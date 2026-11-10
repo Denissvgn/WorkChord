@@ -28,7 +28,7 @@ Schema for creating a governed label group.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # SortableTemplateRowProps
 
 **Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:230`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `SortableTemplateRowProps` in `frontend/src/components/sett
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [statusScopes](../modules/statusScopes.md)
+**Target:**
+
+```typescript
+| 'unknown'
+    | 'blocked'
+    | 'onboarding'
+    | 'ready'
+    | 'disabled'
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `RuntimeReadinessState` in `frontend/src/features/agentTeam
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

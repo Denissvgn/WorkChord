@@ -18,7 +18,7 @@ Backend package identity plus its independently built gateway digest.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

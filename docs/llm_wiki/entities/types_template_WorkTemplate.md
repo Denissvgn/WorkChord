@@ -1,7 +1,7 @@
 # WorkTemplate
 
 **Location:** `frontend/src/types/template.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_template](../modules/types_template.md)
 
@@ -32,7 +32,7 @@ _Auto-generated from `WorkTemplate` in `frontend/src/types/template.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

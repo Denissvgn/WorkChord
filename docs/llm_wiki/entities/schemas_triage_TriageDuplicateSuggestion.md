@@ -29,7 +29,7 @@ Candidate duplicate returned by advisory duplicate search.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

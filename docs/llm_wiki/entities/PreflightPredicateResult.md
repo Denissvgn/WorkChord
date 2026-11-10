@@ -21,7 +21,7 @@ _Auto-generated from `PreflightPredicateResult` in `backend/app/autonomy/preflig
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

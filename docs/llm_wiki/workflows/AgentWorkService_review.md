@@ -28,16 +28,18 @@
 18. `agent_service.AgentConflictError`
 19. `agent_service.AgentConflictError`
 20. `task_service.TaskVersionConflictError`
-21. `task_brief_service.TaskBriefService`
+21. `task_brief_service.TaskBriefService.require_review`
 22. `task_brief_service.TaskBriefService`
-23. `agent_service.AgentConflictError`
-24. `models_agent.AgentTaskAssignment`
-25. `schemas_agent.AgentReviewVerdictResponse`
-26. `agent_routing_policy.canonical_routing_json_bytes`
-27. `agent_routing_policy.canonical_routing_json_bytes`
-28. `agent_routing_observability.record_routing_operational_event`
-29. `agent_routing_observability.record_routing_operational_event`
-30. `commands.commit_or_flush`
+23. `task_brief_service.TaskBriefService.record_review`
+24. `task_brief_service.TaskBriefService`
+25. `agent_service.AgentConflictError`
+26. `models_agent.AgentTaskAssignment`
+27. `schemas_agent.AgentReviewVerdictResponse`
+28. `agent_routing_policy.canonical_routing_json_bytes`
+29. `agent_routing_policy.canonical_routing_json_bytes`
+30. `agent_routing_observability.record_routing_operational_event`
+31. `agent_routing_observability.record_routing_operational_event`
+32. `commands.commit_or_flush`
 
 ## Touches
 

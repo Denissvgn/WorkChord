@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/hooks/useSingleKeyShortcutPreference.test.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` |
-| `./useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` |
-| `@testing-library/react` | `act`, `screen` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` | — | compiler-dependent |
+| `./useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

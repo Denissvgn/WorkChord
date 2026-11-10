@@ -1,9 +1,10 @@
 # ObservedPlanningInput
 
 **Location:** `frontend/src/services/planningInputService.ts:4`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planningInputService](../modules/planningInputService.md)
+**Type parameters:** `T`
 
 ## Description
 
@@ -21,7 +22,7 @@ _Auto-generated from `ObservedPlanningInput` in `frontend/src/services/planningI
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

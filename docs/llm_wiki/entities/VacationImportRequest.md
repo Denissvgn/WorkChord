@@ -17,7 +17,7 @@ CSV text for bulk importing team vacations.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

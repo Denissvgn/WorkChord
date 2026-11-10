@@ -8,19 +8,21 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` |
-| `../../navigation/workspaces` | `getWorkspaceForPath` |
-| `../../services/taskService` | `taskService` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Modal` | `Modal` |
-| `./commandMenuEvents` | `OPEN_COMMAND_MENU_EVENT` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `ArrowUpDown`, `ClipboardCheck`, `Command`, `GanttChartSquare`, `Layers`, `List`, `LayoutGrid`, `ListFilter`, `ListTodo`, `MapPin`, `Maximize2`, `Minimize2`, `Plus`, `Search`, `Settings`, `Users`, `LucideIcon` |
-| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState`, `KeyboardEvent` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useLocation`, `useNavigate` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
+| `../../navigation/workspaces` | `getWorkspaceForPath` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `./commandMenuEvents` | `OPEN_COMMAND_MENU_EVENT` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `LucideIcon` | Declaration | erased |
+| `lucide-react` | `ArrowUpDown`, `ClipboardCheck`, `Command`, `GanttChartSquare`, `Layers`, `List`, `LayoutGrid`, `ListFilter`, `ListTodo`, `MapPin`, `Maximize2`, `Minimize2`, `Plus`, `Search`, `Settings`, `Users` | — | compiler-dependent |
+| `react` | `KeyboardEvent` | Declaration | erased |
+| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useLocation`, `useNavigate` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -89,8 +91,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CommandAction](../entities/CommandAction.md) | Class | 34 | — | — |
-| [CommandGroup](../entities/CommandGroup.md) | Type alias | 32 | — | — |
+| [CommandAction](../entities/CommandAction.md) | Interface | 34 | — | — |
+| [CommandGroup](../entities/CommandGroup.md) | Type alias | 32 | `'results' \| 'tasks' \| 'current' \| 'navigate' \| 'suggested'` | — |
 
 ## Functions
 

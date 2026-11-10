@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -17,39 +19,72 @@ sequenceDiagram
     participant p5 as str
     participant p6 as HTTPException
     participant p7 as exc.detail
-    p0-->>p1: ExecutionUsageService(…).write
+    p0-->>p1: ExecutionUsageService(…).write(actor, run_id, data)
     p0->>p2: ExecutionUsageService
     p0->>p3: _handle_agent_error
-    p3-->>p4: isinstance
-    p3-->>p5: str
-    p3-->>p5: str
-    p3-->>p6: HTTPException
-    p3-->>p4: isinstance
-    p3-->>p6: HTTPException
+    p3-->>p4: isinstance(exc, AgentPermissionError)
+    p3-->>p5: str(exc)
+    p3-->>p5: str(exc)
+    p3-->>p6: HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
+    p3-->>p4: isinstance(exc, AgentRoutingConflictError)
+    p3-->>p6: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
     p3-->>p7: exc.detail
-    p3-->>p4: isinstance
-    p3-->>p6: HTTPException
+    p3-->>p4: isinstance(exc, AgentTeamSetupConflictError)
+    p3-->>p6: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
     p3-->>p7: exc.detail
-    p3-->>p4: isinstance
-    p3-->>p6: HTTPException
+    p3-->>p4: isinstance(exc, TaskVersionConflictError)
+    p3-->>p6: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
     p3-->>p7: exc.detail
-    p3-->>p4: isinstance
-    p3-->>p5: str
-    p3-->>p5: str
-    p3-->>p6: HTTPException
-    p3-->>p4: isinstance
-    p3-->>p5: str
-    p3-->>p5: str
-    p3-->>p6: HTTPException
-    p3-->>p4: isinstance
-    p3-->>p5: str
-    p3-->>p5: str
-    p3-->>p6: HTTPException
+    p3-->>p4: isinstance(exc, AgentConflictError)
+    p3-->>p5: str(exc)
+    p3-->>p5: str(exc)
+    p3-->>p6: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
+    p3-->>p4: isinstance(exc, LookupError)
+    p3-->>p5: str(exc)
+    p3-->>p5: str(exc)
+    p3-->>p6: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
+    p3-->>p4: isinstance(exc, ValueError)
+    p3-->>p5: str(exc)
+    p3-->>p5: str(exc)
+    p3-->>p6: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)
 ```
+
+> Call sequence diagram shows 28 of 28 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 22 of 22 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 1, partial: 1, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 19, emitted: 15, omitted: 4. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `record_execution_usage` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `ExecutionUsageService(…).write` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ExecutionUsageService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `_handle_agent_error` | `available` | `partial` | `available` | `14` | `10` | `4` |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. record_execution_usage"]
@@ -115,7 +150,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

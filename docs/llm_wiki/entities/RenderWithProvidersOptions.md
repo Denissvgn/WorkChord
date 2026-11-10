@@ -1,8 +1,8 @@
 # RenderWithProvidersOptions
 
 **Location:** `frontend/src/test/renderWithProviders.tsx:20`
-**Kind:** Class
-**Bases:** `Omit`
+**Kind:** Interface
+**Bases:** `Omit<RenderOptions, 'wrapper'>`
 **Module:** [renderWithProviders](../modules/renderWithProviders.md)
 
 ## Description
@@ -18,7 +18,7 @@ _Auto-generated from `RenderWithProvidersOptions` in `frontend/src/test/renderWi
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -26,7 +26,7 @@ _Auto-generated from `RenderWithProvidersOptions` in `frontend/src/test/renderWi
 ```mermaid
 flowchart LR
     n0["RenderWithProvidersOptions (frontend/src/test/renderWithProviders.tsx)"]
-    n1["Omit"]
+    n1["Omit#60;RenderOptions, 'wrapper'#62;"]
     n2["renderWithProviders (frontend/src/test/renderWithProviders.tsx)"]
     n0 --> n1
     n2 --> n0
@@ -44,7 +44,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `Omit` | — |
+| Base | `Omit<RenderOptions, 'wrapper'>` | — |
 
 ### References
 

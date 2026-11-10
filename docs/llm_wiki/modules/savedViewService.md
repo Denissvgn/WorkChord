@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/services/savedViewService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/savedView` | `SavedView`, `SavedViewCreate`, `SavedViewDashboardCard`, `SavedViewDuplicate`, `SavedViewListParams`, `SavedViewUpdate` |
-| `./api` | `api` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/savedView` | `SavedView`, `SavedViewCreate`, `SavedViewDashboardCard`, `SavedViewDuplicate`, `SavedViewListParams`, `SavedViewUpdate` | Declaration | erased |
+| `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/services/savedViewService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/dashboard/SavedViewDashboardCards.tsx"]
@@ -77,4 +79,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [FrontendSavedViewService](../entities/FrontendSavedViewService.md) | Class | 17 | — | — |
+| [FrontendSavedViewService](../entities/FrontendSavedViewService.md) | Interface | 17 | — | — |

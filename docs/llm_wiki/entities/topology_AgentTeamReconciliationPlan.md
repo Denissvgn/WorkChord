@@ -22,7 +22,7 @@ _Auto-generated from `AgentTeamReconciliationPlan` in `backend/app/autonomy/cont
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

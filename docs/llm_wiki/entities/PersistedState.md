@@ -22,7 +22,7 @@ _Auto-generated from `PersistedState` in `backend/tests/test_agent_routing_wave6
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -32,7 +32,7 @@ Durable redacted result for one explicitly approved setup action.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

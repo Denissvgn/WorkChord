@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/planning/PlanningWorkbenchFrame.te
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
-| `@testing-library/react` | `screen`, `within` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +34,7 @@ flowchart LR
     n0 --> n1
     n0 --> n2
     n0 --> n3
+    n3 --> n2
     click n0 "../modules/PlanningWorkbenchFrame.test.md"
     click n1 "../modules/PlanningWorkbenchFrame.md"
     click n2 "../modules/i18n.md"

@@ -18,9 +18,10 @@
 8. `agent_service.AgentConflictError`
 9. `agent_service.AgentConflictError`
 10. `task_service.TaskVersionConflictError`
-11. `triage_service.TriageService`
-12. `schemas_triage.TriageItemCreate`
-13. `commands.commit_or_flush`
+11. `triage_service.TriageService.create`
+12. `triage_service.TriageService`
+13. `schemas_triage.TriageItemCreate`
+14. `commands.commit_or_flush`
 
 ## Touches
 

@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [StatusSegmentStrip](../modules/StatusSegmentStrip.md)
+**Target:**
+
+```typescript
+{
+    key: string;
+    label: ReactNode;
+    value: ReactNode;
+    tone?: PillTone;
+}
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `StatusSegment` in `frontend/src/components/ui/StatusSegmen
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

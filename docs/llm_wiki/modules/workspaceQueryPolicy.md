@@ -8,11 +8,11 @@ Creates the identity/access-scoped workspace client and installs both shared wor
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./planningMasters/planningNavigationInvalidation` | `installPlanningNavigationInvalidation` |
-| `./workQueryFreshness` | `installWorkFreshness` |
-| `@tanstack/react-query` | `QueryClient` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./planningMasters/planningNavigationInvalidation` | `installPlanningNavigationInvalidation` | — | compiler-dependent |
+| `./workQueryFreshness` | `installWorkFreshness` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClient` | — | compiler-dependent |
 
 ## Module Signals
 

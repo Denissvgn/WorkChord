@@ -8,11 +8,12 @@ _Auto-generated from `frontend/src/components/common/Input.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `clsx` | `clsx` |
-| `react` | `forwardRef`, `useId`, `InputHTMLAttributes` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `clsx` | `clsx` | — | compiler-dependent |
+| `react` | `InputHTMLAttributes` | Declaration | erased |
+| `react` | `forwardRef`, `useId` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -53,7 +54,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [InputProps](../entities/InputProps.md) | Class | 6 | `InputHTMLAttributes` | — |
+| [InputProps](../entities/InputProps.md) | Interface | 6 | `InputHTMLAttributes<HTMLInputElement>` | — |
 
 ## Functions
 

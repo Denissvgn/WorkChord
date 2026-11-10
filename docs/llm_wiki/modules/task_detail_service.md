@@ -16,10 +16,18 @@ Human ownership queues apply complete inherited deferral policy to every bounded
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `require_project` |
+| `app.authority` | `require_project`, `internal_authority`, `require_project` |
+| `app.commands` | `PlanningConflict` |
+| `app.models.iteration` | `Iteration` |
+| `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `TaskDependency` |
+| `app.query_limits` | `MAX_ITERATION_TREE_TASKS` |
 | `app.schemas.task` | `TaskAgentReadiness` |
 | `app.schemas.task_detail` | `TaskDetailResponse`, `TaskReference`, `TaskReferencePage` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.task_domain_service` | `TaskDomainService` |
+| `app.services.task_service` | `TaskService` |
+| `app.sql_semantics` | `portable_contains` |
 | `sqlalchemy` | `and_`, `literal`, `or_`, `select` |
 | `sqlalchemy.orm` | `selectinload`, `raiseload` |
 
@@ -28,85 +36,32 @@ Human ownership queues apply complete inherited deferral policy to every bounded
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/mcp_agent_tools.py"]
-    n2["backend/app/models/task.py"]
-    n3["backend/app/routers/task_domain.py"]
-    n4["backend/app/schemas/task.py"]
-    n5["backend/app/schemas/task_detail.py"]
-    n6["backend/app/services/task_detail_service.py"]
-    n7["backend/tests/test_bounded_task_policy.py"]
-    n8["backend/tests/test_human_work_queries.py"]
-    n9["backend/tests/test_task_domain.py"]
-    n10["backend/tests/test_task_pagination.py"]
-    n11["scripts/load/service_worksets.py"]
-    n0 --> n2
-    n1 --> n4
-    n1 --> n6
-    n3 --> n0
-    n3 --> n2
-    n3 --> n4
-    n3 --> n5
-    n3 --> n6
-    n5 --> n4
-    n6 --> n0
-    n6 --> n2
-    n6 --> n4
-    n6 --> n5
-    n7 --> n0
-    n7 --> n2
-    n7 --> n6
-    n8 --> n0
-    n8 --> n2
-    n8 --> n4
-    n8 --> n6
-    n8 --> n9
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n4
-    n9 --> n6
-    n10 --> n0
-    n10 --> n2
-    n10 --> n6
-    n11 --> n0
-    n11 --> n2
-    n11 --> n6
-    click n0 "../modules/authority.md"
-    click n1 "../modules/mcp_agent_tools.md"
-    click n2 "../modules/models_task.md"
-    click n3 "../modules/routers_task_domain.md"
-    click n4 "../modules/schemas_task.md"
-    click n5 "../modules/task_detail.md"
-    click n6 "../modules/task_detail_service.md"
-    click n7 "../modules/test_bounded_task_policy.md"
-    click n8 "../modules/test_human_work_queries.md"
-    click n9 "../modules/test_task_domain.md"
-    click n10 "../modules/test_task_pagination.md"
-    click n11 "../modules/service_worksets.md"
+    n0["backend"]
+    n1["backend/app/services/task_detail_service.py"]
+    n2["scripts"]
+    n0 --> n1
+    n1 --> n0
+    n2 --> n1
+    click n1 "../modules/task_detail_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
-| Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
-| Inbound | [test_bounded_task_policy](../modules/test_bounded_task_policy.md) |
-| Inbound | [test_human_work_queries](../modules/test_human_work_queries.md) |
-| Inbound | [test_task_domain](../modules/test_task_domain.md) |
-| Inbound | [test_task_pagination](../modules/test_task_pagination.md) |
-| Inbound | [service_worksets](../modules/service_worksets.md) |
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [schemas_task](../modules/schemas_task.md) |
-| Outbound | [task_detail](../modules/task_detail.md) |
+| Inbound | `backend` (6) |
+| Inbound | `scripts` (1) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

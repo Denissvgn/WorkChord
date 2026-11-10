@@ -15,6 +15,7 @@ Owned emulator controllers drain before resource cleanup. Device-scoped reverse 
 | Source | Symbols |
 |--------|---------|
 | `base64` | `base64` |
+| `ci_runtime` | `stop_process_group` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `os` | `os` |
@@ -22,6 +23,7 @@ Owned emulator controllers drain before resource cleanup. Device-scoped reverse 
 | `platform` | `platform` |
 | `re` | `re` |
 | `secrets` | `secrets` |
+| `shutil` | `shutil` |
 | `ssl` | `ssl` |
 | `subprocess` | `subprocess` |
 | `threading` | `threading` |
@@ -34,6 +36,12 @@ Owned emulator controllers drain before resource cleanup. Device-scoped reverse 
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 *No internal module dependencies detected.*
+
+### External packages
+
+| Language | Used packages | Undeclared packages |
+|---|---:|---:|
+| python | 1 | 1 |
 
 ## Classes
 

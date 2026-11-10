@@ -1,7 +1,7 @@
 # RestartRequiredSetting
 
 **Location:** `frontend/src/types/systemSettings.ts:72`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `RestartRequiredSetting` in `frontend/src/types/systemSetti
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

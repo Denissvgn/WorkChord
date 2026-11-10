@@ -8,20 +8,21 @@ _Auto-generated from `frontend/src/pages/PlanSharePage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../components/feedback/toast` | `useToast` |
-| `../components/ui` | `PageHeader`, `PageLayout` |
-| `../services/planShareService` | `planShareService`, `PlanShareTask` |
-| `../utils/copyText` | `copyText` |
-| `../utils/formatDate` | `formatDate`, `formatDateTime` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `CalendarDays`, `CheckCircle2`, `Copy`, `ExternalLink`, `ListChecks`, `Users` |
-| `react` | `useMemo` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../components/feedback/toast` | `useToast` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../services/planShareService` | `PlanShareTask` | Declaration | erased |
+| `../services/planShareService` | `planShareService` | — | compiler-dependent |
+| `../utils/copyText` | `copyText` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `CalendarDays`, `CheckCircle2`, `Copy`, `ExternalLink`, `ListChecks`, `Users` | — | compiler-dependent |
+| `react` | `useMemo` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -32,6 +33,8 @@ _Auto-generated from `frontend/src/pages/PlanSharePage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]

@@ -1,7 +1,7 @@
 # GitHubRuntimeSettings
 
 **Location:** `frontend/src/types/systemSettings.ts:39`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `GitHubRuntimeSettings` in `frontend/src/types/systemSettin
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

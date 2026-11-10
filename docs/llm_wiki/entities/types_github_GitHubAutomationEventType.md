@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_github](../modules/types_github.md)
+**Target:**
+
+```typescript
+| 'github_pr_opened'
+    | 'github_pr_reopened'
+    | 'github_pr_ready_for_review'
+    | 'github_pr_synchronize'
+    | 'github_pr_closed'
+    | 'github_pr_merged'
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `GitHubAutomationEventType` in `frontend/src/types/github.t
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

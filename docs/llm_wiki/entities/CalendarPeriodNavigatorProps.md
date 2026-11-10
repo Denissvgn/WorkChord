@@ -1,7 +1,7 @@
 # CalendarPeriodNavigatorProps
 
 **Location:** `frontend/src/components/calendar/InteractiveCalendar.tsx:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [InteractiveCalendar](../modules/InteractiveCalendar.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `CalendarPeriodNavigatorProps` in `frontend/src/components/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

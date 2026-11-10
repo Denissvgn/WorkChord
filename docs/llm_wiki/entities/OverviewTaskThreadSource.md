@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [overviewTaskThread](../modules/overviewTaskThread.md)
+**Target:**
+
+```typescript
+typeof OVERVIEW_TASK_THREAD_SOURCES[number]
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `OverviewTaskThreadSource` in `frontend/src/features/overvi
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

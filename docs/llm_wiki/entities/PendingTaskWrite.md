@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskDraftStorage](../modules/taskDraftStorage.md)
+**Target:**
+
+```typescript
+{ id: string; kind: 'task' | 'triage' | 'unknown' }
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `PendingTaskWrite` in `frontend/src/components/tasks/taskDr
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

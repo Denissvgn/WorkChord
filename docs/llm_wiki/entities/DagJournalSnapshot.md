@@ -19,7 +19,7 @@ _Auto-generated from `DagJournalSnapshot` in `backend/app/autonomy/orchestration
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

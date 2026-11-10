@@ -26,7 +26,7 @@ Typed PM recovery diagnosis and optimistic ownership tuple.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

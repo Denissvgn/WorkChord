@@ -22,7 +22,7 @@ Schedule outcome plus the complete optimistic task-version token set.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -22,7 +22,7 @@ Result of applying one GitHub status automation rule.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

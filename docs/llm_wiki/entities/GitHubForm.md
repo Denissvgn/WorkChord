@@ -1,7 +1,7 @@
 # GitHubForm
 
 **Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:39`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `GitHubForm` in `frontend/src/components/settings/RuntimeCo
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

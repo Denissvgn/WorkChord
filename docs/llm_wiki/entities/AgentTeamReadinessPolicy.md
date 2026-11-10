@@ -19,7 +19,7 @@ Backend-owned minimum topology needed before runtime readiness.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

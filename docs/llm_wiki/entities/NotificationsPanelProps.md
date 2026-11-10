@@ -1,7 +1,7 @@
 # NotificationsPanelProps
 
 **Location:** `frontend/src/components/notifications/NotificationsPanel.tsx:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [NotificationsPanel](../modules/NotificationsPanel.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `NotificationsPanelProps` in `frontend/src/components/notif
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

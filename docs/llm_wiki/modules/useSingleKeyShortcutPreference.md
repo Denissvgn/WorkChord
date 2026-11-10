@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/hooks/useSingleKeyShortcutPreference.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../utils/singleKeyShortcutPreference` | `readSingleKeyShortcutsEnabled`, `SINGLE_KEY_SHORTCUTS_CHANGED_EVENT`, `SINGLE_KEY_SHORTCUTS_STORAGE_KEY`, `writeSingleKeyShortcutsEnabled` |
-| `react` | `useCallback`, `useEffect`, `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../utils/singleKeyShortcutPreference` | `readSingleKeyShortcutsEnabled`, `SINGLE_KEY_SHORTCUTS_CHANGED_EVENT`, `SINGLE_KEY_SHORTCUTS_STORAGE_KEY`, `writeSingleKeyShortcutsEnabled` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 

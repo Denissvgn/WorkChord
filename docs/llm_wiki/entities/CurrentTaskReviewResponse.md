@@ -18,7 +18,7 @@ Carries the current task version and a matching independent verdict or an explic
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

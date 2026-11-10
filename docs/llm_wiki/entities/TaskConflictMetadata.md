@@ -1,7 +1,7 @@
 # TaskConflictMetadata
 
 **Location:** `frontend/src/components/tasks/taskEditorContract.ts:265`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TaskConflictMetadata` in `frontend/src/components/tasks/ta
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

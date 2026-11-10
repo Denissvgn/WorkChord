@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
+**Target:**
+
+```typescript
+| 'titleRequired'
+    | 'priorityRange'
+    | 'effortRequired'
+    | 'dateOrder'
+    | 'assigneeOutsideIteration'
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `TaskEditorValidationCode` in `frontend/src/components/task
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

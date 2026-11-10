@@ -4,6 +4,17 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
+**Target:**
+
+```typescript
+| 'create'
+    | 'safe_update'
+    | 'no_change'
+    | 'blocked_conflict'
+    | 'requires_replacement'
+    | 'propose_disable'
+    | 'unmanaged'
+```
 
 ## Description
 
@@ -11,11 +22,11 @@ _Auto-generated from `AgentTeamReconciliationClass` in `frontend/src/types/agent
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

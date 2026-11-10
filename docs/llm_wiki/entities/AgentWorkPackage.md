@@ -37,7 +37,7 @@ Packages associated with canonical tasks capture task/brief/artifact revisions a
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -56,6 +56,7 @@ flowchart LR
     n9["AutonomyWorkPackageService.create_package (backend/app/services/autonomy_work_package_service.py)"]
     n10["AutonomyWorkPackageService.package_response (backend/app/services/autonomy_work_package_service.py)"]
     n11["AutonomyWorkPackageService.transition_response (backend/app/services/autonomy_work_package_service.py)"]
+    n12["backend/app/services/snapshot_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -67,6 +68,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_autonomy.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -79,6 +81,7 @@ flowchart LR
     click n9 "../modules/autonomy_work_package_service.md"
     click n10 "../modules/autonomy_work_package_service.md"
     click n11 "../modules/autonomy_work_package_service.md"
+    click n12 "../modules/snapshot_service.md"
 ```
 
 ### Summary
@@ -108,3 +111,6 @@ flowchart LR
 | `AutonomyWorkPackageService.create_package` | type_reference | [autonomy_work_package_service](../modules/autonomy_work_package_service.md) | — |
 | `AutonomyWorkPackageService.package_response` | type_reference | [autonomy_work_package_service](../modules/autonomy_work_package_service.md) | — |
 | `AutonomyWorkPackageService.transition_response` | type_reference | [autonomy_work_package_service](../modules/autonomy_work_package_service.md) | — |
+| `snapshot_service` | import | [snapshot_service](../modules/snapshot_service.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

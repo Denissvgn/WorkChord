@@ -10,22 +10,22 @@ Project reports expose work-date filters, own versus authorized manager totals, 
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
-| `../../features/timeEntries/useTimeEntries` | `useTimeEntries` |
-| `../../features/useLiveWindow` | `useLiveWindow` |
-| `../../services/timeEntryService` | `timeEntryService`, `timeAccessDenied` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../tasks/TimeEntriesPanel` | `TimeEntriesPanel` |
-| `@tanstack/react-query` | `useMutation` |
-| `date-fns` | `format`, `startOfMonth` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
+| `../../features/timeEntries/useTimeEntries` | `useTimeEntries` | — | compiler-dependent |
+| `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
+| `../../services/timeEntryService` | `timeEntryService`, `timeAccessDenied` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../tasks/TimeEntriesPanel` | `TimeEntriesPanel` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation` | — | compiler-dependent |
+| `date-fns` | `format`, `startOfMonth` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 

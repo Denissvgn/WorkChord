@@ -9,12 +9,14 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `authority.require_project`
-2. `delivery_dependency_service.DeliveryDependencyService`
-3. `snapshot_service.SnapshotService`
-4. `authority.internal_authority`
-5. `external_link_service.ExternalLinkService`
-6. `outbound_webhook_service.emit_outbound_webhook_event`
-7. `commands.commit_or_flush`
+2. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+3. `delivery_dependency_service.DeliveryDependencyService`
+4. `snapshot_service.SnapshotService`
+5. `authority.internal_authority`
+6. `external_link_service.ExternalLinkService.delete_for_entity`
+7. `external_link_service.ExternalLinkService`
+8. `outbound_webhook_service.emit_outbound_webhook_event`
+9. `commands.commit_or_flush`
 
 ## Touches
 

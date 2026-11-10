@@ -23,7 +23,7 @@ Authorized client input; identity and policy fields are server-owned.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
+| `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1; strict=True | — | — |
 | `band` | `TaskDifficultyBand` | `band` | Yes | No | — | — | — | — |
 | `axes` | `TaskDifficultyAxes` | `axes` | Yes | No | — | — | — | — |
 | `required_skill_levels` | `dict[str, SkillLevel]` | `required_skill_levels` | No | No | factory: `dict` | — | — | — |

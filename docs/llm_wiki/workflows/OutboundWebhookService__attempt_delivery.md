@@ -10,8 +10,9 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `time.as_utc`
 2. `time.utc_now`
-3. `discussion_service.DiscussionService`
-4. `commands.commit_or_flush`
+3. `discussion_service.DiscussionService.deliver`
+4. `discussion_service.DiscussionService`
+5. `commands.commit_or_flush`
 
 ## Touches
 

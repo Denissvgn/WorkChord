@@ -48,7 +48,7 @@ Installation-local mapping from a portable actor key to one actor.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

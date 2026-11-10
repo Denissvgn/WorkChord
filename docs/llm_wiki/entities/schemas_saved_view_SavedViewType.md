@@ -19,7 +19,7 @@ Surface that a saved view applies to.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

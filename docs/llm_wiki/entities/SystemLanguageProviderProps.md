@@ -1,7 +1,7 @@
 # SystemLanguageProviderProps
 
 **Location:** `frontend/src/i18n/SystemLanguageProvider.tsx:9`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SystemLanguageProvider](../modules/SystemLanguageProvider.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `SystemLanguageProviderProps` in `frontend/src/i18n/SystemL
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

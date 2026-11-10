@@ -1,7 +1,7 @@
 # SavedView
 
 **Location:** `frontend/src/types/savedView.ts:4`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)
 
@@ -33,7 +33,7 @@ _Auto-generated from `SavedView` in `frontend/src/types/savedView.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

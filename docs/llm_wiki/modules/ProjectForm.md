@@ -8,28 +8,29 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/seedDisplay` | `templateDisplay` |
-| `../../services/planningInputService` | `ObservedRevisions` |
-| `../../services/projectService` | `projectService` |
-| `../../services/teamService` | `teamService` |
-| `../../services/templateService` | `templateService` |
-| `../../types/project` | `Project`, `ProjectCreate`, `ProjectHealth`, `ProjectStatus` |
-| `../../types/template` | `WorkTemplate` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/teamMemberLabels` | `formatTeamMemberProfileLabel` |
-| `../../utils/templateDefaults` | `appendChecklistToDescription`, `getPayloadNumber` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` |
-| `../tasks/useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Save` |
-| `react` | `ReactNode`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
+| `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../services/templateService` | `templateService` | — | compiler-dependent |
+| `../../types/project` | `Project`, `ProjectCreate`, `ProjectHealth`, `ProjectStatus` | Declaration | erased |
+| `../../types/template` | `WorkTemplate` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/teamMemberLabels` | `formatTeamMemberProfileLabel` | — | compiler-dependent |
+| `../../utils/templateDefaults` | `appendChecklistToDescription`, `getPayloadNumber` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
+| `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Save` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -42,6 +43,8 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -72,7 +75,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectFormProps](../entities/ProjectFormProps.md) | Class | 26 | — | — |
+| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 26 | — | — |
 
 ## Functions
 

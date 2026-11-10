@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
+**Target:**
+
+```typescript
+{
+    order: TaskOrderRequest;
+    undoOrder: TaskOrderRequest;
+}
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `ReorderVariables` in `frontend/src/components/tasks/TaskLi
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

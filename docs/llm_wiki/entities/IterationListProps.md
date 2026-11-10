@@ -1,7 +1,7 @@
 # IterationListProps
 
 **Location:** `frontend/src/components/iteration/IterationList.tsx:18`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [IterationList](../modules/IterationList.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `IterationListProps` in `frontend/src/components/iteration/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

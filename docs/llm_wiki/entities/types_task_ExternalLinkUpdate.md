@@ -1,7 +1,7 @@
 # ExternalLinkUpdate
 
 **Location:** `frontend/src/types/task.ts:76`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `ExternalLinkUpdate` in `frontend/src/types/task.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

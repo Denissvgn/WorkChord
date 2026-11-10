@@ -32,7 +32,7 @@ Reusable defaults for creating tasks, projects, or triage items.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

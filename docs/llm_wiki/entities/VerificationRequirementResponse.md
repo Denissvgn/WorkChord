@@ -43,7 +43,7 @@ _Auto-generated from `VerificationRequirementResponse` in `backend/app/schemas/a
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

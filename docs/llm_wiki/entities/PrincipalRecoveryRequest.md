@@ -14,11 +14,11 @@ _Auto-generated from `PrincipalRecoveryRequest` in `backend/app/routers/identity
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `enabled` | `bool` | `enabled` | Yes | No | — | — | — | — |
-| `reason` | `str` | `reason` | Yes | No | — | min_length=8; max_length=2000 | — | — |
+| `reason` | `str` | `reason` | Yes | No | — | max_length=2000; min_length=8 | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,7 +15,7 @@ Raised when a caller submits an unknown manifest schema version.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
+**Target:**
+
+```typescript
+'bulk' | 'merge'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TaskMode` in `frontend/src/components/tasks/TaskList.tsx`.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

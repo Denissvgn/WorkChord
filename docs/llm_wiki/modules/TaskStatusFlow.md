@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/components/analytics/TaskStatusFlow.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `TaskStatus`, `TaskStatusLog` |
-| `../../utils/formatDate` | `formatDateTime` |
-| `../ui/tone` | `STATUS_TONE`, `toneBorderClassName` |
-| `clsx` | `clsx` |
-| `lucide-react` | `ArrowRight` |
-| `react` | `React` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `TaskStatus`, `TaskStatusLog` | Declaration | erased |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../ui/tone` | `STATUS_TONE`, `toneBorderClassName` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `ArrowRight` | — | compiler-dependent |
+| `react` | `React` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,6 +27,8 @@ _Auto-generated from `frontend/src/components/analytics/TaskStatusFlow.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/analytics/TaskStatusFlow.tsx"]
@@ -66,7 +68,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskStatusFlowProps](../entities/TaskStatusFlowProps.md) | Class | 9 | — | — |
+| [TaskStatusFlowProps](../entities/TaskStatusFlowProps.md) | Interface | 9 | — | — |
 
 ## Functions
 

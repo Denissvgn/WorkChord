@@ -1,7 +1,7 @@
 # ToastApi
 
 **Location:** `frontend/src/components/feedback/toast.ts:17`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [toast](../modules/toast.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `ToastApi` in `frontend/src/components/feedback/toast.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

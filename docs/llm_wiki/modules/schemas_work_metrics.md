@@ -23,6 +23,8 @@ flowchart LR
     n3["backend/app/schemas/release.py"]
     n4["backend/app/schemas/task.py"]
     n5["backend/app/schemas/work_metrics.py"]
+    n6["backend/app/services/iteration_service.py"]
+    n7["backend/app/services/project_service.py"]
     n0 --> n1
     n0 --> n4
     n0 --> n5
@@ -30,12 +32,18 @@ flowchart LR
     n2 --> n5
     n3 --> n5
     n4 --> n5
+    n6 --> n1
+    n6 --> n5
+    n7 --> n2
+    n7 --> n5
     click n0 "../modules/schemas_gantt.md"
     click n1 "../modules/schemas_iteration.md"
     click n2 "../modules/schemas_project.md"
     click n3 "../modules/schemas_release.md"
     click n4 "../modules/schemas_task.md"
     click n5 "../modules/schemas_work_metrics.md"
+    click n6 "../modules/iteration_service.md"
+    click n7 "../modules/project_service.md"
 ```
 
 ### Internal neighbors
@@ -47,6 +55,8 @@ flowchart LR
 | Inbound | [schemas_project](../modules/schemas_project.md) |
 | Inbound | [schemas_release](../modules/schemas_release.md) |
 | Inbound | [schemas_task](../modules/schemas_task.md) |
+| Inbound | [iteration_service](../modules/iteration_service.md) |
+| Inbound | [project_service](../modules/project_service.md) |
 
 ### External packages
 

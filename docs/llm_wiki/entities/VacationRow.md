@@ -1,7 +1,7 @@
 # VacationRow
 
 **Location:** `frontend/src/pages/CalendarPage.tsx:46`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [CalendarPage](../modules/CalendarPage.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `VacationRow` in `frontend/src/pages/CalendarPage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

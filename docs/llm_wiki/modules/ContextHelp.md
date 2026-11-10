@@ -8,20 +8,21 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` |
-| `../../navigation/helpContexts` | `getHelpContext`, `HelpContentProvider` |
-| `../common/Checkbox` | `Checkbox` |
-| `../planning/PlanningWorkflowGuide` | `PlanningWorkflowHelpContent` |
-| `../settings/SettingsGoalHelpContent` | `SettingsGoalHelpContent` |
-| `../tasks/TaskWorkflowGuide` | `TaskWorkflowHelpContent` |
-| `../ui` | `SlideOverDrawer` |
-| `./commandMenuEvents` | `openCommandMenu` |
-| `lucide-react` | `ArrowDownUp`, `ChevronRight`, `CircleHelp`, `Command`, `CornerDownLeft`, `Keyboard` |
-| `react` | `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
+| `../../navigation/helpContexts` | `HelpContentProvider` | Specifier | compiler-dependent |
+| `../../navigation/helpContexts` | `getHelpContext` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../planning/PlanningWorkflowGuide` | `PlanningWorkflowHelpContent` | — | compiler-dependent |
+| `../settings/SettingsGoalHelpContent` | `SettingsGoalHelpContent` | — | compiler-dependent |
+| `../tasks/TaskWorkflowGuide` | `TaskWorkflowHelpContent` | — | compiler-dependent |
+| `../ui` | `SlideOverDrawer` | — | compiler-dependent |
+| `./commandMenuEvents` | `openCommandMenu` | — | compiler-dependent |
+| `lucide-react` | `ArrowDownUp`, `ChevronRight`, `CircleHelp`, `Command`, `CornerDownLeft`, `Keyboard` | — | compiler-dependent |
+| `react` | `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -33,6 +34,8 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Checkbox.tsx"]

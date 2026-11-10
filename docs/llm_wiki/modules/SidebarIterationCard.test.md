@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/layout/SidebarIterationCard.test.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./SidebarIterationCard` | `SidebarIterationCard` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./SidebarIterationCard` | `SidebarIterationCard` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

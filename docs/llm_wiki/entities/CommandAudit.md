@@ -25,7 +25,7 @@ Append-only command attribution with principal, source, correlation and reason. 
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

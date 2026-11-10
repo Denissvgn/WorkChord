@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
+**Target:**
+
+```typescript
+'appearance' | 'scheduling' | 'templates_labels' | 'models_agents' | 'github' | 'webhooks' | 'notifications' | 'admin_access' | 'runtime' | 'about'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `SettingsTab` in `frontend/src/pages/SettingsPage.tsx`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

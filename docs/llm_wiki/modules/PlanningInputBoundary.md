@@ -8,14 +8,15 @@ Existing planning editors start from one coherent server resource and complete r
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../services/planningInputService` | `MemberPlanningIntent`, `ObservedPlanningInput`, `PlanningInputKind` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `react` | `useEffect`, `useState`, `ReactNode` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../services/planningInputService` | `MemberPlanningIntent`, `ObservedPlanningInput`, `PlanningInputKind` | Declaration | erased |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `react` | `ReactNode` | Specifier | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +27,8 @@ Existing planning editors start from one coherent server resource and complete r
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -95,4 +98,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `PlanningInputBoundary` | `({ kind, resourceId, creatingMember = false, getIntent, onCancel, children }: {     kind: PlanningInputKind; resourceId: number; creatingMember?: boolean;     onCancel?: () => void;     getIntent?: () => MemberPlanningIntent;     children: (observation: ObservedPlanningInput<T>, controls: ReactNode, onSaved: () => void) => ReactNode; })` | — | — |
+| `PlanningInputBoundary` | <pre><code>&#60;T&#62;&#40;&#123; kind&#44; resourceId&#44; creatingMember &#61; false&#44; getIntent&#44; onCancel&#44; children &#125;&#58; &#123;&#10;    kind&#58; PlanningInputKind&#59; resourceId&#58; number&#59; creatingMember&#63;&#58; boolean&#59;&#10;    onCancel&#63;&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    getIntent&#63;&#58; &#40;&#41; &#61;&#62; MemberPlanningIntent&#59;&#10;    children&#58; &#40;observation&#58; ObservedPlanningInput&#60;T&#62;&#44; controls&#58; ReactNode&#44; onSaved&#58; &#40;&#41; &#61;&#62; void&#41; &#61;&#62; ReactNode&#59;&#10;&#125;&#41;</code></pre> | — | — |

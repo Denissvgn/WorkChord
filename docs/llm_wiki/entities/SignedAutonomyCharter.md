@@ -18,7 +18,7 @@ _Auto-generated from `SignedAutonomyCharter` in `backend/app/autonomy/contracts/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

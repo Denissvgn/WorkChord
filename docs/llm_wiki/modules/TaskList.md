@@ -8,37 +8,38 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/labelService` | `labelService` |
-| `../../services/taskService` | `taskService` |
-| `../../types/label` | `Label` |
-| `../../types/task` | `Task` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/graphLimitError` | `isGraphLimitError` |
-| `../../utils/taskFilters` | `filterTaskWithChildren` |
-| `../../utils/visibleWork` | `selectVisibleWork` |
-| `../common/Button` | `Button` |
-| `../common/ConfirmDialog` | `ConfirmDialog` |
-| `../common/Modal` | `Modal` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../feedback/WorkFreshness` | `WorkFreshness` |
-| `../feedback/toast` | `useToast` |
-| `../ui` | `OverflowMenu` |
-| `../ui/tone` | `statusTextClassName` |
-| `./GuardedTaskModal` | `GuardedTaskModal` |
-| `./PagedTaskBrowser` | `PagedTaskBrowser` |
-| `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
-| `./TaskBulkOperationsPanel` | `TaskBulkOperationsPanel` |
-| `./TaskFiltersBar` | `TaskFilters` |
-| `@dnd-kit/core` | `DndContext`, `closestCenter`, `KeyboardSensor`, `PointerSensor`, `useSensor`, `useSensors`, `DragEndEvent` |
-| `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` |
-| `@dnd-kit/utilities` | `CSS` |
-| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck` |
-| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/labelService` | `labelService` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/label` | `Label` | Declaration | erased |
+| `../../types/task` | `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/graphLimitError` | `isGraphLimitError` | — | compiler-dependent |
+| `../../utils/taskFilters` | `filterTaskWithChildren` | — | compiler-dependent |
+| `../../utils/visibleWork` | `selectVisibleWork` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../feedback/WorkFreshness` | `WorkFreshness` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `../ui` | `OverflowMenu` | — | compiler-dependent |
+| `../ui/tone` | `statusTextClassName` | — | compiler-dependent |
+| `./GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
+| `./PagedTaskBrowser` | `PagedTaskBrowser` | — | compiler-dependent |
+| `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
+| `./TaskBulkOperationsPanel` | `TaskBulkOperationsPanel` | — | compiler-dependent |
+| `./TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `@dnd-kit/core` | `DragEndEvent` | Declaration | erased |
+| `@dnd-kit/core` | `DndContext`, `closestCenter`, `KeyboardSensor`, `PointerSensor`, `useSensor`, `useSensors` | — | compiler-dependent |
+| `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` | — | compiler-dependent |
+| `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -49,6 +50,8 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -79,16 +82,16 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Class | 70 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Class | 740 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Class | 792 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 48 | — | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 49 | — | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | — | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 51 | — | — |
+| [TaskListProps](../entities/TaskListProps.md) | Interface | 70 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 740 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 792 | `TaskItemProps` | — |
+| [SortKey](../entities/SortKey.md) | Type alias | 48 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 49 | `'bulk' \| 'merge'` | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | `Parameters<typeof taskService.reorder>[0]` | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 51 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskList` | `({     iterationId,     filters,     sortKey,     onSortKeyChange,     hasActiveFilters = false,     activeViewName,     onClearFilters,     onCreateTask,     requestedMode,     onModeChange, }: TaskListProps)` | — | — |
+| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |

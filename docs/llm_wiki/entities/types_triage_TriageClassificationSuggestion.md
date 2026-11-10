@@ -1,7 +1,7 @@
 # TriageClassificationSuggestion
 
 **Location:** `frontend/src/types/triage.ts:93`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
 
@@ -34,7 +34,7 @@ _Auto-generated from `TriageClassificationSuggestion` in `frontend/src/types/tri
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

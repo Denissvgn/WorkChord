@@ -1,7 +1,7 @@
 # LabelFormState
 
 **Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:71`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `LabelFormState` in `frontend/src/components/settings/Templ
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

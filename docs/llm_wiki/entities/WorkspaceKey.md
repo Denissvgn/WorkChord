@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)
+**Target:**
+
+```typescript
+'delivery' | 'planning' | 'resource'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `WorkspaceKey` in `frontend/src/navigation/workspaces.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

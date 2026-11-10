@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)
+**Target:**
+
+```typescript
+'done' | 'warn' | 'blocked' | 'opt' | 'accent'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `StatusTone` in `frontend/src/pages/AgentTeamSetupMasterPag
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

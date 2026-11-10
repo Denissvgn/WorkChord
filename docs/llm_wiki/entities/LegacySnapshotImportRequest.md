@@ -18,7 +18,7 @@ _Auto-generated from `LegacySnapshotImportRequest` in `backend/app/routers/snaps
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

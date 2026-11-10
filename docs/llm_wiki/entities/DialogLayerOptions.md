@@ -1,7 +1,7 @@
 # DialogLayerOptions
 
 **Location:** `frontend/src/components/common/dialogLayer.ts:57`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [dialogLayer](../modules/dialogLayer.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `DialogLayerOptions` in `frontend/src/components/common/dia
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

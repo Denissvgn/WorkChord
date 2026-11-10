@@ -19,6 +19,7 @@ Release service for project-scoped shipping records.
 | `app.schemas.release` | `ReleaseCreateRequest`, `ReleaseUpdateRequest` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.task_service` | `TaskService` |
+| `app.services.work_metrics` | `scoped_metric_tasks`, `aggregate_metrics`, `scoped_metric_tasks` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `datetime` |
 | `sqlalchemy` | `select` |
@@ -45,7 +46,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (2) |
-| Outbound | `backend` (10) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -53,7 +54,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

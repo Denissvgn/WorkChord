@@ -10,15 +10,23 @@
 2. `commands.lock_backlog_project`
 3. `snapshot_service.SnapshotService._encode`
 4. `task_service.TaskService`
-5. `authority.AuthorityError`
-6. `snapshot_service.SnapshotService`
-7. `authority.internal_authority`
-8. `delivery_dependency_service.DeliveryDependencyService`
-9. `task_recovery_service.reserve_restored_task_version`
-10. `models_task.Task`
-11. `task_domain_service.require_owner`
-12. `task_brief_service.TaskBriefService`
-13. `models_task.TaskDependency`
+5. `task_service.TaskService._load_iteration_tree`
+6. `authority.AuthorityError`
+7. `task_service.TaskService._require_unclaimed_structure`
+8. `snapshot_service.SnapshotService._preflight_profile_lifetimes`
+9. `snapshot_service.SnapshotService`
+10. `authority.internal_authority`
+11. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+12. `delivery_dependency_service.DeliveryDependencyService`
+13. `task_recovery_service.reserve_restored_task_version`
+14. `models_task.Task`
+15. `task_domain_service.require_owner`
+16. `task_brief_service.TaskBriefService.restore_brief`
+17. `task_brief_service.TaskBriefService`
+18. `task_service.TaskService.record_task_event`
+19. `models_task.TaskDependency`
+20. `task_service.TaskService._load_iteration_tree`
+21. `task_service.TaskService.task_to_response`
 
 ## Touches
 

@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/services/healthService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `axios` | `axios` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `axios` | `axios` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -47,4 +47,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [HealthCheckResult](../entities/HealthCheckResult.md) | Class | 3 | — | — |
+| [HealthCheckResult](../entities/HealthCheckResult.md) | Interface | 3 | — | — |

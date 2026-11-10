@@ -1,7 +1,7 @@
 # WorkflowFocusIntent
 
 **Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:130`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `WorkflowFocusIntent` in `frontend/src/pages/AgentTeamSetup
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

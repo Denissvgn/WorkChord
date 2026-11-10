@@ -8,59 +8,92 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
     participant p1 as _parser().parse_args
     participant p2 as _parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_subparsers
-    participant p5 as subparsers.add_parser
-    participant p6 as _add_target_arguments
-    participant p7 as parser.add_argument
-    participant p8 as snapshot.add_argument
-    participant p9 as uuid4
-    participant p10 as snapshot.set_defaults
-    participant p11 as derive.add_argument
-    participant p12 as derive.set_defaults
-    participant p13 as int
-    participant p14 as args.handler
-    participant p15 as print
+    participant p3 as int
+    participant p4 as args.handler
+    participant p5 as print
+    participant p6 as argparse.ArgumentParser
+    participant p7 as parser.add_subparsers
+    participant p8 as subparsers.add_parser
+    participant p9 as _add_target_arguments
+    participant p10 as snapshot.add_argument
+    participant p11 as uuid4
+    participant p12 as snapshot.set_defaults
+    participant p13 as derive.add_argument
+    participant p14 as derive.set_defaults
+    participant p15 as parser.add_argument
     p0-->>p1: _parser().parse_args
     p0->>p2: _parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_subparsers
-    p2-->>p5: subparsers.add_parser
-    p2->>p6: _add_target_arguments
-    p6-->>p7: parser.add_argument
-    p6-->>p7: parser.add_argument
-    p6-->>p7: parser.add_argument
-    p6-->>p7: parser.add_argument
-    p6-->>p7: parser.add_argument
-    p2-->>p8: snapshot.add_argument
-    p2-->>p8: snapshot.add_argument
-    p2-->>p9: uuid4
-    p2-->>p8: snapshot.add_argument
-    p2-->>p8: snapshot.add_argument
-    p2-->>p10: snapshot.set_defaults
-    p2-->>p5: subparsers.add_parser
-    p2-->>p11: derive.add_argument
-    p2-->>p11: derive.add_argument
-    p2-->>p11: derive.add_argument
-    p2-->>p11: derive.add_argument
-    p2-->>p11: derive.add_argument
-    p2-->>p11: derive.add_argument
-    p2-->>p11: derive.add_argument
-    p2-->>p12: derive.set_defaults
-    p0-->>p13: int
-    p0-->>p14: args.handler
-    p0-->>p15: print
+    p0-->>p3: int(args.handler(...))
+    p0-->>p4: args.handler(args)
+    p0-->>p5: print(..., file=sys.stderr)
+    p2-->>p6: argparse.ArgumentParser(description='Collect fail-closed PostgreSQL qualification evidence.')
+    p2-->>p7: parser.add_subparsers(dest='command', required=True)
+    p2-->>p8: subparsers.add_parser('snapshot')
+    p2->>p9: _add_target_arguments
+    p2-->>p10: snapshot.add_argument('--label', required=True)
+    p2-->>p10: snapshot.add_argument('--snapshot-id', default=...)
+    p2-->>p11: uuid4
+    p2-->>p10: snapshot.add_argument('--include-explain', action='store_true')
+    p2-->>p10: snapshot.add_argument('--output', type=Path, required=True)
+    p2-->>p12: snapshot.set_defaults(handler=_snapshot)
+    p2-->>p8: subparsers.add_parser('derive')
+    p2-->>p13: derive.add_argument('--before', type=Path, required=True)
+    p2-->>p13: derive.add_argument('--after', type=Path, required=True)
+    p2-->>p13: derive.add_argument('--load-result', type=Path, required=True)
+    p2-->>p13: derive.add_argument('--phase', choices=DERIVATION_PHASES, required=True)
+    p2-->>p13: derive.add_argument('--evidence', type=Path, action='append', default=[...])
+    p2-->>p13: derive.add_argument('--external-output', type=Path, required=True)
+    p2-->>p13: derive.add_argument('--integrity-output', type=Path, required=True)
+    p2-->>p14: derive.set_defaults(handler=_derive)
+    p9-->>p15: parser.add_argument('--database-url', required=True)
+    p9-->>p15: parser.add_argument('--authorize-host', required=True)
+    p9-->>p15: parser.add_argument('--environment', choices=(...), required=True)
+    p9-->>p15: parser.add_argument('--production-authorization')
+    p9-->>p15: parser.add_argument('--change-id')
 ```
+
+> Call sequence diagram shows 29 of 29 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 23 of 23 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 2, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 18, emitted: 16, omitted: 2. Unavailable totals are excluded.
+
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_parser` | `available` | `partial` | `available` | `11` | `9` | `2` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_subparsers` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `subparsers.add_parser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_add_target_arguments` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

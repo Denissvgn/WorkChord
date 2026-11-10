@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)
+**Target:**
+
+```typescript
+TeamMember & {
+    capacity_hours: number;
+    planned_hours: number;
+}
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `PlanningTeamMember` in `frontend/src/features/planningMast
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

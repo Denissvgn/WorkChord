@@ -4,6 +4,13 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
+**Target:**
+
+```typescript
+| 'unavailable'
+    | 'not_ready'
+    | 'ready'
+```
 
 ## Description
 
@@ -11,11 +18,11 @@ _Auto-generated from `ModelAwareRoutingTopologyStatus` in `frontend/src/types/ag
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

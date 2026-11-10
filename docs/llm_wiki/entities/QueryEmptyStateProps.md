@@ -1,7 +1,7 @@
 # QueryEmptyStateProps
 
 **Location:** `frontend/src/components/feedback/QueryState.tsx:27`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `SharedStateProps`
 **Module:** [QueryState](../modules/QueryState.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `QueryEmptyStateProps` in `frontend/src/components/feedback
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

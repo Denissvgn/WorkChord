@@ -32,7 +32,7 @@ _Auto-generated from `DeliveryMetricsResponse` in `backend/app/schemas/delivery_
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)
+**Target:**
+
+```typescript
+(key: string, options?: Record<string, unknown>) => string
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `Translate` in `frontend/src/features/planningMasters/maste
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

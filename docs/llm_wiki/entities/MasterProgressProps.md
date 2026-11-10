@@ -1,7 +1,7 @@
 # MasterProgressProps
 
 **Location:** `frontend/src/components/ui/MasterProgress.tsx:1`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [MasterProgress](../modules/MasterProgress.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `MasterProgressProps` in `frontend/src/components/ui/Master
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

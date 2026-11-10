@@ -6,45 +6,79 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as download_agent_skill_bundle
     participant p1 as _resolve_payload
-    participant p2 as action
-    participant p3 as HTTPException
-    participant p4 as service.archive_payload
-    participant p5 as _response
-    participant p6 as get_settings
-    participant p7 as Settings
-    participant p8 as cache_control.replace
-    participant p9 as _etag_matches
-    participant p10 as if_none_match.split
-    participant p11 as candidate.strip
-    participant p12 as value.removeprefix
-    participant p13 as request.headers.get
-    participant p14 as Response
+    participant p2 as service.archive_payload
+    participant p3 as _response
+    participant p4 as action
+    participant p5 as get_settings
+    participant p6 as HTTPException
+    participant p7 as cache_control.replace
+    participant p8 as _etag_matches
+    participant p9 as request.headers.get
+    participant p10 as Response
+    participant p11 as Settings
+    participant p12 as if_none_match.split
+    participant p13 as candidate.strip
+    participant p14 as value.removeprefix
     p0->>p1: _resolve_payload
-    p1-->>p2: action
-    p1-->>p3: HTTPException
-    p1-->>p3: HTTPException
-    p0-->>p4: service.archive_payload
-    p0->>p5: _response
-    p5->>p6: get_settings
-    p6->>p7: Settings
-    p5-->>p8: cache_control.replace
-    p5->>p9: _etag_matches
-    p9-->>p10: if_none_match.split
-    p9-->>p11: candidate.strip
-    p9-->>p12: value.removeprefix
-    p5-->>p13: request.headers.get
-    p5-->>p14: Response
-    p5-->>p14: Response
+    p0-->>p2: service.archive_payload(skill_name, version, archive_format)
+    p0->>p3: _response
+    p1-->>p4: action
+    p3->>p5: get_settings
+    p1-->>p6: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Skill bundle resource not found.')
+    p3-->>p7: cache_control.replace('public,', 'private,', 1)
+    p1-->>p6: HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail='Skill bundle artifacts are unavailable.')
+    p3->>p8: _etag_matches
+    p3-->>p9: request.headers.get('if-none-match')
+    p3-->>p10: Response(status_code=status.HTTP_304_NOT_MODIFIED, headers=headers)
+    p3-->>p10: Response(content=payload.content, media_type=payload.media_type, headers=headers)
+    p5->>p11: Settings
+    p8-->>p12: if_none_match.split(',')
+    p8-->>p13: candidate.strip
+    p8-->>p14: value.removeprefix('W/')
 ```
+
+> Call sequence diagram shows 16 of 16 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 7 of 7 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 6; effect analysis evaluated: 5, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 25, emitted: 25, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `download_agent_skill_bundle` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `_resolve_payload` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `action` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `service.archive_payload` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_response` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `cache_control.replace` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_etag_matches` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `if_none_match.split` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. download_agent_skill_bundle"]
@@ -113,7 +147,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

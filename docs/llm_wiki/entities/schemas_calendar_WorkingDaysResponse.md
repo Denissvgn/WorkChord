@@ -22,7 +22,7 @@ Response with working days calculation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

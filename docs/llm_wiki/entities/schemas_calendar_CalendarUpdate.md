@@ -23,7 +23,7 @@ Schema for updating a calendar.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -20,7 +20,7 @@
 - **Image:** `${WORKCHORD_BACKEND_IMAGE:?Set an exact backend image tag or digest}`
 - **Volumes:** `${DATABASE_TLS_CERT_DIR:?Mount database TLS certificates}:/etc/workchord/database-tls:ro`
 - **Environment:** `{'DATABASE_URL': '${DATABASE_MIGRATION_URL:?Set the dedicated PostgreSQL migrator URL}', 'DATABASE_POSTGRESQL_REQUIRED': 'true', 'DATABASE_PROCESS_ROLE': 'migration', 'DATABASE_APPLICATION_NAME': 'workchord-migration', 'DATABASE_SESSION_ROLE': '${DATABASE_OWNER_ROLE:-workchord_owner}', 'DATABASE_POOL_SIZE': '1', 'DATABASE_MAX_OVERFLOW': '0', 'DATABASE_SSL_MODE': '${DATABASE_SSL_MODE:-verify-full}', 'DATABASE_SSL_ROOT_CERT': '${DATABASE_SSL_ROOT_CERT:?Mount the production database CA certificate}', 'DATABASE_SSL_CERT': '${DATABASE_SSL_CERT:-}', 'DATABASE_SSL_KEY': '${DATABASE_SSL_KEY:-}', 'DATABASE_EXTERNAL_BACKUP_REFERENCE': '${DATABASE_EXTERNAL_BACKUP_REFERENCE:?Set the approved backup or PITR recovery point}', 'DEPLOYMENT_ENVIRONMENT': 'production', 'SETTINGS_ENCRYPTION_KEY': '${SETTINGS_ENCRYPTION_KEY:?Set SETTINGS_ENCRYPTION_KEY}', 'OUTBOUND_DELIVERY_WORKER_ENABLED': 'false', 'MAINTENANCE_MODE': '${MAINTENANCE_MODE:-off}', 'MAINTENANCE_REVISION': '${MAINTENANCE_REVISION:-production-off}', 'MAINTENANCE_REPLICA_ID': 'migration'}`
-- **Command:** `['sh', '-c', 'python -m app.cli.upgrade --no-repairs --external-backup-reference \\"$$DATABASE_EXTERNAL_BACKUP_REFERENCE\\']`
+- **Command:** `['sh', '-c', 'python -m app.cli.upgrade --no-repairs --external-backup-reference "$$DATABASE_EXTERNAL_BACKUP_REFERENCE"']`
 
 ### repair
 

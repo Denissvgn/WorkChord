@@ -18,7 +18,7 @@ _Auto-generated from `CommentUpdate` in `backend/app/routers/discussion.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

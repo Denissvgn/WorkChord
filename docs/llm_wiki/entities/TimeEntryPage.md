@@ -21,7 +21,7 @@ _Auto-generated from `TimeEntryPage` in `backend/app/schemas/time_entry.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

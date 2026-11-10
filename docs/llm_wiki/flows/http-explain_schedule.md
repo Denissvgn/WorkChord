@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -17,16 +19,43 @@ sequenceDiagram
     participant p5 as db.rollback
     participant p6 as llm_service.explain_schedule
     p0->>p1: SchedulerService
-    p0-->>p2: scheduler_service.schedule_iteration
-    p0-->>p3: HTTPException
+    p0-->>p2: scheduler_service.schedule_iteration(iteration_id)
+    p0-->>p3: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0->>p4: ExplainScheduleRequest
     p0-->>p5: db.rollback
-    p0-->>p6: llm_service.explain_schedule
+    p0-->>p6: llm_service.explain_schedule(decisions=schedule_result.decisions, workload_issues=schedule_result.workload_issues, detail_level=request.detail_level)
 ```
+
+> Call sequence diagram shows 6 of 6 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 1 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 1, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 6, emitted: 6, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `explain_schedule` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `SchedulerService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `scheduler_service.schedule_iteration` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ExplainScheduleRequest` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `db.rollback` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `llm_service.explain_schedule` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. explain_schedule"]
@@ -72,7 +101,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

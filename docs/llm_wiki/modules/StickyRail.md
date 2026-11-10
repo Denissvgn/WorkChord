@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/ui/StickyRail.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `clsx` | `clsx` |
-| `react` | `ReactNode` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `clsx` | `clsx` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
 
 ## Module Signals
 
@@ -34,4 +34,4 @@ _Auto-generated from `frontend/src/components/ui/StickyRail.tsx`._
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `StickyRail` | `({     children,     className, }: {     children: ReactNode;     className?: string; })` | — | — |
+| `StickyRail` | <pre><code>&#40;&#123;&#10;    children&#44;&#10;    className&#44;&#10;&#125;&#58; &#123;&#10;    children&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | — |

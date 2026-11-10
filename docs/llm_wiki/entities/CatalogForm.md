@@ -1,7 +1,7 @@
 # CatalogForm
 
 **Location:** `frontend/src/components/settings/AgentModelAdministration.tsx:39`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
 
@@ -27,7 +27,7 @@ _Auto-generated from `CatalogForm` in `frontend/src/components/settings/AgentMod
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

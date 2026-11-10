@@ -31,7 +31,7 @@ Advisory AI task draft separated into grounded and suggested parts.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

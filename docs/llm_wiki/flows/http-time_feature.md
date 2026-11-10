@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -18,20 +20,34 @@ sequenceDiagram
     participant p6 as type
     participant p7 as body.get
     participant p8 as get_settings.cache_clear
-    p0-->>p1: request.headers.get
-    p0-->>p2: os.environ.get
-    p0-->>p3: HTTPException
+    p0-->>p1: request.headers.get('X-Fixture-Key')
+    p0-->>p2: os.environ.get('WORKCHORD_FIXTURE_WORKFLOWS')
+    p0-->>p3: HTTPException(404)
     p0-->>p4: request.json
-    p0-->>p5: isinstance
-    p0-->>p6: type
-    p0-->>p7: body.get
-    p0-->>p3: HTTPException
+    p0-->>p5: isinstance(body, dict)
+    p0-->>p6: type(body.get(...))
+    p0-->>p7: body.get('enabled')
+    p0-->>p3: HTTPException(422)
     p0-->>p8: get_settings.cache_clear
 ```
+
+> Call sequence diagram shows 9 of 9 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 6 of 6 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 6, emitted: 6, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. time_feature"]

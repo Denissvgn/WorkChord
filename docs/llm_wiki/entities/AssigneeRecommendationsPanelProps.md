@@ -1,7 +1,7 @@
 # AssigneeRecommendationsPanelProps
 
 **Location:** `frontend/src/components/team/AssigneeRecommendationsPanel.tsx:9`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AssigneeRecommendationsPanel](../modules/AssigneeRecommendationsPanel.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `AssigneeRecommendationsPanelProps` in `frontend/src/compon
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

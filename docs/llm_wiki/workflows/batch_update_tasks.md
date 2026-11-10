@@ -9,10 +9,12 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `iteration_service.IterationService`
-2. `commands.command_transaction`
-3. `commands.lock_iterations`
-4. `delivery_dependency_service.DeliveryDependencyService`
-5. `schemas_task.TaskBatchUpdateResponse`
+2. `iteration_service.IterationService.get_by_id`
+3. `commands.command_transaction`
+4. `commands.lock_iterations`
+5. `delivery_dependency_service.DeliveryDependencyService.reconcile`
+6. `delivery_dependency_service.DeliveryDependencyService`
+7. `schemas_task.TaskBatchUpdateResponse`
 
 ## Touches
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [tone](../modules/tone.md)
+**Target:**
+
+```typescript
+'gray' | 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'indigo'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `PillTone` in `frontend/src/components/ui/tone.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

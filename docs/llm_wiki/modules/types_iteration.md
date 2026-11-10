@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/types/iteration.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./workMetrics` | `WorkMetrics` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./workMetrics` | `WorkMetrics` | Declaration | erased |
 
 ## Module Signals
 
@@ -21,6 +21,8 @@ _Auto-generated from `frontend/src/types/iteration.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -45,12 +47,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationProject](../entities/IterationProject.md) | Class | 2 | — | — |
-| [Iteration](../entities/types_iteration_Iteration.md) | Class | 9 | — | — |
-| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Class | 23 | — | — |
-| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Class | 32 | — | — |
-| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Class | 45 | — | — |
-| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Class | 55 | — | — |
-| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Class | 59 | `WorkMetrics` | — |
-| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Class | 74 | — | — |
-| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 41 | — | — |
+| [IterationProject](../entities/IterationProject.md) | Interface | 2 | — | — |
+| [Iteration](../entities/types_iteration_Iteration.md) | Interface | 9 | — | — |
+| [IterationCreate](../entities/types_iteration_IterationCreate.md) | Interface | 23 | — | — |
+| [IterationUpdate](../entities/types_iteration_IterationUpdate.md) | Interface | 32 | — | — |
+| [IterationSeriesCreate](../entities/types_iteration_IterationSeriesCreate.md) | Interface | 45 | — | — |
+| [IterationSeriesResponse](../entities/types_iteration_IterationSeriesResponse.md) | Interface | 55 | — | — |
+| [IterationSummary](../entities/types_iteration_IterationSummary.md) | Interface | 59 | `WorkMetrics` | — |
+| [IterationPlanningReadinessSummary](../entities/types_iteration_IterationPlanningReadinessSummary.md) | Interface | 74 | — | — |
+| [IterationSeriesStop](../entities/types_iteration_IterationSeriesStop.md) | Type alias | 41 | <pre><code>&#124; &#123; mode&#58; &#39;count&#39;&#59; count&#58; number &#125;&#10;    &#124; &#123; mode&#58; &#39;until&#95;date&#39;&#59; until&#95;date&#58; string &#125;</code></pre> | — |

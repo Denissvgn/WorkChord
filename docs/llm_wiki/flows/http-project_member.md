@@ -15,6 +15,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -22,42 +24,74 @@ sequenceDiagram
     participant p1 as authority.allows
     participant p2 as AuthorityError
     participant p3 as require_identity_writes
-    participant p4 as get_settings
-    participant p5 as Settings
-    participant p6 as MaintenanceModeError
-    participant p7 as internal_authority
-    participant p8 as db.info.get
-    participant p9 as db.get
-    participant p10 as db.delete
-    participant p11 as db.add
-    participant p12 as ProjectMembership
-    participant p13 as CommandAudit
-    participant p14 as db.flush
-    p0-->>p1: authority.allows
+    participant p4 as internal_authority
+    participant p5 as db.get
+    participant p6 as db.delete
+    participant p7 as db.add
+    participant p8 as ProjectMembership
+    participant p9 as CommandAudit
+    participant p10 as db.flush
+    participant p11 as get_settings
+    participant p12 as db.info.get
+    participant p13 as MaintenanceModeError
+    participant p14 as Settings
+    p0-->>p1: authority.allows(project_id, 'manage')
     p0->>p2: AuthorityError
     p0->>p3: require_identity_writes
-    p3->>p4: get_settings
-    p4->>p5: Settings
-    p3->>p6: MaintenanceModeError
-    p3->>p4: get_settings
     p0->>p2: AuthorityError
-    p0->>p7: internal_authority
-    p7-->>p8: db.info.get
-    p0-->>p9: db.get
-    p0-->>p9: db.get
+    p0->>p4: internal_authority
+    p0-->>p5: db.get(Principal, principal_id)
+    p0-->>p5: db.get(Project, project_id)
     p0->>p2: AuthorityError
-    p0-->>p9: db.get
-    p0-->>p10: db.delete
-    p0-->>p11: db.add
-    p0->>p12: ProjectMembership
-    p0-->>p11: db.add
-    p0->>p13: CommandAudit
-    p0-->>p14: db.flush
+    p0-->>p5: db.get(ProjectMembership, (...))
+    p0-->>p6: db.delete(existing)
+    p0-->>p7: db.add(ProjectMembership(...))
+    p0->>p8: ProjectMembership
+    p0-->>p7: db.add(CommandAudit(...))
+    p0->>p9: CommandAudit
+    p0-->>p10: db.flush
+    p3->>p11: get_settings
+    p4-->>p12: db.info.get('authority_internal', False)
+    p3->>p13: MaintenanceModeError
+    p3->>p11: get_settings
+    p11->>p14: Settings
 ```
+
+> Call sequence diagram shows 20 of 20 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 0 of 0 (0 omitted); unresolved 9 of 9 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 12; effect analysis evaluated: 5, partial: 0, unavailable: 7. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 15, emitted: 15, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `project_member` | `available` | `evaluated` | `available` | `10` | `10` | `0` |
+| `authority.allows` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `db.info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. project_member"]

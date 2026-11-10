@@ -28,7 +28,7 @@ Governed reasons that may raise the derived band or review floor.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

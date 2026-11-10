@@ -1,7 +1,7 @@
 # MasterStepDef
 
 **Location:** `frontend/src/features/planningMasters/masters.ts:14`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `MasterStepDef` in `frontend/src/features/planningMasters/m
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

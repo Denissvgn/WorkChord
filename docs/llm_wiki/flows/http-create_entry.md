@@ -6,31 +6,64 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as create_entry
     participant p1 as domain_result
-    participant p2 as HTTPException
-    participant p3 as exc.detail
-    participant p4 as str
-    participant p5 as TimeEntryService(…).create
-    participant p6 as TimeEntryService
+    participant p2 as TimeEntryService(…).create
+    participant p3 as TimeEntryService
+    participant p4 as HTTPException
+    participant p5 as exc.detail
+    participant p6 as str
     p0->>p1: domain_result
-    p1-->>p2: HTTPException
-    p1-->>p3: exc.detail
-    p1-->>p2: HTTPException
-    p1-->>p4: str
-    p1-->>p2: HTTPException
-    p1-->>p4: str
-    p1-->>p2: HTTPException
-    p0-->>p5: TimeEntryService(…).create
-    p0->>p6: TimeEntryService
+    p0-->>p2: TimeEntryService(…).create(data)
+    p0->>p3: TimeEntryService
+    p1-->>p4: HTTPException(409, detail=exc.detail(...))
+    p1-->>p5: exc.detail
+    p1-->>p4: HTTPException(404, detail=str(...))
+    p1-->>p6: str(exc)
+    p1-->>p4: HTTPException(422, detail=[...])
+    p1-->>p6: str(exc)
+    p1-->>p4: HTTPException(404, detail='Task not found or inaccessible')
 ```
+
+> Call sequence diagram shows 10 of 10 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 6 of 6 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 2, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 6, emitted: 6, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `create_entry` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `domain_result` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TimeEntryService(…).create` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TimeEntryService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. create_entry"]
@@ -92,7 +125,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

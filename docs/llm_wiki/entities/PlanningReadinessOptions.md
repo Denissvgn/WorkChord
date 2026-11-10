@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)
+**Target:**
+
+```typescript
+{
+    includeInbox?: boolean;
+    autoSelectFirst?: boolean;
+}
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `PlanningReadinessOptions` in `frontend/src/features/planni
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

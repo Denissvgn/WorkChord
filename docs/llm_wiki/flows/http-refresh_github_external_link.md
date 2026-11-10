@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -14,16 +16,30 @@ sequenceDiagram
     participant p2 as HTTPException
     participant p3 as str
     participant p4 as link_service.link_to_response
-    p0-->>p1: github_service.refresh_pull_request_status
-    p0-->>p2: HTTPException
-    p0-->>p3: str
-    p0-->>p2: HTTPException
-    p0-->>p4: link_service.link_to_response
+    p0-->>p1: github_service.refresh_pull_request_status(link_id)
+    p0-->>p2: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p3: str(e)
+    p0-->>p2: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
+    p0-->>p4: link_service.link_to_response(link)
 ```
+
+> Call sequence diagram shows 5 of 5 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 7, emitted: 7, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. refresh_github_external_link"]
@@ -63,7 +79,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

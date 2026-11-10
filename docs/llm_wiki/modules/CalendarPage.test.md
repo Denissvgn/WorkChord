@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/pages/CalendarPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./CalendarPage` | `CalendarPage` |
-| `@testing-library/react` | `act`, `screen`, `waitFor` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./CalendarPage` | `CalendarPage` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

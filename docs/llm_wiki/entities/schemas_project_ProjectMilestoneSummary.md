@@ -22,7 +22,7 @@ Compact milestone identity for project task grouping.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

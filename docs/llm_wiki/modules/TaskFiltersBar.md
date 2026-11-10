@@ -8,21 +8,21 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/planningMasters/planningTaskIssues` | `PlanningTaskIssue` |
-| `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay` |
-| `../../services/labelService` | `labelService` |
-| `../../services/projectService` | `projectService` |
-| `../../services/teamService` | `teamService` |
-| `../../utils/taskFilterDefaults` | `defaultFilters` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `./TaskTextEditorModal` | `TaskTextEditorModal` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `ChevronDown`, `ChevronRight`, `X`, `FileText`, `XCircle` |
-| `react` | `useId`, `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/planningMasters/planningTaskIssues` | `PlanningTaskIssue` | Declaration | erased |
+| `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay` | — | compiler-dependent |
+| `../../services/labelService` | `labelService` | — | compiler-dependent |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `./TaskTextEditorModal` | `TaskTextEditorModal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `ChevronDown`, `ChevronRight`, `X`, `FileText`, `XCircle` | — | compiler-dependent |
+| `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -33,6 +33,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -63,8 +65,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFilters](../entities/TaskFilters.md) | Class | 15 | — | — |
-| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Class | 33 | — | — |
+| [TaskFilters](../entities/TaskFilters.md) | Interface | 15 | — | — |
+| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Interface | 33 | — | — |
 
 ## Functions
 

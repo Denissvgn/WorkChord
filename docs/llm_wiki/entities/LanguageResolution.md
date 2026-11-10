@@ -21,7 +21,7 @@ Resolved language selection and the reason it was chosen.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

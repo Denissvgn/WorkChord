@@ -8,47 +8,48 @@ _Auto-generated from `frontend/src/pages/TriagePage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/common/CollapsibleSection` | `CollapsibleSection` |
-| `../components/common/Input` | `Input`, `RequiredIndicator` |
-| `../components/common/Modal` | `Modal` |
-| `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/labels/LabelSelector` | `LabelSelector` |
-| `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
-| `../components/tasks/TaskBriefEditor` | `TaskBriefEditor` |
-| `../components/tasks/TaskDependencySelector` | `TaskDependencySelector` |
-| `../components/tasks/taskEditorContract` | `emptyTaskBrief`, `newCriterion` |
-| `../components/team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` |
-| `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout` |
-| `../i18n/i18n` | `i18n` |
-| `../i18n/seedDisplay` | `templateDisplay` |
-| `../services/iterationService` | `iterationService` |
-| `../services/projectService` | `projectService` |
-| `../services/savedViewService` | `savedViewService` |
-| `../services/taskService` | `taskService` |
-| `../services/teamService` | `teamService` |
-| `../services/templateService` | `templateService` |
-| `../services/triageService` | `triageService` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../types/iteration` | `Iteration` |
-| `../types/project` | `Project` |
-| `../types/savedView` | `SavedView` |
-| `../types/task` | `Task` |
-| `../types/team` | `TeamMember` |
-| `../types/template` | `WorkTemplate` |
-| `../types/triage` | `TriageActionRequest`, `TriageClassificationSuggestion`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageDuplicateSuggestion`, `TriageDuplicateSuggestionsResponse`, `TriageItem`, `TriageItemCreate`, `TriageItemStatus`, `TriageListParams`, `TriageSnoozeRequest`, `TriageTaskDraftResponse` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `../utils/formatDate` | `formatDateTime` |
-| `../utils/safeUrl` | `safeExternalHref` |
-| `../utils/templateDefaults` | `appendChecklistToDescription`, `getPayloadString`, `mergeLabels` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertCircle`, `CheckCircle2`, `Clock3`, `CopyCheck`, `ExternalLink`, `Inbox`, `ListFilter`, `Loader2`, `MessageSquare`, `Plus`, `Search`, `Send`, `Sparkles`, `X`, `XCircle` |
-| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState`, `FormEvent`, `ReactNode` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../components/common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
+| `../components/common/Modal` | `Modal` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../components/labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
+| `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
+| `../components/tasks/TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
+| `../components/tasks/TaskDependencySelector` | `TaskDependencySelector` | — | compiler-dependent |
+| `../components/tasks/taskEditorContract` | `emptyTaskBrief`, `newCriterion` | — | compiler-dependent |
+| `../components/team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` | — | compiler-dependent |
+| `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
+| `../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../services/projectService` | `projectService` | — | compiler-dependent |
+| `../services/savedViewService` | `savedViewService` | — | compiler-dependent |
+| `../services/taskService` | `taskService` | — | compiler-dependent |
+| `../services/teamService` | `teamService` | — | compiler-dependent |
+| `../services/templateService` | `templateService` | — | compiler-dependent |
+| `../services/triageService` | `triageService` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../types/iteration` | `Iteration` | Declaration | erased |
+| `../types/project` | `Project` | Declaration | erased |
+| `../types/savedView` | `SavedView` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
+| `../types/team` | `TeamMember` | Declaration | erased |
+| `../types/template` | `WorkTemplate` | Declaration | erased |
+| `../types/triage` | `TriageActionRequest`, `TriageClassificationSuggestion`, `TriageConvertToTaskRequest`, `TriageConvertToTaskResponse`, `TriageDuplicateRequest`, `TriageDuplicateSuggestion`, `TriageDuplicateSuggestionsResponse`, `TriageItem`, `TriageItemCreate`, `TriageItemStatus`, `TriageListParams`, `TriageSnoozeRequest`, `TriageTaskDraftResponse` | Declaration | erased |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../utils/safeUrl` | `safeExternalHref` | — | compiler-dependent |
+| `../utils/templateDefaults` | `appendChecklistToDescription`, `getPayloadString`, `mergeLabels` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertCircle`, `CheckCircle2`, `Clock3`, `CopyCheck`, `ExternalLink`, `Inbox`, `ListFilter`, `Loader2`, `MessageSquare`, `Plus`, `Search`, `Send`, `Sparkles`, `X`, `XCircle` | — | compiler-dependent |
+| `react` | `FormEvent`, `ReactNode` | Declaration | erased |
+| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -61,6 +62,8 @@ _Auto-generated from `frontend/src/pages/TriagePage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -89,17 +92,17 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListOption](../entities/TaskListOption.md) | Class | 178 | — | — |
-| [ModalFrameProps](../entities/ModalFrameProps.md) | Class | 206 | — | — |
-| [CreateTriageModalProps](../entities/CreateTriageModalProps.md) | Class | 229 | — | — |
-| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Class | 403 | — | — |
-| [TriageActionModalProps](../entities/TriageActionModalProps.md) | Class | 410 | — | — |
-| [ConvertTriageModalProps](../entities/ConvertTriageModalProps.md) | Class | 704 | — | — |
-| [TriageDetailPanelProps](../entities/TriageDetailPanelProps.md) | Class | 1263 | — | — |
-| [DuplicateSuggestionsPanelProps](../entities/DuplicateSuggestionsPanelProps.md) | Class | 1467 | — | — |
-| [DuplicateSuggestionGroupProps](../entities/DuplicateSuggestionGroupProps.md) | Class | 1531 | — | — |
-| [ClassificationPanelProps](../entities/ClassificationPanelProps.md) | Class | 1591 | — | — |
-| [TriageRowProps](../entities/TriageRowProps.md) | Class | 1716 | — | — |
-| [ConvertMutationInput](../entities/ConvertMutationInput.md) | Class | 1798 | — | — |
-| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 401 | — | — |
-| [ActionMutationInput](../entities/ActionMutationInput.md) | Type alias | 1792 | — | — |
+| [TaskListOption](../entities/TaskListOption.md) | Interface | 178 | — | — |
+| [ModalFrameProps](../entities/ModalFrameProps.md) | Interface | 206 | — | — |
+| [CreateTriageModalProps](../entities/CreateTriageModalProps.md) | Interface | 229 | — | — |
+| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Interface | 403 | — | — |
+| [TriageActionModalProps](../entities/TriageActionModalProps.md) | Interface | 410 | — | — |
+| [ConvertTriageModalProps](../entities/ConvertTriageModalProps.md) | Interface | 704 | — | — |
+| [TriageDetailPanelProps](../entities/TriageDetailPanelProps.md) | Interface | 1263 | — | — |
+| [DuplicateSuggestionsPanelProps](../entities/DuplicateSuggestionsPanelProps.md) | Interface | 1467 | — | — |
+| [DuplicateSuggestionGroupProps](../entities/DuplicateSuggestionGroupProps.md) | Interface | 1531 | — | — |
+| [ClassificationPanelProps](../entities/ClassificationPanelProps.md) | Interface | 1591 | — | — |
+| [TriageRowProps](../entities/TriageRowProps.md) | Interface | 1716 | — | — |
+| [ConvertMutationInput](../entities/ConvertMutationInput.md) | Interface | 1798 | — | — |
+| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 401 | `'accept' \| 'decline' \| 'snooze' \| 'duplicate'` | — |
+| [ActionMutationInput](../entities/ActionMutationInput.md) | Type alias | 1792 | <pre><code>&#124; &#123; type&#58; &#39;accept&#39;&#59; itemId&#58; number&#59; payload&#58; TriageActionRequest &#125;&#10;    &#124; &#123; type&#58; &#39;decline&#39;&#59; itemId&#58; number&#59; payload&#58; TriageActionRequest &#125;&#10;    &#124; &#123; type&#58; &#39;snooze&#39;&#59; itemId&#58; number&#59; payload&#58; TriageSnoozeRequest &#125;&#10;    &#124; &#123; type&#58; &#39;duplicate&#39;&#59; itemId&#58; number&#59; payload&#58; TriageDuplicateRequest &#125;</code></pre> | — |

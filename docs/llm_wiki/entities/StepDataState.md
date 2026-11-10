@@ -4,6 +4,17 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)
+**Target:**
+
+```typescript
+{
+    loading: boolean;
+    fetching: boolean;
+    error: unknown;
+    retry: () => Promise<unknown> | unknown;
+    label: string;
+}
+```
 
 ## Description
 
@@ -11,11 +22,11 @@ _Auto-generated from `StepDataState` in `frontend/src/pages/PlanMasterPage.tsx`.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -26,7 +26,7 @@ Brief project info for task.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

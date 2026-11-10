@@ -10,10 +10,13 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `services_work_metrics.working_today`
 2. `services_work_metrics.included_work_ids`
-3. `team_service.TeamService`
+3. `team_service.TeamService.get_by_iteration`
 4. `team_service.TeamService`
-5. `capacity_service.CapacityService`
-6. `schemas_iteration.IterationPlanningReadinessSummary`
+5. `team_service.TeamService.calculate_capacity`
+6. `team_service.TeamService`
+7. `capacity_service.CapacityService.schedule_issues`
+8. `capacity_service.CapacityService`
+9. `schemas_iteration.IterationPlanningReadinessSummary`
 
 ## Touches
 

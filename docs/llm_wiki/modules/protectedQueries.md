@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/utils/protectedQueries.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./apiError` | `getApiErrorStatus` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./apiError` | `getApiErrorStatus` | — | compiler-dependent |
 
 ## Module Signals
 

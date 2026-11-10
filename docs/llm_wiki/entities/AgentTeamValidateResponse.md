@@ -21,7 +21,7 @@ _Auto-generated from `AgentTeamValidateResponse` in `backend/app/schemas/agent_t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

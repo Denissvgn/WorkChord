@@ -1,7 +1,7 @@
 # CommandAction
 
 **Location:** `frontend/src/components/layout/CommandMenu.tsx:34`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [CommandMenu](../modules/CommandMenu.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `CommandAction` in `frontend/src/components/layout/CommandM
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

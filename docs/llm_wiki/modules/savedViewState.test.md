@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/utils/savedViewState.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/savedView` | `SavedView` |
-| `./savedViewState` | `filterSignature`, `savedViewModified` |
-| `./taskFilterDefaults` | `defaultFilters` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/savedView` | `SavedView` | Declaration | erased |
+| `./savedViewState` | `filterSignature`, `savedViewModified` | — | compiler-dependent |
+| `./taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -24,6 +24,8 @@ _Auto-generated from `frontend/src/utils/savedViewState.test.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/types/savedView.ts"]

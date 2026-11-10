@@ -26,7 +26,7 @@ _Auto-generated from `DagNodeState` in `backend/app/autonomy/orchestration.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

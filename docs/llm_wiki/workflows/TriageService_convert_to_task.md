@@ -11,9 +11,10 @@
 1. `schemas_triage.current_triage_brief`
 2. `task_brief_service.brief_from_draft`
 3. `schemas_task.TaskCreate`
-4. `request_source_service.RequestSourceService`
-5. `outbound_webhook_service.emit_outbound_webhook_event`
-6. `commands.commit_or_flush`
+4. `request_source_service.RequestSourceService.copy_triage_links_to_task`
+5. `request_source_service.RequestSourceService`
+6. `outbound_webhook_service.emit_outbound_webhook_event`
+7. `commands.commit_or_flush`
 
 ## Touches
 

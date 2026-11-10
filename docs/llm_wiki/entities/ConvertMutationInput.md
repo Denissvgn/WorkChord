@@ -1,7 +1,7 @@
 # ConvertMutationInput
 
 **Location:** `frontend/src/pages/TriagePage.tsx:1798`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `ConvertMutationInput` in `frontend/src/pages/TriagePage.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

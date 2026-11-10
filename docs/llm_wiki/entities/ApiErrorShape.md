@@ -1,7 +1,7 @@
 # ApiErrorShape
 
 **Location:** `frontend/src/utils/apiError.ts:17`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)
 
@@ -13,13 +13,13 @@ _Auto-generated from `ApiErrorShape` in `frontend/src/utils/apiError.ts`._
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `response` | `{         status?: unknown;         data?: unknown;     }` | No | — | — |
+| `response` | <pre><code>&#123;&#10;        status&#63;&#58; unknown&#59;&#10;        data&#63;&#58; unknown&#59;&#10;    &#125;</code></pre> | No | — | — |
 | `request` | `unknown` | No | — | — |
 | `code` | `unknown` | No | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

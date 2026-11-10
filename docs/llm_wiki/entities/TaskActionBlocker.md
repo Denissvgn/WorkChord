@@ -18,7 +18,7 @@ _Auto-generated from `TaskActionBlocker` in `backend/app/schemas/task_domain.py`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # SchedulingPass
 
 **Location:** `frontend/src/types/schedulingRules.ts:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [schedulingRules](../modules/schedulingRules.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `SchedulingPass` in `frontend/src/types/schedulingRules.ts`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

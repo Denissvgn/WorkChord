@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/hooks/useAdminAccess.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../features/identity/identityContext` | `useIdentity` |
-| `../utils/adminAccess` | `ADMIN_API_KEY_CHANGED_EVENT`, `hasAdminApiKey` |
-| `react` | `useEffect`, `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../utils/adminAccess` | `ADMIN_API_KEY_CHANGED_EVENT`, `hasAdminApiKey` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 

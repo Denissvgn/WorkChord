@@ -36,7 +36,7 @@ Internal normalized triage classification draft before persistence.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

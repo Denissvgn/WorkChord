@@ -19,7 +19,7 @@ One text editing base and its observed iteration revision.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

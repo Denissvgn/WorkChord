@@ -10,8 +10,9 @@
 2. `commands.PlanningConflict`
 3. `authority.internal_authority`
 4. `authority.internal_authority`
-5. `task_service.TaskService`
-6. `task_brief_service.clear_execution_evidence`
+5. `task_service.TaskService.reserve_task_version`
+6. `task_service.TaskService`
+7. `task_brief_service.clear_execution_evidence`
 
 ## Touches
 

@@ -17,7 +17,7 @@ Create payload for a catalog entry.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,13 +8,14 @@ _Auto-generated from `frontend/src/services/projectService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/iteration` | `Iteration` |
-| `../types/project` | `Initiative`, `InitiativeCreate`, `InitiativeUpdate`, `Project`, `ProjectCreate`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneDeleteResponse`, `ProjectMilestoneUpdateRequest`, `ProjectPortfolioSummary`, `ProjectSummary`, `ProjectUpdate`, `ProjectUpdateEntry`, `ProjectUpdateEntryCreate`, `RoadmapMilestonePage` |
-| `../types/task` | `Task` |
-| `./api` | `api` |
-| `./planningInputService` | `revisionHeaders`, `ObservedRevisions` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/iteration` | `Iteration` | Declaration | erased |
+| `../types/project` | `Initiative`, `InitiativeCreate`, `InitiativeUpdate`, `Project`, `ProjectCreate`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneDeleteResponse`, `ProjectMilestoneUpdateRequest`, `ProjectPortfolioSummary`, `ProjectSummary`, `ProjectUpdate`, `ProjectUpdateEntry`, `ProjectUpdateEntryCreate`, `RoadmapMilestonePage` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
+| `./api` | `api` | — | compiler-dependent |
+| `./planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
+| `./planningInputService` | `revisionHeaders` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +27,8 @@ _Auto-generated from `frontend/src/services/projectService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

@@ -23,7 +23,7 @@ Computed advisory readiness for agent execution.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

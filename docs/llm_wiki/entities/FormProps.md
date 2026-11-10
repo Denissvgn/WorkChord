@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GuardedTaskModal](../modules/GuardedTaskModal.md)
+**Target:**
+
+```typescript
+Omit<ComponentProps<typeof TaskForm>, 'onSuccess' | 'onCancel' | 'onDirtyChange' | 'onPendingChange' | 'onDiscardReady' | 'confirmUnsavedOnCancel'>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `FormProps` in `frontend/src/components/tasks/GuardedTaskMo
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

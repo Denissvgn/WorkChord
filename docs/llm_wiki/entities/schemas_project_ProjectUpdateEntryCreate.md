@@ -28,7 +28,7 @@ Schema for creating an append-only project update.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

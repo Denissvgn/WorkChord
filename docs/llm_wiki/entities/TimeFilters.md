@@ -1,7 +1,7 @@
 # TimeFilters
 
 **Location:** `frontend/src/services/timeEntryService.ts:18`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [timeEntryService](../modules/timeEntryService.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TimeFilters` in `frontend/src/services/timeEntryService.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

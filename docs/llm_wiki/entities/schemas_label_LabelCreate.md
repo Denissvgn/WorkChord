@@ -29,7 +29,7 @@ Schema for creating a governed label.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

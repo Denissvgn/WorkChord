@@ -8,27 +8,27 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/common/Modal` | `Modal` |
-| `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/layout/Breadcrumbs` | `Breadcrumbs` |
-| `../components/releases/ReleaseForm` | `ReleaseForm` |
-| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
-| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` |
-| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` |
-| `../services/projectService` | `projectService` |
-| `../services/releaseService` | `releaseService` |
-| `../types/release` | `Release`, `ReleaseStatus`, `ReleaseTaskSummary` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `../utils/formatDate` | `formatDate`, `formatDateTime` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `CalendarDays`, `CheckCircle2`, `Clock`, `Edit`, `FolderOpen`, `Package`, `Tag` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useNavigate`, `useParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/Modal` | `Modal` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
+| `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
+| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
+| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` | — | compiler-dependent |
+| `../services/projectService` | `projectService` | — | compiler-dependent |
+| `../services/releaseService` | `releaseService` | — | compiler-dependent |
+| `../types/release` | `Release`, `ReleaseStatus`, `ReleaseTaskSummary` | Declaration | erased |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `CalendarDays`, `CheckCircle2`, `Clock`, `Edit`, `FolderOpen`, `Package`, `Tag` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useNavigate`, `useParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -40,6 +40,8 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

@@ -4,6 +4,23 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
+**Target:**
+
+```typescript
+{
+    id: string;
+    kind: AttentionKind;
+    severity: AttentionSeverity;
+    urgency: number;
+    magnitude: number;
+    tone: PillTone;
+    icon: LucideIcon;
+    title: string;
+    meta: string;
+    to: string;
+    actionLabel: string;
+}
+```
 
 ## Description
 
@@ -11,11 +28,11 @@ _Auto-generated from `AttentionItem` in `frontend/src/pages/OverviewPage.tsx`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

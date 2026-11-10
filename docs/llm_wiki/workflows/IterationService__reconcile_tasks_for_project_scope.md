@@ -11,6 +11,7 @@
 1. `query_limits.CollectionLimitExceededError`
 2. `snapshot_service.SnapshotService`
 3. `task_service.TaskService`
+4. `task_service.TaskService.record_task_event`
 
 ## Touches
 

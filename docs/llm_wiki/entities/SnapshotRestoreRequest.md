@@ -18,7 +18,7 @@ Explicit acknowledgement required before destructive snapshot restore.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

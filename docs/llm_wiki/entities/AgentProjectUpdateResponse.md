@@ -15,7 +15,7 @@ Agent project-update response with attribution and evidence.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

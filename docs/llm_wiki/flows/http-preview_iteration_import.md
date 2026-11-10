@@ -6,69 +6,118 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as preview_iteration_import
-    participant p1 as _read_json_upload
-    participant p2 as file.read
-    participant p3 as len (backend/app/routers/export.py:_read_json_upload)
-    participant p4 as HTTPException (backend/app/routers/export.py:_read_json_upload)
-    participant p5 as json.loads
-    participant p6 as content.decode
-    participant p7 as str (backend/app/routers/export.py:_read_json_upload)
-    participant p8 as isinstance (backend/app/routers/export.py:_read_json_upload)
-    participant p9 as _validate_import_data
+    participant p1 as _validate_import_data
+    participant p2 as observe_import_planning
+    participant p3 as _read_json_upload
+    participant p4 as IterationService.get_by_id
+    participant p5 as IterationService
+    participant p6 as _validate_import_task_tree
+    participant p7 as PlanningConflict
+    participant p8 as HTTPException (backend/app/routers/expor…y:preview_iteration_import)
+    participant p9 as file.read
     participant p10 as data.get
-    participant p11 as isinstance (backend/app/routers/export.py:_validate_import_data)
-    participant p12 as HTTPException (backend/app/routers/export.py:_validate_import_data)
-    participant p13 as _validate_import_task_tree
-    participant p14 as stack.pop
-    participant p15 as isinstance (backend/app/routers/expor…_validate_import_task_tree)
-    participant p16 as ValueError (backend/app/routers/expor…_validate_import_task_tree)
-    participant p17 as current.get
-    participant p18 as stack.extend
-    participant p19 as reversed
-    participant p20 as len (backend/app/routers/export.py:_validate_import_data)
-    participant p21 as any
-    participant p22 as ValueError (backend/app/routers/export.py:_validate_import_data)
-    p0->>p1: _read_json_upload
-    p1-->>p2: file.read
-    p1-->>p3: len (backend/app/routers/export.py:_read_json_upload)
-    p1-->>p4: HTTPException (backend/app/routers/export.py:_read_json_upload)
-    p1-->>p5: json.loads
-    p1-->>p6: content.decode
-    p1-->>p4: HTTPException (backend/app/routers/export.py:_read_json_upload)
-    p1-->>p7: str (backend/app/routers/export.py:_read_json_upload)
-    p1-->>p8: isinstance (backend/app/routers/export.py:_read_json_upload)
-    p1-->>p4: HTTPException (backend/app/routers/export.py:_read_json_upload)
-    p0->>p9: _validate_import_data
-    p9-->>p10: data.get
-    p9-->>p11: isinstance (backend/app/routers/export.py:_validate_import_data)
-    p9-->>p12: HTTPException (backend/app/routers/export.py:_validate_import_data)
-    p9->>p13: _validate_import_task_tree
-    p13-->>p14: stack.pop
-    p13-->>p15: isinstance (backend/app/routers/expor…_validate_import_task_tree)
-    p13-->>p16: ValueError (backend/app/routers/expor…_validate_import_task_tree)
-    p13-->>p16: ValueError (backend/app/routers/expor…_validate_import_task_tree)
-    p13-->>p17: current.get
-    p13-->>p15: isinstance (backend/app/routers/expor…_validate_import_task_tree)
-    p13-->>p16: ValueError (backend/app/routers/expor…_validate_import_task_tree)
-    p13-->>p18: stack.extend
-    p13-->>p19: reversed
-    p9-->>p10: data.get
-    p9-->>p11: isinstance (backend/app/routers/export.py:_validate_import_data)
-    p9-->>p20: len (backend/app/routers/export.py:_validate_import_data)
-    p9-->>p21: any
-    p9-->>p11: isinstance (backend/app/routers/export.py:_validate_import_data)
-    p9-->>p22: ValueError (backend/app/routers/export.py:_validate_import_data)
+    participant p11 as self.db.execute
+    participant p12 as read
+    participant p13 as len (backend/app/routers/export.py:_read_json_upload)
+    participant p14 as isinstance (backend/app/routers/export.py:_validate_import_data)
+    participant p15 as select(…).options(…).where
+    participant p16 as hashlib.sha256(…).hexdigest
+    participant p17 as HTTPException (backend/app/routers/export.py:_read_json_upload)
+    participant p18 as HTTPException (backend/app/routers/export.py:_validate_import_data)
+    participant p19 as select(…).options
+    participant p20 as hashlib.sha256
+    participant p21 as json.loads
+    participant p22 as select
+    participant p23 as json.dumps(…).encode (backend/app/services/impo…observe_import_planning, 1)
+    participant p24 as content.decode
+    participant p25 as selectinload
+    participant p26 as json.dumps
+    p0->>p1: _validate_import_data
+    p0->>p2: observe_import_planning
+    p0->>p3: _read_json_upload
+    p0->>p4: IterationService.get_by_id
+    p0->>p5: IterationService
+    p1->>p6: _validate_import_task_tree
+    p2->>p7: PlanningConflict
+    p0-->>p8: HTTPException (backend/app/routers/expor…y:preview_iteration_import)(404, detail='Iteration not found or inaccessible')
+    p3-->>p9: file.read(...)
+    p1-->>p10: data.get('tasks', [...])
+    p4-->>p11: self.db.execute(...)
+    p2-->>p12: read
+    p3-->>p13: len (backend/app/routers/export.py:_read_json_upload)(content)
+    p1-->>p14: isinstance (backend/app/routers/export.py:_validate_import_data)(tasks, list)
+    p4-->>p15: select(…).options(…).where(...)
+    p2-->>p16: hashlib.sha256(…).hexdigest
+    p3-->>p17: HTTPException (backend/app/routers/export.py:_read_json_upload)(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail='Import file is too large')
+    p1-->>p18: HTTPException (backend/app/routers/export.py:_validate_import_data)(422, detail='Tasks must be a list')
+    p4-->>p19: select(…).options(selectinload(...), selectinload(...))
+    p2-->>p20: hashlib.sha256(...)
+    p3-->>p21: json.loads(content.decode(...))
+    p4-->>p22: select(Iteration)
+    p2-->>p23: json.dumps(…).encode (backend/app/services/impo…observe_import_planning, 1)
+    p3-->>p24: content.decode('utf-8')
+    p1-->>p10: data.get('team_members', [...])
+    p4-->>p25: selectinload(Iteration.calendar)
+    p2-->>p26: json.dumps(data, sort_keys=True, separators=(...))
+    p3-->>p17: HTTPException (backend/app/routers/export.py:_read_json_upload)(status_code=status.HTTP_400_BAD_REQUEST, detail=...)
+    p1-->>p14: isinstance (backend/app/routers/export.py:_validate_import_data)(members, list)
+    p4-->>p25: selectinload(Iteration.project)
 ```
 
-> Call sequence diagram shows 30 of 47 interactions; 17 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 54 interactions; 24 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 13 of 30 (17 omitted); unresolved 10 of 16 (6 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/routers/export.py:_read_json_upload` | 2 | - | external | 3 |
+| `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | unresolved | 3 |
+| `backend/app/routers/export.py:_validate_import_task_tree` | 16 | - | external | 6 |
+| `backend/app/routers/export.py:_validate_import_data` | 12 | - | external | 6 |
+| `backend/app/services/iteration_service.py:IterationService.get_by_id` | 34 | - | unresolved | 1 |
+| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | - | unresolved | 2 |
+| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | - | external | 2 |
+| `backend/app/services/import_planning_service.py:observe_import_planning` | 44 | [backend/app/commands.py](../modules/commands.md) | internal | 1 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 9; effect analysis evaluated: 6, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+
+Collector observations for 6 source steps with known totals: observed: 27, emitted: 27, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `preview_iteration_import` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `_read_json_upload` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
+| `file.read` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `len (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `content.decode` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/export.py:_read_json_upload)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_validate_import_data` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. preview_iteration_import"]
@@ -134,7 +183,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

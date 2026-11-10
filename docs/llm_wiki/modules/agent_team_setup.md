@@ -15,6 +15,7 @@ Portable agent-team setup, reconciliation, and readiness contracts.
 | `datetime` | `datetime` |
 | `enum` | `StrEnum` |
 | `pydantic` | `ConfigDict`, `Field`, `field_validator`, `model_validator` |
+| `re` | `re` |
 | `typing` | `Any`, `Literal`, `Mapping` |
 | `urllib.parse` | `parse_qsl`, `urlsplit` |
 

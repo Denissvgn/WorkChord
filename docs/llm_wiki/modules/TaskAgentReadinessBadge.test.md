@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskAgentReadinessBadge.test
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `TaskAgentReadiness` |
-| `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
-| `@testing-library/react` | `render`, `screen` |
-| `@testing-library/user-event` | `userEvent` |
-| `react-router-dom` | `MemoryRouter` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `TaskAgentReadiness` | Declaration | erased |
+| `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
+| `@testing-library/react` | `render`, `screen` | — | compiler-dependent |
+| `@testing-library/user-event` | `userEvent` | — | compiler-dependent |
+| `react-router-dom` | `MemoryRouter` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,6 +27,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskAgentReadinessBadge.test
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskAgentReadinessBadge.test.tsx"]

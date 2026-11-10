@@ -25,7 +25,7 @@ Catalog definition for one writable runtime setting.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

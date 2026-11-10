@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../test/fixtures/modelAwareRouting` | `modelAwareRoutingPreview`, `modelAwareRoutingRoster` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/agent` | `AgentActorRosterItem`, `AgentCapabilities`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRoutingPreviewResponse`, `AgentTaskAssignment`, `TaskRoutingAssessment`, `TaskRoutingAssessmentState` |
-| `../../types/task` | `Task` |
-| `./TaskRoutingPanel` | `TaskRoutingPanel` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../test/fixtures/modelAwareRouting` | `modelAwareRoutingPreview`, `modelAwareRoutingRoster` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/agent` | `AgentActorRosterItem`, `AgentCapabilities`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRoutingPreviewResponse`, `AgentTaskAssignment`, `TaskRoutingAssessment`, `TaskRoutingAssessmentState` | Declaration | erased |
+| `../../types/task` | `Task` | Declaration | erased |
+| `./TaskRoutingPanel` | `TaskRoutingPanel` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +29,8 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/agent/TaskRoutingPanel.test.tsx"]
@@ -47,6 +49,7 @@ flowchart LR
     n1 --> n5
     n1 --> n6
     n3 --> n5
+    n4 --> n2
     n5 --> n6
     click n0 "../modules/TaskRoutingPanel.test.md"
     click n1 "../modules/TaskRoutingPanel.md"

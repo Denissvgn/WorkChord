@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/UserSessionBadge.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./UserSessionBadge` | `UserSessionBadge` |
-| `@testing-library/react` | `screen` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./UserSessionBadge` | `UserSessionBadge` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

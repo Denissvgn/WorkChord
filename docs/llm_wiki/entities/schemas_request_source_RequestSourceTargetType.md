@@ -19,7 +19,7 @@ Supported request-source link target types.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

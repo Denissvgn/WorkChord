@@ -1,7 +1,7 @@
 # TaskComment
 
 **Location:** `frontend/src/services/discussionService.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `TaskComment` in `frontend/src/services/discussionService.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

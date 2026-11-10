@@ -1,7 +1,7 @@
 # SavedViewDashboardCard
 
 **Location:** `frontend/src/types/savedView.ts:24`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `SavedViewDashboardCard` in `frontend/src/types/savedView.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

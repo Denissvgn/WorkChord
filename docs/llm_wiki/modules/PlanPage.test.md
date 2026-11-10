@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/pages/PlanPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../features/planningMasters/masters` | `deriveStatus`, `EMPTY_READINESS`, `nextStep`, `readiness` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./PlanPage` | `PlanPage` |
-| `./PlanPage.tsx?raw` | `planPageSource` |
-| `@testing-library/react` | `screen`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../features/planningMasters/masters` | `deriveStatus`, `EMPTY_READINESS`, `nextStep`, `readiness` | — | compiler-dependent |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PlanPage` | `PlanPage` | — | compiler-dependent |
+| `./PlanPage.tsx?raw` | `planPageSource` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -1,7 +1,7 @@
 # TimePage
 
 **Location:** `frontend/src/services/timeEntryService.ts:8`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [timeEntryService](../modules/timeEntryService.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `TimePage` in `frontend/src/services/timeEntryService.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

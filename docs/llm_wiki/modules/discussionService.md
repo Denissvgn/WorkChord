@@ -8,9 +8,9 @@ Typed browser client for comment revisions, mentions, subscriptions, personal in
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./api` | `api` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ Typed browser client for comment revisions, mentions, subscriptions, personal in
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskDiscussion.tsx"]
@@ -50,9 +52,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskComment](../entities/discussionService_TaskComment.md) | Class | 3 | — | — |
-| [CommentRevision](../entities/CommentRevision.md) | Class | 8 | — | — |
-| [Subscription](../entities/Subscription.md) | Class | 9 | — | — |
-| [InboxItem](../entities/InboxItem.md) | Class | 10 | — | — |
-| [NotificationDelivery](../entities/NotificationDelivery.md) | Class | 11 | — | — |
-| [Page](../entities/Page.md) | Class | 12 | — | — |
+| [TaskComment](../entities/discussionService_TaskComment.md) | Interface | 3 | — | — |
+| [CommentRevision](../entities/CommentRevision.md) | Interface | 8 | — | — |
+| [Subscription](../entities/Subscription.md) | Interface | 9 | — | — |
+| [InboxItem](../entities/InboxItem.md) | Interface | 10 | — | — |
+| [NotificationDelivery](../entities/NotificationDelivery.md) | Interface | 11 | — | — |
+| [Page](../entities/Page.md) | Interface | 12 | — | — |

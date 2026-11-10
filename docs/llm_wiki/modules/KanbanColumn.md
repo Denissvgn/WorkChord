@@ -8,16 +8,17 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../../i18n/i18n` | `i18n` |
-| `../../../types/task` | `Task` |
-| `../../ui/tone` | `PillTone`, `toneDotClassName` |
-| `./KanbanCard` | `KanbanCard` |
-| `@dnd-kit/core` | `useDroppable` |
-| `@dnd-kit/sortable` | `SortableContext`, `verticalListSortingStrategy` |
-| `clsx` | `clsx` |
-| `react` | `useMemo` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../../types/task` | `Task` | Declaration | erased |
+| `../../ui/tone` | `PillTone` | Declaration | erased |
+| `../../ui/tone` | `toneDotClassName` | — | compiler-dependent |
+| `./KanbanCard` | `KanbanCard` | — | compiler-dependent |
+| `@dnd-kit/core` | `useDroppable` | — | compiler-dependent |
+| `@dnd-kit/sortable` | `SortableContext`, `verticalListSortingStrategy` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `react` | `useMemo` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +31,8 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
@@ -77,7 +80,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanColumnProps](../entities/KanbanColumnProps.md) | Class | 13 | — | — |
+| [KanbanColumnProps](../entities/KanbanColumnProps.md) | Interface | 13 | — | — |
 
 ## Functions
 

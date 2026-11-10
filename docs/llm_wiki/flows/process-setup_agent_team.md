@@ -6,61 +6,99 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
     participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as os.getenv
-    participant p5 as parser.add_subparsers
-    participant p6 as commands.add_parser
-    participant p7 as validate.add_argument
-    participant p8 as validate.set_defaults
-    participant p9 as plan.add_argument
-    participant p10 as plan.set_defaults
-    participant p11 as apply.add_argument
-    participant p12 as secrets.token_hex
-    participant p13 as apply.set_defaults
-    participant p14 as status.add_argument
+    participant p2 as json.dump
+    participant p3 as args.handler
+    participant p4 as sys.stdout.write
+    participant p5 as argparse.ArgumentParser
+    participant p6 as parser.add_argument
+    participant p7 as os.getenv
+    participant p8 as parser.add_subparsers
+    participant p9 as commands.add_parser
+    participant p10 as validate.add_argument
+    participant p11 as validate.set_defaults
+    participant p12 as plan.add_argument
+    participant p13 as plan.set_defaults
+    participant p14 as apply.add_argument
+    participant p15 as secrets.token_hex
     p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p5: parser.add_subparsers
-    p1-->>p6: commands.add_parser
-    p1-->>p7: validate.add_argument
-    p1-->>p8: validate.set_defaults
-    p1-->>p6: commands.add_parser
-    p1-->>p9: plan.add_argument
-    p1-->>p9: plan.add_argument
-    p1-->>p10: plan.set_defaults
-    p1-->>p6: commands.add_parser
-    p1-->>p11: apply.add_argument
-    p1-->>p11: apply.add_argument
-    p1-->>p11: apply.add_argument
-    p1-->>p11: apply.add_argument
-    p1-->>p11: apply.add_argument
-    p1-->>p12: secrets.token_hex
-    p1-->>p11: apply.add_argument
-    p1-->>p11: apply.add_argument
-    p1-->>p12: secrets.token_hex
-    p1-->>p13: apply.set_defaults
-    p1-->>p6: commands.add_parser
-    p1-->>p14: status.add_argument
+    p0-->>p2: json.dump(value, sys.stdout, ensure_ascii=False, indent=2, sort_keys=True)
+    p0-->>p3: args.handler(args)
+    p0-->>p4: sys.stdout.write('\n')
+    p1-->>p5: argparse.ArgumentParser(description='Operate the digest-bound agent-team setup API without handling runtime credentials.')
+    p1-->>p6: parser.add_argument('--base-url', default=os.getenv(...))
+    p1-->>p7: os.getenv('WORKCHORD_BASE_URL', 'http://localhost:8001')
+    p1-->>p6: parser.add_argument('--api-prefix', default=os.getenv(...))
+    p1-->>p7: os.getenv('WORKCHORD_API_PREFIX', '/api')
+    p1-->>p6: parser.add_argument('--admin-key', default=os.getenv(...), help='Defaults to WORKCHORD_ADMIN_API_KEY and is never printed.')
+    p1-->>p7: os.getenv('WORKCHORD_ADMIN_API_KEY', '')
+    p1-->>p6: parser.add_argument('--timeout', type=float, default=15.0)
+    p1-->>p8: parser.add_subparsers(dest='command', required=True)
+    p1-->>p9: commands.add_parser('validate')
+    p1-->>p10: validate.add_argument('manifest', type=Path)
+    p1-->>p11: validate.set_defaults(handler=run_validate)
+    p1-->>p9: commands.add_parser('plan')
+    p1-->>p12: plan.add_argument('manifest', type=Path)
+    p1-->>p12: plan.add_argument('--expected-revision', type=int, required=True)
+    p1-->>p13: plan.set_defaults(handler=run_plan)
+    p1-->>p9: commands.add_parser('apply')
+    p1-->>p14: apply.add_argument('manifest', type=Path)
+    p1-->>p14: apply.add_argument('--plan', type=Path, required=True)
+    p1-->>p14: apply.add_argument('--approve', action='append', default=[...])
+    p1-->>p14: apply.add_argument('--confirm', action='append', default=[...])
+    p1-->>p14: apply.add_argument('--idempotency-key', default=...)
+    p1-->>p15: secrets.token_hex(12)
+    p1-->>p14: apply.add_argument('--rationale', default='Apply approved agent-team reconciliation actions')
+    p1-->>p14: apply.add_argument('--correlation-id', default=...)
+    p1-->>p15: secrets.token_hex(8)
 ```
 
-> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 8 of 8 (0 omitted); unresolved 21 of 29 (8 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/api_keys/setup_agent_team.py:parse_args` | 2 | - | unresolved | 8 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 2; effect analysis evaluated: 1, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 16, emitted: 15, omitted: 1. Unavailable totals are excluded.
+
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `parse_args` | `available` | `partial` | `available` | `13` | `12` | `1` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_subparsers` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `commands.add_parser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

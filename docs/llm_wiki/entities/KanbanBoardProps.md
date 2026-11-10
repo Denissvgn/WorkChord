@@ -1,7 +1,7 @@
 # KanbanBoardProps
 
 **Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:35`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `KanbanBoardProps` in `frontend/src/components/tasks/Kanban
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

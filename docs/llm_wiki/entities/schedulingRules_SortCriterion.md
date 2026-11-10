@@ -1,7 +1,7 @@
 # SortCriterion
 
 **Location:** `frontend/src/types/schedulingRules.ts:6`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [schedulingRules](../modules/schedulingRules.md)
 
@@ -19,7 +19,7 @@ Mirrors backend SchedulingRulesSchema structure
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # BindingForm
 
 **Location:** `frontend/src/components/settings/AgentModelAdministration.tsx:53`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `BindingForm` in `frontend/src/components/settings/AgentMod
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

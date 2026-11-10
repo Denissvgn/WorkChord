@@ -27,7 +27,7 @@ _Auto-generated from `TimeReportPage` in `backend/app/schemas/time_report.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

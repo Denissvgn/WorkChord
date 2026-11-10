@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/masters.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/agent` | `AgentTeamSetupStep`, `AgentTeamStepState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/agent` | `AgentTeamSetupStep`, `AgentTeamStepState` | Declaration | erased |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/masters.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
@@ -63,8 +65,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AgentTeamStepDefinition](../entities/AgentTeamStepDefinition.md) | Class | 15 | — | — |
-| [AgentTeamStepId](../entities/AgentTeamStepId.md) | Type alias | 13 | — | — |
+| [AgentTeamStepDefinition](../entities/AgentTeamStepDefinition.md) | Interface | 15 | — | — |
+| [AgentTeamStepId](../entities/AgentTeamStepId.md) | Type alias | 13 | `typeof AGENT_TEAM_STEP_IDS[number]` | — |
 
 ## Functions
 

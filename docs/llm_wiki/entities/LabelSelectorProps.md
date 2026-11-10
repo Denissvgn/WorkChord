@@ -1,7 +1,7 @@
 # LabelSelectorProps
 
 **Location:** `frontend/src/components/labels/LabelSelector.tsx:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [LabelSelector](../modules/LabelSelector.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `LabelSelectorProps` in `frontend/src/components/labels/Lab
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

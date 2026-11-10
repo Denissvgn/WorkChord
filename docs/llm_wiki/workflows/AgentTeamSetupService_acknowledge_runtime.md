@@ -9,17 +9,19 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `agent_service.AgentService`
-2. `agent_service.AgentPermissionError`
-3. `authority.internal_authority`
+2. `agent_service.AgentService.authenticate_onboarding`
+3. `agent_service.AgentService.authenticate`
 4. `agent_service.AgentPermissionError`
-5. `models_identity.Principal`
-6. `identity_service.bind_verified_system`
-7. `agent_service.AgentPermissionError`
-8. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
-9. `time.utc_now`
-10. `time.utc_now`
-11. `commands.commit_or_flush`
-12. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
+5. `authority.internal_authority`
+6. `agent_service.AgentPermissionError`
+7. `models_identity.Principal`
+8. `identity_service.bind_verified_system`
+9. `agent_service.AgentPermissionError`
+10. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
+11. `time.utc_now`
+12. `time.utc_now`
+13. `commands.commit_or_flush`
+14. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
 
 ## Touches
 

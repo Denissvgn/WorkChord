@@ -8,21 +8,21 @@ _Auto-generated from `frontend/src/components/gantt/TaskEditModal.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/taskService` | `taskService` |
-| `../../services/teamService` | `teamService` |
-| `../../types/gantt` | `GanttTask` |
-| `../../types/task` | `Task`, `TaskUpdate` |
-| `../common/Button` | `Button` |
-| `../common/ConfirmDialog` | `ConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../tasks/TaskForm` | `TaskForm` |
-| `../ui/SlideOverDrawer` | `SlideOverDrawer` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `Loader2` |
-| `react` | `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/gantt` | `GanttTask` | Declaration | erased |
+| `../../types/task` | `Task`, `TaskUpdate` | Declaration | erased |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../tasks/TaskForm` | `TaskForm` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `Loader2` | — | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -33,6 +33,8 @@ _Auto-generated from `frontend/src/components/gantt/TaskEditModal.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -117,11 +119,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskEditModalProps](../entities/TaskEditModalProps.md) | Class | 15 | — | — |
-| [TaskEditModalContentProps](../entities/TaskEditModalContentProps.md) | Class | 66 | — | — |
+| [TaskEditModalProps](../entities/TaskEditModalProps.md) | Interface | 15 | — | — |
+| [TaskEditModalContentProps](../entities/TaskEditModalContentProps.md) | Interface | 66 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskEditModal` | `({     task,     iterationId,     isOpen,     onClose,     sandboxMode = false,     onSaveSandbox, }: TaskEditModalProps)` | — | — |
+| `TaskEditModal` | <pre><code>&#40;&#123;&#10;    task&#44;&#10;    iterationId&#44;&#10;    isOpen&#44;&#10;    onClose&#44;&#10;    sandboxMode &#61; false&#44;&#10;    onSaveSandbox&#44;&#10;&#125;&#58; TaskEditModalProps&#41;</code></pre> | — | — |

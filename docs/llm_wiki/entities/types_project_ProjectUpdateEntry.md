@@ -1,7 +1,7 @@
 # ProjectUpdateEntry
 
 **Location:** `frontend/src/types/project.ts:103`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `ProjectUpdateEntry` in `frontend/src/types/project.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

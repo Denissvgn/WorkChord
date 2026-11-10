@@ -18,7 +18,7 @@ _Auto-generated from `CalendarSelection` in `backend/app/routers/capacity.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

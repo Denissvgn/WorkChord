@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)
+**Target:**
+
+```typescript
+Pick<
+    Initiative,
+    'id' | 'name' | 'owner_id' | 'owner' | 'owner_profile_id' | 'owner_profile' | 'health' | 'target_date'
+>
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `InitiativeGroupInfo` in `frontend/src/pages/RoadmapPage.ts
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

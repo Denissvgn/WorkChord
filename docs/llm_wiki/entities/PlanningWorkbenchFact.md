@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanningWorkbenchFrame](../modules/PlanningWorkbenchFrame.md)
+**Target:**
+
+```typescript
+{
+    id: string;
+    label: ReactNode;
+    value: ReactNode;
+}
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `PlanningWorkbenchFact` in `frontend/src/components/plannin
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

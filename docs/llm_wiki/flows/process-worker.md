@@ -2,14 +2,18 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [worker](../modules/worker.md)
-**Modules touched:** [app_database](../modules/app_database.md), [config](../modules/config.md), [maintenance](../modules/maintenance.md), [outbound_webhook_service](../modules/outbound_webhook_service.md), and 2 more
+**Modules touched:** [app_database](../modules/app_database.md), [commands](../modules/commands.md), [config](../modules/config.md), [database_runtime](../modules/database_runtime.md), and 6 more
 
 **Complete modules touched:**
 
 - [app_database](../modules/app_database.md)
+- [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [database_runtime](../modules/database_runtime.md)
+- [discussion_service](../modules/discussion_service.md)
 - [maintenance](../modules/maintenance.md)
 - [outbound_webhook_service](../modules/outbound_webhook_service.md)
+- [time](../modules/time.md)
 - [upgrade_service](../modules/upgrade_service.md)
 - [worker](../modules/worker.md)
 
@@ -17,76 +21,126 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as build_parser().parse_args
+    participant p1 as _run
     participant p2 as build_parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_argument
-    participant p5 as asyncio.run
-    participant p6 as _run
-    participant p7 as get_settings
-    participant p8 as Settings
-    participant p9 as print
-    participant p10 as init_db
-    participant p11 as assert_database_current
-    participant p12 as inspect_database
+    participant p3 as get_settings
+    participant p4 as init_db
+    participant p5 as run_due_outbound_delivery_jobs
+    participant p6 as outbound_delivery_worker_loop
+    participant p7 as assert_database_current
+    participant p8 as require_background_writes_enabled
+    participant p9 as OutboundWebhookService.run_due_jobs
+    participant p10 as inspect_database
+    participant p11 as OutboundWebhookService.claim_due_deliveries
+    participant p12 as OutboundWebhookService.process_claimed_delivery
     participant p13 as _inspect_database_connection
-    participant p14 as inspect
-    participant p15 as sorted
-    participant p16 as inspector.get_table_names
-    participant p17 as _current_revision
-    participant p18 as set
-    participant p19 as head_revision
-    participant p20 as DatabaseStatus
-    participant p21 as len
-    participant p22 as _sync_engine
-    participant p23 as database_configuration
-    participant p24 as create_engine
-    participant p25 as dict
-    participant p26 as engine.connect
-    participant p27 as engine.dispose (backend/app/services/upgr…ervice.py:inspect_database)
-    p0-->>p1: build_parser().parse_args
+    participant p14 as _sync_engine
+    participant p15 as OutboundWebhookService._claim_due_postgresql
+    participant p16 as commit_or_flush
+    participant p17 as OutboundWebhookService._attempt_delivery
+    participant p18 as OutboundWebhookService._claim_delivery_id
+    participant p19 as close_database
+    participant p20 as Settings
+    participant p21 as OutboundWebhookService
+    participant p22 as UpgradeError
+    participant p23 as MaintenanceModeError
+    participant p24 as as_utc
+    participant p25 as utc_now
+    participant p26 as OutboundWebhookService._claim_conditions
+    participant p27 as database_configuration
+    participant p28 as run_database_retry
+    participant p29 as asyncio.run
+    participant p30 as build_parser().parse_args
+    p0->>p1: _run
     p0->>p2: build_parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_argument
-    p0-->>p5: asyncio.run
-    p0->>p6: _run
-    p6->>p7: get_settings
-    p7->>p8: Settings
-    p6-->>p9: print
-    p6-->>p9: print
-    p6-->>p9: print
-    p6->>p10: init_db
-    p10->>p11: assert_database_current
-    p11->>p12: inspect_database
-    p12->>p13: _inspect_database_connection
-    p13-->>p14: inspect
-    p13-->>p15: sorted
-    p13-->>p16: inspector.get_table_names
-    p13->>p17: _current_revision
-    p13-->>p18: set
-    p13->>p19: head_revision
-    p13->>p20: DatabaseStatus
-    p13-->>p21: len
-    p12->>p22: _sync_engine
-    p22->>p23: database_configuration
-    p22-->>p24: create_engine
-    p22-->>p25: dict
-    p12-->>p26: engine.connect
-    p12->>p13: _inspect_database_connection
-    p12-->>p27: engine.dispose (backend/app/services/upgr…ervice.py:inspect_database)
+    p1->>p3: get_settings
+    p1->>p4: init_db
+    p1->>p5: run_due_outbound_delivery_jobs
+    p1->>p6: outbound_delivery_worker_loop
+    p4->>p7: assert_database_current
+    p5->>p8: require_background_writes_enabled
+    p5->>p9: OutboundWebhookService.run_due_jobs
+    p7->>p10: inspect_database
+    p9->>p11: OutboundWebhookService.claim_due_deliveries
+    p9->>p12: OutboundWebhookService.process_claimed_delivery
+    p10->>p13: _inspect_database_connection
+    p10->>p14: _sync_engine
+    p11->>p15: OutboundWebhookService._claim_due_postgresql
+    p12->>p16: commit_or_flush
+    p12->>p17: OutboundWebhookService._attempt_delivery
+    p11->>p18: OutboundWebhookService._claim_delivery_id
+    p1->>p19: close_database
+    p3->>p20: Settings
+    p5->>p21: OutboundWebhookService
+    p7->>p22: UpgradeError
+    p8->>p23: MaintenanceModeError
+    p11->>p24: as_utc
+    p11->>p25: utc_now
+    p11->>p26: OutboundWebhookService._claim_conditions
+    p14->>p27: database_configuration
+    p15->>p28: run_database_retry
+    p0-->>p29: asyncio.run(_run(...))
+    p0-->>p30: build_parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 53 interactions; 23 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 131 interactions; 101 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 31 (30 omitted); unresolved 1 of 52 (51 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/cli/worker.py:build_parser` | 3 | - | external | 1 |
+| `backend/app/cli/worker.py:build_parser` | 3 | - | unresolved | 1 |
+| `backend/app/cli/worker.py:_run` | 7 | - | external | 6 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 16 | - | external | 4 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 16 | - | unresolved | 1 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 16 | [backend/app/services/upgrade_service.py](../modules/upgrade_service.md) | internal | 3 |
+| `backend/app/services/upgrade_service.py:_sync_engine` | 25 | - | external | 2 |
+| `backend/app/services/upgrade_service.py:inspect_database` | 15 | - | unresolved | 2 |
+> Omission summary shows 8 of 39 groups; 31 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 49; effect analysis evaluated: 41, partial: 1, unavailable: 7. Counts include steps omitted from the displayed trace.
+
+Collector observations for 42 source steps with known totals: observed: 185, emitted: 173, omitted: 12. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `build_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `build_parser` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `asyncio.run` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_run` | `available` | `evaluated` | `available` | `14` | `14` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `print` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `print` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `print` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

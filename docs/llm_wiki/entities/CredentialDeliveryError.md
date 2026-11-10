@@ -15,7 +15,7 @@ Raised when a one-time actor key did not reach the approved sink.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

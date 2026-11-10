@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/layout/Breadcrumbs.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `lucide-react` | `ChevronRight` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `lucide-react` | `ChevronRight` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -60,8 +60,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [BreadcrumbItem](../entities/BreadcrumbItem.md) | Class | 5 | — | — |
-| [BreadcrumbsProps](../entities/BreadcrumbsProps.md) | Class | 10 | — | — |
+| [BreadcrumbItem](../entities/BreadcrumbItem.md) | Interface | 5 | — | — |
+| [BreadcrumbsProps](../entities/BreadcrumbsProps.md) | Interface | 10 | — | — |
 
 ## Functions
 

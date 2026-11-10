@@ -14,13 +14,21 @@ YAML and fallback scheduling, incremental rescheduling and reservations use comp
 |--------|---------|
 | `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `lock_planning`, `PlanningConflict` |
 | `app.models.iteration` | `Iteration` |
-| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
+| `app.models.project` | `Project` |
+| `app.models.recovery` | `TaskScheduleBaseline` |
+| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
 | `app.schemas.gantt` | `SchedulingDecision`, `ScheduleResult`, `WorkloadIssue` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.capacity_service` | `CapacityService`, `CapacityService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.iteration_service` | `IterationService`, `IterationService` |
 | `app.services.scheduling_rules_service` | `SchedulingRulesService` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService` |
+| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `effective_work_flags` |
+| `asyncio` | `asyncio` |
+| `collections` | `defaultdict`, `defaultdict`, `defaultdict` |
 | `dataclasses` | `dataclass`, `field` |
 | `datetime` | `date`, `timedelta` |
 | `enum` | `Enum` |
@@ -49,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (7) |
-| Outbound | `backend` (9) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -57,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

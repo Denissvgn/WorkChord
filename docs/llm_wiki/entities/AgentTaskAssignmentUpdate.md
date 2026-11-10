@@ -29,7 +29,7 @@ PM command to reorder, reassign, or cancel a queued assignment.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

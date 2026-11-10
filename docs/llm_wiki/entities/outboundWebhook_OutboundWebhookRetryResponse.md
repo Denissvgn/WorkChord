@@ -1,7 +1,7 @@
 # OutboundWebhookRetryResponse
 
 **Location:** `frontend/src/types/outboundWebhook.ts:57`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `OutboundWebhookRetryResponse` in `frontend/src/types/outbo
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

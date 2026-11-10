@@ -9,9 +9,12 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `iteration_service.IterationService`
-2. `task_service.TaskService`
-3. `team_service.TeamService`
-4. `time.utc_now`
+2. `iteration_service.IterationService.get_by_id`
+3. `task_service.TaskService.get_by_iteration`
+4. `task_service.TaskService`
+5. `team_service.TeamService.get_by_iteration`
+6. `team_service.TeamService`
+7. `time.utc_now`
 
 ## Touches
 

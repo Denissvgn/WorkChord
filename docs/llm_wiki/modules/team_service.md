@@ -12,14 +12,19 @@ Capacity and workload reads can omit task relationship hydration. Workload hours
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command` |
+| `app.authority` | `internal_authority`, `internal_authority`, `internal_authority`, `internal_authority` |
+| `app.commands` | `atomic_command`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict`, `PlanningConflict` |
+| `app.models.capacity` | `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence`, `ProfileAbsence` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `TeamMemberProfileSkill`, `Vacation` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
 | `app.schemas.team` | `TeamMemberCreate`, `TeamMemberProfileCreate`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileSkillUpdate`, `TeamMemberProfileUpdate`, `TeamMemberOptionResponse`, `TeamMemberUpdate`, `VacationCreate`, `VacationUpdate`, `VacationImportError`, `VacationImportResponse`, `MemberCapacity`, `MemberWorkload` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.capacity_service` | `CapacityService`, `CapacityService`, `CapacityService`, `CapacityService`, `day_hours`, `CapacityService` |
+| `app.services.work_metrics` | `included_work_ids` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
+| `app.utils.import_parser` | `parse_team_members_text` |
 | `csv` | `csv` |
 | `datetime` | `date` |
 | `io` | `StringIO` |
@@ -46,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
-| Outbound | `backend` (8) |
+| Inbound | `backend` (17) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -55,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

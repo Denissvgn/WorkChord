@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/features/planningMasters/planningNavigationIn
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./usePlanningNavigationSummary` | `planningNavigationSummaryKey` |
-| `@tanstack/react-query` | `QueryClient`, `QueryCacheNotifyEvent` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./usePlanningNavigationSummary` | `planningNavigationSummaryKey` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClient`, `QueryCacheNotifyEvent` | Declaration | erased |
 
 ## Module Signals
 

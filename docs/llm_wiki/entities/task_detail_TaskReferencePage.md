@@ -21,7 +21,7 @@ _Auto-generated from `TaskReferencePage` in `backend/app/schemas/task_detail.py`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

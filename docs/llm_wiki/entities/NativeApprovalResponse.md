@@ -17,7 +17,7 @@ _Auto-generated from `NativeApprovalResponse` in `backend/app/routers/identity.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

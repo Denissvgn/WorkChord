@@ -15,7 +15,7 @@ A shared planning input is absent or outside the authorized graph.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

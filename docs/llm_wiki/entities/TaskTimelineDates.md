@@ -1,7 +1,7 @@
 # TaskTimelineDates
 
 **Location:** `frontend/src/components/gantt/GanttChart.tsx:39`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `TaskTimelineDates` in `frontend/src/components/gantt/Gantt
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

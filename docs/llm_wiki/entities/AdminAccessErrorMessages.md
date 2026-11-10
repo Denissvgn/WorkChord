@@ -1,7 +1,7 @@
 # AdminAccessErrorMessages
 
 **Location:** `frontend/src/utils/adminAccess.ts:6`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [adminAccess](../modules/adminAccess.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `AdminAccessErrorMessages` in `frontend/src/utils/adminAcce
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

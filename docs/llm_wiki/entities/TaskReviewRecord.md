@@ -29,7 +29,7 @@ Immutable authorized acceptance or rejection of a particular task, brief and art
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

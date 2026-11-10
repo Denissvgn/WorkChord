@@ -10,9 +10,9 @@ Private task draft values include the captured creation revision; malformed revi
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./taskEditorContract` | `TaskEditorValues` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./taskEditorContract` | `TaskEditorValues` | Declaration | erased |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ Private task draft values include the captured creation revision; malformed revi
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/taskDraftStorage.test.ts"]
@@ -56,7 +58,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PendingTaskWrite](../entities/PendingTaskWrite.md) | Type alias | 37 | — | — |
+| [PendingTaskWrite](../entities/PendingTaskWrite.md) | Type alias | 37 | `{ id: string; kind: 'task' \| 'triage' \| 'unknown' }` | — |
 
 ## Functions
 

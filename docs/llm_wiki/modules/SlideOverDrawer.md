@@ -8,14 +8,15 @@ _Auto-generated from `frontend/src/components/ui/SlideOverDrawer.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/dialogLayer` | `useDialogLayer` |
-| `lucide-react` | `X` |
-| `react` | `useId`, `ReactNode`, `RefObject` |
-| `react-dom` | `createPortal` |
-| `react-i18next` | `useTranslation` |
-| `tailwind-merge` | `twMerge` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/dialogLayer` | `useDialogLayer` | — | compiler-dependent |
+| `lucide-react` | `X` | — | compiler-dependent |
+| `react` | `ReactNode`, `RefObject` | Declaration | erased |
+| `react` | `useId` | — | compiler-dependent |
+| `react-dom` | `createPortal` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `tailwind-merge` | `twMerge` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -71,4 +72,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `SlideOverDrawer` | `({     open,     title,     subtitle,     icon,     children,     footer,     onClose,     ariaLabel,     className,     initialFocusRef,     restoreFocusRef,     closeOnBackdropClick = true,     closeDisabled = false,     closeLabel: closeLabelProp, }: {     open: boolean;     title: ReactNode;     subtitle?: ReactNode;     icon?: ReactNode;     children: ReactNode;     footer?: ReactNode;     onClose: () => void;     ariaLabel?: string;     className?: string;     initialFocusRef?: RefObject<HTMLElement \| null>;     restoreFocusRef?: RefObject<HTMLElement \| null>;     closeOnBackdropClick?: boolean;     closeDisabled?: boolean;     closeLabel?: string; })` | — | — |
+| `SlideOverDrawer` | <pre><code>&#40;&#123;&#10;    open&#44;&#10;    title&#44;&#10;    subtitle&#44;&#10;    icon&#44;&#10;    children&#44;&#10;    footer&#44;&#10;    onClose&#44;&#10;    ariaLabel&#44;&#10;    className&#44;&#10;    initialFocusRef&#44;&#10;    restoreFocusRef&#44;&#10;    closeOnBackdropClick &#61; true&#44;&#10;    closeDisabled &#61; false&#44;&#10;    closeLabel&#58; closeLabelProp&#44;&#10;&#125;&#58; &#123;&#10;    open&#58; boolean&#59;&#10;    title&#58; ReactNode&#59;&#10;    subtitle&#63;&#58; ReactNode&#59;&#10;    icon&#63;&#58; ReactNode&#59;&#10;    children&#58; ReactNode&#59;&#10;    footer&#63;&#58; ReactNode&#59;&#10;    onClose&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    ariaLabel&#63;&#58; string&#59;&#10;    className&#63;&#58; string&#59;&#10;    initialFocusRef&#63;&#58; RefObject&#60;HTMLElement &#124; null&#62;&#59;&#10;    restoreFocusRef&#63;&#58; RefObject&#60;HTMLElement &#124; null&#62;&#59;&#10;    closeOnBackdropClick&#63;&#58; boolean&#59;&#10;    closeDisabled&#63;&#58; boolean&#59;&#10;    closeLabel&#63;&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | — |

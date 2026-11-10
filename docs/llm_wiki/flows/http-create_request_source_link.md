@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -13,30 +15,44 @@ sequenceDiagram
     participant p1 as RequestSourceLinkCreateRequest.model_validate
     participant p2 as service.create_link
     participant p3 as _bad_request
-    participant p4 as HTTPException (backend/app/routers/request_sources.py:_bad_request)
-    participant p5 as str (backend/app/routers/request_sources.py:_bad_request)
-    participant p6 as _not_found
-    participant p7 as HTTPException (backend/app/routers/request_sources.py:_not_found)
-    participant p8 as str (backend/app/routers/request_sources.py:_not_found)
-    participant p9 as HTTPException (backend/app/routers/reque…create_request_source_link)
-    participant p10 as str (backend/app/routers/reque…create_request_source_link)
-    p0-->>p1: RequestSourceLinkCreateRequest.model_validate
-    p0-->>p2: service.create_link
+    participant p4 as _not_found
+    participant p5 as HTTPException (backend/app/routers/reque…create_request_source_link)
+    participant p6 as str (backend/app/routers/reque…create_request_source_link)
+    participant p7 as HTTPException (backend/app/routers/request_sources.py:_bad_request)
+    participant p8 as HTTPException (backend/app/routers/request_sources.py:_not_found)
+    participant p9 as str (backend/app/routers/request_sources.py:_bad_request)
+    participant p10 as str (backend/app/routers/request_sources.py:_not_found)
+    p0-->>p1: RequestSourceLinkCreateRequest.model_validate(raw_data)
+    p0-->>p2: service.create_link(data)
     p0->>p3: _bad_request
-    p3-->>p4: HTTPException (backend/app/routers/request_sources.py:_bad_request)
-    p3-->>p5: str (backend/app/routers/request_sources.py:_bad_request)
     p0->>p3: _bad_request
-    p0->>p6: _not_found
-    p6-->>p7: HTTPException (backend/app/routers/request_sources.py:_not_found)
-    p6-->>p8: str (backend/app/routers/request_sources.py:_not_found)
-    p0->>p6: _not_found
-    p0-->>p9: HTTPException (backend/app/routers/reque…create_request_source_link)
-    p0-->>p10: str (backend/app/routers/reque…create_request_source_link)
+    p0->>p4: _not_found
+    p0->>p4: _not_found
+    p0-->>p5: HTTPException (backend/app/routers/reque…create_request_source_link)(status_code=status.HTTP_409_CONFLICT, detail=str(...))
+    p0-->>p6: str (backend/app/routers/reque…create_request_source_link)(e)
+    p3-->>p7: HTTPException (backend/app/routers/request_sources.py:_bad_request)(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p4-->>p8: HTTPException (backend/app/routers/request_sources.py:_not_found)(status_code=status.HTTP_404_NOT_FOUND, detail=str(...))
+    p3-->>p9: str (backend/app/routers/request_sources.py:_bad_request)(error)
+    p4-->>p10: str (backend/app/routers/request_sources.py:_not_found)(error)
 ```
+
+> Call sequence diagram shows 12 of 12 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 6 of 6 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 5; effect analysis evaluated: 5, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 21, emitted: 21, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. create_request_source_link"]
@@ -104,7 +120,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

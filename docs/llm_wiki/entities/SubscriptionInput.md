@@ -19,7 +19,7 @@ _Auto-generated from `SubscriptionInput` in `backend/app/routers/discussion.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

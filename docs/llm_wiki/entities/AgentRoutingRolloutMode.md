@@ -19,7 +19,7 @@ Deployment-owned model-aware routing rollout modes.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

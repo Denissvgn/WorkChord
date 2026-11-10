@@ -8,70 +8,111 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
     participant p1 as _parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as parser.parse_args
+    participant p2 as BackendBuildIdentity
+    participant p3 as package_artifact_digest
+    participant p4 as Path
     participant p5 as Path(…).resolve
-    participant p6 as Path
-    participant p7 as BuildIdentity.model_validate_json
-    participant p8 as args.frontend_identity.read_text
-    participant p9 as ValueError (backend/app/build_identity.py:main)
-    participant p10 as BackendBuildIdentity
-    participant p11 as package_artifact_digest
-    participant p12 as sha256
-    participant p13 as sorted
-    participant p14 as package_root.rglob
-    participant p15 as path.is_file
-    participant p16 as ValueError (backend/app/build_identit…py:package_artifact_digest)
-    participant p17 as member.relative_to(…).as_posix().encode
-    participant p18 as member.relative_to(…).as_posix
-    participant p19 as member.relative_to
-    participant p20 as digest.update
-    participant p21 as sha256(…).digest
-    participant p22 as member.read_bytes
-    participant p23 as digest.hexdigest
+    participant p6 as BuildIdentity.model_validate_json
+    participant p7 as args.frontend_identity.read_text
+    participant p8 as ValueError (backend/app/build_identity.py:main)
+    participant p9 as args.output.parent.mkdir
+    participant p10 as args.output.write_text
+    participant p11 as json.dumps
+    participant p12 as identity.model_dump
+    participant p13 as args.output.chmod
+    participant p14 as argparse.ArgumentParser
+    participant p15 as sha256
+    participant p16 as parser.add_argument
+    participant p17 as sorted
+    participant p18 as package_root.rglob
+    participant p19 as path.is_file
+    participant p20 as parser.parse_args
+    participant p21 as ValueError (backend/app/build_identit…py:package_artifact_digest)
+    participant p22 as member.relative_to(…).as_posix().encode
+    participant p23 as member.relative_to(…).as_posix
+    participant p24 as member.relative_to
+    participant p25 as digest.update
     p0->>p1: _parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p4: parser.parse_args
+    p0->>p2: BackendBuildIdentity
+    p0->>p3: package_artifact_digest
+    p0-->>p4: Path(__file__)
     p0-->>p5: Path(…).resolve
-    p0-->>p6: Path
-    p0-->>p7: BuildIdentity.model_validate_json
-    p0-->>p8: args.frontend_identity.read_text
-    p0-->>p9: ValueError (backend/app/build_identity.py:main)
-    p0-->>p9: ValueError (backend/app/build_identity.py:main)
-    p0->>p10: BackendBuildIdentity
-    p0->>p11: package_artifact_digest
-    p11-->>p12: sha256
-    p11-->>p13: sorted
-    p11-->>p14: package_root.rglob
-    p11-->>p15: path.is_file
-    p11-->>p16: ValueError (backend/app/build_identit…py:package_artifact_digest)
-    p11-->>p17: member.relative_to(…).as_posix().encode
-    p11-->>p18: member.relative_to(…).as_posix
-    p11-->>p19: member.relative_to
-    p11-->>p20: digest.update
-    p11-->>p20: digest.update
-    p11-->>p20: digest.update
-    p11-->>p21: sha256(…).digest
-    p11-->>p12: sha256
-    p11-->>p22: member.read_bytes
-    p11-->>p20: digest.update
-    p11-->>p23: digest.hexdigest
+    p0-->>p6: BuildIdentity.model_validate_json(args.frontend_identity.read_text(...))
+    p0-->>p7: args.frontend_identity.read_text(encoding='utf-8')
+    p0-->>p8: ValueError (backend/app/build_identity.py:main)('Expected a frontend build identity')
+    p0-->>p8: ValueError (backend/app/build_identity.py:main)('Frontend and backend source revisions differ')
+    p0-->>p9: args.output.parent.mkdir(parents=True, exist_ok=True)
+    p0-->>p10: args.output.write_text(..., encoding='utf-8')
+    p0-->>p11: json.dumps(identity.model_dump(...), sort_keys=True)
+    p0-->>p12: identity.model_dump(mode='json')
+    p0-->>p13: args.output.chmod(292)
+    p1-->>p14: argparse.ArgumentParser(description='Write the immutable backend container build identity.')
+    p3-->>p15: sha256
+    p1-->>p16: parser.add_argument('--source-revision', required=True)
+    p3-->>p17: sorted(...)
+    p1-->>p16: parser.add_argument('--frontend-identity', type=Path, required=True)
+    p3-->>p18: package_root.rglob('*')
+    p1-->>p16: parser.add_argument('--output', type=Path, required=True)
+    p3-->>p19: path.is_file
+    p1-->>p20: parser.parse_args
+    p3-->>p21: ValueError (backend/app/build_identit…py:package_artifact_digest)('Backend package contains no identity members')
+    p3-->>p22: member.relative_to(…).as_posix().encode('utf-8')
+    p3-->>p23: member.relative_to(…).as_posix
+    p3-->>p24: member.relative_to(package_root)
+    p3-->>p25: digest.update(relative)
+    p3-->>p25: digest.update(b'\x00')
+    p3-->>p25: digest.update(...)
 ```
 
-> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 8 of 9 (1 omitted); unresolved 19 of 23 (4 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/build_identity.py:package_artifact_digest` | 15 | - | unresolved | 4 |
+| `backend/app/build_identity.py:package_artifact_digest` | 15 | - | external | 1 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 4; effect analysis evaluated: 3, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 12, emitted: 12, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `_parse_args` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `Path(…).resolve` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `Path` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `BuildIdentity.model_validate_json` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `args.frontend_identity.read_text` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ValueError (backend/app/build_identity.py:main)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

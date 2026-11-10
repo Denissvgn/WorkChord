@@ -7,11 +7,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1523 | [Open section](#entities) |
-| Modules | 745 | [Open section](#modules) |
+| Modules | 755 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
-| Infrastructure | 11 | [Open section](#infrastructure) |
+| Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
 | Log | 1 | [Open log](log.md) |
@@ -1791,6 +1791,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agent_work_service](modules/agent_work_service.md) - Durable agent assignment, current-work, verification, and recovery services.
 - [allocation_identity](modules/allocation_identity.md) - Reserve numeric allocation identities retained by immutable recovery history.
 - [android_qualification](modules/android_qualification.md) - Release-behavior qualification confined to an explicitly owned ARM64 emulator.
+- [android_web_peer](modules/android_web_peer.md) - `scripts/ci/android_web_peer.mjs`
 - [api](modules/api.md) - `frontend/src/services/api.ts`
 - [apiError](modules/apiError.md) - `frontend/src/utils/apiError.ts`
 - [app_database](modules/app_database.md) - `backend/app/database.py`
@@ -1806,7 +1807,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [autonomy_work_package_service](modules/autonomy_work_package_service.md) - Fenced, package-level autonomous verification lifecycle service.
 - [backlog_snapshot_service](modules/backlog_snapshot_service.md) - Project backlog recovery using the shared transactional snapshot store.
 - [bounded_scope_reads](modules/bounded_scope_reads.md) - Shared finite ID-window reads; the caller supplies its authorized projection.
+- [browser_managed_work](modules/browser_managed_work.md) - `scripts/ci/browser_managed_work.mjs`
+- [browser_performance](modules/browser_performance.md) - `scripts/ci/browser_performance.mjs`
+- [browser_planning_inputs](modules/browser_planning_inputs.md) - `scripts/ci/browser_planning_inputs.mjs`
+- [browser_worker](modules/browser_worker.md) - `scripts/ci/browser_worker.mjs`
+- [browser_write_readback](modules/browser_write_readback.md) - `scripts/ci/browser_write_readback.mjs`
 - [build_agent_skills](modules/build_agent_skills.md) - Validate and reproducibly package WorkChord role skills.
+- [build_frontend_image_identity](modules/build_frontend_image_identity.md) - `scripts/build_frontend_image_identity.mjs`
 - [build_identity](modules/build_identity.md) - Revision-bound identity baked into WorkChord container images.
 - [calendarService](modules/calendarService.md) - `frontend/src/services/calendarService.ts`
 - [calendar_service](modules/calendar_service.md) - Calendar service with business logic.
@@ -1814,6 +1821,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [capacity_service](modules/capacity_service.md) - Profile-owned availability and permission-safe date capacity projections.
 - [catalog](modules/catalog.md) - Versioned transfer catalog derived from the packaged ORM schema.
 - [charter](modules/charter.md) - Standing delegation and finite bootstrap-action contracts.
+- [check-bundle-budget](modules/check-bundle-budget.md) - `frontend/scripts/check-bundle-budget.mjs`
+- [check-query-feedback](modules/check-query-feedback.md) - `frontend/scripts/check-query-feedback.mjs`
+- [check-tailwind-classes](modules/check-tailwind-classes.md) - `frontend/scripts/check-tailwind-classes.mjs`
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
 - [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
@@ -3052,6 +3062,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 - [Dockerfile_backend](infrastructure/Dockerfile_backend.md) - dockerfile
 - [Dockerfile_frontend](infrastructure/Dockerfile_frontend.md) - dockerfile
+- [github action: action.yml](infrastructure/_github_actions_native-postgres_action_yml.md) - yaml_format
 - [GitHub Actions: CI](infrastructure/_github_workflows_ci_yml.md) - github_actions
 - [GitHub Actions: Client and scenario baseline](infrastructure/_github_workflows_client-baseline_yml.md) - github_actions
 - [GitHub Actions: Deployment acceptance](infrastructure/_github_workflows_deployment-acceptance_yml.md) - github_actions

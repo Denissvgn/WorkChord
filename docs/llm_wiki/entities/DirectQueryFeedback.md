@@ -4,6 +4,19 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
+**Target:**
+
+```typescript
+{
+    data: unknown;
+    dataUpdatedAt: number;
+    error: unknown;
+    isLoading: boolean;
+    isFetching: boolean;
+    isError: boolean;
+    refetch: () => Promise<unknown>;
+}
+```
 
 ## Description
 
@@ -11,11 +24,11 @@ _Auto-generated from `DirectQueryFeedback` in `frontend/src/pages/OverviewPage.t
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

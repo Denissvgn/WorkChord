@@ -24,7 +24,9 @@ Authoritative assessment, preview, and selection validation for agent routing.
 | `app.services.agent_routing_policy` | `MAX_ROUTING_CANDIDATES`, `MAX_ROUTING_EXCLUSIONS`, `MAX_ROUTING_PACKET_BYTES`, `MIN_ROUTING_ASSESSMENT_CONFIDENCE`, `MODEL_FAILURE_CATEGORIES`, `REVIEW_MODE_ORDER`, `ROUTING_DECISION_AUTHORITY`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `ROUTING_PREVIEW_TTL_SECONDS`, `RoutingBlockerCode`, `RoutingProfileEvidence`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `evaluate_assignment_compatibility`, `evaluate_model_envelope`, `evaluate_required_skills`, `normalize_model_failure_category`, `routing_candidate_rank_key`, `review_mode_meets`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
+| `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.task_brief_service` | `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `dataclasses` | `dataclass` |
@@ -58,8 +60,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
-| Outbound | `backend` (16) |
+| Inbound | `backend` (12) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -67,7 +69,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

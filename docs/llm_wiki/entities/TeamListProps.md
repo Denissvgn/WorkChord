@@ -1,7 +1,7 @@
 # TeamListProps
 
 **Location:** `frontend/src/components/team/TeamList.tsx:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TeamList](../modules/TeamList.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `TeamListProps` in `frontend/src/components/team/TeamList.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

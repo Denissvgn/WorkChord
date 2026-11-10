@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/agent/RoutingCandidateComparison.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/agent` | `AgentActorRosterItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewResponse` |
-| `../../utils/modelRouting` | `formatRoutingCode` |
-| `lucide-react` | `CheckCircle2`, `ShieldX` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/agent` | `AgentActorRosterItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewResponse` | Declaration | erased |
+| `../../utils/modelRouting` | `formatRoutingCode` | — | compiler-dependent |
+| `lucide-react` | `CheckCircle2`, `ShieldX` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -24,6 +24,8 @@ _Auto-generated from `frontend/src/components/agent/RoutingCandidateComparison.t
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/agent/RoutingCandidateComparison.test.tsx"]
@@ -64,10 +66,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RoutingCandidateComparisonProps](../entities/RoutingCandidateComparisonProps.md) | Class | 15 | — | — |
+| [RoutingCandidateComparisonProps](../entities/RoutingCandidateComparisonProps.md) | Interface | 15 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `RoutingCandidateComparison` | `({     preview,     roster,     selectedCandidateKey,     onSelectCandidate,     selectionDisabled = false, }: RoutingCandidateComparisonProps)` | — | — |
+| `RoutingCandidateComparison` | <pre><code>&#40;&#123;&#10;    preview&#44;&#10;    roster&#44;&#10;    selectedCandidateKey&#44;&#10;    onSelectCandidate&#44;&#10;    selectionDisabled &#61; false&#44;&#10;&#125;&#58; RoutingCandidateComparisonProps&#41;</code></pre> | — | — |

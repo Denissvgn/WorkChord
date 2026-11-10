@@ -1,7 +1,7 @@
 # TaskEditModalProps
 
 **Location:** `frontend/src/components/gantt/TaskEditModal.tsx:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskEditModal](../modules/TaskEditModal.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `TaskEditModalProps` in `frontend/src/components/gantt/Task
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

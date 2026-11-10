@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)
+**Target:**
+
+```typescript
+StepStatus['state'] | 'loading' | 'unavailable'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `StepPresentationState` in `frontend/src/pages/PlanMasterPa
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

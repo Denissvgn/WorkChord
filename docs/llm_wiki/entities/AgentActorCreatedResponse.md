@@ -20,7 +20,7 @@ Agent actor creation response including the one-time API key.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

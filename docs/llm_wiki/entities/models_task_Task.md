@@ -114,7 +114,7 @@ flowchart LR
     n3["backend/app/commands.py"]
     n4["backend/app/http_authority.py"]
     n5["backend/app/models/__init__.py"]
-    n6["_reject_routing_assessment_mutation (backend/app/models/agent.py)"]
+    n6["backend/app/models/agent.py"]
     n7["backend/app/models/delivery_dependency.py"]
     n8["backend/app/models/delivery_observation.py"]
     n9["backend/app/models/discussion.py"]
@@ -171,7 +171,7 @@ flowchart LR
 | `commands` | import | [commands](../modules/commands.md) | — |
 | `http_authority` | import | [http_authority](../modules/http_authority.md) | — |
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
-| `_reject_routing_assessment_mutation` | type_reference | [models_agent](../modules/models_agent.md) | — |
+| `agent` | import | [models_agent](../modules/models_agent.md) | — |
 | `delivery_dependency` | import | [delivery_dependency](../modules/delivery_dependency.md) | — |
 | `delivery_observation` | import | [delivery_observation](../modules/delivery_observation.md) | — |
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
@@ -180,4 +180,4 @@ flowchart LR
 | `recovery` | import | [recovery](../modules/recovery.md) | — |
 | `release` | import | [models_release](../modules/models_release.md) | — |
 
-> References: showing 12 of 269 logical references; 257 omitted by the 12-row generated summary limit.
+> References: showing 12 of 271 logical references; 259 omitted by the 12-row generated summary limit.

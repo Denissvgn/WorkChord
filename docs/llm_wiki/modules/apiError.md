@@ -37,11 +37,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ApiFieldError](../entities/ApiFieldError.md) | Class | 3 | — | — |
-| [NormalizedApiError](../entities/NormalizedApiError.md) | Class | 8 | — | — |
-| [ApiErrorShape](../entities/ApiErrorShape.md) | Class | 17 | — | — |
-| [ApiErrorKind](../entities/ApiErrorKind.md) | Type alias | 1 | — | — |
-| [UnknownRecord](../entities/UnknownRecord.md) | Type alias | 26 | — | — |
+| [ApiFieldError](../entities/ApiFieldError.md) | Interface | 3 | — | — |
+| [NormalizedApiError](../entities/NormalizedApiError.md) | Interface | 8 | — | — |
+| [ApiErrorShape](../entities/ApiErrorShape.md) | Interface | 17 | — | — |
+| [ApiErrorKind](../entities/ApiErrorKind.md) | Type alias | 1 | `'response' \| 'network' \| 'unknown'` | — |
+| [UnknownRecord](../entities/UnknownRecord.md) | Type alias | 26 | `Record<string, unknown>` | — |
 
 ## Functions
 

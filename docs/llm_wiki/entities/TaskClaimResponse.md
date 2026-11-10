@@ -20,7 +20,7 @@ Response for task lease operations.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

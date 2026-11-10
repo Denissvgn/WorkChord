@@ -10,21 +10,22 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../services/taskService` | `taskService` |
-| `../../types/task` | `ExternalLink`, `Task` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/formatDate` | `formatDateTime` |
-| `../../utils/safeUrl` | `safeExternalHref` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
-| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `Bot`, `CircleDot`, `GitBranch`, `History`, `Link`, `Plus`, `RefreshCw`, `Trash2`, `X` |
-| `react` | `useState`, `KeyboardEvent` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/task` | `ExternalLink`, `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../../utils/safeUrl` | `safeExternalHref` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
+| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Bot`, `CircleDot`, `GitBranch`, `History`, `Link`, `Plus`, `RefreshCw`, `Trash2`, `X` | — | compiler-dependent |
+| `react` | `KeyboardEvent` | Specifier | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -37,6 +38,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
@@ -110,7 +113,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskTimelinePanelProps](../entities/TaskTimelinePanelProps.md) | Class | 17 | — | — |
+| [TaskTimelinePanelProps](../entities/TaskTimelinePanelProps.md) | Interface | 17 | — | — |
 
 ## Functions
 

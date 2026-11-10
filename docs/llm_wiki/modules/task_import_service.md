@@ -16,10 +16,12 @@ Task text import, export, and triage intake workflows.
 | `app.commands` | `atomic_command`, `commit_or_flush`, `lock_iterations` |
 | `app.models.task` | `Task` |
 | `app.models.triage` | `TriageItem`, `TriageItemStatus` |
-| `app.schemas.task` | `TaskImportDestination` |
+| `app.schemas.task` | `TaskImportDestination`, `TaskUpdate` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_domain_service` | `nominal_day_hours` |
 | `app.services.task_service` | `TaskService` |
+| `app.services.team_service` | `TeamService` |
+| `app.utils.import_parser` | `parse_tasks_text`, `serialize_tasks_to_text`, `parse_tasks_text` |
 | `json` | `json` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Optional`, `TYPE_CHECKING` |
@@ -38,16 +40,25 @@ flowchart LR
     n6["backend/app/services/task_domain_service.py"]
     n7["backend/app/services/task_import_service.py"]
     n8["backend/app/services/task_service.py"]
+    n9["backend/app/services/team_service.py"]
+    n10["backend/app/utils/import_parser.py"]
     n0 --> n2
     n1 --> n0
     n1 --> n2
     n1 --> n5
     n1 --> n8
     n3 --> n2
+    n5 --> n0
     n5 --> n1
+    n5 --> n2
+    n5 --> n6
+    n5 --> n8
+    n5 --> n9
     n6 --> n0
     n6 --> n1
     n6 --> n2
+    n6 --> n5
+    n6 --> n8
     n7 --> n0
     n7 --> n1
     n7 --> n2
@@ -56,12 +67,21 @@ flowchart LR
     n7 --> n5
     n7 --> n6
     n7 --> n8
+    n7 --> n9
+    n7 --> n10
     n8 --> n0
     n8 --> n1
     n8 --> n2
     n8 --> n3
     n8 --> n4
     n8 --> n5
+    n8 --> n6
+    n8 --> n7
+    n9 --> n0
+    n9 --> n1
+    n9 --> n2
+    n9 --> n10
+    n10 --> n2
     click n0 "../modules/authority.md"
     click n1 "../modules/commands.md"
     click n2 "../modules/models_task.md"
@@ -71,12 +91,15 @@ flowchart LR
     click n6 "../modules/task_domain_service.md"
     click n7 "../modules/task_import_service.md"
     click n8 "../modules/task_service.md"
+    click n9 "../modules/team_service.md"
+    click n10 "../modules/import_parser.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [task_service](../modules/task_service.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [commands](../modules/commands.md) |
 | Outbound | [models_task](../modules/models_task.md) |
@@ -85,6 +108,8 @@ flowchart LR
 | Outbound | [snapshot_service](../modules/snapshot_service.md) |
 | Outbound | [task_domain_service](../modules/task_domain_service.md) |
 | Outbound | [task_service](../modules/task_service.md) |
+| Outbound | [team_service](../modules/team_service.md) |
+| Outbound | [import_parser](../modules/import_parser.md) |
 
 ### External packages
 

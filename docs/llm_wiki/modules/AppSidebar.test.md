@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/layout/AppSidebar.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/savedView` | `SavedView` |
-| `./AppSidebar` | `AppSidebar`, `SidebarContent` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/savedView` | `SavedView` | Declaration | erased |
+| `./AppSidebar` | `AppSidebar`, `SidebarContent` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/layout/AppSidebar.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/AppSidebar.test.tsx"]

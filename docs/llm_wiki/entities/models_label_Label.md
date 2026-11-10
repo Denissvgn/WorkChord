@@ -28,7 +28,7 @@ A governed label slug compatible with existing task tag strings.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

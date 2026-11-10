@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/team/TeamForm.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/team` | `TeamMember`, `TeamMemberCreate` |
-| `./TeamForm` | `TeamForm` |
-| `@testing-library/react` | `act`, `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/team` | `TeamMember`, `TeamMemberCreate` | Declaration | erased |
+| `./TeamForm` | `TeamForm` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/team/TeamForm.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/team/TeamForm.test.tsx"]

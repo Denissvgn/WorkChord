@@ -25,7 +25,7 @@ _Auto-generated from `ActivitySnapshot` in `backend/app/runtime_telemetry.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

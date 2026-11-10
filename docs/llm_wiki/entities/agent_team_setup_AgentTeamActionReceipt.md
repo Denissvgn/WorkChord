@@ -27,7 +27,7 @@ _Auto-generated from `AgentTeamActionReceipt` in `backend/app/schemas/agent_team
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

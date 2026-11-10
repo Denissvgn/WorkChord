@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/common/Button.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./Button` | `Button` |
-| `@testing-library/react` | `render`, `screen` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./Button` | `Button` | — | compiler-dependent |
+| `@testing-library/react` | `render`, `screen` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

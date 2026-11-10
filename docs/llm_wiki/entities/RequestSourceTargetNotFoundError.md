@@ -15,7 +15,7 @@ Raised when a requested link target cannot be found.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

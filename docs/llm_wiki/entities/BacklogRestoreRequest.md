@@ -24,7 +24,7 @@ _Auto-generated from `BacklogRestoreRequest` in `backend/app/schemas/task_domain
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

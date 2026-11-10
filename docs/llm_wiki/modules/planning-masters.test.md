@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/styles/planning-masters.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `node:fs` | `readFileSync` |
-| `node:path` | `resolve` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `node:fs` | `readFileSync` | — | compiler-dependent |
+| `node:path` | `resolve` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -1,7 +1,7 @@
 # PlanShareTeamMember
 
 **Location:** `frontend/src/services/planShareService.ts:20`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planShareService](../modules/planShareService.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `PlanShareTeamMember` in `frontend/src/services/planShareSe
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

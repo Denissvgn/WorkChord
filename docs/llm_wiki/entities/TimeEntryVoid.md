@@ -17,7 +17,7 @@ _Auto-generated from `TimeEntryVoid` in `backend/app/schemas/time_entry.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -44,7 +44,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [OverviewTaskThreadSource](../entities/OverviewTaskThreadSource.md) | Type alias | 8 | — | — |
+| [OverviewTaskThreadSource](../entities/OverviewTaskThreadSource.md) | Type alias | 8 | `typeof OVERVIEW_TASK_THREAD_SOURCES[number]` | — |
 
 ## Functions
 

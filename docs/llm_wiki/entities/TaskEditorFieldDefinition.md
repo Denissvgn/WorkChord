@@ -1,9 +1,10 @@
 # TaskEditorFieldDefinition
 
 **Location:** `frontend/src/components/tasks/taskEditorContract.ts:45`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
+**Type parameters:** `K extends keyof TaskEditorValues`
 
 ## Description
 
@@ -19,7 +20,7 @@ _Auto-generated from `TaskEditorFieldDefinition` in `frontend/src/components/tas
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

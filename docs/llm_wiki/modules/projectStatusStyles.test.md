@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/projects/projectStatusStyles.test.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./projectStatusStyles` | `projectStatusBadgeClassName`, `projectStatusPillClassName` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./projectStatusStyles` | `projectStatusBadgeClassName`, `projectStatusPillClassName` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

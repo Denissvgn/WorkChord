@@ -21,7 +21,7 @@ _Auto-generated from `VerificationRenewRequest` in `backend/app/schemas/autonomy
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

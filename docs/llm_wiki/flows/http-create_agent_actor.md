@@ -6,59 +6,102 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as create_agent_actor
     participant p1 as require_scope
-    participant p2 as actor_has_scope
-    participant p3 as actor_scopes
-    participant p4 as json.loads
-    participant p5 as isinstance (backend/app/services/agent_service.py:actor_scopes)
-    participant p6 as AgentPermissionError
-    participant p7 as service.create_actor
-    participant p8 as _handle_agent_error
+    participant p2 as _actor_response
+    participant p3 as _handle_agent_error
+    participant p4 as AgentActorCreatedResponse
+    participant p5 as actor_has_scope
+    participant p6 as AgentActorResponse
+    participant p7 as AgentPermissionError
+    participant p8 as actor_scopes
     participant p9 as isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    participant p10 as str
-    participant p11 as HTTPException
-    participant p12 as exc.detail
+    participant p10 as service.create_actor
+    participant p11 as _actor_response(…).model_dump
+    participant p12 as str
+    participant p13 as HTTPException
+    participant p14 as exc.detail
     p0->>p1: require_scope
-    p1->>p2: actor_has_scope
-    p2->>p3: actor_scopes
-    p3-->>p4: json.loads
-    p3-->>p5: isinstance (backend/app/services/agent_service.py:actor_scopes)
-    p1->>p6: AgentPermissionError
-    p0-->>p7: service.create_actor
-    p0->>p8: _handle_agent_error
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    p8-->>p10: str
-    p8-->>p10: str
-    p8-->>p11: HTTPException
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    p8-->>p11: HTTPException
-    p8-->>p12: exc.detail
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    p8-->>p11: HTTPException
-    p8-->>p12: exc.detail
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    p8-->>p11: HTTPException
-    p8-->>p12: exc.detail
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    p8-->>p10: str
-    p8-->>p10: str
-    p8-->>p11: HTTPException
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
-    p8-->>p10: str
-    p8-->>p10: str
-    p8-->>p11: HTTPException
-    p8-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)
+    p0->>p2: _actor_response
+    p0->>p3: _handle_agent_error
+    p0->>p4: AgentActorCreatedResponse
+    p1->>p5: actor_has_scope
+    p2->>p6: AgentActorResponse
+    p1->>p7: AgentPermissionError
+    p2->>p8: actor_scopes
+    p3-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, AgentPermissionError)
+    p0-->>p10: service.create_actor(data, principal=actor)
+    p0-->>p11: _actor_response(…).model_dump
+    p3-->>p12: str(exc)
+    p3-->>p12: str(exc)
+    p3-->>p13: HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
+    p3-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, AgentRoutingConflictError)
+    p3-->>p13: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p3-->>p14: exc.detail
+    p3-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, AgentTeamSetupConflictError)
+    p3-->>p13: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p3-->>p14: exc.detail
+    p3-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, TaskVersionConflictError)
+    p3-->>p13: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p3-->>p14: exc.detail
+    p3-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, AgentConflictError)
+    p3-->>p12: str(exc)
+    p3-->>p12: str(exc)
+    p3-->>p13: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
+    p3-->>p9: isinstance (backend/app/routers/agent.py:_handle_agent_error)(exc, LookupError)
+    p3-->>p12: str(exc)
+    p3-->>p12: str(exc)
 ```
 
-> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 17 of 24 (7 omitted); unresolved 5 of 5 (0 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/agent_service.py:actor_has_scope` | 3 | [backend/app/services/agent_service.py](../modules/agent_service.md) | internal | 1 |
+| `backend/app/services/agent_service.py:actor_scopes` | 4 | - | external | 2 |
+| `backend/app/routers/agent.py:_handle_agent_error` | 9 | - | external | 5 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 10; effect analysis evaluated: 6, partial: 1, unavailable: 3. Counts include steps omitted from the displayed trace.
+
+Collector observations for 7 source steps with known totals: observed: 35, emitted: 31, omitted: 4. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `create_agent_actor` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
+| `require_scope` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `actor_has_scope` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `actor_scopes` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AgentPermissionError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `service.create_actor` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_handle_agent_error` | `available` | `partial` | `available` | `14` | `10` | `4` |
+| `isinstance (backend/app/routers/agent.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. create_agent_actor"]
@@ -127,7 +170,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

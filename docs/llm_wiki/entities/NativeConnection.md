@@ -24,7 +24,7 @@ Stores a hashed request identity, S256 challenge, verification code, bounded exp
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

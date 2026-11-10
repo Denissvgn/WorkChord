@@ -22,7 +22,7 @@ _Auto-generated from `CatalogEntry` in `backend/app/database_migration/catalog.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

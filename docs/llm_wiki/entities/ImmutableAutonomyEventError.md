@@ -15,7 +15,7 @@ _Auto-generated from `ImmutableAutonomyEventError` in `backend/app/models/autono
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

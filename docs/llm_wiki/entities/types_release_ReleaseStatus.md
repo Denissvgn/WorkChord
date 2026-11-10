@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_release](../modules/types_release.md)
+**Target:**
+
+```typescript
+'planned' | 'building' | 'shipped' | 'canceled'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `ReleaseStatus` in `frontend/src/types/release.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -17,7 +17,7 @@ _Auto-generated from `TimeEntryCorrection` in `backend/app/schemas/time_entry.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

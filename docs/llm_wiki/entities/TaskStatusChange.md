@@ -19,7 +19,7 @@ Request for changing task status.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx`
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../types/task` | `TaskAgentReadiness` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertTriangle`, `Bot`, `CheckCircle2`, `XCircle` |
-| `react` | `useState`, `useRef`, `useEffect`, `useCallback`, `useId` |
-| `react-dom` | `createPortal` |
-| `react-router-dom` | `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../types/task` | `TaskAgentReadiness` | Declaration | erased |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Bot`, `CheckCircle2`, `XCircle` | — | compiler-dependent |
+| `react` | `useState`, `useRef`, `useEffect`, `useCallback`, `useId` | — | compiler-dependent |
+| `react-dom` | `createPortal` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +29,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx`
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskAgentReadinessBadge.test.tsx"]
@@ -73,7 +75,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskAgentReadinessBadgeProps](../entities/TaskAgentReadinessBadgeProps.md) | Class | 11 | — | — |
+| [TaskAgentReadinessBadgeProps](../entities/TaskAgentReadinessBadgeProps.md) | Interface | 11 | — | — |
 
 ## Functions
 

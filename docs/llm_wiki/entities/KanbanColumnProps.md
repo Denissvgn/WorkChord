@@ -1,7 +1,7 @@
 # KanbanColumnProps
 
 **Location:** `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx:13`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [KanbanColumn](../modules/KanbanColumn.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `KanbanColumnProps` in `frontend/src/components/tasks/Kanba
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -10,12 +10,13 @@ _Auto-generated from `frontend/src/components/settings/AgentTeamStepList.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone`, `AgentTeamStepId` |
-| `../../features/agentTeamSetup/useAgentTeamReadiness` | `useAgentTeamReadiness` |
-| `lucide-react` | `Check` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/agentTeamSetup/masters` | `AgentTeamStepId` | Declaration | erased |
+| `../../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone` | — | compiler-dependent |
+| `../../features/agentTeamSetup/useAgentTeamReadiness` | `useAgentTeamReadiness` | Declaration | erased |
+| `lucide-react` | `Check` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,6 +28,8 @@ _Auto-generated from `frontend/src/components/settings/AgentTeamStepList.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
@@ -63,10 +66,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AgentTeamStepScope](../entities/AgentTeamStepScope.md) | Type alias | 6 | — | — |
+| [AgentTeamStepScope](../entities/AgentTeamStepScope.md) | Type alias | 6 | `'authority' \| 'topology' \| 'runtime'` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AgentTeamStepList` | `({     currentStepId,     idPrefix,     steps, }: {     currentStepId: AgentTeamStepId \| null;     idPrefix: string;     steps: ReturnType<typeof useAgentTeamReadiness>['steps']; })` | — | — |
+| `AgentTeamStepList` | <pre><code>&#40;&#123;&#10;    currentStepId&#44;&#10;    idPrefix&#44;&#10;    steps&#44;&#10;&#125;&#58; &#123;&#10;    currentStepId&#58; AgentTeamStepId &#124; null&#59;&#10;    idPrefix&#58; string&#59;&#10;    steps&#58; ReturnType&#60;typeof useAgentTeamReadiness&#62;&#91;&#39;steps&#39;&#93;&#59;&#10;&#125;&#41;</code></pre> | — | — |

@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ReleaseForm](../modules/ReleaseForm.md)
+**Target:**
+
+```typescript
+{
+    task: Task;
+    level: number;
+}
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `FlattenedTask` in `frontend/src/components/releases/Releas
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

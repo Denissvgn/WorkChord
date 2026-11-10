@@ -1,7 +1,7 @@
 # TaskItemContentProps
 
 **Location:** `frontend/src/components/tasks/TaskList.tsx:792`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `TaskItemProps`
 **Module:** [TaskList](../modules/TaskList.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `TaskItemContentProps` in `frontend/src/components/tasks/Ta
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

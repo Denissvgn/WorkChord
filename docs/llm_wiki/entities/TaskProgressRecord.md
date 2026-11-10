@@ -27,7 +27,7 @@ Immutable worker-reported criterion states, evidence and artifact links, bound t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

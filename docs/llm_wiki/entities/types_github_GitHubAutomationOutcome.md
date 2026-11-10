@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_github](../modules/types_github.md)
+**Target:**
+
+```typescript
+'applied' | 'skipped' | 'failed'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `GitHubAutomationOutcome` in `frontend/src/types/github.ts`
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -41,7 +41,7 @@ Replay-safe setup command receipt with a resumable action plan.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

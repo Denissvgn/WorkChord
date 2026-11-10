@@ -8,11 +8,12 @@ _Auto-generated from `frontend/src/components/layout/RouteErrorBoundary.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/Button` | `Button` |
-| `lucide-react` | `AlertTriangle`, `Home`, `RefreshCw` |
-| `react` | `Component`, `ErrorInfo`, `ReactNode` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Home`, `RefreshCw` | — | compiler-dependent |
+| `react` | `ErrorInfo`, `ReactNode` | Specifier | compiler-dependent |
+| `react` | `Component` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -52,6 +53,6 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RouteErrorBoundary](../entities/RouteErrorBoundary.md) | Class | 18 | `Component` | — |
-| [RouteErrorBoundaryProps](../entities/RouteErrorBoundaryProps.md) | Class | 5 | — | — |
-| [RouteErrorBoundaryState](../entities/RouteErrorBoundaryState.md) | Class | 14 | — | — |
+| [RouteErrorBoundary](../entities/RouteErrorBoundary.md) | Class | 18 | `Component<RouteErrorBoundaryProps, RouteErrorBoundaryState>` | — |
+| [RouteErrorBoundaryProps](../entities/RouteErrorBoundaryProps.md) | Interface | 5 | — | — |
+| [RouteErrorBoundaryState](../entities/RouteErrorBoundaryState.md) | Interface | 14 | — | — |

@@ -22,7 +22,7 @@ _Auto-generated from `DurationSamples` in `backend/app/schemas/delivery_metrics.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

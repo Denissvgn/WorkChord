@@ -1,7 +1,7 @@
 # ReleaseFormProps
 
 **Location:** `frontend/src/components/releases/ReleaseForm.tsx:22`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ReleaseForm](../modules/ReleaseForm.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `ReleaseFormProps` in `frontend/src/components/releases/Rel
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -31,7 +31,7 @@ reconciled, so a partially loaded target cannot accidentally serve traffic.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

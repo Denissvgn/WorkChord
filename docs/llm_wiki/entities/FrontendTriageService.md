@@ -1,7 +1,7 @@
 # FrontendTriageService
 
 **Location:** `frontend/src/services/triageService.ts:47`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [triageService](../modules/triageService.md)
 
@@ -21,16 +21,16 @@ _Auto-generated from `FrontendTriageService` in `frontend/src/services/triageSer
 | `decline` | `(triageItemId: number, data?: TriageActionRequest) => Promise<TriageItem>` | Yes | — | — |
 | `snooze` | `(triageItemId: number, data: TriageSnoozeRequest) => Promise<TriageItem>` | Yes | — | — |
 | `markDuplicate` | `(triageItemId: number, data: TriageDuplicateRequest) => Promise<TriageItem>` | Yes | — | — |
-| `getDuplicateSuggestions` | `(         triageItemId: number,         params?: { limitPerType?: number; minScore?: number }     ) => Promise<TriageDuplicateSuggestionsResponse>` | Yes | — | — |
-| `getAssigneeRecommendations` | `(         triageItemId: number,         iterationId?: number \| null     ) => Promise<AssigneeRecommendation[]>` | Yes | — | — |
-| `getClassificationSuggestions` | `(         triageItemId: number,         limit?: number     ) => Promise<TriageClassificationSuggestion[]>` | Yes | — | — |
+| `getDuplicateSuggestions` | <pre><code>&#40;&#10;        triageItemId&#58; number&#44;&#10;        params&#63;&#58; &#123; limitPerType&#63;&#58; number&#59; minScore&#63;&#58; number &#125;&#10;    &#41; &#61;&#62; Promise&#60;TriageDuplicateSuggestionsResponse&#62;</code></pre> | Yes | — | — |
+| `getAssigneeRecommendations` | <pre><code>&#40;&#10;        triageItemId&#58; number&#44;&#10;        iterationId&#63;&#58; number &#124; null&#10;    &#41; &#61;&#62; Promise&#60;AssigneeRecommendation&#91;&#93;&#62;</code></pre> | Yes | — | — |
+| `getClassificationSuggestions` | <pre><code>&#40;&#10;        triageItemId&#58; number&#44;&#10;        limit&#63;&#58; number&#10;    &#41; &#61;&#62; Promise&#60;TriageClassificationSuggestion&#91;&#93;&#62;</code></pre> | Yes | — | — |
 | `classify` | `(triageItemId: number) => Promise<TriageClassificationSuggestion>` | Yes | — | — |
 | `draftTask` | `(triageItemId: number, data?: TriageTaskDraftRequest) => Promise<TriageTaskDraftResponse>` | Yes | — | — |
 | `convertToTask` | `(triageItemId: number, data: TriageConvertToTaskRequest) => Promise<TriageConvertToTaskResponse>` | Yes | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

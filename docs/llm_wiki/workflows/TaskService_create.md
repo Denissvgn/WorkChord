@@ -17,10 +17,11 @@
 7. `task_domain_service.require_owner`
 8. `snapshot_service.SnapshotService`
 9. `models_task.Task`
-10. `task_brief_service.TaskBriefService`
-11. `models_task.TaskDependency`
-12. `outbound_webhook_service.emit_outbound_webhook_event`
-13. `commands.commit_or_flush`
+10. `task_brief_service.TaskBriefService.apply_brief`
+11. `task_brief_service.TaskBriefService`
+12. `models_task.TaskDependency`
+13. `outbound_webhook_service.emit_outbound_webhook_event`
+14. `commands.commit_or_flush`
 
 ## Touches
 

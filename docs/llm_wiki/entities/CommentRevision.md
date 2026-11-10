@@ -1,7 +1,7 @@
 # CommentRevision
 
 **Location:** `frontend/src/services/discussionService.ts:8`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `CommentRevision` in `frontend/src/services/discussionServi
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

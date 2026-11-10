@@ -18,7 +18,7 @@ Response from description improvement.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

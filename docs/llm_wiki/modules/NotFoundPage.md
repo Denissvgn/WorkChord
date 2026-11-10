@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/pages/NotFoundPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/ui` | `PageHeader`, `SectionCard` |
-| `lucide-react` | `Home` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useLocation`, `useNavigate` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `SectionCard` | — | compiler-dependent |
+| `lucide-react` | `Home` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useLocation`, `useNavigate` | — | compiler-dependent |
 
 ## Module Signals
 

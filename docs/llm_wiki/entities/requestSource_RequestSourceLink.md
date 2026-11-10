@@ -1,7 +1,7 @@
 # RequestSourceLink
 
 **Location:** `frontend/src/types/requestSource.ts:26`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [requestSource](../modules/requestSource.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `RequestSourceLink` in `frontend/src/types/requestSource.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,12 +8,13 @@ _Auto-generated from `frontend/src/components/layout/SidebarIterationCard.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/planningMasters/usePlanningNavigationSummary` | `usePlanningNavigationSummary` |
-| `react` | `KeyboardEvent`, `useEffect`, `useId`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/planningMasters/usePlanningNavigationSummary` | `usePlanningNavigationSummary` | — | compiler-dependent |
+| `react` | `KeyboardEvent` | Specifier | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 

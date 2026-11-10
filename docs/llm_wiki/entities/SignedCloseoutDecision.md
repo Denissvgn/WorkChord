@@ -18,7 +18,7 @@ _Auto-generated from `SignedCloseoutDecision` in `backend/app/autonomy/handoff.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

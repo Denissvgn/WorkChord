@@ -22,7 +22,7 @@ _Auto-generated from `ReadyTopology` in `backend/tests/test_agent_team_setup_qua
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

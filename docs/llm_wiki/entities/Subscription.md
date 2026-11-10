@@ -1,7 +1,7 @@
 # Subscription
 
 **Location:** `frontend/src/services/discussionService.ts:9`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `Subscription` in `frontend/src/services/discussionService.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

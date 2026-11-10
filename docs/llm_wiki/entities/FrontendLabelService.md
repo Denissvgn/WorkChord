@@ -1,7 +1,7 @@
 # FrontendLabelService
 
 **Location:** `frontend/src/services/labelService.ts:41`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [labelService](../modules/labelService.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `FrontendLabelService` in `frontend/src/services/labelServi
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

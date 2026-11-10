@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/feedback/QueryState.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `lucide-react` | `AlertTriangle`, `Inbox`, `LoaderCircle`, `RefreshCw` |
-| `react` | `Ref` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Inbox`, `LoaderCircle`, `RefreshCw` | — | compiler-dependent |
+| `react` | `Ref` | Declaration | erased |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -55,17 +55,17 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SharedStateProps](../entities/SharedStateProps.md) | Class | 7 | — | — |
-| [QueryLoadingStateProps](../entities/QueryLoadingStateProps.md) | Class | 11 | `SharedStateProps` | — |
-| [QueryErrorStateProps](../entities/QueryErrorStateProps.md) | Class | 15 | `SharedStateProps` | — |
-| [QueryEmptyStateProps](../entities/QueryEmptyStateProps.md) | Class | 27 | `SharedStateProps` | — |
-| [QueryStaleStateProps](../entities/QueryStaleStateProps.md) | Class | 32 | `SharedStateProps` | — |
+| [SharedStateProps](../entities/SharedStateProps.md) | Interface | 7 | — | — |
+| [QueryLoadingStateProps](../entities/QueryLoadingStateProps.md) | Interface | 11 | `SharedStateProps` | — |
+| [QueryErrorStateProps](../entities/QueryErrorStateProps.md) | Interface | 15 | `SharedStateProps` | — |
+| [QueryEmptyStateProps](../entities/QueryEmptyStateProps.md) | Interface | 27 | `SharedStateProps` | — |
+| [QueryStaleStateProps](../entities/QueryStaleStateProps.md) | Interface | 32 | `SharedStateProps` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `QueryLoadingState` | `({ message, className = '' }: QueryLoadingStateProps)` | — | — |
-| `QueryErrorState` | `({     error,     fallback,     headingLevel,     isRetrying = false,     message,     onRetry,     retryButtonRef,     retryLabel,     title,     className = '', }: QueryErrorStateProps)` | — | — |
+| `QueryErrorState` | <pre><code>&#40;&#123;&#10;    error&#44;&#10;    fallback&#44;&#10;    headingLevel&#44;&#10;    isRetrying &#61; false&#44;&#10;    message&#44;&#10;    onRetry&#44;&#10;    retryButtonRef&#44;&#10;    retryLabel&#44;&#10;    title&#44;&#10;    className &#61; &#39;&#39;&#44;&#10;&#125;&#58; QueryErrorStateProps&#41;</code></pre> | — | — |
 | `QueryEmptyState` | `({ title, description, className = '' }: QueryEmptyStateProps)` | — | — |
 | `QueryStaleState` | `({ message, onRetry, className = '' }: QueryStaleStateProps)` | — | — |

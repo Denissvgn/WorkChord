@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/masters.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/agent` | `AgentTeamMaster`, `AgentTeamSetupStep` |
-| `./manifest` | `parseAgentTeamMasterEditor` |
-| `./masters` | `AGENT_TEAM_STEP_IDS`, `stateTone`, `stepProgress`, `stepsById` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/agent` | `AgentTeamMaster`, `AgentTeamSetupStep` | Declaration | erased |
+| `./manifest` | `parseAgentTeamMasterEditor` | — | compiler-dependent |
+| `./masters` | `AGENT_TEAM_STEP_IDS`, `stateTone`, `stepProgress`, `stepsById` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -25,6 +25,8 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/masters.test.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/agentTeamSetup/manifest.ts"]

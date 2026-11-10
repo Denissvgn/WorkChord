@@ -29,7 +29,7 @@ _Auto-generated from `Attempt` in `scripts/load/run.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

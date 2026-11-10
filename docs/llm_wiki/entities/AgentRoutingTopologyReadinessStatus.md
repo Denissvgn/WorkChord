@@ -19,7 +19,7 @@ Closed readiness states supplied by the setup authority.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

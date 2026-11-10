@@ -19,6 +19,8 @@ An agent principal retains the actor’s explicit profile binding. Principal acc
 | `app.config` | `get_settings` |
 | `app.maintenance` | `MaintenanceModeError` |
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `WorkspaceAuthorityState`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
+| `app.models.plan_share` | `PlanShare` |
+| `app.models.saved_view` | `SavedView` |
 | `app.models.user_session` | `UserSession` |
 | `app.utils.time` | `utc_now`, `as_utc` |
 | `base64` | `base64` |
@@ -29,7 +31,7 @@ An agent principal retains the actor’s explicit profile binding. Principal acc
 | `json` | `json` |
 | `jwt` | `jwt` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `select`, `update` |
+| `sqlalchemy` | `select`, `update`, `or_`, `and_` |
 | `sqlalchemy.exc` | `IntegrityError` |
 | `urllib.parse` | `urlencode`, `urlsplit`, `unquote` |
 
@@ -51,8 +53,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
-| Outbound | `backend` (7) |
+| Inbound | `backend` (17) |
+| Outbound | `backend` (9) |
 
 ### External packages
 
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

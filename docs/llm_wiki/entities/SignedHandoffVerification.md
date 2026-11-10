@@ -18,7 +18,7 @@ _Auto-generated from `SignedHandoffVerification` in `backend/app/autonomy/handof
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

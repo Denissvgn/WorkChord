@@ -18,7 +18,7 @@ Lazy singleton used to serialize shared planning before iteration and task reser
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

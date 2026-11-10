@@ -20,7 +20,7 @@ Score returned for a similarity document.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

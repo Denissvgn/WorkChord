@@ -28,7 +28,7 @@ _Auto-generated from `AgentTeamApplyResponse` in `backend/app/schemas/agent_team
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -39,7 +39,7 @@ One delivery attempt log for one target and event.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

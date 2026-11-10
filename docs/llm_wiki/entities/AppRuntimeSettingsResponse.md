@@ -19,7 +19,7 @@ Resolved app-wide language behavior.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

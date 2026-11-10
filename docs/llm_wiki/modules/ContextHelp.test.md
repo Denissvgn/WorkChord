@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/components/layout/ContextHelp.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` |
-| `./ContextHelp` | `ContextHelp` |
-| `@testing-library/react` | `screen`, `within` |
-| `react-router-dom` | `useLocation` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` | — | compiler-dependent |
+| `./ContextHelp` | `ContextHelp` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -38,6 +38,7 @@ flowchart LR
     n0 --> n2
     n0 --> n3
     n0 --> n4
+    n3 --> n2
     click n0 "../modules/ContextHelp.test.md"
     click n1 "../modules/ContextHelp.md"
     click n2 "../modules/i18n.md"

@@ -1,7 +1,7 @@
 # IterationFormProps
 
 **Location:** `frontend/src/components/iteration/IterationForm.tsx:24`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
 
@@ -14,7 +14,7 @@ _Auto-generated from `IterationFormProps` in `frontend/src/components/iteration/
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `initialData` | `Iteration` | No | — | — |
-| `lockedProject` | `{         id: number;         name: string;     }` | No | — | — |
+| `lockedProject` | <pre><code>&#123;&#10;        id&#58; number&#59;&#10;        name&#58; string&#59;&#10;    &#125;</code></pre> | No | — | — |
 | `hideProjectScope` | `boolean` | No | — | — |
 | `onSuccess` | `(iteration?: Iteration, iterations?: Iteration[]) => void` | Yes | — | — |
 | `onCancel` | `() => void` | Yes | — | — |
@@ -22,7 +22,7 @@ _Auto-generated from `IterationFormProps` in `frontend/src/components/iteration/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

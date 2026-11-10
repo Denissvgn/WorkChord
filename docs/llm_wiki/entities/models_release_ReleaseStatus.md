@@ -20,7 +20,7 @@ Release lifecycle independent of task status.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

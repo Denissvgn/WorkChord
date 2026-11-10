@@ -8,29 +8,31 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Checkbox` | `Checkbox` |
-| `../components/settings/AdminAccessGate` | `AdminAccessGate` |
-| `../components/settings/AdminAccessPanel` | `AdminAccessPanel` |
-| `../components/settings/AgentAccessPanel` | `AgentAccessPanel` |
-| `../components/settings/AgentModelAdministration` | `AgentModelAdministration` |
-| `../components/settings/EmailSettingsPanel` | `EmailSettingsPanel` |
-| `../components/settings/GitHubSettingsPanel` | `GitHubSettingsPanel` |
-| `../components/settings/InterfaceLanguageSettings` | `InterfaceLanguageSettings` |
-| `../components/settings/OutboundWebhooksPanel` | `OutboundWebhooksPanel` |
-| `../components/settings/RuntimeConfigSettings` | `RuntimeConfigSettings` |
-| `../components/settings/SchedulingRulesSettings` | `SchedulingRulesSettings` |
-| `../components/settings/SystemHealthPanel` | `SystemHealthPanel` |
-| `../components/settings/TemplateLabelSettings` | `TemplateLabelSettings` |
-| `../components/ui` | `PageHeader`, `PageLayout` |
-| `../hooks/useAdminAccess` | `useAdminAccess` |
-| `../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` |
-| `../store/themeStore` | `useThemeStore` |
-| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowRight`, `Bell`, `Bot`, `CalendarClock`, `Check`, `ChevronDown`, `Github`, `KeyRound`, `Keyboard`, `Palette`, `Search`, `ServerCog`, `Settings2`, `Tags`, `Webhook`, `LucideIcon` |
-| `react` | `useEffect`, `useMemo`, `useState`, `KeyboardEvent` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
+| `../components/settings/AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
+| `../components/settings/AgentAccessPanel` | `AgentAccessPanel` | — | compiler-dependent |
+| `../components/settings/AgentModelAdministration` | `AgentModelAdministration` | — | compiler-dependent |
+| `../components/settings/EmailSettingsPanel` | `EmailSettingsPanel` | — | compiler-dependent |
+| `../components/settings/GitHubSettingsPanel` | `GitHubSettingsPanel` | — | compiler-dependent |
+| `../components/settings/InterfaceLanguageSettings` | `InterfaceLanguageSettings` | — | compiler-dependent |
+| `../components/settings/OutboundWebhooksPanel` | `OutboundWebhooksPanel` | — | compiler-dependent |
+| `../components/settings/RuntimeConfigSettings` | `RuntimeConfigSettings` | — | compiler-dependent |
+| `../components/settings/SchedulingRulesSettings` | `SchedulingRulesSettings` | — | compiler-dependent |
+| `../components/settings/SystemHealthPanel` | `SystemHealthPanel` | — | compiler-dependent |
+| `../components/settings/TemplateLabelSettings` | `TemplateLabelSettings` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
+| `../store/themeStore` | `useThemeStore` | — | compiler-dependent |
+| `lucide-react` | `LucideIcon` | Declaration | erased |
+| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowRight`, `Bell`, `Bot`, `CalendarClock`, `Check`, `ChevronDown`, `Github`, `KeyRound`, `Keyboard`, `Palette`, `Search`, `ServerCog`, `Settings2`, `Tags`, `Webhook` | — | compiler-dependent |
+| `react` | `KeyboardEvent` | Declaration | erased |
+| `react` | `useEffect`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -73,9 +75,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SettingsDestination](../entities/SettingsDestination.md) | Class | 47 | — | — |
-| [SettingsGroup](../entities/SettingsGroup.md) | Class | 59 | — | — |
-| [SettingsTab](../entities/SettingsTab.md) | Type alias | 43 | — | — |
-| [SettingsPageTab](../entities/SettingsPageTab.md) | Type alias | 44 | — | — |
-| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 45 | — | — |
-| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 54 | — | — |
+| [SettingsDestination](../entities/SettingsDestination.md) | Interface | 47 | — | — |
+| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 59 | — | — |
+| [SettingsTab](../entities/SettingsTab.md) | Type alias | 43 | `'appearance' \| 'scheduling' \| 'templates_labels' \| 'models_agents' \| 'github' \| 'webhooks' \| 'notifications' \| 'admin_access' \| 'runtime' \| 'about'` | — |
+| [SettingsPageTab](../entities/SettingsPageTab.md) | Type alias | 44 | `'overview' \| SettingsTab` | — |
+| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 45 | `'personal' \| 'planning' \| 'agents' \| 'integrations' \| 'system'` | — |
+| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 54 | <pre><code>Pick&#60;&#10;    SettingsDestination&#44;&#10;    &#39;labelKey&#39; &#124; &#39;descriptionKey&#39; &#124; &#39;icon&#39;&#10;&#62;</code></pre> | — |

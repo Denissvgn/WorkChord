@@ -15,7 +15,7 @@ Raised when another transaction reserves the task context version first.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

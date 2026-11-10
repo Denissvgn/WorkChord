@@ -15,7 +15,7 @@ Raised when a detached remote signature fails closed.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,12 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
+**Target:**
+
+```typescript
+| { mode: 'count'; count: number }
+    | { mode: 'until_date'; until_date: string }
+```
 
 ## Description
 
@@ -11,11 +17,11 @@ _Auto-generated from `IterationSeriesStop` in `frontend/src/types/iteration.ts`.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -23,7 +23,7 @@ Per-task result returned by a selected-task bulk operation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

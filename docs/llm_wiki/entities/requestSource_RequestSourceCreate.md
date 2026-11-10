@@ -1,7 +1,7 @@
 # RequestSourceCreate
 
 **Location:** `frontend/src/types/requestSource.ts:16`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [requestSource](../modules/requestSource.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `RequestSourceCreate` in `frontend/src/types/requestSource.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

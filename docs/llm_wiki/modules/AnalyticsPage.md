@@ -8,22 +8,22 @@ _Auto-generated from `frontend/src/pages/AnalyticsPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/analytics/DeliveryAnalytics` | `DeliveryAnalytics` |
-| `../components/analytics/TaskStatusFlow` | `TaskStatusFlow` |
-| `../components/dashboard/SavedViewDashboardCards` | `SavedViewDashboardCards` |
-| `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/notifications/NotificationsPanel` | `NotificationsPanel` |
-| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
-| `../components/ui` | `PageHeader`, `PageLayout` |
-| `../services/iterationService` | `iterationService` |
-| `../services/taskService` | `taskService` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../types/task` | `TaskStatusLog` |
-| `@tanstack/react-query` | `useQuery` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useNavigate` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/analytics/DeliveryAnalytics` | `DeliveryAnalytics` | — | compiler-dependent |
+| `../components/analytics/TaskStatusFlow` | `TaskStatusFlow` | — | compiler-dependent |
+| `../components/dashboard/SavedViewDashboardCards` | `SavedViewDashboardCards` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../components/notifications/NotificationsPanel` | `NotificationsPanel` | — | compiler-dependent |
+| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../services/taskService` | `taskService` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../types/task` | `TaskStatusLog` | Declaration | erased |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useNavigate` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +34,8 @@ _Auto-generated from `frontend/src/pages/AnalyticsPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/analytics/DeliveryAnalytics.tsx"]
@@ -105,4 +107,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [HistoryGroup](../entities/HistoryGroup.md) | Class | 16 | — | — |
+| [HistoryGroup](../entities/HistoryGroup.md) | Interface | 16 | — | — |

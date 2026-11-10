@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/store/iterationStore.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `zustand` | `create` |
-| `zustand/middleware` | `persist` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `zustand` | `create` | — | compiler-dependent |
+| `zustand/middleware` | `persist` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -52,4 +52,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationStore](../entities/IterationStore.md) | Class | 4 | — | — |
+| [IterationStore](../entities/IterationStore.md) | Interface | 4 | — | — |

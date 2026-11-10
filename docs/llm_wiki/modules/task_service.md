@@ -16,28 +16,38 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `require_project`, `internal_authority` |
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command`, `lock_planning` |
-| `app.models.agent` | `TaskEvent` |
-| `app.models.iteration` | `Iteration` |
+| `app.authority` | `require_project`, `internal_authority`, `internal_authority`, `AuthorityError`, `internal_authority` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command`, `lock_planning`, `lock_backlog_project`, `lock_backlog_project`, `current_command` |
+| `app.models.agent` | `TaskEvent`, `AgentTaskAssignment` |
+| `app.models.delivery_dependency` | `DeliveryDependency` |
+| `app.models.iteration` | `Iteration`, `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
 | `app.models.request_source` | `RequestSourceLink` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
-| `app.models.team_member` | `TeamMember` |
+| `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.models.triage` | `TriageItem` |
+| `app.mutation_versions` | `require_mutation_revision` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_ITERATION_TREE_TASKS` |
+| `app.runtime_telemetry` | `metrics` |
 | `app.schemas.task` | `TaskAssignee`, `TaskClaimedBy`, `TaskCreate`, `TaskImportDestination`, `TaskMilestone`, `TaskProject`, `TaskResponse`, `TaskUpdate` |
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
+| `app.services.backlog_snapshot_service` | `BacklogSnapshotService`, `BacklogSnapshotService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_brief_service` | `clear_execution_evidence`, `TaskBriefService`, `TaskBriefService`, `render_brief`, `clear_acceptance`, `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
+| `app.services.task_domain_service` | `require_owner`, `normalize_effort`, `require_owner`, `nominal_day_hours`, `normalize_effort`, `require_owner`, `require_owner`, `nominal_day_hours` |
 | `app.services.task_hierarchy_service` | `TaskHierarchyService`, `TaskTreeIntegrityError` |
+| `app.services.task_import_service` | `TaskImportService` |
+| `app.services.task_status_service` | `TaskStatusService` |
+| `app.services.work_metrics` | `task_signals`, `task_signals` |
 | `datetime` | `date` |
-| `json` | `json` |
-| `sqlalchemy` | `and_`, `or_`, `select`, `update` |
+| `json` | `json`, `json`, `json` |
+| `sqlalchemy` | `and_`, `or_`, `select`, `update`, `delete`, `update` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
-| `sqlalchemy.orm` | `attributes`, `selectinload` |
+| `sqlalchemy.orm` | `attributes`, `selectinload`, `attributes`, `attributes` |
 | `typing` | `Any`, `Optional`, `Sequence` |
 
 ## Local dependency map
@@ -60,9 +70,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (49) |
+| Inbound | `backend` (59) |
 | Inbound | `scripts` (2) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (27) |
 
 ### External packages
 
@@ -70,7 +80,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 67 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 80 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

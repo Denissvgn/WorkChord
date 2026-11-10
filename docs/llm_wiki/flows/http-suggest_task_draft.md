@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -14,39 +16,53 @@ sequenceDiagram
     participant p2 as (…).strip
     participant p3 as HTTPException
     participant p4 as _task_ai_context_pack
-    participant p5 as data.model_dump
-    participant p6 as context.update
-    participant p7 as db.get
-    participant p8 as db.execute
-    participant p9 as select(…).where
-    participant p10 as select
-    participant p11 as Task.id.in_
-    participant p12 as result.scalars().all
-    participant p13 as result.scalars
-    participant p14 as db.rollback
-    participant p15 as llm_service.suggest_task
+    participant p5 as db.rollback
+    participant p6 as llm_service.suggest_task
+    participant p7 as data.model_dump
+    participant p8 as context.update
+    participant p9 as db.get
+    participant p10 as db.execute
+    participant p11 as select(…).where
+    participant p12 as select
+    participant p13 as Task.id.in_
+    participant p14 as result.scalars().all
+    participant p15 as result.scalars
     p0-->>p1: data.title.strip
     p0-->>p2: (…).strip
-    p0-->>p3: HTTPException
+    p0-->>p3: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task title or description is required')
     p0->>p4: _task_ai_context_pack
-    p4-->>p5: data.model_dump
-    p4-->>p6: context.update
-    p4-->>p7: db.get
-    p4-->>p7: db.get
-    p4-->>p7: db.get
-    p4-->>p8: db.execute
-    p4-->>p9: select(…).where
-    p4-->>p10: select
-    p4-->>p11: Task.id.in_
-    p4-->>p12: result.scalars().all
-    p4-->>p13: result.scalars
-    p0-->>p14: db.rollback
-    p0-->>p15: llm_service.suggest_task
+    p0-->>p5: db.rollback
+    p0-->>p6: llm_service.suggest_task(context_pack)
+    p4-->>p7: data.model_dump
+    p4-->>p8: context.update({...})
+    p4-->>p9: db.get(Project, project_id)
+    p4-->>p9: db.get(ProjectMilestone, milestone_id)
+    p4-->>p9: db.get(WorkTemplate, data.template_id)
+    p4-->>p10: db.execute(...)
+    p4-->>p11: select(…).where(Task.id.in_(...))
+    p4-->>p12: select(Task)
+    p4-->>p13: Task.id.in_(dependency_ids)
+    p4-->>p14: result.scalars().all
+    p4-->>p15: result.scalars
 ```
+
+> Call sequence diagram shows 17 of 17 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 2 of 2 (0 omitted); unresolved 14 of 14 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 2; effect analysis evaluated: 2, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 17, emitted: 17, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. suggest_task_draft"]

@@ -1,7 +1,7 @@
 # TaskImproveDescriptionResponse
 
 **Location:** `frontend/src/types/task.ts:223`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `TaskImproveDescriptionResponse` in `frontend/src/types/tas
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

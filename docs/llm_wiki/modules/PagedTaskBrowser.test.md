@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/tasks/PagedTaskBrowser.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./PagedTaskBrowser` | `PagedTaskBrowser` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PagedTaskBrowser` | `PagedTaskBrowser` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

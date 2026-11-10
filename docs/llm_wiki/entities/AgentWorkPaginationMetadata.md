@@ -18,7 +18,7 @@ Pagination metadata for ready and blocked assigned-work collections.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

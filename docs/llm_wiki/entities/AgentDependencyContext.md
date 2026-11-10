@@ -20,7 +20,7 @@ Dependency state returned in complete worker context.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

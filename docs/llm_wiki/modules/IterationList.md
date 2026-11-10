@@ -8,24 +8,25 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/exportService` | `exportService` |
-| `../../services/iterationService` | `iterationService` |
-| `../../services/planningInputService` | `planningInputService`, `ObservedRevisions` |
-| `../../store/iterationStore` | `useIterationStore` |
-| `../../types/iteration` | `Iteration` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/formatDate` | `formatDate` |
-| `../common/Button` | `Button` |
-| `../common/ConfirmDialog` | `ConfirmDialog` |
-| `../feedback/toast` | `useToast` |
-| `./IterationImportDialog` | `IterationImportDialog` |
-| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
-| `lucide-react` | `Calendar`, `Trash2`, `ArrowRight`, `Download`, `Upload`, `FolderOpen` |
-| `react` | `useState`, `useRef` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/exportService` | `exportService` | — | compiler-dependent |
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./IterationImportDialog` | `IterationImportDialog` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Calendar`, `Trash2`, `ArrowRight`, `Download`, `Upload`, `FolderOpen` | — | compiler-dependent |
+| `react` | `useState`, `useRef` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -36,6 +37,8 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -66,7 +69,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationListProps](../entities/IterationListProps.md) | Class | 18 | — | — |
+| [IterationListProps](../entities/IterationListProps.md) | Interface | 18 | — | — |
 
 ## Functions
 

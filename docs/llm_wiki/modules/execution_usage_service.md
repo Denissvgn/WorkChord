@@ -24,6 +24,7 @@ Bounded usage corrections, immutable pricing and scoped advisory totals.
 | `app.schemas.execution_usage` | `ExecutionUsageResponse`, `ExecutionUsageSummary`, `ExecutionUsageWrite` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope` |
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
+| `app.services.identity_service` | `IdentityService` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `collections` | `defaultdict` |
 | `datetime` | `timedelta` |
@@ -51,7 +52,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (4) |
-| Outbound | `backend` (13) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -59,7 +60,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

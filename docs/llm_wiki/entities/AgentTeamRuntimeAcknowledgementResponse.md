@@ -25,7 +25,7 @@ _Auto-generated from `AgentTeamRuntimeAcknowledgementResponse` in `backend/app/s
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

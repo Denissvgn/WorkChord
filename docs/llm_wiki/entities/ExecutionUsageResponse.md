@@ -26,7 +26,7 @@ _Auto-generated from `ExecutionUsageResponse` in `backend/app/schemas/execution_
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

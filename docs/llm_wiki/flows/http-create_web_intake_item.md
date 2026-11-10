@@ -6,55 +6,90 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as create_web_intake_item
     participant p1 as WebIntakeRequest.model_validate
     participant p2 as get_client_ip
-    participant p3 as ip_address
-    participant p4 as any
-    participant p5 as ip_network
-    participant p6 as get_settings
-    participant p7 as Settings
-    participant p8 as request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
-    participant p9 as forwarded_for.split(…)[…].strip
-    participant p10 as forwarded_for.split
-    participant p11 as real_ip.strip
-    participant p12 as service.create_triage_item
-    participant p13 as request.headers.get (backend/app/routers/intake.py:create_web_intake_item)
-    participant p14 as HTTPException
-    participant p15 as str
-    p0-->>p1: WebIntakeRequest.model_validate
+    participant p3 as service.create_triage_item
+    participant p4 as request.headers.get (backend/app/routers/intake.py:create_web_intake_item)
+    participant p5 as HTTPException
+    participant p6 as str
+    participant p7 as ip_address
+    participant p8 as any
+    participant p9 as ip_network
+    participant p10 as get_settings
+    participant p11 as request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
+    participant p12 as forwarded_for.split(…)[…].strip
+    participant p13 as forwarded_for.split
+    participant p14 as real_ip.strip
+    participant p15 as Settings
+    p0-->>p1: WebIntakeRequest.model_validate(raw_data)
     p0->>p2: get_client_ip
-    p2-->>p3: ip_address
-    p2-->>p4: any
-    p2-->>p5: ip_network
-    p2->>p6: get_settings
-    p6->>p7: Settings
-    p2-->>p8: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
-    p2-->>p9: forwarded_for.split(…)[…].strip
-    p2-->>p10: forwarded_for.split
-    p2-->>p8: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
-    p2-->>p11: real_ip.strip
-    p0-->>p12: service.create_triage_item
-    p0-->>p13: request.headers.get (backend/app/routers/intake.py:create_web_intake_item)
-    p0-->>p14: HTTPException
-    p0-->>p15: str
-    p0-->>p14: HTTPException
-    p0-->>p15: str
-    p0-->>p14: HTTPException
-    p0-->>p15: str
-    p0-->>p14: HTTPException
-    p0-->>p15: str
-    p0-->>p15: str
-    p0-->>p14: HTTPException
-    p0-->>p15: str
+    p0-->>p3: service.create_triage_item(data, authorization_header=authorization, client_ip=client_ip, user_agent=request.headers.get(...))
+    p0-->>p4: request.headers.get (backend/app/routers/intake.py:create_web_intake_item)('User-Agent')
+    p0-->>p5: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p6: str(e)
+    p0-->>p5: HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(...))
+    p0-->>p6: str(e)
+    p0-->>p5: HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(...))
+    p0-->>p6: str(e)
+    p0-->>p5: HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=str(...), headers={...})
+    p0-->>p6: str(e)
+    p0-->>p6: str(e.retry_after_seconds)
+    p0-->>p5: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p6: str(e)
+    p2-->>p7: ip_address(direct_ip)
+    p2-->>p8: any(...)
+    p2-->>p9: ip_network(network, strict=False)
+    p2->>p10: get_settings
+    p2-->>p11: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Forwarded-For')
+    p2-->>p12: forwarded_for.split(…)[…].strip
+    p2-->>p13: forwarded_for.split(',')
+    p2-->>p11: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Real-IP')
+    p2-->>p14: real_ip.strip
+    p10->>p15: Settings
 ```
+
+> Call sequence diagram shows 25 of 25 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 14 of 14 (0 omitted); unresolved 8 of 8 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 4; effect analysis evaluated: 2, partial: 1, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 19, emitted: 18, omitted: 1. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `create_web_intake_item` | `available` | `partial` | `available` | `14` | `13` | `1` |
+| `WebIntakeRequest.model_validate` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `get_client_ip` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `ip_address` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `any` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ip_network` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `forwarded_for.split(…)[…].strip` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `forwarded_for.split` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. create_web_intake_item"]
@@ -121,7 +156,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

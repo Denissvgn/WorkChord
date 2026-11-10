@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/executionUsage.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/analytics/ExecutionUsagePanel.test.tsx"]
@@ -38,4 +40,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ExecutionUsageSummary](../entities/executionUsage_ExecutionUsageSummary.md) | Class | 1 | — | — |
+| [ExecutionUsageSummary](../entities/executionUsage_ExecutionUsageSummary.md) | Interface | 1 | — | — |

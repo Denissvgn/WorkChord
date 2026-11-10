@@ -33,7 +33,7 @@ Schema for team member response.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

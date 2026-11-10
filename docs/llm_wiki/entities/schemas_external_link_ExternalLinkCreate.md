@@ -24,7 +24,7 @@ Schema for creating a generic external link.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

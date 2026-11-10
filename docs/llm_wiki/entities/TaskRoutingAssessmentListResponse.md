@@ -19,11 +19,11 @@ Bounded newest-first assessment history for one task.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `task_id` | `int` | `task_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `current_task_version` | `int` | `current_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
+| `task_id` | `int` | `task_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `current_task_version` | `int` | `current_task_version` | Yes | No | — | ge=1; strict=True | — | — |
 | `assessments` | `list[TaskRoutingAssessmentResponse]` | `assessments` | No | No | factory: `list` | max_length=unknown (MAX_ROUTING_ASSESSMENT_HISTORY) | — | — |
-| `total_count` | `int` | `total_count` | Yes | No | — | strict=True; ge=0 | — | — |
-| `omitted_count` | `int` | `omitted_count` | No | No | `0` | strict=True; ge=0 | — | — |
+| `total_count` | `int` | `total_count` | Yes | No | — | ge=0; strict=True | — | — |
+| `omitted_count` | `int` | `omitted_count` | No | No | `0` | ge=0; strict=True | — | — |
 
 ## Methods
 

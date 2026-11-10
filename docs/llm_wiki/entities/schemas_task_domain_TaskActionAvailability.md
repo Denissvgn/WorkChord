@@ -19,7 +19,7 @@ _Auto-generated from `TaskActionAvailability` in `backend/app/schemas/task_domai
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

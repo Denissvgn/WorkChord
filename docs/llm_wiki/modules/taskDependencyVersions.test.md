@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/services/taskDependencyVersions.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./api` | `api` |
-| `./taskService` | `taskService` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./api` | `api` | — | compiler-dependent |
+| `./taskService` | `taskService` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

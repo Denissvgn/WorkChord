@@ -8,26 +8,32 @@ _Auto-generated from `frontend/src/pages/PlanMasterPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/useConfirmDialog` | `useConfirmDialog` |
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../components/feedback/toast` | `useToast` |
-| `../components/layout/Breadcrumbs` | `Breadcrumbs` |
-| `../components/ui/MasterProgress` | `MasterProgress` |
-| `../features/planningMasters/masters` | `derivePlanningRecovery`, `localizeStatus`, `readiness`, `STEP_DEFS`, `nextStep`, `PlanReadiness`, `StepStatus` |
-| `../features/planningMasters/planningReturn` | `isPlanningStepId`, `withPlanMasterReturn`, `PlanningStepId` |
-| `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `planningIssueTasksHref`, `PlanningTaskIssue` |
-| `../features/planningMasters/usePlanningReadiness` | `usePlanningReadiness`, `PlanningQueryFeedback` |
-| `../services/planShareService` | `planShareService`, `PlanShare` |
-| `../utils/copyText` | `copyText` |
-| `../utils/focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` |
-| `../utils/formatDate` | `formatDate`, `formatDateTime` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `ArrowRight`, `CalendarRange`, `Check`, `Copy`, `ExternalLink`, `GanttChartSquare`, `ListChecks`, `RefreshCw`, `Share2`, `ShieldAlert`, `Users` |
-| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState`, `ReactNode`, `RefObject` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../components/feedback/toast` | `useToast` | — | compiler-dependent |
+| `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
+| `../components/ui/MasterProgress` | `MasterProgress` | — | compiler-dependent |
+| `../features/planningMasters/masters` | `PlanReadiness`, `StepStatus` | Declaration | erased |
+| `../features/planningMasters/masters` | `derivePlanningRecovery`, `localizeStatus`, `readiness`, `STEP_DEFS`, `nextStep` | — | compiler-dependent |
+| `../features/planningMasters/planningReturn` | `PlanningStepId` | Declaration | erased |
+| `../features/planningMasters/planningReturn` | `isPlanningStepId`, `withPlanMasterReturn` | — | compiler-dependent |
+| `../features/planningMasters/planningTaskIssues` | `PlanningTaskIssue` | Declaration | erased |
+| `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `planningIssueTasksHref` | — | compiler-dependent |
+| `../features/planningMasters/usePlanningReadiness` | `PlanningQueryFeedback` | Declaration | erased |
+| `../features/planningMasters/usePlanningReadiness` | `usePlanningReadiness` | — | compiler-dependent |
+| `../services/planShareService` | `PlanShare` | Declaration | erased |
+| `../services/planShareService` | `planShareService` | — | compiler-dependent |
+| `../utils/copyText` | `copyText` | — | compiler-dependent |
+| `../utils/focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `ArrowRight`, `CalendarRange`, `Check`, `Copy`, `ExternalLink`, `GanttChartSquare`, `ListChecks`, `RefreshCw`, `Share2`, `ShieldAlert`, `Users` | — | compiler-dependent |
+| `react` | `ReactNode`, `RefObject` | Declaration | erased |
+| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -39,6 +45,8 @@ _Auto-generated from `frontend/src/pages/PlanMasterPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -69,10 +77,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RecoveryFocusIntent](../entities/RecoveryFocusIntent.md) | Class | 75 | — | — |
-| [ShareFocusIntent](../entities/ShareFocusIntent.md) | Class | 82 | — | — |
-| [StepDataState](../entities/StepDataState.md) | Type alias | 56 | — | — |
-| [EvidenceItem](../entities/EvidenceItem.md) | Type alias | 64 | — | — |
-| [RecoveryFocusTarget](../entities/RecoveryFocusTarget.md) | Type alias | 72 | — | — |
-| [ShareFocusTarget](../entities/ShareFocusTarget.md) | Type alias | 73 | — | — |
-| [StepPresentationState](../entities/StepPresentationState.md) | Type alias | 104 | — | — |
+| [RecoveryFocusIntent](../entities/RecoveryFocusIntent.md) | Interface | 75 | — | — |
+| [ShareFocusIntent](../entities/ShareFocusIntent.md) | Interface | 82 | — | — |
+| [StepDataState](../entities/StepDataState.md) | Type alias | 56 | <pre><code>&#123;&#10;    loading&#58; boolean&#59;&#10;    fetching&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    retry&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62; &#124; unknown&#59;&#10;    label&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [EvidenceItem](../entities/EvidenceItem.md) | Type alias | 64 | <pre><code>&#123;&#10;    label&#58; string&#59;&#10;    value&#58; string&#59;&#10;    exception&#63;&#58; boolean&#59;&#10;    href&#63;&#58; string&#59;&#10;    actionLabel&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [RecoveryFocusTarget](../entities/RecoveryFocusTarget.md) | Type alias | 72 | `'iterations' \| 'stale' \| 'step'` | — |
+| [ShareFocusTarget](../entities/ShareFocusTarget.md) | Type alias | 73 | `'ready' \| 'retry' \| 'shared'` | — |
+| [StepPresentationState](../entities/StepPresentationState.md) | Type alias | 104 | `StepStatus['state'] \| 'loading' \| 'unavailable'` | — |

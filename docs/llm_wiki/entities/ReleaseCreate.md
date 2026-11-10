@@ -31,7 +31,7 @@ Schema for creating a release.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

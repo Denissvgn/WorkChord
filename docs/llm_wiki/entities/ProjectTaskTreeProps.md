@@ -1,7 +1,7 @@
 # ProjectTaskTreeProps
 
 **Location:** `frontend/src/components/projects/ProjectTaskTree.tsx:19`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ProjectTaskTree](../modules/ProjectTaskTree.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `ProjectTaskTreeProps` in `frontend/src/components/projects
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

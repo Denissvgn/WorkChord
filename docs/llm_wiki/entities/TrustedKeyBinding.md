@@ -21,7 +21,7 @@ _Auto-generated from `TrustedKeyBinding` in `backend/app/autonomy/contracts/char
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

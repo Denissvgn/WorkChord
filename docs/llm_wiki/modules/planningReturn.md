@@ -16,6 +16,8 @@ _Auto-generated from `frontend/src/features/planningMasters/planningReturn.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/planning/PlanReturnBar.tsx"]
@@ -50,7 +52,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PlanningStepId](../entities/PlanningStepId.md) | Type alias | 12 | — | — |
+| [PlanningStepId](../entities/PlanningStepId.md) | Type alias | 12 | `typeof PLANNING_STEP_IDS[number]` | — |
 
 ## Functions
 

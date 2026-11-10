@@ -10,8 +10,11 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `schemas_triage.TriageConvertToTaskRequest`
 2. `triage_service.TriageService`
-3. `schemas_triage.TriageConvertToTaskResponse`
-4. `task_service.TaskService`
+3. `triage_service.TriageService.get_by_id`
+4. `triage_service.TriageService.convert_to_task`
+5. `schemas_triage.TriageConvertToTaskResponse`
+6. `task_service.TaskService.task_to_response`
+7. `task_service.TaskService`
 
 ## Touches
 

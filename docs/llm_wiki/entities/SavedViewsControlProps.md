@@ -1,7 +1,7 @@
 # SavedViewsControlProps
 
 **Location:** `frontend/src/components/tasks/SavedViewsControl.tsx:25`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SavedViewsControl](../modules/SavedViewsControl.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `SavedViewsControlProps` in `frontend/src/components/tasks/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

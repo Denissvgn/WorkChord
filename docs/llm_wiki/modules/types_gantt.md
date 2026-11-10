@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/types/gantt.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./iteration` | `Iteration` |
-| `./task` | `TaskUpdate` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./iteration` | `Iteration` | Declaration | erased |
+| `./task` | `TaskUpdate` | Declaration | erased |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/types/gantt.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/gantt/GanttChart.test.tsx"]
@@ -100,14 +102,14 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttTask](../entities/types_gantt_GanttTask.md) | Class | 6 | — | — |
-| [GanttResponse](../entities/types_gantt_GanttResponse.md) | Class | 56 | — | — |
-| [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Class | 66 | — | — |
-| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Class | 76 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
-| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Class | 84 | — | — |
-| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Class | 92 | — | — |
-| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Class | 100 | — | — |
-| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Class | 104 | — | — |
-| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Class | 111 | — | — |
-| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Class | 116 | — | — |
-| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 98 | — | — |
+| [GanttTask](../entities/types_gantt_GanttTask.md) | Interface | 6 | — | — |
+| [GanttResponse](../entities/types_gantt_GanttResponse.md) | Interface | 56 | — | — |
+| [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Interface | 66 | — | — |
+| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Interface | 76 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
+| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Interface | 84 | — | — |
+| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Interface | 92 | — | — |
+| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Interface | 100 | — | — |
+| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Interface | 104 | — | — |
+| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Interface | 111 | — | — |
+| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Interface | 116 | — | — |
+| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 98 | `'brief' \| 'full'` | — |

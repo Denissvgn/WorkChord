@@ -23,7 +23,7 @@ _Auto-generated from `ReconciliationClass` in `backend/app/autonomy/contracts/to
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

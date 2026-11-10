@@ -23,7 +23,7 @@ _Auto-generated from `AgentTeamMemberLifecycle` in `backend/app/schemas/agent_te
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

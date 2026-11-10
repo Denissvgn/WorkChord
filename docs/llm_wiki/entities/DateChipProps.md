@@ -1,7 +1,7 @@
 # DateChipProps
 
 **Location:** `frontend/src/pages/CalendarPage.tsx:1190`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [CalendarPage](../modules/CalendarPage.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `DateChipProps` in `frontend/src/pages/CalendarPage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

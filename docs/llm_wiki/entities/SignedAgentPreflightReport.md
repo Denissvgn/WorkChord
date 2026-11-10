@@ -18,7 +18,7 @@ _Auto-generated from `SignedAgentPreflightReport` in `backend/app/autonomy/prefl
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

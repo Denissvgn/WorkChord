@@ -8,23 +8,25 @@ _Auto-generated from `frontend/src/components/team/VacationManager.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/planningInputService` | `planningInputService`, `ObservedRevisions` |
-| `../../services/teamService` | `teamService` |
-| `../../types/team` | `Vacation`, `TeamMember` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/formatDate` | `formatDate` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `../common/Modal` | `Modal` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` |
-| `./VacationCsvImport` | `VacationCsvImport` |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` |
-| `lucide-react` | `Plane`, `Trash2`, `Plus`, `Calendar` |
-| `react` | `ReactNode`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/team` | `Vacation`, `TeamMember` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
+| `./VacationCsvImport` | `VacationCsvImport` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Plane`, `Trash2`, `Plus`, `Calendar` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +37,8 @@ _Auto-generated from `frontend/src/components/team/VacationManager.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -65,7 +69,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [VacationManagerProps](../entities/VacationManagerProps.md) | Class | 18 | — | — |
+| [VacationManagerProps](../entities/VacationManagerProps.md) | Interface | 18 | — | — |
 
 ## Functions
 

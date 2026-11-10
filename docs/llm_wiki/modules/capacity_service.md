@@ -14,12 +14,18 @@ Commitment projections select only required scalar task fields after complete sc
 |--------|---------|
 | `app.authority` | `AuthorityError`, `internal_authority` |
 | `app.commands` | `PlanningConflict`, `atomic_command`, `lock_iterations`, `lock_planning` |
+| `app.config` | `get_settings` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.capacity` | `PlanningState`, `ProfileAbsence`, `ProfileAvailability` |
 | `app.models.iteration` | `Iteration` |
+| `app.models.task` | `Task`, `Task`, `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile`, `Vacation` |
+| `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_service` | `TaskService` |
+| `app.services.work_metrics` | `included_work_ids` |
 | `datetime` | `date`, `timedelta` |
 | `sqlalchemy` | `delete`, `select`, `update` |
+| `sqlalchemy.orm` | `selectinload` |
 
 ## Local dependency map
 
@@ -41,9 +47,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
+| Inbound | `backend` (8) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (6) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -51,7 +57,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

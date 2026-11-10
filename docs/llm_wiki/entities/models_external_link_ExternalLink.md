@@ -27,7 +27,7 @@ Generic link from an internal entity to an external delivery artifact.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

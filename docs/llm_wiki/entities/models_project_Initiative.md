@@ -28,7 +28,7 @@ Strategic goal that groups related projects on the roadmap.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

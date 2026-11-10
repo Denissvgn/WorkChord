@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -14,24 +16,54 @@ sequenceDiagram
     participant p2 as HTTPException
     participant p3 as str
     participant p4 as current_command
-    participant p5 as getattr
-    participant p6 as isinstance
-    participant p7 as info.get
-    participant p8 as MessageResponse
-    p0-->>p1: service.reorder_tasks
-    p0-->>p2: HTTPException
-    p0-->>p3: str
+    participant p5 as MessageResponse
+    participant p6 as getattr
+    participant p7 as isinstance
+    participant p8 as info.get
+    p0-->>p1: service.reorder_tasks(data.task_ids, iteration_id=data.iteration_id, parent_id=data.parent_id, expected_revision=data.expected_revision)
+    p0-->>p2: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p3: str(e)
     p0->>p4: current_command
-    p4-->>p5: getattr
-    p4-->>p6: isinstance
-    p4-->>p7: info.get
-    p0-->>p3: str
-    p0->>p8: MessageResponse
+    p0-->>p3: str(...)
+    p0->>p5: MessageResponse
+    p4-->>p6: getattr(db, 'info', None)
+    p4-->>p7: isinstance(info, dict)
+    p4-->>p8: info.get('command')
 ```
+
+> Call sequence diagram shows 9 of 9 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 5 of 5 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 2, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 8, emitted: 8, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `reorder_tasks` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `service.reorder_tasks` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `current_command` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `getattr` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `MessageResponse` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. reorder_tasks"]
@@ -89,7 +121,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

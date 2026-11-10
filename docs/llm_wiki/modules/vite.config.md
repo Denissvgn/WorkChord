@@ -8,10 +8,10 @@ _Auto-generated from `frontend/vite.config.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `@vitejs/plugin-react` | `react` |
-| `vite` | `defineConfig` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `@vitejs/plugin-react` | `react` | — | compiler-dependent |
+| `vite` | `defineConfig` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -37,9 +37,12 @@ flowchart LR
     n8["backend/tests/test_managed_authority.py"]
     n0 --> n1
     n0 --> n2
+    n3 --> n0
     n3 --> n2
+    n3 --> n5
     n4 --> n0
     n4 --> n2
+    n4 --> n5
     n5 --> n0
     n5 --> n2
     n6 --> n0

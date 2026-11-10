@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_template](../modules/types_template.md)
+**Target:**
+
+```typescript
+Partial<WorkTemplateCreate>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `WorkTemplateUpdate` in `frontend/src/types/template.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

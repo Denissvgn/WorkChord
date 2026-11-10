@@ -15,6 +15,7 @@ Safety-fenced lifecycle management for disposable test databases.
 | `dataclasses` | `dataclass` |
 | `os` | `os` |
 | `pathlib` | `Path` |
+| `psycopg` | `psycopg`, `sql`, `psycopg`, `sql` |
 | `re` | `re` |
 | `sqlalchemy.engine` | `URL`, `make_url` |
 | `tempfile` | `tempfile` |
@@ -60,7 +61,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 1 | 0 |
+| python | 2 | 0 |
 
 ## Classes
 

@@ -26,7 +26,7 @@ Link from one request source to exactly one supported target.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

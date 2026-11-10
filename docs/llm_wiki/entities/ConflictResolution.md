@@ -1,7 +1,7 @@
 # ConflictResolution
 
 **Location:** `frontend/src/components/settings/AgentModelAdministration.tsx:63`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AgentModelAdministration](../modules/AgentModelAdministration.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `ConflictResolution` in `frontend/src/components/settings/A
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

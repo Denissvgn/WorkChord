@@ -8,18 +8,18 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../store/iterationStore` | `useIterationStore` |
-| `../../types/gantt` | `GanttResponse`, `GanttTask` |
-| `../../types/iteration` | `Iteration` |
-| `../../types/task` | `Task` |
-| `../../types/team` | `TeamMember` |
-| `./usePlanningReadiness` | `countPlanningExceptions`, `enrichPlanningTeamMembers`, `hasSavedPlanningSchedule`, `planningLeafTasks`, `usePlanningReadiness` |
-| `@tanstack/react-query` | `QueryClient`, `QueryClientProvider` |
-| `@testing-library/react` | `act`, `renderHook`, `waitFor` |
-| `react` | `ReactNode` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../../types/gantt` | `GanttResponse`, `GanttTask` | Declaration | erased |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `../../types/task` | `Task` | Declaration | erased |
+| `../../types/team` | `TeamMember` | Declaration | erased |
+| `./usePlanningReadiness` | `countPlanningExceptions`, `enrichPlanningTeamMembers`, `hasSavedPlanningSchedule`, `planningLeafTasks`, `usePlanningReadiness` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClient`, `QueryClientProvider` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `renderHook`, `waitFor` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -31,6 +31,8 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]

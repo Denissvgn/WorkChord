@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/services/templateService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/template` | `TemplateListParams`, `WorkTemplate`, `WorkTemplateCreate`, `WorkTemplateUpdate` |
-| `./api` | `api` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/template` | `TemplateListParams`, `WorkTemplate`, `WorkTemplateCreate`, `WorkTemplateUpdate` | Declaration | erased |
+| `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/services/templateService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/ProjectForm.tsx"]
@@ -66,4 +68,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [FrontendTemplateService](../entities/FrontendTemplateService.md) | Class | 23 | — | — |
+| [FrontendTemplateService](../entities/FrontendTemplateService.md) | Interface | 23 | — | — |

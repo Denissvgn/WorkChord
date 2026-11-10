@@ -15,7 +15,7 @@ _Auto-generated from `ContractBundleError` in `backend/app/autonomy/contracts/po
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

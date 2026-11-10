@@ -8,6 +8,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -16,44 +18,58 @@ sequenceDiagram
     participant p2 as parser.add_argument
     participant p3 as parser.parse_args
     participant p4 as serialized_contract
-    participant p5 as json.dumps
-    participant p6 as build_contract
-    participant p7 as app.openapi
-    participant p8 as set
-    participant p9 as schema[…].keys
-    participant p10 as ValueError
-    participant p11 as sorted
-    participant p12 as collect
-    participant p13 as components[…].get
-    participant p14 as args.output.exists
-    participant p15 as args.output.read_text
-    participant p16 as parser.exit
-    participant p17 as args.output.parent.mkdir
-    participant p18 as args.output.write_text
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
+    participant p5 as args.output.exists
+    participant p6 as args.output.read_text
+    participant p7 as parser.exit
+    participant p8 as args.output.parent.mkdir
+    participant p9 as args.output.write_text
+    participant p10 as json.dumps
+    participant p11 as build_contract
+    participant p12 as app.openapi
+    participant p13 as set
+    participant p14 as schema[…].keys
+    participant p15 as ValueError
+    participant p16 as sorted
+    participant p17 as collect
+    participant p18 as components[…].get
+    p0-->>p1: argparse.ArgumentParser(description=__doc__)
+    p0-->>p2: parser.add_argument('--output', type=Path, default=DEFAULT_OUTPUT)
+    p0-->>p2: parser.add_argument('--check', action='store_true')
     p0-->>p3: parser.parse_args
     p0->>p4: serialized_contract
-    p4-->>p5: json.dumps
-    p4->>p6: build_contract
-    p6-->>p7: app.openapi
-    p6-->>p8: set
-    p6-->>p9: schema[…].keys
-    p6-->>p10: ValueError
-    p6-->>p11: sorted
-    p6-->>p12: collect
-    p6-->>p13: components[…].get
-    p0-->>p14: args.output.exists
-    p0-->>p15: args.output.read_text
-    p0-->>p16: parser.exit
-    p0-->>p17: args.output.parent.mkdir
-    p0-->>p18: args.output.write_text
+    p0-->>p5: args.output.exists
+    p0-->>p6: args.output.read_text
+    p0-->>p7: parser.exit(1, 'Client contract differs regenerate and review consumer compatibility.\n')
+    p0-->>p8: args.output.parent.mkdir(parents=True, exist_ok=True)
+    p0-->>p9: args.output.write_text(expected)
+    p4-->>p10: json.dumps(build_contract(...), ensure_ascii=False, indent=2, sort_keys=True)
+    p4->>p11: build_contract
+    p11-->>p12: app.openapi
+    p11-->>p13: set(CLIENT_PATHS)
+    p11-->>p14: schema[…].keys
+    p11-->>p15: ValueError(...)
+    p11-->>p16: sorted(missing)
+    p11-->>p17: collect(paths)
+    p11-->>p18: components[…].get('required', [...])
 ```
+
+> Call sequence diagram shows 19 of 19 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 5 of 5 (0 omitted); unresolved 12 of 12 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 3, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 9, emitted: 9, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

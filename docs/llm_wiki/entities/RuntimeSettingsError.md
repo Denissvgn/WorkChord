@@ -15,7 +15,7 @@ Raised when a runtime settings update is invalid.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

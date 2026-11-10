@@ -8,18 +8,19 @@ _Auto-generated from `frontend/src/components/layout/AppSidebar.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/seedDisplay` | `savedViewDisplay` |
-| `../../navigation/workspaces` | `getWorkspaceForPath`, `NavItem` |
-| `../../services/savedViewService` | `savedViewService` |
-| `../../types/savedView` | `SavedView` |
-| `./SidebarIterationCard` | `SidebarIterationCard` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `ArrowRight`, `Bookmark`, `ChevronRight`, `ListFilter`, `Search`, `Sparkles`, `TriangleAlert` |
-| `react` | `useEffect`, `useId`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/seedDisplay` | `savedViewDisplay` | — | compiler-dependent |
+| `../../navigation/workspaces` | `NavItem` | Declaration | erased |
+| `../../navigation/workspaces` | `getWorkspaceForPath` | — | compiler-dependent |
+| `../../services/savedViewService` | `savedViewService` | — | compiler-dependent |
+| `../../types/savedView` | `SavedView` | Declaration | erased |
+| `./SidebarIterationCard` | `SidebarIterationCard` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `ArrowRight`, `Bookmark`, `ChevronRight`, `ListFilter`, `Search`, `Sparkles`, `TriangleAlert` | — | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -32,6 +33,8 @@ _Auto-generated from `frontend/src/components/layout/AppSidebar.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/AppShell.tsx"]
@@ -90,11 +93,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SidebarAttentionAction](../entities/SidebarAttentionAction.md) | Class | 24 | — | — |
+| [SidebarAttentionAction](../entities/SidebarAttentionAction.md) | Interface | 24 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `SidebarContent` | `({     attentionAction,     onNavigate, }: {     attentionAction?: SidebarAttentionAction;     onNavigate?: () => void; })` | — | — |
+| `SidebarContent` | <pre><code>&#40;&#123;&#10;    attentionAction&#44;&#10;    onNavigate&#44;&#10;&#125;&#58; &#123;&#10;    attentionAction&#63;&#58; SidebarAttentionAction&#59;&#10;    onNavigate&#63;&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |
 | `AppSidebar` | `()` | — | — |

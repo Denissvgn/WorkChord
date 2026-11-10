@@ -1,7 +1,7 @@
 # TriageDuplicateRequest
 
 **Location:** `frontend/src/types/triage.ts:64`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `TriageDuplicateRequest` in `frontend/src/types/triage.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

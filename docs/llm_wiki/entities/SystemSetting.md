@@ -27,7 +27,7 @@ Secret settings store encrypted payloads in ``secret_ciphertext``.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

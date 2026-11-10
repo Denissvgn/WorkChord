@@ -8,17 +8,18 @@ _Auto-generated from `frontend/src/components/settings/SchedulingPassCard.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/schedulingDisplay` | `schedulingPassDisplay` |
-| `../../types/schedulingRules` | `SchedulingPass`, `SortCriterion`, `TASK_FIELDS`, `FILTER_FIELDS`, `OPERATORS`, `FILTER_VALUES` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `@dnd-kit/sortable` | `useSortable` |
-| `@dnd-kit/utilities` | `CSS` |
-| `lucide-react` | `Trash2`, `ChevronDown`, `ChevronRight`, `GripVertical`, `Plus`, `X`, `ArrowUp`, `ArrowDown`, `Info` |
-| `react` | `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/schedulingDisplay` | `schedulingPassDisplay` | — | compiler-dependent |
+| `../../types/schedulingRules` | `SchedulingPass`, `SortCriterion` | Declaration | erased |
+| `../../types/schedulingRules` | `TASK_FIELDS`, `FILTER_FIELDS`, `OPERATORS`, `FILTER_VALUES` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `@dnd-kit/sortable` | `useSortable` | — | compiler-dependent |
+| `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
+| `lucide-react` | `Trash2`, `ChevronDown`, `ChevronRight`, `GripVertical`, `Plus`, `X`, `ArrowUp`, `ArrowDown`, `Info` | — | compiler-dependent |
+| `react` | `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +30,8 @@ _Auto-generated from `frontend/src/components/settings/SchedulingPassCard.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Checkbox.tsx"]
@@ -72,7 +75,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Props](../entities/SchedulingPassCard_Props.md) | Class | 12 | — | — |
+| [Props](../entities/SchedulingPassCard_Props.md) | Interface | 12 | — | — |
 
 ## Functions
 

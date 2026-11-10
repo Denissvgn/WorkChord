@@ -1,7 +1,7 @@
 # ScheduleDecisionExplanation
 
 **Location:** `frontend/src/types/gantt.ts:104`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `ScheduleDecisionExplanation` in `frontend/src/types/gantt.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

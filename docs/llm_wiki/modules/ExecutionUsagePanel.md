@@ -10,14 +10,14 @@ _Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.tsx`
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/executionUsageService` | `executionUsageService` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/executionUsageService` | `executionUsageService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 

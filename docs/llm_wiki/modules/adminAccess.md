@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/utils/adminAccess.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./apiError` | `getApiErrorMessage`, `getApiErrorStatus` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -46,7 +46,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AdminAccessErrorMessages](../entities/AdminAccessErrorMessages.md) | Class | 6 | — | — |
+| [AdminAccessErrorMessages](../entities/AdminAccessErrorMessages.md) | Interface | 6 | — | — |
 
 ## Functions
 

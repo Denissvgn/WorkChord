@@ -1,7 +1,7 @@
 # FlattenedTask
 
 **Location:** `frontend/src/components/gantt/GanttChart.tsx:35`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `GanttTask`
 **Module:** [GanttChart](../modules/GanttChart.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `FlattenedTask` in `frontend/src/components/gantt/GanttChar
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

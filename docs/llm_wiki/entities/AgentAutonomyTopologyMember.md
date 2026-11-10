@@ -32,7 +32,7 @@ Stable logical-key to actor mapping and non-secret runtime readiness.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

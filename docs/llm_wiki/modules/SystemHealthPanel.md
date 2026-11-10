@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/settings/SystemHealthPanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/healthService` | `healthService` |
-| `../common/Button` | `Button` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `CircleHelp`, `RefreshCw` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/healthService` | `healthService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `CircleHelp`, `RefreshCw` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -59,7 +59,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [VisibleHealthState](../entities/VisibleHealthState.md) | Type alias | 7 | — | — |
+| [VisibleHealthState](../entities/VisibleHealthState.md) | Type alias | 7 | `'notChecked' \| 'checking' \| 'healthy' \| 'unhealthy' \| 'unavailable'` | — |
 
 ## Functions
 

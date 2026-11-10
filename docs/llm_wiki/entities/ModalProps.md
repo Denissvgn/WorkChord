@@ -1,7 +1,7 @@
 # ModalProps
 
 **Location:** `frontend/src/components/common/Modal.tsx:8`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [Modal](../modules/Modal.md)
 
@@ -29,7 +29,7 @@ _Auto-generated from `ModalProps` in `frontend/src/components/common/Modal.tsx`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

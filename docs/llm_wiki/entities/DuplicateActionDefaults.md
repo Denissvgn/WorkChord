@@ -1,7 +1,7 @@
 # DuplicateActionDefaults
 
 **Location:** `frontend/src/pages/TriagePage.tsx:403`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `DuplicateActionDefaults` in `frontend/src/pages/TriagePage
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

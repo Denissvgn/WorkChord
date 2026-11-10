@@ -9,9 +9,11 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `agent_service.AgentService`
-2. `agent_work_service.AgentWorkService.run_response`
-3. `schemas_agent.AgentRunEventResponse`
-4. `schemas_agent.AgentRunDetailResponse`
+2. `agent_service.AgentService.get_run`
+3. `agent_work_service.AgentWorkService.run_response`
+4. `schemas_agent.AgentRunEventResponse`
+5. `agent_service.AgentService.event_to_payload`
+6. `schemas_agent.AgentRunDetailResponse`
 
 ## Touches
 

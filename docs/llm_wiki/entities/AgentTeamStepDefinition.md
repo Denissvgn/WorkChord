@@ -1,7 +1,7 @@
 # AgentTeamStepDefinition
 
 **Location:** `frontend/src/features/agentTeamSetup/masters.ts:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [agentTeamSetup_masters](../modules/agentTeamSetup_masters.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `AgentTeamStepDefinition` in `frontend/src/features/agentTe
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

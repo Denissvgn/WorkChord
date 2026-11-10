@@ -3,20 +3,32 @@
 **Path:** `scripts/ci/Dockerfile.android`
 **Base Image(s):** `eclipse-temurin:17.0.16_8-jdk-jammy@sha256:47d330891da01c4b17fb6af5018d9a7bad33f7a252a91dde890c10d4de5ebd33`
 
-## Environment Variables
+**Configuration view:** source declarations owned by each stage.
+
+Image defaults, variable expansion, and Docker's inheritance/reset rules also affect effective configuration. External base-image defaults remain unknown here.
+
+## Build Stages
+
+### Stage 1
+
+**FROM:** `eclipse-temurin:17.0.16_8-jdk-jammy@sha256:47d330891da01c4b17fb6af5018d9a7bad33f7a252a91dde890c10d4de5ebd33` (source line 1)
+
+**Base relationship:** external or unresolved base; inherited defaults are unknown.
+
+#### Environment Variables
 
 | Variable | Default |
 |----------|---------|
 | `ANDROID_HOME` | `/opt/android-sdk` |
 | `GRADLE_USER_HOME` | `/opt/gradle-cache` |
 
-**Working Directory:** `/workspace`
+**Declared WORKDIR:** `/workspace`
 
-## Entry Point
+#### Entry Point
 
 **CMD:** `["./gradlew", "--no-daemon", "--max-workers=2", "--project-cache-dir", "/tmp/gradle-project-cache", "testDebugUnitTest", "assembleDebug"]`
 
-## File Copies
+#### File Copies
 
 | Instruction | Source | Destination | From Stage |
 |-------------|--------|-------------|------------|

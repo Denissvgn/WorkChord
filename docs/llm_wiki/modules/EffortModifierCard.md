@@ -8,15 +8,16 @@ _Auto-generated from `frontend/src/components/settings/EffortModifierCard.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/schedulingDisplay` | `effortModifierDisplay` |
-| `../../types/schedulingRules` | `EffortModifier`, `MATH_OPERATIONS`, `FORMULA_TEMPLATES`, `FORMULA_ASSIGNEE_FIELDS` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `lucide-react` | `Trash2`, `ChevronDown`, `ChevronRight`, `Info` |
-| `react` | `useState`, `useMemo`, `useId` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/schedulingDisplay` | `effortModifierDisplay` | — | compiler-dependent |
+| `../../types/schedulingRules` | `EffortModifier` | Declaration | erased |
+| `../../types/schedulingRules` | `MATH_OPERATIONS`, `FORMULA_TEMPLATES`, `FORMULA_ASSIGNEE_FIELDS` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `lucide-react` | `Trash2`, `ChevronDown`, `ChevronRight`, `Info` | — | compiler-dependent |
+| `react` | `useState`, `useMemo`, `useId` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,6 +28,8 @@ _Auto-generated from `frontend/src/components/settings/EffortModifierCard.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Checkbox.tsx"]
@@ -75,7 +78,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Props](../entities/EffortModifierCard_Props.md) | Class | 10 | — | — |
+| [Props](../entities/EffortModifierCard_Props.md) | Interface | 10 | — | — |
 
 ## Functions
 

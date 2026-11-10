@@ -20,7 +20,7 @@ One deterministic criterion used for agent-readiness evaluation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

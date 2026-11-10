@@ -19,7 +19,7 @@ _Auto-generated from `NativeTokenResponse` in `backend/app/routers/identity.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

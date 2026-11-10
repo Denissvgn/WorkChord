@@ -22,7 +22,7 @@ _Auto-generated from `ScenarioBase` in `backend/tests/test_agent_routing_wave6_q
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

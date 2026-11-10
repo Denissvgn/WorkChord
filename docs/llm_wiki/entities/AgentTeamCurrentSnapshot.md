@@ -20,7 +20,7 @@ Current topology state with installation-local IDs kept separate.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

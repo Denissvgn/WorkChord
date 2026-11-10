@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` |
-| `@tanstack/react-query` | `useQueryClient` |
-| `react` | `useEffect`, `useReducer`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
+| `react` | `useEffect`, `useReducer`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 

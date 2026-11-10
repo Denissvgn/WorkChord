@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/projects/TimeEntriesReport.test.ts
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/identity/identityContext` | `IdentityContext` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./TimeEntriesReport` | `TimeEntriesReport` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/identity/identityContext` | `IdentityContext` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./TimeEntriesReport` | `TimeEntriesReport` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

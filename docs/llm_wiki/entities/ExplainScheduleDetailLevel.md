@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
+**Target:**
+
+```typescript
+'brief' | 'full'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `ExplainScheduleDetailLevel` in `frontend/src/types/gantt.t
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

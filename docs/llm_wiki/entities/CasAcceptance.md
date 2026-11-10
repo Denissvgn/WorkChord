@@ -24,7 +24,7 @@ _Auto-generated from `CasAcceptance` in `backend/app/autonomy/server_acceptance.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

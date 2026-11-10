@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskBriefEditor.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./TaskBriefEditor` | `TaskBriefEditor` |
-| `./taskEditorContract` | `buildTaskEditorDefaults`, `emptyTaskBrief`, `toTaskCreate` |
-| `@testing-library/react` | `screen` |
-| `react` | `useState` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
+| `./taskEditorContract` | `buildTaskEditorDefaults`, `emptyTaskBrief`, `toTaskCreate` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

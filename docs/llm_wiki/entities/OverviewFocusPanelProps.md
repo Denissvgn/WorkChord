@@ -1,7 +1,7 @@
 # OverviewFocusPanelProps
 
 **Location:** `frontend/src/pages/OverviewPage.tsx:1008`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `OverviewFocusPanelProps` in `frontend/src/pages/OverviewPa
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

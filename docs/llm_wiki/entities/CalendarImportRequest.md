@@ -20,7 +20,7 @@ Request for importing calendar holidays from a public source or CSV text.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

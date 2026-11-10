@@ -8,62 +8,116 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as parser.parse_args
-    participant p5 as validate_closeout
-    participant p6 as _load_json
-    participant p7 as json.loads
-    participant p8 as path.read_text (scripts/ci/check_model_aw…ng_closeout.py:_load_json)
-    participant p9 as CloseoutContractError
-    participant p10 as isinstance (scripts/ci/check_model_aw…ng_closeout.py:_load_json)
-    participant p11 as inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)
-    participant p12 as _exact_ids
-    participant p13 as isinstance (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
-    participant p14 as entry.get
-    participant p15 as len (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
-    p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p4: parser.parse_args
-    p0->>p5: validate_closeout
-    p5->>p6: _load_json
-    p6-->>p7: json.loads
-    p6-->>p8: path.read_text (scripts/ci/check_model_aw…ng_closeout.py:_load_json)
-    p6->>p9: CloseoutContractError
-    p6-->>p10: isinstance (scripts/ci/check_model_aw…ng_closeout.py:_load_json)
-    p6->>p9: CloseoutContractError
-    p5-->>p11: inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)
-    p5->>p9: CloseoutContractError
-    p5-->>p11: inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)
-    p5->>p9: CloseoutContractError
-    p5->>p12: _exact_ids
-    p12-->>p13: isinstance (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
-    p12->>p9: CloseoutContractError
-    p12-->>p13: isinstance (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
-    p12->>p9: CloseoutContractError
-    p12-->>p14: entry.get
-    p12-->>p13: isinstance (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
-    p12->>p9: CloseoutContractError
-    p12-->>p14: entry.get
-    p12->>p9: CloseoutContractError
-    p12-->>p14: entry.get
-    p12-->>p13: isinstance (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
-    p12-->>p15: len (scripts/ci/check_model_aw…ng_closeout.py:_exact_ids)
+    participant p1 as validate_closeout
+    participant p2 as parse_args
+    participant p3 as _load_json
+    participant p4 as _exact_ids
+    participant p5 as _evidence_path
+    participant p6 as _require_tracked
+    participant p7 as _validate_versions
+    participant p8 as _validate_master
+    participant p9 as _validate_external_truth
+    participant p10 as CloseoutContractError
+    participant p11 as agent_contract_features
+    participant p12 as print
+    participant p13 as args.inventory.resolve
+    participant p14 as (…).encode
+    participant p15 as json.dumps (scripts/ci/check_model_aw…_routing_closeout.py:main)
+    participant p16 as len (scripts/ci/check_model_aw…_routing_closeout.py:main)
+    participant p17 as args.output.parent.mkdir
+    participant p18 as args.output.write_bytes
+    participant p19 as argparse.ArgumentParser
+    participant p20 as parser.add_argument
+    participant p21 as inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)
+    participant p22 as parser.parse_args
+    participant p23 as inventory_path.resolve().relative_to(…).as_posix
+    p0->>p1: validate_closeout
+    p0->>p2: parse_args
+    p1->>p3: _load_json
+    p1->>p4: _exact_ids
+    p1->>p5: _evidence_path
+    p1->>p6: _require_tracked
+    p1->>p7: _validate_versions
+    p1->>p8: _validate_master
+    p1->>p9: _validate_external_truth
+    p1->>p10: CloseoutContractError
+    p7->>p11: agent_contract_features
+    p0-->>p12: print(..., file=sys.stderr)
+    p0-->>p13: args.inventory.resolve
+    p0-->>p14: (…).encode('utf-8')
+    p0-->>p15: json.dumps (scripts/ci/check_model_aw…_routing_closeout.py:main)(receipt, ensure_ascii=False, indent=2, sort_keys=True)
+    p0-->>p16: len (scripts/ci/check_model_aw…_routing_closeout.py:main)(encoded)
+    p0-->>p12: print('Model-aware routing closeout receipt is oversized', file=sys.stderr)
+    p0-->>p17: args.output.parent.mkdir(parents=True, exist_ok=True)
+    p0-->>p18: args.output.write_bytes(encoded)
+    p0-->>p12: print(...)
+    p2-->>p19: argparse.ArgumentParser(description='Validate the model-aware routing closure inventory.')
+    p2-->>p20: parser.add_argument('--inventory', type=Path, default=DEFAULT_INVENTORY)
+    p1-->>p21: inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)('schema_version')
+    p2-->>p20: parser.add_argument('--output', type=Path, help='Write a bounded local closure receipt.')
+    p2-->>p20: parser.add_argument('--require-tracked', action='store_true', help='Require every evidence path to be present in the Git index.')
+    p1-->>p21: inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)('decision')
+    p2-->>p22: parser.parse_args
+    p1-->>p21: inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)('tasks')
+    p1-->>p21: inventory.get (scripts/ci/check_model_aw…eout.py:validate_closeout)('release_gates')
+    p1-->>p23: inventory_path.resolve().relative_to(…).as_posix
 ```
 
-> Call sequence diagram shows 30 of 136 interactions; 106 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 136 interactions; 106 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 6 of 43 (37 omitted); unresolved 13 of 48 (35 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/ci/check_model_aware_routing_closeout.py:_load_json` | 9 | - | external | 2 |
+| `scripts/ci/check_model_aware_routing_closeout.py:_load_json` | 9 | - | unresolved | 1 |
+| `scripts/ci/check_model_aware_routing_closeout.py:_load_json` | 9 | [scripts/ci/check_model_aware_routing_closeout.py](../modules/check_model_aware_routing_closeout.md) | internal | 2 |
+| `scripts/ci/check_model_aware_routing_closeout.py:validate_closeout` | 8 | [scripts/ci/check_model_aware_routing_closeout.py](../modules/check_model_aware_routing_closeout.md) | internal | 2 |
+| `scripts/ci/check_model_aware_routing_closeout.py:_exact_ids` | 19 | - | external | 14 |
+| `scripts/ci/check_model_aware_routing_closeout.py:_exact_ids` | 19 | [scripts/ci/check_model_aware_routing_closeout.py](../modules/check_model_aware_routing_closeout.md) | internal | 7 |
+| `scripts/ci/check_model_aware_routing_closeout.py:_exact_ids` | 19 | - | unresolved | 5 |
+| `scripts/ci/check_model_aware_routing_closeout.py:validate_closeout` | 8 | - | unresolved | 6 |
+> Omission summary shows 8 of 26 groups; 18 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 46; effect analysis evaluated: 16, partial: 0, unavailable: 30. Counts include steps omitted from the displayed trace.
+
+Collector observations for 16 source steps with known totals: observed: 86, emitted: 86, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `11` | `11` | `0` |
+| `parse_args` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `validate_closeout` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `_load_json` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `path.read_text (scripts/ci/check_model_aw…ng_closeout.py:_load_json)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `CloseoutContractError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

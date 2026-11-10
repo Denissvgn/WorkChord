@@ -22,7 +22,7 @@ _Auto-generated from `HierarchyRepairRequest` in `backend/app/routers/snapshots.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

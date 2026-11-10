@@ -28,39 +28,46 @@ flowchart LR
     n1["backend/app/models/__init__.py"]
     n2["backend/app/models/saved_view.py"]
     n3["backend/app/models/user_session.py"]
-    n4["backend/app/services/saved_view_service.py"]
-    n5["backend/app/utils/time.py"]
-    n6["backend/tests/database/test_schema_behavior.py"]
-    n7["backend/tests/test_identity_lifecycle.py"]
-    n8["backend/tests/test_managed_authority.py"]
+    n4["backend/app/services/identity_service.py"]
+    n5["backend/app/services/saved_view_service.py"]
+    n6["backend/app/utils/time.py"]
+    n7["backend/tests/database/test_schema_behavior.py"]
+    n8["backend/tests/test_identity_lifecycle.py"]
+    n9["backend/tests/test_managed_authority.py"]
     n1 --> n2
     n1 --> n3
     n2 --> n0
     n2 --> n3
-    n2 --> n5
+    n2 --> n6
     n3 --> n0
     n3 --> n2
-    n3 --> n5
+    n3 --> n6
     n4 --> n2
-    n6 --> n2
-    n6 --> n3
-    n6 --> n5
+    n4 --> n3
+    n4 --> n6
+    n5 --> n2
     n7 --> n2
     n7 --> n3
-    n7 --> n5
-    n7 --> n8
+    n7 --> n6
     n8 --> n2
     n8 --> n3
-    n8 --> n5
+    n8 --> n4
+    n8 --> n6
+    n8 --> n9
+    n9 --> n2
+    n9 --> n3
+    n9 --> n4
+    n9 --> n6
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_saved_view.md"
     click n3 "../modules/user_session.md"
-    click n4 "../modules/saved_view_service.md"
-    click n5 "../modules/time.md"
-    click n6 "../modules/test_schema_behavior.md"
-    click n7 "../modules/test_identity_lifecycle.md"
-    click n8 "../modules/test_managed_authority.md"
+    click n4 "../modules/identity_service.md"
+    click n5 "../modules/saved_view_service.md"
+    click n6 "../modules/time.md"
+    click n7 "../modules/test_schema_behavior.md"
+    click n8 "../modules/test_identity_lifecycle.md"
+    click n9 "../modules/test_managed_authority.md"
 ```
 
 ### Internal neighbors
@@ -69,6 +76,7 @@ flowchart LR
 |---|---|
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [user_session](../modules/user_session.md) |
+| Inbound | [identity_service](../modules/identity_service.md) |
 | Inbound | [saved_view_service](../modules/saved_view_service.md) |
 | Inbound | [test_schema_behavior](../modules/test_schema_behavior.md) |
 | Inbound | [test_identity_lifecycle](../modules/test_identity_lifecycle.md) |

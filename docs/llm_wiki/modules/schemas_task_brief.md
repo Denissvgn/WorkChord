@@ -10,6 +10,7 @@ Canonical brief inputs and separate execution evidence/review contracts.
 
 | Source | Symbols |
 |--------|---------|
+| `app.utils.url_policy` | `normalize_stored_display_url` |
 | `datetime` | `datetime` |
 | `pydantic` | `BaseModel`, `ConfigDict`, `Field`, `field_validator`, `model_validator` |
 | `typing` | `Literal` |
@@ -24,6 +25,7 @@ flowchart LR
     n1["backend/app/schemas/task_brief.py"]
     n2["scripts"]
     n0 --> n1
+    n1 --> n0
     n2 --> n1
     click n1 "../modules/schemas_task_brief.md"
 ```
@@ -34,8 +36,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (14) |
 | Inbound | `scripts` (1) |
+| Outbound | `backend` (1) |
 
 ### External packages
 
@@ -43,7 +46,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

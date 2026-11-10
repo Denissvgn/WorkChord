@@ -16,9 +16,11 @@ Runtime acknowledgement remains scoped to its exact issued handoff credential. R
 |--------|---------|
 | `__future__` | `annotations` |
 | `app.agent_contract` | `AGENT_CONTRACT_FEATURES`, `AGENT_TEAM_MASTER_FEATURE`, `MODEL_AWARE_ROUTING_FEATURE` |
+| `app.authority` | `internal_authority` |
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentTeamActionReceipt`, `AgentTeamApplyRun`, `AgentTeamManagedObject`, `AgentTeamTopology`, `AgentTeamTopologyMember`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.identity` | `Principal` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse` |
@@ -28,6 +30,7 @@ Runtime acknowledgement remains scoped to its exact issued handoff credential. R
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_scopes`, `hash_api_key`, `require_scope`, `validate_idempotency_key` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_credentials` | `CredentialDeliveryError`, `AgentTeamCredentialSink`, `FilesystemAgentTeamCredentialSink` |
+| `app.services.identity_service` | `bind_verified_system` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `dataclasses` | `dataclass` |
 | `datetime` | `timedelta` |
@@ -58,8 +61,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (6) |
-| Outbound | `backend` (14) |
+| Inbound | `backend` (8) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -67,7 +70,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

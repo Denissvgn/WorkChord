@@ -31,7 +31,7 @@ _Auto-generated from `WorkMetricSummary` in `backend/app/schemas/work_metrics.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -48,6 +48,8 @@ flowchart LR
     n7["backend/app/schemas/iteration.py"]
     n8["backend/app/schemas/project.py"]
     n9["backend/app/schemas/release.py"]
+    n10["backend/app/services/iteration_service.py"]
+    n11["backend/app/services/project_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -57,6 +59,8 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/schemas_work_metrics.md"
     click n2 "../modules/schemas_iteration.md"
     click n3 "../modules/schemas_project.md"
@@ -66,6 +70,8 @@ flowchart LR
     click n7 "../modules/schemas_iteration.md"
     click n8 "../modules/schemas_project.md"
     click n9 "../modules/schemas_release.md"
+    click n10 "../modules/iteration_service.md"
+    click n11 "../modules/project_service.md"
 ```
 
 ### Summary
@@ -92,3 +98,5 @@ flowchart LR
 | `iteration` | import | [schemas_iteration](../modules/schemas_iteration.md) | — |
 | `project` | import | [schemas_project](../modules/schemas_project.md) | — |
 | `release` | import | [schemas_release](../modules/schemas_release.md) | — |
+| `iteration_service` | import | [iteration_service](../modules/iteration_service.md) | — |
+| `project_service` | import | [project_service](../modules/project_service.md) | — |

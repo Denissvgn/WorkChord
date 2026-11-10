@@ -1,7 +1,7 @@
 # DuplicateSuggestionGroupProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:1531`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `DuplicateSuggestionGroupProps` in `frontend/src/pages/Tria
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

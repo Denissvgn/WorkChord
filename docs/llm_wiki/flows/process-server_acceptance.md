@@ -17,52 +17,124 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as os.getenv
-    participant p5 as Path (backend/app/cli/server_acceptance.py:parse_args)
-    p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p5: Path (backend/app/cli/server_acceptance.py:parse_args)
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p5: Path (backend/app/cli/server_acceptance.py:parse_args)
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
-    p1-->>p3: parser.add_argument
-    p1-->>p4: os.getenv
+    participant p1 as verify_exported_artifacts
+    participant p2 as _required
+    participant p3 as run_server_acceptance
+    participant p4 as build_blocked_result
+    participant p5 as parse_args
+    participant p6 as load_backend_build_identity
+    participant p7 as verify_receipt_trusted_signer
+    participant p8 as verify_receipt_current_build
+    participant p9 as ServerAcceptanceConfig
+    participant p10 as ServerAcceptanceError
+    participant p11 as _emit
+    participant p12 as _render
+    participant p13 as sha256_hex
+    participant p14 as _probe_application
+    participant p15 as load_postgresql_contract_bundle
+    participant p16 as S3ObjectLockClient.probe_ready
+    participant p17 as ValkeyCasClient.probe
+    participant p18 as OpenBaoTransitClient.probe
+    participant p19 as OpenBaoTransitClient.sign_and_verify
+    participant p20 as _signed_report_payload
+    participant p21 as S3ObjectLockClient.store_locked
+    participant p22 as _receipt
+    participant p23 as _pin
+    participant p24 as OpenBaoTransitClient._request
+    participant p25 as S3ObjectLockClient._request
+    participant p26 as _public_urls
+    participant p27 as canonical_json_bytes
+    participant p28 as _valkey_command
+    participant p29 as print (backend/app/cli/server_acceptance.py:main)
+    participant p30 as args.trusted_signer_public_key_file.read_text
+    p0->>p1: verify_exported_artifacts
+    p0->>p2: _required
+    p0->>p3: run_server_acceptance
+    p0->>p4: build_blocked_result
+    p0->>p5: parse_args
+    p0->>p6: load_backend_build_identity
+    p0->>p7: verify_receipt_trusted_signer
+    p0->>p8: verify_receipt_current_build
+    p0->>p9: ServerAcceptanceConfig
+    p0->>p10: ServerAcceptanceError
+    p0->>p11: _emit
+    p0->>p12: _render
+    p3->>p13: sha256_hex
+    p3->>p14: _probe_application
+    p3->>p15: load_postgresql_contract_bundle
+    p3->>p16: S3ObjectLockClient.probe_ready
+    p3->>p17: ValkeyCasClient.probe
+    p3->>p18: OpenBaoTransitClient.probe
+    p3->>p19: OpenBaoTransitClient.sign_and_verify
+    p3->>p20: _signed_report_payload
+    p3->>p21: S3ObjectLockClient.store_locked
+    p1->>p22: _receipt
+    p1->>p23: _pin
+    p18->>p24: OpenBaoTransitClient._request
+    p21->>p25: S3ObjectLockClient._request
+    p22->>p26: _public_urls
+    p13->>p27: canonical_json_bytes
+    p17->>p28: _valkey_command
+    p0-->>p29: print (backend/app/cli/server_acceptance.py:main)(json.dumps(...))
+    p0-->>p30: args.trusted_signer_public_key_file.read_text(encoding='utf-8')
 ```
 
-> Call sequence diagram shows 30 of 439 interactions; 409 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 630 interactions; 600 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 230 (229 omitted); unresolved 1 of 211 (210 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/cli/server_acceptance.py:parse_args` | 2 | - | external | 20 |
+| `backend/app/cli/server_acceptance.py:parse_args` | 2 | - | unresolved | 20 |
+| `backend/app/autonomy/acceptance_artifacts.py:verify_exported_artifacts` | 43 | - | unresolved | 16 |
+| `backend/app/autonomy/acceptance_artifacts.py:verify_exported_artifacts` | 43 | - | external | 27 |
+| `backend/app/autonomy/acceptance_artifacts.py:verify_exported_artifacts` | 43 | [backend/app/autonomy/acceptance_artifacts.py](../modules/acceptance_artifacts.md) | internal | 7 |
+| `backend/app/autonomy/acceptance_artifacts.py:_json` | 49 | - | external | 1 |
+| `backend/app/autonomy/acceptance_artifacts.py:_read` | 51 | - | external | 7 |
+| `backend/app/autonomy/acceptance_artifacts.py:_read` | 51 | - | unresolved | 2 |
+> Omission summary shows 8 of 102 groups; 94 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 190; effect analysis evaluated: 103, partial: 2, unavailable: 85. Counts include steps omitted from the displayed trace.
+
+Collector observations for 105 source steps with known totals: observed: 513, emitted: 501, omitted: 12. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `16` | `16` | `0` |
+| `parse_args` | `available` | `partial` | `available` | `22` | `15` | `7` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

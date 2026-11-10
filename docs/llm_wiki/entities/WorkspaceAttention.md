@@ -1,7 +1,7 @@
 # WorkspaceAttention
 
 **Location:** `frontend/src/components/layout/AppTopNav.tsx:18`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AppTopNav](../modules/AppTopNav.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `WorkspaceAttention` in `frontend/src/components/layout/App
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

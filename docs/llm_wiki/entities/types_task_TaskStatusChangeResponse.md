@@ -1,7 +1,7 @@
 # TaskStatusChangeResponse
 
 **Location:** `frontend/src/types/task.ts:360`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `TaskStatusChangeResponse` in `frontend/src/types/task.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

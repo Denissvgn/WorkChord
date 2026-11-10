@@ -25,9 +25,9 @@ _Auto-generated from `ExecutionUsageWrite` in `backend/app/schemas/execution_usa
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `report_id` | `str` | `report_id` | Yes | No | — | min_length=1; max_length=128; pattern='^[a-zA-Z0-9_.:-]+$' | — | — |
+| `report_id` | `str` | `report_id` | Yes | No | — | max_length=128; min_length=1; pattern='^[a-zA-Z0-9_.:-]+$' | — | — |
 | `expected_previous_digest` | `str \| None` | `expected_previous_digest` | No | Yes | `None` | pattern='^[a-f0-9]{64}$' | — | — |
-| `source` | `str` | `source` | Yes | No | — | min_length=1; max_length=200 | — | — |
+| `source` | `str` | `source` | Yes | No | — | max_length=200; min_length=1 | — | — |
 | `provenance` | `Literal['provider_reported', 'runtime_metered', 'manual_reported', 'simulated']` | `provenance` | Yes | No | — | — | — | — |
 | `reporting_mode` | `Literal['attempt_total']` | `reporting_mode` | Yes | No | — | — | — | — |
 | `interval_start` | `AwareDatetime` | `interval_start` | Yes | No | — | — | — | — |

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SavedViewsControl](../modules/SavedViewsControl.md)
+**Target:**
+
+```typescript
+'create' | 'duplicate'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `FormMode` in `frontend/src/components/tasks/SavedViewsCont
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -8,15 +8,15 @@ Searches authorized title/ID projections with bounded pagination and project/ite
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/taskService` | `taskService` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `@tanstack/react-query` | `useInfiniteQuery` |
-| `react` | `useEffect`, `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useInfiniteQuery` | — | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 

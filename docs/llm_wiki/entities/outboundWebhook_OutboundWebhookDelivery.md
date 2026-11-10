@@ -1,7 +1,7 @@
 # OutboundWebhookDelivery
 
 **Location:** `frontend/src/types/outboundWebhook.ts:38`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)
 
@@ -32,7 +32,7 @@ _Auto-generated from `OutboundWebhookDelivery` in `frontend/src/types/outboundWe
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

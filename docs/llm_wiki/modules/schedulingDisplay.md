@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/i18n/schedulingDisplay.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/schedulingRules` | `EffortModifier`, `SchedulingPass`, `SortCriterion` |
-| `./i18n` | `i18n` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/schedulingRules` | `EffortModifier`, `SchedulingPass`, `SortCriterion` | Declaration | erased |
+| `./i18n` | `i18n` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/i18n/schedulingDisplay.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/EffortModifierCard.tsx"]

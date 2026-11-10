@@ -8,9 +8,9 @@ Mounted-scope guards suppress obsolete close, discard and pending callbacks afte
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `react` | `useCallback`, `useEffect`, `useRef`, `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `react` | `useCallback`, `useEffect`, `useRef`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 

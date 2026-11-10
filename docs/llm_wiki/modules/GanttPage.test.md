@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/pages/GanttPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../i18n/i18n` | `i18n` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `../types/gantt` | `GanttResponse`, `GanttTask` |
-| `../types/iteration` | `Iteration` |
-| `./GanttPage` | `GanttPage` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../types/gantt` | `GanttResponse`, `GanttTask` | Declaration | erased |
+| `../types/iteration` | `Iteration` | Declaration | erased |
+| `./GanttPage` | `GanttPage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +29,8 @@ _Auto-generated from `frontend/src/pages/GanttPage.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/i18n/i18n.ts"]
@@ -47,6 +49,7 @@ flowchart LR
     n2 --> n3
     n2 --> n5
     n2 --> n6
+    n4 --> n0
     n5 --> n6
     click n0 "../modules/i18n.md"
     click n1 "../modules/GanttPage.test.md"

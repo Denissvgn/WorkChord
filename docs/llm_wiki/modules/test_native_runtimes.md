@@ -10,6 +10,7 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 
 | Source | Symbols |
 |--------|---------|
+| `android_qualification` | `executed_case`, `manifest_flags`, `required_cases`, `load_inputs` |
 | `json` | `json` |
 | `os` | `os` |
 | `pathlib` | `Path` |
@@ -37,7 +38,7 @@ Native orchestration preserves isolation, real result requirements and cleanup.
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| python | 4 | 4 |
+| python | 5 | 5 |
 
 ## Classes
 

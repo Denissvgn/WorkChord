@@ -27,7 +27,7 @@ _Auto-generated from `CommandState` in `backend/app/commands.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

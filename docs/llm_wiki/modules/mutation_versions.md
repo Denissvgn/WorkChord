@@ -27,11 +27,13 @@ flowchart LR
     n4["backend/app/mcp_server.py"]
     n5["backend/app/mutation_versions.py"]
     n6["backend/app/runtime_telemetry.py"]
-    n7["backend/tests/test_mutation_versions.py"]
-    n8["backend/tests/test_shared_member_revisions.py"]
-    n9["backend/tests/test_strict_caller_matrix.py"]
+    n7["backend/app/services/task_service.py"]
+    n8["backend/tests/test_mutation_versions.py"]
+    n9["backend/tests/test_shared_member_revisions.py"]
+    n10["backend/tests/test_strict_caller_matrix.py"]
     n0 --> n5
     n0 --> n6
+    n0 --> n7
     n2 --> n0
     n2 --> n1
     n2 --> n4
@@ -40,26 +42,32 @@ flowchart LR
     n3 --> n0
     n3 --> n1
     n3 --> n5
+    n3 --> n7
     n4 --> n0
     n4 --> n1
     n4 --> n3
     n4 --> n5
+    n4 --> n7
     n5 --> n1
     n5 --> n6
     n7 --> n0
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n4
     n7 --> n5
+    n7 --> n6
+    n8 --> n0
     n8 --> n1
     n8 --> n2
+    n8 --> n3
+    n8 --> n4
     n8 --> n5
     n9 --> n1
     n9 --> n2
-    n9 --> n3
     n9 --> n5
-    n9 --> n6
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
     click n0 "../modules/commands.md"
     click n1 "../modules/config.md"
     click n2 "../modules/app_main.md"
@@ -67,9 +75,10 @@ flowchart LR
     click n4 "../modules/mcp_server.md"
     click n5 "../modules/mutation_versions.md"
     click n6 "../modules/runtime_telemetry.md"
-    click n7 "../modules/test_mutation_versions.md"
-    click n8 "../modules/test_shared_member_revisions.md"
-    click n9 "../modules/test_strict_caller_matrix.md"
+    click n7 "../modules/task_service.md"
+    click n8 "../modules/test_mutation_versions.md"
+    click n9 "../modules/test_shared_member_revisions.md"
+    click n10 "../modules/test_strict_caller_matrix.md"
 ```
 
 ### Internal neighbors
@@ -80,6 +89,7 @@ flowchart LR
 | Inbound | [app_main](../modules/app_main.md) |
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [mcp_server](../modules/mcp_server.md) |
+| Inbound | [task_service](../modules/task_service.md) |
 | Inbound | [test_mutation_versions](../modules/test_mutation_versions.md) |
 | Inbound | [test_shared_member_revisions](../modules/test_shared_member_revisions.md) |
 | Inbound | [test_strict_caller_matrix](../modules/test_strict_caller_matrix.md) |

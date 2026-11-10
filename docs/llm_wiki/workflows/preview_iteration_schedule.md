@@ -16,10 +16,12 @@ therefore always consistent with what a subsequent batch-update apply
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `iteration_service.IterationService`
 2. `task_service.TaskService`
-3. `commands.command_transaction`
-4. `commands.lock_iterations`
-5. `tasks.apply_batch_update_items`
-6. `schemas_gantt.SchedulePreviewResponse`
+3. `iteration_service.IterationService.get_by_id`
+4. `commands.command_transaction`
+5. `commands.lock_iterations`
+6. `tasks.apply_batch_update_items`
+7. `task_service.TaskService.get_by_iteration`
+8. `schemas_gantt.SchedulePreviewResponse`
 
 ## Touches
 

@@ -1,7 +1,7 @@
 # SettingsGroup
 
 **Location:** `frontend/src/pages/SettingsPage.tsx:59`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `SettingsGroup` in `frontend/src/pages/SettingsPage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

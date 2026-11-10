@@ -8,13 +8,14 @@ _Auto-generated from `frontend/src/components/common/Modal.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./dialogLayer` | `useDialogLayer` |
-| `clsx` | `clsx` |
-| `lucide-react` | `X` |
-| `react` | `useId`, `ReactNode`, `RefObject` |
-| `react-dom` | `createPortal` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./dialogLayer` | `useDialogLayer` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `X` | — | compiler-dependent |
+| `react` | `ReactNode`, `RefObject` | Declaration | erased |
+| `react` | `useId` | — | compiler-dependent |
+| `react-dom` | `createPortal` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -55,10 +56,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ModalProps](../entities/ModalProps.md) | Class | 8 | — | — |
+| [ModalProps](../entities/ModalProps.md) | Interface | 8 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `Modal` | `({     open,     title,     description,     children,     footer,     onClose,     closeLabel,     initialFocusRef,     closeOnBackdropClick = false,     closeDisabled = false,     fullScreen = false,     className,     contentClassName, }: ModalProps)` | — | — |
+| `Modal` | <pre><code>&#40;&#123;&#10;    open&#44;&#10;    title&#44;&#10;    description&#44;&#10;    children&#44;&#10;    footer&#44;&#10;    onClose&#44;&#10;    closeLabel&#44;&#10;    initialFocusRef&#44;&#10;    closeOnBackdropClick &#61; false&#44;&#10;    closeDisabled &#61; false&#44;&#10;    fullScreen &#61; false&#44;&#10;    className&#44;&#10;    contentClassName&#44;&#10;&#125;&#58; ModalProps&#41;</code></pre> | — | — |

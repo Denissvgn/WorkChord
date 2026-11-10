@@ -8,19 +8,19 @@ _Auto-generated from `frontend/src/components/tasks/StatusChangeControl.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/taskService` | `taskService` |
-| `../../types/task` | `Task`, `TaskStatus`, `CascadeUpdateInfo` |
-| `../../utils/formatDate` | `formatDate` |
-| `../common/Button` | `Button` |
-| `../common/Modal` | `Modal` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` |
-| `lucide-react` | `ArrowRight`, `AlertTriangle`, `Check` |
-| `react` | `useEffect`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/task` | `Task`, `TaskStatus`, `CascadeUpdateInfo` | Declaration | erased |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `ArrowRight`, `AlertTriangle`, `Check` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -32,6 +32,8 @@ _Auto-generated from `frontend/src/components/tasks/StatusChangeControl.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -93,7 +95,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [StatusChangeControlProps](../entities/StatusChangeControlProps.md) | Class | 13 | — | — |
+| [StatusChangeControlProps](../entities/StatusChangeControlProps.md) | Interface | 13 | — | — |
 
 ## Functions
 

@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/utils/visibleWork.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/task` | `Task`, `TaskStatus` |
-| `./taskFilterDefaults` | `defaultFilters` |
-| `./visibleWork` | `selectVisibleWork` |
-| `vitest` | `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/task` | `Task`, `TaskStatus` | Declaration | erased |
+| `./taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
+| `./visibleWork` | `selectVisibleWork` | — | compiler-dependent |
+| `vitest` | `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -24,6 +24,8 @@ _Auto-generated from `frontend/src/utils/visibleWork.test.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/types/task.ts"]

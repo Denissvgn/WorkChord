@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/features/planningMasters/planningTaskIssues.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `Task` |
-| `./planningTaskIssues` | `hasPositivePlanningEffort`, `isPlanningLeafTask`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `planningIssueTasksHref`, `taskMatchesPlanningIssue` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `Task` | Declaration | erased |
+| `./planningTaskIssues` | `hasPositivePlanningEffort`, `isPlanningLeafTask`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `planningIssueTasksHref`, `taskMatchesPlanningIssue` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/features/planningMasters/planningTaskIssues.t
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/planningMasters/planningTaskIssues.test.ts"]

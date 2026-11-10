@@ -15,7 +15,7 @@ A workload or evidence input is unsafe, stale, or incomplete.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

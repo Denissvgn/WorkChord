@@ -1,7 +1,7 @@
 # IterationSummary
 
 **Location:** `frontend/src/types/iteration.ts:59`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `WorkMetrics`
 **Module:** [types_iteration](../modules/types_iteration.md)
 
@@ -28,7 +28,7 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

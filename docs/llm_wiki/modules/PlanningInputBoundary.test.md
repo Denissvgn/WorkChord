@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/planning/PlanningInputBoundary.tes
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./PlanningInputBoundary` | `PlanningInputBoundary` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `react` | `useState` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -21,7 +21,7 @@ A scheduling pass with filter and sort rules.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

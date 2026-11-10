@@ -24,16 +24,16 @@ Portable desired state for one logical actor/runtime membership.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `actor_key` | `str` | `actor_key` | Yes | No | — | max_length=100; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `actor_name` | `str` | `actor_name` | Yes | No | — | max_length=100; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
-| `display_name` | `str` | `display_name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `display_name` | `str` | `display_name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `role` | `Literal['pm', 'worker', 'verifier']` | `role` | Yes | No | — | — | — | — |
 | `scope_preset` | `Literal['pm-v1', 'worker-v1', 'verifier-v1']` | `scope_preset` | Yes | No | — | — | — | — |
 | `profile_key` | `str` | `profile_key` | Yes | No | — | max_length=120; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
 | `skill_package` | `AgentTeamSkillPackage` | `skill_package` | Yes | No | — | — | — | — |
-| `assignment_modes` | `tuple[Literal['ownership', 'execution', 'verification', 'design_handoff'], ...]` | `assignment_modes` | Yes | No | — | min_length=1; max_length=4 | — | — |
-| `model_binding_keys` | `tuple[str, ...]` | `model_binding_keys` | Yes | No | — | min_length=1; max_length=16 | — | — |
+| `assignment_modes` | `tuple[Literal['ownership', 'execution', 'verification', 'design_handoff'], ...]` | `assignment_modes` | Yes | No | — | max_length=4; min_length=1 | — | — |
+| `model_binding_keys` | `tuple[str, ...]` | `model_binding_keys` | Yes | No | — | max_length=16; min_length=1 | — | — |
 | `default_model_binding_key` | `str` | `default_model_binding_key` | Yes | No | — | max_length=120; pattern=unknown (STABLE_KEY_PATTERN) | — | — |
-| `runtime_ref` | `str` | `runtime_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
-| `credential_ref` | `str` | `credential_ref` | Yes | No | — | min_length=1; max_length=1024 | — | — |
+| `runtime_ref` | `str` | `runtime_ref` | Yes | No | — | max_length=1024; min_length=1 | — | — |
+| `credential_ref` | `str` | `credential_ref` | Yes | No | — | max_length=1024; min_length=1 | — | — |
 
 ## Methods
 

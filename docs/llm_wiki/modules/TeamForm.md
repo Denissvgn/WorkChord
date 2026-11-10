@@ -8,22 +8,23 @@ _Auto-generated from `frontend/src/components/team/TeamForm.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/planningInputService` | `MemberPlanningIntent`, `ObservedRevisions` |
-| `../../services/teamService` | `teamService` |
-| `../../types/team` | `TeamMember`, `TeamMemberCreate`, `TeamMemberProfile` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` |
-| `../tasks/useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` |
-| `lucide-react` | `Save` |
-| `react` | `ReactNode`, `useEffect`, `useId`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/planningInputService` | `MemberPlanningIntent`, `ObservedRevisions` | Declaration | erased |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/team` | `TeamMember`, `TeamMemberCreate`, `TeamMemberProfile` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
+| `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` | — | compiler-dependent |
+| `lucide-react` | `Save` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useEffect`, `useId`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +35,8 @@ _Auto-generated from `frontend/src/components/team/TeamForm.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -64,7 +67,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamFormProps](../entities/TeamFormProps.md) | Class | 17 | — | — |
+| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 17 | — | — |
 
 ## Functions
 

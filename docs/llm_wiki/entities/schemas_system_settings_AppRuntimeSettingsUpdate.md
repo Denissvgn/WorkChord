@@ -19,7 +19,7 @@ Update request for app-wide runtime settings.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

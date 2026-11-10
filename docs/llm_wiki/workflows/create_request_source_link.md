@@ -11,8 +11,10 @@
 1. `schemas_request_source.RequestSourceLinkCreateRequest`
 2. `agent_service.AgentConflictError`
 3. `request_source_service.RequestSourceService`
-4. `agent_service.AgentConflictError`
-5. `agent_service.AgentConflictError`
+4. `request_source_service.RequestSourceService.create_link`
+5. `request_source_service.RequestSourceService.get_link`
+6. `agent_service.AgentConflictError`
+7. `agent_service.AgentConflictError`
 
 ## Touches
 

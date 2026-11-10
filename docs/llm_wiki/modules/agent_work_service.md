@@ -27,15 +27,21 @@ Assigned normal execution compares scheduled starts with the project working dat
 | `app.schemas.agent` | `AgentActorResponse`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentDiscoveryTriageCreate`, `AgentDiscoveryTriageResponse`, `AgentProjectUpdateCreate`, `AgentProjectUpdateResponse`, `AgentActorRosterItem`, `AgentCollectionPageMetadata`, `AgentDependencyContext`, `AgentPaginationMetadata`, `AgentRecoveryListResponse`, `AgentReviewVerdict`, `AgentReviewVerdictResponse`, `AgentReviewQueueResponse`, `AgentRecoveryItem`, `AgentRecoveryRequeue`, `AgentRecoveryRequeueResponse`, `AgentRunResponse`, `AgentTaskAssignmentCreate`, `AgentTaskAssignmentResponse`, `AgentTaskAssignmentUpdate`, `AgentTaskContextResponse`, `AgentWorkBegin`, `AgentWorkBeginResponse`, `AgentWorkDecisionResponse`, `AgentWorkItem`, `AgentWorkPaginationMetadata`, `AgentWorkRenew`, `AgentWorkSubmit`, `AgentWorkTerminal`, `AgentWorkTerminalResponse`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.project` | `ProjectUpdateEntryCreate` |
+| `app.schemas.task_brief` | `ProgressWrite` |
 | `app.schemas.triage` | `TriageItemCreate` |
 | `app.services.agent_model_catalog_service` | `AgentModelCatalogService` |
 | `app.services.agent_routing_observability` | `RoutingOperationalEvent`, `opaque_value_digest`, `record_routing_operational_event` |
 | `app.services.agent_routing_policy` | `MODEL_FAILURE_CATEGORIES`, `ROUTING_DECISION_AUTHORITY`, `ROUTING_DECISION_LINEAGE_FIELDS`, `ROUTING_LINEAGE_AUTHORITY`, `ROUTING_POLICY_VERSION`, `canonical_routing_json_bytes`, `evaluate_actor_authorization`, `normalize_model_failure_category`, `validate_routing_packet_size` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutError`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
-| `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key` |
+| `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingService`, `AgentRoutingService`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError`, `AgentRoutingConflictError` |
+| `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `actor_has_scope`, `actor_scopes`, `validate_idempotency_key`, `AgentService` |
+| `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.project_service` | `ProjectService` |
+| `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `brief_definition_blockers`, `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
+| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `working_today`, `effective_work_flags`, `effective_work_flags` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `base64` | `base64` |
 | `binascii` | `binascii` |
@@ -67,8 +73,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (14) |
-| Outbound | `backend` (20) |
+| Inbound | `backend` (16) |
+| Outbound | `backend` (26) |
 
 ### External packages
 
@@ -76,7 +82,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -28,7 +28,7 @@ Append-only verifier-slot event projection.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

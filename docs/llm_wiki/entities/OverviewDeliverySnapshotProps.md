@@ -1,7 +1,7 @@
 # OverviewDeliverySnapshotProps
 
 **Location:** `frontend/src/pages/OverviewPage.tsx:1095`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `OverviewDeliverySnapshotProps` in `frontend/src/pages/Over
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

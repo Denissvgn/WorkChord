@@ -18,7 +18,7 @@ _Auto-generated from `ProgramDecision` in `backend/app/autonomy/contracts/charte
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

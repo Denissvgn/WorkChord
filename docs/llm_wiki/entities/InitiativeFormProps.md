@@ -1,7 +1,7 @@
 # InitiativeFormProps
 
 **Location:** `frontend/src/components/projects/InitiativeForm.tsx:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [InitiativeForm](../modules/InitiativeForm.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `InitiativeFormProps` in `frontend/src/components/projects/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

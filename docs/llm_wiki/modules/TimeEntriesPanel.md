@@ -10,26 +10,28 @@ The optional task/project disclosure retains scoped personal drafts and creation
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
-| `../../features/timeEntries/useTimeEntries` | `useTimeEntries` |
-| `../../features/useLiveWindow` | `useLiveWindow` |
-| `../../services/taskService` | `taskService` |
-| `../../services/timeEntryService` | `timeEntryService`, `timeAccessDenied`, `TimeEntry` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/formatDate` | `formatDate` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `./DraftDismissalDialog` | `DraftDismissalDialog` |
-| `./useDraftDismissal` | `useDraftDismissal`, `useActiveMount` |
-| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` |
-| `date-fns` | `format` |
-| `react` | `useCallback`, `useEffect`, `useId`, `useState`, `KeyboardEvent` |
-| `react-dom` | `createPortal` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
+| `../../features/timeEntries/useTimeEntries` | `useTimeEntries` | — | compiler-dependent |
+| `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../services/timeEntryService` | `TimeEntry` | Declaration | erased |
+| `../../services/timeEntryService` | `timeEntryService`, `timeAccessDenied` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `./DraftDismissalDialog` | `DraftDismissalDialog` | — | compiler-dependent |
+| `./useDraftDismissal` | `useDraftDismissal`, `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `date-fns` | `format` | — | compiler-dependent |
+| `react` | `KeyboardEvent` | Declaration | erased |
+| `react` | `useCallback`, `useEffect`, `useId`, `useState` | — | compiler-dependent |
+| `react-dom` | `createPortal` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -40,6 +42,8 @@ The optional task/project disclosure retains scoped personal drafts and creation
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -70,10 +74,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Draft](../entities/Draft.md) | Type alias | 22 | — | — |
+| [Draft](../entities/Draft.md) | Type alias | 22 | <pre><code>&#123; work&#95;date&#58; string&#59; timezone&#58; string&#59; minutes&#58; string&#59; note&#58; string&#59; reason&#58; string&#59;&#10;    task&#58; string&#59; request&#58; string&#59; editing&#63;&#58; Pick&#60;TimeEntry&#44; &#39;id&#39; &#124; &#39;version&#39;&#62; &#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TimeEntriesPanel` | `(props: { projectId: number; taskId?: number; disabled?: boolean;     start?: string; end?: string; embedded?: boolean; draftKey?: string \| null; onDirty?: (dirty: boolean) => void; onPending?: (pending: boolean) => void })` | — | — |
+| `TimeEntriesPanel` | <pre><code>&#40;props&#58; &#123; projectId&#58; number&#59; taskId&#63;&#58; number&#59; disabled&#63;&#58; boolean&#59;&#10;    start&#63;&#58; string&#59; end&#63;&#58; string&#59; embedded&#63;&#58; boolean&#59; draftKey&#63;&#58; string &#124; null&#59; onDirty&#63;&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59; onPending&#63;&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void &#125;&#41;</code></pre> | — | — |

@@ -23,7 +23,7 @@ Redacted authoritative member projection used by reconciliation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

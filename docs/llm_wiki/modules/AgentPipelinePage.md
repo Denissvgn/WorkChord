@@ -8,27 +8,27 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/agent/TaskRoutingPanel` | `TaskRoutingPanel` |
-| `../components/feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` |
-| `../components/settings/AdminAccessGate` | `AdminAccessGate` |
-| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` |
-| `../components/ui/SlideOverDrawer` | `SlideOverDrawer` |
-| `../hooks/useAdminAccess` | `useAdminAccess` |
-| `../hooks/useAgentAccess` | `useAgentAccess` |
-| `../services/agentService` | `agentService` |
-| `../types/agent` | `AgentModelTrustState`, `TaskTimelineItem` |
-| `../types/task` | `Task`, `TaskStatus` |
-| `../utils/apiError` | `getApiErrorStatus` |
-| `../utils/formatDate` | `formatDateTime` |
-| `../utils/protectedQueries` | `protectedQueryRetry` |
-| `@tanstack/react-query` | `useQuery` |
-| `clsx` | `clsx` |
-| `framer-motion` | `motion` |
-| `lucide-react` | `CheckCircle2`, `User`, `Calendar`, `Folder`, `RefreshCw`, `Terminal`, `Search`, `Clock`, `AlertTriangle` |
-| `react` | `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/agent/TaskRoutingPanel` | `TaskRoutingPanel` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` | — | compiler-dependent |
+| `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
+| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
+| `../services/agentService` | `agentService` | — | compiler-dependent |
+| `../types/agent` | `AgentModelTrustState`, `TaskTimelineItem` | Declaration | erased |
+| `../types/task` | `Task`, `TaskStatus` | Declaration | erased |
+| `../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `framer-motion` | `motion` | — | compiler-dependent |
+| `lucide-react` | `CheckCircle2`, `User`, `Calendar`, `Folder`, `RefreshCw`, `Terminal`, `Search`, `Clock`, `AlertTriangle` | — | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -41,6 +41,8 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

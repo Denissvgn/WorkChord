@@ -20,7 +20,7 @@ Explicit lifecycle status for a project milestone.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

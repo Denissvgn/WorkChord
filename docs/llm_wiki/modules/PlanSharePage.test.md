@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/pages/PlanSharePage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./PlanSharePage` | `PlanSharePage` |
-| `@testing-library/react` | `screen` |
-| `react-router-dom` | `Route`, `Routes` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PlanSharePage` | `PlanSharePage` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `react-router-dom` | `Route`, `Routes` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

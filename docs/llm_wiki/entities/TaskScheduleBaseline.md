@@ -25,7 +25,7 @@ _Auto-generated from `TaskScheduleBaseline` in `backend/app/models/recovery.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -19,7 +19,7 @@ _Auto-generated from `VerificationTransitionResponse` in `backend/app/schemas/au
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

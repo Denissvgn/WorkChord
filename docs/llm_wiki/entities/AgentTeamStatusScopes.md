@@ -1,7 +1,7 @@
 # AgentTeamStatusScopes
 
 **Location:** `frontend/src/features/agentTeamSetup/statusScopes.ts:23`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [statusScopes](../modules/statusScopes.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `AgentTeamStatusScopes` in `frontend/src/features/agentTeam
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

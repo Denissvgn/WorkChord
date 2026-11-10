@@ -1,7 +1,7 @@
 # RecoveryFocusIntent
 
 **Location:** `frontend/src/pages/PlanMasterPage.tsx:75`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `RecoveryFocusIntent` in `frontend/src/pages/PlanMasterPage
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,17 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
+**Target:**
+
+```typescript
+{
+    name: string;
+    project_id: string;
+    start_date: string;
+    end_date: string;
+    manager_email: string;
+}
+```
 
 ## Description
 
@@ -11,11 +22,11 @@ _Auto-generated from `SingleDraft` in `frontend/src/components/iteration/Iterati
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

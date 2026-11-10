@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/store/themeStore.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `zustand` | `create` |
-| `zustand/middleware` | `persist` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `zustand` | `create` | — | compiler-dependent |
+| `zustand/middleware` | `persist` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -53,5 +53,5 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ThemeState](../entities/ThemeState.md) | Class | 6 | — | — |
-| [Theme](../entities/Theme.md) | Type alias | 4 | — | — |
+| [ThemeState](../entities/ThemeState.md) | Interface | 6 | — | — |
+| [Theme](../entities/Theme.md) | Type alias | 4 | `'light' \| 'dark' \| 'blue' \| 'green'` | — |

@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -24,25 +26,39 @@ sequenceDiagram
     participant p12 as getattr
     participant p13 as len
     p0->>p1: brief_history_page
-    p1-->>p2: db.scalar
-    p1-->>p3: select(…).where (backend/app/routers/task_…main.py:brief_history_page)
-    p1-->>p4: select
-    p1-->>p5: HTTPException
-    p1-->>p6: list
+    p1-->>p2: db.scalar(...)
+    p1-->>p3: select(…).where (backend/app/routers/task_…main.py:brief_history_page)(...)
+    p1-->>p4: select(Task.id)
+    p1-->>p5: HTTPException(404, detail='Task not found or inaccessible')
+    p1-->>p6: list(...)
     p1-->>p7: (…).all
-    p1-->>p8: db.scalars
-    p1-->>p9: select(…).where(…).order_by(…).limit
-    p1-->>p10: select(…).where(…).order_by
-    p1-->>p11: select(…).where (backend/app/routers/task_…n.py:brief_history_page, 1)
-    p1-->>p4: select
-    p1-->>p12: getattr
-    p1-->>p13: len
-    p1-->>p13: len
+    p1-->>p8: db.scalars(...)
+    p1-->>p9: select(…).where(…).order_by(…).limit(...)
+    p1-->>p10: select(…).where(…).order_by(model.id)
+    p1-->>p11: select(…).where (backend/app/routers/task_…n.py:brief_history_page, 1)(..., ...)
+    p1-->>p4: select(model)
+    p1-->>p12: getattr(row, column.name)
+    p1-->>p13: len(rows)
+    p1-->>p13: len(rows)
 ```
+
+> Call sequence diagram shows 15 of 15 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 7 of 7 (0 omitted); unresolved 7 of 7 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 2; effect analysis evaluated: 2, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 13, emitted: 13, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. task_brief_history"]
@@ -107,7 +123,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

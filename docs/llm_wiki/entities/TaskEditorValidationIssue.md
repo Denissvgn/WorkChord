@@ -1,7 +1,7 @@
 # TaskEditorValidationIssue
 
 **Location:** `frontend/src/components/tasks/taskEditorContract.ts:196`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `TaskEditorValidationIssue` in `frontend/src/components/tas
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

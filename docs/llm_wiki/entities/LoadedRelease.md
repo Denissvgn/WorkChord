@@ -22,7 +22,7 @@ _Auto-generated from `_LoadedRelease` in `backend/app/services/agent_skill_bundl
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # TaskDependencySelectorProps
 
 **Location:** `frontend/src/components/tasks/TaskDependencySelector.tsx:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskDependencySelector](../modules/TaskDependencySelector.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TaskDependencySelectorProps` in `frontend/src/components/t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

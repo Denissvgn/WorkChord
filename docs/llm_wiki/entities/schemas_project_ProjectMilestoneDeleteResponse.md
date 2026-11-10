@@ -19,7 +19,7 @@ Response returned after deleting a project milestone.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

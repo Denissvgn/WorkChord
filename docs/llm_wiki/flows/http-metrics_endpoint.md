@@ -17,6 +17,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -24,69 +26,114 @@ sequenceDiagram
     participant p1 as collect_metrics
     participant p2 as readiness_snapshot
     participant p3 as get_settings
-    participant p4 as Settings
-    participant p5 as head_revision
-    participant p6 as ScriptDirectory.from_config
+    participant p4 as head_revision
+    participant p5 as _queue_snapshot
+    participant p6 as maintenance_state
     participant p7 as alembic_config
-    participant p8 as migrations_dir
-    participant p9 as Path(…).resolve
-    participant p10 as Path (backend/app/services/upgr…service.py:migrations_dir)
-    participant p11 as Config
-    participant p12 as str (backend/app/services/upgr…service.py:alembic_config)
-    participant p13 as config.set_main_option
-    participant p14 as alembic_safe_url
-    participant p15 as isinstance
-    participant p16 as make_url
-    participant p17 as url.render_as_string(…).replace
-    participant p18 as url.render_as_string
-    participant p19 as database_configuration
-    participant p20 as parse_database_configuration
-    participant p21 as script.get_heads
-    participant p22 as len (backend/app/services/upgr…_service.py:head_revision)
-    participant p23 as UpgradeError
-    participant p24 as ', '.join
-    participant p25 as asyncio.timeout
-    participant p26 as async_session_maker
-    participant p27 as db.execute (backend/app/observability.py:readiness_snapshot)
+    participant p8 as maintenance_configuration_fingerprint
+    participant p9 as database_configuration
+    participant p10 as _postgresql_snapshot
+    participant p11 as database_runtime_summary
+    participant p12 as _resident_set_size_bytes
+    participant p13 as Settings
+    participant p14 as utc_now
+    participant p15 as UpgradeError
+    participant p16 as as_utc
+    participant p17 as migrations_dir
+    participant p18 as alembic_safe_url
+    participant p19 as parse_database_configuration
+    participant p20 as PlainTextResponse
+    participant p21 as metrics.render_prometheus
+    participant p22 as logger.warning
+    participant p23 as asyncio.timeout
+    participant p24 as async_session_maker
+    participant p25 as db.execute (backend/app/observability.py:readiness_snapshot)
+    participant p26 as text (backend/app/observability.py:readiness_snapshot)
+    participant p27 as list (backend/app/observability.py:readiness_snapshot)
+    participant p28 as (…).scalars
     p0->>p1: collect_metrics
     p1->>p2: readiness_snapshot
     p2->>p3: get_settings
-    p3->>p4: Settings
-    p2->>p5: head_revision
-    p5-->>p6: ScriptDirectory.from_config
-    p5->>p7: alembic_config
-    p7->>p8: migrations_dir
-    p8-->>p9: Path(…).resolve
-    p8-->>p10: Path (backend/app/services/upgr…service.py:migrations_dir)
-    p7-->>p11: Config
-    p7-->>p12: str (backend/app/services/upgr…service.py:alembic_config)
-    p7-->>p13: config.set_main_option
-    p7-->>p12: str (backend/app/services/upgr…service.py:alembic_config)
-    p7-->>p13: config.set_main_option
-    p7->>p14: alembic_safe_url
-    p14-->>p15: isinstance
-    p14-->>p16: make_url
-    p14-->>p17: url.render_as_string(…).replace
-    p14-->>p18: url.render_as_string
-    p7->>p19: database_configuration
-    p19->>p20: parse_database_configuration
-    p19->>p3: get_settings
-    p5-->>p21: script.get_heads
-    p5-->>p22: len (backend/app/services/upgr…_service.py:head_revision)
-    p5->>p23: UpgradeError
-    p5-->>p24: ', '.join
-    p2-->>p25: asyncio.timeout
-    p2-->>p26: async_session_maker
-    p2-->>p27: db.execute (backend/app/observability.py:readiness_snapshot)
+    p2->>p4: head_revision
+    p2->>p5: _queue_snapshot
+    p2->>p6: maintenance_state
+    p4->>p7: alembic_config
+    p6->>p8: maintenance_configuration_fingerprint
+    p7->>p9: database_configuration
+    p2->>p10: _postgresql_snapshot
+    p2->>p11: database_runtime_summary
+    p2->>p12: _resident_set_size_bytes
+    p3->>p13: Settings
+    p5->>p14: utc_now
+    p4->>p15: UpgradeError
+    p5->>p16: as_utc
+    p7->>p17: migrations_dir
+    p7->>p18: alembic_safe_url
+    p9->>p19: parse_database_configuration
+    p0-->>p20: PlainTextResponse(metrics.render_prometheus(...), media_type='text/plain version=0.0.4 charset=utf-8')
+    p0-->>p21: metrics.render_prometheus
+    p1-->>p22: logger.warning('Could not refresh database metrics', exc_info=True)
+    p2-->>p23: asyncio.timeout(settings.database_readiness_timeout_seconds)
+    p2-->>p24: async_session_maker
+    p2-->>p25: db.execute (backend/app/observability.py:readiness_snapshot)(text(...))
+    p2-->>p26: text (backend/app/observability.py:readiness_snapshot)('SELECT 1')
+    p2-->>p27: list (backend/app/observability.py:readiness_snapshot)(...)
+    p2-->>p28: (…).scalars
+    p2-->>p25: db.execute (backend/app/observability.py:readiness_snapshot)(text(...))
+    p2-->>p26: text (backend/app/observability.py:readiness_snapshot)('SELECT version_num FROM alembic_version ORDER BY version_num')
 ```
 
-> Call sequence diagram shows 30 of 126 interactions; 96 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 126 interactions; 96 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 5 of 49 (44 omitted); unresolved 6 of 53 (47 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/upgrade_service.py:head_revision` | 6 | - | external | 2 |
+| `backend/app/services/upgrade_service.py:migrations_dir` | 9 | - | unresolved | 1 |
+| `backend/app/services/upgrade_service.py:migrations_dir` | 9 | - | external | 1 |
+| `backend/app/services/upgrade_service.py:alembic_config` | 8 | - | external | 3 |
+| `backend/app/services/upgrade_service.py:alembic_config` | 8 | - | unresolved | 2 |
+| `backend/app/database_config.py:alembic_safe_url` | 17 | - | external | 2 |
+| `backend/app/database_config.py:alembic_safe_url` | 17 | - | unresolved | 2 |
+| `backend/app/services/upgrade_service.py:database_configuration` | 22 | [backend/app/config.py](../modules/config.md) | internal | 1 |
+> Omission summary shows 8 of 27 groups; 19 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 25; effect analysis evaluated: 23, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 23 source steps with known totals: observed: 51, emitted: 51, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `metrics_endpoint` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `collect_metrics` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `readiness_snapshot` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `head_revision` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `ScriptDirectory.from_config` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `alembic_config` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `migrations_dir` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Path(…).resolve` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `Path (backend/app/services/upgr…service.py:migrations_dir)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `Config` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. metrics_endpoint"]
@@ -157,7 +204,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

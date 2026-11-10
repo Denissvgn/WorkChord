@@ -17,7 +17,7 @@ _Auto-generated from `TaskTimelinePageItem` in `backend/app/schemas/agent.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,7 +15,7 @@ Raised when an outbound webhook target or delivery cannot be found.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,11 +8,12 @@ _Auto-generated from `frontend/src/test/setup.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../i18n/i18n` | `i18n` |
-| `@testing-library/react` | `cleanup` |
-| `vitest` | `afterEach` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `@testing-library/jest-dom/vitest` | — | — | present |
+| `@testing-library/react` | `cleanup` | — | compiler-dependent |
+| `vitest` | `afterEach` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -42,4 +43,4 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 2 | 0 |
+| typescript | 3 | 0 |

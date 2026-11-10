@@ -25,7 +25,7 @@ _Auto-generated from `TaskMetricSignals` in `backend/app/schemas/work_metrics.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

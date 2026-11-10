@@ -36,7 +36,7 @@ Durable agent task assignment response.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

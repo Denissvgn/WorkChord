@@ -20,7 +20,7 @@ The task deletion hook writes the highest observed task version to an independen
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
+**Target:**
+
+```typescript
+'templates' | 'labels'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `ManagementSection` in `frontend/src/components/settings/Te
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

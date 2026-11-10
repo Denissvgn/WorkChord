@@ -15,7 +15,7 @@ _Auto-generated from `EvidenceResolutionError` in `backend/app/autonomy/evidence
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

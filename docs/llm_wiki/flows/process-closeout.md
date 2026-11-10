@@ -16,59 +16,124 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as build_parser().parse_args
-    participant p2 as build_parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_subparsers
-    participant p5 as commands.add_parser
-    participant p6 as publication.add_argument
-    participant p7 as _signing_arguments
-    participant p8 as parser.add_argument (backend/app/cli/closeout.py:_signing_arguments)
-    participant p9 as render.add_argument
-    participant p10 as closeout.add_argument
-    participant p11 as _optional_closeout_dependencies
-    participant p12 as parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p0-->>p1: build_parser().parse_args
-    p0->>p2: build_parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_subparsers
-    p2-->>p5: commands.add_parser
-    p2-->>p6: publication.add_argument
-    p2-->>p6: publication.add_argument
-    p2-->>p6: publication.add_argument
-    p2-->>p6: publication.add_argument
-    p2-->>p6: publication.add_argument
-    p2-->>p6: publication.add_argument
-    p2-->>p6: publication.add_argument
-    p2->>p7: _signing_arguments
-    p7-->>p8: parser.add_argument (backend/app/cli/closeout.py:_signing_arguments)
-    p7-->>p8: parser.add_argument (backend/app/cli/closeout.py:_signing_arguments)
-    p7-->>p8: parser.add_argument (backend/app/cli/closeout.py:_signing_arguments)
-    p2-->>p5: commands.add_parser
-    p2-->>p9: render.add_argument
-    p2-->>p9: render.add_argument
-    p2-->>p9: render.add_argument
-    p2-->>p5: commands.add_parser
-    p2-->>p10: closeout.add_argument
-    p2->>p11: _optional_closeout_dependencies
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
-    p11-->>p12: parser.add_argument (backend/app/cli/closeout.…nal_closeout_dependencies)
+    participant p1 as build_parser
+    participant p2 as publish_postcutover_release
+    participant p3 as render_release_notes
+    participant p4 as finalize_closeout
+    participant p5 as verify_closeout_report
+    participant p6 as read_document
+    participant p7 as _dependency_summary
+    participant p8 as _release_identity
+    participant p9 as _evaluate_closeout_input
+    participant p10 as _validate_qualification
+    participant p11 as _write_public_text
+    participant p12 as _validate_closure_decision
+    participant p13 as _validate_production_report
+    participant p14 as _read_json_object
+    participant p15 as _safe_identifier
+    participant p16 as _installed_application_version
+    participant p17 as _artifact_references
+    participant p18 as _publication_exceptions
+    participant p19 as _repository_document_set
+    participant p20 as _release_notes_markdown
+    participant p21 as _validate_publication
+    participant p22 as _sign_document
+    participant p23 as verify_signed_document
+    participant p24 as _require_new_output
+    participant p25 as _validate_dependency_summary
+    participant p26 as _private_key
+    participant p27 as _text
+    participant p28 as verify_document
+    participant p29 as print
+    participant p30 as build_parser().parse_args
+    p0->>p1: build_parser
+    p0->>p2: publish_postcutover_release
+    p0->>p3: render_release_notes
+    p0->>p4: finalize_closeout
+    p0->>p5: verify_closeout_report
+    p2->>p6: read_document
+    p4->>p7: _dependency_summary
+    p2->>p8: _release_identity
+    p4->>p9: _evaluate_closeout_input
+    p2->>p10: _validate_qualification
+    p3->>p11: _write_public_text
+    p5->>p12: _validate_closure_decision
+    p2->>p13: _validate_production_report
+    p2->>p14: _read_json_object
+    p2->>p15: _safe_identifier
+    p2->>p16: _installed_application_version
+    p2->>p17: _artifact_references
+    p2->>p18: _publication_exceptions
+    p2->>p19: _repository_document_set
+    p2->>p20: _release_notes_markdown
+    p2->>p21: _validate_publication
+    p2->>p22: _sign_document
+    p10->>p23: verify_signed_document
+    p22->>p24: _require_new_output
+    p9->>p25: _validate_dependency_summary
+    p22->>p26: _private_key
+    p8->>p27: _text
+    p6->>p28: verify_document
+    p0-->>p29: print(...)
+    p0-->>p30: build_parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 1386 interactions; 1356 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1386 interactions; 1356 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 266 (265 omitted); unresolved 1 of 532 (531 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/cli/closeout.py:build_parser` | 3 | - | external | 1 |
+| `backend/app/cli/closeout.py:build_parser` | 3 | - | unresolved | 18 |
+| `backend/app/cli/closeout.py:build_parser` | 3 | [backend/app/cli/closeout.py](../modules/cli_closeout.md) | internal | 3 |
+| `backend/app/cli/closeout.py:_signing_arguments` | 14 | - | unresolved | 3 |
+| `backend/app/cli/closeout.py:_optional_closeout_dependencies` | 24 | - | unresolved | 8 |
+| `backend/app/database_migration/manifest.py:read_document` | 38 | - | external | 2 |
+| `backend/app/database_migration/manifest.py:read_document` | 38 | - | unresolved | 1 |
+| `backend/app/database_migration/manifest.py:read_document` | 38 | [backend/app/database_migration/manifest.py](../modules/database_migration_manifest.md) | internal | 2 |
+> Omission summary shows 8 of 186 groups; 178 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 589; effect analysis evaluated: 294, partial: 13, unavailable: 282. Counts include steps omitted from the displayed trace.
+
+Collector observations for 307 source steps with known totals: observed: 1454, emitted: 1392, omitted: 62. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `13` | `13` | `0` |
+| `build_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `build_parser` | `available` | `partial` | `available` | `14` | `9` | `5` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_subparsers` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `commands.add_parser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `publication.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `publication.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `publication.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `publication.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `publication.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `publication.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

@@ -73,7 +73,7 @@ Stable hard blockers shared by preview and assignment enforcement.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

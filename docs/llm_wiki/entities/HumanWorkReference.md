@@ -17,7 +17,7 @@ Enriches a bounded task reference with current server action availability for au
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

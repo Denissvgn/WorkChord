@@ -31,7 +31,7 @@ Secret-free provider-neutral model capability declaration.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

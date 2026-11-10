@@ -10,13 +10,13 @@ _Auto-generated from `frontend/src/features/savedViews/taskViewState.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/tasks/TaskFiltersBar` | `TaskFilters` |
-| `../../components/tasks/TaskList` | `SortKey` |
-| `../../types/savedView` | `SavedView` |
-| `../../utils/taskFilterDefaults` | `defaultFilters` |
-| `../planningMasters/planningTaskIssues` | `parsePlanningTaskIssue` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `../../components/tasks/TaskList` | `SortKey` | Declaration | erased |
+| `../../types/savedView` | `SavedView` | Declaration | erased |
+| `../../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
+| `../planningMasters/planningTaskIssues` | `parsePlanningTaskIssue` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/features/savedViews/taskViewState.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskFiltersBar.tsx"]

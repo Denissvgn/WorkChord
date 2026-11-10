@@ -21,68 +21,23 @@ Centralized outbound URL and host validation.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/config.py"]
-    n1["backend/app/schemas/agent.py"]
-    n2["backend/app/schemas/external_link.py"]
-    n3["backend/app/schemas/outbound_webhook.py"]
-    n4["backend/app/schemas/request_source.py"]
-    n5["backend/app/schemas/task.py"]
-    n6["backend/app/services/email_settings_service.py"]
-    n7["backend/app/services/github_status_service.py"]
-    n8["backend/app/services/llm_service.py"]
-    n9["backend/app/services/outbound_webhook_service.py"]
-    n10["backend/app/services/system_settings_service.py"]
-    n11["backend/app/utils/url_policy.py"]
-    n1 --> n4
-    n1 --> n5
-    n1 --> n11
-    n2 --> n11
-    n3 --> n11
-    n4 --> n11
-    n5 --> n2
-    n5 --> n11
-    n6 --> n0
-    n6 --> n10
-    n6 --> n11
-    n7 --> n0
-    n7 --> n11
-    n8 --> n0
-    n8 --> n11
-    n9 --> n3
-    n9 --> n6
-    n9 --> n11
-    n10 --> n0
-    n10 --> n11
-    n11 --> n0
-    click n0 "../modules/config.md"
-    click n1 "../modules/schemas_agent.md"
-    click n2 "../modules/schemas_external_link.md"
-    click n3 "../modules/schemas_outbound_webhook.md"
-    click n4 "../modules/schemas_request_source.md"
-    click n5 "../modules/schemas_task.md"
-    click n6 "../modules/email_settings_service.md"
-    click n7 "../modules/github_status_service.md"
-    click n8 "../modules/llm_service.md"
-    click n9 "../modules/outbound_webhook_service.md"
-    click n10 "../modules/system_settings_service.md"
-    click n11 "../modules/url_policy.md"
+    n0["backend"]
+    n1["backend/app/utils/url_policy.py"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/url_policy.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [schemas_agent](../modules/schemas_agent.md) |
-| Inbound | [schemas_external_link](../modules/schemas_external_link.md) |
-| Inbound | [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md) |
-| Inbound | [schemas_request_source](../modules/schemas_request_source.md) |
-| Inbound | [schemas_task](../modules/schemas_task.md) |
-| Inbound | [email_settings_service](../modules/email_settings_service.md) |
-| Inbound | [github_status_service](../modules/github_status_service.md) |
-| Inbound | [llm_service](../modules/llm_service.md) |
-| Inbound | [outbound_webhook_service](../modules/outbound_webhook_service.md) |
-| Inbound | [system_settings_service](../modules/system_settings_service.md) |
-| Outbound | [config](../modules/config.md) |
+| Inbound | `backend` (11) |
+| Outbound | `backend` (1) |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

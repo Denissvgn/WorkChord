@@ -8,18 +8,19 @@ _Auto-generated from `frontend/src/components/requestSources/RequestSourceLinksP
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../services/requestSourceService` | `requestSourceService` |
-| `../../types/requestSource` | `RequestSource`, `RequestSourceLinkCreate`, `RequestSourceTargetType`, `RequestSourceType` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/safeUrl` | `safeExternalHref` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertCircle`, `Link2`, `Loader2`, `Plus`, `Search`, `Trash2`, `X` |
-| `react` | `useMemo`, `useState`, `KeyboardEvent` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../services/requestSourceService` | `requestSourceService` | — | compiler-dependent |
+| `../../types/requestSource` | `RequestSource`, `RequestSourceLinkCreate`, `RequestSourceTargetType`, `RequestSourceType` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/safeUrl` | `safeExternalHref` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertCircle`, `Link2`, `Loader2`, `Plus`, `Search`, `Trash2`, `X` | — | compiler-dependent |
+| `react` | `KeyboardEvent` | Specifier | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -32,6 +33,8 @@ _Auto-generated from `frontend/src/components/requestSources/RequestSourceLinksP
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
@@ -106,10 +109,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RequestSourceLinksPanelProps](../entities/RequestSourceLinksPanelProps.md) | Class | 19 | — | — |
+| [RequestSourceLinksPanelProps](../entities/RequestSourceLinksPanelProps.md) | Interface | 19 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `RequestSourceLinksPanel` | `({     targetType,     targetId,     initialCount = 0,     title,     compact = false,     onChanged, }: RequestSourceLinksPanelProps)` | — | — |
+| `RequestSourceLinksPanel` | <pre><code>&#40;&#123;&#10;    targetType&#44;&#10;    targetId&#44;&#10;    initialCount &#61; 0&#44;&#10;    title&#44;&#10;    compact &#61; false&#44;&#10;    onChanged&#44;&#10;&#125;&#58; RequestSourceLinksPanelProps&#41;</code></pre> | — | — |

@@ -1,7 +1,7 @@
 # DurationSamples
 
 **Location:** `frontend/src/types/deliveryMetrics.ts:1`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [deliveryMetrics](../modules/deliveryMetrics.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `DurationSamples` in `frontend/src/types/deliveryMetrics.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # PlanningRecoveryAction
 
 **Location:** `frontend/src/features/planningMasters/masters.ts:122`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `PlanningRecoveryAction` in `frontend/src/features/planning
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

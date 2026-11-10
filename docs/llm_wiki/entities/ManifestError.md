@@ -15,7 +15,7 @@ A migration document is malformed or has lost integrity.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

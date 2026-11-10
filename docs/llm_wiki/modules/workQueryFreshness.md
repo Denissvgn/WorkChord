@@ -8,9 +8,9 @@ Unauthorized query failures remove cached server data and suppress automatic ret
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `@tanstack/react-query` | `QueryClient` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `@tanstack/react-query` | `QueryClient` | Declaration | erased |
 
 ## Module Signals
 
@@ -61,7 +61,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [QueryPolicy](../entities/QueryPolicy.md) | Type alias | 3 | — | — |
+| [QueryPolicy](../entities/QueryPolicy.md) | Type alias | 3 | `'live' \| 'history' \| 'editor' \| 'reference' \| 'settings' \| 'identity'` | — |
 
 ## Functions
 

@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/types/release.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./task` | `TaskStatus` |
-| `./workMetrics` | `WorkMetrics` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./task` | `TaskStatus` | Declaration | erased |
+| `./workMetrics` | `WorkMetrics` | Declaration | erased |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/types/release.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/releases/ReleaseForm.tsx"]
@@ -67,8 +69,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReleaseTaskSummary](../entities/types_release_ReleaseTaskSummary.md) | Class | 6 | — | — |
-| [Release](../entities/types_release_Release.md) | Class | 13 | `WorkMetrics` | — |
-| [ReleaseCreateRequest](../entities/types_release_ReleaseCreateRequest.md) | Class | 29 | — | — |
-| [ReleaseUpdateRequest](../entities/types_release_ReleaseUpdateRequest.md) | Class | 40 | — | — |
-| [ReleaseStatus](../entities/types_release_ReleaseStatus.md) | Type alias | 4 | — | — |
+| [ReleaseTaskSummary](../entities/types_release_ReleaseTaskSummary.md) | Interface | 6 | — | — |
+| [Release](../entities/types_release_Release.md) | Interface | 13 | `WorkMetrics` | — |
+| [ReleaseCreateRequest](../entities/types_release_ReleaseCreateRequest.md) | Interface | 29 | — | — |
+| [ReleaseUpdateRequest](../entities/types_release_ReleaseUpdateRequest.md) | Interface | 40 | — | — |
+| [ReleaseStatus](../entities/types_release_ReleaseStatus.md) | Type alias | 4 | `'planned' \| 'building' \| 'shipped' \| 'canceled'` | — |

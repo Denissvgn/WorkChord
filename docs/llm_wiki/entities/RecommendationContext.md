@@ -29,7 +29,7 @@ Normalized work item context for assignee recommendation scoring.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

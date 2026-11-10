@@ -9,8 +9,9 @@
 1. `authority.require_project`
 2. `time.utc_now`
 3. `query_limits.CollectionLimitExceededError`
-4. `delivery_metrics_service.DeliveryMetricsService`
-5. `schemas_execution_usage.ExecutionUsageSummary`
+4. `delivery_metrics_service.DeliveryMetricsService.report`
+5. `delivery_metrics_service.DeliveryMetricsService`
+6. `schemas_execution_usage.ExecutionUsageSummary`
 
 ## Touches
 

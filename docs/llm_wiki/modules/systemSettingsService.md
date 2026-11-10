@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/services/systemSettingsService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/systemSettings` | `AppRuntimeSettings`, `AppRuntimeSettingsUpdate`, `GitHubRuntimeSettings`, `GitHubRuntimeSettingsUpdate`, `LLMRuntimeSettings`, `LLMRuntimeSettingsUpdate`, `SystemSettings`, `WebIntakeRuntimeSettings`, `WebIntakeRuntimeSettingsUpdate` |
-| `./api` | `api` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/systemSettings` | `AppRuntimeSettings`, `AppRuntimeSettingsUpdate`, `GitHubRuntimeSettings`, `GitHubRuntimeSettingsUpdate`, `LLMRuntimeSettings`, `LLMRuntimeSettingsUpdate`, `SystemSettings`, `WebIntakeRuntimeSettings`, `WebIntakeRuntimeSettingsUpdate` | Declaration | erased |
+| `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/services/systemSettingsService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/InterfaceLanguageSettings.tsx"]

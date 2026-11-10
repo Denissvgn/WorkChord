@@ -8,9 +8,9 @@ _Auto-generated from `frontend/vitest.config.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `vitest/config` | `defineConfig` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `vitest/config` | `defineConfig` | — | compiler-dependent |
 
 ## Module Signals
 

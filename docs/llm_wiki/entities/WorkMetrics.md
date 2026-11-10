@@ -1,7 +1,7 @@
 # WorkMetrics
 
 **Location:** `frontend/src/types/workMetrics.ts:1`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [workMetrics](../modules/workMetrics.md)
 
@@ -29,7 +29,7 @@ _Auto-generated from `WorkMetrics` in `frontend/src/types/workMetrics.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

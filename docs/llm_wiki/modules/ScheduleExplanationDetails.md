@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/components/gantt/ScheduleExplanationDetails.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../types/gantt` | `GanttTask`, `ScheduleDecisionExplanation` |
-| `../../utils/formatDate` | `formatDate` |
-| `../common/Button` | `Button` |
-| `clsx` | `clsx` |
-| `date-fns` | `addDays`, `format`, `parseISO` |
-| `lucide-react` | `AlertTriangle`, `ChevronDown`, `ChevronRight`, `ExternalLink` |
-| `react` | `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../types/gantt` | `GanttTask`, `ScheduleDecisionExplanation` | Declaration | erased |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `date-fns` | `addDays`, `format`, `parseISO` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `ChevronDown`, `ChevronRight`, `ExternalLink` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +30,8 @@ _Auto-generated from `frontend/src/components/gantt/ScheduleExplanationDetails.t
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -74,10 +76,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ScheduleExplanationDetailsProps](../entities/ScheduleExplanationDetailsProps.md) | Class | 12 | — | — |
+| [ScheduleExplanationDetailsProps](../entities/ScheduleExplanationDetailsProps.md) | Interface | 12 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ScheduleExplanationDetails` | `({     decisions,     taskLookup,     memberVacations,     workloadBalanced,     workloadIssues,     onOpenTask, }: ScheduleExplanationDetailsProps)` | — | — |
+| `ScheduleExplanationDetails` | <pre><code>&#40;&#123;&#10;    decisions&#44;&#10;    taskLookup&#44;&#10;    memberVacations&#44;&#10;    workloadBalanced&#44;&#10;    workloadIssues&#44;&#10;    onOpenTask&#44;&#10;&#125;&#58; ScheduleExplanationDetailsProps&#41;</code></pre> | — | — |

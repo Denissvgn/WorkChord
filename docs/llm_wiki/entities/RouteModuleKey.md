@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routeModules](../modules/routeModules.md)
+**Target:**
+
+```typescript
+keyof typeof routeModuleLoaders
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `RouteModuleKey` in `frontend/src/navigation/routeModules.t
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

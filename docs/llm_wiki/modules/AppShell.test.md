@@ -8,14 +8,15 @@ _Auto-generated from `frontend/src/components/layout/AppShell.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./AppShell` | `AppShell` |
-| `@testing-library/react` | `screen` |
-| `react` | `useLayoutEffect`, `useRef`, `ReactNode` |
-| `react-router-dom` | `useLocation`, `useNavigate` |
-| `vitest` | `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./AppShell` | `AppShell` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useLayoutEffect`, `useRef` | — | compiler-dependent |
+| `react-router-dom` | `useLocation`, `useNavigate` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

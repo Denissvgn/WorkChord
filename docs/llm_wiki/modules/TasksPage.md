@@ -8,42 +8,45 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/common/FullscreenWorkspace` | `FullscreenWorkspace` |
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../components/iteration/IterationSelector` | `IterationSelector` |
-| `../components/overview/OverviewTaskReturnBar` | `OverviewTaskReturnBar` |
-| `../components/planning/PlanReturnBar` | `PlanReturnBar` |
-| `../components/tasks/BacklogPanel` | `BacklogPanel` |
-| `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` |
-| `../components/tasks/ImportTasksModal` | `ImportTasksModal` |
-| `../components/tasks/KanbanBoard/KanbanBoard` | `KanbanBoard` |
-| `../components/tasks/SavedViewsControl` | `SavedViewsControl` |
-| `../components/tasks/TaskEditorDrawer` | `TaskEditorDrawer` |
-| `../components/tasks/TaskFiltersBar` | `TaskFiltersBar`, `TaskFilters` |
-| `../components/tasks/TaskList` | `TaskList`, `SortKey`, `TaskMode` |
-| `../components/tasks/TaskSearch` | `TaskSearch` |
-| `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout`, `SlideOverDrawer` |
-| `../features/overview/overviewTaskThread` | `OVERVIEW_TASK_ORIGIN`, `OVERVIEW_TASK_ORIGIN_PARAM`, `OVERVIEW_TASK_PARAM`, `OVERVIEW_TASK_RETURN_PARAM`, `OVERVIEW_TASK_THREAD_PARAM`, `overviewTaskThreadSource`, `positiveTaskId` |
-| `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUE_PARAM`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `PlanningTaskIssue` |
-| `../features/savedViews/taskViewState` | `filtersFromSavedView`, `sortKeyFromSavedView` |
-| `../i18n/seedDisplay` | `savedViewDisplay` |
-| `../services/iterationService` | `iterationService` |
-| `../services/savedViewService` | `savedViewService` |
-| `../services/taskService` | `taskService` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../types/savedView` | `SavedView` |
-| `../utils/savedViewState` | `savedViewModified` |
-| `../utils/taskFilterDefaults` | `defaultFilters` |
-| `@tanstack/react-query` | `useQuery` |
-| `clsx` | `clsx` |
-| `framer-motion` | `motion` |
-| `lucide-react` | `AlertTriangle`, `Bookmark`, `LayoutGrid`, `List`, `ListFilter`, `Maximize2`, `Minimize2`, `Plus`, `Upload`, `Waypoints`, `X` |
-| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/FullscreenWorkspace` | `FullscreenWorkspace` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../components/iteration/IterationSelector` | `IterationSelector` | — | compiler-dependent |
+| `../components/overview/OverviewTaskReturnBar` | `OverviewTaskReturnBar` | — | compiler-dependent |
+| `../components/planning/PlanReturnBar` | `PlanReturnBar` | — | compiler-dependent |
+| `../components/tasks/BacklogPanel` | `BacklogPanel` | — | compiler-dependent |
+| `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
+| `../components/tasks/ImportTasksModal` | `ImportTasksModal` | — | compiler-dependent |
+| `../components/tasks/KanbanBoard/KanbanBoard` | `KanbanBoard` | — | compiler-dependent |
+| `../components/tasks/SavedViewsControl` | `SavedViewsControl` | — | compiler-dependent |
+| `../components/tasks/TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
+| `../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `../components/tasks/TaskFiltersBar` | `TaskFiltersBar` | — | compiler-dependent |
+| `../components/tasks/TaskList` | `SortKey`, `TaskMode` | Declaration | erased |
+| `../components/tasks/TaskList` | `TaskList` | — | compiler-dependent |
+| `../components/tasks/TaskSearch` | `TaskSearch` | — | compiler-dependent |
+| `../components/ui` | `OverflowMenu`, `PageHeader`, `PageLayout`, `SlideOverDrawer` | — | compiler-dependent |
+| `../features/overview/overviewTaskThread` | `OVERVIEW_TASK_ORIGIN`, `OVERVIEW_TASK_ORIGIN_PARAM`, `OVERVIEW_TASK_PARAM`, `OVERVIEW_TASK_RETURN_PARAM`, `OVERVIEW_TASK_THREAD_PARAM`, `overviewTaskThreadSource`, `positiveTaskId` | — | compiler-dependent |
+| `../features/planningMasters/planningTaskIssues` | `PlanningTaskIssue` | Declaration | erased |
+| `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `PLANNING_TASK_ISSUE_PARAM`, `parsePlanningIterationId`, `parsePlanningTaskIssue` | — | compiler-dependent |
+| `../features/savedViews/taskViewState` | `filtersFromSavedView`, `sortKeyFromSavedView` | — | compiler-dependent |
+| `../i18n/seedDisplay` | `savedViewDisplay` | — | compiler-dependent |
+| `../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../services/savedViewService` | `savedViewService` | — | compiler-dependent |
+| `../services/taskService` | `taskService` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../types/savedView` | `SavedView` | Declaration | erased |
+| `../utils/savedViewState` | `savedViewModified` | — | compiler-dependent |
+| `../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `framer-motion` | `motion` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Bookmark`, `LayoutGrid`, `List`, `ListFilter`, `Maximize2`, `Minimize2`, `Plus`, `Upload`, `Waypoints`, `X` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -55,6 +58,8 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -85,4 +90,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ViewMode](../entities/ViewMode.md) | Type alias | 66 | — | — |
+| [ViewMode](../entities/ViewMode.md) | Type alias | 66 | `'list' \| 'board'` | — |

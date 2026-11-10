@@ -1,7 +1,7 @@
 # ScheduleExplanationDetailsProps
 
 **Location:** `frontend/src/components/gantt/ScheduleExplanationDetails.tsx:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ScheduleExplanationDetails](../modules/ScheduleExplanationDetails.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `ScheduleExplanationDetailsProps` in `frontend/src/componen
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,23 +8,23 @@ _Auto-generated from `frontend/src/components/settings/GitHubSettingsPanel.tsx`.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/seedDisplay` | `githubRuleDisplay` |
-| `../../services/githubService` | `githubService` |
-| `../../types/github` | `GitHubAutomationEventType`, `GitHubAutomationTargetStatus`, `GitHubStatusAutomationRule`, `GitHubStatusAutomationRuleCreate` |
-| `../../types/task` | `TaskStatus` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../feedback/toast` | `useToast` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Edit2`, `Github`, `Loader2`, `Plus`, `Save`, `Trash2`, `X` |
-| `react` | `useId`, `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/seedDisplay` | `githubRuleDisplay` | — | compiler-dependent |
+| `../../services/githubService` | `githubService` | — | compiler-dependent |
+| `../../types/github` | `GitHubAutomationEventType`, `GitHubAutomationTargetStatus`, `GitHubStatusAutomationRule`, `GitHubStatusAutomationRuleCreate` | Declaration | erased |
+| `../../types/task` | `TaskStatus` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Edit2`, `Github`, `Loader2`, `Plus`, `Save`, `Trash2`, `X` | — | compiler-dependent |
+| `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -36,6 +36,8 @@ _Auto-generated from `frontend/src/components/settings/GitHubSettingsPanel.tsx`.
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -66,7 +68,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [FormErrors](../entities/FormErrors.md) | Type alias | 45 | — | — |
+| [FormErrors](../entities/FormErrors.md) | Type alias | 45 | `Partial<Record<'name' \| 'sort_order', string>>` | — |
 
 ## Functions
 

@@ -1,9 +1,10 @@
 # Page
 
 **Location:** `frontend/src/services/discussionService.ts:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)
+**Type parameters:** `T`
 
 ## Description
 
@@ -19,7 +20,7 @@ _Auto-generated from `Page` in `frontend/src/services/discussionService.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

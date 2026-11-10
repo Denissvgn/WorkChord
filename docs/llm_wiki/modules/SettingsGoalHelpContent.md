@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/settings/SettingsGoalHelpContent.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `lucide-react` | `ArrowRight` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `lucide-react` | `ArrowRight` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -48,10 +48,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SettingsGoalTab](../entities/SettingsGoalTab.md) | Type alias | 5 | — | — |
+| [SettingsGoalTab](../entities/SettingsGoalTab.md) | Type alias | 5 | `'scheduling' \| 'github' \| 'models_agents'` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `SettingsGoalHelpContent` | `({     onNavigate, }: {     onNavigate?: () => void; })` | — | — |
+| `SettingsGoalHelpContent` | <pre><code>&#40;&#123;&#10;    onNavigate&#44;&#10;&#125;&#58; &#123;&#10;    onNavigate&#63;&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |

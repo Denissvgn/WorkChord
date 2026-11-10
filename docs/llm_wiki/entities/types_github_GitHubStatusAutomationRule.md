@@ -1,7 +1,7 @@
 # GitHubStatusAutomationRule
 
 **Location:** `frontend/src/types/github.ts:14`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_github](../modules/types_github.md)
 
@@ -27,7 +27,7 @@ _Auto-generated from `GitHubStatusAutomationRule` in `frontend/src/types/github.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -26,7 +26,7 @@ _Auto-generated from `DeliveryScenario` in `backend/tests/support/delivery.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

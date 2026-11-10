@@ -25,7 +25,7 @@ Response for task status log entry.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

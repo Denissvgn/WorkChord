@@ -19,7 +19,7 @@ Transport selected by the durable outbound delivery worker.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

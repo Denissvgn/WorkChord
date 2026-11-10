@@ -12,11 +12,11 @@ _Auto-generated from `AgentAssignmentQueueClass` in `backend/app/schemas/agent.p
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

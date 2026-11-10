@@ -41,7 +41,7 @@ _Auto-generated from `AgentWorkPackageResponse` in `backend/app/schemas/autonomy
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

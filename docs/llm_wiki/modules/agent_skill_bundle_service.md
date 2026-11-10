@@ -13,6 +13,7 @@ The typed `catalog()` accessor gives team setup a defensive copy of the same val
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.config` | `get_settings` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleArchiveRecord`, `SkillBundleCatalogEntry`, `SkillBundleCatalogResponse`, `SkillBundleDiscoveryResponse`, `SkillBundleManifestResponse`, `SkillBundleReleaseIndex` |
 | `base64` | `base64` |
 | `collections` | `Counter` |
@@ -35,43 +36,53 @@ The typed `catalog()` accessor gives team setup a defensive copy of the same val
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/mcp_agent_tools.py"]
-    n1["backend/app/routers/agent.py"]
-    n2["backend/app/routers/agent_skill_bundles.py"]
-    n3["backend/app/schemas/agent_skill_bundle.py"]
-    n4["backend/app/services/agent_skill_bundle_service.py"]
-    n5["backend/app/services/agent_team_setup_service.py"]
-    n6["backend/tests/conftest.py"]
-    n7["backend/tests/test_agent_routing_rollout.py"]
-    n8["backend/tests/test_agent_team_catalog.py"]
-    n0 --> n3
-    n0 --> n4
-    n0 --> n5
-    n1 --> n2
-    n1 --> n3
+    n0["backend/app/config.py"]
+    n1["backend/app/mcp_agent_tools.py"]
+    n2["backend/app/routers/agent.py"]
+    n3["backend/app/routers/agent_skill_bundles.py"]
+    n4["backend/app/schemas/agent_skill_bundle.py"]
+    n5["backend/app/services/agent_skill_bundle_service.py"]
+    n6["backend/app/services/agent_team_setup_service.py"]
+    n7["backend/tests/conftest.py"]
+    n8["backend/tests/test_agent_routing_rollout.py"]
+    n9["backend/tests/test_agent_team_catalog.py"]
+    n1 --> n0
     n1 --> n4
     n1 --> n5
+    n1 --> n6
+    n2 --> n0
     n2 --> n3
     n2 --> n4
-    n4 --> n3
-    n5 --> n3
+    n2 --> n5
+    n2 --> n6
+    n3 --> n0
+    n3 --> n4
+    n3 --> n5
+    n5 --> n0
     n5 --> n4
+    n6 --> n0
     n6 --> n4
+    n6 --> n5
     n7 --> n0
-    n7 --> n1
-    n7 --> n4
-    n8 --> n3
-    n8 --> n4
+    n7 --> n5
+    n8 --> n0
+    n8 --> n1
+    n8 --> n2
     n8 --> n5
-    click n0 "../modules/mcp_agent_tools.md"
-    click n1 "../modules/routers_agent.md"
-    click n2 "../modules/agent_skill_bundles.md"
-    click n3 "../modules/agent_skill_bundle.md"
-    click n4 "../modules/agent_skill_bundle_service.md"
-    click n5 "../modules/agent_team_setup_service.md"
-    click n6 "../modules/conftest.md"
-    click n7 "../modules/test_agent_routing_rollout.md"
-    click n8 "../modules/test_agent_team_catalog.md"
+    n9 --> n0
+    n9 --> n4
+    n9 --> n5
+    n9 --> n6
+    click n0 "../modules/config.md"
+    click n1 "../modules/mcp_agent_tools.md"
+    click n2 "../modules/routers_agent.md"
+    click n3 "../modules/agent_skill_bundles.md"
+    click n4 "../modules/agent_skill_bundle.md"
+    click n5 "../modules/agent_skill_bundle_service.md"
+    click n6 "../modules/agent_team_setup_service.md"
+    click n7 "../modules/conftest.md"
+    click n8 "../modules/test_agent_routing_rollout.md"
+    click n9 "../modules/test_agent_team_catalog.md"
 ```
 
 ### Internal neighbors
@@ -85,6 +96,7 @@ flowchart LR
 | Inbound | [conftest](../modules/conftest.md) |
 | Inbound | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) |
 | Inbound | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) |
+| Outbound | [config](../modules/config.md) |
 | Outbound | [agent_skill_bundle](../modules/agent_skill_bundle.md) |
 
 ### External packages

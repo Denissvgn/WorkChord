@@ -1,7 +1,7 @@
 # BalanceWorkload
 
 **Location:** `frontend/src/types/schedulingRules.ts:32`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [schedulingRules](../modules/schedulingRules.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `BalanceWorkload` in `frontend/src/types/schedulingRules.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

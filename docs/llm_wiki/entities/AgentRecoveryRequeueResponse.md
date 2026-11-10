@@ -20,7 +20,7 @@ Authoritative result of stale-work reconciliation and requeue.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

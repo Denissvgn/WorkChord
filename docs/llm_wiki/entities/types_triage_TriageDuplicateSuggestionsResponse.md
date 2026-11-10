@@ -1,7 +1,7 @@
 # TriageDuplicateSuggestionsResponse
 
 **Location:** `frontend/src/types/triage.ts:87`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `TriageDuplicateSuggestionsResponse` in `frontend/src/types
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

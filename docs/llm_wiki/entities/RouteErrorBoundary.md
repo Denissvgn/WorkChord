@@ -2,7 +2,7 @@
 
 **Location:** `frontend/src/components/layout/RouteErrorBoundary.tsx:18`
 **Kind:** Class
-**Bases:** `Component`
+**Bases:** `Component<RouteErrorBoundaryProps, RouteErrorBoundaryState>`
 **Module:** [RouteErrorBoundary](../modules/RouteErrorBoundary.md)
 
 ## Description
@@ -30,7 +30,7 @@ _Auto-generated from `RouteErrorBoundary` in `frontend/src/components/layout/Rou
 ```mermaid
 flowchart LR
     n0["RouteErrorBoundary (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
-    n1["Component"]
+    n1["Component#60;RouteErrorBoundaryProps, RouteErrorBoundaryState#62;"]
     n2["frontend/src/components/layout/AppShell.tsx"]
     n3["RouteErrorBoundary.componentDidUpdate (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
     n4["RouteErrorBoundary.getDerivedStateFromError (frontend/src/components/layout/RouteErrorBoundary.tsx)"]
@@ -54,7 +54,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `Component` | — |
+| Base | `Component<RouteErrorBoundaryProps, RouteErrorBoundaryState>` | — |
 
 ### References
 

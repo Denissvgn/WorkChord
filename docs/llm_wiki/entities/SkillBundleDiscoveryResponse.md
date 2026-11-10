@@ -21,7 +21,7 @@ Stable well-known pointer to the mutable catalog URL.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
+**Target:**
+
+```typescript
+'updated' | 'deleted' | 'skipped' | 'failed' | 'would_update' | 'would_delete'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TaskBulkOutcome` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

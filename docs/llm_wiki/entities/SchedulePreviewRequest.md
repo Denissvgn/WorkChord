@@ -22,7 +22,7 @@ preview exercises exactly the payload a later apply would send.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

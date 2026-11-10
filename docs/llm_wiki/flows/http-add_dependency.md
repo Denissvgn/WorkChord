@@ -6,30 +6,61 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as add_dependency
     participant p1 as service.add_dependency
     participant p2 as _raise_task_version_conflict
-    participant p3 as HTTPException (backend/app/routers/tasks…aise_task_version_conflict)
-    participant p4 as exc.detail
-    participant p5 as HTTPException (backend/app/routers/tasks.py:add_dependency)
-    participant p6 as str
-    participant p7 as MessageResponse
-    p0-->>p1: service.add_dependency
+    participant p3 as HTTPException (backend/app/routers/tasks.py:add_dependency)
+    participant p4 as str
+    participant p5 as MessageResponse
+    participant p6 as HTTPException (backend/app/routers/tasks…aise_task_version_conflict)
+    participant p7 as exc.detail
+    p0-->>p1: service.add_dependency(task_id, data.depends_on_id, expected_version=data.expected_version)
     p0->>p2: _raise_task_version_conflict
-    p2-->>p3: HTTPException (backend/app/routers/tasks…aise_task_version_conflict)
-    p2-->>p4: exc.detail
-    p0-->>p5: HTTPException (backend/app/routers/tasks.py:add_dependency)
-    p0-->>p6: str
-    p0-->>p5: HTTPException (backend/app/routers/tasks.py:add_dependency)
-    p0->>p7: MessageResponse
+    p0-->>p3: HTTPException (backend/app/routers/tasks.py:add_dependency)(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p4: str(e)
+    p0-->>p3: HTTPException (backend/app/routers/tasks.py:add_dependency)(…)
+    p0->>p5: MessageResponse
+    p2-->>p6: HTTPException (backend/app/routers/tasks…aise_task_version_conflict)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p7: exc.detail
 ```
+
+> Call sequence diagram shows 8 of 8 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 2, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 9, emitted: 9, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `add_dependency` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `service.add_dependency` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_raise_task_version_conflict` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `HTTPException (backend/app/routers/tasks…aise_task_version_conflict)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/tasks.py:add_dependency)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/tasks.py:add_dependency)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `MessageResponse` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. add_dependency"]
@@ -83,7 +114,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

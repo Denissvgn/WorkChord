@@ -38,7 +38,7 @@ Request for grounded advisory task AI suggestions.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

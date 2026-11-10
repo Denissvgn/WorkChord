@@ -1,7 +1,7 @@
 # TaskEditorDefaultsContext
 
 **Location:** `frontend/src/components/tasks/taskEditorContract.ts:37`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TaskEditorDefaultsContext` in `frontend/src/components/tas
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

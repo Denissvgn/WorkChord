@@ -24,7 +24,7 @@ One ordered assigned-work item.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

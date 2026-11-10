@@ -1,7 +1,7 @@
 # InboxItem
 
 **Location:** `frontend/src/services/discussionService.ts:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `InboxItem` in `frontend/src/services/discussionService.ts`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # PlanShareSnapshot
 
 **Location:** `frontend/src/services/planShareService.ts:26`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planShareService](../modules/planShareService.md)
 
@@ -13,14 +13,14 @@ _Auto-generated from `PlanShareSnapshot` in `frontend/src/services/planShareServ
 
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
-| `iteration` | `{         id: number;         name: string;         start_date: string;         end_date: string;     }` | Yes | — | — |
+| `iteration` | <pre><code>&#123;&#10;        id&#58; number&#59;&#10;        name&#58; string&#59;&#10;        start&#95;date&#58; string&#59;&#10;        end&#95;date&#58; string&#59;&#10;    &#125;</code></pre> | Yes | — | — |
 | `tasks` | `PlanShareTask[]` | Yes | — | — |
 | `team_members` | `PlanShareTeamMember[]` | Yes | — | — |
-| `snapshot_info` | `{         created_at: string;         reason: string;     }` | Yes | — | — |
+| `snapshot_info` | <pre><code>&#123;&#10;        created&#95;at&#58; string&#59;&#10;        reason&#58; string&#59;&#10;    &#125;</code></pre> | Yes | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

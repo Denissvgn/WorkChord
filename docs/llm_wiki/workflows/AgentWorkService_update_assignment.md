@@ -10,7 +10,7 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `agent_service.validate_idempotency_key`
 2. `agent_routing_service.AgentRoutingService`
-3. `agent_service.AgentConflictError`
+3. `agent_routing_service.AgentRoutingService.lock_selection_inputs`
 4. `agent_service.AgentConflictError`
 5. `agent_service.AgentConflictError`
 6. `agent_service.AgentConflictError`
@@ -18,10 +18,11 @@
 8. `agent_service.AgentConflictError`
 9. `agent_service.AgentConflictError`
 10. `agent_service.AgentConflictError`
-11. `agent_routing_service.AgentRoutingConflictError`
-12. `time.utc_now`
-13. `agent_routing_service.AgentRoutingConflictError`
-14. `commands.commit_or_flush`
+11. `agent_service.AgentConflictError`
+12. `agent_routing_service.AgentRoutingConflictError`
+13. `time.utc_now`
+14. `agent_routing_service.AgentRoutingConflictError`
+15. `commands.commit_or_flush`
 
 ## Touches
 

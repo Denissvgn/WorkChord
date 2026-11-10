@@ -20,7 +20,7 @@ _Auto-generated from `ObjectStoreAcceptance` in `backend/app/autonomy/server_acc
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

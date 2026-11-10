@@ -1,7 +1,7 @@
 # GanttChartProps
 
 **Location:** `frontend/src/components/gantt/GanttChart.tsx:22`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `GanttChartProps` in `frontend/src/components/gantt/GanttCh
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

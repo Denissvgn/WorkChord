@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/tasks/SortableTaskItem.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `@dnd-kit/sortable` | `useSortable` |
-| `@dnd-kit/utilities` | `CSS` |
-| `lucide-react` | `GripVertical` |
-| `react` | `ReactNode` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `@dnd-kit/sortable` | `useSortable` | — | compiler-dependent |
+| `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
+| `lucide-react` | `GripVertical` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -37,7 +37,7 @@ _Auto-generated from `frontend/src/components/tasks/SortableTaskItem.tsx`._
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SortableTaskItemProps](../entities/SortableTaskItemProps.md) | Class | 7 | — | — |
+| [SortableTaskItemProps](../entities/SortableTaskItemProps.md) | Interface | 7 | — | — |
 
 ## Functions
 

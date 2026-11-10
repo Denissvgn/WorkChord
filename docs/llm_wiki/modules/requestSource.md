@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/requestSource.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/requestSources/RequestSourceLinksPanel.tsx"]
@@ -39,10 +41,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RequestSource](../entities/requestSource_RequestSource.md) | Class | 4 | — | — |
-| [RequestSourceCreate](../entities/requestSource_RequestSourceCreate.md) | Class | 16 | — | — |
-| [RequestSourceLink](../entities/requestSource_RequestSourceLink.md) | Class | 26 | — | — |
-| [RequestSourceLinkWithSource](../entities/RequestSourceLinkWithSource.md) | Class | 35 | `RequestSourceLink` | — |
-| [RequestSourceType](../entities/requestSource_RequestSourceType.md) | Type alias | 1 | — | — |
-| [RequestSourceTargetType](../entities/requestSource_RequestSourceTargetType.md) | Type alias | 2 | — | — |
-| [RequestSourceLinkCreate](../entities/requestSource_RequestSourceLinkCreate.md) | Type alias | 39 | — | — |
+| [RequestSource](../entities/requestSource_RequestSource.md) | Interface | 4 | — | — |
+| [RequestSourceCreate](../entities/requestSource_RequestSourceCreate.md) | Interface | 16 | — | — |
+| [RequestSourceLink](../entities/requestSource_RequestSourceLink.md) | Interface | 26 | — | — |
+| [RequestSourceLinkWithSource](../entities/RequestSourceLinkWithSource.md) | Interface | 35 | `RequestSourceLink` | — |
+| [RequestSourceType](../entities/requestSource_RequestSourceType.md) | Type alias | 1 | `'customer' \| 'internal' \| 'support' \| 'email' \| 'web' \| 'import'` | — |
+| [RequestSourceTargetType](../entities/requestSource_RequestSourceTargetType.md) | Type alias | 2 | `'task' \| 'project' \| 'triage_item'` | — |
+| [RequestSourceLinkCreate](../entities/requestSource_RequestSourceLinkCreate.md) | Type alias | 39 | <pre><code>&#124; &#123;&#10;        target&#95;type&#58; RequestSourceTargetType&#59;&#10;        target&#95;id&#58; number&#59;&#10;        request&#95;source&#95;id&#58; number&#59;&#10;        request&#95;source&#63;&#58; never&#59;&#10;    &#125;&#10;    &#124; &#123;&#10;        target&#95;type&#58; RequestSourceTargetType&#59;&#10;        target&#95;id&#58; number&#59;&#10;        request&#95;source&#58; RequestSourceCreate&#59;&#10;        request&#95;source&#95;id&#63;&#58; never&#59;&#10;    &#125;</code></pre> | — |

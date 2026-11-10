@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [toast](../modules/toast.md)
+**Target:**
+
+```typescript
+'success' | 'error' | 'info'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `ToastTone` in `frontend/src/components/feedback/toast.ts`.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

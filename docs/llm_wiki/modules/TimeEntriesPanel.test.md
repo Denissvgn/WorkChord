@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/tasks/TimeEntriesPanel.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/identity/identityContext` | `IdentityContext` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./TimeEntriesPanel` | `TimeEntriesPanel` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/identity/identityContext` | `IdentityContext` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./TimeEntriesPanel` | `TimeEntriesPanel` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

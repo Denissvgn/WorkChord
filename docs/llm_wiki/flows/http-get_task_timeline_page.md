@@ -2,37 +2,125 @@
 
 **Entry point:** `get_task_timeline_page` (`http`)
 **Source:** [tasks](../modules/tasks.md)
-**Modules touched:** [routers_task_domain](../modules/routers_task_domain.md), [schemas_agent](../modules/schemas_agent.md), [task_timeline_service](../modules/task_timeline_service.md), [tasks](../modules/tasks.md)
+**Modules touched:** [routers_task_domain](../modules/routers_task_domain.md), [schemas_agent](../modules/schemas_agent.md), [task_timeline_service](../modules/task_timeline_service.md), [tasks](../modules/tasks.md), and 1 more
+
+**Complete modules touched:**
+
+- [routers_task_domain](../modules/routers_task_domain.md)
+- [schemas_agent](../modules/schemas_agent.md)
+- [task_timeline_service](../modules/task_timeline_service.md)
+- [tasks](../modules/tasks.md)
+- [time](../modules/time.md)
 
 ## Call sequence
+
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
 
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as get_task_timeline_page
-    participant p1 as domain_result
-    participant p2 as HTTPException
-    participant p3 as exc.detail
-    participant p4 as str
-    participant p5 as TaskTimelineService(…).page
-    participant p6 as TaskTimelineService
-    participant p7 as TaskTimelinePage
-    p0->>p1: domain_result
-    p1-->>p2: HTTPException
-    p1-->>p3: exc.detail
-    p1-->>p2: HTTPException
-    p1-->>p4: str
-    p1-->>p2: HTTPException
-    p1-->>p4: str
-    p1-->>p2: HTTPException
-    p0-->>p5: TaskTimelineService(…).page
-    p0->>p6: TaskTimelineService
-    p0->>p7: TaskTimelinePage
+    participant p1 as TaskTimelineService.page
+    participant p2 as domain_result
+    participant p3 as TaskTimelineService
+    participant p4 as TaskTimelinePage
+    participant p5 as TaskTimelineService.decode
+    participant p6 as as_utc
+    participant p7 as TaskTimelineService.item
+    participant p8 as HTTPException
+    participant p9 as exc.detail
+    participant p10 as ValueError (backend/app/services/task…y:TaskTimelineService.page)
+    participant p11 as self.db.scalar
+    participant p12 as select(…).where (backend/app/services/task…askTimelineService.page, 1)
+    participant p13 as str
+    participant p14 as select
+    participant p15 as LookupError
+    participant p16 as select(…).where (backend/app/services/task…askTimelineService.page, 2)
+    participant p17 as select(…).where (backend/app/services/task…askTimelineService.page, 3)
+    participant p18 as select(…).where (backend/app/services/task…y:TaskTimelineService.page)
+    participant p19 as select(…).options(…).join(…).where
+    participant p20 as select(…).options(…).join
+    participant p21 as select(…).options
+    participant p22 as selectinload(…).load_only
+    p0->>p1: TaskTimelineService.page
+    p0->>p2: domain_result
+    p0->>p3: TaskTimelineService
+    p0->>p4: TaskTimelinePage
+    p1->>p5: TaskTimelineService.decode
+    p1->>p6: as_utc
+    p1->>p7: TaskTimelineService.item
+    p2-->>p8: HTTPException(409, detail=exc.detail(...))
+    p2-->>p9: exc.detail
+    p1-->>p10: ValueError (backend/app/services/task…y:TaskTimelineService.page)('Use a timeline page limit from 1 to 500')
+    p1-->>p11: self.db.scalar(...)
+    p2-->>p8: HTTPException(404, detail=str(...))
+    p1-->>p12: select(…).where (backend/app/services/task…askTimelineService.page, 1)(...)
+    p2-->>p13: str(exc)
+    p1-->>p14: select(Task.id)
+    p2-->>p8: HTTPException(422, detail=[...])
+    p1-->>p15: LookupError('Task not found or inaccessible')
+    p2-->>p13: str(exc)
+    p2-->>p8: HTTPException(404, detail='Task not found or inaccessible')
+    p1-->>p16: select(…).where (backend/app/services/task…askTimelineService.page, 2)(...)
+    p1-->>p14: select(TaskEvent)
+    p1-->>p17: select(…).where (backend/app/services/task…askTimelineService.page, 3)(...)
+    p1-->>p14: select(TaskStatusLog)
+    p1-->>p18: select(…).where (backend/app/services/task…y:TaskTimelineService.page)(...)
+    p1-->>p14: select(AgentRun)
+    p1-->>p19: select(…).options(…).join(…).where(...)
+    p1-->>p20: select(…).options(…).join(AgentRun)
+    p1-->>p21: select(…).options(...)
+    p1-->>p14: select(AgentRunEvent)
+    p1-->>p22: selectinload(…).load_only(AgentRun.actor_id)
 ```
+
+> Call sequence diagram shows 30 of 79 interactions; 49 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 13 of 43 (30 omitted); unresolved 10 of 28 (18 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.decode` | 16 | - | external | 14 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.decode` | 16 | [backend/app/utils/time.py](../modules/time.md) | internal | 1 |
+| `backend/app/utils/time.py:as_utc` | 30 | - | unresolved | 2 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.page` | 10 | - | external | 9 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.page` | 10 | - | unresolved | 12 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.item` | 61 | - | external | 7 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.item` | 61 | - | unresolved | 4 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 9; effect analysis evaluated: 7, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 7 source steps with known totals: observed: 42, emitted: 42, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `get_task_timeline_page` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `domain_result` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TaskTimelineService.page` | `available` | `evaluated` | `available` | `12` | `12` | `0` |
+| `ValueError (backend/app/services/task…y:TaskTimelineService.page)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `self.db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. get_task_timeline_page"]
@@ -44,9 +132,9 @@ flowchart LR
     s7["7. HTTPException"]
     s8["8. str"]
     s9["9. HTTPException"]
-    s10["10. TaskTimelineService(…).page"]
-    s11["11. TaskTimelineService"]
-    s12["12. TaskTimelinePage"]
+    s10["10. TaskTimelineService.page"]
+    s11["11. ValueError (backend/app/services/task…y:TaskTimelineService.page)"]
+    s12["12. self.db.scalar"]
     s1 -->|"domain_result(...)"| s2
     s2 -. "HTTPException(409, detail=exc.detail(...))" .-> s3
     s2 -. "exc.detail(data not statically known)" .-> s4
@@ -55,13 +143,19 @@ flowchart LR
     s2 -. "HTTPException(422, detail=[...])" .-> s7
     s2 -. "str(exc)" .-> s8
     s2 -. "HTTPException(404, detail='Task not found or inaccessible')" .-> s9
-    s1 -. "TaskTimelineService(…).page(task_id, limit=limit, cursor=cursor)" .-> s10
-    s1 -->|"TaskTimelineService(db)"| s11
-    s1 -->|"TaskTimelinePage(**=result)"| s12
+    s1 -->|"TaskTimelineService.page(task_id, limit=limit, cursor=cursor)"| s10
+    s10 -. "ValueError (backend/app/services/task…y:TaskTimelineService.page)('Use a timeline page limit from 1 to 500')" .-> s11
+    s10 -. "self.db.scalar(...)" .-> s12
+    b0["mutation selected.extend"]
+    s10 -. "mutation selected.extend" .-> b0
+    b1["mutation selected.sort"]
+    s10 -. "mutation selected.sort" .-> b1
     click s1 "../modules/tasks.md"
     click s2 "../modules/routers_task_domain.md"
-    click s11 "../modules/task_timeline_service.md"
-    click s12 "../modules/schemas_agent.md"
+    click s10 "../modules/task_timeline_service.md"
+    classDef boundary stroke:#b45309,stroke-dasharray: 4 2
+    class b0 boundary
+    class b1 boundary
 ```
 
 ### Step data
@@ -77,9 +171,9 @@ flowchart LR
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
-| `TaskTimelineService(…).page` | - | - | - | - |
-| `TaskTimelineService` | - | - | - | - |
-| `TaskTimelinePage` | - | - | - | - |
+| `TaskTimelineService.page` | `task_id`, `limit`, `cursor` | `Task`, `TaskEvent`, `TaskStatusLog`, `AgentRun`, `AgentRunEvent`, `AgentRun` | - | `dict(...)` |
+| `ValueError (backend/app/services/task…y:TaskTimelineService.page)` | - | - | - | - |
+| `self.db.scalar` | - | - | - | - |
 
 ### Call data
 
@@ -93,13 +187,16 @@ flowchart LR
 | domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| get_task_timeline_page | TaskTimelineService(…).page | 1026 | `TaskTimelineService(db).page(task_id, limit=limit, cursor=cursor)` |
-| get_task_timeline_page | TaskTimelineService | 1026 | `TaskTimelineService(db)` |
-| get_task_timeline_page | TaskTimelinePage | 1027 | `TaskTimelinePage(**=result)` |
+| get_task_timeline_page | TaskTimelineService.page | 1026 | `TaskTimelineService(db).page(task_id, limit=limit, cursor=cursor)` |
+| TaskTimelineService.page | ValueError (backend/app/services/task…y:TaskTimelineService.page) | 45 | `ValueError('Use a timeline page limit from 1 to 500')` |
+| TaskTimelineService.page | self.db.scalar | 47 | `self.db.scalar(...)` |
 
 ### Boundary effects
 
-*No boundary effects detected.*
+| Kind | Target | Step | Line |
+|---|---|---|---:|
+| mutation | `selected.extend` | `TaskTimelineService.page` | 61 |
+| mutation | `selected.sort` | `TaskTimelineService.page` | 62 |
 
 ### Static analysis gaps
 
@@ -110,7 +207,9 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `get_task_timeline_page` | `TaskTimelineService(db).page` | 1026 |
+| external_call | `TaskTimelineService.page` | `ValueError` | 45 |
+| unresolved_call | `TaskTimelineService.page` | `self.db.scalar` | 47 |
+| step_limit | `get_task_timeline_page` | `first 12 steps` | 0 |
 
 ## Behavior
 

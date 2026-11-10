@@ -23,7 +23,7 @@ Canonical profile absence with optimistic versioning, a retained tombstone and p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -34,16 +34,19 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["CapacityService.save_absence (backend/app/services/capacity_service.py)"]
-    n4["backend/tests/test_profile_capacity.py"]
+    n4["backend/app/services/team_service.py"]
+    n5["backend/tests/test_profile_capacity.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/models_capacity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/capacity_service.md"
-    click n4 "../modules/test_profile_capacity.md"
+    click n4 "../modules/team_service.md"
+    click n5 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -64,4 +67,5 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `CapacityService.save_absence` | call | [capacity_service](../modules/capacity_service.md) | 1 |
+| `team_service` | import | [team_service](../modules/team_service.md) | — |
 | `test_profile_capacity` | import | [test_profile_capacity](../modules/test_profile_capacity.md) | — |

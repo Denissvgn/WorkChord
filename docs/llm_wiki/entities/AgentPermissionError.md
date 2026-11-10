@@ -15,7 +15,7 @@ Raised when an agent lacks a required scope.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

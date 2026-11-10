@@ -19,6 +19,8 @@
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/ConstraintsPanel.tsx"]
@@ -74,11 +76,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SortCriterion](../entities/schedulingRules_SortCriterion.md) | Class | 6 | — | Scheduling Rules Types |
-| [FilterConfig](../entities/FilterConfig.md) | Class | 11 | — | — |
-| [SchedulingPass](../entities/schedulingRules_SchedulingPass.md) | Class | 15 | — | — |
-| [EffortModifier](../entities/schedulingRules_EffortModifier.md) | Class | 23 | — | — |
-| [BalanceWorkload](../entities/BalanceWorkload.md) | Class | 32 | — | — |
-| [Constraints](../entities/schedulingRules_Constraints.md) | Class | 37 | — | — |
-| [SchedulingRules](../entities/schedulingRules_SchedulingRules.md) | Class | 46 | — | — |
-| [SchedulingRulesResponse](../entities/schedulingRules_SchedulingRulesResponse.md) | Class | 53 | — | — |
+| [SortCriterion](../entities/schedulingRules_SortCriterion.md) | Interface | 6 | — | Scheduling Rules Types |
+| [FilterConfig](../entities/FilterConfig.md) | Interface | 11 | — | — |
+| [SchedulingPass](../entities/schedulingRules_SchedulingPass.md) | Interface | 15 | — | — |
+| [EffortModifier](../entities/schedulingRules_EffortModifier.md) | Interface | 23 | — | — |
+| [BalanceWorkload](../entities/BalanceWorkload.md) | Interface | 32 | — | — |
+| [Constraints](../entities/schedulingRules_Constraints.md) | Interface | 37 | — | — |
+| [SchedulingRules](../entities/schedulingRules_SchedulingRules.md) | Interface | 46 | — | — |
+| [SchedulingRulesResponse](../entities/schedulingRules_SchedulingRulesResponse.md) | Interface | 53 | — | — |

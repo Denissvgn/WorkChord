@@ -4,6 +4,13 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)
+**Target:**
+
+```typescript
+Pick<TaskUpdate, 'assignee_id'> & {
+    status?: TaskStatus;
+}
+```
 
 ## Description
 
@@ -11,11 +18,11 @@ _Auto-generated from `BoardTaskUpdate` in `frontend/src/components/tasks/KanbanB
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

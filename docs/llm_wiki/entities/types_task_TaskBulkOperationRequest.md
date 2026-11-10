@@ -1,7 +1,7 @@
 # TaskBulkOperationRequest
 
 **Location:** `frontend/src/types/task.ts:322`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `TaskBulkOperationRequest` in `frontend/src/types/task.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

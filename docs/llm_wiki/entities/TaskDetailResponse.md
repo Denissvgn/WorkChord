@@ -22,7 +22,7 @@ _Auto-generated from `TaskDetailResponse` in `backend/app/schemas/task_detail.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

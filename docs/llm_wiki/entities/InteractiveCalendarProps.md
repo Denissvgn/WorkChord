@@ -1,7 +1,7 @@
 # InteractiveCalendarProps
 
 **Location:** `frontend/src/components/calendar/InteractiveCalendar.tsx:20`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [InteractiveCalendar](../modules/InteractiveCalendar.md)
 
@@ -28,7 +28,7 @@ _Auto-generated from `InteractiveCalendarProps` in `frontend/src/components/cale
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

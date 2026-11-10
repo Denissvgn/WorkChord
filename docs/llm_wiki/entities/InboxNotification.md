@@ -23,7 +23,7 @@ Personal read/unread receipt for one durable inbox delivery. A unique delivery r
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

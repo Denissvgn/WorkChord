@@ -20,7 +20,7 @@ Schema for reordering tasks.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

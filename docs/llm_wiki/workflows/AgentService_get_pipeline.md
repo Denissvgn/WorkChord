@@ -11,7 +11,9 @@
 1. `time.utc_now`
 2. `query_limits.CollectionLimitExceededError`
 3. `agent_work_service.AgentWorkService`
-4. `time.as_utc`
+4. `agent_work_service.AgentWorkService._start_blockers`
+5. `time.as_utc`
+6. `agent_work_service.AgentWorkService._has_pending_recovery_signal`
 
 ## Touches
 

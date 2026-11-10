@@ -18,7 +18,7 @@ Assignee info for Gantt task.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

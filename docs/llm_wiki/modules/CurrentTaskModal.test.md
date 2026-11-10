@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/tasks/CurrentTaskModal.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/task` | `Task`, `TaskDetail` |
-| `./GuardedTaskModal` | `CurrentTaskModal` |
-| `@testing-library/react` | `act`, `screen`, `waitFor` |
-| `react` | `useEffect`, `useState` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/task` | `Task`, `TaskDetail` | Declaration | erased |
+| `./GuardedTaskModal` | `CurrentTaskModal` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,6 +27,8 @@ _Auto-generated from `frontend/src/components/tasks/CurrentTaskModal.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/CurrentTaskModal.test.tsx"]

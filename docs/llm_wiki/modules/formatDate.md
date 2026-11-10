@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/utils/formatDate.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../i18n/dateLocale` | `dateFnsLocale` |
-| `date-fns` | `format`, `isValid`, `parseISO` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
+| `date-fns` | `format`, `isValid`, `parseISO` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -53,11 +53,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DateInput](../entities/DateInput.md) | Type alias | 4 | — | — |
+| [DateInput](../entities/DateInput.md) | Type alias | 4 | `string \| Date \| null \| undefined` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `formatDate` | `(value: DateInput, language: string) -> string` | — | Format a date using the active application language. |
-| `formatDateTime` | `(value: DateInput, language: string) -> string` | — | Format an instant in UTC using the active application language. Date-only |
+| `formatDate` | `(value: DateInput, language?: string) -> string` | — | Format a date using the active application language. |
+| `formatDateTime` | `(value: DateInput, language?: string) -> string` | — | Format an instant in UTC using the active application language. Date-only |

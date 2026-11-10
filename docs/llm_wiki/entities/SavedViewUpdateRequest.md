@@ -30,7 +30,7 @@ Public API payload for updating a saved view.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

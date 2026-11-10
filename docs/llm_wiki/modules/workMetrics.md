@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/workMetrics.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/WorkMetricsLine.tsx"]
@@ -46,4 +48,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkMetrics](../entities/WorkMetrics.md) | Class | 1 | — | — |
+| [WorkMetrics](../entities/WorkMetrics.md) | Interface | 1 | — | — |

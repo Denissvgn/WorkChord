@@ -15,7 +15,7 @@ Raised when deployed build artifacts fail their integrity contract.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

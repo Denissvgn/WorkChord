@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/common/Input.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./Input` | `Input` |
-| `@testing-library/react` | `render`, `screen` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./Input` | `Input` | — | compiler-dependent |
+| `@testing-library/react` | `render`, `screen` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

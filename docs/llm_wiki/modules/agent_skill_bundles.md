@@ -53,6 +53,7 @@ flowchart LR
     n5 --> n7
     n5 --> n8
     n7 --> n0
+    n8 --> n0
     n8 --> n6
     click n0 "../modules/config.md"
     click n1 "../modules/app_database.md"

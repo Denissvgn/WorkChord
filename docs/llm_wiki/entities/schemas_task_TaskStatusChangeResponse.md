@@ -19,7 +19,7 @@ Response for status change with cascade info.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

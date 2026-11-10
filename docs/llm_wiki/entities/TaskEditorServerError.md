@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
+**Target:**
+
+```typescript
+| {
+        kind: 'version-conflict';
+        expectedVersion: number;
+        currentTask: TaskConflictMetadata;
+    }
+    | { kind: 'generic'; message: string }
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `TaskEditorServerError` in `frontend/src/components/tasks/t
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -8,9 +8,10 @@ _Auto-generated from `frontend/src/navigation/workspaces.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `lucide-react` | `LucideIcon`, `LayoutDashboard`, `Calendar`, `Inbox`, `Users`, `ListTodo`, `FolderOpen`, `Map`, `GanttChartSquare`, `Settings`, `Repeat`, `BarChart`, `Bot`, `MapPin`, `Network` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `lucide-react` | `LucideIcon` | Declaration | erased |
+| `lucide-react` | `LayoutDashboard`, `Calendar`, `Inbox`, `Users`, `ListTodo`, `FolderOpen`, `Map`, `GanttChartSquare`, `Settings`, `Repeat`, `BarChart`, `Bot`, `MapPin`, `Network` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +24,8 @@ _Auto-generated from `frontend/src/navigation/workspaces.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/AppSidebar.tsx"]
@@ -65,9 +68,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [NavItem](../entities/NavItem.md) | Class | 21 | — | — |
-| [WorkspaceMetadata](../entities/WorkspaceMetadata.md) | Class | 29 | — | — |
-| [WorkspaceKey](../entities/WorkspaceKey.md) | Type alias | 19 | — | — |
+| [NavItem](../entities/NavItem.md) | Interface | 21 | — | — |
+| [WorkspaceMetadata](../entities/WorkspaceMetadata.md) | Interface | 29 | — | — |
+| [WorkspaceKey](../entities/WorkspaceKey.md) | Type alias | 19 | `'delivery' \| 'planning' \| 'resource'` | — |
 
 ## Functions
 

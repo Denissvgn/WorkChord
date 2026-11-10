@@ -20,7 +20,7 @@ Schema for moving a task subtree to another iteration.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

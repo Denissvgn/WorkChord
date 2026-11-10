@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/utils/teamMemberLabels.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../i18n/i18n` | `i18n` |
-| `../types/team` | `TeamMemberOption`, `TeamMemberProfileCompact` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../types/team` | `TeamMemberOption`, `TeamMemberProfileCompact` | Declaration | erased |
 
 ## Module Signals
 
@@ -24,6 +24,8 @@ _Auto-generated from `frontend/src/utils/teamMemberLabels.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/InitiativeForm.tsx"]
@@ -72,14 +74,14 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamMemberLabelSource](../entities/TeamMemberLabelSource.md) | Type alias | 6 | — | — |
-| [TeamMemberProfileLabelSource](../entities/TeamMemberProfileLabelSource.md) | Type alias | 7 | — | — |
+| [TeamMemberLabelSource](../entities/TeamMemberLabelSource.md) | Type alias | 6 | `Pick<TeamMemberOption, 'name' \| 'position' \| 'iteration_name'>` | — |
+| [TeamMemberProfileLabelSource](../entities/TeamMemberProfileLabelSource.md) | Type alias | 7 | `Pick<TeamMemberProfileCompact, 'display_name' \| 'headline' \| 'email'>` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `formatTeamMemberLabel` | `(member: TeamMemberLabelSource)` | — | — |
-| `formatOwnerLabel` | `(owner: TeamMemberLabelSource \| null, ownerId: number \| null, emptyLabel: string)` | — | — |
+| `formatOwnerLabel` | `(owner?: TeamMemberLabelSource \| null, ownerId?: number \| null, emptyLabel?: string)` | — | — |
 | `formatTeamMemberProfileLabel` | `(profile: TeamMemberProfileLabelSource)` | — | — |
-| `formatPortfolioOwnerLabel` | `(ownerProfile: TeamMemberProfileLabelSource \| null, legacyOwner: TeamMemberLabelSource \| null, legacyOwnerId: number \| null, emptyLabel: string)` | — | — |
+| `formatPortfolioOwnerLabel` | `(ownerProfile?: TeamMemberProfileLabelSource \| null, legacyOwner?: TeamMemberLabelSource \| null, legacyOwnerId?: number \| null, emptyLabel?: string)` | — | — |

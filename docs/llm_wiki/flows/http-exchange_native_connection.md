@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -13,35 +15,67 @@ sequenceDiagram
     participant p1 as NativeSessionService(…).exchange
     participant p2 as NativeSessionService
     participant p3 as get_client_ip
-    participant p4 as ip_address
-    participant p5 as any
-    participant p6 as ip_network
-    participant p7 as get_settings
-    participant p8 as Settings
+    participant p4 as request.headers.get (backend/app/routers/ident…exchange_native_connection)
+    participant p5 as ip_address
+    participant p6 as any
+    participant p7 as ip_network
+    participant p8 as get_settings
     participant p9 as request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
     participant p10 as forwarded_for.split(…)[…].strip
     participant p11 as forwarded_for.split
     participant p12 as real_ip.strip
-    participant p13 as request.headers.get (backend/app/routers/ident…exchange_native_connection)
-    p0-->>p1: NativeSessionService(…).exchange
+    participant p13 as Settings
+    p0-->>p1: NativeSessionService(…).exchange(data.request_id, data.code_verifier, ..., request.headers.get(...))
     p0->>p2: NativeSessionService
     p0->>p3: get_client_ip
-    p3-->>p4: ip_address
-    p3-->>p5: any
-    p3-->>p6: ip_network
-    p3->>p7: get_settings
-    p7->>p8: Settings
-    p3-->>p9: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
+    p0-->>p4: request.headers.get (backend/app/routers/ident…exchange_native_connection)('User-Agent')
+    p3-->>p5: ip_address(direct_ip)
+    p3-->>p6: any(...)
+    p3-->>p7: ip_network(network, strict=False)
+    p3->>p8: get_settings
+    p3-->>p9: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Forwarded-For')
     p3-->>p10: forwarded_for.split(…)[…].strip
-    p3-->>p11: forwarded_for.split
-    p3-->>p9: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)
+    p3-->>p11: forwarded_for.split(',')
+    p3-->>p9: request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)('X-Real-IP')
     p3-->>p12: real_ip.strip
-    p0-->>p13: request.headers.get (backend/app/routers/ident…exchange_native_connection)
+    p8->>p13: Settings
 ```
+
+> Call sequence diagram shows 14 of 14 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 7 of 7 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 5; effect analysis evaluated: 3, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 11, emitted: 11, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `exchange_native_connection` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `NativeSessionService(…).exchange` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `NativeSessionService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_client_ip` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `ip_address` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `any` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ip_network` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `request.headers.get (backend/app/services/sess…n_service.py:get_client_ip)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `forwarded_for.split(…)[…].strip` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `forwarded_for.split` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. exchange_native_connection"]
@@ -109,7 +143,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

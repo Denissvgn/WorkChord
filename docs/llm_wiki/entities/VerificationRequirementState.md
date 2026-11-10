@@ -23,7 +23,7 @@ _Auto-generated from `VerificationRequirementState` in `backend/app/autonomy/orc
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

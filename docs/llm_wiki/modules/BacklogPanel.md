@@ -8,19 +8,19 @@ Provides project-scoped capture and bounded backlog navigation without inventing
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
-| `../../features/useLiveWindow` | `useLiveWindow` |
-| `../../services/projectService` | `projectService` |
-| `../../services/taskService` | `taskService` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `./GuardedTaskModal` | `GuardedTaskModal` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
+| `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `./GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 

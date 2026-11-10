@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
+**Target:**
+
+```typescript
+'human' | 'agent' | 'hybrid'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TeamMemberProfileKind` in `frontend/src/types/team.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

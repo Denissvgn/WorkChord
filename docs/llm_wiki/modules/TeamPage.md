@@ -8,23 +8,23 @@ _Auto-generated from `frontend/src/pages/TeamPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../components/planning/PlanReturnBar` | `PlanReturnBar` |
-| `../components/team/ImportTeamModal` | `ImportTeamModal` |
-| `../components/team/TeamForm` | `TeamForm` |
-| `../components/team/TeamList` | `TeamList` |
-| `../components/team/TeamProfileManager` | `TeamProfileManager` |
-| `../components/ui` | `PageHeader`, `PageLayout` |
-| `../services/iterationService` | `iterationService` |
-| `../services/teamService` | `teamService` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../types/team` | `TeamMember`, `TeamMemberProfile` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useState`, `useEffect` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../components/planning/PlanReturnBar` | `PlanReturnBar` | — | compiler-dependent |
+| `../components/team/ImportTeamModal` | `ImportTeamModal` | — | compiler-dependent |
+| `../components/team/TeamForm` | `TeamForm` | — | compiler-dependent |
+| `../components/team/TeamList` | `TeamList` | — | compiler-dependent |
+| `../components/team/TeamProfileManager` | `TeamProfileManager` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../services/teamService` | `teamService` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../types/team` | `TeamMember`, `TeamMemberProfile` | Declaration | erased |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useState`, `useEffect` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +35,8 @@ _Auto-generated from `frontend/src/pages/TeamPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
@@ -111,4 +113,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamPageAction](../entities/TeamPageAction.md) | Type alias | 17 | — | — |
+| [TeamPageAction](../entities/TeamPageAction.md) | Type alias | 17 | `'assign' \| 'import'` | — |

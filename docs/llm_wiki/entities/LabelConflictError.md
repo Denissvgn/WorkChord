@@ -15,7 +15,7 @@ Raised when label taxonomy uniqueness constraints are violated.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

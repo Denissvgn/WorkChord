@@ -21,7 +21,7 @@ One person’s versioned notification choices for a task. Access to a task does 
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

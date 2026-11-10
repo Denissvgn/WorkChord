@@ -8,22 +8,24 @@ _Auto-generated from `frontend/src/components/layout/AppTopNav.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/planningMasters/usePlanningNavigationSummary` | `usePlanningNavigationSummary` |
-| `../../navigation/routeModules` | `warmRouteModule` |
-| `../../navigation/workspaces` | `getWorkspaceForPath`, `WORKSPACES`, `WorkspaceMetadata` |
-| `../../services/triageService` | `triageService` |
-| `../UserSessionBadge` | `UserSessionBadge` |
-| `../common/dialogLayer` | `useDialogLayer` |
-| `./AppSidebar` | `SidebarContent`, `SidebarAttentionAction` |
-| `./ContextHelp` | `ContextHelp` |
-| `./commandMenuEvents` | `openCommandMenu` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `AlertTriangle`, `Command`, `Menu`, `X` |
-| `react` | `useEffect`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/planningMasters/usePlanningNavigationSummary` | `usePlanningNavigationSummary` | — | compiler-dependent |
+| `../../navigation/routeModules` | `warmRouteModule` | — | compiler-dependent |
+| `../../navigation/workspaces` | `WorkspaceMetadata` | Declaration | erased |
+| `../../navigation/workspaces` | `getWorkspaceForPath`, `WORKSPACES` | — | compiler-dependent |
+| `../../services/triageService` | `triageService` | — | compiler-dependent |
+| `../UserSessionBadge` | `UserSessionBadge` | — | compiler-dependent |
+| `../common/dialogLayer` | `useDialogLayer` | — | compiler-dependent |
+| `./AppSidebar` | `SidebarAttentionAction` | Declaration | erased |
+| `./AppSidebar` | `SidebarContent` | — | compiler-dependent |
+| `./ContextHelp` | `ContextHelp` | — | compiler-dependent |
+| `./commandMenuEvents` | `openCommandMenu` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Command`, `Menu`, `X` | — | compiler-dependent |
+| `react` | `useEffect`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +37,8 @@ _Auto-generated from `frontend/src/components/layout/AppTopNav.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/dialogLayer.ts"]
@@ -103,7 +107,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkspaceAttention](../entities/WorkspaceAttention.md) | Class | 18 | — | — |
+| [WorkspaceAttention](../entities/WorkspaceAttention.md) | Interface | 18 | — | — |
 
 ## Functions
 

@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)
+**Target:**
+
+```typescript
+{
+    mode: EditorMode;
+    singleDraft: SingleDraft;
+    seriesDraft: SeriesDraft;
+}
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `EditorBaseline` in `frontend/src/components/iteration/Iter
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

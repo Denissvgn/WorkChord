@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SystemHealthPanel](../modules/SystemHealthPanel.md)
+**Target:**
+
+```typescript
+'notChecked' | 'checking' | 'healthy' | 'unhealthy' | 'unavailable'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `VisibleHealthState` in `frontend/src/components/settings/S
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

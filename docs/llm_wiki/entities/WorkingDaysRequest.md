@@ -18,7 +18,7 @@ Request for calculating working days.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

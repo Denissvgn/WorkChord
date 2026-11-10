@@ -15,7 +15,7 @@ Raised when a webhook signature is missing or invalid.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

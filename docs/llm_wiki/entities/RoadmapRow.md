@@ -4,6 +4,19 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)
+**Target:**
+
+```typescript
+{
+    project: Project;
+    milestones: ProjectMilestone[];
+    markers: RoadmapMarker[];
+    startDate: Date | null;
+    endDate: Date | null;
+    spanSource: 'project' | 'single-project-date' | 'milestones' | 'none';
+    isUnscheduled: boolean;
+}
+```
 
 ## Description
 
@@ -11,11 +24,11 @@ _Auto-generated from `RoadmapRow` in `frontend/src/pages/RoadmapPage.tsx`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

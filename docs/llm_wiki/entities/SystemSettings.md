@@ -1,7 +1,7 @@
 # SystemSettings
 
 **Location:** `frontend/src/types/systemSettings.ts:77`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `SystemSettings` in `frontend/src/types/systemSettings.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

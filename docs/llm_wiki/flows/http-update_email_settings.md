@@ -6,29 +6,60 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as update_email_settings
     participant p1 as service.update_settings
     participant p2 as _response
-    participant p3 as EmailSettingsResponse
-    participant p4 as HTTPException
-    participant p5 as str
-    participant p6 as logger.error
-    p0-->>p1: service.update_settings
+    participant p3 as HTTPException
+    participant p4 as str
+    participant p5 as logger.error
+    participant p6 as EmailSettingsResponse
+    p0-->>p1: service.update_settings(…)
     p0->>p2: _response
-    p2->>p3: EmailSettingsResponse
-    p0-->>p4: HTTPException
-    p0-->>p5: str
-    p0-->>p6: logger.error
-    p0-->>p4: HTTPException
-    p0-->>p5: str
+    p0-->>p3: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p4: str(e)
+    p0-->>p5: logger.error('Failed to save email settings', exc_info=True)
+    p0-->>p3: HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=...)
+    p0-->>p4: str(e)
+    p2->>p6: EmailSettingsResponse
 ```
+
+> Call sequence diagram shows 8 of 8 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 2, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 7, emitted: 7, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `update_email_settings` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `service.update_settings` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_response` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `EmailSettingsResponse` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `logger.error` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. update_email_settings"]
@@ -82,7 +113,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

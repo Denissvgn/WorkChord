@@ -8,18 +8,19 @@ Current task modal openings own a unique, abortable authoritative detail read an
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `Task` |
-| `../common/Modal` | `Modal` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `./DraftDismissalDialog` | `DraftDismissalDialog` |
-| `./TaskForm` | `TaskForm` |
-| `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` |
-| `./useDraftDismissal` | `useDraftDismissal` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useId`, `useState`, `ComponentProps`, `ReactNode` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `Task` | Declaration | erased |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `./DraftDismissalDialog` | `DraftDismissalDialog` | — | compiler-dependent |
+| `./TaskForm` | `TaskForm` | — | compiler-dependent |
+| `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` | — | compiler-dependent |
+| `./useDraftDismissal` | `useDraftDismissal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `ComponentProps`, `ReactNode` | Specifier | compiler-dependent |
+| `react` | `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +31,8 @@ Current task modal openings own a unique, abortable authoritative detail read an
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -60,11 +63,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [FormProps](../entities/FormProps.md) | Type alias | 12 | — | — |
+| [FormProps](../entities/FormProps.md) | Type alias | 12 | `Omit<ComponentProps<typeof TaskForm>, 'onSuccess' \| 'onCancel' \| 'onDirtyChange' \| 'onPendingChange' \| 'onDiscardReady' \| 'confirmUnsavedOnCancel'>` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `GuardedTaskModal` | `({ title, closeLabel, onClose, ...form }: FormProps & {     title: ReactNode; closeLabel: string; onClose: () => void; })` | — | — |
+| `GuardedTaskModal` | <pre><code>&#40;&#123; title&#44; closeLabel&#44; onClose&#44; &#46;&#46;&#46;form &#125;&#58; FormProps &#38; &#123;&#10;    title&#58; ReactNode&#59; closeLabel&#58; string&#59; onClose&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |
 | `CurrentTaskModal` | `({ taskId, onClose }: { taskId: number; onClose: () => void })` | — | — |

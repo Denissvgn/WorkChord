@@ -26,7 +26,7 @@ Free-text source record that can be linked to work entities.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

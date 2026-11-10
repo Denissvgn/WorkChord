@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanningWorkflowGuide](../modules/PlanningWorkflowGuide.md)
+**Target:**
+
+```typescript
+{
+    icon: LucideIcon;
+    title: string;
+    body: string;
+}
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `GuideItem` in `frontend/src/components/planning/PlanningWo
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

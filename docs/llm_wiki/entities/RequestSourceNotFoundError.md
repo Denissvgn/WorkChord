@@ -15,7 +15,7 @@ Raised when a request source or link cannot be found.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

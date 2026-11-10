@@ -1,7 +1,7 @@
 # ExplainScheduleRequest
 
 **Location:** `frontend/src/types/gantt.ts:100`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `ExplainScheduleRequest` in `frontend/src/types/gantt.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

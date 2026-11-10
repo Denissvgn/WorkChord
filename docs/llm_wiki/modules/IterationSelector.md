@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/components/iteration/IterationSelector.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/iterationService` | `iterationService` |
-| `../../store/iterationStore` | `useIterationStore` |
-| `../../types/iteration` | `Iteration` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useQuery` |
-| `clsx` | `clsx` |
-| `react` | `useEffect` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `react` | `useEffect` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/components/iteration/IterationSelector.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
@@ -80,10 +82,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationSelectorProps](../entities/IterationSelectorProps.md) | Class | 10 | — | — |
+| [IterationSelectorProps](../entities/IterationSelectorProps.md) | Interface | 10 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `IterationSelector` | `({     className,     onChange,     showLabel = false, }: IterationSelectorProps)` | — | — |
+| `IterationSelector` | <pre><code>&#40;&#123;&#10;    className&#44;&#10;    onChange&#44;&#10;    showLabel &#61; false&#44;&#10;&#125;&#58; IterationSelectorProps&#41;</code></pre> | — | — |

@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessPanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` |
-| `../../utils/adminAccess` | `clearAdminApiKey`, `setAdminApiKey` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `@tanstack/react-query` | `useQueryClient` |
-| `lucide-react` | `KeyRound`, `ShieldCheck`, `Trash2` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../utils/adminAccess` | `clearAdminApiKey`, `setAdminApiKey` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `KeyRound`, `ShieldCheck`, `Trash2` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -82,4 +82,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AdminAccessPanel` | `({     headingLevel = 2, }: {     headingLevel?: 2 \| 3; })` | — | — |
+| `AdminAccessPanel` | <pre><code>&#40;&#123;&#10;    headingLevel &#61; 2&#44;&#10;&#125;&#58; &#123;&#10;    headingLevel&#63;&#58; 2 &#124; 3&#59;&#10;&#125;&#41;</code></pre> | — | — |

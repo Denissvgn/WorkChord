@@ -18,7 +18,7 @@ Schema for creating a task dependency.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

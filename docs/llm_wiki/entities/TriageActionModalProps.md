@@ -1,7 +1,7 @@
 # TriageActionModalProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:410`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -27,7 +27,7 @@ _Auto-generated from `TriageActionModalProps` in `frontend/src/pages/TriagePage.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

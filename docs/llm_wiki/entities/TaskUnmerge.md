@@ -18,7 +18,7 @@ Request schema for unmerging a parent task.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

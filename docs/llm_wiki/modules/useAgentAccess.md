@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/hooks/useAgentAccess.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../utils/agentAccess` | `AGENT_API_KEY_CHANGED_EVENT`, `hasAgentApiKey` |
-| `react` | `useEffect`, `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../utils/agentAccess` | `AGENT_API_KEY_CHANGED_EVENT`, `hasAgentApiKey` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 

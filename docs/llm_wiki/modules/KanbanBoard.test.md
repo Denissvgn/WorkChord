@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../../test/renderWithProviders` | `renderWithProviders` |
-| `../../../types/task` | `Task` |
-| `../../../types/team` | `TeamMember` |
-| `./KanbanBoard` | `KanbanBoard` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `react` | `ReactNode` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../../types/task` | `Task` | Declaration | erased |
+| `../../../types/team` | `TeamMember` | Declaration | erased |
+| `./KanbanBoard` | `KanbanBoard` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
@@ -67,4 +69,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DndContextMockProps](../entities/DndContextMockProps.md) | Class | 29 | — | — |
+| [DndContextMockProps](../entities/DndContextMockProps.md) | Interface | 29 | — | — |

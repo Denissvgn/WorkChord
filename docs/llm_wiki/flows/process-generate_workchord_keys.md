@@ -6,70 +6,93 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
     participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as parser.parse_args
-    participant p5 as selected_keys
-    participant p6 as raw_key.upper
-    participant p7 as ', '.join
-    participant p8 as SystemExit
-    participant p9 as keys.append
-    participant p10 as build_payload
-    participant p11 as datetime.now(…).isoformat
-    participant p12 as datetime.now
-    participant p13 as print
-    participant p14 as json.dumps
-    participant p15 as render_shell
-    participant p16 as isinstance (scripts/api_keys/generate…chord_keys.py:render_shell)
-    participant p17 as lines.append (scripts/api_keys/generate…chord_keys.py:render_shell)
-    participant p18 as values.items (scripts/api_keys/generate…chord_keys.py:render_shell)
-    participant p19 as shlex.quote
-    participant p20 as str
-    participant p21 as '\n'.join (scripts/api_keys/generate…chord_keys.py:render_shell)
-    participant p22 as render_env
-    participant p23 as isinstance (scripts/api_keys/generate…rkchord_keys.py:render_env)
+    participant p2 as selected_keys
+    participant p3 as build_payload
+    participant p4 as render_shell
+    participant p5 as render_env
+    participant p6 as print
+    participant p7 as raw_key.upper
+    participant p8 as json.dumps
+    participant p9 as argparse.ArgumentParser
+    participant p10 as datetime.now(…).isoformat
+    participant p11 as isinstance (scripts/api_keys/generate…chord_keys.py:render_shell)
+    participant p12 as isinstance (scripts/api_keys/generate…rkchord_keys.py:render_env)
+    participant p13 as parser.add_argument
+    participant p14 as ', '.join
+    participant p15 as datetime.now
+    participant p16 as lines.append (scripts/api_keys/generate…chord_keys.py:render_shell)
+    participant p17 as lines.extend
+    participant p18 as SystemExit
+    participant p19 as <dynamic>
+    participant p20 as values.items (scripts/api_keys/generate…chord_keys.py:render_shell)
+    participant p21 as values.items (scripts/api_keys/generate…rkchord_keys.py:render_env)
+    participant p22 as keys.append
+    participant p23 as lines.append (scripts/api_keys/generate…rkchord_keys.py:render_env)
     p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p4: parser.parse_args
-    p0->>p5: selected_keys
-    p5-->>p6: raw_key.upper
-    p5-->>p7: ', '.join
-    p5-->>p8: SystemExit
-    p5-->>p9: keys.append
-    p5-->>p9: keys.append
-    p0->>p10: build_payload
-    p10-->>p11: datetime.now(…).isoformat
-    p10-->>p12: datetime.now
-    p0-->>p13: print
-    p0-->>p14: json.dumps
-    p0-->>p13: print
-    p0->>p15: render_shell
-    p15-->>p16: isinstance (scripts/api_keys/generate…chord_keys.py:render_shell)
-    p15-->>p17: lines.append (scripts/api_keys/generate…chord_keys.py:render_shell)
-    p15-->>p18: values.items (scripts/api_keys/generate…chord_keys.py:render_shell)
-    p15-->>p17: lines.append (scripts/api_keys/generate…chord_keys.py:render_shell)
-    p15-->>p19: shlex.quote
-    p15-->>p20: str
-    p15-->>p21: '\n'.join (scripts/api_keys/generate…chord_keys.py:render_shell)
-    p0-->>p13: print
-    p0->>p22: render_env
-    p22-->>p23: isinstance (scripts/api_keys/generate…rkchord_keys.py:render_env)
+    p0->>p2: selected_keys
+    p0->>p3: build_payload
+    p0->>p4: render_shell
+    p0->>p5: render_env
+    p0-->>p6: print(json.dumps(...))
+    p2-->>p7: raw_key.upper
+    p0-->>p8: json.dumps(payload, indent=2, sort_keys=True)
+    p0-->>p6: print(render_shell(...))
+    p0-->>p6: print(render_env(...))
+    p1-->>p9: argparse.ArgumentParser(description='Generate local WorkChord API keys and shared secrets.')
+    p3-->>p10: datetime.now(…).isoformat(timespec='seconds')
+    p4-->>p11: isinstance (scripts/api_keys/generate…chord_keys.py:render_shell)(values, dict)
+    p5-->>p12: isinstance (scripts/api_keys/generate…rkchord_keys.py:render_env)(values, dict)
+    p1-->>p13: parser.add_argument('--format', choices=[...], default='env', help='Output format. Defaults to dotenv env lines.')
+    p2-->>p14: ', '.join(KEY_GENERATORS)
+    p3-->>p15: datetime.now(UTC)
+    p4-->>p16: lines.append (scripts/api_keys/generate…chord_keys.py:render_shell)(' Source this file only in trusted shells.')
+    p5-->>p17: lines.extend([...])
+    p1-->>p13: parser.add_argument('--only', action='append', metavar='KEY', help='Generate only this key. Repeat for multiple keys.')
+    p2-->>p18: SystemExit(...)
+    p3-->>p19: <dynamic>
+    p4-->>p20: values.items (scripts/api_keys/generate…chord_keys.py:render_shell)
+    p5-->>p21: values.items (scripts/api_keys/generate…rkchord_keys.py:render_env)
+    p1-->>p13: parser.add_argument('--include-outbound-webhook', action='store_true', help='Also generate an outbound webhook target signing secret.')
+    p2-->>p22: keys.append(key)
+    p4-->>p16: lines.append (scripts/api_keys/generate…chord_keys.py:render_shell)(...)
+    p5-->>p23: lines.append (scripts/api_keys/generate…rkchord_keys.py:render_env)(...)
+    p1-->>p13: parser.add_argument('--no-comments', action='store_true', help='Suppress explanatory comments in env and shell output.')
+    p2-->>p22: keys.append('OUTBOUND_WEBHOOK_SIGNING_SECRET')
 ```
 
-> Call sequence diagram shows 30 of 37 interactions; 7 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 9 of 11 (2 omitted); unresolved 16 of 22 (6 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/api_keys/generate_workchord_keys.py:parse_args` | 2 | - | unresolved | 1 |
+| `scripts/api_keys/generate_workchord_keys.py:render_shell` | 22 | - | external | 2 |
+| `scripts/api_keys/generate_workchord_keys.py:render_shell` | 22 | - | unresolved | 1 |
+| `scripts/api_keys/generate_workchord_keys.py:render_env` | 31 | - | unresolved | 4 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 6; effect analysis evaluated: 6, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 6 source steps with known totals: observed: 30, emitted: 30, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

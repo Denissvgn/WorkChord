@@ -27,7 +27,7 @@ Append-only event emitted during an agent run.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

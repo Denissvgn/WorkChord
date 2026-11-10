@@ -39,7 +39,7 @@ One independently claimable verifier slot with a fenced lifecycle.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

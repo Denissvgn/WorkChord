@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/tasks/TaskDiscussion.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/identity/identityContext` | `IdentityContext` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./TaskDiscussion` | `TaskDiscussion` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/identity/identityContext` | `IdentityContext` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./TaskDiscussion` | `TaskDiscussion` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

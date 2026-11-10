@@ -33,7 +33,7 @@ Append-only structured status update for a project.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

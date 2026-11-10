@@ -8,38 +8,39 @@ Snapshot restore captures the target iteration identity and its observed revisio
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/common/ConfirmDialog` | `ConfirmDialog` |
-| `../components/common/FullscreenWorkspace` | `FullscreenWorkspace` |
-| `../components/common/Modal` | `Modal` |
-| `../components/feedback/toast` | `useToast` |
-| `../components/gantt/GanttChart` | `GanttChart` |
-| `../components/gantt/ScheduleExplanationDetails` | `ScheduleExplanationDetails` |
-| `../components/gantt/TaskEditModal` | `TaskEditModal` |
-| `../components/iteration/IterationSelector` | `IterationSelector` |
-| `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
-| `../components/ui` | `OverflowMenu` |
-| `../hooks/useAdminAccess` | `useAdminAccess` |
-| `../services/ganttService` | `ganttService` |
-| `../services/iterationService` | `iterationService` |
-| `../services/planningInputService` | `planningInputService` |
-| `../services/snapshotService` | `snapshotService`, `IterationSnapshot` |
-| `../services/taskService` | `taskService` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../types/gantt` | `ExplainScheduleResponse`, `GanttTask` |
-| `../types/iteration` | `Iteration` |
-| `../types/task` | `TaskBatchUpdateItem`, `TaskUpdate` |
-| `../utils/adminAccess` | `getAdminAccessErrorMessage` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `../utils/formatDate` | `formatDateTime` |
-| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertTriangle`, `Sparkles`, `Maximize2`, `Minimize2`, `FlaskConical`, `Undo2`, `Check`, `History`, `RefreshCw` |
-| `react` | `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../components/common/FullscreenWorkspace` | `FullscreenWorkspace` | — | compiler-dependent |
+| `../components/common/Modal` | `Modal` | — | compiler-dependent |
+| `../components/feedback/toast` | `useToast` | — | compiler-dependent |
+| `../components/gantt/GanttChart` | `GanttChart` | — | compiler-dependent |
+| `../components/gantt/ScheduleExplanationDetails` | `ScheduleExplanationDetails` | — | compiler-dependent |
+| `../components/gantt/TaskEditModal` | `TaskEditModal` | — | compiler-dependent |
+| `../components/iteration/IterationSelector` | `IterationSelector` | — | compiler-dependent |
+| `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` | — | compiler-dependent |
+| `../components/ui` | `OverflowMenu` | — | compiler-dependent |
+| `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../services/ganttService` | `ganttService` | — | compiler-dependent |
+| `../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../services/snapshotService` | `IterationSnapshot` | Declaration | erased |
+| `../services/snapshotService` | `snapshotService` | — | compiler-dependent |
+| `../services/taskService` | `taskService` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../types/gantt` | `ExplainScheduleResponse`, `GanttTask` | Declaration | erased |
+| `../types/iteration` | `Iteration` | Declaration | erased |
+| `../types/task` | `TaskBatchUpdateItem`, `TaskUpdate` | Declaration | erased |
+| `../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Sparkles`, `Maximize2`, `Minimize2`, `FlaskConical`, `Undo2`, `Check`, `History`, `RefreshCw` | — | compiler-dependent |
+| `react` | `useState`, `useEffect`, `useMemo`, `useCallback`, `useRef` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -51,6 +52,8 @@ Snapshot restore captures the target iteration identity and its observed revisio
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

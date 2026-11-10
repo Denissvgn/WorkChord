@@ -18,7 +18,7 @@ Analysis of team workload.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

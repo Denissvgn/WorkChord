@@ -1,7 +1,7 @@
 # SharedStateProps
 
 **Location:** `frontend/src/components/feedback/QueryState.tsx:7`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [QueryState](../modules/QueryState.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `SharedStateProps` in `frontend/src/components/feedback/Que
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

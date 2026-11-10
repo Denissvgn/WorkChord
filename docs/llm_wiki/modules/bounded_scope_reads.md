@@ -17,7 +17,24 @@ Shared finite ID-window reads; the caller supplies its authorized projection.
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
-*No internal module dependencies detected.*
+```mermaid
+flowchart LR
+    n0["backend/app/services/bounded_scope_reads.py"]
+    n1["backend/app/services/iteration_service.py"]
+    n2["backend/app/services/project_service.py"]
+    n1 --> n0
+    n2 --> n0
+    click n0 "../modules/bounded_scope_reads.md"
+    click n1 "../modules/iteration_service.md"
+    click n2 "../modules/project_service.md"
+```
+
+### Internal neighbors
+
+| Direction | Module |
+|---|---|
+| Inbound | [iteration_service](../modules/iteration_service.md) |
+| Inbound | [project_service](../modules/project_service.md) |
 
 ### External packages
 

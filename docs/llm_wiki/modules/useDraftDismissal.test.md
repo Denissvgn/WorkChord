@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/tasks/useDraftDismissal.test.tsx`.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./useDraftDismissal` | `useDraftDismissal` |
-| `@testing-library/react` | `act`, `renderHook` |
-| `vitest` | `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./useDraftDismissal` | `useDraftDismissal` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `renderHook` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/savedView.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -37,11 +39,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SavedView](../entities/savedView_SavedView.md) | Class | 4 | — | — |
-| [SavedViewDashboardCard](../entities/SavedViewDashboardCard.md) | Class | 24 | — | — |
-| [SavedViewListParams](../entities/SavedViewListParams.md) | Class | 37 | — | — |
-| [SavedViewCreate](../entities/savedView_SavedViewCreate.md) | Class | 41 | — | — |
-| [SavedViewUpdate](../entities/savedView_SavedViewUpdate.md) | Class | 52 | — | — |
-| [SavedViewDuplicate](../entities/SavedViewDuplicate.md) | Class | 63 | — | — |
-| [SavedViewType](../entities/savedView_SavedViewType.md) | Type alias | 1 | — | — |
-| [SavedViewScope](../entities/savedView_SavedViewScope.md) | Type alias | 2 | — | — |
+| [SavedView](../entities/savedView_SavedView.md) | Interface | 4 | — | — |
+| [SavedViewDashboardCard](../entities/SavedViewDashboardCard.md) | Interface | 24 | — | — |
+| [SavedViewListParams](../entities/SavedViewListParams.md) | Interface | 37 | — | — |
+| [SavedViewCreate](../entities/savedView_SavedViewCreate.md) | Interface | 41 | — | — |
+| [SavedViewUpdate](../entities/savedView_SavedViewUpdate.md) | Interface | 52 | — | — |
+| [SavedViewDuplicate](../entities/SavedViewDuplicate.md) | Interface | 63 | — | — |
+| [SavedViewType](../entities/savedView_SavedViewType.md) | Type alias | 1 | `'tasks' \| 'projects' \| 'triage'` | — |
+| [SavedViewScope](../entities/savedView_SavedViewScope.md) | Type alias | 2 | `'personal' \| 'shared' \| 'system'` | — |

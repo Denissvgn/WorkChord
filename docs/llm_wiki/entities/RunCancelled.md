@@ -15,7 +15,7 @@ A cancellation signal was observed. The runner persists cancellation and perform
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

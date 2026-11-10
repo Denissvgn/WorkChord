@@ -18,7 +18,7 @@ Read-only setting that remains environment/startup bound.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

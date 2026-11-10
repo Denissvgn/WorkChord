@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/common/FullscreenWorkspace.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./dialogLayer` | `useDialogLayer` |
-| `clsx` | `clsx` |
-| `react` | `ReactNode`, `RefObject` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./dialogLayer` | `useDialogLayer` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `react` | `ReactNode`, `RefObject` | Declaration | erased |
 
 ## Module Signals
 
@@ -56,4 +56,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `FullscreenWorkspace` | `({     open,     onClose,     ariaLabel,     children,     className,     fullscreenClassName,     initialFocusRef, }: {     open: boolean;     onClose: () => void;     ariaLabel: string;     children: ReactNode;     className?: string;     fullscreenClassName?: string;     initialFocusRef?: RefObject<HTMLElement \| null>; })` | — | — |
+| `FullscreenWorkspace` | <pre><code>&#40;&#123;&#10;    open&#44;&#10;    onClose&#44;&#10;    ariaLabel&#44;&#10;    children&#44;&#10;    className&#44;&#10;    fullscreenClassName&#44;&#10;    initialFocusRef&#44;&#10;&#125;&#58; &#123;&#10;    open&#58; boolean&#59;&#10;    onClose&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    ariaLabel&#58; string&#59;&#10;    children&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;    fullscreenClassName&#63;&#58; string&#59;&#10;    initialFocusRef&#63;&#58; RefObject&#60;HTMLElement &#124; null&#62;&#59;&#10;&#125;&#41;</code></pre> | — | — |

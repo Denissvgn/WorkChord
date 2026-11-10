@@ -1,7 +1,7 @@
 # HealthCheckResult
 
 **Location:** `frontend/src/services/healthService.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [healthService](../modules/healthService.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `HealthCheckResult` in `frontend/src/services/healthService
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

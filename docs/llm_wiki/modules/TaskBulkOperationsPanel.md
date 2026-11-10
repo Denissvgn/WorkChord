@@ -8,21 +8,21 @@ _Auto-generated from `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../services/iterationService` | `iterationService` |
-| `../../services/projectService` | `projectService` |
-| `../../services/taskService` | `taskService` |
-| `../../services/teamService` | `teamService` |
-| `../../types/task` | `Task`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskStatus` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Bot`, `CheckCircle2`, `ClipboardCheck`, `Trash2`, `XCircle` |
-| `react` | `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/task` | `Task`, `TaskBulkAction`, `TaskBulkOperationRequest`, `TaskBulkOperationResponse`, `TaskBulkOperationResult`, `TaskStatus` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Bot`, `CheckCircle2`, `ClipboardCheck`, `Trash2`, `XCircle` | — | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +35,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -105,10 +107,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskBulkOperationsPanelProps](../entities/TaskBulkOperationsPanelProps.md) | Class | 24 | — | — |
+| [TaskBulkOperationsPanelProps](../entities/TaskBulkOperationsPanelProps.md) | Interface | 24 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskBulkOperationsPanel` | `({     iterationId,     selectedTasks,     selectedTaskIds,     onClearSelection,     onApplied, }: TaskBulkOperationsPanelProps)` | — | — |
+| `TaskBulkOperationsPanel` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    selectedTasks&#44;&#10;    selectedTaskIds&#44;&#10;    onClearSelection&#44;&#10;    onApplied&#44;&#10;&#125;&#58; TaskBulkOperationsPanelProps&#41;</code></pre> | — | — |

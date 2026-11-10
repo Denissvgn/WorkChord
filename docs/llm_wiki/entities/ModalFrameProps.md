@@ -1,7 +1,7 @@
 # ModalFrameProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:206`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `ModalFrameProps` in `frontend/src/pages/TriagePage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

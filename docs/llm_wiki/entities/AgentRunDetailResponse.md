@@ -17,7 +17,7 @@ Full detail of an agent run including its list of chronological trace events.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -11,10 +11,11 @@ Operator-scoped, bounded hierarchy diagnosis and version-checked deterministic r
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `require_operator` |
-| `app.commands` | `atomic_command`, `lock_iterations` |
+| `app.commands` | `atomic_command`, `lock_iterations`, `AggregateVersionConflict` |
+| `app.models.iteration` | `Iteration` |
 | `app.models.task` | `Task` |
 | `app.services.snapshot_service` | `SnapshotService` |
-| `app.services.task_service` | `TaskService` |
+| `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.task_status_service` | `TaskStatusService` |
 | `app.services.work_metrics` | `effective_work_flags`, `scoped_metric_tasks`, `task_signals` |
 | `sqlalchemy` | `select` |
@@ -26,59 +27,78 @@ Operator-scoped, bounded hierarchy diagnosis and version-checked deterministic r
 flowchart LR
     n0["backend/app/authority.py"]
     n1["backend/app/commands.py"]
-    n2["backend/app/models/task.py"]
-    n3["backend/app/routers/snapshots.py"]
-    n4["backend/app/services/hierarchy_repair_service.py"]
-    n5["backend/app/services/snapshot_service.py"]
-    n6["backend/app/services/task_service.py"]
-    n7["backend/app/services/task_status_service.py"]
-    n8["backend/app/services/work_metrics.py"]
-    n9["backend/tests/test_work_correctness.py"]
-    n0 --> n2
+    n2["backend/app/models/iteration.py"]
+    n3["backend/app/models/task.py"]
+    n4["backend/app/routers/snapshots.py"]
+    n5["backend/app/services/hierarchy_repair_service.py"]
+    n6["backend/app/services/snapshot_service.py"]
+    n7["backend/app/services/task_service.py"]
+    n8["backend/app/services/task_status_service.py"]
+    n9["backend/app/services/work_metrics.py"]
+    n10["backend/tests/test_work_correctness.py"]
+    n0 --> n3
     n1 --> n0
     n1 --> n2
-    n1 --> n5
+    n1 --> n3
     n1 --> n6
-    n3 --> n1
-    n3 --> n4
-    n3 --> n5
-    n3 --> n6
-    n4 --> n0
+    n1 --> n7
+    n2 --> n3
+    n3 --> n2
     n4 --> n1
-    n4 --> n2
     n4 --> n5
     n4 --> n6
     n4 --> n7
-    n4 --> n8
+    n5 --> n0
     n5 --> n1
+    n5 --> n2
+    n5 --> n3
+    n5 --> n6
+    n5 --> n7
+    n5 --> n8
+    n5 --> n9
     n6 --> n0
     n6 --> n1
     n6 --> n2
-    n6 --> n5
+    n6 --> n3
+    n6 --> n4
+    n6 --> n7
     n7 --> n0
     n7 --> n1
     n7 --> n2
+    n7 --> n3
     n7 --> n6
+    n7 --> n8
+    n7 --> n9
     n8 --> n0
     n8 --> n1
     n8 --> n2
+    n8 --> n3
+    n8 --> n6
+    n8 --> n7
+    n8 --> n9
     n9 --> n0
     n9 --> n1
     n9 --> n2
-    n9 --> n4
-    n9 --> n5
-    n9 --> n6
-    n9 --> n8
+    n9 --> n3
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
+    n10 --> n9
     click n0 "../modules/authority.md"
     click n1 "../modules/commands.md"
-    click n2 "../modules/models_task.md"
-    click n3 "../modules/snapshots.md"
-    click n4 "../modules/hierarchy_repair_service.md"
-    click n5 "../modules/snapshot_service.md"
-    click n6 "../modules/task_service.md"
-    click n7 "../modules/task_status_service.md"
-    click n8 "../modules/services_work_metrics.md"
-    click n9 "../modules/test_work_correctness.md"
+    click n2 "../modules/models_iteration.md"
+    click n3 "../modules/models_task.md"
+    click n4 "../modules/snapshots.md"
+    click n5 "../modules/hierarchy_repair_service.md"
+    click n6 "../modules/snapshot_service.md"
+    click n7 "../modules/task_service.md"
+    click n8 "../modules/task_status_service.md"
+    click n9 "../modules/services_work_metrics.md"
+    click n10 "../modules/test_work_correctness.md"
 ```
 
 ### Internal neighbors
@@ -89,6 +109,7 @@ flowchart LR
 | Inbound | [test_work_correctness](../modules/test_work_correctness.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [commands](../modules/commands.md) |
+| Outbound | [models_iteration](../modules/models_iteration.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [snapshot_service](../modules/snapshot_service.md) |
 | Outbound | [task_service](../modules/task_service.md) |

@@ -19,7 +19,7 @@ Closed context-capacity tiers ordered by increasing capacity.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

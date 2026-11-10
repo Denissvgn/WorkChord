@@ -1,7 +1,7 @@
 # WebIntakeForm
 
 **Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:49`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `WebIntakeForm` in `frontend/src/components/settings/Runtim
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

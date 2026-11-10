@@ -1,7 +1,7 @@
 # Release
 
 **Location:** `frontend/src/types/release.ts:13`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `WorkMetrics`
 **Module:** [types_release](../modules/types_release.md)
 
@@ -29,7 +29,7 @@ _Auto-generated from `Release` in `frontend/src/types/release.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

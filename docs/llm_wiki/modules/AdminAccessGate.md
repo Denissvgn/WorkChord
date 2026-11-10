@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessGate.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` |
-| `./AdminAccessPanel` | `AdminAccessPanel` |
-| `lucide-react` | `LockKeyhole` |
-| `react` | `ReactNode` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `./AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
+| `lucide-react` | `LockKeyhole` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -70,10 +70,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AdminAccessGateProps](../entities/AdminAccessGateProps.md) | Class | 7 | — | — |
+| [AdminAccessGateProps](../entities/AdminAccessGateProps.md) | Interface | 7 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AdminAccessGate` | `({     children,     showPanel = true,     recovery,     accessGranted,     headingLevel = 3, }: AdminAccessGateProps)` | — | — |
+| `AdminAccessGate` | <pre><code>&#40;&#123;&#10;    children&#44;&#10;    showPanel &#61; true&#44;&#10;    recovery&#44;&#10;    accessGranted&#44;&#10;    headingLevel &#61; 3&#44;&#10;&#125;&#58; AdminAccessGateProps&#41;</code></pre> | — | — |

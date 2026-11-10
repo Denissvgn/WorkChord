@@ -4,6 +4,22 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
+**Target:**
+
+```typescript
+| 'novel-architecture'
+    | 'material-ambiguity'
+    | 'broad-context'
+    | 'security'
+    | 'authorization'
+    | 'migration'
+    | 'data-integrity'
+    | 'concurrency'
+    | 'production'
+    | 'irreversible-change'
+    | 'independent-verification'
+    | 'specialist-verification'
+```
 
 ## Description
 
@@ -11,11 +27,11 @@ _Auto-generated from `AssessmentReasonCode` in `frontend/src/types/agent.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

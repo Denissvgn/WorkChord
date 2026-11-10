@@ -8,40 +8,42 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/common/ConfirmDialog` | `ConfirmDialog` |
-| `../components/common/Input` | `RequiredIndicator` |
-| `../components/common/Modal` | `Modal` |
-| `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/layout/Breadcrumbs` | `Breadcrumbs` |
-| `../components/projects/ProjectForm` | `ProjectForm` |
-| `../components/projects/ProjectIterationsSection` | `ProjectIterationsSection` |
-| `../components/projects/ProjectTaskTree` | `ProjectTaskTree` |
-| `../components/projects/TimeEntriesReport` | `TimeEntriesReport` |
-| `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName`, `projectStatusPillClassName` |
-| `../components/releases/ReleaseForm` | `ReleaseForm` |
-| `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
-| `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` |
-| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` |
-| `../components/ui` | `InlineEmptyState`, `OverflowMenu`, `MetricGrid`, `PageHeader`, `PageLayout`, `Pill`, `SectionCard`, `SlideOverDrawer`, `StatusSegmentStrip`, `StickyRail` |
-| `../components/ui/tone` | `STATUS_TONE` |
-| `../i18n/i18n` | `i18n` |
-| `../services/planningInputService` | `planningInputService`, `ObservedPlanningInput` |
-| `../services/projectService` | `projectService` |
-| `../services/releaseService` | `releaseService` |
-| `../types/project` | `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneStatus`, `ProjectMilestoneTaskGroup`, `ProjectMilestoneUpdateRequest`, `ProjectStatus`, `ProjectTargetDateRisk`, `ProjectUpdateEntry`, `ProjectUpdateFreshness` |
-| `../types/release` | `Release`, `ReleaseStatus` |
-| `../utils/apiError` | `normalizeApiError`, `getApiErrorMessage`, `getApiErrorStatus` |
-| `../utils/formatDate` | `formatDate`, `formatDateTime` |
-| `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowDown`, `ArrowUp`, `CalendarDays`, `CheckCircle2`, `ChevronRight`, `Edit`, `FolderOpen`, `History`, `MessageSquare`, `Package`, `Plus`, `Send`, `Target`, `Trash2`, `User`, `XCircle` |
-| `react` | `useState`, `FormEvent` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useNavigate`, `useParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../components/common/Input` | `RequiredIndicator` | — | compiler-dependent |
+| `../components/common/Modal` | `Modal` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
+| `../components/projects/ProjectForm` | `ProjectForm` | — | compiler-dependent |
+| `../components/projects/ProjectIterationsSection` | `ProjectIterationsSection` | — | compiler-dependent |
+| `../components/projects/ProjectTaskTree` | `ProjectTaskTree` | — | compiler-dependent |
+| `../components/projects/TimeEntriesReport` | `TimeEntriesReport` | — | compiler-dependent |
+| `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName`, `projectStatusPillClassName` | — | compiler-dependent |
+| `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
+| `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
+| `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
+| `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
+| `../components/ui` | `InlineEmptyState`, `OverflowMenu`, `MetricGrid`, `PageHeader`, `PageLayout`, `Pill`, `SectionCard`, `SlideOverDrawer`, `StatusSegmentStrip`, `StickyRail` | — | compiler-dependent |
+| `../components/ui/tone` | `STATUS_TONE` | — | compiler-dependent |
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../services/planningInputService` | `ObservedPlanningInput` | Specifier | compiler-dependent |
+| `../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../services/projectService` | `projectService` | — | compiler-dependent |
+| `../services/releaseService` | `releaseService` | — | compiler-dependent |
+| `../types/project` | `Project`, `ProjectHealth`, `ProjectMilestone`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneStatus`, `ProjectMilestoneTaskGroup`, `ProjectMilestoneUpdateRequest`, `ProjectStatus`, `ProjectTargetDateRisk`, `ProjectUpdateEntry`, `ProjectUpdateFreshness` | Declaration | erased |
+| `../types/release` | `Release`, `ReleaseStatus` | Declaration | erased |
+| `../utils/apiError` | `normalizeApiError`, `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
+| `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowDown`, `ArrowUp`, `CalendarDays`, `CheckCircle2`, `ChevronRight`, `Edit`, `FolderOpen`, `History`, `MessageSquare`, `Package`, `Plus`, `Send`, `Target`, `Trash2`, `User`, `XCircle` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useNavigate`, `useParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -54,6 +56,8 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -82,8 +86,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 155 | — | — |
-| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 164 | — | — |
-| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 169 | — | — |
-| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 174 | — | — |
-| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 183 | — | — |
+| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 155 | <pre><code>&#123;&#10;    health&#58; ProjectHealth&#59;&#10;    summary&#58; string&#59;&#10;    progress&#95;text&#58; string&#59;&#10;    risks&#95;text&#58; string&#59;&#10;    decisions&#95;text&#58; string&#59;&#10;    next&#95;steps&#95;text&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 164 | <pre><code>&#123;&#10;    projectId&#58; number &#124; null&#59;&#10;    form&#58; ProjectUpdateFormState&#59;&#10;&#125;</code></pre> | — |
+| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 169 | <pre><code>&#123;&#10;    projectId&#58; number &#124; null&#59;&#10;    message&#58; string &#124; null&#59;&#10;&#125;</code></pre> | — |
+| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 174 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    target&#95;date&#58; string&#59;&#10;    completed&#95;at&#58; string&#59;&#10;    sort&#95;order&#58; string&#59;&#10;    status&#58; ProjectMilestoneStatus&#59;&#10;&#125;</code></pre> | — |
+| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 183 | <pre><code>&#123;&#10;    mode&#58; &#39;create&#39; &#124; &#39;edit&#39;&#59;&#10;    milestone&#58; ProjectMilestone &#124; null&#59;&#10;    form&#58; MilestoneFormState&#59;&#10;    error&#58; string &#124; null&#59;&#10;&#125;</code></pre> | — |

@@ -20,7 +20,7 @@ Normalized assignment intents derived from purpose and queue class.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

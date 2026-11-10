@@ -10,16 +10,16 @@ _Auto-generated from `frontend/src/components/tasks/PagedTaskBrowser.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
-| `../../features/useLiveWindow` | `useLiveWindow` |
-| `../../services/taskService` | `taskService` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
+| `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 

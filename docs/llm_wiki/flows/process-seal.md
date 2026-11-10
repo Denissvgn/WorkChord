@@ -8,71 +8,121 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as _parser().parse_args
-    participant p2 as _parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_argument
-    participant p5 as args.input.resolve
-    participant p6 as args.output.resolve
-    participant p7 as QualificationInputError
-    participant p8 as read_json_object
-    participant p9 as json.loads
-    participant p10 as path.read_text
-    participant p11 as isinstance (scripts/load/common.py:read_json_object)
-    participant p12 as verify_document
-    participant p13 as document.get (scripts/load/common.py:verify_document)
-    participant p14 as isinstance (scripts/load/common.py:verify_document)
-    participant p15 as len
-    participant p16 as dict (scripts/load/common.py:verify_document)
-    participant p17 as payload.pop
-    participant p18 as sha256_bytes
-    participant p19 as hashlib.sha256(…).hexdigest
-    participant p20 as hashlib.sha256
-    participant p21 as canonical_json_bytes
-    participant p22 as json.dumps(…).encode (scripts/load/common.py:canonical_json_bytes)
-    participant p23 as json.dumps (scripts/load/common.py:canonical_json_bytes)
-    participant p24 as atomic_write_json
-    p0-->>p1: _parser().parse_args
-    p0->>p2: _parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_argument
-    p2-->>p4: parser.add_argument
-    p0-->>p5: args.input.resolve
-    p0-->>p6: args.output.resolve
-    p0->>p7: QualificationInputError
-    p0->>p8: read_json_object
-    p8-->>p9: json.loads
-    p8-->>p10: path.read_text
-    p8->>p7: QualificationInputError
-    p8-->>p11: isinstance (scripts/load/common.py:read_json_object)
-    p8->>p7: QualificationInputError
-    p8->>p12: verify_document
-    p12-->>p13: document.get (scripts/load/common.py:verify_document)
-    p12-->>p14: isinstance (scripts/load/common.py:verify_document)
-    p12-->>p15: len
-    p12->>p7: QualificationInputError
-    p12-->>p16: dict (scripts/load/common.py:verify_document)
-    p12-->>p17: payload.pop
-    p12->>p18: sha256_bytes
-    p18-->>p19: hashlib.sha256(…).hexdigest
-    p18-->>p20: hashlib.sha256
-    p12->>p21: canonical_json_bytes
-    p21-->>p22: json.dumps(…).encode (scripts/load/common.py:canonical_json_bytes)
-    p21-->>p23: json.dumps (scripts/load/common.py:canonical_json_bytes)
-    p12->>p7: QualificationInputError
-    p0->>p7: QualificationInputError
-    p0->>p24: atomic_write_json
+    participant p1 as read_json_object
+    participant p2 as atomic_write_json
+    participant p3 as _parser
+    participant p4 as QualificationInputError
+    participant p5 as seal_document
+    participant p6 as verify_document
+    participant p7 as sha256_bytes
+    participant p8 as canonical_json_bytes
+    participant p9 as print
+    participant p10 as _parser().parse_args
+    participant p11 as args.input.resolve
+    participant p12 as args.output.resolve
+    participant p13 as document.get (scripts/load/seal.py:main)
+    participant p14 as argparse.ArgumentParser
+    participant p15 as json.loads
+    participant p16 as parser.add_argument
+    participant p17 as path.read_text
+    participant p18 as dict (scripts/load/common.py:atomic_write_json)
+    participant p19 as path.parent.mkdir
+    participant p20 as isinstance (scripts/load/common.py:read_json_object)
+    participant p21 as path.with_name
+    participant p22 as os.getpid
+    participant p23 as json.dumps(…).encode (scripts/load/common.py:atomic_write_json)
+    participant p24 as json.dumps (scripts/load/common.py:atomic_write_json)
+    participant p25 as temporary.open
+    participant p26 as os.chmod
+    participant p27 as handle.write
+    participant p28 as handle.flush
+    p0->>p1: read_json_object
+    p0->>p2: atomic_write_json
+    p0->>p3: _parser
+    p0->>p4: QualificationInputError
+    p2->>p5: seal_document
+    p1->>p6: verify_document
+    p5->>p7: sha256_bytes
+    p5->>p8: canonical_json_bytes
+    p0-->>p9: print(...)
+    p0-->>p10: _parser().parse_args
+    p0-->>p11: args.input.resolve
+    p0-->>p12: args.output.resolve
+    p0-->>p13: document.get (scripts/load/seal.py:main)('kind', 'unspecified')
+    p0-->>p9: print(..., file=sys.stderr)
+    p3-->>p14: argparse.ArgumentParser(description='Seal a reviewed qualification evidence JSON object.')
+    p1-->>p15: json.loads(path.read_text(...))
+    p3-->>p16: parser.add_argument('--input', type=Path, required=True)
+    p1-->>p17: path.read_text(encoding='utf-8')
+    p2-->>p18: dict (scripts/load/common.py:atomic_write_json)(payload)
+    p3-->>p16: parser.add_argument('--output', type=Path, required=True)
+    p2-->>p19: path.parent.mkdir(parents=True, exist_ok=True)
+    p1-->>p20: isinstance (scripts/load/common.py:read_json_object)(value, dict)
+    p2-->>p21: path.with_name(...)
+    p2-->>p22: os.getpid
+    p2-->>p23: json.dumps(…).encode (scripts/load/common.py:atomic_write_json)('utf-8')
+    p2-->>p24: json.dumps (scripts/load/common.py:atomic_write_json)(document, ensure_ascii=False, allow_nan=False, indent=2, sort_keys=True)
+    p2-->>p25: temporary.open('xb')
+    p2-->>p26: os.chmod(temporary, mode)
+    p2-->>p27: handle.write(encoded)
+    p2-->>p28: handle.flush
 ```
 
-> Call sequence diagram shows 30 of 56 interactions; 26 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 56 interactions; 26 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 9 of 20 (11 omitted); unresolved 13 of 20 (7 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/load/common.py:read_json_object` | 10 | [scripts/load/common.py](../modules/load_common.md) | internal | 2 |
+| `scripts/load/common.py:verify_document` | 16 | - | unresolved | 2 |
+| `scripts/load/common.py:verify_document` | 16 | - | external | 3 |
+| `scripts/load/common.py:verify_document` | 16 | [scripts/load/common.py](../modules/load_common.md) | internal | 4 |
+| `scripts/load/common.py:sha256_bytes` | 23 | - | unresolved | 1 |
+| `scripts/load/common.py:sha256_bytes` | 23 | - | external | 1 |
+| `scripts/load/common.py:canonical_json_bytes` | 26 | - | unresolved | 1 |
+| `scripts/load/common.py:canonical_json_bytes` | 26 | - | external | 1 |
+> Omission summary shows 8 of 13 groups; 5 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 17; effect analysis evaluated: 10, partial: 0, unavailable: 7. Counts include steps omitted from the displayed trace.
+
+Collector observations for 10 source steps with known totals: observed: 42, emitted: 42, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
+| `_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_parser` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `args.input.resolve` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `args.output.resolve` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `QualificationInputError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `read_json_object` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `path.read_text` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

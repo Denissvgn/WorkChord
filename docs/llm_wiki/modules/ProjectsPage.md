@@ -8,30 +8,30 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/common/Input` | `Input` |
-| `../components/common/Modal` | `Modal` |
-| `../components/common/useConfirmDialog` | `useConfirmDialog` |
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` |
-| `../components/projects/InitiativeForm` | `InitiativeForm` |
-| `../components/projects/ProjectForm` | `ProjectForm` |
-| `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName` |
-| `../components/ui` | `InlineEmptyState`, `PageHeader`, `PageLayout`, `TableFrame` |
-| `../services/projectService` | `projectService` |
-| `../services/savedViewService` | `savedViewService` |
-| `../types/project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectPortfolioSummary`, `ProjectStatus` |
-| `../types/savedView` | `SavedView` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `../utils/formatDate` | `formatDate` |
-| `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertTriangle`, `ChevronDown`, `FolderOpen`, `LoaderCircle`, `Plus`, `Search`, `Target` |
-| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useNavigate`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/Input` | `Input` | — | compiler-dependent |
+| `../components/common/Modal` | `Modal` | — | compiler-dependent |
+| `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` | — | compiler-dependent |
+| `../components/projects/InitiativeForm` | `InitiativeForm` | — | compiler-dependent |
+| `../components/projects/ProjectForm` | `ProjectForm` | — | compiler-dependent |
+| `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName` | — | compiler-dependent |
+| `../components/ui` | `InlineEmptyState`, `PageHeader`, `PageLayout`, `TableFrame` | — | compiler-dependent |
+| `../services/projectService` | `projectService` | — | compiler-dependent |
+| `../services/savedViewService` | `savedViewService` | — | compiler-dependent |
+| `../types/project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectPortfolioSummary`, `ProjectStatus` | Declaration | erased |
+| `../types/savedView` | `SavedView` | Declaration | erased |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `ChevronDown`, `FolderOpen`, `LoaderCircle`, `Plus`, `Search`, `Target` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useNavigate`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -43,6 +43,8 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

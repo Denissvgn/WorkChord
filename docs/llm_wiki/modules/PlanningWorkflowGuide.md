@@ -8,14 +8,15 @@ _Auto-generated from `frontend/src/components/planning/PlanningWorkflowGuide.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/Button` | `Button` |
-| `../ui/SlideOverDrawer` | `SlideOverDrawer` |
-| `lucide-react` | `CalendarClock`, `ChevronRight`, `CircleHelp`, `FlaskConical`, `History`, `ListChecks`, `LockKeyhole`, `Share2`, `LucideIcon` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `lucide-react` | `LucideIcon` | Declaration | erased |
+| `lucide-react` | `CalendarClock`, `ChevronRight`, `CircleHelp`, `FlaskConical`, `History`, `ListChecks`, `LockKeyhole`, `Share2` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -63,12 +64,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PlanningSurface](../entities/PlanningSurface.md) | Type alias | 18 | — | — |
-| [GuideItem](../entities/GuideItem.md) | Type alias | 20 | — | — |
+| [PlanningSurface](../entities/PlanningSurface.md) | Type alias | 18 | `'plan' \| 'gantt'` | — |
+| [GuideItem](../entities/GuideItem.md) | Type alias | 20 | <pre><code>&#123;&#10;    icon&#58; LucideIcon&#59;&#10;    title&#58; string&#59;&#10;    body&#58; string&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `PlanningWorkflowHelpContent` | `({     surface,     showAction = true,     onNavigate, }: {     surface: PlanningSurface;     showAction?: boolean;     onNavigate?: () => void; })` | — | — |
+| `PlanningWorkflowHelpContent` | <pre><code>&#40;&#123;&#10;    surface&#44;&#10;    showAction &#61; true&#44;&#10;    onNavigate&#44;&#10;&#125;&#58; &#123;&#10;    surface&#58; PlanningSurface&#59;&#10;    showAction&#63;&#58; boolean&#59;&#10;    onNavigate&#63;&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |
 | `PlanningWorkflowGuide` | `({ surface }: { surface: PlanningSurface })` | — | — |

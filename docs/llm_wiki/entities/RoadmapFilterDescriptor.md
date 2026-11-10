@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)
+**Target:**
+
+```typescript
+{
+    id: 'status' | 'health' | 'owner' | 'initiative' | 'dates';
+    label: string;
+    remove: () => void;
+}
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `RoadmapFilterDescriptor` in `frontend/src/pages/RoadmapPag
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

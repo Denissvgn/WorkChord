@@ -28,7 +28,7 @@ Schema for updating a governed label group.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

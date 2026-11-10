@@ -1,7 +1,7 @@
 # EventOption
 
 **Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:53`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `EventOption` in `frontend/src/components/settings/Outbound
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

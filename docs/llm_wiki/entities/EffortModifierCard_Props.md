@@ -1,7 +1,7 @@
 # Props
 
 **Location:** `frontend/src/components/settings/EffortModifierCard.tsx:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [EffortModifierCard](../modules/EffortModifierCard.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `Props` in `frontend/src/components/settings/EffortModifier
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,40 +15,74 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as revoke_owned_session
     participant p1 as require_identity_writes
-    participant p2 as get_settings
-    participant p3 as Settings
-    participant p4 as MaintenanceModeError
-    participant p5 as internal_authority
-    participant p6 as db.info.get
-    participant p7 as db.scalar
-    participant p8 as select(…).where
-    participant p9 as select
-    participant p10 as AuthorityError
-    participant p11 as utc_now
-    participant p12 as datetime.now
+    participant p2 as internal_authority
+    participant p3 as db.scalar
+    participant p4 as select(…).where
+    participant p5 as select
+    participant p6 as AuthorityError
+    participant p7 as utc_now
+    participant p8 as get_settings
+    participant p9 as db.info.get
+    participant p10 as datetime.now
+    participant p11 as MaintenanceModeError
+    participant p12 as Settings
     p0->>p1: require_identity_writes
-    p1->>p2: get_settings
-    p2->>p3: Settings
-    p1->>p4: MaintenanceModeError
-    p1->>p2: get_settings
-    p0->>p5: internal_authority
-    p5-->>p6: db.info.get
-    p0-->>p7: db.scalar
-    p0-->>p8: select(…).where
-    p0-->>p9: select
-    p0->>p10: AuthorityError
-    p0->>p11: utc_now
-    p11-->>p12: datetime.now
+    p0->>p2: internal_authority
+    p0-->>p3: db.scalar(...)
+    p0-->>p4: select(…).where(..., ...)
+    p0-->>p5: select(UserSession)
+    p0->>p6: AuthorityError
+    p0->>p7: utc_now
+    p1->>p8: get_settings
+    p2-->>p9: db.info.get('authority_internal', False)
+    p7-->>p10: datetime.now(UTC)
+    p1->>p11: MaintenanceModeError
+    p1->>p8: get_settings
+    p8->>p12: Settings
 ```
+
+> Call sequence diagram shows 13 of 13 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 2 of 2 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 9; effect analysis evaluated: 6, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+
+Collector observations for 6 source steps with known totals: observed: 13, emitted: 13, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `revoke_owned_session` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `db.info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. revoke_owned_session"]
@@ -119,7 +153,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

@@ -1,7 +1,7 @@
 # TeamMemberOption
 
 **Location:** `frontend/src/types/team.ts:124`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `TeamMemberOption` in `frontend/src/types/team.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/services/planningInputService.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./api` | `api` |
-| `./planningInputService` | `planningInputService` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./api` | `api` | — | compiler-dependent |
+| `./planningInputService` | `planningInputService` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

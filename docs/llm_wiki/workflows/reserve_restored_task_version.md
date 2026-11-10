@@ -11,7 +11,8 @@
 1. `commands.current_command`
 2. `authority.internal_authority`
 3. `authority.AuthorityError`
-4. `task_service.TaskService`
+4. `task_service.TaskService.reserve_task_version`
+5. `task_service.TaskService`
 
 ## Touches
 

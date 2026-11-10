@@ -15,7 +15,7 @@ Raised when a database cannot be upgraded safely.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

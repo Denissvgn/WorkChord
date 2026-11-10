@@ -4,6 +4,17 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PageLayout](../modules/PageLayout.md)
+**Target:**
+
+```typescript
+{
+    title: ReactNode;
+    subtitle?: ReactNode;
+    meta?: ReactNode;
+    actions?: ReactNode;
+    className?: string;
+}
+```
 
 ## Description
 
@@ -11,11 +22,11 @@ _Auto-generated from `PageHeaderProps` in `frontend/src/components/ui/PageLayout
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

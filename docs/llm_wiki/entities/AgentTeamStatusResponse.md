@@ -29,7 +29,7 @@ _Auto-generated from `AgentTeamStatusResponse` in `backend/app/schemas/agent_tea
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

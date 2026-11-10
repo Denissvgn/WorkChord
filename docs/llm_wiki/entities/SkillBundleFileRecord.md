@@ -19,7 +19,7 @@ One allow-listed file in an independently installable role skill.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

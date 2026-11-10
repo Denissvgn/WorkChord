@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/App.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./components/layout/AppShell` | `AppShell` |
-| `./components/layout/DocumentMetadata` | `DocumentMetadata` |
-| `./navigation/routeModules` | `routeModuleLoaders` |
-| `lucide-react` | `LoaderCircle` |
-| `react` | `lazy`, `Suspense` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Route`, `Routes` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./components/layout/AppShell` | `AppShell` | — | compiler-dependent |
+| `./components/layout/DocumentMetadata` | `DocumentMetadata` | — | compiler-dependent |
+| `./navigation/routeModules` | `routeModuleLoaders` | — | compiler-dependent |
+| `lucide-react` | `LoaderCircle` | — | compiler-dependent |
+| `react` | `lazy`, `Suspense` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Route`, `Routes` | — | compiler-dependent |
 
 ## Module Signals
 

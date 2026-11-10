@@ -4,7 +4,7 @@
 **Source:** [mcp_server](../modules/mcp_server.md)
 **Modules touched:** [app_database](../modules/app_database.md), [config](../modules/config.md), [database_config](../modules/database_config.md), [mcp_server](../modules/mcp_server.md), [upgrade_service](../modules/upgrade_service.md)
 
-**Related modules:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), and 11 more
+**Related modules:** [agent_model_catalog_service](../modules/agent_model_catalog_service.md), [agent_routing_service](../modules/agent_routing_service.md), [agent_service](../modules/agent_service.md), and 12 more
 
 **Complete related modules:**
 
@@ -16,6 +16,7 @@
 - [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
+- [http_authority](../modules/http_authority.md)
 - [identity_service](../modules/identity_service.md)
 - [maintenance](../modules/maintenance.md)
 - [models_agent](../modules/models_agent.md)
@@ -25,79 +26,123 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as argparse.ArgumentParser
-    participant p2 as parser.add_argument
-    participant p3 as parser.parse_args
-    participant p4 as os.getenv
-    participant p5 as print
-    participant p6 as SystemExit
-    participant p7 as redirect_stdout
-    participant p8 as asyncio.run
-    participant p9 as init_db
-    participant p10 as assert_database_current
-    participant p11 as inspect_database
-    participant p12 as _inspect_database_connection
-    participant p13 as inspect (backend/app/services/upgr…nspect_database_connection)
-    participant p14 as sorted (backend/app/services/upgr…nspect_database_connection)
-    participant p15 as inspector.get_table_names (backend/app/services/upgr…nspect_database_connection)
-    participant p16 as _current_revision
-    participant p17 as inspect (backend/app/services/upgr…rvice.py:_current_revision)
-    participant p18 as inspector.get_table_names (backend/app/services/upgr…rvice.py:_current_revision)
-    participant p19 as connection.execute
-    participant p20 as text
-    participant p21 as result.fetchall
-    participant p22 as len (backend/app/services/upgr…rvice.py:_current_revision)
-    participant p23 as ','.join
-    participant p24 as sorted (backend/app/services/upgr…rvice.py:_current_revision)
-    participant p25 as set
-    participant p26 as head_revision
-    participant p27 as ScriptDirectory.from_config
-    participant p28 as alembic_config
-    participant p29 as script.get_heads
-    participant p30 as len (backend/app/services/upgr…e_service.py:head_revision)
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p3: parser.parse_args
-    p0-->>p4: os.getenv
-    p0-->>p5: print
-    p0-->>p6: SystemExit
-    p0-->>p7: redirect_stdout
-    p0-->>p8: asyncio.run
-    p0->>p9: init_db
-    p9->>p10: assert_database_current
-    p10->>p11: inspect_database
-    p11->>p12: _inspect_database_connection
-    p12-->>p13: inspect (backend/app/services/upgr…nspect_database_connection)
-    p12-->>p14: sorted (backend/app/services/upgr…nspect_database_connection)
-    p12-->>p15: inspector.get_table_names (backend/app/services/upgr…nspect_database_connection)
-    p12->>p16: _current_revision
-    p16-->>p17: inspect (backend/app/services/upgr…rvice.py:_current_revision)
-    p16-->>p18: inspector.get_table_names (backend/app/services/upgr…rvice.py:_current_revision)
-    p16-->>p19: connection.execute
-    p16-->>p20: text
-    p16-->>p21: result.fetchall
-    p16-->>p22: len (backend/app/services/upgr…rvice.py:_current_revision)
-    p16-->>p23: ','.join
-    p16-->>p24: sorted (backend/app/services/upgr…rvice.py:_current_revision)
-    p12-->>p25: set
-    p12->>p26: head_revision
-    p26-->>p27: ScriptDirectory.from_config
-    p26->>p28: alembic_config
-    p26-->>p29: script.get_heads
-    p26-->>p30: len (backend/app/services/upgr…e_service.py:head_revision)
+    participant p1 as init_db
+    participant p2 as _run_standalone_transport
+    participant p3 as assert_database_current
+    participant p4 as inspect_database
+    participant p5 as _inspect_database_connection
+    participant p6 as _sync_engine
+    participant p7 as database_configuration
+    participant p8 as head_revision
+    participant p9 as close_database
+    participant p10 as UpgradeError
+    participant p11 as _current_revision
+    participant p12 as DatabaseStatus
+    participant p13 as parse_database_configuration
+    participant p14 as alembic_config
+    participant p15 as get_settings
+    participant p16 as argparse.ArgumentParser
+    participant p17 as parser.add_argument
+    participant p18 as parser.parse_args
+    participant p19 as os.getenv
+    participant p20 as print
+    participant p21 as SystemExit
+    participant p22 as redirect_stdout
+    participant p23 as asyncio.run
+    participant p24 as mcp.run_stdio_async
+    participant p25 as mcp.run_streamable_http_async
+    participant p26 as engine.dispose (backend/app/database.py:close_database)
+    participant p27 as engine.connect
+    participant p28 as engine.dispose (backend/app/services/upgr…ervice.py:inspect_database)
+    p0->>p1: init_db
+    p0->>p2: _run_standalone_transport
+    p1->>p3: assert_database_current
+    p3->>p4: inspect_database
+    p4->>p5: _inspect_database_connection
+    p4->>p6: _sync_engine
+    p6->>p7: database_configuration
+    p5->>p8: head_revision
+    p2->>p9: close_database
+    p3->>p10: UpgradeError
+    p5->>p11: _current_revision
+    p5->>p12: DatabaseStatus
+    p7->>p13: parse_database_configuration
+    p8->>p14: alembic_config
+    p7->>p15: get_settings
+    p0-->>p16: argparse.ArgumentParser(description='Run WorkChord MCP server')
+    p0-->>p17: parser.add_argument('--transport', choices=[...], default='stdio', help='MCP transport to run')
+    p0-->>p18: parser.parse_args(argv)
+    p0-->>p19: os.getenv(MCP_AGENT_API_KEY_ENV)
+    p0-->>p20: print(..., file=sys.stderr)
+    p0-->>p21: SystemExit(2)
+    p0-->>p22: redirect_stdout(sys.stderr)
+    p0-->>p23: asyncio.run(init_db(...))
+    p0-->>p23: asyncio.run(init_db(...))
+    p0-->>p23: asyncio.run(_run_standalone_transport(...))
+    p2-->>p24: mcp.run_stdio_async
+    p2-->>p25: mcp.run_streamable_http_async
+    p9-->>p26: engine.dispose (backend/app/database.py:close_database)
+    p4-->>p27: engine.connect
+    p4-->>p28: engine.dispose (backend/app/services/upgr…ervice.py:inspect_database)
 ```
 
-> Call sequence diagram shows 30 of 52 interactions; 22 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 52 interactions; 22 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 8 of 20 (12 omitted); unresolved 7 of 14 (7 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 13 | - | external | 4 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 13 | - | unresolved | 1 |
+| `backend/app/services/upgrade_service.py:_current_revision` | 17 | - | external | 4 |
+| `backend/app/services/upgrade_service.py:_current_revision` | 17 | - | unresolved | 4 |
+| `backend/app/services/upgrade_service.py:head_revision` | 27 | - | external | 2 |
+| `backend/app/services/upgrade_service.py:head_revision` | 27 | - | unresolved | 2 |
+| `backend/app/services/upgrade_service.py:head_revision` | 27 | [backend/app/services/upgrade_service.py](../modules/upgrade_service.md) | internal | 1 |
+| `backend/app/services/upgrade_service.py:_sync_engine` | 36 | - | external | 2 |
+> Omission summary shows 8 of 10 groups; 2 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 19; effect analysis evaluated: 16, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+
+Collector observations for 16 source steps with known totals: observed: 41, emitted: 41, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `print` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `SystemExit` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `redirect_stdout` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `asyncio.run` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `init_db` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `assert_database_current` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `inspect_database` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

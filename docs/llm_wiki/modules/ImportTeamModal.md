@@ -8,17 +8,17 @@ _Auto-generated from `frontend/src/components/team/ImportTeamModal.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../services/teamService` | `teamService` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/Modal` | `Modal` |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` |
-| `lucide-react` | `Upload`, `FileText`, `AlertCircle` |
-| `react` | `useEffect`, `useId`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Upload`, `FileText`, `AlertCircle` | — | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -81,10 +81,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ImportTeamModalProps](../entities/ImportTeamModalProps.md) | Class | 13 | — | — |
+| [ImportTeamModalProps](../entities/ImportTeamModalProps.md) | Interface | 13 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ImportTeamModal` | `({     iterationId,     onClose,     onSuccess: onImportSuccess,     onStateChange, }: ImportTeamModalProps)` | — | — |
+| `ImportTeamModal` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    onClose&#44;&#10;    onSuccess&#58; onImportSuccess&#44;&#10;    onStateChange&#44;&#10;&#125;&#58; ImportTeamModalProps&#41;</code></pre> | — | — |

@@ -37,7 +37,7 @@ _Auto-generated from `TriageTaskDraftResponse` in `backend/app/schemas/triage.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

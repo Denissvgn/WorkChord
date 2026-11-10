@@ -15,7 +15,7 @@ Raised when a portable/evidence contract contains credential material.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

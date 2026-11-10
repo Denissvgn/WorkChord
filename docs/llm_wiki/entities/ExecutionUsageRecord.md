@@ -32,7 +32,7 @@ _Auto-generated from `ExecutionUsageRecord` in `backend/app/models/execution_usa
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

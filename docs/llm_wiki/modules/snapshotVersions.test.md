@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/services/snapshotVersions.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./api` | `api` |
-| `./snapshotService` | `snapshotService` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./api` | `api` | — | compiler-dependent |
+| `./snapshotService` | `snapshotService` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

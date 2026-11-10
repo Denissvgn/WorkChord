@@ -25,7 +25,7 @@ Replay-safe record for agent and PM mutations.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

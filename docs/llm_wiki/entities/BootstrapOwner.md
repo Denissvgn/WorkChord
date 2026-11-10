@@ -17,7 +17,7 @@ _Auto-generated from `BootstrapOwner` in `backend/app/routers/identity.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

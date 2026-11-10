@@ -22,7 +22,7 @@ Authoritative result consumed inside the assignment transaction.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -29,7 +29,7 @@ PM command to replace stale execution ownership with recovery work.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

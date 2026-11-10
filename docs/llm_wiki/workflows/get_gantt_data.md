@@ -15,9 +15,13 @@ on one async session. Vacation dates still use O(1) set lookups.
 1. `iteration_service.IterationService`
 2. `task_service.TaskService`
 3. `team_service.TeamService`
-4. `calendar_service.CalendarService`
-5. `schemas_gantt.GanttResponse`
-6. `schemas_iteration.IterationResponse`
+4. `iteration_service.IterationService.get_by_id`
+5. `task_service.TaskService.get_by_iteration`
+6. `team_service.TeamService.get_by_iteration`
+7. `calendar_service.CalendarService`
+8. `calendar_service.CalendarService.calculate_working_days`
+9. `schemas_gantt.GanttResponse`
+10. `schemas_iteration.IterationResponse`
 
 ## Touches
 

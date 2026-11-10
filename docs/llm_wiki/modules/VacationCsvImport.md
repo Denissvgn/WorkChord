@@ -8,17 +8,17 @@ Vacation CSV selection opens a bounded shared-person scope preview. Import sends
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../services/planningInputService` | `ObservedRevisions` |
-| `../../services/teamService` | `teamService` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../tasks/useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useMutation` |
-| `react` | `useEffect`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +29,8 @@ Vacation CSV selection opens a bounded shared-person scope preview. Import sends
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]

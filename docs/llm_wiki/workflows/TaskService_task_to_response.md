@@ -17,7 +17,8 @@
 7. `agent_readiness.evaluate_agent_readiness`
 8. `schemas_task.TaskResponse`
 9. `schemas_task.TaskAssignee`
-10. `external_link_service.ExternalLinkService`
+10. `external_link_service.ExternalLinkService.task_links_to_response`
+11. `external_link_service.ExternalLinkService`
 
 ## Touches
 

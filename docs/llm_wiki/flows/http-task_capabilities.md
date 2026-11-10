@@ -6,34 +6,67 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as task_capabilities
     participant p1 as domain_capabilities
     participant p2 as internal_authority
-    participant p3 as db.info.get
-    participant p4 as db.scalar
-    participant p5 as select(…).where(…).limit
-    participant p6 as select(…).where
-    participant p7 as select
-    participant p8 as get_settings
+    participant p3 as db.scalar
+    participant p4 as select(…).where(…).limit
+    participant p5 as select(…).where
+    participant p6 as select
+    participant p7 as get_settings
+    participant p8 as db.info.get
     participant p9 as Settings
     p0->>p1: domain_capabilities
     p1->>p2: internal_authority
-    p2-->>p3: db.info.get
-    p1-->>p4: db.scalar
-    p1-->>p5: select(…).where(…).limit
-    p1-->>p6: select(…).where
-    p1-->>p7: select
-    p1->>p8: get_settings
-    p8->>p9: Settings
-    p1->>p8: get_settings
+    p1-->>p3: db.scalar(...)
+    p1-->>p4: select(…).where(…).limit(1)
+    p1-->>p5: select(…).where(...)
+    p1-->>p6: select(Task.id)
+    p1->>p7: get_settings
+    p1->>p7: get_settings
+    p2-->>p8: db.info.get('authority_internal', False)
+    p7->>p9: Settings
 ```
+
+> Call sequence diagram shows 10 of 10 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 1 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 6; effect analysis evaluated: 5, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 10, emitted: 10, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `task_capabilities` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `domain_capabilities` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `db.info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).where(…).limit` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. task_capabilities"]
@@ -98,7 +131,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

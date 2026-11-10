@@ -41,7 +41,7 @@ Delivery attempt response with embedded event details.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

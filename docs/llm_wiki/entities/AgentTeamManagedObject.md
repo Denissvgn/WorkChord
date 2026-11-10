@@ -26,7 +26,7 @@ Topology-local mapping for reusable profiles, catalogs, and bindings.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -22,7 +22,7 @@ Recoverable and auditable result of a completed snapshot restore.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

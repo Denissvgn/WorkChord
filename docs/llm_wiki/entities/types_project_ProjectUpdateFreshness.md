@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)
+**Target:**
+
+```typescript
+'fresh' | 'stale' | 'missing' | 'not_required'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `ProjectUpdateFreshness` in `frontend/src/types/project.ts`
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

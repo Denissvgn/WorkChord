@@ -21,7 +21,7 @@ Result of an incremental reschedule operation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

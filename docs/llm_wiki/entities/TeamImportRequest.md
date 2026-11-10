@@ -17,7 +17,7 @@ Request for importing team members from text.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
