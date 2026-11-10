@@ -1,6 +1,6 @@
 # NotificationsPanelProps
 
-**Location:** `frontend/src/components/notifications/NotificationsPanel.tsx:12`
+**Location:** `frontend/src/components/notifications/NotificationsPanel.tsx:20`
 **Kind:** Interface
 **Bases:** —
 **Module:** [NotificationsPanel](../modules/NotificationsPanel.md)

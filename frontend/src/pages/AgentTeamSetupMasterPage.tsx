@@ -333,8 +333,13 @@ const AgentTeamSetupMasterPage = () => {
         || planMutation.isPending
         || applyMutation.isPending;
     const canMutate = readiness.status?.can_mutate === true;
+    // Without an admin or agent key the status cannot be read; say that plainly
+    // instead of echoing request headers, and do not offer a retry that cannot work.
+    const statusAccessDenied = readiness.isError
+        && axios.isAxiosError(readiness.error)
+        && [401, 403].includes(readiness.error.response?.status ?? 0);
     const statusError = readiness.isError
-        ? errorMessage(readiness.error)
+        ? (statusAccessDenied ? t('agentTeamSetup.statusNeedsKey') : errorMessage(readiness.error))
         : preservedStatusError;
     const statusScopes = deriveAgentTeamStatusScopes({
         status: readiness.status,
@@ -597,12 +602,12 @@ const AgentTeamSetupMasterPage = () => {
                                     <h2 className="wc-state-heading">
                                         {t('agentTeamSetup.statusUnavailableTitle')}
                                     </h2>
-                                    <div className="muted mono" style={{ marginTop: 4 }}>
+                                    <div className={statusAccessDenied ? 'muted' : 'muted mono'} style={{ marginTop: 4 }}>
                                         {statusError}
                                     </div>
                                 </div>
                             </div>
-                            <button
+                            {!statusAccessDenied && <button
                                 type="button"
                                 className="btn sm"
                                 disabled={readiness.isFetching}
@@ -612,7 +617,7 @@ const AgentTeamSetupMasterPage = () => {
                             >
                                 <RefreshCw size={13} aria-hidden="true" />
                                 {t('queryFeedback.retry')}
-                            </button>
+                            </button>}
                         </div>
                     </div>
                 )}
@@ -1071,10 +1076,12 @@ const AgentTeamSetupMasterPage = () => {
                                         {t(`agentTeamSetup.statusScopes.runtime.states.${statusScopes.runtime}`)}
                                     </span>
                                     <span className="agent-team-runtime-summary-count">
-                                        {t('agentTeamSetup.membersReadyCount', {
-                                            ready: memberCounts.ready,
-                                            total: memberCounts.total,
-                                        })}
+                                        {readiness.status
+                                            ? t('agentTeamSetup.membersReadyCount', {
+                                                ready: memberCounts.ready,
+                                                total: memberCounts.total,
+                                            })
+                                            : t('agentTeamSetup.notReadable')}
                                     </span>
                                     <ChevronDown
                                         className="agent-team-runtime-summary-chevron"
@@ -1096,7 +1103,9 @@ const AgentTeamSetupMasterPage = () => {
                             </div>
                             <div className="divider" />
                             <div className="mono muted">
-                                {readiness.status?.topology_key ?? t('agentTeamSetup.noTopology')}
+                                {readiness.status
+                                    ? readiness.status.topology_key ?? t('agentTeamSetup.noTopology')
+                                    : t('agentTeamSetup.notReadable')}
                             </div>
                             <div className="mono muted">
                                 {t('agentTeamSetup.topologyRevision', {
@@ -1122,7 +1131,7 @@ const AgentTeamSetupMasterPage = () => {
                             </div>
                             <div className="between" style={{ marginTop: 10 }}>
                                 <span className="muted">{t('agentTeamSetup.membersReady')}</span>
-                                <strong>{memberCounts.ready}/{memberCounts.total}</strong>
+                                <strong>{readiness.status ? `${memberCounts.ready}/${memberCounts.total}` : t('agentTeamSetup.notReadable')}</strong>
                             </div>
                             <p className="muted">
                                 {runtimeAction}

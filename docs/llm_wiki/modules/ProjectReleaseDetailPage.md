@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
 | `../components/common/Modal` | `Modal` | — | compiler-dependent |
+| `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
 | `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
@@ -56,7 +57,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -64,4 +65,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

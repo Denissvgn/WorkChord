@@ -14,6 +14,7 @@ import {
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { Modal } from '../components/common/Modal';
+import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { ReleaseForm } from '../components/releases/ReleaseForm';
@@ -102,6 +103,7 @@ const ProjectReleaseDetailPage = () => {
     const numericReleaseId = Number(releaseId);
     const [isEditing, setIsEditing] = useState(false);
     const [shipError, setShipError] = useState<string | null>(null);
+    const { requestConfirmation, confirmationDialog } = useConfirmDialog();
 
     const projectEnabled = Number.isInteger(numericProjectId) && numericProjectId > 0;
     const releaseEnabled = Number.isInteger(numericReleaseId) && numericReleaseId > 0;
@@ -201,7 +203,28 @@ const ProjectReleaseDetailPage = () => {
                 actions={(
                     <>
                     {release.status !== 'shipped' && (
-                        <button className="btn primary" disabled={markShippedMutation.isPending} onClick={() => markShippedMutation.mutate()}>
+                        <button
+                            type="button"
+                            className="btn primary"
+                            disabled={markShippedMutation.isPending}
+                            onClick={() => {
+                                // Shipping writes a release entry into every linked task's history,
+                                // so confirm with the unresolved count before committing it.
+                                const unresolved = release.tasks.filter(task => !['resolved', 'closed'].includes(task.status)).length;
+                                requestConfirmation({
+                                    title: t('surfaces.releaseDetail.shipConfirmTitle', { name: release.name }),
+                                    description: t('surfaces.releaseDetail.shipConfirmBody', {
+                                        unresolved,
+                                        total: release.tasks.length,
+                                    }),
+                                    confirmLabel: t('surfaces.releaseDetail.markShipped'),
+                                    cancelLabel: t('actions.cancel'),
+                                    closeLabel: t('actions.close'),
+                                    tone: 'warning',
+                                    onConfirm: () => markShippedMutation.mutateAsync(),
+                                });
+                            }}
+                        >
                             <CheckCircle2 className="h-4 w-4"/> {t('surfaces.releaseDetail.markShipped')}
                         </button>
                     )}
@@ -277,6 +300,7 @@ const ProjectReleaseDetailPage = () => {
                     />
                 )}
             </Modal>
+            {confirmationDialog}
         </PageLayout>
     );
 };

@@ -339,7 +339,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [task_service](modules/task_service.md) | 61 | 27 |
 | [models_iteration](modules/models_iteration.md) | 58 | 6 |
 | [authority](modules/authority.md) | 54 | 6 |
-| [apiError](modules/apiError.md) | 48 | 0 |
+| [apiError](modules/apiError.md) | 49 | 0 |
 | [team_member](modules/team_member.md) | 47 | 6 |
 | [models_project](modules/models_project.md) | 44 | 9 |
 | [api](modules/api.md) | 37 | 2 |
@@ -366,10 +366,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [types_iteration](modules/types_iteration.md) | 20 | 1 |
 | [recovery](modules/recovery.md) | 19 | 3 |
+| [toast](modules/toast.md) | 19 | 0 |
 | [types_team](modules/types_team.md) | 19 | 0 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
 | [Modal](modules/Modal.md) | 18 | 1 |
-| [toast](modules/toast.md) | 18 | 0 |
 | [teamService](modules/teamService.md) | 18 | 3 |
 | [identity_service](modules/identity_service.md) | 17 | 9 |
 | [iteration_service](modules/iteration_service.md) | 17 | 16 |
@@ -399,11 +399,11 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_iteration](modules/schemas_iteration.md) | 12 | 2 |
 | [schemas_task_domain](modules/schemas_task_domain.md) | 12 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 12 | 18 |
+| [useConfirmDialog](modules/useConfirmDialog.md) | 12 | 1 |
 | [savedView](modules/savedView.md) | 12 | 0 |
 | [models_outbound_webhook](modules/models_outbound_webhook.md) | 11 | 2 |
 | [system_settings_service](modules/system_settings_service.md) | 11 | 5 |
 | [url_policy](modules/url_policy.md) | 11 | 1 |
-| [useConfirmDialog](modules/useConfirmDialog.md) | 11 | 1 |
 | [seedDisplay](modules/seedDisplay.md) | 11 | 5 |
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [load_common](modules/load_common.md) | 11 | 1 |
@@ -531,6 +531,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) | 4 | 2 |
 | [projectStatusStyles](modules/projectStatusStyles.md) | 4 | 2 |
 | [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 6 |
+| [AdminAccessGate](modules/AdminAccessGate.md) | 4 | 2 |
 | [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 8 |
 | [TaskForm](modules/TaskForm.md) | 4 | 36 |
 | [TaskList](modules/TaskList.md) | 4 | 21 |
@@ -581,8 +582,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AppSidebar](modules/AppSidebar.md) | 3 | 5 |
 | [CommandMenu](modules/CommandMenu.md) | 3 | 6 |
 | [commandMenuEvents](modules/commandMenuEvents.md) | 3 | 0 |
-| [AdminAccessGate](modules/AdminAccessGate.md) | 3 | 2 |
-| [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 4 |
+| [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
 | [PersonCapacity](modules/PersonCapacity.md) | 3 | 5 |
@@ -594,7 +594,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
-| [resources.ru](modules/resources.ru.md) | 3 | 4 |
+| [resources.ru](modules/resources.ru.md) | 3 | 5 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
 | [releaseService](modules/releaseService.md) | 3 | 2 |
 | [systemSettingsService](modules/systemSettingsService.md) | 3 | 2 |
@@ -673,7 +673,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AgentModelAdministration](modules/AgentModelAdministration.md) | 2 | 13 |
 | [EffortModifierCard](modules/EffortModifierCard.md) | 2 | 4 |
 | [EmailSettingsPanel](modules/EmailSettingsPanel.md) | 2 | 11 |
-| [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) | 2 | 11 |
+| [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) | 2 | 12 |
 | [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) | 2 | 12 |
 | [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) | 2 | 10 |
 | [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) | 2 | 12 |
@@ -707,6 +707,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [discussionService](modules/discussionService.md) | 2 | 1 |
 | [exportService](modules/exportService.md) | 2 | 2 |
 | [planShareService](modules/planShareService.md) | 2 | 1 |
+| [schedulingRulesService](modules/schedulingRulesService.md) | 2 | 2 |
 | [sessionService](modules/sessionService.md) | 2 | 1 |
 | [snapshotService](modules/snapshotService.md) | 2 | 1 |
 | [themeStore](modules/themeStore.md) | 2 | 0 |
@@ -792,6 +793,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [OverflowMenu](modules/OverflowMenu.md) | 1 | 0 |
 | [taskViewState](modules/taskViewState.md) | 1 | 5 |
 | [SystemLanguageProvider](modules/SystemLanguageProvider.md) | 1 | 4 |
+| [agentTeamSetup.ru](modules/agentTeamSetup.ru.md) | 1 | 0 |
 | [teamwork.en](modules/teamwork.en.md) | 1 | 0 |
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
 | [helpContexts](modules/helpContexts.md) | 1 | 2 |
@@ -816,7 +818,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [healthService](modules/healthService.md) | 1 | 0 |
 | [outboundWebhookService](modules/outboundWebhookService.md) | 1 | 2 |
 | [requestSourceService](modules/requestSourceService.md) | 1 | 2 |
-| [schedulingRulesService](modules/schedulingRulesService.md) | 1 | 2 |
 | [tailwind.config](modules/tailwind.config.md) | 1 | 0 |
 | [browser_worker](modules/browser_worker.md) | 1 | 0 |
 | [local_baseline](modules/local_baseline.md) | 1 | 4 |
@@ -1021,8 +1022,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanMasterPage.test](modules/PlanMasterPage.test.md) | 0 | 10 |
 | [PlanPage.test](modules/PlanPage.test.md) | 0 | 3 |
 | [PlanSharePage.test](modules/PlanSharePage.test.md) | 0 | 2 |
-| [ProjectDetailPage](modules/ProjectDetailPage.md) | 0 | 26 |
-| [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | 0 | 13 |
+| [ProjectDetailPage](modules/ProjectDetailPage.md) | 0 | 27 |
+| [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | 0 | 14 |
 | [ProjectsPage.test](modules/ProjectsPage.test.md) | 0 | 3 |
 | [RoadmapPage.test](modules/RoadmapPage.test.md) | 0 | 2 |
 | [SettingsPage.test](modules/SettingsPage.test.md) | 0 | 5 |

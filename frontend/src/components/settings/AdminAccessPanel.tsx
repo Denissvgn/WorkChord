@@ -6,6 +6,8 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { clearAdminApiKey, setAdminApiKey } from '../../utils/adminAccess';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { schedulingRulesService } from '../../services/schedulingRulesService';
+import { getApiErrorStatus } from '../../utils/apiError';
 
 const protectedQueryKeys = [
     ['system-settings'],
@@ -37,6 +39,7 @@ export const AdminAccessPanel = ({
     const { hasAdminKey } = useAdminAccess();
     const [draftKey, setDraftKey] = useState('');
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [verifying, setVerifying] = useState(false);
     const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
     const refreshProtectedQueries = () => {
@@ -51,18 +54,40 @@ export const AdminAccessPanel = ({
         });
     };
 
-    const saveKey = () => {
+    const saveKey = async () => {
         const nextKey = draftKey.trim();
         if (!nextKey) {
             setMessage({ type: 'error', text: t('settings.adminAccessEnterKey') });
             return;
         }
 
+        setVerifying(true);
+        setMessage(null);
         setAdminApiKey(nextKey);
         removeProtectedQueries();
-        setDraftKey('');
-        setMessage({ type: 'success', text: t('settings.adminAccessSaved') });
-        refreshProtectedQueries();
+        try {
+            // One protected read tells whether the server accepts this key.
+            await schedulingRulesService.getRules();
+            setDraftKey('');
+            setMessage({ type: 'success', text: t('settings.adminAccessAccepted') });
+            refreshProtectedQueries();
+        } catch (cause) {
+            const status = getApiErrorStatus(cause);
+            if (status === 401 || status === 403 || status === 503) {
+                clearAdminApiKey();
+                removeProtectedQueries();
+                setMessage({
+                    type: 'error',
+                    text: t(status === 503 ? 'settings.adminAccessBackendNotConfigured' : 'settings.adminAccessRejected'),
+                });
+            } else {
+                setDraftKey('');
+                setMessage({ type: 'error', text: t('settings.adminAccessUnverified') });
+                refreshProtectedQueries();
+            }
+        } finally {
+            setVerifying(false);
+        }
     };
 
     const clearKey = () => {
@@ -123,7 +148,7 @@ export const AdminAccessPanel = ({
                     placeholder={t('settings.adminAccessPlaceholder')}
                 />
                 <div className="flex shrink-0 items-end gap-2">
-                    <Button type="button" onClick={saveKey} className="inline-flex items-center gap-2">
+                    <Button type="button" onClick={() => void saveKey()} isLoading={verifying} className="inline-flex items-center gap-2">
                         <KeyRound className="h-4 w-4" />
                         {t('settings.adminAccessSave')}
                     </Button>

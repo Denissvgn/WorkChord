@@ -138,6 +138,7 @@
   --accent-soft:  var(--wc-accent-soft);
   --accent-line:  var(--wc-accent-line);
   --thread:       var(--wc-thread);
+  --thread-on:    var(--wc-thread-on);
   --thread-ink:   var(--wc-thread-ink);
   --thread-soft:  var(--wc-thread-soft);
   --thread-line:  var(--wc-thread-line);
@@ -1228,6 +1229,8 @@
   box-shadow: 0 0 0 3px var(--thread-soft);
 }
 :where(.wc .input):is(input, select, textarea)::placeholder { color: var(--ink-3); opacity: 1; }
+/* Raw fields outside the .input pattern keep the same readable placeholder. */
+:where(.wc) :where(input, textarea)::placeholder { color: var(--ink-3); opacity: 1; }
 :where(.wc .input):is(input, select, textarea):disabled { background: var(--panel-2); color: var(--ink-3); cursor: not-allowed; opacity: 1; }
 :where(.wc .input):is(input, select, textarea):-webkit-autofill,
 :where(.wc .input):is(input, select, textarea):-webkit-autofill:hover {

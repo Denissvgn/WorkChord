@@ -9,6 +9,14 @@ import clsx from 'clsx';
 import { formatDate, formatDateTime } from '../../utils/formatDate';
 import { QueryErrorState } from '../feedback/QueryState';
 
+// Status logs record who changed the task: a person, an agent, or automation.
+const ACTOR_LABEL_KEYS: Record<string, string> = {
+    user: 'notifications.user',
+    agent: 'notifications.agent',
+    auto: 'notifications.auto',
+    system: 'notifications.system',
+};
+
 interface NotificationsPanelProps {
     iterationId: number;
     className?: string;
@@ -102,7 +110,7 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                                     </div>
                                     <div className="text-xs text-content-tertiary flex justify-between items-center">
                                         <span>{formatDateTime(log.changed_at, i18n.language)}</span>
-                                        <span>{log.triggered_by === 'auto' ? t('notifications.auto') : t('notifications.user')}</span>
+                                        <span>{t(ACTOR_LABEL_KEYS[log.triggered_by] ?? 'notifications.unknownActor')}</span>
                                     </div>
                                     {log.reason && (
                                         <div className="mt-1 text-xs text-content-secondary bg-surface-muted p-1.5 rounded">

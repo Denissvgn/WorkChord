@@ -27,24 +27,28 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/settings/SchedulingRulesSettings.tsx"]
-    n1["frontend/src/services/api.ts"]
-    n2["frontend/src/services/schedulingRulesService.ts"]
-    n3["frontend/src/types/schedulingRules.ts"]
-    n0 --> n2
+    n0["frontend/src/components/settings/AdminAccessPanel.tsx"]
+    n1["frontend/src/components/settings/SchedulingRulesSettings.tsx"]
+    n2["frontend/src/services/api.ts"]
+    n3["frontend/src/services/schedulingRulesService.ts"]
+    n4["frontend/src/types/schedulingRules.ts"]
     n0 --> n3
-    n2 --> n1
-    n2 --> n3
-    click n0 "../modules/SchedulingRulesSettings.md"
-    click n1 "../modules/api.md"
-    click n2 "../modules/schedulingRulesService.md"
-    click n3 "../modules/schedulingRules.md"
+    n1 --> n3
+    n1 --> n4
+    n3 --> n2
+    n3 --> n4
+    click n0 "../modules/AdminAccessPanel.md"
+    click n1 "../modules/SchedulingRulesSettings.md"
+    click n2 "../modules/api.md"
+    click n3 "../modules/schedulingRulesService.md"
+    click n4 "../modules/schedulingRules.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [AdminAccessPanel](../modules/AdminAccessPanel.md) |
 | Inbound | [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md) |
 | Outbound | [api](../modules/api.md) |
 | Outbound | [schedulingRules](../modules/schedulingRules.md) |

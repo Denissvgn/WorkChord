@@ -150,7 +150,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/OverviewPage.tsx': 'e54b146286e95b83',
     'src/pages/PlanMasterPage.tsx': '099fb2eef2f3f843',
     'src/pages/PlanSharePage.tsx': '9e333df62efb5575',
-    'src/pages/ProjectDetailPage.tsx': '3983a899b47c0111',
+    'src/pages/ProjectDetailPage.tsx': '69d01e7c38692a1a',
     'src/pages/ProjectReleaseDetailPage.tsx': '9145592c7cadb869',
     'src/pages/ProjectsPage.tsx': '4fd72b0f96d3e263',
     'src/pages/RoadmapPage.tsx': '8cf2879f1873fa25',

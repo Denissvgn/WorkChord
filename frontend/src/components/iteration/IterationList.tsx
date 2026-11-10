@@ -24,7 +24,8 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const { t } = useTranslation();
     const toast = useToast();
-    const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions } | null>(null);
+    const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions; name: string; taskCount: number | null } | null>(null);
+    const [deleteConfirmation, setDeleteConfirmation] = useState('');
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const [importingId, setImportingId] = useState<number | null>(null);
     const [importFile, setImportFile] = useState<File | null>(null);
@@ -85,14 +86,20 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     const openDelete = async (id: number) => {
         try {
             const observed = await planningInputService.readInitial<Iteration>('iteration', id);
-            setDeleteContext({ id, revisions: observed.expected_revisions }); setDeletingId(id);
+            // The task count makes the loss explicit; the dialog still works when it cannot be read.
+            const taskCount = await iterationService.getPlanningReadiness(id)
+                .then(summary => summary.task_count)
+                .catch(() => null);
+            const name = iterations?.find(item => item.id === id)?.name ?? '';
+            setDeleteConfirmation('');
+            setDeleteContext({ id, revisions: observed.expected_revisions, name, taskCount }); setDeletingId(id);
         } catch (cause) { toast.error(getApiErrorMessage(cause, t('feedback.iterationDeleteFailed'))); }
     };
 
     if (isLoading) return <div>{t('common.loading')}</div>;
     if (isError) return (
         <div role="alert" className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-4 text-feedback-danger-foreground">
-            <p>{getApiErrorMessage(error, t('feedback.iterationDeleteFailed'))}</p>
+            <p>{getApiErrorMessage(error, t('iterations.loadFailed'))}</p>
             <Button className="mt-3" variant="secondary" onClick={() => void refetch()}>{t('queryFeedback.retry')}</Button>
         </div>
     );
@@ -204,12 +211,31 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
 
             <ConfirmDialog
                 open={deletingId !== null}
-                title={t('iterations.deleteTitle')}
-                description={<>{t('iterations.deleteBody')}{deleteMutation.isError && <p role="alert">{getApiErrorMessage(deleteMutation.error, t('feedback.iterationDeleteFailed'))}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => { if (deletingId) void openDelete(deletingId); }}>{t('planningInput.reviewAgain')}</Button></p>}</>}
-                confirmLabel={t('actions.delete')}
+                title={t('iterations.deleteNamedTitle', { name: deleteContext?.name ?? '' })}
+                description={<>
+                    <p>{deleteContext?.taskCount == null
+                        ? t('iterations.deleteBody')
+                        : t('iterations.deleteBodyWithCount', { count: deleteContext.taskCount })}</p>
+                    {(deleteContext?.taskCount ?? 1) > 0 && deleteContext?.name && (
+                        <label className="mt-3 block text-sm">
+                            <span className="field-lbl">{t('iterations.deleteTypeName', { name: deleteContext.name })}</span>
+                            <input
+                                className="input mt-1 w-full"
+                                value={deleteConfirmation}
+                                onChange={event => setDeleteConfirmation(event.target.value)}
+                                autoComplete="off"
+                            />
+                        </label>
+                    )}
+                    {deleteMutation.isError && <p role="alert">{getApiErrorMessage(deleteMutation.error, t('feedback.iterationDeleteFailed'))}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => { if (deletingId) void openDelete(deletingId); }}>{t('planningInput.reviewAgain')}</Button></p>}</>}
+                confirmLabel={deleteContext?.taskCount
+                    ? t('iterations.deleteConfirmWithCount', { count: deleteContext.taskCount })
+                    : t('iterations.deleteConfirm')}
                 cancelLabel={t('actions.cancel')}
                 closeLabel={t('actions.close')}
                 pending={deleteMutation.isPending}
+                confirmDisabled={(deleteContext?.taskCount ?? 1) > 0 && Boolean(deleteContext?.name)
+                    && deleteConfirmation.trim() !== deleteContext?.name.trim()}
                 onCancel={() => setDeletingId(null)}
                 onConfirm={() => { if (deleteContext) deleteMutation.mutate(deleteContext); }}
             />

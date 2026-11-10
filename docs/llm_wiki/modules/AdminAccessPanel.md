@@ -11,7 +11,9 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessPanel.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../services/schedulingRulesService` | `schedulingRulesService` | — | compiler-dependent |
 | `../../utils/adminAccess` | `clearAdminApiKey`, `setAdminApiKey` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
@@ -38,7 +40,9 @@ flowchart LR
     n4["frontend/src/components/settings/AdminAccessPanel.tsx"]
     n5["frontend/src/hooks/useAdminAccess.ts"]
     n6["frontend/src/pages/SettingsPage.tsx"]
-    n7["frontend/src/utils/adminAccess.ts"]
+    n7["frontend/src/services/schedulingRulesService.ts"]
+    n8["frontend/src/utils/adminAccess.ts"]
+    n9["frontend/src/utils/apiError.ts"]
     n2 --> n4
     n2 --> n5
     n3 --> n4
@@ -46,10 +50,13 @@ flowchart LR
     n4 --> n1
     n4 --> n5
     n4 --> n7
-    n5 --> n7
+    n4 --> n8
+    n4 --> n9
+    n5 --> n8
     n6 --> n2
     n6 --> n4
     n6 --> n5
+    n8 --> n9
     click n0 "../modules/Button.md"
     click n1 "../modules/Input.md"
     click n2 "../modules/AdminAccessGate.md"
@@ -57,7 +64,9 @@ flowchart LR
     click n4 "../modules/AdminAccessPanel.md"
     click n5 "../modules/useAdminAccess.md"
     click n6 "../modules/SettingsPage.md"
-    click n7 "../modules/adminAccess.md"
+    click n7 "../modules/schedulingRulesService.md"
+    click n8 "../modules/adminAccess.md"
+    click n9 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -70,7 +79,9 @@ flowchart LR
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [Input](../modules/Input.md) |
 | Outbound | [useAdminAccess](../modules/useAdminAccess.md) |
+| Outbound | [schedulingRulesService](../modules/schedulingRulesService.md) |
 | Outbound | [adminAccess](../modules/adminAccess.md) |
+| Outbound | [apiError](../modules/apiError.md) |
 
 ### External packages
 

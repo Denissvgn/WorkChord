@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 757,
+      "modules": 758,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3041
+    "total": 3042
   },
   "dependency_pages": {
     "count": 2,
@@ -45160,6 +45160,7 @@
         "modules/AgentPipelinePage.test.md",
         "modules/agentService.md",
         "modules/agentService.test.md",
+        "modules/agentTeamSetup.ru.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.md",
         "modules/agentTeamSetup_masters.test.md",
@@ -67438,6 +67439,7 @@
         "modules/AdminAccessPanel.md",
         "modules/AgentPipelinePage.md",
         "modules/AgentTeamSetupMasterPage.md",
+        "modules/GitHubSettingsPanel.md",
         "modules/SettingsPage.md",
         "modules/useAdminAccess.md"
       ],
@@ -67455,8 +67457,10 @@
         "modules/AdminAccessGate.md",
         "modules/AdminAccessPanel.md",
         "modules/AdminAccessPanel.test.md",
+        "modules/apiError.md",
         "modules/Button.md",
         "modules/Input.md",
+        "modules/schedulingRulesService.md",
         "modules/SettingsPage.md",
         "modules/useAdminAccess.md"
       ],
@@ -68075,6 +68079,19 @@
       "role": "semantic",
       "source_path": "frontend/src/services/agentService.test.ts",
       "title": "agentService.test Module"
+    },
+    {
+      "canonical_path": "modules/agentTeamSetup.ru.md",
+      "id": "agentTeamSetup.ru",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/agentTeamSetup.ru",
+      "outgoing_internal_links": [
+        "modules/agentTeamSetup.ru.md",
+        "modules/resources.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/agentTeamSetup.ru.ts",
+      "title": "agentTeamSetup.ru Module"
     },
     {
       "canonical_path": "modules/agentTeamSetup_manifest.md",
@@ -73722,6 +73739,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/resources.ru",
       "outgoing_internal_links": [
+        "modules/agentTeamSetup.ru.md",
         "modules/i18n.test.md",
         "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
@@ -74543,6 +74561,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/schedulingRulesService",
       "outgoing_internal_links": [
+        "modules/AdminAccessPanel.md",
         "modules/api.md",
         "modules/schedulingRules.md",
         "modules/schedulingRulesService.md",
@@ -93870,6 +93889,7 @@
         "modules/AgentPipelinePage.test.md",
         "modules/agentService.md",
         "modules/agentService.test.md",
+        "modules/agentTeamSetup.ru.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.md",
         "modules/agentTeamSetup_masters.test.md",
@@ -94638,6 +94658,7 @@
         "modules/AgentPipelinePage.test.md",
         "modules/agentService.md",
         "modules/agentService.test.md",
+        "modules/agentTeamSetup.ru.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.md",
         "modules/agentTeamSetup_masters.test.md",
@@ -95354,5 +95375,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0c179f013f7aee5732e7e347e1f5a4e9e630043c11ad333a702a4efb4d55f2cf"
+  "source_hash": "sha256:b859f8bcc98cb827aa5e7e64d3414ece8781be749af1fcab566bd2d71cf75732"
 }

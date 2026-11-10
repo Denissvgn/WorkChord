@@ -23,6 +23,7 @@ _Auto-generated from `ConfirmDialogProps` in `frontend/src/components/common/Con
 | `onCancel` | `() => void` | Yes | — | — |
 | `tone` | `ConfirmDialogTone` | No | — | — |
 | `pending` | `boolean` | No | — | — |
+| `confirmDisabled` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [ConfirmDialog](../modules/ConfirmDialog.md) | 0 | `cancelLabel`, `closeLabel`, `confirmLabel`, `description`, `onCancel`, `onConfirm`, `open`, `pending`, `title`, `tone` |
+| [ConfirmDialog](../modules/ConfirmDialog.md) | 0 | `cancelLabel`, `closeLabel`, `confirmDisabled`, `confirmLabel`, `description`, `onCancel`, `onConfirm`, `open`, `pending`, `title`, `tone` |
 
 ### References
 

@@ -1,6 +1,6 @@
 # Tab
 
-**Location:** `frontend/src/components/notifications/NotificationsPanel.tsx:17`
+**Location:** `frontend/src/components/notifications/NotificationsPanel.tsx:25`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [NotificationsPanel](../modules/NotificationsPanel.md)

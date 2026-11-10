@@ -22,4 +22,24 @@ describe('Button', () => {
         expect(screen.getByRole('button', { name: 'Synchronize' }))
             .toHaveAttribute('aria-busy', 'true');
     });
+
+    it('does not submit a surrounding form unless it is a submit button', () => {
+        render(
+            <form>
+                <Button>Change status</Button>
+                <Button type="submit">Save</Button>
+            </form>,
+        );
+
+        expect(screen.getByRole('button', { name: 'Change status' })).toHaveAttribute('type', 'button');
+        expect(screen.getByRole('button', { name: 'Save' })).toHaveAttribute('type', 'submit');
+    });
+
+    it('styles the outline variant without the outline utility class', () => {
+        render(<Button variant="outline">Filters</Button>);
+
+        const button = screen.getByRole('button', { name: 'Filters' });
+        expect(button).toHaveClass('btn', 'btn-outline');
+        expect(button).not.toHaveClass('outline');
+    });
 });

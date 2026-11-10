@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1526 | [Open section](#entities) |
-| Modules | 757 | [Open section](#modules) |
+| Modules | 758 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
@@ -1769,6 +1769,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agentAccess](modules/agentAccess.md) - `frontend/src/utils/agentAccess.ts`
 - [agentService](modules/agentService.md) - `frontend/src/services/agentService.ts`
 - [agentService.test](modules/agentService.test.md) - `frontend/src/services/agentService.test.ts`
+- [agentTeamSetup.ru](modules/agentTeamSetup.ru.md) - `frontend/src/i18n/agentTeamSetup.ru.ts`
 - [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) - `frontend/src/features/agentTeamSetup/manifest.ts`
 - [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) - `frontend/src/features/agentTeamSetup/masters.ts`
 - [agentTeamSetup_masters.test](modules/agentTeamSetup_masters.test.md) - `frontend/src/features/agentTeamSetup/masters.test.ts`

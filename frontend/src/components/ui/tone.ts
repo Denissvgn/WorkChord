@@ -58,8 +58,8 @@ export const STATUS_TONE: Record<TaskStatus, PillTone> = {
 };
 
 export const statusTextClassName: Record<TaskStatus, string> = {
-    planned: 'text-status-planned', active: 'text-status-active',
-    resolved: 'text-status-resolved', closed: 'text-status-closed',
+    planned: 'text-status-planned-foreground', active: 'text-status-active-foreground',
+    resolved: 'text-status-resolved-foreground', closed: 'text-status-closed-foreground',
 };
 
 export const isTaskStatus = (value: string): value is TaskStatus => value in STATUS_TONE;
