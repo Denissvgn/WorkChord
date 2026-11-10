@@ -157,4 +157,3 @@ async def test_deployed_catalog_supports_validation_and_bound_planning(
     assert len(plan.plan_digest) == 64
     assert all(action.operation == "create_member" for action in plan.actions)
     assert plan == await service.plan(actor, request)
-
