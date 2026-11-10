@@ -27,11 +27,12 @@ flowchart LR
     n1["backend/app/routers/agent.py"]
     n2["backend/app/schemas/agent_team_setup.py"]
     n3["backend/app/services/agent_team_setup_service.py"]
-    n4["backend/tests/test_agent_team_setup.py"]
-    n5["backend/tests/test_agent_team_setup_qualification.py"]
-    n6["scripts/ci/check_model_aware_routing_closeout.py"]
-    n7["scripts/generate_agent_team_contract.py"]
-    n8["scripts/generate_agent_team_report_contract.py"]
+    n4["backend/tests/test_agent_team_catalog.py"]
+    n5["backend/tests/test_agent_team_setup.py"]
+    n6["backend/tests/test_agent_team_setup_qualification.py"]
+    n7["scripts/ci/check_model_aware_routing_closeout.py"]
+    n8["scripts/generate_agent_team_contract.py"]
+    n9["scripts/generate_agent_team_report_contract.py"]
     n1 --> n2
     n1 --> n3
     n2 --> n0
@@ -40,19 +41,22 @@ flowchart LR
     n4 --> n3
     n5 --> n2
     n5 --> n3
-    n5 --> n4
     n6 --> n2
+    n6 --> n3
+    n6 --> n5
     n7 --> n2
     n8 --> n2
+    n9 --> n2
     click n0 "../modules/autonomy_canonical.md"
     click n1 "../modules/routers_agent.md"
     click n2 "../modules/agent_team_setup.md"
     click n3 "../modules/agent_team_setup_service.md"
-    click n4 "../modules/test_agent_team_setup.md"
-    click n5 "../modules/test_agent_team_setup_qualification.md"
-    click n6 "../modules/check_model_aware_routing_closeout.md"
-    click n7 "../modules/generate_agent_team_contract.md"
-    click n8 "../modules/generate_agent_team_report_contract.md"
+    click n4 "../modules/test_agent_team_catalog.md"
+    click n5 "../modules/test_agent_team_setup.md"
+    click n6 "../modules/test_agent_team_setup_qualification.md"
+    click n7 "../modules/check_model_aware_routing_closeout.md"
+    click n8 "../modules/generate_agent_team_contract.md"
+    click n9 "../modules/generate_agent_team_report_contract.md"
 ```
 
 ### Internal neighbors
@@ -61,6 +65,7 @@ flowchart LR
 |---|---|
 | Inbound | [routers_agent](../modules/routers_agent.md) |
 | Inbound | [agent_team_setup_service](../modules/agent_team_setup_service.md) |
+| Inbound | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) |
 | Inbound | [test_agent_team_setup](../modules/test_agent_team_setup.md) |
 | Inbound | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) |
 | Inbound | [check_model_aware_routing_closeout](../modules/check_model_aware_routing_closeout.md) |

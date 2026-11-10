@@ -7,8 +7,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1523 | [Open section](#entities) |
-| Modules | 744 | [Open section](#modules) |
-| Workflows | 191 | [Open section](#workflows) |
+| Modules | 745 | [Open section](#modules) |
+| Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
 | Infrastructure | 11 | [Open section](#infrastructure) |
@@ -2147,6 +2147,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_agent_run_trust_compatibility](modules/test_agent_run_trust_compatibility.md) - Compatibility coverage for persisted and projected run-model trust evidence.
 - [test_agent_runtime_recovery](modules/test_agent_runtime_recovery.md) - Separate-process protocol simulation; no provider or pilot acceptance implied.
 - [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) - Contract coverage for MAR-SKILL-001, MAR-SKILL-002, and MAR-PKG-001.
+- [test_agent_team_catalog](modules/test_agent_team_catalog.md) - Team setup shares deployed bundle identities and integrity failures.
 - [test_agent_team_setup](modules/test_agent_team_setup.md) - Contract and service coverage for portable agent-team setup.
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
@@ -2307,6 +2308,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentService_get_pipeline](workflows/AgentService_get_pipeline.md) - entry: `agent_service.AgentService.get_pipeline`
 - [AgentService_renew_claim](workflows/AgentService_renew_claim.md) - entry: `agent_service.AgentService.renew_claim`
 - [AgentService_start_run](workflows/AgentService_start_run.md) - entry: `agent_service.AgentService.start_run`
+- [AgentTeamSetupService___init__](workflows/AgentTeamSetupService___init__.md) - entry: `agent_team_setup_service.AgentTeamSetupService.__init__`
 - [AgentTeamSetupService__apply_create_or_update](workflows/AgentTeamSetupService__apply_create_or_update.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_create_or_update`
 - [AgentTeamSetupService__apply_identity_replacement](workflows/AgentTeamSetupService__apply_identity_replacement.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_identity_replacement`
 - [AgentTeamSetupService__apply_replace_recovery](workflows/AgentTeamSetupService__apply_replace_recovery.md) - entry: `agent_team_setup_service.AgentTeamSetupService._apply_replace_recovery`

@@ -35,6 +35,7 @@ flowchart LR
     n10["AgentSkillBundleService._validate_release (backend/app/services/agent_skill_bundle_service.py)"]
     n11["AgentSkillBundleService._validate_skill_entry (backend/app/services/agent_skill_bundle_service.py)"]
     n12["AgentSkillBundleService.file_payload (backend/app/services/agent_skill_bundle_service.py)"]
+    n13["backend/app/services/agent_team_setup_service.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -47,6 +48,7 @@ flowchart LR
     n10 --> n0
     n11 --> n0
     n12 --> n0
+    n13 --> n0
     click n0 "../modules/agent_skill_bundle_service.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -59,6 +61,7 @@ flowchart LR
     click n10 "../modules/agent_skill_bundle_service.md"
     click n11 "../modules/agent_skill_bundle_service.md"
     click n12 "../modules/agent_skill_bundle_service.md"
+    click n13 "../modules/agent_team_setup_service.md"
 ```
 
 ### Summary
@@ -88,3 +91,6 @@ flowchart LR
 | `AgentSkillBundleService._validate_release` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 16 |
 | `AgentSkillBundleService._validate_skill_entry` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 11 |
 | `AgentSkillBundleService.file_payload` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 5 |
+| `agent_team_setup_service` | import | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

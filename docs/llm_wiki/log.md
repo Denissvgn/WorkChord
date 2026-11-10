@@ -2230,3 +2230,125 @@ Person identity recovery now verifies complete saved owner and allocation proven
 - Pages deprecated: 0
 - Semantic fields preserved: 1
 - Moved entities: none
+
+## 2026-10-13
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f9226ee1822f02f4b7d14d38de810a93fc58da1f1523f726e40b3d4ee653fd6b`
+- Pages created: 2
+- Pages updated: 21
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2990
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-10-13
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f49ee7c46cb50b20907a5fec1e1aeea8888820e4036e21238893fdcedc2daa8a`
+- Pages created: 0
+- Pages updated: 9
+- Pages metadata-only: 2
+- Pages skipped (unchanged): 3001
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+### Shared deployed role catalog
+
+Team setup now consumes the bundle service’s integrity-validated release catalog and deployment path configuration. Typed catalog results are defensive copies; missing, corrupt or untrusted artifacts retain fail-closed setup conflicts.
+
+## 2026-11-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6f355676e91a6b0941f3b489fa59b4a3b020e29472b448f931e7b62bff38a1ec`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3013
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 0
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 7
+
+## 2026-11-07
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6f355676e91a6b0941f3b489fa59b4a3b020e29472b448f931e7b62bff38a1ec`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3013
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 0
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 7
+
+## 2026-11-10
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:00d1faea949e1d7f79001759ee174b3d17f99ac380591c3cf8b539444b245dc7`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3010
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none
+
+## 2026-11-10
+
+### Wiki sync
+- Source: `.`
+- Generator version: `2.3.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:00d1faea949e1d7f79001759ee174b3d17f99ac380591c3cf8b539444b245dc7`
+- Pages created: 0
+- Pages updated: 0
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3013
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

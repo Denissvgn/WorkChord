@@ -30,15 +30,15 @@ flowchart LR
     n2["plan_agent_team_reconciliation (backend/app/routers/agent.py)"]
     n3["AgentTeamSetupService.apply (backend/app/services/agent_team_setup_service.py)"]
     n4["AgentTeamSetupService.plan (backend/app/services/agent_team_setup_service.py)"]
-    n5["test_confirmed_identity_replacement_disables_old_actor (backend/tests/test_agent_team_setup.py)"]
-    n6["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
-    n7["test_topologies_share_catalog_and_profile_references_not_identities (backend/tests/test_agent_team_setup.py)"]
-    n8["test_uncertain_delivery_requires_explicit_new_reference_recovery (backend/tests/test_agent_team_setup.py)"]
-    n9["apply_manifest (backend/tests/test_agent_team_setup_qualification.py)"]
-    n10["test_setup_scenario_04_adopts_without_credential_rotation (backend/tests/test_agent_team_setup_qualification.py)"]
-    n11["test_setup_scenario_06_add_binding_change_and_explicit_disable (backend/tests/test_agent_team_setup_qualification.py)"]
-    n12["test_setup_scenario_11_compatibility_preflight_is_non_mutating (backend/tests/test_agent_team_setup_qualification.py)"]
-    n13["test_setup_scenarios_05_07_08_drift_readiness_and_redaction (backend/tests/test_agent_team_setup_qualification.py)"]
+    n5["test_deployed_catalog_supports_validation_and_bound_planning (backend/tests/test_agent_team_catalog.py)"]
+    n6["test_confirmed_identity_replacement_disables_old_actor (backend/tests/test_agent_team_setup.py)"]
+    n7["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
+    n8["test_topologies_share_catalog_and_profile_references_not_identities (backend/tests/test_agent_team_setup.py)"]
+    n9["test_uncertain_delivery_requires_explicit_new_reference_recovery (backend/tests/test_agent_team_setup.py)"]
+    n10["apply_manifest (backend/tests/test_agent_team_setup_qualification.py)"]
+    n11["test_setup_scenario_04_adopts_without_credential_rotation (backend/tests/test_agent_team_setup_qualification.py)"]
+    n12["test_setup_scenario_06_add_binding_change_and_explicit_disable (backend/tests/test_agent_team_setup_qualification.py)"]
+    n13["test_setup_scenario_11_compatibility_preflight_is_non_mutating (backend/tests/test_agent_team_setup_qualification.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -57,11 +57,11 @@ flowchart LR
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/agent_team_setup_service.md"
     click n4 "../modules/agent_team_setup_service.md"
-    click n5 "../modules/test_agent_team_setup.md"
+    click n5 "../modules/test_agent_team_catalog.md"
     click n6 "../modules/test_agent_team_setup.md"
     click n7 "../modules/test_agent_team_setup.md"
     click n8 "../modules/test_agent_team_setup.md"
-    click n9 "../modules/test_agent_team_setup_qualification.md"
+    click n9 "../modules/test_agent_team_setup.md"
     click n10 "../modules/test_agent_team_setup_qualification.md"
     click n11 "../modules/test_agent_team_setup_qualification.md"
     click n12 "../modules/test_agent_team_setup_qualification.md"
@@ -87,6 +87,7 @@ flowchart LR
 | `plan_agent_team_reconciliation` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentTeamSetupService.apply` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService.plan` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `test_deployed_catalog_supports_validation_and_bound_planning` | call | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | 1 |
 | `test_confirmed_identity_replacement_disables_old_actor` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_topologies_share_catalog_and_profile_references_not_identities` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
@@ -95,4 +96,5 @@ flowchart LR
 | `test_setup_scenario_04_adopts_without_credential_rotation` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `test_setup_scenario_06_add_binding_change_and_explicit_disable` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `test_setup_scenario_11_compatibility_preflight_is_non_mutating` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
-| `test_setup_scenarios_05_07_08_drift_readiness_and_redaction` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
+
+> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.

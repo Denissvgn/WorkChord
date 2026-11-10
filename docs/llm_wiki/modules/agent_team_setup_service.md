@@ -6,6 +6,8 @@
 
 Operator-only agent-team validation, reconciliation, setup, and readiness.
 
+Role-package compatibility uses the integrity-validated catalog from `AgentSkillBundleService`, including its configured deployed artifact directory. Catalog, checksum-index, archive or trust-pin failures become the stable `agent_team_skill_catalog_unavailable` conflict; setup does not fall back to source-tree metadata.
+
 Runtime acknowledgement remains scoped to its exact issued handoff credential. Readiness compares every current handoff revision, and a stale acknowledgement blocks dispatch. An explicit refresh requires the prior receipt digest plus current package, profile, bindings, topology, features and modes; normal duplicate replay retains its existing semantics. Managed controllers receive workspace membership explicitly, and account disablement remains separate from runtime readiness and model-binding observations.
 
 ## Imports
@@ -24,13 +26,13 @@ Runtime acknowledgement remains scoped to its exact issued handoff credential. R
 | `app.services.agent_profile_catalog_service` | `ALL_PROFILE_PRESETS`, `AgentProfileCatalogService` |
 | `app.services.agent_routing_rollout` | `AgentRoutingTopologyReadiness` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_scopes`, `hash_api_key`, `require_scope`, `validate_idempotency_key` |
+| `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_credentials` | `CredentialDeliveryError`, `AgentTeamCredentialSink`, `FilesystemAgentTeamCredentialSink` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `dataclasses` | `dataclass` |
 | `datetime` | `timedelta` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
-| `pathlib` | `Path` |
 | `secrets` | `secrets` |
 | `sqlalchemy` | `func`, `or_`, `select`, `text` |
 | `sqlalchemy.exc` | `IntegrityError` |
@@ -56,8 +58,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (5) |
-| Outbound | `backend` (13) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (14) |
 
 ### External packages
 
@@ -65,15 +67,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 101 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
-| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 115 | — | Current topology/revision and active member set for exact-actor routing. |
-| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 149 | — | Reconcile one portable topology without making the UI a control plane. |
+| [AgentTeamSetupConflictError](../entities/AgentTeamSetupConflictError.md) | 102 | `AgentConflictError` | Stable conflict envelope shared by setup REST and MCP reads. |
+| [AgentTeamMembershipBoundary](../entities/AgentTeamMembershipBoundary.md) | 116 | — | Current topology/revision and active member set for exact-actor routing. |
+| [AgentTeamSetupService](../entities/AgentTeamSetupService.md) | 150 | — | Reconcile one portable topology without making the UI a control plane. |
 
 ## Functions
 

@@ -20,6 +20,7 @@ Shared isolated SQLite and PostgreSQL lifecycle fixtures.
 | `app.models.task` | `Task` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
 | `app.services.agent_routing_rollout` | `AgentRoutingTopologyReadiness`, `reset_agent_routing_topology_readiness`, `set_agent_routing_topology_readiness` |
+| `app.services.agent_skill_bundle_service` | `AgentSkillBundleService` |
 | `collections.abc` | `AsyncIterator`, `Awaitable`, `Callable`, `Iterator` |
 | `datetime` | `date` |
 | `itertools` | `count` |
@@ -31,6 +32,8 @@ Shared isolated SQLite and PostgreSQL lifecycle fixtures.
 | `socket` | `socket` |
 | `sqlalchemy` | `event` |
 | `sqlalchemy.ext.asyncio` | `AsyncEngine`, `AsyncSession`, `async_sessionmaker`, `create_async_engine` |
+| `subprocess` | `subprocess` |
+| `sys` | `sys` |
 | `tests.support` | `FailureInjector`, `FrozenClock`, `LegacySQLiteFactory`, `MappedModelFactory`, `PostgresTestDatabase`, `PostgresTestDatabaseManager` |
 | `typing` | `Any` |
 
@@ -48,8 +51,9 @@ flowchart LR
     n6["backend/app/models/task.py"]
     n7["backend/app/models/team_member.py"]
     n8["backend/app/services/agent_routing_rollout.py"]
-    n9["backend/tests/conftest.py"]
-    n10["backend/tests/support/__init__.py"]
+    n9["backend/app/services/agent_skill_bundle_service.py"]
+    n10["backend/tests/conftest.py"]
+    n11["backend/tests/support/__init__.py"]
     n1 --> n0
     n2 --> n3
     n2 --> n4
@@ -74,16 +78,17 @@ flowchart LR
     n7 --> n5
     n7 --> n6
     n8 --> n0
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n4
-    n9 --> n5
-    n9 --> n6
-    n9 --> n7
-    n9 --> n8
-    n9 --> n10
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n3
+    n10 --> n4
+    n10 --> n5
+    n10 --> n6
+    n10 --> n7
+    n10 --> n8
+    n10 --> n9
+    n10 --> n11
     click n0 "../modules/config.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -93,8 +98,9 @@ flowchart LR
     click n6 "../modules/models_task.md"
     click n7 "../modules/team_member.md"
     click n8 "../modules/agent_routing_rollout.md"
-    click n9 "../modules/conftest.md"
-    click n10 "../modules/support___init__.md"
+    click n9 "../modules/agent_skill_bundle_service.md"
+    click n10 "../modules/conftest.md"
+    click n11 "../modules/support___init__.md"
 ```
 
 ### Internal neighbors
@@ -110,6 +116,7 @@ flowchart LR
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [team_member](../modules/team_member.md) |
 | Outbound | [agent_routing_rollout](../modules/agent_routing_rollout.md) |
+| Outbound | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) |
 | Outbound | [support___init__](../modules/support___init__.md) |
 
 ### External packages
@@ -122,6 +129,8 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `agent_skill_artifact_root` | `(tmp_path_factory: pytest.TempPathFactory) -> Path` | `@pytest.fixture(scope='session')` | Build the same integrity-indexed role release used in deployments. |
+| `deployed_agent_skill_release` | `(agent_skill_artifact_root: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Path]` | `@pytest.fixture` | — |
 | `no_unapproved_network` | `(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None` | `@pytest.fixture(autouse=True)` | Fail unit tests that accidentally cross a network boundary. |
 | `qualified_model_aware_routing_test_context` | `(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]` | `@pytest.fixture` | Run legacy routing suites behind an explicit server-owned test topology. |
 | `mapped_model_factory` | `() -> MappedModelFactory` | `@pytest.fixture` | — |

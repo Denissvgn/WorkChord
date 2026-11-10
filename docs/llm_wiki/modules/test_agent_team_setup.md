@@ -70,8 +70,8 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [CapturingCredentialSink](../entities/CapturingCredentialSink.md) | 71 | — | — |
-| [FailingOnceCredentialSink](../entities/FailingOnceCredentialSink.md) | 92 | `CapturingCredentialSink` | — |
+| [CapturingCredentialSink](../entities/CapturingCredentialSink.md) | 72 | — | — |
+| [FailingOnceCredentialSink](../entities/FailingOnceCredentialSink.md) | 93 | `CapturingCredentialSink` | — |
 
 ## Functions
 

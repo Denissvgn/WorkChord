@@ -32,12 +32,12 @@ flowchart TD
 | [app_database](modules/app_database.md) | 87 | 5 |
 | [commands](modules/commands.md) | 81 | 12 |
 | [Button](modules/Button.md) | 77 | 0 |
-| [time](modules/time.md) | 74 | 0 |
-| [config](modules/config.md) | 68 | 1 |
+| [time](modules/time.md) | 75 | 0 |
+| [config](modules/config.md) | 69 | 1 |
 | [QueryState](modules/QueryState.md) | 65 | 2 |
 | [types_task](modules/types_task.md) | 65 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 63 | 1 |
-| [models_agent](modules/models_agent.md) | 60 | 5 |
+| [models_agent](modules/models_agent.md) | 61 | 5 |
 | [models_iteration](modules/models_iteration.md) | 55 | 6 |
 | [task_service](modules/task_service.md) | 51 | 17 |
 | [authority](modules/authority.md) | 49 | 6 |
@@ -125,6 +125,7 @@ flowchart TD
 | [source](modules/source.md) | 8 | 5 |
 | [maintenance](modules/maintenance.md) | 8 | 2 |
 | [models___init__](modules/models___init__.md) | 8 | 31 |
+| [agent_team_setup](modules/agent_team_setup.md) | 8 | 1 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [system_settings_service](modules/system_settings_service.md) | 8 | 5 |
 | [triage_service](modules/triage_service.md) | 8 | 17 |
@@ -144,7 +145,7 @@ flowchart TD
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
 | [models_task_brief](modules/models_task_brief.md) | 7 | 2 |
 | [mutation_versions](modules/mutation_versions.md) | 7 | 2 |
-| [agent_team_setup](modules/agent_team_setup.md) | 7 | 1 |
+| [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) | 7 | 1 |
 | [backlog_snapshot_service](modules/backlog_snapshot_service.md) | 7 | 8 |
 | [planning_input_context](modules/planning_input_context.md) | 7 | 11 |
 | [scheduler_service](modules/scheduler_service.md) | 7 | 9 |
@@ -161,10 +162,12 @@ flowchart TD
 | [models_saved_view](modules/models_saved_view.md) | 6 | 3 |
 | [task_status_log](modules/task_status_log.md) | 6 | 3 |
 | [routers_task_domain](modules/routers_task_domain.md) | 6 | 21 |
+| [agent_skill_bundle](modules/agent_skill_bundle.md) | 6 | 0 |
 | [schemas_execution_usage](modules/schemas_execution_usage.md) | 6 | 0 |
 | [planning_inputs](modules/planning_inputs.md) | 6 | 0 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
 | [agent_planning_service](modules/agent_planning_service.md) | 6 | 19 |
+| [agent_team_setup_service](modules/agent_team_setup_service.md) | 6 | 14 |
 | [capacity_service](modules/capacity_service.md) | 6 | 6 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
@@ -176,14 +179,12 @@ flowchart TD
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
 | [transfer](modules/transfer.md) | 5 | 9 |
 | [routers_agent_planning](modules/routers_agent_planning.md) | 5 | 16 |
-| [agent_skill_bundle](modules/agent_skill_bundle.md) | 5 | 0 |
 | [schemas_calendar](modules/schemas_calendar.md) | 5 | 1 |
 | [schemas_request_source](modules/schemas_request_source.md) | 5 | 1 |
 | [schemas_saved_view](modules/schemas_saved_view.md) | 5 | 0 |
 | [schemas_work_metrics](modules/schemas_work_metrics.md) | 5 | 0 |
 | [agent_model_catalog_service](modules/agent_model_catalog_service.md) | 5 | 6 |
 | [agent_profile_catalog_service](modules/agent_profile_catalog_service.md) | 5 | 3 |
-| [agent_team_setup_service](modules/agent_team_setup_service.md) | 5 | 13 |
 | [assignee_recommendation_service](modules/assignee_recommendation_service.md) | 5 | 5 |
 | [delivery_metrics_service](modules/delivery_metrics_service.md) | 5 | 9 |
 | [saved_view_service](modules/saved_view_service.md) | 5 | 4 |
@@ -217,7 +218,6 @@ flowchart TD
 | [schemas_template](modules/schemas_template.md) | 4 | 1 |
 | [schemas_time_entry](modules/schemas_time_entry.md) | 4 | 0 |
 | [agent_routing_observability](modules/agent_routing_observability.md) | 4 | 5 |
-| [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) | 4 | 1 |
 | [delivery_dependency_service](modules/delivery_dependency_service.md) | 4 | 5 |
 | [email_settings_service](modules/email_settings_service.md) | 4 | 5 |
 | [execution_usage_service](modules/execution_usage_service.md) | 4 | 13 |
@@ -545,7 +545,7 @@ flowchart TD
 | [test_autonomy_foundation](modules/test_autonomy_foundation.md) | 0 | 12 |
 | [test_autonomy_migrations](modules/test_autonomy_migrations.md) | 0 | 3 |
 | [test_work_package_service](modules/test_work_package_service.md) | 0 | 7 |
-| [conftest](modules/conftest.md) | 0 | 10 |
+| [conftest](modules/conftest.md) | 0 | 11 |
 | [test_database_configuration](modules/test_database_configuration.md) | 0 | 3 |
 | [test_deployment_topology](modules/test_deployment_topology.md) | 0 | 0 |
 | [test_observability](modules/test_observability.md) | 0 | 3 |
@@ -584,6 +584,7 @@ flowchart TD
 | [test_agent_routing_wave3_contract](modules/test_agent_routing_wave3_contract.md) | 0 | 2 |
 | [test_agent_run_trust_compatibility](modules/test_agent_run_trust_compatibility.md) | 0 | 4 |
 | [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) | 0 | 8 |
+| [test_agent_team_catalog](modules/test_agent_team_catalog.md) | 0 | 7 |
 | [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) | 0 | 0 |
 | [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) | 0 | 12 |
 | [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) | 0 | 8 |
