@@ -20,7 +20,7 @@ _Auto-generated from `RuntimeContract` in `backend/app/autonomy/contracts/topolo
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

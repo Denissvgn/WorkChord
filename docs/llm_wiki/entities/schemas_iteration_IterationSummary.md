@@ -28,7 +28,7 @@ Summary statistics for an iteration.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

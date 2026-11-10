@@ -15,6 +15,8 @@ Owns typed task/milestone delivery prerequisites, distinct from local schedule d
 | `app.models.delivery_dependency` | `DeliveryDependency` |
 | `app.models.project` | `ProjectMilestone` |
 | `app.models.task` | `Task`, `TaskDependency` |
+| `app.services.task_brief_service` | `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
+| `app.services.task_service` | `TaskService`, `TaskService`, `TaskService`, `TaskService` |
 | `collections` | `defaultdict`, `deque` |
 | `sqlalchemy` | `or_`, `select` |
 
@@ -23,70 +25,29 @@ Owns typed task/milestone delivery prerequisites, distinct from local schedule d
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/commands.py"]
-    n2["backend/app/models/delivery_dependency.py"]
-    n3["backend/app/models/project.py"]
-    n4["backend/app/models/task.py"]
-    n5["backend/app/routers/delivery_dependencies.py"]
-    n6["backend/app/routers/tasks.py"]
-    n7["backend/app/services/delivery_dependency_service.py"]
-    n8["backend/tests/test_delivery_dependencies.py"]
-    n0 --> n3
-    n0 --> n4
+    n0["backend"]
+    n1["backend/app/services/delivery_dependency_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n3
-    n1 --> n4
-    n1 --> n7
-    n2 --> n3
-    n2 --> n4
-    n3 --> n4
-    n4 --> n3
-    n5 --> n7
-    n6 --> n1
-    n6 --> n4
-    n6 --> n7
-    n7 --> n0
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n4
-    n8 --> n0
-    n8 --> n1
-    n8 --> n2
-    n8 --> n3
-    n8 --> n4
-    n8 --> n7
-    click n0 "../modules/authority.md"
-    click n1 "../modules/commands.md"
-    click n2 "../modules/delivery_dependency.md"
-    click n3 "../modules/models_project.md"
-    click n4 "../modules/models_task.md"
-    click n5 "../modules/delivery_dependencies.md"
-    click n6 "../modules/tasks.md"
-    click n7 "../modules/delivery_dependency_service.md"
-    click n8 "../modules/test_delivery_dependencies.md"
+    click n1 "../modules/delivery_dependency_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [commands](../modules/commands.md) |
-| Inbound | [delivery_dependencies](../modules/delivery_dependencies.md) |
-| Inbound | [tasks](../modules/tasks.md) |
-| Inbound | [test_delivery_dependencies](../modules/test_delivery_dependencies.md) |
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [delivery_dependency](../modules/delivery_dependency.md) |
-| Outbound | [models_project](../modules/models_project.md) |
-| Outbound | [models_task](../modules/models_task.md) |
+| Inbound | `backend` (14) |
+| Outbound | `backend` (7) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

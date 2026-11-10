@@ -35,7 +35,7 @@ Restart-safe bounded observation/retention job projection.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

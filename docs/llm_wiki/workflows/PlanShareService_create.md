@@ -6,11 +6,12 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `snapshot_service.SnapshotService`
-2. `time.utc_now`
+1. `snapshot_service.SnapshotService.build_snapshot_data`
+2. `snapshot_service.SnapshotService`
 3. `time.utc_now`
-4. `models_plan_share.PlanShare`
-5. `commands.commit_or_flush`
+4. `time.utc_now`
+5. `models_plan_share.PlanShare`
+6. `commands.commit_or_flush`
 
 ## Touches
 

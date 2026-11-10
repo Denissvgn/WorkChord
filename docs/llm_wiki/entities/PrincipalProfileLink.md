@@ -20,7 +20,7 @@ _Auto-generated from `PrincipalProfileLink` in `backend/app/models/identity.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

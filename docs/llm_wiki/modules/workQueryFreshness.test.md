@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/features/workQueryFreshness.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./workQueryFreshness` | `installWorkFreshness` |
-| `@tanstack/react-query` | `QueryClient`, `QueryObserver` |
-| `vitest` | `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./workQueryFreshness` | `installWorkFreshness` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClient`, `QueryObserver` | — | compiler-dependent |
+| `vitest` | `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

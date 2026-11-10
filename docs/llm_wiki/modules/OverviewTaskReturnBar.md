@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/overview/OverviewTaskReturnBar.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/overview/overviewTaskThread` | `overviewTaskReturnFocusId` |
-| `lucide-react` | `ArrowLeft`, `Waypoints` |
-| `react` | `RefObject` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/overview/overviewTaskThread` | `overviewTaskReturnFocusId` | — | compiler-dependent |
+| `lucide-react` | `ArrowLeft`, `Waypoints` | — | compiler-dependent |
+| `react` | `RefObject` | Declaration | erased |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -55,4 +55,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `OverviewTaskReturnBar` | `({     active,     taskId,     taskTitle,     returnActionRef, }: {     active: boolean;     taskId: number \| null;     taskTitle?: string \| null;     returnActionRef?: RefObject<HTMLAnchorElement \| null>; })` | — | — |
+| `OverviewTaskReturnBar` | <pre><code>&#40;&#123;&#10;    active&#44;&#10;    taskId&#44;&#10;    taskTitle&#44;&#10;    returnActionRef&#44;&#10;&#125;&#58; &#123;&#10;    active&#58; boolean&#59;&#10;    taskId&#58; number &#124; null&#59;&#10;    taskTitle&#63;&#58; string &#124; null&#59;&#10;    returnActionRef&#63;&#58; RefObject&#60;HTMLAnchorElement &#124; null&#62;&#59;&#10;&#125;&#41;</code></pre> | — | — |

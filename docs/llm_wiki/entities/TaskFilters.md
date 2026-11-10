@@ -1,7 +1,7 @@
 # TaskFilters
 
 **Location:** `frontend/src/components/tasks/TaskFiltersBar.tsx:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskFiltersBar](../modules/TaskFiltersBar.md)
 
@@ -31,7 +31,7 @@ _Auto-generated from `TaskFilters` in `frontend/src/components/tasks/TaskFilters
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

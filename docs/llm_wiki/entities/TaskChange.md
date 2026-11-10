@@ -24,7 +24,7 @@ Represents a change to a task for incremental rescheduling.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

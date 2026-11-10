@@ -15,7 +15,7 @@ Raised when a secret cannot be encrypted or decrypted.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

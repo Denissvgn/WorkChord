@@ -1,7 +1,7 @@
 # IterationSelectorProps
 
 **Location:** `frontend/src/components/iteration/IterationSelector.tsx:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [IterationSelector](../modules/IterationSelector.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `IterationSelectorProps` in `frontend/src/components/iterat
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

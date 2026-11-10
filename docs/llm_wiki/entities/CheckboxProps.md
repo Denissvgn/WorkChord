@@ -1,8 +1,8 @@
 # CheckboxProps
 
 **Location:** `frontend/src/components/common/Checkbox.tsx:6`
-**Kind:** Class
-**Bases:** `Omit`
+**Kind:** Interface
+**Bases:** `Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>`
 **Module:** [Checkbox](../modules/Checkbox.md)
 
 ## Description
@@ -18,7 +18,7 @@ _Auto-generated from `CheckboxProps` in `frontend/src/components/common/Checkbox
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -26,7 +26,7 @@ _Auto-generated from `CheckboxProps` in `frontend/src/components/common/Checkbox
 ```mermaid
 flowchart LR
     n0["CheckboxProps (frontend/src/components/common/Checkbox.tsx)"]
-    n1["Omit"]
+    n1["Omit#60;React.InputHTMLAttributes#60;HTMLInputElement#62;, 'onChange'#62;"]
     n0 --> n1
     click n0 "../modules/Checkbox.md"
 ```
@@ -41,4 +41,4 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `Omit` | — |
+| Base | `Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>` | — |

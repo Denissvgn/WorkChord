@@ -8,27 +8,28 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAgentAccess` | `useAgentAccess` |
-| `../../services/agentService` | `agentService` |
-| `../../types/agent` | `AgentAssignmentPurpose`, `AgentRoutingCandidate`, `AgentTaskAssignment`, `AssessmentReasonCode`, `ModelContextTier`, `ModelReasoningTier`, `TaskDifficultyAxes`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskSkillLevel` |
-| `../../types/task` | `Task` |
-| `../../utils/apiError` | `normalizeApiError` |
-| `../../utils/formatDate` | `formatDateTime` |
-| `../../utils/modelRouting` | `ASSESSMENT_REASON_CODES`, `createAgentCommandMetadata`, `deriveDifficultyBand`, `formatRoutingCode`, `minimumReviewMode`, `MODEL_AWARE_ROUTING_FEATURE`, `parseRoutingTags`, `reviewModeMeets` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input`, `RequiredIndicator` |
-| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` |
-| `../feedback/toast` | `useToast` |
-| `./RoutingCandidateComparison` | `RoutingCandidateComparison` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `CheckCircle2`, `Plus`, `RefreshCw`, `Route`, `Trash2` |
-| `react` | `useEffect`, `useMemo`, `useState`, `FormEvent` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
+| `../../services/agentService` | `agentService` | — | compiler-dependent |
+| `../../types/agent` | `AgentAssignmentPurpose`, `AgentRoutingCandidate`, `AgentTaskAssignment`, `AssessmentReasonCode`, `ModelContextTier`, `ModelReasoningTier`, `TaskDifficultyAxes`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskSkillLevel` | Declaration | erased |
+| `../../types/task` | `Task` | Declaration | erased |
+| `../../utils/apiError` | `normalizeApiError` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../../utils/modelRouting` | `ASSESSMENT_REASON_CODES`, `createAgentCommandMetadata`, `deriveDifficultyBand`, `formatRoutingCode`, `minimumReviewMode`, `MODEL_AWARE_ROUTING_FEATURE`, `parseRoutingTags`, `reviewModeMeets` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./RoutingCandidateComparison` | `RoutingCandidateComparison` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `CheckCircle2`, `Plus`, `RefreshCw`, `Route`, `Trash2` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `react` | `useEffect`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -41,6 +42,8 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -71,8 +74,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Class | 54 | — | — |
-| [AssessmentDraft](../entities/AssessmentDraft.md) | Class | 59 | — | — |
+| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 54 | — | — |
+| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 59 | — | — |
 
 ## Functions
 

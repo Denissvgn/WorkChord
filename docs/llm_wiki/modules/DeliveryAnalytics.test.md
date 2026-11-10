@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.test.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` |
-| `../../types/deliveryMetrics` | `DeliveryMetrics` |
-| `./DeliveryAnalytics` | `DeliveryAnalytics` |
-| `@testing-library/react` | `fireEvent`, `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
+| `../../types/deliveryMetrics` | `DeliveryMetrics` | Declaration | erased |
+| `./DeliveryAnalytics` | `DeliveryAnalytics` | — | compiler-dependent |
+| `@testing-library/react` | `fireEvent`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.test.t
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/analytics/DeliveryAnalytics.test.tsx"]

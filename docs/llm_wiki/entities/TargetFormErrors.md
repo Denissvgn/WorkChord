@@ -1,7 +1,7 @@
 # TargetFormErrors
 
 **Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:46`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `TargetFormErrors` in `frontend/src/components/settings/Out
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

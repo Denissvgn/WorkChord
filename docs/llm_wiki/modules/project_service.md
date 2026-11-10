@@ -20,7 +20,10 @@ Project summaries capture one UTC instant and interpret target risk, elapsed sch
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `atomic_command`, `lock_planning`, `commit_or_flush`, `schedule_input_command` |
+| `app.authority` | `require_project`, `internal_authority` |
+| `app.commands` | `atomic_command`, `lock_planning`, `commit_or_flush`, `schedule_input_command`, `PlanningConflict` |
+| `app.models.agent` | `AgentRun`, `AgentTaskAssignment` |
+| `app.models.delivery_dependency` | `DeliveryDependency` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Initiative`, `Project`, `ProjectMilestone`, `ProjectMilestoneStatus`, `ProjectStatus`, `ProjectUpdateEntry` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
@@ -28,15 +31,19 @@ Project summaries capture one UTC instant and interpret target risk, elapsed sch
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS`, `MAX_PROJECT_LIST_ITEMS`, `MAX_PROJECT_TREE_TASKS` |
 | `app.schemas.project` | `InitiativeCreate`, `InitiativeUpdate`, `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneSummary`, `ProjectMilestoneTaskGroup`, `ProjectMilestoneUpdate`, `ProjectPortfolioSummary`, `ProjectSummary`, `STALE_PROJECT_UPDATE_DAYS`, `ProjectTargetDateRisk`, `ProjectUpdate`, `ProjectUpdateEntryCreate`, `ProjectUpdateEntryResponse`, `ProjectUpdateFreshness` |
 | `app.schemas.team` | `TeamMemberOptionResponse`, `TeamMemberProfileCompact` |
+| `app.schemas.work_metrics` | `WorkMetricSummary` |
+| `app.services.bounded_scope_reads` | `scope_page` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService`, `DeliveryDependencyService` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.request_source_service` | `RequestSourceService` |
-| `app.services.work_metrics` | `working_today` |
+| `app.services.task_service` | `TaskService` |
+| `app.services.work_metrics` | `working_today`, `aggregate_metrics`, `aggregate_metrics`, `aggregate_metrics` |
 | `app.sql_semantics` | `portable_case_insensitive_equal` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `date`, `datetime` |
 | `sqlalchemy` | `Select`, `case`, `exists`, `func`, `select`, `update` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
-| `sqlalchemy.orm` | `aliased`, `selectinload` |
+| `sqlalchemy.orm` | `aliased`, `selectinload`, `attributes` |
 | `typing` | `Optional`, `Sequence` |
 
 ## Local dependency map
@@ -59,9 +66,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (13) |
+| Inbound | `backend` (14) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (13) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -69,7 +76,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

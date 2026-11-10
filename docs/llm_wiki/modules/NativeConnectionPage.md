@@ -8,16 +8,16 @@ Provides explicit browser consent for the Android companion. It shows the signed
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../features/identity/identityContext` | `useIdentity` |
-| `../services/api` | `api` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../services/api` | `api` | — | compiler-dependent |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 

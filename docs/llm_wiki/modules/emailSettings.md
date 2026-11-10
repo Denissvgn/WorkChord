@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/types/emailSettings.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./systemSettings` | `RuntimeSettingSource` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./systemSettings` | `RuntimeSettingSource` | Declaration | erased |
 
 ## Module Signals
 
@@ -21,6 +21,8 @@ _Auto-generated from `frontend/src/types/emailSettings.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/EmailSettingsPanel.test.tsx"]
@@ -55,7 +57,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [EmailSettings](../entities/emailSettings_EmailSettings.md) | Class | 3 | — | — |
-| [EmailSettingsUpdate](../entities/emailSettings_EmailSettingsUpdate.md) | Class | 16 | — | — |
-| [TestEmailRequest](../entities/emailSettings_TestEmailRequest.md) | Class | 28 | — | — |
-| [TestEmailResponse](../entities/emailSettings_TestEmailResponse.md) | Class | 32 | — | — |
+| [EmailSettings](../entities/emailSettings_EmailSettings.md) | Interface | 3 | — | — |
+| [EmailSettingsUpdate](../entities/emailSettings_EmailSettingsUpdate.md) | Interface | 16 | — | — |
+| [TestEmailRequest](../entities/emailSettings_TestEmailRequest.md) | Interface | 28 | — | — |
+| [TestEmailResponse](../entities/emailSettings_TestEmailResponse.md) | Interface | 32 | — | — |

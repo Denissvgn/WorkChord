@@ -1,7 +1,7 @@
 # ProjectSummary
 
 **Location:** `frontend/src/types/project.ts:199`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `WorkMetrics`
 **Module:** [types_project](../modules/types_project.md)
 
@@ -51,7 +51,7 @@ _Auto-generated from `ProjectSummary` in `frontend/src/types/project.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

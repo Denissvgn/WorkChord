@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [workQueryFreshness](../modules/workQueryFreshness.md)
+**Target:**
+
+```typescript
+'live' | 'history' | 'editor' | 'reference' | 'settings' | 'identity'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `QueryPolicy` in `frontend/src/features/workQueryFreshness.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

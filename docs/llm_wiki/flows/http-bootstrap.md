@@ -15,54 +15,88 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as bootstrap
     participant p1 as require_identity_writes
-    participant p2 as get_settings
-    participant p3 as Settings
-    participant p4 as MaintenanceModeError
-    participant p5 as internal_authority
-    participant p6 as db.info.get
-    participant p7 as db.get
-    participant p8 as AuthorityError
-    participant p9 as db.execute
-    participant p10 as update(…).where(…).values
-    participant p11 as update(…).where
-    participant p12 as update
-    participant p13 as WorkspaceAuthorityState.bootstrap_principal_id.is_
-    participant p14 as db.add
-    participant p15 as WorkspaceMembership
-    participant p16 as CommandAudit
-    participant p17 as secrets.token_hex
+    participant p2 as internal_authority
+    participant p3 as db.get
+    participant p4 as AuthorityError
+    participant p5 as db.execute
+    participant p6 as update(…).where(…).values
+    participant p7 as update(…).where
+    participant p8 as update
+    participant p9 as WorkspaceAuthorityState.bootstrap_principal_id.is_
+    participant p10 as db.add
+    participant p11 as WorkspaceMembership
+    participant p12 as CommandAudit
+    participant p13 as secrets.token_hex
+    participant p14 as get_settings
+    participant p15 as db.info.get
+    participant p16 as MaintenanceModeError
+    participant p17 as Settings
     p0->>p1: require_identity_writes
-    p1->>p2: get_settings
-    p2->>p3: Settings
-    p1->>p4: MaintenanceModeError
-    p1->>p2: get_settings
-    p0->>p5: internal_authority
-    p5-->>p6: db.info.get
-    p0-->>p7: db.get
-    p0->>p8: AuthorityError
-    p0-->>p7: db.get
-    p0->>p8: AuthorityError
-    p0-->>p9: db.execute
-    p0-->>p10: update(…).where(…).values
-    p0-->>p11: update(…).where
-    p0-->>p12: update
-    p0-->>p13: WorkspaceAuthorityState.bootstrap_principal_id.is_
-    p0->>p8: AuthorityError
-    p0-->>p14: db.add
-    p0->>p15: WorkspaceMembership
-    p0-->>p14: db.add
-    p0->>p16: CommandAudit
-    p0-->>p17: secrets.token_hex
+    p0->>p2: internal_authority
+    p0-->>p3: db.get(Principal, data.principal_id)
+    p0->>p4: AuthorityError
+    p0-->>p3: db.get(WorkspaceAuthorityState, 1)
+    p0->>p4: AuthorityError
+    p0-->>p5: db.execute(...)
+    p0-->>p6: update(…).where(…).values(bootstrap_principal_id=principal.id)
+    p0-->>p7: update(…).where(..., WorkspaceAuthorityState.bootstrap_principal_id.is_(...))
+    p0-->>p8: update(WorkspaceAuthorityState)
+    p0-->>p9: WorkspaceAuthorityState.bootstrap_principal_id.is_(None)
+    p0->>p4: AuthorityError
+    p0-->>p10: db.add(WorkspaceMembership(...))
+    p0->>p11: WorkspaceMembership
+    p0-->>p10: db.add(CommandAudit(...))
+    p0->>p12: CommandAudit
+    p0-->>p13: secrets.token_hex(16)
+    p1->>p14: get_settings
+    p2-->>p15: db.info.get('authority_internal', False)
+    p1->>p16: MaintenanceModeError
+    p1->>p14: get_settings
+    p14->>p17: Settings
 ```
+
+> Call sequence diagram shows 22 of 22 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 2 of 2 (0 omitted); unresolved 9 of 9 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 12; effect analysis evaluated: 5, partial: 0, unavailable: 7. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 14, emitted: 14, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `bootstrap` | `available` | `evaluated` | `available` | `9` | `9` | `0` |
+| `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `db.info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. bootstrap"]

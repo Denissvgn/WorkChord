@@ -1,7 +1,7 @@
 # FrontendSavedViewService
 
 **Location:** `frontend/src/services/savedViewService.ts:17`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [savedViewService](../modules/savedViewService.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `FrontendSavedViewService` in `frontend/src/services/savedV
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

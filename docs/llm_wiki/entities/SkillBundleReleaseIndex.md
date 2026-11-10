@@ -19,7 +19,7 @@ Checksum index emitted beside the catalog and role archives.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

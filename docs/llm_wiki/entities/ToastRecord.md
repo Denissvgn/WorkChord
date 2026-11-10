@@ -1,8 +1,8 @@
 # ToastRecord
 
 **Location:** `frontend/src/components/feedback/ToastProvider.tsx:13`
-**Kind:** Class
-**Bases:** `Required`
+**Kind:** Interface
+**Bases:** `Required<Pick<ToastInput, 'message' | 'tone' | 'durationMs'>>`
 **Module:** [ToastProvider](../modules/ToastProvider.md)
 
 ## Description
@@ -21,7 +21,7 @@ _Auto-generated from `ToastRecord` in `frontend/src/components/feedback/ToastPro
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -29,7 +29,7 @@ _Auto-generated from `ToastRecord` in `frontend/src/components/feedback/ToastPro
 ```mermaid
 flowchart LR
     n0["ToastRecord (frontend/src/components/feedback/ToastProvider.tsx)"]
-    n1["Required"]
+    n1["Required#60;Pick#60;ToastInput, 'message' | 'tone' | 'durationMs'#62;#62;"]
     n0 --> n1
     click n0 "../modules/ToastProvider.md"
 ```
@@ -44,4 +44,4 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `Required` | — |
+| Base | `Required<Pick<ToastInput, 'message' \| 'tone' \| 'durationMs'>>` | — |

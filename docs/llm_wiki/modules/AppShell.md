@@ -8,19 +8,20 @@ _Auto-generated from `frontend/src/components/layout/AppShell.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../store/themeStore` | `useThemeStore` |
-| `../feedback/WorkRefreshStatus` | `WorkRefreshStatus` |
-| `./AppSidebar` | `AppSidebar` |
-| `./AppTopNav` | `AppTopNav` |
-| `./CommandMenu` | `CommandMenu` |
-| `./DocumentMetadata` | `DocumentMetadata` |
-| `./RouteErrorBoundary` | `RouteErrorBoundary` |
-| `framer-motion` | `MotionConfig` |
-| `react` | `ReactNode`, `useEffect`, `useRef` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../store/themeStore` | `useThemeStore` | — | compiler-dependent |
+| `../feedback/WorkRefreshStatus` | `WorkRefreshStatus` | — | compiler-dependent |
+| `./AppSidebar` | `AppSidebar` | — | compiler-dependent |
+| `./AppTopNav` | `AppTopNav` | — | compiler-dependent |
+| `./CommandMenu` | `CommandMenu` | — | compiler-dependent |
+| `./DocumentMetadata` | `DocumentMetadata` | — | compiler-dependent |
+| `./RouteErrorBoundary` | `RouteErrorBoundary` | — | compiler-dependent |
+| `framer-motion` | `MotionConfig` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useEffect`, `useRef` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 

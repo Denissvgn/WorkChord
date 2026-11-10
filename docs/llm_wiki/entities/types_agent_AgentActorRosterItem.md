@@ -1,7 +1,7 @@
 # AgentActorRosterItem
 
 **Location:** `frontend/src/types/agent.ts:299`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `AgentActor`
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `AgentActorRosterItem` in `frontend/src/types/agent.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

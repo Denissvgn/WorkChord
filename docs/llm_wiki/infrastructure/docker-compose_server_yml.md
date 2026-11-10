@@ -7,11 +7,11 @@
 | Service | Image / Build | Ports | Depends On |
 |---------|---------------|-------|------------|
 | `postgres` | — |  |  |
-| `migration` | — |  | `{'database-bootstrap': {'condition': 'service_completed_successfully'}}` |
-| `repair` | — |  | `{'database-security': {'condition': 'service_completed_successfully'}}` |
-| `backend` | — |  |  |
-| `delivery-worker` | — |  |  |
-| `frontend` | — |  |  |
+| `migration` | build: `.` |  | `{'database-bootstrap': {'condition': 'service_completed_successfully'}}` |
+| `repair` | build: `.` |  | `{'database-security': {'condition': 'service_completed_successfully'}}` |
+| `backend` | build: `.` |  |  |
+| `delivery-worker` | build: `.` |  |  |
+| `frontend` | build: `.` |  |  |
 | `database-bootstrap` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'postgres': {'condition': 'service_healthy'}}` |
 | `database-security` | `postgres:18.4-bookworm@sha256:1961f96e6029a02c3812d7cb329a3b03a3ac2bb067058dec17b0f5596aca9296` |  | `{'migration': {'condition': 'service_completed_successfully'}}` |
 | `openbao` | `openbao/openbao:2.6.1@sha256:5b2486ab0fb90bbc788cc345b0a08616dfb375873ee8be5df3a2fd4d378a67e0` |  |  |
@@ -19,7 +19,7 @@
 | `minio` | `minio/minio:RELEASE.2025-09-07T16-13-09Z@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e` |  |  |
 | `minio-bootstrap` | `minio/mc:RELEASE.2025-08-13T08-35-41Z@sha256:a7fe349ef4bd8521fb8497f55c6042871b2ae640607cf99d9bede5e9bdf11727` |  | `{'minio': {'condition': 'service_started'}}` |
 | `valkey` | `valkey/valkey:8.1.9-alpine@sha256:a038175878d66b9d274fbf8be73c0305e93798b83917647f167e18cef3c71eec` |  |  |
-| `autonomy-acceptance` | — |  | `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'minio-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}` |
+| `autonomy-acceptance` | build: `.` |  | `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'minio-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}` |
 
 ### postgres
 
@@ -28,25 +28,35 @@
 
 ### migration
 
+- **Build context:** `.`
+- **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Environment:** `{'DATABASE_URL': '${DATABASE_MIGRATION_URL:?Set DATABASE_MIGRATION_URL}', 'DATABASE_SESSION_ROLE': 'workchord_owner'}`
 - **Depends on:** `{'database-bootstrap': {'condition': 'service_completed_successfully'}}`
 
 ### repair
 
+- **Build context:** `.`
+- **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Environment:** `{'DATABASE_URL': '${DATABASE_MIGRATION_URL:?Set DATABASE_MIGRATION_URL}', 'DATABASE_SESSION_ROLE': 'workchord_owner'}`
 - **Depends on:** `{'database-security': {'condition': 'service_completed_successfully'}}`
 
 ### backend
 
+- **Build context:** `.`
+- **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Volumes:** `workchord_server_data:/app/data`
 - **Environment:** `{'DATABASE_URL': '${DATABASE_RUNTIME_URL:?Set DATABASE_RUNTIME_URL}', 'DATABASE_SESSION_ROLE': '', 'DEPLOYMENT_ENVIRONMENT': 'development', 'SESSION_COOKIE_SECURE': '${WORKCHORD_SESSION_COOKIE_SECURE:-true}', 'MCP_DNS_REBINDING_PROTECTION': 'true', 'MCP_ALLOWED_HOSTS': '${MCP_ALLOWED_HOSTS:-["localhost:*","127.0.0.1:*","[::1]:*"]}', 'MCP_ALLOWED_ORIGINS': '${MCP_ALLOWED_ORIGINS:-["http://localhost:*","http://127.0.0.1:*"]}', 'MCP_UNSAFE_ALLOW_PUBLIC_BINDING': 'false'}`
 
 ### delivery-worker
 
+- **Build context:** `.`
+- **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Environment:** `{'DATABASE_URL': '${DATABASE_RUNTIME_URL:?Set DATABASE_RUNTIME_URL}', 'DATABASE_SESSION_ROLE': ''}`
 
 ### frontend
 
+- **Build context:** `.`
+- **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-frontend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 
 ### database-bootstrap
 
@@ -99,6 +109,8 @@
 
 ### autonomy-acceptance
 
+- **Build context:** `.`
+- **Image:** `${WORKCHORD_IMAGE_PREFIX:-workchord}-backend:${WORKCHORD_SOURCE_REVISION:?Set WORKCHORD_SOURCE_REVISION}`
 - **Volumes:** `workchord_autonomy_runtime:/run/workchord-autonomy:ro`, `${WORKCHORD_ACCEPTANCE_REPORT_DIR:?Set WORKCHORD_ACCEPTANCE_REPORT_DIR}:/var/lib/workchord/acceptance`
 - **Environment:** `{'DEPLOYMENT_ENVIRONMENT': 'development', 'AUTONOMY_BACKEND_URL': 'http://backend:8001', 'AUTONOMY_GATEWAY_URL': 'http://frontend', 'AUTONOMY_SIGNER_URL': 'http://openbao:8200', 'AUTONOMY_SIGNER_TOKEN_FILE': '/run/workchord-autonomy/openbao-token', 'AUTONOMY_SIGNER_KEY': 'workchord-server-acceptance', 'AUTONOMY_TRUSTED_SIGNER_PUBLIC_KEY_FILE': '/run/workchord-autonomy/openbao-signer-public-key.b64', 'AUTONOMY_MINIO_ENDPOINT': 'http://minio:9000', 'AUTONOMY_MINIO_ACCESS_KEY': '${AUTONOMY_MINIO_ACCESS_KEY:?Set AUTONOMY_MINIO_ACCESS_KEY}', 'AUTONOMY_MINIO_SECRET_KEY': '${AUTONOMY_MINIO_SECRET_KEY:?Set AUTONOMY_MINIO_SECRET_KEY}', 'AUTONOMY_MINIO_EVIDENCE_BUCKET': 'workchord-server-acceptance', 'AUTONOMY_MINIO_REGION': 'us-east-1', 'AUTONOMY_VALKEY_HOST': 'valkey', 'AUTONOMY_VALKEY_PORT': '6379', 'AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS': '${AUTONOMY_ACCEPTANCE_TIMEOUT_SECONDS:-10}'}`
 - **Depends on:** `{'backend': {'condition': 'service_healthy'}, 'delivery-worker': {'condition': 'service_started'}, 'openbao-bootstrap': {'condition': 'service_completed_successfully'}, 'minio-bootstrap': {'condition': 'service_completed_successfully'}, 'valkey': {'condition': 'service_healthy'}}`

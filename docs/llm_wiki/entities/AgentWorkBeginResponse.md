@@ -23,7 +23,7 @@ Atomic begin result containing all new authoritative state.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

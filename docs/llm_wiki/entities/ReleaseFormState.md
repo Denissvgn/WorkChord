@@ -4,6 +4,20 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ReleaseForm](../modules/ReleaseForm.md)
+**Target:**
+
+```typescript
+{
+    name: string;
+    description: string;
+    status: ReleaseStatus;
+    target_date: string;
+    shipped_at: string;
+    version: string;
+    environment: string;
+    task_ids: number[];
+}
+```
 
 ## Description
 
@@ -11,11 +25,11 @@ _Auto-generated from `ReleaseFormState` in `frontend/src/components/releases/Rel
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

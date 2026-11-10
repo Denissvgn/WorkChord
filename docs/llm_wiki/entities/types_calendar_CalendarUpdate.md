@@ -1,7 +1,7 @@
 # CalendarUpdate
 
 **Location:** `frontend/src/types/calendar.ts:20`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `CalendarUpdate` in `frontend/src/types/calendar.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

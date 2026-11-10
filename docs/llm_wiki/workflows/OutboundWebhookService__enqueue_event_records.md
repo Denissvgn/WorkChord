@@ -9,8 +9,9 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `models_outbound_webhook.OutboundWebhookEvent`
-2. `email_settings_service.EmailSettingsService`
-3. `commands.commit_or_flush`
+2. `email_settings_service.EmailSettingsService.get_settings`
+3. `email_settings_service.EmailSettingsService`
+4. `commands.commit_or_flush`
 
 ## Touches
 

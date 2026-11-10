@@ -46,7 +46,7 @@ Trace record for one automated agent execution.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -125,4 +125,4 @@ flowchart LR
 | `AgentService.finish_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.get_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.
+> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.

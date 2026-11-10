@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../i18n/i18n` | `i18n` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `../types/agent` | `AgentPipeline`, `AgentRun`, `TaskTimelineResponse` |
-| `../types/task` | `Task` |
-| `./AgentPipelinePage` | `AgentPipelinePage` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../types/agent` | `AgentPipeline`, `AgentRun`, `TaskTimelineResponse` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
+| `./AgentPipelinePage` | `AgentPipelinePage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/i18n/i18n.ts"]
@@ -43,6 +45,7 @@ flowchart LR
     n1 --> n5
     n2 --> n4
     n2 --> n5
+    n3 --> n0
     n4 --> n5
     click n0 "../modules/i18n.md"
     click n1 "../modules/AgentPipelinePage.test.md"

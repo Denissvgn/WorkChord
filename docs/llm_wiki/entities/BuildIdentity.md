@@ -20,7 +20,7 @@ Content identity written while an image is built.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

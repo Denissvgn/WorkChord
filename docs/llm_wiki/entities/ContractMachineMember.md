@@ -19,7 +19,7 @@ _Auto-generated from `ContractMachineMember` in `backend/app/autonomy/contracts/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

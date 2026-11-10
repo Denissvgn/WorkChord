@@ -23,7 +23,7 @@ _Auto-generated from `AgentTeamReconciliationClass` in `backend/app/schemas/agen
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

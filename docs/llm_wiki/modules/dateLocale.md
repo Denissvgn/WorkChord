@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/i18n/dateLocale.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./i18n` | `i18n` |
-| `date-fns` | `Locale` |
-| `date-fns/locale` | `enUS`, `ru` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./i18n` | `i18n` | — | compiler-dependent |
+| `date-fns` | `Locale` | Declaration | erased |
+| `date-fns/locale` | `enUS`, `ru` | — | compiler-dependent |
 
 ## Module Signals
 

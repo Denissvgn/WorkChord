@@ -1,7 +1,7 @@
 # ImportTeamModalProps
 
 **Location:** `frontend/src/components/team/ImportTeamModal.tsx:13`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ImportTeamModal](../modules/ImportTeamModal.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `ImportTeamModalProps` in `frontend/src/components/team/Imp
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

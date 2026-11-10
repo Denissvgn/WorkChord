@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanPage](../modules/PlanPage.md)
+**Target:**
+
+```typescript
+'idle' | 'success' | 'error'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `RefreshStatus` in `frontend/src/pages/PlanPage.tsx`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

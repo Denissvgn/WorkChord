@@ -24,7 +24,7 @@ Segmented task list representing the agent supervision pipeline board.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

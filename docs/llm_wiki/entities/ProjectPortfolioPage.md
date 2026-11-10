@@ -21,7 +21,7 @@ _Auto-generated from `ProjectPortfolioPage` in `backend/app/schemas/project.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

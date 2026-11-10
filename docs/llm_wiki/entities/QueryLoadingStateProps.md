@@ -1,7 +1,7 @@
 # QueryLoadingStateProps
 
 **Location:** `frontend/src/components/feedback/QueryState.tsx:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `SharedStateProps`
 **Module:** [QueryState](../modules/QueryState.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `QueryLoadingStateProps` in `frontend/src/components/feedba
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

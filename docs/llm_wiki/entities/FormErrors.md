@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md)
+**Target:**
+
+```typescript
+Partial<Record<'name' | 'sort_order', string>>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `FormErrors` in `frontend/src/components/settings/GitHubSet
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

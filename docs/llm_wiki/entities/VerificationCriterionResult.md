@@ -20,7 +20,7 @@ _Auto-generated from `VerificationCriterionResult` in `backend/app/schemas/auton
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

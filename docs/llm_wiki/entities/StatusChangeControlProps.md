@@ -1,7 +1,7 @@
 # StatusChangeControlProps
 
 **Location:** `frontend/src/components/tasks/StatusChangeControl.tsx:13`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [StatusChangeControl](../modules/StatusChangeControl.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `StatusChangeControlProps` in `frontend/src/components/task
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

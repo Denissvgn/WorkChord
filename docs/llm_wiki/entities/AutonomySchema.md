@@ -22,7 +22,7 @@ _Auto-generated from `AutonomySchema` in `backend/app/schemas/autonomy.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

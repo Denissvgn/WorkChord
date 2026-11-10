@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/components/tasks/TaskDependencySelector.tsx`.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../services/taskService` | `taskService` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -88,7 +88,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskDependencySelectorProps](../entities/TaskDependencySelectorProps.md) | Class | 11 | — | — |
+| [TaskDependencySelectorProps](../entities/TaskDependencySelectorProps.md) | Interface | 11 | — | — |
 
 ## Functions
 

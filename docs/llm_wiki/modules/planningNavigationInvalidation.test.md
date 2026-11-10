@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/features/planningMasters/planningNavigationIn
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./planningNavigationInvalidation` | `installPlanningNavigationInvalidation` |
-| `./usePlanningNavigationSummary` | `planningNavigationSummaryKey` |
-| `@tanstack/react-query` | `QueryClient` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./planningNavigationInvalidation` | `installPlanningNavigationInvalidation` | — | compiler-dependent |
+| `./usePlanningNavigationSummary` | `planningNavigationSummaryKey` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClient` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

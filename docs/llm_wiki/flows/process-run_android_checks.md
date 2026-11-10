@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -31,43 +33,62 @@ sequenceDiagram
     participant p19 as (…).read_text (scripts/ci/run_android_checks.py:main)
     participant p20 as re.search
     participant p21 as RuntimeError
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
+    p0-->>p1: argparse.ArgumentParser(description=__doc__)
+    p0-->>p2: parser.add_argument('--output', type=Path)
+    p0-->>p2: parser.add_argument('--timeout-seconds', type=positive_seconds, default=1200)
+    p0-->>p2: parser.add_argument('--release-qualification', action='store_true')
+    p0-->>p2: parser.add_argument('--qualification-inputs', type=Path)
     p0-->>p3: parser.parse_args
-    p0-->>p4: bool
-    p0-->>p5: parser.error
-    p0-->>p6: Path
-    p0-->>p7: tempfile.mkdtemp
-    p0-->>p8: RunReceipt
-    p0-->>p9: SystemExit
-    p0-->>p10: str
-    p0-->>p11: bind_source
-    p0-->>p12: tempfile.TemporaryDirectory
-    p0-->>p13: run.cleanups.append
-    p0-->>p6: Path
-    p0-->>p14: shutil.copytree
-    p0-->>p15: shutil.ignore_patterns
+    p0-->>p4: bool(args.qualification_inputs)
+    p0-->>p5: parser.error('--release-qualification and --qualification-inputs must be selected together')
+    p0-->>p6: Path(tempfile.mkdtemp(...))
+    p0-->>p7: tempfile.mkdtemp(prefix='workchord-android-')
+    p0-->>p8: RunReceipt(output, checks=[...], timeout_seconds=args.timeout_seconds)
+    p0-->>p9: SystemExit(str(...))
+    p0-->>p10: str(exc)
+    p0-->>p11: bind_source(run, source_digest)
+    p0-->>p12: tempfile.TemporaryDirectory(prefix='workchord-android-runtime-')
+    p0-->>p13: run.cleanups.append(workspace.cleanup)
+    p0-->>p6: Path(workspace.name)
+    p0-->>p14: shutil.copytree(..., project, ignore=shutil.ignore_patterns(...))
+    p0-->>p15: shutil.ignore_patterns('build', '.gradle', '.idea', '.kotlin', 'local.properties', '.DS_Store')
     p0-->>p16: os.environ.copy
-    p0-->>p10: str
-    p0-->>p6: Path
-    p0-->>p17: env.get
-    p0-->>p6: Path
-    p0-->>p6: Path
-    p0-->>p18: run.run
-    p0-->>p10: str
+    p0-->>p10: str(...)
+    p0-->>p6: Path(workspace.name)
+    p0-->>p17: env.get('JAVA_HOME')
+    p0-->>p6: Path(env[...])
+    p0-->>p6: Path('java')
+    p0-->>p18: run.run('java-version', [...], cwd=project, env=env, timeout=30)
+    p0-->>p10: str(java)
     p0-->>p19: (…).read_text (scripts/ci/run_android_checks.py:main)
-    p0-->>p20: re.search
-    p0-->>p21: RuntimeError
+    p0-->>p20: re.search('version "17[.\\"]', version)
+    p0-->>p21: RuntimeError('JDK 17 is required')
 ```
 
-> Call sequence diagram shows 30 of 65 interactions; 35 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 65 interactions; 35 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 20 of 36 (16 omitted); unresolved 10 of 29 (19 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/ci/run_android_checks.py:main` | 1 | - | external | 16 |
+| `scripts/ci/run_android_checks.py:main` | 1 | - | unresolved | 19 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 18, emitted: 18, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

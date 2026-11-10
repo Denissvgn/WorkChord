@@ -20,7 +20,7 @@ Schema for a single task update item in a batch.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

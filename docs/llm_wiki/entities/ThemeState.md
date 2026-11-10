@@ -1,7 +1,7 @@
 # ThemeState
 
 **Location:** `frontend/src/store/themeStore.ts:6`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [themeStore](../modules/themeStore.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `ThemeState` in `frontend/src/store/themeStore.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

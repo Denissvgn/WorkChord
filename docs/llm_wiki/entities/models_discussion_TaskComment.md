@@ -26,7 +26,7 @@ Current comment projection with durable human authorship, an independent version
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

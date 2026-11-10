@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [formatDate](../modules/formatDate.md)
+**Target:**
+
+```typescript
+string | Date | null | undefined
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `DateInput` in `frontend/src/utils/formatDate.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

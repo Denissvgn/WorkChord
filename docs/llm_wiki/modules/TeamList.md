@@ -8,21 +8,22 @@ _Auto-generated from `frontend/src/components/team/TeamList.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/planningInputService` | `planningInputService`, `ObservedRevisions` |
-| `../../services/teamService` | `teamService` |
-| `../../types/team` | `MemberCapacity`, `MemberWorkload`, `TeamMember` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../feedback/toast` | `useToast` |
-| `./VacationManager` | `VacationManager` |
-| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
-| `lucide-react` | `ChevronDown`, `ChevronUp`, `Loader2`, `Trash2`, `User`, `Plane`, `Calendar` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/team` | `MemberCapacity`, `MemberWorkload`, `TeamMember` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./VacationManager` | `VacationManager` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `ChevronDown`, `ChevronUp`, `Loader2`, `Trash2`, `User`, `Plane`, `Calendar` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -33,6 +34,8 @@ _Auto-generated from `frontend/src/components/team/TeamList.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -107,7 +110,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamListProps](../entities/TeamListProps.md) | Class | 15 | — | — |
+| [TeamListProps](../entities/TeamListProps.md) | Interface | 15 | — | — |
 
 ## Functions
 

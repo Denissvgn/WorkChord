@@ -15,7 +15,7 @@ Raised when application code attempts to mutate append-only evidence.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

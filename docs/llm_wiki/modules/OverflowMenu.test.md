@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/ui/OverflowMenu.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./OverflowMenu` | `OverflowMenu` |
-| `@testing-library/react` | `screen` |
-| `vitest` | `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./OverflowMenu` | `OverflowMenu` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -1,7 +1,7 @@
 # Availability
 
 **Location:** `frontend/src/components/tasks/PersonCapacity.tsx:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [PersonCapacity](../modules/PersonCapacity.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `Availability` in `frontend/src/components/tasks/PersonCapa
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

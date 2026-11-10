@@ -19,7 +19,7 @@ _Auto-generated from `DatabaseFailureKind` in `backend/app/database_runtime.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

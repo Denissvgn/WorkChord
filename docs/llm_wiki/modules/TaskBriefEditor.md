@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskBriefEditor.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `TaskBrief` |
-| `../common/Button` | `Button` |
-| `./taskEditorContract` | `newCriterion` |
-| `lucide-react` | `ArrowDown`, `ArrowUp`, `Plus`, `Trash2` |
-| `react` | `useId` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `TaskBrief` | Declaration | erased |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `./taskEditorContract` | `newCriterion` | — | compiler-dependent |
+| `lucide-react` | `ArrowDown`, `ArrowUp`, `Plus`, `Trash2` | — | compiler-dependent |
+| `react` | `useId` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskBriefEditor.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -79,4 +81,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskBriefEditor` | `({ value, onChange, disabled = false, hideContext = false }: {     value: TaskBrief; onChange: (value: TaskBrief) => void; disabled?: boolean; hideContext?: boolean; })` | — | — |
+| `TaskBriefEditor` | <pre><code>&#40;&#123; value&#44; onChange&#44; disabled &#61; false&#44; hideContext &#61; false &#125;&#58; &#123;&#10;    value&#58; TaskBrief&#59; onChange&#58; &#40;value&#58; TaskBrief&#41; &#61;&#62; void&#59; disabled&#63;&#58; boolean&#59; hideContext&#63;&#58; boolean&#59;&#10;&#125;&#41;</code></pre> | — | — |

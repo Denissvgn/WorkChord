@@ -28,29 +28,49 @@ flowchart LR
     n1["backend/app/commands.py"]
     n2["backend/app/models/recovery.py"]
     n3["backend/app/models/task_brief.py"]
-    n4["backend/app/services/task_recovery_service.py"]
-    n5["backend/app/services/task_service.py"]
+    n4["backend/app/services/backlog_snapshot_service.py"]
+    n5["backend/app/services/snapshot_service.py"]
+    n6["backend/app/services/task_recovery_service.py"]
+    n7["backend/app/services/task_service.py"]
     n1 --> n0
     n1 --> n5
+    n1 --> n7
     n4 --> n0
     n4 --> n1
     n4 --> n2
-    n4 --> n3
     n4 --> n5
+    n4 --> n6
+    n4 --> n7
     n5 --> n0
     n5 --> n1
+    n5 --> n2
+    n5 --> n6
+    n5 --> n7
+    n6 --> n0
+    n6 --> n1
+    n6 --> n2
+    n6 --> n3
+    n6 --> n7
+    n7 --> n0
+    n7 --> n1
+    n7 --> n4
+    n7 --> n5
     click n0 "../modules/authority.md"
     click n1 "../modules/commands.md"
     click n2 "../modules/recovery.md"
     click n3 "../modules/models_task_brief.md"
-    click n4 "../modules/task_recovery_service.md"
-    click n5 "../modules/task_service.md"
+    click n4 "../modules/backlog_snapshot_service.md"
+    click n5 "../modules/snapshot_service.md"
+    click n6 "../modules/task_recovery_service.md"
+    click n7 "../modules/task_service.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [backlog_snapshot_service](../modules/backlog_snapshot_service.md) |
+| Inbound | [snapshot_service](../modules/snapshot_service.md) |
 | Outbound | [authority](../modules/authority.md) |
 | Outbound | [commands](../modules/commands.md) |
 | Outbound | [recovery](../modules/recovery.md) |

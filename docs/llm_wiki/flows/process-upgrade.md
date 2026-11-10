@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [upgrade](../modules/upgrade.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 12 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [commands](../modules/commands.md), [config](../modules/config.md), and 19 more
 
 **Complete modules touched:**
 
@@ -15,86 +15,145 @@
 - [identity_service](../modules/identity_service.md)
 - [label_service](../modules/label_service.md)
 - [maintenance](../modules/maintenance.md)
+- [models_calendar](../modules/models_calendar.md)
+- [models_github](../modules/models_github.md)
 - [models_identity](../modules/models_identity.md)
+- [models_label](../modules/models_label.md)
+- [models_saved_view](../modules/models_saved_view.md)
+- [models_system_settings](../modules/models_system_settings.md)
+- [models_template](../modules/models_template.md)
 - [project_identity](../modules/project_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [template_service](../modules/template_service.md)
 - [upgrade](../modules/upgrade.md)
 - [upgrade_service](../modules/upgrade_service.md)
+- [url_policy](../modules/url_policy.md)
 
 **Related modules:** [config](../modules/config.md), [upgrade_service](../modules/upgrade_service.md)
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as build_parser().parse_args
-    participant p2 as build_parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_mutually_exclusive_group
-    participant p5 as mode.add_argument
-    participant p6 as parser.add_argument
-    participant p7 as _print_status
+    participant p1 as _print_status
+    participant p2 as get_settings
+    participant p3 as run_database_repairs
+    participant p4 as bootstrap_database_schema
+    participant p5 as build_parser
+    participant p6 as UpgradeError
+    participant p7 as run_alembic_upgrade
     participant p8 as inspect_database
-    participant p9 as _inspect_database_connection
-    participant p10 as inspect (backend/app/services/upgr…spect_database_connection)
-    participant p11 as sorted (backend/app/services/upgr…spect_database_connection)
-    participant p12 as inspector.get_table_names (backend/app/services/upgr…spect_database_connection)
-    participant p13 as _current_revision
-    participant p14 as inspect (backend/app/services/upgr…vice.py:_current_revision)
-    participant p15 as inspector.get_table_names (backend/app/services/upgr…vice.py:_current_revision)
-    participant p16 as connection.execute (backend/app/services/upgr…vice.py:_current_revision)
-    participant p17 as text (backend/app/services/upgr…vice.py:_current_revision)
-    participant p18 as result.fetchall
-    participant p19 as len (backend/app/services/upgr…vice.py:_current_revision)
-    participant p20 as ','.join
-    participant p21 as sorted (backend/app/services/upgr…vice.py:_current_revision)
-    participant p22 as set (backend/app/services/upgr…spect_database_connection)
-    participant p23 as head_revision
-    participant p24 as ScriptDirectory.from_config (backend/app/services/upgr…_service.py:head_revision)
-    participant p25 as alembic_config
-    p0-->>p1: build_parser().parse_args
-    p0->>p2: build_parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_mutually_exclusive_group
-    p2-->>p5: mode.add_argument
-    p2-->>p5: mode.add_argument
-    p2-->>p5: mode.add_argument
-    p2-->>p6: parser.add_argument
-    p2-->>p6: parser.add_argument
-    p2-->>p6: parser.add_argument
-    p2-->>p6: parser.add_argument
-    p0->>p7: _print_status
-    p7->>p8: inspect_database
-    p8->>p9: _inspect_database_connection
-    p9-->>p10: inspect (backend/app/services/upgr…spect_database_connection)
-    p9-->>p11: sorted (backend/app/services/upgr…spect_database_connection)
-    p9-->>p12: inspector.get_table_names (backend/app/services/upgr…spect_database_connection)
-    p9->>p13: _current_revision
-    p13-->>p14: inspect (backend/app/services/upgr…vice.py:_current_revision)
-    p13-->>p15: inspector.get_table_names (backend/app/services/upgr…vice.py:_current_revision)
-    p13-->>p16: connection.execute (backend/app/services/upgr…vice.py:_current_revision)
-    p13-->>p17: text (backend/app/services/upgr…vice.py:_current_revision)
-    p13-->>p18: result.fetchall
-    p13-->>p19: len (backend/app/services/upgr…vice.py:_current_revision)
-    p13-->>p20: ','.join
-    p13-->>p21: sorted (backend/app/services/upgr…vice.py:_current_revision)
-    p9-->>p22: set (backend/app/services/upgr…spect_database_connection)
-    p9->>p23: head_revision
-    p23-->>p24: ScriptDirectory.from_config (backend/app/services/upgr…_service.py:head_revision)
-    p23->>p25: alembic_config
+    participant p9 as migration_connection
+    participant p10 as _validate_managed_revision
+    participant p11 as run_post_migration_repairs
+    participant p12 as _inspect_database_connection
+    participant p13 as require_background_writes_enabled
+    participant p14 as _sync_engine
+    participant p15 as initialize_control_plane
+    participant p16 as commit_or_flush
+    participant p17 as CalendarService.get_or_create_default
+    participant p18 as inspect_project_identity
+    participant p19 as TemplateService.seed_default_templates
+    participant p20 as LabelService.seed_default_labels
+    participant p21 as SavedViewService.seed_default_views
+    participant p22 as GitHubStatusAutomationService.seed_default_rules
+    participant p23 as _backup_precondition
+    participant p24 as _run_schema_upgrade
+    participant p25 as RuntimeSettingsService.migrate_legacy_email_settings
+    participant p26 as require_identity_writes
+    participant p27 as backup_sqlite_database
+    participant p28 as head_revision
+    participant p29 as print (backend/app/cli/upgrade.py:main)
+    participant p30 as build_parser().parse_args
+    p0->>p1: _print_status
+    p0->>p2: get_settings
+    p0->>p3: run_database_repairs
+    p0->>p4: bootstrap_database_schema
+    p0->>p5: build_parser
+    p0->>p6: UpgradeError
+    p0->>p7: run_alembic_upgrade
+    p1->>p8: inspect_database
+    p3->>p9: migration_connection
+    p3->>p10: _validate_managed_revision
+    p3->>p11: run_post_migration_repairs
+    p8->>p12: _inspect_database_connection
+    p11->>p13: require_background_writes_enabled
+    p8->>p14: _sync_engine
+    p11->>p15: initialize_control_plane
+    p11->>p16: commit_or_flush
+    p11->>p17: CalendarService.get_or_create_default
+    p7->>p18: inspect_project_identity
+    p11->>p19: TemplateService.seed_default_templates
+    p11->>p20: LabelService.seed_default_labels
+    p11->>p21: SavedViewService.seed_default_views
+    p11->>p22: GitHubStatusAutomationService.seed_default_rules
+    p7->>p23: _backup_precondition
+    p7->>p24: _run_schema_upgrade
+    p11->>p25: RuntimeSettingsService.migrate_legacy_email_settings
+    p15->>p26: require_identity_writes
+    p23->>p27: backup_sqlite_database
+    p12->>p28: head_revision
+    p0-->>p29: print (backend/app/cli/upgrade.py:main)(...)
+    p0-->>p30: build_parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 302 interactions; 272 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 486 interactions; 456 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 134 (133 omitted); unresolved 1 of 192 (191 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/cli/upgrade.py:build_parser` | 3 | - | external | 1 |
+| `backend/app/cli/upgrade.py:build_parser` | 3 | - | unresolved | 8 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 15 | - | external | 4 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 15 | - | unresolved | 1 |
+| `backend/app/services/upgrade_service.py:_inspect_database_connection` | 15 | [backend/app/services/upgrade_service.py](../modules/upgrade_service.md) | internal | 2 |
+| `backend/app/services/upgrade_service.py:_current_revision` | 19 | - | external | 4 |
+| `backend/app/services/upgrade_service.py:_current_revision` | 19 | - | unresolved | 4 |
+| `backend/app/services/upgrade_service.py:head_revision` | 29 | - | external | 2 |
+> Omission summary shows 8 of 132 groups; 124 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 161; effect analysis evaluated: 95, partial: 1, unavailable: 65. Counts include steps omitted from the displayed trace.
+
+Collector observations for 96 source steps with known totals: observed: 373, emitted: 368, omitted: 5. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
+| `build_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `build_parser` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_mutually_exclusive_group` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `mode.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `mode.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `mode.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

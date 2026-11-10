@@ -19,18 +19,25 @@ Progress availability follows open-leaf execution permission and excludes direct
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `internal_authority`, `require_project` |
-| `app.commands` | `atomic_command`, `lock_iterations` |
+| `app.commands` | `atomic_command`, `lock_iterations`, `PlanningConflict`, `PlanningConflict` |
 | `app.config` | `get_settings`, `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentRun`, `AgentTaskAssignment` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.iteration` | `Iteration` |
-| `app.models.task` | `Task` |
+| `app.models.task` | `Task`, `TaskDependency` |
+| `app.models.task_status_log` | `TaskStatusLog` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.schemas.task_domain` | `TaskActionsResponse`, `TaskActionRequest` |
-| `app.services.task_brief_service` | `clear_acceptance` |
+| `app.services.agent_work_service` | `AgentWorkService` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_brief_service` | `clear_acceptance`, `TaskBriefService`, `TaskBriefService` |
+| `app.services.task_hierarchy_service` | `TaskTreeIntegrityError`, `TaskTreeIntegrityError` |
+| `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `effective_work_flags` |
-| `app.utils.time` | `utc_now` |
+| `app.utils.time` | `utc_now`, `as_utc` |
+| `copy` | `copy` |
 | `decimal` | `Decimal`, `ROUND_HALF_UP` |
 | `sqlalchemy` | `or_`, `select` |
 
@@ -52,8 +59,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (11) |
-| Outbound | `backend` (13) |
+| Inbound | `backend` (17) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -61,7 +68,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

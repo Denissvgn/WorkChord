@@ -22,7 +22,7 @@ Resolved GitHub runtime settings.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

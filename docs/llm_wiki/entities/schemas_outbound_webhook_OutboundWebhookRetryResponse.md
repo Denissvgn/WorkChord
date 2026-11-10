@@ -17,7 +17,7 @@ Response returned by retry and test delivery endpoints.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

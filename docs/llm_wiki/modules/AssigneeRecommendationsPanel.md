@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/components/team/AssigneeRecommendationsPanel.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/taskService` | `taskService` |
-| `../../services/triageService` | `triageService` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `UserCheck` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../services/triageService` | `triageService` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `UserCheck` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -81,10 +81,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AssigneeRecommendationsPanelProps](../entities/AssigneeRecommendationsPanelProps.md) | Class | 9 | — | — |
+| [AssigneeRecommendationsPanelProps](../entities/AssigneeRecommendationsPanelProps.md) | Interface | 9 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AssigneeRecommendationsPanel` | `({     targetType,     taskId,     triageItemId,     iterationId,     selectedAssigneeId,     onSelectAssignee, }: AssigneeRecommendationsPanelProps)` | — | — |
+| `AssigneeRecommendationsPanel` | <pre><code>&#40;&#123;&#10;    targetType&#44;&#10;    taskId&#44;&#10;    triageItemId&#44;&#10;    iterationId&#44;&#10;    selectedAssigneeId&#44;&#10;    onSelectAssignee&#44;&#10;&#125;&#58; AssigneeRecommendationsPanelProps&#41;</code></pre> | — | — |

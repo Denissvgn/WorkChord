@@ -1,7 +1,7 @@
 # DuplicateSuggestionsPanelProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:1467`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `DuplicateSuggestionsPanelProps` in `frontend/src/pages/Tri
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)
+**Target:**
+
+```typescript
+Record<string, unknown>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `UnknownRecord` in `frontend/src/utils/apiError.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

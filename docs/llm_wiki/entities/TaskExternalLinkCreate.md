@@ -21,7 +21,7 @@ Schema for creating an external link on a task.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

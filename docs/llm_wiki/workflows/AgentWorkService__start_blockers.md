@@ -10,10 +10,11 @@
 2. `time.as_utc`
 3. `services_work_metrics.effective_work_flags`
 4. `services_work_metrics.working_today`
-5. `delivery_dependency_service.DeliveryDependencyService`
-6. `time.as_utc`
+5. `delivery_dependency_service.DeliveryDependencyService.ready`
+6. `delivery_dependency_service.DeliveryDependencyService`
 7. `time.as_utc`
-8. `task_brief_service.brief_definition_blockers`
+8. `time.as_utc`
+9. `task_brief_service.brief_definition_blockers`
 
 ## Touches
 

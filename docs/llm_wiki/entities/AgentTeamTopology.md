@@ -30,7 +30,7 @@ Applied portable agent-team manifest and authoritative readiness state.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

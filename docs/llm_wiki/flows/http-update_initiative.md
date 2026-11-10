@@ -2,75 +2,137 @@
 
 **Entry point:** `update_initiative` (`http`)
 **Source:** [projects](../modules/projects.md)
-**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [projects](../modules/projects.md), [system_settings_service](../modules/system_settings_service.md)
+**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [projects](../modules/projects.md), [system_settings_service](../modules/system_settings_service.md), and 1 more
+
+**Complete modules touched:**
+
+- [config](../modules/config.md)
+- [language_service](../modules/language_service.md)
+- [projects](../modules/projects.md)
+- [system_settings_service](../modules/system_settings_service.md)
+- [url_policy](../modules/url_policy.md)
 
 ## Call sequence
+
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
 
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as update_initiative
-    participant p1 as service.update_initiative
-    participant p2 as HTTPException
-    participant p3 as _localized_detail
-    participant p4 as resolve_runtime_ui_language
-    participant p5 as normalize_language
-    participant p6 as str(…).strip().lower
-    participant p7 as str(…).strip
-    participant p8 as str (backend/app/services/lang…ice.py:normalize_language)
-    participant p9 as RuntimeSettingsService(…).get_app_settings
-    participant p10 as RuntimeSettingsService
-    participant p11 as getattr
-    participant p12 as logger.warning
-    participant p13 as get_settings
-    participant p14 as Settings
-    participant p15 as backend_error_message
-    participant p16 as message.lower
-    participant p17 as re.fullmatch
-    participant p18 as match.groups
-    participant p19 as label.strip().lower().replace
-    participant p20 as label.strip().lower
-    participant p21 as label.strip
-    participant p22 as entity_not_found_message
-    participant p23 as _RESOURCE_LABELS.get (backend/app/services/lang…:entity_not_found_message)
-    participant p24 as localized
-    p0-->>p1: service.update_initiative
-    p0-->>p2: HTTPException
-    p0->>p3: _localized_detail
-    p3->>p4: resolve_runtime_ui_language
-    p4->>p5: normalize_language
-    p5-->>p6: str(…).strip().lower
-    p5-->>p7: str(…).strip
-    p5-->>p8: str (backend/app/services/lang…ice.py:normalize_language)
-    p4-->>p9: RuntimeSettingsService(…).get_app_settings
-    p4->>p10: RuntimeSettingsService
-    p4->>p5: normalize_language
-    p4-->>p11: getattr
-    p4-->>p12: logger.warning
-    p4->>p5: normalize_language
-    p4-->>p11: getattr
-    p4->>p13: get_settings
-    p13->>p14: Settings
-    p4-->>p12: logger.warning
-    p3->>p15: backend_error_message
-    p15->>p5: normalize_language
-    p15-->>p16: message.lower
-    p15-->>p17: re.fullmatch
-    p15-->>p18: match.groups
-    p15-->>p19: label.strip().lower().replace
-    p15-->>p20: label.strip().lower
-    p15-->>p21: label.strip
-    p15->>p22: entity_not_found_message
-    p22-->>p23: _RESOURCE_LABELS.get (backend/app/services/lang…:entity_not_found_message)
-    p22->>p24: localized
-    p24->>p5: normalize_language
+    participant p1 as _localized_detail
+    participant p2 as _not_found_detail
+    participant p3 as resolve_runtime_ui_language
+    participant p4 as backend_error_message
+    participant p5 as RuntimeSettingsService.get_app_settings
+    participant p6 as entity_not_found_message
+    participant p7 as get_settings
+    participant p8 as scoped_entity_not_found_message
+    participant p9 as entity_deleted_message
+    participant p10 as RuntimeSettingsService.resolve
+    participant p11 as localized
+    participant p12 as RuntimeSettingsService._definition
+    participant p13 as RuntimeSettingsService._decrypt_secret
+    participant p14 as RuntimeSettingsService._coerce
+    participant p15 as normalize_language
+    participant p16 as RuntimeSettingsService
+    participant p17 as Settings
+    participant p18 as RuntimeSettingsService._row
+    participant p19 as RuntimeSettingsService._env_value
+    participant p20 as RuntimeSettingsError
+    participant p21 as RuntimeSettingsService._fernet
+    participant p22 as RuntimeSettingsEncryptionError
+    participant p23 as normalize_provider_api_url
+    participant p24 as HTTPException
+    participant p25 as service.update_initiative
+    participant p26 as str (backend/app/routers/projects.py:update_initiative)
+    participant p27 as message.lower
+    participant p28 as re.fullmatch
+    participant p29 as match.groups
+    p0->>p1: _localized_detail
+    p0->>p2: _not_found_detail
+    p1->>p3: resolve_runtime_ui_language
+    p1->>p4: backend_error_message
+    p3->>p5: RuntimeSettingsService.get_app_settings
+    p4->>p6: entity_not_found_message
+    p3->>p7: get_settings
+    p4->>p8: scoped_entity_not_found_message
+    p4->>p9: entity_deleted_message
+    p5->>p10: RuntimeSettingsService.resolve
+    p6->>p11: localized
+    p10->>p12: RuntimeSettingsService._definition
+    p10->>p13: RuntimeSettingsService._decrypt_secret
+    p10->>p14: RuntimeSettingsService._coerce
+    p3->>p15: normalize_language
+    p3->>p16: RuntimeSettingsService
+    p7->>p17: Settings
+    p10->>p18: RuntimeSettingsService._row
+    p10->>p19: RuntimeSettingsService._env_value
+    p12->>p20: RuntimeSettingsError
+    p13->>p21: RuntimeSettingsService._fernet
+    p13->>p22: RuntimeSettingsEncryptionError
+    p14->>p23: normalize_provider_api_url
+    p0-->>p24: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)
+    p0-->>p25: service.update_initiative(initiative_id, data)
+    p0-->>p26: str (backend/app/routers/projects.py:update_initiative)(e)
+    p0-->>p24: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
+    p4-->>p27: message.lower
+    p4-->>p28: re.fullmatch('(.+) with id ([^ ]+) not found', message)
+    p4-->>p29: match.groups
 ```
 
-> Call sequence diagram shows 30 of 119 interactions; 89 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 165 interactions; 135 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 47 (43 omitted); unresolved 3 of 70 (67 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/language_service.py:normalize_language` | 6 | - | unresolved | 2 |
+| `backend/app/services/language_service.py:normalize_language` | 6 | - | external | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._definition` | 12 | - | unresolved | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 15 | - | unresolved | 3 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._row` | 15 | - | external | 1 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 20 | - | unresolved | 3 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 26 | - | external | 8 |
+| `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 26 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
+> Omission summary shows 8 of 27 groups; 19 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
+
+> Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 49; effect analysis evaluated: 30, partial: 1, unavailable: 18. Counts include steps omitted from the displayed trace.
+
+Collector observations for 31 source steps with known totals: observed: 160, emitted: 134, omitted: 26. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `update_initiative` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `service.update_initiative` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_localized_detail` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `resolve_runtime_ui_language` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `normalize_language` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `str(…).strip().lower` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str(…).strip (backend/app/services/lang…ice.py:normalize_language)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str (backend/app/services/lang…ice.py:normalize_language)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `RuntimeSettingsService.get_app_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `RuntimeSettingsService.resolve` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `RuntimeSettingsService._definition` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. update_initiative"]
@@ -80,28 +142,29 @@ flowchart LR
     s5["5. resolve_runtime_ui_language"]
     s6["6. normalize_language"]
     s7["7. str(…).strip().lower"]
-    s8["8. str(…).strip"]
+    s8["8. str(…).strip (backend/app/services/lang…ice.py:normalize_language)"]
     s9["9. str (backend/app/services/lang…ice.py:normalize_language)"]
-    s10["10. RuntimeSettingsService(…).get_app_settings"]
-    s11["11. RuntimeSettingsService"]
-    s12["12. normalize_language"]
+    s10["10. RuntimeSettingsService.get_app_settings"]
+    s11["11. RuntimeSettingsService.resolve"]
+    s12["12. RuntimeSettingsService._definition"]
     s1 -. "service.update_initiative(initiative_id, data)" .-> s2
     s1 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)" .-> s3
     s1 -->|"_localized_detail(service, str(...))"| s4
     s4 -->|"resolve_runtime_ui_language(service.db)"| s5
     s5 -->|"normalize_language(default)"| s6
     s6 -. "str(…).strip().lower(data not statically known)" .-> s7
-    s6 -. "str(…).strip(data not statically known)" .-> s8
+    s6 -. "str(…).strip (backend/app/services/lang…ice.py:normalize_language)(data not statically known)" .-> s8
     s6 -. "str (backend/app/services/lang…ice.py:normalize_language)(...)" .-> s9
-    s5 -. "RuntimeSettingsService(…).get_app_settings(data not statically known)" .-> s10
-    s5 -->|"RuntimeSettingsService(db)"| s11
-    s5 -->|"normalize_language(getattr(...), default=fallback)"| s12
+    s5 -->|"RuntimeSettingsService.get_app_settings(data not statically known)"| s10
+    s10 -->|"RuntimeSettingsService.resolve('app.ui_language')"| s11
+    s11 -->|"RuntimeSettingsService._definition(key)"| s12
     click s1 "../modules/projects.md"
     click s4 "../modules/projects.md"
     click s5 "../modules/language_service.md"
     click s6 "../modules/language_service.md"
+    click s10 "../modules/system_settings_service.md"
     click s11 "../modules/system_settings_service.md"
-    click s12 "../modules/language_service.md"
+    click s12 "../modules/system_settings_service.md"
 ```
 
 ### Step data
@@ -115,11 +178,11 @@ flowchart LR
 | `resolve_runtime_ui_language` | `db: Any`, `default: LanguageCode \| None` | - | - | `normalize_language(...)`, `normalize_language(...)`, `fallback` |
 | `normalize_language` | `value: Any`, `default: LanguageCode` | - | - | `normalized`, `default` |
 | `str(…).strip().lower` | - | - | - | - |
-| `str(…).strip` | - | - | - | - |
+| `str(…).strip (backend/app/services/lang…ice.py:normalize_language)` | - | - | - | - |
 | `str (backend/app/services/lang…ice.py:normalize_language)` | - | - | - | - |
-| `RuntimeSettingsService(…).get_app_settings` | - | - | - | - |
-| `RuntimeSettingsService` | - | - | - | - |
-| `normalize_language` | `value: Any`, `default: LanguageCode` | - | - | `normalized`, `default` |
+| `RuntimeSettingsService.get_app_settings` | - | - | - | `SimpleNamespace(...)` |
+| `RuntimeSettingsService.resolve` | `key: str` | - | - | `(...)`, `(...)`, `(...)` |
+| `RuntimeSettingsService._definition` | `key: str` | - | - | `definition` |
 
 ### Call data
 
@@ -131,15 +194,15 @@ flowchart LR
 | _localized_detail | resolve_runtime_ui_language | 68 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
-| normalize_language | str(…).strip | 35 | `str(value or '').strip(data not statically known)` |
+| normalize_language | str(…).strip (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
 | normalize_language | str (backend/app/services/lang…ice.py:normalize_language) | 35 | `str(...)` |
-| resolve_runtime_ui_language | RuntimeSettingsService(…).get_app_settings | 411 | `RuntimeSettingsService(db).get_app_settings(data not statically known)` |
-| resolve_runtime_ui_language | RuntimeSettingsService | 411 | `RuntimeSettingsService(db)` |
-| resolve_runtime_ui_language | normalize_language | 412 | `normalize_language(getattr(...), default=fallback)` |
+| resolve_runtime_ui_language | RuntimeSettingsService.get_app_settings | 411 | `RuntimeSettingsService(db).get_app_settings(data not statically known)` |
+| RuntimeSettingsService.get_app_settings | RuntimeSettingsService.resolve | 337 | `self.resolve('app.ui_language')` |
+| RuntimeSettingsService.resolve | RuntimeSettingsService._definition | 284 | `self._definition(key)` |
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 
@@ -149,8 +212,8 @@ flowchart LR
 | external_call | `update_initiative` | `HTTPException` | 182 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
-| unresolved_call | `resolve_runtime_ui_language` | `RuntimeSettingsService(db).get_app_settings` | 411 |
 | step_limit | `update_initiative` | `first 12 steps` | 0 |
+| truncated_flow | `update_initiative` | `depth limit` | 0 |
 
 ## Behavior
 

@@ -1,7 +1,7 @@
 # TaskAgentReadinessBadgeProps
 
 **Location:** `frontend/src/components/tasks/TaskAgentReadinessBadge.tsx:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskAgentReadinessBadge](../modules/TaskAgentReadinessBadge.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `TaskAgentReadinessBadgeProps` in `frontend/src/components/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

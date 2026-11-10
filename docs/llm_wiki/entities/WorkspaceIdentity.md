@@ -1,7 +1,7 @@
 # WorkspaceIdentity
 
 **Location:** `frontend/src/features/identity/identityService.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [identityService](../modules/identityService.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

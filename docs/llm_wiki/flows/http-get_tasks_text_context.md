@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -17,21 +19,52 @@ sequenceDiagram
     participant p5 as service.get_tasks_as_text
     participant p6 as AggregateVersionConflict
     participant p7 as TaskTextContext
-    p0-->>p1: db.scalar
-    p0-->>p2: select(…).where
-    p0-->>p3: select
-    p0-->>p4: HTTPException
-    p0-->>p5: service.get_tasks_as_text
-    p0-->>p1: db.scalar
-    p0-->>p2: select(…).where
-    p0-->>p3: select
+    p0-->>p1: db.scalar(...)
+    p0-->>p2: select(…).where(...)
+    p0-->>p3: select(Iteration.revision)
+    p0-->>p4: HTTPException(404, detail='Iteration not found or inaccessible')
+    p0-->>p5: service.get_tasks_as_text(iteration_id)
+    p0-->>p1: db.scalar(...)
+    p0-->>p2: select(…).where(...)
+    p0-->>p3: select(Iteration.revision)
     p0->>p6: AggregateVersionConflict
     p0->>p7: TaskTextContext
 ```
 
+> Call sequence diagram shows 10 of 10 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 5 of 5 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
+
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 1, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 6, emitted: 6, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `get_tasks_text_context` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `service.get_tasks_as_text` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AggregateVersionConflict` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `TaskTextContext` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. get_tasks_text_context"]
@@ -93,7 +126,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

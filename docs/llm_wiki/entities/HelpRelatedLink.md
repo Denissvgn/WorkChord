@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [helpContexts](../modules/helpContexts.md)
+**Target:**
+
+```typescript
+{
+    to: string;
+    labelKey: string;
+    defaultLabel: string;
+    descriptionKey?: string;
+}
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `HelpRelatedLink` in `frontend/src/navigation/helpContexts.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

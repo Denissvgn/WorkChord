@@ -25,7 +25,7 @@ Public API payload for duplicating an existing saved view.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

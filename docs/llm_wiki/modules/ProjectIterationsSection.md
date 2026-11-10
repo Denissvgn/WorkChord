@@ -8,24 +8,25 @@ _Auto-generated from `frontend/src/components/projects/ProjectIterationsSection.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../services/iterationService` | `iterationService` |
-| `../../services/planningInputService` | `planningInputService`, `ObservedRevisions` |
-| `../../types/iteration` | `Iteration` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/formatDate` | `formatDate` |
-| `../common/Button` | `Button` |
-| `../common/ConfirmDialog` | `ConfirmDialog` |
-| `../common/Modal` | `Modal` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../iteration/IterationForm` | `IterationForm` |
-| `../ui` | `InlineEmptyState`, `SectionCard` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `CalendarDays`, `Link2`, `Pencil`, `Plus`, `Unlink` |
-| `react` | `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../iteration/IterationForm` | `IterationForm` | — | compiler-dependent |
+| `../ui` | `InlineEmptyState`, `SectionCard` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `CalendarDays`, `Link2`, `Pencil`, `Plus`, `Unlink` | — | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -36,6 +37,8 @@ _Auto-generated from `frontend/src/components/projects/ProjectIterationsSection.
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -66,11 +69,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectIterationsSectionProps](../entities/ProjectIterationsSectionProps.md) | Class | 18 | — | — |
-| [IterationEditorState](../entities/IterationEditorState.md) | Type alias | 25 | — | — |
+| [ProjectIterationsSectionProps](../entities/ProjectIterationsSectionProps.md) | Interface | 18 | — | — |
+| [IterationEditorState](../entities/IterationEditorState.md) | Type alias | 25 | <pre><code>&#124; &#123; mode&#58; &#39;create&#39;&#59; iteration&#58; null &#125;&#10;    &#124; &#123; mode&#58; &#39;edit&#39;&#59; iteration&#58; Iteration &#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ProjectIterationsSection` | `({     projectId,     projectName,     iterations,     isLoading, }: ProjectIterationsSectionProps)` | — | — |
+| `ProjectIterationsSection` | <pre><code>&#40;&#123;&#10;    projectId&#44;&#10;    projectName&#44;&#10;    iterations&#44;&#10;    isLoading&#44;&#10;&#125;&#58; ProjectIterationsSectionProps&#41;</code></pre> | — | — |

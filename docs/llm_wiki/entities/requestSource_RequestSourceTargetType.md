@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [requestSource](../modules/requestSource.md)
+**Target:**
+
+```typescript
+'task' | 'project' | 'triage_item'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `RequestSourceTargetType` in `frontend/src/types/requestSou
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

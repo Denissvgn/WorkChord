@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/label.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/labels/LabelSelector.tsx"]
@@ -72,12 +74,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [LabelGroupBrief](../entities/types_label_LabelGroupBrief.md) | Class | 1 | — | — |
-| [Label](../entities/types_label_Label.md) | Class | 9 | — | — |
-| [LabelGroup](../entities/types_label_LabelGroup.md) | Class | 24 | — | — |
-| [LabelGroupCreate](../entities/types_label_LabelGroupCreate.md) | Class | 38 | — | — |
-| [LabelCreate](../entities/types_label_LabelCreate.md) | Class | 49 | — | — |
-| [LabelGroupListParams](../entities/LabelGroupListParams.md) | Class | 61 | — | — |
-| [LabelListParams](../entities/LabelListParams.md) | Class | 65 | — | — |
-| [LabelGroupUpdate](../entities/types_label_LabelGroupUpdate.md) | Type alias | 47 | — | — |
-| [LabelUpdate](../entities/types_label_LabelUpdate.md) | Type alias | 59 | — | — |
+| [LabelGroupBrief](../entities/types_label_LabelGroupBrief.md) | Interface | 1 | — | — |
+| [Label](../entities/types_label_Label.md) | Interface | 9 | — | — |
+| [LabelGroup](../entities/types_label_LabelGroup.md) | Interface | 24 | — | — |
+| [LabelGroupCreate](../entities/types_label_LabelGroupCreate.md) | Interface | 38 | — | — |
+| [LabelCreate](../entities/types_label_LabelCreate.md) | Interface | 49 | — | — |
+| [LabelGroupListParams](../entities/LabelGroupListParams.md) | Interface | 61 | — | — |
+| [LabelListParams](../entities/LabelListParams.md) | Interface | 65 | — | — |
+| [LabelGroupUpdate](../entities/types_label_LabelGroupUpdate.md) | Type alias | 47 | `Partial<LabelGroupCreate>` | — |
+| [LabelUpdate](../entities/types_label_LabelUpdate.md) | Type alias | 59 | `Partial<LabelCreate>` | — |

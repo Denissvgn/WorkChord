@@ -33,7 +33,7 @@ Runtime inputs, including credentials that never enter a receipt.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

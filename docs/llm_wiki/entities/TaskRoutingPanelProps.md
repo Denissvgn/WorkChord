@@ -1,7 +1,7 @@
 # TaskRoutingPanelProps
 
 **Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:54`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskRoutingPanel](../modules/TaskRoutingPanel.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `TaskRoutingPanelProps` in `frontend/src/components/agent/T
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

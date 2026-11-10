@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)
+**Target:**
+
+```typescript
+Omit<SchedulingRules, 'effort_modifiers' | 'scheduling_passes'> & {
+    effort_modifiers: EditableEffortModifier[];
+    scheduling_passes: EditableSchedulingPass[];
+}
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `EditableSchedulingRules` in `frontend/src/components/setti
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

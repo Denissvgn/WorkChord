@@ -8,15 +8,16 @@ _Auto-generated from `frontend/src/i18n/SystemLanguageProvider.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../hooks/useAdminAccess` | `useAdminAccess` |
-| `../services/systemSettingsService` | `systemSettingsService` |
-| `./i18n` | `changeAppLanguage` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `ReactNode`, `useEffect` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../services/systemSettingsService` | `systemSettingsService` | — | compiler-dependent |
+| `./i18n` | `changeAppLanguage` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `ReactNode` | Specifier | compiler-dependent |
+| `react` | `useEffect` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -39,6 +40,7 @@ flowchart LR
     n3 --> n1
     n3 --> n2
     n3 --> n5
+    n4 --> n2
     n4 --> n3
     click n0 "../modules/QueryState.md"
     click n1 "../modules/useAdminAccess.md"
@@ -68,7 +70,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SystemLanguageProviderProps](../entities/SystemLanguageProviderProps.md) | Class | 9 | — | — |
+| [SystemLanguageProviderProps](../entities/SystemLanguageProviderProps.md) | Interface | 9 | — | — |
 
 ## Functions
 

@@ -1,7 +1,7 @@
 # TeamFormProps
 
 **Location:** `frontend/src/components/team/TeamForm.tsx:17`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TeamForm](../modules/TeamForm.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `TeamFormProps` in `frontend/src/components/team/TeamForm.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

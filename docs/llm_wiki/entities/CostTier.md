@@ -19,7 +19,7 @@ Closed relative cost tiers; exact prices are deliberately excluded.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

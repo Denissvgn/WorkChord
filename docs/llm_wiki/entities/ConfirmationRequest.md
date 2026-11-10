@@ -1,7 +1,7 @@
 # ConfirmationRequest
 
 **Location:** `frontend/src/components/common/useConfirmDialog.tsx:6`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [useConfirmDialog](../modules/useConfirmDialog.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `ConfirmationRequest` in `frontend/src/components/common/us
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

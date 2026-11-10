@@ -1,7 +1,7 @@
 # TemplateSeedBaseline
 
 **Location:** `frontend/src/i18n/seedDisplay.ts:7`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [seedDisplay](../modules/seedDisplay.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TemplateSeedBaseline` in `frontend/src/i18n/seedDisplay.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

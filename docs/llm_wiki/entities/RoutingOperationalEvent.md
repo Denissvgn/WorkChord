@@ -25,7 +25,7 @@ Closed, low-cardinality routing outcome vocabulary.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

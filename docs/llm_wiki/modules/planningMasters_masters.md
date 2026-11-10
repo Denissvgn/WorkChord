@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/features/planningMasters/masters.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./planningReturn` | `PlanningStepId` |
-| `./planningTaskIssues` | `PlanningTaskIssue` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./planningReturn` | `PlanningStepId` | Declaration | erased |
+| `./planningTaskIssues` | `PlanningTaskIssue` | Declaration | erased |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/features/planningMasters/masters.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/planningMasters/masters.test.ts"]
@@ -88,13 +90,13 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [StepStatus](../entities/StepStatus.md) | Class | 8 | — | — |
-| [MasterStepDef](../entities/MasterStepDef.md) | Class | 14 | — | — |
-| [PlanReadiness](../entities/PlanReadiness.md) | Class | 93 | — | — |
-| [PlanningRecoveryAction](../entities/PlanningRecoveryAction.md) | Class | 122 | — | — |
-| [StepState](../entities/StepState.md) | Type alias | 6 | — | — |
-| [PlanningRecoveryKind](../entities/PlanningRecoveryKind.md) | Type alias | 112 | — | — |
-| [Translate](../entities/Translate.md) | Type alias | 338 | — | — |
+| [StepStatus](../entities/StepStatus.md) | Interface | 8 | — | — |
+| [MasterStepDef](../entities/MasterStepDef.md) | Interface | 14 | — | — |
+| [PlanReadiness](../entities/PlanReadiness.md) | Interface | 93 | — | — |
+| [PlanningRecoveryAction](../entities/PlanningRecoveryAction.md) | Interface | 122 | — | — |
+| [StepState](../entities/StepState.md) | Type alias | 6 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
+| [PlanningRecoveryKind](../entities/PlanningRecoveryKind.md) | Type alias | 112 | <pre><code>&#124; &#39;create&#45;period&#39;&#10;    &#124; &#39;add&#45;team&#39;&#10;    &#124; &#39;repair&#45;capacity&#39;&#10;    &#124; &#39;add&#45;work&#39;&#10;    &#124; &#39;repair&#45;assignee&#39;&#10;    &#124; &#39;repair&#45;effort&#39;&#10;    &#124; &#39;build&#45;schedule&#39;&#10;    &#124; &#39;review&#45;plan&#39;</code></pre> | — |
+| [Translate](../entities/Translate.md) | Type alias | 338 | `(key: string, options?: Record<string, unknown>) => string` | — |
 
 ## Functions
 

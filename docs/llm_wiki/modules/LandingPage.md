@@ -8,9 +8,10 @@ _Auto-generated from `frontend/src/pages/LandingPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../styles/landing.css` | — | — | present |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 

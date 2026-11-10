@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
+**Target:**
+
+```typescript
+'essential' | 'planning' | 'advanced' | 'internal'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TaskEditorSection` in `frontend/src/components/tasks/taskE
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

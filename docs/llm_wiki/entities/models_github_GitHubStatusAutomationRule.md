@@ -27,7 +27,7 @@ Opt-in rule that maps GitHub PR activity to task status changes.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # TaskTextEditorBodyProps
 
 **Location:** `frontend/src/components/tasks/TaskTextEditorModal.tsx:39`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `TaskTextEditorModalProps`
 **Module:** [TaskTextEditorModal](../modules/TaskTextEditorModal.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TaskTextEditorBodyProps` in `frontend/src/components/tasks
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

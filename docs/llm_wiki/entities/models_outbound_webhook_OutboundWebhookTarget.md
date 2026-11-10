@@ -27,7 +27,7 @@ Configurable subscriber for outbound domain events.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

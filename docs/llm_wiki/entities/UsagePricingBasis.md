@@ -20,16 +20,16 @@ _Auto-generated from `UsagePricingBasis` in `backend/app/schemas/execution_usage
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `currency` | `str` | `currency` | Yes | No | — | pattern='^[A-Z]{3}$' | — | — |
-| `unit` | `str` | `unit` | Yes | No | — | min_length=1; max_length=64; pattern='^[a-z][a-z0-9_]*$' | — | — |
+| `unit` | `str` | `unit` | Yes | No | — | max_length=64; min_length=1; pattern='^[a-z][a-z0-9_]*$' | — | — |
 | `price_amount` | `Money` | `price_amount` | Yes | No | — | — | — | — |
-| `price_quantity` | `Decimal` | `price_quantity` | Yes | No | — | gt=0; max_digits=18; decimal_places=6; allow_inf_nan=False | — | — |
-| `version` | `str` | `version` | Yes | No | — | min_length=1; max_length=128 | — | — |
-| `source` | `str` | `source` | Yes | No | — | min_length=1; max_length=500 | — | — |
+| `price_quantity` | `Decimal` | `price_quantity` | Yes | No | — | allow_inf_nan=False; decimal_places=6; gt=0; max_digits=18 | — | — |
+| `version` | `str` | `version` | Yes | No | — | max_length=128; min_length=1 | — | — |
+| `source` | `str` | `source` | Yes | No | — | max_length=500; min_length=1 | — | — |
 | `quoted_at` | `AwareDatetime` | `quoted_at` | Yes | No | — | — | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

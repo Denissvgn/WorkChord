@@ -19,7 +19,7 @@ Exact-version manifest projected from the canonical catalog.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

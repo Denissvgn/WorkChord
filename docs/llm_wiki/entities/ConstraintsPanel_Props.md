@@ -1,7 +1,7 @@
 # Props
 
 **Location:** `frontend/src/components/settings/ConstraintsPanel.tsx:6`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ConstraintsPanel](../modules/ConstraintsPanel.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `Props` in `frontend/src/components/settings/ConstraintsPan
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

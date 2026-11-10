@@ -8,46 +8,62 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
     participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as DEFAULT_OUTPUT.relative_to
-    participant p5 as parser.parse_args
-    participant p6 as args.output.resolve
-    participant p7 as rendered_schema
+    participant p2 as args.output.resolve
+    participant p3 as rendered_schema
+    participant p4 as output.read_bytes
+    participant p5 as output.parent.mkdir
+    participant p6 as output.write_bytes
+    participant p7 as argparse.ArgumentParser
     participant p8 as sys.path.insert
-    participant p9 as str
-    participant p10 as AgentTeamMaster.model_json_schema
-    participant p11 as (…).encode
-    participant p12 as json.dumps
-    participant p13 as output.read_bytes
-    participant p14 as output.parent.mkdir
-    participant p15 as output.write_bytes
+    participant p9 as parser.add_argument
+    participant p10 as str
+    participant p11 as DEFAULT_OUTPUT.relative_to
+    participant p12 as AgentTeamMaster.model_json_schema
+    participant p13 as (…).encode
+    participant p14 as parser.parse_args
+    participant p15 as json.dumps
     p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p4: DEFAULT_OUTPUT.relative_to
-    p1-->>p3: parser.add_argument
-    p1-->>p5: parser.parse_args
-    p0-->>p6: args.output.resolve
-    p0->>p7: rendered_schema
-    p7-->>p8: sys.path.insert
-    p7-->>p9: str
-    p7-->>p10: AgentTeamMaster.model_json_schema
-    p7-->>p11: (…).encode
-    p7-->>p12: json.dumps
-    p0-->>p13: output.read_bytes
-    p0-->>p14: output.parent.mkdir
-    p0-->>p15: output.write_bytes
+    p0-->>p2: args.output.resolve
+    p0->>p3: rendered_schema
+    p0-->>p4: output.read_bytes
+    p0-->>p5: output.parent.mkdir(parents=True, exist_ok=True)
+    p0-->>p6: output.write_bytes(expected)
+    p1-->>p7: argparse.ArgumentParser(description='Generate the agent-team-master-v1 JSON Schema.')
+    p3-->>p8: sys.path.insert(0, str(...))
+    p1-->>p9: parser.add_argument('--output', type=Path, default=DEFAULT_OUTPUT, help=...)
+    p3-->>p10: str(BACKEND_ROOT)
+    p1-->>p11: DEFAULT_OUTPUT.relative_to(REPOSITORY_ROOT)
+    p3-->>p12: AgentTeamMaster.model_json_schema(ref_template=' /$defs/{model}', mode='validation')
+    p1-->>p9: parser.add_argument('--check', action='store_true', help='Exit nonzero when the existing output differs.')
+    p3-->>p13: (…).encode('utf-8')
+    p1-->>p14: parser.parse_args
+    p3-->>p15: json.dumps(schema, ensure_ascii=False, indent=2, sort_keys=True)
 ```
+
+> Call sequence diagram shows 16 of 16 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 10 of 10 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 3; effect analysis evaluated: 3, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 14, emitted: 14, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

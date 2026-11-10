@@ -1,7 +1,7 @@
 # SavedViewListParams
 
 **Location:** `frontend/src/types/savedView.ts:37`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `SavedViewListParams` in `frontend/src/types/savedView.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

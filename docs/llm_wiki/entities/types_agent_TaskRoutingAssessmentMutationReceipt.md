@@ -1,7 +1,7 @@
 # TaskRoutingAssessmentMutationReceipt
 
 **Location:** `frontend/src/types/agent.ts:372`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -27,7 +27,7 @@ _Auto-generated from `TaskRoutingAssessmentMutationReceipt` in `frontend/src/typ
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

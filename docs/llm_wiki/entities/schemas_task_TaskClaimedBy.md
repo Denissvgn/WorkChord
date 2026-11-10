@@ -25,7 +25,7 @@ Brief agent info for task claim state.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

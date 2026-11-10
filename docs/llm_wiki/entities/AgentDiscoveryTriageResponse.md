@@ -15,7 +15,7 @@ Created discovery Triage item with source linkage metadata.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

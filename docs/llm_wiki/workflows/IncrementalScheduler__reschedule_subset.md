@@ -12,8 +12,9 @@ existing parallel scheduler to reschedule them.
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `iteration_service.IterationService`
-2. `services_work_metrics.effective_work_flags`
-3. `commands.commit_or_flush`
+2. `iteration_service.IterationService.get_by_id`
+3. `services_work_metrics.effective_work_flags`
+4. `commands.commit_or_flush`
 
 ## Touches
 

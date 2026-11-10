@@ -1,8 +1,8 @@
 # InputProps
 
 **Location:** `frontend/src/components/common/Input.tsx:6`
-**Kind:** Class
-**Bases:** `InputHTMLAttributes`
+**Kind:** Interface
+**Bases:** `InputHTMLAttributes<HTMLInputElement>`
 **Module:** [Input](../modules/Input.md)
 
 ## Description
@@ -18,7 +18,7 @@ _Auto-generated from `InputProps` in `frontend/src/components/common/Input.tsx`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -26,7 +26,7 @@ _Auto-generated from `InputProps` in `frontend/src/components/common/Input.tsx`.
 ```mermaid
 flowchart LR
     n0["InputProps (frontend/src/components/common/Input.tsx)"]
-    n1["InputHTMLAttributes"]
+    n1["InputHTMLAttributes#60;HTMLInputElement#62;"]
     n0 --> n1
     click n0 "../modules/Input.md"
 ```
@@ -41,4 +41,4 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `InputHTMLAttributes` | — |
+| Base | `InputHTMLAttributes<HTMLInputElement>` | — |

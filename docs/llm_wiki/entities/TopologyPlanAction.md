@@ -25,7 +25,7 @@ _Auto-generated from `TopologyPlanAction` in `backend/app/autonomy/contracts/top
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

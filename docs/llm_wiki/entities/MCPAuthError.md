@@ -15,7 +15,7 @@ Raised when MCP agent authentication fails.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

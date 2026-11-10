@@ -23,7 +23,7 @@ _Auto-generated from `StatusEvidenceReference` in `backend/app/autonomy/status.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

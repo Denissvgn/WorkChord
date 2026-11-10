@@ -11,8 +11,9 @@
 1. `time.utc_now`
 2. `services_work_metrics.working_today`
 3. `services_work_metrics.working_today`
-4. `request_source_service.RequestSourceService`
-5. `schemas_project.ProjectSummary`
+4. `request_source_service.RequestSourceService.count_for_project`
+5. `request_source_service.RequestSourceService`
+6. `schemas_project.ProjectSummary`
 
 ## Touches
 

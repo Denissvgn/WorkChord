@@ -28,7 +28,7 @@ Verifier-scoped pass or rejection command.
 | `assignment_id` | `int` | `assignment_id` | Yes | No | — | — | — | — |
 | `verdict` | `Literal['pass', 'reject']` | `verdict` | Yes | No | — | — | — | — |
 | `expected_task_version` | `int` | `expected_task_version` | Yes | No | — | ge=1 | — | — |
-| `evidence` | `dict[str, Any]` | `evidence` | Yes | No | — | min_length=1; max_length=100 | — | — |
+| `evidence` | `dict[str, Any]` | `evidence` | Yes | No | — | max_length=100; min_length=1 | — | — |
 | `reason` | `Optional[str]` | `reason` | No | Yes | `None` | max_length=4000 | — | — |
 | `rework_actor_id` | `Optional[int]` | `rework_actor_id` | No | Yes | `None` | — | — | — |
 | `rework_queue_rank` | `int` | `rework_queue_rank` | No | No | `0` | ge=0 | — | — |

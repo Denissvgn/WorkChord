@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/useAgentTeamReadiness
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/agentService` | `agentService` |
-| `./masters` | `stepProgress`, `stepsById` |
-| `@tanstack/react-query` | `useQuery` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/agentService` | `agentService` | — | compiler-dependent |
+| `./masters` | `stepProgress`, `stepsById` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/features/agentTeamSetup/useAgentTeamReadiness
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentTeamStepList.tsx"]
@@ -64,4 +66,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `useAgentTeamReadiness` | `(topologyKey: string)` | — | — |
+| `useAgentTeamReadiness` | `(topologyKey?: string)` | — | — |

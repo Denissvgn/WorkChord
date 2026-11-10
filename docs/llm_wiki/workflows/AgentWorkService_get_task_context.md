@@ -17,8 +17,9 @@
 7. `agent_service.AgentPermissionError`
 8. `time.utc_now`
 9. `schemas_agent.AgentDependencyContext`
-10. `agent_service.AgentService`
-11. `schemas_agent.AgentTaskContextResponse`
+10. `agent_service.AgentService.get_task_timeline`
+11. `agent_service.AgentService`
+12. `schemas_agent.AgentTaskContextResponse`
 
 ## Touches
 

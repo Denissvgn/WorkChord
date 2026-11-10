@@ -1,7 +1,7 @@
 # ImportTasksModalProps
 
 **Location:** `frontend/src/components/tasks/ImportTasksModal.tsx:14`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ImportTasksModal](../modules/ImportTasksModal.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `ImportTasksModalProps` in `frontend/src/components/tasks/I
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

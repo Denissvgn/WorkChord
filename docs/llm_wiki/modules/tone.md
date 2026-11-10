@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/components/ui/tone.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `TaskStatus` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `TaskStatus` | Declaration | erased |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/components/ui/tone.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -46,7 +48,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PillTone](../entities/PillTone.md) | Type alias | 3 | — | — |
+| [PillTone](../entities/PillTone.md) | Type alias | 3 | `'gray' \| 'blue' \| 'green' \| 'yellow' \| 'red' \| 'purple' \| 'indigo'` | — |
 
 ## Functions
 

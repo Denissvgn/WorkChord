@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -17,18 +19,46 @@ sequenceDiagram
     participant p5 as _cookie_options
     participant p6 as get_settings
     participant p7 as Settings
-    p0-->>p1: IdentityService(…).transfer_guest
+    p0-->>p1: IdentityService(…).transfer_guest(..., ..., operator_reason=data.reason, guest_id=data.guest_session_id)
     p0->>p2: IdentityService
-    p0-->>p3: request.cookies.get
-    p0-->>p4: response.delete_cookie
+    p0-->>p3: request.cookies.get('workchord_guest_transfer')
+    p0-->>p4: response.delete_cookie('workchord_guest_transfer', path=...)
     p0->>p5: _cookie_options
     p5->>p6: get_settings
     p6->>p7: Settings
 ```
 
+> Call sequence diagram shows 7 of 7 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 0 of 0 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
+
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 5; effect analysis evaluated: 3, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 3 source steps with known totals: observed: 7, emitted: 7, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `transfer_guest` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `IdentityService(…).transfer_guest` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `IdentityService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `request.cookies.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `response.delete_cookie` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_cookie_options` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. transfer_guest"]
@@ -80,7 +110,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

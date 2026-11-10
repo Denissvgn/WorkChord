@@ -24,7 +24,7 @@ Normalized domain event available for webhook delivery.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

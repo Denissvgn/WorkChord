@@ -15,10 +15,16 @@ Actual dependency changes invalidate current progress and acceptance through gen
 | Source | Symbols |
 |--------|---------|
 | `app.authority` | `AuthorityError`, `require_project` |
-| `app.commands` | `atomic_command` |
+| `app.autonomy.canonical` | `sha256_hex` |
+| `app.commands` | `atomic_command`, `command_transaction` |
+| `app.models.autonomy` | `AgentWorkPackage` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.schemas.task_brief` | `TaskBrief`, `ProgressWrite`, `TaskReviewWrite`, `BriefCriterion` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
+| `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_service` | `TaskService` |
+| `copy` | `copy` |
 | `re` | `re` |
 | `sqlalchemy` | `func`, `select` |
 | `uuid` | `NAMESPACE_URL`, `uuid5` |
@@ -41,8 +47,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (10) |
-| Outbound | `backend` (5) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (10) |
 
 ### External packages
 
@@ -50,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

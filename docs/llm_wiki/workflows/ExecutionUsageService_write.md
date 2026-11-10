@@ -8,18 +8,19 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `authority.internal_authority`
 2. `agent_service.AgentPermissionError`
-3. `identity_service.IdentityService`
-4. `agent_service.AgentConflictError`
+3. `identity_service.IdentityService.actor_context`
+4. `identity_service.IdentityService`
 5. `agent_service.AgentConflictError`
 6. `agent_service.AgentConflictError`
 7. `agent_service.AgentConflictError`
-8. `time.utc_now`
-9. `time.as_utc`
+8. `agent_service.AgentConflictError`
+9. `time.utc_now`
 10. `time.as_utc`
 11. `time.as_utc`
 12. `time.as_utc`
 13. `time.as_utc`
-14. `models_execution_usage.ExecutionUsageRecord`
+14. `time.as_utc`
+15. `models_execution_usage.ExecutionUsageRecord`
 
 ## Touches
 

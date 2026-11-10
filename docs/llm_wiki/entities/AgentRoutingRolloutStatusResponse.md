@@ -27,7 +27,7 @@ Explicit configured and effective model-aware routing rollout state.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -20,7 +20,7 @@ Freshness state for project stakeholder updates.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

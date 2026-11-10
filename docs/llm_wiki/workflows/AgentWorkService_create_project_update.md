@@ -10,9 +10,10 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `agent_service.validate_idempotency_key`
 2. `agent_service.AgentConflictError`
-3. `project_service.ProjectService`
-4. `schemas_project.ProjectUpdateEntryCreate`
-5. `commands.commit_or_flush`
+3. `project_service.ProjectService.create_project_update`
+4. `project_service.ProjectService`
+5. `schemas_project.ProjectUpdateEntryCreate`
+6. `commands.commit_or_flush`
 
 ## Touches
 

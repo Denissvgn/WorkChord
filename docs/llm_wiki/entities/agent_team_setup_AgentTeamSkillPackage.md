@@ -19,7 +19,7 @@ Exact immutable role-package identity expected by one runtime.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

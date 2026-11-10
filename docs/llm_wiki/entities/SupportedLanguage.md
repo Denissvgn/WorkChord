@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [i18n](../modules/i18n.md)
+**Target:**
+
+```typescript
+'en' | 'ru'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `SupportedLanguage` in `frontend/src/i18n/i18n.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

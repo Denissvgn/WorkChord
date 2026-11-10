@@ -19,7 +19,7 @@ Verification result plus optional rework assignment.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

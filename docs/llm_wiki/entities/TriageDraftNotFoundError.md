@@ -15,7 +15,7 @@ Raised when referenced draft context does not exist.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

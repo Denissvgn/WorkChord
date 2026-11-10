@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/test/renderWithProviders.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/feedback/toast` | `useToast` |
-| `./renderWithProviders` | `renderWithProviders` |
-| `@tanstack/react-query` | `useQueryClient` |
-| `@testing-library/react` | `screen` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useLocation` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/feedback/toast` | `useToast` | — | compiler-dependent |
+| `./renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

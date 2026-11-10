@@ -1,7 +1,7 @@
 # BreadcrumbItem
 
 **Location:** `frontend/src/components/layout/Breadcrumbs.tsx:5`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [Breadcrumbs](../modules/Breadcrumbs.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `BreadcrumbItem` in `frontend/src/components/layout/Breadcr
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

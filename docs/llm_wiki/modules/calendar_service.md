@@ -14,10 +14,13 @@ Nominal-workday edits use the same task-unit refresh helper as iteration calenda
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `commit_or_flush`, `schedule_input_command` |
+| `app.authority` | `internal_authority` |
+| `app.commands` | `commit_or_flush`, `schedule_input_command`, `PlanningConflict` |
 | `app.models.calendar` | `Calendar` |
+| `app.models.capacity` | `ProfileAvailability` |
 | `app.models.iteration` | `Iteration` |
 | `app.schemas.calendar` | `CalendarCreate`, `CalendarImportError`, `CalendarImportRequest`, `CalendarImportResponse`, `CalendarUpdate`, `WorkingDaysResponse` |
+| `app.services.task_domain_service` | `refresh_nominal_day_hours` |
 | `collections.abc` | `Iterable` |
 | `csv` | `csv` |
 | `datetime` | `date`, `timedelta` |
@@ -45,7 +48,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (9) |
-| Outbound | `backend` (4) |
+| Outbound | `backend` (7) |
 
 ### External packages
 
@@ -53,7 +56,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

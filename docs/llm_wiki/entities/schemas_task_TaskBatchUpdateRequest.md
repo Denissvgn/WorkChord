@@ -19,7 +19,7 @@ Schema for updating multiple tasks in a single request.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

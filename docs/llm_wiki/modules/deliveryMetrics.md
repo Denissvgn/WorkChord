@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/deliveryMetrics.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/analytics/DeliveryAnalytics.test.tsx"]
@@ -44,6 +46,6 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DurationSamples](../entities/deliveryMetrics_DurationSamples.md) | Class | 1 | — | — |
-| [DeliveryQueueItem](../entities/deliveryMetrics_DeliveryQueueItem.md) | Class | 10 | — | — |
-| [DeliveryMetrics](../entities/DeliveryMetrics.md) | Class | 17 | — | — |
+| [DurationSamples](../entities/deliveryMetrics_DurationSamples.md) | Interface | 1 | — | — |
+| [DeliveryQueueItem](../entities/deliveryMetrics_DeliveryQueueItem.md) | Interface | 10 | — | — |
+| [DeliveryMetrics](../entities/DeliveryMetrics.md) | Interface | 17 | — | — |

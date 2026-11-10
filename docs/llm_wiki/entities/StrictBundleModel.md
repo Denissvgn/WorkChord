@@ -21,7 +21,7 @@ Reject undeclared build metadata instead of serving it accidentally.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

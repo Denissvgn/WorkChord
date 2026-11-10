@@ -15,7 +15,7 @@ Raised before a fixture could touch a non-test database target.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

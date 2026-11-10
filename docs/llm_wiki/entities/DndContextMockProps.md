@@ -1,7 +1,7 @@
 # DndContextMockProps
 
 **Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx:29`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [KanbanBoard.test](../modules/KanbanBoard.test.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `DndContextMockProps` in `frontend/src/components/tasks/Kan
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

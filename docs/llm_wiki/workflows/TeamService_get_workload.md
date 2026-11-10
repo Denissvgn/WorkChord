@@ -8,9 +8,10 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `capacity_service.CapacityService`
-2. `services_work_metrics.included_work_ids`
-3. `schemas_team.MemberWorkload`
+1. `capacity_service.CapacityService.calendar_for`
+2. `capacity_service.CapacityService`
+3. `services_work_metrics.included_work_ids`
+4. `schemas_team.MemberWorkload`
 
 ## Touches
 

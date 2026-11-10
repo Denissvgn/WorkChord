@@ -15,7 +15,7 @@ A cutover input is unsafe, stale, incomplete, or internally inconsistent.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

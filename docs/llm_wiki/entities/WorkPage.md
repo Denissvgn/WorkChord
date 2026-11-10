@@ -1,7 +1,7 @@
 # WorkPage
 
 **Location:** `frontend/src/pages/MyWorkPage.tsx:19`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [MyWorkPage](../modules/MyWorkPage.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `WorkPage` in `frontend/src/pages/MyWorkPage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

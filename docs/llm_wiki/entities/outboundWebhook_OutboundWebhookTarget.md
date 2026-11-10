@@ -1,7 +1,7 @@
 # OutboundWebhookTarget
 
 **Location:** `frontend/src/types/outboundWebhook.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `OutboundWebhookTarget` in `frontend/src/types/outboundWebh
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

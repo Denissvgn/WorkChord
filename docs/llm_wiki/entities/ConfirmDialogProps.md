@@ -1,7 +1,7 @@
 # ConfirmDialogProps
 
 **Location:** `frontend/src/components/common/ConfirmDialog.tsx:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ConfirmDialog](../modules/ConfirmDialog.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `ConfirmDialogProps` in `frontend/src/components/common/Con
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

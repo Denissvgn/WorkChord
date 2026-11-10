@@ -16,39 +16,73 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as logout
     participant p1 as require_identity_writes
-    participant p2 as get_settings
-    participant p3 as Settings
-    participant p4 as MaintenanceModeError
-    participant p5 as internal_authority
-    participant p6 as db.info.get
-    participant p7 as db.get
-    participant p8 as utc_now
+    participant p2 as internal_authority
+    participant p3 as db.get
+    participant p4 as utc_now
+    participant p5 as _cookie_options
+    participant p6 as response.delete_cookie
+    participant p7 as get_settings
+    participant p8 as db.info.get
     participant p9 as datetime.now
-    participant p10 as _cookie_options
-    participant p11 as response.delete_cookie
+    participant p10 as MaintenanceModeError
+    participant p11 as Settings
     p0->>p1: require_identity_writes
-    p1->>p2: get_settings
-    p2->>p3: Settings
-    p1->>p4: MaintenanceModeError
-    p1->>p2: get_settings
-    p0->>p5: internal_authority
-    p5-->>p6: db.info.get
-    p0-->>p7: db.get
-    p0->>p8: utc_now
-    p8-->>p9: datetime.now
-    p0->>p10: _cookie_options
-    p10->>p2: get_settings
-    p0-->>p11: response.delete_cookie
+    p0->>p2: internal_authority
+    p0-->>p3: db.get(UserSession, authority.session_id)
+    p0->>p4: utc_now
+    p0->>p5: _cookie_options
+    p0-->>p6: response.delete_cookie(options[...], path=options[...], secure=options[...], httponly=True, samesite='lax')
+    p1->>p7: get_settings
+    p2-->>p8: db.info.get('authority_internal', False)
+    p4-->>p9: datetime.now(UTC)
+    p5->>p7: get_settings
+    p1->>p10: MaintenanceModeError
+    p1->>p7: get_settings
+    p7->>p11: Settings
 ```
+
+> Call sequence diagram shows 13 of 13 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 1 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 10; effect analysis evaluated: 8, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 8 source steps with known totals: observed: 16, emitted: 16, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `logout` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `db.info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `utc_now` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `datetime.now` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_cookie_options` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. logout"]
@@ -120,7 +154,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

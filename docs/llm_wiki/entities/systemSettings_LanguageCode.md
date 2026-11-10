@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
+**Target:**
+
+```typescript
+'en' | 'ru'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `LanguageCode` in `frontend/src/types/systemSettings.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

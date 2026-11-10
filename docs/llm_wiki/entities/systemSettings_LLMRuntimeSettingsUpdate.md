@@ -1,7 +1,7 @@
 # LLMRuntimeSettingsUpdate
 
 **Location:** `frontend/src/types/systemSettings.ts:28`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `LLMRuntimeSettingsUpdate` in `frontend/src/types/systemSet
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

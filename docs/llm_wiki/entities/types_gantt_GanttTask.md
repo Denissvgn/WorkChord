@@ -1,7 +1,7 @@
 # GanttTask
 
 **Location:** `frontend/src/types/gantt.ts:6`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
 
@@ -37,7 +37,7 @@ _Auto-generated from `GanttTask` in `frontend/src/types/gantt.ts`._
 | `is_deferred` | `boolean` | No | — | — |
 | `is_outside_constraints` | `boolean` | Yes | — | — |
 | `tags` | `string[]` | Yes | — | — |
-| `milestone` | `{         id: number;         project_id: number;         name: string;         status: string;         target_date?: string \| null;     } \| null` | No | — | — |
+| `milestone` | <pre><code>&#123;&#10;        id&#58; number&#59;&#10;        project&#95;id&#58; number&#59;&#10;        name&#58; string&#59;&#10;        status&#58; string&#59;&#10;        target&#95;date&#63;&#58; string &#124; null&#59;&#10;    &#125; &#124; null</code></pre> | No | — | — |
 | `assignee` | `{ id: number; name: string } \| null` | No | — | — |
 | `assignees` | `Array<{ id: number; name: string }>` | Yes | — | — |
 | `children` | `GanttTask[]` | Yes | — | — |
@@ -45,11 +45,11 @@ _Auto-generated from `GanttTask` in `frontend/src/types/gantt.ts`._
 | `version` | `number` | No | — | — |
 | `sandbox_update` | `TaskUpdate` | No | — | — |
 | `isSandboxModified` | `boolean` | No | — | — |
-| `schedule_result` | `{         scheduled_start: string;         scheduled_end: string;         issues: Array<{             is_overload: boolean;             description: string;         }>;     }` | No | — | — |
+| `schedule_result` | <pre><code>&#123;&#10;        scheduled&#95;start&#58; string&#59;&#10;        scheduled&#95;end&#58; string&#59;&#10;        issues&#58; Array&#60;&#123;&#10;            is&#95;overload&#58; boolean&#59;&#10;            description&#58; string&#59;&#10;        &#125;&#62;&#59;&#10;    &#125;</code></pre> | No | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

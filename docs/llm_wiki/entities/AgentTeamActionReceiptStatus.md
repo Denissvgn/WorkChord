@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)
+**Target:**
+
+```typescript
+AgentTeamApplyResponse['receipts'][number]['status']
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `AgentTeamActionReceiptStatus` in `frontend/src/pages/Agent
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -22,7 +22,7 @@ _Auto-generated from `TaskActionsResponse` in `backend/app/schemas/task_domain.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

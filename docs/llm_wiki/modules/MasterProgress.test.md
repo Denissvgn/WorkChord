@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/ui/MasterProgress.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./MasterProgress` | `MasterProgress` |
-| `@testing-library/react` | `render`, `screen` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./MasterProgress` | `MasterProgress` | — | compiler-dependent |
+| `@testing-library/react` | `render`, `screen` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

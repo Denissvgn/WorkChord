@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/ui/PageLayout.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `clsx` | `clsx` |
-| `react` | `ReactNode` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `clsx` | `clsx` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
 
 ## Module Signals
 
@@ -34,8 +34,8 @@ _Auto-generated from `frontend/src/components/ui/PageLayout.tsx`._
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PageLayoutProps](../entities/PageLayoutProps.md) | Type alias | 4 | — | — |
-| [PageHeaderProps](../entities/PageHeaderProps.md) | Type alias | 24 | — | — |
+| [PageLayoutProps](../entities/PageLayoutProps.md) | Type alias | 4 | <pre><code>&#123;&#10;    children&#58; ReactNode&#59;&#10;    variant&#63;&#58; &#39;default&#39; &#124; &#39;wide&#39; &#124; &#39;workbench&#39;&#59;&#10;    className&#63;&#58; string&#59;&#10;    testId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [PageHeaderProps](../entities/PageHeaderProps.md) | Type alias | 24 | <pre><code>&#123;&#10;    title&#58; ReactNode&#59;&#10;    subtitle&#63;&#58; ReactNode&#59;&#10;    meta&#63;&#58; ReactNode&#59;&#10;    actions&#63;&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
@@ -47,6 +47,6 @@ _Auto-generated from `frontend/src/components/ui/PageLayout.tsx`._
 | `Toolbar` | `({ children, className }: { children: ReactNode; className?: string })` | — | — |
 | `ActionGroup` | `({ children, className }: { children: ReactNode; className?: string })` | — | — |
 | `FormGrid` | `({ children, className }: { children: ReactNode; className?: string })` | — | — |
-| `InlineField` | `({     label,     children,     hint,     className, }: {     label: ReactNode;     children: ReactNode;     hint?: ReactNode;     className?: string; })` | — | — |
+| `InlineField` | <pre><code>&#40;&#123;&#10;    label&#44;&#10;    children&#44;&#10;    hint&#44;&#10;    className&#44;&#10;&#125;&#58; &#123;&#10;    label&#58; ReactNode&#59;&#10;    children&#58; ReactNode&#59;&#10;    hint&#63;&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | — |
 | `MetricGrid` | `({ children, columns = 4, className }: { children: ReactNode; columns?: 3 \| 4 \| 5 \| 6; className?: string })` | — | — |
 | `TableFrame` | `({ children, className }: { children: ReactNode; className?: string })` | — | — |

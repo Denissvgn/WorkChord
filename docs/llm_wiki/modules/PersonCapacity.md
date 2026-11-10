@@ -10,16 +10,16 @@ Person calendar changes retain the opening availability revision across live ref
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/api` | `api` |
-| `../../services/calendarService` | `calendarService` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `react` | `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/api` | `api` | — | compiler-dependent |
+| `../../services/calendarService` | `calendarService` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `react` | `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -93,9 +93,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Absence](../entities/Absence.md) | Class | 10 | — | — |
-| [Availability](../entities/Availability.md) | Class | 11 | — | — |
-| [Capacity](../entities/Capacity.md) | Class | 12 | — | — |
+| [Absence](../entities/Absence.md) | Interface | 10 | — | — |
+| [Availability](../entities/Availability.md) | Interface | 11 | — | — |
+| [Capacity](../entities/Capacity.md) | Interface | 12 | — | — |
 
 ## Functions
 

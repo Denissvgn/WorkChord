@@ -18,7 +18,7 @@ Paginated PM recovery projection.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

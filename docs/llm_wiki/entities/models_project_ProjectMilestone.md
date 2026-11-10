@@ -28,7 +28,7 @@ Manually ordered milestone for a single project roadmap.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

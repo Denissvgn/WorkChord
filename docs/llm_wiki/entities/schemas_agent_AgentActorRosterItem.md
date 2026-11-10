@@ -23,7 +23,7 @@ Secret-free actor dispatch roster item.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -11,12 +11,18 @@
 1. `maintenance.require_background_writes_enabled`
 2. `identity_service.initialize_control_plane`
 3. `commands.commit_or_flush`
-4. `calendar_service.CalendarService`
-5. `template_service.TemplateService`
-6. `label_service.LabelService`
-7. `saved_view_service.SavedViewService`
-8. `github_status_automation_service.GitHubStatusAutomationService`
-9. `system_settings_service.RuntimeSettingsService`
+4. `calendar_service.CalendarService.get_or_create_default`
+5. `calendar_service.CalendarService`
+6. `template_service.TemplateService.seed_default_templates`
+7. `template_service.TemplateService`
+8. `label_service.LabelService.seed_default_labels`
+9. `label_service.LabelService`
+10. `saved_view_service.SavedViewService.seed_default_views`
+11. `saved_view_service.SavedViewService`
+12. `github_status_automation_service.GitHubStatusAutomationService.seed_default_rules`
+13. `github_status_automation_service.GitHubStatusAutomationService`
+14. `system_settings_service.RuntimeSettingsService.migrate_legacy_email_settings`
+15. `system_settings_service.RuntimeSettingsService`
 
 ## Touches
 

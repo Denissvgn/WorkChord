@@ -1,7 +1,7 @@
 # AssessmentDraft
 
 **Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:59`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskRoutingPanel](../modules/TaskRoutingPanel.md)
 
@@ -27,7 +27,7 @@ _Auto-generated from `AssessmentDraft` in `frontend/src/components/agent/TaskRou
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

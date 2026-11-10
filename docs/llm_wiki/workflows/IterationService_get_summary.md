@@ -9,8 +9,9 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `calendar_service.CalendarService`
-2. `services_work_metrics.aggregate_metrics`
-3. `schemas_iteration.IterationSummary`
+2. `calendar_service.CalendarService.calculate_working_days`
+3. `services_work_metrics.aggregate_metrics`
+4. `schemas_iteration.IterationSummary`
 
 ## Touches
 

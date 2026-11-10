@@ -28,7 +28,7 @@ _Auto-generated from `TimeEntryRevision` in `backend/app/models/time_entry.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

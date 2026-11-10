@@ -8,10 +8,11 @@ _Auto-generated from `frontend/src/components/projects/projectStatusStyles.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/project` | `ProjectMilestoneStatus`, `ProjectStatus` |
-| `../ui/tone` | `toneBorderClassName`, `wcPillClass`, `PillTone` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/project` | `ProjectMilestoneStatus`, `ProjectStatus` | Declaration | erased |
+| `../ui/tone` | `PillTone` | Specifier | compiler-dependent |
+| `../ui/tone` | `toneBorderClassName`, `wcPillClass` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +24,8 @@ _Auto-generated from `frontend/src/components/projects/projectStatusStyles.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/projectStatusStyles.test.ts"]
@@ -66,7 +69,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectRecordStatus](../entities/ProjectRecordStatus.md) | Type alias | 8 | — | — |
+| [ProjectRecordStatus](../entities/ProjectRecordStatus.md) | Type alias | 8 | `ProjectStatus \| ProjectMilestoneStatus` | — |
 
 ## Functions
 

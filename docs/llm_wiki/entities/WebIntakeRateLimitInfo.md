@@ -21,7 +21,7 @@ Rate-limit details returned on rejection.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

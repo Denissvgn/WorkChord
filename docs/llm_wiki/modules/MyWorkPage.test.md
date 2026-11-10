@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/tasks/taskDraftStorage` | `writeTaskDraft` |
-| `../components/tasks/taskEditorContract` | `buildTaskEditorDefaults` |
-| `../features/identity/identityContext` | `IdentityContext` |
-| `../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` |
-| `../types/task` | `Task` |
-| `./MyWorkPage` | `MyWorkPage` |
-| `@testing-library/react` | `act`, `screen`, `waitFor` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/tasks/taskDraftStorage` | `writeTaskDraft` | — | compiler-dependent |
+| `../components/tasks/taskEditorContract` | `buildTaskEditorDefaults` | — | compiler-dependent |
+| `../features/identity/identityContext` | `IdentityContext` | — | compiler-dependent |
+| `../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
+| `../types/task` | `Task` | Declaration | erased |
+| `./MyWorkPage` | `MyWorkPage` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +29,8 @@ _Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/taskDraftStorage.ts"]

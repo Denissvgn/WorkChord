@@ -20,7 +20,7 @@ Closed review modes ordered by increasing independence requirements.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

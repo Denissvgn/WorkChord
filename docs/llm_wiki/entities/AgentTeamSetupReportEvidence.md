@@ -21,7 +21,7 @@ Durable reconciliation evidence summarized without action payloads.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

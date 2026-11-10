@@ -18,19 +18,34 @@ Saved planning graphs include complete person lifetime provenance for allocation
 
 | Source | Symbols |
 |--------|---------|
-| `app.commands` | `atomic_command`, `current_command`, `lock_iterations` |
+| `app.authority` | `internal_authority`, `internal_authority`, `require_operator` |
+| `app.commands` | `atomic_command`, `current_command`, `lock_iterations`, `PlanningConflict`, `PlanningConflict`, `PlanningConflict`, `PlanningConflict` |
 | `app.config` | `get_settings` |
-| `app.models.recovery` | `ApplicationSnapshot`, `LegacySnapshotImport` |
+| `app.database` | `Base` |
+| `app.models.agent` | `AgentRun`, `AgentTaskAssignment` |
+| `app.models.autonomy` | `AgentWorkPackage` |
+| `app.models.delivery_dependency` | `DeliveryDependency` |
+| `app.models.iteration` | `Iteration` |
+| `app.models.recovery` | `ApplicationSnapshot`, `LegacySnapshotImport`, `TaskScheduleBaseline` |
+| `app.models.task` | `Task`, `Task`, `TaskDependency` |
+| `app.models.team_member` | `TeamMemberProfile`, `TeamMemberProfile`, `TeamMember`, `TeamMemberProfile`, `TeamMember`, `Vacation` |
+| `app.routers.snapshots` | `_validate_snapshot_task_payloads` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.iteration_service` | `IterationService` |
-| `app.services.team_service` | `TeamService` |
+| `app.services.task_brief_service` | `TaskBriefService` |
+| `app.services.task_domain_service` | `require_owner` |
+| `app.services.task_recovery_service` | `reserve_restored_task_version` |
+| `app.services.task_service` | `TaskService`, `TaskService` |
+| `app.services.team_service` | `TeamService`, `TeamService` |
 | `app.utils.time` | `utc_now` |
-| `datetime` | `datetime`, `timedelta` |
+| `datetime` | `datetime`, `timedelta`, `date` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `pathlib` | `Path` |
 | `re` | `re` |
-| `sqlalchemy` | `select`, `delete` |
+| `sqlalchemy` | `select`, `delete`, `inspect`, `or_`, `func` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
+| `uuid` | `UUID`, `UUID` |
 
 ## Local dependency map
 
@@ -50,8 +65,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
-| Outbound | `backend` (6) |
+| Inbound | `backend` (20) |
+| Outbound | `backend` (20) |
 
 ### External packages
 
@@ -59,7 +74,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

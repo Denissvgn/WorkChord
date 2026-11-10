@@ -1,7 +1,7 @@
 # SchedulingRules
 
 **Location:** `frontend/src/types/schedulingRules.ts:46`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [schedulingRules](../modules/schedulingRules.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `SchedulingRules` in `frontend/src/types/schedulingRules.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

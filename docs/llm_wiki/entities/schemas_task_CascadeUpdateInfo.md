@@ -22,7 +22,7 @@ Information about cascading date updates.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

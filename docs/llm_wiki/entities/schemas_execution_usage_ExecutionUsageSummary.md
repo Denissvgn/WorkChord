@@ -43,7 +43,7 @@ _Auto-generated from `ExecutionUsageSummary` in `backend/app/schemas/execution_u
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

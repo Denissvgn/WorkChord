@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [teamMemberLabels](../modules/teamMemberLabels.md)
+**Target:**
+
+```typescript
+Pick<TeamMemberOption, 'name' | 'position' | 'iteration_name'>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TeamMemberLabelSource` in `frontend/src/utils/teamMemberLa
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

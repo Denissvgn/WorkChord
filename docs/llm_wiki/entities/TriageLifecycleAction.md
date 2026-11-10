@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
+**Target:**
+
+```typescript
+'accept' | 'decline' | 'snooze' | 'duplicate'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TriageLifecycleAction` in `frontend/src/pages/TriagePage.t
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -18,7 +18,7 @@ Fact or claim tied to an explicit source in the AI context pack.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

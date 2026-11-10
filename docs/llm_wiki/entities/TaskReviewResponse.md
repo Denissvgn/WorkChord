@@ -31,7 +31,7 @@ _Auto-generated from `TaskReviewResponse` in `backend/app/schemas/task_brief.py`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

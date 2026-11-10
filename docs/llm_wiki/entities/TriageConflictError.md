@@ -15,7 +15,7 @@ Raised when a triage action conflicts with current item state.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

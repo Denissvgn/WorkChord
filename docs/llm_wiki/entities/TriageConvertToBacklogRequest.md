@@ -19,7 +19,7 @@ Explicit project backlog destination; the legacy iteration contract stays requir
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

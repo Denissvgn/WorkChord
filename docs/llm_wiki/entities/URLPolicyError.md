@@ -15,7 +15,7 @@ Raised when a URL or host violates outbound egress policy.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,17 +8,18 @@ _Auto-generated from `frontend/src/pages/PlanPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../components/ui` | `PageHeader`, `PageLayout` |
-| `../features/planningMasters/masters` | `localizeStatus`, `STEP_DEFS` |
-| `../features/planningMasters/usePlanningReadiness` | `usePlanningReadiness` |
-| `../utils/formatDate` | `formatDate` |
-| `lucide-react` | `ArrowRight`, `CalendarRange`, `Check`, `ChevronDown`, `GanttChartSquare`, `Inbox`, `Layers`, `ListTodo`, `LockKeyhole`, `RefreshCw`, `Sparkles`, `TriangleAlert`, `Users`, `LucideIcon` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../features/planningMasters/masters` | `localizeStatus`, `STEP_DEFS` | — | compiler-dependent |
+| `../features/planningMasters/usePlanningReadiness` | `usePlanningReadiness` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `lucide-react` | `LucideIcon` | Declaration | erased |
+| `lucide-react` | `ArrowRight`, `CalendarRange`, `Check`, `ChevronDown`, `GanttChartSquare`, `Inbox`, `Layers`, `ListTodo`, `LockKeyhole`, `RefreshCw`, `Sparkles`, `TriangleAlert`, `Users` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -76,6 +77,6 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [LocalizedStepStatus](../entities/LocalizedStepStatus.md) | Type alias | 26 | — | — |
-| [PlanningJob](../entities/PlanningJob.md) | Type alias | 32 | — | — |
-| [RefreshStatus](../entities/RefreshStatus.md) | Type alias | 41 | — | — |
+| [LocalizedStepStatus](../entities/LocalizedStepStatus.md) | Type alias | 26 | <pre><code>&#123;&#10;    state&#58; string&#59;&#10;    summary&#63;&#58; string&#59;&#10;    missing&#63;&#58; string&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
+| [PlanningJob](../entities/PlanningJob.md) | Type alias | 32 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    title&#58; string&#59;&#10;    description&#58; string&#59;&#10;    icon&#58; LucideIcon&#59;&#10;    meta&#58; string&#59;&#10;    to&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [RefreshStatus](../entities/RefreshStatus.md) | Type alias | 41 | `'idle' \| 'success' \| 'error'` | — |

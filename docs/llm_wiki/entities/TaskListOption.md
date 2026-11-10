@@ -1,7 +1,7 @@
 # TaskListOption
 
 **Location:** `frontend/src/pages/TriagePage.tsx:178`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `TaskListOption` in `frontend/src/pages/TriagePage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

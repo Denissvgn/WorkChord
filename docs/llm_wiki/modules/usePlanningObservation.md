@@ -8,11 +8,12 @@ Editor observations are retained with drafts. Only explicit conflict reapply rea
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../services/planningInputService` | `planningInputService`, `ObservedPlanningInput`, `PlanningInputKind`, `MemberPlanningIntent` |
-| `../utils/apiError` | `getApiErrorStatus` |
-| `react` | `useCallback`, `useEffect`, `useRef`, `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../services/planningInputService` | `ObservedPlanningInput`, `PlanningInputKind`, `MemberPlanningIntent` | Specifier | compiler-dependent |
+| `../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useRef`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +24,8 @@ Editor observations are retained with drafts. Only explicit conflict reapply rea
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/planning/PlanningInputBoundary.tsx"]
@@ -99,4 +102,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `usePlanningObservation` | `()` | — | — |
+| `usePlanningObservation` | `<T>()` | — | — |

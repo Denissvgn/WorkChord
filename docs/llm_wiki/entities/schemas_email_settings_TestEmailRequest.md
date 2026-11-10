@@ -17,7 +17,7 @@ Schema for test email request.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

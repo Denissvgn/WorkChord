@@ -13,24 +13,27 @@ Agent integration services.
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentModelCatalogEntry`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.identity` | `Principal` |
 | `app.models.label` | `Label`, `LabelGroup` |
-| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
+| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `Task`, `TaskDependency` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
 | `app.schemas.agent` | `AgentActorCreate`, `AgentRunCreate`, `AgentRunEventCreate`, `AgentRunFinish`, `AgentTaskCreate`, `AgentTaskPatch`, `SUPPORTED_AGENT_SCOPES`, `TaskClaimRequest`, `TaskEventCreate` |
 | `app.schemas.task` | `TaskCreate`, `TaskUpdate`, `TaskResponse` |
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
+| `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.task_service` | `TaskService` |
+| `app.services.task_timeline_service` | `TaskTimelineService` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `datetime`, `timedelta` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `select`, `text` |
+| `sqlalchemy` | `select`, `text`, `and_`, `select` |
 | `sqlalchemy.exc` | `IntegrityError` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
-| `sqlalchemy.orm` | `selectinload` |
+| `sqlalchemy.orm` | `selectinload`, `selectinload` |
 | `typing` | `Any`, `Optional`, `Sequence` |
 
 ## Local dependency map
@@ -51,8 +54,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (28) |
-| Outbound | `backend` (13) |
+| Inbound | `backend` (29) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -60,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

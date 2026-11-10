@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [teamMemberLabels](../modules/teamMemberLabels.md)
+**Target:**
+
+```typescript
+Pick<TeamMemberProfileCompact, 'display_name' | 'headline' | 'email'>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TeamMemberProfileLabelSource` in `frontend/src/utils/teamM
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

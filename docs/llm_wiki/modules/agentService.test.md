@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/services/agentService.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/agent` | `AgentCommandMetadata`, `AgentModelCatalogCreate`, `AgentTeamMaster`, `AgentTeamPlan`, `ModelAwareAgentTaskAssignmentCreate`, `TaskRoutingAssessmentCommand` |
-| `./agentService` | `agentService` |
-| `./api` | `api` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/agent` | `AgentCommandMetadata`, `AgentModelCatalogCreate`, `AgentTeamMaster`, `AgentTeamPlan`, `ModelAwareAgentTaskAssignmentCreate`, `TaskRoutingAssessmentCommand` | Declaration | erased |
+| `./agentService` | `agentService` | — | compiler-dependent |
+| `./api` | `api` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -25,6 +25,8 @@ _Auto-generated from `frontend/src/services/agentService.test.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/services/agentService.test.ts"]

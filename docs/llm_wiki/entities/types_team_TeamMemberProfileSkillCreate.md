@@ -1,7 +1,7 @@
 # TeamMemberProfileSkillCreate
 
 **Location:** `frontend/src/types/team.ts:39`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `TeamMemberProfileSkillCreate` in `frontend/src/types/team.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -20,7 +20,7 @@ _Auto-generated from `AgentTeamSetupStep` in `backend/app/schemas/agent_team_set
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

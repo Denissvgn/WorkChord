@@ -6,50 +6,83 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as patch_agent_task
     participant p1 as service.patch_task
     participant p2 as _handle_agent_error
-    participant p3 as isinstance
-    participant p4 as str
-    participant p5 as HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    participant p6 as exc.detail
-    participant p7 as HTTPException (backend/app/routers/agent.py:patch_agent_task)
-    p0-->>p1: service.patch_task
+    participant p3 as HTTPException (backend/app/routers/agent.py:patch_agent_task)
+    participant p4 as isinstance
+    participant p5 as str
+    participant p6 as HTTPException (backend/app/routers/agent.py:_handle_agent_error)
+    participant p7 as exc.detail
+    p0-->>p1: service.patch_task(task_id, actor, data, idempotency_key)
     p0->>p2: _handle_agent_error
-    p2-->>p3: isinstance
-    p2-->>p4: str
-    p2-->>p4: str
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p3: isinstance
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p6: exc.detail
-    p2-->>p3: isinstance
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p6: exc.detail
-    p2-->>p3: isinstance
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p6: exc.detail
-    p2-->>p3: isinstance
-    p2-->>p4: str
-    p2-->>p4: str
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p3: isinstance
-    p2-->>p4: str
-    p2-->>p4: str
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p3: isinstance
-    p2-->>p4: str
-    p2-->>p4: str
-    p2-->>p5: HTTPException (backend/app/routers/agent.py:_handle_agent_error)
-    p0-->>p7: HTTPException (backend/app/routers/agent.py:patch_agent_task)
+    p0-->>p3: HTTPException (backend/app/routers/agent.py:patch_agent_task)(status_code=status.HTTP_404_NOT_FOUND, detail='Task not found')
+    p2-->>p4: isinstance(exc, AgentPermissionError)
+    p2-->>p5: str(exc)
+    p2-->>p5: str(exc)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
+    p2-->>p4: isinstance(exc, AgentRoutingConflictError)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p7: exc.detail
+    p2-->>p4: isinstance(exc, AgentTeamSetupConflictError)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p7: exc.detail
+    p2-->>p4: isinstance(exc, TaskVersionConflictError)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p7: exc.detail
+    p2-->>p4: isinstance(exc, AgentConflictError)
+    p2-->>p5: str(exc)
+    p2-->>p5: str(exc)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_409_CONFLICT, detail=detail)
+    p2-->>p4: isinstance(exc, LookupError)
+    p2-->>p5: str(exc)
+    p2-->>p5: str(exc)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
+    p2-->>p4: isinstance(exc, ValueError)
+    p2-->>p5: str(exc)
+    p2-->>p5: str(exc)
+    p2-->>p6: HTTPException (backend/app/routers/agent.py:_handle_agent_error)(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)
 ```
+
+> Call sequence diagram shows 28 of 28 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 23 of 23 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 2; effect analysis evaluated: 1, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 21, emitted: 17, omitted: 4. Unavailable totals are excluded.
+
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `patch_agent_task` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `service.patch_task` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_handle_agent_error` | `available` | `partial` | `available` | `14` | `10` | `4` |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/agent.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/agent.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException (backend/app/routers/agent.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. patch_agent_task"]
@@ -114,7 +147,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

@@ -37,7 +37,7 @@ _Auto-generated from `TriageConvertToTaskRequest` in `backend/app/schemas/triage
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

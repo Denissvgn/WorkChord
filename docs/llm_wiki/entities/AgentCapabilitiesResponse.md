@@ -29,7 +29,7 @@ Authenticated REST/MCP compatibility handshake with shared readiness semantics. 
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -24,7 +24,7 @@ Schema for email settings response (password masked).
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

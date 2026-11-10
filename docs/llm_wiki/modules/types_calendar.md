@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/calendar.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/pages/CalendarPage.tsx"]
@@ -39,9 +41,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Calendar](../entities/types_calendar_Calendar.md) | Class | 1 | — | — |
-| [CalendarCreate](../entities/types_calendar_CalendarCreate.md) | Class | 12 | — | — |
-| [CalendarUpdate](../entities/types_calendar_CalendarUpdate.md) | Class | 20 | — | — |
-| [WorkingDaysResponse](../entities/types_calendar_WorkingDaysResponse.md) | Class | 28 | — | — |
-| [CalendarImportError](../entities/types_calendar_CalendarImportError.md) | Class | 35 | — | — |
-| [CalendarImportResponse](../entities/types_calendar_CalendarImportResponse.md) | Class | 40 | — | — |
+| [Calendar](../entities/types_calendar_Calendar.md) | Interface | 1 | — | — |
+| [CalendarCreate](../entities/types_calendar_CalendarCreate.md) | Interface | 12 | — | — |
+| [CalendarUpdate](../entities/types_calendar_CalendarUpdate.md) | Interface | 20 | — | — |
+| [WorkingDaysResponse](../entities/types_calendar_WorkingDaysResponse.md) | Interface | 28 | — | — |
+| [CalendarImportError](../entities/types_calendar_CalendarImportError.md) | Interface | 35 | — | — |
+| [CalendarImportResponse](../entities/types_calendar_CalendarImportResponse.md) | Interface | 40 | — | — |

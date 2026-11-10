@@ -10,19 +10,20 @@ Comment drafts checkpoint uncertainty before writing and retain input through mi
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
-| `../../features/identity/identityContext` | `useIdentity` |
-| `../../features/useLiveWindow` | `useLiveWindow` |
-| `../../services/discussionService` | `discussionService`, `TaskComment` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `./useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery` |
-| `react` | `useEffect`, `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
+| `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
+| `../../services/discussionService` | `TaskComment` | Declaration | erased |
+| `../../services/discussionService` | `discussionService` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery` | — | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -33,6 +34,8 @@ Comment drafts checkpoint uncertainty before writing and retain input through mi
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -103,10 +106,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [EditingComment](../entities/EditingComment.md) | Type alias | 14 | — | — |
+| [EditingComment](../entities/EditingComment.md) | Type alias | 14 | `Pick<TaskComment, 'id' \| 'version'>` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskDiscussion` | `({ taskId, draftKey, disabled, onDirty, onPending }: {     taskId: number; draftKey: string \| null; disabled: boolean;     onDirty: (dirty: boolean) => void; onPending: (pending: boolean) => void; })` | — | — |
+| `TaskDiscussion` | <pre><code>&#40;&#123; taskId&#44; draftKey&#44; disabled&#44; onDirty&#44; onPending &#125;&#58; &#123;&#10;    taskId&#58; number&#59; draftKey&#58; string &#124; null&#59; disabled&#58; boolean&#59;&#10;    onDirty&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59; onPending&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |

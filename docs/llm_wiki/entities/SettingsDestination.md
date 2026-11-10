@@ -1,7 +1,7 @@
 # SettingsDestination
 
 **Location:** `frontend/src/pages/SettingsPage.tsx:47`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `SettingsDestination` in `frontend/src/pages/SettingsPage.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

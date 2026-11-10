@@ -19,7 +19,7 @@ _Auto-generated from `AutonomyState` in `backend/app/autonomy/contracts/charter.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

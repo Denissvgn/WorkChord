@@ -1,7 +1,7 @@
 # IterationStore
 
 **Location:** `frontend/src/store/iterationStore.ts:4`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [iterationStore](../modules/iterationStore.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `IterationStore` in `frontend/src/store/iterationStore.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

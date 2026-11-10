@@ -25,7 +25,7 @@ Append-only comment body, mention targets, attribution and removal state for one
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

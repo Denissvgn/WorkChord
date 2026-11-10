@@ -26,7 +26,7 @@ _Auto-generated from `CorrelatedProviderAction` in `backend/app/autonomy/provide
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

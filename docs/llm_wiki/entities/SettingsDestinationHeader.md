@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
+**Target:**
+
+```typescript
+Pick<
+    SettingsDestination,
+    'labelKey' | 'descriptionKey' | 'icon'
+>
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `SettingsDestinationHeader` in `frontend/src/pages/Settings
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -12,12 +12,14 @@
 2. `commands.lock_planning`
 3. `authority.internal_authority`
 4. `commands.PlanningConflict`
-5. `delivery_dependency_service.DeliveryDependencyService`
-6. `authority.internal_authority`
-7. `commands.PlanningConflict`
-8. `delivery_dependency_service.DeliveryDependencyService`
-9. `outbound_webhook_service.emit_outbound_webhook_event`
-10. `commands.commit_or_flush`
+5. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+6. `delivery_dependency_service.DeliveryDependencyService`
+7. `authority.internal_authority`
+8. `commands.PlanningConflict`
+9. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+10. `delivery_dependency_service.DeliveryDependencyService`
+11. `outbound_webhook_service.emit_outbound_webhook_event`
+12. `commands.commit_or_flush`
 
 ## Touches
 

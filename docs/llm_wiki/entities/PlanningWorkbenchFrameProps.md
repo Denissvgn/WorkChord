@@ -4,6 +4,26 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanningWorkbenchFrame](../modules/PlanningWorkbenchFrame.md)
+**Target:**
+
+```typescript
+{
+    title: ReactNode;
+    description?: ReactNode;
+    facts?: PlanningWorkbenchFact[];
+    contextControl?: ReactNode;
+    secondaryActions?: ReactNode;
+    primaryAction?: ReactNode;
+    overflowAction?: ReactNode;
+    state?: ReactNode;
+    children: ReactNode;
+    variant?: 'default' | 'wide' | 'workbench';
+    className?: string;
+    headerClassName?: string;
+    canvasClassName?: string;
+    testId?: string;
+}
+```
 
 ## Description
 
@@ -11,11 +31,11 @@ _Auto-generated from `PlanningWorkbenchFrameProps` in `frontend/src/components/p
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

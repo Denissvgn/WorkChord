@@ -1,7 +1,7 @@
 # MemberCapacity
 
 **Location:** `frontend/src/types/team.ts:154`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
 
@@ -23,7 +23,7 @@ Detailed capacity breakdown from GET /team-members/{id}/capacity.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

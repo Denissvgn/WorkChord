@@ -1,7 +1,7 @@
 # NavItem
 
 **Location:** `frontend/src/navigation/workspaces.ts:21`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `NavItem` in `frontend/src/navigation/workspaces.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

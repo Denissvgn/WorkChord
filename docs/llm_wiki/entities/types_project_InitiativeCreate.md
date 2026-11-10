@@ -1,7 +1,7 @@
 # InitiativeCreate
 
 **Location:** `frontend/src/types/project.ts:27`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `InitiativeCreate` in `frontend/src/types/project.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

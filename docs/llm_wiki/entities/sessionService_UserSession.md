@@ -1,7 +1,7 @@
 # UserSession
 
 **Location:** `frontend/src/services/sessionService.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [sessionService](../modules/sessionService.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `UserSession` in `frontend/src/services/sessionService.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

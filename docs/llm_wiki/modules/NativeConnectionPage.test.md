@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/pages/NativeConnectionPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../features/identity/identityContext` | `IdentityContext` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./NativeConnectionPage` | `NativeConnectionPage` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../features/identity/identityContext` | `IdentityContext` | — | compiler-dependent |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./NativeConnectionPage` | `NativeConnectionPage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

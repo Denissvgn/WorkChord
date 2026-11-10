@@ -1,7 +1,7 @@
 # ReleaseCreateRequest
 
 **Location:** `frontend/src/types/release.ts:29`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_release](../modules/types_release.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `ReleaseCreateRequest` in `frontend/src/types/release.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

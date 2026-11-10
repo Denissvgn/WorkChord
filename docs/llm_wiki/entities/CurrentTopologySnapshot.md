@@ -20,7 +20,7 @@ _Auto-generated from `CurrentTopologySnapshot` in `backend/app/autonomy/contract
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

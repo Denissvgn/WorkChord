@@ -17,7 +17,7 @@ Request for schedule explanation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

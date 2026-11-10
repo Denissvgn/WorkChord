@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/features/timeEntries/useTimeEntries.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/timeEntryService` | `timeEntryService` |
-| `../identity/identityContext` | `useIdentity` |
-| `@tanstack/react-query` | `useQuery` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/timeEntryService` | `timeEntryService` | — | compiler-dependent |
+| `../identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 
 ## Module Signals
 

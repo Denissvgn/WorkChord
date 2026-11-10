@@ -15,7 +15,7 @@ Raised when an operator-facing contract is incomplete or unsafe.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

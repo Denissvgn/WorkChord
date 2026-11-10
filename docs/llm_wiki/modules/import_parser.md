@@ -22,13 +22,23 @@ Parser utilities for importing tasks and team members from text files.
 flowchart LR
     n0["backend/app/models/task.py"]
     n1["backend/app/services/planning_input_context.py"]
-    n2["backend/app/utils/import_parser.py"]
+    n2["backend/app/services/task_import_service.py"]
+    n3["backend/app/services/team_service.py"]
+    n4["backend/app/utils/import_parser.py"]
     n1 --> n0
-    n1 --> n2
+    n1 --> n3
+    n1 --> n4
     n2 --> n0
+    n2 --> n3
+    n2 --> n4
+    n3 --> n0
+    n3 --> n4
+    n4 --> n0
     click n0 "../modules/models_task.md"
     click n1 "../modules/planning_input_context.md"
-    click n2 "../modules/import_parser.md"
+    click n2 "../modules/task_import_service.md"
+    click n3 "../modules/team_service.md"
+    click n4 "../modules/import_parser.md"
 ```
 
 ### Internal neighbors
@@ -36,6 +46,8 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [planning_input_context](../modules/planning_input_context.md) |
+| Inbound | [task_import_service](../modules/task_import_service.md) |
+| Inbound | [team_service](../modules/team_service.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 
 ## Classes

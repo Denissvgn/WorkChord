@@ -24,7 +24,7 @@ Current topology/revision and active member set for exact-actor routing.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

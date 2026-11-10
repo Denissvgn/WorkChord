@@ -26,7 +26,7 @@ Retain delivery identity and scope independently of later hierarchy edits.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -21,7 +21,7 @@ One task state produced by schedule preview or apply.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

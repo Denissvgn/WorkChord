@@ -18,7 +18,7 @@ Closed authorities allowed to supply topology readiness.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,78 +8,124 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as _parser().parse_args
-    participant p2 as _parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_argument
-    participant p5 as read_json_object
-    participant p6 as atomic_write_json
-    participant p7 as seal_document
-    participant p8 as QualificationInputError
-    participant p9 as dict (scripts/load/common.py:seal_document)
-    participant p10 as sha256_bytes
-    participant p11 as hashlib.sha256(…).hexdigest
-    participant p12 as hashlib.sha256
-    participant p13 as canonical_json_bytes (scripts/load/common.py)
-    participant p14 as json.dumps(…).encode (scripts/load/common.py:canonical_json_bytes)
-    participant p15 as json.dumps (scripts/load/common.py:canonical_json_bytes)
-    participant p16 as dict (scripts/load/common.py:atomic_write_json)
-    participant p17 as path.parent.mkdir
-    participant p18 as path.with_name
-    participant p19 as os.getpid
-    participant p20 as json.dumps(…).encode (scripts/load/common.py:atomic_write_json)
-    participant p21 as json.dumps (scripts/load/common.py:atomic_write_json)
-    participant p22 as temporary.open
-    participant p23 as os.chmod
-    participant p24 as handle.write
-    participant p25 as handle.flush
-    participant p26 as os.fsync
-    participant p27 as handle.fileno
-    participant p28 as os.replace
-    participant p29 as os.open
-    p0-->>p1: _parser().parse_args
-    p0->>p2: _parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_argument
-    p2-->>p4: parser.add_argument
-    p0-->>p5: read_json_object
-    p0->>p6: atomic_write_json
-    p6->>p7: seal_document
-    p7->>p8: QualificationInputError
-    p7-->>p9: dict (scripts/load/common.py:seal_document)
-    p7->>p10: sha256_bytes
-    p10-->>p11: hashlib.sha256(…).hexdigest
-    p10-->>p12: hashlib.sha256
-    p7->>p13: canonical_json_bytes (scripts/load/common.py)
-    p13-->>p14: json.dumps(…).encode (scripts/load/common.py:canonical_json_bytes)
-    p13-->>p15: json.dumps (scripts/load/common.py:canonical_json_bytes)
-    p6-->>p16: dict (scripts/load/common.py:atomic_write_json)
-    p6-->>p17: path.parent.mkdir
-    p6-->>p18: path.with_name
-    p6-->>p19: os.getpid
-    p6-->>p20: json.dumps(…).encode (scripts/load/common.py:atomic_write_json)
-    p6-->>p21: json.dumps (scripts/load/common.py:atomic_write_json)
-    p6-->>p22: temporary.open
-    p6-->>p23: os.chmod
-    p6-->>p24: handle.write
-    p6-->>p25: handle.flush
-    p6-->>p26: os.fsync
-    p6-->>p27: handle.fileno
-    p6-->>p28: os.replace
-    p6-->>p29: os.open
+    participant p1 as atomic_write_json
+    participant p2 as evaluate
+    participant p3 as _parser
+    participant p4 as seal_document
+    participant p5 as contract_member_json
+    participant p6 as _elapsed
+    participant p7 as percentile
+    participant p8 as capacity_contract
+    participant p9 as contract_bundle
+    participant p10 as _time
+    participant p11 as load_postgresql_contract_bundle
+    participant p12 as canonical_json_bytes (backend/app/autonomy/canonical.py)
+    participant p13 as sha256_hex
+    participant p14 as _validate_machine_semantics
+    participant p15 as QualificationInputError
+    participant p16 as _gate
+    participant p17 as utc_now_text
+    participant p18 as sha256_bytes
+    participant p19 as canonical_json_bytes (scripts/load/common.py)
+    participant p20 as ContractBundleError
+    participant p21 as PostgreSQLContractBundle
+    participant p22 as _json_value
+    participant p23 as print
+    participant p24 as _parser().parse_args
+    participant p25 as read_json_object
+    participant p26 as argparse.ArgumentParser
+    participant p27 as parser.add_argument
+    participant p28 as dict (scripts/load/common.py:atomic_write_json)
+    participant p29 as sorted (scripts/load/resilience.py:evaluate)
+    p0->>p1: atomic_write_json
+    p0->>p2: evaluate
+    p0->>p3: _parser
+    p1->>p4: seal_document
+    p2->>p5: contract_member_json
+    p2->>p6: _elapsed
+    p2->>p7: percentile
+    p2->>p8: capacity_contract
+    p5->>p9: contract_bundle
+    p6->>p10: _time
+    p9->>p11: load_postgresql_contract_bundle
+    p11->>p12: canonical_json_bytes (backend/app/autonomy/canonical.py)
+    p11->>p13: sha256_hex
+    p11->>p14: _validate_machine_semantics
+    p2->>p15: QualificationInputError
+    p2->>p16: _gate
+    p2->>p17: utc_now_text
+    p4->>p18: sha256_bytes
+    p4->>p19: canonical_json_bytes (scripts/load/common.py)
+    p11->>p20: ContractBundleError
+    p11->>p21: PostgreSQLContractBundle
+    p12->>p22: _json_value
+    p0-->>p23: print(...)
+    p0-->>p24: _parser().parse_args
+    p0-->>p25: read_json_object(args.observations, sealed=True)
+    p0-->>p23: print(..., file=sys.stderr)
+    p3-->>p26: argparse.ArgumentParser(description='Evaluate sealed PostgreSQL fault and recovery observations.')
+    p3-->>p27: parser.add_argument('--observations', type=Path, required=True)
+    p1-->>p28: dict (scripts/load/common.py:atomic_write_json)(payload)
+    p2-->>p29: sorted (scripts/load/resilience.py:evaluate)(..., key=...)
 ```
 
-> Call sequence diagram shows 30 of 217 interactions; 187 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 217 interactions; 187 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 5 of 95 (90 omitted); unresolved 3 of 54 (51 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/load/resilience.py:_parser` | 3 | - | unresolved | 1 |
+| `scripts/load/common.py:seal_document` | 9 | [scripts/load/common.py](../modules/load_common.md) | internal | 1 |
+| `scripts/load/common.py:seal_document` | 9 | - | external | 1 |
+| `scripts/load/common.py:sha256_bytes` | 12 | - | unresolved | 1 |
+| `scripts/load/common.py:sha256_bytes` | 12 | - | external | 1 |
+| `scripts/load/common.py:canonical_json_bytes` | 15 | - | unresolved | 1 |
+| `scripts/load/common.py:canonical_json_bytes` | 15 | - | external | 1 |
+| `scripts/load/common.py:atomic_write_json` | 8 | - | unresolved | 9 |
+> Omission summary shows 8 of 41 groups; 33 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 69; effect analysis evaluated: 33, partial: 0, unavailable: 36. Counts include steps omitted from the displayed trace.
+
+Collector observations for 33 source steps with known totals: observed: 123, emitted: 123, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_parser` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `read_json_object` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `atomic_write_json` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `seal_document` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `QualificationInputError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `dict (scripts/load/common.py:seal_document)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `sha256_bytes` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

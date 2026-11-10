@@ -8,6 +8,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -25,28 +27,42 @@ sequenceDiagram
     participant p11 as (…).write_text
     participant p12 as export_artifacts
     participant p13 as print
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
+    p0-->>p1: argparse.ArgumentParser(description=__doc__)
+    p0-->>p2: parser.add_argument('--reports', type=Path, required=True)
+    p0-->>p2: parser.add_argument('--output', type=Path, required=True)
+    p0-->>p2: parser.add_argument('--outcome', choices=[...], default='failure')
     p0-->>p3: parser.parse_args
-    p0-->>p4: args.output.mkdir
+    p0-->>p4: args.output.mkdir(parents=True, exist_ok=False)
     p0-->>p5: (…).encode
-    p0-->>p6: json.dumps
-    p0-->>p7: (…).write_bytes
-    p0-->>p8: len
+    p0-->>p6: json.dumps({...}, sort_keys=True, indent=2)
+    p0-->>p7: (…).write_bytes(payload)
+    p0-->>p8: len(payload)
     p0-->>p9: sha256(…).hexdigest
-    p0-->>p10: sha256
-    p0-->>p11: (…).write_text
-    p0-->>p6: json.dumps
-    p0-->>p12: export_artifacts
-    p0-->>p13: print
-    p0-->>p6: json.dumps
+    p0-->>p10: sha256(payload)
+    p0-->>p11: (…).write_text(...)
+    p0-->>p6: json.dumps(index, indent=2, sort_keys=True)
+    p0-->>p12: export_artifacts(args.reports, args.output, outcome=args.outcome)
+    p0-->>p13: print(json.dumps(...))
+    p0-->>p6: json.dumps(result, sort_keys=True)
 ```
+
+> Call sequence diagram shows 17 of 17 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 7 of 7 (0 omitted); unresolved 10 of 10 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 5, emitted: 5, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

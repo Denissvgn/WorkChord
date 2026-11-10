@@ -1,7 +1,7 @@
 # TargetFormState
 
 **Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:35`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `TargetFormState` in `frontend/src/components/settings/Outb
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

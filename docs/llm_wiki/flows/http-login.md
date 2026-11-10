@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -14,55 +16,87 @@ sequenceDiagram
     participant p2 as IdentityService
     participant p3 as RedirectResponse
     participant p4 as _cookie_options
-    participant p5 as get_settings
-    participant p6 as Settings
-    participant p7 as response.set_cookie
-    participant p8 as request.cookies.get
-    participant p9 as _get_session_by_token
-    participant p10 as _SESSION_TOKEN_PATTERN.fullmatch
-    participant p11 as db.execute
-    participant p12 as select(…).where
-    participant p13 as select
-    participant p14 as _token_digest
-    participant p15 as hashlib.sha256(…).hexdigest
-    participant p16 as hashlib.sha256
-    participant p17 as token.encode
-    participant p18 as result.scalar_one_or_none
-    participant p19 as as_utc
-    participant p20 as value.replace
-    participant p21 as value.astimezone
-    participant p22 as utc_now
-    participant p23 as datetime.now
-    p0-->>p1: IdentityService(…).begin_login
+    participant p5 as response.set_cookie
+    participant p6 as request.cookies.get
+    participant p7 as get_settings
+    participant p8 as _get_session_by_token
+    participant p9 as _SESSION_TOKEN_PATTERN.fullmatch
+    participant p10 as db.execute
+    participant p11 as select(…).where
+    participant p12 as select
+    participant p13 as _token_digest
+    participant p14 as result.scalar_one_or_none
+    participant p15 as as_utc
+    participant p16 as utc_now
+    participant p17 as Settings
+    participant p18 as hashlib.sha256(…).hexdigest
+    participant p19 as value.replace
+    participant p20 as datetime.now
+    participant p21 as hashlib.sha256
+    participant p22 as value.astimezone
+    participant p23 as token.encode
+    p0-->>p1: IdentityService(…).begin_login(return_to)
     p0->>p2: IdentityService
-    p0-->>p3: RedirectResponse
+    p0-->>p3: RedirectResponse(url, status_code=303, headers={...})
     p0->>p4: _cookie_options
-    p4->>p5: get_settings
-    p5->>p6: Settings
-    p0-->>p7: response.set_cookie
-    p0-->>p8: request.cookies.get
-    p0->>p5: get_settings
-    p0->>p9: _get_session_by_token
-    p9-->>p10: _SESSION_TOKEN_PATTERN.fullmatch
-    p9-->>p11: db.execute
-    p9-->>p12: select(…).where
-    p9-->>p13: select
-    p9->>p14: _token_digest
-    p14-->>p15: hashlib.sha256(…).hexdigest
-    p14-->>p16: hashlib.sha256
-    p14-->>p17: token.encode
-    p9-->>p18: result.scalar_one_or_none
-    p9->>p19: as_utc
-    p19-->>p20: value.replace
-    p19-->>p21: value.astimezone
-    p9->>p22: utc_now
-    p22-->>p23: datetime.now
-    p0-->>p7: response.set_cookie
+    p0-->>p5: response.set_cookie('workchord_login', browser, max_age=600, httponly=True, secure=options[...], samesite='lax', path=options[...])
+    p0-->>p6: request.cookies.get(...)
+    p0->>p7: get_settings
+    p0->>p8: _get_session_by_token
+    p0-->>p5: response.set_cookie('workchord_guest_transfer', guest, max_age=600, httponly=True, secure=options[...], samesite='lax', path=options[...])
+    p4->>p7: get_settings
+    p8-->>p9: _SESSION_TOKEN_PATTERN.fullmatch(token)
+    p8-->>p10: db.execute(...)
+    p8-->>p11: select(…).where(...)
+    p8-->>p12: select(UserSession)
+    p8->>p13: _token_digest
+    p8-->>p14: result.scalar_one_or_none
+    p8->>p15: as_utc
+    p8->>p16: utc_now
+    p7->>p17: Settings
+    p13-->>p18: hashlib.sha256(…).hexdigest
+    p15-->>p19: value.replace(tzinfo=UTC)
+    p16-->>p20: datetime.now(UTC)
+    p13-->>p21: hashlib.sha256(token.encode(...))
+    p15-->>p22: value.astimezone(UTC)
+    p13-->>p23: token.encode('utf-8')
 ```
+
+> Call sequence diagram shows 25 of 25 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 12 of 12 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 10; effect analysis evaluated: 8, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 8 source steps with known totals: observed: 23, emitted: 23, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `login` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `IdentityService(…).begin_login` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `IdentityService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `RedirectResponse` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_cookie_options` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `response.set_cookie` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `request.cookies.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `_get_session_by_token` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `_SESSION_TOKEN_PATTERN.fullmatch` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. login"]
@@ -132,7 +166,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

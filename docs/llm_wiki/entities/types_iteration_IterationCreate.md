@@ -1,7 +1,7 @@
 # IterationCreate
 
 **Location:** `frontend/src/types/iteration.ts:23`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `IterationCreate` in `frontend/src/types/iteration.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

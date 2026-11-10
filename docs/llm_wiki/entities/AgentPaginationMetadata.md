@@ -21,7 +21,7 @@ Opaque snapshot-bound pagination metadata shared by REST and MCP.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

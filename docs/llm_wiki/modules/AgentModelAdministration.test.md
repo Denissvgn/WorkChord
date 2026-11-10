@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/settings/AgentModelAdministration.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/agent` | `AgentActor`, `AgentActorRosterItem`, `AgentCapabilities`, `AgentModelBinding`, `AgentModelCatalogEntry` |
-| `./AgentModelAdministration` | `AgentModelAdministration` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/agent` | `AgentActor`, `AgentActorRosterItem`, `AgentCapabilities`, `AgentModelBinding`, `AgentModelCatalogEntry` | Declaration | erased |
+| `./AgentModelAdministration` | `AgentModelAdministration` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/settings/AgentModelAdministration.
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/AgentModelAdministration.test.tsx"]

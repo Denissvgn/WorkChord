@@ -29,7 +29,7 @@ Server-authoritative current/next work decision.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

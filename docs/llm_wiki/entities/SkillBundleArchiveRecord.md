@@ -20,7 +20,7 @@ One exact downloadable archive representation of a role skill.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

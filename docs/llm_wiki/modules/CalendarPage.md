@@ -10,32 +10,33 @@ Calendar reads and writes retain resource and draft generation boundaries. Pendi
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/calendar/InteractiveCalendar` | `CalendarPeriodNavigator`, `InteractiveCalendar` |
-| `../components/common/Button` | `Button` |
-| `../components/common/Input` | `Input` |
-| `../components/common/useConfirmDialog` | `useConfirmDialog` |
-| `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` |
-| `../components/team/VacationCsvImport` | `VacationCsvImport` |
-| `../components/ui` | `OverflowMenu` |
-| `../features/usePlanningObservation` | `usePlanningObservation` |
-| `../i18n/dateLocale` | `dateFnsLocale` |
-| `../services/calendarService` | `calendarService` |
-| `../services/iterationService` | `iterationService` |
-| `../services/planningInputService` | `planningInputService` |
-| `../services/teamService` | `teamService` |
-| `../store/iterationStore` | `useIterationStore` |
-| `../types/calendar` | `Calendar`, `CalendarCreate`, `CalendarUpdate` |
-| `../types/team` | `TeamMember`, `Vacation` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `date-fns` | `eachDayOfInterval`, `format`, `parseISO`, `Locale` |
-| `lucide-react` | `CalendarDays`, `CalendarRange`, `Download`, `Grid`, `List`, `Plane`, `Plus`, `Save`, `Trash2`, `Upload`, `X` |
-| `react` | `useEffect`, `useMemo`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/calendar/InteractiveCalendar` | `CalendarPeriodNavigator`, `InteractiveCalendar` | — | compiler-dependent |
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/Input` | `Input` | — | compiler-dependent |
+| `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` | — | compiler-dependent |
+| `../components/team/VacationCsvImport` | `VacationCsvImport` | — | compiler-dependent |
+| `../components/ui` | `OverflowMenu` | — | compiler-dependent |
+| `../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
+| `../services/calendarService` | `calendarService` | — | compiler-dependent |
+| `../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../services/teamService` | `teamService` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../types/calendar` | `Calendar`, `CalendarCreate`, `CalendarUpdate` | Declaration | erased |
+| `../types/team` | `TeamMember`, `Vacation` | Declaration | erased |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `date-fns` | `Locale` | Declaration | erased |
+| `date-fns` | `eachDayOfInterval`, `format`, `parseISO` | — | compiler-dependent |
+| `lucide-react` | `CalendarDays`, `CalendarRange`, `Download`, `Grid`, `List`, `Plane`, `Plus`, `Save`, `Trash2`, `Upload`, `X` | — | compiler-dependent |
+| `react` | `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -46,6 +47,8 @@ Calendar reads and writes retain resource and draft generation boundaries. Pendi
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -76,7 +79,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarDraft](../entities/CalendarDraft.md) | Class | 39 | — | — |
-| [VacationRow](../entities/VacationRow.md) | Class | 46 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Class | 1127 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Class | 1190 | — | — |
+| [CalendarDraft](../entities/CalendarDraft.md) | Interface | 39 | — | — |
+| [VacationRow](../entities/VacationRow.md) | Interface | 46 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Interface | 1127 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Interface | 1190 | — | — |

@@ -1,7 +1,7 @@
 # LabelGroupBrief
 
 **Location:** `frontend/src/types/label.ts:1`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_label](../modules/types_label.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `LabelGroupBrief` in `frontend/src/types/label.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

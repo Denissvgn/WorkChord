@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/tasks/PersonCapacity.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./PersonCapacity` | `PersonCapacity` |
-| `@testing-library/react` | `act`, `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PersonCapacity` | `PersonCapacity` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

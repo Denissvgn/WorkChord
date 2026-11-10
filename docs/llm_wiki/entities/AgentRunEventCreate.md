@@ -25,14 +25,14 @@ Request to append an agent run event.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `event_type` | `str` | `event_type` | Yes | No | — | min_length=1; max_length=100 | — | — |
+| `event_type` | `str` | `event_type` | Yes | No | — | max_length=100; min_length=1 | — | — |
 | `message` | `Optional[str]` | `message` | No | Yes | `None` | max_length=unknown (MAX_AGENT_EVENT_MESSAGE_LENGTH) | — | — |
 | `payload` | `dict[str, Any]` | `payload` | No | No | factory: `dict` | max_length=unknown (MAX_AGENT_JSON_FIELDS) | — | — |
 | `trace_id` | `Optional[str]` | `trace_id` | No | Yes | `None` | max_length=255 | — | — |
 | `span_id` | `Optional[str]` | `span_id` | No | Yes | `None` | max_length=255 | — | — |
 | `correlation_id` | `Optional[str]` | `correlation_id` | No | Yes | `None` | max_length=255 | — | — |
 | `idempotency_key` | `Optional[str]` | `idempotency_key` | No | Yes | `None` | max_length=255 | — | — |
-| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | min_length=16; max_length=64 | — | — |
+| `claim_id` | `Optional[str]` | `claim_id` | No | Yes | `None` | max_length=64; min_length=16 | — | — |
 | `claim_generation` | `Optional[int]` | `claim_generation` | No | Yes | `None` | ge=1 | — | — |
 
 ## Methods

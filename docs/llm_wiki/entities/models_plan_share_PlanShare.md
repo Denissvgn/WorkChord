@@ -27,7 +27,7 @@ One immutable iteration plan snapshot owned by a browser session.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -39,10 +39,11 @@ flowchart LR
     n2["backend/app/models/__init__.py"]
     n3["backend/app/models/iteration.py"]
     n4["backend/app/models/user_session.py"]
-    n5["PlanShareService.create (backend/app/services/plan_share_service.py)"]
-    n6["PlanShareService.get_active_by_public_id (backend/app/services/plan_share_service.py)"]
-    n7["PlanShareService.get_owned_current (backend/app/services/plan_share_service.py)"]
-    n8["PlanShareService.to_response (backend/app/services/plan_share_service.py)"]
+    n5["backend/app/services/identity_service.py"]
+    n6["PlanShareService.create (backend/app/services/plan_share_service.py)"]
+    n7["PlanShareService.get_active_by_public_id (backend/app/services/plan_share_service.py)"]
+    n8["PlanShareService.get_owned_current (backend/app/services/plan_share_service.py)"]
+    n9["PlanShareService.to_response (backend/app/services/plan_share_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -51,15 +52,17 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/models_plan_share.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/models_iteration.md"
     click n4 "../modules/user_session.md"
-    click n5 "../modules/plan_share_service.md"
+    click n5 "../modules/identity_service.md"
     click n6 "../modules/plan_share_service.md"
     click n7 "../modules/plan_share_service.md"
     click n8 "../modules/plan_share_service.md"
+    click n9 "../modules/plan_share_service.md"
 ```
 
 ### Summary
@@ -81,6 +84,7 @@ flowchart LR
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `iteration` | import | [models_iteration](../modules/models_iteration.md) | — |
 | `user_session` | import | [user_session](../modules/user_session.md) | — |
+| `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
 | `PlanShareService.create` | call | [plan_share_service](../modules/plan_share_service.md) | 1 |
 | `PlanShareService.create` | type_reference | [plan_share_service](../modules/plan_share_service.md) | — |
 | `PlanShareService.get_active_by_public_id` | type_reference | [plan_share_service](../modules/plan_share_service.md) | — |

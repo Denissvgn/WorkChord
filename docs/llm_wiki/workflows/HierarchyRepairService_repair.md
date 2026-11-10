@@ -10,8 +10,11 @@
 2. `commands.AggregateVersionConflict`
 3. `commands.lock_iterations`
 4. `task_service.TaskService`
-5. `task_service.TaskVersionConflictError`
-6. `snapshot_service.SnapshotService`
+5. `task_service.TaskService._require_unclaimed_structure`
+6. `task_service.TaskVersionConflictError`
+7. `snapshot_service.SnapshotService`
+8. `task_service.TaskService.reserve_task_version`
+9. `task_service.TaskService.record_task_event`
 
 ## Touches
 

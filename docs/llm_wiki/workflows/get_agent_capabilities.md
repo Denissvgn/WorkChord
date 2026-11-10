@@ -8,16 +8,18 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `agent_routing_rollout.AgentRoutingRolloutService`
-2. `agent_team_setup_service.AgentTeamSetupService`
-3. `agent_routing_rollout.AgentRoutingRolloutService`
-4. `agent_routing_rollout.AgentRoutingRolloutService`
-5. `agent_contract.agent_contract_features`
-6. `task_domain_service.domain_capabilities`
-7. `config.get_settings`
-8. `agent_service.actor_has_scope`
-9. `schemas_agent.AgentCapabilitiesResponse`
-10. `agent_service.actor_scopes`
+1. `agent_routing_rollout.AgentRoutingRolloutService.status`
+2. `agent_routing_rollout.AgentRoutingRolloutService`
+3. `agent_team_setup_service.AgentTeamSetupService.routing_readiness`
+4. `agent_team_setup_service.AgentTeamSetupService`
+5. `agent_routing_rollout.AgentRoutingRolloutService`
+6. `agent_routing_rollout.AgentRoutingRolloutService`
+7. `agent_contract.agent_contract_features`
+8. `task_domain_service.domain_capabilities`
+9. `config.get_settings`
+10. `agent_service.actor_has_scope`
+11. `schemas_agent.AgentCapabilitiesResponse`
+12. `agent_service.actor_scopes`
 
 ## Touches
 

@@ -19,7 +19,7 @@ _Auto-generated from `AttemptLedgerSnapshot` in `backend/app/autonomy/evidence.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

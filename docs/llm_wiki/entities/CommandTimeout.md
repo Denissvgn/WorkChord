@@ -15,7 +15,7 @@ An execution deadline was reached. The runner records timed_out before cleaning 
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

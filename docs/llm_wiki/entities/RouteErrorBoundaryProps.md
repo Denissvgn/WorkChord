@@ -1,7 +1,7 @@
 # RouteErrorBoundaryProps
 
 **Location:** `frontend/src/components/layout/RouteErrorBoundary.tsx:5`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [RouteErrorBoundary](../modules/RouteErrorBoundary.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `RouteErrorBoundaryProps` in `frontend/src/components/layou
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

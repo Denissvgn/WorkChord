@@ -1,7 +1,7 @@
 # WorkloadAnalysis
 
 **Location:** `frontend/src/types/gantt.ts:111`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `WorkloadAnalysis` in `frontend/src/types/gantt.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

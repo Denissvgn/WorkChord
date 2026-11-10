@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessPanel.test.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` |
-| `./AdminAccessPanel` | `AdminAccessPanel` |
-| `@testing-library/react` | `screen` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
+| `./AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +35,7 @@ flowchart LR
     n0 --> n1
     n0 --> n2
     n0 --> n3
+    n3 --> n2
     click n0 "../modules/AdminAccessPanel.test.md"
     click n1 "../modules/AdminAccessPanel.md"
     click n2 "../modules/i18n.md"

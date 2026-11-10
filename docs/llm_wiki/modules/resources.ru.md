@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/i18n/resources.ru.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./pagination` | `paginationRU` |
-| `./planningInputMessages` | `planningInputRussian` |
-| `./teamwork.ru` | `teamworkRussian` |
-| `./timeEntries` | `timeEntriesRU` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./pagination` | `paginationRU` | — | compiler-dependent |
+| `./planningInputMessages` | `planningInputRussian` | — | compiler-dependent |
+| `./teamwork.ru` | `teamworkRussian` | — | compiler-dependent |
+| `./timeEntries` | `timeEntriesRU` | — | compiler-dependent |
 
 ## Module Signals
 

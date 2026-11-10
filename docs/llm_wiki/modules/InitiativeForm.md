@@ -8,21 +8,21 @@ _Auto-generated from `frontend/src/components/projects/InitiativeForm.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/projectService` | `projectService` |
-| `../../services/teamService` | `teamService` |
-| `../../types/project` | `Initiative`, `InitiativeCreate`, `ProjectHealth` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/teamMemberLabels` | `formatTeamMemberProfileLabel` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Save` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/project` | `Initiative`, `InitiativeCreate`, `ProjectHealth` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/teamMemberLabels` | `formatTeamMemberProfileLabel` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Save` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +34,8 @@ _Auto-generated from `frontend/src/components/projects/InitiativeForm.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -105,8 +107,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [InitiativeFormProps](../entities/InitiativeFormProps.md) | Class | 15 | — | — |
-| [InitiativeFormState](../entities/InitiativeFormState.md) | Type alias | 21 | — | — |
+| [InitiativeFormProps](../entities/InitiativeFormProps.md) | Interface | 15 | — | — |
+| [InitiativeFormState](../entities/InitiativeFormState.md) | Type alias | 21 | `InitiativeCreate` | — |
 
 ## Functions
 

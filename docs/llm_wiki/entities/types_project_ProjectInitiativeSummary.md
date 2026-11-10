@@ -1,7 +1,7 @@
 # ProjectInitiativeSummary
 
 **Location:** `frontend/src/types/project.ts:45`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `ProjectInitiativeSummary` in `frontend/src/types/project.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

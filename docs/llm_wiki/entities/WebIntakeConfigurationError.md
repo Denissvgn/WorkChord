@@ -15,7 +15,7 @@ Raised when the intake endpoint is not configured.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

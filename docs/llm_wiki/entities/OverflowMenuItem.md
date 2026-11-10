@@ -4,6 +4,17 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverflowMenu](../modules/OverflowMenu.md)
+**Target:**
+
+```typescript
+{
+    label: ReactNode;
+    icon?: ReactNode;
+    onSelect: () => void;
+    tone?: 'default' | 'danger';
+    disabled?: boolean;
+}
+```
 
 ## Description
 
@@ -11,11 +22,11 @@ _Auto-generated from `OverflowMenuItem` in `frontend/src/components/ui/OverflowM
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

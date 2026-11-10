@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/components/common/CollapsibleSection.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `clsx` | `clsx` |
-| `lucide-react` | `ChevronDown` |
-| `react` | `useId`, `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `ChevronDown` | — | compiler-dependent |
+| `react` | `useId`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -82,7 +82,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CollapsibleSectionProps](../entities/CollapsibleSectionProps.md) | Class | 5 | — | — |
+| [CollapsibleSectionProps](../entities/CollapsibleSectionProps.md) | Interface | 5 | — | — |
 
 ## Functions
 

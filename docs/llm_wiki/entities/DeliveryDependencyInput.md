@@ -19,7 +19,7 @@ _Auto-generated from `DeliveryDependencyInput` in `backend/app/routers/delivery_
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

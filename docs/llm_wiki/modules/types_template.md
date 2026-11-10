@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/template.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/ProjectForm.tsx"]
@@ -67,8 +69,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkTemplate](../entities/types_template_WorkTemplate.md) | Class | 3 | — | — |
-| [WorkTemplateCreate](../entities/types_template_WorkTemplateCreate.md) | Class | 22 | — | — |
-| [TemplateListParams](../entities/TemplateListParams.md) | Class | 39 | — | — |
-| [TemplateType](../entities/types_template_TemplateType.md) | Type alias | 1 | — | — |
-| [WorkTemplateUpdate](../entities/types_template_WorkTemplateUpdate.md) | Type alias | 37 | — | — |
+| [WorkTemplate](../entities/types_template_WorkTemplate.md) | Interface | 3 | — | — |
+| [WorkTemplateCreate](../entities/types_template_WorkTemplateCreate.md) | Interface | 22 | — | — |
+| [TemplateListParams](../entities/TemplateListParams.md) | Interface | 39 | — | — |
+| [TemplateType](../entities/types_template_TemplateType.md) | Type alias | 1 | `'task' \| 'project' \| 'triage'` | — |
+| [WorkTemplateUpdate](../entities/types_template_WorkTemplateUpdate.md) | Type alias | 37 | `Partial<WorkTemplateCreate>` | — |

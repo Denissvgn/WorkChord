@@ -16,15 +16,23 @@ Direct lifecycle changes retain planned, active, resolved and closed values; sum
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `AuthorityError` |
-| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations` |
+| `app.authority` | `AuthorityError`, `require_project` |
+| `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict` |
+| `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
+| `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
+| `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `OutboundWebhookService` |
+| `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService` |
+| `app.services.task_hierarchy_service` | `TaskTreeIntegrityError` |
 | `app.services.task_service` | `TaskService` |
+| `app.services.work_metrics` | `effective_work_flags`, `working_today`, `task_signals` |
+| `app.utils.time` | `utc_now` |
 | `datetime` | `date`, `timedelta` |
 | `json` | `json` |
 | `sqlalchemy` | `desc`, `func`, `select` |
@@ -37,81 +45,29 @@ Direct lifecycle changes retain planned, active, resolved and closed values; sum
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/commands.py"]
-    n2["backend/app/models/iteration.py"]
-    n3["backend/app/models/task.py"]
-    n4["backend/app/models/task_status_log.py"]
-    n5["backend/app/query_limits.py"]
-    n6["backend/app/services/hierarchy_repair_service.py"]
-    n7["backend/app/services/language_service.py"]
-    n8["backend/app/services/outbound_webhook_service.py"]
-    n9["backend/app/services/task_service.py"]
-    n10["backend/app/services/task_status_service.py"]
-    n0 --> n3
+    n0["backend"]
+    n1["backend/app/services/task_status_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n2
-    n1 --> n3
-    n1 --> n9
-    n2 --> n3
-    n3 --> n2
-    n3 --> n4
-    n4 --> n3
-    n6 --> n0
-    n6 --> n1
-    n6 --> n3
-    n6 --> n9
-    n6 --> n10
-    n8 --> n1
-    n9 --> n0
-    n9 --> n1
-    n9 --> n2
-    n9 --> n3
-    n9 --> n5
-    n9 --> n7
-    n9 --> n8
-    n10 --> n0
-    n10 --> n1
-    n10 --> n2
-    n10 --> n3
-    n10 --> n4
-    n10 --> n5
-    n10 --> n7
-    n10 --> n8
-    n10 --> n9
-    click n0 "../modules/authority.md"
-    click n1 "../modules/commands.md"
-    click n2 "../modules/models_iteration.md"
-    click n3 "../modules/models_task.md"
-    click n4 "../modules/task_status_log.md"
-    click n5 "../modules/query_limits.md"
-    click n6 "../modules/hierarchy_repair_service.md"
-    click n7 "../modules/language_service.md"
-    click n8 "../modules/outbound_webhook_service.md"
-    click n9 "../modules/task_service.md"
-    click n10 "../modules/task_status_service.md"
+    click n1 "../modules/task_status_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [hierarchy_repair_service](../modules/hierarchy_repair_service.md) |
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [models_iteration](../modules/models_iteration.md) |
-| Outbound | [models_task](../modules/models_task.md) |
-| Outbound | [task_status_log](../modules/task_status_log.md) |
-| Outbound | [query_limits](../modules/query_limits.md) |
-| Outbound | [language_service](../modules/language_service.md) |
-| Outbound | [outbound_webhook_service](../modules/outbound_webhook_service.md) |
-| Outbound | [task_service](../modules/task_service.md) |
+| Inbound | `backend` (2) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -41,7 +41,7 @@ Stored advisory classification suggestion for a triage item.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

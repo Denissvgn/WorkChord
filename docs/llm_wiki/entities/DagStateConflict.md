@@ -15,7 +15,7 @@ _Auto-generated from `DagStateConflict` in `backend/app/autonomy/orchestration.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

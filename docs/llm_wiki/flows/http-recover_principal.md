@@ -16,57 +16,91 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as recover_principal
     participant p1 as require_operator
-    participant p2 as db.info.get (backend/app/authority.py:require_operator)
-    participant p3 as AuthorityError
-    participant p4 as require_identity_writes
-    participant p5 as get_settings
-    participant p6 as Settings
-    participant p7 as MaintenanceModeError
-    participant p8 as internal_authority
-    participant p9 as db.info.get (backend/app/authority.py:internal_authority)
-    participant p10 as db.get
-    participant p11 as db.execute
-    participant p12 as update(…).where(…).values
-    participant p13 as update(…).where
-    participant p14 as update
-    participant p15 as UserSession.revoked_at.is_
-    participant p16 as utc_now
-    participant p17 as datetime.now
-    participant p18 as db.add
-    participant p19 as CommandAudit
-    participant p20 as db.flush
+    participant p2 as require_identity_writes
+    participant p3 as internal_authority
+    participant p4 as db.get
+    participant p5 as AuthorityError
+    participant p6 as db.execute
+    participant p7 as update(…).where(…).values
+    participant p8 as update(…).where
+    participant p9 as update
+    participant p10 as UserSession.revoked_at.is_
+    participant p11 as utc_now
+    participant p12 as db.add
+    participant p13 as CommandAudit
+    participant p14 as db.flush
+    participant p15 as db.info.get (backend/app/authority.py:require_operator)
+    participant p16 as get_settings
+    participant p17 as db.info.get (backend/app/authority.py:internal_authority)
+    participant p18 as datetime.now
+    participant p19 as MaintenanceModeError
+    participant p20 as Settings
     p0->>p1: require_operator
-    p1-->>p2: db.info.get (backend/app/authority.py:require_operator)
-    p1->>p3: AuthorityError
-    p0->>p4: require_identity_writes
-    p4->>p5: get_settings
-    p5->>p6: Settings
-    p4->>p7: MaintenanceModeError
-    p4->>p5: get_settings
-    p0->>p8: internal_authority
-    p8-->>p9: db.info.get (backend/app/authority.py:internal_authority)
-    p0-->>p10: db.get
-    p0->>p3: AuthorityError
-    p0-->>p11: db.execute
-    p0-->>p12: update(…).where(…).values
-    p0-->>p13: update(…).where
-    p0-->>p14: update
-    p0-->>p15: UserSession.revoked_at.is_
-    p0->>p16: utc_now
-    p16-->>p17: datetime.now
-    p0-->>p18: db.add
-    p0->>p19: CommandAudit
-    p0-->>p20: db.flush
+    p0->>p2: require_identity_writes
+    p0->>p3: internal_authority
+    p0-->>p4: db.get(Principal, principal_id)
+    p0->>p5: AuthorityError
+    p0-->>p6: db.execute(...)
+    p0-->>p7: update(…).where(…).values(revoked_at=utc_now(...), csrf_token=None)
+    p0-->>p8: update(…).where(..., UserSession.revoked_at.is_(...))
+    p0-->>p9: update(UserSession)
+    p0-->>p10: UserSession.revoked_at.is_(None)
+    p0->>p11: utc_now
+    p0-->>p12: db.add(CommandAudit(...))
+    p0->>p13: CommandAudit
+    p0-->>p14: db.flush
+    p1-->>p15: db.info.get (backend/app/authority.py:require_operator)('authority')
+    p2->>p16: get_settings
+    p3-->>p17: db.info.get (backend/app/authority.py:internal_authority)('authority_internal', False)
+    p11-->>p18: datetime.now(UTC)
+    p1->>p5: AuthorityError
+    p2->>p19: MaintenanceModeError
+    p2->>p16: get_settings
+    p16->>p20: Settings
 ```
+
+> Call sequence diagram shows 22 of 22 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 2 of 2 (0 omitted); unresolved 9 of 9 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 12; effect analysis evaluated: 7, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
+
+Collector observations for 7 source steps with known totals: observed: 15, emitted: 15, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `recover_principal` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `require_operator` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `db.info.get (backend/app/authority.py:require_operator)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `db.info.get (backend/app/authority.py:internal_authority)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. recover_principal"]

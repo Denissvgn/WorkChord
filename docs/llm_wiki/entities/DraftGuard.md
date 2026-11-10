@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [DraftDismissalDialog](../modules/DraftDismissalDialog.md)
+**Target:**
+
+```typescript
+ReturnType<typeof useDraftDismissal>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `DraftGuard` in `frontend/src/components/tasks/DraftDismiss
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

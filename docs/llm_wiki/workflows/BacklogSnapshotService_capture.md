@@ -9,11 +9,15 @@
 1. `authority.require_project`
 2. `commands.current_command`
 3. `commands.lock_backlog_project`
-4. `task_service.TaskService`
-5. `snapshot_service.SnapshotService`
-6. `time.utc_now`
-7. `recovery.ApplicationSnapshot`
-8. `config.get_settings`
+4. `task_service.TaskService._load_iteration_tree`
+5. `task_service.TaskService`
+6. `snapshot_service.SnapshotService`
+7. `snapshot_service.SnapshotService._validate_reason`
+8. `time.utc_now`
+9. `snapshot_service.SnapshotService._task_to_export`
+10. `snapshot_service.SnapshotService.profile_lifetimes`
+11. `recovery.ApplicationSnapshot`
+12. `config.get_settings`
 
 ## Touches
 

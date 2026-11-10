@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/pages/RoadmapPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./RoadmapPage` | `RoadmapPage` |
-| `@testing-library/react` | `fireEvent`, `screen`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./RoadmapPage` | `RoadmapPage` | — | compiler-dependent |
+| `@testing-library/react` | `fireEvent`, `screen`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

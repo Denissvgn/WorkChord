@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/tasks/taskEditorContract.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `Task`, `TaskBrief`, `TaskCreate`, `TaskStatus`, `TaskUpdate` |
-| `../../utils/apiError` | `getApiErrorMessage` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `Task`, `TaskBrief`, `TaskCreate`, `TaskStatus`, `TaskUpdate` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/components/tasks/taskEditorContract.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskBriefEditor.test.tsx"]
@@ -91,15 +93,15 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskEditorValues](../entities/TaskEditorValues.md) | Class | 10 | — | — |
-| [TaskEditorDefaultsContext](../entities/TaskEditorDefaultsContext.md) | Class | 37 | — | — |
-| [TaskEditorFieldDefinition](../entities/TaskEditorFieldDefinition.md) | Class | 45 | — | — |
-| [TaskEditorValidationIssue](../entities/TaskEditorValidationIssue.md) | Class | 196 | — | — |
-| [TaskConflictMetadata](../entities/TaskConflictMetadata.md) | Class | 265 | — | — |
-| [TaskEditorSection](../entities/TaskEditorSection.md) | Type alias | 4 | — | — |
-| [TaskEditorAvailability](../entities/TaskEditorAvailability.md) | Type alias | 5 | — | — |
-| [TaskEditorValidationCode](../entities/TaskEditorValidationCode.md) | Type alias | 189 | — | — |
-| [TaskEditorServerError](../entities/TaskEditorServerError.md) | Type alias | 273 | — | — |
+| [TaskEditorValues](../entities/TaskEditorValues.md) | Interface | 10 | — | — |
+| [TaskEditorDefaultsContext](../entities/TaskEditorDefaultsContext.md) | Interface | 37 | — | — |
+| [TaskEditorFieldDefinition](../entities/TaskEditorFieldDefinition.md) | Interface | 45 | — | — |
+| [TaskEditorValidationIssue](../entities/TaskEditorValidationIssue.md) | Interface | 196 | — | — |
+| [TaskConflictMetadata](../entities/TaskConflictMetadata.md) | Interface | 265 | — | — |
+| [TaskEditorSection](../entities/TaskEditorSection.md) | Type alias | 4 | `'essential' \| 'planning' \| 'advanced' \| 'internal'` | — |
+| [TaskEditorAvailability](../entities/TaskEditorAvailability.md) | Type alias | 5 | <pre><code>&#124; &#39;all&#45;editors&#39;&#10;    &#124; &#39;existing&#45;task&#39;&#10;    &#124; &#39;preserved&#45;metadata&#39;</code></pre> | — |
+| [TaskEditorValidationCode](../entities/TaskEditorValidationCode.md) | Type alias | 189 | <pre><code>&#124; &#39;titleRequired&#39;&#10;    &#124; &#39;priorityRange&#39;&#10;    &#124; &#39;effortRequired&#39;&#10;    &#124; &#39;dateOrder&#39;&#10;    &#124; &#39;assigneeOutsideIteration&#39;</code></pre> | — |
+| [TaskEditorServerError](../entities/TaskEditorServerError.md) | Type alias | 273 | <pre><code>&#124; &#123;&#10;        kind&#58; &#39;version&#45;conflict&#39;&#59;&#10;        expectedVersion&#58; number&#59;&#10;        currentTask&#58; TaskConflictMetadata&#59;&#10;    &#125;&#10;    &#124; &#123; kind&#58; &#39;generic&#39;&#59; message&#58; string &#125;</code></pre> | — |
 
 ## Functions
 
@@ -107,7 +109,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `emptyTaskBrief` | `() -> TaskBrief` | — | — |
 | `buildTaskEditorDefaults` | `(context: TaskEditorDefaultsContext = {}) -> TaskEditorValues` | — | — |
-| `validateTaskEditor` | `(values: TaskEditorValues, iterationAssigneeIds: ReadonlySet<number>) -> TaskEditorValidationIssue[]` | — | — |
+| `validateTaskEditor` | `(values: TaskEditorValues, iterationAssigneeIds?: ReadonlySet<number>) -> TaskEditorValidationIssue[]` | — | — |
 | `toTaskCreate` | `(values: TaskEditorValues) -> TaskCreate` | — | — |
 | `toTaskUpdate` | `(values: TaskEditorValues, options: { includeStatus?: boolean } = {}) -> TaskUpdate` | — | — |
 | `mapTaskEditorServerError` | `(error: unknown, fallback: string) -> TaskEditorServerError` | — | — |

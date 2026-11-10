@@ -9,8 +9,10 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `authority.require_project`
-2. `task_domain_service.TaskDomainService`
-3. `delivery_dependency_service.DeliveryDependencyService`
+2. `task_domain_service.TaskDomainService.allowed_actions`
+3. `task_domain_service.TaskDomainService`
+4. `delivery_dependency_service.DeliveryDependencyService.ready`
+5. `delivery_dependency_service.DeliveryDependencyService`
 
 ## Touches
 

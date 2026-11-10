@@ -15,7 +15,7 @@ Base class for all models.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -141,4 +141,4 @@ flowchart LR
 | `discussion` | import | [models_discussion](../modules/models_discussion.md) | — |
 | `execution_usage` | import | [models_execution_usage](../modules/models_execution_usage.md) | — |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.

@@ -1,7 +1,7 @@
 # TimeEntry
 
 **Location:** `frontend/src/services/timeEntryService.ts:4`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `TimeValues`
 **Module:** [timeEntryService](../modules/timeEntryService.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `TimeEntry` in `frontend/src/services/timeEntryService.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

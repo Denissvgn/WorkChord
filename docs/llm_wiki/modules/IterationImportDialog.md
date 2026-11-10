@@ -8,18 +8,18 @@ JSON import confirms the retained file against its original complete observation
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/exportService` | `exportService` |
-| `../../services/planningInputService` | `ObservedRevisions` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/Modal` | `Modal` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../tasks/useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `react` | `useId` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/exportService` | `exportService` | — | compiler-dependent |
+| `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `react` | `useId` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +30,8 @@ JSON import confirms the retained file against its original complete observation
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]

@@ -17,7 +17,7 @@ _Auto-generated from `PlanningInputRevisions` in `backend/app/schemas/planning_i
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

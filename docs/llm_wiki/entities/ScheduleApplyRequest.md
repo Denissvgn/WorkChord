@@ -19,7 +19,7 @@ _Auto-generated from `ScheduleApplyRequest` in `backend/app/schemas/gantt.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

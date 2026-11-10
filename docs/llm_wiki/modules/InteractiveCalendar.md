@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/calendar/InteractiveCalendar.tsx`.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/dateLocale` | `dateFnsLocale` |
-| `clsx` | `clsx` |
-| `date-fns` | `format`, `startOfMonth`, `endOfMonth`, `eachDayOfInterval`, `getDay` |
-| `lucide-react` | `ChevronLeft`, `ChevronRight` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `date-fns` | `format`, `startOfMonth`, `endOfMonth`, `eachDayOfInterval`, `getDay` | — | compiler-dependent |
+| `lucide-react` | `ChevronLeft`, `ChevronRight` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -55,12 +55,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarPeriodNavigatorProps](../entities/CalendarPeriodNavigatorProps.md) | Class | 10 | — | — |
-| [InteractiveCalendarProps](../entities/InteractiveCalendarProps.md) | Class | 20 | — | — |
+| [CalendarPeriodNavigatorProps](../entities/CalendarPeriodNavigatorProps.md) | Interface | 10 | — | — |
+| [InteractiveCalendarProps](../entities/InteractiveCalendarProps.md) | Interface | 20 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `CalendarPeriodNavigator` | `({     year,     month,     holidays,     weekendDays,     onYearChange,     onMonthChange,     className, }: CalendarPeriodNavigatorProps)` | — | — |
-| `InteractiveCalendar` | `({     year,     month,     holidays,     shortDays,     weekendDays,     onYearChange,     onMonthChange,     onAddHoliday,     onRemoveHoliday,     onAddShortDay,     onRemoveShortDay }: InteractiveCalendarProps)` | — | — |
+| `CalendarPeriodNavigator` | <pre><code>&#40;&#123;&#10;    year&#44;&#10;    month&#44;&#10;    holidays&#44;&#10;    weekendDays&#44;&#10;    onYearChange&#44;&#10;    onMonthChange&#44;&#10;    className&#44;&#10;&#125;&#58; CalendarPeriodNavigatorProps&#41;</code></pre> | — | — |
+| `InteractiveCalendar` | <pre><code>&#40;&#123;&#10;    year&#44;&#10;    month&#44;&#10;    holidays&#44;&#10;    shortDays&#44;&#10;    weekendDays&#44;&#10;    onYearChange&#44;&#10;    onMonthChange&#44;&#10;    onAddHoliday&#44;&#10;    onRemoveHoliday&#44;&#10;    onAddShortDay&#44;&#10;    onRemoveShortDay&#10;&#125;&#58; InteractiveCalendarProps&#41;</code></pre> | — | — |

@@ -24,7 +24,7 @@ _Auto-generated from `NativeConnectionExchange` in `backend/app/routers/identity
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

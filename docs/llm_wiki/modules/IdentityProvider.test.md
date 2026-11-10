@@ -8,15 +8,16 @@ _Auto-generated from `frontend/src/features/identity/IdentityProvider.test.tsx`.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../planningMasters/usePlanningNavigationSummary` | `planningNavigationSummaryKey` |
-| `./IdentityProvider` | `IdentityProvider`, `IdentityBadge` |
-| `@tanstack/react-query` | `useQueryClient`, `QueryClient` |
-| `@testing-library/react` | `screen`, `waitFor`, `act` |
-| `react` | `useEffect` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../planningMasters/usePlanningNavigationSummary` | `planningNavigationSummaryKey` | — | compiler-dependent |
+| `./IdentityProvider` | `IdentityProvider`, `IdentityBadge` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClient` | Declaration | erased |
+| `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `act` | — | compiler-dependent |
+| `react` | `useEffect` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

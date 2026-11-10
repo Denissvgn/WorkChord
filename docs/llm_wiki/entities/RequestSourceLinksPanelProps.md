@@ -1,7 +1,7 @@
 # RequestSourceLinksPanelProps
 
 **Location:** `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx:19`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [RequestSourceLinksPanel](../modules/RequestSourceLinksPanel.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `RequestSourceLinksPanelProps` in `frontend/src/components/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

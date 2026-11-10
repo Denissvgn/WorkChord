@@ -13,12 +13,13 @@
 3. `task_domain_service.require_owner`
 4. `task_domain_service.normalize_effort`
 5. `task_brief_service.render_brief`
-6. `task_brief_service.TaskBriefService`
-7. `models_task.TaskDependency`
-8. `task_brief_service.clear_execution_evidence`
-9. `task_brief_service.clear_acceptance`
-10. `outbound_webhook_service.emit_outbound_webhook_event`
-11. `commands.commit_or_flush`
+6. `task_brief_service.TaskBriefService.apply_brief`
+7. `task_brief_service.TaskBriefService`
+8. `models_task.TaskDependency`
+9. `task_brief_service.clear_execution_evidence`
+10. `task_brief_service.clear_acceptance`
+11. `outbound_webhook_service.emit_outbound_webhook_event`
+12. `commands.commit_or_flush`
 
 ## Touches
 

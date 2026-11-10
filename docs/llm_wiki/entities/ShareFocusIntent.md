@@ -1,7 +1,7 @@
 # ShareFocusIntent
 
 **Location:** `frontend/src/pages/PlanMasterPage.tsx:82`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `ShareFocusIntent` in `frontend/src/pages/PlanMasterPage.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

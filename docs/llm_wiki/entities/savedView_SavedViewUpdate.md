@@ -1,7 +1,7 @@
 # SavedViewUpdate
 
 **Location:** `frontend/src/types/savedView.ts:52`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `SavedViewUpdate` in `frontend/src/types/savedView.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -29,7 +29,7 @@ Checksummed application recovery data belongs to an iteration or a project backl
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

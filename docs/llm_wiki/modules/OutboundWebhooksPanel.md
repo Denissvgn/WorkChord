@@ -8,24 +8,25 @@ _Auto-generated from `frontend/src/components/settings/OutboundWebhooksPanel.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` |
-| `../../services/outboundWebhookService` | `outboundWebhookService` |
-| `../../types/outboundWebhook` | `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookTarget`, `OutboundWebhookTargetCreate`, `OutboundWebhookTargetUpdate` |
-| `../../utils/adminAccess` | `getAdminAccessErrorMessage` |
-| `../../utils/formatDate` | `formatDateTime` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../feedback/toast` | `useToast` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Edit2`, `Loader2`, `Plus`, `RefreshCw`, `Save`, `Send`, `Trash2`, `Webhook`, `X` |
-| `react` | `useId`, `useMemo`, `useState`, `FormEvent` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../services/outboundWebhookService` | `outboundWebhookService` | — | compiler-dependent |
+| `../../types/outboundWebhook` | `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookTarget`, `OutboundWebhookTargetCreate`, `OutboundWebhookTargetUpdate` | Declaration | erased |
+| `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Edit2`, `Loader2`, `Plus`, `RefreshCw`, `Save`, `Send`, `Trash2`, `Webhook`, `X` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -37,6 +38,8 @@ _Auto-generated from `frontend/src/components/settings/OutboundWebhooksPanel.tsx
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -67,9 +70,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TargetFormState](../entities/TargetFormState.md) | Class | 35 | — | — |
-| [TargetFormErrors](../entities/TargetFormErrors.md) | Class | 46 | — | — |
-| [EventOption](../entities/EventOption.md) | Class | 53 | — | — |
+| [TargetFormState](../entities/TargetFormState.md) | Interface | 35 | — | — |
+| [TargetFormErrors](../entities/TargetFormErrors.md) | Interface | 46 | — | — |
+| [EventOption](../entities/EventOption.md) | Interface | 53 | — | — |
 
 ## Functions
 

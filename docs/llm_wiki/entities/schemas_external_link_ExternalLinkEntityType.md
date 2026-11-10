@@ -19,7 +19,7 @@ Supported internal entity types for external links.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

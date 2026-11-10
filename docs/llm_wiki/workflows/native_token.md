@@ -7,8 +7,9 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `authority.AuthorityError`
-2. `identity_service.IdentityService`
-3. `session_service.get_client_ip`
+2. `identity_service.IdentityService.issue_session`
+3. `identity_service.IdentityService`
+4. `session_service.get_client_ip`
 
 ## Touches
 

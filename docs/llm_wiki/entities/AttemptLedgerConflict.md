@@ -15,7 +15,7 @@ _Auto-generated from `AttemptLedgerConflict` in `backend/app/autonomy/evidence.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

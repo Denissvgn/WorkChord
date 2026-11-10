@@ -1,7 +1,7 @@
 # TeamProfileManagerProps
 
 **Location:** `frontend/src/components/team/TeamProfileManager.tsx:66`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TeamProfileManager](../modules/TeamProfileManager.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `TeamProfileManagerProps` in `frontend/src/components/team/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

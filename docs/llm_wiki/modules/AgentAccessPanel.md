@@ -8,19 +8,19 @@ _Auto-generated from `frontend/src/components/settings/AgentAccessPanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAgentAccess` | `useAgentAccess` |
-| `../../services/agentService` | `agentService` |
-| `../../utils/agentAccess` | `clearAgentApiKey`, `setAgentApiKey` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `@tanstack/react-query` | `useQuery`, `useQueryClient` |
-| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `KeyRound`, `ShieldCheck`, `Trash2` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
+| `../../services/agentService` | `agentService` | — | compiler-dependent |
+| `../../utils/agentAccess` | `clearAgentApiKey`, `setAgentApiKey` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `KeyRound`, `ShieldCheck`, `Trash2` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 

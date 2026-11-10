@@ -17,7 +17,7 @@ Response returned after creating an iteration series.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

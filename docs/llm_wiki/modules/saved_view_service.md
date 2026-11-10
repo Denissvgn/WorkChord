@@ -16,6 +16,10 @@ Task dashboard cards count matching leaves. Personal ownership follows the durab
 | `app.models.iteration` | `Iteration` |
 | `app.models.saved_view` | `SavedView` |
 | `app.schemas.saved_view` | `SavedViewCreate`, `SavedViewCreateRequest`, `SavedViewDashboardCardResponse`, `SavedViewDuplicateRequest`, `SavedViewResponse`, `SavedViewScope`, `SavedViewType`, `SavedViewUpdate`, `SavedViewUpdateRequest` |
+| `app.services.label_service` | `LabelService` |
+| `app.services.project_service` | `ProjectService` |
+| `app.services.task_service` | `TaskService` |
+| `app.services.triage_service` | `TriageService` |
 | `datetime` | `date` |
 | `math` | `isfinite` |
 | `sqlalchemy` | `Select`, `or_`, `select` |
@@ -27,64 +31,29 @@ Task dashboard cards count matching leaves. Personal ownership follows the durab
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/commands.py"]
-    n1["backend/app/mcp_agent_tools.py"]
-    n2["backend/app/models/iteration.py"]
-    n3["backend/app/models/saved_view.py"]
-    n4["backend/app/routers/saved_views.py"]
-    n5["backend/app/schemas/saved_view.py"]
-    n6["backend/app/services/saved_view_service.py"]
-    n7["backend/app/services/upgrade_service.py"]
-    n8["backend/tests/test_saved_view_service.py"]
-    n9["backend/tests/test_work_correctness.py"]
-    n0 --> n2
+    n0["backend"]
+    n1["backend/app/services/saved_view_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n5
-    n1 --> n6
-    n4 --> n5
-    n4 --> n6
-    n6 --> n0
-    n6 --> n2
-    n6 --> n3
-    n6 --> n5
-    n7 --> n0
-    n7 --> n6
-    n8 --> n5
-    n8 --> n6
-    n9 --> n0
-    n9 --> n2
-    n9 --> n6
-    click n0 "../modules/commands.md"
-    click n1 "../modules/mcp_agent_tools.md"
-    click n2 "../modules/models_iteration.md"
-    click n3 "../modules/models_saved_view.md"
-    click n4 "../modules/saved_views.md"
-    click n5 "../modules/schemas_saved_view.md"
-    click n6 "../modules/saved_view_service.md"
-    click n7 "../modules/upgrade_service.md"
-    click n8 "../modules/test_saved_view_service.md"
-    click n9 "../modules/test_work_correctness.md"
+    click n1 "../modules/saved_view_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
-| Inbound | [saved_views](../modules/saved_views.md) |
-| Inbound | [upgrade_service](../modules/upgrade_service.md) |
-| Inbound | [test_saved_view_service](../modules/test_saved_view_service.md) |
-| Inbound | [test_work_correctness](../modules/test_work_correctness.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [models_iteration](../modules/models_iteration.md) |
-| Outbound | [models_saved_view](../modules/models_saved_view.md) |
-| Outbound | [schemas_saved_view](../modules/schemas_saved_view.md) |
+| Inbound | `backend` (5) |
+| Outbound | `backend` (8) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

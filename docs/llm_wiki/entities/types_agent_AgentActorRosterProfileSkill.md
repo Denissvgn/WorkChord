@@ -1,7 +1,7 @@
 # AgentActorRosterProfileSkill
 
 **Location:** `frontend/src/types/agent.ts:167`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `AgentActorRosterProfileSkill` in `frontend/src/types/agent
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

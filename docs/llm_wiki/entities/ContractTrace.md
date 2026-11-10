@@ -22,7 +22,7 @@ _Auto-generated from `ContractTrace` in `backend/app/autonomy/contracts/postgres
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

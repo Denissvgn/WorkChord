@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/planning/PlanningWorkflowGuide.tes
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./PlanningWorkflowGuide` | `PlanningWorkflowGuide` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PlanningWorkflowGuide` | `PlanningWorkflowGuide` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

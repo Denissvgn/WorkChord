@@ -1,7 +1,7 @@
 # NotificationDelivery
 
 **Location:** `frontend/src/services/discussionService.ts:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `NotificationDelivery` in `frontend/src/services/discussion
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

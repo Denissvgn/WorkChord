@@ -21,7 +21,7 @@ _Auto-generated from `Candidate` in `backend/tests/test_agent_routing_wave6_qual
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

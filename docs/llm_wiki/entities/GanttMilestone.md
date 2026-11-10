@@ -21,7 +21,7 @@ Milestone info for Gantt task editing.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

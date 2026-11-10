@@ -41,6 +41,7 @@ flowchart LR
     n3 --> n5
     n3 --> n6
     n3 --> n7
+    n6 --> n4
     n6 --> n7
     click n0 "../modules/app_database.md"
     click n1 "../modules/app_main.md"

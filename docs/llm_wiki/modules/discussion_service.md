@@ -16,6 +16,10 @@ Owns bounded human discussion, validated mentions, subscriptions and personal in
 | `app.models.identity` | `Principal`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.outbound_webhook` | `OutboundWebhookDelivery`, `OutboundWebhookEvent` |
 | `app.models.task` | `Task` |
+| `app.services.identity_service` | `IdentityService` |
+| `app.services.outbound_webhook_service` | `OutboundDeliveryAttemptError` |
+| `app.sql_semantics` | `portable_contains` |
+| `app.utils.time` | `utc_now` |
 | `hashlib` | `sha256` |
 | `sqlalchemy` | `or_`, `select`, `update` |
 
@@ -24,65 +28,29 @@ Owns bounded human discussion, validated mentions, subscriptions and personal in
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/authority.py"]
-    n1["backend/app/commands.py"]
-    n2["backend/app/models/discussion.py"]
-    n3["backend/app/models/identity.py"]
-    n4["backend/app/models/outbound_webhook.py"]
-    n5["backend/app/models/task.py"]
-    n6["backend/app/routers/discussion.py"]
-    n7["backend/app/services/discussion_service.py"]
-    n8["backend/tests/test_task_discussion.py"]
-    n0 --> n3
-    n0 --> n5
+    n0["backend"]
+    n1["backend/app/services/discussion_service.py"]
+    n0 --> n1
     n1 --> n0
-    n1 --> n5
-    n1 --> n7
-    n2 --> n5
-    n6 --> n7
-    n7 --> n0
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n4
-    n7 --> n5
-    n8 --> n0
-    n8 --> n1
-    n8 --> n2
-    n8 --> n3
-    n8 --> n4
-    n8 --> n5
-    n8 --> n7
-    click n0 "../modules/authority.md"
-    click n1 "../modules/commands.md"
-    click n2 "../modules/models_discussion.md"
-    click n3 "../modules/models_identity.md"
-    click n4 "../modules/models_outbound_webhook.md"
-    click n5 "../modules/models_task.md"
-    click n6 "../modules/routers_discussion.md"
-    click n7 "../modules/discussion_service.md"
-    click n8 "../modules/test_task_discussion.md"
+    click n1 "../modules/discussion_service.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [commands](../modules/commands.md) |
-| Inbound | [routers_discussion](../modules/routers_discussion.md) |
-| Inbound | [test_task_discussion](../modules/test_task_discussion.md) |
-| Outbound | [authority](../modules/authority.md) |
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [models_discussion](../modules/models_discussion.md) |
-| Outbound | [models_identity](../modules/models_identity.md) |
-| Outbound | [models_outbound_webhook](../modules/models_outbound_webhook.md) |
-| Outbound | [models_task](../modules/models_task.md) |
+| Inbound | `backend` (4) |
+| Outbound | `backend` (10) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 1 | 0 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

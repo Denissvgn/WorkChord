@@ -8,17 +8,17 @@ _Auto-generated from `frontend/src/pages/OverviewPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../features/planningMasters/usePlanningReadiness` | `PlanningTeamMember` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `../types/iteration` | `Iteration`, `IterationSummary` |
-| `../types/task` | `Task`, `TaskStatus` |
-| `../utils/selectWorkNowTasks` | `selectWorkNowTasks` |
-| `./OverviewPage` | `OverviewPage` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `@testing-library/user-event` | `UserEvent` |
-| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../features/planningMasters/usePlanningReadiness` | `PlanningTeamMember` | Declaration | erased |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../types/iteration` | `Iteration`, `IterationSummary` | Declaration | erased |
+| `../types/task` | `Task`, `TaskStatus` | Declaration | erased |
+| `../utils/selectWorkNowTasks` | `selectWorkNowTasks` | — | compiler-dependent |
+| `./OverviewPage` | `OverviewPage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `@testing-library/user-event` | `UserEvent` | Declaration | erased |
+| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +30,8 @@ _Auto-generated from `frontend/src/pages/OverviewPage.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/planningMasters/usePlanningReadiness.ts"]

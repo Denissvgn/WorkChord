@@ -17,6 +17,7 @@ Outbound webhook target management and delivery service.
 | `app.models.outbound_webhook` | `OutboundDeliveryChannel`, `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookEvent`, `OutboundWebhookTarget` |
 | `app.runtime_telemetry` | `activity`, `metrics` |
 | `app.schemas.outbound_webhook` | `OutboundWebhookDeliveryResponse`, `OutboundWebhookRetryResponse`, `OutboundWebhookTargetCreate`, `OutboundWebhookTargetResponse`, `OutboundWebhookTargetUpdate` |
+| `app.services.discussion_service` | `DiscussionService` |
 | `app.services.email_settings_service` | `EmailSettingsService` |
 | `app.services.notification_service` | `NotificationService` |
 | `app.utils.time` | `as_utc`, `utc_now` |
@@ -53,8 +54,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (15) |
-| Outbound | `backend` (11) |
+| Inbound | `backend` (16) |
+| Outbound | `backend` (12) |
 
 ### External packages
 
@@ -62,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

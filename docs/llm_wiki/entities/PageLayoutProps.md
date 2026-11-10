@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PageLayout](../modules/PageLayout.md)
+**Target:**
+
+```typescript
+{
+    children: ReactNode;
+    variant?: 'default' | 'wide' | 'workbench';
+    className?: string;
+    testId?: string;
+}
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `PageLayoutProps` in `frontend/src/components/ui/PageLayout
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

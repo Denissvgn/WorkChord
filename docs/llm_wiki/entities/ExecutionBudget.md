@@ -22,7 +22,7 @@ _Auto-generated from `ExecutionBudget` in `backend/app/autonomy/contracts/charte
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

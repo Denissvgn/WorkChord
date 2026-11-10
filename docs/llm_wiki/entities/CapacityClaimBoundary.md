@@ -20,7 +20,7 @@ _Auto-generated from `CapacityClaimBoundary` in `backend/app/autonomy/handoff.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/outboundWebhook.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/OutboundWebhooksPanel.test.tsx"]
@@ -44,11 +46,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [OutboundWebhookTarget](../entities/outboundWebhook_OutboundWebhookTarget.md) | Class | 3 | — | — |
-| [OutboundWebhookTargetCreate](../entities/outboundWebhook_OutboundWebhookTargetCreate.md) | Class | 16 | — | — |
-| [OutboundWebhookEvent](../entities/outboundWebhook_OutboundWebhookEvent.md) | Class | 28 | — | — |
-| [OutboundWebhookDelivery](../entities/outboundWebhook_OutboundWebhookDelivery.md) | Class | 38 | — | — |
-| [OutboundWebhookRetryResponse](../entities/outboundWebhook_OutboundWebhookRetryResponse.md) | Class | 57 | — | — |
-| [OutboundWebhookDeliveryListParams](../entities/OutboundWebhookDeliveryListParams.md) | Class | 61 | — | — |
-| [OutboundWebhookDeliveryStatus](../entities/outboundWebhook_OutboundWebhookDeliveryStatus.md) | Type alias | 1 | — | — |
-| [OutboundWebhookTargetUpdate](../entities/outboundWebhook_OutboundWebhookTargetUpdate.md) | Type alias | 26 | — | — |
+| [OutboundWebhookTarget](../entities/outboundWebhook_OutboundWebhookTarget.md) | Interface | 3 | — | — |
+| [OutboundWebhookTargetCreate](../entities/outboundWebhook_OutboundWebhookTargetCreate.md) | Interface | 16 | — | — |
+| [OutboundWebhookEvent](../entities/outboundWebhook_OutboundWebhookEvent.md) | Interface | 28 | — | — |
+| [OutboundWebhookDelivery](../entities/outboundWebhook_OutboundWebhookDelivery.md) | Interface | 38 | — | — |
+| [OutboundWebhookRetryResponse](../entities/outboundWebhook_OutboundWebhookRetryResponse.md) | Interface | 57 | — | — |
+| [OutboundWebhookDeliveryListParams](../entities/OutboundWebhookDeliveryListParams.md) | Interface | 61 | — | — |
+| [OutboundWebhookDeliveryStatus](../entities/outboundWebhook_OutboundWebhookDeliveryStatus.md) | Type alias | 1 | `'pending' \| 'delivered' \| 'failed'` | — |
+| [OutboundWebhookTargetUpdate](../entities/outboundWebhook_OutboundWebhookTargetUpdate.md) | Type alias | 26 | `Partial<OutboundWebhookTargetCreate>` | — |

@@ -20,7 +20,7 @@ Request for importing holidays from external source.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

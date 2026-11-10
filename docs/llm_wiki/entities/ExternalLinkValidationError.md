@@ -15,7 +15,7 @@ Raised when a provider-specific link cannot be parsed.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

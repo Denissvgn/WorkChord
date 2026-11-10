@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/feedback/LiveWindowStatus.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/Button` | `Button` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -83,4 +83,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `LiveWindowStatus` | `({ window }: { window: {     outsideWindow: boolean; headError: boolean; isFetching: boolean; restart: () => Promise<void>; } })` | — | — |
+| `LiveWindowStatus` | <pre><code>&#40;&#123; window &#125;&#58; &#123; window&#58; &#123;&#10;    outsideWindow&#58; boolean&#59; headError&#58; boolean&#59; isFetching&#58; boolean&#59; restart&#58; &#40;&#41; &#61;&#62; Promise&#60;void&#62;&#59;&#10;&#125; &#125;&#41;</code></pre> | — | — |

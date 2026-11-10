@@ -10,12 +10,12 @@ List and Board use one filtered tree and actionable-leaf projection. Parent cont
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/tasks/TaskFiltersBar` | `TaskFilters` |
-| `../types/label` | `LabelGroup` |
-| `../types/task` | `Task` |
-| `./taskFilters` | `filterTaskWithChildren` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `../types/label` | `LabelGroup` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
+| `./taskFilters` | `filterTaskWithChildren` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ List and Board use one filtered tree and actionable-leaf projection. Parent cont
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
@@ -79,10 +81,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [VisibleLeaf](../entities/VisibleLeaf.md) | Type alias | 6 | — | — |
+| [VisibleLeaf](../entities/VisibleLeaf.md) | Type alias | 6 | `Task & { parent_context: string[] }` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `selectVisibleWork` | `(tasks: Task[], filters: TaskFilters, groups: LabelGroup[] = [])` | — | — |
+| `selectVisibleWork` | `(tasks: Task[], filters?: TaskFilters, groups: LabelGroup[] = [])` | — | — |

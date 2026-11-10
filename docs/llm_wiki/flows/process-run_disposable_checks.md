@@ -6,64 +6,112 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
     participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as parser.add_mutually_exclusive_group
-    participant p5 as mode.add_argument
-    participant p6 as parser.parse_args
-    participant p7 as parser.error
-    participant p8 as set(…).intersection (scripts/ci/run_disposable_checks.py:parse_args)
-    participant p9 as set (scripts/ci/run_disposable_checks.py:parse_args)
-    participant p10 as Path
-    participant p11 as tempfile.mkdtemp
-    participant p12 as RunReceipt
-    participant p13 as SystemExit
-    participant p14 as str
-    participant p15 as bind_source
-    participant p16 as run.check_budget
-    participant p17 as subprocess.check_output(…).strip
+    participant p2 as bind_source
+    participant p3 as validate_results
+    participant p4 as runtime_environment
+    participant p5 as validate_admin_url
+    participant p6 as require_free_browser_ports
+    participant p7 as Path
+    participant p8 as run.cleanups.append
+    participant p9 as tempfile.mkdtemp
+    participant p10 as RunReceipt
+    participant p11 as SystemExit
+    participant p12 as str
+    participant p13 as tempfile.TemporaryDirectory
+    participant p14 as run.validators.append (scripts/ci/run_disposable_checks.py:main)
+    participant p15 as env.get (scripts/ci/run_disposable_checks.py:main)
+    participant p16 as run.run
+    participant p17 as set(…).intersection (scripts/ci/run_disposable_checks.py:main)
+    participant p18 as set (scripts/ci/run_disposable_checks.py:main)
+    participant p19 as map
+    participant p20 as shutil.copytree
     p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p4: parser.add_mutually_exclusive_group
-    p1-->>p5: mode.add_argument
-    p1-->>p5: mode.add_argument
-    p1-->>p5: mode.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p3: parser.add_argument
-    p1-->>p6: parser.parse_args
-    p1-->>p7: parser.error
-    p1-->>p7: parser.error
-    p1-->>p7: parser.error
-    p1-->>p7: parser.error
-    p1-->>p8: set(…).intersection (scripts/ci/run_disposable_checks.py:parse_args)
-    p1-->>p9: set (scripts/ci/run_disposable_checks.py:parse_args)
-    p1-->>p7: parser.error
-    p0-->>p10: Path
-    p0-->>p11: tempfile.mkdtemp
-    p0-->>p12: RunReceipt
-    p0-->>p13: SystemExit
-    p0-->>p14: str
-    p0->>p15: bind_source
-    p15-->>p16: run.check_budget
-    p15-->>p17: subprocess.check_output(…).strip
+    p0->>p2: bind_source
+    p0->>p3: validate_results
+    p0->>p4: runtime_environment
+    p0->>p5: validate_admin_url
+    p0->>p6: require_free_browser_ports
+    p0-->>p7: Path(tempfile.mkdtemp(...))
+    p0-->>p8: run.cleanups.append(workspace.cleanup)
+    p0-->>p9: tempfile.mkdtemp(prefix='workchord-checks-')
+    p0-->>p10: RunReceipt(output, checks=selected, timeout_seconds=args.timeout_seconds)
+    p0-->>p11: SystemExit(str(...))
+    p0-->>p12: str(exc)
+    p0-->>p13: tempfile.TemporaryDirectory(prefix='workchord-runtime-')
+    p0-->>p14: run.validators.append (scripts/ci/run_disposable_checks.py:main)(...)
+    p0-->>p7: Path(workspace.name)
+    p0-->>p12: str(...)
+    p0-->>p12: str(...)
+    p0-->>p15: env.get (scripts/ci/run_disposable_checks.py:main)('POSTGRES_ADMIN_URL', '')
+    p0-->>p12: str(...)
+    p0-->>p16: run.run('python-version', [...], cwd=scratch, env=env, timeout=30)
+    p0-->>p16: run.run('contract', [...], cwd=scratch, env=env, timeout=120)
+    p0-->>p12: str(...)
+    p0-->>p17: set(…).intersection (scripts/ci/run_disposable_checks.py:main)({...})
+    p0-->>p18: set (scripts/ci/run_disposable_checks.py:main)(selected)
+    p0-->>p16: run.run(scope, [...], cwd=scratch, env=env, timeout=..., check=False)
+    p0-->>p19: map(str, targets)
+    p0-->>p14: run.validators.append (scripts/ci/run_disposable_checks.py:main)(require_schema_diff)
+    p0-->>p17: set(…).intersection (scripts/ci/run_disposable_checks.py:main)({...})
+    p0-->>p18: set (scripts/ci/run_disposable_checks.py:main)(selected)
+    p0-->>p20: shutil.copytree(..., frontend, ignore=shutil.ignore_patterns(...))
 ```
 
-> Call sequence diagram shows 30 of 105 interactions; 75 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 105 interactions; 75 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 15 of 38 (23 omitted); unresolved 9 of 61 (52 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/ci/run_disposable_checks.py:parse_args` | 2 | - | external | 2 |
+| `scripts/ci/run_disposable_checks.py:parse_args` | 2 | - | unresolved | 19 |
+| `scripts/ci/run_disposable_checks.py:bind_source` | 29 | - | unresolved | 5 |
+| `scripts/ci/run_disposable_checks.py:bind_source` | 29 | - | external | 1 |
+| `scripts/ci/run_disposable_checks.py:validate_results` | 39 | - | external | 6 |
+| `scripts/ci/run_disposable_checks.py:validate_results` | 39 | - | unresolved | 11 |
+| `scripts/ci/run_disposable_checks.py:runtime_environment` | 58 | - | external | 2 |
+| `scripts/ci/run_disposable_checks.py:runtime_environment` | 58 | - | unresolved | 2 |
+> Omission summary shows 8 of 13 groups; 5 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 7; effect analysis evaluated: 6, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 7 source steps with known totals: observed: 52, emitted: 42, omitted: 10. Unavailable totals are excluded.
+
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `partial` | `available` | `31` | `21` | `10` |
+| `parse_args` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_mutually_exclusive_group` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `mode.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `mode.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `mode.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

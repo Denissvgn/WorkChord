@@ -20,7 +20,7 @@ Atomic submit/fail result.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

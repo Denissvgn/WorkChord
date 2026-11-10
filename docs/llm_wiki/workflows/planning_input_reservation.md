@@ -12,6 +12,7 @@
 2. `mutation_versions.require_mutation_revision`
 3. `snapshot_service.SnapshotService`
 4. `task_service.TaskService`
+5. `task_service.TaskService.reserve_task_version`
 
 ## Touches
 

@@ -18,7 +18,7 @@ _Auto-generated from `AgentTeamPlanRequest` in `backend/app/schemas/agent_team_s
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

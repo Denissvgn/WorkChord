@@ -1,7 +1,7 @@
 # IterationPlanningReadinessSummary
 
 **Location:** `frontend/src/types/iteration.ts:74`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `IterationPlanningReadinessSummary` in `frontend/src/types/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

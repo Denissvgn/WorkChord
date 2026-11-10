@@ -20,7 +20,7 @@ Carries explicit human ownership state, categorized reference queues and live cu
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

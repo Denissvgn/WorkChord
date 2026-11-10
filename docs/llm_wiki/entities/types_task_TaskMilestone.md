@@ -1,7 +1,7 @@
 # TaskMilestone
 
 **Location:** `frontend/src/types/task.ts:22`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TaskMilestone` in `frontend/src/types/task.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

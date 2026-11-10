@@ -44,4 +44,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `safeExternalHref` | `(value: string \| null) -> string \| undefined` | — | — |
+| `safeExternalHref` | `(value?: string \| null) -> string \| undefined` | — | — |

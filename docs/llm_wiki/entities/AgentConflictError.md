@@ -15,7 +15,7 @@ Raised when an agent operation conflicts with current task state.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

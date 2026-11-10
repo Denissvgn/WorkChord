@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/services/timeEntryService.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./timeEntryService` | `timeEntryService` |
-| `vitest` | `beforeEach`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./timeEntryService` | `timeEntryService` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

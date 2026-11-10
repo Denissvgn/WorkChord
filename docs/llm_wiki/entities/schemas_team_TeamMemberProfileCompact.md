@@ -30,7 +30,7 @@ Compact profile data embedded in team-member responses.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

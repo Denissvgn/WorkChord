@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)
+**Target:**
+
+```typescript
+{ [SETTINGS_ROW_ID]: string }
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `SettingsRowIdentity` in `frontend/src/components/settings/
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

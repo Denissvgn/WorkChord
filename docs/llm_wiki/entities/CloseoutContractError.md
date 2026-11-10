@@ -15,7 +15,7 @@ Raised when closure evidence is incomplete, stale, or overclaimed.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

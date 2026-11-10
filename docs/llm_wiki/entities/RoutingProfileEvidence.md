@@ -24,7 +24,7 @@ Secret-free profile evidence used by compatibility decisions.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

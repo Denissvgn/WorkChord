@@ -15,7 +15,7 @@ Raised when database settings are unsupported or unsafe.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

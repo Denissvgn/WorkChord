@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/i18n/seedDisplay.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/github` | `GitHubStatusAutomationRule` |
-| `../types/label` | `Label`, `LabelGroup` |
-| `../types/savedView` | `SavedView`, `SavedViewDashboardCard` |
-| `../types/template` | `WorkTemplate` |
-| `./i18n` | `i18n` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/github` | `GitHubStatusAutomationRule` | Declaration | erased |
+| `../types/label` | `Label`, `LabelGroup` | Declaration | erased |
+| `../types/savedView` | `SavedView`, `SavedViewDashboardCard` | Declaration | erased |
+| `../types/template` | `WorkTemplate` | Declaration | erased |
+| `./i18n` | `i18n` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/i18n/seedDisplay.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -50,7 +52,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TemplateSeedBaseline](../entities/TemplateSeedBaseline.md) | Class | 7 | — | — |
+| [TemplateSeedBaseline](../entities/TemplateSeedBaseline.md) | Interface | 7 | — | — |
 
 ## Functions
 

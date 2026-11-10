@@ -8,11 +8,11 @@ Compares effective saved-view filters and ordering against current defaults, tre
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/tasks/TaskFiltersBar` | `TaskFilters` |
-| `../types/savedView` | `SavedView` |
-| `./taskFilterDefaults` | `defaultFilters` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `../types/savedView` | `SavedView` | Declaration | erased |
+| `./taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ Compares effective saved-view filters and ordering against current defaults, tre
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/SavedViewsControl.tsx"]

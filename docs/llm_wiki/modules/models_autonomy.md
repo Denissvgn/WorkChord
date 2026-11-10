@@ -27,26 +27,36 @@ flowchart LR
     n1["backend/app/models/__init__.py"]
     n2["backend/app/models/autonomy.py"]
     n3["backend/app/services/autonomy_work_package_service.py"]
-    n4["backend/app/utils/time.py"]
-    n5["backend/tests/autonomy/test_autonomy_migrations.py"]
-    n6["backend/tests/autonomy/test_work_package_service.py"]
+    n4["backend/app/services/snapshot_service.py"]
+    n5["backend/app/services/task_brief_service.py"]
+    n6["backend/app/utils/time.py"]
+    n7["backend/tests/autonomy/test_autonomy_migrations.py"]
+    n8["backend/tests/autonomy/test_work_package_service.py"]
     n1 --> n2
     n2 --> n0
-    n2 --> n4
+    n2 --> n6
     n3 --> n2
-    n3 --> n4
+    n3 --> n6
+    n4 --> n0
+    n4 --> n2
+    n4 --> n5
+    n4 --> n6
     n5 --> n2
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n3
+    n5 --> n4
+    n7 --> n2
+    n8 --> n0
+    n8 --> n1
+    n8 --> n2
+    n8 --> n3
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_autonomy.md"
     click n3 "../modules/autonomy_work_package_service.md"
-    click n4 "../modules/time.md"
-    click n5 "../modules/test_autonomy_migrations.md"
-    click n6 "../modules/test_work_package_service.md"
+    click n4 "../modules/snapshot_service.md"
+    click n5 "../modules/task_brief_service.md"
+    click n6 "../modules/time.md"
+    click n7 "../modules/test_autonomy_migrations.md"
+    click n8 "../modules/test_work_package_service.md"
 ```
 
 ### Internal neighbors
@@ -55,6 +65,8 @@ flowchart LR
 |---|---|
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [autonomy_work_package_service](../modules/autonomy_work_package_service.md) |
+| Inbound | [snapshot_service](../modules/snapshot_service.md) |
+| Inbound | [task_brief_service](../modules/task_brief_service.md) |
 | Inbound | [test_autonomy_migrations](../modules/test_autonomy_migrations.md) |
 | Inbound | [test_work_package_service](../modules/test_work_package_service.md) |
 | Outbound | [app_database](../modules/app_database.md) |

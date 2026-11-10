@@ -1,7 +1,7 @@
 # TriageListParams
 
 **Location:** `frontend/src/types/triage.ts:46`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_triage](../modules/types_triage.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `TriageListParams` in `frontend/src/types/triage.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

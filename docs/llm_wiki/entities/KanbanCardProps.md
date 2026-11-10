@@ -1,7 +1,7 @@
 # KanbanCardProps
 
 **Location:** `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [KanbanCard](../modules/KanbanCard.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `KanbanCardProps` in `frontend/src/components/tasks/KanbanB
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

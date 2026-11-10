@@ -27,7 +27,7 @@ Immutable canonical brief history, keyed by original task identity and brief rev
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

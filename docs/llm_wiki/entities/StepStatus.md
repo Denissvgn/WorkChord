@@ -1,7 +1,7 @@
 # StepStatus
 
 **Location:** `frontend/src/features/planningMasters/masters.ts:8`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `StepStatus` in `frontend/src/features/planningMasters/mast
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

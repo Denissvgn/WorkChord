@@ -15,45 +15,79 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as revoke_session (backend/app/routers/session.py)
     participant p1 as revoke_session (backend/app/services/session_service.py)
-    participant p2 as utc_now
-    participant p3 as datetime.now
+    participant p2 as MessageResponse
+    participant p3 as utc_now
     participant p4 as commit_or_flush
-    participant p5 as current_command
-    participant p6 as getattr
-    participant p7 as isinstance
-    participant p8 as info.get
-    participant p9 as db.flush
-    participant p10 as db.commit
-    participant p11 as _cookie_options
-    participant p12 as get_settings
+    participant p5 as _cookie_options
+    participant p6 as response.delete_cookie
+    participant p7 as datetime.now
+    participant p8 as current_command
+    participant p9 as get_settings
+    participant p10 as db.flush
+    participant p11 as db.commit
+    participant p12 as getattr
     participant p13 as Settings
-    participant p14 as response.delete_cookie
-    participant p15 as MessageResponse
+    participant p14 as isinstance
+    participant p15 as info.get
     p0->>p1: revoke_session (backend/app/services/session_service.py)
-    p1->>p2: utc_now
-    p2-->>p3: datetime.now
+    p0->>p2: MessageResponse
+    p1->>p3: utc_now
     p1->>p4: commit_or_flush
-    p4->>p5: current_command
-    p5-->>p6: getattr
-    p5-->>p7: isinstance
-    p5-->>p8: info.get
-    p4-->>p9: db.flush
-    p4-->>p10: db.commit
-    p1->>p11: _cookie_options
-    p11->>p12: get_settings
-    p12->>p13: Settings
-    p1-->>p14: response.delete_cookie
-    p0->>p15: MessageResponse
+    p1->>p5: _cookie_options
+    p1-->>p6: response.delete_cookie(key=options[...], path=options[...], secure=options[...], httponly=True, samesite='lax')
+    p3-->>p7: datetime.now(UTC)
+    p4->>p8: current_command
+    p5->>p9: get_settings
+    p4-->>p10: db.flush
+    p4-->>p11: db.commit
+    p8-->>p12: getattr(db, 'info', None)
+    p9->>p13: Settings
+    p8-->>p14: isinstance(info, dict)
+    p8-->>p15: info.get('command')
 ```
+
+> Call sequence diagram shows 15 of 15 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 9; effect analysis evaluated: 7, partial: 0, unavailable: 2. Counts include steps omitted from the displayed trace.
+
+Collector observations for 7 source steps with known totals: observed: 15, emitted: 15, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `revoke_session (backend/app/routers/session.py)` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `revoke_session (backend/app/services/session_service.py)` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `utc_now` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `datetime.now` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `commit_or_flush` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `current_command` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `getattr` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.flush` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `db.commit` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_cookie_options` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. revoke_session (backend/app/routers/session.py)"]
@@ -122,7 +156,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

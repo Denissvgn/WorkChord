@@ -18,7 +18,7 @@ Per-collection counts for compound assigned-work pages.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

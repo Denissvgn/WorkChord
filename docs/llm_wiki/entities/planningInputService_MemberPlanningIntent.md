@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planningInputService](../modules/planningInputService.md)
+**Target:**
+
+```typescript
+{ profile_id?: number | null; name?: string; email?: string | null; text?: string; csv_text?: string }
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `MemberPlanningIntent` in `frontend/src/services/planningIn
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

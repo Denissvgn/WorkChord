@@ -8,11 +8,12 @@ _Auto-generated from `frontend/src/services/iterationService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/iteration` | `Iteration`, `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationSummary`, `IterationUpdate` |
-| `./api` | `api` |
-| `./planningInputService` | `revisionHeaders`, `ObservedRevisions` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/iteration` | `Iteration`, `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSeriesCreate`, `IterationSeriesResponse`, `IterationSummary`, `IterationUpdate` | Declaration | erased |
+| `./api` | `api` | — | compiler-dependent |
+| `./planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
+| `./planningInputService` | `revisionHeaders` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -24,6 +25,8 @@ _Auto-generated from `frontend/src/services/iterationService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

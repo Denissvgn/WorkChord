@@ -35,7 +35,7 @@ Schema for reusable team-member profile responses.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

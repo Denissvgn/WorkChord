@@ -29,7 +29,7 @@ Append-only ledger entry for task mutations and agent checkpoints.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

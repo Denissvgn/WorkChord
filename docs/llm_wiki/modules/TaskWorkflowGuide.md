@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskWorkflowGuide.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/Button` | `Button` |
-| `../ui/SlideOverDrawer` | `SlideOverDrawer` |
-| `lucide-react` | `Bot`, `CalendarRange`, `CheckCircle2`, `ChevronRight`, `CircleHelp`, `UserRoundCheck` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `lucide-react` | `Bot`, `CalendarRange`, `CheckCircle2`, `ChevronRight`, `CircleHelp`, `UserRoundCheck` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -59,5 +59,5 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskWorkflowHelpContent` | `({     showAction = true,     onNavigate, }: {     showAction?: boolean;     onNavigate?: () => void; })` | — | — |
+| `TaskWorkflowHelpContent` | <pre><code>&#40;&#123;&#10;    showAction &#61; true&#44;&#10;    onNavigate&#44;&#10;&#125;&#58; &#123;&#10;    showAction&#63;&#58; boolean&#59;&#10;    onNavigate&#63;&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |
 | `TaskWorkflowGuide` | `()` | — | — |

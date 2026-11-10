@@ -1,7 +1,7 @@
 # CalendarCreate
 
 **Location:** `frontend/src/types/calendar.ts:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_calendar](../modules/types_calendar.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `CalendarCreate` in `frontend/src/types/calendar.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

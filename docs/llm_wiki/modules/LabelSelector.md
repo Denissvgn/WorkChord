@@ -8,17 +8,17 @@ _Auto-generated from `frontend/src/components/labels/LabelSelector.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay` |
-| `../../services/labelService` | `labelService` |
-| `../../types/label` | `Label` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `Plus`, `X` |
-| `react` | `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay` | — | compiler-dependent |
+| `../../services/labelService` | `labelService` | — | compiler-dependent |
+| `../../types/label` | `Label` | Declaration | erased |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `Plus`, `X` | — | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -29,6 +29,8 @@ _Auto-generated from `frontend/src/components/labels/LabelSelector.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -96,11 +98,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [LabelSelectorProps](../entities/LabelSelectorProps.md) | Class | 11 | — | — |
-| [LabelOption](../entities/LabelOption.md) | Type alias | 20 | — | — |
+| [LabelSelectorProps](../entities/LabelSelectorProps.md) | Interface | 11 | — | — |
+| [LabelOption](../entities/LabelOption.md) | Type alias | 20 | <pre><code>Label &#38; &#123;&#10;    groupName&#58; string&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `LabelSelector` | `({     value,     onChange,     label,     placeholder,     allowCustom = true,     className, }: LabelSelectorProps)` | — | — |
+| `LabelSelector` | <pre><code>&#40;&#123;&#10;    value&#44;&#10;    onChange&#44;&#10;    label&#44;&#10;    placeholder&#44;&#10;    allowCustom &#61; true&#44;&#10;    className&#44;&#10;&#125;&#58; LabelSelectorProps&#41;</code></pre> | — | — |

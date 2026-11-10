@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -15,41 +17,55 @@ sequenceDiagram
     participant p3 as subprocess.check_output(…).strip
     participant p4 as subprocess.check_output
     participant p5 as prepare
-    participant p6 as ValueError
-    participant p7 as sorted
-    participant p8 as (…).glob
-    participant p9 as path.is_file
-    participant p10 as path.read_text
-    participant p11 as re.sub
-    participant p12 as path.write_text
-    participant p13 as print
-    participant p14 as config.parent.mkdir
-    participant p15 as config.write_text
-    participant p16 as Path
-    p0-->>p1: argparse.ArgumentParser
+    participant p6 as Path
+    participant p7 as ValueError
+    participant p8 as sorted
+    participant p9 as (…).glob
+    participant p10 as path.is_file
+    participant p11 as path.read_text
+    participant p12 as re.sub
+    participant p13 as path.write_text
+    participant p14 as print
+    participant p15 as config.parent.mkdir
+    participant p16 as config.write_text
+    p0-->>p1: argparse.ArgumentParser(description=__doc__)
     p0-->>p2: parser.parse_args
     p0-->>p3: subprocess.check_output(…).strip
-    p0-->>p4: subprocess.check_output
+    p0-->>p4: subprocess.check_output([...], text=True)
     p0->>p5: prepare
-    p5-->>p6: ValueError
-    p5-->>p7: sorted
-    p5-->>p8: (…).glob
-    p5-->>p7: sorted
-    p5-->>p8: (…).glob
-    p5-->>p9: path.is_file
-    p5-->>p10: path.read_text
-    p5-->>p11: re.sub
-    p5-->>p11: re.sub
-    p5-->>p12: path.write_text
-    p5-->>p13: print
-    p5-->>p14: config.parent.mkdir
-    p5-->>p15: config.write_text
-    p0-->>p16: Path
+    p0-->>p6: Path('/etc/apt')
+    p5-->>p7: ValueError(...)
+    p5-->>p8: sorted(...)
+    p5-->>p9: (…).glob('*.list')
+    p5-->>p8: sorted(...)
+    p5-->>p9: (…).glob('*.sources')
+    p5-->>p10: path.is_file
+    p5-->>p11: path.read_text
+    p5-->>p12: re.sub('https?://azure\\.archive\\.ubuntu\\.com/ubuntu(?=/|\\s|$)', archive, original)
+    p5-->>p12: re.sub('mirror\\+file:/etc/apt/apt-mirrors\\.txt(?=\\s|$)', archive, updated)
+    p5-->>p13: path.write_text(updated)
+    p5-->>p14: print(...)
+    p5-->>p15: config.parent.mkdir(parents=True, exist_ok=True)
+    p5-->>p16: config.write_text(APT_CONFIG)
 ```
+
+> Call sequence diagram shows 19 of 19 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 9 of 9 (0 omitted); unresolved 9 of 9 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 2; effect analysis evaluated: 2, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 2 source steps with known totals: observed: 7, emitted: 7, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

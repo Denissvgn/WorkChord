@@ -14,48 +14,49 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/identity/identityContext` | `useIdentity` |
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../i18n/seedDisplay` | `templateDisplay` |
-| `../../services/iterationService` | `iterationService` |
-| `../../services/projectService` | `projectService` |
-| `../../services/taskService` | `taskService` |
-| `../../services/teamService` | `teamService` |
-| `../../services/templateService` | `templateService` |
-| `../../services/triageService` | `triageService` |
-| `../../types/iteration` | `Iteration` |
-| `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `TaskUpdate` |
-| `../../types/template` | `WorkTemplate` |
-| `../../types/triage` | `TriageItemCreate` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/formatDate` | `formatDate` |
-| `../../utils/templateDefaults` | `getPayloadBoolean`, `getPayloadString`, `mergeLabels` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../common/ConfirmDialog` | `ConfirmDialog` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../labels/LabelSelector` | `LabelSelector` |
-| `../team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` |
-| `./DeliveryDependencies` | `DeliveryDependencies` |
-| `./PersonCapacity` | `PersonCapacity` |
-| `./StatusChangeControl` | `StatusChangeControl` |
-| `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` |
-| `./TaskBriefEditor` | `TaskBriefEditor` |
-| `./TaskDependencySelector` | `TaskDependencySelector` |
-| `./TaskDiscussion` | `TaskDiscussion` |
-| `./TaskTimelinePanel` | `TaskTimelinePanel` |
-| `./TaskWorkPanel` | `TaskWorkPanel` |
-| `./TimeEntriesPanel` | `TimeEntriesPanel` |
-| `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft`, `readPendingTaskWrite` |
-| `./taskEditorContract` | `emptyTaskBrief`, `newCriterion`, `buildTaskEditorDefaults`, `mapTaskEditorServerError`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor`, `TaskConflictMetadata`, `TaskEditorValues` |
-| `./useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` |
-| `lucide-react` | `Inbox`, `Save`, `Sparkles` |
-| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../services/templateService` | `templateService` | — | compiler-dependent |
+| `../../services/triageService` | `triageService` | — | compiler-dependent |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `TaskUpdate` | Declaration | erased |
+| `../../types/template` | `WorkTemplate` | Declaration | erased |
+| `../../types/triage` | `TriageItemCreate` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../../utils/templateDefaults` | `getPayloadBoolean`, `getPayloadString`, `mergeLabels` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
+| `../team/AssigneeRecommendationsPanel` | `AssigneeRecommendationsPanel` | — | compiler-dependent |
+| `./DeliveryDependencies` | `DeliveryDependencies` | — | compiler-dependent |
+| `./PersonCapacity` | `PersonCapacity` | — | compiler-dependent |
+| `./StatusChangeControl` | `StatusChangeControl` | — | compiler-dependent |
+| `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
+| `./TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
+| `./TaskDependencySelector` | `TaskDependencySelector` | — | compiler-dependent |
+| `./TaskDiscussion` | `TaskDiscussion` | — | compiler-dependent |
+| `./TaskTimelinePanel` | `TaskTimelinePanel` | — | compiler-dependent |
+| `./TaskWorkPanel` | `TaskWorkPanel` | — | compiler-dependent |
+| `./TimeEntriesPanel` | `TimeEntriesPanel` | — | compiler-dependent |
+| `./taskDraftStorage` | `readTaskDraft`, `writeTaskDraft`, `removeTaskDraft`, `readPendingTaskWrite` | — | compiler-dependent |
+| `./taskEditorContract` | `TaskConflictMetadata`, `TaskEditorValues` | Specifier | compiler-dependent |
+| `./taskEditorContract` | `emptyTaskBrief`, `newCriterion`, `buildTaskEditorDefaults`, `mapTaskEditorServerError`, `toTaskCreate`, `toTaskUpdate`, `validateTaskEditor` | — | compiler-dependent |
+| `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQueryClient`, `useQuery` | — | compiler-dependent |
+| `lucide-react` | `Inbox`, `Save`, `Sparkles` | — | compiler-dependent |
+| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -66,6 +67,8 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -96,10 +99,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Class | 56 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 56 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskForm` | `({     iterationId: requestedIterationId,     initialData,     parentId,     parentPriority,     parentProjectId,     parentMilestoneId,     onSuccess,     onCancel,     mode = 'direct',     onSaveSandbox,     onDirtyChange,     onPendingChange,     onDiscardReady,     confirmUnsavedOnCancel = true, }: TaskFormProps)` | — | — |
+| `TaskForm` | <pre><code>&#40;&#123;&#10;    iterationId&#58; requestedIterationId&#44;&#10;    initialData&#44;&#10;    parentId&#44;&#10;    parentPriority&#44;&#10;    parentProjectId&#44;&#10;    parentMilestoneId&#44;&#10;    onSuccess&#44;&#10;    onCancel&#44;&#10;    mode &#61; &#39;direct&#39;&#44;&#10;    onSaveSandbox&#44;&#10;    onDirtyChange&#44;&#10;    onPendingChange&#44;&#10;    onDiscardReady&#44;&#10;    confirmUnsavedOnCancel &#61; true&#44;&#10;&#125;&#58; TaskFormProps&#41;</code></pre> | — | — |

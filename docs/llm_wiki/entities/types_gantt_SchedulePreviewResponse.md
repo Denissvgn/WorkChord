@@ -1,7 +1,7 @@
 # SchedulePreviewResponse
 
 **Location:** `frontend/src/types/gantt.ts:76`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
 
@@ -21,7 +21,7 @@ Server dry-run of sandbox edits through the real scheduler (nothing persisted).
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,7 +15,7 @@ Raised when a webhook payload cannot be processed.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

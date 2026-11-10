@@ -21,7 +21,7 @@ _Auto-generated from `TimeRevisionResponse` in `backend/app/schemas/time_entry.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

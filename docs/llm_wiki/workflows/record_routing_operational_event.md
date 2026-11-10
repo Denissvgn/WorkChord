@@ -8,9 +8,10 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `task_service.TaskService`
-2. `outbound_webhook_service.emit_outbound_webhook_event`
-3. `commands.commit_or_flush`
+1. `task_service.TaskService.record_task_event`
+2. `task_service.TaskService`
+3. `outbound_webhook_service.emit_outbound_webhook_event`
+4. `commands.commit_or_flush`
 
 ## Touches
 

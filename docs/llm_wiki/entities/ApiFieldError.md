@@ -1,7 +1,7 @@
 # ApiFieldError
 
 **Location:** `frontend/src/utils/apiError.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [apiError](../modules/apiError.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `ApiFieldError` in `frontend/src/utils/apiError.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

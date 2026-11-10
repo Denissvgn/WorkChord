@@ -18,7 +18,7 @@ Request for snoozing a triage item.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -28,73 +28,116 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as argparse.ArgumentParser
-    participant p2 as parser.add_argument
-    participant p3 as parser.parse_args
-    participant p4 as serialized_examples
-    participant p5 as json.dumps
-    participant p6 as build_examples
-    participant p7 as TaskBrief
-    participant p8 as BriefCriterion
-    participant p9 as TaskResponse
-    participant p10 as leaf.model_copy
-    participant p11 as TaskReference
-    participant p12 as TaskReferencePage
-    participant p13 as TaskDetailResponse
-    participant p14 as reference.model_copy
-    participant p15 as TaskActionsResponse
-    participant p16 as TaskActionAvailability
-    participant p17 as TaskStatusChangeResponse
-    participant p18 as CascadeUpdateInfo
-    participant p19 as TaskReviewResponse
-    participant p20 as datetime
-    participant p21 as leaf.model_dump
-    participant p22 as legacy.pop
-    participant p23 as legacy.update
-    participant p24 as Response
-    participant p25 as _cookie_options
-    participant p26 as get_settings
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p3: parser.parse_args
-    p0->>p4: serialized_examples
-    p4-->>p5: json.dumps
-    p4->>p6: build_examples
-    p6->>p7: TaskBrief
-    p6->>p8: BriefCriterion
-    p6->>p9: TaskResponse
-    p6-->>p10: leaf.model_copy
-    p6->>p11: TaskReference
-    p6->>p12: TaskReferencePage
-    p6->>p12: TaskReferencePage
-    p6->>p13: TaskDetailResponse
-    p6-->>p14: reference.model_copy
-    p6->>p15: TaskActionsResponse
-    p6->>p16: TaskActionAvailability
-    p6->>p16: TaskActionAvailability
-    p6-->>p10: leaf.model_copy
-    p6->>p17: TaskStatusChangeResponse
-    p6->>p18: CascadeUpdateInfo
-    p6->>p19: TaskReviewResponse
-    p6-->>p20: datetime
-    p6-->>p21: leaf.model_dump
-    p6-->>p22: legacy.pop
-    p6-->>p23: legacy.update
-    p6-->>p24: Response
-    p6->>p25: _cookie_options
-    p25->>p26: get_settings
+    participant p1 as serialized_examples
+    participant p2 as build_examples
+    participant p3 as _cookie_options
+    participant p4 as get_settings
+    participant p5 as TaskBrief
+    participant p6 as BriefCriterion
+    participant p7 as TaskResponse
+    participant p8 as TaskReference
+    participant p9 as TaskReferencePage
+    participant p10 as TaskDetailResponse
+    participant p11 as TaskActionsResponse
+    participant p12 as TaskActionAvailability
+    participant p13 as TaskStatusChangeResponse
+    participant p14 as CascadeUpdateInfo
+    participant p15 as TaskReviewResponse
+    participant p16 as TaskVersionConflictError
+    participant p17 as Settings
+    participant p18 as argparse.ArgumentParser
+    participant p19 as parser.add_argument
+    participant p20 as parser.parse_args
+    participant p21 as args.output.exists
+    participant p22 as args.output.read_text
+    participant p23 as parser.exit
+    participant p24 as args.output.parent.mkdir
+    participant p25 as args.output.write_text
+    participant p26 as json.dumps
+    participant p27 as leaf.model_copy
+    participant p28 as reference.model_copy
+    p0->>p1: serialized_examples
+    p1->>p2: build_examples
+    p2->>p3: _cookie_options
+    p3->>p4: get_settings
+    p2->>p5: TaskBrief
+    p2->>p6: BriefCriterion
+    p2->>p7: TaskResponse
+    p2->>p8: TaskReference
+    p2->>p9: TaskReferencePage
+    p2->>p10: TaskDetailResponse
+    p2->>p11: TaskActionsResponse
+    p2->>p12: TaskActionAvailability
+    p2->>p13: TaskStatusChangeResponse
+    p2->>p14: CascadeUpdateInfo
+    p2->>p15: TaskReviewResponse
+    p2->>p16: TaskVersionConflictError
+    p4->>p17: Settings
+    p0-->>p18: argparse.ArgumentParser(description=__doc__)
+    p0-->>p19: parser.add_argument('--output', type=Path, default=OUTPUT)
+    p0-->>p19: parser.add_argument('--check', action='store_true')
+    p0-->>p20: parser.parse_args
+    p0-->>p21: args.output.exists
+    p0-->>p22: args.output.read_text
+    p0-->>p23: parser.exit(1, 'Mobile examples differ regenerate and review consumer compatibility.\n')
+    p0-->>p24: args.output.parent.mkdir(parents=True, exist_ok=True)
+    p0-->>p25: args.output.write_text(expected)
+    p1-->>p26: json.dumps(build_examples(...), ensure_ascii=False, indent=2, sort_keys=True)
+    p2-->>p27: leaf.model_copy(update={...})
+    p2-->>p28: reference.model_copy(update={...})
+    p2-->>p27: leaf.model_copy(update={...})
 ```
 
-> Call sequence diagram shows 30 of 47 interactions; 17 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 47 interactions; 17 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 2 of 5 (3 omitted); unresolved 11 of 23 (12 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/generate_mobile_contract_fixtures.py:build_examples` | 8 | [backend/app/schemas/task_detail.py](../modules/task_detail.md) | internal | 1 |
+| `scripts/generate_mobile_contract_fixtures.py:build_examples` | 8 | [backend/app/schemas/task_domain.py](../modules/schemas_task_domain.md) | internal | 1 |
+| `scripts/generate_mobile_contract_fixtures.py:build_examples` | 8 | - | external | 3 |
+| `scripts/generate_mobile_contract_fixtures.py:build_examples` | 8 | - | unresolved | 12 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 20; effect analysis evaluated: 5, partial: 0, unavailable: 15. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 11, emitted: 11, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `serialized_examples` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `json.dumps` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `build_examples` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `TaskBrief` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `BriefCriterion` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `TaskResponse` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `leaf.model_copy` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

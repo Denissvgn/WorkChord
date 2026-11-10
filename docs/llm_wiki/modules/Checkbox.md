@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/common/Checkbox.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `clsx` | `clsx` |
-| `lucide-react` | `Check` |
-| `react` | `forwardRef` |
-| `tailwind-merge` | `twMerge` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Check` | — | compiler-dependent |
+| `react` | `forwardRef` | — | compiler-dependent |
+| `tailwind-merge` | `twMerge` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -54,4 +54,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CheckboxProps](../entities/CheckboxProps.md) | Class | 6 | `Omit` | — |
+| [CheckboxProps](../entities/CheckboxProps.md) | Interface | 6 | `Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>` | — |

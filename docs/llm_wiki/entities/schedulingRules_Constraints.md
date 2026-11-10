@@ -1,7 +1,7 @@
 # Constraints
 
 **Location:** `frontend/src/types/schedulingRules.ts:37`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [schedulingRules](../modules/schedulingRules.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `Constraints` in `frontend/src/types/schedulingRules.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

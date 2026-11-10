@@ -28,7 +28,7 @@ Compact team-member identity for owner and assignee selectors.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

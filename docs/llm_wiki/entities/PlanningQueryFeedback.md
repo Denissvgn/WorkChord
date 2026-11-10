@@ -4,6 +4,22 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)
+**Target:**
+
+```typescript
+{
+    enabled: boolean;
+    hasData: boolean;
+    dataUpdatedAt: number;
+    isLoading: boolean;
+    isFetching: boolean;
+    isError: boolean;
+    isBlockingError: boolean;
+    isRefetchError: boolean;
+    error: unknown;
+    refetch: () => Promise<unknown>;
+}
+```
 
 ## Description
 
@@ -11,11 +27,11 @@ _Auto-generated from `PlanningQueryFeedback` in `frontend/src/features/planningM
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

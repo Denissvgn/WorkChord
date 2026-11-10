@@ -19,7 +19,7 @@ Request for importing tasks from text.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

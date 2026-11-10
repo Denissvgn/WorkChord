@@ -1,7 +1,7 @@
 # FrontendTemplateService
 
 **Location:** `frontend/src/services/templateService.ts:23`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [templateService](../modules/templateService.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `FrontendTemplateService` in `frontend/src/services/templat
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

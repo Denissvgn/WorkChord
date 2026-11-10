@@ -1,7 +1,7 @@
 # SidebarAttentionAction
 
 **Location:** `frontend/src/components/layout/AppSidebar.tsx:24`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AppSidebar](../modules/AppSidebar.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `SidebarAttentionAction` in `frontend/src/components/layout
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # ClassificationPanelProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:1591`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `ClassificationPanelProps` in `frontend/src/pages/TriagePag
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -34,7 +34,7 @@ Reusable person profile for durable capability and preference metadata.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -110,4 +110,4 @@ flowchart LR
 | `AgentRoutingService._profile_revision` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `agent_service` | import | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 70 logical references; 58 omitted by the 12-row generated summary limit.
+> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.

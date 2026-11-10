@@ -12,11 +12,11 @@ _Auto-generated from `WorkingZone` in `backend/app/schemas/planning_inputs.py`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

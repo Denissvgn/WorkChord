@@ -8,11 +8,12 @@ _Auto-generated from `frontend/src/components/common/Button.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `clsx` | `clsx` |
-| `lucide-react` | `Loader2` |
-| `react` | `forwardRef`, `ButtonHTMLAttributes` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Loader2` | — | compiler-dependent |
+| `react` | `ButtonHTMLAttributes` | Declaration | erased |
+| `react` | `forwardRef` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -53,4 +54,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ButtonProps](../entities/ButtonProps.md) | Class | 6 | `ButtonHTMLAttributes` | — |
+| [ButtonProps](../entities/ButtonProps.md) | Interface | 6 | `ButtonHTMLAttributes<HTMLButtonElement>` | — |

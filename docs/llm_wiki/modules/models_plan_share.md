@@ -29,8 +29,9 @@ flowchart LR
     n2["backend/app/models/iteration.py"]
     n3["backend/app/models/plan_share.py"]
     n4["backend/app/models/user_session.py"]
-    n5["backend/app/services/plan_share_service.py"]
-    n6["backend/app/utils/time.py"]
+    n5["backend/app/services/identity_service.py"]
+    n6["backend/app/services/plan_share_service.py"]
+    n7["backend/app/utils/time.py"]
     n1 --> n2
     n1 --> n3
     n1 --> n4
@@ -39,20 +40,24 @@ flowchart LR
     n3 --> n0
     n3 --> n2
     n3 --> n4
-    n3 --> n6
+    n3 --> n7
     n4 --> n0
     n4 --> n3
-    n4 --> n6
+    n4 --> n7
     n5 --> n3
     n5 --> n4
-    n5 --> n6
+    n5 --> n7
+    n6 --> n3
+    n6 --> n4
+    n6 --> n7
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_iteration.md"
     click n3 "../modules/models_plan_share.md"
     click n4 "../modules/user_session.md"
-    click n5 "../modules/plan_share_service.md"
-    click n6 "../modules/time.md"
+    click n5 "../modules/identity_service.md"
+    click n6 "../modules/plan_share_service.md"
+    click n7 "../modules/time.md"
 ```
 
 ### Internal neighbors
@@ -62,6 +67,7 @@ flowchart LR
 | Inbound | [models___init__](../modules/models___init__.md) |
 | Inbound | [models_iteration](../modules/models_iteration.md) |
 | Inbound | [user_session](../modules/user_session.md) |
+| Inbound | [identity_service](../modules/identity_service.md) |
 | Inbound | [plan_share_service](../modules/plan_share_service.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [models_iteration](../modules/models_iteration.md) |

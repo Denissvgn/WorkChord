@@ -37,47 +37,47 @@ Immutable server-generated evidence for one exact routing selection.
 | `authority` | `Literal['agent-routing-service-v1']` | `authority` | No | No | `'agent-routing-service-v1'` | — | — | — |
 | `selection_pending` | `Literal[False]` | `selection_pending` | No | No | `False` | — | — | — |
 | `policy_version` | `Literal['model-aware-routing-v1']` | `policy_version` | No | No | `ROUTING_POLICY_VERSION` | — | — | — |
-| `task_id` | `int` | `task_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `topology_key` | `str \| None` | `topology_key` | No | Yes | `None` | min_length=1; max_length=100 | — | — |
-| `topology_revision` | `int \| None` | `topology_revision` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `task_version` | `int` | `task_version` | Yes | No | — | strict=True; ge=1 | — | — |
-| `assessment_id` | `int` | `assessment_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `assessment_task_version` | `int` | `assessment_task_version` | Yes | No | — | strict=True; ge=1 | — | — |
+| `task_id` | `int` | `task_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `topology_key` | `str \| None` | `topology_key` | No | Yes | `None` | max_length=100; min_length=1 | — | — |
+| `topology_revision` | `int \| None` | `topology_revision` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `task_version` | `int` | `task_version` | Yes | No | — | ge=1; strict=True | — | — |
+| `assessment_id` | `int` | `assessment_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `assessment_task_version` | `int` | `assessment_task_version` | Yes | No | — | ge=1; strict=True | — | — |
 | `assessment_band` | `TaskDifficultyBand` | `assessment_band` | Yes | No | — | — | — | — |
 | `assessment_confidence` | `float` | `assessment_confidence` | Yes | No | — | le=1.0; ge=unknown (MIN_ROUTING_ASSESSMENT_CONFIDENCE) | — | — |
 | `assessment_reason_codes` | `tuple[AssessmentReasonCode, ...]` | `assessment_reason_codes` | No | No | `()` | — | — | — |
 | `purpose` | `Literal['execution', 'verification']` | `purpose` | Yes | No | — | — | — | — |
-| `actor_id` | `int` | `actor_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `actor_id` | `int` | `actor_id` | Yes | No | — | ge=1; strict=True | — | — |
 | `actor_revision` | `PositiveRevision` | `actor_revision` | Yes | No | — | — | — | — |
 | `actor_queue_revision` | `PositiveRevision` | `actor_queue_revision` | Yes | No | — | — | — | — |
-| `profile_id` | `int` | `profile_id` | Yes | No | — | strict=True; ge=1 | — | — |
-| `profile_revision` | `str` | `profile_revision` | Yes | No | — | min_length=1; max_length=120 | — | — |
-| `capacity_owner_id` | `int \| None` | `capacity_owner_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `capacity_owner_profile_id` | `int \| None` | `capacity_owner_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `profile_id` | `int` | `profile_id` | Yes | No | — | ge=1; strict=True | — | — |
+| `profile_revision` | `str` | `profile_revision` | Yes | No | — | max_length=120; min_length=1 | — | — |
+| `capacity_owner_id` | `int \| None` | `capacity_owner_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `capacity_owner_profile_id` | `int \| None` | `capacity_owner_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `model_binding_id` | `int` | `model_binding_id` | Yes | No | — | ge=1; strict=True | — | — |
 | `model_binding_revision` | `PositiveRevision` | `model_binding_revision` | Yes | No | — | — | — | — |
-| `model_catalog_id` | `int` | `model_catalog_id` | Yes | No | — | strict=True; ge=1 | — | — |
+| `model_catalog_id` | `int` | `model_catalog_id` | Yes | No | — | ge=1; strict=True | — | — |
 | `model_catalog_key` | `RoutingKey` | `model_catalog_key` | Yes | No | — | — | — | — |
 | `model_catalog_revision` | `PositiveRevision` | `model_catalog_revision` | Yes | No | — | — | — | — |
-| `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `configured_model_alias` | `str` | `configured_model_alias` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `selected_reasoning_tier` | `ReasoningTier` | `selected_reasoning_tier` | Yes | No | — | — | — | — |
 | `selected_context_tier` | `ModelContextTier` | `selected_context_tier` | Yes | No | — | — | — | — |
-| `resolved_model` | `str \| None` | `resolved_model` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `resolved_model` | `str \| None` | `resolved_model` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `review_mode` | `TaskReviewMode` | `review_mode` | Yes | No | — | — | — | — |
-| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | strict=True; ge=1 | — | — |
-| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `reviewer_profile_id` | `int \| None` | `reviewer_profile_id` | No | Yes | `None` | ge=1; strict=True | — | — |
+| `routing_preview_id` | `str` | `routing_preview_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `routing_preview_digest` | `RoutingDigest` | `routing_preview_digest` | Yes | No | — | — | — | — |
 | `input_digest` | `RoutingDigest` | `input_digest` | Yes | No | — | — | — | — |
 | `preview_generated_at` | `datetime` | `preview_generated_at` | Yes | No | — | — | — | — |
 | `preview_expires_at` | `datetime` | `preview_expires_at` | Yes | No | — | — | — | — |
-| `selected_rank` | `int` | `selected_rank` | Yes | No | — | strict=True; ge=1 | — | — |
-| `adequacy_class` | `int` | `adequacy_class` | Yes | No | — | strict=True; ge=0 | — | — |
+| `selected_rank` | `int` | `selected_rank` | Yes | No | — | ge=1; strict=True | — | — |
+| `adequacy_class` | `int` | `adequacy_class` | Yes | No | — | ge=0; strict=True | — | — |
 | `selection_reason_codes` | `tuple[RoutingKey, ...]` | `selection_reason_codes` | No | No | `()` | — | — | — |
 | `eligible_candidate_summaries` | `tuple[RoutingCandidateSummary, ...]` | `eligible_candidate_summaries` | Yes | No | — | min_length=1; max_length=unknown (MAX_ROUTING_CANDIDATES) | — | — |
 | `exclusion_summaries` | `tuple[RoutingExclusionSummary, ...]` | `exclusion_summaries` | No | No | `()` | max_length=unknown (MAX_ROUTING_EXCLUSIONS) | — | — |
-| `eligible_candidates_omitted` | `int` | `eligible_candidates_omitted` | No | No | `0` | strict=True; ge=0 | — | — |
-| `exclusions_omitted` | `int` | `exclusions_omitted` | No | No | `0` | strict=True; ge=0 | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `eligible_candidates_omitted` | `int` | `eligible_candidates_omitted` | No | No | `0` | ge=0; strict=True | — | — |
+| `exclusions_omitted` | `int` | `exclusions_omitted` | No | No | `0` | ge=0; strict=True | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
 | `confidence` | `float` | `confidence` | Yes | No | — | le=1.0; ge=unknown (MIN_ROUTING_ASSESSMENT_CONFIDENCE) | — | — |
 | `trust_lineage` | `RoutingTrustLineage` | `trust_lineage` | Yes | No | — | — | — | — |
 | `prior_lineage` | `dict[str, Any] \| None` | `prior_lineage` | No | Yes | `None` | — | — | — |

@@ -15,7 +15,7 @@ Raised when skill source, catalog, or archive validation fails.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

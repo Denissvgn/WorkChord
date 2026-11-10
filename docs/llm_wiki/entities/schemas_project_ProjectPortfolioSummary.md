@@ -24,7 +24,7 @@ Compact project signals for portfolio tables.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

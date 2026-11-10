@@ -1,7 +1,7 @@
 # Dependency
 
 **Location:** `frontend/src/components/tasks/DeliveryDependencies.tsx:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [DeliveryDependencies](../modules/DeliveryDependencies.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `Dependency` in `frontend/src/components/tasks/DeliveryDepe
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

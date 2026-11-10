@@ -27,7 +27,7 @@ A governed group for related task label slugs.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

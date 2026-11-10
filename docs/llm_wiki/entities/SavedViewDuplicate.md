@@ -1,7 +1,7 @@
 # SavedViewDuplicate
 
 **Location:** `frontend/src/types/savedView.ts:63`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `SavedViewDuplicate` in `frontend/src/types/savedView.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/pages/IterationsPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/iteration/IterationForm` | `IterationForm` |
-| `../components/iteration/IterationImportDialog` | `IterationImportDialog` |
-| `../components/iteration/IterationList` | `IterationList` |
-| `../components/planning/PlanReturnBar` | `PlanReturnBar` |
-| `../components/ui` | `PageHeader`, `PageLayout` |
-| `../types/iteration` | `Iteration` |
-| `react` | `useState`, `useRef` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/iteration/IterationForm` | `IterationForm` | — | compiler-dependent |
+| `../components/iteration/IterationImportDialog` | `IterationImportDialog` | — | compiler-dependent |
+| `../components/iteration/IterationList` | `IterationList` | — | compiler-dependent |
+| `../components/planning/PlanReturnBar` | `PlanReturnBar` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../types/iteration` | `Iteration` | Declaration | erased |
+| `react` | `useState`, `useRef` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/pages/IterationsPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/iteration/IterationForm.tsx"]

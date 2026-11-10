@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../i18n/i18n` | `i18n` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `./ProjectsPage` | `ProjectsPage` |
-| `@testing-library/react` | `screen`, `within` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./ProjectsPage` | `ProjectsPage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +35,7 @@ flowchart LR
     n1 --> n0
     n1 --> n2
     n1 --> n3
+    n3 --> n0
     click n0 "../modules/i18n.md"
     click n1 "../modules/ProjectsPage.test.md"
     click n2 "../modules/ProjectsPage.md"

@@ -1,7 +1,7 @@
 # ToastInput
 
 **Location:** `frontend/src/components/feedback/toast.ts:5`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [toast](../modules/toast.md)
 
@@ -23,7 +23,7 @@ _Auto-generated from `ToastInput` in `frontend/src/components/feedback/toast.ts`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

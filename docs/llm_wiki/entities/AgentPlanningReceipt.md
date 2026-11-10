@@ -30,7 +30,7 @@ Exact durable response stored for one PM setup mutation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

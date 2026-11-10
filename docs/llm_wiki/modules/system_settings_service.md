@@ -24,6 +24,7 @@ DB-backed runtime system settings resolution.
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `types` | `SimpleNamespace` |
 | `typing` | `Any`, `Literal`, `Optional` |
+| `urllib.parse` | `urlparse` |
 
 ## Local dependency map
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (11) |
 | Outbound | `backend` (5) |
 
 ### External packages
@@ -52,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

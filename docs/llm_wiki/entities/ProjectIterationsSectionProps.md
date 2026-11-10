@@ -1,7 +1,7 @@
 # ProjectIterationsSectionProps
 
 **Location:** `frontend/src/components/projects/ProjectIterationsSection.tsx:18`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ProjectIterationsSection](../modules/ProjectIterationsSection.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `ProjectIterationsSectionProps` in `frontend/src/components
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

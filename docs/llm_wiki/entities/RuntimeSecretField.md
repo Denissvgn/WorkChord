@@ -17,7 +17,7 @@ Resolved secret metadata without exposing the secret.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

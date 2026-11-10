@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/services/timeEntryService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./api` | `api` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/services/timeEntryService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/TimeEntriesReport.tsx"]
@@ -60,12 +62,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TimeValues](../entities/timeEntryService_TimeValues.md) | Class | 3 | — | — |
-| [TimeEntry](../entities/timeEntryService_TimeEntry.md) | Class | 4 | `TimeValues` | — |
-| [TimePage](../entities/TimePage.md) | Class | 8 | — | — |
-| [TimeRevision](../entities/TimeRevision.md) | Class | 9 | `TimeValues` | — |
-| [TimeReport](../entities/TimeReport.md) | Class | 10 | — | — |
-| [TimeFilters](../entities/TimeFilters.md) | Class | 18 | — | — |
+| [TimeValues](../entities/timeEntryService_TimeValues.md) | Interface | 3 | — | — |
+| [TimeEntry](../entities/timeEntryService_TimeEntry.md) | Interface | 4 | `TimeValues` | — |
+| [TimePage](../entities/TimePage.md) | Interface | 8 | — | — |
+| [TimeRevision](../entities/TimeRevision.md) | Interface | 9 | `TimeValues` | — |
+| [TimeReport](../entities/TimeReport.md) | Interface | 10 | — | — |
+| [TimeFilters](../entities/TimeFilters.md) | Interface | 18 | — | — |
 
 ## Functions
 

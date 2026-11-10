@@ -8,18 +8,18 @@ Displays delivery readiness and adds or removes typed prerequisites using the de
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/api` | `api` |
-| `../../services/projectService` | `projectService` |
-| `../../services/taskService` | `taskService` |
-| `../../types/task` | `Task` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `@tanstack/react-query` | `useMutation`, `useQuery` |
-| `react` | `useEffect`, `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/api` | `api` | — | compiler-dependent |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/task` | `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery` | — | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +30,8 @@ Displays delivery readiness and adds or removes typed prerequisites using the de
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -95,7 +97,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Dependency](../entities/Dependency.md) | Class | 12 | — | — |
+| [Dependency](../entities/Dependency.md) | Interface | 12 | — | — |
 
 ## Functions
 

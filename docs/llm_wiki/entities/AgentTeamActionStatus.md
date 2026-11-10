@@ -20,7 +20,7 @@ _Auto-generated from `AgentTeamActionStatus` in `backend/app/schemas/agent_team_
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

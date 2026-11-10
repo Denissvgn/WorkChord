@@ -1,7 +1,7 @@
 # VacationManagerProps
 
 **Location:** `frontend/src/components/team/VacationManager.tsx:18`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [VacationManager](../modules/VacationManager.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `VacationManagerProps` in `frontend/src/components/team/Vac
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

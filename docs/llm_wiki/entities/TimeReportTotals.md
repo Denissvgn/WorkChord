@@ -22,7 +22,7 @@ _Auto-generated from `TimeReportTotals` in `backend/app/schemas/time_report.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,12 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TimeEntriesPanel](../modules/TimeEntriesPanel.md)
+**Target:**
+
+```typescript
+{ work_date: string; timezone: string; minutes: string; note: string; reason: string;
+    task: string; request: string; editing?: Pick<TimeEntry, 'id' | 'version'> }
+```
 
 ## Description
 
@@ -11,11 +17,11 @@ _Auto-generated from `Draft` in `frontend/src/components/tasks/TimeEntriesPanel.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

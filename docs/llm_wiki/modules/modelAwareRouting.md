@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/test/fixtures/modelAwareRouting.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/agent` | `AgentActorRosterItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewResponse` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/agent` | `AgentActorRosterItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewResponse` | Declaration | erased |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/test/fixtures/modelAwareRouting.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/agent/RoutingCandidateComparison.test.tsx"]

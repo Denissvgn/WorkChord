@@ -20,7 +20,7 @@ Triage item model.
 | `datetime` | `datetime` |
 | `enum` | `Enum` |
 | `sqlalchemy` | `Boolean`, `CheckConstraint`, `Float`, `ForeignKey`, `Integer`, `JSON`, `String`, `Text` |
-| `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
+| `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship`, `attributes` |
 | `typing` | `TYPE_CHECKING`, `Any`, `Optional` |
 
 ## Local dependency map

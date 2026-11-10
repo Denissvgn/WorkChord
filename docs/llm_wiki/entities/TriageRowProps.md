@@ -1,7 +1,7 @@
 # TriageRowProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:1716`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TriageRowProps` in `frontend/src/pages/TriagePage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

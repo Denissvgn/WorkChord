@@ -8,25 +8,26 @@ Preserves authenticated saved-view ownership and legacy predicate adaptation. It
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../i18n/seedDisplay` | `savedViewDisplay` |
-| `../../services/savedViewService` | `savedViewService` |
-| `../../services/sessionService` | `sessionService` |
-| `../../types/savedView` | `SavedView`, `SavedViewScope` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../../utils/savedViewState` | `savedViewModified` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `../common/Modal` | `Modal` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `./TaskFiltersBar` | `TaskFilters` |
-| `./TaskList` | `SortKey` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `AlertTriangle`, `Copy`, `Save`, `Trash2` |
-| `react` | `useMemo`, `useRef`, `useState`, `FormEvent` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../i18n/seedDisplay` | `savedViewDisplay` | — | compiler-dependent |
+| `../../services/savedViewService` | `savedViewService` | — | compiler-dependent |
+| `../../services/sessionService` | `sessionService` | — | compiler-dependent |
+| `../../types/savedView` | `SavedView`, `SavedViewScope` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/savedViewState` | `savedViewModified` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `./TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `./TaskList` | `SortKey` | Declaration | erased |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Copy`, `Save`, `Trash2` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `react` | `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -39,6 +40,8 @@ Preserves authenticated saved-view ownership and legacy predicate adaptation. It
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -69,12 +72,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Class | 25 | — | — |
-| [EditableScope](../entities/EditableScope.md) | Type alias | 22 | — | — |
-| [FormMode](../entities/FormMode.md) | Type alias | 23 | — | — |
+| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Interface | 25 | — | — |
+| [EditableScope](../entities/EditableScope.md) | Type alias | 22 | `Exclude<SavedViewScope, 'system'>` | — |
+| [FormMode](../entities/FormMode.md) | Type alias | 23 | `'create' \| 'duplicate'` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `SavedViewsControl` | `({     filters,     sortKey,     selectedViewId,     onSelectedViewIdChange,     onApplyView, }: SavedViewsControlProps)` | — | — |
+| `SavedViewsControl` | <pre><code>&#40;&#123;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    selectedViewId&#44;&#10;    onSelectedViewIdChange&#44;&#10;    onApplyView&#44;&#10;&#125;&#58; SavedViewsControlProps&#41;</code></pre> | — | — |

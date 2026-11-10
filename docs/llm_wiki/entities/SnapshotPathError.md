@@ -15,7 +15,7 @@ Raised when a snapshot name cannot be safely resolved inside its iteration direc
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

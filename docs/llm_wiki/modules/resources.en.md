@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/i18n/resources.en.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./pagination` | `paginationEN` |
-| `./planningInputMessages` | `planningInputEnglish` |
-| `./teamwork.en` | `teamworkEnglish` |
-| `./timeEntries` | `timeEntriesEN` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./pagination` | `paginationEN` | — | compiler-dependent |
+| `./planningInputMessages` | `planningInputEnglish` | — | compiler-dependent |
+| `./teamwork.en` | `teamworkEnglish` | — | compiler-dependent |
+| `./timeEntries` | `timeEntriesEN` | — | compiler-dependent |
 
 ## Module Signals
 

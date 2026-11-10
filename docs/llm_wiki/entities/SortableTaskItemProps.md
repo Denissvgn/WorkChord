@@ -1,7 +1,7 @@
 # SortableTaskItemProps
 
 **Location:** `frontend/src/components/tasks/SortableTaskItem.tsx:7`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SortableTaskItem](../modules/SortableTaskItem.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `SortableTaskItemProps` in `frontend/src/components/tasks/S
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

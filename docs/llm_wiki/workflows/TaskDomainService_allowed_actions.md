@@ -6,15 +6,19 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `delivery_dependency_service.DeliveryDependencyService`
-2. `task_brief_service.TaskBriefService`
-3. `agent_work_service.AgentWorkService`
-4. `time.utc_now`
-5. `time.as_utc`
-6. `time.as_utc`
+1. `delivery_dependency_service.DeliveryDependencyService.ready`
+2. `delivery_dependency_service.DeliveryDependencyService`
+3. `task_brief_service.TaskBriefService.require_review`
+4. `task_brief_service.TaskBriefService`
+5. `agent_work_service.AgentWorkService._start_blockers`
+6. `agent_work_service.AgentWorkService`
 7. `time.utc_now`
-8. `task_brief_service.TaskBriefService`
-9. `schemas_task_domain.TaskActionsResponse`
+8. `time.as_utc`
+9. `time.as_utc`
+10. `time.utc_now`
+11. `task_brief_service.TaskBriefService.require_review`
+12. `task_brief_service.TaskBriefService`
+13. `schemas_task_domain.TaskActionsResponse`
 
 ## Touches
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [visibleWork](../modules/visibleWork.md)
+**Target:**
+
+```typescript
+Task & { parent_context: string[] }
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `VisibleLeaf` in `frontend/src/utils/visibleWork.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

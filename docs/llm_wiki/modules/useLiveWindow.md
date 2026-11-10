@@ -8,10 +8,11 @@ Live paged work retains four pages with one separate foreground head-discovery r
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `@tanstack/react-query` | `useInfiniteQuery`, `useQuery`, `useQueryClient`, `InfiniteData`, `QueryKey`, `UseInfiniteQueryOptions` |
-| `react` | `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `@tanstack/react-query` | `InfiniteData`, `QueryKey`, `UseInfiniteQueryOptions` | Specifier | compiler-dependent |
+| `@tanstack/react-query` | `useInfiniteQuery`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -76,6 +77,6 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `useLiveWindow` | `(options: UseInfiniteQueryOptions<T, Error, InfiniteData<T, P>, QueryKey, P>)` | — | — |
+| `useLiveWindow` | `<T, P>(options: UseInfiniteQueryOptions<T, Error, InfiniteData<T, P>, QueryKey, P>)` | — | — |
 | `validateWindowCursor` | `(page: unknown, current: unknown, next: unknown)` | — | — |
-| `deduplicateWindow` | `(data: InfiniteData<T, P>) -> InfiniteData<T, P>` | — | — |
+| `deduplicateWindow` | `<T, P>(data: InfiniteData<T, P>) -> InfiniteData<T, P>` | — | — |

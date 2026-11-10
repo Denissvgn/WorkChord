@@ -15,7 +15,7 @@ _Auto-generated from `CharterVerificationError` in `backend/app/autonomy/contrac
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -18,7 +18,7 @@ _Auto-generated from `SignedCharterVerificationReceipt` in `backend/app/autonomy
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

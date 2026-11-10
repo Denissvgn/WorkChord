@@ -19,7 +19,7 @@ _Auto-generated from `WorkspaceAuthorityState` in `backend/app/models/identity.p
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

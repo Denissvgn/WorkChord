@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanMasterPage.test](../modules/PlanMasterPage.test.md)
+**Target:**
+
+```typescript
+{
+    id: number;
+    name: string;
+    capacity_hours: number;
+    planned_hours: number;
+}
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `PlanningMember` in `frontend/src/pages/PlanMasterPage.test
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

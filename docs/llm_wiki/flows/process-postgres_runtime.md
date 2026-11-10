@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -28,43 +30,62 @@ sequenceDiagram
     participant p16 as tempfile.NamedTemporaryFile
     participant p17 as secret.write
     participant p18 as secret.flush
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
+    p0-->>p1: argparse.ArgumentParser(description=__doc__)
+    p0-->>p2: parser.add_argument('action', choices=[...])
+    p0-->>p2: parser.add_argument('--data-dir', type=Path, required=True)
+    p0-->>p2: parser.add_argument('--bin-dir', type=Path, required=True)
+    p0-->>p2: parser.add_argument('--port', type=int, default=55432)
     p0-->>p3: parser.parse_args
     p0-->>p4: args.data_dir.resolve
     p0-->>p5: args.bin_dir.resolve
-    p0-->>p6: parser.error
+    p0-->>p6: parser.error('Use an unprivileged local port')
     p0-->>p7: (…).is_file
     p0-->>p8: data.exists
-    p0-->>p6: parser.error
+    p0-->>p6: parser.error('Refusing to stop a cluster not created by this helper')
     p0-->>p9: (…).exists
-    p0-->>p10: subprocess.run
-    p0-->>p11: str
-    p0-->>p11: str
+    p0-->>p10: subprocess.run([...], check=True)
+    p0-->>p11: str(...)
+    p0-->>p11: str(data)
     p0-->>p8: data.exists
-    p0-->>p6: parser.error
-    p0-->>p12: subprocess.check_output
-    p0-->>p11: str
-    p0-->>p13: re.search
-    p0-->>p6: parser.error
-    p0-->>p14: os.environ.get
-    p0-->>p6: parser.error
-    p0-->>p15: data.parent.mkdir
-    p0-->>p16: tempfile.NamedTemporaryFile
-    p0-->>p17: secret.write
+    p0-->>p6: parser.error('Use a new data directory existing clusters are never overwritten')
+    p0-->>p12: subprocess.check_output([...], text=True)
+    p0-->>p11: str(...)
+    p0-->>p13: re.search('\\(PostgreSQL\\) 18\\.', version)
+    p0-->>p6: parser.error('PostgreSQL 18 is required')
+    p0-->>p14: os.environ.get('WORKCHORD_CI_POSTGRES_PASSWORD')
+    p0-->>p6: parser.error('Set WORKCHORD_CI_POSTGRES_PASSWORD to a nonempty single-line value')
+    p0-->>p15: data.parent.mkdir(parents=True, exist_ok=True)
+    p0-->>p16: tempfile.NamedTemporaryFile(mode='w', prefix='workchord-pg-password-', dir=data.parent)
+    p0-->>p17: secret.write(...)
     p0-->>p18: secret.flush
-    p0-->>p10: subprocess.run
-    p0-->>p11: str
+    p0-->>p10: subprocess.run([...], check=True)
+    p0-->>p11: str(...)
 ```
 
-> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 38 interactions; 8 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 11 of 18 (7 omitted); unresolved 19 of 20 (1 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/ci/postgres_runtime.py:main` | 1 | - | external | 7 |
+| `scripts/ci/postgres_runtime.py:main` | 1 | - | unresolved | 1 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 10, emitted: 10, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. main"]

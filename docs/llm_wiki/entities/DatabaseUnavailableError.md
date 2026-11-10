@@ -15,7 +15,7 @@ A retryable database availability failure exhausted its budget.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

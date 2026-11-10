@@ -1,7 +1,7 @@
 # ProjectCreate
 
 **Location:** `frontend/src/types/project.ts:76`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)
 
@@ -26,7 +26,7 @@ _Auto-generated from `ProjectCreate` in `frontend/src/types/project.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

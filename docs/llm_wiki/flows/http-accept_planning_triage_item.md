@@ -6,63 +6,100 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as accept_planning_triage_item
     participant p1 as _run_triage_action
-    participant p2 as require_scope
-    participant p3 as actor_has_scope
-    participant p4 as actor_scopes
-    participant p5 as json.loads
-    participant p6 as isinstance (backend/app/services/agent_service.py:actor_scopes)
-    participant p7 as AgentPermissionError
-    participant p8 as adapter
-    participant p9 as data.model_dump
-    participant p10 as _require_triage_result
-    participant p11 as LookupError
-    participant p12 as _handle_agent_error
-    participant p13 as isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    participant p14 as HTTPException
-    participant p15 as str
-    participant p16 as exc.detail
+    participant p2 as _handle_agent_error
+    participant p3 as require_scope
+    participant p4 as actor_has_scope
+    participant p5 as _require_triage_result
+    participant p6 as AgentPermissionError
+    participant p7 as actor_scopes
+    participant p8 as isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
+    participant p9 as adapter
+    participant p10 as HTTPException
+    participant p11 as data.model_dump
+    participant p12 as str
+    participant p13 as exc.detail
     p0->>p1: _run_triage_action
-    p1->>p2: require_scope
-    p2->>p3: actor_has_scope
-    p3->>p4: actor_scopes
-    p4-->>p5: json.loads
-    p4-->>p6: isinstance (backend/app/services/agent_service.py:actor_scopes)
-    p2->>p7: AgentPermissionError
-    p1-->>p8: adapter
-    p1-->>p9: data.model_dump
-    p1->>p10: _require_triage_result
-    p10-->>p11: LookupError
-    p0->>p12: _handle_agent_error
-    p12-->>p13: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p12-->>p14: HTTPException
-    p12-->>p15: str
-    p12-->>p13: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p12-->>p14: HTTPException
-    p12-->>p16: exc.detail
-    p12-->>p13: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p12-->>p14: HTTPException
-    p12-->>p16: exc.detail
-    p12-->>p13: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p12-->>p14: HTTPException
-    p12-->>p15: str
-    p12-->>p13: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p12-->>p14: HTTPException
-    p12-->>p15: str
-    p12-->>p13: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)
-    p12-->>p14: HTTPException
-    p12-->>p15: str
+    p0->>p2: _handle_agent_error
+    p1->>p3: require_scope
+    p3->>p4: actor_has_scope
+    p1->>p5: _require_triage_result
+    p3->>p6: AgentPermissionError
+    p4->>p7: actor_scopes
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentPermissionError)
+    p1-->>p9: adapter(…)
+    p2-->>p10: HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))
+    p1-->>p11: data.model_dump(mode='json', exclude_unset=True)
+    p2-->>p12: str(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentRoutingConflictError)
+    p2-->>p10: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p13: exc.detail
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TaskVersionConflictError)
+    p2-->>p10: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p13: exc.detail
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, AgentConflictError)
+    p2-->>p10: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(...))
+    p2-->>p12: str(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, TriageConflictError)
+    p2-->>p10: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(...))
+    p2-->>p12: str(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, LookupError)
+    p2-->>p10: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(...))
+    p2-->>p12: str(exc)
+    p2-->>p8: isinstance (backend/app/routers/agent…ing.py:_handle_agent_error)(exc, ValueError)
+    p2-->>p10: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p2-->>p12: str(exc)
 ```
 
-> Call sequence diagram shows 30 of 33 interactions; 3 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 33 interactions; 3 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 19 of 22 (3 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/agent_service.py:actor_scopes` | 5 | - | external | 2 |
+| `backend/app/routers/agent_planning.py:_require_triage_result` | 11 | - | external | 1 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 8; effect analysis evaluated: 6, partial: 1, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 7 source steps with known totals: observed: 38, emitted: 34, omitted: 4. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `accept_planning_triage_item` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `_run_triage_action` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `require_scope` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `actor_has_scope` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `actor_scopes` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AgentPermissionError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `adapter` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `data.model_dump` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_require_triage_result` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `LookupError` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. accept_planning_triage_item"]
@@ -132,7 +169,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

@@ -1,7 +1,7 @@
 # CollapsibleSectionProps
 
 **Location:** `frontend/src/components/common/CollapsibleSection.tsx:5`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [CollapsibleSection](../modules/CollapsibleSection.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `CollapsibleSectionProps` in `frontend/src/components/commo
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

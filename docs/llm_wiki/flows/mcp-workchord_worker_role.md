@@ -2,19 +2,28 @@
 
 **Entry point:** `workchord_worker_role` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 3 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [commands](../modules/commands.md), [config](../modules/config.md), and 10 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [authority](../modules/authority.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [discussion_service](../modules/discussion_service.md)
 - [identity_service](../modules/identity_service.md)
+- [maintenance](../modules/maintenance.md)
 - [mcp_server](../modules/mcp_server.md)
+- [models_identity](../modules/models_identity.md)
+- [models_outbound_webhook](../modules/models_outbound_webhook.md)
+- [task_brief_service](../modules/task_brief_service.md)
+- [task_service](../modules/task_service.md)
+- [time](../modules/time.md)
 
 ## Call sequence
+
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
 
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
@@ -22,70 +31,117 @@ sequenceDiagram
     participant p0 as workchord_worker_role
     participant p1 as _skill_bundle_prompt
     participant p2 as _agent_context
-    participant p3 as _current_agent_key
-    participant p4 as _http_agent_key.get
-    participant p5 as os.getenv
-    participant p6 as MCPAuthError
-    participant p7 as _open_db_session
-    participant p8 as _session_factory
-    participant p9 as hasattr
-    participant p10 as command_transaction
-    participant p11 as current_command
-    participant p12 as getattr
-    participant p13 as isinstance (backend/app/commands.py:current_command)
-    participant p14 as info.get
-    participant p15 as RuntimeError
-    participant p16 as CommandState
-    participant p17 as db.flush
-    participant p18 as db.info.get
-    participant p19 as DeliveryDependencyService(…).reconcile
-    participant p20 as DeliveryDependencyService
-    participant p21 as sorted
-    participant p22 as db.info.pop
-    participant p23 as set
-    participant p24 as DiscussionService(…).enqueue
-    participant p25 as DiscussionService
-    participant p26 as db.rollback
-    participant p27 as db.commit
+    participant p3 as _skill_bundle_scope_requirement
+    participant p4 as command_transaction
+    participant p5 as _authenticate_agent_key
+    participant p6 as _require_scope_requirement
+    participant p7 as IdentityService.actor_context
+    participant p8 as get_settings
+    participant p9 as require_scope
+    participant p10 as AgentService.authenticate
+    participant p11 as require_identity_writes
+    participant p12 as DeliveryDependencyService.reconcile
+    participant p13 as DiscussionService.enqueue
+    participant p14 as actor_has_scope
+    participant p15 as commit_or_flush
+    participant p16 as DeliveryDependencyService.validate_cycles
+    participant p17 as DiscussionService.recipient_authorized
+    participant p18 as TaskService.reserve_task_version
+    participant p19 as clear_execution_evidence
+    participant p20 as _current_agent_key
+    participant p21 as MCPAuthError
+    participant p22 as _open_db_session
+    participant p23 as IdentityService
+    participant p24 as current_command
+    participant p25 as internal_authority
+    participant p26 as CommandState
+    participant p27 as AgentService
+    participant p28 as AgentPermissionError
+    participant p29 as isinstance (backend/app/mcp_server.py…require_scope_requirement)
+    participant p30 as _http_agent_key.get
     p0->>p1: _skill_bundle_prompt
     p1->>p2: _agent_context
-    p2->>p3: _current_agent_key
-    p3-->>p4: _http_agent_key.get
-    p3-->>p5: os.getenv
-    p2->>p6: MCPAuthError
-    p2->>p7: _open_db_session
-    p7-->>p8: _session_factory
-    p7-->>p9: hasattr
-    p2->>p10: command_transaction
-    p10->>p11: current_command
-    p11-->>p12: getattr
-    p11-->>p13: isinstance (backend/app/commands.py:current_command)
-    p11-->>p14: info.get
-    p10-->>p15: RuntimeError
-    p10->>p16: CommandState
-    p10-->>p15: RuntimeError
-    p10-->>p17: db.flush
-    p10-->>p18: db.info.get
-    p10-->>p18: db.info.get
-    p10-->>p18: db.info.get
-    p10-->>p19: DeliveryDependencyService(…).reconcile
-    p10->>p20: DeliveryDependencyService
-    p10-->>p21: sorted
-    p10-->>p22: db.info.pop
-    p10-->>p23: set
-    p10-->>p24: DiscussionService(…).enqueue
-    p10->>p25: DiscussionService
-    p10-->>p26: db.rollback
-    p10-->>p27: db.commit
+    p1->>p3: _skill_bundle_scope_requirement
+    p2->>p4: command_transaction
+    p2->>p5: _authenticate_agent_key
+    p2->>p6: _require_scope_requirement
+    p2->>p7: IdentityService.actor_context
+    p5->>p8: get_settings
+    p6->>p9: require_scope
+    p5->>p10: AgentService.authenticate
+    p7->>p11: require_identity_writes
+    p4->>p12: DeliveryDependencyService.reconcile
+    p4->>p13: DiscussionService.enqueue
+    p9->>p14: actor_has_scope
+    p10->>p15: commit_or_flush
+    p12->>p16: DeliveryDependencyService.validate_cycles
+    p13->>p17: DiscussionService.recipient_authorized
+    p12->>p18: TaskService.reserve_task_version
+    p12->>p19: clear_execution_evidence
+    p2->>p20: _current_agent_key
+    p2->>p21: MCPAuthError
+    p2->>p22: _open_db_session
+    p2->>p23: IdentityService
+    p4->>p24: current_command
+    p7->>p25: internal_authority
+    p4->>p26: CommandState
+    p5->>p27: AgentService
+    p6->>p28: AgentPermissionError
+    p6-->>p29: isinstance (backend/app/mcp_server.py…require_scope_requirement)(required, str)
+    p20-->>p30: _http_agent_key.get
 ```
 
-> Call sequence diagram shows 30 of 57 interactions; 27 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 200 interactions; 170 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 40 (39 omitted); unresolved 1 of 90 (89 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/mcp_server.py:_current_agent_key` | 4 | - | external | 1 |
+| `backend/app/mcp_server.py:_open_db_session` | 8 | - | unresolved | 1 |
+| `backend/app/mcp_server.py:_open_db_session` | 8 | - | external | 1 |
+| `backend/app/commands.py:current_command` | 12 | - | external | 2 |
+| `backend/app/commands.py:current_command` | 12 | - | unresolved | 1 |
+| `backend/app/commands.py:command_transaction` | 11 | - | external | 4 |
+| `backend/app/commands.py:command_transaction` | 11 | - | unresolved | 12 |
+| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.reconcile` | 23 | - | unresolved | 23 |
+> Omission summary shows 8 of 59 groups; 51 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 71; effect analysis evaluated: 48, partial: 0, unavailable: 23. Counts include steps omitted from the displayed trace.
+
+Collector observations for 48 source steps with known totals: observed: 173, emitted: 173, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `workchord_worker_role` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `_skill_bundle_prompt` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `_agent_context` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `_current_agent_key` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `_http_agent_key.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `os.getenv` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `MCPAuthError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `_open_db_session` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `_session_factory` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `hasattr` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `command_transaction` | `available` | `evaluated` | `available` | `10` | `10` | `0` |
+| `current_command` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. workchord_worker_role"]

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planningTaskIssues](../modules/planningTaskIssues.md)
+**Target:**
+
+```typescript
+typeof PLANNING_TASK_ISSUES[number]
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `PlanningTaskIssue` in `frontend/src/features/planningMaste
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

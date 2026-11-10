@@ -1,7 +1,7 @@
 # AdminAccessGateProps
 
 **Location:** `frontend/src/components/settings/AdminAccessGate.tsx:7`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AdminAccessGate](../modules/AdminAccessGate.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `AdminAccessGateProps` in `frontend/src/components/settings
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [agentTeamSetup_masters](../modules/agentTeamSetup_masters.md)
+**Target:**
+
+```typescript
+typeof AGENT_TEAM_STEP_IDS[number]
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `AgentTeamStepId` in `frontend/src/features/agentTeamSetup/
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -15,51 +15,85 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as workspace_member
     participant p1 as require_operator
-    participant p2 as db.info.get (backend/app/authority.py:require_operator)
+    participant p2 as require_identity_writes
     participant p3 as AuthorityError
-    participant p4 as require_identity_writes
-    participant p5 as get_settings
-    participant p6 as Settings
-    participant p7 as MaintenanceModeError
-    participant p8 as internal_authority
-    participant p9 as db.info.get (backend/app/authority.py:internal_authority)
-    participant p10 as db.get
-    participant p11 as db.delete
-    participant p12 as db.add
-    participant p13 as WorkspaceMembership
-    participant p14 as CommandAudit
-    participant p15 as db.flush
+    participant p4 as internal_authority
+    participant p5 as db.get
+    participant p6 as db.delete
+    participant p7 as db.add
+    participant p8 as WorkspaceMembership
+    participant p9 as CommandAudit
+    participant p10 as db.flush
+    participant p11 as db.info.get (backend/app/authority.py:require_operator)
+    participant p12 as get_settings
+    participant p13 as db.info.get (backend/app/authority.py:internal_authority)
+    participant p14 as MaintenanceModeError
+    participant p15 as Settings
     p0->>p1: require_operator
-    p1-->>p2: db.info.get (backend/app/authority.py:require_operator)
+    p0->>p2: require_identity_writes
+    p0->>p3: AuthorityError
+    p0->>p3: AuthorityError
+    p0->>p4: internal_authority
+    p0-->>p5: db.get(Principal, principal_id)
+    p0->>p3: AuthorityError
+    p0-->>p5: db.get(WorkspaceMembership, principal_id)
+    p0-->>p6: db.delete(existing)
+    p0-->>p7: db.add(WorkspaceMembership(...))
+    p0->>p8: WorkspaceMembership
+    p0-->>p7: db.add(CommandAudit(...))
+    p0->>p9: CommandAudit
+    p0-->>p10: db.flush
+    p1-->>p11: db.info.get (backend/app/authority.py:require_operator)('authority')
+    p2->>p12: get_settings
+    p4-->>p13: db.info.get (backend/app/authority.py:internal_authority)('authority_internal', False)
     p1->>p3: AuthorityError
-    p0->>p4: require_identity_writes
-    p4->>p5: get_settings
-    p5->>p6: Settings
-    p4->>p7: MaintenanceModeError
-    p4->>p5: get_settings
-    p0->>p3: AuthorityError
-    p0->>p3: AuthorityError
-    p0->>p8: internal_authority
-    p8-->>p9: db.info.get (backend/app/authority.py:internal_authority)
-    p0-->>p10: db.get
-    p0->>p3: AuthorityError
-    p0-->>p10: db.get
-    p0-->>p11: db.delete
-    p0-->>p12: db.add
-    p0->>p13: WorkspaceMembership
-    p0-->>p12: db.add
-    p0->>p14: CommandAudit
-    p0-->>p15: db.flush
+    p2->>p14: MaintenanceModeError
+    p2->>p12: get_settings
+    p12->>p15: Settings
 ```
+
+> Call sequence diagram shows 21 of 21 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 0 of 0 (0 omitted); unresolved 8 of 8 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 14; effect analysis evaluated: 6, partial: 0, unavailable: 8. Counts include steps omitted from the displayed trace.
+
+Collector observations for 6 source steps with known totals: observed: 15, emitted: 15, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `workspace_member` | `available` | `evaluated` | `available` | `9` | `9` | `0` |
+| `require_operator` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `db.info.get (backend/app/authority.py:require_operator)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+
 ```mermaid
 flowchart LR
     s1["1. workspace_member"]

@@ -2,130 +2,186 @@
 
 **Entry point:** `get_agent_capabilities` (`http`)
 **Source:** [routers_agent](../modules/routers_agent.md)
-**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), and 6 more
+**Modules touched:** [agent_contract](../modules/agent_contract.md), [agent_routing_rollout](../modules/agent_routing_rollout.md), [agent_service](../modules/agent_service.md), [agent_team_setup](../modules/agent_team_setup.md), and 8 more
 
 **Complete modules touched:**
 
 - [agent_contract](../modules/agent_contract.md)
 - [agent_routing_rollout](../modules/agent_routing_rollout.md)
 - [agent_service](../modules/agent_service.md)
+- [agent_team_setup](../modules/agent_team_setup.md)
 - [agent_team_setup_service](../modules/agent_team_setup_service.md)
 - [authority](../modules/authority.md)
+- [autonomy_canonical](../modules/autonomy_canonical.md)
 - [config](../modules/config.md)
 - [routers_agent](../modules/routers_agent.md)
 - [schemas_agent](../modules/schemas_agent.md)
 - [task_domain_service](../modules/task_domain_service.md)
+- [time](../modules/time.md)
 
 ## Call sequence
+
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
 
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as get_agent_capabilities
-    participant p1 as AgentRoutingRolloutService().status
-    participant p2 as AgentRoutingRolloutService
-    participant p3 as AgentTeamSetupService(…).routing_readiness
-    participant p4 as AgentTeamSetupService
-    participant p5 as (…).status
-    participant p6 as agent_contract_features
-    participant p7 as ValueError
-    participant p8 as features.insert
-    participant p9 as features.index
-    participant p10 as features.extend
-    participant p11 as domain_capabilities
-    participant p12 as internal_authority
-    participant p13 as db.info.get
-    participant p14 as db.scalar
-    participant p15 as select(…).where(…).limit
-    participant p16 as select(…).where
-    participant p17 as select
-    participant p18 as get_settings
-    participant p19 as Settings
-    participant p20 as getattr
-    participant p21 as actor_has_scope
-    participant p22 as actor_scopes
-    participant p23 as json.loads
-    participant p24 as isinstance
-    participant p25 as SkillBundleCatalogResponse.model_validate_json
-    participant p26 as bundle_service.catalog_payload
-    p0-->>p1: AgentRoutingRolloutService().status
-    p0->>p2: AgentRoutingRolloutService
-    p0-->>p3: AgentTeamSetupService(…).routing_readiness
-    p0->>p4: AgentTeamSetupService
-    p0-->>p5: (…).status
-    p0->>p2: AgentRoutingRolloutService
-    p0->>p2: AgentRoutingRolloutService
-    p0->>p6: agent_contract_features
-    p6-->>p7: ValueError
-    p6-->>p8: features.insert
-    p6-->>p9: features.index
-    p0-->>p10: features.extend
-    p0->>p11: domain_capabilities
-    p11->>p12: internal_authority
-    p12-->>p13: db.info.get
-    p11-->>p14: db.scalar
-    p11-->>p15: select(…).where(…).limit
-    p11-->>p16: select(…).where
-    p11-->>p17: select
-    p11->>p18: get_settings
-    p18->>p19: Settings
-    p11->>p18: get_settings
-    p0-->>p20: getattr
-    p0->>p18: get_settings
-    p0->>p21: actor_has_scope
-    p21->>p22: actor_scopes
-    p22-->>p23: json.loads
-    p22-->>p24: isinstance
-    p0-->>p25: SkillBundleCatalogResponse.model_validate_json
-    p0-->>p26: bundle_service.catalog_payload
+    participant p1 as AgentRoutingRolloutService.status
+    participant p2 as AgentTeamSetupService.routing_readiness
+    participant p3 as domain_capabilities
+    participant p4 as actor_has_scope
+    participant p5 as AgentRoutingRolloutService
+    participant p6 as AgentTeamSetupService
+    participant p7 as agent_contract_features
+    participant p8 as get_settings
+    participant p9 as AgentCapabilitiesResponse
+    participant p10 as actor_scopes
+    participant p11 as AgentTeamSetupService.membership_boundary
+    participant p12 as AgentRoutingTopologyReadiness.unavailable
+    participant p13 as AgentRoutingTopologyReadiness.ready
+    participant p14 as AgentRoutingTopologyReadiness.not_ready
+    participant p15 as AgentTeamSetupService._status_for_topology
+    participant p16 as AgentTeamSetupService._handoff
+    participant p17 as _canonical_json
+    participant p18 as ensure_agent_team_secret_free
+    participant p19 as AgentRoutingRolloutMode
+    participant p20 as internal_authority
+    participant p21 as AgentRoutingRolloutStatus
+    participant p22 as AgentTeamSetupService._topology
+    participant p23 as AgentRoutingTopologyReadiness
+    participant p24 as Settings
+    participant p25 as AgentTeamMembershipBoundary
+    participant p26 as AgentTeamSetupConflictError
+    participant p27 as utc_now
+    participant p28 as AgentTeamMemberLifecycle
+    participant p29 as getattr
+    participant p30 as (…).status
+    p0->>p1: AgentRoutingRolloutService.status
+    p0->>p2: AgentTeamSetupService.routing_readiness
+    p0->>p3: domain_capabilities
+    p0->>p4: actor_has_scope
+    p0->>p5: AgentRoutingRolloutService
+    p0->>p6: AgentTeamSetupService
+    p0->>p7: agent_contract_features
+    p0->>p8: get_settings
+    p0->>p9: AgentCapabilitiesResponse
+    p0->>p10: actor_scopes
+    p2->>p11: AgentTeamSetupService.membership_boundary
+    p2->>p12: AgentRoutingTopologyReadiness.unavailable
+    p2->>p13: AgentRoutingTopologyReadiness.ready
+    p2->>p14: AgentRoutingTopologyReadiness.not_ready
+    p11->>p15: AgentTeamSetupService._status_for_topology
+    p15->>p16: AgentTeamSetupService._handoff
+    p15->>p17: _canonical_json
+    p17->>p18: ensure_agent_team_secret_free
+    p1->>p19: AgentRoutingRolloutMode
+    p3->>p20: internal_authority
+    p1->>p21: AgentRoutingRolloutStatus
+    p2->>p22: AgentTeamSetupService._topology
+    p12->>p23: AgentRoutingTopologyReadiness
+    p8->>p24: Settings
+    p11->>p25: AgentTeamMembershipBoundary
+    p15->>p26: AgentTeamSetupConflictError
+    p15->>p27: utc_now
+    p15->>p28: AgentTeamMemberLifecycle
+    p0-->>p29: getattr(service, 'db', None)
+    p0-->>p30: (…).status
 ```
 
-> Call sequence diagram shows 30 of 37 interactions; 7 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 216 interactions; 186 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 62 (61 omitted); unresolved 1 of 96 (95 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/services/agent_routing_rollout.py:AgentRoutingRolloutService.status` | 2 | [backend/app/services/agent_routing_rollout.py](../modules/agent_routing_rollout.md) | internal | 2 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 9 | - | unresolved | 4 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 9 | - | external | 3 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService.membership_boundary` | 9 | [backend/app/services/agent_team_setup_service.py](../modules/agent_team_setup_service.md) | internal | 1 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | unresolved | 16 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._topology` | 15 | - | external | 5 |
+| `backend/app/services/agent_team_setup_service.py:AgentTeamSetupService._status_for_topology` | 37 | - | unresolved | 49 |
+| `backend/app/utils/time.py:utc_now` | 40 | - | external | 1 |
+> Omission summary shows 8 of 37 groups; 29 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
+
+> Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 59; effect analysis evaluated: 31, partial: 2, unavailable: 26. Counts include steps omitted from the displayed trace.
+
+Collector observations for 33 source steps with known totals: observed: 189, emitted: 167, omitted: 22. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `get_agent_capabilities` | `available` | `evaluated` | `available` | `9` | `9` | `0` |
+| `AgentRoutingRolloutService.status` | `available` | `evaluated` | `available` | `9` | `9` | `0` |
+| `AgentRoutingRolloutMode` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `AgentRoutingRolloutStatus` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `AgentRoutingRolloutService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `AgentTeamSetupService.routing_readiness` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `AgentTeamSetupService.membership_boundary` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `self.db.execute (backend/app/services/agen…rvice.membership_boundary)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).join(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `select(…).join` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. get_agent_capabilities"]
-    s2["2. AgentRoutingRolloutService().status"]
-    s3["3. AgentRoutingRolloutService"]
-    s4["4. AgentTeamSetupService(…).routing_readiness"]
-    s5["5. AgentTeamSetupService"]
-    s6["6. (…).status"]
+    s2["2. AgentRoutingRolloutService.status"]
+    s3["3. AgentRoutingRolloutMode"]
+    s4["4. AgentRoutingRolloutStatus"]
+    s5["5. AgentRoutingRolloutStatus"]
+    s6["6. AgentRoutingRolloutStatus"]
     s7["7. AgentRoutingRolloutService"]
-    s8["8. AgentRoutingRolloutService"]
-    s9["9. agent_contract_features"]
-    s10["10. ValueError"]
-    s11["11. features.insert"]
-    s12["12. features.index"]
-    s1 -. "AgentRoutingRolloutService().status(data not statically known)" .-> s2
-    s1 -->|"AgentRoutingRolloutService(data not statically known)"| s3
-    s1 -. "AgentTeamSetupService(…).routing_readiness(actor)" .-> s4
-    s1 -->|"AgentTeamSetupService(service.db)"| s5
-    s1 -. "(…).status(data not statically known)" .-> s6
+    s8["8. AgentTeamSetupService.routing_readiness"]
+    s9["9. AgentTeamSetupService.membership_boundary"]
+    s10["10. self.db.execute (backend/app/services/agen…rvice.membership_boundary)"]
+    s11["11. select(…).join(…).where"]
+    s12["12. select(…).join"]
+    s1 -->|"AgentRoutingRolloutService.status(data not statically known)"| s2
+    s2 -->|"AgentRoutingRolloutMode(self.settings.model_aware_routing_mode)"| s3
+    s2 -->|"AgentRoutingRolloutStatus(…)"| s4
+    s2 -->|"AgentRoutingRolloutStatus(…)"| s5
+    s2 -->|"AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)"| s6
     s1 -->|"AgentRoutingRolloutService(data not statically known)"| s7
-    s1 -->|"AgentRoutingRolloutService(topology_readiness=topology_readiness)"| s8
-    s1 -->|"agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)"| s9
-    s9 -. "ValueError('Unsupported model-aware routing mode')" .-> s10
-    s9 -. "features.insert(..., MODEL_AWARE_ROUTING_FEATURE)" .-> s11
-    s9 -. "features.index('actor-roster-v1')" .-> s12
+    s1 -->|"AgentTeamSetupService.routing_readiness(actor)"| s8
+    s8 -->|"AgentTeamSetupService.membership_boundary(actor.id)"| s9
+    s9 -. "self.db.execute (backend/app/services/agen…rvice.membership_boundary)(...)" .-> s10
+    s9 -. "select(…).join(…).where(..., ...)" .-> s11
+    s9 -. "select(…).join(AgentTeamTopologyMember, ...)" .-> s12
     b0["mutation features.extend"]
     s1 -. "mutation features.extend" .-> b0
     b1["mutation features.append"]
     s1 -. "mutation features.append" .-> b1
-    b2["mutation features.insert"]
-    s9 -. "mutation features.insert" .-> b2
     click s1 "../modules/routers_agent.md"
+    click s2 "../modules/agent_routing_rollout.md"
     click s3 "../modules/agent_routing_rollout.md"
-    click s5 "../modules/agent_team_setup_service.md"
+    click s4 "../modules/agent_routing_rollout.md"
+    click s5 "../modules/agent_routing_rollout.md"
+    click s6 "../modules/agent_routing_rollout.md"
     click s7 "../modules/agent_routing_rollout.md"
-    click s8 "../modules/agent_routing_rollout.md"
-    click s9 "../modules/agent_contract.md"
+    click s8 "../modules/agent_team_setup_service.md"
+    click s9 "../modules/agent_team_setup_service.md"
     classDef boundary stroke:#b45309,stroke-dasharray: 4 2
     class b0 boundary
     class b1 boundary
-    class b2 boundary
 ```
 
 ### Step data
@@ -133,33 +189,33 @@ flowchart LR
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
 | `get_agent_capabilities` | `request: Request`, `actor: Annotated[AgentActor, Depends(get_agent_actor)]`, `service: Annotated[AgentWorkService, Depends(get_agent_work_service)]`, `bundle_service: Annotated[AgentSkillBundleService, Depends(get_agent_skill_bundle_service)]` | `SkillBundleArtifactError` | `recommended_skills[...]` | `AgentCapabilitiesResponse(...)` |
-| `AgentRoutingRolloutService().status` | - | - | - | - |
+| `AgentRoutingRolloutService.status` | - | `self.settings.model_aware_routing_mode`, `self.topology_readiness`, `AgentRoutingRolloutMode`, `AgentRoutingRolloutMode`, `AgentRoutingTopologyReadinessStatus`, `AgentRoutingRolloutMode` | - | `AgentRoutingRolloutStatus(...)`, `AgentRoutingRolloutStatus(...)`, `AgentRoutingRolloutStatus(...)` |
+| `AgentRoutingRolloutMode` | - | - | - | - |
+| `AgentRoutingRolloutStatus` | - | - | - | - |
+| `AgentRoutingRolloutStatus` | - | - | - | - |
+| `AgentRoutingRolloutStatus` | - | - | - | - |
 | `AgentRoutingRolloutService` | - | - | - | - |
-| `AgentTeamSetupService(…).routing_readiness` | - | - | - | - |
-| `AgentTeamSetupService` | - | - | - | - |
-| `(…).status` | - | - | - | - |
-| `AgentRoutingRolloutService` | - | - | - | - |
-| `AgentRoutingRolloutService` | - | - | - | - |
-| `agent_contract_features` | `include_skill_bundles: bool`, `model_aware_routing_mode: str` | `AGENT_CONTRACT_FEATURES`, `SKILL_BUNDLES_FEATURE`, `MODEL_AWARE_ROUTING_FEATURE` | - | `features` |
-| `ValueError` | - | - | - | - |
-| `features.insert` | - | - | - | - |
-| `features.index` | - | - | - | - |
+| `AgentTeamSetupService.routing_readiness` | `actor: AgentActor` | - | - | `AgentRoutingTopologyReadiness.unavailable(...)`, `AgentRoutingTopologyReadiness.ready(...)`, `AgentRoutingTopologyReadiness.not_ready(...)` |
+| `AgentTeamSetupService.membership_boundary` | `actor_id: int` | `AgentTeamTopologyMember`, `AgentTeamTopology` | - | `None`, `None`, `AgentTeamMembershipBoundary(...)` |
+| `self.db.execute (backend/app/services/agen…rvice.membership_boundary)` | - | - | - | - |
+| `select(…).join(…).where` | - | - | - | - |
+| `select(…).join` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_capabilities | AgentRoutingRolloutService().status | 339 | `AgentRoutingRolloutService().status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService.status | 339 | `AgentRoutingRolloutService().status(data not statically known)` |
+| AgentRoutingRolloutService.status | AgentRoutingRolloutMode | 253 | `AgentRoutingRolloutMode(self.settings.model_aware_routing_mode)` |
+| AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 258 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=AgentRoutingRolloutMode.OFF, feature_advertised=False, blocker_codes=(...), topology_readiness=readiness)` |
+| AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 266 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=AgentRoutingRolloutMode.OFF, feature_advertised=False, blocker_codes=(...), topology_readiness=readiness)` |
+| AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 273 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)` |
 | get_agent_capabilities | AgentRoutingRolloutService | 339 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentTeamSetupService(…).routing_readiness | 341 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| get_agent_capabilities | AgentTeamSetupService | 341 | `AgentTeamSetupService(service.db)` |
-| get_agent_capabilities | (…).status | 344 | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 345 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 348 | `AgentRoutingRolloutService(topology_readiness=topology_readiness)` |
-| get_agent_capabilities | agent_contract_features | 352 | `agent_contract_features(include_skill_bundles=False, model_aware_routing_mode=rollout_status.effective_mode.value)` |
-| agent_contract_features | ValueError | 43 | `ValueError('Unsupported model-aware routing mode')` |
-| agent_contract_features | features.insert | 51 | `features.insert(..., MODEL_AWARE_ROUTING_FEATURE)` |
-| agent_contract_features | features.index | 52 | `features.index('actor-roster-v1')` |
+| get_agent_capabilities | AgentTeamSetupService.routing_readiness | 341 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
+| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3446 | `self.membership_boundary(actor.id)` |
+| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3378 | `self.db.execute(...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3379 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join | 3379 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
 
 ### Boundary effects
 
@@ -167,18 +223,16 @@ flowchart LR
 |---|---|---|---:|
 | mutation | `features.extend` | `get_agent_capabilities` | 357 |
 | mutation | `features.append` | `get_agent_capabilities` | 374 |
-| mutation | `features.insert` | `agent_contract_features` | 51 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_capabilities` | `AgentRoutingRolloutService().status` | 339 |
-| unresolved_call | `get_agent_capabilities` | `AgentTeamSetupService(service.db).routing_readiness` | 341 |
-| unresolved_call | `get_agent_capabilities` | `(AgentRoutingRolloutService() if topology_readiness.status == AgentRoutingTopologyReadinessStatus.UNAVAILABLE else AgentRoutingRolloutService(topology_readiness=topology_readiness)).status` | 344 |
-| external_call | `agent_contract_features` | `ValueError` | 43 |
-| unresolved_call | `agent_contract_features` | `features.index` | 52 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3378 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3379 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3379 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
+| truncated_flow | `get_agent_capabilities` | `depth limit` | 0 |
 
 ## Behavior
 

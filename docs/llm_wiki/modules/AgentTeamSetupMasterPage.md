@@ -10,25 +10,26 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/layout/Breadcrumbs` | `Breadcrumbs` |
-| `../components/settings/AdminAccessGate` | `AdminAccessGate` |
-| `../components/settings/AgentTeamStepList` | `AgentTeamStepList` |
-| `../components/ui/MasterProgress` | `MasterProgress` |
-| `../features/agentTeamSetup/manifest` | `parseAgentTeamMasterEditor` |
-| `../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone` |
-| `../features/agentTeamSetup/statusScopes` | `deriveAgentTeamStatusScopes`, `RuntimeReadinessState`, `SessionAuthorityState`, `TopologyConfigurationState` |
-| `../features/agentTeamSetup/useAgentTeamReadiness` | `useAgentTeamReadiness` |
-| `../services/agentService` | `agentService` |
-| `../types/agent` | `AgentTeamApplyResponse`, `AgentTeamMaster`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamValidation` |
-| `../utils/focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` |
-| `../utils/formatDate` | `formatDateTime` |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` |
-| `axios` | `axios` |
-| `lucide-react` | `ChevronDown`, `CircleAlert`, `FileJson`, `KeyRound`, `LoaderCircle`, `RefreshCw`, `ShieldCheck` |
-| `react` | `useEffect`, `useMemo`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
+| `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
+| `../components/settings/AgentTeamStepList` | `AgentTeamStepList` | — | compiler-dependent |
+| `../components/ui/MasterProgress` | `MasterProgress` | — | compiler-dependent |
+| `../features/agentTeamSetup/manifest` | `parseAgentTeamMasterEditor` | — | compiler-dependent |
+| `../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone` | — | compiler-dependent |
+| `../features/agentTeamSetup/statusScopes` | `RuntimeReadinessState`, `SessionAuthorityState`, `TopologyConfigurationState` | Specifier | compiler-dependent |
+| `../features/agentTeamSetup/statusScopes` | `deriveAgentTeamStatusScopes` | — | compiler-dependent |
+| `../features/agentTeamSetup/useAgentTeamReadiness` | `useAgentTeamReadiness` | — | compiler-dependent |
+| `../services/agentService` | `agentService` | — | compiler-dependent |
+| `../types/agent` | `AgentTeamApplyResponse`, `AgentTeamMaster`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamValidation` | Declaration | erased |
+| `../utils/focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` | — | compiler-dependent |
+| `../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `axios` | `axios` | — | compiler-dependent |
+| `lucide-react` | `ChevronDown`, `CircleAlert`, `FileJson`, `KeyRound`, `LoaderCircle`, `RefreshCw`, `ShieldCheck` | — | compiler-dependent |
+| `react` | `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -40,6 +41,8 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -70,7 +73,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Class | 130 | — | — |
-| [StatusTone](../entities/StatusTone.md) | Type alias | 60 | — | — |
-| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 127 | — | — |
-| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 128 | — | — |
+| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 130 | — | — |
+| [StatusTone](../entities/StatusTone.md) | Type alias | 60 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
+| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 127 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
+| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 128 | `'plan' \| 'receipt'` | — |

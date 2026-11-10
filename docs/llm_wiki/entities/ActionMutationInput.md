@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
+**Target:**
+
+```typescript
+| { type: 'accept'; itemId: number; payload: TriageActionRequest }
+    | { type: 'decline'; itemId: number; payload: TriageActionRequest }
+    | { type: 'snooze'; itemId: number; payload: TriageSnoozeRequest }
+    | { type: 'duplicate'; itemId: number; payload: TriageDuplicateRequest }
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `ActionMutationInput` in `frontend/src/pages/TriagePage.tsx
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

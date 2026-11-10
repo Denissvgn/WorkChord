@@ -12,6 +12,7 @@ Controlled external web intake service.
 |--------|---------|
 | `app.schemas.intake` | `WebIntakeRequest` |
 | `app.schemas.triage` | `TriageItemCreate` |
+| `app.services.identity_service` | `bind_verified_system` |
 | `app.services.triage_service` | `TriageService` |
 | `app.utils.time` | `utc_now` |
 | `dataclasses` | `dataclass` |
@@ -30,24 +31,28 @@ flowchart LR
     n0["backend/app/routers/intake.py"]
     n1["backend/app/schemas/intake.py"]
     n2["backend/app/schemas/triage.py"]
-    n3["backend/app/services/triage_service.py"]
-    n4["backend/app/services/web_intake_service.py"]
-    n5["backend/app/utils/time.py"]
+    n3["backend/app/services/identity_service.py"]
+    n4["backend/app/services/triage_service.py"]
+    n5["backend/app/services/web_intake_service.py"]
+    n6["backend/app/utils/time.py"]
     n0 --> n1
     n0 --> n2
-    n0 --> n4
-    n3 --> n2
-    n3 --> n5
-    n4 --> n1
+    n0 --> n5
+    n3 --> n6
     n4 --> n2
-    n4 --> n3
-    n4 --> n5
+    n4 --> n6
+    n5 --> n1
+    n5 --> n2
+    n5 --> n3
+    n5 --> n4
+    n5 --> n6
     click n0 "../modules/routers_intake.md"
     click n1 "../modules/schemas_intake.md"
     click n2 "../modules/schemas_triage.md"
-    click n3 "../modules/triage_service.md"
-    click n4 "../modules/web_intake_service.md"
-    click n5 "../modules/time.md"
+    click n3 "../modules/identity_service.md"
+    click n4 "../modules/triage_service.md"
+    click n5 "../modules/web_intake_service.md"
+    click n6 "../modules/time.md"
 ```
 
 ### Internal neighbors
@@ -57,6 +62,7 @@ flowchart LR
 | Inbound | [routers_intake](../modules/routers_intake.md) |
 | Outbound | [schemas_intake](../modules/schemas_intake.md) |
 | Outbound | [schemas_triage](../modules/schemas_triage.md) |
+| Outbound | [identity_service](../modules/identity_service.md) |
 | Outbound | [triage_service](../modules/triage_service.md) |
 | Outbound | [time](../modules/time.md) |
 

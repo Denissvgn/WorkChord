@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/team/ImportTeamModal.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` |
-| `../../types/team` | `TeamMember` |
-| `./ImportTeamModal` | `ImportTeamModal` |
-| `@testing-library/react` | `act`, `fireEvent`, `screen`, `waitFor` |
-| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
+| `../../types/team` | `TeamMember` | Declaration | erased |
+| `./ImportTeamModal` | `ImportTeamModal` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `fireEvent`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/team/ImportTeamModal.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/team/ImportTeamModal.test.tsx"]

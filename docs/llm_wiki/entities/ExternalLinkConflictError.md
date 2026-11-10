@@ -15,7 +15,7 @@ Raised when a provider-specific link already exists for an entity.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -23,7 +23,7 @@ _Auto-generated from `GateStatusAmendment` in `backend/app/autonomy/status.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -20,7 +20,7 @@ Document used by the BM25 similarity scorer.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

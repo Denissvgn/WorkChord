@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/tasks/DraftDismissalDialog.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/ConfirmDialog` | `ConfirmDialog` |
-| `./useDraftDismissal` | `useDraftDismissal` |
-| `react` | `useContext`, `useEffect` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `UNSAFE_DataRouterContext`, `useBlocker` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `./useDraftDismissal` | `useDraftDismissal` | — | compiler-dependent |
+| `react` | `useContext`, `useEffect` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `UNSAFE_DataRouterContext`, `useBlocker` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -69,7 +69,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DraftGuard](../entities/DraftGuard.md) | Type alias | 7 | — | — |
+| [DraftGuard](../entities/DraftGuard.md) | Type alias | 7 | `ReturnType<typeof useDraftDismissal>` | — |
 
 ## Functions
 

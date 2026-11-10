@@ -1,8 +1,8 @@
 # TaskUpdate
 
 **Location:** `frontend/src/types/task.ts:189`
-**Kind:** Class
-**Bases:** `Partial`
+**Kind:** Interface
+**Bases:** `Partial<TaskCreate>`
 **Module:** [types_task](../modules/types_task.md)
 
 ## Description
@@ -18,7 +18,7 @@ _Auto-generated from `TaskUpdate` in `frontend/src/types/task.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -26,7 +26,7 @@ _Auto-generated from `TaskUpdate` in `frontend/src/types/task.ts`._
 ```mermaid
 flowchart LR
     n0["TaskUpdate (frontend/src/types/task.ts)"]
-    n1["Partial"]
+    n1["Partial#60;TaskCreate#62;"]
     n2["frontend/src/components/gantt/TaskEditModal.tsx"]
     n3["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
     n4["toTaskUpdate (frontend/src/components/tasks/taskEditorContract.ts)"]
@@ -65,7 +65,7 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `Partial` | — |
+| Base | `Partial<TaskCreate>` | — |
 
 ### References
 

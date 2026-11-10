@@ -1,7 +1,7 @@
 # ProjectMilestoneUpdateRequest
 
 **Location:** `frontend/src/types/project.ts:152`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_project](../modules/types_project.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `ProjectMilestoneUpdateRequest` in `frontend/src/types/proj
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

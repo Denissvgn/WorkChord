@@ -6,24 +6,25 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `agent_team_setup_service.AgentTeamSetupService`
-2. `query_limits.CollectionLimitExceededError`
+1. `agent_team_setup_service.AgentTeamSetupService.membership_boundary`
+2. `agent_team_setup_service.AgentTeamSetupService`
 3. `query_limits.CollectionLimitExceededError`
-4. `task_service.TaskVersionConflictError`
-5. `agent_routing.TaskRoutingAssessmentResponse.from_record`
-6. `agent_routing_policy.canonical_routing_json_bytes`
-7. `agent_routing_policy.evaluate_actor_authorization`
-8. `agent_service.actor_scopes`
-9. `agent_routing_policy.evaluate_assignment_compatibility`
-10. `agent_routing_policy.evaluate_required_skills`
-11. `query_limits.CollectionLimitExceededError`
-12. `agent_routing_policy.evaluate_model_envelope`
-13. `agent_routing_policy.routing_candidate_rank_key`
-14. `time.as_utc`
-15. `agent_routing_policy.canonical_routing_json_bytes`
+4. `query_limits.CollectionLimitExceededError`
+5. `task_service.TaskVersionConflictError`
+6. `agent_routing.TaskRoutingAssessmentResponse.from_record`
+7. `agent_routing_policy.canonical_routing_json_bytes`
+8. `agent_routing_policy.evaluate_actor_authorization`
+9. `agent_service.actor_scopes`
+10. `agent_routing_policy.evaluate_assignment_compatibility`
+11. `agent_routing_policy.evaluate_required_skills`
+12. `query_limits.CollectionLimitExceededError`
+13. `agent_routing_policy.evaluate_model_envelope`
+14. `agent_routing_policy.routing_candidate_rank_key`
+15. `time.as_utc`
 16. `agent_routing_policy.canonical_routing_json_bytes`
-17. `agent_routing.AgentRoutingPreviewResponse`
-18. `agent_routing_policy.validate_routing_packet_size`
+17. `agent_routing_policy.canonical_routing_json_bytes`
+18. `agent_routing.AgentRoutingPreviewResponse`
+19. `agent_routing_policy.validate_routing_packet_size`
 
 ## Touches
 

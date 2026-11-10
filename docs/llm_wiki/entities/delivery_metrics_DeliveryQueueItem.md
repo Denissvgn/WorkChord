@@ -20,7 +20,7 @@ _Auto-generated from `DeliveryQueueItem` in `backend/app/schemas/delivery_metric
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,6 +15,7 @@
 5. `commands.PlanningConflict`
 6. `commands.PlanningConflict`
 7. `team_service.TeamService`
+8. `team_service.TeamService._resolve_profile_for_member`
 
 ## Touches
 

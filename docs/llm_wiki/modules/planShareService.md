@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/services/planShareService.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./api` | `api` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./api` | `api` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/services/planShareService.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/pages/PlanMasterPage.tsx"]
@@ -49,7 +51,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PlanShareTask](../entities/PlanShareTask.md) | Class | 3 | — | — |
-| [PlanShareTeamMember](../entities/PlanShareTeamMember.md) | Class | 20 | — | — |
-| [PlanShareSnapshot](../entities/PlanShareSnapshot.md) | Class | 26 | — | — |
-| [PlanShare](../entities/planShareService_PlanShare.md) | Class | 41 | — | — |
+| [PlanShareTask](../entities/PlanShareTask.md) | Interface | 3 | — | — |
+| [PlanShareTeamMember](../entities/PlanShareTeamMember.md) | Interface | 20 | — | — |
+| [PlanShareSnapshot](../entities/PlanShareSnapshot.md) | Interface | 26 | — | — |
+| [PlanShare](../entities/planShareService_PlanShare.md) | Interface | 41 | — | — |

@@ -40,7 +40,7 @@ Outcome-oriented planning container above tasks and iterations. SQLite allocates
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -119,4 +119,4 @@ flowchart LR
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
 | `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
 
-> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.
+> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.

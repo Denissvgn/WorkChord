@@ -19,7 +19,7 @@ _Auto-generated from `NativeConnectionDetails` in `backend/app/routers/identity.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

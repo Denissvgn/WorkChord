@@ -19,7 +19,7 @@ Workload issue for a team member.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

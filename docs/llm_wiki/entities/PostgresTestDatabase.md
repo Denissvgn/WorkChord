@@ -34,7 +34,7 @@ One uniquely named PostgreSQL database owned by a fixture.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

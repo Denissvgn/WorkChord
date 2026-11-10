@@ -1,7 +1,7 @@
 # TimeReport
 
 **Location:** `frontend/src/services/timeEntryService.ts:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [timeEntryService](../modules/timeEntryService.md)
 
@@ -21,12 +21,12 @@ _Auto-generated from `TimeReport` in `frontend/src/services/timeEntryService.ts`
 | `has_more` | `boolean` | Yes | — | — |
 | `next_after_id` | `number \| null` | Yes | — | — |
 | `can_view_project_totals` | `boolean` | Yes | — | — |
-| `items` | `{ task_id: number; task_title: string \| null; recorded_minutes: number \| null; entry_count: number;         estimate_hours: number \| null; estimate_state: 'known' \| 'unknown' \| 'unavailable' }[]` | Yes | — | — |
-| `totals` | `{ task_count: number; tasks_with_records: number; recorded_minutes: number \| null;         project_work_minutes: number \| null; known_estimate_hours: number \| null; tasks_with_estimates: number }` | Yes | — | — |
+| `items` | <pre><code>&#123; task&#95;id&#58; number&#59; task&#95;title&#58; string &#124; null&#59; recorded&#95;minutes&#58; number &#124; null&#59; entry&#95;count&#58; number&#59;&#10;        estimate&#95;hours&#58; number &#124; null&#59; estimate&#95;state&#58; &#39;known&#39; &#124; &#39;unknown&#39; &#124; &#39;unavailable&#39; &#125;&#91;&#93;</code></pre> | Yes | — | — |
+| `totals` | <pre><code>&#123; task&#95;count&#58; number&#59; tasks&#95;with&#95;records&#58; number&#59; recorded&#95;minutes&#58; number &#124; null&#59;&#10;        project&#95;work&#95;minutes&#58; number &#124; null&#59; known&#95;estimate&#95;hours&#58; number &#124; null&#59; tasks&#95;with&#95;estimates&#58; number &#125;</code></pre> | Yes | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

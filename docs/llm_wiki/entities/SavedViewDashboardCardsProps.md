@@ -1,7 +1,7 @@
 # SavedViewDashboardCardsProps
 
 **Location:** `frontend/src/components/dashboard/SavedViewDashboardCards.tsx:11`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `SavedViewDashboardCardsProps` in `frontend/src/components/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

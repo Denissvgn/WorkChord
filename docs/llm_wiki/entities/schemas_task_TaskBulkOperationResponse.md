@@ -23,7 +23,7 @@ Response for selected-task bulk operations.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

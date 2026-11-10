@@ -18,7 +18,7 @@ _Auto-generated from `SignedBootstrapActionManifest` in `backend/app/autonomy/co
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

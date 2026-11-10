@@ -46,70 +46,123 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as argparse.ArgumentParser
-    participant p2 as parser.add_argument
-    participant p3 as parser.parse_args
-    participant p4 as args.output.exists
-    participant p5 as parser.error
-    participant p6 as asyncio.run
-    participant p7 as run
-    participant p8 as validate_declaration
-    participant p9 as declaration.get (scripts/load/service_work…s.py:validate_declaration)
-    participant p10 as type (scripts/load/service_work…s.py:validate_declaration)
-    participant p11 as declaration.get(…).get
-    participant p12 as ValueError (scripts/load/service_work…s.py:validate_declaration)
-    participant p13 as source_binding
-    participant p14 as Path(…).resolve (scripts/load/source_binding.py:source_binding)
-    participant p15 as Path (scripts/load/source_binding.py:source_binding)
-    participant p16 as sorted (scripts/load/source_binding.py:source_binding)
-    participant p17 as root.glob
-    participant p18 as str (scripts/load/source_binding.py:source_binding)
-    participant p19 as path.relative_to
-    participant p20 as hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding, 1)
-    participant p21 as hashlib.sha256 (scripts/load/source_binding.py:source_binding)
-    participant p22 as path.read_bytes
-    participant p23 as hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding)
-    p0-->>p1: argparse.ArgumentParser
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p2: parser.add_argument
-    p0-->>p3: parser.parse_args
-    p0-->>p4: args.output.exists
-    p0-->>p5: parser.error
-    p0-->>p6: asyncio.run
-    p0->>p7: run
-    p7->>p8: validate_declaration
-    p8-->>p9: declaration.get (scripts/load/service_work…s.py:validate_declaration)
-    p8-->>p10: type (scripts/load/service_work…s.py:validate_declaration)
-    p8-->>p9: declaration.get (scripts/load/service_work…s.py:validate_declaration)
-    p8-->>p11: declaration.get(…).get
-    p8-->>p9: declaration.get (scripts/load/service_work…s.py:validate_declaration)
-    p8-->>p12: ValueError (scripts/load/service_work…s.py:validate_declaration)
-    p7->>p13: source_binding
-    p13-->>p14: Path(…).resolve (scripts/load/source_binding.py:source_binding)
-    p13-->>p15: Path (scripts/load/source_binding.py:source_binding)
-    p13-->>p16: sorted (scripts/load/source_binding.py:source_binding)
-    p13-->>p17: root.glob
-    p13-->>p17: root.glob
-    p13-->>p17: root.glob
-    p13-->>p18: str (scripts/load/source_binding.py:source_binding)
-    p13-->>p19: path.relative_to
-    p13-->>p20: hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding, 1)
-    p13-->>p21: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
-    p13-->>p22: path.read_bytes
-    p13-->>p23: hashlib.sha256(…).hexdigest (scripts/load/source_binding.py:source_binding)
-    p13-->>p21: hashlib.sha256 (scripts/load/source_binding.py:source_binding)
+    participant p1 as run
+    participant p2 as atomic_write_json
+    participant p3 as seal_document
+    participant p4 as assert_safe_test_database_url
+    participant p5 as seed_delivery_scenario
+    participant p6 as summarize
+    participant p7 as verify_binding
+    participant p8 as latency_summary
+    participant p9 as percentile
+    participant p10 as validate_declaration
+    participant p11 as source_binding
+    participant p12 as Iteration
+    participant p13 as Task
+    participant p14 as AgentRun
+    participant p15 as _deployment_environment
+    participant p16 as Calendar
+    participant p17 as QualificationInputError
+    participant p18 as UnsafeDatabaseTarget
+    participant p19 as Project
+    participant p20 as sha256_bytes
+    participant p21 as canonical_json_bytes
+    participant p22 as TeamMemberProfile
+    participant p23 as TeamMember
+    participant p24 as AgentActor
+    participant p25 as Recorder
+    participant p26 as hash_api_key
+    participant p27 as UserSession
+    participant p28 as Attempt
+    participant p29 as argparse.ArgumentParser
+    participant p30 as parser.add_argument
+    p0->>p1: run
+    p0->>p2: atomic_write_json
+    p2->>p3: seal_document
+    p1->>p4: assert_safe_test_database_url
+    p1->>p5: seed_delivery_scenario
+    p1->>p6: summarize
+    p1->>p7: verify_binding
+    p6->>p8: latency_summary
+    p8->>p9: percentile
+    p1->>p10: validate_declaration
+    p1->>p11: source_binding
+    p1->>p12: Iteration
+    p1->>p13: Task
+    p1->>p14: AgentRun
+    p4->>p15: _deployment_environment
+    p5->>p16: Calendar
+    p3->>p17: QualificationInputError
+    p4->>p18: UnsafeDatabaseTarget
+    p5->>p19: Project
+    p3->>p20: sha256_bytes
+    p3->>p21: canonical_json_bytes
+    p5->>p22: TeamMemberProfile
+    p5->>p23: TeamMember
+    p5->>p24: AgentActor
+    p6->>p25: Recorder
+    p5->>p26: hash_api_key
+    p5->>p27: UserSession
+    p6->>p28: Attempt
+    p0-->>p29: argparse.ArgumentParser(description=__doc__)
+    p0-->>p30: parser.add_argument('--database-url', required=True)
 ```
 
-> Call sequence diagram shows 30 of 266 interactions; 236 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 266 interactions; 236 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 105 (104 omitted); unresolved 1 of 108 (107 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/load/service_worksets.py:main` | 1 | - | unresolved | 6 |
+| `scripts/load/service_worksets.py:main` | 1 | - | external | 3 |
+| `scripts/load/service_worksets.py:validate_declaration` | 11 | - | unresolved | 4 |
+| `scripts/load/service_worksets.py:validate_declaration` | 11 | - | external | 2 |
+| `scripts/load/source_binding.py:source_binding` | 18 | - | unresolved | 9 |
+| `scripts/load/source_binding.py:source_binding` | 18 | - | external | 9 |
+| `backend/tests/support/database.py:_deployment_environment` | 38 | - | external | 1 |
+| `backend/tests/support/database.py:assert_safe_test_database_url` | 37 | - | external | 4 |
+> Omission summary shows 8 of 38 groups; 30 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 54; effect analysis evaluated: 20, partial: 0, unavailable: 34. Counts include steps omitted from the displayed trace.
+
+Collector observations for 20 source steps with known totals: observed: 85, emitted: 85, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `args.output.exists` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.error` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `asyncio.run` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `run` | `available` | `evaluated` | `available` | `16` | `16` | `0` |
+| `validate_declaration` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `declaration.get (scripts/load/service_work…s.py:validate_declaration)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

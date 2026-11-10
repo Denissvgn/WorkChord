@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/requestSources/RequestSourceLinksP
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./RequestSourceLinksPanel` | `RequestSourceLinksPanel` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `react` | `FormEvent` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

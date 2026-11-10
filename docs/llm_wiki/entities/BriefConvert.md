@@ -24,7 +24,7 @@ _Auto-generated from `BriefConvert` in `backend/app/schemas/task_brief.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

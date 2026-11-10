@@ -6,33 +6,65 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as get_agent_profile_presets
     participant p1 as _require_catalog_read
-    participant p2 as any
-    participant p3 as actor_has_scope
-    participant p4 as actor_scopes
-    participant p5 as json.loads
-    participant p6 as isinstance
-    participant p7 as HTTPException
-    participant p8 as AgentProfileCatalogService(…).presets
-    participant p9 as AgentProfileCatalogService
+    participant p2 as AgentProfileCatalogService.presets
+    participant p3 as AgentProfileCatalogService
+    participant p4 as any
+    participant p5 as actor_has_scope
+    participant p6 as HTTPException
+    participant p7 as actor_scopes
+    participant p8 as json.loads
+    participant p9 as isinstance
     p0->>p1: _require_catalog_read
-    p1-->>p2: any
-    p1->>p3: actor_has_scope
-    p3->>p4: actor_scopes
-    p4-->>p5: json.loads
-    p4-->>p6: isinstance
-    p1-->>p7: HTTPException
-    p0-->>p8: AgentProfileCatalogService(…).presets
-    p0->>p9: AgentProfileCatalogService
+    p0->>p2: AgentProfileCatalogService.presets
+    p0->>p3: AgentProfileCatalogService
+    p1-->>p4: any(...)
+    p1->>p5: actor_has_scope
+    p1-->>p6: HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')
+    p5->>p7: actor_scopes
+    p7-->>p8: json.loads(actor.scopes)
+    p7-->>p9: isinstance(scopes, list)
 ```
+
+> Call sequence diagram shows 9 of 9 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 0 of 0 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 6; effect analysis evaluated: 5, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 13, emitted: 13, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `get_agent_profile_presets` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `_require_catalog_read` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `any` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `actor_has_scope` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `actor_scopes` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AgentProfileCatalogService.presets` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `AgentProfileCatalogService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. get_agent_profile_presets"]
@@ -43,7 +75,7 @@ flowchart LR
     s6["6. json.loads"]
     s7["7. isinstance"]
     s8["8. HTTPException"]
-    s9["9. AgentProfileCatalogService(…).presets"]
+    s9["9. AgentProfileCatalogService.presets"]
     s10["10. AgentProfileCatalogService"]
     s1 -->|"_require_catalog_read(actor)"| s2
     s2 -. "any(...)" .-> s3
@@ -52,12 +84,13 @@ flowchart LR
     s5 -. "json.loads(actor.scopes)" .-> s6
     s5 -. "isinstance(scopes, list)" .-> s7
     s2 -. "HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')" .-> s8
-    s1 -. "AgentProfileCatalogService(…).presets(data not statically known)" .-> s9
+    s1 -->|"AgentProfileCatalogService.presets(data not statically known)"| s9
     s1 -->|"AgentProfileCatalogService(db)"| s10
     click s1 "../modules/agent_catalog.md"
     click s2 "../modules/agent_catalog.md"
     click s4 "../modules/agent_service.md"
     click s5 "../modules/agent_service.md"
+    click s9 "../modules/agent_profile_catalog_service.md"
     click s10 "../modules/agent_profile_catalog_service.md"
 ```
 
@@ -73,7 +106,7 @@ flowchart LR
 | `json.loads` | - | - | - | - |
 | `isinstance` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
-| `AgentProfileCatalogService(…).presets` | - | - | - | - |
+| `AgentProfileCatalogService.presets` | - | `ALL_PROFILE_PRESETS` | - | `ALL_PROFILE_PRESETS` |
 | `AgentProfileCatalogService` | - | - | - | - |
 
 ### Call data
@@ -87,12 +120,12 @@ flowchart LR
 | actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance | 75 | `isinstance(scopes, list)` |
 | _require_catalog_read | HTTPException | 72 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')` |
-| get_agent_profile_presets | AgentProfileCatalogService(…).presets | 95 | `AgentProfileCatalogService(db).presets(data not statically known)` |
+| get_agent_profile_presets | AgentProfileCatalogService.presets | 95 | `AgentProfileCatalogService(db).presets(data not statically known)` |
 | get_agent_profile_presets | AgentProfileCatalogService | 95 | `AgentProfileCatalogService(db)` |
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 
@@ -102,7 +135,6 @@ flowchart LR
 | external_call | `actor_scopes` | `json.loads` | 72 |
 | external_call | `actor_scopes` | `isinstance` | 75 |
 | external_call | `_require_catalog_read` | `HTTPException` | 72 |
-| unresolved_call | `get_agent_profile_presets` | `AgentProfileCatalogService(db).presets` | 95 |
 
 ## Behavior
 

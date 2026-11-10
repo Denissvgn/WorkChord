@@ -15,7 +15,7 @@ Raised when a source is already linked to the target.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

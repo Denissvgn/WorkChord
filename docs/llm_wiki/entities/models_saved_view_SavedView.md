@@ -32,7 +32,7 @@ Persisted filter, sort, and column configuration for reusable views.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -43,15 +43,15 @@ flowchart LR
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
     n3["backend/app/models/user_session.py"]
-    n4["SavedViewService._can_write (backend/app/services/saved_view_service.py)"]
-    n5["SavedViewService._dashboard_count (backend/app/services/saved_view_service.py)"]
-    n6["SavedViewService._is_visible_to_session (backend/app/services/saved_view_service.py)"]
-    n7["SavedViewService._reject_system_scope (backend/app/services/saved_view_service.py)"]
-    n8["SavedViewService._require_personal_creator (backend/app/services/saved_view_service.py)"]
-    n9["SavedViewService._response_for_view (backend/app/services/saved_view_service.py)"]
-    n10["SavedViewService._target_path_for_view (backend/app/services/saved_view_service.py)"]
-    n11["SavedViewService.create (backend/app/services/saved_view_service.py)"]
-    n12["SavedViewService.create_for_session (backend/app/services/saved_view_service.py)"]
+    n4["backend/app/services/identity_service.py"]
+    n5["SavedViewService._can_write (backend/app/services/saved_view_service.py)"]
+    n6["SavedViewService._dashboard_count (backend/app/services/saved_view_service.py)"]
+    n7["SavedViewService._is_visible_to_session (backend/app/services/saved_view_service.py)"]
+    n8["SavedViewService._reject_system_scope (backend/app/services/saved_view_service.py)"]
+    n9["SavedViewService._require_personal_creator (backend/app/services/saved_view_service.py)"]
+    n10["SavedViewService._response_for_view (backend/app/services/saved_view_service.py)"]
+    n11["SavedViewService._target_path_for_view (backend/app/services/saved_view_service.py)"]
+    n12["SavedViewService.create (backend/app/services/saved_view_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -68,7 +68,7 @@ flowchart LR
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
     click n3 "../modules/user_session.md"
-    click n4 "../modules/saved_view_service.md"
+    click n4 "../modules/identity_service.md"
     click n5 "../modules/saved_view_service.md"
     click n6 "../modules/saved_view_service.md"
     click n7 "../modules/saved_view_service.md"
@@ -97,6 +97,7 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
 | `user_session` | import | [user_session](../modules/user_session.md) | — |
+| `identity_service` | import | [identity_service](../modules/identity_service.md) | — |
 | `SavedViewService._can_write` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
 | `SavedViewService._dashboard_count` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
 | `SavedViewService._is_visible_to_session` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
@@ -106,6 +107,5 @@ flowchart LR
 | `SavedViewService._target_path_for_view` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
 | `SavedViewService.create` | call | [saved_view_service](../modules/saved_view_service.md) | 1 |
 | `SavedViewService.create` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
-| `SavedViewService.create_for_session` | type_reference | [saved_view_service](../modules/saved_view_service.md) | — |
 
-> References: showing 12 of 27 logical references; 15 omitted by the 12-row generated summary limit.
+> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.

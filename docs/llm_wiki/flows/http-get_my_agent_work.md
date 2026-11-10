@@ -6,56 +6,106 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as get_my_agent_work
-    participant p1 as service.get_work
+    participant p1 as _if_none_match_matches
     participant p2 as _handle_agent_error
-    participant p3 as isinstance
-    participant p4 as str (backend/app/routers/agent.py:_handle_agent_error)
-    participant p5 as HTTPException
-    participant p6 as exc.detail
+    participant p3 as utc_now
+    participant p4 as _if_none_match_matches.<locals>.normalize
+    participant p5 as max
+    participant p6 as service.get_work
     participant p7 as service.work_etag
-    participant p8 as max
-    participant p9 as int
-    p0-->>p1: service.get_work
+    participant p8 as int
+    participant p9 as (…).total_seconds
+    participant p10 as str (backend/app/routers/agent.py:get_my_agent_work)
+    participant p11 as Response
+    participant p12 as response.headers.update
+    participant p13 as isinstance
+    participant p14 as datetime.now
+    participant p15 as str (backend/app/routers/agent.py:_handle_agent_error)
+    participant p16 as any
+    participant p17 as candidate.strip
+    participant p18 as HTTPException
+    participant p19 as value.split
+    participant p20 as exc.detail
+    p0->>p1: _if_none_match_matches
     p0->>p2: _handle_agent_error
-    p2-->>p3: isinstance
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p5: HTTPException
-    p2-->>p3: isinstance
-    p2-->>p5: HTTPException
-    p2-->>p6: exc.detail
-    p2-->>p3: isinstance
-    p2-->>p5: HTTPException
-    p2-->>p6: exc.detail
-    p2-->>p3: isinstance
-    p2-->>p5: HTTPException
-    p2-->>p6: exc.detail
-    p2-->>p3: isinstance
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p5: HTTPException
-    p2-->>p3: isinstance
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p5: HTTPException
-    p2-->>p3: isinstance
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p4: str (backend/app/routers/agent.py:_handle_agent_error)
-    p2-->>p5: HTTPException
-    p0-->>p7: service.work_etag
-    p0-->>p8: max
-    p0-->>p9: int
+    p0->>p3: utc_now
+    p1->>p4: _if_none_match_matches.<locals>.normalize
+    p0-->>p5: max(1, int(...))
+    p0-->>p6: service.get_work(actor, limit=limit, cursor=cursor)
+    p0-->>p7: service.work_etag(decision, cursor=cursor, limit=limit)
+    p0-->>p8: int(...)
+    p0-->>p9: (…).total_seconds
+    p0-->>p10: str (backend/app/routers/agent.py:get_my_agent_work)(retry_after)
+    p0-->>p11: Response(status_code=status.HTTP_304_NOT_MODIFIED, headers=cache_headers)
+    p0-->>p12: response.headers.update(cache_headers)
+    p2-->>p13: isinstance(exc, AgentPermissionError)
+    p3-->>p14: datetime.now(UTC)
+    p2-->>p15: str (backend/app/routers/agent.py:_handle_agent_error)(exc)
+    p1-->>p16: any(...)
+    p2-->>p15: str (backend/app/routers/agent.py:_handle_agent_error)(exc)
+    p1-->>p17: candidate.strip
+    p2-->>p18: HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
+    p2-->>p13: isinstance(exc, AgentRoutingConflictError)
+    p1-->>p19: value.split(',')
+    p2-->>p18: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p20: exc.detail
+    p2-->>p13: isinstance(exc, AgentTeamSetupConflictError)
+    p2-->>p18: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p20: exc.detail
+    p2-->>p13: isinstance(exc, TaskVersionConflictError)
+    p2-->>p18: HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))
+    p2-->>p20: exc.detail
+    p2-->>p13: isinstance(exc, AgentConflictError)
 ```
 
-> Call sequence diagram shows 30 of 42 interactions; 12 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 44 interactions; 14 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 17 of 28 (11 omitted); unresolved 9 of 11 (2 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/routers/agent.py:_handle_agent_error` | 3 | - | external | 11 |
+| `backend/app/routers/agent.py:_if_none_match_matches.<locals>.normalize` | 37 | - | unresolved | 2 |
+| `backend/app/routers/agent.py:_if_none_match_matches` | 36 | [backend/app/routers/agent.py](../modules/routers_agent.md) | internal | 1 |
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 6; effect analysis evaluated: 5, partial: 1, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 6 source steps with known totals: observed: 35, emitted: 31, omitted: 4. Unavailable totals are excluded.
+
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `get_my_agent_work` | `available` | `evaluated` | `available` | `11` | `11` | `0` |
+| `service.get_work` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_handle_agent_error` | `available` | `partial` | `available` | `14` | `10` | `4` |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str (backend/app/routers/agent.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str (backend/app/routers/agent.py:_handle_agent_error)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `exc.detail` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `isinstance` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. get_my_agent_work"]

@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/systemSettings.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/settings/EmailSettingsPanel.tsx"]
@@ -58,17 +60,17 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AppRuntimeSettings](../entities/AppRuntimeSettings.md) | Class | 6 | — | — |
-| [AppRuntimeSettingsUpdate](../entities/systemSettings_AppRuntimeSettingsUpdate.md) | Class | 12 | — | — |
-| [LLMRuntimeSettings](../entities/LLMRuntimeSettings.md) | Class | 18 | — | — |
-| [LLMRuntimeSettingsUpdate](../entities/systemSettings_LLMRuntimeSettingsUpdate.md) | Class | 28 | — | — |
-| [GitHubRuntimeSettings](../entities/GitHubRuntimeSettings.md) | Class | 39 | — | — |
-| [GitHubRuntimeSettingsUpdate](../entities/systemSettings_GitHubRuntimeSettingsUpdate.md) | Class | 48 | — | — |
-| [WebIntakeRuntimeSettings](../entities/WebIntakeRuntimeSettings.md) | Class | 59 | — | — |
-| [WebIntakeRuntimeSettingsUpdate](../entities/systemSettings_WebIntakeRuntimeSettingsUpdate.md) | Class | 65 | — | — |
-| [RestartRequiredSetting](../entities/systemSettings_RestartRequiredSetting.md) | Class | 72 | — | — |
-| [SystemSettings](../entities/SystemSettings.md) | Class | 77 | — | — |
-| [RuntimeSettingSource](../entities/systemSettings_RuntimeSettingSource.md) | Type alias | 1 | — | — |
-| [LLMProvider](../entities/systemSettings_LLMProvider.md) | Type alias | 2 | — | — |
-| [LanguageCode](../entities/systemSettings_LanguageCode.md) | Type alias | 3 | — | — |
-| [AILanguageMode](../entities/systemSettings_AILanguageMode.md) | Type alias | 4 | — | — |
+| [AppRuntimeSettings](../entities/AppRuntimeSettings.md) | Interface | 6 | — | — |
+| [AppRuntimeSettingsUpdate](../entities/systemSettings_AppRuntimeSettingsUpdate.md) | Interface | 12 | — | — |
+| [LLMRuntimeSettings](../entities/LLMRuntimeSettings.md) | Interface | 18 | — | — |
+| [LLMRuntimeSettingsUpdate](../entities/systemSettings_LLMRuntimeSettingsUpdate.md) | Interface | 28 | — | — |
+| [GitHubRuntimeSettings](../entities/GitHubRuntimeSettings.md) | Interface | 39 | — | — |
+| [GitHubRuntimeSettingsUpdate](../entities/systemSettings_GitHubRuntimeSettingsUpdate.md) | Interface | 48 | — | — |
+| [WebIntakeRuntimeSettings](../entities/WebIntakeRuntimeSettings.md) | Interface | 59 | — | — |
+| [WebIntakeRuntimeSettingsUpdate](../entities/systemSettings_WebIntakeRuntimeSettingsUpdate.md) | Interface | 65 | — | — |
+| [RestartRequiredSetting](../entities/systemSettings_RestartRequiredSetting.md) | Interface | 72 | — | — |
+| [SystemSettings](../entities/SystemSettings.md) | Interface | 77 | — | — |
+| [RuntimeSettingSource](../entities/systemSettings_RuntimeSettingSource.md) | Type alias | 1 | `'runtime' \| 'environment' \| 'default'` | — |
+| [LLMProvider](../entities/systemSettings_LLMProvider.md) | Type alias | 2 | `'openai' \| 'openrouter' \| 'nvidia' \| 'custom'` | — |
+| [LanguageCode](../entities/systemSettings_LanguageCode.md) | Type alias | 3 | `'en' \| 'ru'` | — |
+| [AILanguageMode](../entities/systemSettings_AILanguageMode.md) | Type alias | 4 | `'auto' \| LanguageCode` | — |

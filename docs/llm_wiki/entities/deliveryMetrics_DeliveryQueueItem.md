@@ -1,7 +1,7 @@
 # DeliveryQueueItem
 
 **Location:** `frontend/src/types/deliveryMetrics.ts:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [deliveryMetrics](../modules/deliveryMetrics.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `DeliveryQueueItem` in `frontend/src/types/deliveryMetrics.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

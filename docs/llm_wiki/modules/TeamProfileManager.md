@@ -8,21 +8,21 @@ Profile and skill writes send the original complete observed revisions. Deletion
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../services/planningInputService` | `planningInputService` |
-| `../../services/teamService` | `teamService` |
-| `../../types/team` | `TeamMemberAssignmentMode`, `TeamMemberProfile`, `TeamMemberProfileCreate`, `TeamMemberProfileKind`, `TeamMemberProfileSkill`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileUpdate` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Plus`, `Trash2` |
-| `react` | `useEffect`, `useMemo`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../types/team` | `TeamMemberAssignmentMode`, `TeamMemberProfile`, `TeamMemberProfileCreate`, `TeamMemberProfileKind`, `TeamMemberProfileSkill`, `TeamMemberProfileSkillCreate`, `TeamMemberProfileUpdate` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Plus`, `Trash2` | — | compiler-dependent |
+| `react` | `useEffect`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +34,8 @@ Profile and skill writes send the original complete observed revisions. Deletion
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -109,10 +111,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamProfileManagerProps](../entities/TeamProfileManagerProps.md) | Class | 66 | — | — |
+| [TeamProfileManagerProps](../entities/TeamProfileManagerProps.md) | Interface | 66 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TeamProfileManager` | `({     currentIterationId = null,     currentIterationName = null,     assignedProfileIds = [],     onAssignProfile, }: TeamProfileManagerProps)` | — | — |
+| `TeamProfileManager` | <pre><code>&#40;&#123;&#10;    currentIterationId &#61; null&#44;&#10;    currentIterationName &#61; null&#44;&#10;    assignedProfileIds &#61; &#91;&#93;&#44;&#10;    onAssignProfile&#44;&#10;&#125;&#58; TeamProfileManagerProps&#41;</code></pre> | — | — |

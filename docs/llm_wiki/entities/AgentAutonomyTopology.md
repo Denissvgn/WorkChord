@@ -30,7 +30,7 @@ Applied secret-free topology projection; external receipts stay authoritative.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

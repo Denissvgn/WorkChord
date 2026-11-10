@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/features/overview/attentionRanking.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `Task` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `Task` | Declaration | erased |
 
 ## Module Signals
 
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/features/overview/attentionRanking.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/overview/attentionRanking.test.ts"]
@@ -51,14 +53,14 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AttentionSeverity](../entities/AttentionSeverity.md) | Type alias | 3 | — | — |
-| [AttentionKind](../entities/AttentionKind.md) | Type alias | 5 | — | — |
-| [RankableAttention](../entities/RankableAttention.md) | Type alias | 13 | — | — |
+| [AttentionSeverity](../entities/AttentionSeverity.md) | Type alias | 3 | `'critical' \| 'warning' \| 'advisory'` | — |
+| [AttentionKind](../entities/AttentionKind.md) | Type alias | 5 | <pre><code>&#124; &#39;overdue&#39;&#10;    &#124; &#39;project&#45;risk&#39;&#10;    &#124; &#39;pace&#39;&#10;    &#124; &#39;project&#45;update&#39;&#10;    &#124; &#39;unassigned&#39;&#10;    &#124; &#39;intake&#39;</code></pre> | — |
+| [RankableAttention](../entities/RankableAttention.md) | Type alias | 13 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    kind&#58; AttentionKind&#59;&#10;    severity&#58; AttentionSeverity&#59;&#10;    urgency&#58; number&#59;&#10;    magnitude&#58; number&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `compareAttentionRank` | `(left: RankableAttention, right: RankableAttention)` | — | — |
-| `rankAttentionItems` | `(items: readonly Item[])` | — | — |
+| `rankAttentionItems` | `<Item extends RankableAttention>(items: readonly Item[])` | — | — |
 | `rankAttentionTaskCandidates` | `(tasks: readonly Task[])` | — | — |

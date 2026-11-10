@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/utils/focusLifecycle.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` |
-| `vitest` | `afterEach`, `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` | — | compiler-dependent |
+| `vitest` | `afterEach`, `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

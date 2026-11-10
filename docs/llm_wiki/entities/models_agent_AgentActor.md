@@ -39,7 +39,7 @@ Automated agent identity authorized to operate on tasks.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

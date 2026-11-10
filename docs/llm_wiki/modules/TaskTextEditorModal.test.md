@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/tasks/TaskTextEditorModal.test.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` |
-| `./ImportTasksModal` | `ImportTasksModal` |
-| `./TaskTextEditorModal` | `TaskTextEditorModal` |
-| `@testing-library/react` | `act`, `fireEvent`, `screen`, `waitFor` |
-| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
+| `./ImportTasksModal` | `ImportTasksModal` | — | compiler-dependent |
+| `./TaskTextEditorModal` | `TaskTextEditorModal` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `fireEvent`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

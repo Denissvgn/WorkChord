@@ -30,7 +30,7 @@ API request for creating a project-scoped release.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

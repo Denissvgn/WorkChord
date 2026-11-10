@@ -8,16 +8,16 @@ _Auto-generated from `frontend/src/components/projects/ProjectTaskTree.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../types/task` | `Task` |
-| `../../utils/formatDate` | `formatDate` |
-| `../tasks/TaskEditorDrawer` | `TaskEditorDrawer` |
-| `../ui/tone` | `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `Circle`, `CornerDownRight`, `MessageSquare`, `User` |
-| `react` | `useState` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../types/task` | `Task` | Declaration | erased |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../tasks/TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
+| `../ui/tone` | `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `CheckCircle2`, `Circle`, `CornerDownRight`, `MessageSquare`, `User` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -30,6 +30,8 @@ _Auto-generated from `frontend/src/components/projects/ProjectTaskTree.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/projects/ProjectTaskTree.tsx"]
@@ -80,7 +82,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectTaskTreeProps](../entities/ProjectTaskTreeProps.md) | Class | 19 | — | — |
+| [ProjectTaskTreeProps](../entities/ProjectTaskTreeProps.md) | Interface | 19 | — | — |
 
 ## Functions
 

@@ -1,7 +1,7 @@
 # TaskProgress
 
 **Location:** `frontend/src/types/task.ts:449`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `TaskProgress` in `frontend/src/types/task.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

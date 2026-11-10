@@ -27,7 +27,7 @@ Records all status transitions with timestamp, reason, and affected tasks.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

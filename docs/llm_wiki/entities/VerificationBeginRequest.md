@@ -22,7 +22,7 @@ _Auto-generated from `VerificationBeginRequest` in `backend/app/schemas/autonomy
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

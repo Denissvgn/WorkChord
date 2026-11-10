@@ -11,10 +11,11 @@
 1. `authority.require_project`
 2. `authority.AuthorityError`
 3. `authority.AuthorityError`
-4. `delivery_dependency_service.DeliveryDependencyService`
-5. `authority.AuthorityError`
-6. `autonomy_canonical.sha256_hex`
-7. `authority.AuthorityError`
+4. `delivery_dependency_service.DeliveryDependencyService.ready`
+5. `delivery_dependency_service.DeliveryDependencyService`
+6. `authority.AuthorityError`
+7. `autonomy_canonical.sha256_hex`
+8. `authority.AuthorityError`
 
 ## Touches
 

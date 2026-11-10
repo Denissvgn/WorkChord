@@ -20,7 +20,7 @@ Human-readable explanation for a scheduling decision.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

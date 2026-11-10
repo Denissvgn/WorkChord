@@ -22,7 +22,7 @@ _Auto-generated from `CollectorBinding` in `backend/app/autonomy/providers.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

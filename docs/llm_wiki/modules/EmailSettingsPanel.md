@@ -8,23 +8,23 @@ _Auto-generated from `frontend/src/components/settings/EmailSettingsPanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` |
-| `../../services/emailSettingsService` | `emailSettingsService` |
-| `../../types/emailSettings` | `EmailSettings` |
-| `../../types/systemSettings` | `RuntimeSettingSource` |
-| `../../utils/adminAccess` | `getAdminAccessErrorMessage` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `../feedback/toast` | `useToast` |
-| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
-| `lucide-react` | `Save`, `Mail`, `Server`, `Shield`, `Eye`, `EyeOff`, `Send` |
-| `react` | `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../services/emailSettingsService` | `emailSettingsService` | — | compiler-dependent |
+| `../../types/emailSettings` | `EmailSettings` | Declaration | erased |
+| `../../types/systemSettings` | `RuntimeSettingSource` | Declaration | erased |
+| `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Save`, `Mail`, `Server`, `Shield`, `Eye`, `EyeOff`, `Send` | — | compiler-dependent |
+| `react` | `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -36,6 +36,8 @@ _Auto-generated from `frontend/src/components/settings/EmailSettingsPanel.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -66,7 +68,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [EmailValidationErrors](../entities/EmailValidationErrors.md) | Type alias | 47 | — | — |
+| [EmailValidationErrors](../entities/EmailValidationErrors.md) | Type alias | 47 | <pre><code>Partial&#60;Record&#60;&#10;    &#39;smtp&#95;host&#39; &#124; &#39;smtp&#95;port&#39; &#124; &#39;smtp&#95;from&#95;email&#39; &#124; &#39;test&#95;email&#39;&#44;&#10;    string&#10;&#62;&#62;</code></pre> | — |
 
 ## Functions
 

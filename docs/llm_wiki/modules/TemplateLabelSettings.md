@@ -8,26 +8,27 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay`, `templateDisplay` |
-| `../../services/labelService` | `labelService` |
-| `../../services/templateService` | `templateService` |
-| `../../types/label` | `Label`, `LabelCreate`, `LabelGroup`, `LabelGroupCreate`, `LabelGroupUpdate`, `LabelUpdate` |
-| `../../types/template` | `TemplateType`, `WorkTemplate`, `WorkTemplateCreate`, `WorkTemplateUpdate` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input`, `RequiredIndicator` |
-| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` |
-| `../feedback/toast` | `useToast` |
-| `../labels/LabelSelector` | `LabelSelector` |
-| `@dnd-kit/core` | `DndContext`, `KeyboardSensor`, `PointerSensor`, `closestCenter`, `useSensor`, `useSensors`, `DragEndEvent` |
-| `@dnd-kit/sortable` | `SortableContext`, `arrayMove`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` |
-| `@dnd-kit/utilities` | `CSS` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Archive`, `ChevronDown`, `ChevronUp`, `Edit3`, `FileText`, `GripVertical`, `Plus`, `Power`, `Save`, `Tags`, `X` |
-| `react` | `useId`, `useMemo`, `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay`, `templateDisplay` | — | compiler-dependent |
+| `../../services/labelService` | `labelService` | — | compiler-dependent |
+| `../../services/templateService` | `templateService` | — | compiler-dependent |
+| `../../types/label` | `Label`, `LabelCreate`, `LabelGroup`, `LabelGroupCreate`, `LabelGroupUpdate`, `LabelUpdate` | Declaration | erased |
+| `../../types/template` | `TemplateType`, `WorkTemplate`, `WorkTemplateCreate`, `WorkTemplateUpdate` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `../labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
+| `@dnd-kit/core` | `DragEndEvent` | Declaration | erased |
+| `@dnd-kit/core` | `DndContext`, `KeyboardSensor`, `PointerSensor`, `closestCenter`, `useSensor`, `useSensors` | — | compiler-dependent |
+| `@dnd-kit/sortable` | `SortableContext`, `arrayMove`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` | — | compiler-dependent |
+| `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Archive`, `ChevronDown`, `ChevronUp`, `Edit3`, `FileText`, `GripVertical`, `Plus`, `Power`, `Save`, `Tags`, `X` | — | compiler-dependent |
+| `react` | `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -39,6 +40,8 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -69,11 +72,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TemplateFormState](../entities/TemplateFormState.md) | Class | 47 | — | — |
-| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Class | 62 | — | — |
-| [LabelFormState](../entities/LabelFormState.md) | Class | 71 | — | — |
-| [SortableTemplateRowProps](../entities/SortableTemplateRowProps.md) | Class | 230 | — | — |
-| [ManagementSection](../entities/ManagementSection.md) | Type alias | 46 | — | — |
+| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 47 | — | — |
+| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 62 | — | — |
+| [LabelFormState](../entities/LabelFormState.md) | Interface | 71 | — | — |
+| [SortableTemplateRowProps](../entities/SortableTemplateRowProps.md) | Interface | 230 | — | — |
+| [ManagementSection](../entities/ManagementSection.md) | Type alias | 46 | `'templates' \| 'labels'` | — |
 
 ## Functions
 

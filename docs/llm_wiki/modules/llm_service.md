@@ -15,11 +15,12 @@ LLM service for task formalization and schedule explanation.
 | `app.schemas.llm` | `FormalizeResponse`, `SuggestedSubtask`, `ImproveDescriptionResponse`, `ExplainScheduleResponse`, `ScheduleDecisionExplanation`, `WorkloadAnalysis`, `GroundedAISuggestionResponse`, `GroundedFact` |
 | `app.schemas.triage` | `TriageClassificationDraft`, `TriageTaskDraftResponse` |
 | `app.services.language_service` | `AILanguageMode`, `LanguageCode`, `language_instruction`, `localized`, `normalize_ai_language_mode`, `normalize_language`, `resolve_ai_language` |
+| `app.services.system_settings_service` | `RuntimeSettingsService` |
 | `app.utils.url_policy` | `normalize_provider_api_url` |
 | `collections` | `Counter` |
 | `dataclasses` | `dataclass` |
 | `httpx` | `httpx` |
-| `json` | `json` |
+| `json` | `json`, `json` |
 | `logging` | `logging` |
 | `re` | `re` |
 | `typing` | `Any`, `Optional` |
@@ -37,24 +38,29 @@ flowchart LR
     n5["backend/app/schemas/triage.py"]
     n6["backend/app/services/language_service.py"]
     n7["backend/app/services/llm_service.py"]
-    n8["backend/app/services/triage_service.py"]
-    n9["backend/app/utils/url_policy.py"]
+    n8["backend/app/services/system_settings_service.py"]
+    n9["backend/app/services/triage_service.py"]
+    n10["backend/app/utils/url_policy.py"]
     n1 --> n4
     n1 --> n7
     n2 --> n5
     n2 --> n6
     n2 --> n7
-    n2 --> n8
+    n2 --> n9
     n6 --> n0
+    n6 --> n8
     n7 --> n0
     n7 --> n3
     n7 --> n4
     n7 --> n5
     n7 --> n6
-    n7 --> n9
-    n8 --> n5
-    n8 --> n7
-    n9 --> n0
+    n7 --> n8
+    n7 --> n10
+    n8 --> n0
+    n8 --> n10
+    n9 --> n5
+    n9 --> n7
+    n10 --> n0
     click n0 "../modules/config.md"
     click n1 "../modules/routers_llm.md"
     click n2 "../modules/routers_triage.md"
@@ -63,8 +69,9 @@ flowchart LR
     click n5 "../modules/schemas_triage.md"
     click n6 "../modules/language_service.md"
     click n7 "../modules/llm_service.md"
-    click n8 "../modules/triage_service.md"
-    click n9 "../modules/url_policy.md"
+    click n8 "../modules/system_settings_service.md"
+    click n9 "../modules/triage_service.md"
+    click n10 "../modules/url_policy.md"
 ```
 
 ### Internal neighbors
@@ -79,6 +86,7 @@ flowchart LR
 | Outbound | [schemas_llm](../modules/schemas_llm.md) |
 | Outbound | [schemas_triage](../modules/schemas_triage.md) |
 | Outbound | [language_service](../modules/language_service.md) |
+| Outbound | [system_settings_service](../modules/system_settings_service.md) |
 | Outbound | [url_policy](../modules/url_policy.md) |
 
 ### External packages

@@ -7,11 +7,13 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `authority.require_project`
-2. `task_service.TaskService`
+2. `task_service.TaskService.load_owner_names`
 3. `task_service.TaskService`
-4. `schemas_task.TaskAgentReadiness`
-5. `commands.PlanningConflict`
-6. `task_detail.TaskDetailResponse`
+4. `task_service.TaskService.task_to_response`
+5. `task_service.TaskService`
+6. `schemas_task.TaskAgentReadiness`
+7. `commands.PlanningConflict`
+8. `task_detail.TaskDetailResponse`
 
 ## Touches
 

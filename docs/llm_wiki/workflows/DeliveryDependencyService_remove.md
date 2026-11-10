@@ -8,8 +8,12 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `commands.lock_planning`
 2. `task_service.TaskService`
-3. `authority.require_project`
-4. `task_brief_service.clear_execution_evidence`
+3. `task_service.TaskService.get_by_id`
+4. `authority.require_project`
+5. `task_service.TaskService.ensure_expected_version`
+6. `task_service.TaskService.reserve_task_version`
+7. `task_service.TaskService._require_unclaimed_structure`
+8. `task_brief_service.clear_execution_evidence`
 
 ## Touches
 

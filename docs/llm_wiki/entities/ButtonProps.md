@@ -1,8 +1,8 @@
 # ButtonProps
 
 **Location:** `frontend/src/components/common/Button.tsx:6`
-**Kind:** Class
-**Bases:** `ButtonHTMLAttributes`
+**Kind:** Interface
+**Bases:** `ButtonHTMLAttributes<HTMLButtonElement>`
 **Module:** [Button](../modules/Button.md)
 
 ## Description
@@ -19,7 +19,7 @@ _Auto-generated from `ButtonProps` in `frontend/src/components/common/Button.tsx
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -27,7 +27,7 @@ _Auto-generated from `ButtonProps` in `frontend/src/components/common/Button.tsx
 ```mermaid
 flowchart LR
     n0["ButtonProps (frontend/src/components/common/Button.tsx)"]
-    n1["ButtonHTMLAttributes"]
+    n1["ButtonHTMLAttributes#60;HTMLButtonElement#62;"]
     n0 --> n1
     click n0 "../modules/Button.md"
 ```
@@ -42,4 +42,4 @@ flowchart LR
 
 | Kind | Entity | Module |
 |---|---|---|
-| Base | `ButtonHTMLAttributes` | — |
+| Base | `ButtonHTMLAttributes<HTMLButtonElement>` | — |

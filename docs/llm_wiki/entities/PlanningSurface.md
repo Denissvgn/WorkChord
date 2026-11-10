@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanningWorkflowGuide](../modules/PlanningWorkflowGuide.md)
+**Target:**
+
+```typescript
+'plan' | 'gantt'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `PlanningSurface` in `frontend/src/components/planning/Plan
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

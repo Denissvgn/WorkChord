@@ -1,7 +1,7 @@
 # HistoryGroup
 
 **Location:** `frontend/src/pages/AnalyticsPage.tsx:16`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [AnalyticsPage](../modules/AnalyticsPage.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `HistoryGroup` in `frontend/src/pages/AnalyticsPage.tsx`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

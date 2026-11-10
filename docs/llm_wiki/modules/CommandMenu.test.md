@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` |
-| `./CommandMenu` | `CommandMenu`, `RECENT_COMMANDS_STORAGE_KEY` |
-| `@testing-library/react` | `screen`, `within` |
-| `react-router-dom` | `useLocation` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` | — | compiler-dependent |
+| `./CommandMenu` | `CommandMenu`, `RECENT_COMMANDS_STORAGE_KEY` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

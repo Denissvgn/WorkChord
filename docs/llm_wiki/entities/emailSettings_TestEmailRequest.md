@@ -1,7 +1,7 @@
 # TestEmailRequest
 
 **Location:** `frontend/src/types/emailSettings.ts:28`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [emailSettings](../modules/emailSettings.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `TestEmailRequest` in `frontend/src/types/emailSettings.ts`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

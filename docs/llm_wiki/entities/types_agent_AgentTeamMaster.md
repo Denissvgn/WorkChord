@@ -1,7 +1,7 @@
 # AgentTeamMaster
 
 **Location:** `frontend/src/types/agent.ts:668`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -21,11 +21,11 @@ _Auto-generated from `AgentTeamMaster` in `frontend/src/types/agent.ts`._
 | `controller` | `AgentTeamMemberSpec` | Yes | — | — |
 | `workers` | `AgentTeamMemberSpec[]` | Yes | — | — |
 | `verifiers` | `AgentTeamMemberSpec[]` | Yes | — | — |
-| `readiness_policy` | `{         minimum_execution_workers: number;         require_independent_verifier_when_assessed: boolean;         maximum_runtime_staleness_seconds: number;     }` | Yes | — | — |
+| `readiness_policy` | <pre><code>&#123;&#10;        minimum&#95;execution&#95;workers&#58; number&#59;&#10;        require&#95;independent&#95;verifier&#95;when&#95;assessed&#58; boolean&#59;&#10;        maximum&#95;runtime&#95;staleness&#95;seconds&#58; number&#59;&#10;    &#125;</code></pre> | Yes | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

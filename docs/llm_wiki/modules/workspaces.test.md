@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/navigation/workspaces.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./workspaces` | `getWorkspaceForPath`, `getWorkspaceFromPath` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./workspaces` | `getWorkspaceForPath`, `getWorkspaceFromPath` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

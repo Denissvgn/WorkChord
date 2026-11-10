@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/settings/ConstraintsPanel.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/schedulingRules` | `Constraints` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/schedulingRules` | `Constraints` | Declaration | erased |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -24,6 +24,8 @@ _Auto-generated from `frontend/src/components/settings/ConstraintsPanel.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Checkbox.tsx"]
@@ -62,7 +64,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Props](../entities/ConstraintsPanel_Props.md) | Class | 6 | — | — |
+| [Props](../entities/ConstraintsPanel_Props.md) | Interface | 6 | — | — |
 
 ## Functions
 

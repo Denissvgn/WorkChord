@@ -1,7 +1,7 @@
 # IterationSnapshot
 
 **Location:** `frontend/src/services/snapshotService.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [snapshotService](../modules/snapshotService.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `IterationSnapshot` in `frontend/src/services/snapshotServi
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # LabelGroupFormState
 
 **Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:62`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `LabelGroupFormState` in `frontend/src/components/settings/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

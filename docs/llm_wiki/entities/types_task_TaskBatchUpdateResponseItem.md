@@ -1,7 +1,7 @@
 # TaskBatchUpdateResponseItem
 
 **Location:** `frontend/src/types/task.ts:412`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `TaskBatchUpdateResponseItem` in `frontend/src/types/task.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

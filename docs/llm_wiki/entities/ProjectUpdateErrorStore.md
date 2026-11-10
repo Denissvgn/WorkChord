@@ -4,6 +4,14 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)
+**Target:**
+
+```typescript
+{
+    projectId: number | null;
+    message: string | null;
+}
+```
 
 ## Description
 
@@ -11,11 +19,11 @@ _Auto-generated from `ProjectUpdateErrorStore` in `frontend/src/pages/ProjectDet
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

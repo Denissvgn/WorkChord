@@ -25,7 +25,7 @@ Response returned after receiving a GitHub webhook delivery.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/features/useLiveWindow.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./useLiveWindow` | `useLiveWindow`, `validateWindowCursor`, `deduplicateWindow` |
-| `./workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` |
-| `@tanstack/react-query` | `QueryClientProvider` |
-| `@testing-library/react` | `act`, `waitFor`, `renderHook` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./useLiveWindow` | `useLiveWindow`, `validateWindowCursor`, `deduplicateWindow` | — | compiler-dependent |
+| `./workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClientProvider` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `waitFor`, `renderHook` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -29,7 +29,7 @@ Schema for updating a governed label.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

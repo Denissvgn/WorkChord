@@ -19,7 +19,7 @@ Response for advisory duplicate suggestions.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

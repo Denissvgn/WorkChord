@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/ui/tone.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./tone` | `STATUS_TONE`, `toneLineVar`, `toneSoftVar`, `toneVar`, `wcPillClass` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./tone` | `STATUS_TONE`, `toneLineVar`, `toneSoftVar`, `toneVar`, `wcPillClass` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -1,7 +1,7 @@
 # ExecutionUsageSummary
 
 **Location:** `frontend/src/types/executionUsage.ts:1`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [executionUsage](../modules/executionUsage.md)
 
@@ -37,11 +37,11 @@ _Auto-generated from `ExecutionUsageSummary` in `frontend/src/types/executionUsa
 | `simulated_estimated_cost` | `Record<string, string>` | Yes | — | — |
 | `simulated_units` | `Record<string, string \| null>` | Yes | — | — |
 | `independently_reconciled` | `false` | Yes | — | — |
-| `advisory_budget` | `{ amount: string; currency: string; known_reported_cost: string \| null;         known_estimated_cost: string \| null; coverage: string; advisory_only: true } \| null` | Yes | — | — |
+| `advisory_budget` | <pre><code>&#123; amount&#58; string&#59; currency&#58; string&#59; known&#95;reported&#95;cost&#58; string &#124; null&#59;&#10;        known&#95;estimated&#95;cost&#58; string &#124; null&#59; coverage&#58; string&#59; advisory&#95;only&#58; true &#125; &#124; null</code></pre> | Yes | — | — |
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

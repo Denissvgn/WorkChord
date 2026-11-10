@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [CommandMenu](../modules/CommandMenu.md)
+**Target:**
+
+```typescript
+'results' | 'tasks' | 'current' | 'navigate' | 'suggested'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `CommandGroup` in `frontend/src/components/layout/CommandMe
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

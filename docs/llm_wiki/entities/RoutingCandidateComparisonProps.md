@@ -1,7 +1,7 @@
 # RoutingCandidateComparisonProps
 
 **Location:** `frontend/src/components/agent/RoutingCandidateComparison.tsx:15`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [RoutingCandidateComparison](../modules/RoutingCandidateComparison.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `RoutingCandidateComparisonProps` in `frontend/src/componen
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # WebIntakeRuntimeSettingsUpdate
 
 **Location:** `frontend/src/types/systemSettings.ts:65`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `WebIntakeRuntimeSettingsUpdate` in `frontend/src/types/sys
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

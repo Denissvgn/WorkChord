@@ -8,22 +8,22 @@ _Auto-generated from `frontend/src/components/settings/RuntimeConfigSettings.tsx
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` |
-| `../../services/systemSettingsService` | `systemSettingsService` |
-| `../../types/systemSettings` | `AILanguageMode`, `AppRuntimeSettingsUpdate`, `GitHubRuntimeSettingsUpdate`, `LLMProvider`, `LLMRuntimeSettingsUpdate`, `RuntimeSettingSource`, `SystemSettings`, `WebIntakeRuntimeSettingsUpdate` |
-| `../../utils/adminAccess` | `getAdminAccessErrorMessage` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` |
-| `../feedback/toast` | `useToast` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `Globe2`, `KeyRound`, `RefreshCcw`, `Save`, `ServerCog`, `ShieldAlert` |
-| `react` | `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../services/systemSettingsService` | `systemSettingsService` | — | compiler-dependent |
+| `../../types/systemSettings` | `AILanguageMode`, `AppRuntimeSettingsUpdate`, `GitHubRuntimeSettingsUpdate`, `LLMProvider`, `LLMRuntimeSettingsUpdate`, `RuntimeSettingSource`, `SystemSettings`, `WebIntakeRuntimeSettingsUpdate` | Declaration | erased |
+| `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `Globe2`, `KeyRound`, `RefreshCcw`, `Save`, `ServerCog`, `ShieldAlert` | — | compiler-dependent |
+| `react` | `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +35,8 @@ _Auto-generated from `frontend/src/components/settings/RuntimeConfigSettings.tsx
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -65,12 +67,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [LLMForm](../entities/LLMForm.md) | Class | 25 | — | — |
-| [AppForm](../entities/AppForm.md) | Class | 35 | — | — |
-| [GitHubForm](../entities/GitHubForm.md) | Class | 39 | — | — |
-| [WebIntakeForm](../entities/WebIntakeForm.md) | Class | 49 | — | — |
-| [RuntimeSection](../entities/RuntimeSection.md) | Type alias | 55 | — | — |
-| [RuntimeErrors](../entities/RuntimeErrors.md) | Type alias | 56 | — | — |
+| [LLMForm](../entities/LLMForm.md) | Interface | 25 | — | — |
+| [AppForm](../entities/AppForm.md) | Interface | 35 | — | — |
+| [GitHubForm](../entities/GitHubForm.md) | Interface | 39 | — | — |
+| [WebIntakeForm](../entities/WebIntakeForm.md) | Interface | 49 | — | — |
+| [RuntimeSection](../entities/RuntimeSection.md) | Type alias | 55 | `'llm' \| 'github' \| 'webIntake'` | — |
+| [RuntimeErrors](../entities/RuntimeErrors.md) | Type alias | 56 | `Record<string, string>` | — |
 
 ## Functions
 

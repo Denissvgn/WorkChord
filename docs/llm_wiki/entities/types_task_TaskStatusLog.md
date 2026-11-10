@@ -1,7 +1,7 @@
 # TaskStatusLog
 
 **Location:** `frontend/src/types/task.ts:366`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `TaskStatusLog` in `frontend/src/types/task.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

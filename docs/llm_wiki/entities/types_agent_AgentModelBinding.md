@@ -1,7 +1,7 @@
 # AgentModelBinding
 
 **Location:** `frontend/src/types/agent.ts:239`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -32,7 +32,7 @@ _Auto-generated from `AgentModelBinding` in `frontend/src/types/agent.ts`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

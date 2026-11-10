@@ -1,7 +1,7 @@
 # ModelAwareRoutingTopologyReadiness
 
 **Location:** `frontend/src/types/agent.ts:127`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `ModelAwareRoutingTopologyReadiness` in `frontend/src/types
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

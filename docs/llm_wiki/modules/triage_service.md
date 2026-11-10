@@ -21,10 +21,11 @@ Triage retains the legacy iteration-required conversion route and adds an explic
 | `app.models.template` | `TemplateType`, `WorkTemplate` |
 | `app.models.triage` | `TriageClassificationSuggestion`, `TriageItem`, `TriageItemStatus` |
 | `app.schemas.task` | `TaskCreate` |
-| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationDraft`, `TriageConvertToTaskRequest`, `TriageDuplicateSuggestion`, `TriageDuplicateSuggestionsResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageTaskDraftResponse` |
+| `app.schemas.triage` | `TriageActionRequest`, `TriageClassificationDraft`, `TriageConvertToTaskRequest`, `TriageDuplicateSuggestion`, `TriageDuplicateSuggestionsResponse`, `TriageDuplicateRequest`, `TriageItemCreate`, `TriageItemUpdate`, `TriageSnoozeRequest`, `TriageTaskDraftRequest`, `TriageTaskDraftResponse`, `current_triage_brief` |
 | `app.services.llm_service` | `LLMService` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.request_source_service` | `RequestSourceService` |
+| `app.services.task_brief_service` | `brief_from_draft`, `render_brief`, `brief_from_draft` |
 | `app.services.task_service` | `TaskService` |
 | `app.sql_semantics` | `portable_contains` |
 | `app.utils.text_similarity` | `BM25Similarity`, `SimilarityDocument`, `normalize_text` |
@@ -54,8 +55,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
-| Outbound | `backend` (17) |
+| Inbound | `backend` (9) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -63,7 +64,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -26,7 +26,7 @@ Dashboard card summary backed by a saved view.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

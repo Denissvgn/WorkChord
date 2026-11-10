@@ -15,7 +15,7 @@ Raised when an intake request is not authenticated.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

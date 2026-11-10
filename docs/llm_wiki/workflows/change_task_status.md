@@ -19,8 +19,9 @@ Cascade updates: When dates shift, dependent tasks are automatically updated.
 1. `language_service.resolve_runtime_ui_language`
 2. `language_service.invalid_status_transition_message`
 3. `iteration_service.IterationService`
-4. `schemas_task.TaskStatusChangeResponse`
-5. `schemas_task.CascadeUpdateInfo`
+4. `iteration_service.IterationService.get_by_id`
+5. `schemas_task.TaskStatusChangeResponse`
+6. `schemas_task.CascadeUpdateInfo`
 
 ## Touches
 

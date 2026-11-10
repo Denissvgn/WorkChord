@@ -1,7 +1,7 @@
 # AppRuntimeSettingsUpdate
 
 **Location:** `frontend/src/types/systemSettings.ts:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [systemSettings](../modules/systemSettings.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `AppRuntimeSettingsUpdate` in `frontend/src/types/systemSet
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

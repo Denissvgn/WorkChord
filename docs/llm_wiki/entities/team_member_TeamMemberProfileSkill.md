@@ -29,7 +29,7 @@ Structured skill or weakness attached to a reusable team-member profile.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

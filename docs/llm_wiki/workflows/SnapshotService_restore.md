@@ -13,16 +13,23 @@
 3. `commands.lock_iterations`
 4. `task_service.TaskService`
 5. `snapshots._validate_snapshot_task_payloads`
-6. `team_member.TeamMember`
-7. `team_service.TeamService`
-8. `team_member.Vacation`
-9. `delivery_dependency_service.DeliveryDependencyService`
-10. `task_recovery_service.reserve_restored_task_version`
-11. `models_task.Task`
-12. `task_domain_service.require_owner`
-13. `task_brief_service.TaskBriefService`
-14. `recovery.TaskScheduleBaseline`
-15. `models_task.TaskDependency`
+6. `task_service.TaskService.get_all_tasks`
+7. `task_service.TaskService._require_unclaimed_structure`
+8. `team_member.TeamMember`
+9. `team_service.TeamService.detach_absence_adapters`
+10. `team_service.TeamService`
+11. `team_member.Vacation`
+12. `delivery_dependency_service.DeliveryDependencyService.require_unreferenced`
+13. `delivery_dependency_service.DeliveryDependencyService`
+14. `task_recovery_service.reserve_restored_task_version`
+15. `models_task.Task`
+16. `task_domain_service.require_owner`
+17. `task_brief_service.TaskBriefService.restore_brief`
+18. `task_brief_service.TaskBriefService`
+19. `recovery.TaskScheduleBaseline`
+20. `task_service.TaskService.record_task_event`
+21. `models_task.TaskDependency`
+22. `task_service.TaskService.record_task_event`
 
 ## Touches
 

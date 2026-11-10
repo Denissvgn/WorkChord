@@ -34,7 +34,7 @@ Schema for external link responses, including synthetic legacy links.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

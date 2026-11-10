@@ -19,7 +19,7 @@ Delivery states exposed by the outbound webhook API.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

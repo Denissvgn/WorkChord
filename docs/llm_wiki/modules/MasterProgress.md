@@ -42,10 +42,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MasterProgressProps](../entities/MasterProgressProps.md) | Class | 1 | — | — |
+| [MasterProgressProps](../entities/MasterProgressProps.md) | Interface | 1 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `MasterProgress` | `({     className = '',     completed,     label,     total,     valueText, }: MasterProgressProps)` | — | — |
+| `MasterProgress` | <pre><code>&#40;&#123;&#10;    className &#61; &#39;&#39;&#44;&#10;    completed&#44;&#10;    label&#44;&#10;    total&#44;&#10;    valueText&#44;&#10;&#125;&#58; MasterProgressProps&#41;</code></pre> | — | — |

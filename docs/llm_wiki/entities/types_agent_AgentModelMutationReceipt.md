@@ -1,9 +1,10 @@
 # AgentModelMutationReceipt
 
 **Location:** `frontend/src/types/agent.ts:282`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
+**Type parameters:** <pre><code>TResult extends AgentModelCatalogEntry &#124; AgentModelBinding &#61;&#10;        AgentModelCatalogEntry &#124; AgentModelBinding</code></pre>
 
 ## Description
 
@@ -27,7 +28,7 @@ _Auto-generated from `AgentModelMutationReceipt` in `frontend/src/types/agent.ts
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

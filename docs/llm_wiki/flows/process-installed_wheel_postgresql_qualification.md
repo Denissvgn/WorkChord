@@ -2,7 +2,7 @@
 
 **Entry point:** `main` (`process`)
 **Source:** [installed_wheel_postgresql_qualification](../modules/installed_wheel_postgresql_qualification.md)
-**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), and 26 more
+**Modules touched:** [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [catalog](../modules/catalog.md), [cli_closeout](../modules/cli_closeout.md), and 30 more
 
 **Complete modules touched:**
 
@@ -23,10 +23,14 @@
 - [maintenance](../modules/maintenance.md)
 - [models_agent](../modules/models_agent.md)
 - [models_calendar](../modules/models_calendar.md)
+- [models_github](../modules/models_github.md)
 - [models_identity](../modules/models_identity.md)
 - [models_iteration](../modules/models_iteration.md)
+- [models_label](../modules/models_label.md)
 - [models_project](../modules/models_project.md)
+- [models_saved_view](../modules/models_saved_view.md)
 - [models_task](../modules/models_task.md)
+- [models_template](../modules/models_template.md)
 - [project_identity](../modules/project_identity.md)
 - [saved_view_service](../modules/saved_view_service.md)
 - [source](../modules/source.md)
@@ -63,74 +67,126 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as _parser().parse_args
-    participant p2 as _parser
-    participant p3 as argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser)
-    participant p4 as parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)
-    participant p5 as SystemExit
-    participant p6 as _coordinate
-    participant p7 as tempfile.TemporaryDirectory
-    participant p8 as Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate)
-    participant p9 as Path (scripts/ci/installed_whee…lification.py:_coordinate)
-    participant p10 as os.urandom(…).hex
-    participant p11 as os.urandom
-    participant p12 as (…).write_text
-    participant p13 as _database_url
-    participant p14 as urlsplit (scripts/ci/installed_whee…fication.py:_database_url)
-    participant p15 as urlunsplit
-    participant p16 as _target_identifier
-    participant p17 as urlsplit (scripts/ci/installed_whee…ion.py:_target_identifier)
-    participant p18 as _create_database
-    participant p19 as psycopg.connect (scripts/ci/installed_whee…ation.py:_create_database)
-    participant p20 as _psycopg_url
-    participant p21 as sqlalchemy_url.replace
-    participant p22 as connection.execute (scripts/ci/installed_whee…ation.py:_create_database)
-    participant p23 as sql.SQL(…).format (scripts/ci/installed_whee…on.py:_create_database, 8)
-    participant p24 as sql.SQL (scripts/ci/installed_whee…ation.py:_create_database)
-    participant p25 as sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
-    p0-->>p1: _parser().parse_args
-    p0->>p2: _parser
-    p2-->>p3: argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser)
-    p2-->>p4: parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)
-    p2-->>p4: parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)
-    p2-->>p4: parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)
-    p2-->>p4: parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)
-    p0-->>p5: SystemExit
-    p0->>p6: _coordinate
-    p6-->>p7: tempfile.TemporaryDirectory
-    p6-->>p8: Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate)
-    p6-->>p9: Path (scripts/ci/installed_whee…lification.py:_coordinate)
-    p6-->>p10: os.urandom(…).hex
-    p6-->>p11: os.urandom
-    p6-->>p10: os.urandom(…).hex
-    p6-->>p11: os.urandom
-    p6-->>p12: (…).write_text
-    p6->>p13: _database_url
-    p13-->>p14: urlsplit (scripts/ci/installed_whee…fication.py:_database_url)
-    p13-->>p15: urlunsplit
-    p6->>p16: _target_identifier
-    p16-->>p17: urlsplit (scripts/ci/installed_whee…ion.py:_target_identifier)
-    p6->>p18: _create_database
-    p18-->>p19: psycopg.connect (scripts/ci/installed_whee…ation.py:_create_database)
-    p18->>p20: _psycopg_url
-    p20-->>p21: sqlalchemy_url.replace
-    p18-->>p22: connection.execute (scripts/ci/installed_whee…ation.py:_create_database)
-    p18-->>p23: sql.SQL(…).format (scripts/ci/installed_whee…on.py:_create_database, 8)
-    p18-->>p24: sql.SQL (scripts/ci/installed_whee…ation.py:_create_database)
-    p18-->>p25: sql.Identifier (scripts/ci/installed_whee…ation.py:_create_database)
+    participant p1 as _coordinate
+    participant p2 as _source_phase
+    participant p3 as _target_phase
+    participant p4 as _maintenance_phase
+    participant p5 as _parser
+    participant p6 as _assert_installed_package
+    participant p7 as bootstrap_database_schema
+    participant p8 as load_snapshot
+    participant p9 as _probe_maintenance
+    participant p10 as reconcile_snapshot
+    participant p11 as record_post_copy_repairs
+    participant p12 as _create_database
+    participant p13 as _run_phase
+    participant p14 as _drop_database
+    participant p15 as write_document
+    participant p16 as preflight_source
+    participant p17 as run_alembic_upgrade
+    participant p18 as seal_document
+    participant p19 as _load_source_manifest
+    participant p20 as build_parser (backend/app/cli/cutover.py)
+    participant p21 as _target_engine
+    participant p22 as _authorize_target
+    participant p23 as _target_identity_sha256
+    participant p24 as build_parser (backend/app/cli/closeout.py)
+    participant p25 as read_document
+    participant p26 as _optional_evidence
+    participant p27 as validate_writer_drain_evidence
+    participant p28 as _source_file_set
+    participant p29 as SystemExit
+    participant p30 as _parser().parse_args
+    p0->>p1: _coordinate
+    p0->>p2: _source_phase
+    p0->>p3: _target_phase
+    p0->>p4: _maintenance_phase
+    p0->>p5: _parser
+    p2->>p6: _assert_installed_package
+    p2->>p7: bootstrap_database_schema
+    p3->>p8: load_snapshot
+    p4->>p9: _probe_maintenance
+    p3->>p10: reconcile_snapshot
+    p3->>p11: record_post_copy_repairs
+    p1->>p12: _create_database
+    p1->>p13: _run_phase
+    p1->>p14: _drop_database
+    p2->>p15: write_document
+    p2->>p16: preflight_source
+    p7->>p17: run_alembic_upgrade
+    p15->>p18: seal_document
+    p8->>p19: _load_source_manifest
+    p6->>p20: build_parser (backend/app/cli/cutover.py)
+    p8->>p21: _target_engine
+    p8->>p22: _authorize_target
+    p8->>p23: _target_identity_sha256
+    p6->>p24: build_parser (backend/app/cli/closeout.py)
+    p16->>p25: read_document
+    p8->>p26: _optional_evidence
+    p16->>p27: validate_writer_drain_evidence
+    p16->>p28: _source_file_set
+    p0-->>p29: SystemExit('--admin-url is required')
+    p0-->>p30: _parser().parse_args
 ```
 
-> Call sequence diagram shows 30 of 1624 interactions; 1594 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 1714 interactions; 1684 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 536 (535 omitted); unresolved 1 of 671 (670 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_parser` | 3 | - | external | 1 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_parser` | 3 | - | unresolved | 4 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_coordinate` | 10 | - | external | 4 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_coordinate` | 10 | - | unresolved | 4 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_coordinate` | 10 | [scripts/ci/installed_wheel_postgresql_qualification.py](../modules/installed_wheel_postgresql_qualification.md) | internal | 4 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_database_url` | 19 | - | external | 2 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_target_identifier` | 22 | - | external | 1 |
+| `scripts/ci/installed_wheel_postgresql_qualification.py:_create_database` | 24 | - | external | 24 |
+> Omission summary shows 8 of 372 groups; 364 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 508; effect analysis evaluated: 332, partial: 9, unavailable: 167. Counts include steps omitted from the displayed trace.
+
+Collector observations for 341 source steps with known totals: observed: 1256, emitted: 1227, omitted: 29. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_parser` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `argparse.ArgumentParser (scripts/ci/installed_whee…_qualification.py:_parser)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument (scripts/ci/installed_whee…_qualification.py:_parser)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `SystemExit` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_coordinate` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `tempfile.TemporaryDirectory` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `Path(…).resolve (scripts/ci/installed_whee…lification.py:_coordinate)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]
@@ -196,7 +252,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

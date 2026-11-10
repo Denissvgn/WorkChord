@@ -8,10 +8,11 @@ _Auto-generated from `frontend/src/navigation/helpContexts.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./routeModules` | `metadataForPath`, `RouteModuleKey` |
-| `./workspaces` | `getWorkspaceForPath`, `PRIMARY_NAV_ITEMS` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./routeModules` | `RouteModuleKey` | Specifier | compiler-dependent |
+| `./routeModules` | `metadataForPath` | — | compiler-dependent |
+| `./workspaces` | `getWorkspaceForPath`, `PRIMARY_NAV_ITEMS` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -23,6 +24,8 @@ _Auto-generated from `frontend/src/navigation/helpContexts.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/ContextHelp.tsx"]
@@ -50,8 +53,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [HelpContentProvider](../entities/HelpContentProvider.md) | Type alias | 10 | — | — |
-| [HelpRelatedLink](../entities/HelpRelatedLink.md) | Type alias | 12 | — | — |
+| [HelpContentProvider](../entities/HelpContentProvider.md) | Type alias | 10 | `'plan' \| 'gantt' \| 'tasks' \| 'settings' \| 'workspace'` | — |
+| [HelpRelatedLink](../entities/HelpRelatedLink.md) | Type alias | 12 | <pre><code>&#123;&#10;    to&#58; string&#59;&#10;    labelKey&#58; string&#59;&#10;    defaultLabel&#58; string&#59;&#10;    descriptionKey&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

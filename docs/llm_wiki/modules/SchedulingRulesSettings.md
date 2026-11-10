@@ -8,26 +8,27 @@ _Auto-generated from `frontend/src/components/settings/SchedulingRulesSettings.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` |
-| `../../services/schedulingRulesService` | `schedulingRulesService` |
-| `../../types/schedulingRules` | `SchedulingRules`, `EffortModifier`, `SchedulingPass`, `Constraints` |
-| `../../utils/adminAccess` | `getAdminAccessErrorMessage` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../feedback/toast` | `useToast` |
-| `./ConstraintsPanel` | `ConstraintsPanel` |
-| `./EffortModifierCard` | `EffortModifierCard` |
-| `./SchedulingPassCard` | `SchedulingPassCard` |
-| `@dnd-kit/core` | `DndContext`, `closestCenter`, `KeyboardSensor`, `PointerSensor`, `useSensor`, `useSensors`, `DragEndEvent` |
-| `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `verticalListSortingStrategy` |
-| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` |
-| `lucide-react` | `AlertTriangle`, `Save`, `RotateCcw`, `ChevronDown`, `ChevronRight`, `Plus`, `Loader2` |
-| `react` | `useState`, `useCallback`, `useMemo` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../services/schedulingRulesService` | `schedulingRulesService` | — | compiler-dependent |
+| `../../types/schedulingRules` | `SchedulingRules`, `EffortModifier`, `SchedulingPass`, `Constraints` | Declaration | erased |
+| `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./ConstraintsPanel` | `ConstraintsPanel` | — | compiler-dependent |
+| `./EffortModifierCard` | `EffortModifierCard` | — | compiler-dependent |
+| `./SchedulingPassCard` | `SchedulingPassCard` | — | compiler-dependent |
+| `@dnd-kit/core` | `DragEndEvent` | Declaration | erased |
+| `@dnd-kit/core` | `DndContext`, `closestCenter`, `KeyboardSensor`, `PointerSensor`, `useSensor`, `useSensors` | — | compiler-dependent |
+| `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `verticalListSortingStrategy` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Save`, `RotateCcw`, `ChevronDown`, `ChevronRight`, `Plus`, `Loader2` | — | compiler-dependent |
+| `react` | `useState`, `useCallback`, `useMemo` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -40,6 +41,8 @@ _Auto-generated from `frontend/src/components/settings/SchedulingRulesSettings.t
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -70,11 +73,11 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SectionId](../entities/SectionId.md) | Type alias | 33 | — | — |
-| [SettingsRowIdentity](../entities/SettingsRowIdentity.md) | Type alias | 36 | — | — |
-| [EditableEffortModifier](../entities/EditableEffortModifier.md) | Type alias | 37 | — | — |
-| [EditableSchedulingPass](../entities/EditableSchedulingPass.md) | Type alias | 38 | — | — |
-| [EditableSchedulingRules](../entities/EditableSchedulingRules.md) | Type alias | 39 | — | — |
+| [SectionId](../entities/SectionId.md) | Type alias | 33 | `'modifiers' \| 'passes' \| 'constraints'` | — |
+| [SettingsRowIdentity](../entities/SettingsRowIdentity.md) | Type alias | 36 | `{ [SETTINGS_ROW_ID]: string }` | — |
+| [EditableEffortModifier](../entities/EditableEffortModifier.md) | Type alias | 37 | `EffortModifier & SettingsRowIdentity` | — |
+| [EditableSchedulingPass](../entities/EditableSchedulingPass.md) | Type alias | 38 | `SchedulingPass & SettingsRowIdentity` | — |
+| [EditableSchedulingRules](../entities/EditableSchedulingRules.md) | Type alias | 39 | <pre><code>Omit&#60;SchedulingRules&#44; &#39;effort&#95;modifiers&#39; &#124; &#39;scheduling&#95;passes&#39;&#62; &#38; &#123;&#10;    effort&#95;modifiers&#58; EditableEffortModifier&#91;&#93;&#59;&#10;    scheduling&#95;passes&#58; EditableSchedulingPass&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

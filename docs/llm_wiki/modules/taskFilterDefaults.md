@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/utils/taskFilterDefaults.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/tasks/TaskFiltersBar` | `TaskFilters` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
 
 ## Module Signals
 
@@ -22,7 +22,8 @@ _Auto-generated from `frontend/src/utils/taskFilterDefaults.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
-<!-- Thick arrows (==>) mark edges inside an import cycle. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskFiltersBar.tsx"]
@@ -33,7 +34,7 @@ flowchart LR
     n5["frontend/src/utils/taskFilterDefaults.ts"]
     n6["frontend/src/utils/taskFilters.test.ts"]
     n7["frontend/src/utils/visibleWork.test.ts"]
-    n0 ==> n5
+    n0 --> n5
     n1 --> n0
     n1 --> n5
     n2 --> n0
@@ -44,7 +45,7 @@ flowchart LR
     n3 --> n5
     n4 --> n0
     n4 --> n5
-    n5 ==> n0
+    n5 --> n0
     n6 --> n5
     n7 --> n5
     click n0 "../modules/TaskFiltersBar.md"

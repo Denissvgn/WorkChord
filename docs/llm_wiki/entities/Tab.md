@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [NotificationsPanel](../modules/NotificationsPanel.md)
+**Target:**
+
+```typescript
+'history' | 'overdue'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `Tab` in `frontend/src/components/notifications/Notificatio
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

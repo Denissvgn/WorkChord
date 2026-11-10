@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.test
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/executionUsage` | `ExecutionUsageSummary` |
-| `./ExecutionUsagePanel` | `ExecutionUsagePanel` |
-| `@testing-library/react` | `fireEvent`, `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/executionUsage` | `ExecutionUsageSummary` | Declaration | erased |
+| `./ExecutionUsagePanel` | `ExecutionUsagePanel` | — | compiler-dependent |
+| `@testing-library/react` | `fireEvent`, `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +26,8 @@ _Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.test
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/analytics/ExecutionUsagePanel.test.tsx"]

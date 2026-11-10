@@ -8,10 +8,12 @@ _Auto-generated from `frontend/src/components/common/useConfirmDialog.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./ConfirmDialog` | `ConfirmDialog`, `ConfirmDialogTone` |
-| `react` | `useState`, `ReactNode` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./ConfirmDialog` | `ConfirmDialogTone` | Declaration | erased |
+| `./ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useState` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -22,6 +24,8 @@ _Auto-generated from `frontend/src/components/common/useConfirmDialog.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -52,7 +56,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ConfirmationRequest](../entities/ConfirmationRequest.md) | Class | 6 | — | — |
+| [ConfirmationRequest](../entities/ConfirmationRequest.md) | Interface | 6 | — | — |
 
 ## Functions
 

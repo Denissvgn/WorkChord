@@ -10,23 +10,23 @@ Only the selected work/review/inbox consumers remain enabled. Paged queues use r
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/common/Button` | `Button` |
-| `../components/feedback/LiveWindowStatus` | `LiveWindowStatus` |
-| `../components/feedback/QueryState` | `QueryErrorState` |
-| `../components/tasks/GuardedTaskModal` | `CurrentTaskModal` |
-| `../components/tasks/PersonCapacity` | `PersonCapacity` |
-| `../components/ui` | `PageLayout`, `PageHeader` |
-| `../features/identity/identityContext` | `useIdentity` |
-| `../features/useLiveWindow` | `useLiveWindow` |
-| `../services/api` | `api` |
-| `../services/discussionService` | `discussionService` |
-| `../types/task` | `TaskReference`, `TaskReferencePage` |
-| `../utils/apiError` | `getApiErrorMessage` |
-| `@tanstack/react-query` | `useMutation` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/feedback/LiveWindowStatus` | `LiveWindowStatus` | — | compiler-dependent |
+| `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../components/tasks/GuardedTaskModal` | `CurrentTaskModal` | — | compiler-dependent |
+| `../components/tasks/PersonCapacity` | `PersonCapacity` | — | compiler-dependent |
+| `../components/ui` | `PageLayout`, `PageHeader` | — | compiler-dependent |
+| `../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
+| `../services/api` | `api` | — | compiler-dependent |
+| `../services/discussionService` | `discussionService` | — | compiler-dependent |
+| `../types/task` | `TaskReference`, `TaskReferencePage` | Declaration | erased |
+| `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -38,6 +38,8 @@ Only the selected work/review/inbox consumers remain enabled. Paged queues use r
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -68,5 +70,5 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkPage](../entities/WorkPage.md) | Class | 19 | — | — |
-| [Queue](../entities/Queue.md) | Type alias | 18 | — | — |
+| [WorkPage](../entities/WorkPage.md) | Interface | 19 | — | — |
+| [Queue](../entities/Queue.md) | Type alias | 18 | `typeof QUEUES[number]` | — |

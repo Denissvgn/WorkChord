@@ -4,6 +4,23 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
+**Target:**
+
+```typescript
+{
+    id: string;
+    label: string;
+    enabled: boolean;
+    hasData: boolean;
+    hasUsableData: boolean;
+    dataUpdatedAt: number;
+    isLoading: boolean;
+    isFetching: boolean;
+    isError: boolean;
+    error: unknown;
+    refetch: () => Promise<unknown>;
+}
+```
 
 ## Description
 
@@ -11,11 +28,11 @@ _Auto-generated from `OverviewDataSource` in `frontend/src/pages/OverviewPage.ts
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

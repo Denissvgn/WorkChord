@@ -2,11 +2,14 @@
 
 **Entry point:** `workspace_get_iteration_summary` (`mcp`)
 **Source:** [mcp_server](../modules/mcp_server.md)
-**Modules touched:** [agent_service](../modules/agent_service.md), [commands](../modules/commands.md), [config](../modules/config.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), and 6 more
+**Modules touched:** [agent_service](../modules/agent_service.md), [authority](../modules/authority.md), [calendar_service](../modules/calendar_service.md), [capacity_service](../modules/capacity_service.md), and 20 more
 
 **Complete modules touched:**
 
 - [agent_service](../modules/agent_service.md)
+- [authority](../modules/authority.md)
+- [calendar_service](../modules/calendar_service.md)
+- [capacity_service](../modules/capacity_service.md)
 - [commands](../modules/commands.md)
 - [config](../modules/config.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
@@ -16,78 +19,140 @@
 - [maintenance](../modules/maintenance.md)
 - [mcp_agent_tools](../modules/mcp_agent_tools.md)
 - [mcp_server](../modules/mcp_server.md)
+- [models_identity](../modules/models_identity.md)
+- [models_outbound_webhook](../modules/models_outbound_webhook.md)
+- [query_limits](../modules/query_limits.md)
+- [schemas_calendar](../modules/schemas_calendar.md)
+- [schemas_iteration](../modules/schemas_iteration.md)
+- [schemas_team](../modules/schemas_team.md)
+- [services_work_metrics](../modules/services_work_metrics.md)
+- [task_brief_service](../modules/task_brief_service.md)
+- [task_service](../modules/task_service.md)
+- [team_service](../modules/team_service.md)
+- [time](../modules/time.md)
 
 ## Call sequence
+
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
 
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as workspace_get_iteration_summary
     participant p1 as _tool_call
-    participant p2 as enforce_mcp_access
-    participant p3 as get_settings
-    participant p4 as Settings
-    participant p5 as scope_requirement_is_mutating
-    participant p6 as isinstance (backend/app/maintenance.p…e_requirement_is_mutating)
-    participant p7 as tuple
-    participant p8 as any (backend/app/maintenance.p…e_requirement_is_mutating)
-    participant p9 as scope.endswith
-    participant p10 as MaintenanceModeError
-    participant p11 as _agent_context
-    participant p12 as _current_agent_key
-    participant p13 as _http_agent_key.get
-    participant p14 as os.getenv
-    participant p15 as MCPAuthError
-    participant p16 as _open_db_session
-    participant p17 as _session_factory
-    participant p18 as hasattr
-    participant p19 as command_transaction
-    participant p20 as current_command
-    participant p21 as getattr
-    participant p22 as isinstance (backend/app/commands.py:current_command)
-    participant p23 as info.get
-    participant p24 as RuntimeError
-    participant p25 as CommandState
-    participant p26 as db.flush
+    participant p2 as get_iteration_summary
+    participant p3 as enforce_mcp_access
+    participant p4 as IterationService.get_summary
+    participant p5 as _agent_context
+    participant p6 as get_settings
+    participant p7 as CalendarService.calculate_working_days
+    participant p8 as command_transaction
+    participant p9 as aggregate_metrics
+    participant p10 as _authenticate_agent_key
+    participant p11 as IterationService._calculate_team_capacity
+    participant p12 as _require_scope_requirement
+    participant p13 as IdentityService.actor_context
+    participant p14 as TeamService.get_by_iteration
+    participant p15 as require_scope
+    participant p16 as AgentService.authenticate
+    participant p17 as TeamService.calculate_capacity
+    participant p18 as require_identity_writes
+    participant p19 as DeliveryDependencyService.reconcile
+    participant p20 as DiscussionService.enqueue
+    participant p21 as working_today
+    participant p22 as actor_has_scope
+    participant p23 as TeamService.get_by_id
+    participant p24 as CapacityService.calendar_for
+    participant p25 as CapacityService.calendar_status
+    participant p26 as CapacityService.absence_ranges
+    participant p27 as commit_or_flush
+    participant p28 as DeliveryDependencyService.validate_cycles
+    participant p29 as ToolError
+    participant p30 as func
     p0->>p1: _tool_call
-    p1->>p2: enforce_mcp_access
-    p2->>p3: get_settings
-    p3->>p4: Settings
-    p2->>p5: scope_requirement_is_mutating
-    p5-->>p6: isinstance (backend/app/maintenance.p…e_requirement_is_mutating)
-    p5-->>p7: tuple
-    p5-->>p8: any (backend/app/maintenance.p…e_requirement_is_mutating)
-    p5-->>p9: scope.endswith
-    p5-->>p8: any (backend/app/maintenance.p…e_requirement_is_mutating)
-    p5-->>p9: scope.endswith
-    p5-->>p9: scope.endswith
-    p2->>p10: MaintenanceModeError
-    p1->>p11: _agent_context
-    p11->>p12: _current_agent_key
-    p12-->>p13: _http_agent_key.get
-    p12-->>p14: os.getenv
-    p11->>p15: MCPAuthError
-    p11->>p16: _open_db_session
-    p16-->>p17: _session_factory
-    p16-->>p18: hasattr
-    p11->>p19: command_transaction
-    p19->>p20: current_command
-    p20-->>p21: getattr
-    p20-->>p22: isinstance (backend/app/commands.py:current_command)
-    p20-->>p23: info.get
-    p19-->>p24: RuntimeError
-    p19->>p25: CommandState
-    p19-->>p24: RuntimeError
-    p19-->>p26: db.flush
+    p0->>p2: get_iteration_summary
+    p1->>p3: enforce_mcp_access
+    p2->>p4: IterationService.get_summary
+    p1->>p5: _agent_context
+    p3->>p6: get_settings
+    p4->>p7: CalendarService.calculate_working_days
+    p5->>p8: command_transaction
+    p4->>p9: aggregate_metrics
+    p5->>p10: _authenticate_agent_key
+    p4->>p11: IterationService._calculate_team_capacity
+    p5->>p12: _require_scope_requirement
+    p5->>p13: IdentityService.actor_context
+    p11->>p14: TeamService.get_by_iteration
+    p12->>p15: require_scope
+    p10->>p16: AgentService.authenticate
+    p11->>p17: TeamService.calculate_capacity
+    p13->>p18: require_identity_writes
+    p8->>p19: DeliveryDependencyService.reconcile
+    p8->>p20: DiscussionService.enqueue
+    p9->>p21: working_today
+    p15->>p22: actor_has_scope
+    p17->>p23: TeamService.get_by_id
+    p17->>p24: CapacityService.calendar_for
+    p17->>p25: CapacityService.calendar_status
+    p17->>p26: CapacityService.absence_ranges
+    p16->>p27: commit_or_flush
+    p19->>p28: DeliveryDependencyService.validate_cycles
+    p1-->>p29: ToolError(_structured_tool_error(...))
+    p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 106 interactions; 76 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 616 interactions; 586 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 1 of 209 (208 omitted); unresolved 1 of 290 (289 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/config.py:get_settings` | 4 | [backend/app/config.py](../modules/config.md) | internal | 1 |
+| `backend/app/maintenance.py:enforce_mcp_access` | 3 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 2 |
+| `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | external | 4 |
+| `backend/app/maintenance.py:scope_requirement_is_mutating` | 6 | - | unresolved | 3 |
+| `backend/app/mcp_server.py:_agent_context` | 15 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 3 |
+| `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
+| `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
+| `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
+> Omission summary shows 8 of 125 groups; 117 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 118; effect analysis evaluated: 80, partial: 2, unavailable: 36. Counts include steps omitted from the displayed trace.
+
+Collector observations for 82 source steps with known totals: observed: 345, emitted: 335, omitted: 10. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `workspace_get_iteration_summary` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `_tool_call` | `available` | `partial` | `available` | `18` | `12` | `6` |
+| `enforce_mcp_access` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `scope_requirement_is_mutating` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `isinstance (backend/app/maintenance.p…e_requirement_is_mutating)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `tuple (backend/app/maintenance.p…e_requirement_is_mutating)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `any (backend/app/maintenance.p…e_requirement_is_mutating)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `scope.endswith` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `any (backend/app/maintenance.p…e_requirement_is_mutating)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `scope.endswith` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. workspace_get_iteration_summary"]
@@ -97,7 +162,7 @@ flowchart LR
     s5["5. Settings"]
     s6["6. scope_requirement_is_mutating"]
     s7["7. isinstance (backend/app/maintenance.p…e_requirement_is_mutating)"]
-    s8["8. tuple"]
+    s8["8. tuple (backend/app/maintenance.p…e_requirement_is_mutating)"]
     s9["9. any (backend/app/maintenance.p…e_requirement_is_mutating)"]
     s10["10. scope.endswith"]
     s11["11. any (backend/app/maintenance.p…e_requirement_is_mutating)"]
@@ -108,7 +173,7 @@ flowchart LR
     s4 -->|"Settings(data not statically known)"| s5
     s3 -->|"scope_requirement_is_mutating(required_scope)"| s6
     s6 -. "isinstance (backend/app/maintenance.p…e_requirement_is_mutating)(required_scope, str)" .-> s7
-    s6 -. "tuple(required_scope)" .-> s8
+    s6 -. "tuple (backend/app/maintenance.p…e_requirement_is_mutating)(required_scope)" .-> s8
     s6 -. "any (backend/app/maintenance.p…e_requirement_is_mutating)(...)" .-> s9
     s6 -. "scope.endswith(':read')" .-> s10
     s6 -. "any (backend/app/maintenance.p…e_requirement_is_mutating)(...)" .-> s11
@@ -132,7 +197,7 @@ flowchart LR
 | `Settings` | - | - | - | - |
 | `scope_requirement_is_mutating` | `required_scope: Any` | - | - | `False`, `...` |
 | `isinstance (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
-| `tuple` | - | - | - | - |
+| `tuple (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
 | `any (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
 | `scope.endswith` | - | - | - | - |
 | `any (backend/app/maintenance.p…e_requirement_is_mutating)` | - | - | - | - |
@@ -148,7 +213,7 @@ flowchart LR
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
 | scope_requirement_is_mutating | isinstance (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `isinstance(required_scope, str)` |
-| scope_requirement_is_mutating | tuple | 100 | `tuple(required_scope)` |
+| scope_requirement_is_mutating | tuple (backend/app/maintenance.p…e_requirement_is_mutating) | 100 | `tuple(required_scope)` |
 | scope_requirement_is_mutating | any (backend/app/maintenance.p…e_requirement_is_mutating) | 101 | `any(...)` |
 | scope_requirement_is_mutating | scope.endswith | 101 | `scope.endswith(':read')` |
 | scope_requirement_is_mutating | any (backend/app/maintenance.p…e_requirement_is_mutating) | 102 | `any(...)` |
@@ -156,7 +221,7 @@ flowchart LR
 
 ### Boundary effects
 
-*No boundary effects detected.*
+*No boundary-effect observations were captured in this static trace.*
 
 ### Static analysis gaps
 

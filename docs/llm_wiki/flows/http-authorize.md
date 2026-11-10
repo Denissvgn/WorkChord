@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -24,30 +26,44 @@ sequenceDiagram
     participant p12 as secrets.token_urlsafe
     participant p13 as time.time
     participant p14 as RedirectResponse
-    p0-->>p1: dict
-    p0-->>p2: params.get
-    p0-->>p2: params.get
-    p0-->>p2: params.get
-    p0-->>p3: HTTPException
-    p0-->>p4: params.pop
-    p0-->>p5: ''.join
-    p0-->>p6: html.escape
-    p0-->>p7: urlencode
+    p0-->>p1: dict(request.query_params)
+    p0-->>p2: params.get('redirect_uri')
+    p0-->>p2: params.get('client_id')
+    p0-->>p2: params.get('code_challenge_method')
+    p0-->>p3: HTTPException(400, 'Invalid fixture authorization request')
+    p0-->>p4: params.pop('fixture_subject', None)
+    p0-->>p5: ''.join(...)
+    p0-->>p6: html.escape(urlencode(...))
+    p0-->>p7: urlencode({...})
     p0-->>p8: person.title
-    p0-->>p9: os.environ.get
-    p0-->>p10: HTMLResponse
-    p0-->>p9: os.environ.get
+    p0-->>p9: os.environ.get('WORKCHORD_FIXTURE_PLANNING')
+    p0-->>p10: HTMLResponse(...)
+    p0-->>p9: os.environ.get('WORKCHORD_FIXTURE_PLANNING')
     p0-->>p11: set
-    p0-->>p3: HTTPException
-    p0-->>p12: secrets.token_urlsafe
+    p0-->>p3: HTTPException(400)
+    p0-->>p12: secrets.token_urlsafe(24)
     p0-->>p13: time.time
-    p0-->>p14: RedirectResponse
-    p0-->>p7: urlencode
+    p0-->>p14: RedirectResponse(..., status_code=303)
+    p0-->>p7: urlencode({...})
 ```
+
+> Call sequence diagram shows 19 of 19 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 13 of 13 (0 omitted); unresolved 6 of 6 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis evaluated.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 9, emitted: 9, omitted: 0. Unavailable totals are excluded.
+
 ```mermaid
 flowchart LR
     s1["1. authorize"]

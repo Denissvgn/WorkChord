@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/planning/PlanReturnBar.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/planningMasters/planningReturn` | `isPlanningStepId`, `planMasterStepHref`, `PLANNING_RETURN_STEP_PARAM` |
-| `lucide-react` | `ArrowLeft`, `Waypoints` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/planningMasters/planningReturn` | `isPlanningStepId`, `planMasterStepHref`, `PLANNING_RETURN_STEP_PARAM` | — | compiler-dependent |
+| `lucide-react` | `ArrowLeft`, `Waypoints` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 

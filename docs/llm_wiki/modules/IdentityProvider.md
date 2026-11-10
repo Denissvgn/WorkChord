@@ -12,22 +12,24 @@ The workspace factory owns both query freshness and planning invalidation. Accou
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../components/common/Button` | `Button` |
-| `../../services/api` | `setSessionIntegrity`, `IDENTITY_EXPIRED_EVENT`, `api` |
-| `../../services/teamService` | `teamService` |
-| `../../utils/adminAccess` | `clearAdminApiKey`, `ADMIN_API_KEY_CHANGED_EVENT` |
-| `../../utils/agentAccess` | `clearAgentApiKey`, `AGENT_API_KEY_CHANGED_EVENT` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` |
-| `./identityContext` | `IdentityContext`, `useIdentity` |
-| `./identityService` | `identityService`, `WorkspaceIdentity` |
-| `@tanstack/react-query` | `QueryClientProvider`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `LogIn`, `LogOut`, `ShieldCheck`, `User` |
-| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState`, `ReactNode` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../components/common/Button` | `Button` | — | compiler-dependent |
+| `../../services/api` | `setSessionIntegrity`, `IDENTITY_EXPIRED_EVENT`, `api` | — | compiler-dependent |
+| `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../utils/adminAccess` | `clearAdminApiKey`, `ADMIN_API_KEY_CHANGED_EVENT` | — | compiler-dependent |
+| `../../utils/agentAccess` | `clearAgentApiKey`, `AGENT_API_KEY_CHANGED_EVENT` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` | — | compiler-dependent |
+| `./identityContext` | `IdentityContext`, `useIdentity` | — | compiler-dependent |
+| `./identityService` | `WorkspaceIdentity` | Declaration | erased |
+| `./identityService` | `identityService` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryClientProvider`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `LogIn`, `LogOut`, `ShieldCheck`, `User` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -38,6 +40,8 @@ The workspace factory owns both query freshness and planning invalidation. Accou
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]

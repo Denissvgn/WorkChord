@@ -1,7 +1,7 @@
 # TeamMemberProfileCompact
 
 **Location:** `frontend/src/types/team.ts:76`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `TeamMemberProfileCompact` in `frontend/src/types/team.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

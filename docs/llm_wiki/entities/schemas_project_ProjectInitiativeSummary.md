@@ -30,7 +30,7 @@ Compact initiative identity embedded in project responses.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

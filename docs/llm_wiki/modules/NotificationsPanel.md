@@ -8,18 +8,18 @@ _Auto-generated from `frontend/src/components/notifications/NotificationsPanel.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/taskService` | `taskService` |
-| `../../utils/formatDate` | `formatDate`, `formatDateTime` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../ui/tone` | `isTaskStatus`, `statusTextClassName` |
-| `@tanstack/react-query` | `useQuery` |
-| `clsx` | `clsx` |
-| `lucide-react` | `AlertCircle`, `History`, `CheckCircle` |
-| `react` | `React`, `useState` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `Link` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../ui/tone` | `isTaskStatus`, `statusTextClassName` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `AlertCircle`, `History`, `CheckCircle` | — | compiler-dependent |
+| `react` | `React`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -73,8 +73,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [NotificationsPanelProps](../entities/NotificationsPanelProps.md) | Class | 12 | — | — |
-| [Tab](../entities/Tab.md) | Type alias | 17 | — | — |
+| [NotificationsPanelProps](../entities/NotificationsPanelProps.md) | Interface | 12 | — | — |
+| [Tab](../entities/Tab.md) | Type alias | 17 | `'history' \| 'overdue'` | — |
 
 ## Functions
 

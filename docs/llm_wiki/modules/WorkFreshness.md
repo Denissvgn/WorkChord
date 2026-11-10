@@ -8,10 +8,10 @@ Displays the update time, unavailable/stale state, and refresh action for a call
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../common/Button` | `Button` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -57,4 +57,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `WorkFreshness` | `({ updatedAt, stale, refreshing, onRefresh }: {     updatedAt: number; stale: boolean; refreshing: boolean; onRefresh: () => void; })` | — | Display update age and recovery state for a caller-owned work query. |
+| `WorkFreshness` | <pre><code>&#40;&#123; updatedAt&#44; stale&#44; refreshing&#44; onRefresh &#125;&#58; &#123;&#10;    updatedAt&#58; number&#59; stale&#58; boolean&#59; refreshing&#58; boolean&#59; onRefresh&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | Display update age and recovery state for a caller-owned work query. |

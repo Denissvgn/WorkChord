@@ -15,6 +15,8 @@ _Auto-generated from `frontend/src/types/team.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -37,22 +39,22 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Vacation](../entities/types_team_Vacation.md) | Class | 1 | — | — |
-| [VacationCreate](../entities/types_team_VacationCreate.md) | Class | 7 | — | — |
-| [VacationImportError](../entities/types_team_VacationImportError.md) | Class | 12 | — | — |
-| [VacationImportResponse](../entities/types_team_VacationImportResponse.md) | Class | 17 | — | — |
-| [TeamMemberProfileSkill](../entities/types_team_TeamMemberProfileSkill.md) | Class | 24 | — | — |
-| [TeamMemberProfileSkillCreate](../entities/types_team_TeamMemberProfileSkillCreate.md) | Class | 39 | — | — |
-| [TeamMemberProfile](../entities/types_team_TeamMemberProfile.md) | Class | 60 | — | — |
-| [TeamMemberProfileCompact](../entities/types_team_TeamMemberProfileCompact.md) | Class | 76 | — | — |
-| [TeamMemberProfileCreate](../entities/types_team_TeamMemberProfileCreate.md) | Class | 87 | — | — |
-| [TeamMemberProfileUpdate](../entities/types_team_TeamMemberProfileUpdate.md) | Class | 99 | — | — |
-| [TeamMember](../entities/types_team_TeamMember.md) | Class | 110 | — | — |
-| [TeamMemberOption](../entities/TeamMemberOption.md) | Class | 124 | — | — |
-| [TeamMemberCreate](../entities/types_team_TeamMemberCreate.md) | Class | 133 | — | — |
-| [MemberWorkload](../entities/types_team_MemberWorkload.md) | Class | 143 | — | — |
-| [MemberCapacity](../entities/types_team_MemberCapacity.md) | Class | 154 | — | Detailed capacity breakdown from GET /team-members/{id}/capacity. |
-| [AssigneeRecommendation](../entities/AssigneeRecommendation.md) | Class | 164 | — | — |
-| [TeamMemberProfileSkillUpdate](../entities/types_team_TeamMemberProfileSkillUpdate.md) | Type alias | 50 | — | — |
-| [TeamMemberProfileKind](../entities/TeamMemberProfileKind.md) | Type alias | 52 | — | — |
-| [TeamMemberAssignmentMode](../entities/TeamMemberAssignmentMode.md) | Type alias | 54 | — | — |
+| [Vacation](../entities/types_team_Vacation.md) | Interface | 1 | — | — |
+| [VacationCreate](../entities/types_team_VacationCreate.md) | Interface | 7 | — | — |
+| [VacationImportError](../entities/types_team_VacationImportError.md) | Interface | 12 | — | — |
+| [VacationImportResponse](../entities/types_team_VacationImportResponse.md) | Interface | 17 | — | — |
+| [TeamMemberProfileSkill](../entities/types_team_TeamMemberProfileSkill.md) | Interface | 24 | — | — |
+| [TeamMemberProfileSkillCreate](../entities/types_team_TeamMemberProfileSkillCreate.md) | Interface | 39 | — | — |
+| [TeamMemberProfile](../entities/types_team_TeamMemberProfile.md) | Interface | 60 | — | — |
+| [TeamMemberProfileCompact](../entities/types_team_TeamMemberProfileCompact.md) | Interface | 76 | — | — |
+| [TeamMemberProfileCreate](../entities/types_team_TeamMemberProfileCreate.md) | Interface | 87 | — | — |
+| [TeamMemberProfileUpdate](../entities/types_team_TeamMemberProfileUpdate.md) | Interface | 99 | — | — |
+| [TeamMember](../entities/types_team_TeamMember.md) | Interface | 110 | — | — |
+| [TeamMemberOption](../entities/TeamMemberOption.md) | Interface | 124 | — | — |
+| [TeamMemberCreate](../entities/types_team_TeamMemberCreate.md) | Interface | 133 | — | — |
+| [MemberWorkload](../entities/types_team_MemberWorkload.md) | Interface | 143 | — | — |
+| [MemberCapacity](../entities/types_team_MemberCapacity.md) | Interface | 154 | — | Detailed capacity breakdown from GET /team-members/{id}/capacity. |
+| [AssigneeRecommendation](../entities/AssigneeRecommendation.md) | Interface | 164 | — | — |
+| [TeamMemberProfileSkillUpdate](../entities/types_team_TeamMemberProfileSkillUpdate.md) | Type alias | 50 | `Partial<TeamMemberProfileSkillCreate>` | — |
+| [TeamMemberProfileKind](../entities/TeamMemberProfileKind.md) | Type alias | 52 | `'human' \| 'agent' \| 'hybrid'` | — |
+| [TeamMemberAssignmentMode](../entities/TeamMemberAssignmentMode.md) | Type alias | 54 | <pre><code>&#124; &#39;ownership&#39;&#10;    &#124; &#39;execution&#39;&#10;    &#124; &#39;verification&#39;&#10;    &#124; &#39;design&#95;handoff&#39;</code></pre> | — |

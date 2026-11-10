@@ -23,7 +23,7 @@ _Auto-generated from `ContractSourceInput` in `backend/app/autonomy/contracts/po
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

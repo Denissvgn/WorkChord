@@ -24,7 +24,7 @@ _Auto-generated from `_MutationResult` in `backend/app/services/agent_model_cata
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

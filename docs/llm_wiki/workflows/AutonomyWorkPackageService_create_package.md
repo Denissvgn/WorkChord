@@ -11,11 +11,12 @@
 3. `agent_service.AgentConflictError`
 4. `agent_service.AgentConflictError`
 5. `commands.command_transaction`
-6. `task_service.TaskService`
-7. `autonomy_canonical.sha256_hex`
-8. `models_autonomy.AgentWorkPackage`
-9. `models_autonomy.AgentVerificationRequirement`
-10. `commands.commit_or_flush`
+6. `task_service.TaskService._lock_task_scope`
+7. `task_service.TaskService`
+8. `autonomy_canonical.sha256_hex`
+9. `models_autonomy.AgentWorkPackage`
+10. `models_autonomy.AgentVerificationRequirement`
+11. `commands.commit_or_flush`
 
 ## Touches
 

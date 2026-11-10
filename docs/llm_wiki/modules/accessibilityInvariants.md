@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/test/accessibilityInvariants.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `@testing-library/dom` | `getRoles` |
-| `dom-accessibility-api` | `computeAccessibleName` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `@testing-library/dom` | `getRoles` | — | compiler-dependent |
+| `dom-accessibility-api` | `computeAccessibleName` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -56,7 +56,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AccessibleNameViolation](../entities/AccessibleNameViolation.md) | Class | 16 | — | — |
+| [AccessibleNameViolation](../entities/AccessibleNameViolation.md) | Interface | 16 | — | — |
 
 ## Functions
 

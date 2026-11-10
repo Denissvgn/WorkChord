@@ -17,7 +17,7 @@ Request for task formalization via LLM.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

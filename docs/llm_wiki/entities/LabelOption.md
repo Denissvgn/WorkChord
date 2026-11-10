@@ -4,6 +4,13 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [LabelSelector](../modules/LabelSelector.md)
+**Target:**
+
+```typescript
+Label & {
+    groupName: string;
+}
+```
 
 ## Description
 
@@ -11,11 +18,11 @@ _Auto-generated from `LabelOption` in `frontend/src/components/labels/LabelSelec
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

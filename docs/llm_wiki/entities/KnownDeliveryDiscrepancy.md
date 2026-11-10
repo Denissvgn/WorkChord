@@ -15,7 +15,7 @@ Only the specific observed behavior may satisfy an expected failure.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

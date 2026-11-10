@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/agent/RoutingCandidateComparison.t
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../test/fixtures/modelAwareRouting` | `eligibleRoutingCandidate`, `modelAwareRoutingPreview`, `modelAwareRoutingRoster` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./RoutingCandidateComparison` | `RoutingCandidateComparison` |
-| `@testing-library/react` | `screen` |
-| `vitest` | `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../test/fixtures/modelAwareRouting` | `eligibleRoutingCandidate`, `modelAwareRoutingPreview`, `modelAwareRoutingRoster` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./RoutingCandidateComparison` | `RoutingCandidateComparison` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -38,6 +38,7 @@ flowchart LR
     n0 --> n2
     n0 --> n3
     n0 --> n4
+    n4 --> n2
     click n0 "../modules/RoutingCandidateComparison.test.md"
     click n1 "../modules/RoutingCandidateComparison.md"
     click n2 "../modules/i18n.md"

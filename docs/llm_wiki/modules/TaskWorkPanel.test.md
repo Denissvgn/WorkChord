@@ -8,14 +8,14 @@ _Auto-generated from `frontend/src/components/tasks/TaskWorkPanel.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `../../types/task` | `Task` |
-| `./TaskWorkPanel` | `TaskWorkPanel` |
-| `./taskEditorContract` | `emptyTaskBrief` |
-| `@testing-library/react` | `screen`, `waitFor` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../../types/task` | `Task` | Declaration | erased |
+| `./TaskWorkPanel` | `TaskWorkPanel` | — | compiler-dependent |
+| `./taskEditorContract` | `emptyTaskBrief` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -27,6 +27,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskWorkPanel.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/taskEditorContract.ts"]

@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/layout/AppTopNav.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./AppTopNav` | `AppTopNav` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `vitest` | `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./AppTopNav` | `AppTopNav` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

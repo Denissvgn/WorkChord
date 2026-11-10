@@ -8,72 +8,122 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as _parser().parse_args
+    participant p1 as _main
     participant p2 as _parser
-    participant p3 as argparse.ArgumentParser
-    participant p4 as parser.add_argument
-    participant p5 as _main
-    participant p6 as read_json_object
-    participant p7 as json.loads
-    participant p8 as path.read_text
-    participant p9 as QualificationInputError
-    participant p10 as isinstance (scripts/load/common.py:read_json_object)
-    participant p11 as verify_document
-    participant p12 as document.get
-    participant p13 as isinstance (scripts/load/common.py:verify_document)
-    participant p14 as len (scripts/load/common.py:verify_document)
-    participant p15 as dict (scripts/load/common.py:verify_document)
-    participant p16 as payload.pop
-    participant p17 as sha256_bytes
-    participant p18 as hashlib.sha256(…).hexdigest
-    participant p19 as hashlib.sha256
-    participant p20 as canonical_json_bytes (scripts/load/common.py)
-    participant p21 as json.dumps(…).encode (scripts/load/common.py:canonical_json_bytes)
-    participant p22 as json.dumps (scripts/load/common.py:canonical_json_bytes)
-    participant p23 as validate_result
-    p0-->>p1: _parser().parse_args
+    participant p3 as read_json_object
+    participant p4 as validate_result
+    participant p5 as atomic_write_json
+    participant p6 as _measurement_deltas
+    participant p7 as seal_document
+    participant p8 as contract_member_json
+    participant p9 as verify_document
+    participant p10 as contract_bundle
+    participant p11 as load_postgresql_contract_bundle
+    participant p12 as QualificationInputError
+    participant p13 as utc_now_text
+    participant p14 as _delta
+    participant p15 as sha256_bytes
+    participant p16 as canonical_json_bytes (scripts/load/common.py)
+    participant p17 as ContractBundleError
+    participant p18 as canonical_json_bytes (backend/app/autonomy/canonical.py)
+    participant p19 as sha256_hex
+    participant p20 as _validate_machine_semantics
+    participant p21 as PostgreSQLContractBundle
+    participant p22 as print (scripts/load/compare.py:main)
+    participant p23 as _parser().parse_args
+    participant p24 as argparse.ArgumentParser
+    participant p25 as parser.add_argument
+    participant p26 as sorted (scripts/load/compare.py:_main)
+    participant p27 as set (scripts/load/compare.py:_main)
+    p0->>p1: _main
     p0->>p2: _parser
-    p2-->>p3: argparse.ArgumentParser
-    p2-->>p4: parser.add_argument
-    p2-->>p4: parser.add_argument
-    p2-->>p4: parser.add_argument
-    p2-->>p4: parser.add_argument
-    p0->>p5: _main
-    p5->>p6: read_json_object
-    p6-->>p7: json.loads
-    p6-->>p8: path.read_text
-    p6->>p9: QualificationInputError
-    p6-->>p10: isinstance (scripts/load/common.py:read_json_object)
-    p6->>p9: QualificationInputError
-    p6->>p11: verify_document
-    p11-->>p12: document.get
-    p11-->>p13: isinstance (scripts/load/common.py:verify_document)
-    p11-->>p14: len (scripts/load/common.py:verify_document)
-    p11->>p9: QualificationInputError
-    p11-->>p15: dict (scripts/load/common.py:verify_document)
-    p11-->>p16: payload.pop
-    p11->>p17: sha256_bytes
-    p17-->>p18: hashlib.sha256(…).hexdigest
-    p17-->>p19: hashlib.sha256
-    p11->>p20: canonical_json_bytes (scripts/load/common.py)
-    p20-->>p21: json.dumps(…).encode (scripts/load/common.py:canonical_json_bytes)
-    p20-->>p22: json.dumps (scripts/load/common.py:canonical_json_bytes)
-    p11->>p9: QualificationInputError
-    p5->>p6: read_json_object
-    p5->>p23: validate_result
+    p1->>p3: read_json_object
+    p1->>p4: validate_result
+    p1->>p5: atomic_write_json
+    p1->>p6: _measurement_deltas
+    p5->>p7: seal_document
+    p4->>p8: contract_member_json
+    p3->>p9: verify_document
+    p8->>p10: contract_bundle
+    p10->>p11: load_postgresql_contract_bundle
+    p1->>p12: QualificationInputError
+    p1->>p13: utc_now_text
+    p6->>p14: _delta
+    p7->>p15: sha256_bytes
+    p7->>p16: canonical_json_bytes (scripts/load/common.py)
+    p11->>p17: ContractBundleError
+    p11->>p18: canonical_json_bytes (backend/app/autonomy/canonical.py)
+    p11->>p19: sha256_hex
+    p11->>p20: _validate_machine_semantics
+    p11->>p21: PostgreSQLContractBundle
+    p0-->>p22: print (scripts/load/compare.py:main)(..., file=sys.stderr)
+    p0-->>p23: _parser().parse_args
+    p2-->>p24: argparse.ArgumentParser(description='Compare two sealed load results.')
+    p2-->>p25: parser.add_argument('--baseline', type=Path, required=True)
+    p2-->>p25: parser.add_argument('--tuned', type=Path, required=True)
+    p2-->>p25: parser.add_argument('--change', action='append', required=True)
+    p2-->>p25: parser.add_argument('--output', type=Path, required=True)
+    p1-->>p26: sorted (scripts/load/compare.py:_main)(...)
+    p1-->>p27: set (scripts/load/compare.py:_main)(baseline[...])
 ```
 
-> Call sequence diagram shows 30 of 134 interactions; 104 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 134 interactions; 104 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 39 (35 omitted); unresolved 5 of 48 (43 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `scripts/load/common.py:read_json_object` | 10 | - | external | 2 |
+| `scripts/load/common.py:read_json_object` | 10 | - | unresolved | 1 |
+| `scripts/load/common.py:read_json_object` | 10 | [scripts/load/common.py](../modules/load_common.md) | internal | 2 |
+| `scripts/load/common.py:verify_document` | 16 | - | unresolved | 2 |
+| `scripts/load/common.py:verify_document` | 16 | - | external | 3 |
+| `scripts/load/common.py:verify_document` | 16 | [scripts/load/common.py](../modules/load_common.md) | internal | 4 |
+| `scripts/load/common.py:sha256_bytes` | 23 | - | unresolved | 1 |
+| `scripts/load/common.py:sha256_bytes` | 23 | - | external | 1 |
+> Omission summary shows 8 of 34 groups; 26 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 48; effect analysis evaluated: 27, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
+
+Collector observations for 27 source steps with known totals: observed: 99, emitted: 99, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `_parser().parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_parser` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `_main` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `read_json_object` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `json.loads` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `path.read_text` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

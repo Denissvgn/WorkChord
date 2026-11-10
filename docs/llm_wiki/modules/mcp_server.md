@@ -17,6 +17,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
 | `app.database` | `async_session_maker`, `close_database`, `init_db` |
+| `app.http_authority` | `resolve_http_identity` |
 | `app.maintenance` | `MaintenanceModeError`, `enforce_mcp_access` |
 | `app.models.agent` | `AgentActor` |
 | `app.mutation_versions` | `MissingMutationRevision` |
@@ -37,6 +38,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `mcp.server.transport_security` | `TransportSecuritySettings` |
 | `os` | `os` |
 | `pydantic` | `ValidationError` |
+| `starlette.requests` | `Request` |
 | `starlette.responses` | `PlainTextResponse` |
 | `starlette.routing` | `Route` |
 | `starlette.types` | `ASGIApp`, `Receive`, `Scope`, `Send` |
@@ -62,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (7) |
-| Outbound | `backend` (15) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -70,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

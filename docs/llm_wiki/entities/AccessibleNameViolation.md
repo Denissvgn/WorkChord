@@ -1,7 +1,7 @@
 # AccessibleNameViolation
 
 **Location:** `frontend/src/test/accessibilityInvariants.ts:16`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [accessibilityInvariants](../modules/accessibilityInvariants.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `AccessibleNameViolation` in `frontend/src/test/accessibili
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

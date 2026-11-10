@@ -20,7 +20,7 @@ Minimum band/review requirements attached to one governed reason.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -15,7 +15,7 @@ Create an outbound webhook target.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -19,7 +19,7 @@ _Auto-generated from `RedactionClass` in `backend/app/autonomy/evidence.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

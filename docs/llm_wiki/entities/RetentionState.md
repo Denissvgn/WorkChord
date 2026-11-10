@@ -19,7 +19,7 @@ _Auto-generated from `RetentionState` in `backend/app/autonomy/handoff.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

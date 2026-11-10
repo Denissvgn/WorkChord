@@ -4,6 +4,19 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
+**Target:**
+
+```typescript
+{
+    id: number;
+    name: string;
+    position: string;
+    allocatedDays: number;
+    capacityDays: number;
+    utilizationPercent: number;
+    tone: PillTone;
+}
+```
 
 ## Description
 
@@ -11,11 +24,11 @@ _Auto-generated from `CapacityException` in `frontend/src/pages/OverviewPage.tsx
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

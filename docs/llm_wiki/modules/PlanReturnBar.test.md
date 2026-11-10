@@ -8,13 +8,13 @@ _Auto-generated from `frontend/src/components/planning/PlanReturnBar.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../i18n/i18n` | `i18n` |
-| `../../test/renderWithProviders` | `renderWithProviders` |
-| `./PlanReturnBar` | `PlanReturnBar` |
-| `@testing-library/react` | `screen` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `./PlanReturnBar` | `PlanReturnBar` | — | compiler-dependent |
+| `@testing-library/react` | `screen` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +34,7 @@ flowchart LR
     n0 --> n1
     n0 --> n2
     n0 --> n3
+    n3 --> n2
     click n0 "../modules/PlanReturnBar.test.md"
     click n1 "../modules/PlanReturnBar.md"
     click n2 "../modules/i18n.md"

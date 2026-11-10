@@ -23,7 +23,15 @@ Readiness and summary capacity use actual person calendar hours, short days, abs
 | `app.models.team_member` | `TeamMember` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_ITERATION_LIST_ITEMS`, `MAX_ITERATION_TREE_TASKS` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationProjectSummary`, `IterationResponse`, `IterationSeriesCreate`, `IterationSummary`, `IterationUpdate` |
+| `app.schemas.work_metrics` | `WorkMetricSummary` |
+| `app.services.bounded_scope_reads` | `scope_page` |
 | `app.services.calendar_service` | `CalendarService` |
+| `app.services.capacity_service` | `CapacityService`, `CapacityService` |
+| `app.services.snapshot_service` | `SnapshotService` |
+| `app.services.task_domain_service` | `nominal_day_hours`, `refresh_nominal_day_hours` |
+| `app.services.task_service` | `TaskService` |
+| `app.services.team_service` | `TeamService`, `TeamService` |
+| `app.services.work_metrics` | `aggregate_metrics`, `included_work_ids`, `working_today` |
 | `dataclasses` | `dataclass` |
 | `datetime` | `date`, `timedelta` |
 | `re` | `re` |
@@ -50,8 +58,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
-| Outbound | `backend` (8) |
+| Inbound | `backend` (17) |
+| Outbound | `backend` (16) |
 
 ### External packages
 
@@ -59,7 +67,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

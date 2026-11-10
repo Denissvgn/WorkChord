@@ -8,15 +8,15 @@ _Auto-generated from `frontend/src/pages/TasksPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `../types/task` | `Task` |
-| `./TasksPage` | `TasksPage` |
-| `@testing-library/react` | `screen`, `waitFor`, `within` |
-| `react` | `ReactNode` |
-| `react-router-dom` | `useLocation` |
-| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../types/task` | `Task` | Declaration | erased |
+| `./TasksPage` | `TasksPage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
+| `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -28,6 +28,8 @@ _Auto-generated from `frontend/src/pages/TasksPage.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/pages/TasksPage.test.tsx"]

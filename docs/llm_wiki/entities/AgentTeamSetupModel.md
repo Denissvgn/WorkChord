@@ -26,7 +26,7 @@ Strict base with JSON-schema metadata shared by setup contracts.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

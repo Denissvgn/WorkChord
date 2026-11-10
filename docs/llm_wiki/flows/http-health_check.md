@@ -6,36 +6,70 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as health_check
     participant p1 as maintenance_state
     participant p2 as get_settings
-    participant p3 as Settings
-    participant p4 as socket.gethostname
-    participant p5 as maintenance_configuration_fingerprint
-    participant p6 as json.dumps(…).encode
-    participant p7 as json.dumps
-    participant p8 as hashlib.sha256(…).hexdigest
-    participant p9 as hashlib.sha256
-    participant p10 as list
+    participant p3 as socket.gethostname
+    participant p4 as maintenance_configuration_fingerprint
+    participant p5 as list
+    participant p6 as Settings
+    participant p7 as json.dumps(…).encode
+    participant p8 as json.dumps
+    participant p9 as hashlib.sha256(…).hexdigest
+    participant p10 as hashlib.sha256
     p0->>p1: maintenance_state
     p1->>p2: get_settings
-    p2->>p3: Settings
-    p1-->>p4: socket.gethostname
-    p1->>p5: maintenance_configuration_fingerprint
-    p5->>p2: get_settings
-    p5-->>p6: json.dumps(…).encode
-    p5-->>p7: json.dumps
-    p5-->>p8: hashlib.sha256(…).hexdigest
-    p5-->>p9: hashlib.sha256
-    p1-->>p10: list
+    p1-->>p3: socket.gethostname
+    p1->>p4: maintenance_configuration_fingerprint
+    p1-->>p5: list(settings.maintenance_validation_allowlist)
+    p2->>p6: Settings
+    p4->>p2: get_settings
+    p4-->>p7: json.dumps(…).encode
+    p4-->>p8: json.dumps(payload, sort_keys=True, separators=(...))
+    p4-->>p9: hashlib.sha256(…).hexdigest
+    p4-->>p10: hashlib.sha256(encoded)
 ```
+
+> Call sequence diagram shows 11 of 11 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 4 of 4 (0 omitted); unresolved 2 of 2 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 6; effect analysis evaluated: 5, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 5 source steps with known totals: observed: 6, emitted: 6, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `health_check` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `maintenance_state` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `socket.gethostname` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `maintenance_configuration_fingerprint` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `json.dumps(…).encode` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `json.dumps` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `hashlib.sha256(…).hexdigest` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `hashlib.sha256` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `list` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. health_check"]

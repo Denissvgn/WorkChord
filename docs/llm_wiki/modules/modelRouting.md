@@ -8,9 +8,9 @@ _Auto-generated from `frontend/src/utils/modelRouting.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../types/agent` | `AgentCommandMetadata`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskReviewMode` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../types/agent` | `AgentCommandMetadata`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskReviewMode` | Declaration | erased |
 
 ## Module Signals
 
@@ -23,6 +23,8 @@ _Auto-generated from `frontend/src/utils/modelRouting.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/agent/RoutingCandidateComparison.tsx"]
@@ -63,7 +65,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [AssessmentReasonCode](../entities/modelRouting_AssessmentReasonCode.md) | Type alias | 25 | — | — |
+| [AssessmentReasonCode](../entities/modelRouting_AssessmentReasonCode.md) | Type alias | 25 | `typeof ASSESSMENT_REASON_CODES[number]` | — |
 
 ## Functions
 

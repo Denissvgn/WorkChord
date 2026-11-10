@@ -26,7 +26,7 @@ Compact project identity embedded in iteration responses.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanPage](../modules/PlanPage.md)
+**Target:**
+
+```typescript
+{
+    state: string;
+    summary?: string;
+    missing?: string[];
+}
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `LocalizedStepStatus` in `frontend/src/pages/PlanPage.tsx`.
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

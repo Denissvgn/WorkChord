@@ -21,7 +21,7 @@ Task dependency relationship (including cross-parent subtask dependencies).
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
@@ -100,4 +100,4 @@ flowchart LR
 | `project_service` | import | [project_service](../modules/project_service.md) | — |
 | `scheduler_service` | import | [scheduler_service](../modules/scheduler_service.md) | — |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

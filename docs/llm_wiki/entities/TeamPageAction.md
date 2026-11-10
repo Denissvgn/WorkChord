@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TeamPage](../modules/TeamPage.md)
+**Target:**
+
+```typescript
+'assign' | 'import'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `TeamPageAction` in `frontend/src/pages/TeamPage.tsx`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

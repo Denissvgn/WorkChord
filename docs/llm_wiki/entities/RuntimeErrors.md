@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)
+**Target:**
+
+```typescript
+Record<string, string>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `RuntimeErrors` in `frontend/src/components/settings/Runtim
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

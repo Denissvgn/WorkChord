@@ -8,14 +8,15 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningNavigatio
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/iterationService` | `iterationService` |
-| `../../store/iterationStore` | `useIterationStore` |
-| `../../types/iteration` | `Iteration` |
-| `./masters` | `deriveStatus`, `readiness`, `PlanReadiness` |
-| `@tanstack/react-query` | `useQuery` |
-| `react` | `useMemo` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `./masters` | `PlanReadiness` | Declaration | erased |
+| `./masters` | `deriveStatus`, `readiness` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `react` | `useMemo` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -26,6 +27,8 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningNavigatio
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/layout/AppTopNav.tsx"]
@@ -85,5 +88,5 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `planningNavigationSummaryKey` | `(iterationId: number)` | — | — |
+| `planningNavigationSummaryKey` | `(iterationId?: number)` | — | — |
 | `usePlanningNavigationSummary` | `()` | — | — |

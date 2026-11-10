@@ -22,7 +22,7 @@ _Auto-generated from `LegacySnapshotImport` in `backend/app/models/recovery.py`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

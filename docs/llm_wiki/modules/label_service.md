@@ -35,12 +35,14 @@ flowchart LR
     n5["backend/app/services/agent_routing_policy.py"]
     n6["backend/app/services/label_service.py"]
     n7["backend/app/services/language_service.py"]
-    n8["backend/app/services/upgrade_service.py"]
-    n9["backend/app/sql_semantics.py"]
-    n10["backend/tests/test_agent_routing_contract.py"]
+    n8["backend/app/services/saved_view_service.py"]
+    n9["backend/app/services/upgrade_service.py"]
+    n10["backend/app/sql_semantics.py"]
+    n11["backend/tests/test_agent_routing_contract.py"]
     n1 --> n0
     n1 --> n4
     n1 --> n6
+    n1 --> n8
     n3 --> n4
     n3 --> n6
     n3 --> n7
@@ -49,11 +51,14 @@ flowchart LR
     n6 --> n4
     n6 --> n5
     n6 --> n7
-    n6 --> n9
+    n6 --> n10
     n8 --> n0
     n8 --> n6
-    n10 --> n5
-    n10 --> n6
+    n9 --> n0
+    n9 --> n6
+    n9 --> n8
+    n11 --> n5
+    n11 --> n6
     click n0 "../modules/commands.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/models_label.md"
@@ -62,9 +67,10 @@ flowchart LR
     click n5 "../modules/agent_routing_policy.md"
     click n6 "../modules/label_service.md"
     click n7 "../modules/language_service.md"
-    click n8 "../modules/upgrade_service.md"
-    click n9 "../modules/sql_semantics.md"
-    click n10 "../modules/test_agent_routing_contract.md"
+    click n8 "../modules/saved_view_service.md"
+    click n9 "../modules/upgrade_service.md"
+    click n10 "../modules/sql_semantics.md"
+    click n11 "../modules/test_agent_routing_contract.md"
 ```
 
 ### Internal neighbors
@@ -73,6 +79,7 @@ flowchart LR
 |---|---|
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [labels](../modules/labels.md) |
+| Inbound | [saved_view_service](../modules/saved_view_service.md) |
 | Inbound | [upgrade_service](../modules/upgrade_service.md) |
 | Inbound | [test_agent_routing_contract](../modules/test_agent_routing_contract.md) |
 | Outbound | [commands](../modules/commands.md) |

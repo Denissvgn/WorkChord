@@ -10,7 +10,8 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `mutation_versions.require_mutation_revision`
 2. `agent_service.AgentService`
-3. `schemas_agent.AgentTaskPatch`
+3. `agent_service.AgentService.patch_task`
+4. `schemas_agent.AgentTaskPatch`
 
 ## Touches
 

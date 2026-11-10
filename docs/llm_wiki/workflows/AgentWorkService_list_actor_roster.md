@@ -8,10 +8,12 @@
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `agent_team_setup_service.AgentTeamSetupService`
-2. `query_limits.CollectionLimitExceededError`
-3. `agent_model_catalog_service.AgentModelCatalogService`
-4. `schemas_agent.AgentActorRosterItem`
+1. `agent_team_setup_service.AgentTeamSetupService.membership_boundary`
+2. `agent_team_setup_service.AgentTeamSetupService`
+3. `query_limits.CollectionLimitExceededError`
+4. `agent_model_catalog_service.AgentModelCatalogService`
+5. `agent_model_catalog_service.AgentModelCatalogService.binding_response`
+6. `schemas_agent.AgentActorRosterItem`
 
 ## Touches
 

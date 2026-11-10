@@ -18,7 +18,7 @@ Cursor page of milestones used by the portfolio roadmap.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

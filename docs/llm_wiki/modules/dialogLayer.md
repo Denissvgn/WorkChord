@@ -8,9 +8,10 @@ _Auto-generated from `frontend/src/components/common/dialogLayer.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `react` | `useCallback`, `useEffect`, `useRef`, `RefObject` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `react` | `RefObject` | Declaration | erased |
+| `react` | `useCallback`, `useEffect`, `useRef` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -60,10 +61,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DialogLayerOptions](../entities/DialogLayerOptions.md) | Class | 57 | — | — |
+| [DialogLayerOptions](../entities/DialogLayerOptions.md) | Interface | 57 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `useDialogLayer` | `({     open,     onClose,     initialFocusRef,     restoreFocusRef,     closeDisabled = false, }: DialogLayerOptions)` | — | Share modal-layer behavior without coupling a dialog to a visual layout. |
+| `useDialogLayer` | <pre><code>&#60;T extends HTMLElement&#62;&#40;&#123;&#10;    open&#44;&#10;    onClose&#44;&#10;    initialFocusRef&#44;&#10;    restoreFocusRef&#44;&#10;    closeDisabled &#61; false&#44;&#10;&#125;&#58; DialogLayerOptions&#41;</code></pre> | — | Share modal-layer behavior without coupling a dialog to a visual layout. |

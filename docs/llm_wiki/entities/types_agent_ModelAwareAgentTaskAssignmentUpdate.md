@@ -1,7 +1,7 @@
 # ModelAwareAgentTaskAssignmentUpdate
 
 **Location:** `frontend/src/types/agent.ts:518`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
 
@@ -28,7 +28,7 @@ _Auto-generated from `ModelAwareAgentTaskAssignmentUpdate` in `frontend/src/type
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

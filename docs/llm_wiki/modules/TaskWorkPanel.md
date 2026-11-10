@@ -8,22 +8,23 @@ Commit and uncommit commands retain original source and selected-target aggregat
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../features/usePlanningObservation` | `usePlanningObservation` |
-| `../../services/iterationService` | `iterationService` |
-| `../../services/planningInputService` | `ObservedRevisions`, `planningInputService` |
-| `../../services/taskService` | `taskService` |
-| `../../types/iteration` | `Iteration` |
-| `../../types/task` | `CriterionProgress`, `Task` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/Input` | `Input` |
-| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` |
-| `./useDraftDismissal` | `useActiveMount` |
-| `@tanstack/react-query` | `useMutation`, `useQuery` |
-| `react` | `useEffect`, `useId`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
+| `../../services/iterationService` | `iterationService` | — | compiler-dependent |
+| `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
+| `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/iteration` | `Iteration` | Declaration | erased |
+| `../../types/task` | `CriterionProgress`, `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Input` | `Input` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery` | — | compiler-dependent |
+| `react` | `useEffect`, `useId`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +35,8 @@ Commit and uncommit commands retain original source and selected-target aggregat
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -64,4 +67,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskWorkPanel` | `({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload }: {     task: Task; disabled: boolean; draftKey: string \| null; onDirty: (dirty: boolean) => void;     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void; })` | — | — |
+| `TaskWorkPanel` | <pre><code>&#40;&#123; task&#44; disabled&#44; draftKey&#44; onDirty&#44; onPending&#44; onUpdated&#44; onReload &#125;&#58; &#123;&#10;    task&#58; Task&#59; disabled&#58; boolean&#59; draftKey&#58; string &#124; null&#59; onDirty&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onPending&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void&#59; onUpdated&#58; &#40;task&#58; Task&#41; &#61;&#62; void&#59; onReload&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |

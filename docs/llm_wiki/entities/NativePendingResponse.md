@@ -17,7 +17,7 @@ _Auto-generated from `NativePendingResponse` in `backend/app/routers/identity.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

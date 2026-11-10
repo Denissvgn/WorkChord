@@ -1,7 +1,7 @@
 # ConvertTriageModalProps
 
 **Location:** `frontend/src/pages/TriagePage.tsx:704`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `ConvertTriageModalProps` in `frontend/src/pages/TriagePage
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -10,18 +10,18 @@ _Auto-generated from `frontend/src/components/tasks/TaskTextEditorModal.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/taskService` | `taskService` |
-| `../../types/task` | `TaskTextContext` |
-| `../../utils/apiError` | `getApiErrorMessage`, `normalizeApiError` |
-| `../common/Button` | `Button` |
-| `../common/Modal` | `Modal` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `Save`, `FileText`, `AlertCircle`, `CheckCircle`, `Loader2`, `Maximize2`, `Minimize2` |
-| `react` | `useRef`, `useState` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/task` | `TaskTextContext` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage`, `normalizeApiError` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Modal` | `Modal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Save`, `FileText`, `AlertCircle`, `CheckCircle`, `Loader2`, `Maximize2`, `Minimize2` | — | compiler-dependent |
+| `react` | `useRef`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -32,6 +32,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskTextEditorModal.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -83,8 +85,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskTextEditorModalProps](../entities/TaskTextEditorModalProps.md) | Class | 12 | — | — |
-| [TaskTextEditorBodyProps](../entities/TaskTextEditorBodyProps.md) | Class | 39 | `TaskTextEditorModalProps` | — |
+| [TaskTextEditorModalProps](../entities/TaskTextEditorModalProps.md) | Interface | 12 | — | — |
+| [TaskTextEditorBodyProps](../entities/TaskTextEditorBodyProps.md) | Interface | 39 | `TaskTextEditorModalProps` | — |
 
 ## Functions
 

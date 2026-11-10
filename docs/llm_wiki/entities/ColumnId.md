@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)
+**Target:**
+
+```typescript
+'planned-unassigned' | 'planned-assigned' | 'active' | 'resolved' | 'closed'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `ColumnId` in `frontend/src/components/tasks/KanbanBoard/Ka
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [identityContext](../modules/identityContext.md)
+**Target:**
+
+```typescript
+{ identity: WorkspaceIdentity | undefined; refresh: () => void; signOut: () => Promise<void> }
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `IdentityContextValue` in `frontend/src/features/identity/i
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

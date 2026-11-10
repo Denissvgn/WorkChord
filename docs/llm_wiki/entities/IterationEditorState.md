@@ -4,6 +4,12 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectIterationsSection](../modules/ProjectIterationsSection.md)
+**Target:**
+
+```typescript
+| { mode: 'create'; iteration: null }
+    | { mode: 'edit'; iteration: Iteration }
+```
 
 ## Description
 
@@ -11,11 +17,11 @@ _Auto-generated from `IterationEditorState` in `frontend/src/components/projects
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # Props
 
 **Location:** `frontend/src/components/settings/SchedulingPassCard.tsx:12`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [SchedulingPassCard](../modules/SchedulingPassCard.md)
 
@@ -20,7 +20,7 @@ _Auto-generated from `Props` in `frontend/src/components/settings/SchedulingPass
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -4,6 +4,23 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
+**Target:**
+
+```typescript
+| 'set_assignee'
+    | 'clear_assignee'
+    | 'auto_assign'
+    | 'set_project'
+    | 'clear_project'
+    | 'set_milestone'
+    | 'clear_milestone'
+    | 'set_priority'
+    | 'add_labels'
+    | 'remove_labels'
+    | 'set_flags'
+    | 'change_status'
+    | 'delete'
+```
 
 ## Description
 
@@ -11,11 +28,11 @@ _Auto-generated from `TaskBulkAction` in `frontend/src/types/task.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

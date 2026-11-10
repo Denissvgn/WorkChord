@@ -1,7 +1,7 @@
 # TaskTimelinePanelProps
 
 **Location:** `frontend/src/components/tasks/TaskTimelinePanel.tsx:17`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskTimelinePanel](../modules/TaskTimelinePanel.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `TaskTimelinePanelProps` in `frontend/src/components/tasks/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

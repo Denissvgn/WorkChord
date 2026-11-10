@@ -1,7 +1,7 @@
 # TaskEditorValues
 
 **Location:** `frontend/src/components/tasks/taskEditorContract.ts:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)
 
@@ -40,7 +40,7 @@ _Auto-generated from `TaskEditorValues` in `frontend/src/components/tasks/taskEd
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

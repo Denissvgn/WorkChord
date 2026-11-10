@@ -4,6 +4,17 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [attentionRanking](../modules/attentionRanking.md)
+**Target:**
+
+```typescript
+{
+    id: string;
+    kind: AttentionKind;
+    severity: AttentionSeverity;
+    urgency: number;
+    magnitude: number;
+}
+```
 
 ## Description
 
@@ -11,11 +22,11 @@ _Auto-generated from `RankableAttention` in `frontend/src/features/overview/atte
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

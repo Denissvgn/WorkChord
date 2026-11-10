@@ -1,7 +1,7 @@
 # TaskFormProps
 
 **Location:** `frontend/src/components/tasks/TaskForm.tsx:56`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskForm](../modules/TaskForm.md)
 
@@ -30,7 +30,7 @@ _Auto-generated from `TaskFormProps` in `frontend/src/components/tasks/TaskForm.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

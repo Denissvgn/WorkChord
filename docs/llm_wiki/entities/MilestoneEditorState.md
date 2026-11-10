@@ -4,6 +4,16 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)
+**Target:**
+
+```typescript
+{
+    mode: 'create' | 'edit';
+    milestone: ProjectMilestone | null;
+    form: MilestoneFormState;
+    error: string | null;
+}
+```
 
 ## Description
 
@@ -11,11 +21,11 @@ _Auto-generated from `MilestoneEditorState` in `frontend/src/pages/ProjectDetail
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

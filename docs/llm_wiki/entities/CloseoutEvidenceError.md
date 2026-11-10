@@ -15,7 +15,7 @@ A post-cutover publication or closure input is incomplete or unsafe.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

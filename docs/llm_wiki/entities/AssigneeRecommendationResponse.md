@@ -26,7 +26,7 @@ Explainable candidate score for assigning a task or triage item.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

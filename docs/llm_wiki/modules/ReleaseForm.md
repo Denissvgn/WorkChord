@@ -8,22 +8,23 @@ _Auto-generated from `frontend/src/components/releases/ReleaseForm.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../services/projectService` | `projectService` |
-| `../../services/releaseService` | `releaseService` |
-| `../../types/release` | `Release`, `ReleaseCreateRequest`, `ReleaseStatus`, `ReleaseUpdateRequest` |
-| `../../types/task` | `Task` |
-| `../../utils/apiError` | `getApiErrorMessage` |
-| `../common/Button` | `Button` |
-| `../common/CollapsibleSection` | `CollapsibleSection` |
-| `../feedback/QueryState` | `QueryErrorState` |
-| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `clsx` | `clsx` |
-| `lucide-react` | `Save` |
-| `react` | `useMemo`, `useState`, `FormEvent` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/releaseService` | `releaseService` | — | compiler-dependent |
+| `../../types/release` | `Release`, `ReleaseCreateRequest`, `ReleaseStatus`, `ReleaseUpdateRequest` | Declaration | erased |
+| `../../types/task` | `Task` | Declaration | erased |
+| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../ui/tone` | `pillToneClassName`, `STATUS_TONE` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
+| `lucide-react` | `Save` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -35,6 +36,8 @@ _Auto-generated from `frontend/src/components/releases/ReleaseForm.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
@@ -120,12 +123,12 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Class | 22 | — | — |
-| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 29 | — | — |
-| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 34 | — | — |
+| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 22 | — | — |
+| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 29 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 34 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ReleaseForm` | `({     projectId,     initialData,     onSuccess,     onCancel, }: ReleaseFormProps)` | — | — |
+| `ReleaseForm` | <pre><code>&#40;&#123;&#10;    projectId&#44;&#10;    initialData&#44;&#10;    onSuccess&#44;&#10;    onCancel&#44;&#10;&#125;&#58; ReleaseFormProps&#41;</code></pre> | — | — |

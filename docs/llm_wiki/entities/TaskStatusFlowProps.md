@@ -1,7 +1,7 @@
 # TaskStatusFlowProps
 
 **Location:** `frontend/src/components/analytics/TaskStatusFlow.tsx:9`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskStatusFlow](../modules/TaskStatusFlow.md)
 
@@ -17,7 +17,7 @@ _Auto-generated from `TaskStatusFlowProps` in `frontend/src/components/analytics
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -25,7 +25,7 @@ Task progress metrics grouped under one milestone or unassigned work.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

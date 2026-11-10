@@ -25,7 +25,7 @@ Base class shared by immutable, extra-forbidden contracts.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

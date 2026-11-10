@@ -18,7 +18,7 @@ _Auto-generated from `SignedActionLease` in `backend/app/autonomy/leases.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

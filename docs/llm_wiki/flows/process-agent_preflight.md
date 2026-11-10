@@ -8,67 +8,123 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
     participant p0 as main
-    participant p1 as parse_args
-    participant p2 as argparse.ArgumentParser
-    participant p3 as parser.add_argument
-    participant p4 as parser.parse_args
-    participant p5 as load_postgresql_contract_bundle
-    participant p6 as resources.files
-    participant p7 as package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…ostgresql_contract_bundle)
-    participant p8 as package_root.joinpath
+    participant p1 as load_postgresql_contract_bundle
+    participant p2 as evaluate_agent_preflight
+    participant p3 as _release_fingerprint
+    participant p4 as parse_args
+    participant p5 as canonical_json_bytes
+    participant p6 as sha256_hex
+    participant p7 as _validate_machine_semantics
+    participant p8 as _json_value
     participant p9 as ContractBundleError
-    participant p10 as PostgreSQLContractManifest.model_validate_json
-    participant p11 as canonical_json_bytes
-    participant p12 as json.dumps(…).encode
-    participant p13 as json.dumps (backend/app/autonomy/cano…l.py:canonical_json_bytes)
-    participant p14 as _json_value
-    participant p15 as isinstance (backend/app/autonomy/canonical.py:_json_value)
-    participant p16 as value.model_dump
-    participant p17 as value.isoformat
-    participant p18 as str
-    participant p19 as value.items
-    participant p20 as package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…gresql_contract_bundle, 1)
-    p0->>p1: parse_args
-    p1-->>p2: argparse.ArgumentParser
-    p1-->>p3: parser.add_argument
-    p1-->>p4: parser.parse_args
-    p0->>p5: load_postgresql_contract_bundle
-    p5-->>p6: resources.files
-    p5-->>p7: package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…ostgresql_contract_bundle)
-    p5-->>p8: package_root.joinpath
-    p5->>p9: ContractBundleError
-    p5-->>p10: PostgreSQLContractManifest.model_validate_json
-    p5->>p9: ContractBundleError
-    p5->>p11: canonical_json_bytes
-    p11-->>p12: json.dumps(…).encode
-    p11-->>p13: json.dumps (backend/app/autonomy/cano…l.py:canonical_json_bytes)
-    p11->>p14: _json_value
-    p14-->>p15: isinstance (backend/app/autonomy/canonical.py:_json_value)
-    p14-->>p16: value.model_dump
-    p14-->>p15: isinstance (backend/app/autonomy/canonical.py:_json_value)
-    p14-->>p15: isinstance (backend/app/autonomy/canonical.py:_json_value)
-    p14-->>p17: value.isoformat
-    p14-->>p15: isinstance (backend/app/autonomy/canonical.py:_json_value)
-    p14-->>p18: str
-    p14->>p14: _json_value
-    p14-->>p19: value.items
-    p14-->>p15: isinstance (backend/app/autonomy/canonical.py:_json_value)
-    p14-->>p15: isinstance (backend/app/autonomy/canonical.py:_json_value)
-    p14->>p14: _json_value
-    p5-->>p20: package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…gresql_contract_bundle, 1)
-    p5-->>p8: package_root.joinpath
-    p5->>p9: ContractBundleError
+    participant p10 as PreflightPredicateResult
+    participant p11 as AgentPreflightReport
+    participant p12 as PostgreSQLContractBundle
+    participant p13 as json.dumps (backend/app/cli/agent_preflight.py:main)
+    participant p14 as report.model_dump
+    participant p15 as args.output.write_text
+    participant p16 as print
+    participant p17 as argparse.ArgumentParser
+    participant p18 as resources.files
+    participant p19 as datetime.now
+    participant p20 as subprocess.run(…).stdout.strip
+    participant p21 as parser.add_argument
+    participant p22 as package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…ostgresql_contract_bundle)
+    participant p23 as now.utcoffset
+    participant p24 as subprocess.run
+    participant p25 as parser.parse_args
+    participant p26 as package_root.joinpath
+    participant p27 as ValueError
+    participant p28 as len (backend/app/cli/agent_pre…t.py:_release_fingerprint)
+    participant p29 as all (backend/app/cli/agent_pre…t.py:_release_fingerprint)
+    p0->>p1: load_postgresql_contract_bundle
+    p0->>p2: evaluate_agent_preflight
+    p0->>p3: _release_fingerprint
+    p0->>p4: parse_args
+    p1->>p5: canonical_json_bytes
+    p1->>p6: sha256_hex
+    p1->>p7: _validate_machine_semantics
+    p5->>p8: _json_value
+    p1->>p9: ContractBundleError
+    p2->>p10: PreflightPredicateResult
+    p2->>p11: AgentPreflightReport
+    p1->>p12: PostgreSQLContractBundle
+    p0-->>p13: json.dumps (backend/app/cli/agent_preflight.py:main)(payload, indent=2, sort_keys=True)
+    p0-->>p14: report.model_dump(mode='json')
+    p0-->>p15: args.output.write_text(rendered, encoding='utf-8')
+    p0-->>p16: print(rendered, end='')
+    p4-->>p17: argparse.ArgumentParser(…)
+    p1-->>p18: resources.files(__package__)
+    p2-->>p19: datetime.now(UTC)
+    p3-->>p20: subprocess.run(…).stdout.strip
+    p4-->>p21: parser.add_argument('--output', type=Path, help='Optional path for the unsigned diagnostic JSON.')
+    p1-->>p22: package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…ostgresql_contract_bundle)
+    p2-->>p23: now.utcoffset
+    p3-->>p24: subprocess.run([...], check=True, capture_output=True, text=True, timeout=5)
+    p4-->>p25: parser.parse_args(argv)
+    p1-->>p26: package_root.joinpath('contract-manifest-v1.json')
+    p2-->>p27: ValueError('Preflight clock must be timezone-aware')
+    p3-->>p28: len (backend/app/cli/agent_pre…t.py:_release_fingerprint)(value)
+    p2-->>p27: ValueError('Preflight predicate has duplicate evidence')
+    p3-->>p29: all (backend/app/cli/agent_pre…t.py:_release_fingerprint)(...)
 ```
 
-> Call sequence diagram shows 30 of 153 interactions; 123 omitted to keep the visualization within the 30-interaction and generated-diagram limits.
+> Call sequence diagram shows 30 of 153 interactions; 123 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 10 of 70 (60 omitted); unresolved 8 of 42 (34 omitted). These counts cover the captured static trace.
+
+Omitted captured detail, grouped by actual caller occurrence and target module:
+
+| Caller | Parent step | Target module | Kind | Omitted interactions |
+| --- | --- | --- | --- | --- |
+| `backend/app/autonomy/contracts/postgresql/loader.py:load_postgresql_contract_bundle` | 6 | - | unresolved | 6 |
+| `backend/app/autonomy/contracts/postgresql/loader.py:load_postgresql_contract_bundle` | 6 | [backend/app/autonomy/contracts/postgresql/loader.py](../modules/loader.md) | internal | 8 |
+| `backend/app/autonomy/canonical.py:canonical_json_bytes` | 13 | - | unresolved | 1 |
+| `backend/app/autonomy/canonical.py:canonical_json_bytes` | 13 | - | external | 1 |
+| `backend/app/autonomy/canonical.py:_json_value` | 16 | - | external | 7 |
+| `backend/app/autonomy/canonical.py:_json_value` | 16 | - | unresolved | 3 |
+| `backend/app/autonomy/canonical.py:_json_value` | 16 | [backend/app/autonomy/canonical.py](../modules/autonomy_canonical.md) | internal | 2 |
+| `backend/app/autonomy/contracts/postgresql/loader.py:load_postgresql_contract_bundle` | 6 | - | external | 3 |
+> Omission summary shows 8 of 19 groups; 11 further groups are not expanded here. Counts above include all omitted interactions.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 42; effect analysis evaluated: 15, partial: 1, unavailable: 26. Counts include steps omitted from the displayed trace.
+
+Collector observations for 16 source steps with known totals: observed: 92, emitted: 91, omitted: 1. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `main` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
+| `parse_args` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
+| `argparse.ArgumentParser` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.add_argument` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `parser.parse_args` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `load_postgresql_contract_bundle` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
+| `resources.files` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `package_root.joinpath(…).read_bytes (backend/app/autonomy/cont…ostgresql_contract_bundle)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `package_root.joinpath` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ContractBundleError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `PostgreSQLContractManifest.model_validate_json` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `ContractBundleError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. main"]

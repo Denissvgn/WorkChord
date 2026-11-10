@@ -25,7 +25,7 @@ Compact planning inputs used by persistent navigation.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

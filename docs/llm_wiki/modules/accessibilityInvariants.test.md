@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/test/accessibilityInvariants.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./accessibilityInvariants` | `accessibleNameViolations`, `summaryNameViolations` |
-| `vitest` | `describe`, `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./accessibilityInvariants` | `accessibleNameViolations`, `summaryNameViolations` | — | compiler-dependent |
+| `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

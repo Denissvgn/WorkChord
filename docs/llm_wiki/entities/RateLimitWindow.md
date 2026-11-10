@@ -20,7 +20,7 @@ _Auto-generated from `_RateLimitWindow` in `backend/app/services/web_intake_serv
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

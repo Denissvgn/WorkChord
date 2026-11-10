@@ -25,7 +25,7 @@ Types of changes that trigger incremental rescheduling.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

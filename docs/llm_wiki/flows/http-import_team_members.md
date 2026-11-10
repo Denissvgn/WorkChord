@@ -6,6 +6,8 @@
 
 ## Call sequence
 
+> Static overview in presentation order, not runtime execution order. Arrows retain captured callers; representative internal continuations and boundary examples precede repeated helper detail.
+
 <!-- Auto-generated from static call edges. Dashed arrows are external or unresolved calls. Reviewed runtime conditions and side effects belong in Behavior. -->
 ```mermaid
 sequenceDiagram
@@ -17,18 +19,46 @@ sequenceDiagram
     participant p5 as len
     participant p6 as HTTPException
     participant p7 as str
-    p0-->>p1: service.import_members
-    p0-->>p2: service.get_by_id
-    p0-->>p3: full_members.append
+    p0-->>p1: service.import_members(iteration_id, data.text, expected_revisions=...)
+    p0-->>p2: service.get_by_id(member.id)
+    p0-->>p3: full_members.append(full_member)
     p0->>p4: TeamImportResponse
-    p0-->>p5: len
-    p0-->>p6: HTTPException
-    p0-->>p7: str
+    p0-->>p5: len(full_members)
+    p0-->>p6: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p7: str(e)
 ```
+
+> Call sequence diagram shows 7 of 7 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+
+> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
 
 <!-- Auto-generated static analysis. Treat values and boundaries as best-effort hints, not runtime proof. -->
+
+### Analysis coverage
+
+**Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
+
+Source steps: 2; effect analysis evaluated: 1, partial: 0, unavailable: 1. Counts include steps omitted from the displayed trace.
+
+Collector observations for 1 source steps with known totals: observed: 6, emitted: 6, omitted: 0. Unavailable totals are excluded.
+
+- Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector totals unavailable; observed counts cover captured records only.
+
+| Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
+|---|---|---|---|---:|---:|---:|
+| `import_team_members` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `service.import_members` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `service.get_by_id` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `full_members.append` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `TeamImportResponse` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
+| `len` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `HTTPException` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `str` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+
 ```mermaid
 flowchart LR
     s1["1. import_team_members"]

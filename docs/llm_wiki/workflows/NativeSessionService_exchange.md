@@ -16,7 +16,8 @@
 8. `time.utc_now`
 9. `time.utc_now`
 10. `authority.AuthorityError`
-11. `identity_service.IdentityService`
+11. `identity_service.IdentityService.issue_session`
+12. `identity_service.IdentityService`
 
 ## Touches
 

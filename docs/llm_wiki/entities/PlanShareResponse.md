@@ -31,7 +31,7 @@ A revocable plan snapshot link and its immutable captured data.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -39,6 +39,7 @@ flowchart LR
     n6["backend/app/utils/time.py"]
     n7["backend/tests/test_agent_team_catalog.py"]
     n1 --> n6
+    n4 --> n0
     n4 --> n2
     n5 --> n0
     n5 --> n1

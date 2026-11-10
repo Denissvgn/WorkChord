@@ -1,7 +1,7 @@
 # ProjectFormProps
 
 **Location:** `frontend/src/components/projects/ProjectForm.tsx:26`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [ProjectForm](../modules/ProjectForm.md)
 
@@ -19,7 +19,7 @@ _Auto-generated from `ProjectFormProps` in `frontend/src/components/projects/Pro
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

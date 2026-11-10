@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SavedViewsControl](../modules/SavedViewsControl.md)
+**Target:**
+
+```typescript
+Exclude<SavedViewScope, 'system'>
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `EditableScope` in `frontend/src/components/tasks/SavedView
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

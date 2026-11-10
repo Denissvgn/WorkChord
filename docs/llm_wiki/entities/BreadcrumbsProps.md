@@ -1,7 +1,7 @@
 # BreadcrumbsProps
 
 **Location:** `frontend/src/components/layout/Breadcrumbs.tsx:10`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [Breadcrumbs](../modules/Breadcrumbs.md)
 
@@ -18,7 +18,7 @@ _Auto-generated from `BreadcrumbsProps` in `frontend/src/components/layout/Bread
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

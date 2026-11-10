@@ -46,7 +46,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (2) |
+| Inbound | `backend` (3) |
 | Outbound | `backend` (12) |
 
 ### External packages

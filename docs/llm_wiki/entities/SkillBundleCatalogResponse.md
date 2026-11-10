@@ -21,7 +21,7 @@ Canonical catalog emitted by the deterministic skill build.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

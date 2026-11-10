@@ -26,7 +26,7 @@ Request for transient AI-assisted triage task drafting.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

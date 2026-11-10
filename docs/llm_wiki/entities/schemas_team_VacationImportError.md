@@ -18,7 +18,7 @@ One vacation import row that could not be applied.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

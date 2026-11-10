@@ -12,11 +12,11 @@ _Auto-generated from `LLMProvider` in `backend/app/schemas/system_settings.py`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

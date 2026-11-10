@@ -1,7 +1,7 @@
 # WorkspaceMetadata
 
 **Location:** `frontend/src/navigation/workspaces.ts:29`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `WorkspaceMetadata` in `frontend/src/navigation/workspaces.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

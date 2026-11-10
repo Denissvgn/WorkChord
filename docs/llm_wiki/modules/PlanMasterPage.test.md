@@ -8,21 +8,22 @@ _Auto-generated from `frontend/src/pages/PlanMasterPage.test.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../features/planningMasters/masters` | `deriveStatus`, `EMPTY_READINESS`, `nextStep`, `readiness`, `PlanReadiness` |
-| `../features/planningMasters/usePlanningReadiness` | `PlanningQueryFeedback` |
-| `../i18n/i18n` | `i18n` |
-| `../i18n/resources.en` | `englishResources` |
-| `../i18n/resources.ru` | `russianResources` |
-| `../test/accessibilityInvariants` | `accessibleNameViolations` |
-| `../test/renderWithProviders` | `renderWithProviders` |
-| `../types/iteration` | `Iteration` |
-| `../types/task` | `Task` |
-| `./PlanMasterPage` | `PlanMasterPage` |
-| `./PlanMasterPage.tsx?raw` | `planMasterSource` |
-| `@testing-library/react` | `act`, `screen`, `waitFor`, `within` |
-| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../features/planningMasters/masters` | `PlanReadiness` | Declaration | erased |
+| `../features/planningMasters/masters` | `deriveStatus`, `EMPTY_READINESS`, `nextStep`, `readiness` | — | compiler-dependent |
+| `../features/planningMasters/usePlanningReadiness` | `PlanningQueryFeedback` | Declaration | erased |
+| `../i18n/i18n` | `i18n` | — | compiler-dependent |
+| `../i18n/resources.en` | `englishResources` | — | compiler-dependent |
+| `../i18n/resources.ru` | `russianResources` | — | compiler-dependent |
+| `../test/accessibilityInvariants` | `accessibleNameViolations` | — | compiler-dependent |
+| `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
+| `../types/iteration` | `Iteration` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
+| `./PlanMasterPage` | `PlanMasterPage` | — | compiler-dependent |
+| `./PlanMasterPage.tsx?raw` | `planMasterSource` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `vitest` | `afterEach`, `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -34,6 +35,8 @@ _Auto-generated from `frontend/src/pages/PlanMasterPage.test.tsx`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/features/planningMasters/masters.ts"]
@@ -63,6 +66,7 @@ flowchart LR
     n5 --> n10
     n6 --> n0
     n6 --> n1
+    n8 --> n2
     click n0 "../modules/planningMasters_masters.md"
     click n1 "../modules/usePlanningReadiness.md"
     click n2 "../modules/i18n.md"
@@ -101,5 +105,5 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [QueryKey](../entities/QueryKey.md) | Type alias | 35 | — | — |
-| [PlanningMember](../entities/PlanningMember.md) | Type alias | 36 | — | — |
+| [QueryKey](../entities/QueryKey.md) | Type alias | 35 | `'iterations' \| 'team' \| 'tasks' \| 'gantt' \| 'inbox'` | — |
+| [PlanningMember](../entities/PlanningMember.md) | Type alias | 36 | <pre><code>&#123;&#10;    id&#58; number&#59;&#10;    name&#58; string&#59;&#10;    capacity&#95;hours&#58; number&#59;&#10;    planned&#95;hours&#58; number&#59;&#10;&#125;</code></pre> | — |

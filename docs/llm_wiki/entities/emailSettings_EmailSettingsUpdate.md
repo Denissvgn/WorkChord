@@ -1,7 +1,7 @@
 # EmailSettingsUpdate
 
 **Location:** `frontend/src/types/emailSettings.ts:16`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [emailSettings](../modules/emailSettings.md)
 
@@ -25,7 +25,7 @@ _Auto-generated from `EmailSettingsUpdate` in `frontend/src/types/emailSettings.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

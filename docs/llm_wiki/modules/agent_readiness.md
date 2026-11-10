@@ -50,9 +50,12 @@ flowchart LR
     n4 --> n6
     n4 --> n8
     n5 --> n0
+    n5 --> n6
     n6 --> n0
     n6 --> n1
     n6 --> n2
+    n6 --> n5
+    n6 --> n7
     n7 --> n0
     n7 --> n8
     click n0 "../modules/models_task.md"

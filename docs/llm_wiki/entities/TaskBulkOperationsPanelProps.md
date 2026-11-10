@@ -1,7 +1,7 @@
 # TaskBulkOperationsPanelProps
 
 **Location:** `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx:24`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TaskBulkOperationsPanelProps` in `frontend/src/components/
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

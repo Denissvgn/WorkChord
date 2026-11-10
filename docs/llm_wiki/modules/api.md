@@ -8,11 +8,11 @@ _Auto-generated from `frontend/src/services/api.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../utils/adminAccess` | `getAdminApiKey` |
-| `../utils/agentAccess` | `getAgentApiKey` |
-| `axios` | `axios`, `AxiosHeaders` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../utils/adminAccess` | `getAdminApiKey` | — | compiler-dependent |
+| `../utils/agentAccess` | `getAgentApiKey` | — | compiler-dependent |
+| `axios` | `axios`, `AxiosHeaders` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/components/layout/DocumentMetadata.tsx`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../navigation/routeModules` | `metadataForPath` |
-| `react` | `useEffect` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useLocation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../navigation/routeModules` | `metadataForPath` | — | compiler-dependent |
+| `react` | `useEffect` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useLocation` | — | compiler-dependent |
 
 ## Module Signals
 

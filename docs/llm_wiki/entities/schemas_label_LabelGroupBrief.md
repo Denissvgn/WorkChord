@@ -27,7 +27,7 @@ Brief label group shape embedded in label responses.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -1,7 +1,7 @@
 # PlanShareTask
 
 **Location:** `frontend/src/services/planShareService.ts:3`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planShareService](../modules/planShareService.md)
 
@@ -30,7 +30,7 @@ _Auto-generated from `PlanShareTask` in `frontend/src/services/planShareService.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/utils/taskFilters.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../components/tasks/TaskFiltersBar` | `TaskFilters` |
-| `../features/planningMasters/planningTaskIssues` | `taskMatchesPlanningIssue` |
-| `../types/label` | `LabelGroup` |
-| `../types/task` | `Task` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
+| `../features/planningMasters/planningTaskIssues` | `taskMatchesPlanningIssue` | — | compiler-dependent |
+| `../types/label` | `LabelGroup` | Declaration | erased |
+| `../types/task` | `Task` | Declaration | erased |
 
 ## Module Signals
 
@@ -24,6 +24,8 @@ _Auto-generated from `frontend/src/utils/taskFilters.ts`._
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend/src/components/tasks/TaskFiltersBar.tsx"]

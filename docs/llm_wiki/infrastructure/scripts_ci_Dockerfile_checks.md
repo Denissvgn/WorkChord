@@ -3,7 +3,19 @@
 **Path:** `scripts/ci/Dockerfile.checks`
 **Base Image(s):** `python:3.12.13-slim-bookworm@sha256:8a7e7cc04fd3e2bd787f7f24e22d5d119aa590d429b50c95dfe12b3abe52f48b`
 
-## Environment Variables
+**Configuration view:** source declarations owned by each stage.
+
+Image defaults, variable expansion, and Docker's inheritance/reset rules also affect effective configuration. External base-image defaults remain unknown here.
+
+## Build Stages
+
+### Stage 1
+
+**FROM:** `python:3.12.13-slim-bookworm@sha256:8a7e7cc04fd3e2bd787f7f24e22d5d119aa590d429b50c95dfe12b3abe52f48b` (source line 1)
+
+**Base relationship:** external or unresolved base; inherited defaults are unknown.
+
+#### Environment Variables
 
 | Variable | Default |
 |----------|---------|
@@ -13,13 +25,13 @@
 | `PYTHONDONTWRITEBYTECODE` | `1` |
 | `PYTHONPYCACHEPREFIX` | `/tmp/workchord-pycache` |
 
-**Working Directory:** `/tmp/workchord`
+**Declared WORKDIR:** `/tmp/workchord`
 
-## Entry Point
+#### Entry Point
 
 **CMD:** `["python", "--version"]`
 
-## File Copies
+#### File Copies
 
 | Instruction | Source | Destination | From Stage |
 |-------------|--------|-------------|------------|

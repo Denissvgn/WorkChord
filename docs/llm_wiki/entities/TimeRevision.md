@@ -1,7 +1,7 @@
 # TimeRevision
 
 **Location:** `frontend/src/services/timeEntryService.ts:9`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** `TimeValues`
 **Module:** [timeEntryService](../modules/timeEntryService.md)
 
@@ -21,7 +21,7 @@ _Auto-generated from `TimeRevision` in `frontend/src/services/timeEntryService.t
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

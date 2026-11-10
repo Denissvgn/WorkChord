@@ -8,10 +8,10 @@ _Auto-generated from `frontend/src/components/tasks/taskDraftStorage.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./taskDraftStorage` | `removeTaskDraft` |
-| `vitest` | `expect`, `it` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./taskDraftStorage` | `removeTaskDraft` | — | compiler-dependent |
+| `vitest` | `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -1,7 +1,7 @@
 # PlanShare
 
 **Location:** `frontend/src/services/planShareService.ts:41`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [planShareService](../modules/planShareService.md)
 
@@ -24,7 +24,7 @@ _Auto-generated from `PlanShare` in `frontend/src/services/planShareService.ts`.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

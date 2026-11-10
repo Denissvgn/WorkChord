@@ -20,7 +20,7 @@ _Auto-generated from `GuestTransferRequest` in `backend/app/routers/identity.py`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

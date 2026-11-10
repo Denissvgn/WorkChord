@@ -8,12 +8,12 @@ _Auto-generated from `frontend/src/features/workspaceQueryPolicy.test.ts`._
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `./workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` |
-| `./workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` |
-| `@tanstack/react-query` | `QueryObserver` |
-| `vitest` | `expect`, `it`, `vi` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `./workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` | — | compiler-dependent |
+| `./workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` | — | compiler-dependent |
+| `@tanstack/react-query` | `QueryObserver` | — | compiler-dependent |
+| `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -8,21 +8,22 @@ Each drawer opening now retains its initial coherent snapshot while the user typ
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../types/task` | `Task`, `TaskUpdate` |
-| `../common/Button` | `Button` |
-| `../ui/SlideOverDrawer` | `SlideOverDrawer` |
-| `./DraftDismissalDialog` | `DraftDismissalDialog` |
-| `./TaskContextSummary` | `TaskContextSummary` |
-| `./TaskForm` | `TaskForm` |
-| `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` |
-| `./useDraftDismissal` | `useDraftDismissal` |
-| `@tanstack/react-query` | `useQuery` |
-| `lucide-react` | `Loader2` |
-| `react` | `useId`, `useMemo`, `useState`, `ReactNode`, `RefObject` |
-| `react-i18next` | `useTranslation` |
-| `react-router-dom` | `useNavigate`, `useSearchParams` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../types/task` | `Task`, `TaskUpdate` | Declaration | erased |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `./DraftDismissalDialog` | `DraftDismissalDialog` | — | compiler-dependent |
+| `./TaskContextSummary` | `TaskContextSummary` | — | compiler-dependent |
+| `./TaskForm` | `TaskForm` | — | compiler-dependent |
+| `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` | — | compiler-dependent |
+| `./useDraftDismissal` | `useDraftDismissal` | — | compiler-dependent |
+| `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `Loader2` | — | compiler-dependent |
+| `react` | `ReactNode`, `RefObject` | Declaration | erased |
+| `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useNavigate`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -33,6 +34,8 @@ Each drawer opening now retains its initial coherent snapshot while the user typ
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -63,10 +66,10 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 16 | — | — |
+| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 16 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskEditorDrawer` | `({     taskId,     iterationId,     open,     onClose,     mode = 'direct',     prepareTask,     onSaveSandbox,     title,     subtitle,     icon,     beforeForm,     className,     restoreFocusRef, }: {     taskId: number \| null;     iterationId?: number;     open: boolean;     onClose: () => void;     mode?: 'direct' \| 'sandbox';     prepareTask?: (task: Task) => Task;     onSaveSandbox?: (update: TaskUpdate) => void;     title?: DrawerCopy;     subtitle?: DrawerCopy;     icon?: ReactNode;     beforeForm?: ReactNode;     className?: string;     restoreFocusRef?: RefObject<HTMLElement \| null>; })` | — | — |
+| `TaskEditorDrawer` | <pre><code>&#40;&#123;&#10;    taskId&#44;&#10;    iterationId&#44;&#10;    open&#44;&#10;    onClose&#44;&#10;    mode &#61; &#39;direct&#39;&#44;&#10;    prepareTask&#44;&#10;    onSaveSandbox&#44;&#10;    title&#44;&#10;    subtitle&#44;&#10;    icon&#44;&#10;    beforeForm&#44;&#10;    className&#44;&#10;    restoreFocusRef&#44;&#10;&#125;&#58; &#123;&#10;    taskId&#58; number &#124; null&#59;&#10;    iterationId&#63;&#58; number&#59;&#10;    open&#58; boolean&#59;&#10;    onClose&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    mode&#63;&#58; &#39;direct&#39; &#124; &#39;sandbox&#39;&#59;&#10;    prepareTask&#63;&#58; &#40;task&#58; Task&#41; &#61;&#62; Task&#59;&#10;    onSaveSandbox&#63;&#58; &#40;update&#58; TaskUpdate&#41; &#61;&#62; void&#59;&#10;    title&#63;&#58; DrawerCopy&#59;&#10;    subtitle&#63;&#58; DrawerCopy&#59;&#10;    icon&#63;&#58; ReactNode&#59;&#10;    beforeForm&#63;&#58; ReactNode&#59;&#10;    className&#63;&#58; string&#59;&#10;    restoreFocusRef&#63;&#58; RefObject&#60;HTMLElement &#124; null&#62;&#59;&#10;&#125;&#41;</code></pre> | — | — |

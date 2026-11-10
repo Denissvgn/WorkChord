@@ -4,6 +4,11 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [savedView](../modules/savedView.md)
+**Target:**
+
+```typescript
+'tasks' | 'projects' | 'triage'
+```
 
 ## Description
 
@@ -11,11 +16,11 @@ _Auto-generated from `SavedViewType` in `frontend/src/types/savedView.ts`._
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

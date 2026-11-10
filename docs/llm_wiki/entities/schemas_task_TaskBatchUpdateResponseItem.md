@@ -19,7 +19,7 @@ Schema for a single task update response inside a batch response.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

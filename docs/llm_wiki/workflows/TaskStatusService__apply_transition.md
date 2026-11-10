@@ -11,7 +11,8 @@
 1. `services_work_metrics.working_today`
 2. `time.utc_now`
 3. `task_status_log.TaskStatusLog`
-4. `outbound_webhook_service.OutboundWebhookService`
+4. `outbound_webhook_service.OutboundWebhookService.enqueue_status_change`
+5. `outbound_webhook_service.OutboundWebhookService`
 
 ## Touches
 

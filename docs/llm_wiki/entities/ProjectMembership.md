@@ -20,7 +20,7 @@ _Auto-generated from `ProjectMembership` in `backend/app/models/identity.py`._
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

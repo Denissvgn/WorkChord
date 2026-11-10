@@ -23,7 +23,7 @@ _Auto-generated from `HandoffEvidenceReference` in `backend/app/autonomy/handoff
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

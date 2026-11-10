@@ -19,7 +19,7 @@ Request for formalizing unsaved task form data.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

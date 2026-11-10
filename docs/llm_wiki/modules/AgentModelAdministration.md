@@ -8,25 +8,26 @@ _Auto-generated from `frontend/src/components/settings/AgentModelAdministration.
 
 ## Imports
 
-| Source | Symbols |
-|--------|---------|
-| `../../hooks/useAgentAccess` | `useAgentAccess` |
-| `../../services/agentService` | `agentService` |
-| `../../types/agent` | `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelCatalogCreate`, `AgentModelCatalogEntry` |
-| `../../utils/apiError` | `normalizeApiError` |
-| `../../utils/formatDate` | `formatDateTime` |
-| `../../utils/modelRouting` | `createAgentCommandMetadata`, `formatRoutingCode`, `parseRoutingTags` |
-| `../../utils/protectedQueries` | `protectedQueryRetry` |
-| `../common/Button` | `Button` |
-| `../common/Checkbox` | `Checkbox` |
-| `../common/Input` | `Input`, `RequiredIndicator` |
-| `../common/useConfirmDialog` | `useConfirmDialog` |
-| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` |
-| `../feedback/toast` | `useToast` |
-| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` |
-| `lucide-react` | `AlertTriangle`, `Bot`, `Database`, `Link2`, `Pencil`, `Plus`, `RefreshCw`, `ShieldCheck`, `X` |
-| `react` | `useMemo`, `useState`, `FormEvent` |
-| `react-i18next` | `useTranslation` |
+| Source | Symbols | Type-only | Runtime emission |
+|--------|---------|-----------|------------------|
+| `../../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
+| `../../services/agentService` | `agentService` | — | compiler-dependent |
+| `../../types/agent` | `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelCatalogCreate`, `AgentModelCatalogEntry` | Declaration | erased |
+| `../../utils/apiError` | `normalizeApiError` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
+| `../../utils/modelRouting` | `createAgentCommandMetadata`, `formatRoutingCode`, `parseRoutingTags` | — | compiler-dependent |
+| `../../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
+| `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
+| `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
+| `lucide-react` | `AlertTriangle`, `Bot`, `Database`, `Link2`, `Pencil`, `Plus`, `RefreshCw`, `ShieldCheck`, `X` | — | compiler-dependent |
+| `react` | `FormEvent` | Declaration | erased |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -38,6 +39,8 @@ _Auto-generated from `frontend/src/components/settings/AgentModelAdministration.
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
     n0["frontend"]
@@ -68,9 +71,9 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CatalogForm](../entities/CatalogForm.md) | Class | 39 | — | — |
-| [BindingForm](../entities/BindingForm.md) | Class | 53 | — | — |
-| [ConflictResolution](../entities/ConflictResolution.md) | Class | 63 | — | — |
+| [CatalogForm](../entities/CatalogForm.md) | Interface | 39 | — | — |
+| [BindingForm](../entities/BindingForm.md) | Interface | 53 | — | — |
+| [ConflictResolution](../entities/ConflictResolution.md) | Interface | 63 | — | — |
 
 ## Functions
 

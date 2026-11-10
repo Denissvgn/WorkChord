@@ -1,7 +1,7 @@
 # EffortModifier
 
 **Location:** `frontend/src/types/schedulingRules.ts:23`
-**Kind:** Class
+**Kind:** Interface
 **Bases:** —
 **Module:** [schedulingRules](../modules/schedulingRules.md)
 
@@ -22,7 +22,7 @@ _Auto-generated from `EffortModifier` in `frontend/src/types/schedulingRules.ts`
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

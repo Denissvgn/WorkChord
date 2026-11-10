@@ -7,8 +7,9 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `routers_task_domain.domain_result`
-2. `task_timeline_service.TaskTimelineService`
-3. `schemas_agent.TaskTimelinePage`
+2. `task_timeline_service.TaskTimelineService.page`
+3. `task_timeline_service.TaskTimelineService`
+4. `schemas_agent.TaskTimelinePage`
 
 ## Touches
 

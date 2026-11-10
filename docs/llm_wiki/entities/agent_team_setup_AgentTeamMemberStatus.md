@@ -42,7 +42,7 @@ Separates desired/configured identity, package acknowledgement, current or stale
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

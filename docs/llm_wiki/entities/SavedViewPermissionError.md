@@ -15,7 +15,7 @@ Raised when a session cannot mutate a saved view.
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 

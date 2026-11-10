@@ -4,6 +4,15 @@
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routeModules](../modules/routeModules.md)
+**Target:**
+
+```typescript
+{
+    key: RouteModuleKey;
+    path: string;
+    titleKey: string;
+}
+```
 
 ## Description
 
@@ -11,11 +20,11 @@ _Auto-generated from `RouteMetadata` in `frontend/src/navigation/routeModules.ts
 
 ## Attributes
 
-*No annotated attributes found.*
+*See the alias definition for its member types.*
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*See the alias definition for callable and member types.*
 
 ## Relationships
 

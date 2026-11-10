@@ -23,7 +23,7 @@ _Auto-generated from `NativeConnectionStart` in `backend/app/routers/identity.py
 
 ## Methods
 
-*No public methods. Inherits from base classes.*
+*No declared methods.*
 
 ## Relationships
 
