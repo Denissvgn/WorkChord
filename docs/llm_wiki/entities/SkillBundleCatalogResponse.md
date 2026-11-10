@@ -33,14 +33,16 @@ flowchart LR
     n2["backend/app/mcp_agent_tools.py"]
     n3["backend/app/routers/agent.py"]
     n4["list_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
-    n5["backend/app/services/agent_skill_bundle_service.py"]
+    n5["AgentSkillBundleService.catalog (backend/app/services/agent_skill_bundle_service.py)"]
     n6["AgentTeamSetupService._skill_catalog (backend/app/services/agent_team_setup_service.py)"]
+    n7["backend/tests/test_agent_team_catalog.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/agent_skill_bundle.md"
     click n1 "../modules/agent_skill_bundle.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -48,6 +50,7 @@ flowchart LR
     click n4 "../modules/agent_skill_bundles.md"
     click n5 "../modules/agent_skill_bundle_service.md"
     click n6 "../modules/agent_team_setup_service.md"
+    click n7 "../modules/test_agent_team_catalog.md"
 ```
 
 ### Summary
@@ -69,5 +72,6 @@ flowchart LR
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
 | `list_agent_skill_bundles` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
-| `agent_skill_bundle_service` | import | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | — |
+| `AgentSkillBundleService.catalog` | type_reference | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | — |
 | `AgentTeamSetupService._skill_catalog` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `test_agent_team_catalog` | import | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | — |

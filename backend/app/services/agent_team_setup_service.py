@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from app.services.agent_team_credentials import CredentialDeliveryError, AgentTeamCredentialSink, FilesystemAgentTeamCredentialSink
 
 from app.commands import commit_or_flush
@@ -41,6 +39,10 @@ from app.models.agent import (
 )
 from app.models.team_member import TeamMemberProfile
 from app.schemas.agent_skill_bundle import SkillBundleCatalogResponse
+from app.services.agent_skill_bundle_service import (
+    AgentSkillBundleService,
+    SkillBundleArtifactError,
+)
 from app.schemas.agent_team_setup import (
     AGENT_TEAM_PLAN_SCHEMA_VERSION,
     MAX_AGENT_TEAM_ACTIONS,
@@ -95,7 +97,6 @@ from app.utils.time import as_utc, utc_now
 
 ACK_WINDOW_SECONDS = 60
 ACK_ATTEMPT_LIMIT = 5
-REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 
 
 class AgentTeamSetupConflictError(AgentConflictError):
@@ -154,7 +155,7 @@ class AgentTeamSetupService:
         db: AsyncSession,
         *,
         credential_sink: AgentTeamCredentialSink | None = None,
-        skill_catalog_path: Path | None = None,
+        skill_bundle_service: AgentSkillBundleService | None = None,
     ):
         self.db = db
         settings = get_settings()
@@ -166,10 +167,7 @@ class AgentTeamSetupService:
                 "agent-team-secure-sink",
             ),
         )
-        self.skill_catalog_path = (
-            skill_catalog_path
-            or REPOSITORY_ROOT / "agent-skills" / "catalog.json"
-        )
+        self.skill_bundle_service = skill_bundle_service or AgentSkillBundleService()
 
     @staticmethod
     def _require_operator(actor: AgentActor) -> None:
@@ -195,10 +193,8 @@ class AgentTeamSetupService:
 
     def _skill_catalog(self) -> SkillBundleCatalogResponse:
         try:
-            return SkillBundleCatalogResponse.model_validate_json(
-                self.skill_catalog_path.read_bytes()
-            )
-        except (OSError, ValueError) as exc:
+            return self.skill_bundle_service.catalog()
+        except SkillBundleArtifactError as exc:
             raise AgentTeamSetupConflictError(
                 "agent_team_skill_catalog_unavailable",
                 "The immutable agent role-package catalog is unavailable",

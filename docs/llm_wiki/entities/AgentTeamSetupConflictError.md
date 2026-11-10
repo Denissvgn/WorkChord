@@ -1,6 +1,6 @@
 # AgentTeamSetupConflictError
 
-**Location:** `backend/app/services/agent_team_setup_service.py:101`
+**Location:** `backend/app/services/agent_team_setup_service.py:102`
 **Kind:** Class
 **Bases:** `AgentConflictError`
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -97,4 +97,4 @@ flowchart LR
 | `AgentTeamSetupService._increment_ack_attempt` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService._replay_apply` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

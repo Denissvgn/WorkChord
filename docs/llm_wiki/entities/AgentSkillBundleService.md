@@ -9,6 +9,8 @@
 
 Validate and serve only files emitted by the deterministic skill build.
 
+`catalog()` exposes a defensive typed copy for internal consumers such as team setup, while using the same release validation and cache as HTTP delivery. The returned model can be modified without changing later consumers' package identities.
+
 ## Attributes
 
 | Name | Type | Default | Description |
@@ -36,6 +38,7 @@ Validate and serve only files emitted by the deterministic skill build.
 | `_load_release` | `() -> _LoadedRelease` | — | Return one atomically validated snapshot shared by REST and MCP callers. |
 | `_find_skill` | `(release: _LoadedRelease, skill_name: str, version: str) -> SkillBundleCatalogEntry` | `@staticmethod` | — |
 | `_find_archive` | `(skill: SkillBundleCatalogEntry, archive_format: Literal['zip', 'tar.gz']) -> SkillBundleArchiveRecord` | `@staticmethod` | — |
+| `catalog` | `() -> SkillBundleCatalogResponse` | — | Return a defensive copy of the integrity-validated release catalog. |
 | `catalog_payload` | `() -> SkillBundlePayload` | — | Return the byte-exact mutable catalog build artifact. |
 | `discovery_payload` | `(catalog_url: str) -> SkillBundlePayload` | — | Return the well-known pointer plus current catalog identity. |
 | `manifest_payload` | `(skill_name: str, version: str) -> SkillBundlePayload` | — | Return a role-local manifest whose bytes cannot drift with other roles. |
@@ -56,8 +59,7 @@ flowchart LR
     n6["get_agent_skill_bundle_service (backend/app/routers/agent_skill_bundles.py)"]
     n7["inspect_agent_skill_bundle_file (backend/app/routers/agent_skill_bundles.py)"]
     n8["list_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
-    n9["test_rest_and_mcp_capabilities_share_fail_closed_rollout_status (backend/tests/test_agent_routing_rollout.py)"]
-    n10["test_rest_and_mcp_preserve_maximum_readiness_blocker_projection (backend/tests/test_agent_routing_rollout.py)"]
+    n9["AgentTeamSetupService.__init__ (backend/app/services/agent_team_setup_service.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -67,7 +69,6 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
-    n10 --> n0
     click n0 "../modules/agent_skill_bundle_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_agent.md"
@@ -77,15 +78,14 @@ flowchart LR
     click n6 "../modules/agent_skill_bundles.md"
     click n7 "../modules/agent_skill_bundles.md"
     click n8 "../modules/agent_skill_bundles.md"
-    click n9 "../modules/test_agent_routing_rollout.md"
-    click n10 "../modules/test_agent_routing_rollout.md"
+    click n9 "../modules/agent_team_setup_service.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 21 | `_cache_metrics`, `_release_cache` |
+| [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 22 | `_cache_metrics`, `_release_cache` |
 
 ### References
 
@@ -101,5 +101,7 @@ flowchart LR
 | `get_agent_skill_bundle_service` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `inspect_agent_skill_bundle_file` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `list_agent_skill_bundles` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
-| `test_rest_and_mcp_capabilities_share_fail_closed_rollout_status` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
-| `test_rest_and_mcp_preserve_maximum_readiness_blocker_projection` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
+| `AgentTeamSetupService.__init__` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
+| `AgentTeamSetupService.__init__` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

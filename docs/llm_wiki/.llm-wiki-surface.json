@@ -25,11 +25,11 @@
       "infrastructure": 11,
       "load-order": 1,
       "log": 1,
-      "modules": 744,
-      "workflows": 191
+      "modules": 745,
+      "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3023
+    "total": 3025
   },
   "dependency_pages": {
     "count": 2,
@@ -42776,6 +42776,7 @@
         "modules/test_agent_run_trust_compatibility.md",
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
+        "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
@@ -42947,6 +42948,7 @@
         "workflows/AgentService_get_pipeline.md",
         "workflows/AgentService_renew_claim.md",
         "workflows/AgentService_start_run.md",
+        "workflows/AgentTeamSetupService___init__.md",
         "workflows/AgentTeamSetupService__apply_create_or_update.md",
         "workflows/AgentTeamSetupService__apply_identity_replacement.md",
         "workflows/AgentTeamSetupService__apply_replace_recovery.md",
@@ -43583,8 +43585,8 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_qualification.md"
+        "modules/test_agent_team_catalog.md",
+        "modules/test_agent_team_setup.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -44702,9 +44704,9 @@
       "outgoing_internal_links": [
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
+        "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md",
-        "modules/test_agent_routing_rollout.md"
+        "modules/routers_agent.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
@@ -44959,6 +44961,7 @@
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/routers_agent.md",
+        "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_qualification.md"
       ],
@@ -45029,6 +45032,7 @@
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
         "modules/routers_agent.md",
+        "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_qualification.md"
       ],
@@ -57678,6 +57682,7 @@
       "outgoing_internal_links": [
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
+        "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md"
       ],
@@ -57709,7 +57714,8 @@
         "modules/agent_skill_bundles.md",
         "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md"
+        "modules/routers_agent.md",
+        "modules/test_agent_team_catalog.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_skill_bundle.py",
@@ -64787,7 +64793,8 @@
         "modules/agent_skill_bundles.md",
         "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md"
+        "modules/routers_agent.md",
+        "modules/test_agent_team_catalog.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_skill_bundle.py",
@@ -64809,9 +64816,12 @@
         "modules/agent_skill_bundle.md",
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
+        "modules/agent_team_setup_service.md",
+        "modules/conftest.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
-        "modules/test_agent_routing_rollout.md"
+        "modules/test_agent_routing_rollout.md",
+        "modules/test_agent_team_catalog.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
@@ -64895,6 +64905,7 @@
         "modules/generate_agent_team_contract.md",
         "modules/generate_agent_team_report_contract.md",
         "modules/routers_agent.md",
+        "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_qualification.md"
       ],
@@ -66135,6 +66146,7 @@
       "mcp_uri": "llm-wiki://modules/conftest",
       "outgoing_internal_links": [
         "modules/agent_routing_rollout.md",
+        "modules/agent_skill_bundle_service.md",
         "modules/app_database.md",
         "modules/config.md",
         "modules/conftest.md",
@@ -74537,6 +74549,25 @@
       "title": "test_agent_skill_routing_guidance Module"
     },
     {
+      "canonical_path": "modules/test_agent_team_catalog.md",
+      "id": "test_agent_team_catalog",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_agent_team_catalog",
+      "outgoing_internal_links": [
+        "modules/agent_skill_bundle.md",
+        "modules/agent_skill_bundle_service.md",
+        "modules/agent_team_setup.md",
+        "modules/agent_team_setup_service.md",
+        "modules/config.md",
+        "modules/models_agent.md",
+        "modules/test_agent_team_catalog.md",
+        "modules/time.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_team_catalog.py",
+      "title": "test_agent_team_catalog Module"
+    },
+    {
       "canonical_path": "modules/test_agent_team_setup.md",
       "id": "test_agent_team_setup",
       "kind": "modules",
@@ -77406,6 +77437,21 @@
       "role": "mixed",
       "source_path": "backend/app/services/agent_service.py",
       "title": "AgentService_start_run"
+    },
+    {
+      "canonical_path": "workflows/AgentTeamSetupService___init__.md",
+      "id": "AgentTeamSetupService___init__",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/AgentTeamSetupService___init__",
+      "outgoing_internal_links": [
+        "modules/agent_skill_bundle_service.md",
+        "modules/agent_team_credentials.md",
+        "modules/agent_team_setup_service.md",
+        "modules/config.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/services/agent_team_setup_service.py",
+      "title": "AgentTeamSetupService___init__"
     },
     {
       "canonical_path": "workflows/AgentTeamSetupService__apply_create_or_update.md",
@@ -89717,6 +89763,7 @@
         "modules/test_agent_run_trust_compatibility.md",
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
+        "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
@@ -90472,6 +90519,7 @@
         "modules/test_agent_run_trust_compatibility.md",
         "modules/test_agent_runtime_recovery.md",
         "modules/test_agent_skill_routing_guidance.md",
+        "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
@@ -90633,5 +90681,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:6b2d59c88b49399b9bb7814c842936bf453f51e7481173969d5651299762d33a"
+  "source_hash": "sha256:0480651c190199af436cda72c5650fc4b06dab912f55fdb080e0037da5e41584"
 }

@@ -61,8 +61,8 @@ flowchart LR
     n9["AgentTeamSetupService._execute_action (backend/app/services/agent_team_setup_service.py)"]
     n10["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
     n11["AgentTeamSetupService._refresh_handoffs (backend/app/services/agent_team_setup_service.py)"]
-    n12["backend/tests/test_agent_team_setup.py"]
-    n13["acknowledge_all (backend/tests/test_agent_team_setup_qualification.py)"]
+    n12["backend/tests/test_agent_team_catalog.py"]
+    n13["backend/tests/test_agent_team_setup.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -88,8 +88,8 @@ flowchart LR
     click n9 "../modules/agent_team_setup_service.md"
     click n10 "../modules/agent_team_setup_service.md"
     click n11 "../modules/agent_team_setup_service.md"
-    click n12 "../modules/test_agent_team_setup.md"
-    click n13 "../modules/test_agent_team_setup_qualification.md"
+    click n12 "../modules/test_agent_team_catalog.md"
+    click n13 "../modules/test_agent_team_setup.md"
 ```
 
 ### Summary
@@ -118,7 +118,7 @@ flowchart LR
 | `AgentTeamSetupService._execute_action` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._refresh_handoffs` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `test_agent_team_catalog` | import | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | — |
 | `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
-| `acknowledge_all` | type_reference | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | — |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

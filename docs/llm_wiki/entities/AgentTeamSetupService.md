@@ -1,6 +1,6 @@
 # AgentTeamSetupService
 
-**Location:** `backend/app/services/agent_team_setup_service.py:149`
+**Location:** `backend/app/services/agent_team_setup_service.py:150`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -8,6 +8,8 @@
 ## Description
 
 Reconcile one portable topology without making the UI a control plane.
+
+Uses the bundle service's deployed, integrity-validated catalog for role-package compatibility. An unavailable or invalid release fails closed with the existing setup conflict code, including when the application is installed as a wheel without a source checkout.
 
 ## Attributes
 
@@ -17,7 +19,7 @@ Reconcile one portable topology without making the UI a control plane.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
-| `__init__` | `(db: AsyncSession, *, credential_sink: AgentTeamCredentialSink \| None = None, skill_catalog_path: Path \| None = None)` | — | — |
+| `__init__` | `(db: AsyncSession, *, credential_sink: AgentTeamCredentialSink \| None = None, skill_bundle_service: AgentSkillBundleService \| None = None)` | — | — |
 | `_require_operator` | `(actor: AgentActor) -> None` | `@staticmethod` | — |
 | `_principal_key` | `(actor: AgentActor) -> str` | `@staticmethod` | — |
 | `_supported_features` | `() -> frozenset[str]` | `@staticmethod` | — |
@@ -129,4 +131,4 @@ flowchart LR
 | `validate_agent_team_master` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 
-> References: showing 12 of 30 logical references; 18 omitted by the 12-row generated summary limit.
+> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.

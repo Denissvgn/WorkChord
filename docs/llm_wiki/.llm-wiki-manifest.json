@@ -1,8 +1,8 @@
 {
   "artifact_hashes": {
-    "evaluated_envelope_hash": "sha256:66b3f7d7cd39a187f998ebdf78d64c6bd04ebdc1c21d2fd2bdf6cfc1ba5be8d6",
-    "knowledge_index_hash": "sha256:aba6aa41e2ab440151af879ac71a7894acd26b2f7e3b5aba28067c2c8301c3d5",
-    "surface_index_hash": "sha256:e1e67623f9e24fdea87d80adc7860bf64bc813b0a68083701811797c27c82d78"
+    "evaluated_envelope_hash": "sha256:61b927d36a3df99dd099ecca94d562693a7c76128b79ca8812c0a2f687683e51",
+    "knowledge_index_hash": "sha256:9604dfc8e59b12d9d4e4a593d599b9804ab92c6985235a106dc4223b63a48722",
+    "surface_index_hash": "sha256:7d30a172eb30187d4e7a1b83011f504f52294d8c4bbc46e757b61ce993da6b49"
   },
   "evidence_baselines": {
     "entities/Absence.md": {
@@ -807,10 +807,10 @@
     },
     "entities/AgentSkillBundleService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:9c5aee5ddb8eae4f0839b9ed1f0acab48f229dffbf6ad8a4e4335f0bbe492beb",
+        "concept_observation_hash": "sha256:77132e8792b37566456e9fca8699ae37ff052b1bff19356786398671bc72bbf0",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -1010,7 +1010,7 @@
         "concept_observation_hash": "sha256:10a8e3b83774b52a22bd882dfe83a68b8afc8e135f629ce48f1068afeeab377b",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
+        "source_content_hash": "sha256:262f254f9bdacde79322cffbcffe2f3bdf77b95856e554bcb6dca808acd7443f",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -1080,7 +1080,7 @@
         "concept_observation_hash": "sha256:8856634c362b0a8a8546de2befceab142d4b6c2ef8e157763c179eaf0dce3495",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
+        "source_content_hash": "sha256:262f254f9bdacde79322cffbcffe2f3bdf77b95856e554bcb6dca808acd7443f",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -1127,10 +1127,10 @@
     },
     "entities/AgentTeamSetupService.md": {
       "basis": {
-        "concept_observation_hash": "sha256:8da4a74642aa3935dff6d57bb0de5d825ec161c924f919f44668c84fa9aa2ec9",
+        "concept_observation_hash": "sha256:b2ffb904c28368036a0ce3f00808e25cc5f87c515e83c5ae1973513dd60947ec",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
+        "source_content_hash": "sha256:262f254f9bdacde79322cffbcffe2f3bdf77b95856e554bcb6dca808acd7443f",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -1970,7 +1970,7 @@
         "concept_observation_hash": "sha256:e188b7fbcc8e1d1f9cbbaab806bbf990592856d8a9f1a877ff02ac18e6dd526f",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -2100,7 +2100,7 @@
         "concept_observation_hash": "sha256:bc3cc2b285ac5bc4f115a03f1c0865afe2f809eed8c70c3717771b87a32c9724",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:9f636cc1956638b62cafbbc553fbe0f2547325bf31e1976ba939bffb987be34d",
+        "source_content_hash": "sha256:7ae0b9cd77c99d1b45b464ef84df372dce6b2a6210c724db12f4bc223260429f",
         "source_path": "backend/tests/test_agent_team_setup.py"
       },
       "state": "known"
@@ -3380,7 +3380,7 @@
         "concept_observation_hash": "sha256:cb8a7e490f5189109af16c40a6fc07658aaacaf5649c44e1038e64394f2277d5",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:9f636cc1956638b62cafbbc553fbe0f2547325bf31e1976ba939bffb987be34d",
+        "source_content_hash": "sha256:7ae0b9cd77c99d1b45b464ef84df372dce6b2a6210c724db12f4bc223260429f",
         "source_path": "backend/tests/test_agent_team_setup.py"
       },
       "state": "known"
@@ -4510,7 +4510,7 @@
         "concept_observation_hash": "sha256:f26f3376dc1bfbc5d075e45e4f400c760facdc1a65af4ce021885c857f25b8db",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -6270,7 +6270,7 @@
         "concept_observation_hash": "sha256:614047b57321fd215f38812b6c24447ea4a2f37bb978118c755795528bcebf0a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:f2474c20c8ba5f2ed5e78ccb6df8f6d79b67b6ce1c103325284a4c19e13519e2",
+        "source_content_hash": "sha256:e75540dd136dcd652016a37d0d9f012dfd61daebb68cdd411183ad9f8e1fb982",
         "source_path": "backend/tests/test_agent_team_setup_qualification.py"
       },
       "state": "known"
@@ -6410,7 +6410,7 @@
         "concept_observation_hash": "sha256:f79af02a68c2394c894cde95075014a8010b75b2e934fa5f4ed8bc2784ac6a67",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -7700,7 +7700,7 @@
         "concept_observation_hash": "sha256:2648dce795466b366a18b5b276b2919c93a3aa6d45a615fca2bce386d1ce5070",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -7760,7 +7760,7 @@
         "concept_observation_hash": "sha256:a650c511e1c0a4ac056213e8869935906e9cf65fc908f330c3b1e43c26e9cea5",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -7770,7 +7770,7 @@
         "concept_observation_hash": "sha256:50e65c699d170505456eb4634cadea1f7577e640d9cfe58f5a2c2ffba58706ce",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "entity",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -17630,7 +17630,7 @@
         "concept_observation_hash": "sha256:138eb53c87334688905f131ada6af661bdba295c22ed27ed8ad38c42ab371ea0",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+        "source_content_hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
         "source_path": "backend/app/services/agent_skill_bundle_service.py"
       },
       "state": "known"
@@ -17667,10 +17667,10 @@
     },
     "modules/agent_team_setup_service.md": {
       "basis": {
-        "concept_observation_hash": "sha256:2cbfbb2c8930cb4adc2579aa9a8aa89ba53a35336e44374c933bed6877e50ac7",
+        "concept_observation_hash": "sha256:4fc3af845a8be0c39606d587c25fdf47dfc13fa3280db742618adfdf254b0371",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
+        "source_content_hash": "sha256:262f254f9bdacde79322cffbcffe2f3bdf77b95856e554bcb6dca808acd7443f",
         "source_path": "backend/app/services/agent_team_setup_service.py"
       },
       "state": "known"
@@ -18057,10 +18057,10 @@
     },
     "modules/conftest.md": {
       "basis": {
-        "concept_observation_hash": "sha256:4740faa70b70f3ae62dbefd0b03bfd5fd6628171998805f9a956fd2440d90e86",
+        "concept_observation_hash": "sha256:3e9634028e576bb5215594ac419d954cc6ea2ba32031b19dfa820fac06d0588a",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:3af51f7b30269ef198957063c6e96f0127feb325f49aeef67a107d110d924902",
+        "source_content_hash": "sha256:881c53d5e01d0f48803961a28d23acd1f4ff455a9470c2a308b16a9255e3a2bf",
         "source_path": "backend/tests/conftest.py"
       },
       "state": "known"
@@ -21265,12 +21265,22 @@
       },
       "state": "known"
     },
+    "modules/test_agent_team_catalog.md": {
+      "basis": {
+        "concept_observation_hash": "sha256:c47672307542dd043de405068d4a91bb6939fadd961051e8fcfda84b551e96c6",
+        "extractor_ref": "llm-wiki/extractor/python",
+        "scope": "module",
+        "source_content_hash": "sha256:af82493015d84a04e5d809905b7b11a3e857798ace03ce3a4567f41e425aad52",
+        "source_path": "backend/tests/test_agent_team_catalog.py"
+      },
+      "state": "known"
+    },
     "modules/test_agent_team_setup.md": {
       "basis": {
         "concept_observation_hash": "sha256:04a8575bdc49130112e3a2914c909d34d6bb3e0cc4c3b6092afced35738d5aa6",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:9f636cc1956638b62cafbbc553fbe0f2547325bf31e1976ba939bffb987be34d",
+        "source_content_hash": "sha256:7ae0b9cd77c99d1b45b464ef84df372dce6b2a6210c724db12f4bc223260429f",
         "source_path": "backend/tests/test_agent_team_setup.py"
       },
       "state": "known"
@@ -21290,7 +21300,7 @@
         "concept_observation_hash": "sha256:4dc3bc7efcb14f3543bea99bff62fcdca19811775ae24c0d9ab05c059c1d33da",
         "extractor_ref": "llm-wiki/extractor/python",
         "scope": "module",
-        "source_content_hash": "sha256:f2474c20c8ba5f2ed5e78ccb6df8f6d79b67b6ce1c103325284a4c19e13519e2",
+        "source_content_hash": "sha256:e75540dd136dcd652016a37d0d9f012dfd61daebb68cdd411183ad9f8e1fb982",
         "source_path": "backend/tests/test_agent_team_setup_qualification.py"
       },
       "state": "known"
@@ -22679,9 +22689,10 @@
   "generation_inputs": {
     "infrastructure": {
       "discovery": {
-        "candidate_count": 17,
+        "candidate_count": 18,
         "roots": [
           ".",
+          ".github",
           ".github/actions/native-postgres",
           ".github/workflows",
           "adapters/codex/workchord-agent-roles/skills/workchord-pm/agents",
@@ -22693,6 +22704,11 @@
         ],
         "supported_count": 11,
         "unsupported_yaml": [
+          {
+            "path": ".github/FUNDING.yml",
+            "reason": "unrecognized-yaml",
+            "source_content_hash": "sha256:6fbbe02b303146b00f48c17bfa8f3f786f8efae990e23d3ee82165048a45bf16"
+          },
           {
             "path": ".github/actions/native-postgres/action.yml",
             "reason": "unrecognized-yaml",
@@ -22724,7 +22740,7 @@
             "source_content_hash": "sha256:9718b4a76ef67ced7d32c86d881331c78992f5fb1e5e37eff32ee1e8a6f81458"
           }
         ],
-        "unsupported_yaml_count": 6
+        "unsupported_yaml_count": 7
       },
       "schema_version": "llm-wiki-infrastructure-sync/v1",
       "sources": {
@@ -22890,13 +22906,13 @@
       "assets_hash": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
       "generation_options_hash": "sha256:963c315eb4f1d2b1fb73b2343d545b0268798643b4c9f247f8c3633bcff03442",
       "implementation_hash": "sha256:45ea060700ec7e6fe03ec9c95d7882376c6095320e122bf14b7d58d8c21681bd",
-      "inventory_hash": "sha256:56d4b1906d72d0bdbc46ce0d984702edd940bd7bae54252ac88bd32d096bcf29",
-      "lifecycle_hash": "sha256:0ea6c976942d181e5186bf4f758b597f0fcd269ef09ffd9397f886a75abb7047",
-      "markdown_snapshot_hash": "sha256:04f99e01ea913a9ad22ad436da94d81023c09ac268e01fef835920e6dc18e575",
-      "observation_inputs_hash": "sha256:5e669cd8a40a0536fef8adde432d78f1f5d12f29f926ebf446398e516d1f65bb",
-      "repository_hash": "sha256:acc3901bfd36dd6f2564de7ccb315de144b339dba0b47e64a6a228009d9596aa",
+      "inventory_hash": "sha256:6b8eb00401e469b6658926d9baf69b26c41e64cfb822c9d8655465d095f9eec4",
+      "lifecycle_hash": "sha256:a19ed0d943d2e01287aa20700759815cb992e12b41ca6dcd5be2712c6a76e325",
+      "markdown_snapshot_hash": "sha256:054576cbf5c02825a722f580016ad2e62b138c1cd7dc9775a51585200e4219ce",
+      "observation_inputs_hash": "sha256:8cd80d192517aee7ed8c6f7033f68b96d552f93f6127a92ce0b7790222498c56",
+      "repository_hash": "sha256:38e0e67d52b89231b86f181bf80863cb80caa0093894f45b26f48c26e9fc5655",
       "schema_version": "llm-wiki-knowledge-reuse/v1",
-      "source_snapshot_hash": "sha256:494ee96e90287a4236bc677f48970b4c4ec0aa3ec33a047af192b1eea3105acf"
+      "source_snapshot_hash": "sha256:0e4b3bb2f0c8e9ec673238d23ee3c82d9a1191a52f0e3934a4e7321f87ca9743"
     },
     "llm-wiki/generation-options/v1": {
       "data_flow_enabled": true,
@@ -34454,6 +34470,10 @@
     "modules/test_agent_skill_routing_guidance.md": {
       "scope": "module",
       "source_path": "backend/tests/test_agent_skill_routing_guidance.py"
+    },
+    "modules/test_agent_team_catalog.md": {
+      "scope": "module",
+      "source_path": "backend/tests/test_agent_team_catalog.py"
     },
     "modules/test_agent_team_setup.md": {
       "scope": "module",
@@ -56069,6 +56089,7 @@
               "_validate_skill_file_path": "—",
               "archive_payload": "Return one immutable archive after release-wide checksum validation.",
               "cache_metrics": "Return process-local validation/cache counters for health exporters.",
+              "catalog": "Return a defensive copy of the integrity-validated release catalog.",
               "catalog_payload": "Return the byte-exact mutable catalog build artifact.",
               "clear_cache": "Clear validated snapshots; intended for deterministic test isolation.",
               "discovery_payload": "Return the well-known pointer plus current catalog identity.",
@@ -56146,10 +56167,10 @@
           }
         }
       },
-      "hash": "sha256:8af068f1417027bd56e6c561d3277de012f59e74960c55659831f92f276355ac",
+      "hash": "sha256:9ae918c53f04381f300efecbcaf0d810dea38921b594c0fbecdbb123a7aee08c",
       "language": "python",
       "module_page": "agent_skill_bundle_service",
-      "semantic_hash": "sha256:b6149101ef74260d3a60932809f50906acf84a90c5e92160a5ab0099b0173be3"
+      "semantic_hash": "sha256:d9d061915d9e370c53d8227af6e5a8b2196118f7cc1b736bf28602fde719dc4e"
     },
     "backend/app/services/agent_team_credentials.py": {
       "entities": [
@@ -56338,10 +56359,10 @@
           }
         }
       },
-      "hash": "sha256:a720726add0029b78678b98b819606243ce14cca6d54281d3b02014864384994",
+      "hash": "sha256:262f254f9bdacde79322cffbcffe2f3bdf77b95856e554bcb6dca808acd7443f",
       "language": "python",
       "module_page": "agent_team_setup_service",
-      "semantic_hash": "sha256:fd2dd887548527c8c867cd3e3e71b9d1dc75a0d832afa313e0fadc9c461177c3"
+      "semantic_hash": "sha256:6664f1f98fee8bf7c1ef5cc5e7885d8c3658a7f8262192437b61ab4c7f02968f"
     },
     "backend/app/services/agent_work_service.py": {
       "entities": [
@@ -60673,9 +60694,11 @@
           "description": "Shared isolated SQLite and PostgreSQL lifecycle fixtures.",
           "functions": {
             "actor_factory": "Persist deterministic actors with optional profile bindings.",
+            "agent_skill_artifact_root": "Build the same integrity-indexed role release used in deployments.",
             "configure_database": "Point shared database helpers at one test target and clear caches.",
             "db_session": "—",
             "db_session_factory": "Yield a factory so concurrency tests can open independent transactions.",
+            "deployed_agent_skill_release": "—",
             "failure_injector": "—",
             "frozen_clock": "—",
             "legacy_sqlite_factory": "—",
@@ -60691,10 +60714,10 @@
           }
         }
       },
-      "hash": "sha256:3af51f7b30269ef198957063c6e96f0127feb325f49aeef67a107d110d924902",
+      "hash": "sha256:881c53d5e01d0f48803961a28d23acd1f4ff455a9470c2a308b16a9255e3a2bf",
       "language": "python",
       "module_page": "conftest",
-      "semantic_hash": "sha256:be681e9f845e08c5fb46d6f65f2e0f1ffce08c20897e2d7a90145d6ec20a8645"
+      "semantic_hash": "sha256:33f30332082f5a7c802833df240654c3daad99fb3a497a8d50aa8065db69a021"
     },
     "backend/tests/database/test_database_configuration.py": {
       "entities": [],
@@ -62287,6 +62310,30 @@
       "module_page": "test_agent_skill_routing_guidance",
       "semantic_hash": "sha256:8a9da7b4ab9e1d7a0c2c7219a52d75ee863e203f5cece6feb346af5f7b35bc23"
     },
+    "backend/tests/test_agent_team_catalog.py": {
+      "entities": [],
+      "entity_page_occurrences": [],
+      "entity_pages": {},
+      "generated_semantics": {
+        "entities": {},
+        "module": {
+          "classes": {},
+          "description": "Team setup shares deployed bundle identities and integrity failures.",
+          "functions": {
+            "deployed_release": "—",
+            "test_deployed_catalog_supports_validation_and_bound_planning": "—",
+            "test_setup_and_delivery_fail_closed_on_damaged_release": "—",
+            "test_setup_revalidates_an_archive_changed_after_cache_population": "—",
+            "test_setup_uses_an_explicit_release_service": "—",
+            "test_setup_uses_the_delivery_catalog_and_returns_independent_copies": "—"
+          }
+        }
+      },
+      "hash": "sha256:af82493015d84a04e5d809905b7b11a3e857798ace03ce3a4567f41e425aad52",
+      "language": "python",
+      "module_page": "test_agent_team_catalog",
+      "semantic_hash": "sha256:e891f5c21354001941536c7269f28af4bef1c876e8d1f0b9048a645ed26d83f2"
+    },
     "backend/tests/test_agent_team_setup.py": {
       "entities": [
         "CapturingCredentialSink",
@@ -62349,10 +62396,10 @@
           }
         }
       },
-      "hash": "sha256:9f636cc1956638b62cafbbc553fbe0f2547325bf31e1976ba939bffb987be34d",
+      "hash": "sha256:7ae0b9cd77c99d1b45b464ef84df372dce6b2a6210c724db12f4bc223260429f",
       "language": "python",
       "module_page": "test_agent_team_setup",
-      "semantic_hash": "sha256:91968e06785d81728ed9839c7bd0917c7aad43dcc1312d4faad7c9489c03938c"
+      "semantic_hash": "sha256:b3f33c1b47cfef87a98f670b83a140ddceab0bcf452f7831ca6cb675eb09de76"
     },
     "backend/tests/test_agent_team_setup_cli.py": {
       "entities": [],
@@ -62431,7 +62478,7 @@
           }
         }
       },
-      "hash": "sha256:f2474c20c8ba5f2ed5e78ccb6df8f6d79b67b6ce1c103325284a4c19e13519e2",
+      "hash": "sha256:e75540dd136dcd652016a37d0d9f012dfd61daebb68cdd411183ad9f8e1fb982",
       "language": "python",
       "module_page": "test_agent_team_setup_qualification",
       "semantic_hash": "sha256:b13a331146bbbeeb610a9360b1f1932b6865c2d646b2fc7821f73332ebf23eb9"

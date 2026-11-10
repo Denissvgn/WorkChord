@@ -10,6 +10,8 @@ import os
 os.environ.setdefault("WORKCHORD_AUTH_MODE", "trusted_local")
 from pathlib import Path
 import socket
+import subprocess
+import sys
 from typing import Any
 
 import pytest
@@ -29,6 +31,7 @@ from app.services.agent_routing_rollout import (
     reset_agent_routing_topology_readiness,
     set_agent_routing_topology_readiness,
 )
+from app.services.agent_skill_bundle_service import AgentSkillBundleService
 from app import models  # noqa: F401 - register every mapper
 from app.models.agent import AgentActor
 from app.models.calendar import Calendar
@@ -43,6 +46,34 @@ from tests.support import (
     PostgresTestDatabase,
     PostgresTestDatabaseManager,
 )
+
+
+@pytest.fixture(scope="session")
+def agent_skill_artifact_root(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """Build the same integrity-indexed role release used in deployments."""
+    root = Path(__file__).resolve().parents[2]
+    output = tmp_path_factory.mktemp("agent-skills") / "release"
+    subprocess.run(
+        [sys.executable, str(root / "scripts/build_agent_skills.py"),
+         "--skills-dir", str(root / "agent-skills"),
+         "build", "--output-dir", str(output)],
+        check=True, capture_output=True, text=True,
+    )
+    return output
+
+
+@pytest.fixture
+def deployed_agent_skill_release(
+    agent_skill_artifact_root: Path, monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[Path]:
+    monkeypatch.setenv("WORKCHORD_AGENT_SKILL_ARTIFACTS_DIR", str(agent_skill_artifact_root))
+    monkeypatch.setenv("AGENT_SKILL_BUNDLES_PUBLIC", "false")
+    monkeypatch.setenv("AGENT_SKILL_BUNDLE_TRUSTED_CHECKSUMS_SHA256", "")
+    get_settings.cache_clear()
+    AgentSkillBundleService.clear_cache()
+    yield agent_skill_artifact_root
+    AgentSkillBundleService.clear_cache()
+    get_settings.cache_clear()
 
 
 @pytest.fixture(autouse=True)
