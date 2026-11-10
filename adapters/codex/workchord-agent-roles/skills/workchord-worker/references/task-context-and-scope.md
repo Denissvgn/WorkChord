@@ -38,18 +38,18 @@ earlier attempt, not proof that the current criteria are complete.
 
 Require these sections or equivalent typed fields:
 
-| Section | Worker question |
+| Section (typed field) | Worker question |
 | --- | --- |
-| Goal | What observable outcome must exist, and why? |
-| Context and sources | Which files, records, decisions, and evidence apply? |
-| Scope | What changes or investigation belong here? |
-| Out of scope | Which adjacent work must be reported instead? |
-| Constraints and risks | Which compatibility, security, migration, rollout, timing, or access limits apply? |
-| Expected deliverables | Which files, records, artifacts, or decisions must exist? |
-| Acceptance criteria | Which independently checkable statements define success? |
-| Verification | Which commands, checks, reviewer steps, and evidence are required? |
-| Dependencies and inputs | Which predecessor states or external inputs are required? |
-| Handoff and escalation | Who reviews, and what requires PM/human input? |
+| Goal (`goal`) | What observable outcome must exist, and why? |
+| Context (`context`) | Which files, records, decisions, and evidence apply? |
+| Scope (`scope`) | What changes or investigation belong here? |
+| Out of scope (`exclusions`) | Which adjacent work must be reported instead? |
+| Constraints and risks (headed paragraph in `context`) | Which compatibility, security, migration, rollout, timing, or access limits apply? |
+| Expected artifacts (`artifact_expectations`) | Which files, records, artifacts, or decisions must exist? |
+| Acceptance criteria (`acceptance_criteria`) | Which independently checkable statements define success, and how is each checked? |
+| Verification approach (`verification`) | Which commands, checks, reviewer steps, and evidence are required? |
+| Dependencies and inputs (dependency links and `context`) | Which predecessor states or external inputs are required? |
+| Handoff and escalation (headed paragraph in `context`) | Who reviews, and what requires PM/human input? |
 
 Do not begin if an omission can change implementation scope, safety, or the
 meaning of success. Emit or return exact missing-context reasons and request PM

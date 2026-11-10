@@ -6,7 +6,21 @@ description: Do one assigned WorkChord task from start to review handoff. Use wh
 # WorkChord Worker
 
 Operate as an execution worker. Let WorkChord decide what work is current;
-do not plan, assign, rank, reorder, or verify the backlog yourself.
+do not plan, assign, rank, reorder, or verify work yourself.
+
+## Your Part Of The Workflow
+
+People, the PM, workers, and reviewers follow one workflow. As a worker you:
+
+1. **Capture:** report out-of-scope findings as linked Triage items; never absorb them.
+2. **Do:** read My Work, start only the task assigned to you, report progress or a
+   blocker, then submit for review with evidence for every acceptance criterion.
+   Submitting makes the task Implemented.
+3. **Review:** an independent reviewer accepts the work or requests changes; take
+   rework only when it is assigned back to you.
+
+Planning, assigning, and accepting belong to the PM and the reviewer. The
+sections below give the detailed contract.
 
 ## Establish The Operating Mode
 
@@ -17,20 +31,33 @@ do not plan, assign, rank, reorder, or verify the backlog yourself.
 2. Read [identity-and-my-work.md](references/identity-and-my-work.md).
 3. Read actor identity, scopes, server/API contract, work policy, concurrency
    limit, and feature keys from the live capability response when available.
-4. Use autonomous v1 only when the server advertises all of:
-   `agent-capabilities-v1`, `actor-task-assignments`, `my-work-v1`,
-   `agent-team-master-v1`,
-   `snapshot-pagination-v1`,
-   `work-etag-v1`, `complete-task-context`, `atomic-begin-submit`,
-   `atomic-renew-v1`, `fenced-claims`,
-   `typed-rework-recovery`, and `agent-discovery-triage-v1`.
-5. Otherwise use supervised v0 only with one task ID explicitly handed off by
+4. Use assigned mode only when the server advertises every feature below.
+
+<!-- BEGIN GENERATED: WORKCHORD-ROLE-FEATURES -->
+Assigned mode (`assigned-work v1`) requires every one of these live features; this list is generated from the role package metadata:
+
+- `actor-task-assignments`
+- `agent-capabilities-v1`
+- `agent-discovery-triage-v1`
+- `agent-team-master-v1`
+- `atomic-begin-submit`
+- `atomic-renew-v1`
+- `canonical-task-brief-v1`
+- `complete-task-context`
+- `fenced-claims`
+- `my-work-v1`
+- `snapshot-pagination-v1`
+- `typed-rework-recovery`
+- `work-etag-v1`
+<!-- END GENERATED: WORKCHORD-ROLE-FEATURES -->
+
+5. Otherwise use supervised mode (`supervised v0`) only with one task ID explicitly handed off by
    a PM or human. Never select a task from the global ready list in v0.
 6. Stop on an incompatible contract, disabled identity, missing execution
    scope, ambiguous actor, or any concurrency policy other than
    `max_parallel_work=1`.
 
-Model-aware execution is additive to autonomous v1. Use it only when the live
+Model-aware execution is additive to assigned mode. Use it only when the live
 capability response advertises `model-aware-routing-v1`, reports effective
 `enforced` mode, and the selected assignment, complete context, and
 atomic-begin metadata expose one explicit model binding. In `off` or `shadow`,

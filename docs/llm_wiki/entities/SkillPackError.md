@@ -1,6 +1,6 @@
 # SkillPackError
 
-**Location:** `scripts/build_agent_skills.py:841`
+**Location:** `scripts/build_agent_skills.py:843`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [build_agent_skills](../modules/build_agent_skills.md)

@@ -147,7 +147,12 @@ const CalendarPage = () => {
         queueMicrotask(() => {
             if (cancelled) return;
             void readCalendarContext('calendar', calendarId).then(observed => {
-                if (!cancelled && generation === draftGeneration.current && observed) setDraft(makeDraft(observed.resource));
+                if (!cancelled && generation === draftGeneration.current && observed) {
+                    setDraft(makeDraft(observed.resource));
+                    // Open on the current month when the calendar covers this year.
+                    const today = new Date();
+                    setVisibleMonth(observed.resource.year === today.getFullYear() ? today.getMonth() : 0);
+                }
             });
             setVisibleMonth(0);
             setCalendarSummary('');
@@ -711,9 +716,14 @@ const CalendarPage = () => {
                     label={t('actions.moreActions')}
                     items={[
                         {
-                            label: calendars.length <= 1
-                                ? t('calendar.deleteLastCalendarHint')
-                                : t('calendar.deleteCalendar'),
+                            label: calendars.length <= 1 ? (
+                                <span>
+                                    {t('calendar.deleteCalendar')}
+                                    <span className="block text-xs font-normal text-content-secondary">
+                                        {t('calendar.deleteLastCalendarHint')}
+                                    </span>
+                                </span>
+                            ) : t('calendar.deleteCalendar'),
                             icon: <Trash2 className="h-4 w-4" aria-hidden="true" />,
                             onSelect: confirmDeleteCalendar,
                             disabled: calendars.length <= 1 || calendarBusy,
@@ -923,13 +933,18 @@ const CalendarPage = () => {
                                 value={manualDate}
                                 onChange={event => setManualDate(event.target.value)}
                             />
-                            <Button
-                                type="button"
-                                onClick={addManualDate}
-                                disabled={!manualDate}
-                            >
-                                {t('calendar.addDay')}
-                            </Button>
+                            <div>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={addManualDate}
+                                    disabled={!manualDate}
+                                >
+                                    <Plus className="w-4 h-4" />
+                                    {t('calendar.addDay')}
+                                </Button>
+                                {!manualDate && <p className="mt-1 text-xs text-content-secondary">{t('calendar.addDayHint')}</p>}
+                            </div>
                             <Input
                                 type="date"
                                 label={t('calendar.startDate')}
@@ -943,15 +958,20 @@ const CalendarPage = () => {
                                 min={rangeStart}
                                 onChange={event => setRangeEnd(event.target.value)}
                             />
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                onClick={addManualRange}
-                                disabled={!rangeStart || !rangeEnd || rangeStart > rangeEnd}
-                            >
-                                <CalendarRange className="w-4 h-4" />
-                                {t('calendar.addRange')}
-                            </Button>
+                            <div>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={addManualRange}
+                                    disabled={!rangeStart || !rangeEnd || rangeStart > rangeEnd}
+                                >
+                                    <CalendarRange className="w-4 h-4" />
+                                    {t('calendar.addRange')}
+                                </Button>
+                                {(!rangeStart || !rangeEnd || rangeStart > rangeEnd) && (
+                                    <p className="mt-1 text-xs text-content-secondary">{t('calendar.addRangeHint')}</p>
+                                )}
+                            </div>
                         </div>
                     </section>
 
@@ -1023,7 +1043,7 @@ const CalendarPage = () => {
                         <h4>{t('calendar.noTeamTitle')}</h4>
                         <p>{t('calendar.noTeamBody')}</p>
                         <div className="empty-actions">
-                            <Link to="/team" className="btn primary">{t('nav.team')}</Link>
+                            <Link to="/team" className="btn">{t('calendar.addCapacityInTeam')}</Link>
                         </div>
                     </div>
                 ) : (

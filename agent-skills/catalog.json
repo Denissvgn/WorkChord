@@ -9,22 +9,22 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.11.0.tar.gz",
-          "sha256": "28f4ddc8ab4261da1d01543ae5b2b3df4769973ccf64c94638fb3fc8f744a9bd",
+          "sha256": "a1ac37fb11c92a3fec0e870a9b81aa4de377c4c98ce4f173d66f9d775ec3b2de",
           "size": 143393
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.11.0.zip",
-          "sha256": "725abc9712eb52da8ba7215e5c14ee1574fa31cd4e3798d521bd6ec2a6a8ff35",
-          "size": 130555
+          "sha256": "90fb18bd14887ed2495cc7ad1b7afed95d1738d255d16577528b4b6370519857",
+          "size": 132871
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "45379623b2a2191349ff8abc316a6c8f605f8347a85ba0c287cfb3e224c1f325",
-          "size": 11433
+          "sha256": "707b6bdb2111877d51bb45f2dcc049a92f4a6eda5ceb93831ccca7b7de70619e",
+          "size": 12368
         },
         {
           "path": "agents/openai.yaml",
@@ -43,8 +43,8 @@
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
-          "sha256": "c5519203e783a7345b8cd36c74719abc59e253a2b6f5df60cf6ed15d7f99d294",
-          "size": 16902
+          "sha256": "af877d4f807a7cb8c25fa59584e8595e7ef2c021fa94915bcc445e8198145f14",
+          "size": 18283
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -116,22 +116,22 @@
         {
           "format": "tar.gz",
           "path": "workchord-worker-1.10.0.tar.gz",
-          "sha256": "e9ef21d0b34de6631dfbcf9352aa7855dabc1defff91b5033acf9290a416dec5",
+          "sha256": "6871fd550189d026b906770bd4c53ed0287371e798492d19a61c92c40b132671",
           "size": 81948
         },
         {
           "format": "zip",
           "path": "workchord-worker-1.10.0.zip",
-          "sha256": "27faa28afa4b6cab190a8213ef7c82ca4657ab7358e47d6c1f55817486f85f12",
-          "size": 70620
+          "sha256": "fedd0ba7757afbd85b43144c74282154f6b75645a3ce5bbfb02a5b1e846a27e7",
+          "size": 71964
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "0fe629dea702ca6a67ff0809234d42dca6bf644bce6bc98eeb5aa2f790568ddc",
-          "size": 8490
+          "sha256": "f4d4a729623e26b62271c942225ff16ac7ec9ab571386d67a637095c77d9585e",
+          "size": 9419
         },
         {
           "path": "agents/openai.yaml",
@@ -155,13 +155,13 @@
         },
         {
           "path": "references/identity-and-my-work.md",
-          "sha256": "dde449b8563d19b2f6e46328f5712b1a1d7765efa439beac48f9d0cb071a2d4f",
-          "size": 10211
+          "sha256": "84717440e076888fd263fe84cfd9ca22e81dc249b490f995369143e07d0cb44d",
+          "size": 10383
         },
         {
           "path": "references/task-context-and-scope.md",
-          "sha256": "be9886c05c750e488a1c8e4a4c9eccba82f8c5e7c14ffab09a8fb02c9ff56b98",
-          "size": 6608
+          "sha256": "b98accd7b39c5e81ab570b4b715aa5296d303300a90b0286952ae1a52cbfa72f",
+          "size": 6851
         },
         {
           "path": "references/workflow-and-names.md",
@@ -203,5 +203,5 @@
       "version": "1.10.0"
     }
   ],
-  "source_revision": "sha256:653528806f1a60ff702e7b6801137fcef88cea7ff19338fe0da0c5e1e03f9aae"
+  "source_revision": "sha256:687f7007f7e7e6aac363cbb6635c3318c3aaa85620d17bc231a52c8aff349cd2"
 }

@@ -1908,6 +1908,17 @@ const TriagePage = () => {
         Number(Boolean(sourceFilter)) +
         Number(Boolean(statusFilter)) +
         Number(!activeOnly);
+    const resetFilters = () => {
+        clearRequestedViewParam();
+        setSearch('');
+        setSourceFilter('');
+        setStatusFilter('');
+        setActiveOnly(true);
+    };
+    const startNewIntake = () => {
+        createMutation.reset();
+        setIsCreating(true);
+    };
 
     const invalidateTriageQueries = () => {
         queryClient.invalidateQueries({ queryKey: ['triage'] });
@@ -2074,14 +2085,10 @@ const TriagePage = () => {
                 title={t('surfaces.triagePage.triageIntake')}
                 subtitle={t('surfaces.triagePage.reviewRawIntakeAndConvertAcceptedWorkIntoPlannedTasks')}
                 actions={(
-                    <OverflowMenu
-                        label={t('actions.moreActions')}
-                        items={[{
-                            label: t('surfaces.triagePage.newIntake'),
-                            icon: <Plus className="h-4 w-4" aria-hidden="true" />,
-                            onSelect: () => { createMutation.reset(); setIsCreating(true); },
-                        }]}
-                    />
+                    <Button onClick={startNewIntake}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.triagePage.newIntake')}
+                    </Button>
                 )}
             />
 
@@ -2130,6 +2137,7 @@ const TriagePage = () => {
                                 setSearch(event.target.value);
                             }}
                             placeholder={t('surfaces.triagePage.searchTitleDescriptionSourceKey')}
+                            aria-label={t('surfaces.triagePage.searchIntake')}
                             className="pl-9"
                         />
                     </div>
@@ -2149,13 +2157,7 @@ const TriagePage = () => {
                     {activeFilterCount > 0 && (
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                clearRequestedViewParam();
-                                setSearch('');
-                                setSourceFilter('');
-                                setStatusFilter('');
-                                setActiveOnly(true);
-                            }}
+                            onClick={resetFilters}
                         >
                             {t('surfaces.triagePage.reset')}
                         </Button>
@@ -2196,7 +2198,7 @@ const TriagePage = () => {
                             </select>
                         </label>
                         <div>
-                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-content-secondary">{t('surfaces.triagePage.status')}</span>
+                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-content-secondary">{t('surfaces.triagePage.show')}</span>
                             <div className="seg">
                                 <button
                                     type="button"
@@ -2247,7 +2249,7 @@ const TriagePage = () => {
                 </div>
             )}
 
-            <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
+            <div className={clsx('grid min-h-0 flex-1 grid-cols-1 gap-4', (triageItems.length > 0 || selectedItem) && 'xl:grid-cols-[minmax(0,1fr)_420px]')}>
                 <div className="min-h-0 overflow-hidden rounded-lg border border-border bg-surface-card">
                     {listErrorMessage ? (
                         <QueryErrorState
@@ -2261,8 +2263,22 @@ const TriagePage = () => {
                         <div className="flex h-full items-center justify-center p-8 text-center">
                             <div>
                                 <Inbox className="mx-auto mb-3 h-10 w-10 text-content-tertiary" />
-                                <p className="font-medium text-content-primary">{t('surfaces.triagePage.noIntakeItemsMatchTheCurrentFilters')}</p>
-                                <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.convertedDeclinedDuplicateAndFutureSnoozedItemsAreHiddenByTheActiveInboxUnlessFiltered')}</p>
+                                {activeFilterCount > 0 ? (
+                                    <>
+                                        <p className="font-medium text-content-primary">{t('surfaces.triagePage.noIntakeItemsMatchTheCurrentFilters')}</p>
+                                        <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.convertedDeclinedDuplicateAndFutureSnoozedItemsAreHiddenByTheActiveInboxUnlessFiltered')}</p>
+                                        <Button className="mt-3" variant="secondary" onClick={resetFilters}>{t('surfaces.triagePage.reset')}</Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="font-medium text-content-primary">{t('surfaces.triagePage.inboxZeroTitle')}</p>
+                                        <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.inboxZeroBody')}</p>
+                                        <Button className="mt-3" onClick={startNewIntake}>
+                                            <Plus className="h-4 w-4" aria-hidden="true" />
+                                            {t('surfaces.triagePage.newIntake')}
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -2294,7 +2310,7 @@ const TriagePage = () => {
                     )}
                 </div>
 
-                <div className="min-h-[420px] xl:min-h-0">
+                {(triageItems.length > 0 || selectedItem) && <div className="min-h-[420px] xl:min-h-0">
                     <TriageDetailPanel
                         item={selectedItem}
                         projectsById={projectsById}
@@ -2305,7 +2321,7 @@ const TriagePage = () => {
                         onConvert={openConvert}
                         onRequestLinksChanged={invalidateTriageQueries}
                     />
-                </div>
+                </div>}
             </div>
 
             {isCreating && (

@@ -81,5 +81,5 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [CalendarDraft](../entities/CalendarDraft.md) | Interface | 39 | — | — |
 | [VacationRow](../entities/VacationRow.md) | Interface | 46 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Interface | 1127 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Interface | 1190 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Interface | 1147 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Interface | 1210 | — | — |

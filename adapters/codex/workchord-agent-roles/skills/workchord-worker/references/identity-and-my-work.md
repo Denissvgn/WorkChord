@@ -8,8 +8,8 @@ using `expected_previous_acknowledgement_digest`; retain the prior digest and
 never overwrite acknowledgement blindly. `availability_unknown` is not a
 provider health check.
 
-Use this reference to establish authority, choose autonomous v1 or supervised
-v0, and interpret the server-owned work decision.
+Use this reference to establish authority, choose assigned mode (`assigned-work v1`) or supervised
+mode (`supervised v0`), and interpret the server-owned work decision.
 
 ## Separate The Runtime Identities
 
@@ -88,7 +88,7 @@ role version.
 
 ## Gate The Mode
 
-Use autonomous v1 only when all required features are advertised:
+Use assigned mode (`assigned-work v1`) only when all required features are advertised:
 
 | Feature | Guarantee required by this skill |
 | --- | --- |
@@ -99,6 +99,7 @@ Use autonomous v1 only when all required features are advertised:
 | `snapshot-pagination-v1` | Ready, blocked, review, and recovery pages use opaque snapshot-bound cursors |
 | `work-etag-v1` | REST work polling supports a private weak ETag and bodyless `304` |
 | `complete-task-context` | Assignment, brief, dependencies, readiness, timeline, and evidence contract |
+| `canonical-task-brief-v1` | Typed brief fields and stable acceptance-criterion IDs that evidence binds to |
 | `atomic-begin-submit` | Transactional lifecycle boundaries for start and success |
 | `atomic-renew-v1` | Lease extension and run heartbeat update remain one fenced operation |
 | `fenced-claims` | Stale writers cannot mutate after lease loss |

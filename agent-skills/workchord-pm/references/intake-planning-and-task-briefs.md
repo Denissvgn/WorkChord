@@ -106,46 +106,55 @@ supervised-v0 compatibility primitives, not the audited decomposition contract.
 
 ## Write the Complete Task Brief
 
-Put this structure in the task description until the live server exposes equivalent typed fields. Preserve concrete source links and verification commands.
+Write the brief into the task's typed `brief` object (feature
+`canonical-task-brief-v1`) on planning create and patch, not into the
+description. People edit the same fields in the WorkChord task view, workers
+and reviewers treat them as authoritative, and readiness evaluates them. A
+brief written only into the description stays a legacy Markdown projection:
+it has no criterion IDs to record evidence against, and readiness falls back
+to a keyword check.
+
+| Typed field | Shown to people as | Put here |
+| --- | --- | --- |
+| `goal` | Goal | The observable outcome and why it matters. |
+| `context` | Context | Request, files or records, prior decisions, known evidence, and the headed paragraphs below. |
+| `scope` | Scope | The changes or investigation that belong to this task. |
+| `exclusions` | Out of scope | Adjacent work the worker must report instead of absorbing. |
+| `acceptance_criteria[]` | Acceptance criteria | One independently checkable statement per item in `text`, with how to check it in `verification`. |
+| `verification` | Verification approach | Commands, checks, reviewer expectations, and required evidence across criteria. |
+| `artifact_expectations` | Expected artifacts | Files, records, artifacts, or decisions that must exist. |
+
+Put these sections at the end of `context` as headed paragraphs, because they
+have no typed field of their own:
 
 ```markdown
-## Goal
-State the observable outcome and why it matters.
+### Constraints and risks
+Compatibility, security, migration, rollout, timing, and access limits.
 
-## Context and sources
-Link the request, relevant files or records, prior decisions, and known evidence.
-
-## Scope
-List the changes or investigation that belong to this task.
-
-## Out of scope
-Name adjacent work the worker must report instead of absorbing.
-
-## Constraints and risks
-Record compatibility, security, migration, rollout, timing, and access limits.
-
-## Difficulty and routing requirements
-Record the five governed axes, derived band, confidence, governed reason codes,
+### Difficulty and routing requirements
+The five governed axes, derived band, confidence, governed reason codes,
 minimum skill levels, provider-neutral model/tool/data-policy minimums, review
 mode, and assessment rationale. Use a typed live assessment when advertised;
-otherwise label this as supervised planning evidence rather than a model-aware
-selection.
+otherwise label this as supervised planning evidence rather than a
+model-aware selection.
 
-## Expected deliverables
-Name the files, records, artifacts, or decisions that must exist.
+### Dependencies and inputs
+External inputs and the state that satisfies each one. Record predecessor
+tasks as real dependency links, not only as prose.
 
-## Acceptance criteria
-Use independently checkable statements.
-
-## Verification
-Give commands, checks, reviewer expectations, and required evidence.
-
-## Dependencies and inputs
-Name predecessor tasks, external inputs, and the state that satisfies each one.
-
-## Handoff and escalation
-Name the reviewer and conditions requiring PM or human input.
+### Handoff and escalation
+The reviewer and the conditions requiring PM or human input.
 ```
+
+Let the server assign criterion `id` and `revision`; keep them when you patch
+an existing criterion so recorded evidence stays bound to it. Changing a
+criterion's meaning creates a new revision, and evidence for the old revision
+cannot support acceptance. When an existing task has only a legacy
+description, write its typed brief with `agent_patch_planning_task` (or the
+matching planning REST route) and check every field against the original text
+before relying on it.
+
+Preserve concrete source links and verification commands.
 
 Reject vague phrases such as “make it work,” “update as needed,” or “test everything.” Name paths, behavioral boundaries, compatible versions, expected outputs, and the minimum sufficient evidence whenever they are knowable.
 
@@ -233,7 +242,7 @@ lifecycle may still be used if its own feature set remains complete.
 Require all of these before routing or scheduling:
 
 - Use a leaf task in a real iteration.
-- Complete every task-brief section or explicitly state “none” with rationale.
+- Complete every typed brief field and every headed `context` section, or explicitly state “none” with rationale.
 - Link the correct project and optional milestone.
 - Set positive effort and priority.
 - Set a valid same-iteration dependency graph.
@@ -246,7 +255,7 @@ Require all of these before routing or scheduling:
   version; otherwise record that selection will remain supervised and cannot be
   described as model-aware.
 
-Treat the current server's description-length and keyword readiness check as a minimum signal, not proof of this contract.
+The server's definition-ready check reads the typed brief (goal, scope, acceptance criteria, and verification) and falls back to a description keyword check only for legacy tasks. Treat either as a minimum signal, not proof of this contract.
 
 ### Start-ready
 
