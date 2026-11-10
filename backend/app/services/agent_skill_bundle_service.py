@@ -538,6 +538,10 @@ class AgentSkillBundleService:
             raise SkillBundleNotFoundError("Requested archive format is unavailable")
         return matches[0]
 
+    def catalog(self) -> SkillBundleCatalogResponse:
+        """Return a defensive copy of the integrity-validated release catalog."""
+        return self._load_release().catalog.model_copy(deep=True)
+
     def catalog_payload(self) -> SkillBundlePayload:
         """Return the byte-exact mutable catalog build artifact."""
         release = self._load_release()

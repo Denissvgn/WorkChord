@@ -47,6 +47,7 @@ from tests.test_delivery_scenarios import delivery_store
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+pytestmark = pytest.mark.usefixtures("deployed_agent_skill_release")
 EXAMPLE_PATH = REPOSITORY_ROOT / "config" / "examples" / "agent-team-master.json"
 
 

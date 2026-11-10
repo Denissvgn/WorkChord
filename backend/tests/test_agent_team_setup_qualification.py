@@ -64,6 +64,7 @@ from tests.test_agent_team_setup import (
 
 
 pytestmark = [
+    pytest.mark.usefixtures("deployed_agent_skill_release"),
     pytest.mark.sqlite,
     pytest.mark.usefixtures("qualified_model_aware_routing_test_context"),
 ]
