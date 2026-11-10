@@ -540,6 +540,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [workQueryFreshness](modules/workQueryFreshness.md) | 4 | 0 |
 | [useAgentAccess](modules/useAgentAccess.md) | 4 | 1 |
 | [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) | 4 | 1 |
+| [resources.en](modules/resources.en.md) | 4 | 4 |
 | [routeModules](modules/routeModules.md) | 4 | 0 |
 | [templateService](modules/templateService.md) | 4 | 2 |
 | [timeEntryService](modules/timeEntryService.md) | 4 | 1 |
@@ -593,7 +594,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
-| [resources.en](modules/resources.en.md) | 3 | 4 |
+| [resources.ru](modules/resources.ru.md) | 3 | 4 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
 | [releaseService](modules/releaseService.md) | 3 | 2 |
 | [systemSettingsService](modules/systemSettingsService.md) | 3 | 2 |
@@ -700,7 +701,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [useTimeEntries](modules/useTimeEntries.md) | 2 | 2 |
 | [pagination](modules/pagination.md) | 2 | 0 |
 | [planningInputMessages](modules/planningInputMessages.md) | 2 | 0 |
-| [resources.ru](modules/resources.ru.md) | 2 | 4 |
 | [schedulingDisplay](modules/schedulingDisplay.md) | 2 | 2 |
 | [timeEntries](modules/timeEntries.md) | 2 | 0 |
 | [calendarService](modules/calendarService.md) | 2 | 3 |
@@ -924,6 +924,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_task_pagination](modules/test_task_pagination.md) | 0 | 15 |
 | [test_time_reports](modules/test_time_reports.md) | 0 | 18 |
 | [test_work_correctness](modules/test_work_correctness.md) | 0 | 27 |
+| [test_workflow_vocabulary](modules/test_workflow_vocabulary.md) | 0 | 0 |
 | [eslint.config](modules/eslint.config.md) | 0 | 0 |
 | [postcss.config](modules/postcss.config.md) | 0 | 0 |
 | [check-bundle-budget](modules/check-bundle-budget.md) | 0 | 0 |
@@ -1003,6 +1004,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) | 0 | 2 |
 | [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) | 0 | 3 |
 | [i18n.test](modules/i18n.test.md) | 0 | 3 |
+| [workflowVocabulary.test](modules/workflowVocabulary.test.md) | 0 | 2 |
 | [src_main](modules/src_main.md) | 0 | 5 |
 | [workspaces.test](modules/workspaces.test.md) | 0 | 1 |
 | [AgentPipelinePage.test](modules/AgentPipelinePage.test.md) | 0 | 5 |

@@ -1,6 +1,6 @@
 ---
 name: workchord-pm
-description: Operate WorkChord as an accountable PM controller. Use when an agent must define initiatives, projects, milestones, releases, iterations, calendars, teams, capability profiles, intake, executable task briefs, assignments, schedules, delivery supervision, verification, rework, recovery, or stakeholder updates in a WorkChord workspace.
+description: Plan, assign, and supervise WorkChord work as the accountable PM. Use when an agent must define initiatives, projects, milestones, releases, iterations, calendars, teams, capability profiles, intake, executable task briefs, assignments, schedules, delivery supervision, verification, rework, recovery, or stakeholder updates in a WorkChord workspace.
 ---
 
 # WorkChord PM
@@ -18,13 +18,14 @@ Control planning and delivery through WorkChord's authoritative records. Shape a
 4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
 5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
 6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
+7. Use the shared names in [workflow-and-names.md](references/workflow-and-names.md) in everything people read: task text, events, Triage items, project updates, and review notes.
 
 Never provision actors, issue or rotate keys, modify runtime secrets, or infer authorization from a profile skill, task label, or installed procedural skill. Ask an operator to perform identity administration.
 The Setup Master validate/plan/apply surfaces are operator-only. A bound PM may
 read its secret-free topology status and handoffs but must not adopt, create,
 replace, disable, activate, or broaden any member.
 
-The full assigned-work v1 PM controller requires both `recovery:read` and
+The full assigned-work v1 PM role requires both `recovery:read` and
 `recovery:write`. A PM without recovery write authority may diagnose and hand
 off stale work, but must not claim that the recovery phase is complete.
 
@@ -70,14 +71,14 @@ Inspect assignment, task status, claim expiry, run state, recent progress, artif
 
 ### 6. Verify, Rework, Close, and Report
 
-Compare submitted evidence with every acceptance criterion. Let an independent verifier or accountable PM close accepted work. Reject failed work to an explicitly owned rework queue. Append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Compare submitted evidence with every acceptance criterion. Let an independent reviewer (the `verifier` role) or the accountable PM accept the work. Request changes by rejecting failed work to an explicitly owned rework queue. Append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ## Preserve Role Boundaries
 
 - Let the PM own scope, priority, dependencies, capacity ownership, actor dispatch, queue order, schedule, reviewer selection, recovery, and reporting.
 - Let the assigned worker own `planned -> active -> resolved` during a valid execution attempt.
-- Let an independent verifier or accountable PM own `resolved -> closed` or `resolved -> active` for rework.
-- Treat `Task.assignee_id` as iteration capacity ownership, not authenticated actor assignment.
+- Let an independent reviewer or the accountable PM own `resolved -> closed` (Accept) or `resolved -> active` for rework (Request changes).
+- Treat `Task.assignee_id` (the assignee people see) as iteration capacity ownership, not authenticated actor assignment.
 - Treat a durable actor assignment as dispatch, not a claim.
 - Treat a claim as a temporary execution lease, not task status.
 - Treat an agent run as one observable attempt, not proof of acceptance.

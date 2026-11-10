@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1523,
+      "entities": 1526,
       "flows": 550,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 755,
+      "modules": 757,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3036
+    "total": 3041
   },
   "dependency_pages": {
     "count": 2,
@@ -38417,7 +38417,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3088,
+              "line": 3331,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38425,7 +38425,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3093,
+              "line": 3336,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38433,7 +38433,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3096,
+              "line": 3339,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38441,7 +38441,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3099,
+              "line": 3342,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38449,7 +38449,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3102,
+              "line": 3345,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38457,7 +38457,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3108,
+              "line": 3351,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38465,7 +38465,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3111,
+              "line": 3354,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38473,7 +38473,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3120,
+              "line": 3363,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38482,61 +38482,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3079,
+              "line": 3322,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3020,
+              "line": 3263,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3021,
+              "line": 3264,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3027,
+              "line": 3270,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3028,
+              "line": 3271,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3032,
+              "line": 3275,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3036,
+              "line": 3279,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3037,
+              "line": 3280,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3041,
+              "line": 3284,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3042,
+              "line": 3285,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -38562,7 +38562,7 @@
           "modules_touched": [
             "scripts/build_agent_skills.py"
           ],
-          "step_count": 1165,
+          "step_count": 1250,
           "truncated": true
         }
       },
@@ -43378,6 +43378,7 @@
         "entities/EmailSettingsResponse.md",
         "entities/EmailSettingsService.md",
         "entities/EmailValidationErrors.md",
+        "entities/Entry.md",
         "entities/ErrorDetail.md",
         "entities/ErrorResponse.md",
         "entities/EventOption.md",
@@ -43515,6 +43516,7 @@
         "entities/LLMRuntimeSettingsResponse.md",
         "entities/LLMService.md",
         "entities/LoadedRelease.md",
+        "entities/Localized.md",
         "entities/LocalizedStepStatus.md",
         "entities/LockedAcceptanceObject.md",
         "entities/MaintenanceModeError.md",
@@ -44517,6 +44519,7 @@
         "entities/VirtualClient.md",
         "entities/VisibleHealthState.md",
         "entities/VisibleLeaf.md",
+        "entities/Vocabulary.md",
         "entities/WebIntakeConfigurationError.md",
         "entities/WebIntakeForm.md",
         "entities/WebIntakeRateLimiter.md",
@@ -45789,6 +45792,7 @@
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
+        "modules/test_workflow_vocabulary.md",
         "modules/text_similarity.md",
         "modules/themeStore.md",
         "modules/time.md",
@@ -45854,6 +45858,7 @@
         "modules/vitest.config.md",
         "modules/web_intake_service.md",
         "modules/worker.md",
+        "modules/workflowVocabulary.test.md",
         "modules/WorkFreshness.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
@@ -50995,6 +51000,18 @@
       "title": "EmailValidationErrors"
     },
     {
+      "canonical_path": "entities/Entry.md",
+      "id": "Entry",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Entry",
+      "outgoing_internal_links": [
+        "modules/workflowVocabulary.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/workflowVocabulary.test.ts",
+      "title": "Entry"
+    },
+    {
       "canonical_path": "entities/ErrorDetail.md",
       "id": "ErrorDetail",
       "kind": "entities",
@@ -52793,6 +52810,18 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
       "title": "_LoadedRelease"
+    },
+    {
+      "canonical_path": "entities/Localized.md",
+      "id": "Localized",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Localized",
+      "outgoing_internal_links": [
+        "modules/workflowVocabulary.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/workflowVocabulary.test.ts",
+      "title": "Localized"
     },
     {
       "canonical_path": "entities/LocalizedStepStatus.md",
@@ -66812,6 +66841,18 @@
       "title": "VisibleLeaf"
     },
     {
+      "canonical_path": "entities/Vocabulary.md",
+      "id": "Vocabulary",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Vocabulary",
+      "outgoing_internal_links": [
+        "modules/workflowVocabulary.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/workflowVocabulary.test.ts",
+      "title": "Vocabulary"
+    },
+    {
       "canonical_path": "entities/WebIntakeConfigurationError.md",
       "id": "WebIntakeConfigurationError",
       "kind": "entities",
@@ -73668,7 +73709,8 @@
         "modules/planningInputMessages.md",
         "modules/resources.en.md",
         "modules/teamwork.en.md",
-        "modules/timeEntries.md"
+        "modules/timeEntries.md",
+        "modules/workflowVocabulary.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/i18n/resources.en.ts",
@@ -73686,7 +73728,8 @@
         "modules/planningInputMessages.md",
         "modules/resources.ru.md",
         "modules/teamwork.ru.md",
-        "modules/timeEntries.md"
+        "modules/timeEntries.md",
+        "modules/workflowVocabulary.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/i18n/resources.ru.ts",
@@ -78769,6 +78812,16 @@
       "title": "test_work_package_service Module"
     },
     {
+      "canonical_path": "modules/test_workflow_vocabulary.md",
+      "id": "test_workflow_vocabulary",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_workflow_vocabulary",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/tests/test_workflow_vocabulary.py",
+      "title": "test_workflow_vocabulary Module"
+    },
+    {
       "canonical_path": "modules/text_similarity.md",
       "id": "text_similarity",
       "kind": "modules",
@@ -80048,6 +80101,23 @@
       "role": "semantic",
       "source_path": "backend/app/cli/worker.py",
       "title": "worker Module"
+    },
+    {
+      "canonical_path": "modules/workflowVocabulary.test.md",
+      "id": "workflowVocabulary.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/workflowVocabulary.test",
+      "outgoing_internal_links": [
+        "entities/Entry.md",
+        "entities/Localized.md",
+        "entities/Vocabulary.md",
+        "modules/resources.en.md",
+        "modules/resources.ru.md",
+        "modules/workflowVocabulary.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/workflowVocabulary.test.ts",
+      "title": "workflowVocabulary.test Module"
     },
     {
       "canonical_path": "modules/WorkFreshness.md",
@@ -94432,6 +94502,7 @@
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
+        "modules/test_workflow_vocabulary.md",
         "modules/text_similarity.md",
         "modules/themeStore.md",
         "modules/time.md",
@@ -94497,6 +94568,7 @@
         "modules/vitest.config.md",
         "modules/web_intake_service.md",
         "modules/worker.md",
+        "modules/workflowVocabulary.test.md",
         "modules/WorkFreshness.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
@@ -95198,6 +95270,7 @@
         "modules/test_transfer_catalog.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
+        "modules/test_workflow_vocabulary.md",
         "modules/text_similarity.md",
         "modules/themeStore.md",
         "modules/time.md",
@@ -95263,6 +95336,7 @@
         "modules/vitest.config.md",
         "modules/web_intake_service.md",
         "modules/worker.md",
+        "modules/workflowVocabulary.test.md",
         "modules/WorkFreshness.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
@@ -95280,5 +95354,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:4052b03c4080113ce01695f1c67f97861a695c6c40bfb75cd7ff743adf666350"
+  "source_hash": "sha256:a19a7fd430e24192d6d08492febdb0794465edb89a12d1c75d8547befd78965c"
 }

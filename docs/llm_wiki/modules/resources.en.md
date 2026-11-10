@@ -34,7 +34,8 @@ flowchart LR
     n4["frontend/src/i18n/resources.en.ts"]
     n5["frontend/src/i18n/teamwork.en.ts"]
     n6["frontend/src/i18n/timeEntries.ts"]
-    n7["frontend/src/pages/PlanMasterPage.test.tsx"]
+    n7["frontend/src/i18n/workflowVocabulary.test.ts"]
+    n8["frontend/src/pages/PlanMasterPage.test.tsx"]
     n0 --> n1
     n0 --> n4
     n1 --> n4
@@ -42,8 +43,9 @@ flowchart LR
     n4 --> n3
     n4 --> n5
     n4 --> n6
-    n7 --> n1
     n7 --> n4
+    n8 --> n1
+    n8 --> n4
     click n0 "../modules/i18n.test.md"
     click n1 "../modules/i18n.md"
     click n2 "../modules/pagination.md"
@@ -51,7 +53,8 @@ flowchart LR
     click n4 "../modules/resources.en.md"
     click n5 "../modules/teamwork.en.md"
     click n6 "../modules/timeEntries.md"
-    click n7 "../modules/PlanMasterPage.test.md"
+    click n7 "../modules/workflowVocabulary.test.md"
+    click n8 "../modules/PlanMasterPage.test.md"
 ```
 
 ### Internal neighbors
@@ -60,6 +63,7 @@ flowchart LR
 |---|---|
 | Inbound | [i18n.test](../modules/i18n.test.md) |
 | Inbound | [i18n](../modules/i18n.md) |
+| Inbound | [workflowVocabulary.test](../modules/workflowVocabulary.test.md) |
 | Inbound | [PlanMasterPage.test](../modules/PlanMasterPage.test.md) |
 | Outbound | [pagination](../modules/pagination.md) |
 | Outbound | [planningInputMessages](../modules/planningInputMessages.md) |

@@ -1,6 +1,6 @@
 ---
 name: workchord-worker
-description: Execute one WorkChord backlog assignment safely from acquisition through handoff. Use when an implementation, analysis, documentation, test, design, or operations agent must discover or resume its assigned work, validate task context, claim and trace execution, report progress or blockers, submit evidence, resolve work for independent verification, or recover from lifecycle conflicts.
+description: Do one assigned WorkChord task from start to review handoff. Use when an implementation, analysis, documentation, test, design, or operations agent must discover or resume its assigned work, validate task context, claim and trace execution, report progress or blockers, submit evidence for review by an independent reviewer, or recover from lifecycle conflicts.
 ---
 
 # WorkChord Worker
@@ -138,6 +138,13 @@ state.
    self-assign, reassign, reorder, or silently continue onto another task.
 7. Preserve the selected binding and reported-model evidence in the run and
    handoff. Never describe a matching self-report as independent attestation.
+
+## Use The Shared Names
+
+Write events, blocker reports, discovery Triage items, and submitted evidence
+with the names in [workflow-and-names.md](references/workflow-and-names.md), so
+people see the same words in WorkChord. "Submit for review" makes the task
+Implemented; only an independent reviewer makes it Accepted.
 
 ## Choose The Transport
 

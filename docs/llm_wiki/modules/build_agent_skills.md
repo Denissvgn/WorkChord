@@ -10,6 +10,8 @@ Generated submission tables include the optional typed `criterion_progress` pack
 
 Canonical role guidance requires stable criterion IDs and revisions for submission and independent review. Package identities and example manifest checksum pins must advance together; frozen published role and catalog identities remain append-only.
 
+`config/workflow-vocabulary.json` is the shared source for role display names, workflow steps, task states, action verbs, My Work queues, and terms. The script validates it, renders one identical generated block into each role's `references/workflow-and-names.md`, and fails validation when that block drifts; the frontend checks its interface labels against the same file.
+
 Validate and reproducibly package WorkChord role skills.
 
 ## Imports
@@ -50,7 +52,7 @@ Validate and reproducibly package WorkChord role skills.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [SkillPackError](../entities/SkillPackError.md) | 830 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
+| [SkillPackError](../entities/SkillPackError.md) | 841 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
 
 ## Functions
 
@@ -74,8 +76,14 @@ Validate and reproducibly package WorkChord role skills.
 | `_format_generated_rest` | `(operation: dict[str, Any]) -> str` | — | — |
 | `_format_generated_mcp` | `(operation: dict[str, Any]) -> str` | — | — |
 | `render_assigned_work_contract_markdown` | `() -> str` | — | Render the canonical assigned-work contract as one reusable Markdown block. |
+| `_generated_block` | `(text: str, *, begin: str, end: str, label: str, context: str) -> str` | — | — |
 | `_generated_contract_block` | `(text: str, *, context: str) -> str` | — | — |
 | `_replace_generated_contract_block` | `(text: str, *, context: str) -> str` | — | — |
+| `_require_text` | `(value: Any, *, field: str) -> str` | — | — |
+| `_require_localized` | `(value: Any, *, field: str) -> dict[str, str]` | — | — |
+| `load_workflow_vocabulary` | `(repository_root: Path = REPOSITORY_ROOT) -> dict[str, Any]` | — | Load and validate the shared workflow vocabulary used by role skills and UI. |
+| `render_workflow_vocabulary_markdown` | `(vocabulary: dict[str, Any]) -> str` | — | Render the shared workflow vocabulary as one identical block for every role. |
+| `_workflow_vocabulary_block` | `(text: str, *, context: str) -> str` | — | — |
 | `render_openai_adapter` | `(role_dir: Path) -> bytes` | — | Derive deterministic optional UI metadata from one portable SKILL.md. |
 | `sync_generated_skill_sources` | `(repository_root: Path = REPOSITORY_ROOT, skills_dir: Path = DEFAULT_SKILLS_DIR) -> list[Path]` | — | Synchronize shared references and optional adapters from canonical sources. |
 | `validate_generated_skill_sources` | `(repository_root: Path = REPOSITORY_ROOT, skills_dir: Path = DEFAULT_SKILLS_DIR) -> None` | — | Fail when generated role/manual blocks or adapters drift from their sources. |

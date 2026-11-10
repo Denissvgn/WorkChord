@@ -315,9 +315,9 @@ def test_role_versions_are_new_frozen_identities() -> None:
     }
     catalogs = {catalog["version"] for catalog in baseline["catalogs"]}
 
-    assert build_agent_skills.CATALOG_VERSION == "1.10.1"
-    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.10.1"
-    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.9.1"
+    assert build_agent_skills.CATALOG_VERSION == "1.11.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.11.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.10.0"
     assert ("workchord-pm", "1.3.0") in releases
     assert ("workchord-worker", "1.2.0") in releases
     assert "1.3.0" in catalogs
@@ -342,6 +342,9 @@ def test_role_versions_are_new_frozen_identities() -> None:
     assert ("workchord-pm", "1.10.1") in releases
     assert ("workchord-worker", "1.9.1") in releases
     assert "1.10.1" in catalogs
+    assert ("workchord-pm", "1.11.0") in releases
+    assert ("workchord-worker", "1.10.0") in releases
+    assert "1.11.0" in catalogs
 
 
 @pytest.mark.contract

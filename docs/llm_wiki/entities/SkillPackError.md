@@ -1,6 +1,6 @@
 # SkillPackError
 
-**Location:** `scripts/build_agent_skills.py:830`
+**Location:** `scripts/build_agent_skills.py:841`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [build_agent_skills](../modules/build_agent_skills.md)
@@ -30,7 +30,7 @@ flowchart LR
     n5["_collect_role_files (scripts/build_agent_skills.py)"]
     n6["_destination_mutation_lock (scripts/build_agent_skills.py)"]
     n7["_extract_validated_archive (scripts/build_agent_skills.py)"]
-    n8["_generated_contract_block (scripts/build_agent_skills.py)"]
+    n8["_generated_block (scripts/build_agent_skills.py)"]
     n9["_inspect_regular_tree (scripts/build_agent_skills.py)"]
     n10["_load_release (scripts/build_agent_skills.py)"]
     n11["_load_release_baseline (scripts/build_agent_skills.py)"]
@@ -86,11 +86,11 @@ flowchart LR
 | `_collect_role_files` | call | [build_agent_skills](../modules/build_agent_skills.md) | 6 |
 | `_destination_mutation_lock` | call | [build_agent_skills](../modules/build_agent_skills.md) | 8 |
 | `_extract_validated_archive` | call | [build_agent_skills](../modules/build_agent_skills.md) | 4 |
-| `_generated_contract_block` | call | [build_agent_skills](../modules/build_agent_skills.md) | 2 |
+| `_generated_block` | call | [build_agent_skills](../modules/build_agent_skills.md) | 2 |
 | `_inspect_regular_tree` | call | [build_agent_skills](../modules/build_agent_skills.md) | 3 |
 | `_load_release` | call | [build_agent_skills](../modules/build_agent_skills.md) | 9 |
 | `_load_release_baseline` | call | [build_agent_skills](../modules/build_agent_skills.md) | 13 |
 | `_parse_frontmatter` | call | [build_agent_skills](../modules/build_agent_skills.md) | 10 |
 | `_read_install_lock` | call | [build_agent_skills](../modules/build_agent_skills.md) | 9 |
 
-> References: showing 12 of 52 logical references; 40 omitted by the 12-row generated summary limit.
+> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
