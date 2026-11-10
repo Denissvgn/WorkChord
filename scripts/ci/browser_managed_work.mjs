@@ -181,7 +181,7 @@ try {
   await page.getByRole('button', { name: 'Save progress', exact: true }).click();
   assert.equal((await progressSaved).status(), 200);
   await workCommand('resolve_manual');
-  assert.equal(await page.getByRole('button', { name: 'Accept work', exact: true }).isDisabled(), true);
+  assert.equal(await page.getByRole('button', { name: 'Accept', exact: true }).isDisabled(), true);
   const implemented = await (await context.request.get(`/api/tasks/${capturedTask.id}`)).json();
   assert.equal(implemented.start_date, null);
   assert.equal(implemented.status, 'resolved');
@@ -197,7 +197,7 @@ try {
   await reviewerPage.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
   await reviewerPage.getByRole('textbox', { name: 'Reason for the action or review', exact: true }).fill('Independently inspected the criterion evidence');
   const accepted = reviewerPage.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/review`) && response.request().method() === 'POST');
-  await reviewerPage.getByRole('button', { name: 'Accept work', exact: true }).click();
+  await reviewerPage.getByRole('button', { name: 'Accept', exact: true }).click();
   const verdict = await accepted;
   assert.equal(verdict.status(), 200, await verdict.text());
   assert.equal((await verdict.json()).is_accepted, true);

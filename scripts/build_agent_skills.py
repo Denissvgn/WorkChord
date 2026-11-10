@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.10.1"
+CATALOG_VERSION = "1.11.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.7.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -72,6 +72,17 @@ ASSIGNED_WORK_CONTRACT_DOCUMENTS = (
     "agent-skills/workchord-pm/references/api-and-mcp.md",
     "agent-skills/workchord-worker/references/api-and-mcp.md",
 )
+
+WORKFLOW_VOCABULARY_SCHEMA = "workchord-workflow-vocabulary/v1"
+WORKFLOW_VOCABULARY_SOURCE = "config/workflow-vocabulary.json"
+WORKFLOW_VOCABULARY_BEGIN = (
+    "<!-- BEGIN GENERATED: WORKCHORD-SHARED-WORKFLOW-V1 -->"
+)
+WORKFLOW_VOCABULARY_END = (
+    "<!-- END GENERATED: WORKCHORD-SHARED-WORKFLOW-V1 -->"
+)
+WORKFLOW_VOCABULARY_REFERENCE = "references/workflow-and-names.md"
+WORKFLOW_VOCABULARY_LANGUAGES = ("en", "ru")
 
 
 def _contract_parameters(
@@ -744,7 +755,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.10.1",
+        "version": "1.11.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -784,7 +795,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.9.1",
+        "version": "1.10.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -1165,24 +1176,226 @@ def render_assigned_work_contract_markdown() -> str:
     return "\n".join(rows)
 
 
-def _generated_contract_block(text: str, *, context: str) -> str:
-    if text.count(ASSIGNED_WORK_CONTRACT_BEGIN) != 1 or text.count(
-        ASSIGNED_WORK_CONTRACT_END
-    ) != 1:
-        raise SkillPackError(
-            f"{context} must contain exactly one assigned-work generated block"
-        )
-    start = text.index(ASSIGNED_WORK_CONTRACT_BEGIN)
-    end_marker = text.find(ASSIGNED_WORK_CONTRACT_END, start)
+def _generated_block(
+    text: str, *, begin: str, end: str, label: str, context: str
+) -> str:
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise SkillPackError(f"{context} must contain exactly one {label} generated block")
+    start = text.index(begin)
+    end_marker = text.find(end, start)
     if end_marker < 0:
-        raise SkillPackError(f"{context} has reversed assigned-work block markers")
-    end = end_marker + len(ASSIGNED_WORK_CONTRACT_END)
-    return text[start:end]
+        raise SkillPackError(f"{context} has reversed {label} block markers")
+    return text[start : end_marker + len(end)]
+
+
+def _generated_contract_block(text: str, *, context: str) -> str:
+    return _generated_block(
+        text,
+        begin=ASSIGNED_WORK_CONTRACT_BEGIN,
+        end=ASSIGNED_WORK_CONTRACT_END,
+        label="assigned-work",
+        context=context,
+    )
 
 
 def _replace_generated_contract_block(text: str, *, context: str) -> str:
     current = _generated_contract_block(text, context=context)
     return text.replace(current, render_assigned_work_contract_markdown(), 1)
+
+
+def _require_text(value: Any, *, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise SkillPackError(f"Workflow vocabulary field {field} must be non-empty text")
+    if "|" in value or "\n" in value:
+        raise SkillPackError(
+            f"Workflow vocabulary field {field} must not contain '|' or line breaks"
+        )
+    return value
+
+
+def _require_localized(value: Any, *, field: str) -> dict[str, str]:
+    if not isinstance(value, dict) or set(value) != set(WORKFLOW_VOCABULARY_LANGUAGES):
+        raise SkillPackError(
+            f"Workflow vocabulary field {field} needs exactly: "
+            + ", ".join(WORKFLOW_VOCABULARY_LANGUAGES)
+        )
+    return {
+        language: _require_text(value[language], field=f"{field}.{language}")
+        for language in WORKFLOW_VOCABULARY_LANGUAGES
+    }
+
+
+# Section -> (required text fields, required localized fields, optional text fields)
+_WORKFLOW_VOCABULARY_SECTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = {
+    "roles": (("code_role", "does"), ("name", "group"), ()),
+    "workflow": (("name", "person", "pm", "worker", "reviewer"), (), ()),
+    "task_states": (("means",), ("name",), ("product_term",)),
+    "actions": (("effect", "agents"), ("name",), ()),
+    "queues": (("means", "agents"), ("name",), ()),
+    "terms": (("name", "means", "not"), (), ()),
+}
+
+
+def load_workflow_vocabulary(
+    repository_root: Path = REPOSITORY_ROOT,
+) -> dict[str, Any]:
+    """Load and validate the shared workflow vocabulary used by role skills and UI."""
+    path = repository_root / WORKFLOW_VOCABULARY_SOURCE
+    try:
+        vocabulary = json.loads(path.read_text(encoding="utf-8"))
+    except OSError as exc:
+        raise SkillPackError(f"Cannot read workflow vocabulary {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise SkillPackError(f"Invalid JSON in {path}: {exc}") from exc
+    if not isinstance(vocabulary, dict):
+        raise SkillPackError("Workflow vocabulary root must be an object")
+    if vocabulary.get("schema_version") != WORKFLOW_VOCABULARY_SCHEMA:
+        raise SkillPackError(
+            f"Unsupported workflow vocabulary schema: {vocabulary.get('schema_version')!r}"
+        )
+    _require_text(vocabulary.get("rule"), field="rule")
+    expected_keys = {"schema_version", "rule", *_WORKFLOW_VOCABULARY_SECTIONS}
+    if set(vocabulary) != expected_keys:
+        raise SkillPackError(
+            "Workflow vocabulary must contain exactly: " + ", ".join(sorted(expected_keys))
+        )
+    for section, (texts, localized, optional) in _WORKFLOW_VOCABULARY_SECTIONS.items():
+        entries = vocabulary[section]
+        if not isinstance(entries, list) or not entries:
+            raise SkillPackError(f"Workflow vocabulary {section} must be a non-empty list")
+        seen: set[str] = set()
+        for index, entry in enumerate(entries):
+            where = f"{section}[{index}]"
+            if not isinstance(entry, dict):
+                raise SkillPackError(f"Workflow vocabulary {where} must be an object")
+            allowed = {"id", *texts, *localized, *optional, "also_seen_as"}
+            unknown = sorted(set(entry).difference(allowed))
+            if unknown:
+                raise SkillPackError(
+                    f"Workflow vocabulary {where} has unknown fields: {', '.join(unknown)}"
+                )
+            identifier = entry.get("id")
+            if not isinstance(identifier, str) or not SKILL_NAME_RE.match(
+                identifier.replace("_", "-")
+            ):
+                raise SkillPackError(f"Workflow vocabulary {where}.id must be a lower-case id")
+            if identifier in seen:
+                raise SkillPackError(f"Duplicate workflow vocabulary id {section}.{identifier}")
+            seen.add(identifier)
+            for field in texts:
+                _require_text(entry.get(field), field=f"{where}.{field}")
+            for field in localized:
+                _require_localized(entry.get(field), field=f"{where}.{field}")
+            for field in optional:
+                if field in entry:
+                    _require_text(entry[field], field=f"{where}.{field}")
+            aliases = entry.get("also_seen_as", [])
+            if not isinstance(aliases, list):
+                raise SkillPackError(f"Workflow vocabulary {where}.also_seen_as must be a list")
+            for alias_index, alias in enumerate(aliases):
+                _require_text(alias, field=f"{where}.also_seen_as[{alias_index}]")
+    return vocabulary
+
+
+def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
+    """Render the shared workflow vocabulary as one identical block for every role."""
+
+    def table(header: tuple[str, ...], rows: Iterable[tuple[str, ...]]) -> list[str]:
+        return [
+            "| " + " | ".join(header) + " |",
+            "| " + " | ".join("---" for _ in header) + " |",
+            *("| " + " | ".join(row) + " |" for row in rows),
+            "",
+        ]
+
+    lines = [
+        WORKFLOW_VOCABULARY_BEGIN,
+        "**Generated shared workflow and names**",
+        "",
+        (
+            f"Canonical schema: `{WORKFLOW_VOCABULARY_SCHEMA}`. This exact block is "
+            "generated by `scripts/build_agent_skills.py sync-generated` from the "
+            "vocabulary that also defines the WorkChord interface labels."
+        ),
+        "",
+        vocabulary["rule"],
+        "",
+        "Roles:",
+        "",
+        *table(
+            ("Role", "Code role", "Does"),
+            (
+                (role["name"]["en"], f"`{role['code_role']}`", role["does"])
+                for role in vocabulary["roles"]
+            ),
+        ),
+        "One workflow, seen from each side:",
+        "",
+        *table(
+            ("Step", "Person in the UI", "PM", "Worker", "Reviewer"),
+            (
+                (step["name"], step["person"], step["pm"], step["worker"], step["reviewer"])
+                for step in vocabulary["workflow"]
+            ),
+        ),
+        "Task states:",
+        "",
+        *table(
+            ("State", "Product term", "Means"),
+            (
+                (
+                    f"{state['name']['en']} (`{state['id']}`)",
+                    state.get("product_term", "—"),
+                    state["means"],
+                )
+                for state in vocabulary["task_states"]
+            ),
+        ),
+        "Actions, with the same names for people and agents:",
+        "",
+        *table(
+            ("Action", "Effect", "Agents"),
+            (
+                (action["name"]["en"], action["effect"], action["agents"])
+                for action in vocabulary["actions"]
+            ),
+        ),
+        "My Work queues people see, and the matching agent work state:",
+        "",
+        *table(
+            ("Queue", "Means", "Agents"),
+            (
+                (queue["name"]["en"], queue["means"], queue["agents"])
+                for queue in vocabulary["queues"]
+            ),
+        ),
+        "Terms:",
+        "",
+        *table(
+            ("Term", "Means", "Not", "Older labels"),
+            (
+                (
+                    term["name"],
+                    term["means"],
+                    term["not"],
+                    ", ".join(f'"{alias}"' for alias in term.get("also_seen_as", [])) or "—",
+                )
+                for term in vocabulary["terms"]
+            ),
+        ),
+        WORKFLOW_VOCABULARY_END,
+    ]
+    return "\n".join(lines)
+
+
+def _workflow_vocabulary_block(text: str, *, context: str) -> str:
+    return _generated_block(
+        text,
+        begin=WORKFLOW_VOCABULARY_BEGIN,
+        end=WORKFLOW_VOCABULARY_END,
+        label="shared-workflow",
+        context=context,
+    )
 
 
 def render_openai_adapter(role_dir: Path) -> bytes:
@@ -1247,6 +1460,22 @@ def sync_generated_skill_sources(
         if rendered != current:
             path.write_text(rendered, encoding="utf-8")
             updated.append(path)
+    vocabulary_block = render_workflow_vocabulary_markdown(
+        load_workflow_vocabulary(repository_root)
+    )
+    for role_name in sorted(ROLE_METADATA):
+        path = skills_dir / role_name / WORKFLOW_VOCABULARY_REFERENCE
+        context = f"{role_name}/{WORKFLOW_VOCABULARY_REFERENCE}"
+        try:
+            current = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise SkillPackError(f"Cannot read shared-workflow target {path}") from exc
+        rendered = current.replace(
+            _workflow_vocabulary_block(current, context=context), vocabulary_block, 1
+        )
+        if rendered != current:
+            path.write_text(rendered, encoding="utf-8")
+            updated.append(path)
     for role_name in sorted(ROLE_METADATA):
         role_dir = skills_dir / role_name
         path = role_dir / "agents" / "openai.yaml"
@@ -1282,6 +1511,20 @@ def validate_generated_skill_sources(
             )
     if len(set(observed_blocks)) != 1:
         raise SkillPackError("Assigned-work role/manual generated blocks have diverged")
+    expected_vocabulary = render_workflow_vocabulary_markdown(
+        load_workflow_vocabulary(repository_root)
+    )
+    for role_name in sorted(ROLE_METADATA):
+        path = skills_dir / role_name / WORKFLOW_VOCABULARY_REFERENCE
+        context = f"{role_name}/{WORKFLOW_VOCABULARY_REFERENCE}"
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise SkillPackError(f"Cannot read shared-workflow target {path}") from exc
+        if _workflow_vocabulary_block(text, context=context) != expected_vocabulary:
+            raise SkillPackError(
+                f"Shared workflow vocabulary drift in {context}; run sync-generated"
+            )
     for role_name in sorted(ROLE_METADATA):
         role_dir = skills_dir / role_name
         path = role_dir / "agents" / "openai.yaml"
@@ -1881,15 +2124,15 @@ def build_codex_plugin(skills_dir: Path, output_dir: Path) -> Path:
         "name": "workchord-agent-roles",
         "version": catalog["catalog_version"],
         "license": ARTIFACT_LICENSE,
-        "description": "Installable WorkChord PM and worker operating roles.",
+        "description": "Installable WorkChord PM and Worker role skills.",
         "author": {"name": "WorkChord maintainers"},
         "skills": "./skills/",
         "interface": {
             "displayName": "WorkChord Agent Roles",
-            "shortDescription": "Operate WorkChord as a PM or assigned worker.",
+            "shortDescription": "Work in WorkChord as a PM or an assigned Worker.",
             "longDescription": (
-                "Adds the canonical WorkChord PM controller and low-freedom "
-                "worker skills generated from the versioned generic role pack."
+                "Adds the WorkChord PM and Worker role skills, generated from the "
+                "versioned role pack and the shared workflow vocabulary."
             ),
             "developerName": "WorkChord maintainers",
             "category": "Productivity",

@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1523 | [Open section](#entities) |
-| Modules | 755 | [Open section](#modules) |
+| Entities | 1526 | [Open section](#entities) |
+| Modules | 757 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
@@ -335,6 +335,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [EmailSettingsResponse](entities/EmailSettingsResponse.md)
 - [EmailSettingsService](entities/EmailSettingsService.md)
 - [EmailValidationErrors](entities/EmailValidationErrors.md)
+- [Entry](entities/Entry.md)
 - [ErrorDetail](entities/ErrorDetail.md)
 - [ErrorResponse](entities/ErrorResponse.md)
 - [EventOption](entities/EventOption.md)
@@ -469,6 +470,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LegacySnapshotImport](entities/LegacySnapshotImport.md)
 - [LegacySnapshotImportRequest](entities/LegacySnapshotImportRequest.md)
 - [LoadedRelease](entities/LoadedRelease.md)
+- [Localized](entities/Localized.md)
 - [LocalizedStepStatus](entities/LocalizedStepStatus.md)
 - [LockedAcceptanceObject](entities/LockedAcceptanceObject.md)
 - [MCPAgentKeyMiddleware](entities/MCPAgentKeyMiddleware.md)
@@ -1019,6 +1021,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [VirtualClient](entities/VirtualClient.md)
 - [VisibleHealthState](entities/VisibleHealthState.md)
 - [VisibleLeaf](entities/VisibleLeaf.md)
+- [Vocabulary](entities/Vocabulary.md)
 - [WebIntakeConfigurationError](entities/WebIntakeConfigurationError.md)
 - [WebIntakeForm](entities/WebIntakeForm.md)
 - [WebIntakeRateLimitError](entities/WebIntakeRateLimitError.md)
@@ -2237,6 +2240,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
+- [test_workflow_vocabulary](modules/test_workflow_vocabulary.md) - The shared workflow vocabulary is rendered identically into every role skill.
 - [text_similarity](modules/text_similarity.md) - Lightweight text similarity helpers for advisory search.
 - [themeStore](modules/themeStore.md) - `frontend/src/store/themeStore.ts`
 - [time](modules/time.md) - Timezone-safe UTC helpers and SQLAlchemy datetime normalization.
@@ -2295,6 +2299,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [workQueryFreshness](modules/workQueryFreshness.md) - `frontend/src/features/workQueryFreshness.ts`
 - [workQueryFreshness.test](modules/workQueryFreshness.test.md) - `frontend/src/features/workQueryFreshness.test.ts`
 - [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
+- [workflowVocabulary.test](modules/workflowVocabulary.test.md) - `frontend/src/i18n/workflowVocabulary.test.ts`
 - [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) - `frontend/src/features/workspaceQueryPolicy.ts`
 - [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) - `frontend/src/features/workspaceQueryPolicy.test.ts`
 - [workspaces](modules/workspaces.md) - `frontend/src/navigation/workspaces.ts`

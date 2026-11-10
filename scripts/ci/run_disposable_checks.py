@@ -190,6 +190,9 @@ def main():
             frontend = scratch / 'frontend'
             shutil.copytree(ROOT / 'frontend', frontend, ignore=shutil.ignore_patterns(
                 'node_modules', 'dist', 'coverage', 'test-results', '.env', '.env.*', '*.tsbuildinfo', '.DS_Store'))
+            # Frontend tests compare interface labels with the shared workflow vocabulary.
+            (scratch / 'config').mkdir(exist_ok=True)
+            shutil.copyfile(ROOT / 'config/workflow-vocabulary.json', scratch / 'config/workflow-vocabulary.json')
             run.run('frontend-install', ['npm', 'ci'], cwd=frontend, env=env, timeout=300)
             run.run('node-version', ['node', '--version'], cwd=frontend, env=env, timeout=30)
             if 'frontend' in selected:

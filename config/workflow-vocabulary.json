@@ -1,0 +1,108 @@
+{
+  "schema_version": "workchord-workflow-vocabulary/v1",
+  "rule": "Use these names in everything people read: task events, Triage items, project updates, review notes, and handoffs. API field, scope, feature, and operation names stay exactly as the live contract defines them.",
+  "roles": [
+    {
+      "id": "pm",
+      "code_role": "pm",
+      "name": { "en": "PM", "ru": "Менеджер проекта" },
+      "group": { "en": "PM", "ru": "Менеджер проекта" },
+      "does": "Plans and assigns work: Triage, briefs, capacity, schedule, agent assignments, recovery, and project updates."
+    },
+    {
+      "id": "worker",
+      "code_role": "worker",
+      "name": { "en": "Worker", "ru": "Исполнитель" },
+      "group": { "en": "Workers", "ru": "Исполнители" },
+      "does": "Does one assigned task at a time and submits it for review with evidence."
+    },
+    {
+      "id": "reviewer",
+      "code_role": "verifier",
+      "name": { "en": "Reviewer", "ru": "Проверяющий" },
+      "group": { "en": "Reviewers", "ru": "Проверяющие" },
+      "does": "Checks submitted evidence against each acceptance criterion, then accepts the work or requests changes. Never reviews work it did."
+    }
+  ],
+  "workflow": [
+    {
+      "id": "capture",
+      "name": "Capture",
+      "person": "Triage → New intake, or Tasks → New task.",
+      "pm": "Runs Triage and records one disposition; files WorkChord defects as Triage items.",
+      "worker": "Reports out-of-scope findings as linked Triage items.",
+      "reviewer": "Reports out-of-scope findings as linked Triage items."
+    },
+    {
+      "id": "plan",
+      "name": "Plan and assign",
+      "person": "Plan an iteration: planning period, people and capacity, work, scheduling blockers, schedule, review.",
+      "pm": "Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments.",
+      "worker": "—",
+      "reviewer": "—"
+    },
+    {
+      "id": "do",
+      "name": "Do",
+      "person": "Start work, Report blocker, Submit for review.",
+      "pm": "Supervises delivery and recovers stuck work through typed recovery.",
+      "worker": "Reads My Work, starts the assigned task, reports progress or a blocker, then submits for review.",
+      "reviewer": "—"
+    },
+    {
+      "id": "review",
+      "name": "Review",
+      "person": "My Work → To review; Accept or Request changes.",
+      "pm": "Routes the review to an independent reviewer; reviews only as the accountable PM.",
+      "worker": "Takes rework only when it is assigned back.",
+      "reviewer": "Records a result per acceptance criterion, then accepts or requests changes."
+    },
+    {
+      "id": "report",
+      "name": "Report",
+      "person": "Post update on the project.",
+      "pm": "Publishes a project update with health, summary, progress, risks, decisions, and next steps.",
+      "worker": "—",
+      "reviewer": "—"
+    }
+  ],
+  "task_states": [
+    { "id": "planned", "name": { "en": "Planned", "ru": "Запланировано" }, "means": "Accepted into planning; work has not started." },
+    { "id": "active", "name": { "en": "Active", "ru": "Активно" }, "means": "Someone is working on it, including rework." },
+    { "id": "resolved", "name": { "en": "Resolved", "ru": "Решено" }, "product_term": "Implemented", "means": "Work is submitted with evidence and waits for review." },
+    { "id": "closed", "name": { "en": "Closed", "ru": "Закрыто" }, "product_term": "Accepted", "means": "An independent reviewer accepted the evidence." }
+  ],
+  "actions": [
+    { "id": "start_work", "name": { "en": "Start work", "ru": "Начать работу" }, "effect": "Planned → Active.", "agents": "Atomic begin on the assigned work." },
+    { "id": "report_blocker", "name": { "en": "Report blocker", "ru": "Сообщить о блокере" }, "effect": "Marks the task blocked, with a reason.", "agents": "`agent.blocker` event with blocker, impact, checks tried, and the owner or action needed; the PM decides whether to mark the task blocked." },
+    { "id": "remove_block", "name": { "en": "Remove block", "ru": "Снять блокировку" }, "effect": "Clears the blocker.", "agents": "PM decision; workers do not clear blockers." },
+    { "id": "submit_for_review", "name": { "en": "Submit for review", "ru": "Отправить на проверку" }, "effect": "Active → Resolved (Implemented), with evidence per criterion.", "agents": "Atomic submit with criterion progress and artifact links." },
+    { "id": "accept", "name": { "en": "Accept", "ru": "Принять" }, "effect": "Resolved → Closed (Accepted).", "agents": "Typed review verdict that passes every criterion." },
+    { "id": "request_changes", "name": { "en": "Request changes", "ru": "Запросить изменения" }, "effect": "Resolved → Active as rework, with the failed criteria and a named owner.", "agents": "Typed review verdict that rejects, with the rework handoff." },
+    { "id": "reopen", "name": { "en": "Reopen", "ru": "Открыть повторно" }, "effect": "Closed work becomes active again, with a recorded reason.", "agents": "PM decision through the audited command." }
+  ],
+  "queues": [
+    { "id": "doing", "name": { "en": "Doing", "ru": "В работе" }, "means": "Your current task.", "agents": "`resume`: continue only the current assignment." },
+    { "id": "up_next", "name": { "en": "Up next", "ru": "На очереди" }, "means": "Assigned to you and ready to start.", "agents": "`start_assigned`: begin only the returned next assignment; `wait` means not yet." },
+    { "id": "blocked", "name": { "en": "Blocked", "ru": "Заблокировано" }, "means": "Assigned to you but blocked.", "agents": "Blocked assigned items; start nothing early." },
+    { "id": "in_review", "name": { "en": "In review", "ru": "На проверке" }, "means": "You submitted it; a reviewer has not decided yet.", "agents": "Resolved work waiting for its review assignment." },
+    { "id": "to_review", "name": { "en": "To review", "ru": "К проверке" }, "means": "Work waiting for your review.", "agents": "Review-purpose assignments; never in the worker loop." },
+    { "id": "inbox", "name": { "en": "Inbox", "ru": "Уведомления" }, "means": "Notifications and delivery status.", "agents": "Hints to refetch, never a reason to act." }
+  ],
+  "terms": [
+    { "id": "owner", "name": "Owner", "means": "The person or profile accountable for the task across iterations.", "not": "The assignee who carries the effort in one iteration." },
+    { "id": "assignee", "name": "Assignee", "means": "The iteration capacity row that carries the task's planned effort (`Task.assignee_id`).", "not": "An agent assignment; an assignee does not dispatch an agent.", "also_seen_as": ["capacity owner"] },
+    { "id": "agent_assignment", "name": "Agent assignment", "means": "Durable dispatch of one task to one exact agent, with queue order and not-before time.", "not": "A claim or the assignee." },
+    { "id": "claim", "name": "Claim", "means": "A temporary, exclusive lease to work on a task; shown to people as \"Working: agent until time\".", "not": "Task status or an assignment." },
+    { "id": "run", "name": "Run", "means": "One recorded attempt at the work, with its evidence.", "not": "Acceptance." },
+    { "id": "blocker", "name": "Blocker", "means": "A recorded reason the task cannot proceed, with who reported it.", "not": "Waiting on an unfinished dependency." },
+    { "id": "waiting_on_dependencies", "name": "Waiting on dependencies", "means": "A predecessor task is not finished yet.", "not": "A blocker that someone reported." },
+    { "id": "definition_ready", "name": "Definition-ready", "means": "The brief and planning fields are complete enough to route the task.", "not": "Permission to start." },
+    { "id": "start_ready", "name": "Start-ready", "means": "Definition-ready, scheduled, dependencies done, and assigned to the agent that may start it now.", "not": "A pool that agents may pick work from." },
+    { "id": "capability", "name": "Capability", "means": "What a profile can do, with a level; routing advice only.", "not": "Permission or a role skill.", "also_seen_as": ["profile skill"] },
+    { "id": "role_skill", "name": "Role skill", "means": "The installable instructions an agent follows for its role.", "not": "A profile capability." },
+    { "id": "operator", "name": "Operator", "means": "The person who holds the admin key and manages agents, keys, and access.", "not": "The PM role." },
+    { "id": "admin_key", "name": "Admin key", "means": "The workspace administration credential an operator uses.", "not": "Something an agent asks for or stores.", "also_seen_as": ["session authority", "PM admin credential", "WORKCHORD_ADMIN_API_KEY"] },
+    { "id": "agent_key", "name": "Agent key", "means": "The credential one agent uses to act as itself; kept in the runtime secret store.", "not": "Something to paste into task text, events, or logs.", "also_seen_as": ["actor credential", "AGENT_API_KEY", "MCP_AGENT_API_KEY"] }
+  ]
+}

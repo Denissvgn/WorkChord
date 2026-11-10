@@ -7,9 +7,9 @@ profile. A project manager grants access to the projects you need. Profile
 ownership and project permissions are separate. See [identity and access](identity-and-recovery.md).
 
 Open **My Work** for owned work across projects, including nested tasks and
-backlog work. Its queues distinguish active, queued, blocked, and
-awaiting-review work. **Review work** lists accessible work that another person
-can review. Open a task to see its currently allowed actions and any blockers.
+backlog work. Its queues are **Doing**, **Up next**, **Blocked**, and
+**In review** (work you submitted that waits for a reviewer). **To review** lists
+accessible work that another person can review. Open a task to see its currently allowed actions and any blockers.
 
 ## Capture, assign, and estimate
 
