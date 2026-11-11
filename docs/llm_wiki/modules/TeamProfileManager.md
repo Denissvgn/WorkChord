@@ -4,7 +4,7 @@
 
 ## Description
 
-Profile and skill writes send the original complete observed revisions. Deletion confirmations capture independent immutable observations, and conflicts preserve input for explicit reapply. Skill drafts prevent selection from moving their owning profile.
+Profile and skill writes send the original complete observed revisions. Deletion confirmations capture independent immutable observations, and conflicts preserve input for explicit reapply. Skill drafts prevent selection from moving their owning profile. The create-profile and add-capability forms open on request, and the selected profile's detail leads the rail.
 
 ## Imports
 

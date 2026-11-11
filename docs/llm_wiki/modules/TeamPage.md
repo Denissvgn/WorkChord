@@ -23,6 +23,7 @@ _Auto-generated from `frontend/src/pages/TeamPage.tsx`._
 | `../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../types/team` | `TeamMember`, `TeamMemberProfile` | Declaration | erased |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
+| `lucide-react` | `Plus`, `Upload` | — | compiler-dependent |
 | `react` | `useState`, `useEffect` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `useSearchParams` | — | compiler-dependent |
@@ -58,7 +59,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 5 | 0 |
 
 > All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
@@ -66,4 +67,4 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamPageAction](../entities/TeamPageAction.md) | Type alias | 18 | `'assign' \| 'import'` | — |
+| [TeamPageAction](../entities/TeamPageAction.md) | Type alias | 19 | `'assign' \| 'import'` | — |
