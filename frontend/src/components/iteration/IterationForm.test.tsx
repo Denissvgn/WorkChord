@@ -231,4 +231,25 @@ describe('IterationForm hardening', () => {
         expect(nameInput).toHaveValue('Still here after failure');
         expect(nameInput).toBeEnabled();
     });
+
+    it('shows which kind is chosen, says why Save is unavailable, and asks before discarding changes', async () => {
+        const onCancel = vi.fn();
+        const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={onCancel} />);
+        const single = await screen.findByRole('button', { name: 'Single period' });
+        expect(single).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByRole('button', { name: 'Repeating series' })).toHaveAttribute('aria-pressed', 'false');
+        const save = screen.getByRole('button', { name: /Save/ });
+        expect(save).toBeDisabled();
+        expect(save).toHaveAccessibleDescription('Enter a name to save.');
+
+        await user.click(screen.getByRole('button', { name: 'Repeating series' }));
+        expect(screen.getByRole('button', { name: 'Repeating series' })).toHaveAttribute('aria-pressed', 'true');
+        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        expect(onCancel).not.toHaveBeenCalled();
+        await user.click(await screen.findByRole('button', { name: 'Keep editing' }));
+        expect(onCancel).not.toHaveBeenCalled();
+        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        await user.click(await screen.findByRole('button', { name: 'Discard changes' }));
+        expect(onCancel).toHaveBeenCalledOnce();
+    });
 });

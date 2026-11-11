@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { CalendarRange, ListChecks, Repeat, Save } from 'lucide-react';
 import { Button } from '../common/Button';
+import { useConfirmDialog } from '../common/useConfirmDialog';
 import { Input } from '../common/Input';
 import { CollapsibleSection } from '../common/CollapsibleSection';
 import { iterationService } from '../../services/iterationService';
@@ -321,6 +322,30 @@ const IterationFormEditor = ({
         seriesMutation.mutate(payload);
     };
 
+    // Say why Save is unavailable instead of leaving it silently disabled.
+    const saveBlockedReason = isSaving ? null : mode === 'series'
+        ? (!seriesDraft.base_name.trim() ? t('iterationForm.needSeriesName')
+            : !seriesDraft.start_date ? t('iterationForm.needStartDate')
+                : seriesDraft.duration_days < 1 || seriesDraft.duration_days > 366 ? t('iterationForm.needDuration')
+                    : seriesPreview.length === 0 ? t('iterationForm.needSeriesEnd')
+                        : seriesPreview.length > MAX_SERIES_ITERATIONS ? t('iterationForm.tooManyInSeries', { count: MAX_SERIES_ITERATIONS }) : null)
+        : (!singleDraft.name.trim() ? t('iterationForm.needName')
+            : !singleDraft.start_date || !singleDraft.end_date ? t('iterationForm.needDates')
+                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates') : null);
+    const { requestConfirmation, confirmationDialog } = useConfirmDialog();
+    const handleCancel = () => {
+        if (!isDirty) { onCancel(); return; }
+        requestConfirmation({
+            title: t('iterationForm.discardTitle'),
+            description: t('iterationForm.discardBody'),
+            confirmLabel: t('iterationForm.discard'),
+            cancelLabel: t('iterationForm.keepEditing'),
+            closeLabel: t('actions.close'),
+            tone: 'danger',
+            onConfirm: onCancel,
+        });
+    };
+
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         if (mode === 'series') {
@@ -364,6 +389,7 @@ const IterationFormEditor = ({
     );
 
     return (
+        <>
         <form
             onSubmit={handleSubmit}
             className="iteration-period-editor"
@@ -375,10 +401,11 @@ const IterationFormEditor = ({
                 className="m-0 min-w-0 space-y-6 border-0 p-0"
             >
             {!initialData && (
-                <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
+                <div role="group" aria-label={t('iterationForm.kind')} className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
                     <button
                         type="button"
-                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm' : 'text-content-secondary hover:text-content-primary'}`}
+                        aria-pressed={mode === 'single'}
+                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                         onClick={() => setMode('single')}
                     >
                         <CalendarRange className="h-4 w-4" />
@@ -386,7 +413,8 @@ const IterationFormEditor = ({
                     </button>
                     <button
                         type="button"
-                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm' : 'text-content-secondary hover:text-content-primary'}`}
+                        aria-pressed={mode === 'series'}
+                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                         onClick={() => setMode('series')}
                     >
                         <Repeat className="h-4 w-4" />
@@ -560,14 +588,16 @@ const IterationFormEditor = ({
                 </div>
             )}
 
-            <div className="flex justify-end gap-2 border-t pt-4">
-                <Button type="button" variant="ghost" onClick={onCancel}>
+            <div className="flex flex-wrap items-center justify-end gap-2 border-t pt-4">
+                {saveBlockedReason && <p id="iteration-save-blocked" className="mr-auto text-sm text-content-secondary">{saveBlockedReason}</p>}
+                <Button type="button" variant="ghost" onClick={handleCancel}>
                     {t('actions.cancel')}
                 </Button>
                 <Button
                     type="submit"
                     isLoading={isSaving}
                     disabled={mode === 'series' ? !seriesValid : !singleValid}
+                    aria-describedby={saveBlockedReason ? 'iteration-save-blocked' : undefined}
                 >
                     <Save className="mr-2 h-4 w-4" />
                     {initialData
@@ -579,6 +609,8 @@ const IterationFormEditor = ({
             </div>
             </fieldset>
         </form>
+        {confirmationDialog}
+        </>
     );
 };
 

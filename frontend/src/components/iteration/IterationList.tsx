@@ -99,13 +99,18 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
         } catch (cause) { toast.error(getApiErrorMessage(cause, t('feedback.iterationDeleteFailed'))); }
     };
 
-    if (isLoading) return <div>{t('common.loading')}</div>;
-    if (isError) return (
-        <div role="alert" className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-4 text-feedback-danger-foreground">
-            <p>{getApiErrorMessage(error, t('iterations.loadFailed'))}</p>
-            <Button className="mt-3" variant="secondary" onClick={() => void refetch()}>{t('queryFeedback.retry')}</Button>
-        </div>
-    );
+    if (isLoading) return <p role="status" className="text-sm text-content-secondary">{t('iterations.loading')}</p>;
+    if (isError) {
+        // The sentence says what failed; the server's detail, when it differs, follows it.
+        const detail = getApiErrorMessage(error, '');
+        return (
+            <div role="alert" className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-4 text-feedback-danger-foreground">
+                <p className="font-medium">{t('iterations.loadFailed')}</p>
+                {detail && detail !== t('iterations.loadFailed') && <p className="mt-1 text-sm">{detail}</p>}
+                <Button className="mt-3" variant="secondary" onClick={() => void refetch()}>{t('queryFeedback.retry')}</Button>
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -195,7 +200,7 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                             title={t('iterations.importJson')}
                             aria-label={t('iterations.importJson')}
                         >
-                            <Download className="w-4 h-4" />
+                            <Upload aria-hidden="true" className="w-4 h-4" />
                         </Button>
                         <Button
                             variant="ghost"
@@ -204,7 +209,7 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                             title={t('iterations.exportJson')}
                             aria-label={t('iterations.exportJson')}
                         >
-                            <Upload className="w-4 h-4" />
+                            <Download aria-hidden="true" className="w-4 h-4" />
                         </Button>
                         {onEdit && (
                             <Button
