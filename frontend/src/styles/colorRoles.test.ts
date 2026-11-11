@@ -40,6 +40,18 @@ describe('color roles', () => {
         }
     });
 
+    it.each(['light', 'dark', 'blue', 'green'])('keeps selection, success and ink apart in the %s theme', theme => {
+        const tokens = themeTokens(theme);
+        // A selected row (action tint) must not look like a quiet muted surface.
+        expect(distance(tokens.get('action-muted')!, tokens.get('surface-muted')!), `${theme}: action-muted vs surface-muted`).toBeGreaterThan(8);
+        // The action color must not read as success or Resolved.
+        expect(distance(tokens.get('action-primary')!, tokens.get('feedback-success')!), `${theme}: action vs success`).toBeGreaterThan(80);
+        expect(distance(tokens.get('action-primary')!, tokens.get('status-resolved-solid')!), `${theme}: action vs resolved`).toBeGreaterThan(80);
+        // Body ink stays neutral: no channel far from the others.
+        const ink = tokens.get('content-primary')!;
+        expect(Math.max(...ink) - Math.min(...ink), `${theme}: ink is tinted`).toBeLessThan(40);
+    });
+
     it('never colors priority with exception, status or action hues', () => {
         for (let priority = 1; priority <= 10; priority += 1) {
             expect(priorityChipClassName(priority)).not.toMatch(/feedback-|status-|action/);

@@ -4804,7 +4804,7 @@
   position: absolute;
   inset: 0;
   border: 0;
-  background: var(--overlay, rgba(0,0,0,.4));
+  background: rgb(var(--color-overlay) / 0.4);
   animation: wc-layer-fade-in 140ms ease-out both;
 }
 .wc .mobile-nav-panel {
