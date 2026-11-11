@@ -27,18 +27,22 @@ _Auto-generated from `frontend/src/components/common/UnsavedLeaveGuard.tsx`._
 flowchart LR
     n0["frontend/src/components/common/ConfirmDialog.tsx"]
     n1["frontend/src/components/common/UnsavedLeaveGuard.tsx"]
-    n2["frontend/src/pages/CalendarPage.tsx"]
+    n2["frontend/src/components/settings/SettingsUnsavedBar.tsx"]
+    n3["frontend/src/pages/CalendarPage.tsx"]
     n1 --> n0
     n2 --> n1
+    n3 --> n1
     click n0 "../modules/ConfirmDialog.md"
     click n1 "../modules/UnsavedLeaveGuard.md"
-    click n2 "../modules/CalendarPage.md"
+    click n2 "../modules/SettingsUnsavedBar.md"
+    click n3 "../modules/CalendarPage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [SettingsUnsavedBar](../modules/SettingsUnsavedBar.md) |
 | Inbound | [CalendarPage](../modules/CalendarPage.md) |
 | Outbound | [ConfirmDialog](../modules/ConfirmDialog.md) |
 

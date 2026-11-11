@@ -11,6 +11,7 @@ _Auto-generated from `frontend/vite.config.ts`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `@vitejs/plugin-react` | `react` | — | compiler-dependent |
+| `node:fs` | `readFileSync` | — | compiler-dependent |
 | `vite` | `defineConfig` | — | compiler-dependent |
 
 ## Module Signals
@@ -18,6 +19,7 @@ _Auto-generated from `frontend/vite.config.ts`._
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
+| Constants | `appVersion` |
 
 ## Local dependency map
 

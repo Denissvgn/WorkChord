@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/settings/SchedulingRulesSettings.t
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../hooks/useAdminAccess` | `useCanReadSettings` | — | compiler-dependent |
 | `../../services/schedulingRulesService` | `schedulingRulesService` | — | compiler-dependent |
 | `../../types/schedulingRules` | `SchedulingRules`, `EffortModifier`, `SchedulingPass`, `Constraints` | Declaration | erased |
 | `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
@@ -22,6 +22,7 @@ _Auto-generated from `frontend/src/components/settings/SchedulingRulesSettings.t
 | `./ConstraintsPanel` | `ConstraintsPanel` | — | compiler-dependent |
 | `./EffortModifierCard` | `EffortModifierCard` | — | compiler-dependent |
 | `./SchedulingPassCard` | `SchedulingPassCard` | — | compiler-dependent |
+| `./SettingsUnsavedBar` | `SettingsUnsavedBar` | — | compiler-dependent |
 | `@dnd-kit/core` | `DragEndEvent` | Declaration | erased |
 | `@dnd-kit/core` | `DndContext`, `closestCenter`, `KeyboardSensor`, `PointerSensor`, `useSensor`, `useSensors` | — | compiler-dependent |
 | `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `verticalListSortingStrategy` | — | compiler-dependent |
@@ -59,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -67,17 +68,17 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SectionId](../entities/SectionId.md) | Type alias | 33 | `'modifiers' \| 'passes' \| 'constraints'` | — |
-| [SettingsRowIdentity](../entities/SettingsRowIdentity.md) | Type alias | 36 | `{ [SETTINGS_ROW_ID]: string }` | — |
-| [EditableEffortModifier](../entities/EditableEffortModifier.md) | Type alias | 37 | `EffortModifier & SettingsRowIdentity` | — |
-| [EditableSchedulingPass](../entities/EditableSchedulingPass.md) | Type alias | 38 | `SchedulingPass & SettingsRowIdentity` | — |
-| [EditableSchedulingRules](../entities/EditableSchedulingRules.md) | Type alias | 39 | <pre><code>Omit&#60;SchedulingRules&#44; &#39;effort&#95;modifiers&#39; &#124; &#39;scheduling&#95;passes&#39;&#62; &#38; &#123;&#10;    effort&#95;modifiers&#58; EditableEffortModifier&#91;&#93;&#59;&#10;    scheduling&#95;passes&#58; EditableSchedulingPass&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
+| [SectionId](../entities/SectionId.md) | Type alias | 34 | `'modifiers' \| 'passes' \| 'constraints'` | — |
+| [SettingsRowIdentity](../entities/SettingsRowIdentity.md) | Type alias | 37 | `{ [SETTINGS_ROW_ID]: string }` | — |
+| [EditableEffortModifier](../entities/EditableEffortModifier.md) | Type alias | 38 | `EffortModifier & SettingsRowIdentity` | — |
+| [EditableSchedulingPass](../entities/EditableSchedulingPass.md) | Type alias | 39 | `SchedulingPass & SettingsRowIdentity` | — |
+| [EditableSchedulingRules](../entities/EditableSchedulingRules.md) | Type alias | 40 | <pre><code>Omit&#60;SchedulingRules&#44; &#39;effort&#95;modifiers&#39; &#124; &#39;scheduling&#95;passes&#39;&#62; &#38; &#123;&#10;    effort&#95;modifiers&#58; EditableEffortModifier&#91;&#93;&#59;&#10;    scheduling&#95;passes&#58; EditableSchedulingPass&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

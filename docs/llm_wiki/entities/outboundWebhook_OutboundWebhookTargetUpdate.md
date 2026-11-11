@@ -1,6 +1,6 @@
 # OutboundWebhookTargetUpdate
 
-**Location:** `frontend/src/types/outboundWebhook.ts:26`
+**Location:** `frontend/src/types/outboundWebhook.ts:28`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)

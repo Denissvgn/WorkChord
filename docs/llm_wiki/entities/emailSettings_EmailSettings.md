@@ -20,6 +20,7 @@ _Auto-generated from `EmailSettings` in `frontend/src/types/emailSettings.ts`._
 | `smtp_from_email` | `string` | Yes | — | — |
 | `smtp_use_tls` | `boolean` | Yes | — | — |
 | `has_password` | `boolean` | Yes | — | — |
+| `redacted_fields` | `string[]` | No | — | — |
 | `smtp_password` | `string` | No | — | — |
 | `clear_smtp_password` | `boolean` | No | — | — |
 | `field_sources` | `Record<string, RuntimeSettingSource>` | No | — | — |
@@ -50,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [emailSettings](../modules/emailSettings.md) | 0 | `clear_smtp_password`, `enabled`, `field_sources`, `has_password`, `smtp_from_email`, `smtp_host`, `smtp_password`, `smtp_port`, `smtp_use_tls`, `smtp_user` |
+| [emailSettings](../modules/emailSettings.md) | 0 | `clear_smtp_password`, `enabled`, `field_sources`, `has_password`, `redacted_fields`, `smtp_from_email`, `smtp_host`, `smtp_password`, `smtp_port`, `smtp_use_tls`, `smtp_user` |
 
 ### References
 

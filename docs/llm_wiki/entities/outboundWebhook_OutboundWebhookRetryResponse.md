@@ -1,6 +1,6 @@
 # OutboundWebhookRetryResponse
 
-**Location:** `frontend/src/types/outboundWebhook.ts:57`
+**Location:** `frontend/src/types/outboundWebhook.ts:61`
 **Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)

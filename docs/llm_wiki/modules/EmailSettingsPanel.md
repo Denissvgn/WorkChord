@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/settings/EmailSettingsPanel.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../hooks/useAdminAccess` | `useCanReadSettings` | — | compiler-dependent |
 | `../../services/emailSettingsService` | `emailSettingsService` | — | compiler-dependent |
 | `../../types/emailSettings` | `EmailSettings` | Declaration | erased |
 | `../../types/systemSettings` | `RuntimeSettingSource` | Declaration | erased |
@@ -21,6 +21,8 @@ _Auto-generated from `frontend/src/components/settings/EmailSettingsPanel.tsx`._
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./SettingsUnsavedBar` | `SettingsUnsavedBar` | — | compiler-dependent |
+| `./WithheldValuesNote` | `WithheldValuesNote` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Save`, `Mail`, `Server`, `Shield`, `Eye`, `EyeOff`, `Send` | — | compiler-dependent |
 | `react` | `useRef`, `useState` | — | compiler-dependent |
@@ -54,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,13 +64,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [EmailValidationErrors](../entities/EmailValidationErrors.md) | Type alias | 47 | <pre><code>Partial&#60;Record&#60;&#10;    &#39;smtp&#95;host&#39; &#124; &#39;smtp&#95;port&#39; &#124; &#39;smtp&#95;from&#95;email&#39; &#124; &#39;test&#95;email&#39;&#44;&#10;    string&#10;&#62;&#62;</code></pre> | — |
+| [EmailValidationErrors](../entities/EmailValidationErrors.md) | Type alias | 49 | <pre><code>Partial&#60;Record&#60;&#10;    &#39;smtp&#95;host&#39; &#124; &#39;smtp&#95;port&#39; &#124; &#39;smtp&#95;from&#95;email&#39; &#124; &#39;test&#95;email&#39;&#44;&#10;    string&#10;&#62;&#62;</code></pre> | — |
 
 ## Functions
 

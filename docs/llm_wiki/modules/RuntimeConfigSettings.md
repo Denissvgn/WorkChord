@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/settings/RuntimeConfigSettings.tsx
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../hooks/useAdminAccess` | `useCanReadSettings` | — | compiler-dependent |
 | `../../services/systemSettingsService` | `systemSettingsService` | — | compiler-dependent |
 | `../../types/systemSettings` | `AILanguageMode`, `AppRuntimeSettingsUpdate`, `GitHubRuntimeSettingsUpdate`, `LLMProvider`, `LLMRuntimeSettingsUpdate`, `RuntimeSettingSource`, `SystemSettings`, `WebIntakeRuntimeSettingsUpdate` | Declaration | erased |
 | `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
@@ -20,6 +20,8 @@ _Auto-generated from `frontend/src/components/settings/RuntimeConfigSettings.tsx
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./SettingsUnsavedBar` | `SettingsUnsavedBar` | — | compiler-dependent |
+| `./WithheldValuesNote` | `WithheldValuesNote` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Globe2`, `KeyRound`, `RefreshCcw`, `Save`, `ServerCog`, `ShieldAlert` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
@@ -53,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (10) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -61,18 +63,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [LLMForm](../entities/LLMForm.md) | Interface | 25 | — | — |
-| [AppForm](../entities/AppForm.md) | Interface | 35 | — | — |
-| [GitHubForm](../entities/GitHubForm.md) | Interface | 39 | — | — |
-| [WebIntakeForm](../entities/WebIntakeForm.md) | Interface | 49 | — | — |
-| [RuntimeSection](../entities/RuntimeSection.md) | Type alias | 55 | `'llm' \| 'github' \| 'webIntake'` | — |
-| [RuntimeErrors](../entities/RuntimeErrors.md) | Type alias | 56 | `Record<string, string>` | — |
+| [LLMForm](../entities/LLMForm.md) | Interface | 27 | — | — |
+| [AppForm](../entities/AppForm.md) | Interface | 37 | — | — |
+| [GitHubForm](../entities/GitHubForm.md) | Interface | 41 | — | — |
+| [WebIntakeForm](../entities/WebIntakeForm.md) | Interface | 51 | — | — |
+| [RuntimeSection](../entities/RuntimeSection.md) | Type alias | 57 | `'llm' \| 'github' \| 'webIntake'` | — |
+| [RuntimeErrors](../entities/RuntimeErrors.md) | Type alias | 58 | `Record<string, string>` | — |
 
 ## Functions
 

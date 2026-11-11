@@ -1,6 +1,6 @@
 # EmailValidationErrors
 
-**Location:** `frontend/src/components/settings/EmailSettingsPanel.tsx:47`
+**Location:** `frontend/src/components/settings/EmailSettingsPanel.tsx:49`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [EmailSettingsPanel](../modules/EmailSettingsPanel.md)

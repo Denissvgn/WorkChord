@@ -11,6 +11,7 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/common/Checkbox` | `Checkbox` | — | compiler-dependent |
+| `../components/settings/AccessKeysSummary` | `AccessKeysSummary` | — | compiler-dependent |
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
 | `../components/settings/AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
 | `../components/settings/AgentAccessPanel` | `AgentAccessPanel` | — | compiler-dependent |
@@ -28,7 +29,7 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 | `../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
 | `../store/themeStore` | `useThemeStore` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
-| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowRight`, `Bell`, `Bot`, `CalendarClock`, `Check`, `ChevronDown`, `Github`, `KeyRound`, `Keyboard`, `Palette`, `Search`, `ServerCog`, `Settings2`, `Tags`, `Webhook` | — | compiler-dependent |
+| `lucide-react` | `Activity`, `AlertTriangle`, `ArrowRight`, `Bell`, `Bot`, `CalendarClock`, `Check`, `Github`, `KeyRound`, `Keyboard`, `Palette`, `Search`, `ServerCog`, `Settings2`, `Tags`, `Webhook` | — | compiler-dependent |
 | `react` | `KeyboardEvent` | Declaration | erased |
 | `react` | `useEffect`, `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -38,8 +39,8 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `RECENT_SETTINGS_STORAGE_KEY`, `default` |
-| Constants | `SETTINGS_GROUPS`, `SETTINGS_DESTINATIONS`, `MAX_RECENT_SETTINGS`, `RECENT_SETTINGS_STORAGE_KEY` |
+| Exports | `default` |
+| Constants | `SETTINGS_GROUPS`, `SETTINGS_DESTINATIONS` |
 | Module calls | `SETTINGS_DESTINATIONS = flatMap` |
 
 ## Local dependency map
@@ -61,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (17) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -69,15 +70,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [SettingsDestination](../entities/SettingsDestination.md) | Interface | 47 | — | — |
-| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 59 | — | — |
+| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 61 | — | — |
 | [SettingsTab](../entities/SettingsTab.md) | Type alias | 43 | `'appearance' \| 'scheduling' \| 'templates_labels' \| 'models_agents' \| 'github' \| 'webhooks' \| 'notifications' \| 'admin_access' \| 'runtime' \| 'about'` | — |
 | [SettingsPageTab](../entities/SettingsPageTab.md) | Type alias | 44 | `'overview' \| SettingsTab` | — |
 | [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 45 | `'personal' \| 'planning' \| 'agents' \| 'integrations' \| 'system'` | — |
-| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 54 | <pre><code>Pick&#60;&#10;    SettingsDestination&#44;&#10;    &#39;labelKey&#39; &#124; &#39;descriptionKey&#39; &#124; &#39;icon&#39;&#10;&#62;</code></pre> | — |
+| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 56 | <pre><code>Pick&#60;&#10;    SettingsDestination&#44;&#10;    &#39;labelKey&#39; &#124; &#39;descriptionKey&#39; &#124; &#39;icon&#39;&#10;&#62;</code></pre> | — |

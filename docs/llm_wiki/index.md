@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1538 | [Open section](#entities) |
-| Modules | 781 | [Open section](#modules) |
+| Modules | 785 | [Open section](#modules) |
 | Workflows | 195 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 554 | [Open section](#entry-point-flows) |
@@ -1573,6 +1573,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) - Preserve profile lifetimes across recovery and deletion.
 - [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
 - [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
+- [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
@@ -1719,9 +1720,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) - `frontend/src/components/settings/SchedulingRulesSettings.tsx`
 - [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) - `frontend/src/components/settings/SchedulingRulesSettings.test.tsx`
 - [SectionCard](modules/SectionCard.md) - `frontend/src/components/ui/SectionCard.tsx`
+- [SettingsAccessAndAbout.test](modules/SettingsAccessAndAbout.test.md) - `frontend/src/components/settings/SettingsAccessAndAbout.test.tsx`
 - [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) - `frontend/src/components/settings/SettingsGoalHelpContent.tsx`
 - [SettingsPage](modules/SettingsPage.md) - `frontend/src/pages/SettingsPage.tsx`
 - [SettingsPage.test](modules/SettingsPage.test.md) - `frontend/src/pages/SettingsPage.test.tsx`
+- [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) - `frontend/src/components/settings/SettingsUnsavedBar.tsx`
 - [SidebarIterationCard](modules/SidebarIterationCard.md) - `frontend/src/components/layout/SidebarIterationCard.tsx`
 - [SidebarIterationCard.test](modules/SidebarIterationCard.test.md) - `frontend/src/components/layout/SidebarIterationCard.test.tsx`
 - [SlideOverDrawer](modules/SlideOverDrawer.md) - `frontend/src/components/ui/SlideOverDrawer.tsx`
@@ -1785,6 +1788,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
 - [VacationCsvImport](modules/VacationCsvImport.md) - `frontend/src/components/team/VacationCsvImport.tsx`
 - [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
+- [WithheldValuesNote](modules/WithheldValuesNote.md) - `frontend/src/components/settings/WithheldValuesNote.tsx`
 - [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
 - [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
 - [WorkRefreshStatus](modules/WorkRefreshStatus.md) - `frontend/src/components/feedback/WorkRefreshStatus.tsx`

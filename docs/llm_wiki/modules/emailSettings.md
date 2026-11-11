@@ -58,6 +58,6 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [EmailSettings](../entities/emailSettings_EmailSettings.md) | Interface | 3 | — | — |
-| [EmailSettingsUpdate](../entities/emailSettings_EmailSettingsUpdate.md) | Interface | 16 | — | — |
-| [TestEmailRequest](../entities/emailSettings_TestEmailRequest.md) | Interface | 28 | — | — |
-| [TestEmailResponse](../entities/emailSettings_TestEmailResponse.md) | Interface | 32 | — | — |
+| [EmailSettingsUpdate](../entities/emailSettings_EmailSettingsUpdate.md) | Interface | 18 | — | — |
+| [TestEmailRequest](../entities/emailSettings_TestEmailRequest.md) | Interface | 30 | — | — |
+| [TestEmailResponse](../entities/emailSettings_TestEmailResponse.md) | Interface | 34 | — | — |

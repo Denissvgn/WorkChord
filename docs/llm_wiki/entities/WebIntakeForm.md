@@ -1,6 +1,6 @@
 # WebIntakeForm
 
-**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:49`
+**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:51`
 **Kind:** Interface
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)

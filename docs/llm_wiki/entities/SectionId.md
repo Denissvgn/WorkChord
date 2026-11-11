@@ -1,6 +1,6 @@
 # SectionId
 
-**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:33`
+**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:34`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)

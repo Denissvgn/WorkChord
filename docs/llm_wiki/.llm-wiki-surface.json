@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 781,
+      "modules": 785,
       "workflows": 195
     },
     "dependency_architecture": 2,
-    "total": 3084
+    "total": 3088
   },
   "dependency_pages": {
     "count": 2,
@@ -45495,6 +45495,7 @@
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
+        "modules/AccessKeysSummary.md",
         "modules/adminAccess.md",
         "modules/AdminAccessGate.md",
         "modules/AdminAccessGate.test.md",
@@ -45971,9 +45972,11 @@
         "modules/session_service.md",
         "modules/sessionService.md",
         "modules/settings_read.md",
+        "modules/SettingsAccessAndAbout.test.md",
         "modules/SettingsGoalHelpContent.md",
         "modules/SettingsPage.md",
         "modules/SettingsPage.test.md",
+        "modules/SettingsUnsavedBar.md",
         "modules/setup.md",
         "modules/setup_agent_team.md",
         "modules/SidebarIterationCard.md",
@@ -46247,6 +46250,7 @@
         "modules/vite.config.md",
         "modules/vitest.config.md",
         "modules/web_intake_service.md",
+        "modules/WithheldValuesNote.md",
         "modules/worker.md",
         "modules/workflowVocabulary.test.md",
         "modules/WorkFreshness.md",
@@ -67982,6 +67986,20 @@
       "title": "accessibilityInvariants.test Module"
     },
     {
+      "canonical_path": "modules/AccessKeysSummary.md",
+      "id": "AccessKeysSummary",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/AccessKeysSummary",
+      "outgoing_internal_links": [
+        "modules/AccessKeysSummary.md",
+        "modules/SettingsAccessAndAbout.test.md",
+        "modules/SettingsPage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/AccessKeysSummary.tsx",
+      "title": "AccessKeysSummary Module"
+    },
+    {
       "canonical_path": "modules/adminAccess.md",
       "id": "adminAccess",
       "kind": "modules",
@@ -71562,6 +71580,7 @@
         "modules/InterfaceLanguageSettings.md",
         "modules/QueryState.md",
         "modules/SettingsPage.md",
+        "modules/SettingsUnsavedBar.md",
         "modules/systemSettings.md",
         "modules/systemSettingsService.md",
         "modules/toast.md"
@@ -76350,6 +76369,23 @@
       "title": "settings_read Module"
     },
     {
+      "canonical_path": "modules/SettingsAccessAndAbout.test.md",
+      "id": "SettingsAccessAndAbout.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/SettingsAccessAndAbout.test",
+      "outgoing_internal_links": [
+        "modules/AccessKeysSummary.md",
+        "modules/renderWithProviders.md",
+        "modules/SettingsAccessAndAbout.test.md",
+        "modules/SettingsUnsavedBar.md",
+        "modules/SystemHealthPanel.md",
+        "modules/WithheldValuesNote.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/SettingsAccessAndAbout.test.tsx",
+      "title": "SettingsAccessAndAbout.test Module"
+    },
+    {
       "canonical_path": "modules/SettingsGoalHelpContent.md",
       "id": "SettingsGoalHelpContent",
       "kind": "modules",
@@ -76397,6 +76433,27 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/SettingsPage.test.tsx",
       "title": "SettingsPage.test Module"
+    },
+    {
+      "canonical_path": "modules/SettingsUnsavedBar.md",
+      "id": "SettingsUnsavedBar",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/SettingsUnsavedBar",
+      "outgoing_internal_links": [
+        "modules/Button.md",
+        "modules/EmailSettingsPanel.md",
+        "modules/GitHubSettingsPanel.md",
+        "modules/InterfaceLanguageSettings.md",
+        "modules/OutboundWebhooksPanel.md",
+        "modules/RuntimeConfigSettings.md",
+        "modules/SchedulingRulesSettings.md",
+        "modules/SettingsAccessAndAbout.test.md",
+        "modules/SettingsUnsavedBar.md",
+        "modules/UnsavedLeaveGuard.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/SettingsUnsavedBar.tsx",
+      "title": "SettingsUnsavedBar Module"
     },
     {
       "canonical_path": "modules/setup.md",
@@ -76832,6 +76889,7 @@
         "entities/VisibleHealthState.md",
         "modules/Button.md",
         "modules/healthService.md",
+        "modules/SettingsAccessAndAbout.test.md",
         "modules/SettingsPage.md",
         "modules/SystemHealthPanel.md"
       ],
@@ -80537,6 +80595,7 @@
         "entities/UnsavedLeaveGuardProps.md",
         "modules/CalendarPage.md",
         "modules/ConfirmDialog.md",
+        "modules/SettingsUnsavedBar.md",
         "modules/UnsavedLeaveGuard.md"
       ],
       "role": "semantic",
@@ -80984,6 +81043,22 @@
       "role": "semantic",
       "source_path": "backend/app/services/web_intake_service.py",
       "title": "web_intake_service Module"
+    },
+    {
+      "canonical_path": "modules/WithheldValuesNote.md",
+      "id": "WithheldValuesNote",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/WithheldValuesNote",
+      "outgoing_internal_links": [
+        "modules/EmailSettingsPanel.md",
+        "modules/OutboundWebhooksPanel.md",
+        "modules/RuntimeConfigSettings.md",
+        "modules/SettingsAccessAndAbout.test.md",
+        "modules/WithheldValuesNote.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/WithheldValuesNote.tsx",
+      "title": "WithheldValuesNote Module"
     },
     {
       "canonical_path": "modules/worker.md",
@@ -94894,6 +94969,7 @@
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
+        "modules/AccessKeysSummary.md",
         "modules/adminAccess.md",
         "modules/AdminAccessGate.md",
         "modules/AdminAccessGate.test.md",
@@ -95370,9 +95446,11 @@
         "modules/session_service.md",
         "modules/sessionService.md",
         "modules/settings_read.md",
+        "modules/SettingsAccessAndAbout.test.md",
         "modules/SettingsGoalHelpContent.md",
         "modules/SettingsPage.md",
         "modules/SettingsPage.test.md",
+        "modules/SettingsUnsavedBar.md",
         "modules/setup.md",
         "modules/setup_agent_team.md",
         "modules/SidebarIterationCard.md",
@@ -95646,6 +95724,7 @@
         "modules/vite.config.md",
         "modules/vitest.config.md",
         "modules/web_intake_service.md",
+        "modules/WithheldValuesNote.md",
         "modules/worker.md",
         "modules/workflowVocabulary.test.md",
         "modules/WorkFreshness.md",
@@ -95686,6 +95765,7 @@
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
+        "modules/AccessKeysSummary.md",
         "modules/adminAccess.md",
         "modules/AdminAccessGate.md",
         "modules/AdminAccessGate.test.md",
@@ -96162,9 +96242,11 @@
         "modules/session_service.md",
         "modules/sessionService.md",
         "modules/settings_read.md",
+        "modules/SettingsAccessAndAbout.test.md",
         "modules/SettingsGoalHelpContent.md",
         "modules/SettingsPage.md",
         "modules/SettingsPage.test.md",
+        "modules/SettingsUnsavedBar.md",
         "modules/setup.md",
         "modules/setup_agent_team.md",
         "modules/SidebarIterationCard.md",
@@ -96438,6 +96520,7 @@
         "modules/vite.config.md",
         "modules/vitest.config.md",
         "modules/web_intake_service.md",
+        "modules/WithheldValuesNote.md",
         "modules/worker.md",
         "modules/workflowVocabulary.test.md",
         "modules/WorkFreshness.md",
@@ -96457,5 +96540,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:c7dcd2a95b583860d6338a7468f5d2db541898560089b01a384ee912594c0e93"
+  "source_hash": "sha256:a1c65aa96952b9734766a8713eca007736d17464826964d74afbf3264b8461a4"
 }

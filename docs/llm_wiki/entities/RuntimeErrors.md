@@ -1,6 +1,6 @@
 # RuntimeErrors
 
-**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:56`
+**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:58`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)

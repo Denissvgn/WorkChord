@@ -1,6 +1,6 @@
 # RuntimeSection
 
-**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:55`
+**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:57`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)

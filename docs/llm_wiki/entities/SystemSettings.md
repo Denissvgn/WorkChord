@@ -18,6 +18,7 @@ _Auto-generated from `SystemSettings` in `frontend/src/types/systemSettings.ts`.
 | `github` | `GitHubRuntimeSettings` | Yes | — | — |
 | `web_intake` | `WebIntakeRuntimeSettings` | Yes | — | — |
 | `restart_required` | `RestartRequiredSetting[]` | Yes | — | — |
+| `redacted_fields` | `string[]` | No | — | — |
 
 ## Methods
 
@@ -48,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [systemSettings](../modules/systemSettings.md) | 0 | `app`, `github`, `llm`, `restart_required`, `web_intake` |
+| [systemSettings](../modules/systemSettings.md) | 0 | `app`, `github`, `llm`, `redacted_fields`, `restart_required`, `web_intake` |
 
 ### References
 

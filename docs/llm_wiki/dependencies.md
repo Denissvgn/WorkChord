@@ -340,13 +340,13 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 |--------|--------|---------|
 | [models_task](modules/models_task.md) | 94 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
+| [Button](modules/Button.md) | 83 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
-| [Button](modules/Button.md) | 82 | 0 |
 | [time](modules/time.md) | 77 | 0 |
 | [config](modules/config.md) | 72 | 1 |
 | [types_task](modules/types_task.md) | 70 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 69 | 2 |
 | [QueryState](modules/QueryState.md) | 68 | 2 |
-| [renderWithProviders](modules/renderWithProviders.md) | 68 | 2 |
 | [models_agent](modules/models_agent.md) | 65 | 5 |
 | [task_service](modules/task_service.md) | 61 | 28 |
 | [models_iteration](modules/models_iteration.md) | 58 | 6 |
@@ -470,6 +470,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [scheduler_service](modules/scheduler_service.md) | 7 | 15 |
 | [task_detail_service](modules/task_detail_service.md) | 7 | 15 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
+| [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) | 7 | 2 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
 | [evidence](modules/evidence.md) | 6 | 2 |
@@ -547,6 +548,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) | 4 | 2 |
 | [projectStatusStyles](modules/projectStatusStyles.md) | 4 | 2 |
 | [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 6 |
+| [WithheldValuesNote](modules/WithheldValuesNote.md) | 4 | 0 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 4 | 3 |
 | [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 10 |
 | [TaskForm](modules/TaskForm.md) | 4 | 36 |
@@ -677,6 +679,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ExecutionUsagePanel](modules/ExecutionUsagePanel.md) | 2 | 3 |
 | [InteractiveCalendar](modules/InteractiveCalendar.md) | 2 | 1 |
 | [FullscreenWorkspace](modules/FullscreenWorkspace.md) | 2 | 1 |
+| [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) | 2 | 1 |
 | [WorkFreshness](modules/WorkFreshness.md) | 2 | 1 |
 | [GanttChart](modules/GanttChart.md) | 2 | 13 |
 | [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
@@ -691,14 +694,16 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ProjectForm](modules/ProjectForm.md) | 2 | 16 |
 | [TimeEntriesReport](modules/TimeEntriesReport.md) | 2 | 10 |
 | [ReleaseForm](modules/ReleaseForm.md) | 2 | 9 |
+| [AccessKeysSummary](modules/AccessKeysSummary.md) | 2 | 0 |
 | [AgentAccessPanel](modules/AgentAccessPanel.md) | 2 | 7 |
 | [AgentModelAdministration](modules/AgentModelAdministration.md) | 2 | 13 |
 | [EffortModifierCard](modules/EffortModifierCard.md) | 2 | 4 |
-| [EmailSettingsPanel](modules/EmailSettingsPanel.md) | 2 | 11 |
-| [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) | 2 | 12 |
-| [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) | 2 | 12 |
-| [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) | 2 | 10 |
-| [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) | 2 | 12 |
+| [EmailSettingsPanel](modules/EmailSettingsPanel.md) | 2 | 13 |
+| [GitHubSettingsPanel](modules/GitHubSettingsPanel.md) | 2 | 13 |
+| [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) | 2 | 14 |
+| [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) | 2 | 12 |
+| [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) | 2 | 13 |
+| [SystemHealthPanel](modules/SystemHealthPanel.md) | 2 | 2 |
 | [TemplateLabelSettings](modules/TemplateLabelSettings.md) | 2 | 11 |
 | [DeliveryDependencies](modules/DeliveryDependencies.md) | 2 | 7 |
 | [ImportTasksModal](modules/ImportTasksModal.md) | 2 | 7 |
@@ -782,7 +787,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_time_entries](modules/test_time_entries.md) | 1 | 14 |
 | [App](modules/App.md) | 1 | 3 |
 | [TaskStatusFlow](modules/TaskStatusFlow.md) | 1 | 3 |
-| [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) | 1 | 1 |
 | [SavedViewDashboardCards](modules/SavedViewDashboardCards.md) | 1 | 4 |
 | [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 1 | 1 |
 | [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 4 |
@@ -796,10 +800,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ProjectTaskTree](modules/ProjectTaskTree.md) | 1 | 5 |
 | [AgentTeamStepList](modules/AgentTeamStepList.md) | 1 | 2 |
 | [ConstraintsPanel](modules/ConstraintsPanel.md) | 1 | 3 |
-| [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) | 1 | 7 |
+| [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) | 1 | 8 |
 | [SchedulingPassCard](modules/SchedulingPassCard.md) | 1 | 4 |
 | [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) | 1 | 0 |
-| [SystemHealthPanel](modules/SystemHealthPanel.md) | 1 | 2 |
 | [BacklogPanel](modules/BacklogPanel.md) | 1 | 7 |
 | [KanbanColumn](modules/KanbanColumn.md) | 1 | 4 |
 | [SavedViewsControl](modules/SavedViewsControl.md) | 1 | 14 |
@@ -831,7 +834,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanSharePage](modules/PlanSharePage.md) | 1 | 7 |
 | [ProjectsPage](modules/ProjectsPage.md) | 1 | 16 |
 | [RoadmapPage](modules/RoadmapPage.md) | 1 | 13 |
-| [SettingsPage](modules/SettingsPage.md) | 1 | 17 |
+| [SettingsPage](modules/SettingsPage.md) | 1 | 18 |
 | [TasksPage](modules/TasksPage.md) | 1 | 29 |
 | [deliveryMetricsService](modules/deliveryMetricsService.md) | 1 | 2 |
 | [emailSettingsService](modules/emailSettingsService.md) | 1 | 2 |
@@ -994,6 +997,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [OutboundWebhooksPanel.test](modules/OutboundWebhooksPanel.test.md) | 0 | 3 |
 | [RuntimeConfigSettings.test](modules/RuntimeConfigSettings.test.md) | 0 | 3 |
 | [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) | 0 | 3 |
+| [SettingsAccessAndAbout.test](modules/SettingsAccessAndAbout.test.md) | 0 | 5 |
 | [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) | 0 | 3 |
 | [CurrentTaskModal.test](modules/CurrentTaskModal.test.md) | 0 | 3 |
 | [KanbanBoard.test](modules/KanbanBoard.test.md) | 0 | 4 |

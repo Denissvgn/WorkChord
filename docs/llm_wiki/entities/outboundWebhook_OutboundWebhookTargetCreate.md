@@ -1,6 +1,6 @@
 # OutboundWebhookTargetCreate
 
-**Location:** `frontend/src/types/outboundWebhook.ts:16`
+**Location:** `frontend/src/types/outboundWebhook.ts:18`
 **Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)

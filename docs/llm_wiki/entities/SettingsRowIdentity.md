@@ -1,6 +1,6 @@
 # SettingsRowIdentity
 
-**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:36`
+**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:37`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)

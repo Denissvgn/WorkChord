@@ -28,9 +28,9 @@ Partial update for an outbound webhook target.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
 | `description` | `Optional[str]` | `description` | No | Yes | `None` | — | — | — |
-| `url` | `Optional[str]` | `url` | No | Yes | `None` | min_length=1; max_length=1000 | — | — |
+| `url` | `Optional[str]` | `url` | No | Yes | `None` | max_length=1000; min_length=1 | — | — |
 | `enabled` | `Optional[bool]` | `enabled` | No | Yes | `None` | — | — | — |
 | `subscribed_events_json` | `Optional[list[str]]` | `subscribed_events_json` | No | Yes | `None` | — | — | — |
 | `secret` | `Optional[str]` | `secret` | No | Yes | `None` | max_length=500 | — | — |

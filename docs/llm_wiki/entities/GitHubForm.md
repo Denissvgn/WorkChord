@@ -1,6 +1,6 @@
 # GitHubForm
 
-**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:39`
+**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:41`
 **Kind:** Interface
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)

@@ -1,6 +1,6 @@
 # AppForm
 
-**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:35`
+**Location:** `frontend/src/components/settings/RuntimeConfigSettings.tsx:37`
 **Kind:** Interface
 **Bases:** —
 **Module:** [RuntimeConfigSettings](../modules/RuntimeConfigSettings.md)

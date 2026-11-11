@@ -1,6 +1,6 @@
 # VisibleHealthState
 
-**Location:** `frontend/src/components/settings/SystemHealthPanel.tsx:7`
+**Location:** `frontend/src/components/settings/SystemHealthPanel.tsx:9`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SystemHealthPanel](../modules/SystemHealthPanel.md)
