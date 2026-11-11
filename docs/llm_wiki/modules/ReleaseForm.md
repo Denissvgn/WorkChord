@@ -19,6 +19,7 @@ _Auto-generated from `frontend/src/components/releases/ReleaseForm.tsx`._
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
+| `../common/DisabledReason` | `DisabledReason` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../ui/tone` | `pillToneClassName`, `STATUS_TONE` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (10) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
@@ -64,15 +65,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 24 | — | — |
-| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 31 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
-| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 36 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 25 | — | — |
+| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 32 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 37 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

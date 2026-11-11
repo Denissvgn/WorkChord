@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 808,
+      "modules": 810,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3128
+    "total": 3130
   },
   "dependency_pages": {
     "count": 2,
@@ -45819,6 +45819,7 @@
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/dialogLayer.md",
+        "modules/DisabledReason.md",
         "modules/discussion_service.md",
         "modules/discussionService.md",
         "modules/DocumentMetadata.md",
@@ -45876,6 +45877,7 @@
         "modules/http_authority.md",
         "modules/i18n.md",
         "modules/i18n.test.md",
+        "modules/iconButtonTooltips.test.md",
         "modules/identity_service.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
@@ -70793,6 +70795,24 @@
       "title": "dialogLayer Module"
     },
     {
+      "canonical_path": "modules/DisabledReason.md",
+      "id": "DisabledReason",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/DisabledReason",
+      "outgoing_internal_links": [
+        "modules/AgentTeamSetupMasterPage.md",
+        "modules/CalendarPage.md",
+        "modules/DisabledReason.md",
+        "modules/ImportTeamModal.md",
+        "modules/IterationImportDialog.md",
+        "modules/ProjectDetailPage.md",
+        "modules/ReleaseForm.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/DisabledReason.tsx",
+      "title": "DisabledReason Module"
+    },
+    {
       "canonical_path": "modules/discussion_service.md",
       "id": "discussion_service",
       "kind": "modules",
@@ -71719,6 +71739,16 @@
       "title": "i18n.test Module"
     },
     {
+      "canonical_path": "modules/iconButtonTooltips.test.md",
+      "id": "iconButtonTooltips.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/iconButtonTooltips.test",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/iconButtonTooltips.test.ts",
+      "title": "iconButtonTooltips.test Module"
+    },
+    {
       "canonical_path": "modules/identity_service.md",
       "id": "identity_service",
       "kind": "modules",
@@ -71858,6 +71888,7 @@
         "entities/ImportTeamModalProps.md",
         "modules/apiError.md",
         "modules/Button.md",
+        "modules/DisabledReason.md",
         "modules/ImportTeamModal.md",
         "modules/ImportTeamModal.test.md",
         "modules/Modal.md",
@@ -72105,6 +72136,7 @@
       "outgoing_internal_links": [
         "modules/apiError.md",
         "modules/Button.md",
+        "modules/DisabledReason.md",
         "modules/exportService.md",
         "modules/IterationImportDialog.md",
         "modules/IterationList.md",
@@ -95919,6 +95951,7 @@
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/dialogLayer.md",
+        "modules/DisabledReason.md",
         "modules/discussion_service.md",
         "modules/discussionService.md",
         "modules/DocumentMetadata.md",
@@ -95976,6 +96009,7 @@
         "modules/http_authority.md",
         "modules/i18n.md",
         "modules/i18n.test.md",
+        "modules/iconButtonTooltips.test.md",
         "modules/identity_service.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
@@ -96738,6 +96772,7 @@
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/dialogLayer.md",
+        "modules/DisabledReason.md",
         "modules/discussion_service.md",
         "modules/discussionService.md",
         "modules/DocumentMetadata.md",
@@ -96795,6 +96830,7 @@
         "modules/http_authority.md",
         "modules/i18n.md",
         "modules/i18n.test.md",
+        "modules/iconButtonTooltips.test.md",
         "modules/identity_service.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
@@ -97395,5 +97431,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:e73acb0285c68cdb9c7abbcb2abf751804f4ccc3c3d7be3bcc92514caec27770"
+  "source_hash": "sha256:0421c085feed9f95df947b3dacbeb7e2fe7bede1d0d14ed4fc43b5f4f0f32c28"
 }

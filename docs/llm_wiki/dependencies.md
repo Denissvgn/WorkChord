@@ -525,6 +525,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
 | [agent_planning_service](modules/agent_planning_service.md) | 6 | 19 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
+| [DisabledReason](modules/DisabledReason.md) | 6 | 0 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
 | [savedViewService](modules/savedViewService.md) | 6 | 2 |
@@ -729,7 +730,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [GanttChart](modules/GanttChart.md) | 2 | 13 |
 | [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
 | [IterationCapacityLine](modules/IterationCapacityLine.md) | 2 | 3 |
-| [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 7 |
+| [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 8 |
 | [IterationList](modules/IterationList.md) | 2 | 12 |
 | [LabelChip](modules/LabelChip.md) | 2 | 0 |
 | [AppShell](modules/AppShell.md) | 2 | 7 |
@@ -740,7 +741,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) | 2 | 7 |
 | [PlanningWorkflowGuide](modules/PlanningWorkflowGuide.md) | 2 | 2 |
 | [TimeEntriesReport](modules/TimeEntriesReport.md) | 2 | 10 |
-| [ReleaseForm](modules/ReleaseForm.md) | 2 | 10 |
+| [ReleaseForm](modules/ReleaseForm.md) | 2 | 11 |
 | [AccessKeysSummary](modules/AccessKeysSummary.md) | 2 | 0 |
 | [AgentAccessPanel](modules/AgentAccessPanel.md) | 2 | 7 |
 | [AgentModelAdministration](modules/AgentModelAdministration.md) | 2 | 13 |
@@ -761,7 +762,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskTextEditorModal](modules/TaskTextEditorModal.md) | 2 | 5 |
 | [taskEditorSnapshot](modules/taskEditorSnapshot.md) | 2 | 2 |
 | [AssigneeRecommendationsPanel](modules/AssigneeRecommendationsPanel.md) | 2 | 4 |
-| [ImportTeamModal](modules/ImportTeamModal.md) | 2 | 6 |
+| [ImportTeamModal](modules/ImportTeamModal.md) | 2 | 7 |
 | [TeamForm](modules/TeamForm.md) | 2 | 11 |
 | [TeamList](modules/TeamList.md) | 2 | 11 |
 | [TeamProfileManager](modules/TeamProfileManager.md) | 2 | 10 |
@@ -871,8 +872,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
 | [helpContexts](modules/helpContexts.md) | 1 | 2 |
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 14 |
-| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 15 |
-| [CalendarPage](modules/CalendarPage.md) | 1 | 19 |
+| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 16 |
+| [CalendarPage](modules/CalendarPage.md) | 1 | 20 |
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
 | [MyWorkPage](modules/MyWorkPage.md) | 1 | 15 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
@@ -1020,6 +1021,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [InteractiveCalendar.test](modules/InteractiveCalendar.test.md) | 0 | 2 |
 | [Button.test](modules/Button.test.md) | 0 | 1 |
 | [Input.test](modules/Input.test.md) | 0 | 1 |
+| [iconButtonTooltips.test](modules/iconButtonTooltips.test.md) | 0 | 0 |
 | [ToastProvider.test](modules/ToastProvider.test.md) | 0 | 2 |
 | [GanttChart.test](modules/GanttChart.test.md) | 0 | 5 |
 | [IterationForm.test](modules/IterationForm.test.md) | 0 | 3 |
@@ -1118,7 +1120,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanMasterPage.test](modules/PlanMasterPage.test.md) | 0 | 10 |
 | [PlanPage.test](modules/PlanPage.test.md) | 0 | 3 |
 | [PlanSharePage.test](modules/PlanSharePage.test.md) | 0 | 2 |
-| [ProjectDetailPage](modules/ProjectDetailPage.md) | 0 | 30 |
+| [ProjectDetailPage](modules/ProjectDetailPage.md) | 0 | 31 |
 | [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | 0 | 15 |
 | [ProjectsPage.test](modules/ProjectsPage.test.md) | 0 | 3 |
 | [RoadmapPage.test](modules/RoadmapPage.test.md) | 0 | 2 |

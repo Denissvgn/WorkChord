@@ -1,6 +1,6 @@
 # StatusTone
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:64`
+**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:65`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)

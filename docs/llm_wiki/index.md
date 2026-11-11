@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1552 | [Open section](#entities) |
-| Modules | 808 | [Open section](#modules) |
+| Modules | 810 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1634,6 +1634,7 @@ Retained history; these declarations are absent from the selected source invento
 - [DeliveryAnalytics](modules/DeliveryAnalytics.md) - `frontend/src/components/analytics/DeliveryAnalytics.tsx`
 - [DeliveryAnalytics.test](modules/DeliveryAnalytics.test.md) - `frontend/src/components/analytics/DeliveryAnalytics.test.tsx`
 - [DeliveryDependencies](modules/DeliveryDependencies.md) - `frontend/src/components/tasks/DeliveryDependencies.tsx`
+- [DisabledReason](modules/DisabledReason.md) - `frontend/src/components/common/DisabledReason.tsx`
 - [DocumentMetadata](modules/DocumentMetadata.md) - `frontend/src/components/layout/DocumentMetadata.tsx`
 - [DraftDismissalDialog](modules/DraftDismissalDialog.md) - `frontend/src/components/tasks/DraftDismissalDialog.tsx`
 - [EffortModifierCard](modules/EffortModifierCard.md) - `frontend/src/components/settings/EffortModifierCard.tsx`
@@ -1968,6 +1969,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http_authority](modules/http_authority.md) - Fail-closed HTTP identity resolution and explicit public capability boundaries.
 - [i18n](modules/i18n.md) - `frontend/src/i18n/i18n.ts`
 - [i18n.test](modules/i18n.test.md) - `frontend/src/i18n/i18n.test.ts`
+- [iconButtonTooltips.test](modules/iconButtonTooltips.test.md) - `frontend/src/components/common/iconButtonTooltips.test.ts`
 - [identityContext](modules/identityContext.md) - `frontend/src/features/identity/identityContext.ts`
 - [identityService](modules/identityService.md) - `frontend/src/features/identity/identityService.ts`
 - [identity_service](modules/identity_service.md) - Trusted OIDC sign-in and durable principal/session lifecycle.

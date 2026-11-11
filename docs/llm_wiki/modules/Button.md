@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/components/common/Button.tsx`._
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `Loader2` | — | compiler-dependent |
 | `react` | `ButtonHTMLAttributes` | Declaration | erased |
-| `react` | `forwardRef` | — | compiler-dependent |
+| `react` | `Children`, `forwardRef` | — | compiler-dependent |
 
 ## Module Signals
 

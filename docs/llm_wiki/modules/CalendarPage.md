@@ -15,6 +15,7 @@ Calendar reads and writes retain resource and draft generation boundaries. Pendi
 |--------|---------|-----------|------------------|
 | `../components/calendar/InteractiveCalendar` | `CalendarPeriodNavigator`, `InteractiveCalendar` | — | compiler-dependent |
 | `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/DisabledReason` | `DisabledReason` | — | compiler-dependent |
 | `../components/common/Input` | `Input` | — | compiler-dependent |
 | `../components/common/UnsavedLeaveGuard` | `UnsavedLeaveGuard` | — | compiler-dependent |
 | `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
@@ -67,7 +68,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (19) |
+| Outbound | `frontend` (20) |
 
 ### External packages
 
@@ -75,13 +76,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarDraft](../entities/CalendarDraft.md) | Interface | 40 | — | — |
-| [VacationRow](../entities/VacationRow.md) | Interface | 47 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Interface | 1186 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Interface | 1249 | — | — |
+| [CalendarDraft](../entities/CalendarDraft.md) | Interface | 41 | — | — |
+| [VacationRow](../entities/VacationRow.md) | Interface | 48 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Interface | 1189 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Interface | 1252 | — | — |

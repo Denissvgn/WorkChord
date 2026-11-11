@@ -15,6 +15,7 @@ _Auto-generated from `frontend/src/components/team/ImportTeamModal.tsx`._
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
+| `../common/DisabledReason` | `DisabledReason` | — | compiler-dependent |
 | `../common/Modal` | `Modal` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Upload`, `FileText`, `AlertCircle` | — | compiler-dependent |
@@ -36,33 +37,36 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/common/Modal.tsx"]
-    n2["frontend/src/components/team/ImportTeamModal.test.tsx"]
-    n3["frontend/src/components/team/ImportTeamModal.tsx"]
-    n4["frontend/src/features/mutationFeedback.ts"]
-    n5["frontend/src/features/usePlanningObservation.ts"]
-    n6["frontend/src/pages/TeamPage.tsx"]
-    n7["frontend/src/services/teamService.ts"]
-    n8["frontend/src/utils/apiError.ts"]
-    n2 --> n3
-    n3 --> n0
-    n3 --> n1
+    n1["frontend/src/components/common/DisabledReason.tsx"]
+    n2["frontend/src/components/common/Modal.tsx"]
+    n3["frontend/src/components/team/ImportTeamModal.test.tsx"]
+    n4["frontend/src/components/team/ImportTeamModal.tsx"]
+    n5["frontend/src/features/mutationFeedback.ts"]
+    n6["frontend/src/features/usePlanningObservation.ts"]
+    n7["frontend/src/pages/TeamPage.tsx"]
+    n8["frontend/src/services/teamService.ts"]
+    n9["frontend/src/utils/apiError.ts"]
     n3 --> n4
-    n3 --> n5
-    n3 --> n7
-    n3 --> n8
-    n5 --> n8
-    n6 --> n3
-    n6 --> n7
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n5
+    n4 --> n6
+    n4 --> n8
+    n4 --> n9
+    n6 --> n9
+    n7 --> n4
+    n7 --> n8
     click n0 "../modules/Button.md"
-    click n1 "../modules/Modal.md"
-    click n2 "../modules/ImportTeamModal.test.md"
-    click n3 "../modules/ImportTeamModal.md"
-    click n4 "../modules/mutationFeedback.md"
-    click n5 "../modules/usePlanningObservation.md"
-    click n6 "../modules/TeamPage.md"
-    click n7 "../modules/teamService.md"
-    click n8 "../modules/apiError.md"
+    click n1 "../modules/DisabledReason.md"
+    click n2 "../modules/Modal.md"
+    click n3 "../modules/ImportTeamModal.test.md"
+    click n4 "../modules/ImportTeamModal.md"
+    click n5 "../modules/mutationFeedback.md"
+    click n6 "../modules/usePlanningObservation.md"
+    click n7 "../modules/TeamPage.md"
+    click n8 "../modules/teamService.md"
+    click n9 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -72,6 +76,7 @@ flowchart LR
 | Inbound | [ImportTeamModal.test](../modules/ImportTeamModal.test.md) |
 | Inbound | [TeamPage](../modules/TeamPage.md) |
 | Outbound | [Button](../modules/Button.md) |
+| Outbound | [DisabledReason](../modules/DisabledReason.md) |
 | Outbound | [Modal](../modules/Modal.md) |
 | Outbound | [mutationFeedback](../modules/mutationFeedback.md) |
 | Outbound | [usePlanningObservation](../modules/usePlanningObservation.md) |
@@ -88,7 +93,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ImportTeamModalProps](../entities/ImportTeamModalProps.md) | Interface | 14 | — | — |
+| [ImportTeamModalProps](../entities/ImportTeamModalProps.md) | Interface | 15 | — | — |
 
 ## Functions
 

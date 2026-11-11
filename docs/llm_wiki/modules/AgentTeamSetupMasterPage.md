@@ -12,6 +12,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../components/common/DisabledReason` | `DisabledReason` | — | compiler-dependent |
 | `../components/feedback/toast` | `useToast` | — | compiler-dependent |
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
@@ -63,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (15) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -71,13 +72,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 134 | — | — |
-| [StatusTone](../entities/StatusTone.md) | Type alias | 64 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
-| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 131 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
-| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 132 | `'plan' \| 'receipt'` | — |
+| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 135 | — | — |
+| [StatusTone](../entities/StatusTone.md) | Type alias | 65 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
+| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 132 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
+| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 133 | `'plan' \| 'receipt'` | — |
