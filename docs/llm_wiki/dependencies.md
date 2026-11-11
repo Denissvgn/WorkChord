@@ -238,6 +238,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | [types_agent](modules/types_agent.md) |
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | [types_task](modules/types_task.md) |
 | [AgentTeamSetupMasterPage.test](modules/AgentTeamSetupMasterPage.test.md) | [types_agent](modules/types_agent.md) |
+| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | [manifestLocations](modules/manifestLocations.md) |
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | [statusScopes](modules/statusScopes.md) |
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | [types_agent](modules/types_agent.md) |
 | [AnalyticsPage](modules/AnalyticsPage.md) | [types_task](modules/types_task.md) |
@@ -400,8 +401,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [types_iteration](modules/types_iteration.md) | 25 | 1 |
 | [user_session](modules/user_session.md) | 24 | 6 |
 | [services_work_metrics](modules/services_work_metrics.md) | 23 | 8 |
+| [toast](modules/toast.md) | 23 | 0 |
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
-| [toast](modules/toast.md) | 22 | 0 |
 | [index](modules/index.md) | 22 | 0 |
 | [types_team](modules/types_team.md) | 22 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
@@ -757,6 +758,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [VacationCsvImport](modules/VacationCsvImport.md) | 2 | 6 |
 | [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 2 | 3 |
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 2 | 1 |
+| [manifestLocations](modules/manifestLocations.md) | 2 | 0 |
 | [statusScopes](modules/statusScopes.md) | 2 | 1 |
 | [useAgentTeamReadiness](modules/useAgentTeamReadiness.md) | 2 | 2 |
 | [LocalProfilePicker](modules/LocalProfilePicker.md) | 2 | 4 |
@@ -836,6 +838,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [InitiativeForm](modules/InitiativeForm.md) | 1 | 10 |
 | [ProjectIterationsSection](modules/ProjectIterationsSection.md) | 1 | 12 |
 | [ProjectTaskTree](modules/ProjectTaskTree.md) | 1 | 5 |
+| [AgentTeamManifestPreview](modules/AgentTeamManifestPreview.md) | 1 | 0 |
 | [AgentTeamStepList](modules/AgentTeamStepList.md) | 1 | 2 |
 | [ConstraintsPanel](modules/ConstraintsPanel.md) | 1 | 3 |
 | [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) | 1 | 8 |
@@ -860,7 +863,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
 | [helpContexts](modules/helpContexts.md) | 1 | 2 |
 | [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 13 |
-| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 12 |
+| [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 15 |
 | [CalendarPage](modules/CalendarPage.md) | 1 | 19 |
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
 | [MyWorkPage](modules/MyWorkPage.md) | 1 | 15 |
@@ -1071,6 +1074,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [StatusSegmentStrip](modules/StatusSegmentStrip.md) | 0 | 1 |
 | [StickyRail](modules/StickyRail.md) | 0 | 0 |
 | [tone.test](modules/tone.test.md) | 0 | 1 |
+| [manifestLocations.test](modules/manifestLocations.test.md) | 0 | 1 |
 | [agentTeamSetup_masters.test](modules/agentTeamSetup_masters.test.md) | 0 | 3 |
 | [statusScopes.test](modules/statusScopes.test.md) | 0 | 2 |
 | [IdentityProvider.test](modules/IdentityProvider.test.md) | 0 | 3 |

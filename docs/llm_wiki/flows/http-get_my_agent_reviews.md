@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_my_agent_reviews | service.get_reviews | 946 | `service.get_reviews(actor, limit=limit, cursor=cursor)` |
-| get_my_agent_reviews | _handle_agent_error | 948 | `_handle_agent_error(exc, structured=True)` |
+| get_my_agent_reviews | service.get_reviews | 962 | `service.get_reviews(actor, limit=limit, cursor=cursor)` |
+| get_my_agent_reviews | _handle_agent_error | 964 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_my_agent_reviews` | `service.get_reviews` | 946 |
+| unresolved_call | `get_my_agent_reviews` | `service.get_reviews` | 962 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| preview_task_routing | service.preview_task_routing | 673 | `service.preview_task_routing(task_id, actor, data)` |
-| preview_task_routing | _handle_agent_error | 675 | `_handle_agent_error(exc, structured=True)` |
+| preview_task_routing | service.preview_task_routing | 689 | `service.preview_task_routing(task_id, actor, data)` |
+| preview_task_routing | _handle_agent_error | 691 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `preview_task_routing` | `service.preview_task_routing` | 673 |
+| unresolved_call | `preview_task_routing` | `service.preview_task_routing` | 689 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

@@ -147,8 +147,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| claim_task | service.claim_task | 1077 | `service.claim_task(task_id, actor, data, idempotency_key)` |
-| claim_task | _handle_agent_error | 1079 | `_handle_agent_error(exc)` |
+| claim_task | service.claim_task | 1093 | `service.claim_task(task_id, actor, data, idempotency_key)` |
+| claim_task | _handle_agent_error | 1095 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -167,7 +167,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `claim_task` | `service.claim_task` | 1077 |
+| unresolved_call | `claim_task` | `service.claim_task` | 1093 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

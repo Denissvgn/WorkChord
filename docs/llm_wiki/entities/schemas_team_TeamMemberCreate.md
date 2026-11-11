@@ -13,8 +13,8 @@ Schema for creating a team member.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `str` | `name` | Yes | No | — | min_length=1; max_length=255 | — | — |
-| `position` | `str` | `position` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `name` | `str` | `name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `position` | `str` | `position` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `email` | `Optional[str]` | `email` | No | Yes | `None` | max_length=255 | — | — |
 | `profile_id` | `Optional[int]` | `profile_id` | No | Yes | `None` | — | — | — |
 | `availability_percent` | `float` | `availability_percent` | No | No | `100.0` | ge=0; le=100 | — | — |

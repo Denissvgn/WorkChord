@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_task_context | service.get_task_context | 856 | `service.get_task_context(actor, task_id, assignment_id=assignment_id)` |
-| get_agent_task_context | _handle_agent_error | 862 | `_handle_agent_error(exc, structured=True)` |
+| get_agent_task_context | service.get_task_context | 872 | `service.get_task_context(actor, task_id, assignment_id=assignment_id)` |
+| get_agent_task_context | _handle_agent_error | 878 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_task_context` | `service.get_task_context` | 856 |
+| unresolved_call | `get_agent_task_context` | `service.get_task_context` | 872 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

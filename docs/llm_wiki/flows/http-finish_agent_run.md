@@ -147,8 +147,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| finish_agent_run | service.finish_run | 1244 | `service.finish_run(run_id, actor, data)` |
-| finish_agent_run | _handle_agent_error | 1246 | `_handle_agent_error(exc)` |
+| finish_agent_run | service.finish_run | 1260 | `service.finish_run(run_id, actor, data)` |
+| finish_agent_run | _handle_agent_error | 1262 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -167,7 +167,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `finish_agent_run` | `service.finish_run` | 1244 |
+| unresolved_call | `finish_agent_run` | `service.finish_run` | 1260 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

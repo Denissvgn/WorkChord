@@ -1,6 +1,6 @@
 # WorkflowFocusIntent
 
-**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:130`
+**Location:** `frontend/src/pages/AgentTeamSetupMasterPage.tsx:134`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md)

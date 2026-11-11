@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_agent_assignment | service.update_assignment | 746 | `service.update_assignment(assignment_id, actor, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| update_agent_assignment | _handle_agent_error | 755 | `_handle_agent_error(exc, structured=True)` |
+| update_agent_assignment | service.update_assignment | 762 | `service.update_assignment(assignment_id, actor, data, idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| update_agent_assignment | _handle_agent_error | 771 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_agent_assignment` | `service.update_assignment` | 746 |
+| unresolved_call | `update_agent_assignment` | `service.update_assignment` | 762 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

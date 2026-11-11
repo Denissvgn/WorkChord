@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_pipeline | service.get_pipeline | 1332 | `service.get_pipeline(data not statically known)` |
-| get_agent_pipeline | AgentPipelineResponse | 1333 | `AgentPipelineResponse(**=cols)` |
+| get_agent_pipeline | service.get_pipeline | 1348 | `service.get_pipeline(data not statically known)` |
+| get_agent_pipeline | AgentPipelineResponse | 1349 | `AgentPipelineResponse(**=cols)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_pipeline` | `service.get_pipeline` | 1332 |
+| unresolved_call | `get_agent_pipeline` | `service.get_pipeline` | 1348 |
 
 ## Behavior
 

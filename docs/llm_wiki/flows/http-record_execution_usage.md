@@ -136,9 +136,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_execution_usage | ExecutionUsageService(…).write | 1362 | `ExecutionUsageService(db).write(actor, run_id, data)` |
-| record_execution_usage | ExecutionUsageService | 1362 | `ExecutionUsageService(db)` |
-| record_execution_usage | _handle_agent_error | 1364 | `_handle_agent_error(exc, structured=True)` |
+| record_execution_usage | ExecutionUsageService(…).write | 1378 | `ExecutionUsageService(db).write(actor, run_id, data)` |
+| record_execution_usage | ExecutionUsageService | 1378 | `ExecutionUsageService(db)` |
+| record_execution_usage | _handle_agent_error | 1380 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -156,7 +156,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `record_execution_usage` | `ExecutionUsageService(db).write` | 1362 |
+| unresolved_call | `record_execution_usage` | `ExecutionUsageService(db).write` | 1378 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

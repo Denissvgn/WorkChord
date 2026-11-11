@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_team_setup_status | service.status | 505 | `service.status(actor, topology_key=topology_key)` |
-| get_agent_team_setup_status | _handle_agent_error | 507 | `_handle_agent_error(exc, structured=True)` |
+| get_agent_team_setup_status | service.status | 521 | `service.status(actor, topology_key=topology_key)` |
+| get_agent_team_setup_status | _handle_agent_error | 523 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_team_setup_status` | `service.status` | 505 |
+| unresolved_call | `get_agent_team_setup_status` | `service.status` | 521 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

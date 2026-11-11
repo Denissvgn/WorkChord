@@ -133,8 +133,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| patch_agent_task | service.patch_task | 1150 | `service.patch_task(task_id, actor, data, idempotency_key)` |
-| patch_agent_task | _handle_agent_error | 1152 | `_handle_agent_error(exc)` |
+| patch_agent_task | service.patch_task | 1166 | `service.patch_task(task_id, actor, data, idempotency_key)` |
+| patch_agent_task | _handle_agent_error | 1168 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -153,7 +153,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `patch_agent_task` | `service.patch_task` | 1150 |
+| unresolved_call | `patch_agent_task` | `service.patch_task` | 1166 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

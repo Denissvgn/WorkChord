@@ -23,7 +23,8 @@ _Auto-generated from `frontend/src/components/settings/AgentTeamStepList.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `AgentTeamStepList` |
-| Constants | `AGENT_TEAM_STEP_SCOPES` |
+| Constants | `MANIFEST_STEPS`, `AGENT_TEAM_STEP_SCOPES` |
+| Module calls | `MANIFEST_STEPS = Set` |
 
 ## Local dependency map
 
@@ -72,4 +73,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `AgentTeamStepList` | <pre><code>&#40;&#123;&#10;    currentStepId&#44;&#10;    idPrefix&#44;&#10;    steps&#44;&#10;&#125;&#58; &#123;&#10;    currentStepId&#58; AgentTeamStepId &#124; null&#59;&#10;    idPrefix&#58; string&#59;&#10;    steps&#58; ReturnType&#60;typeof useAgentTeamReadiness&#62;&#91;&#39;steps&#39;&#93;&#59;&#10;&#125;&#41;</code></pre> | — | — |
+| `AgentTeamStepList` | <pre><code>&#40;&#123;&#10;    currentStepId&#44;&#10;    onOpenSection&#44;&#10;    idPrefix&#44;&#10;    steps&#44;&#10;&#125;&#58; &#123;&#10;    currentStepId&#58; AgentTeamStepId &#124; null&#59;&#10;    idPrefix&#58; string&#59;&#10;    steps&#58; ReturnType&#60;typeof useAgentTeamReadiness&#62;&#91;&#39;steps&#39;&#93;&#59;&#10;    &#47;&#42;&#42; Open the manifest section a step is written in&#46; &#42;&#47;&#10;    onOpenSection&#63;&#58; &#40;stepId&#58; string&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |

@@ -133,8 +133,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_ready_tasks | service.list_ready_tasks | 772 | `service.list_ready_tasks(actor, iteration_id=iteration_id, tags=tags, priority_min=priority_min, priority_max=priority_max, assignee_id=assignee_id, capabilities=capabilities, limit=limit)` |
-| list_ready_tasks | _handle_agent_error | 783 | `_handle_agent_error(exc)` |
+| list_ready_tasks | service.list_ready_tasks | 788 | `service.list_ready_tasks(actor, iteration_id=iteration_id, tags=tags, priority_min=priority_min, priority_max=priority_max, assignee_id=assignee_id, capabilities=capabilities, limit=limit)` |
+| list_ready_tasks | _handle_agent_error | 799 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -153,7 +153,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_ready_tasks` | `service.list_ready_tasks` | 772 |
+| unresolved_call | `list_ready_tasks` | `service.list_ready_tasks` | 788 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

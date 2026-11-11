@@ -12,11 +12,15 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../components/feedback/toast` | `useToast` | — | compiler-dependent |
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
+| `../components/settings/AgentTeamManifestPreview` | `AgentTeamManifestPreview` | — | compiler-dependent |
 | `../components/settings/AgentTeamStepList` | `AgentTeamStepList` | — | compiler-dependent |
 | `../components/ui/MasterProgress` | `MasterProgress` | — | compiler-dependent |
 | `../features/agentTeamSetup/manifest` | `parseAgentTeamMasterEditor` | — | compiler-dependent |
+| `../features/agentTeamSetup/manifestLocations` | `EditorIssue` | Declaration | erased |
+| `../features/agentTeamSetup/manifestLocations` | `fieldIssues`, `lineForPath`, `lineRange`, `pathIssue`, `syntaxIssue` | — | compiler-dependent |
 | `../features/agentTeamSetup/masters` | `AGENT_TEAM_STEP_DEFINITIONS`, `stateTone` | — | compiler-dependent |
 | `../features/agentTeamSetup/statusScopes` | `RuntimeReadinessState`, `SessionAuthorityState`, `TopologyConfigurationState` | Specifier | compiler-dependent |
 | `../features/agentTeamSetup/statusScopes` | `deriveAgentTeamStatusScopes` | — | compiler-dependent |
@@ -25,7 +29,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.tsx`._
 | `../types/agent` | `AgentTeamApplyResponse`, `AgentTeamMaster`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamValidation` | Declaration | erased |
 | `../utils/focusLifecycle` | `captureFocusOrigin`, `focusOwnedTarget` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `axios` | `axios` | — | compiler-dependent |
 | `lucide-react` | `ChevronDown`, `CircleAlert`, `FileJson`, `KeyRound`, `LoaderCircle`, `RefreshCw`, `ShieldCheck` | — | compiler-dependent |
 | `react` | `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
@@ -59,7 +63,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (15) |
 
 ### External packages
 
@@ -67,13 +71,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 130 | — | — |
-| [StatusTone](../entities/StatusTone.md) | Type alias | 60 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
-| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 127 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
-| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 128 | `'plan' \| 'receipt'` | — |
+| [WorkflowFocusIntent](../entities/WorkflowFocusIntent.md) | Interface | 134 | — | — |
+| [StatusTone](../entities/StatusTone.md) | Type alias | 64 | `'done' \| 'warn' \| 'blocked' \| 'opt' \| 'accent'` | — |
+| [AgentTeamActionReceiptStatus](../entities/AgentTeamActionReceiptStatus.md) | Type alias | 131 | `AgentTeamApplyResponse['receipts'][number]['status']` | — |
+| [WorkflowFocusTarget](../entities/WorkflowFocusTarget.md) | Type alias | 132 | `'plan' \| 'receipt'` | — |

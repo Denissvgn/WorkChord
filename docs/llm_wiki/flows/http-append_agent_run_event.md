@@ -139,8 +139,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| append_agent_run_event | service.append_run_event | 1216 | `service.append_run_event(run_id, actor, data)` |
-| append_agent_run_event | _handle_agent_error | 1218 | `_handle_agent_error(exc)` |
+| append_agent_run_event | service.append_run_event | 1232 | `service.append_run_event(run_id, actor, data)` |
+| append_agent_run_event | _handle_agent_error | 1234 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -159,7 +159,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `append_agent_run_event` | `service.append_run_event` | 1216 |
+| unresolved_call | `append_agent_run_event` | `service.append_run_event` | 1232 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

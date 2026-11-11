@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| renew_my_agent_work | service.renew_work | 910 | `service.renew_work(actor, data, idempotency_key=idempotency_key)` |
-| renew_my_agent_work | _handle_agent_error | 916 | `_handle_agent_error(exc, structured=True)` |
+| renew_my_agent_work | service.renew_work | 926 | `service.renew_work(actor, data, idempotency_key=idempotency_key)` |
+| renew_my_agent_work | _handle_agent_error | 932 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `renew_my_agent_work` | `service.renew_work` | 910 |
+| unresolved_call | `renew_my_agent_work` | `service.renew_work` | 926 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

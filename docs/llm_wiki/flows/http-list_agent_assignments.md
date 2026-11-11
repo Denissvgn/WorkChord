@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_agent_assignments | service.list_assignments | 719 | `service.list_assignments(actor, task_id=task_id, actor_id=actor_id, purpose=purpose, state=state, limit=limit)` |
-| list_agent_assignments | _handle_agent_error | 728 | `_handle_agent_error(exc, structured=True)` |
+| list_agent_assignments | service.list_assignments | 735 | `service.list_assignments(actor, task_id=task_id, actor_id=actor_id, purpose=purpose, state=state, limit=limit)` |
+| list_agent_assignments | _handle_agent_error | 744 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_agent_assignments` | `service.list_assignments` | 719 |
+| unresolved_call | `list_agent_assignments` | `service.list_assignments` | 735 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1547 | [Open section](#entities) |
-| Modules | 797 | [Open section](#modules) |
+| Entities | 1549 | [Open section](#entities) |
+| Modules | 800 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 555 | [Open section](#entry-point-flows) |
+| Entry-point flows | 556 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -330,6 +330,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [EditableScope](entities/EditableScope.md)
 - [EditingComment](entities/EditingComment.md)
 - [EditorBaseline](entities/EditorBaseline.md)
+- [EditorIssue](entities/EditorIssue.md)
 - [EditorMode](entities/EditorMode.md)
 - [EffortModifierCard_Props](entities/EffortModifierCard_Props.md)
 - [EffortModifierSchema](entities/EffortModifierSchema.md)
@@ -493,6 +494,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MappedModelFactory](entities/MappedModelFactory.md)
 - [MasterProgressProps](entities/MasterProgressProps.md)
 - [MasterStepDef](entities/MasterStepDef.md)
+- [Member](entities/Member.md)
 - [MemberSchedule](entities/MemberSchedule.md)
 - [MembershipChange](entities/MembershipChange.md)
 - [MemoryAttemptBackend](entities/MemoryAttemptBackend.md)
@@ -1598,6 +1600,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AgentModelAdministration.test](modules/AgentModelAdministration.test.md) - `frontend/src/components/settings/AgentModelAdministration.test.tsx`
 - [AgentPipelinePage](modules/AgentPipelinePage.md) - `frontend/src/pages/AgentPipelinePage.tsx`
 - [AgentPipelinePage.test](modules/AgentPipelinePage.test.md) - `frontend/src/pages/AgentPipelinePage.test.tsx`
+- [AgentTeamManifestPreview](modules/AgentTeamManifestPreview.md) - `frontend/src/components/settings/AgentTeamManifestPreview.tsx`
 - [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) - `frontend/src/pages/AgentTeamSetupMasterPage.tsx`
 - [AgentTeamSetupMasterPage.test](modules/AgentTeamSetupMasterPage.test.md) - `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`
 - [AgentTeamStepList](modules/AgentTeamStepList.md) - `frontend/src/components/settings/AgentTeamStepList.tsx`
@@ -1977,6 +1980,8 @@ Retained history; these declarations are absent from the selected source invento
 - [loader](modules/loader.md) - Installed-resource loader for the PostgreSQL machine contract bundle.
 - [local_baseline](modules/local_baseline.md) - Summarize declared local observations without issuing capacity certification.
 - [maintenance](modules/maintenance.md) - Fail-closed maintenance/validation authority shared by REST, MCP, and workers.
+- [manifestLocations](modules/manifestLocations.md) - /** * Where things are in the manifest editor: the line of each JSON path, so a * problem can say "line 12" and the editor can jump there. */
+- [manifestLocations.test](modules/manifestLocations.test.md) - `frontend/src/features/agentTeamSetup/manifestLocations.test.ts`
 - [mcp_agent_tools](modules/mcp_agent_tools.md) - Framework-neutral MCP tool handlers for agent task access.
 - [mcp_server](modules/mcp_server.md) - MCP server facade for external LLM-agent integrations.
 - [migrations_env](modules/migrations_env.md) - Alembic environment configuration.
@@ -2703,6 +2708,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-get_agent_task_context](flows/http-get_agent_task_context.md) - entry: `get_agent_task_context`
 - [http-get_agent_team_setup_report](flows/http-get_agent_team_setup_report.md) - entry: `get_agent_team_setup_report`
 - [http-get_agent_team_setup_status](flows/http-get_agent_team_setup_status.md) - entry: `get_agent_team_setup_status`
+- [http-get_agent_team_starting_points](flows/http-get_agent_team_starting_points.md) - entry: `get_agent_team_starting_points`
 - [http-get_availability](flows/http-get_availability.md) - entry: `get_availability`
 - [http-get_calendar](flows/http-get_calendar.md) - entry: `get_calendar`
 - [http-get_calendars](flows/http-get_calendars.md) - entry: `get_calendars`

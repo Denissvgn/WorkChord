@@ -13,7 +13,7 @@ Schema for creating multiple back-to-back iterations.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `base_name` | `str` | `base_name` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `base_name` | `str` | `base_name` | Yes | No | — | max_length=255; min_length=1 | — | — |
 | `calendar_id` | `Optional[int]` | `calendar_id` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |

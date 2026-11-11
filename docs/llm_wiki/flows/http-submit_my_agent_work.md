@@ -131,8 +131,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| submit_my_agent_work | service.submit | 892 | `service.submit(actor, data, idempotency_key=idempotency_key)` |
-| submit_my_agent_work | _handle_agent_error | 898 | `_handle_agent_error(exc, structured=True)` |
+| submit_my_agent_work | service.submit | 908 | `service.submit(actor, data, idempotency_key=idempotency_key)` |
+| submit_my_agent_work | _handle_agent_error | 914 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 273 | `str(exc)` |
 | _handle_agent_error | str | 275 | `str(exc)` |
@@ -151,7 +151,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `submit_my_agent_work` | `service.submit` | 892 |
+| unresolved_call | `submit_my_agent_work` | `service.submit` | 908 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

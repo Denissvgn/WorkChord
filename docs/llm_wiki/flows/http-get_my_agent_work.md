@@ -160,8 +160,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_my_agent_work | service.get_work | 798 | `service.get_work(actor, limit=limit, cursor=cursor)` |
-| get_my_agent_work | _handle_agent_error | 800 | `_handle_agent_error(exc, structured=True)` |
+| get_my_agent_work | service.get_work | 814 | `service.get_work(actor, limit=limit, cursor=cursor)` |
+| get_my_agent_work | _handle_agent_error | 816 | `_handle_agent_error(exc, structured=True)` |
 | _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 273 | `str(exc)` |
 | _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 275 | `str(exc)` |
@@ -176,13 +176,13 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `response.headers.update` | `get_my_agent_work` | 815 |
+| mutation | `response.headers.update` | `get_my_agent_work` | 831 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_my_agent_work` | `service.get_work` | 798 |
+| unresolved_call | `get_my_agent_work` | `service.get_work` | 814 |
 | external_call | `_handle_agent_error` | `isinstance` | 271 |
 | external_call | `_handle_agent_error` | `HTTPException` | 277 |
 | external_call | `_handle_agent_error` | `isinstance` | 278 |

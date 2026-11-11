@@ -24,7 +24,7 @@ Contract and service coverage for portable agent-team setup.
 | `app.schemas.agent_team_setup` | `MAX_AGENT_TEAM_MANIFEST_BYTES`, `AgentTeamApplyRequest`, `AgentTeamCurrentMember`, `AgentTeamCurrentSnapshot`, `AgentTeamManifestRequest`, `AgentTeamMaster`, `AgentTeamPlanRequest`, `AgentTeamReconciliationClass`, `AgentTeamRuntimeAcknowledgement`, `parse_agent_team_master`, `reconcile_agent_team_master` |
 | `app.services.agent_service` | `AgentService`, `hash_api_key` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
-| `app.services.identity_service` | `initialize_control_plane` |
+| `app.services.identity_service` | `initialize_control_plane`, `initialize_control_plane` |
 | `app.utils.time` | `utc_now` |
 | `copy` | `deepcopy` |
 | `httpx` | `httpx` |
@@ -89,3 +89,4 @@ flowchart LR
 | `test_mcp_registers_secret_free_setup_status_read_only` | *(async)* `() -> None` | `@pytest.mark.asyncio` | — |
 | `test_topologies_share_catalog_and_profile_references_not_identities` | *(async)* `(db_session: AsyncSession) -> None` | `@pytest.mark.asyncio` | — |
 | `test_revision_bound_acknowledgement_with_database_scenarios` | *(async)* `(delivery_store, onboarding_access_mode)` | — | — |
+| `test_starting_points_offer_a_valid_catalog_filled_template_and_the_applied_manifest` | *(async)* `(db_session: AsyncSession) -> None` | — | — |

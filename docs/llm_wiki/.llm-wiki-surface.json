@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1547,
-      "flows": 555,
+      "entities": 1549,
+      "flows": 556,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 797,
+      "modules": 800,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3111
+    "total": 3117
   },
   "dependency_pages": {
     "count": 2,
@@ -186,13 +186,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 549,
+              "line": 565,
               "step": "acknowledge_agent_team_runtime",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 554,
+              "line": 570,
               "step": "acknowledge_agent_team_runtime",
               "target": "service.acknowledge_runtime"
             },
@@ -437,7 +437,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1216,
+              "line": 1232,
               "step": "append_agent_run_event",
               "target": "service.append_run_event"
             },
@@ -521,7 +521,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1168,
+              "line": 1184,
               "step": "append_task_event",
               "target": "service.append_task_event"
             },
@@ -1281,7 +1281,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 874,
+              "line": 890,
               "step": "begin_my_agent_work",
               "target": "service.begin"
             },
@@ -1882,7 +1882,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1077,
+              "line": 1093,
               "step": "claim_task",
               "target": "service.claim_task"
             },
@@ -2701,7 +2701,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 576,
+              "line": 592,
               "step": "create_agent_actor",
               "target": "service.create_actor"
             },
@@ -2750,7 +2750,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 693,
+              "line": 709,
               "step": "create_agent_assignment",
               "target": "service.create_assignment"
             },
@@ -3001,7 +3001,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1033,
+              "line": 1049,
               "step": "create_agent_project_update",
               "target": "service.create_project_update"
             },
@@ -3084,7 +3084,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1134,
+              "line": 1150,
               "step": "create_agent_task",
               "target": "service.create_task"
             },
@@ -8039,7 +8039,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 928,
+              "line": 944,
               "step": "fail_my_agent_work",
               "target": "service.fail"
             },
@@ -8122,7 +8122,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1244,
+              "line": 1260,
               "step": "finish_agent_run",
               "target": "service.finish_run"
             },
@@ -8367,19 +8367,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3378,
+              "line": 3423,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 3379,
+              "line": 3424,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 3379,
+              "line": 3424,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join"
             },
@@ -8605,7 +8605,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1332,
+              "line": 1348,
               "step": "get_agent_pipeline",
               "target": "service.get_pipeline"
             }
@@ -8751,31 +8751,31 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1343,
+              "line": 1359,
               "step": "get_agent_run_detail",
               "target": "service.get_run"
             },
             {
               "kind": "external_call",
-              "line": 1345,
+              "line": 1361,
               "step": "get_agent_run_detail",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 1288,
+              "line": 1304,
               "step": "_run_detail_response",
               "target": "service.event_to_payload"
             },
             {
               "kind": "unresolved_call",
-              "line": 1313,
+              "line": 1329,
               "step": "_run_detail_response",
               "target": "service.event_to_payload"
             },
             {
               "kind": "unresolved_call",
-              "line": 1314,
+              "line": 1330,
               "step": "_run_detail_response",
               "target": "service.list_to_payload"
             }
@@ -8883,7 +8883,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 856,
+              "line": 872,
               "step": "get_agent_task_context",
               "target": "service.get_task_context"
             },
@@ -8966,7 +8966,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 527,
+              "line": 543,
               "step": "get_agent_team_setup_report",
               "target": "service.report"
             },
@@ -9049,7 +9049,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 505,
+              "line": 521,
               "step": "get_agent_team_setup_status",
               "target": "service.status"
             },
@@ -9116,6 +9116,83 @@
         }
       },
       "id": "http-get_agent_team_setup_status",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "get_agent_team_starting_points",
+        "source_path": "backend/app/routers/agent.py",
+        "symbol": "get_agent_team_starting_points"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 500,
+              "step": "get_agent_team_starting_points",
+              "target": "service.starting_points"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 500,
+              "step": "get_agent_team_starting_points",
+              "target": "str(request.base_url).rstrip"
+            },
+            {
+              "kind": "external_call",
+              "line": 271,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 277,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 278,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 279,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 279,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "get_agent_team_starting_points",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent.py"
+          ],
+          "step_count": 30,
+          "truncated": false
+        }
+      },
+      "id": "http-get_agent_team_starting_points",
       "language": "python"
     },
     {
@@ -10207,7 +10284,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 946,
+              "line": 962,
               "step": "get_my_agent_reviews",
               "target": "service.get_reviews"
             },
@@ -10290,7 +10367,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 815,
+              "line": 831,
               "step": "get_my_agent_work",
               "step_index": 1,
               "target": "response.headers.update"
@@ -10299,7 +10376,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 798,
+              "line": 814,
               "step": "get_my_agent_work",
               "target": "service.get_work"
             },
@@ -13715,7 +13792,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 609,
+              "line": 625,
               "step": "list_agent_actors",
               "target": "service.list_actor_roster"
             },
@@ -13798,7 +13875,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 719,
+              "line": 735,
               "step": "list_agent_assignments",
               "target": "service.list_assignments"
             },
@@ -14049,7 +14126,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 985,
+              "line": 1001,
               "step": "list_agent_recovery_tasks",
               "target": "service.list_recovery_tasks"
             },
@@ -14560,7 +14637,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 826,
+              "line": 842,
               "step": "list_my_agent_claims",
               "target": "service.list_my_claims"
             },
@@ -14643,7 +14720,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 839,
+              "line": 855,
               "step": "list_my_agent_runs",
               "target": "service.list_my_runs"
             },
@@ -15272,7 +15349,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 772,
+              "line": 788,
               "step": "list_ready_tasks",
               "target": "service.list_ready_tasks"
             },
@@ -17187,7 +17264,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1150,
+              "line": 1166,
               "step": "patch_agent_task",
               "target": "service.patch_task"
             },
@@ -17954,7 +18031,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 673,
+              "line": 689,
               "step": "preview_task_routing",
               "target": "service.preview_task_routing"
             },
@@ -18472,7 +18549,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1362,
+              "line": 1378,
               "step": "record_execution_usage",
               "target": "ExecutionUsageService(db).write"
             },
@@ -18760,7 +18837,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1112,
+              "line": 1128,
               "step": "release_task_claim",
               "target": "service.release_claim"
             },
@@ -18964,7 +19041,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 910,
+              "line": 926,
               "step": "renew_my_agent_work",
               "target": "service.renew_work"
             },
@@ -19047,7 +19124,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1095,
+              "line": 1111,
               "step": "renew_task_claim",
               "target": "service.renew_claim"
             },
@@ -19387,7 +19464,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1058,
+              "line": 1074,
               "step": "report_agent_discovery",
               "target": "service.report_discovery"
             },
@@ -19470,7 +19547,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1005,
+              "line": 1021,
               "step": "requeue_agent_recovery_task",
               "target": "service.requeue_recovery"
             },
@@ -20747,7 +20824,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1201,
+              "line": 1217,
               "step": "start_agent_run",
               "target": "service.start_run"
             },
@@ -20911,7 +20988,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 965,
+              "line": 981,
               "step": "submit_my_agent_review_verdict",
               "target": "service.review"
             },
@@ -20994,7 +21071,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 892,
+              "line": 908,
               "step": "submit_my_agent_work",
               "target": "service.submit"
             },
@@ -22864,31 +22941,31 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 627,
+              "line": 643,
               "step": "update_agent_actor",
               "target": "service.db.get"
             },
             {
               "kind": "external_call",
-              "line": 629,
+              "line": 645,
               "step": "update_agent_actor",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 631,
+              "line": 647,
               "step": "update_agent_actor",
               "target": "service.db.get"
             },
             {
               "kind": "external_call",
-              "line": 633,
+              "line": 649,
               "step": "update_agent_actor",
               "target": "ValueError"
             },
             {
               "kind": "external_call",
-              "line": 645,
+              "line": 661,
               "step": "update_agent_actor",
               "target": "getattr"
             },
@@ -22930,7 +23007,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 746,
+              "line": 762,
               "step": "update_agent_assignment",
               "target": "service.update_assignment"
             },
@@ -43808,6 +43885,7 @@
         "entities/EditableScope.md",
         "entities/EditingComment.md",
         "entities/EditorBaseline.md",
+        "entities/EditorIssue.md",
         "entities/EditorMode.md",
         "entities/EffortModifierCard_Props.md",
         "entities/EffortModifierSchema.md",
@@ -43979,6 +44057,7 @@
         "entities/MCPAuthError.md",
         "entities/MCPExactPathAlias.md",
         "entities/MCPHostValidationMiddleware.md",
+        "entities/Member.md",
         "entities/MemberSchedule.md",
         "entities/MembershipChange.md",
         "entities/MemoryAttemptBackend.md",
@@ -45136,6 +45215,7 @@
         "flows/http-get_agent_task_context.md",
         "flows/http-get_agent_team_setup_report.md",
         "flows/http-get_agent_team_setup_status.md",
+        "flows/http-get_agent_team_starting_points.md",
         "flows/http-get_availability.md",
         "flows/http-get_calendar.md",
         "flows/http-get_calendars.md",
@@ -45630,6 +45710,7 @@
         "modules/AgentPipelinePage.test.md",
         "modules/agentService.md",
         "modules/agentService.test.md",
+        "modules/AgentTeamManifestPreview.md",
         "modules/agentTeamSetup.ru.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.md",
@@ -45841,6 +45922,8 @@
         "modules/local_baseline.md",
         "modules/LocalProfilePicker.md",
         "modules/maintenance.md",
+        "modules/manifestLocations.md",
+        "modules/manifestLocations.test.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
         "modules/mcp_agent_tools.md",
@@ -48618,7 +48701,6 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/AgentTeamSetupService",
       "outgoing_internal_links": [
-        "modules/agent_routing_service.md",
         "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md"
@@ -51381,6 +51463,19 @@
       "title": "EditorBaseline"
     },
     {
+      "canonical_path": "entities/EditorIssue.md",
+      "id": "EditorIssue",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/EditorIssue",
+      "outgoing_internal_links": [
+        "modules/AgentTeamSetupMasterPage.md",
+        "modules/manifestLocations.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/agentTeamSetup/manifestLocations.ts",
+      "title": "EditorIssue"
+    },
+    {
       "canonical_path": "entities/EditorMode.md",
       "id": "EditorMode",
       "kind": "entities",
@@ -53613,6 +53708,18 @@
       "role": "semantic",
       "source_path": "backend/app/mcp_server.py",
       "title": "MCPHostValidationMiddleware"
+    },
+    {
+      "canonical_path": "entities/Member.md",
+      "id": "Member",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/Member",
+      "outgoing_internal_links": [
+        "modules/AgentTeamManifestPreview.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/AgentTeamManifestPreview.tsx",
+      "title": "Member"
     },
     {
       "canonical_path": "entities/MemberSchedule.md",
@@ -68928,6 +69035,20 @@
       "title": "agentService.test Module"
     },
     {
+      "canonical_path": "modules/AgentTeamManifestPreview.md",
+      "id": "AgentTeamManifestPreview",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/AgentTeamManifestPreview",
+      "outgoing_internal_links": [
+        "entities/Member.md",
+        "modules/AgentTeamManifestPreview.md",
+        "modules/AgentTeamSetupMasterPage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/AgentTeamManifestPreview.tsx",
+      "title": "AgentTeamManifestPreview Module"
+    },
+    {
       "canonical_path": "modules/agentTeamSetup.ru.md",
       "id": "agentTeamSetup.ru",
       "kind": "modules",
@@ -72386,6 +72507,34 @@
       "role": "semantic",
       "source_path": "backend/app/maintenance.py",
       "title": "maintenance Module"
+    },
+    {
+      "canonical_path": "modules/manifestLocations.md",
+      "id": "manifestLocations",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/manifestLocations",
+      "outgoing_internal_links": [
+        "entities/EditorIssue.md",
+        "modules/AgentTeamSetupMasterPage.md",
+        "modules/manifestLocations.md",
+        "modules/manifestLocations.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/agentTeamSetup/manifestLocations.ts",
+      "title": "manifestLocations Module"
+    },
+    {
+      "canonical_path": "modules/manifestLocations.test.md",
+      "id": "manifestLocations.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/manifestLocations.test",
+      "outgoing_internal_links": [
+        "modules/manifestLocations.md",
+        "modules/manifestLocations.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/agentTeamSetup/manifestLocations.test.ts",
+      "title": "manifestLocations.test Module"
     },
     {
       "canonical_path": "modules/MasterProgress.md",
@@ -86713,6 +86862,18 @@
       "title": "get_agent_team_setup_status"
     },
     {
+      "canonical_path": "flows/http-get_agent_team_starting_points.md",
+      "id": "http-get_agent_team_starting_points",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_agent_team_starting_points",
+      "outgoing_internal_links": [
+        "modules/routers_agent.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent.py",
+      "title": "get_agent_team_starting_points"
+    },
+    {
       "canonical_path": "flows/http-get_availability.md",
       "id": "http-get_availability",
       "kind": "flows",
@@ -95466,6 +95627,7 @@
         "modules/AgentPipelinePage.test.md",
         "modules/agentService.md",
         "modules/agentService.test.md",
+        "modules/AgentTeamManifestPreview.md",
         "modules/agentTeamSetup.ru.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.md",
@@ -95677,6 +95839,8 @@
         "modules/local_baseline.md",
         "modules/LocalProfilePicker.md",
         "modules/maintenance.md",
+        "modules/manifestLocations.md",
+        "modules/manifestLocations.test.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
         "modules/mcp_agent_tools.md",
@@ -96274,6 +96438,7 @@
         "modules/AgentPipelinePage.test.md",
         "modules/agentService.md",
         "modules/agentService.test.md",
+        "modules/AgentTeamManifestPreview.md",
         "modules/agentTeamSetup.ru.md",
         "modules/agentTeamSetup_manifest.md",
         "modules/agentTeamSetup_masters.md",
@@ -96485,6 +96650,8 @@
         "modules/local_baseline.md",
         "modules/LocalProfilePicker.md",
         "modules/maintenance.md",
+        "modules/manifestLocations.md",
+        "modules/manifestLocations.test.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
         "modules/mcp_agent_tools.md",
@@ -97026,5 +97193,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:98f4c53b9a9d8c8bb0e3caeb6848fc1b8589466736361afb73b843f0ba84dbeb"
+  "source_hash": "sha256:5b54693856099279d12d8fabb90f04b6d15b5b2bd268fbdad980219ee822d747"
 }
