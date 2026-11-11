@@ -438,6 +438,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                     </div>
                                     <div className="text-xs text-content-secondary mt-0.5">
                                         {item.actor_name || item.actor_type || t('common.system')}
+                                        {item.payload?.local_profile_id != null && <span> · {t('identity.localNotVerified')}</span>}
                                         {item.trace_id && <span> - {item.trace_id}</span>}
                                     </div>
                                     {eventText(item.payload) && (

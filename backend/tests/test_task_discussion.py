@@ -12,7 +12,7 @@ from app.models.capacity import PlanningState
 from app.models.discussion import InboxNotification, TaskCommentRevision
 from app.models.identity import ProjectMembership
 from app.models.outbound_webhook import OutboundWebhookDelivery
-from app.schemas.task import TaskCreate
+from app.schemas.task import TaskCreate, TaskUpdate
 from app.services.discussion_service import DiscussionService
 from app.services.outbound_webhook_service import OutboundWebhookService
 from app.services.task_service import TaskService
@@ -198,3 +198,40 @@ async def test_discussion_history_reappears_with_the_restored_task_identity(deli
         assert updated["version"] == 2
         assert len((await DiscussionService(db).history(task_id, comment["id"]))["items"]) == 2
     get_settings.cache_clear()
+
+
+async def test_local_session_comments_and_history_carry_the_chosen_profile(delivery_store):
+    from app.models.team_member import TeamMemberProfile
+    from app.services.task_timeline_service import TaskTimelineService
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        person = TeamMemberProfile(display_name="Local person", profile_kind="human")
+        other = TeamMemberProfile(display_name="Someone else", profile_kind="human")
+        db.add_all([person, other])
+        await db.flush()
+        person_id, other_id = person.id, other.id
+        local = Authority(None, "local", local=True, profile_id=person_id)
+        db.info["authority"] = Authority(None, "local", local=True)
+        task = await TaskService(db).create(None, TaskCreate(title="Discuss locally", project_id=scenario.projects[0]))
+        task_id, version = task.id, task.version
+        await db.commit()
+        service = DiscussionService(db)
+        with pytest.raises(AuthorityError, match="choose who you are working as"):
+            await service.save(task_id, "Nobody chose a profile", [])
+        db.info["authority"] = local
+        comment = await service.save(task_id, "Written on this browser", [])
+        assert (comment["principal_id"], comment["author_profile_id"], comment["author_local"], comment["author_name"]) == (
+            None, person_id, True, "Local person")
+        listed = (await service.list(task_id))["items"]
+        assert [(item["author_name"], item["author_local"]) for item in listed] == [("Local person", True)]
+        assert (await service.save(task_id, "Edited", [], comment_id=comment["id"], expected_version=1))["version"] == 2
+        assert all(item["author_local"] for item in (await service.history(task_id, comment["id"]))["items"])
+        db.info["authority"] = replace(local, profile_id=other_id)
+        with pytest.raises(AuthorityError, match="Only the author"):
+            await service.save(task_id, "Not mine", [], comment_id=comment["id"], expected_version=2)
+        db.info["authority"] = local
+        await TaskService(db).update(task_id, TaskUpdate(title="Discuss locally, renamed", expected_version=version))
+        await db.commit()
+        page = await TaskTimelineService(db).page(task_id, limit=20)
+        named = [item for item in page["items"] if item.get("payload", {}).get("local_profile_id") == person_id]
+        assert named and all(item["actor_name"] == "Local person" for item in named)

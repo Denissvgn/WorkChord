@@ -143,6 +143,7 @@ export const englishResources = {
                 linkProfile: "Link this profile",
                 linkFailed: "The profile could not be linked.",
                 workingAs: "Working as: {{name}}",
+                localNotVerified: "local, not verified",
                 workingAsLocal: "Working as {{name}} · local, not verified",
                 notWorkingAs: "You are not working as anyone yet.",
                 localProfileHelp: "Choose your person profile to see your work here. This is a choice on this browser, not a verified sign-in.",

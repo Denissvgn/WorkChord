@@ -15,7 +15,9 @@ class TaskComment(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     task_id: Mapped[int | None] = mapped_column(ForeignKey("tasks.id", ondelete="SET NULL"), index=True)
     original_task_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    principal_id: Mapped[int] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
+    # A signed-in author, or None for a trusted-local author named by author_profile_id (local, not verified).
+    principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"), nullable=True)
+    author_profile_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     body: Mapped[str] = mapped_column(Text, nullable=False)
     mentions: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
@@ -30,7 +32,9 @@ class TaskCommentRevision(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     comment_id: Mapped[int] = mapped_column(ForeignKey("task_comments.id", ondelete="RESTRICT"), index=True)
     original_task_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
-    principal_id: Mapped[int] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"))
+    # A signed-in author, or None for a trusted-local author named by author_profile_id (local, not verified).
+    principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"), nullable=True)
+    author_profile_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     version: Mapped[int] = mapped_column(Integer, nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
     mentions: Mapped[list] = mapped_column(JSON, nullable=False)

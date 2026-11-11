@@ -332,7 +332,8 @@ def authorize_domain_writes(session, _flush_context, _instances):
             if authority.kind != "human" or obj.principal_id != authority.principal_id or not authority.allows(obj.project_id, "read"):
                 raise AuthorityError("time_entry_author_required", "Time records are private to their author.")
             owned_personal = True
-        if table in {"task_comments", "task_comment_revisions"} and obj in session.new and obj.principal_id != authority.principal_id:
+        if table in {"task_comments", "task_comment_revisions"} and obj in session.new and (obj.principal_id != authority.principal_id
+                or obj.principal_id is None and (not authority.local or obj.author_profile_id is None or obj.author_profile_id != authority.profile_id)):
             raise AuthorityError("comment_authorship_required", "Discussion authorship must match the current account.")
         if protocol and table == "agent_idempotency_records" and obj.actor_id == authority.actor_id:
             owned_personal = True

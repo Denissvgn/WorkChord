@@ -394,6 +394,8 @@ class TaskService:
         authority = self.db.info.get("authority")
         if authority is not None:
             payload = {**(payload or {}), "principal_id": authority.principal_id, "source": authority.source}
+            if authority.local and authority.principal_id is None and authority.profile_id is not None:
+                payload["local_profile_id"] = authority.profile_id
             correlation_id = authority.correlation_id
             actor_id = authority.actor_id
             if actor_type != "auto":

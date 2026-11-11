@@ -46,6 +46,7 @@ export const teamworkEnglish = {
     "discussion": "Discussion",
     "discussionHelp": "Use comments for questions and coordination. Record execution evidence and acceptance in Work and review.",
     "signInDiscussion": "Sign in with a human account to join the discussion.",
+    "chooseProfileToComment": "To comment, choose who you are working as in the account menu.",
     "noComments": "No comments yet.",
     "commentRemoved": "Comment removed",
     "edit": "Edit",

@@ -26,6 +26,30 @@ class DiscussionService:
             raise AuthorityError("human_identity_required", "Sign in with a human account to join the discussion.")
         return authority.principal_id
 
+    async def author(self):
+        """Return (principal_id, profile_id) for the writer: a signed-in person, or a
+        trusted-local session commenting as the person profile it works as."""
+        authority = self.db.info.get("authority")
+        if authority is not None and authority.principal_id is not None and authority.kind == "human":
+            return authority.principal_id, None
+        if authority is not None and authority.kind == "local" and authority.profile_id is not None:
+            from app.services.identity_service import local_work_profile
+            if await local_work_profile(self.db, authority.profile_id) is not None:
+                return None, authority.profile_id
+        raise AuthorityError("human_identity_required", "Sign in, or choose who you are working as, to join the discussion.")
+
+    async def author_names(self, rows):
+        """Name each author; a local author is named by the profile it chose."""
+        from app.models.team_member import TeamMemberProfile
+        principal_ids = {row.principal_id for row in rows if row.principal_id is not None}
+        profile_ids = {row.author_profile_id for row in rows if row.principal_id is None and row.author_profile_id is not None}
+        with internal_authority(self.db):
+            people = dict((await self.db.execute(select(Principal.id, Principal.display_name)
+                .where(Principal.id.in_(principal_ids)))).tuples().all()) if principal_ids else {}
+            profiles = dict((await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.display_name)
+                .where(TeamMemberProfile.id.in_(profile_ids)))).tuples().all()) if profile_ids else {}
+        return lambda row: people.get(row.principal_id) if row.principal_id is not None else profiles.get(row.author_profile_id)
+
     async def task(self, task_id, *, writing=False, lock=False):
         task = await self.db.scalar(select(Task).where(Task.id == task_id).execution_options(populate_existing=True))
         if task is None:
@@ -73,7 +97,7 @@ class DiscussionService:
     @staticmethod
     def serialize(comment, author_name):
         return {"id": comment.id, "task_id": comment.original_task_id, "principal_id": comment.principal_id,
-            "author_name": author_name, "body": "" if comment.deleted else comment.body,
+            "author_profile_id": comment.author_profile_id, "author_local": comment.principal_id is None, "author_name": author_name, "body": "" if comment.deleted else comment.body,
             "mentions": [] if comment.deleted else comment.mentions, "version": comment.version,
             "deleted": comment.deleted, "created_at": comment.created_at, "updated_at": comment.updated_at}
 
@@ -81,10 +105,11 @@ class DiscussionService:
         await self.task(task_id)
         if not 1 <= limit <= 100 or after_id < 0:
             raise ValueError("Use a limit from 1 to 100 and a nonnegative cursor")
-        rows = (await self.db.execute(select(TaskComment, Principal.display_name).join(Principal, Principal.id == TaskComment.principal_id)
+        rows = (await self.db.scalars(select(TaskComment)
             .where(TaskComment.original_task_id == task_id, TaskComment.id > after_id).order_by(TaskComment.id).limit(limit + 1))).all()
-        return {"items": [self.serialize(comment, name) for comment, name in rows[:limit]], "has_more": len(rows) > limit,
-            "next_after_id": rows[limit - 1][0].id if len(rows) > limit else None}
+        name = await self.author_names(rows[:limit])
+        return {"items": [self.serialize(comment, name(comment)) for comment in rows[:limit]], "has_more": len(rows) > limit,
+            "next_after_id": rows[limit - 1].id if len(rows) > limit else None}
 
     async def history(self, task_id, comment_id, *, after_version=0, limit=50):
         await self.task(task_id)
@@ -96,12 +121,13 @@ class DiscussionService:
         rows = (await self.db.scalars(select(TaskCommentRevision).where(TaskCommentRevision.comment_id == comment_id,
             TaskCommentRevision.version > after_version).order_by(TaskCommentRevision.version).limit(limit + 1))).all()
         return {"items": [{"version": row.version, "body": row.body, "mentions": row.mentions, "deleted": row.deleted,
-            "principal_id": row.principal_id, "created_at": row.created_at} for row in rows[:limit]],
+            "principal_id": row.principal_id, "author_profile_id": row.author_profile_id, "author_local": row.principal_id is None,
+            "created_at": row.created_at} for row in rows[:limit]],
             "has_more": len(rows) > limit, "next_after_version": rows[limit - 1].version if len(rows) > limit else None}
 
     @atomic_command
     async def save(self, task_id, body, mentions, *, comment_id=None, expected_version=None, deleted=False):
-        principal_id = self.principal_id()
+        principal_id, profile_id = await self.author()
         task = await self.task(task_id, writing=True, lock=True)
         body = body.strip()
         if not deleted and not body or len(body) > 12000 or len(mentions) > 25:
@@ -116,7 +142,8 @@ class DiscussionService:
             raise ValueError("Comment not found or inaccessible")
         if comment:
             authority = self.db.info["authority"]
-            if comment.principal_id != principal_id and not (deleted and authority.allows(task.project_id, "manage")):
+            own = (comment.principal_id, comment.author_profile_id if comment.principal_id is None else None) == (principal_id, profile_id)
+            if not own and not (deleted and authority.allows(task.project_id, "manage")):
                 raise AuthorityError("comment_author_required", "Only the author can edit this comment.")
             if expected_version != comment.version:
                 raise PlanningConflict("comment_version_conflict", "This comment changed. Reload it before applying your draft.")
@@ -124,18 +151,17 @@ class DiscussionService:
                 raise PlanningConflict("comment_deleted", "This comment has been removed. Start a new comment.")
             comment.version += 1
         else:
-            comment = TaskComment(task_id=task_id, original_task_id=task_id, principal_id=principal_id, version=1)
+            comment = TaskComment(task_id=task_id, original_task_id=task_id, principal_id=principal_id, author_profile_id=profile_id, version=1)
             self.db.add(comment)
         comment.task_id = task_id
         comment.body, comment.mentions, comment.deleted = ("", [], True) if deleted else (body, mentions, False)
         await self.db.flush()
-        self.db.add(TaskCommentRevision(comment_id=comment.id, original_task_id=task_id, principal_id=principal_id,
+        self.db.add(TaskCommentRevision(comment_id=comment.id, original_task_id=task_id, principal_id=principal_id, author_profile_id=profile_id,
             version=comment.version, body=comment.body, mentions=comment.mentions, deleted=comment.deleted))
         await self.db.flush()
         if not deleted:
             await self.enqueue(task_id, "discussion", f"comment:{comment.id}:{comment.version}", mentions=mentions)
-        name = await self.db.scalar(select(Principal.display_name).where(Principal.id == comment.principal_id))
-        return self.serialize(comment, name)
+        return self.serialize(comment, (await self.author_names([comment]))(comment))
 
     async def subscription(self, task_id):
         principal_id = self.principal_id()

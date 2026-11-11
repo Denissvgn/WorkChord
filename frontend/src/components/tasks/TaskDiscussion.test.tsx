@@ -68,4 +68,21 @@ describe('task discussion', () => {
         expect(screen.getByRole('button', { name: 'Post comment' })).toBeEnabled();
         expect(service.save).toHaveBeenCalledTimes(1);
     });
+
+    it('lets a local session read, and comment only as the profile it works as, marked local', async () => {
+        service.list.mockResolvedValue({ items: [{ ...comment(), principal_id: null, author_profile_id: 4, author_local: true, author_name: 'Priya' }], has_more: false });
+        const local = (profile: { id: number; display_name: string } | null) => renderWithProviders(<IdentityContext.Provider value={{ identity: {
+            mode: 'trusted_local', authenticated: false, configured: false, principal: null, profile, workspace_role: null, projects: {}, csrf_token: null,
+        }, refresh: vi.fn(), signOut: async () => undefined }}><TaskDiscussion taskId={42} draftKey={null} disabled={false} onDirty={vi.fn()} onPending={vi.fn()} /></IdentityContext.Provider>);
+        const first = local(null);
+        expect(await screen.findByText('· local, not verified', { exact: false })).toBeInTheDocument();
+        expect(screen.getByText('To comment, choose who you are working as in the account menu.')).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: 'New comment' })).toBeNull();
+        expect(service.subscription).not.toHaveBeenCalled();
+        first.unmount();
+        local({ id: 4, display_name: 'Priya' });
+        expect(await screen.findByRole('button', { name: 'Edit' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'New comment' })).toBeInTheDocument();
+        expect(service.subscription).not.toHaveBeenCalled();
+    });
 });

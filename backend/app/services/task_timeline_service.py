@@ -64,6 +64,7 @@ class TaskTimelineService:
         selected = selected[:limit]
         items = [self.item(source, row, at) for at, source, _, row in selected]
         await self._attach_agent_names(items)
+        await self._attach_person_names(items)
         next_cursor = None
         if more:
             at, source, identifier, _ = selected[-1]
@@ -84,6 +85,28 @@ class TaskTimelineService:
         for item in items:
             if item.get("actor_type") == "agent":
                 item["actor_name"] = names.get(item.get("actor_id"))
+
+    async def _attach_person_names(self, items):
+        """Name the person behind each user entry. A trusted-local entry carries the
+        profile the session chose; the payload's local_profile_id marks it local, not verified."""
+        from app.authority import internal_authority
+        from app.models.identity import Principal
+        from app.models.team_member import TeamMemberProfile
+        people = [item for item in items if item.get("actor_type") == "user" and isinstance(item.get("payload"), dict)]
+        principal_ids = {item["payload"].get("principal_id") for item in people} - {None}
+        profile_ids = {item["payload"].get("local_profile_id") for item in people} - {None}
+        if not principal_ids and not profile_ids:
+            return
+        with internal_authority(self.db):
+            principals = dict((await self.db.execute(select(Principal.id, Principal.display_name)
+                .where(Principal.id.in_(principal_ids)))).tuples().all()) if principal_ids else {}
+            profiles = dict((await self.db.execute(select(TeamMemberProfile.id, TeamMemberProfile.display_name)
+                .where(TeamMemberProfile.id.in_(profile_ids)))).tuples().all()) if profile_ids else {}
+        for item in people:
+            payload = item["payload"]
+            name = principals.get(payload.get("principal_id")) or profiles.get(payload.get("local_profile_id"))
+            if name:
+                item["actor_name"] = name
 
     def item(self, source, row, at):
         parse = self.serializer.event_to_payload
