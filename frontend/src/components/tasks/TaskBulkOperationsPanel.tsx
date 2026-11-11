@@ -27,6 +27,8 @@ interface TaskBulkOperationsPanelProps {
     selectedTaskIds: number[];
     onClearSelection: () => void;
     onApplied: () => void;
+    /** Focus the assignee picker on open, for hand-offs that arrive to assign work. */
+    focusAssignee?: boolean;
 }
 
 const ACTION_OPTIONS: { value: TaskBulkAction; labelKey: string }[] = [
@@ -70,6 +72,7 @@ export const TaskBulkOperationsPanel = ({
     selectedTaskIds,
     onClearSelection,
     onApplied,
+    focusAssignee = false,
 }: TaskBulkOperationsPanelProps) => {
     useTranslation();
     const queryClient = useQueryClient();
@@ -265,7 +268,13 @@ export const TaskBulkOperationsPanel = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {effectiveAction === 'set_assignee' && (
-                    <select value={assigneeId} onChange={event => setAssigneeId(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
+                    <select
+                        value={assigneeId}
+                        onChange={event => setAssigneeId(event.target.value)}
+                        aria-label={t('surfaces.taskBulk.chooseAssignee')}
+                        autoFocus={focusAssignee}
+                        className="text-sm border rounded-md px-2 py-2 bg-surface-card"
+                    >
                         <option value="">{t('surfaces.taskBulk.chooseAssignee')}</option>
                         {teamMembers.map(member => (
                             <option key={member.id} value={member.id}>{member.name}</option>

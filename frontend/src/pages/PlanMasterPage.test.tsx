@@ -342,19 +342,19 @@ describe('PlanMasterPage orchestration checkpoint', () => {
         const primaryAction = screen.getByRole('link', { name: assignAction });
         expect(primaryAction).toHaveAttribute(
             'href',
-            '/tasks?panel=filters&planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',
+            '/tasks?mode=bulk&planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',
         );
         expect(screen.getByRole('link', {
             name: i18n.t('plan.master.openUnassignedTasks', { count: 1 }),
         })).toHaveAttribute(
             'href',
-            '/tasks?panel=filters&planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',
+            '/tasks?mode=bulk&planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',
         );
         expect(screen.getByRole('link', {
             name: i18n.t('plan.master.openMissingEffortTasks', { count: 1 }),
         })).toHaveAttribute(
             'href',
-            '/tasks?panel=filters&planningIssue=missing-effort&iterationId=1&fromPlanStep=schedule',
+            '/tasks?planningIssue=missing-effort&iterationId=1&fromPlanStep=schedule',
         );
     });
 

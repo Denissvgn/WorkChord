@@ -446,7 +446,7 @@ const TasksPage = () => {
                 <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
                     <Link className="text-sm font-medium text-action hover:underline" to="/tasks?scope=backlog">{t('teamwork.projectBacklog')}</Link>
                     <TaskSearch />
-                    {savedViewModified(selectedSavedView, filters, sortKey) && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
+                    {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
                 </div>
                 <PlanReturnBar />
                 <OverviewTaskReturnBar
@@ -733,6 +733,7 @@ const TasksPage = () => {
                                         onCreateTask={() => setIsCreating(true)}
                                         requestedMode={taskMode}
                                         onModeChange={mode => setTaskContextParam('mode', mode)}
+                                        preselectAllInBulk={taskMode === 'bulk' && filters.planningIssue === 'unassigned'}
                                     />
                                 </div>
                             </div>

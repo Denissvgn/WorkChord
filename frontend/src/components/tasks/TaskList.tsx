@@ -78,6 +78,8 @@ interface TaskListProps {
     onCreateTask?: () => void;
     requestedMode?: TaskMode | null;
     onModeChange?: (mode: TaskMode | null) => void;
+    /** Select every matching task once when bulk mode opens from a hand-off. */
+    preselectAllInBulk?: boolean;
 }
 
 export const TaskList = ({
@@ -91,6 +93,7 @@ export const TaskList = ({
     onCreateTask,
     requestedMode,
     onModeChange,
+    preselectAllInBulk = false,
 }: TaskListProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
@@ -292,6 +295,16 @@ export const TaskList = ({
         () => visibleTasks.filter(task => selectedBulkTaskIds.has(task.id)),
         [visibleTasks, selectedBulkTaskIds]
     );
+    const didPreselect = useRef(false);
+    useEffect(() => {
+        if (!isBulkMode) {
+            didPreselect.current = false;
+            return;
+        }
+        if (!preselectAllInBulk || didPreselect.current || visibleTasks.length === 0) return;
+        didPreselect.current = true;
+        setSelectedBulkTaskIds(new Set(visibleTasks.map(task => task.id)));
+    }, [isBulkMode, preselectAllInBulk, visibleTasks]);
 
     const labelsBySlug = useMemo(() => {
         const map = new Map<string, Label>();
@@ -425,7 +438,7 @@ export const TaskList = ({
             )}
             {isMergeMode || isBulkMode ? (
                 <div
-                    className="mb-2 flex flex-wrap items-center gap-2 rounded-lg border border-action bg-action-muted px-3 py-2"
+                    className="sticky top-0 z-20 mb-2 flex flex-wrap items-center gap-2 rounded-lg border border-action bg-action-muted px-3 py-2"
                     role="region"
                     aria-label={isMergeMode ? t('taskList.mergeTasks') : t('taskList.bulkEdit')}
                 >
@@ -460,7 +473,7 @@ export const TaskList = ({
                                 onClick={() => setSelectedBulkTaskIds(new Set(visibleTasks.map(task => task.id)))}
                                 disabled={visibleTasks.length === 0}
                             >
-                                {t('taskList.selectVisible')}
+                                {t('taskList.selectAllMatching', { count: visibleTasks.length })}
                             </Button>
                             {selectedBulkTaskIds.size > 0 && (
                                 <Button
@@ -504,25 +517,14 @@ export const TaskList = ({
                         </span>
                     )}
                 </div>
-                    <OverflowMenu
-                        label={t('taskList.organizeTasks')}
-                        items={[
-                            {
-                                label: t('taskList.mergeTasks'),
-                                icon: <Layers className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => {
-                                    setTaskMode('merge');
-                                },
-                            },
-                            {
-                                label: t('taskList.bulkEdit'),
-                                icon: <ClipboardCheck className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => {
-                                    setTaskMode('bulk');
-                                },
-                            },
-                        ]}
-                    />
+                    <Button variant="secondary" size="sm" onClick={() => setTaskMode('bulk')}>
+                        <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
+                        {t('taskList.select')}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setTaskMode('merge')}>
+                        <Layers className="h-4 w-4" aria-hidden="true" />
+                        {t('taskList.mergeTasks')}
+                    </Button>
                 </div>
             )}
 
@@ -533,6 +535,7 @@ export const TaskList = ({
                     selectedTaskIds={Array.from(selectedBulkTaskIds)}
                     onClearSelection={() => setSelectedBulkTaskIds(new Set())}
                     onApplied={() => undefined}
+                    focusAssignee={preselectAllInBulk}
                 />
             )}
 
