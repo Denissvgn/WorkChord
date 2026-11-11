@@ -186,14 +186,14 @@ describe('TaskList rows and groups', () => {
             { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' }, { ...task(4), status: 'closed' },
         ]);
         const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} />);
-        const groups = await screen.findAllByRole('heading', { level: 3 });
+        const groups = await screen.findAllByRole('heading', { level: 2 });
         expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Closed1 task']);
         expect(screen.getByRole('button', { name: /Closed/ })).toHaveAttribute('aria-expanded', 'false');
         expect(screen.queryByRole('button', { name: 'Task 4' })).toBeNull();
         await user.click(screen.getByRole('button', { name: /Closed/ }));
         expect(screen.getByRole('button', { name: 'Task 4' })).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Group by status' }));
-        expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
+        expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
         expect(screen.getByRole('button', { name: 'Group by status' })).toHaveAttribute('aria-pressed', 'false');
     });
 
@@ -201,7 +201,7 @@ describe('TaskList rows and groups', () => {
         taskServiceMock.getByIteration.mockResolvedValue([{ ...task(1), tags: ['backend'] }]);
         const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="sort_order" onSortKeyChange={() => undefined} />);
         expect(await screen.findByRole('button', { name: 'Task 1' })).toBeInTheDocument();
-        expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
+        expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
         expect(screen.getByRole('button', { name: 'Group by status' })).toBeDisabled();
         expect(screen.queryByText('backend')).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Details (2): Task 1' }));

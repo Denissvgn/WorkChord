@@ -76,6 +76,8 @@ import type {
 } from '../types/triage';
 import { feedbackMessage } from '../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
+import { Select } from '../components/common/Select';
+import { Textarea } from '../components/common/Textarea';
 
 const t = i18n.t.bind(i18n);
 
@@ -313,21 +315,11 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
                 )}
 
                 {triageTemplates.length > 0 && (
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.template')}</label>
-                        <select
-                            value={selectedTemplateId}
-                            onChange={event => handleTemplateSelect(event.target.value)}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.triagePage.noTemplate')}</option>
-                            {triageTemplates.map(template => (
+                    <Select label={t('surfaces.triagePage.template')} value={selectedTemplateId} onChange={event => handleTemplateSelect(event.target.value)}><option value="">{t('surfaces.triagePage.noTemplate')}</option>{triageTemplates.map(template => (
                                 <option key={template.id} value={template.id}>
                                     {templateDisplay(template).name}
                                 </option>
-                            ))}
-                        </select>
-                    </div>
+                            ))}</Select>
                 )}
 
                 <Input
@@ -338,14 +330,7 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
                     maxLength={255}
                 />
 
-                <div>
-                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.description')}</label>
-                    <textarea
-                        value={description}
-                        onChange={event => setDescription(event.target.value)}
-                        className="min-h-[110px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                </div>
+                <Textarea label={t('surfaces.triagePage.description')} value={description} onChange={event => setDescription(event.target.value)} className="min-h-[110px]" />
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Input label={t('surfaces.triagePage.source')} value={source} onChange={event => setSource(event.target.value)} maxLength={100} />
@@ -357,32 +342,12 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Input label={t('surfaces.triagePage.assigneeHint')} value={assigneeHint} onChange={event => setAssigneeHint(event.target.value)} maxLength={255} />
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.projectHint')}</label>
-                        <select
-                            value={projectHintId}
-                            onChange={event => setProjectHintId(event.target.value)}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.triagePage.noProject')}</option>
-                            {projects.map(project => (
+                    <Select label={t('surfaces.triagePage.projectHint')} value={projectHintId} onChange={event => setProjectHintId(event.target.value)}><option value="">{t('surfaces.triagePage.noProject')}</option>{projects.map(project => (
                                 <option key={project.id} value={project.id}>{project.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.iterationHint')}</label>
-                        <select
-                            value={iterationHintId}
-                            onChange={event => setIterationHintId(event.target.value)}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.triagePage.noIteration')}</option>
-                            {iterations.map(iteration => (
+                            ))}</Select>
+                    <Select label={t('surfaces.triagePage.iterationHint')} value={iterationHintId} onChange={event => setIterationHintId(event.target.value)}><option value="">{t('surfaces.triagePage.noIteration')}</option>{iterations.map(iteration => (
                                 <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                            ))}
-                        </select>
-                    </div>
+                            ))}</Select>
                 </div>
 
                 <LabelSelector
@@ -624,67 +589,24 @@ const TriageActionModal = ({
                         </div>
 
                         {duplicateTargetType === 'triage' ? (
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">
-                                    {t('surfaces.triagePage.duplicateOf')}
-                                    <RequiredIndicator />
-                                </label>
-                                <select
-                                    value={duplicateItemId}
-                                    onChange={event => setDuplicateItemId(event.target.value)}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                    required
-                                >
-                                    <option value="">{t('surfaces.triagePage.selectIntakeItem')}</option>
-                                    {triageDuplicateOptions.map(candidate => (
+                            <Select label={<>{t('surfaces.triagePage.duplicateOf')}<RequiredIndicator /></>} value={duplicateItemId} onChange={event => setDuplicateItemId(event.target.value)} required><option value="">{t('surfaces.triagePage.selectIntakeItem')}</option>{triageDuplicateOptions.map(candidate => (
                                         <option key={candidate.id} value={candidate.id}>
                                             #{candidate.id} {candidate.title}
                                         </option>
-                                    ))}
-                                </select>
-                            </div>
+                                    ))}</Select>
                         ) : (
                             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">
-                                        {t('surfaces.triagePage.taskIteration')}
-                                        <RequiredIndicator />
-                                    </label>
-                                    <select
-                                        value={duplicateIterationId}
-                                        onChange={event => {
+                                <Select label={<>{t('surfaces.triagePage.taskIteration')}<RequiredIndicator /></>} value={duplicateIterationId} onChange={event => {
                                             setDuplicateIterationId(event.target.value);
                                             setDuplicateTaskId('');
-                                        }}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                        required
-                                    >
-                                        <option value="">{t('surfaces.triagePage.selectIteration')}</option>
-                                        {iterations.map(iteration => (
+                                        }} required><option value="">{t('surfaces.triagePage.selectIteration')}</option>{iterations.map(iteration => (
                                             <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">
-                                        {t('surfaces.triagePage.task')}
-                                        <RequiredIndicator />
-                                    </label>
-                                    <select
-                                        value={duplicateTaskId}
-                                        onChange={event => setDuplicateTaskId(event.target.value)}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                        required
-                                        disabled={!parsedDuplicateIterationId}
-                                    >
-                                        <option value="">{t('surfaces.triagePage.selectTask')}</option>
-                                        {taskDuplicateOptions.map(task => (
+                                        ))}</Select>
+                                <Select label={<>{t('surfaces.triagePage.task')}<RequiredIndicator /></>} value={duplicateTaskId} onChange={event => setDuplicateTaskId(event.target.value)} required disabled={!parsedDuplicateIterationId}><option value="">{t('surfaces.triagePage.selectTask')}</option>{taskDuplicateOptions.map(task => (
                                             <option key={task.id} value={task.id}>
                                                 {'-'.repeat(task.depth)} {task.title}
                                             </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                        ))}</Select>
                                 <label className="flex items-start gap-2 rounded-md border border-action bg-action-muted p-3 text-sm text-action md:col-span-2">
                                     <input
                                         type="checkbox"
@@ -1087,12 +1009,7 @@ const ConvertTriageSplitView = ({
 
                         {/* Description Textarea with Inline Suggestion */}
                         <div>
-                            <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.description')}</label>
-                            <textarea
-                                value={description}
-                                onChange={event => setDescription(event.target.value)}
-                                className="min-h-[140px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                            />
+                            <Textarea label={t('surfaces.triagePage.description')} value={description} onChange={event => setDescription(event.target.value)} className="min-h-[140px] text-sm" />
                             {draftPreview && draftPreview.suggested_description !== description && (
                                 <div className="mt-1 flex flex-col gap-1 rounded-md bg-action-muted/30 border border-action/50 px-2 py-1 text-xs text-action">
                                     <div className="flex items-center justify-between">
@@ -1122,15 +1039,7 @@ const ConvertTriageSplitView = ({
                         </div>
                         {/* Quick Assignment Row */}
                         <div className="grid grid-cols-2 gap-4 p-4 rounded-lg border border-border bg-surface-muted/50">
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">
-                                    {t('surfaces.triagePage.iteration')}
-                                    {destination === "iteration" && <RequiredIndicator />}
-                                </label>
-                                <select
-                                    disabled={destination === "project_backlog"}
-                                    value={iterationId}
-                                    onChange={event => {
+                            <Select label={<>{t('surfaces.triagePage.iteration')}{destination === "iteration" && <RequiredIndicator />}</>} disabled={destination === "project_backlog"} value={iterationId} onChange={event => {
                                         const nextIterationId = event.target.value;
                                         const nextIteration = iterations.find(iteration => String(iteration.id) === nextIterationId);
                                         setIterationId(nextIterationId);
@@ -1141,16 +1050,9 @@ const ConvertTriageSplitView = ({
                                         }
                                         setAssigneeId('');
                                         setDependsOn([]);
-                                    }}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    required={destination === "iteration"}
-                                >
-                                    <option value="">{t('surfaces.triagePage.select')}</option>
-                                    {iterations.map(iteration => (
+                                    }} required={destination === "iteration"}><option value="">{t('surfaces.triagePage.select')}</option>{iterations.map(iteration => (
                                         <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                                    ))}
-                                </select>
-                            </div>
+                                    ))}</Select>
 
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.project')}</label>
@@ -1160,6 +1062,7 @@ const ConvertTriageSplitView = ({
                                     </div>
                                 ) : (
                                     <select
+                                        aria-label={t('surfaces.triagePage.project')}
                                         value={projectId}
                                         onChange={event => setProjectId(event.target.value)}
                                         className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
@@ -1172,22 +1075,11 @@ const ConvertTriageSplitView = ({
                                 )}
                             </div>
 
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.assignee')}</label>
-                                <select
-                                    value={assigneeId}
-                                    onChange={event => setAssigneeId(event.target.value)}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    disabled={!hasSelectedIteration}
-                                >
-                                    <option value="">{t('surfaces.triagePage.unassigned')}</option>
-                                    {teamMembers.map(member => (
+                            <Select label={t('surfaces.triagePage.assignee')} value={assigneeId} onChange={event => setAssigneeId(event.target.value)} disabled={!hasSelectedIteration}><option value="">{t('surfaces.triagePage.unassigned')}</option>{teamMembers.map(member => (
                                         <option key={member.id} value={member.id}>
                                             {member.name}
                                         </option>
-                                    ))}
-                                </select>
-                            </div>
+                                    ))}</Select>
 
                             <Input
                                 label={t('surfaces.triagePage.priority')}
@@ -1218,21 +1110,11 @@ const ConvertTriageSplitView = ({
                                     placeholder={t('surfaces.triagePage.addCustomTag')}
                                 />
 
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.taskTemplate')}</label>
-                                    <select
-                                        value={selectedTaskTemplateId}
-                                        onChange={event => setSelectedTaskTemplateId(event.target.value)}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    >
-                                        <option value="">{t('surfaces.triagePage.noTemplate')}</option>
-                                        {taskTemplates.map(template => (
+                                <Select label={t('surfaces.triagePage.taskTemplate')} value={selectedTaskTemplateId} onChange={event => setSelectedTaskTemplateId(event.target.value)}><option value="">{t('surfaces.triagePage.noTemplate')}</option>{taskTemplates.map(template => (
                                             <option key={template.id} value={template.id}>
                                                 {templateDisplay(template).name}
                                             </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                        ))}</Select>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <Input

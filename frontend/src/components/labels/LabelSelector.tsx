@@ -148,6 +148,7 @@ export const LabelSelector = ({
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
                 <select
+                    aria-label={t('surfaces.labelSelector.addGovernedLabel')}
                     disabled={optionsLoading || Boolean(optionError)}
                     value={selectedSuggestion}
                     onChange={event => {
@@ -168,6 +169,7 @@ export const LabelSelector = ({
                     <div className="flex min-w-0 gap-2">
                         <input
                             type="text"
+                            aria-label={t('surfaces.labelSelector.addCustomLabel')}
                             value={customLabel}
                             onChange={event => setCustomLabel(event.target.value)}
                             onKeyDown={event => {

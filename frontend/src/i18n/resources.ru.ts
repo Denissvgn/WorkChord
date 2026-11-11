@@ -861,6 +861,7 @@ export const russianResources = {
                 failed: 'Не удалось добавить. Название сохранено, попробуйте ещё раз.',
             },
             taskImport: {
+                textLabel: 'Задачи для импорта, по одной на строку',
                 reloadContext: 'Обновить контекст плана и сохранить ввод',
                 readingFile: 'Чтение файла…',
                 fileError: 'Не удалось прочитать файл. Выберите его снова или вставьте текст.',
@@ -3834,6 +3835,15 @@ export const russianResources = {
                     close: "Закрыть",
                 },
                 taskBulk: {
+                    actionLabel: "Массовое действие",
+                    projectLabel: "Проект",
+                    milestoneLabel: "Веха",
+                    priorityLabel: "Приоритет",
+                    labelsLabel: "Метки",
+                    optionalLabel: "Необязательная",
+                    deferredLabel: "Отложенная",
+                    statusLabel: "Статус",
+                    reasonLabel: "Причина",
                     chooseProject: "Выберите проект",
                     reasonOptional: "Причина, опционально",
                     clearSelection: "Очистить выбор",

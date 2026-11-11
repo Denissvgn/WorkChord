@@ -444,14 +444,14 @@ export const TaskList = ({
     const scrollElement = rowsNode?.closest<HTMLElement>('#workspace-main') ?? null;
     const virtualizeRows = !isDraggingEnabled && scrollElement !== null && rowItems.length > VIRTUALIZE_AFTER_ROWS;
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
-        <h3 className="m-0">
+        <h2 className="m-0">
             <button type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
                 className="flex min-h-11 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
                 <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
             </button>
-        </h3>
+        </h2>
     ) : (
         <TaskItemContent
             task={item.task}
@@ -671,11 +671,11 @@ export const TaskList = ({
 
             {filteredAndSortedTasks?.length === 0 && (
                 <div className="rounded-lg border border-dashed border-border bg-surface-muted px-6 py-12 text-center">
-                    <h3 className="text-base font-semibold text-content-primary">
+                    <h2 className="text-base font-semibold text-content-primary">
                         {tasks && tasks.length > 0
                             ? t('taskList.noFilterMatches')
                             : t('taskList.noTasks')}
-                    </h3>
+                    </h2>
                     <p className="mx-auto mt-1 max-w-lg text-sm text-content-secondary">
                         {tasks && tasks.length > 0
                             ? activeViewName

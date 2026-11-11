@@ -24,6 +24,8 @@ import { templateDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { Select } from '../common/Select';
+import { Textarea } from '../common/Textarea';
 
 interface ProjectFormProps {
     initialData?: Project;
@@ -229,21 +231,11 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
             )}
 
             {canApplyTemplates && projectTemplates.length > 0 && (
-                <div>
-                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.template')}</label>
-                    <select
-                        value={selectedTemplateId}
-                        onChange={event => handleTemplateSelect(event.target.value)}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                    >
-                        <option value="">{t('surfaces.projectForm.noTemplate')}</option>
-                        {projectTemplates.map(template => (
+                <Select label={t('surfaces.projectForm.template')} value={selectedTemplateId} onChange={event => handleTemplateSelect(event.target.value)}><option value="">{t('surfaces.projectForm.noTemplate')}</option>{projectTemplates.map(template => (
                             <option key={template.id} value={template.id}>
                                 {templateDisplay(template).name}
                             </option>
-                        ))}
-                    </select>
-                </div>
+                        ))}</Select>
             )}
 
             <Input
@@ -253,41 +245,16 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                 required
             />
 
-            <div>
-                <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.description')}</label>
-                <textarea
-                    value={formData.description || ''}
-                    onChange={event => setFormData({ ...formData, description: event.target.value })}
-                    className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus min-h-[96px]"
-                />
-            </div>
+            <Textarea label={t('surfaces.projectForm.description')} value={formData.description || ''} onChange={event => setFormData({ ...formData, description: event.target.value })} className="min-h-[96px]" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.status')}</label>
-                    <select
-                        value={formData.status}
-                        onChange={event => setFormData({ ...formData, status: event.target.value as ProjectStatus })}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                    >
-                        {statusOptions.map(option => (
+                <Select label={t('surfaces.projectForm.status')} value={formData.status} onChange={event => setFormData({ ...formData, status: event.target.value as ProjectStatus })}>{statusOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
-                        ))}
-                    </select>
-                </div>
+                        ))}</Select>
 
-                <div>
-                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.health')}</label>
-                    <select
-                        value={formData.health}
-                        onChange={event => setFormData({ ...formData, health: event.target.value as ProjectHealth })}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                    >
-                        {healthOptions.map(option => (
+                <Select label={t('surfaces.projectForm.health')} value={formData.health} onChange={event => setFormData({ ...formData, health: event.target.value as ProjectHealth })}>{healthOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
-                        ))}
-                    </select>
-                </div>
+                        ))}</Select>
             </div>
 
             {/* Dates and owner are what the project header asks for, so they are never folded away. */}
@@ -339,24 +306,14 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
             {/* Collapsible: Advanced Options */}
             <CollapsibleSection title={t('taskForm.advancedOptions')}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.initiative')}</label>
-                        <select
-                            value={formData.initiative_id ?? ''}
-                            onChange={event => setFormData({
+                    <Select label={t('surfaces.projectForm.initiative')} value={formData.initiative_id ?? ''} onChange={event => setFormData({
                                 ...formData,
                                 initiative_id: event.target.value ? parseInt(event.target.value) : null,
-                            })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                        >
-                            <option value="">{t('surfaces.projectForm.noInitiative')}</option>
-                            {initiatives.map(initiative => (
+                            })}><option value="">{t('surfaces.projectForm.noInitiative')}</option>{initiatives.map(initiative => (
                                 <option key={initiative.id} value={initiative.id}>
                                     {initiative.name}
                                 </option>
-                            ))}
-                        </select>
-                    </div>
+                            ))}</Select>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

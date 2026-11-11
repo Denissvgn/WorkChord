@@ -13,6 +13,8 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import type { Initiative, InitiativeCreate, ProjectHealth } from '../../types/project';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { Textarea } from '../common/Textarea';
+import { Select } from '../common/Select';
 
 interface InitiativeFormProps {
     initialData?: Initiative;
@@ -128,56 +130,28 @@ export const InitiativeForm = ({ initialData, onSuccess, onCancel }: InitiativeF
                 required
             />
 
-            <div>
-                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.initiativeForm.description')}</label>
-                <textarea
-                    value={formData.description || ''}
-                    onChange={event => setFormData({ ...formData, description: event.target.value })}
-                    className="min-h-[96px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                />
-            </div>
+            <Textarea label={t('surfaces.initiativeForm.description')} value={formData.description || ''} onChange={event => setFormData({ ...formData, description: event.target.value })} className="min-h-[96px]" />
 
-            <div>
-                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.initiativeForm.health')}</label>
-                <select
-                    value={formData.health}
-                    onChange={event => setFormData({ ...formData, health: event.target.value as ProjectHealth })}
-                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    {healthOptions.map(option => (
+            <Select label={t('surfaces.initiativeForm.health')} value={formData.health} onChange={event => setFormData({ ...formData, health: event.target.value as ProjectHealth })}>{healthOptions.map(option => (
                         <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
-                    ))}
-                </select>
-            </div>
+                    ))}</Select>
 
             {/* Collapsible: Details */}
             <CollapsibleSection title={t('taskForm.advancedOptions')}>
                 <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.initiativeForm.owner')}</label>
-                        <select
-                            value={formData.owner_profile_id ?? ''}
-                            onChange={event => setFormData({
+                    <Select label={t('surfaces.initiativeForm.owner')} value={formData.owner_profile_id ?? ''} onChange={event => setFormData({
                                 ...formData,
                                 owner_id: null,
                                 owner_profile_id: event.target.value ? parseInt(event.target.value) : null,
-                            })}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                            disabled={ownerOptionsQuery.isLoading || ownerOptionsQuery.isError}
-                        >
-                            <option value="">{t('surfaces.initiativeForm.unassigned')}</option>
-                            {selectedOwnerMissing && formData.owner_profile_id && initialData?.owner_profile && (
+                            })} disabled={ownerOptionsQuery.isLoading || ownerOptionsQuery.isError}><option value="">{t('surfaces.initiativeForm.unassigned')}</option>{selectedOwnerMissing && formData.owner_profile_id && initialData?.owner_profile && (
                                 <option value={formData.owner_profile_id}>
                                     {formatTeamMemberProfileLabel(initialData.owner_profile)}
                                 </option>
-                            )}
-                            {ownerOptions.map(owner => (
+                            )}{ownerOptions.map(owner => (
                                 <option key={owner.id} value={owner.id}>
                                     {formatTeamMemberProfileLabel(owner)}
                                 </option>
-                            ))}
-                        </select>
-                    </div>
+                            ))}</Select>
 
                     <Input
                         type="date"

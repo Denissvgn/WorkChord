@@ -829,6 +829,7 @@ export const englishResources = {
                 failed: 'Could not add it. The title is kept; try again.',
             },
             taskImport: {
+                textLabel: 'Tasks to import, one per line',
                 reloadContext: 'Reload planning context and keep input',
                 readingFile: 'Reading file…',
                 fileError: 'The file could not be read. Choose it again or paste its text.',
@@ -4462,6 +4463,15 @@ export const englishResources = {
                     close: "Close",
                 },
                 taskBulk: {
+                    actionLabel: "Bulk action",
+                    projectLabel: "Project",
+                    milestoneLabel: "Milestone",
+                    priorityLabel: "Priority",
+                    labelsLabel: "Labels",
+                    optionalLabel: "Optional",
+                    deferredLabel: "Deferred",
+                    statusLabel: "Status",
+                    reasonLabel: "Reason",
                     chooseProject: "Choose project",
                     reasonOptional: "Reason, optional",
                     clearSelection: "Clear selection",

@@ -1248,6 +1248,14 @@
 }
 :where(.wc .input.error):is(input, select, textarea) { border-color: var(--blocked); }
 :where(.wc .input.with-leading-icon):is(input, select, textarea) { padding-left: 34px; }
+:where(.wc select.input) {
+  /* appearance: none drops the native arrow; draw one so a select reads as a choice. */
+  padding-right: 30px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
 :where(
   .wc input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.input),
   .wc select:not(.input),

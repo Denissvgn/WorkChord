@@ -280,6 +280,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                     <div className="mb-3 flex flex-col gap-2 sm:flex-row">
                         <input
                             type="text"
+                            aria-label={t('surfaces.taskTimeline.pasteGitHubPRIssueOrBranchURL')}
                             value={githubUrl}
                             onKeyDown={handleGitHubLinkKeyDown}
                             onChange={event => {

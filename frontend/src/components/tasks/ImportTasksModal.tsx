@@ -220,6 +220,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
 
                     {/* Text area */}
                     <textarea
+                        aria-label={t('taskImport.textLabel')}
                         ref={editorRef}
                         value={text}
                         readOnly={importMutation.isPending || isLoading || baseRevision === undefined}
