@@ -127,6 +127,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [KanbanBoard](modules/KanbanBoard.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [KanbanBoard](modules/KanbanBoard.md) | [types_task](modules/types_task.md) |
 | [KanbanCard](modules/KanbanCard.md) | [types_task](modules/types_task.md) |
+| [KanbanColumn.test](modules/KanbanColumn.test.md) | [types_task](modules/types_task.md) |
 | [KanbanColumn](modules/KanbanColumn.md) | [tone](modules/tone.md) |
 | [KanbanColumn](modules/KanbanColumn.md) | [types_task](modules/types_task.md) |
 | [MetricCount.test](modules/MetricCount.test.md) | [workMetrics](modules/workMetrics.md) |
@@ -375,11 +376,11 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 |--------|--------|---------|
 | [models_task](modules/models_task.md) | 94 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
-| [Button](modules/Button.md) | 85 | 0 |
+| [Button](modules/Button.md) | 86 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
 | [time](modules/time.md) | 77 | 0 |
-| [renderWithProviders](modules/renderWithProviders.md) | 76 | 2 |
-| [types_task](modules/types_task.md) | 73 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 77 | 2 |
+| [types_task](modules/types_task.md) | 74 | 2 |
 | [config](modules/config.md) | 72 | 1 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
 | [models_agent](modules/models_agent.md) | 65 | 5 |
@@ -391,8 +392,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_project](modules/models_project.md) | 45 | 9 |
 | [api](modules/api.md) | 37 | 2 |
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
-| [i18n](modules/i18n.md) | 36 | 1 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
+| [i18n](modules/i18n.md) | 34 | 1 |
 | [formatDate](modules/formatDate.md) | 34 | 1 |
 | [taskService](modules/taskService.md) | 32 | 3 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
@@ -475,6 +476,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [sql_semantics](modules/sql_semantics.md) | 9 | 0 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 9 | 0 |
 | [taskEditorContract](modules/taskEditorContract.md) | 9 | 2 |
+| [workNumbers](modules/workNumbers.md) | 9 | 0 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [database_config](modules/database_config.md) | 8 | 0 |
 | [source](modules/source.md) | 8 | 5 |
@@ -493,7 +495,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schedulingRules](modules/schedulingRules.md) | 8 | 0 |
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [taskFilterDefaults](modules/taskFilterDefaults.md) | 8 | 1 |
-| [workNumbers](modules/workNumbers.md) | 8 | 0 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
 | [catalog](modules/catalog.md) | 7 | 2 |
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
@@ -645,6 +646,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ProjectForm](modules/ProjectForm.md) | 3 | 17 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
+| [KanbanCard](modules/KanbanCard.md) | 3 | 3 |
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
 | [PersonCapacity](modules/PersonCapacity.md) | 3 | 5 |
 | [QuickCapture](modules/QuickCapture.md) | 3 | 8 |
@@ -752,7 +754,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [DeliveryDependencies](modules/DeliveryDependencies.md) | 2 | 8 |
 | [ImportTasksModal](modules/ImportTasksModal.md) | 2 | 8 |
 | [KanbanBoard](modules/KanbanBoard.md) | 2 | 17 |
-| [KanbanCard](modules/KanbanCard.md) | 2 | 2 |
+| [KanbanColumn](modules/KanbanColumn.md) | 2 | 4 |
+| [claimTime](modules/claimTime.md) | 2 | 0 |
 | [TaskDependencySelector](modules/TaskDependencySelector.md) | 2 | 5 |
 | [TaskTextEditorModal](modules/TaskTextEditorModal.md) | 2 | 5 |
 | [taskEditorSnapshot](modules/taskEditorSnapshot.md) | 2 | 2 |
@@ -850,7 +853,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SchedulingPassCard](modules/SchedulingPassCard.md) | 1 | 4 |
 | [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) | 1 | 0 |
 | [BacklogPanel](modules/BacklogPanel.md) | 1 | 7 |
-| [KanbanColumn](modules/KanbanColumn.md) | 1 | 4 |
 | [SavedViewsControl](modules/SavedViewsControl.md) | 1 | 14 |
 | [StatusChangeControl](modules/StatusChangeControl.md) | 1 | 8 |
 | [TaskBulkOperationsPanel](modules/TaskBulkOperationsPanel.md) | 1 | 10 |
@@ -1050,6 +1052,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) | 0 | 3 |
 | [CurrentTaskModal.test](modules/CurrentTaskModal.test.md) | 0 | 3 |
 | [KanbanBoard.test](modules/KanbanBoard.test.md) | 0 | 4 |
+| [KanbanColumn.test](modules/KanbanColumn.test.md) | 0 | 5 |
 | [MetricCount.test](modules/MetricCount.test.md) | 0 | 4 |
 | [PagedTaskBrowser.test](modules/PagedTaskBrowser.test.md) | 0 | 2 |
 | [PersonCapacity.test](modules/PersonCapacity.test.md) | 0 | 2 |

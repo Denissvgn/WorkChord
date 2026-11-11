@@ -81,8 +81,8 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [KanbanBoardProps](../entities/KanbanBoardProps.md) | Interface | 37 | — | — |
 | [ColumnId](../entities/ColumnId.md) | Type alias | 42 | `'planned-unassigned' \| 'planned-assigned' \| 'active' \| 'resolved' \| 'closed'` | — |
-| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 59 | <pre><code>Pick&#60;TaskUpdate&#44; &#39;assignee&#95;id&#39;&#62; &#38; &#123;&#10;    status&#63;&#58; TaskStatus&#59;&#10;&#125;</code></pre> | — |
-| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 63 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    updates&#58; BoardTaskUpdate&#59;&#10;    targetColumn&#58; ColumnId&#59;&#10;&#125;</code></pre> | — |
+| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 60 | <pre><code>Pick&#60;TaskUpdate&#44; &#39;assignee&#95;id&#39;&#62; &#38; &#123;&#10;    status&#63;&#58; TaskStatus&#59;&#10;&#125;</code></pre> | — |
+| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 64 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    updates&#58; BoardTaskUpdate&#59;&#10;    targetColumn&#58; ColumnId&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

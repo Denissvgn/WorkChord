@@ -110,7 +110,7 @@ flowchart LR
     n9["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
     n10["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
     n11["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
-    n12["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
+    n12["frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -135,7 +135,7 @@ flowchart LR
     click n9 "../modules/KanbanBoard.test.md"
     click n10 "../modules/KanbanBoard.md"
     click n11 "../modules/KanbanCard.md"
-    click n12 "../modules/KanbanColumn.md"
+    click n12 "../modules/KanbanColumn.test.md"
 ```
 
 ### Summary
@@ -159,6 +159,6 @@ flowchart LR
 | `KanbanBoard.test` | import | [KanbanBoard.test](../modules/KanbanBoard.test.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 | `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
-| `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
+| `KanbanColumn.test` | import | [KanbanColumn.test](../modules/KanbanColumn.test.md) | — |
 
-> References: showing 12 of 70 logical references; 58 omitted by the 12-row generated summary limit.
+> References: showing 12 of 71 logical references; 59 omitted by the 12-row generated summary limit.

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1552 | [Open section](#entities) |
-| Modules | 804 | [Open section](#modules) |
+| Modules | 806 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1676,6 +1676,7 @@ Retained history; these declarations are absent from the selected source invento
 - [KanbanBoard.test](modules/KanbanBoard.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx`
 - [KanbanCard](modules/KanbanCard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx`
 - [KanbanColumn](modules/KanbanColumn.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx`
+- [KanbanColumn.test](modules/KanbanColumn.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx`
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
 - [LiveWindowStatus](modules/LiveWindowStatus.md) - `frontend/src/components/feedback/LiveWindowStatus.tsx`
@@ -1893,6 +1894,7 @@ Retained history; these declarations are absent from the selected source invento
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
 - [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
+- [claimTime](modules/claimTime.md) - /** "18:42" for a claim that ends today, a short date and time otherwise, in the reader's time zone. */
 - [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
 - [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.

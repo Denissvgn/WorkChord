@@ -24,30 +24,33 @@ flowchart LR
     n0["frontend/src/components/analytics/OnTrackSummary.tsx"]
     n1["frontend/src/components/analytics/StatusDistribution.tsx"]
     n2["frontend/src/components/iteration/IterationCapacityLine.tsx"]
-    n3["frontend/src/components/tasks/WorkMetricsLine.tsx"]
-    n4["frontend/src/components/team/TeamList.tsx"]
-    n5["frontend/src/pages/OverviewPage.tsx"]
-    n6["frontend/src/pages/ProjectDetailPage.tsx"]
-    n7["frontend/src/pages/ProjectsPage.tsx"]
-    n8["frontend/src/utils/workNumbers.ts"]
-    n0 --> n8
-    n1 --> n8
-    n2 --> n8
-    n3 --> n8
-    n4 --> n8
-    n5 --> n3
-    n5 --> n8
-    n6 --> n8
-    n7 --> n8
+    n3["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
+    n4["frontend/src/components/tasks/WorkMetricsLine.tsx"]
+    n5["frontend/src/components/team/TeamList.tsx"]
+    n6["frontend/src/pages/OverviewPage.tsx"]
+    n7["frontend/src/pages/ProjectDetailPage.tsx"]
+    n8["frontend/src/pages/ProjectsPage.tsx"]
+    n9["frontend/src/utils/workNumbers.ts"]
+    n0 --> n9
+    n1 --> n9
+    n2 --> n9
+    n3 --> n9
+    n4 --> n9
+    n5 --> n9
+    n6 --> n4
+    n6 --> n9
+    n7 --> n9
+    n8 --> n9
     click n0 "../modules/OnTrackSummary.md"
     click n1 "../modules/StatusDistribution.md"
     click n2 "../modules/IterationCapacityLine.md"
-    click n3 "../modules/WorkMetricsLine.md"
-    click n4 "../modules/TeamList.md"
-    click n5 "../modules/OverviewPage.md"
-    click n6 "../modules/ProjectDetailPage.md"
-    click n7 "../modules/ProjectsPage.md"
-    click n8 "../modules/workNumbers.md"
+    click n3 "../modules/KanbanCard.md"
+    click n4 "../modules/WorkMetricsLine.md"
+    click n5 "../modules/TeamList.md"
+    click n6 "../modules/OverviewPage.md"
+    click n7 "../modules/ProjectDetailPage.md"
+    click n8 "../modules/ProjectsPage.md"
+    click n9 "../modules/workNumbers.md"
 ```
 
 ### Internal neighbors
@@ -57,6 +60,7 @@ flowchart LR
 | Inbound | [OnTrackSummary](../modules/OnTrackSummary.md) |
 | Inbound | [StatusDistribution](../modules/StatusDistribution.md) |
 | Inbound | [IterationCapacityLine](../modules/IterationCapacityLine.md) |
+| Inbound | [KanbanCard](../modules/KanbanCard.md) |
 | Inbound | [WorkMetricsLine](../modules/WorkMetricsLine.md) |
 | Inbound | [TeamList](../modules/TeamList.md) |
 | Inbound | [OverviewPage](../modules/OverviewPage.md) |

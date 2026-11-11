@@ -10,23 +10,23 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../../i18n/i18n` | `i18n` | — | compiler-dependent |
 | `../../../types/task` | `Task` | Declaration | erased |
+| `../../common/Button` | `Button` | — | compiler-dependent |
 | `../../ui/tone` | `PillTone` | Declaration | erased |
 | `../../ui/tone` | `toneDotClassName` | — | compiler-dependent |
 | `./KanbanCard` | `KanbanCard` | — | compiler-dependent |
 | `@dnd-kit/core` | `useDroppable` | — | compiler-dependent |
 | `@dnd-kit/sortable` | `SortableContext`, `verticalListSortingStrategy` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `react` | `useMemo` | — | compiler-dependent |
+| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Exports | `KanbanColumn` |
-| Constants | `t` |
-| Module calls | `t = bind` |
+| Constants | `COLUMN_PAGE_SIZE` |
 
 ## Local dependency map
 
@@ -35,29 +35,34 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
-    n1["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
-    n2["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
-    n3["frontend/src/components/ui/tone.ts"]
-    n4["frontend/src/i18n/i18n.ts"]
-    n5["frontend/src/types/task.ts"]
-    n0 --> n1
-    n0 --> n2
-    n0 --> n3
-    n0 --> n5
+    n0["frontend/src/components/common/Button.tsx"]
+    n1["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
+    n2["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
+    n3["frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx"]
+    n4["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
+    n5["frontend/src/components/ui/tone.ts"]
+    n6["frontend/src/types/task.ts"]
+    n1 --> n0
+    n1 --> n2
     n1 --> n4
     n1 --> n5
-    n2 --> n1
-    n2 --> n3
-    n2 --> n4
-    n2 --> n5
-    n3 --> n5
-    click n0 "../modules/KanbanBoard.md"
-    click n1 "../modules/KanbanCard.md"
-    click n2 "../modules/KanbanColumn.md"
-    click n3 "../modules/tone.md"
-    click n4 "../modules/i18n.md"
-    click n5 "../modules/types_task.md"
+    n1 --> n6
+    n2 --> n6
+    n3 --> n2
+    n3 --> n4
+    n3 --> n6
+    n4 --> n0
+    n4 --> n2
+    n4 --> n5
+    n4 --> n6
+    n5 --> n6
+    click n0 "../modules/Button.md"
+    click n1 "../modules/KanbanBoard.md"
+    click n2 "../modules/KanbanCard.md"
+    click n3 "../modules/KanbanColumn.test.md"
+    click n4 "../modules/KanbanColumn.md"
+    click n5 "../modules/tone.md"
+    click n6 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
@@ -65,22 +70,23 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [KanbanBoard](../modules/KanbanBoard.md) |
+| Inbound | [KanbanColumn.test](../modules/KanbanColumn.test.md) |
+| Outbound | [Button](../modules/Button.md) |
 | Outbound | [KanbanCard](../modules/KanbanCard.md) |
 | Outbound | [tone](../modules/tone.md) |
-| Outbound | [i18n](../modules/i18n.md) |
 | Outbound | [types_task](../modules/types_task.md) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 5 | 0 |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanColumnProps](../entities/KanbanColumnProps.md) | Interface | 13 | — | — |
+| [KanbanColumnProps](../entities/KanbanColumnProps.md) | Interface | 15 | — | — |
 
 ## Functions
 

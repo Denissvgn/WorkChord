@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 804,
+      "modules": 806,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3124
+    "total": 3126
   },
   "dependency_pages": {
     "count": 2,
@@ -45775,6 +45775,7 @@
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
+        "modules/claimTime.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -45912,6 +45913,7 @@
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
+        "modules/KanbanColumn.test.md",
         "modules/label_service.md",
         "modules/labels.md",
         "modules/LabelSelector.md",
@@ -66364,7 +66366,7 @@
         "modules/KanbanBoard.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
-        "modules/KanbanColumn.md",
+        "modules/KanbanColumn.test.md",
         "modules/ProjectTaskTree.md",
         "modules/ReleaseForm.md",
         "modules/TaskEditModal.md",
@@ -70042,6 +70044,20 @@
       "title": "ci_runtime Module"
     },
     {
+      "canonical_path": "modules/claimTime.md",
+      "id": "claimTime",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/claimTime",
+      "outgoing_internal_links": [
+        "modules/claimTime.md",
+        "modules/KanbanCard.md",
+        "modules/KanbanColumn.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/KanbanBoard/claimTime.ts",
+      "title": "claimTime Module"
+    },
+    {
       "canonical_path": "modules/cli_closeout.md",
       "id": "cli_closeout",
       "kind": "modules",
@@ -72268,11 +72284,13 @@
       "mcp_uri": "llm-wiki://modules/KanbanCard",
       "outgoing_internal_links": [
         "entities/KanbanCardProps.md",
-        "modules/i18n.md",
+        "modules/claimTime.md",
         "modules/KanbanBoard.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
-        "modules/types_task.md"
+        "modules/KanbanColumn.test.md",
+        "modules/types_task.md",
+        "modules/workNumbers.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx",
@@ -72285,16 +72303,34 @@
       "mcp_uri": "llm-wiki://modules/KanbanColumn",
       "outgoing_internal_links": [
         "entities/KanbanColumnProps.md",
-        "modules/i18n.md",
+        "modules/Button.md",
         "modules/KanbanBoard.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
+        "modules/KanbanColumn.test.md",
         "modules/tone.md",
         "modules/types_task.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx",
       "title": "KanbanColumn Module"
+    },
+    {
+      "canonical_path": "modules/KanbanColumn.test.md",
+      "id": "KanbanColumn.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/KanbanColumn.test",
+      "outgoing_internal_links": [
+        "modules/claimTime.md",
+        "modules/KanbanCard.md",
+        "modules/KanbanColumn.md",
+        "modules/KanbanColumn.test.md",
+        "modules/renderWithProviders.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx",
+      "title": "KanbanColumn.test Module"
     },
     {
       "canonical_path": "modules/label_service.md",
@@ -81823,6 +81859,7 @@
       "mcp_uri": "llm-wiki://modules/workNumbers",
       "outgoing_internal_links": [
         "modules/IterationCapacityLine.md",
+        "modules/KanbanCard.md",
         "modules/OnTrackSummary.md",
         "modules/OverviewPage.md",
         "modules/ProjectDetailPage.md",
@@ -95807,6 +95844,7 @@
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
+        "modules/claimTime.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -95944,6 +95982,7 @@
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
+        "modules/KanbanColumn.test.md",
         "modules/label_service.md",
         "modules/labels.md",
         "modules/LabelSelector.md",
@@ -96622,6 +96661,7 @@
         "modules/check_postgresql_documentation.md",
         "modules/Checkbox.md",
         "modules/ci_runtime.md",
+        "modules/claimTime.md",
         "modules/cli_closeout.md",
         "modules/cli_cutover.md",
         "modules/cli_database_migration.md",
@@ -96759,6 +96799,7 @@
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
+        "modules/KanbanColumn.test.md",
         "modules/label_service.md",
         "modules/labels.md",
         "modules/LabelSelector.md",
@@ -97319,5 +97360,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a451a22cef3fde627b07dbf49e786798251105d99e71bf6986770ae8eaf31cf9"
+  "source_hash": "sha256:2fca3f598973759072f441fc3f116ad090f50e6c409f09aed4766f4136c29a14"
 }

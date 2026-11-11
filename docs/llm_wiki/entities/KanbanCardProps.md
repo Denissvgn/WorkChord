@@ -1,6 +1,6 @@
 # KanbanCardProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx:10`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx:11`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanCard](../modules/KanbanCard.md)
