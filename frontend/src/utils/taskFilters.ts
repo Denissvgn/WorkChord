@@ -104,6 +104,8 @@ export const taskMatchesFilters = (
 
     if (filters.isIterationOverflow !== undefined && filters.isIterationOverflow !== null
         && Boolean(task.is_iteration_overflow) !== filters.isIterationOverflow) return false;
+    if (filters.isBlocked !== undefined && filters.isBlocked !== null
+        && Boolean(task.blocked_reason?.trim()) !== filters.isBlocked) return false;
 
     if (filters.agentReady !== null && task.agent_readiness.is_ready !== filters.agentReady) {
         return false;

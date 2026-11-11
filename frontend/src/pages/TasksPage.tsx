@@ -136,6 +136,7 @@ const TasksPage = () => {
         Number(filters.hasDependency !== null) +
         Number(filters.isOverdue !== null) +
         Number(filters.isIterationOverflow != null) +
+        Number(filters.isBlocked != null) +
         Number(filters.agentReady !== null) +
         Number(Boolean(filters.startDateFrom)) +
         Number(Boolean(filters.startDateTo)) +

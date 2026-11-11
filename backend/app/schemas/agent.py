@@ -450,6 +450,7 @@ class TaskTimelineItem(BaseModel):
     payload: dict[str, Any] = Field(default_factory=dict)
     actor_type: Optional[str] = None
     actor_id: Optional[int] = None
+    actor_name: Optional[str] = None
     trace_id: Optional[str] = None
 
 

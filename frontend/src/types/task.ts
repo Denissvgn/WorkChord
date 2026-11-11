@@ -388,6 +388,7 @@ export interface TaskTimelineItem {
     payload: Record<string, unknown>;
     actor_type?: string | null;
     actor_id?: number | null;
+    actor_name?: string | null;
     trace_id?: string | null;
 }
 

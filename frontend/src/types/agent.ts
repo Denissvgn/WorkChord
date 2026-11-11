@@ -624,6 +624,7 @@ export interface TaskTimelineItem {
     payload: JsonObject;
     actor_type?: string | null;
     actor_id?: number | null;
+    actor_name?: string | null;
     trace_id?: string | null;
 }
 

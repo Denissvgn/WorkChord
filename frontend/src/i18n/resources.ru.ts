@@ -105,6 +105,8 @@ export const russianResources = {
                 deliveryMetrics: "Показатели работы",
                 any: "Любые",
                 withinIteration: "В пределах итерации",
+                blocked: "Заблокировано",
+                notBlocked: "Не заблокировано",
 
                 "openTask": "Открыть задачу: {{title}}",
                 "moveTask": "Переместить задачу: {{title}}",
@@ -2974,7 +2976,7 @@ export const russianResources = {
                 savedViews: {
                     triage_needs_triage: { name: 'Требует Triage', description: 'Новые intake items, которым нужен review.' },
                     tasks_unassigned: { name: 'Не назначено', description: 'Задачи без назначенного owner.' },
-                    tasks_blocked: { name: 'Заблокировано', description: 'Задачи с меткой blocked.' },
+                    tasks_blocked: { name: 'Заблокировано', description: 'Задачи с сообщённым блокером.' },
                     tasks_overdue: { name: 'Выход за итерацию', description: 'Прогноз завершения после окончания итерации.' },
                     tasks_high_priority: { name: 'Высокий приоритет', description: 'Задачи с priority 1.' },
                     tasks_ready_for_agent: { name: 'Готово для agent', description: 'Задачи, которые соответствуют явным agent-readiness criteria.' },
@@ -3989,6 +3991,7 @@ export const russianResources = {
                         githubPrReady: "GitHub PR готов к проверке", githubPrDraft: "GitHub PR переведён в черновик",
                         githubPrClosed: "GitHub PR закрыт", githubPrMerged: "GitHub PR смержен",
                         githubAutomationFailed: "Ошибка автоматизации GitHub", releaseShipped: "Релиз выпущен",
+                        agentProgress: "Ход работы", agentCheckpoint: "Контрольная точка", agentBlocker: "Сообщено о блокере",
                     },
                 },
                 templateLabels: {

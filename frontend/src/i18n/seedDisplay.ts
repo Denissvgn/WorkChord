@@ -101,7 +101,7 @@ const labelBaselines: Record<string, string> = {
 const savedViewBaselines: Record<string, { name: string; description: string }> = {
     triage_needs_triage: { name: 'Needs triage', description: 'New intake items that need review.' },
     tasks_unassigned: { name: 'Unassigned', description: 'Tasks without an assigned owner.' },
-    tasks_blocked: { name: 'Blocked', description: 'Tasks tagged as blocked.' },
+    tasks_blocked: { name: 'Blocked', description: 'Tasks with a reported blocker.' },
     tasks_overdue: { name: 'Iteration overflow', description: 'Work forecast beyond its iteration boundary; this retains the legacy view predicate.' },
     tasks_high_priority: { name: 'High priority', description: 'Priority 1 tasks.' },
     tasks_ready_for_agent: { name: 'Ready for agent', description: 'Tasks that satisfy explicit agent-readiness criteria.' },

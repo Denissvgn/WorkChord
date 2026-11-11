@@ -140,8 +140,11 @@ Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
   logs and sensitive data elsewhere.
 - Use the claim-bound discovery action to create linked Triage for genuine
   out-of-scope work. Do not absorb it into the current assignment.
-- Report a blocker through the supported typed action or event. Do not invent a
-  `blocked` task status and do not silently choose replacement work.
+- Report a blocker as a claim-fenced `agent.blocker` task event whose
+  `blocker` field states the reason. It marks the task Blocked for people, with
+  your name in the task's Activity, and leaves the task version unchanged. Only
+  the PM or a person removes the block. A blocker on a run event stays attempt
+  evidence and does not mark the task. Do not silently choose replacement work.
 - Distinguish reasoning/context/tool insufficiency from access, dependency,
   credential, scheduling, and external-service blockers. Report observed facts;
   do not request or perform a model-tier change yourself.

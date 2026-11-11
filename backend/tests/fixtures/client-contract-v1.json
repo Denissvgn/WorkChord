@@ -3463,6 +3463,17 @@
             ],
             "title": "Actor Id"
           },
+          "actor_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Name"
+          },
           "actor_type": {
             "anyOf": [
               {

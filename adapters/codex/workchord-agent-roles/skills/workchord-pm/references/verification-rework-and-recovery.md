@@ -179,7 +179,7 @@ key, rationale, and correlation ID. Preserve the same three values only for an
 exact retry; changing rationale or correlation creates a different audited
 request and must not replay the prior command.
 
-Do not fabricate a `blocked` task status. Use a typed blocker or recovery event, governed label when appropriate, and an accountable recovery owner.
+A worker's claim-fenced `agent.blocker` task event marks the task Blocked, with its reason and the worker's name in Activity; people see it in the Blocked view and the project's blocked count. Decide the response (clarify, fix the dependency, recover, or reassign), then remove the block with Remove block once the cause is resolved. When your deployment offers no agent operation for Remove block, ask a person to do it. Never mark work blocked with a label.
 
 ## Triage Discoveries
 

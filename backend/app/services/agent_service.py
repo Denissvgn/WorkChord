@@ -53,6 +53,20 @@ ALLOWED_ASSIGNED_RUN_EVENT_TYPES = {
 }
 
 
+MAX_BLOCKER_REASON_CHARS = 1000
+BLOCKER_REASON_FIELDS = ("blocker", "summary", "reason", "message")
+
+
+def blocker_reason_from_payload(payload: Any) -> str:
+    """Derive the bounded, human-readable blocker reason from an agent.blocker payload."""
+    if isinstance(payload, dict):
+        for field in BLOCKER_REASON_FIELDS:
+            value = payload.get(field)
+            if isinstance(value, str) and value.strip():
+                return value.strip()[:MAX_BLOCKER_REASON_CHARS]
+    return "Blocker reported by the assigned agent."
+
+
 class AgentConflictError(Exception):
     """Raised when an agent operation conflicts with current task state."""
 
@@ -964,6 +978,11 @@ class AgentService:
                     "Task event idempotency key was reused with a different request."
                 )
             return existing
+        if assigned_worker and data.event_type == "agent.blocker":
+            # A claim-fenced blocker is the same Blocked state people set with
+            # "Block work"; only the PM or a person removes it. The task
+            # version stays unchanged so the worker's lease fields stay valid.
+            task.blocked_reason = blocker_reason_from_payload(data.payload)
         if assigned_worker:
             self._record_command_receipt(
                 actor,

@@ -46,8 +46,8 @@ Actions, with the same names for people and agents:
 | Action | Effect | Agents |
 | --- | --- | --- |
 | Start work | Planned → Active. | Atomic begin on the assigned work. |
-| Report blocker | Marks the task blocked, with a reason. | `agent.blocker` event with blocker, impact, checks tried, and the owner or action needed; the PM decides whether to mark the task blocked. |
-| Remove block | Clears the blocker. | PM decision; workers do not clear blockers. |
+| Report blocker | Marks the task blocked, with a reason. | Claim-fenced `agent.blocker` task event with blocker, impact, checks tried, and the owner or action needed; it marks the task blocked. |
+| Remove block | Clears the blocker. | The PM or a person removes it; workers never clear blockers. |
 | Submit for review | Active → Resolved (Implemented), with evidence per criterion. | Atomic submit with criterion progress and artifact links. |
 | Accept | Resolved → Closed (Accepted). | Typed review verdict that passes every criterion. |
 | Request changes | Resolved → Active as rework, with the failed criteria and a named owner. | Typed review verdict that rejects, with the rework handoff. |

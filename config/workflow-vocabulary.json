@@ -74,8 +74,8 @@
   ],
   "actions": [
     { "id": "start_work", "name": { "en": "Start work", "ru": "Начать работу" }, "effect": "Planned → Active.", "agents": "Atomic begin on the assigned work." },
-    { "id": "report_blocker", "name": { "en": "Report blocker", "ru": "Сообщить о блокере" }, "effect": "Marks the task blocked, with a reason.", "agents": "`agent.blocker` event with blocker, impact, checks tried, and the owner or action needed; the PM decides whether to mark the task blocked." },
-    { "id": "remove_block", "name": { "en": "Remove block", "ru": "Снять блокировку" }, "effect": "Clears the blocker.", "agents": "PM decision; workers do not clear blockers." },
+    { "id": "report_blocker", "name": { "en": "Report blocker", "ru": "Сообщить о блокере" }, "effect": "Marks the task blocked, with a reason.", "agents": "Claim-fenced `agent.blocker` task event with blocker, impact, checks tried, and the owner or action needed; it marks the task blocked." },
+    { "id": "remove_block", "name": { "en": "Remove block", "ru": "Снять блокировку" }, "effect": "Clears the blocker.", "agents": "The PM or a person removes it; workers never clear blockers." },
     { "id": "submit_for_review", "name": { "en": "Submit for review", "ru": "Отправить на проверку" }, "effect": "Active → Resolved (Implemented), with evidence per criterion.", "agents": "Atomic submit with criterion progress and artifact links." },
     { "id": "accept", "name": { "en": "Accept", "ru": "Принять" }, "effect": "Resolved → Closed (Accepted).", "agents": "Typed review verdict that passes every criterion." },
     { "id": "request_changes", "name": { "en": "Request changes", "ru": "Запросить изменения" }, "effect": "Resolved → Active as rework, with the failed criteria and a named owner.", "agents": "Typed review verdict that rejects, with the rework handoff." },

@@ -104,6 +104,8 @@ export const englishResources = {
                 deliveryMetrics: "Delivery metrics",
                 any: "Any",
                 withinIteration: "Within iteration",
+                blocked: "Blocked",
+                notBlocked: "Not blocked",
 
                 "openTask": "Open task: {{title}}",
                 "moveTask": "Move task: {{title}}",
@@ -3126,7 +3128,7 @@ export const englishResources = {
                 savedViews: {
                     triage_needs_triage: { name: 'Needs triage', description: 'New intake items that need review.' },
                     tasks_unassigned: { name: 'Unassigned', description: 'Tasks without an assigned owner.' },
-                    tasks_blocked: { name: 'Blocked', description: 'Tasks tagged as blocked.' },
+                    tasks_blocked: { name: 'Blocked', description: 'Tasks with a reported blocker.' },
                     tasks_overdue: { name: 'Iteration overflow', description: 'Tasks forecast to finish after the iteration end.' },
                     tasks_high_priority: { name: 'High priority', description: 'Priority 1 tasks.' },
                     tasks_ready_for_agent: { name: 'Ready for agent', description: 'Tasks that satisfy explicit agent-readiness criteria.' },
@@ -4117,6 +4119,7 @@ export const englishResources = {
                         githubPrReady: "GitHub PR ready for review", githubPrDraft: "GitHub PR converted to draft",
                         githubPrClosed: "GitHub PR closed", githubPrMerged: "GitHub PR merged",
                         githubAutomationFailed: "GitHub automation failed", releaseShipped: "Release shipped",
+                        agentProgress: "Progress", agentCheckpoint: "Checkpoint", agentBlocker: "Blocker reported",
                     },
                 },
                 templateLabels: {

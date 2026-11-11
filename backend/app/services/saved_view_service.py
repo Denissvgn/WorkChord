@@ -39,6 +39,7 @@ TASK_FILTER_DEFAULTS: dict[str, Any] = {
     "hasDependency": None,
     "isOverdue": None,
     "isIterationOverflow": None,
+    "isBlocked": None,
     "agentReady": None,
     "planningIssue": None,
     "startDateFrom": "",
@@ -87,9 +88,9 @@ DEFAULT_SAVED_VIEW_DEFINITIONS: list[dict[str, Any]] = [
     {
         "seed_key": "tasks_blocked",
         "name": "Blocked",
-        "description": "Tasks tagged as blocked.",
+        "description": "Tasks with a reported blocker.",
         "view_type": SavedViewType.TASKS.value,
-        "filters_json": {"labelSlugs": ["blocked"]},
+        "filters_json": {"isBlocked": True},
         "sort_json": {"sortKey": "priority"},
     },
     {
@@ -280,6 +281,8 @@ class SavedViewService:
                 normalized["isOverdue"] = self._normalize_nullable_bool(filters["isOverdue"], "isOverdue")
             if "isIterationOverflow" in filters:
                 normalized["isIterationOverflow"] = self._normalize_nullable_bool(filters["isIterationOverflow"], "isIterationOverflow")
+            if "isBlocked" in filters:
+                normalized["isBlocked"] = self._normalize_nullable_bool(filters["isBlocked"], "isBlocked")
             if "agentReady" in filters:
                 normalized["agentReady"] = self._normalize_nullable_bool(filters["agentReady"], "agentReady")
             if "planningIssue" in filters:
@@ -638,6 +641,9 @@ class SavedViewService:
             return False
 
         if filters.get("isIterationOverflow") is not None and task.is_iteration_overflow != filters["isIterationOverflow"]:
+            return False
+
+        if filters.get("isBlocked") is not None and bool((task.blocked_reason or "").strip()) != filters["isBlocked"]:
             return False
 
         if filters.get("agentReady") is not None and task.agent_readiness.is_ready != filters["agentReady"]:
