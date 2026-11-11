@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==83.0.0"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -23,10 +23,10 @@ dependencies = [
     "PyYAML>=6.0",
     "python-multipart",
     "aiosmtplib>=3.0.0",
-    "cryptography>=41.0.0",
-    "PyJWT[crypto]>=2.13,<3",
+    "cryptography>=50.0.0",
+    "PyJWT[crypto]>=2.15,<3",
     "email-validator>=2.0.0",
-    "mcp[cli]>=1,<2",
+    "mcp[cli]>=1.30,<2",
 ]
 
 [project.scripts]
@@ -39,7 +39,7 @@ workchord-agent-preflight = "app.cli.agent_preflight:main"
 workchord-server-acceptance = "app.cli.server_acceptance:main"
 
 [dependency-groups]
-build = ["setuptools==83.0.0"]
+build = ["setuptools==84.2.1"]
 test = [
     "pytest>=8.4,<10",
     "pytest-asyncio>=1.2,<2",
