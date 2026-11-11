@@ -15,6 +15,7 @@ import type { Iteration } from '../../types/iteration';
 import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
+import { IterationCapacityLine } from './IterationCapacityLine';
 
 interface IterationListProps {
     onEdit?: (iteration: Iteration) => void;
@@ -125,7 +126,7 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                 >
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-feedback-purple-muted rounded-lg text-feedback-purple-foreground">
+                            <div className="p-2 bg-surface-subtle rounded-lg text-content-secondary">
                                 <Calendar className="w-6 h-6" />
                             </div>
                             <div>
@@ -168,6 +169,7 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                             <span className="text-content-secondary">{t('iterations.workingDays')}</span>
                             <span className="font-medium">{t('units.days', { count: iteration.working_days })}</span>
                         </div>
+                        <IterationCapacityLine iterationId={iteration.id} />
                     </div>
 
                     <div className="flex flex-wrap justify-end gap-2 pt-4 border-t border-border-subtle">

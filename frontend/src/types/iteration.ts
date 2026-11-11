@@ -83,6 +83,9 @@ export interface IterationPlanningReadinessSummary {
     iteration_id: number;
     team_member_count: number;
     team_capacity_hours: number;
+    /** Effort of the iteration's planning leaves, and the part assigned to a capacity row. */
+    planned_hours?: number;
+    assigned_hours?: number;
     team_members_no_capacity: number;
     task_count: number;
     tasks_without_assignee: number;

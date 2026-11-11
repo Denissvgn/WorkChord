@@ -128,6 +128,9 @@ class IterationPlanningReadinessSummary(BaseModel):
     # Capacity rows whose profile is an agent; the rest are people (decision: agents count as capacity).
     team_agent_count: int = 0
     team_capacity_hours: float
+    # Effort of the iteration's planning leaves, and the part assigned to a capacity row.
+    planned_hours: float = 0.0
+    assigned_hours: float = 0.0
     team_members_no_capacity: int
     task_count: int
     tasks_without_assignee: int

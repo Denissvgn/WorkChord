@@ -155,4 +155,20 @@ describe('TeamForm', () => {
         expect(nameInput).toHaveValue('Duplicate Person');
         expect(nameInput).toBeEnabled();
     });
+
+    it('starts a new agent capacity row with no overhead and says what its number means', async () => {
+        teamServiceMock.getProfiles.mockResolvedValue([
+            { id: 3, display_name: 'Build agent', profile_kind: 'agent', email: null, headline: null, skills: [] },
+            { id: 4, display_name: 'Grace Hopper', profile_kind: 'human', email: null, headline: null, skills: [] },
+        ]);
+        const { user } = renderWithProviders(<TeamForm iterationId={9} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        const profile = await screen.findByRole('combobox', { name: 'Existing profile' });
+        await waitFor(() => expect(profile).toBeEnabled());
+        await user.selectOptions(profile, '3');
+        expect(screen.getByText(/For an agent, capacity is the hours it can take work/)).toBeInTheDocument();
+        expect(screen.getByRole('spinbutton', { name: /Overhead|Utilization/i })).toHaveValue(0);
+        await user.selectOptions(profile, '4');
+        expect(screen.getByRole('spinbutton', { name: /Overhead|Utilization/i })).toHaveValue(20);
+        expect(screen.getByText(/working hours on the calendar/)).toBeInTheDocument();
+    });
 });

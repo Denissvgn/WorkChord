@@ -336,6 +336,11 @@ class MemberWorkload(BaseModel):
     free_days: float  # Can be negative
     workload_status: Literal["green", "yellow", "red"]
     workload_percent: float
+    # Hours are the unit people compare in; one day is nominal_day_hours on the member's calendar.
+    capacity_hours: float = 0.0
+    allocated_hours: float = 0.0
+    free_hours: float = 0.0
+    nominal_day_hours: float = 8.0
 
 
 class TeamImportRequest(PlanningInputRevisions):

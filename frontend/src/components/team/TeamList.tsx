@@ -1,6 +1,6 @@
 import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, Loader2, Trash2, User, Plane, Calendar } from 'lucide-react';
 import { teamService } from '../../services/teamService';
@@ -13,6 +13,7 @@ import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { formatDecimal } from '../../utils/workNumbers';
 
 interface TeamListProps {
     iterationId: number;
@@ -51,6 +52,18 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
         } catch (cause) { toast.error(getApiErrorMessage(cause, t('teamCapacity.deleteFailed'))); }
     };
 
+    // feedback-policy: query loading,error,retry,empty - each row shows its own workload error and retry; the total counts loaded rows only.
+    const workloads = useQueries({
+        queries: (members ?? []).map(member => ({
+            queryKey: ['workload', member.id],
+            queryFn: () => teamService.getWorkload(member.id),
+            staleTime: 5 * 60 * 1000,
+        })),
+    });
+    const loaded = workloads.map(query => query.data).filter((workload): workload is MemberWorkload => Boolean(workload));
+    // One shared scale, so bars can be compared across people.
+    const scale = Math.max(1, ...loaded.map(workload => Math.max(workload.capacity_hours ?? 0, workload.allocated_hours ?? 0)));
+
     // Find the current member from fresh data for the vacation manager
     const managingVacationsFor = managingVacationsForId
         ? members?.find(m => m.id === managingVacationsForId) || null
@@ -61,9 +74,11 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
 
     return (
         <div className="grid grid-cols-1 gap-4">
+            {members && members.length > 0 && <CapacityTotals workloads={loaded} expected={members.length} />}
             {members?.map((member) => (
                 <TeamMemberCard
                     key={member.id}
+                    scale={scale}
                     member={member}
                     onEdit={onEdit}
                     onDelete={() => void confirmMemberDelete(member)}
@@ -87,13 +102,68 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
     );
 };
 
+/** The team's total, who is over capacity, and the hour conversion, said once. */
+const CapacityTotals = ({ workloads, expected }: { workloads: MemberWorkload[]; expected: number }) => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
+    const hours = (value: number) => formatDecimal(value, locale) ?? '0';
+    const capacity = workloads.reduce((sum, workload) => sum + (workload.capacity_hours ?? 0), 0);
+    const planned = workloads.reduce((sum, workload) => sum + (workload.allocated_hours ?? 0), 0);
+    // A row whose capacity is unknown is not "over"; its bar says the capacity is unknown.
+    const over = workloads.filter(workload => (workload.capacity_hours ?? 0) > 0 && (workload.allocated_hours ?? 0) > (workload.capacity_hours ?? 0)).length;
+    const dayLengths = [...new Set(workloads.map(workload => workload.nominal_day_hours).filter((value): value is number => Boolean(value)))];
+    return (
+        <section className="card card-pad space-y-1" aria-labelledby="capacity-totals-title">
+            <h3 id="capacity-totals-title" className="text-base font-semibold">{t('teamCapacity.totalTitle')}</h3>
+            <p className="text-sm">
+                <strong>{t('teamCapacity.hoursOf', { planned: hours(planned), capacity: hours(capacity) })}</strong>
+                {' · '}{planned <= capacity ? t('teamCapacity.hoursFree', { hours: hours(capacity - planned) }) : t('teamCapacity.hoursOver', { hours: hours(planned - capacity) })}
+                {over > 0 && <>{' · '}<span className="text-feedback-danger-foreground">{t('teamCapacity.overCount', { count: over })}</span></>}
+                {workloads.length < expected && <>{' · '}<span className="text-content-secondary">{t('teamCapacity.partialTotal', { loaded: workloads.length, total: expected })}</span></>}
+            </p>
+            <p className="text-xs text-content-secondary">
+                {dayLengths.length === 1 ? t('teamCapacity.conversion', { hours: hours(dayLengths[0]) }) : t('teamCapacity.conversionMixed')}
+            </p>
+        </section>
+    );
+};
+
+/** Planned hours against capacity on the team's shared scale, labelled at the end. */
+const CapacityBar = ({ workload, scale }: { workload: MemberWorkload; scale: number }) => {
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
+    const hours = (value: number) => formatDecimal(value, locale) ?? '0';
+    const capacity = workload.capacity_hours ?? 0;
+    const planned = workload.allocated_hours ?? 0;
+    const width = (value: number) => `${Math.min(100, value / scale * 100)}%`;
+    if (capacity <= 0) {
+        return <p className="w-64 text-sm text-feedback-warning-foreground">{t('teamCapacity.capacityUnknown')} · {t('teamCapacity.plannedOnly', { planned: hours(planned) })}</p>;
+    }
+    const over = planned > capacity;
+    return (
+        <div className="w-64 space-y-1">
+            <div className="relative h-3 rounded-full bg-surface-subtle" aria-hidden="true">
+                <span className="absolute inset-y-0 left-0 rounded-full border border-feedback-success-border bg-feedback-success-muted" style={{ width: width(capacity) }} />
+                <span className="absolute inset-y-0 left-0 rounded-full bg-action" style={{ width: width(Math.min(planned, capacity)) }} />
+                {over && <span className="absolute inset-y-0 rounded-r-full bg-feedback-danger" style={{ left: width(capacity), width: `${Math.min(100, (planned - capacity) / scale * 100)}%` }} />}
+            </div>
+            <p className={`text-sm tabular-nums ${over ? 'text-feedback-danger-foreground' : 'text-content-primary'}`}>
+                {t('teamCapacity.hoursOf', { planned: hours(planned), capacity: hours(capacity) })}
+                {' · '}{over ? t('teamCapacity.hoursOver', { hours: hours(planned - capacity) }) : t('teamCapacity.hoursFree', { hours: hours(capacity - planned) })}
+            </p>
+        </div>
+    );
+};
+
 const TeamMemberCard = ({
     member,
+    scale,
     onDelete,
     onEdit,
     onManageVacations
 }: {
     member: TeamMember,
+    scale: number,
     onDelete: () => void,
     onEdit: (m: TeamMember) => void,
     onManageVacations: () => void
@@ -120,15 +190,6 @@ const TeamMemberCard = ({
         staleTime: 5 * 60 * 1000,
     });
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'green': return 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border';
-            case 'yellow': return 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border';
-            case 'red': return 'bg-feedback-danger-muted text-feedback-danger-foreground border-feedback-danger-border';
-            default: return 'bg-surface-subtle text-content-primary';
-        }
-    };
-
     return (
         <div className="card flex flex-col p-4">
         <div className="flex items-center justify-between">
@@ -144,9 +205,9 @@ const TeamMemberCard = ({
                         </span>
                     </h3>
                     <div className="text-sm text-content-secondary mt-1 flex items-center gap-4">
-                        <span>{t('teamCapacity.availabilityShort')} {member.availability_percent}%</span>
-                        <span>{t('teamCapacity.coefficientShort')} {member.professionalism_coefficient}</span>
-                        <span>{t('teamCapacity.utilizationShort')} {member.operational_utilization}%</span>
+                        <span title={t('teamCapacity.availabilityHelp')}>{t('teamCapacity.availabilityShort')} {member.availability_percent}%</span>
+                        <span title={t('teamCapacity.utilizationHelp')}>{t('teamCapacity.utilizationShort')} {member.operational_utilization}%</span>
+                        <span title={t('teamCapacity.coefficientHelp')}>{t('teamCapacity.coefficientShort')} ×{member.professionalism_coefficient}</span>
                         {member.vacations.length > 0 && (
                             <span className="flex items-center text-feedback-purple-foreground">
                                 <Plane className="w-3 h-3 mr-1" />
@@ -175,19 +236,7 @@ const TeamMemberCard = ({
 
             <div className="flex items-center gap-6">
                 {workloadError && <QueryErrorState className="max-w-xs" error={workloadError} onRetry={() => void refetchWorkload()} />}
-                {workload && (
-                    <div className={`px-4 py-2 rounded-md border text-sm font-medium ${getStatusColor(workload.workload_status)}`}>
-                        <div className="flex flex-col items-end">
-                            <span>{t('teamCapacity.allocatedDays', { allocated: workload.allocated_days, capacity: workload.capacity_days })}</span>
-                            <span className="text-xs">
-                                {workload.free_days >= 0
-                                    ? t('teamCapacity.freeDays', { count: workload.free_days })
-                                    : t('teamCapacity.overloadedBy', { count: Math.abs(workload.free_days) })
-                                }
-                            </span>
-                        </div>
-                    </div>
-                )}
+                {workload && <CapacityBar workload={workload} scale={scale} />}
 
                 <Button
                     variant="ghost"

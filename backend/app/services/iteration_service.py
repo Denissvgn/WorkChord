@@ -585,6 +585,7 @@ class IterationService:
                         func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), agent_working), 1), else_=0)),
                         0,
                     ),
+                    func.coalesce(func.sum(Task.effort_hours), 0),
                 ).where(is_planning_leaf)
             )
         ).one()
@@ -626,6 +627,8 @@ class IterationService:
             iteration_id=iteration_id,
             team_agent_count=agent_rows,
             team_capacity_hours=round(total_hours, 2),
+            planned_hours=round(float(task_row[6] or 0), 2),
+            assigned_hours=round(float(sum(value or 0 for value in planned_hours.values())), 2),
             checkpoints=checkpoints,
             checkpoints_done=sum(item["state"] == "done" for item in checkpoints),
             checkpoints_total=len(PLAN_CHECKPOINT_IDS),
