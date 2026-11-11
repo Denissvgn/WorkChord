@@ -169,12 +169,13 @@ const ProjectSummaryCells = ({
             <td className="px-3 py-3">
                 {/* Health and the delivery signals read together in one place. */}
                 <div className="flex flex-wrap gap-1.5">
+                    {/* Each chip names what it measures; an unknown date risk adds nothing the Target column does not show. */}
                     <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(health))}>
-                        {t(projectHealthLabelKeys[health])}
+                        {t('surfaces.projectsPage.healthSignal', { value: t(projectHealthLabelKeys[health]) })}
                     </span>
-                    {summary && (
+                    {summary && summary.target_date_risk !== 'unknown' && (
                         <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium', riskClassName(summary.target_date_risk))}>
-                            {t(riskLabelKeys[summary.target_date_risk])}
+                            {t('surfaces.projectsPage.targetSignal', { value: t(riskLabelKeys[summary.target_date_risk]) })}
                         </span>
                     )}
                     {(summary?.blocked_tasks ?? 0) > 0 && (
@@ -229,10 +230,12 @@ const ProjectRow = ({
                 <Link to={`/projects/${project.id}`} className="font-medium text-content-primary hover:text-action">
                     {project.name}
                 </Link>
-                <p className="mt-1 truncate text-xs text-content-secondary">
-                    {project.initiative ? project.initiative.name : t('surfaces.projectsPage.unassigned')}
-                    {project.description && ` · ${project.description}`}
-                </p>
+                {/* The initiative when there is one; "Unassigned" here read as if the project had no owner. */}
+                {(project.initiative || project.description) && (
+                    <p className="mt-1 truncate text-xs text-content-secondary">
+                        {[project.initiative?.name, project.description].filter(Boolean).join(' · ')}
+                    </p>
+                )}
             </td>
             <td className="px-3 py-3">
                 <span className={clsx('whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium', projectStatusBadgeClassName(project.status))}>
@@ -604,9 +607,10 @@ const ProjectsPage = () => {
                     )}
 
                     <TableFrame className="projects-table">
-                        {/* Focusable, so the table can be scrolled with the keyboard when it does not fit. */}
+                        {/* Focusable, so the table can be scrolled with the keyboard when it does not fit. Relative, so
+                            screen-reader-only labels inside stay within it instead of widening the page. */}
                         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be reachable by keyboard to scroll it. */}
-                        <div aria-busy={portfolioSummariesLoading} className="overflow-x-auto" tabIndex={0} role="region" aria-label={t('surfaces.projectsPage.projectsTable')}>
+                        <div aria-busy={portfolioSummariesLoading} className="relative overflow-x-auto" tabIndex={0} role="region" aria-label={t('surfaces.projectsPage.projectsTable')}>
                             <table className="w-full min-w-[860px]">
                                 <thead className="bg-surface-muted">
                                     <tr className="border-b border-border text-left text-xs font-medium text-content-secondary">

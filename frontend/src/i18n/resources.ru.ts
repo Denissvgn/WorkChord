@@ -3507,6 +3507,8 @@ export const russianResources = {
                     rowActions: "Действия для «{{name}}»",
                     open: "Открыть проект",
                     projectsTable: "Таблица проектов",
+                    healthSignal: 'Состояние: {{value}}',
+                    targetSignal: 'Срок: {{value}}',
                     atRiskCount: "С риском: {{count}}",
                     unassignedCount: "Без инициативы: {{count}}",
                     noRiskFlags: "Нет отметок о риске",

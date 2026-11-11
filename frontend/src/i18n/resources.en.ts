@@ -4184,6 +4184,8 @@ export const englishResources = {
                     rowActions: "Actions for {{name}}",
                     open: "Open project",
                     projectsTable: "Projects table",
+                    healthSignal: 'Health: {{value}}',
+                    targetSignal: 'Target: {{value}}',
                     atRiskCount: "{{count}} at risk",
                     unassignedCount: "{{count}} unassigned",
                     noRiskFlags: "No risk flags",

@@ -1070,9 +1070,17 @@ const TaskItemContent = ({
                     <span className="sr-only">{t('taskList.assignee')}: </span>{task.assignee?.name ?? t('common.unassigned')}
                 </span>
 
-                <span className="w-12 shrink-0 text-right text-xs tabular-nums text-content-secondary">
-                    {effort === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: effort })}
-                </span>
+                {/* The narrow effort column shows a dash for an unknown estimate; the word is its tooltip and accessible text. */}
+                {effort === null ? (
+                    <span className="w-12 shrink-0 text-right text-xs text-content-tertiary" title={t('domain.unknownEstimate')}>
+                        <span aria-hidden="true">—</span>
+                        <span className="sr-only">{t('domain.unknownEstimate')}</span>
+                    </span>
+                ) : (
+                    <span className="w-12 shrink-0 text-right text-xs tabular-nums text-content-secondary">
+                        {t('units.daysCompact', { count: effort })}
+                    </span>
+                )}
 
                 <div className="flex shrink-0 items-center">
                     <Button variant="ghost" size="sm" aria-expanded={showDetails} aria-controls={detailsId}

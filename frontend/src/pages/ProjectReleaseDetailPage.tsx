@@ -236,13 +236,7 @@ const ProjectReleaseDetailPage = () => {
                 )}
             />
             <WorkMetricsLine metrics={release} scope={numericReleaseId > 0 ? { release_id: numericReleaseId } : null} />
-            {/* Release facts are metadata, not metrics: a definition list, not KPI tiles. */}
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
-                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.status')}</dt><dd className="font-medium text-content-primary">{t(releaseStatusLabelKeys[release.status])}</dd></div>
-                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.linkedTasks')}</dt><dd className="font-medium tabular-nums text-content-primary">{release.tasks.length}</dd></div>
-                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.shipped')}</dt><dd className="font-medium text-content-primary">{formatDate(release.shipped_at)}</dd></div>
-                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.environment')}</dt><dd className="font-medium text-content-primary">{release.environment || '—'}</dd></div>
-            </dl>
+            {/* Release facts are metadata, not metrics: the status pill above and the metadata card below carry them, not KPI tiles. */}
 
             {shipError && (
                 <div className="flex items-start justify-between gap-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">

@@ -81,10 +81,12 @@ RUN python -m app.build_identity \
 # runtime serves only this trusted generated directory, never database prose.
 COPY agent-skills /app/agent-skills
 COPY scripts/build_agent_skills.py /app/scripts/build_agent_skills.py
+# The skill build renders the shared workflow names from this file; it is build input only.
+COPY config/workflow-vocabulary.json /app/config/workflow-vocabulary.json
 RUN python /app/scripts/build_agent_skills.py \
       --skills-dir /app/agent-skills \
       build --output-dir /app/agent-skill-artifacts \
-    && rm -rf /app/agent-skills /app/scripts
+    && rm -rf /app/agent-skills /app/scripts /app/config
 
 # Environment variables
 ENV PYTHONUNBUFFERED=1

@@ -113,7 +113,8 @@ html:has(.landing-page) {
   gap: var(--space-landing-md);
 }
 
-.landing-button {
+/* Scoped under .landing-page so it outranks `.landing-page a { color: inherit }`. */
+.landing-page .landing-button {
   display: inline-flex;
   align-items: center;
   min-height: 2.75rem;
@@ -127,8 +128,8 @@ html:has(.landing-page) {
   text-decoration: none;
 }
 
-.landing-button:hover { background: var(--color-landing-ink); }
-.landing-button:focus-visible { outline: 2px solid var(--color-landing-focus); outline-offset: 2px; }
+.landing-page .landing-button:hover { background: var(--color-landing-ink); }
+.landing-page .landing-button:focus-visible { outline: 2px solid var(--color-landing-focus); outline-offset: 2px; }
 
 .landing-nav__action,
 .landing-text-link {
