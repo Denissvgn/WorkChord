@@ -12,7 +12,7 @@ import { CollapsibleSection } from '../common/CollapsibleSection';
 import { projectService } from '../../services/projectService';
 import { teamService } from '../../services/teamService';
 import { templateService } from '../../services/templateService';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { formatTeamMemberProfileLabel } from '../../utils/teamMemberLabels';
 import {
     appendChecklistToDescription,
@@ -204,9 +204,16 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
         }
     };
 
+    const conflictStatus = getApiErrorStatus(updateMutation.error);
+    const versionConflict = conflictStatus === 409 || conflictStatus === 412;
+
     return (
         <form onSubmit={handleSubmit} className="space-y-6"><fieldset disabled={createMutation.isPending || updateMutation.isPending} className="m-0 min-w-0 space-y-6 border-0 p-0">
-            {contextControls && <fieldset disabled={createMutation.isPending || updateMutation.isPending} className="m-0 min-w-0 border-0 p-0">{contextControls}</fieldset>}
+            {/* Reloading and comparing revisions only matter after a save meets a newer version. */}
+            {contextControls && versionConflict && <fieldset disabled={createMutation.isPending || updateMutation.isPending} className="m-0 min-w-0 space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3">
+                <legend className="text-sm font-semibold">{t('surfaces.projectForm.conflictTitle')}</legend>
+                {contextControls}
+            </fieldset>}
             {optionsLoading && <QueryLoadingState />}
             {optionError && (
                 <QueryErrorState
@@ -216,7 +223,7 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                 />
             )}
             {error && (
-                <div className="bg-feedback-danger-muted text-feedback-danger-foreground p-3 rounded-md text-sm">
+                <div role="alert" className="bg-feedback-danger-muted text-feedback-danger-foreground p-3 rounded-md text-sm">
                     {error}
                 </div>
             )}
@@ -283,8 +290,9 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                 </div>
             </div>
 
-            {/* Collapsible: Dates */}
-            <CollapsibleSection title={t('projectForm.dates')}>
+            {/* Dates and owner are what the project header asks for, so they are never folded away. */}
+            <fieldset className="m-0 min-w-0 space-y-4 border-0 p-0">
+                <legend className="mb-2 text-sm font-semibold text-content-primary">{t('projectForm.dates')}</legend>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                         type="date"
@@ -299,35 +307,38 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                         onChange={event => setFormData({ ...formData, target_date: event.target.value || null })}
                     />
                 </div>
-            </CollapsibleSection>
+            </fieldset>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.owner')}</label>
+                    <select
+                        aria-label={t('surfaces.projectForm.owner')}
+                        value={formData.owner_profile_id ?? ''}
+                        onChange={event => setFormData({
+                            ...formData,
+                            owner_id: null,
+                            owner_profile_id: event.target.value ? parseInt(event.target.value) : null,
+                        })}
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                    >
+                        <option value="">{t('surfaces.projectForm.unassigned')}</option>
+                        {selectedOwnerMissing && formData.owner_profile_id && initialData?.owner_profile && (
+                            <option value={formData.owner_profile_id}>
+                                {formatTeamMemberProfileLabel(initialData.owner_profile)}
+                            </option>
+                        )}
+                        {ownerOptions.map(owner => (
+                            <option key={owner.id} value={owner.id}>
+                                {formatTeamMemberProfileLabel(owner)}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
             {/* Collapsible: Advanced Options */}
             <CollapsibleSection title={t('taskForm.advancedOptions')}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.owner')}</label>
-                        <select
-                            value={formData.owner_profile_id ?? ''}
-                            onChange={event => setFormData({
-                                ...formData,
-                                owner_id: null,
-                                owner_profile_id: event.target.value ? parseInt(event.target.value) : null,
-                            })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                        >
-                            <option value="">{t('surfaces.projectForm.unassigned')}</option>
-                            {selectedOwnerMissing && formData.owner_profile_id && initialData?.owner_profile && (
-                                <option value={formData.owner_profile_id}>
-                                    {formatTeamMemberProfileLabel(initialData.owner_profile)}
-                                </option>
-                            )}
-                            {ownerOptions.map(owner => (
-                                <option key={owner.id} value={owner.id}>
-                                    {formatTeamMemberProfileLabel(owner)}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
                     <div>
                         <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.initiative')}</label>
                         <select
@@ -367,7 +378,8 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                 )}
             </CollapsibleSection>
 
-            <div className="flex justify-end gap-2 pt-4 border-t">
+            {/* The footer stays in reach while the form scrolls. */}
+            <div className="sticky bottom-0 z-10 -mx-1 flex justify-end gap-2 border-t bg-surface-card px-1 py-3">
                 <Button type="button" variant="ghost" onClick={onCancel}>
                     {t('surfaces.projectForm.cancel')}
                 </Button>

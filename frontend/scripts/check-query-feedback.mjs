@@ -112,7 +112,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/projects/ProjectForm.tsx': 'af87c769ef9a559f',
     'src/components/projects/ProjectIterationsSection.tsx': 'd7d5bffa05a82217',
     'src/components/releases/ReleaseForm.tsx': '91c6487c6874dc84',
-    'src/components/requestSources/RequestSourceLinksPanel.tsx': '93987503489c3a23',
+    'src/components/requestSources/RequestSourceLinksPanel.tsx': '8808b501891c1768',
     'src/components/settings/EmailSettingsPanel.tsx': '5e708d82e35b68d2',
     'src/components/settings/GitHubSettingsPanel.tsx': '45df5a73c267ad6e',
     'src/components/settings/InterfaceLanguageSettings.tsx': '37833eab286e1764',

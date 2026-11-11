@@ -4061,6 +4061,7 @@ export const englishResources = {
                     updateFailed: "Failed to update project",
                     createProject: "Create Project",
                     updateProject: "Update Project",
+                    conflictTitle: "Someone changed this project after you opened it. Compare, then reload or keep your draft.",
                     statuses: {
                         proposed: "Proposed",
                         planned: "Planned",
@@ -4217,6 +4218,10 @@ export const englishResources = {
                     },
                 },
                 requestSourceLinks: {
+                    linkRequest: "Link request",
+                    closeForm: "Close",
+                    sourceType: "Source type",
+                    searchType: "Search by type",
                     searchExistingRequests: "Search existing requests",
                     dismissRequestSourceError: "Dismiss request source error",
                     add: "Add",

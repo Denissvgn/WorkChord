@@ -3413,6 +3413,7 @@ export const russianResources = {
                     updateFailed: "Не удалось обновить проект",
                     createProject: "Создать проект",
                     updateProject: "Обновить проект",
+                    conflictTitle: "Проект изменили после того, как вы его открыли. Сравните, затем загрузите заново или сохраните черновик.",
                     statuses: {
                         proposed: "Предложено",
                         planned: "Запланировано",
@@ -3577,6 +3578,10 @@ export const russianResources = {
                     },
                 },
                 requestSourceLinks: {
+                    linkRequest: "Связать запрос",
+                    closeForm: "Закрыть",
+                    sourceType: "Тип источника",
+                    searchType: "Искать по типу",
                     searchExistingRequests: "Искать существующие запросы",
                     dismissRequestSourceError: "Скрыть ошибку источника запроса",
                     add: "Добавить",
