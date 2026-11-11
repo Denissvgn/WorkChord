@@ -101,9 +101,9 @@ sequenceDiagram
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 645 interactions; 615 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 635 interactions; 605 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 223 (222 omitted); unresolved 1 of 303 (302 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 214 (213 omitted); unresolved 1 of 302 (301 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 

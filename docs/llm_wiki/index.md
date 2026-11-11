@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1561 | [Open section](#entities) |
-| Modules | 824 | [Open section](#modules) |
+| Modules | 826 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 557 | [Open section](#entry-point-flows) |
@@ -1912,7 +1912,7 @@ Retained history; these declarations are absent from the selected source invento
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
 - [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
-- [claimTime](modules/claimTime.md) - /** "18:42" for a claim that ends today, a short date and time otherwise, in the reader's time zone. */
+- [claimTime](modules/claimTime.md) - /** * "18:42 GMT+3" for a claim that ends today, a short date and time otherwise: the reader's * local time, with its zone named so it reads unambiguously next to UTC times elsewhere. */
 - [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
 - [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
@@ -2220,6 +2220,8 @@ Retained history; these declarations are absent from the selected source invento
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
 - [taskFilters.test](modules/taskFilters.test.md) - `frontend/src/utils/taskFilters.test.ts`
 - [taskService](modules/taskService.md) - `frontend/src/services/taskService.ts`
+- [taskTransitions](modules/taskTransitions.md) - `frontend/src/features/taskTransitions.ts`
+- [taskTransitions.test](modules/taskTransitions.test.md) - `frontend/src/features/taskTransitions.test.ts`
 - [taskViewState](modules/taskViewState.md) - `frontend/src/features/savedViews/taskViewState.ts`
 - [task_brief_service](modules/task_brief_service.md) - Canonical brief rendering, conservative legacy conversion and evidence commands.
 - [task_bulk_operation_service](modules/task_bulk_operation_service.md) - Selected-task bulk operation orchestration.

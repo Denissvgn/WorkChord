@@ -95,9 +95,9 @@ sequenceDiagram
     p4-->>p30: self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)(...)
 ```
 
-> Call sequence diagram shows 30 of 512 interactions; 482 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 502 interactions; 472 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 189 (188 omitted); unresolved 1 of 241 (240 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 180 (179 omitted); unresolved 1 of 240 (239 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 

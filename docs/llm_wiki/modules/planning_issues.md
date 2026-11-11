@@ -55,6 +55,7 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `is_planning_gap_candidate` | `(task: Any) -> bool` | — | A planned, non-deferred leaf: the only work the scheduler places. |
+| `_agent_working` | `(task: Any) -> bool` | — | Whether an agent holds live execution work: a response's ``agent_working`` field, |
 | `needs_assignee` | `(task: Any) -> bool` | — | — |
 | `agent_working_without_capacity` | `(task: Any) -> bool` | — | — |
 | `missing_effort` | `(task: Any) -> bool` | — | — |

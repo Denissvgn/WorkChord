@@ -1,6 +1,6 @@
 # LabelFormState
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:61`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:62`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)

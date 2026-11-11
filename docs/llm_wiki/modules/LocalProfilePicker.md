@@ -17,7 +17,7 @@ Lets a trusted-local browser choose the person profile it works as, or add one w
 | `./identityService` | `identityService` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery` | — | compiler-dependent |
 | `react` | `FormEvent` | Declaration | erased |
-| `react` | `useId`, `useState` | — | compiler-dependent |
+| `react` | `useId`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals

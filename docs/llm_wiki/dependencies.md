@@ -115,6 +115,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) | [schedulingRules](modules/schedulingRules.md) |
 | [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) | [schedulingRules](modules/schedulingRules.md) |
 | [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) | [types_label](modules/types_label.md) |
+| [TemplateLabelSettings](modules/TemplateLabelSettings.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [TemplateLabelSettings](modules/TemplateLabelSettings.md) | [types_label](modules/types_label.md) |
 | [TemplateLabelSettings](modules/TemplateLabelSettings.md) | [types_template](modules/types_template.md) |
 | [CurrentTaskModal.test](modules/CurrentTaskModal.test.md) | [types_task](modules/types_task.md) |
@@ -233,6 +234,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [taskViewState](modules/taskViewState.md) | [TaskFiltersBar](modules/TaskFiltersBar.md) |
 | [taskViewState](modules/taskViewState.md) | [TaskList](modules/TaskList.md) |
 | [taskViewState](modules/taskViewState.md) | [savedView](modules/savedView.md) |
+| [taskTransitions](modules/taskTransitions.md) | [types_task](modules/types_task.md) |
 | [usePlanningObservation](modules/usePlanningObservation.md) | [planningInputService](modules/planningInputService.md) |
 | [schedulingDisplay](modules/schedulingDisplay.md) | [schedulingRules](modules/schedulingRules.md) |
 | [seedDisplay](modules/seedDisplay.md) | [types_github](modules/types_github.md) |
@@ -382,7 +384,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [commands](modules/commands.md) | 82 | 12 |
 | [renderWithProviders](modules/renderWithProviders.md) | 79 | 2 |
 | [time](modules/time.md) | 77 | 0 |
-| [types_task](modules/types_task.md) | 74 | 2 |
+| [types_task](modules/types_task.md) | 75 | 2 |
 | [config](modules/config.md) | 72 | 1 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
 | [models_agent](modules/models_agent.md) | 66 | 5 |
@@ -410,8 +412,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [services_work_metrics](modules/services_work_metrics.md) | 23 | 8 |
 | [toast](modules/toast.md) | 23 | 0 |
 | [index](modules/index.md) | 23 | 0 |
+| [mutationFeedback](modules/mutationFeedback.md) | 23 | 0 |
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
-| [mutationFeedback](modules/mutationFeedback.md) | 22 | 0 |
 | [types_team](modules/types_team.md) | 22 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
 | [tone](modules/tone.md) | 21 | 1 |
@@ -663,8 +665,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 3 | 13 |
 | [taskDraftStorage](modules/taskDraftStorage.md) | 3 | 1 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
+| [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 3 | 3 |
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 11 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
+| [taskTransitions](modules/taskTransitions.md) | 3 | 1 |
 | [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
 | [resources.ru](modules/resources.ru.md) | 3 | 9 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
@@ -757,10 +761,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) | 2 | 12 |
 | [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) | 2 | 13 |
 | [SystemHealthPanel](modules/SystemHealthPanel.md) | 2 | 2 |
-| [TemplateLabelSettings](modules/TemplateLabelSettings.md) | 2 | 13 |
+| [TemplateLabelSettings](modules/TemplateLabelSettings.md) | 2 | 14 |
 | [DeliveryDependencies](modules/DeliveryDependencies.md) | 2 | 8 |
 | [ImportTasksModal](modules/ImportTasksModal.md) | 2 | 8 |
-| [KanbanBoard](modules/KanbanBoard.md) | 2 | 17 |
+| [KanbanBoard](modules/KanbanBoard.md) | 2 | 18 |
 | [KanbanColumn](modules/KanbanColumn.md) | 2 | 4 |
 | [claimTime](modules/claimTime.md) | 2 | 0 |
 | [TaskDependencySelector](modules/TaskDependencySelector.md) | 2 | 5 |
@@ -773,7 +777,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TeamProfileManager](modules/TeamProfileManager.md) | 2 | 10 |
 | [VacationCsvImport](modules/VacationCsvImport.md) | 2 | 6 |
 | [SegmentedControl](modules/SegmentedControl.md) | 2 | 0 |
-| [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 2 | 3 |
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 2 | 1 |
 | [manifestLocations](modules/manifestLocations.md) | 2 | 0 |
 | [statusScopes](modules/statusScopes.md) | 2 | 1 |
@@ -862,7 +865,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) | 1 | 0 |
 | [BacklogPanel](modules/BacklogPanel.md) | 1 | 7 |
 | [SavedViewsControl](modules/SavedViewsControl.md) | 1 | 16 |
-| [StatusChangeControl](modules/StatusChangeControl.md) | 1 | 8 |
+| [StatusChangeControl](modules/StatusChangeControl.md) | 1 | 9 |
 | [TaskBulkOperationsPanel](modules/TaskBulkOperationsPanel.md) | 1 | 10 |
 | [TaskContextSummary](modules/TaskContextSummary.md) | 1 | 4 |
 | [TaskReviewer](modules/TaskReviewer.md) | 1 | 3 |
@@ -1067,7 +1070,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [RuntimeConfigSettings.test](modules/RuntimeConfigSettings.test.md) | 0 | 3 |
 | [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) | 0 | 3 |
 | [SettingsAccessAndAbout.test](modules/SettingsAccessAndAbout.test.md) | 0 | 5 |
-| [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) | 0 | 3 |
+| [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) | 0 | 4 |
 | [CurrentTaskModal.test](modules/CurrentTaskModal.test.md) | 0 | 3 |
 | [KanbanBoard.test](modules/KanbanBoard.test.md) | 0 | 4 |
 | [KanbanColumn.test](modules/KanbanColumn.test.md) | 0 | 5 |
@@ -1113,6 +1116,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planningNavigationInvalidation.test](modules/planningNavigationInvalidation.test.md) | 0 | 2 |
 | [planningTaskIssues.test](modules/planningTaskIssues.test.md) | 0 | 2 |
 | [usePlanningReadiness.test](modules/usePlanningReadiness.test.md) | 0 | 6 |
+| [taskTransitions.test](modules/taskTransitions.test.md) | 0 | 1 |
 | [useLiveWindow.test](modules/useLiveWindow.test.md) | 0 | 2 |
 | [workQueryFreshness.test](modules/workQueryFreshness.test.md) | 0 | 1 |
 | [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) | 0 | 2 |

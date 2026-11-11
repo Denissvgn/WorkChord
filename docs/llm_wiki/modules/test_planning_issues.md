@@ -49,3 +49,4 @@ flowchart LR
 | `test_deferred_and_parent_tasks_are_excluded` | `(overrides) -> None` | `@pytest.mark.parametrize('overrides', [{'is_deferred': True}, {'effective_is_deferred': True}, {'is_composite': True}, {'children': [object()]}])` | — |
 | `test_agent_held_work_is_not_unassigned` | `() -> None` | — | — |
 | `test_missing_effort` | `(effort) -> None` | `@pytest.mark.parametrize('effort', [None, 0, -1, float('nan'), True])` | — |
+| `test_loaded_orm_tasks_read_the_attached_agent_flag` | `() -> None` | — | — |

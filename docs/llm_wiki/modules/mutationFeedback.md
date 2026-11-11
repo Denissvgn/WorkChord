@@ -37,7 +37,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (22) |
+| Inbound | `frontend` (23) |
 
 ### External packages
 
@@ -45,7 +45,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -53,8 +53,8 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [MutationUndo](../entities/MutationUndo.md) | Interface | 4 | — | A way back from a write the user just made. |
 | [MutationFeedbackMeta](../entities/MutationFeedbackMeta.md) | Interface | 15 | `Record<string, unknown>` | Put on a mutation's `meta` to announce its result. One listener shows the |
-| [FeedbackAction](../entities/FeedbackAction.md) | Type alias | 20 | `'created' \| 'saved' \| 'deleted'` | — |
-| [FeedbackKind](../entities/FeedbackKind.md) | Type alias | 21 | `'project' \| 'release' \| 'milestone' \| 'task' \| 'triageItem' \| 'teamMember' \| 'profile' \| 'initiative' \| 'update' \| 'absence'` | — |
+| [FeedbackAction](../entities/FeedbackAction.md) | Type alias | 21 | `'created' \| 'saved' \| 'deleted'` | — |
+| [FeedbackKind](../entities/FeedbackKind.md) | Type alias | 22 | `'project' \| 'release' \| 'milestone' \| 'task' \| 'triageItem' \| 'teamMember' \| 'profile' \| 'initiative' \| 'update' \| 'absence'` | — |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # TemplateFormState
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:37`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:38`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)

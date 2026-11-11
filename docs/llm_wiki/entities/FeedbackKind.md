@@ -1,6 +1,6 @@
 # FeedbackKind
 
-**Location:** `frontend/src/features/mutationFeedback.ts:21`
+**Location:** `frontend/src/features/mutationFeedback.ts:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [mutationFeedback](../modules/mutationFeedback.md)

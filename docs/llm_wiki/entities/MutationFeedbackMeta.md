@@ -16,7 +16,7 @@ errors stay where they happened (inline) and in the error toast.
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `success` | `string \| ((data: unknown, variables: unknown) => string \| null \| undefined)` | No | — | — |
-| `undo` | `(data: unknown, variables: unknown) => MutationUndo \| null \| undefined` | No | — | — |
+| `undo` | `(data: unknown, variables: unknown, context: unknown) => MutationUndo \| null \| undefined` | No | — | — |
 
 ## Methods
 
@@ -32,15 +32,15 @@ flowchart LR
     n2["frontend/src/components/projects/InitiativeForm.tsx"]
     n3["frontend/src/components/projects/ProjectForm.tsx"]
     n4["frontend/src/components/releases/ReleaseForm.tsx"]
-    n5["frontend/src/components/tasks/DeliveryDependencies.tsx"]
-    n6["frontend/src/components/tasks/ImportTasksModal.tsx"]
-    n7["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
-    n8["frontend/src/components/tasks/QuickCapture.tsx"]
-    n9["frontend/src/components/tasks/StatusChangeControl.tsx"]
-    n10["frontend/src/components/tasks/TaskBulkOperationsPanel.tsx"]
-    n11["frontend/src/components/tasks/TaskForm.tsx"]
-    n12["frontend/src/components/tasks/TaskWorkPanel.tsx"]
-    n13["frontend/src/components/team/ImportTeamModal.tsx"]
+    n5["frontend/src/components/settings/TemplateLabelSettings.tsx"]
+    n6["frontend/src/components/tasks/DeliveryDependencies.tsx"]
+    n7["frontend/src/components/tasks/ImportTasksModal.tsx"]
+    n8["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
+    n9["frontend/src/components/tasks/QuickCapture.tsx"]
+    n10["frontend/src/components/tasks/StatusChangeControl.tsx"]
+    n11["frontend/src/components/tasks/TaskBulkOperationsPanel.tsx"]
+    n12["frontend/src/components/tasks/TaskForm.tsx"]
+    n13["frontend/src/components/tasks/TaskWorkPanel.tsx"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -58,15 +58,15 @@ flowchart LR
     click n2 "../modules/InitiativeForm.md"
     click n3 "../modules/ProjectForm.md"
     click n4 "../modules/ReleaseForm.md"
-    click n5 "../modules/DeliveryDependencies.md"
-    click n6 "../modules/ImportTasksModal.md"
-    click n7 "../modules/KanbanBoard.md"
-    click n8 "../modules/QuickCapture.md"
-    click n9 "../modules/StatusChangeControl.md"
-    click n10 "../modules/TaskBulkOperationsPanel.md"
-    click n11 "../modules/TaskForm.md"
-    click n12 "../modules/TaskWorkPanel.md"
-    click n13 "../modules/ImportTeamModal.md"
+    click n5 "../modules/TemplateLabelSettings.md"
+    click n6 "../modules/DeliveryDependencies.md"
+    click n7 "../modules/ImportTasksModal.md"
+    click n8 "../modules/KanbanBoard.md"
+    click n9 "../modules/QuickCapture.md"
+    click n10 "../modules/StatusChangeControl.md"
+    click n11 "../modules/TaskBulkOperationsPanel.md"
+    click n12 "../modules/TaskForm.md"
+    click n13 "../modules/TaskWorkPanel.md"
 ```
 
 ### Summary
@@ -88,6 +88,7 @@ flowchart LR
 | `InitiativeForm` | import | [InitiativeForm](../modules/InitiativeForm.md) | — |
 | `ProjectForm` | import | [ProjectForm](../modules/ProjectForm.md) | — |
 | `ReleaseForm` | import | [ReleaseForm](../modules/ReleaseForm.md) | — |
+| `TemplateLabelSettings` | import | [TemplateLabelSettings](../modules/TemplateLabelSettings.md) | — |
 | `DeliveryDependencies` | import | [DeliveryDependencies](../modules/DeliveryDependencies.md) | — |
 | `ImportTasksModal` | import | [ImportTasksModal](../modules/ImportTasksModal.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
@@ -96,6 +97,5 @@ flowchart LR
 | `TaskBulkOperationsPanel` | import | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
 | `TaskForm` | import | [TaskForm](../modules/TaskForm.md) | — |
 | `TaskWorkPanel` | import | [TaskWorkPanel](../modules/TaskWorkPanel.md) | — |
-| `ImportTeamModal` | import | [ImportTeamModal](../modules/ImportTeamModal.md) | — |
 
-> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

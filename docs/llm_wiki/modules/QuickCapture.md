@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/components/tasks/QuickCapture.tsx`._
 | `../../types/triage` | `TriageItem` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
-| `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `@tanstack/react-query` | `useMutation` | — | compiler-dependent |
 | `lucide-react` | `CornerDownLeft`, `Plus` | — | compiler-dependent |
 | `react` | `FormEvent` | Specifier | compiler-dependent |
 | `react` | `useId`, `useRef`, `useState` | — | compiler-dependent |

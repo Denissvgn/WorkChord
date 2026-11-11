@@ -32,30 +32,34 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 ```mermaid
 flowchart LR
     n0["frontend/src/components/feedback/toast.ts"]
-    n1["frontend/src/features/identity/IdentityProvider.tsx"]
-    n2["frontend/src/features/mutationFeedback.test.tsx"]
-    n3["frontend/src/features/mutationFeedback.ts"]
-    n4["frontend/src/features/MutationSuccessFeedback.tsx"]
-    n5["frontend/src/utils/apiError.ts"]
-    n1 --> n4
+    n1["frontend/src/components/settings/TemplateLabelSettings.test.tsx"]
+    n2["frontend/src/features/identity/IdentityProvider.tsx"]
+    n3["frontend/src/features/mutationFeedback.test.tsx"]
+    n4["frontend/src/features/mutationFeedback.ts"]
+    n5["frontend/src/features/MutationSuccessFeedback.tsx"]
+    n6["frontend/src/utils/apiError.ts"]
     n1 --> n5
-    n2 --> n3
-    n2 --> n4
-    n4 --> n0
-    n4 --> n3
-    n4 --> n5
+    n2 --> n5
+    n2 --> n6
+    n3 --> n4
+    n3 --> n5
+    n5 --> n0
+    n5 --> n4
+    n5 --> n6
     click n0 "../modules/toast.md"
-    click n1 "../modules/IdentityProvider.md"
-    click n2 "../modules/mutationFeedback.test.md"
-    click n3 "../modules/mutationFeedback.md"
-    click n4 "../modules/MutationSuccessFeedback.md"
-    click n5 "../modules/apiError.md"
+    click n1 "../modules/TemplateLabelSettings.test.md"
+    click n2 "../modules/IdentityProvider.md"
+    click n3 "../modules/mutationFeedback.test.md"
+    click n4 "../modules/mutationFeedback.md"
+    click n5 "../modules/MutationSuccessFeedback.md"
+    click n6 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [TemplateLabelSettings.test](../modules/TemplateLabelSettings.test.md) |
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
 | Inbound | [mutationFeedback.test](../modules/mutationFeedback.test.md) |
 | Outbound | [toast](../modules/toast.md) |

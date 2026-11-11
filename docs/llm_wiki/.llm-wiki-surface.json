@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 824,
+      "modules": 826,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3155
+    "total": 3157
   },
   "dependency_pages": {
     "count": 2,
@@ -8054,7 +8054,7 @@
             "backend/app/authority.py",
             "backend/app/commands.py"
           ],
-          "step_count": 400,
+          "step_count": 390,
           "truncated": false
         }
       },
@@ -17037,7 +17037,7 @@
             "backend/app/commands.py",
             "backend/app/config.py"
           ],
-          "step_count": 324,
+          "step_count": 314,
           "truncated": false
         }
       },
@@ -33876,7 +33876,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 513,
+          "step_count": 503,
           "truncated": true
         }
       },
@@ -36086,7 +36086,7 @@
             "backend/app/schemas/team.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 646,
+          "step_count": 636,
           "truncated": true
         }
       },
@@ -36434,7 +36434,7 @@
             "backend/app/schemas/project.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 615,
+          "step_count": 605,
           "truncated": true
         }
       },
@@ -36522,7 +36522,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 551,
+          "step_count": 541,
           "truncated": true
         }
       },
@@ -37748,7 +37748,7 @@
             "backend/app/query_limits.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 567,
+          "step_count": 557,
           "truncated": true
         }
       },
@@ -46323,6 +46323,8 @@
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
+        "modules/taskTransitions.md",
+        "modules/taskTransitions.test.md",
         "modules/taskViewState.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TaskWorkPanel.md",
@@ -54975,7 +54977,6 @@
       "outgoing_internal_links": [
         "modules/DeliveryDependencies.md",
         "modules/ImportTasksModal.md",
-        "modules/ImportTeamModal.md",
         "modules/InitiativeForm.md",
         "modules/KanbanBoard.md",
         "modules/mutationFeedback.md",
@@ -54985,7 +54986,8 @@
         "modules/StatusChangeControl.md",
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskForm.md",
-        "modules/TaskWorkPanel.md"
+        "modules/TaskWorkPanel.md",
+        "modules/TemplateLabelSettings.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/mutationFeedback.ts",
@@ -66901,8 +66903,8 @@
         "modules/TaskBulkOperationsPanel.md",
         "modules/taskEditorContract.md",
         "modules/taskService.md",
+        "modules/taskTransitions.md",
         "modules/tone.md",
-        "modules/types_github.md",
         "modules/types_task.md"
       ],
       "role": "semantic",
@@ -73667,6 +73669,7 @@
         "modules/mutationFeedback.md",
         "modules/mutationFeedback.test.md",
         "modules/MutationSuccessFeedback.md",
+        "modules/TemplateLabelSettings.test.md",
         "modules/toast.md"
       ],
       "role": "semantic",
@@ -77776,6 +77779,7 @@
         "modules/StatusChangeControl.md",
         "modules/TaskForm.md",
         "modules/taskService.md",
+        "modules/taskTransitions.md",
         "modules/tone.md",
         "modules/types_task.md"
       ],
@@ -78959,6 +78963,35 @@
       "title": "TaskTimelinePanel.test Module"
     },
     {
+      "canonical_path": "modules/taskTransitions.md",
+      "id": "taskTransitions",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskTransitions",
+      "outgoing_internal_links": [
+        "modules/KanbanBoard.md",
+        "modules/StatusChangeControl.md",
+        "modules/taskTransitions.md",
+        "modules/taskTransitions.test.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/taskTransitions.ts",
+      "title": "taskTransitions Module"
+    },
+    {
+      "canonical_path": "modules/taskTransitions.test.md",
+      "id": "taskTransitions.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/taskTransitions.test",
+      "outgoing_internal_links": [
+        "modules/taskTransitions.md",
+        "modules/taskTransitions.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/taskTransitions.test.ts",
+      "title": "taskTransitions.test Module"
+    },
+    {
       "canonical_path": "modules/taskViewState.md",
       "id": "taskViewState",
       "kind": "modules",
@@ -79262,6 +79295,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/TemplateLabelSettings.test",
       "outgoing_internal_links": [
+        "modules/MutationSuccessFeedback.md",
         "modules/renderWithProviders.md",
         "modules/TemplateLabelSettings.md",
         "modules/TemplateLabelSettings.test.md",
@@ -96797,6 +96831,8 @@
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
+        "modules/taskTransitions.md",
+        "modules/taskTransitions.test.md",
         "modules/taskViewState.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TaskWorkPanel.md",
@@ -97632,6 +97668,8 @@
         "modules/TaskTextEditorModal.test.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
+        "modules/taskTransitions.md",
+        "modules/taskTransitions.test.md",
         "modules/taskViewState.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TaskWorkPanel.md",
@@ -97847,5 +97885,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:1da826b4be003faf16167261a321ddcf8f75e052a285171301b74bf4afb9ac29"
+  "source_hash": "sha256:2b854b9a4a680ae55f499494b51e4cf760d4d0200ecbd7aa60dd17184bff3d9b"
 }

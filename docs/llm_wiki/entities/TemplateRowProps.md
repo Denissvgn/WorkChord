@@ -1,6 +1,6 @@
 # TemplateRowProps
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:220`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:221`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)

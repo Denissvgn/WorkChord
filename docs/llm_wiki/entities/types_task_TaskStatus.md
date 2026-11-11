@@ -35,11 +35,11 @@ flowchart LR
     n5["frontend/src/components/tasks/TaskBulkOperationsPanel.tsx"]
     n6["frontend/src/components/tasks/taskEditorContract.ts"]
     n7["isTaskStatus (frontend/src/components/ui/tone.ts)"]
-    n8["frontend/src/pages/AgentPipelinePage.tsx"]
-    n9["frontend/src/pages/OverviewPage.test.tsx"]
-    n10["frontend/src/pages/OverviewPage.tsx"]
-    n11["frontend/src/services/taskService.ts"]
-    n12["frontend/src/types/github.ts"]
+    n8["canTransition (frontend/src/features/taskTransitions.ts)"]
+    n9["frontend/src/pages/AgentPipelinePage.tsx"]
+    n10["frontend/src/pages/OverviewPage.test.tsx"]
+    n11["frontend/src/pages/OverviewPage.tsx"]
+    n12["frontend/src/services/taskService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -60,11 +60,11 @@ flowchart LR
     click n5 "../modules/TaskBulkOperationsPanel.md"
     click n6 "../modules/taskEditorContract.md"
     click n7 "../modules/tone.md"
-    click n8 "../modules/AgentPipelinePage.md"
-    click n9 "../modules/OverviewPage.test.md"
-    click n10 "../modules/OverviewPage.md"
-    click n11 "../modules/taskService.md"
-    click n12 "../modules/types_github.md"
+    click n8 "../modules/taskTransitions.md"
+    click n9 "../modules/AgentPipelinePage.md"
+    click n10 "../modules/OverviewPage.test.md"
+    click n11 "../modules/OverviewPage.md"
+    click n12 "../modules/taskService.md"
 ```
 
 ### Summary
@@ -84,10 +84,10 @@ flowchart LR
 | `TaskBulkOperationsPanel` | import | [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | — |
 | `taskEditorContract` | import | [taskEditorContract](../modules/taskEditorContract.md) | — |
 | `isTaskStatus` | type_reference | [tone](../modules/tone.md) | — |
+| `canTransition` | type_reference | [taskTransitions](../modules/taskTransitions.md) | — |
 | `AgentPipelinePage` | import | [AgentPipelinePage](../modules/AgentPipelinePage.md) | — |
 | `OverviewPage.test` | import | [OverviewPage.test](../modules/OverviewPage.test.md) | — |
 | `OverviewPage` | import | [OverviewPage](../modules/OverviewPage.md) | — |
 | `taskService` | import | [taskService](../modules/taskService.md) | — |
-| `github` | import | [types_github](../modules/types_github.md) | — |
 
-> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

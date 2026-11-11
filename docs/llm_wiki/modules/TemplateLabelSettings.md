@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../i18n/seedDisplay` | `labelDisplay`, `labelGroupDisplay`, `templateDisplay` | — | compiler-dependent |
 | `../../services/labelService` | `labelService` | — | compiler-dependent |
 | `../../services/templateService` | `templateService` | — | compiler-dependent |
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -64,17 +65,17 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 37 | — | — |
-| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 52 | — | — |
-| [LabelFormState](../entities/LabelFormState.md) | Interface | 61 | — | — |
-| [TemplateRowProps](../entities/TemplateRowProps.md) | Interface | 220 | — | — |
-| [ManagementSection](../entities/ManagementSection.md) | Type alias | 36 | `'templates' \| 'labels'` | — |
+| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 38 | — | — |
+| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 53 | — | — |
+| [LabelFormState](../entities/LabelFormState.md) | Interface | 62 | — | — |
+| [TemplateRowProps](../entities/TemplateRowProps.md) | Interface | 221 | — | — |
+| [ManagementSection](../entities/ManagementSection.md) | Type alias | 37 | `'templates' \| 'labels'` | — |
 
 ## Functions
 

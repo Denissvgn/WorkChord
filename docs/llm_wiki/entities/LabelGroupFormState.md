@@ -1,6 +1,6 @@
 # LabelGroupFormState
 
-**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:52`
+**Location:** `frontend/src/components/settings/TemplateLabelSettings.tsx:53`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TemplateLabelSettings](../modules/TemplateLabelSettings.md)
