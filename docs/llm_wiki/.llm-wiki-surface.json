@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 806,
+      "modules": 808,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3126
+    "total": 3128
   },
   "dependency_pages": {
     "count": 2,
@@ -45782,6 +45782,7 @@
         "modules/cli_server_acceptance.md",
         "modules/CollapsibleSection.md",
         "modules/collect.md",
+        "modules/colorRoles.test.md",
         "modules/CommandMenu.md",
         "modules/CommandMenu.test.md",
         "modules/commandMenuEvents.md",
@@ -45915,6 +45916,7 @@
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
         "modules/label_service.md",
+        "modules/LabelChip.md",
         "modules/labels.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
@@ -70157,6 +70159,19 @@
       "title": "collect Module"
     },
     {
+      "canonical_path": "modules/colorRoles.test.md",
+      "id": "colorRoles.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/colorRoles.test",
+      "outgoing_internal_links": [
+        "modules/colorRoles.test.md",
+        "modules/tone.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/styles/colorRoles.test.ts",
+      "title": "colorRoles.test Module"
+    },
+    {
       "canonical_path": "modules/CommandMenu.md",
       "id": "CommandMenu",
       "kind": "modules",
@@ -72289,6 +72304,7 @@
         "modules/KanbanCard.md",
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
+        "modules/tone.md",
         "modules/types_task.md",
         "modules/workNumbers.md"
       ],
@@ -72358,6 +72374,20 @@
       "title": "label_service Module"
     },
     {
+      "canonical_path": "modules/LabelChip.md",
+      "id": "LabelChip",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/LabelChip",
+      "outgoing_internal_links": [
+        "modules/LabelChip.md",
+        "modules/LabelSelector.md",
+        "modules/TaskList.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/labels/LabelChip.tsx",
+      "title": "LabelChip Module"
+    },
+    {
       "canonical_path": "modules/labels.md",
       "id": "labels",
       "kind": "modules",
@@ -72384,6 +72414,7 @@
         "entities/LabelOption.md",
         "entities/LabelSelectorProps.md",
         "modules/Button.md",
+        "modules/LabelChip.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
         "modules/QueryState.md",
@@ -95851,6 +95882,7 @@
         "modules/cli_server_acceptance.md",
         "modules/CollapsibleSection.md",
         "modules/collect.md",
+        "modules/colorRoles.test.md",
         "modules/CommandMenu.md",
         "modules/CommandMenu.test.md",
         "modules/commandMenuEvents.md",
@@ -95984,6 +96016,7 @@
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
         "modules/label_service.md",
+        "modules/LabelChip.md",
         "modules/labels.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
@@ -96668,6 +96701,7 @@
         "modules/cli_server_acceptance.md",
         "modules/CollapsibleSection.md",
         "modules/collect.md",
+        "modules/colorRoles.test.md",
         "modules/CommandMenu.md",
         "modules/CommandMenu.test.md",
         "modules/commandMenuEvents.md",
@@ -96801,6 +96835,7 @@
         "modules/KanbanColumn.md",
         "modules/KanbanColumn.test.md",
         "modules/label_service.md",
+        "modules/LabelChip.md",
         "modules/labels.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
@@ -97360,5 +97395,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2fca3f598973759072f441fc3f116ad090f50e6c409f09aed4766f4136c29a14"
+  "source_hash": "sha256:e73acb0285c68cdb9c7abbcb2abf751804f4ccc3c3d7be3bcc92514caec27770"
 }

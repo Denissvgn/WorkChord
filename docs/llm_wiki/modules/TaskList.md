@@ -24,8 +24,9 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/WorkFreshness` | `WorkFreshness` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `../labels/LabelChip` | `LabelChip` | — | compiler-dependent |
 | `../ui` | `OverflowMenu` | — | compiler-dependent |
-| `../ui/tone` | `statusTextClassName` | — | compiler-dependent |
+| `../ui/tone` | `priorityChipClassName`, `statusTextClassName` | — | compiler-dependent |
 | `./GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
 | `./PagedTaskBrowser` | `PagedTaskBrowser` | — | compiler-dependent |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
@@ -72,7 +73,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (21) |
+| Outbound | `frontend` (22) |
 
 ### External packages
 
@@ -80,20 +81,20 @@ flowchart LR
 |---|---:|---:|
 | typescript | 10 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Interface | 79 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 846 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 900 | `TaskItemProps` | — |
-| [SortKey](../entities/TaskList_SortKey.md) | Type alias | 51 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 52 | `'bulk' \| 'merge'` | — |
-| [RowItem](../entities/RowItem.md) | Type alias | 57 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 59 | `Parameters<typeof taskService.reorder>[0]` | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 60 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
+| [TaskListProps](../entities/TaskListProps.md) | Interface | 80 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 847 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 901 | `TaskItemProps` | — |
+| [SortKey](../entities/TaskList_SortKey.md) | Type alias | 52 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 53 | `'bulk' \| 'merge'` | — |
+| [RowItem](../entities/RowItem.md) | Type alias | 58 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 60 | `Parameters<typeof taskService.reorder>[0]` | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 61 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

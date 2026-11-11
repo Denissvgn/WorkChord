@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1552 | [Open section](#entities) |
-| Modules | 806 | [Open section](#modules) |
+| Modules | 808 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1677,6 +1677,7 @@ Retained history; these declarations are absent from the selected source invento
 - [KanbanCard](modules/KanbanCard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx`
 - [KanbanColumn](modules/KanbanColumn.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx`
 - [KanbanColumn.test](modules/KanbanColumn.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx`
+- [LabelChip](modules/LabelChip.md) - `frontend/src/components/labels/LabelChip.tsx`
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
 - [LiveWindowStatus](modules/LiveWindowStatus.md) - `frontend/src/components/feedback/LiveWindowStatus.tsx`
@@ -1900,6 +1901,7 @@ Retained history; these declarations are absent from the selected source invento
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
 - [cli_server_acceptance](modules/cli_server_acceptance.md) - Run the bounded self-hosted server acceptance profile.
 - [collect](modules/collect.md) - Collect sealed PostgreSQL evidence and derive qualification metrics.
+- [colorRoles.test](modules/colorRoles.test.md) - `frontend/src/styles/colorRoles.test.ts`
 - [commandMenuEvents](modules/commandMenuEvents.md) - `frontend/src/components/layout/commandMenuEvents.ts`
 - [commands](modules/commands.md) - Explicit transaction ownership shared by HTTP, MCP and service commands.
 - [compare](modules/compare.md) - Create a sealed, machine-readable baseline versus tuned load comparison.

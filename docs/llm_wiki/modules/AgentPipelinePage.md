@@ -15,6 +15,7 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.tsx`._
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
 | `../components/ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
+| `../components/ui/tone` | `priorityChipClassName` | — | compiler-dependent |
 | `../hooks/useAdminAccess` | `useAdminAccess`, `useKeylessReader` | — | compiler-dependent |
 | `../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
 | `../services/agentService` | `agentService` | — | compiler-dependent |
@@ -59,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -67,7 +68,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

@@ -412,6 +412,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [mutationFeedback](modules/mutationFeedback.md) | 22 | 0 |
 | [types_team](modules/types_team.md) | 22 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
+| [tone](modules/tone.md) | 21 | 1 |
 | [teamService](modules/teamService.md) | 21 | 3 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
@@ -422,7 +423,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [identity_service](modules/identity_service.md) | 18 | 10 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
 | [Modal](modules/Modal.md) | 18 | 1 |
-| [tone](modules/tone.md) | 18 | 1 |
 | [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
@@ -594,7 +594,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 4 | 3 |
 | [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 10 |
 | [TaskForm](modules/TaskForm.md) | 4 | 37 |
-| [TaskList](modules/TaskList.md) | 4 | 21 |
+| [TaskList](modules/TaskList.md) | 4 | 22 |
 | [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 4 | 13 |
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 4 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 4 | 1 |
@@ -639,14 +639,14 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ToastProvider](modules/ToastProvider.md) | 3 | 2 |
 | [IterationForm](modules/IterationForm.md) | 3 | 13 |
 | [IterationSelector](modules/IterationSelector.md) | 3 | 4 |
-| [LabelSelector](modules/LabelSelector.md) | 3 | 5 |
+| [LabelSelector](modules/LabelSelector.md) | 3 | 6 |
 | [AppSidebar](modules/AppSidebar.md) | 3 | 5 |
 | [CommandMenu](modules/CommandMenu.md) | 3 | 6 |
 | [commandMenuEvents](modules/commandMenuEvents.md) | 3 | 0 |
 | [ProjectForm](modules/ProjectForm.md) | 3 | 17 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
-| [KanbanCard](modules/KanbanCard.md) | 3 | 3 |
+| [KanbanCard](modules/KanbanCard.md) | 3 | 4 |
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
 | [PersonCapacity](modules/PersonCapacity.md) | 3 | 5 |
 | [QuickCapture](modules/QuickCapture.md) | 3 | 8 |
@@ -731,6 +731,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [IterationCapacityLine](modules/IterationCapacityLine.md) | 2 | 3 |
 | [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 7 |
 | [IterationList](modules/IterationList.md) | 2 | 12 |
+| [LabelChip](modules/LabelChip.md) | 2 | 0 |
 | [AppShell](modules/AppShell.md) | 2 | 7 |
 | [AppTopNav](modules/AppTopNav.md) | 2 | 9 |
 | [ContextHelp](modules/ContextHelp.md) | 2 | 8 |
@@ -869,7 +870,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [teamwork.en](modules/teamwork.en.md) | 1 | 0 |
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
 | [helpContexts](modules/helpContexts.md) | 1 | 2 |
-| [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 13 |
+| [AgentPipelinePage](modules/AgentPipelinePage.md) | 1 | 14 |
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 15 |
 | [CalendarPage](modules/CalendarPage.md) | 1 | 19 |
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
@@ -1131,6 +1132,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [taskDependencyVersions.test](modules/taskDependencyVersions.test.md) | 0 | 2 |
 | [timeEntryService.test](modules/timeEntryService.test.md) | 0 | 1 |
 | [iterationStore.test](modules/iterationStore.test.md) | 0 | 1 |
+| [colorRoles.test](modules/colorRoles.test.md) | 0 | 1 |
 | [planning-masters.test](modules/planning-masters.test.md) | 0 | 0 |
 | [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) | 0 | 1 |
 | [renderWithProviders.test](modules/renderWithProviders.test.md) | 0 | 2 |
