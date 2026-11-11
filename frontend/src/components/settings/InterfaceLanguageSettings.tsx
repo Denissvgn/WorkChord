@@ -1,3 +1,4 @@
+import { SettingsUnsavedBar } from './SettingsUnsavedBar';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Globe2, Save } from 'lucide-react';
@@ -126,6 +127,7 @@ export const InterfaceLanguageSettings = () => {
                 <Save className="mr-2 h-4 w-4" />
                 {t('settingsPage.saveInterfaceLanguage')}
             </Button>
+            <SettingsUnsavedBar dirty={!isUnchanged} saving={languageMutation.isPending} onSave={saveLanguage} onDiscard={() => setLanguageDraft(null)} />
         </section>
     );
 };

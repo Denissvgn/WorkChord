@@ -8,6 +8,8 @@ export interface EmailSettings {
     smtp_from_email: string;
     smtp_use_tls: boolean;
     has_password: boolean;
+    /** Values left out because this browser has no admin key. */
+    redacted_fields?: string[];
     smtp_password?: string; // Optional field for frontend form state
     clear_smtp_password?: boolean;
     field_sources?: Record<string, RuntimeSettingSource>;

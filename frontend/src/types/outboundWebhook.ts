@@ -11,6 +11,8 @@ export interface OutboundWebhookTarget {
     headers_json: Record<string, string>;
     created_at: string;
     updated_at: string;
+    /** Values left out because this browser has no admin key. */
+    redacted_fields?: string[];
 }
 
 export interface OutboundWebhookTargetCreate {
@@ -52,6 +54,8 @@ export interface OutboundWebhookDelivery {
     created_at: string;
     updated_at: string;
     event: OutboundWebhookEvent;
+    /** Values left out because this browser has no admin key. */
+    redacted_fields?: string[];
 }
 
 export interface OutboundWebhookRetryResponse {

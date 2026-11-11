@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { healthService } from '../../services/healthService';
 import { Button } from '../common/Button';
 
+const appVersion: string | undefined = import.meta.env.VITE_APP_VERSION;
+
 type VisibleHealthState = 'notChecked' | 'checking' | 'healthy' | 'unhealthy' | 'unavailable';
 
 const stateClasses: Record<VisibleHealthState, string> = {
@@ -27,7 +29,7 @@ export const SystemHealthPanel = () => {
     const healthQuery = useQuery({
         queryKey: ['system-health'],
         queryFn: healthService.check,
-        enabled: false,
+        // Checked when About opens; the button checks again.
         retry: false,
     });
 
@@ -43,6 +45,7 @@ export const SystemHealthPanel = () => {
 
     return (
         <div className="space-y-4">
+            <p className="text-sm font-medium">{appVersion ? t('healthStatus.version', { version: appVersion }) : t('healthStatus.versionUnknown')}</p>
             <p className="text-sm text-content-secondary">{t('healthStatus.description')}</p>
             <div
                 aria-atomic="true"

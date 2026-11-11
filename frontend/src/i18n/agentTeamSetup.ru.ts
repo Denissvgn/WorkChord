@@ -150,7 +150,7 @@ export const agentTeamSetupRussian = {
             noRecordEvidence: 'Серверная конфигурация топологии не подтверждена.',
         },
         authority: {
-            title: 'Полномочия сессии',
+            title: 'Доступ',
             states: {
                 checking: 'Проверка',
                 unverified: 'Не подтверждены',

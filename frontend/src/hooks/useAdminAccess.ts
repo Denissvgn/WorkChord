@@ -34,3 +34,10 @@ export const useKeylessReader = () => {
     const projectMember = identity.principal?.kind === 'human' && Object.keys(identity.projects ?? {}).length > 0;
     return { settings: local || member, workViews: local || member || projectMember };
 };
+
+/** Settings panels load for key holders and for keyless readers, who see them read-only. */
+export const useCanReadSettings = () => {
+    const { hasAdminKey } = useAdminAccess();
+    const reader = useKeylessReader();
+    return hasAdminKey || reader.settings;
+};

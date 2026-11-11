@@ -29,7 +29,7 @@ describe('admin access gate', () => {
     it('keeps the gate for people who cannot read without the key', () => {
         renderGate(identity({ mode: 'managed', authenticated: true, principal: { id: 3, kind: 'human', display_name: 'Guest' } }));
         expect(screen.queryByRole('textbox', { name: 'Rule' })).toBeNull();
-        expect(screen.getByRole('heading', { name: 'Session authority required' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Admin key required' })).toBeInTheDocument();
     });
 
     it('keeps the gate for panels that are not marked readable', () => {

@@ -9,6 +9,8 @@ import { OutboundWebhooksPanel } from './OutboundWebhooksPanel';
 
 const adminAccessMock = vi.hoisted(() => ({
     useAdminAccess: vi.fn(),
+    // Settings load for key holders, as these tests set up.
+    useCanReadSettings: () => true,
 }));
 
 const outboundWebhookServiceMock = vi.hoisted(() => ({

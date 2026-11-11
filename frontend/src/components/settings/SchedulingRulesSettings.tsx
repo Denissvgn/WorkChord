@@ -1,3 +1,4 @@
+import { SettingsUnsavedBar } from './SettingsUnsavedBar';
 import { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,7 @@ import { EffortModifierCard } from './EffortModifierCard';
 import { SchedulingPassCard } from './SchedulingPassCard';
 import { ConstraintsPanel } from './ConstraintsPanel';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
-import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { useCanReadSettings } from '../../hooks/useAdminAccess';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
 
 type SectionId = 'modifiers' | 'passes' | 'constraints';
@@ -74,7 +75,7 @@ const withSettingsRowIds = (rules: SchedulingRules): EditableSchedulingRules => 
 export const SchedulingRulesSettings = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { hasAdminKey } = useAdminAccess();
+    const canReadSettings = useCanReadSettings();
     const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(
         new Set(['modifiers', 'passes', 'constraints'])
     );
@@ -101,7 +102,7 @@ export const SchedulingRulesSettings = () => {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['scheduling-rules'],
         queryFn: schedulingRulesService.getRules,
-        enabled: hasAdminKey,
+        enabled: canReadSettings,
         retry: protectedQueryRetry,
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -573,6 +574,7 @@ export const SchedulingRulesSettings = () => {
                     </div>
                 </div>
             </fieldset>
+            <SettingsUnsavedBar dirty={hasChanges} saving={isMutating} onSave={handleSave} onDiscard={handleDiscard} />
             {confirmationDialog}
         </div>
     );

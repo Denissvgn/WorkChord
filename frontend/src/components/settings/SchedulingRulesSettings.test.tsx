@@ -6,6 +6,8 @@ import { SchedulingRulesSettings } from './SchedulingRulesSettings';
 
 const adminAccessMock = vi.hoisted(() => ({
     useAdminAccess: vi.fn(),
+    // Settings load for key holders, as these tests set up.
+    useCanReadSettings: () => true,
 }));
 
 const schedulingRulesServiceMock = vi.hoisted(() => ({
@@ -129,7 +131,7 @@ describe('SchedulingRulesSettings', () => {
             expect(schedulingRulesServiceMock.updateRules).toHaveBeenCalledOnce();
         });
         expect(overload).toBeDisabled();
-        expect(screen.getByRole('button', { name: /discard/i })).toBeDisabled();
+        screen.getAllByRole('button', { name: /discard/i }).forEach(button => expect(button).toBeDisabled());
         expect(screen.getByRole('button', { name: 'Reset to defaults' })).toBeDisabled();
 
         const savedRules = schedulingRulesServiceMock.updateRules.mock.calls[0]?.[0];

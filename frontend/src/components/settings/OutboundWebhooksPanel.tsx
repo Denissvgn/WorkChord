@@ -1,3 +1,5 @@
+import { SettingsUnsavedBar } from './SettingsUnsavedBar';
+import { WithheldValuesNote } from './WithheldValuesNote';
 import { useId, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -19,7 +21,7 @@ import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
 import { outboundWebhookService } from '../../services/outboundWebhookService';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
-import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { useCanReadSettings } from '../../hooks/useAdminAccess';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { formatDateTime } from '../../utils/formatDate';
 import { QueryErrorState } from '../feedback/QueryState';
@@ -159,7 +161,7 @@ const formsMatch = (left: TargetFormState, right: TargetFormState) => (
 export const OutboundWebhooksPanel = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { hasAdminKey } = useAdminAccess();
+    const canReadSettings = useCanReadSettings();
     const toast = useToast();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const headersInputId = useId();
@@ -173,7 +175,7 @@ export const OutboundWebhooksPanel = () => {
     const { data: targets = [], isLoading: targetsLoading, error: targetsError, refetch: refetchTargets } = useQuery({
         queryKey: ['outbound-webhook-targets'],
         queryFn: outboundWebhookService.getTargets,
-        enabled: hasAdminKey,
+        enabled: canReadSettings,
         retry: protectedQueryRetry,
     });
 
@@ -184,7 +186,7 @@ export const OutboundWebhooksPanel = () => {
             status: deliveryStatus || null,
             limit: 50,
         }),
-        enabled: hasAdminKey,
+        enabled: canReadSettings,
         retry: protectedQueryRetry,
     });
 
@@ -520,6 +522,11 @@ export const OutboundWebhooksPanel = () => {
 
     return (
         <div className="max-w-7xl space-y-5">
+            <WithheldValuesNote fields={[...targets, ...deliveries].flatMap(item => item.redacted_fields ?? [])} labels={{
+                url: t('settings.withheld.webhookUrl'), headers_json: t('settings.withheld.webhookHeaders'), target_url: t('settings.withheld.webhookUrl'),
+                last_error: t('settings.withheld.deliveryErrors'), last_response_body: t('settings.withheld.deliveryErrors'), 'event.payload_json': t('settings.withheld.eventPayloads'),
+            }} />
+            <SettingsUnsavedBar dirty={hasUnsavedChanges} hint={t('settings.unsaved.saveForm')} />
             <form onSubmit={handleSubmit} className="card space-y-5" aria-busy={formLocked} noValidate>
                 <fieldset disabled={formLocked} className="contents">
                 <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-start">

@@ -8,7 +8,6 @@ import {
     Bot,
     CalendarClock,
     Check,
-    ChevronDown,
     Github,
     KeyRound,
     Keyboard,
@@ -33,6 +32,7 @@ import { InterfaceLanguageSettings } from '../components/settings/InterfaceLangu
 import { AdminAccessPanel } from '../components/settings/AdminAccessPanel';
 import { AdminAccessGate } from '../components/settings/AdminAccessGate';
 import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
+import { AccessKeysSummary } from '../components/settings/AccessKeysSummary';
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { Checkbox } from '../components/common/Checkbox';
@@ -48,6 +48,8 @@ interface SettingsDestination {
     id: SettingsTab;
     labelKey: string;
     descriptionKey: string;
+    /** Field labels and words people search for on this destination. */
+    keywordsKey: string;
     icon: LucideIcon;
 }
 
@@ -71,6 +73,7 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
                 id: 'appearance',
                 labelKey: 'settingsPage.appearance',
                 descriptionKey: 'settingsPage.descriptions.appearance',
+                keywordsKey: 'settingsPage.keywords.appearance',
                 icon: Palette,
             },
         ],
@@ -83,12 +86,14 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
                 id: 'scheduling',
                 labelKey: 'settingsPage.scheduling',
                 descriptionKey: 'settingsPage.descriptions.scheduling',
+                keywordsKey: 'settingsPage.keywords.scheduling',
                 icon: CalendarClock,
             },
             {
                 id: 'templates_labels',
                 labelKey: 'settingsPage.templatesLabels',
                 descriptionKey: 'settingsPage.descriptions.templatesLabels',
+                keywordsKey: 'settingsPage.keywords.templatesLabels',
                 icon: Tags,
             },
         ],
@@ -101,6 +106,7 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
                 id: 'models_agents',
                 labelKey: 'settingsPage.modelsAgents',
                 descriptionKey: 'settingsPage.descriptions.modelsAgents',
+                keywordsKey: 'settingsPage.keywords.modelsAgents',
                 icon: Bot,
             },
         ],
@@ -113,18 +119,21 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
                 id: 'github',
                 labelKey: 'settingsPage.github',
                 descriptionKey: 'settingsPage.descriptions.github',
+                keywordsKey: 'settingsPage.keywords.github',
                 icon: Github,
             },
             {
                 id: 'webhooks',
                 labelKey: 'settingsPage.webhooks',
                 descriptionKey: 'settingsPage.descriptions.webhooks',
+                keywordsKey: 'settingsPage.keywords.webhooks',
                 icon: Webhook,
             },
             {
                 id: 'notifications',
                 labelKey: 'settingsPage.notifications',
                 descriptionKey: 'settingsPage.descriptions.notifications',
+                keywordsKey: 'settingsPage.keywords.notifications',
                 icon: Bell,
             },
         ],
@@ -137,18 +146,21 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
                 id: 'admin_access',
                 labelKey: 'settingsPage.adminAccess',
                 descriptionKey: 'settingsPage.descriptions.adminAccess',
+                keywordsKey: 'settingsPage.keywords.adminAccess',
                 icon: KeyRound,
             },
             {
                 id: 'runtime',
                 labelKey: 'settingsPage.runtimeConfig',
                 descriptionKey: 'settingsPage.descriptions.runtime',
+                keywordsKey: 'settingsPage.keywords.runtime',
                 icon: ServerCog,
             },
             {
                 id: 'about',
                 labelKey: 'settingsPage.about',
                 descriptionKey: 'settingsPage.descriptions.about',
+                keywordsKey: 'settingsPage.keywords.about',
                 icon: Activity,
             },
         ],
@@ -156,32 +168,6 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
 ];
 
 const SETTINGS_DESTINATIONS = SETTINGS_GROUPS.flatMap(group => group.items);
-const MAX_RECENT_SETTINGS = 3;
-export const RECENT_SETTINGS_STORAGE_KEY = 'workchord.settings.recent';
-
-const readRecentSettings = (): SettingsTab[] => {
-    if (typeof window === 'undefined') return [];
-    try {
-        const parsed = JSON.parse(window.localStorage.getItem(RECENT_SETTINGS_STORAGE_KEY) ?? '[]');
-        if (!Array.isArray(parsed)) return [];
-        const valid = parsed.filter((value): value is SettingsTab => (
-            typeof value === 'string' && SETTINGS_DESTINATIONS.some(destination => destination.id === value)
-        ));
-        return [...new Set(valid)].slice(0, MAX_RECENT_SETTINGS);
-    } catch {
-        return [];
-    }
-};
-
-const writeRecentSettings = (tabs: SettingsTab[]) => {
-    if (typeof window === 'undefined') return;
-    try {
-        window.localStorage.setItem(RECENT_SETTINGS_STORAGE_KEY, JSON.stringify(tabs));
-    } catch {
-        // Recents are an enhancement; Settings remains fully usable if storage is unavailable.
-    }
-};
-
 const isSettingsTab = (value: string | null): value is SettingsTab => (
     SETTINGS_DESTINATIONS.some(destination => destination.id === value)
 );
@@ -210,32 +196,27 @@ const SettingsPage = () => {
         setEnabled: setSingleKeyShortcutsEnabled,
     } = useSingleKeyShortcutPreference();
     const { t } = useTranslation();
-    const recentTabs = useMemo(() => {
-        const storedTabs = readRecentSettings();
-        if (activeTab === 'overview') return storedTabs;
-        return [activeTab, ...storedTabs.filter(tab => tab !== activeTab)]
-            .slice(0, MAX_RECENT_SETTINGS);
-    }, [activeTab]);
     const normalizedSearch = destinationSearch.trim().toLocaleLowerCase();
-    const filteredGroups = useMemo(() => SETTINGS_GROUPS
-        .map(group => ({
-            ...group,
-            items: group.items.filter(destination => (
-                [
-                    t(destination.labelKey),
-                    t(destination.descriptionKey),
-                    t(group.labelKey),
-                ].some(value => value.toLocaleLowerCase().includes(normalizedSearch))
-            )),
-        }))
-        .filter(group => group.items.length > 0), [normalizedSearch, t]);
+    const filteredGroups = useMemo(() => {
+        const searchable = (group: SettingsGroup, destination: SettingsDestination) => [
+            t(destination.labelKey), t(destination.descriptionKey), t(destination.keywordsKey), t(group.labelKey),
+        ].join(' ').toLocaleLowerCase();
+        const words = normalizedSearch.split(/\s+/).filter(Boolean);
+        // Whole words first, so "key" finds Access rather than "keyboard"; any substring otherwise.
+        const wholeWords = (text: string) => {
+            const present = new Set(text.split(/[^\p{L}\p{N}:]+/u));
+            return words.every(word => present.has(word));
+        };
+        const filterBy = (matches: (text: string) => boolean) => SETTINGS_GROUPS
+            .map(group => ({ ...group, items: group.items.filter(destination => matches(searchable(group, destination))) }))
+            .filter(group => group.items.length > 0);
+        const exact = filterBy(wholeWords);
+        return exact.length > 0 ? exact : filterBy(text => text.includes(normalizedSearch));
+    }, [normalizedSearch, t]);
     const filteredDestinationCount = filteredGroups.reduce(
         (count, group) => count + group.items.length,
         0,
     );
-    const recentDestinations = recentTabs
-        .map(tab => SETTINGS_DESTINATIONS.find(destination => destination.id === tab))
-        .filter((destination): destination is SettingsDestination => Boolean(destination));
 
     useEffect(() => {
         if (rawTab === null || isSettingsTab(rawTab)) return;
@@ -243,11 +224,6 @@ const SettingsPage = () => {
         nextParams.delete('tab');
         setSearchParams(nextParams, { replace: true });
     }, [rawTab, searchParams, setSearchParams]);
-
-    useEffect(() => {
-        if (activeTab === 'overview') return;
-        writeRecentSettings(recentTabs);
-    }, [activeTab, recentTabs]);
 
     const settingsHref = (tab: SettingsPageTab) => {
         const nextParams = new URLSearchParams(searchParams);
@@ -355,38 +331,20 @@ const SettingsPage = () => {
                                 ))}
                             </div>
                         ) : (
-                            <>
-                                <section className="settings-nav-group" aria-labelledby="settings-recent-title">
-                                    <h2 id="settings-recent-title">{t('settingsPage.catalog.recent')}</h2>
-                                    {recentDestinations.length > 0 ? (
+                            <div className="settings-catalog-groups">
+                                {SETTINGS_GROUPS.map(group => (
+                                    <section
+                                        key={group.id}
+                                        className="settings-nav-group"
+                                        aria-labelledby={`settings-group-${group.id}`}
+                                    >
+                                        <h2 id={`settings-group-${group.id}`}>{t(group.labelKey)}</h2>
                                         <div className="settings-nav-list">
-                                            {recentDestinations.map(renderDestinationLink)}
+                                            {group.items.map(renderDestinationLink)}
                                         </div>
-                                    ) : (
-                                        <p className="settings-nav-empty">{t('settingsPage.catalog.recentEmpty')}</p>
-                                    )}
-                                </section>
-                                <details className="settings-catalog">
-                                    <summary>
-                                        <span>{t('settingsPage.catalog.browseAll')}</span>
-                                        <ChevronDown aria-hidden="true" className="h-4 w-4" />
-                                    </summary>
-                                    <div className="settings-catalog-groups">
-                                        {SETTINGS_GROUPS.map(group => (
-                                            <section
-                                                key={group.id}
-                                                className="settings-nav-group"
-                                                aria-labelledby={`settings-group-${group.id}`}
-                                            >
-                                                <h2 id={`settings-group-${group.id}`}>{t(group.labelKey)}</h2>
-                                                <div className="settings-nav-list">
-                                                    {group.items.map(renderDestinationLink)}
-                                                </div>
-                                            </section>
-                                        ))}
-                                    </div>
-                                </details>
-                            </>
+                                    </section>
+                                ))}
+                            </div>
                         )}
                     </nav>
                 </aside>
@@ -530,7 +488,10 @@ const SettingsPage = () => {
                         {activeTab === 'templates_labels' && <TemplateLabelSettings/>}
                         {activeTab === 'models_agents' && (
                             <div className="space-y-5">
-                                <AgentAccessPanel />
+                                <p className="text-sm text-content-secondary">
+                                    {t('settingsPage.agentKeyOnAccess')}{' '}
+                                    <Link to={settingsHref('admin_access')} className="font-medium text-action underline">{t('settingsPage.openAdminAccess')}</Link>
+                                </p>
                                 <AgentModelAdministration />
                             </div>
                         )}
@@ -549,7 +510,13 @@ const SettingsPage = () => {
                                 <EmailSettingsPanel/>
                             </AdminAccessGate>
                         )}
-                        {activeTab === 'admin_access' && <AdminAccessPanel/>}
+                        {activeTab === 'admin_access' && (
+                            <div className="space-y-5">
+                                <AccessKeysSummary />
+                                <AdminAccessPanel/>
+                                <AgentAccessPanel />
+                            </div>
+                        )}
                         {activeTab === 'runtime' && (
                             <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
                                 <RuntimeConfigSettings/>
