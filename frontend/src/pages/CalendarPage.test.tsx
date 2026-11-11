@@ -37,7 +37,7 @@ it('locks calendar changes during a save and ignores an obsolete resource comple
     await waitFor(() => expect(api.get.mock.calls.some(([path]) => path === '/tasks/planning-inputs/calendar/2/context')).toBe(true));
     await act(async () => finish({ data: first }));
     // The save lock is released once the obsolete completion is ignored.
-    await waitFor(() => expect(screen.getByRole('button', { name: 'New Calendar' })).toBeEnabled());
+    await waitFor(() => expect(screen.getByRole('button', { name: 'New calendar' })).toBeEnabled());
     expect(api.get.mock.calls.filter(([path]) => path === '/tasks/planning-inputs/calendar/1/context')).toHaveLength(1);
     expect(screen.queryByText('Calendar settings saved')).not.toBeInTheDocument();
 });

@@ -241,7 +241,7 @@ describe('Overview partial-data resilience', () => {
 
         expect(await screen.findByText('Task 11')).toBeVisible();
         const statusTitle = screen.getByRole('heading', {
-            name: 'Some Overview data could not be refreshed',
+            name: 'Some overview data could not be refreshed',
         });
         const status = statusTitle.closest('section');
         expect(status).not.toBeNull();
@@ -312,7 +312,7 @@ describe('Overview partial-data resilience', () => {
         expect(retry).toHaveFocus();
         expect(screen.queryByText('Overview data updated.')).not.toBeInTheDocument();
         expect(screen.getByRole('heading', {
-            name: 'Some Overview data could not be refreshed',
+            name: 'Some overview data could not be refreshed',
         })).toBeVisible();
     });
 

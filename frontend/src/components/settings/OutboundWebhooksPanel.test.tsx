@@ -99,7 +99,7 @@ describe('OutboundWebhooksPanel', () => {
         const url = screen.getByLabelText('URL');
 
         await user.type(url, 'ftp://files.example.com/webhook');
-        await user.click(screen.getByRole('button', { name: 'Create Target' }));
+        await user.click(screen.getByRole('button', { name: 'Create target' }));
 
         expect(outboundWebhookServiceMock.createTarget).not.toHaveBeenCalled();
         expect(name).toHaveAttribute('aria-invalid', 'true');
@@ -112,7 +112,7 @@ describe('OutboundWebhooksPanel', () => {
 
     it('makes replacing and clearing the stored secret mutually exclusive', async () => {
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
-        await screen.findByRole('heading', { name: 'Outbound Webhooks' });
+        await screen.findByRole('heading', { name: 'Outbound webhooks' });
         await user.click(screen.getByRole('button', { name: 'Edit: Target 1' }));
 
         const secret = screen.getByPlaceholderText('Leave unchanged');
@@ -124,7 +124,7 @@ describe('OutboundWebhooksPanel', () => {
         expect(secret).toHaveValue('');
         expect(clearSecret).toBeChecked();
 
-        await user.click(screen.getByRole('button', { name: 'Save Target' }));
+        await user.click(screen.getByRole('button', { name: 'Save target' }));
 
         await waitFor(() => {
             expect(outboundWebhookServiceMock.updateTarget).toHaveBeenCalledOnce();
@@ -136,7 +136,7 @@ describe('OutboundWebhooksPanel', () => {
 
     it('requires explicit discard confirmation before New, Edit, or Cancel replaces a dirty draft', async () => {
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
-        await screen.findByRole('heading', { name: 'Outbound Webhooks' });
+        await screen.findByRole('heading', { name: 'Outbound webhooks' });
         await user.click(screen.getByRole('button', { name: 'Edit: Target 1' }));
 
         const name = screen.getByLabelText('Name');
@@ -157,7 +157,7 @@ describe('OutboundWebhooksPanel', () => {
 
         await user.clear(name);
         await user.type(name, 'Another dirty draft');
-        await user.click(screen.getByRole('button', { name: 'New Target' }));
+        await user.click(screen.getByRole('button', { name: 'New target' }));
         dialog = screen.getByRole('dialog');
         expect(name).toHaveValue('Another dirty draft');
         await user.click(within(dialog).getByRole('button', { name: 'Discard changes' }));
@@ -166,7 +166,7 @@ describe('OutboundWebhooksPanel', () => {
 
     it('reconciles a same-target row toggle into the editor without losing other draft fields', async () => {
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
-        await screen.findByRole('heading', { name: 'Outbound Webhooks' });
+        await screen.findByRole('heading', { name: 'Outbound webhooks' });
         await user.click(screen.getByRole('button', { name: 'Edit: Target 1' }));
 
         const description = screen.getByLabelText('Description');
@@ -183,7 +183,7 @@ describe('OutboundWebhooksPanel', () => {
         expect(screen.getByRole('checkbox', { name: 'Enabled' })).not.toBeChecked();
         expect(description).toHaveValue('Keep this description');
 
-        await user.click(screen.getByRole('button', { name: 'Save Target' }));
+        await user.click(screen.getByRole('button', { name: 'Save target' }));
         await waitFor(() => expect(outboundWebhookServiceMock.updateTarget).toHaveBeenCalledTimes(2));
         expect(outboundWebhookServiceMock.updateTarget.mock.calls[1]?.[1]).toEqual(
             expect.objectContaining({
@@ -195,12 +195,12 @@ describe('OutboundWebhooksPanel', () => {
 
     it('treats a reconciled same-target toggle as the editor baseline', async () => {
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
-        await screen.findByRole('heading', { name: 'Outbound Webhooks' });
+        await screen.findByRole('heading', { name: 'Outbound webhooks' });
         await user.click(screen.getByRole('button', { name: 'Edit: Target 1' }));
         await user.click(screen.getByRole('checkbox', { name: 'Target 1: Enabled' }));
 
         await waitFor(() => expect(outboundWebhookServiceMock.updateTarget).toHaveBeenCalled());
-        await user.click(screen.getByRole('button', { name: 'New Target' }));
+        await user.click(screen.getByRole('button', { name: 'New target' }));
 
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
         expect(screen.getByLabelText('Name')).toHaveValue('');
@@ -219,14 +219,14 @@ describe('OutboundWebhooksPanel', () => {
         const url = screen.getByLabelText('URL');
         await user.type(name, 'New destination');
         await user.type(url, 'https://hooks.example.com/new');
-        await user.click(screen.getByRole('button', { name: 'Create Target' }));
+        await user.click(screen.getByRole('button', { name: 'Create target' }));
 
         await waitFor(() => {
             expect(outboundWebhookServiceMock.createTarget).toHaveBeenCalledOnce();
         });
         expect(name).toBeDisabled();
         expect(url).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'New Target' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'New target' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Send test delivery: Target 1' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Edit: Target 2' })).toBeDisabled();
 

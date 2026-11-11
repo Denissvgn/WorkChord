@@ -23,6 +23,21 @@ describe('formats and wording', () => {
         expect(english.filter(([, text]) => text.includes('(s)')).map(([key]) => key)).toEqual([]);
     });
 
+    it('writes labels in sentence case', () => {
+        // Names keep their capitals: page and workspace names, products, acronyms, and the shared vocabulary.
+        const names = /Delivery Hub|Timeline & Planning|Resource & Settings|My Work|Plan Work|Plan Master|Agent Pipeline|Agent Team Setup|United States/g;
+        const skipped = /^(nav|documentTitles|breadcrumbs|statuses|languages|agentTeamSetup\.roles|agentTeamSetup\.steps)\./;
+        const titleCase = english.filter(([key, text]) => {
+            if (skipped.test(key) || /[<•{"]|--/.test(text)) return false;
+            // A label that is only a name, or a name inside a label, is not Title Case.
+            const words = text.replace(names, 'Name').split(/\s+/).filter(word => word !== 'Name');
+            if (words.length < 2 || words.length > 5) return false;
+            const rest = words.slice(1).filter(word => !/^(a|an|and|or|of|to|in|on|for|the|by|with|&|\/)$/i.test(word));
+            return rest.length > 0 && rest.every(word => /^[A-Z][a-z]+$/.test(word) && !/^(WorkChord|GitHub|Gantt|Android|Overview|Tasks|Triage|Projects|Roadmap|Iterations|Calendar|Team|Analytics|Settings|Schedule|Review)$/.test(word));
+        });
+        expect(titleCase.map(([key, text]) => `${key}: ${text}`)).toEqual([]);
+    });
+
     it('uses one ellipsis character', () => {
         expect(english.filter(([, text]) => text.includes('...')).map(([key]) => key)).toEqual([]);
     });

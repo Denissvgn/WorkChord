@@ -43,7 +43,7 @@ describe('SettingsPage', () => {
         expect(within(navigation).getByRole('link', { name: 'Overview' }))
             .toHaveAttribute('aria-current', 'page');
         expect(screen.getByText('Changing settings needs the admin key')).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Open Access' }))
+        expect(screen.getByRole('link', { name: 'Open access' }))
             .toHaveAttribute('href', '/settings?tab=admin_access');
         expect(screen.getByRole('navigation', { name: 'Common settings jobs' }))
             .toBeVisible();

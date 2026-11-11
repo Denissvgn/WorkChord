@@ -178,12 +178,12 @@ describe('TemplateLabelSettings hardening', () => {
     it('associates every manual editor label with its control', async () => {
         const { user } = renderWithProviders(<TemplateLabelSettings />);
 
-        await user.click(await screen.findByRole('button', { name: 'New Template' }));
+        await user.click(await screen.findByRole('button', { name: 'New template' }));
         expect(screen.getByLabelText('Type')).toBeInTheDocument();
         expect(screen.getByLabelText('Description')).toBeInTheDocument();
-        expect(screen.getByLabelText('Default Description')).toBeInTheDocument();
+        expect(screen.getByLabelText('Default description')).toBeInTheDocument();
         expect(screen.getByLabelText('Checklist')).toBeInTheDocument();
-        expect(screen.getByLabelText('Default Payload JSON')).toBeInTheDocument();
+        expect(screen.getByLabelText('Default payload JSON')).toBeInTheDocument();
 
         await openLabels();
         await rowAction(user, 'Workflow', 'Edit group');

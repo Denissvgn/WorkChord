@@ -42,7 +42,7 @@ describe('iteration outlook on Analytics', () => {
         renderWithProviders(<StatusDistribution summary={summary()} />);
         expect(screen.getByRole('img', { name: 'Planned 4, Active 2, Resolved 1, Closed 3' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: '2 accepted' })).toBeInTheDocument();
-        expect(screen.getByRole('rowheader', { name: 'Accepted (of Closed)' })).toBeInTheDocument();
+        expect(screen.getByRole('rowheader', { name: 'Accepted (of closed)' })).toBeInTheDocument();
     });
 
     it('lists a task lifecycle in order with time in each state and the current state named', () => {

@@ -78,10 +78,10 @@ describe('IterationForm hardening', () => {
             />,
         );
 
-        const nameInput = await screen.findByLabelText('Iteration Name');
+        const nameInput = await screen.findByLabelText('Iteration name');
         await user.clear(nameInput);
         await user.type(nameInput, 'August delivery plan');
-        await user.click(screen.getByRole('button', { name: 'Update Iteration' }));
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
 
         await waitFor(() => {
             expect(iterationServiceMock.update).toHaveBeenCalledOnce();
@@ -106,8 +106,8 @@ describe('IterationForm hardening', () => {
             />,
         );
 
-        await user.clear(await screen.findByLabelText('Manager Email (for notifications)'));
-        await user.click(screen.getByRole('button', { name: 'Update Iteration' }));
+        await user.clear(await screen.findByLabelText('Manager email (for notifications)'));
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
 
         await waitFor(() => {
             expect(iterationServiceMock.update).toHaveBeenCalledOnce();
@@ -170,17 +170,17 @@ describe('IterationForm hardening', () => {
         );
         const latestState = () => onStateChange.mock.calls.at(-1)?.[0];
 
-        await user.type(await screen.findByLabelText('Iteration Name'), 'September plan');
-        await user.type(screen.getByLabelText('Start Date'), '2026-09-01');
-        await user.type(screen.getByLabelText('End Date'), '2026-09-14');
-        await user.click(screen.getByRole('button', { name: 'Save Iteration' }));
+        await user.type(await screen.findByLabelText('Iteration name'), 'September plan');
+        await user.type(screen.getByLabelText('Start date'), '2026-09-01');
+        await user.type(screen.getByLabelText('End date'), '2026-09-14');
+        await user.click(screen.getByRole('button', { name: 'Save iteration' }));
 
         await waitFor(() => {
             expect(iterationServiceMock.create).toHaveBeenCalledOnce();
             expect(latestState()).toEqual({ dirty: true, pending: true });
         });
 
-        const form = (await screen.findByLabelText('Iteration Name')).closest('form');
+        const form = (await screen.findByLabelText('Iteration name')).closest('form');
         expect(form).not.toBeNull();
         expect(form).toHaveAttribute('aria-busy', 'true');
         for (const control of within(form!).getAllByRole('button')) {
@@ -222,10 +222,10 @@ describe('IterationForm hardening', () => {
             />,
         );
 
-        const nameInput = await screen.findByLabelText('Iteration Name');
+        const nameInput = await screen.findByLabelText('Iteration name');
         await user.clear(nameInput);
         await user.type(nameInput, 'Still here after failure');
-        await user.click(screen.getByRole('button', { name: 'Update Iteration' }));
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
 
         expect(await screen.findByRole('alert')).toHaveTextContent('Failed to save iteration');
         expect(nameInput).toHaveValue('Still here after failure');

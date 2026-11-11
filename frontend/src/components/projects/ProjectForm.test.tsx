@@ -20,8 +20,8 @@ describe('ProjectForm', () => {
     it('shows dates and owner without expanding anything', async () => {
         projects.getInitiatives.mockResolvedValue([]);
         renderWithProviders(<ProjectForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
-        expect(await screen.findByLabelText('Start Date')).toBeVisible();
-        expect(screen.getByLabelText('Target Date')).toBeVisible();
+        expect(await screen.findByLabelText('Start date')).toBeVisible();
+        expect(screen.getByLabelText('Target date')).toBeVisible();
         expect(screen.getByRole('combobox', { name: 'Owner' })).toBeVisible();
     });
 
@@ -30,7 +30,7 @@ describe('ProjectForm', () => {
         planning.readInitial.mockResolvedValue({ resource: project, resource_id: 3, expected_revisions: { 3: 2 }, complete: true });
         projects.update.mockRejectedValue(new AxiosError('Conflict', '409', undefined, undefined, { status: 409, data: { detail: 'Project changed.' } } as never));
         const { user } = renderWithProviders(<ProjectForm initialData={project} onSuccess={vi.fn()} onCancel={vi.fn()} />);
-        const save = await screen.findByRole('button', { name: /Update Project/ });
+        const save = await screen.findByRole('button', { name: /Update project/ });
         expect(screen.queryByText(/Someone changed this project/)).toBeNull();
         await user.click(save);
         expect(await screen.findByText(/Someone changed this project/)).toBeInTheDocument();

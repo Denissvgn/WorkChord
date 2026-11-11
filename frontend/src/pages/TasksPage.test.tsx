@@ -281,9 +281,9 @@ describe('TasksPage', () => {
             .toHaveAttribute('aria-pressed', 'true');
         expect(within(viewContext).getByRole('button', { name: 'Filters' })).toBeVisible();
         expect(within(viewContext).getByRole('button', { name: 'List' })).toBeVisible();
-        const newTaskAction = screen.getByRole('button', { name: 'New Task' });
+        const newTaskAction = screen.getByRole('button', { name: 'New task' });
         expect(newTaskAction.closest('.tasks-primary-slot')).not.toBeNull();
-        expect(screen.getAllByRole('button', { name: 'New Task' })).toHaveLength(1);
+        expect(screen.getAllByRole('button', { name: 'New task' })).toHaveLength(1);
         expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
     });
 

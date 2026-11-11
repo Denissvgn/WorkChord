@@ -105,7 +105,7 @@ describe('ProjectsPage', () => {
             .toBeVisible();
         expect(screen.queryByRole('button', { name: 'Clear filters' }))
             .not.toBeInTheDocument();
-        expect(screen.getAllByRole('button', { name: 'New Project' })).toHaveLength(1);
+        expect(screen.getAllByRole('button', { name: 'New project' })).toHaveLength(1);
     });
 
     it('never says "No risk flags" while a project health is unassessed', async () => {
@@ -137,17 +137,17 @@ describe('ProjectsPage', () => {
         const initiativesLabel = screen.getByText('Initiatives');
         const initiativesDisclosure = initiativesLabel.closest('details');
 
-        expect(screen.getAllByRole('button', { name: 'New Project' })).toHaveLength(1);
+        expect(screen.getAllByRole('button', { name: 'New project' })).toHaveLength(1);
         expect(screen.getByRole('heading', { name: 'Project portfolio' })).toBeVisible();
         expect(initiativesDisclosure).not.toHaveAttribute('open');
         expect(projectLink.compareDocumentPosition(initiativesDisclosure!))
             .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-        expect(screen.getByRole('button', { name: 'New Initiative' })).not.toBeVisible();
+        expect(screen.getByRole('button', { name: 'New initiative' })).not.toBeVisible();
 
         await user.click(initiativesLabel.closest('summary')!);
 
         expect(initiativesDisclosure).toHaveAttribute('open');
-        expect(screen.getByRole('button', { name: 'New Initiative' })).toBeVisible();
+        expect(screen.getByRole('button', { name: 'New initiative' })).toBeVisible();
     });
 
     it('names project signals and formats effort with the active locale', async () => {

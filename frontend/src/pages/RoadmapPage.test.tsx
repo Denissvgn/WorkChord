@@ -133,7 +133,7 @@ describe('RoadmapPage', () => {
             name: 'Remove filter: Status: Active',
         })).toBeVisible();
         expect(screen.getByRole('button', {
-            name: 'Remove filter: Health: On Track',
+            name: 'Remove filter: Health: On track',
         })).toBeVisible();
         expect(screen.getByRole('button', {
             name: 'Remove filter: Owner: Unassigned',

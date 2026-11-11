@@ -71,12 +71,12 @@ describe('RuntimeConfigSettings', () => {
     it('keeps all save actions disabled until their own settings change', async () => {
         renderRuntimeSettings();
 
-        await screen.findByRole('heading', { name: 'LLM Provider' });
+        await screen.findByRole('heading', { name: 'LLM provider' });
 
-        expect(screen.getByRole('button', { name: 'Save AI Language' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Save AI language' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Save LLM' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Save GitHub' })).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'Save Web Intake' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Save web intake' })).toBeDisabled();
     });
 
     it('blocks invalid required, URL, and backend-bound numeric values without losing the draft', async () => {
@@ -114,7 +114,7 @@ describe('RuntimeConfigSettings', () => {
         await user.click(screen.getByRole('button', { name: 'Save GitHub' }));
         await user.clear(rateLimit);
         await user.type(rateLimit, '10001');
-        await user.click(screen.getByRole('button', { name: 'Save Web Intake' }));
+        await user.click(screen.getByRole('button', { name: 'Save web intake' }));
 
         expect(systemSettingsServiceMock.updateGitHub).not.toHaveBeenCalled();
         expect(systemSettingsServiceMock.updateWebIntake).not.toHaveBeenCalled();

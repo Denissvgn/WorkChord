@@ -37,7 +37,7 @@ const openNested = async () => {
     await page.getByText('Parent', { exact: true }).first().waitFor();
     const expand = page.getByRole('button', { name: /Expand: Parent/i });
     if (await expand.count()) await expand.click();
-    await page.getByRole('button', { name: 'Edit Task: Nested leaf', exact: true }).click();
+    await page.getByRole('button', { name: 'Edit task: Nested leaf', exact: true }).click();
   }
   await editAllFields();
   await page.getByRole('textbox', { name: 'Description', exact: true }).waitFor();
@@ -87,7 +87,7 @@ try {
     if (route.request().method() === 'PUT') await route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ detail: 'Disposable injected save failure' }) });
     else await route.continue();
   });
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   await page.getByText('Disposable injected save failure', { exact: true }).waitFor();
   assert.match(await description.inputValue(), /Browser draft/);
   await page.unroute(`**/api/tasks/${nested.id}`);
@@ -99,14 +99,14 @@ try {
   const changed = await context.request.put(`/api/tasks/${nested.id}`, { headers, data: { title: 'Nested leaf', description: 'Other writer changed the work', expected_version: nested.version } });
   assert.equal(changed.status(), 200, await changed.text());
   const saveConflict = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${nested.id}`) && response.request().method() === 'PUT');
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   assert.equal((await saveConflict).status(), 409);
   await page.getByText('This task changed while you were editing', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Keep draft with current version', exact: true }).click();
   await page.getByText('Current version loaded. Your draft is unchanged; review it before saving.', { exact: true }).waitFor();
   assert.match(await description.inputValue(), /Browser draft/);
   const saved = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${nested.id}`) && response.request().method() === 'PUT');
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   assert.equal((await saved).status(), 200);
   await description.waitFor({ state: 'hidden' });
   const readback = await context.request.get(`/api/tasks/${nested.id}`);
@@ -127,7 +127,7 @@ try {
   const cookie = (await context.cookies()).find(cookie => cookie.name === 'workchord_session');
   const expired = await context.request.post(`${issuer}/control/expire`, { headers: { 'X-Fixture-Key': 'disposable-browser-control' }, data: { token: cookie.value } });
   assert.equal((await expired.json()).expired, 1);
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   await page.getByText('Your session expired. Sign in again to continue.', { exact: false }).first().waitFor();
   assert.equal(await mobileDescription.inputValue(), 'Recover this draft after session expiry');
   await signedIn('Alice');
@@ -139,7 +139,7 @@ try {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(`/projects/${projects[0].id}`);
   await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).fill('Canonical browser work');
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Canonical browser work');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Capture and deliver urgent human work');
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('The task starts without a forecast or an invented estimate.');
   await page.getByRole('textbox', { name: 'Scope', exact: true }).fill('One independently checked result');
@@ -148,7 +148,7 @@ try {
   await page.getByRole('textbox', { name: 'Verification approach', exact: true }).fill('Inspect the delivered result');
   await page.getByLabel('Owner', { exact: true }).selectOption({ label: 'Shared owner' });
   const captured = page.waitForResponse(response => response.url().endsWith(`/api/projects/${projects[0].id}/backlog`) && response.request().method() === 'POST');
-  await page.getByRole('button', { name: 'Create Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Create task', exact: true }).click();
   const captureResponse = await captured;
   assert.equal(captureResponse.status(), 201, await captureResponse.text());
   const capturedTask = await captureResponse.json();
@@ -186,7 +186,7 @@ try {
   assert.equal(await page.getByRole('textbox', { name: 'Evidence', exact: true }).inputValue(), '');
   await page.getByLabel('The result can be inspected independently', { exact: true }).selectOption('completed');
   await page.getByRole('textbox', { name: 'Evidence', exact: true }).fill('A reviewer can reproduce and inspect the result.');
-  assert.equal(await page.getByRole('textbox', { name: 'Task Title', exact: false }).isDisabled(), true);
+  assert.equal(await page.getByRole('textbox', { name: 'Task title', exact: false }).isDisabled(), true);
   assert.equal(await page.getByLabel('Action', { exact: true }).isDisabled(), true);
   const progressSaved = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/progress`) && response.request().method() === 'POST');
   await page.getByRole('button', { name: 'Save progress', exact: true }).click();
@@ -230,7 +230,7 @@ try {
   await page.getByRole('searchbox', { name: 'Search tasks', exact: true }).fill(`#${capturedTask.id}`);
   await page.getByRole('region', { name: 'Search tasks', exact: true }).getByRole('link', { name: `#${capturedTask.id} · Canonical browser work`, exact: true }).click();
   await editAllFields();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).scrollIntoViewIfNeeded();
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'teamwork-editor-desktop.png'), fullPage: true });
   await page.getByRole('textbox', { name: 'New comment', exact: true }).fill('Coordinate delivery with the reviewer');
   await page.getByRole('textbox', { name: 'Mention a person: search by name', exact: true }).fill('Charlie');
@@ -305,7 +305,7 @@ try {
   assert.equal(started.status(), 200, await started.text());
   await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ state: 'hidden', timeout: 45000 });
   await page.goto(`/my-work?queue=active&task=${observed.id}`);
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).waitFor();
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).waitFor();
   const peerComment = await peerContext.request.post(`/api/tasks/${observed.id}/comments`, {
     headers: peerHeaders, data: { body: 'Peer comment arrives in foreground', mentions: [] } });
   assert.equal(peerComment.status(), 201, await peerComment.text());
@@ -475,7 +475,7 @@ try {
   await reviewerContext.close();
   check('Unestimated backlog capture, durable owner, structured criteria, manual execution, persisted evidence, and independent human acceptance');
   await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).fill('Preserve the structured intake');
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Preserve the structured intake');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Keep the draft through triage');
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('Context must survive the handoff.');
   await page.getByRole('button', { name: 'Add criterion', exact: true }).click();
