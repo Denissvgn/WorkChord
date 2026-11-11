@@ -1,0 +1,45 @@
+# Weekly dependency updates, so security fixes arrive as reviewable PRs instead of an alert backlog.
+# Runtime and development dependencies are grouped separately so either can be merged or reverted alone.
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      backend-runtime:
+        dependency-type: "production"
+      backend-development:
+        dependency-type: "development"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      frontend-runtime:
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+      frontend-development:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "gradle"
+    directory: "/android-companion"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
