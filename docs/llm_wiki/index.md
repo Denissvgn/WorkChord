@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1555 | [Open section](#entities) |
-| Modules | 815 | [Open section](#modules) |
+| Modules | 819 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1684,6 +1684,7 @@ Retained history; these declarations are absent from the selected source invento
 - [LabelChip](modules/LabelChip.md) - `frontend/src/components/labels/LabelChip.tsx`
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
+- [LandingPage.test](modules/LandingPage.test.md) - `frontend/src/pages/LandingPage.test.tsx`
 - [LiveWindowStatus](modules/LiveWindowStatus.md) - `frontend/src/components/feedback/LiveWindowStatus.tsx`
 - [LocalProfilePicker](modules/LocalProfilePicker.md) - `frontend/src/features/identity/LocalProfilePicker.tsx`
 - [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
@@ -1959,6 +1960,7 @@ Retained history; these declarations are absent from the selected source invento
 - [focusLifecycle.test](modules/focusLifecycle.test.md) - `frontend/src/utils/focusLifecycle.test.ts`
 - [formControlLabels.test](modules/formControlLabels.test.md) - `frontend/src/components/common/formControlLabels.test.ts`
 - [formatDate](modules/formatDate.md) - `frontend/src/utils/formatDate.ts`
+- [formatsAndWording.test](modules/formatsAndWording.test.md) - `frontend/src/i18n/formatsAndWording.test.ts`
 - [ganttService](modules/ganttService.md) - `frontend/src/services/ganttService.ts`
 - [generate_agent_team_contract](modules/generate_agent_team_contract.md) - Generate the published JSON Schema for the portable agent-team master.
 - [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) - Generate the JSON Schema for the bounded agent-team setup report.
@@ -1994,6 +1996,8 @@ Retained history; these declarations are absent from the selected source invento
 - [labelService](modules/labelService.md) - `frontend/src/services/labelService.ts`
 - [label_service](modules/label_service.md) - Service for governed label taxonomy and built-in defaults.
 - [labels](modules/labels.md) - Label taxonomy API router.
+- [landing.en](modules/landing.en.md) - `frontend/src/i18n/landing.en.ts`
+- [landing.ru](modules/landing.ru.md) - `frontend/src/i18n/landing.ru.ts`
 - [language_service](modules/language_service.md) - Language resolution helpers for UI and AI output.
 - [leases](modules/leases.md) - Short-lived exact-target action leases parented to durable attempt starts.
 - [llm_service](modules/llm_service.md) - LLM service for task formalization and schedule explanation.

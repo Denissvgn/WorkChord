@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 815,
+      "modules": 819,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3138
+    "total": 3142
   },
   "dependency_pages": {
     "count": 2,
@@ -45853,6 +45853,7 @@
         "modules/focusLifecycle.md",
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
+        "modules/formatsAndWording.test.md",
         "modules/formControlLabels.test.md",
         "modules/FullscreenWorkspace.md",
         "modules/GanttBarInputs.md",
@@ -45926,7 +45927,10 @@
         "modules/labels.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
+        "modules/landing.en.md",
+        "modules/landing.ru.md",
         "modules/LandingPage.md",
+        "modules/LandingPage.test.md",
         "modules/language_service.md",
         "modules/leases.md",
         "modules/LiveWindowStatus.md",
@@ -70743,6 +70747,7 @@
         "modules/deliveryMetrics.md",
         "modules/deliveryMetricsService.md",
         "modules/ExecutionUsagePanel.md",
+        "modules/formatDate.md",
         "modules/projectService.md",
         "modules/QueryState.md"
       ],
@@ -71155,6 +71160,7 @@
         "modules/ExecutionUsagePanel.md",
         "modules/ExecutionUsagePanel.test.md",
         "modules/executionUsageService.md",
+        "modules/formatDate.md",
         "modules/QueryState.md"
       ],
       "role": "semantic",
@@ -71343,6 +71349,20 @@
       "role": "semantic",
       "source_path": "frontend/src/utils/formatDate.ts",
       "title": "formatDate Module"
+    },
+    {
+      "canonical_path": "modules/formatsAndWording.test.md",
+      "id": "formatsAndWording.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/formatsAndWording.test",
+      "outgoing_internal_links": [
+        "modules/formatsAndWording.test.md",
+        "modules/i18n.md",
+        "modules/resources.en.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/formatsAndWording.test.ts",
+      "title": "formatsAndWording.test Module"
     },
     {
       "canonical_path": "modules/formControlLabels.test.md",
@@ -72524,14 +72544,57 @@
       "title": "labelService Module"
     },
     {
+      "canonical_path": "modules/landing.en.md",
+      "id": "landing.en",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/landing.en",
+      "outgoing_internal_links": [
+        "modules/landing.en.md",
+        "modules/resources.en.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/landing.en.ts",
+      "title": "landing.en Module"
+    },
+    {
+      "canonical_path": "modules/landing.ru.md",
+      "id": "landing.ru",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/landing.ru",
+      "outgoing_internal_links": [
+        "modules/landing.ru.md",
+        "modules/resources.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/landing.ru.ts",
+      "title": "landing.ru Module"
+    },
+    {
       "canonical_path": "modules/LandingPage.md",
       "id": "LandingPage",
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/LandingPage",
-      "outgoing_internal_links": [],
+      "outgoing_internal_links": [
+        "modules/LandingPage.md",
+        "modules/LandingPage.test.md"
+      ],
       "role": "semantic",
       "source_path": "frontend/src/pages/LandingPage.tsx",
       "title": "LandingPage Module"
+    },
+    {
+      "canonical_path": "modules/LandingPage.test.md",
+      "id": "LandingPage.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/LandingPage.test",
+      "outgoing_internal_links": [
+        "modules/LandingPage.md",
+        "modules/LandingPage.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/LandingPage.test.tsx",
+      "title": "LandingPage.test Module"
     },
     {
       "canonical_path": "modules/language_service.md",
@@ -75230,8 +75293,10 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/resources.en",
       "outgoing_internal_links": [
+        "modules/formatsAndWording.test.md",
         "modules/i18n.md",
         "modules/i18n.test.md",
+        "modules/landing.en.md",
         "modules/pagination.md",
         "modules/PlanMasterPage.test.md",
         "modules/planningInputMessages.md",
@@ -75252,6 +75317,7 @@
       "outgoing_internal_links": [
         "modules/agentTeamSetup.ru.md",
         "modules/i18n.test.md",
+        "modules/landing.ru.md",
         "modules/pagination.md",
         "modules/plan.ru.md",
         "modules/PlanMasterPage.test.md",
@@ -78212,18 +78278,7 @@
       "mcp_uri": "llm-wiki://modules/TaskDiscussion",
       "outgoing_internal_links": [
         "entities/EditingComment.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/discussionService.md",
-        "modules/identityContext.md",
-        "modules/LiveWindowStatus.md",
-        "modules/QueryState.md",
-        "modules/TaskDiscussion.md",
-        "modules/TaskDiscussion.test.md",
-        "modules/TaskForm.md",
-        "modules/TaskReadView.md",
-        "modules/useDraftDismissal.md",
-        "modules/useLiveWindow.md"
+        "modules/TaskDiscussion.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskDiscussion.tsx",
@@ -96094,6 +96149,7 @@
         "modules/focusLifecycle.md",
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
+        "modules/formatsAndWording.test.md",
         "modules/formControlLabels.test.md",
         "modules/FullscreenWorkspace.md",
         "modules/GanttBarInputs.md",
@@ -96167,7 +96223,10 @@
         "modules/labels.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
+        "modules/landing.en.md",
+        "modules/landing.ru.md",
         "modules/LandingPage.md",
+        "modules/LandingPage.test.md",
         "modules/language_service.md",
         "modules/leases.md",
         "modules/LiveWindowStatus.md",
@@ -96920,6 +96979,7 @@
         "modules/focusLifecycle.md",
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
+        "modules/formatsAndWording.test.md",
         "modules/formControlLabels.test.md",
         "modules/FullscreenWorkspace.md",
         "modules/GanttBarInputs.md",
@@ -96993,7 +97053,10 @@
         "modules/labels.md",
         "modules/LabelSelector.md",
         "modules/labelService.md",
+        "modules/landing.en.md",
+        "modules/landing.ru.md",
         "modules/LandingPage.md",
+        "modules/LandingPage.test.md",
         "modules/language_service.md",
         "modules/leases.md",
         "modules/LiveWindowStatus.md",
@@ -97553,5 +97616,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:8cb0ffdbe34b5bffa27e90eddcae9a16f839dff6cf73646b46087fa5ef4ad2c0"
+  "source_hash": "sha256:6bfe8463d5e4163afc8abf712ea29df1bee3a60eeb01d7bdaea73d74a57163b1"
 }

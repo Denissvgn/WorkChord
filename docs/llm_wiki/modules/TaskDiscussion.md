@@ -18,6 +18,7 @@ Comment drafts checkpoint uncertainty before writing and retain input through mi
 | `../../services/discussionService` | `TaskComment` | Declaration | erased |
 | `../../services/discussionService` | `discussionService` | — | compiler-dependent |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
@@ -38,69 +39,21 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/feedback/LiveWindowStatus.tsx"]
-    n2["frontend/src/components/feedback/QueryState.tsx"]
-    n3["frontend/src/components/tasks/TaskDiscussion.test.tsx"]
-    n4["frontend/src/components/tasks/TaskDiscussion.tsx"]
-    n5["frontend/src/components/tasks/TaskForm.tsx"]
-    n6["frontend/src/components/tasks/TaskReadView.tsx"]
-    n7["frontend/src/components/tasks/useDraftDismissal.ts"]
-    n8["frontend/src/features/identity/identityContext.ts"]
-    n9["frontend/src/features/useLiveWindow.ts"]
-    n10["frontend/src/services/discussionService.ts"]
-    n11["frontend/src/utils/apiError.ts"]
+    n0["frontend"]
+    n1["frontend/src/components/tasks/TaskDiscussion.tsx"]
+    n0 --> n1
     n1 --> n0
-    n2 --> n0
-    n2 --> n11
-    n3 --> n4
-    n3 --> n8
-    n4 --> n0
-    n4 --> n1
-    n4 --> n2
-    n4 --> n7
-    n4 --> n8
-    n4 --> n9
-    n4 --> n10
-    n4 --> n11
-    n5 --> n0
-    n5 --> n2
-    n5 --> n4
-    n5 --> n7
-    n5 --> n8
-    n5 --> n11
-    n6 --> n0
-    n6 --> n4
-    n6 --> n11
-    click n0 "../modules/Button.md"
-    click n1 "../modules/LiveWindowStatus.md"
-    click n2 "../modules/QueryState.md"
-    click n3 "../modules/TaskDiscussion.test.md"
-    click n4 "../modules/TaskDiscussion.md"
-    click n5 "../modules/TaskForm.md"
-    click n6 "../modules/TaskReadView.md"
-    click n7 "../modules/useDraftDismissal.md"
-    click n8 "../modules/identityContext.md"
-    click n9 "../modules/useLiveWindow.md"
-    click n10 "../modules/discussionService.md"
-    click n11 "../modules/apiError.md"
+    click n1 "../modules/TaskDiscussion.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [TaskDiscussion.test](../modules/TaskDiscussion.test.md) |
-| Inbound | [TaskForm](../modules/TaskForm.md) |
-| Inbound | [TaskReadView](../modules/TaskReadView.md) |
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [LiveWindowStatus](../modules/LiveWindowStatus.md) |
-| Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [useDraftDismissal](../modules/useDraftDismissal.md) |
-| Outbound | [identityContext](../modules/identityContext.md) |
-| Outbound | [useLiveWindow](../modules/useLiveWindow.md) |
-| Outbound | [discussionService](../modules/discussionService.md) |
-| Outbound | [apiError](../modules/apiError.md) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (9) |
 
 ### External packages
 
@@ -108,11 +61,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [EditingComment](../entities/EditingComment.md) | Type alias | 14 | `Pick<TaskComment, 'id' \| 'version'>` | — |
+| [EditingComment](../entities/EditingComment.md) | Type alias | 15 | `Pick<TaskComment, 'id' \| 'version'>` | — |
 
 ## Functions
 

@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/pages/IterationsPage.tsx`._
 | `../components/planning/PlanReturnBar` | `PlanReturnBar` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
 | `../types/iteration` | `Iteration` | Declaration | erased |
-| `lucide-react` | `Upload` | — | compiler-dependent |
+| `lucide-react` | `Plus`, `Upload` | — | compiler-dependent |
 | `react` | `useState`, `useRef` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 

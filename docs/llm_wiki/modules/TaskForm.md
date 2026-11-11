@@ -32,7 +32,7 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | `../../types/template` | `WorkTemplate` | Declaration | erased |
 | `../../types/triage` | `TriageItemCreate` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
-| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
 | `../../utils/templateDefaults` | `getPayloadBoolean`, `getPayloadString`, `mergeLabels` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |

@@ -13,6 +13,7 @@ _Auto-generated from `frontend/src/components/analytics/ExecutionUsagePanel.tsx`
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../services/executionUsageService` | `executionUsageService` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
@@ -36,12 +37,15 @@ flowchart LR
     n3["frontend/src/components/common/Button.tsx"]
     n4["frontend/src/components/feedback/QueryState.tsx"]
     n5["frontend/src/services/executionUsageService.ts"]
+    n6["frontend/src/utils/formatDate.ts"]
     n0 --> n2
     n0 --> n4
+    n0 --> n6
     n1 --> n2
     n2 --> n3
     n2 --> n4
     n2 --> n5
+    n2 --> n6
     n4 --> n3
     click n0 "../modules/DeliveryAnalytics.md"
     click n1 "../modules/ExecutionUsagePanel.test.md"
@@ -49,6 +53,7 @@ flowchart LR
     click n3 "../modules/Button.md"
     click n4 "../modules/QueryState.md"
     click n5 "../modules/executionUsageService.md"
+    click n6 "../modules/formatDate.md"
 ```
 
 ### Internal neighbors
@@ -60,6 +65,7 @@ flowchart LR
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [executionUsageService](../modules/executionUsageService.md) |
+| Outbound | [formatDate](../modules/formatDate.md) |
 
 ### External packages
 

@@ -378,8 +378,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [app_database](modules/app_database.md) | 88 | 5 |
 | [Button](modules/Button.md) | 86 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
+| [renderWithProviders](modules/renderWithProviders.md) | 78 | 2 |
 | [time](modules/time.md) | 77 | 0 |
-| [renderWithProviders](modules/renderWithProviders.md) | 77 | 2 |
 | [types_task](modules/types_task.md) | 74 | 2 |
 | [config](modules/config.md) | 72 | 1 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
@@ -391,10 +391,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [team_member](modules/team_member.md) | 53 | 6 |
 | [models_project](modules/models_project.md) | 45 | 9 |
 | [api](modules/api.md) | 37 | 2 |
+| [formatDate](modules/formatDate.md) | 37 | 1 |
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
-| [i18n](modules/i18n.md) | 34 | 1 |
-| [formatDate](modules/formatDate.md) | 34 | 1 |
+| [i18n](modules/i18n.md) | 35 | 1 |
 | [taskService](modules/taskService.md) | 32 | 3 |
 | [Input](modules/Input.md) | 31 | 0 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
@@ -558,6 +558,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [MetricCount](modules/MetricCount.md) | 5 | 3 |
 | [planningReturn](modules/planningReturn.md) | 5 | 0 |
 | [dateLocale](modules/dateLocale.md) | 5 | 1 |
+| [resources.en](modules/resources.en.md) | 5 | 5 |
 | [workspaces](modules/workspaces.md) | 5 | 0 |
 | [labelService](modules/labelService.md) | 5 | 2 |
 | [types_triage](modules/types_triage.md) | 5 | 1 |
@@ -605,7 +606,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [workQueryFreshness](modules/workQueryFreshness.md) | 4 | 0 |
 | [useAgentAccess](modules/useAgentAccess.md) | 4 | 1 |
 | [useSingleKeyShortcutPreference](modules/useSingleKeyShortcutPreference.md) | 4 | 1 |
-| [resources.en](modules/resources.en.md) | 4 | 4 |
 | [routeModules](modules/routeModules.md) | 4 | 0 |
 | [templateService](modules/templateService.md) | 4 | 2 |
 | [timeEntryService](modules/timeEntryService.md) | 4 | 1 |
@@ -654,7 +654,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PersonCapacity](modules/PersonCapacity.md) | 3 | 5 |
 | [QuickCapture](modules/QuickCapture.md) | 3 | 8 |
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
-| [TaskDiscussion](modules/TaskDiscussion.md) | 3 | 8 |
+| [TaskDiscussion](modules/TaskDiscussion.md) | 3 | 9 |
 | [TaskReadView](modules/TaskReadView.md) | 3 | 13 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 3 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 3 | 13 |
@@ -663,7 +663,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 11 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
-| [resources.ru](modules/resources.ru.md) | 3 | 6 |
+| [resources.ru](modules/resources.ru.md) | 3 | 7 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
 | [releaseService](modules/releaseService.md) | 3 | 2 |
 | [systemSettingsService](modules/systemSettingsService.md) | 3 | 2 |
@@ -720,8 +720,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [UserSessionBadge](modules/UserSessionBadge.md) | 2 | 3 |
 | [RoutingCandidateComparison](modules/RoutingCandidateComparison.md) | 2 | 2 |
 | [TaskRoutingPanel](modules/TaskRoutingPanel.md) | 2 | 14 |
-| [DeliveryAnalytics](modules/DeliveryAnalytics.md) | 2 | 5 |
-| [ExecutionUsagePanel](modules/ExecutionUsagePanel.md) | 2 | 3 |
+| [DeliveryAnalytics](modules/DeliveryAnalytics.md) | 2 | 6 |
+| [ExecutionUsagePanel](modules/ExecutionUsagePanel.md) | 2 | 4 |
 | [OnTrackSummary](modules/OnTrackSummary.md) | 2 | 5 |
 | [StatusDistribution](modules/StatusDistribution.md) | 2 | 5 |
 | [TaskStatusFlow](modules/TaskStatusFlow.md) | 2 | 3 |
@@ -870,6 +870,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [taskViewState](modules/taskViewState.md) | 1 | 5 |
 | [SystemLanguageProvider](modules/SystemLanguageProvider.md) | 1 | 4 |
 | [agentTeamSetup.ru](modules/agentTeamSetup.ru.md) | 1 | 0 |
+| [landing.en](modules/landing.en.md) | 1 | 0 |
+| [landing.ru](modules/landing.ru.md) | 1 | 0 |
 | [plan.ru](modules/plan.ru.md) | 1 | 0 |
 | [teamwork.en](modules/teamwork.en.md) | 1 | 0 |
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
@@ -878,6 +880,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 16 |
 | [CalendarPage](modules/CalendarPage.md) | 1 | 20 |
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
+| [LandingPage](modules/LandingPage.md) | 1 | 0 |
 | [MyWorkPage](modules/MyWorkPage.md) | 1 | 15 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
 | [OverviewPage](modules/OverviewPage.md) | 1 | 19 |
@@ -1107,6 +1110,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [workQueryFreshness.test](modules/workQueryFreshness.test.md) | 0 | 1 |
 | [workspaceQueryPolicy.test](modules/workspaceQueryPolicy.test.md) | 0 | 2 |
 | [useSingleKeyShortcutPreference.test](modules/useSingleKeyShortcutPreference.test.md) | 0 | 3 |
+| [formatsAndWording.test](modules/formatsAndWording.test.md) | 0 | 2 |
 | [i18n.test](modules/i18n.test.md) | 0 | 3 |
 | [workflowVocabulary.test](modules/workflowVocabulary.test.md) | 0 | 2 |
 | [src_main](modules/src_main.md) | 0 | 5 |
@@ -1117,7 +1121,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [CalendarPage.test](modules/CalendarPage.test.md) | 0 | 2 |
 | [GanttPage.test](modules/GanttPage.test.md) | 0 | 6 |
 | [IterationsPage](modules/IterationsPage.md) | 0 | 6 |
-| [LandingPage](modules/LandingPage.md) | 0 | 0 |
+| [LandingPage.test](modules/LandingPage.test.md) | 0 | 2 |
 | [MyWorkPage.test](modules/MyWorkPage.test.md) | 0 | 6 |
 | [NativeConnectionPage.test](modules/NativeConnectionPage.test.md) | 0 | 3 |
 | [NotFoundPage](modules/NotFoundPage.md) | 0 | 2 |
