@@ -6,12 +6,18 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     addDays,
+    addMonths,
     compareAsc,
     differenceInCalendarDays,
     eachMonthOfInterval,
+    endOfMonth,
+    endOfQuarter,
+    endOfYear,
     format,
     parseISO,
     startOfMonth,
+    startOfQuarter,
+    startOfYear,
 } from 'date-fns';
 import {
     FolderOpen,
@@ -451,6 +457,8 @@ const RoadmapTimeline = ({
         0,
         100,
     );
+    const today = new Date();
+    const todayInRange = compareAsc(today, normalizedRange.start) >= 0 && compareAsc(today, normalizedRange.end) <= 0;
 
     return (
         <div
@@ -471,6 +479,12 @@ const RoadmapTimeline = ({
                         </p>
                     </div>
                     <div className="relative h-16">
+                        {todayInRange && (
+                            <span className="absolute bottom-1 z-10 -translate-x-1/2 rounded bg-action px-1.5 py-0.5 text-wc-micro font-semibold text-action-foreground"
+                                style={{ left: `${positionForDate(today)}%` }}>
+                                {t('surfaces.roadmapPage.today')}
+                            </span>
+                        )}
                         {months.map(month => (
                             <div
                                 key={month.toISOString()}
@@ -498,8 +512,16 @@ const RoadmapTimeline = ({
                                 style={{ left: `${positionForDate(month)}%` }}
                             />
                         ))}
+                        {todayInRange && (
+                            <div className="absolute top-0 z-10 h-full w-0.5 bg-action" style={{ left: `${positionForDate(today)}%` }} />
+                        )}
                     </div>
                     <div className="relative">
+                        {groups.length === 0 && (
+                            <p className="px-4 py-6 text-sm text-content-secondary" style={{ marginLeft: 'var(--roadmap-project-rail-width)' }}>
+                                {t('surfaces.roadmapPage.nothingDatedYet')}
+                            </p>
+                        )}
                         {groups.map(group => {
                         const initiative = group.initiative;
                         const groupHeadingId = `roadmap-timeline-${group.key}`;
@@ -570,7 +592,7 @@ const RoadmapTimeline = ({
                                                             {t(projectStatusLabelKeys[row.project.status])}
                                                         </span>
                                                         <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(row.project.health))}>
-                                                            {t(projectHealthLabelKeys[row.project.health])}
+                                                            {t('surfaces.roadmapPage.healthLabel', { health: t(projectHealthLabelKeys[row.project.health]) })}
                                                         </span>
                                                     </div>
                                                     <p className="roadmap-project-span-source mt-2 text-xs text-content-secondary">
@@ -616,39 +638,6 @@ const RoadmapTimeline = ({
 };
 /* eslint-enable jsx-a11y/no-noninteractive-tabindex */
 
-const RoadmapGroupHeader = ({ group }: { group: RoadmapGroup }) => {
-    const initiative = group.initiative;
-
-    return (
-        <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface-card p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base font-semibold text-content-primary">
-                        {initiative ? initiative.name : t('surfaces.roadmapPage.unassigned')}
-                    </h3>
-                    {initiative ? (
-                        <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(initiative.health))}>
-                            {t(projectHealthLabelKeys[initiative.health])}
-                        </span>
-                    ) : (
-                        <span className="rounded-full border border-border bg-surface-muted px-2 py-0.5 text-xs font-medium text-content-secondary">
-                            {t('surfaces.roadmapPage.noInitiative')}
-                        </span>
-                    )}
-                </div>
-                <p className="mt-1 text-sm text-content-secondary">
-                    {initiative
-                        ? `${formatPortfolioOwnerLabel(initiative.owner_profile, initiative.owner, initiative.owner_id, t('surfaces.roadmapPage.unassignedOwner'))} - ${t('surfaces.roadmapPage.target')} ${formatDate(initiative.target_date)}`
-                        : t('surfaces.roadmapPage.projectsWithoutAnInitiativeAssignment')}
-                </p>
-            </div>
-            <span className="w-fit rounded-full bg-surface-subtle px-2.5 py-1 text-xs font-medium text-content-secondary">
-                {t('surfaces.roadmapPage.projectCount', { count: group.rows.length })}
-            </span>
-        </div>
-    );
-};
-
 const UnscheduledProjects = ({ groups }: { groups: RoadmapGroup[] }) => {
     const projectCount = groups.reduce((total, group) => total + group.rows.length, 0);
     if (projectCount === 0) return null;
@@ -664,41 +653,32 @@ const UnscheduledProjects = ({ groups }: { groups: RoadmapGroup[] }) => {
                     {projectCount}
                 </span>
             </div>
-            <div className="mt-4 space-y-5">
-                {groups.map(group => (
-                    <div key={group.key}>
-                        <RoadmapGroupHeader group={group} />
-                        <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                            {group.rows.map(row => (
-                                <Link
-                                    key={row.project.id}
-                                    to={`/projects/${row.project.id}`}
-                                    className="rounded-md border border-border px-3 py-3 hover:border-action hover:bg-action-muted"
-                                >
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <p className="truncate font-medium text-content-primary">{row.project.name}</p>
-                                            <p className="mt-1 text-xs text-content-secondary">
-                                                {t('surfaces.roadmapPage.milestoneCount', { count: row.milestones.length })}, {t('surfaces.roadmapPage.noDatedMarkers')}
-                                            </p>
-                                        </div>
-                                        <span className={clsx('shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(row.project.health))}>
-                                            {t(projectHealthLabelKeys[row.project.health])}
-                                        </span>
-                                    </div>
-                                </Link>
-                            ))}
+            <ul className="mt-4 divide-y divide-border-subtle">
+                {groups.flatMap(group => group.rows.map(row => (
+                    <li key={row.project.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                        <div className="min-w-0">
+                            <Link to={`/projects/${row.project.id}`} className="font-medium text-content-primary hover:text-action">{row.project.name}</Link>
+                            <p className="mt-1 text-xs text-content-secondary">
+                                {group.initiative ? group.initiative.name : t('surfaces.roadmapPage.noInitiative')}
+                                {' · '}
+                                {t('surfaces.roadmapPage.milestoneCount', { count: row.milestones.length })}, {t('surfaces.roadmapPage.noDatedMarkers')}
+                                {' · '}
+                                {t('surfaces.roadmapPage.healthLabel', { health: t(projectHealthLabelKeys[row.project.health]) })}
+                            </p>
                         </div>
-                    </div>
-                ))}
-            </div>
+                        <div className="flex shrink-0 flex-wrap gap-2">
+                            <Link className="btn sm" to={`/projects/${row.project.id}?action=edit`}>{t('surfaces.roadmapPage.setProjectDates')}</Link>
+                            <Link className="btn sm secondary" to={`/projects/${row.project.id}?action=add-milestone`}>{t('surfaces.roadmapPage.addMilestone')}</Link>
+                        </div>
+                    </li>
+                )))}
+            </ul>
         </section>
     );
 };
 
 const TimelineGroups = ({ groups, range }: { groups: RoadmapGroup[]; range: DateRange }) => {
-    if (groups.length === 0) return null;
-
+    // The axis with today stays visible even before anything is dated.
     return (
         <section className="space-y-4">
             <div className="flex items-center justify-between gap-3">
@@ -709,6 +689,15 @@ const TimelineGroups = ({ groups, range }: { groups: RoadmapGroup[]; range: Date
                     </p>
                 </div>
             </div>
+            <ul aria-label={t('surfaces.roadmapPage.milestoneLegend')} className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-content-secondary">
+                {(['planned', 'active', 'completed', 'canceled'] as const).map(status => (
+                    <li key={status} className="flex items-center gap-1.5">
+                        <span aria-hidden="true" className={clsx('inline-block h-2.5 w-2.5 rotate-45 border-2', markerClassName(status))} />
+                        {t(milestoneStatusLabelKeys[status])}
+                    </li>
+                ))}
+                <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-0.5 bg-action" />{t('surfaces.roadmapPage.today')}</li>
+            </ul>
             <RoadmapTimeline groups={groups} range={range} />
         </section>
     );
@@ -988,6 +977,27 @@ const RoadmapPage = () => {
                 ] : []}
                 secondaryActions={(
                     <>
+                        {!isLoading && !hasQueryError && projects.length > 0 && (
+                            <div role="group" aria-label={t('surfaces.roadmapPage.windowPresets')} className="seg">
+                                {([
+                                    ['presetQuarter', () => { const start = startOfQuarter(new Date()); return [start, endOfQuarter(start)]; }],
+                                    ['presetSixMonths', () => { const start = startOfMonth(new Date()); return [start, endOfMonth(addMonths(start, 5))]; }],
+                                    ['presetYear', () => { const start = startOfYear(new Date()); return [start, endOfYear(start)]; }],
+                                ] as const).map(([key, window]) => {
+                                    const [start, end] = window();
+                                    const active = dateFrom === formatInputDate(start) && dateTo === formatInputDate(end);
+                                    return (
+                                        <button key={key} type="button" aria-pressed={active}
+                                            onClick={() => { setDateFrom(formatInputDate(start)); setDateTo(formatInputDate(end)); }}>
+                                            {t(`surfaces.roadmapPage.${key}`)}
+                                        </button>
+                                    );
+                                })}
+                                <button type="button" aria-pressed={!dateFrom && !dateTo} onClick={resetDateRange}>
+                                    {t('surfaces.roadmapPage.presetFit')}
+                                </button>
+                            </div>
+                        )}
                         {!isLoading && !hasQueryError && projects.length > 0 && (
                             <Button
                                 type="button"

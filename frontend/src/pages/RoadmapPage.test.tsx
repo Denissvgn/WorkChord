@@ -302,3 +302,23 @@ describe('RoadmapPage', () => {
         expect(within(timelines[0]).getByRole('link', { name: 'Beacon' })).toBeVisible();
     });
 });
+
+describe('RoadmapPage without dates', () => {
+    beforeEach(() => {
+        projectServiceMock.getAll.mockReset();
+        projectServiceMock.getInitiatives.mockReset();
+        projectServiceMock.getRoadmapMilestones.mockReset();
+        projectServiceMock.getAll.mockResolvedValue([{ ...project, start_date: null, target_date: null }]);
+        projectServiceMock.getInitiatives.mockResolvedValue([]);
+        projectServiceMock.getRoadmapMilestones.mockResolvedValue({ items: [], next_cursor: null });
+    });
+
+    it('keeps the axis and offers to date an unscheduled project from the roadmap', async () => {
+        renderWithProviders(<RoadmapPage />, { initialEntries: ['/roadmap'] });
+        expect(await screen.findByText('No project or milestone has dates yet. Date a project below to see it here.')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Set project dates' })).toHaveAttribute('href', '/projects/1?action=edit');
+        expect(screen.getByRole('link', { name: 'Add milestone' })).toHaveAttribute('href', '/projects/1?action=add-milestone');
+        expect(screen.getAllByText(/^No initiative/).length).toBeGreaterThan(0);
+        expect(screen.getByRole('group', { name: 'Timeline window' })).toBeInTheDocument();
+    });
+});

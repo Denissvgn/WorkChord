@@ -4,9 +4,9 @@ import { planningInputService, type ObservedPlanningInput } from '../services/pl
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { TimeEntriesReport } from '../components/projects/TimeEntriesReport';
 import i18n from '../i18n/i18n';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -857,7 +857,10 @@ const ProjectDetailPage = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const numericProjectId = Number(projectId);
-    const [isEditing, setIsEditing] = useState(false);
+    // The roadmap links here with ?action=edit or ?action=add-milestone.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const requestedAction = searchParams.get('action');
+    const [isEditing, setIsEditing] = useState(requestedAction === 'edit');
     const [showCreateRelease, setShowCreateRelease] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showDetachConfirm, setShowDetachConfirm] = useState(false);
@@ -1118,6 +1121,18 @@ const ProjectDetailPage = () => {
             error: null,
         });
     };
+
+    const [handledAction, setHandledAction] = useState<string | null>(null);
+    if (requestedAction && handledAction !== requestedAction) {
+        setHandledAction(requestedAction);
+        if (requestedAction === 'add-milestone') openCreateMilestone();
+    }
+    useEffect(() => {
+        if (!requestedAction) return;
+        const next = new URLSearchParams(searchParams);
+        next.delete('action');
+        setSearchParams(next, { replace: true });
+    }, [requestedAction, searchParams, setSearchParams]);
 
     const openEditMilestone = (milestone: ProjectMilestone) => {
         setMilestoneActionError(null);
