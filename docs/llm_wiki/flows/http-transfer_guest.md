@@ -100,11 +100,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| transfer_guest | IdentityService(…).transfer_guest | 309 | `IdentityService(db).transfer_guest(..., ..., operator_reason=data.reason, guest_id=data.guest_session_id)` |
-| transfer_guest | IdentityService | 309 | `IdentityService(db)` |
-| transfer_guest | request.cookies.get | 309 | `request.cookies.get('workchord_guest_transfer')` |
-| transfer_guest | response.delete_cookie | 311 | `response.delete_cookie('workchord_guest_transfer', path=...)` |
-| transfer_guest | _cookie_options | 311 | `_cookie_options(data not statically known)` |
+| transfer_guest | IdentityService(…).transfer_guest | 320 | `IdentityService(db).transfer_guest(..., ..., operator_reason=data.reason, guest_id=data.guest_session_id)` |
+| transfer_guest | IdentityService | 320 | `IdentityService(db)` |
+| transfer_guest | request.cookies.get | 320 | `request.cookies.get('workchord_guest_transfer')` |
+| transfer_guest | response.delete_cookie | 322 | `response.delete_cookie('workchord_guest_transfer', path=...)` |
+| transfer_guest | _cookie_options | 322 | `_cookie_options(data not statically known)` |
 | _cookie_options | get_settings | 37 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 
@@ -116,9 +116,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `transfer_guest` | `IdentityService(db).transfer_guest` | 309 |
-| unresolved_call | `transfer_guest` | `request.cookies.get` | 309 |
-| unresolved_call | `transfer_guest` | `response.delete_cookie` | 311 |
+| unresolved_call | `transfer_guest` | `IdentityService(db).transfer_guest` | 320 |
+| unresolved_call | `transfer_guest` | `request.cookies.get` | 320 |
+| unresolved_call | `transfer_guest` | `response.delete_cookie` | 322 |
 
 ## Behavior
 

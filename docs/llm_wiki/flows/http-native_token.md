@@ -190,8 +190,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| native_token | AuthorityError | 319 | `AuthorityError(data not statically known)` |
-| native_token | IdentityService.issue_session | 320 | `IdentityService(db).issue_session(authority.principal_id, ..., request.headers.get(...))` |
+| native_token | AuthorityError | 330 | `AuthorityError(data not statically known)` |
+| native_token | IdentityService.issue_session | 331 | `IdentityService(db).issue_session(authority.principal_id, ..., request.headers.get(...))` |
 | IdentityService.issue_session | require_identity_writes | 226 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |

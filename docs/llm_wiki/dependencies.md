@@ -510,6 +510,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) | 7 | 2 |
 | [planning_input_context](modules/planning_input_context.md) | 7 | 11 |
 | [task_detail_service](modules/task_detail_service.md) | 7 | 15 |
+| [DisabledReason](modules/DisabledReason.md) | 7 | 0 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) | 7 | 2 |
 | [SlideOverDrawer](modules/SlideOverDrawer.md) | 7 | 1 |
@@ -528,7 +529,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planning_inputs](modules/planning_inputs.md) | 6 | 0 |
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
-| [DisabledReason](modules/DisabledReason.md) | 6 | 0 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
 | [workspaces](modules/workspaces.md) | 6 | 0 |
@@ -885,7 +885,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
 | [LandingPage](modules/LandingPage.md) | 1 | 0 |
 | [MyWorkPage](modules/MyWorkPage.md) | 1 | 15 |
-| [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
+| [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 5 |
 | [OverviewPage](modules/OverviewPage.md) | 1 | 19 |
 | [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 14 |
 | [PlanPage](modules/PlanPage.md) | 1 | 5 |

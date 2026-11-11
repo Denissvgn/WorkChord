@@ -103,14 +103,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| sessions | AuthorityError | 329 | `AuthorityError('authentication_required', 'Sign in to manage sessions.', 401)` |
-| sessions | (…).all | 330 | `(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all(data not statically known)` |
-| sessions | db.scalars | 330 | `db.scalars(...)` |
-| sessions | select(…).where(…).order_by(…).limit | 330 | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100)` |
-| sessions | select(…).where(…).order_by | 330 | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc(...))` |
-| sessions | select(…).where | 330 | `select(UserSession).where(...)` |
-| sessions | select | 330 | `select(UserSession)` |
-| sessions | UserSession.created_at.desc | 330 | `UserSession.created_at.desc(data not statically known)` |
+| sessions | AuthorityError | 340 | `AuthorityError('authentication_required', 'Sign in to manage sessions.', 401)` |
+| sessions | (…).all | 341 | `(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all(data not statically known)` |
+| sessions | db.scalars | 341 | `db.scalars(...)` |
+| sessions | select(…).where(…).order_by(…).limit | 341 | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100)` |
+| sessions | select(…).where(…).order_by | 341 | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc(...))` |
+| sessions | select(…).where | 341 | `select(UserSession).where(...)` |
+| sessions | select | 341 | `select(UserSession)` |
+| sessions | UserSession.created_at.desc | 341 | `UserSession.created_at.desc(data not statically known)` |
 
 ### Boundary effects
 
@@ -120,13 +120,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `sessions` | `(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all` | 330 |
-| unresolved_call | `sessions` | `db.scalars` | 330 |
-| unresolved_call | `sessions` | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit` | 330 |
-| unresolved_call | `sessions` | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by` | 330 |
-| unresolved_call | `sessions` | `select(UserSession).where` | 330 |
-| external_call | `sessions` | `select` | 330 |
-| unresolved_call | `sessions` | `UserSession.created_at.desc` | 330 |
+| unresolved_call | `sessions` | `(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all` | 341 |
+| unresolved_call | `sessions` | `db.scalars` | 341 |
+| unresolved_call | `sessions` | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit` | 341 |
+| unresolved_call | `sessions` | `select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by` | 341 |
+| unresolved_call | `sessions` | `select(UserSession).where` | 341 |
+| external_call | `sessions` | `select` | 341 |
+| unresolved_call | `sessions` | `UserSession.created_at.desc` | 341 |
 
 ## Behavior
 

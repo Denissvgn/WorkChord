@@ -135,15 +135,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| choose_local_profile | get_settings | 163 | `get_settings(data not statically known)` |
+| choose_local_profile | get_settings | 174 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
-| choose_local_profile | AuthorityError | 164 | `AuthorityError('local_profile_unavailable', 'Signed-in accounts are linked to a work profile by an operator.', 409)` |
-| choose_local_profile | local_work_profile | 165 | `local_work_profile(db, data.profile_id)` |
+| choose_local_profile | AuthorityError | 175 | `AuthorityError('local_profile_unavailable', 'Signed-in accounts are linked to a work profile by an operator.', 409)` |
+| choose_local_profile | local_work_profile | 176 | `local_work_profile(db, data.profile_id)` |
 | local_work_profile | internal_authority | 40 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
 | local_work_profile | db.get | 41 | `db.get(TeamMemberProfile, profile_id)` |
-| choose_local_profile | AuthorityError | 167 | `AuthorityError('profile_not_found', 'Choose an existing person profile.', 404)` |
-| choose_local_profile | commit_or_flush | 169 | `commit_or_flush(db)` |
+| choose_local_profile | AuthorityError | 178 | `AuthorityError('profile_not_found', 'Choose an existing person profile.', 404)` |
+| choose_local_profile | commit_or_flush | 180 | `commit_or_flush(db)` |
 | commit_or_flush | current_command | 79 | `current_command(db)` |
 | current_command | getattr | 73 | `getattr(db, 'info', None)` |
 

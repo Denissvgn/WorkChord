@@ -17,8 +17,8 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
 | `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
-| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` | — | compiler-dependent |
-| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName`, `wcPillClass` | — | compiler-dependent |
 | `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
 | `../services/releaseService` | `releaseService` | — | compiler-dependent |

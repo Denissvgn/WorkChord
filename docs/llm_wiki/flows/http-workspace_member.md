@@ -160,24 +160,24 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_member | require_operator | 231 | `require_operator(db)` |
+| workspace_member | require_operator | 242 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 79 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| workspace_member | require_identity_writes | 232 | `require_identity_writes(data not statically known)` |
+| workspace_member | require_identity_writes | 243 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| workspace_member | AuthorityError | 235 | `AuthorityError('invalid_workspace_role', 'Choose a workspace role.', 422)` |
-| workspace_member | AuthorityError | 237 | `AuthorityError(data not statically known)` |
-| workspace_member | internal_authority | 238 | `internal_authority(db)` |
+| workspace_member | AuthorityError | 246 | `AuthorityError('invalid_workspace_role', 'Choose a workspace role.', 422)` |
+| workspace_member | AuthorityError | 248 | `AuthorityError(data not statically known)` |
+| workspace_member | internal_authority | 249 | `internal_authority(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `workspace_member` | 248 |
-| mutation | `db.add` | `workspace_member` | 249 |
+| mutation | `db.add` | `workspace_member` | 259 |
+| mutation | `db.add` | `workspace_member` | 260 |
 
 ### Static analysis gaps
 

@@ -150,7 +150,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| describe_native_connection | NativeSessionService.describe | 94 | `NativeSessionService(db).describe(request_id)` |
+| describe_native_connection | NativeSessionService.describe | 98 | `NativeSessionService(db).describe(request_id)` |
 | NativeSessionService.describe | NativeSessionService.human | 64 | `self.human(data not statically known)` |
 | NativeSessionService.human | self.db.info.get | 26 | `self.db.info.get('authority')` |
 | NativeSessionService.human | AuthorityError | 28 | `AuthorityError('human_session_required', 'Sign in with a human account to connect a device.', 403)` |

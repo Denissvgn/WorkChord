@@ -23,7 +23,7 @@ Exposes sign-in, one-time owner bootstrap, scoped membership administration, exp
 | `app.models.user_session` | `UserSession` |
 | `app.security` | `require_admin_api_key` |
 | `app.services.identity_service` | `IdentityService`, `local_work_profile`, `require_identity_writes` |
-| `app.services.native_session_service` | `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService` |
+| `app.services.native_session_service` | `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService` |
 | `app.services.session_service` | `_cookie_options`, `get_client_ip`, `get_current_session`, `_get_session_by_token` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `datetime`, `timedelta` |
@@ -75,13 +75,14 @@ flowchart LR
 | [NativeConnectionResponse](../entities/NativeConnectionResponse.md) | Pydantic model | 48 | `BaseModel` | — |
 | [NativeConnectionDetails](../entities/NativeConnectionDetails.md) | Pydantic model | 55 | `BaseModel` | — |
 | [NativeApprovalResponse](../entities/NativeApprovalResponse.md) | Pydantic model | 61 | `BaseModel` | — |
-| [NativePendingResponse](../entities/NativePendingResponse.md) | Pydantic model | 65 | `BaseModel` | — |
-| [NativeTokenResponse](../entities/NativeTokenResponse.md) | Pydantic model | 69 | `BaseModel` | — |
-| [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 104 | `BaseModel` | — |
-| [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 110 | `BaseModel` | — |
-| [LocalProfileChoice](../entities/LocalProfileChoice.md) | Pydantic model | 115 | `BaseModel` | — |
-| [GuestTransferRequest](../entities/GuestTransferRequest.md) | Pydantic model | 120 | `BaseModel` | — |
-| [PrincipalRecoveryRequest](../entities/PrincipalRecoveryRequest.md) | Pydantic model | 366 | `BaseModel` | — |
+| [NativeDenialResponse](../entities/NativeDenialResponse.md) | Pydantic model | 65 | `BaseModel` | — |
+| [NativePendingResponse](../entities/NativePendingResponse.md) | Pydantic model | 69 | `BaseModel` | — |
+| [NativeTokenResponse](../entities/NativeTokenResponse.md) | Pydantic model | 73 | `BaseModel` | — |
+| [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 115 | `BaseModel` | — |
+| [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 121 | `BaseModel` | — |
+| [LocalProfileChoice](../entities/LocalProfileChoice.md) | Pydantic model | 126 | `BaseModel` | — |
+| [GuestTransferRequest](../entities/GuestTransferRequest.md) | Pydantic model | 131 | `BaseModel` | — |
+| [PrincipalRecoveryRequest](../entities/PrincipalRecoveryRequest.md) | Pydantic model | 377 | `BaseModel` | — |
 
 ## Functions
 
@@ -91,6 +92,7 @@ flowchart LR
 | `exchange_native_connection` | *(async)* `(data: NativeConnectionExchange, request: Request, response: Response, db: Database)` | `@router.post('/native-connections/exchange', response_model=NativePendingResponse \| NativeTokenResponse)` | — |
 | `describe_native_connection` | *(async)* `(request_id: str, response: Response, db: Database)` | `@router.get('/native-connections/{request_id}', response_model=NativeConnectionDetails)` | — |
 | `approve_native_connection` | *(async)* `(request_id: str, data: NativeConnectionApproval, response: Response, db: Database)` | `@router.post('/native-connections/{request_id}/approve', response_model=NativeApprovalResponse)` | — |
+| `deny_native_connection` | *(async)* `(request_id: str, response: Response, db: Database)` | `@router.post('/native-connections/{request_id}/deny', response_model=NativeDenialResponse)` | — |
 | `me` | *(async)* `(request: Request, response: Response, db: Database)` | `@router.get('/me')` | — |
 | `choose_local_profile` | *(async)* `(data: LocalProfileChoice, response: Response, db: Database, session: Annotated[UserSession, Depends(get_current_session)])` | `@router.put('/local-profile')` | Record which person profile a trusted-local session works as; local, not verified. |
 | `login` | *(async)* `(request: Request, db: Database, return_to: str = '/')` | `@router.get('/login')` | — |

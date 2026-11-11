@@ -140,17 +140,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| logout | require_identity_writes | 349 | `require_identity_writes(data not statically known)` |
+| logout | require_identity_writes | 360 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| logout | internal_authority | 352 | `internal_authority(db)` |
+| logout | internal_authority | 363 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| logout | db.get | 353 | `db.get(UserSession, authority.session_id)` |
-| logout | utc_now | 354 | `utc_now(data not statically known)` |
+| logout | db.get | 364 | `db.get(UserSession, authority.session_id)` |
+| logout | utc_now | 365 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
-| logout | _cookie_options | 355 | `_cookie_options(data not statically known)` |
+| logout | _cookie_options | 366 | `_cookie_options(data not statically known)` |
 
 ### Boundary effects
 
@@ -161,7 +161,7 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `logout` | `db.get` | 353 |
+| unresolved_call | `logout` | `db.get` | 364 |
 | external_call | `utc_now` | `datetime.now` | 13 |
 | step_limit | `logout` | `first 12 steps` | 0 |
 

@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1560 | [Open section](#entities) |
+| Entities | 1561 | [Open section](#entities) |
 | Modules | 822 | [Open section](#modules) |
-| Workflows | 196 | [Open section](#workflows) |
+| Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 556 | [Open section](#entry-point-flows) |
+| Entry-point flows | 557 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -536,6 +536,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NativeConnectionExchange](entities/NativeConnectionExchange.md)
 - [NativeConnectionResponse](entities/NativeConnectionResponse.md)
 - [NativeConnectionStart](entities/NativeConnectionStart.md)
+- [NativeDenialResponse](entities/NativeDenialResponse.md)
 - [NativePendingResponse](entities/NativePendingResponse.md)
 - [NativeSessionService](entities/NativeSessionService.md)
 - [NativeTokenResponse](entities/NativeTokenResponse.md)
@@ -2492,6 +2493,7 @@ Retained history; these declarations are absent from the selected source invento
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
 - [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
 - [NativeSessionService_connection](workflows/NativeSessionService_connection.md) - entry: `native_session_service.NativeSessionService.connection`
+- [NativeSessionService_deny](workflows/NativeSessionService_deny.md) - entry: `native_session_service.NativeSessionService.deny`
 - [NativeSessionService_exchange](workflows/NativeSessionService_exchange.md) - entry: `native_session_service.NativeSessionService.exchange`
 - [NativeSessionService_start](workflows/NativeSessionService_start.md) - entry: `native_session_service.NativeSessionService.start`
 - [OutboundWebhookService__attempt_delivery](workflows/OutboundWebhookService__attempt_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService._attempt_delivery`
@@ -2713,6 +2715,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-delete_team_member_profile_skill](flows/http-delete_team_member_profile_skill.md) - entry: `delete_team_member_profile_skill`
 - [http-delete_vacation](flows/http-delete_vacation.md) - entry: `delete_vacation`
 - [http-delivery_metrics](flows/http-delivery_metrics.md) - entry: `delivery_metrics`
+- [http-deny_native_connection](flows/http-deny_native_connection.md) - entry: `deny_native_connection`
 - [http-describe_native_connection](flows/http-describe_native_connection.md) - entry: `describe_native_connection`
 - [http-disable_agent_model_binding](flows/http-disable_agent_model_binding.md) - entry: `disable_agent_model_binding`
 - [http-disable_agent_model_catalog_entry](flows/http-disable_agent_model_catalog_entry.md) - entry: `disable_agent_model_catalog_entry`

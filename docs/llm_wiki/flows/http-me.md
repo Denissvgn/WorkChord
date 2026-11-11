@@ -214,7 +214,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| me | resolve_http_identity | 132 | `resolve_http_identity(request, db)` |
+| me | resolve_http_identity | 143 | `resolve_http_identity(request, db)` |
 | resolve_http_identity | get_settings | 43 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | resolve_http_identity | IdentityService | 45 | `IdentityService(db)` |
@@ -230,7 +230,7 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `result.update` | `me` | 143 |
+| mutation | `result.update` | `me` | 154 |
 | mutation | `contexts.append` | `resolve_http_identity` | 63 |
 | mutation | `contexts.append` | `resolve_http_identity` | 65 |
 | mutation | `contexts.append` | `resolve_http_identity` | 75 |
