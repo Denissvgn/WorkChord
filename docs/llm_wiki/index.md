@@ -6,7 +6,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1549 | [Open section](#entities) |
+| Entities | 1550 | [Open section](#entities) |
 | Modules | 800 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
@@ -823,7 +823,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SortCriterionSchema](entities/SortCriterionSchema.md)
 - [SortKey](entities/SortKey.md)
 - [SortableTaskItemProps](entities/SortableTaskItemProps.md)
-- [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
 - [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
 - [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
@@ -961,6 +960,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TeamService](entities/TeamService.md)
 - [TemplateFormState](entities/TemplateFormState.md)
 - [TemplateListParams](entities/TemplateListParams.md)
+- [TemplateRowProps](entities/TemplateRowProps.md)
 - [TemplateSeedBaseline](entities/TemplateSeedBaseline.md)
 - [TemplateService](entities/TemplateService.md)
 - [Theme](entities/Theme.md)
@@ -1571,6 +1571,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 Retained history; these declarations are absent from the selected source inventory.
 
+- [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
 - [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
 
 ## Modules

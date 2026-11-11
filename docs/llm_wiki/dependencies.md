@@ -402,8 +402,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [user_session](modules/user_session.md) | 24 | 6 |
 | [services_work_metrics](modules/services_work_metrics.md) | 23 | 8 |
 | [toast](modules/toast.md) | 23 | 0 |
+| [index](modules/index.md) | 23 | 0 |
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
-| [index](modules/index.md) | 22 | 0 |
 | [types_team](modules/types_team.md) | 22 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
 | [mutationFeedback](modules/mutationFeedback.md) | 21 | 0 |
@@ -520,6 +520,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_planning_service](modules/agent_planning_service.md) | 6 | 19 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
+| [SlideOverDrawer](modules/SlideOverDrawer.md) | 6 | 1 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
 | [savedViewService](modules/savedViewService.md) | 6 | 2 |
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
@@ -546,7 +547,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanningInputBoundary](modules/PlanningInputBoundary.md) | 5 | 4 |
 | [AdminAccessGate](modules/AdminAccessGate.md) | 5 | 3 |
 | [MetricCount](modules/MetricCount.md) | 5 | 3 |
-| [SlideOverDrawer](modules/SlideOverDrawer.md) | 5 | 1 |
 | [planningReturn](modules/planningReturn.md) | 5 | 0 |
 | [dateLocale](modules/dateLocale.md) | 5 | 1 |
 | [workspaces](modules/workspaces.md) | 5 | 0 |
@@ -742,7 +742,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [RuntimeConfigSettings](modules/RuntimeConfigSettings.md) | 2 | 12 |
 | [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) | 2 | 13 |
 | [SystemHealthPanel](modules/SystemHealthPanel.md) | 2 | 2 |
-| [TemplateLabelSettings](modules/TemplateLabelSettings.md) | 2 | 11 |
+| [TemplateLabelSettings](modules/TemplateLabelSettings.md) | 2 | 13 |
 | [DeliveryDependencies](modules/DeliveryDependencies.md) | 2 | 8 |
 | [ImportTasksModal](modules/ImportTasksModal.md) | 2 | 8 |
 | [KanbanBoard](modules/KanbanBoard.md) | 2 | 17 |

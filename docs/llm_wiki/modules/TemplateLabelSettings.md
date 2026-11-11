@@ -21,12 +21,10 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tsx
 | `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `../labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
-| `@dnd-kit/core` | `DragEndEvent` | Declaration | erased |
-| `@dnd-kit/core` | `DndContext`, `KeyboardSensor`, `PointerSensor`, `closestCenter`, `useSensor`, `useSensors` | — | compiler-dependent |
-| `@dnd-kit/sortable` | `SortableContext`, `arrayMove`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` | — | compiler-dependent |
-| `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
+| `../ui` | `OverflowMenu` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
-| `lucide-react` | `Archive`, `ChevronDown`, `ChevronUp`, `Edit3`, `FileText`, `GripVertical`, `Plus`, `Power`, `Save`, `Tags`, `X` | — | compiler-dependent |
+| `lucide-react` | `Archive`, `ChevronDown`, `ChevronUp`, `Edit3`, `FileText`, `Plus`, `Save`, `Tags`, `X` | — | compiler-dependent |
 | `react` | `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
@@ -58,25 +56,25 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 7 | 0 |
+| typescript | 4 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 47 | — | — |
-| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 62 | — | — |
-| [LabelFormState](../entities/LabelFormState.md) | Interface | 71 | — | — |
-| [SortableTemplateRowProps](../entities/SortableTemplateRowProps.md) | Interface | 230 | — | — |
-| [ManagementSection](../entities/ManagementSection.md) | Type alias | 46 | `'templates' \| 'labels'` | — |
+| [TemplateFormState](../entities/TemplateFormState.md) | Interface | 37 | — | — |
+| [LabelGroupFormState](../entities/LabelGroupFormState.md) | Interface | 52 | — | — |
+| [LabelFormState](../entities/LabelFormState.md) | Interface | 61 | — | — |
+| [TemplateRowProps](../entities/TemplateRowProps.md) | Interface | 220 | — | — |
+| [ManagementSection](../entities/ManagementSection.md) | Type alias | 36 | `'templates' \| 'labels'` | — |
 
 ## Functions
 

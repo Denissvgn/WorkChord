@@ -18,7 +18,7 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1549,
+      "entities": 1550,
       "flows": 556,
       "guides": 0,
       "index": 1,
@@ -29,7 +29,7 @@
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3117
+    "total": 3118
   },
   "dependency_pages": {
     "count": 2,
@@ -44785,6 +44785,7 @@
         "entities/TeamService.md",
         "entities/TemplateFormState.md",
         "entities/TemplateListParams.md",
+        "entities/TemplateRowProps.md",
         "entities/TemplateSeedBaseline.md",
         "entities/TemplateService.md",
         "entities/Theme.md",
@@ -61716,7 +61717,7 @@
         "modules/TemplateLabelSettings.md"
       ],
       "role": "semantic",
-      "source_path": "frontend/src/components/settings/TemplateLabelSettings.tsx",
+      "source_path": null,
       "title": "SortableTemplateRowProps"
     },
     {
@@ -63936,6 +63937,18 @@
       "role": "semantic",
       "source_path": "frontend/src/types/template.ts",
       "title": "TemplateListParams"
+    },
+    {
+      "canonical_path": "entities/TemplateRowProps.md",
+      "id": "TemplateRowProps",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TemplateRowProps",
+      "outgoing_internal_links": [
+        "modules/TemplateLabelSettings.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/TemplateLabelSettings.tsx",
+      "title": "TemplateRowProps"
     },
     {
       "canonical_path": "entities/TemplateSeedBaseline.md",
@@ -77077,7 +77090,8 @@
         "modules/SlideOverDrawer.md",
         "modules/TaskEditModal.md",
         "modules/TaskEditorDrawer.md",
-        "modules/TaskWorkflowGuide.md"
+        "modules/TaskWorkflowGuide.md",
+        "modules/TemplateLabelSettings.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/ui/SlideOverDrawer.tsx",
@@ -78744,8 +78758,8 @@
         "entities/LabelFormState.md",
         "entities/LabelGroupFormState.md",
         "entities/ManagementSection.md",
-        "entities/SortableTemplateRowProps.md",
         "entities/TemplateFormState.md",
+        "entities/TemplateRowProps.md",
         "modules/TemplateLabelSettings.md"
       ],
       "role": "semantic",
@@ -97193,5 +97207,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:5b54693856099279d12d8fabb90f04b6d15b5b2bd268fbdad980219ee822d747"
+  "source_hash": "sha256:58c2e01100133dd2d640d5ad5417fcf2f4d65b0e25fe01ad2c2a6dc4130c68d9"
 }
