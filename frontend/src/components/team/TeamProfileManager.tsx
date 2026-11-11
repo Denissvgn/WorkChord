@@ -83,6 +83,9 @@ export const TeamProfileManager = ({
     const [editingProfileId, setEditingProfileId] = useState<number | null>(null);
     const [skillForm, setSkillForm] = useState<TeamMemberProfileSkillCreate>(emptySkillForm);
     const [editingSkillId, setEditingSkillId] = useState<number | null>(null);
+    // Forms open on request so the profile list and the selected profile lead the page.
+    const [profileFormOpen, setProfileFormOpen] = useState(false);
+    const [skillFormOpen, setSkillFormOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const profileContext = usePlanningObservation<TeamMemberProfile>();
@@ -125,6 +128,7 @@ export const TeamProfileManager = ({
             setSelectedProfileId(profile.id);
             setProfileForm(emptyProfileForm);
             setEditingProfileId(null);
+            setProfileFormOpen(false);
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
     });
@@ -136,6 +140,7 @@ export const TeamProfileManager = ({
             setSelectedProfileId(profile.id);
             setProfileForm(emptyProfileForm);
             setEditingProfileId(null);
+            setProfileFormOpen(false);
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
     });
@@ -156,6 +161,7 @@ export const TeamProfileManager = ({
             void skillContext.read('profile', variables.profileId);
             setSkillForm(emptySkillForm);
             setEditingSkillId(null);
+            setSkillFormOpen(false);
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveSkill'))),
     });
@@ -167,6 +173,7 @@ export const TeamProfileManager = ({
             void skillContext.read('profile', variables.profileId);
             setSkillForm(emptySkillForm);
             setEditingSkillId(null);
+            setSkillFormOpen(false);
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveSkill'))),
     });
@@ -311,6 +318,12 @@ export const TeamProfileManager = ({
                             {t('teamProfiles.description')}
                         </p>
                     </div>
+                    {!profileFormOpen && editingProfileId === null && (
+                        <Button type="button" size="sm" variant="secondary" onClick={() => setProfileFormOpen(true)}>
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            {t('teamProfiles.newProfile')}
+                        </Button>
+                    )}
                 </div>
 
                 <p
@@ -425,105 +438,6 @@ export const TeamProfileManager = ({
             </div>
 
             <div className="space-y-4">
-                <form onSubmit={submitProfile} className="card space-y-3 p-4">
-                    <h3 className="font-medium text-content-primary">{editingProfileId ? t('teamProfiles.editProfile') : t('teamProfiles.createProfile')}</h3>
-                    <div>
-                        <Input
-                            id="profile-seed-key"
-                            aria-describedby="profile-seed-key-help"
-                            label={t('teamProfiles.seedKey')}
-                            value={profileForm.seed_key || ''}
-                            onChange={event => setProfileForm({ ...profileForm, seed_key: event.target.value })}
-                            placeholder={t('teamProfiles.seedKeyPlaceholder')}
-                            readOnly={editingProfileId !== null}
-                        />
-                        <p id="profile-seed-key-help" className="mt-1 text-xs text-content-tertiary">
-                            {editingProfileId !== null
-                                ? t('teamProfiles.seedKeyImmutableHelp')
-                                : t('teamProfiles.seedKeyHelp')}
-                        </p>
-                    </div>
-                    <Input label={t('teamProfiles.displayName')} value={profileForm.display_name} onChange={event => setProfileForm({ ...profileForm, display_name: event.target.value })} required />
-                    <Input label={t('teamProfiles.email')} type="email" value={profileForm.email || ''} onChange={event => setProfileForm({ ...profileForm, email: event.target.value })} />
-                    <Input label={t('teamProfiles.headline')} value={profileForm.headline || ''} onChange={event => setProfileForm({ ...profileForm, headline: event.target.value })} placeholder={t('teamProfiles.headlinePlaceholder')} />
-                    <textarea
-                        aria-label={t('teamProfiles.summaryPlaceholder')}
-                        value={profileForm.summary || ''}
-                        onChange={event => setProfileForm({ ...profileForm, summary: event.target.value })}
-                        placeholder={t('teamProfiles.summaryPlaceholder')}
-                        className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                    <div className="field">
-                        <label htmlFor="profile-kind" className="field-lbl">
-                            {t('teamProfiles.profileKind')}
-                        </label>
-                        <select
-                            id="profile-kind"
-                            className="input"
-                            value={profileForm.profile_kind}
-                            onChange={event => setProfileForm({
-                                ...profileForm,
-                                profile_kind: event.target.value as TeamMemberProfileKind,
-                            })}
-                        >
-                            {PROFILE_KINDS.map(profileKind => (
-                                <option key={profileKind} value={profileKind}>
-                                    {t(`teamProfiles.profileKinds.${profileKind}`)}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <fieldset className="rounded-md border border-border-subtle p-3">
-                        <legend className="px-1 text-sm font-medium text-content-primary">
-                            {t('teamProfiles.assignmentModes')}
-                        </legend>
-                        <div className="mt-1 grid gap-2 sm:grid-cols-2">
-                            {ASSIGNMENT_MODES.map(assignmentMode => (
-                                <label
-                                    key={assignmentMode}
-                                    className="flex items-center gap-2 text-sm text-content-primary"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={profileForm.assignment_modes.includes(assignmentMode)}
-                                        onChange={event => toggleAssignmentMode(assignmentMode, event.target.checked)}
-                                        className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                                    />
-                                    {t(`teamProfiles.assignmentModeOptions.${assignmentMode}`)}
-                                </label>
-                            ))}
-                        </div>
-                    </fieldset>
-                    <div>
-                        <label className="flex items-center gap-2 text-sm text-content-primary">
-                            <input
-                                type="checkbox"
-                                aria-describedby="profile-automation-help"
-                                checked={profileForm.automation_enabled}
-                                onChange={event => setProfileForm({ ...profileForm, automation_enabled: event.target.checked })}
-                                className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                            />
-                            {t('teamProfiles.useForRecommendations')}
-                        </label>
-                        <p id="profile-automation-help" className="mt-1 text-xs text-content-tertiary">
-                            {t('teamProfiles.automationEligibilityHelp')}
-                        </p>
-                    </div>
-                    <div className="flex justify-between gap-2">
-                        {editingProfileId !== null && (
-                            <Button type="button" variant="ghost" onClick={() => {
-                                setEditingProfileId(null);
-                                setProfileForm(emptyProfileForm);
-                            }}>
-                                {t('actions.cancel')}
-                            </Button>
-                        )}
-                        <Button type="submit" disabled={Boolean(editingProfileId) && (!profileContext.observation || profileContext.loading)} isLoading={createProfileMutation.isPending || updateProfileMutation.isPending}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {editingProfileId ? t('teamProfiles.save') : t('teamProfiles.create')}
-                        </Button>
-                    </div>
-                </form>
 
                 {selectedProfile && (
                     <div className="card space-y-3 p-4">
@@ -544,36 +458,36 @@ export const TeamProfileManager = ({
                             </div>
                         </div>
 
-                        <form onSubmit={submitSkill} className="space-y-2 rounded-md border border-border-subtle bg-surface-muted p-3">
-                            <Input label={t('teamProfiles.skill')} value={skillForm.skill_name} onChange={event => setSkillForm({ ...skillForm, skill_name: event.target.value })} placeholder={t('teamProfiles.skillPlaceholder')} required />
-                            <div className="grid grid-cols-2 gap-2">
-                                <Input label={t('teamProfiles.category')} value={skillForm.category || ''} onChange={event => setSkillForm({ ...skillForm, category: event.target.value })} placeholder={t('teamProfiles.categoryPlaceholder')} />
-                                <Input label={t('teamProfiles.key')} value={skillForm.skill_key} onChange={event => setSkillForm({ ...skillForm, skill_key: event.target.value })} placeholder={t('teamProfiles.keyPlaceholder')} />
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Input type="number" min="1" max="5" label={t('teamProfiles.level')} value={skillForm.level} onChange={event => setSkillForm({ ...skillForm, level: Number(event.target.value) })} />
-                                <Input type="number" min="1" max="5" label={t('teamProfiles.interest')} value={skillForm.interest} onChange={event => setSkillForm({ ...skillForm, interest: Number(event.target.value) })} />
-                            </div>
-                            <Input
-                                label={t('teamProfiles.keywords')}
-                                value={(skillForm.keywords_json || []).join(', ')}
-                                onChange={event => setSkillForm({
-                                    ...skillForm,
-                                    keywords_json: event.target.value.split(',').map(item => item.trim()).filter(Boolean),
-                                })}
-                                placeholder={t('teamProfiles.keywordsPlaceholder')}
-                            />
-                            <label className="flex items-center gap-2 text-sm text-content-primary">
-                                <input
-                                    type="checkbox"
-                                    checked={skillForm.is_weakness}
-                                    onChange={event => setSkillForm({ ...skillForm, is_weakness: event.target.checked })}
-                                    className="h-4 w-4 rounded border-border-strong text-feedback-warning focus:ring-focus"
+                        {(skillFormOpen || editingSkillId !== null) ? (
+                            <form onSubmit={submitSkill} className="space-y-2 rounded-md border border-border-subtle bg-surface-muted p-3">
+                                <Input label={t('teamProfiles.skill')} value={skillForm.skill_name} onChange={event => setSkillForm({ ...skillForm, skill_name: event.target.value })} placeholder={t('teamProfiles.skillPlaceholder')} required />
+                                <div className="grid grid-cols-2 gap-2">
+                                    <Input label={t('teamProfiles.category')} value={skillForm.category || ''} onChange={event => setSkillForm({ ...skillForm, category: event.target.value })} placeholder={t('teamProfiles.categoryPlaceholder')} />
+                                    <Input label={t('teamProfiles.key')} value={skillForm.skill_key} onChange={event => setSkillForm({ ...skillForm, skill_key: event.target.value })} placeholder={t('teamProfiles.keyPlaceholder')} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <Input type="number" min="1" max="5" label={t('teamProfiles.level')} value={skillForm.level} onChange={event => setSkillForm({ ...skillForm, level: Number(event.target.value) })} />
+                                    <Input type="number" min="1" max="5" label={t('teamProfiles.interest')} value={skillForm.interest} onChange={event => setSkillForm({ ...skillForm, interest: Number(event.target.value) })} />
+                                </div>
+                                <Input
+                                    label={t('teamProfiles.keywords')}
+                                    value={(skillForm.keywords_json || []).join(', ')}
+                                    onChange={event => setSkillForm({
+                                        ...skillForm,
+                                        keywords_json: event.target.value.split(',').map(item => item.trim()).filter(Boolean),
+                                    })}
+                                    placeholder={t('teamProfiles.keywordsPlaceholder')}
                                 />
-                                {t('teamProfiles.markAsWeakness')}
-                            </label>
-                            <div className="flex gap-2">
-                                {editingSkillId && (
+                                <label className="flex items-center gap-2 text-sm text-content-primary">
+                                    <input
+                                        type="checkbox"
+                                        checked={skillForm.is_weakness}
+                                        onChange={event => setSkillForm({ ...skillForm, is_weakness: event.target.checked })}
+                                        className="h-4 w-4 rounded border-border-strong text-feedback-warning focus:ring-focus"
+                                    />
+                                    {t('teamProfiles.markAsWeakness')}
+                                </label>
+                                <div className="flex gap-2">
                                     <Button
                                         type="button"
                                         size="sm"
@@ -581,21 +495,27 @@ export const TeamProfileManager = ({
                                         onClick={() => {
                                             setEditingSkillId(null);
                                             setSkillForm(emptySkillForm);
+                                            setSkillFormOpen(false);
                                         }}
                                     >
                                         {t('actions.cancel')}
                                     </Button>
-                                )}
-                                <Button
-                                    type="submit"
-                                    size="sm"
-                                    disabled={!skillContext.observation || skillContext.loading}
-                                    isLoading={createSkillMutation.isPending || updateSkillMutation.isPending}
-                                >
-                                    {editingSkillId ? t('teamProfiles.saveSkill') : t('teamProfiles.addSkill')}
-                                </Button>
-                            </div>
-                        </form>
+                                    <Button
+                                        type="submit"
+                                        size="sm"
+                                        disabled={!skillContext.observation || skillContext.loading}
+                                        isLoading={createSkillMutation.isPending || updateSkillMutation.isPending}
+                                    >
+                                        {editingSkillId ? t('teamProfiles.saveSkill') : t('teamProfiles.addSkill')}
+                                    </Button>
+                                </div>
+                            </form>
+                        ) : (
+                            <Button type="button" size="sm" variant="secondary" onClick={() => setSkillFormOpen(true)}>
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                {t('teamProfiles.addSkill')}
+                            </Button>
+                        )}
 
                         <div className="space-y-2">
                             {selectedProfile.skills.map(skill => (
@@ -637,6 +557,106 @@ export const TeamProfileManager = ({
                             ))}
                         </div>
                     </div>
+                )}
+                {(profileFormOpen || editingProfileId !== null) && (
+                    <form onSubmit={submitProfile} className="card space-y-3 p-4">
+                        <h3 className="font-medium text-content-primary">{editingProfileId ? t('teamProfiles.editProfile') : t('teamProfiles.createProfile')}</h3>
+                        <div>
+                            <Input
+                                id="profile-seed-key"
+                                aria-describedby="profile-seed-key-help"
+                                label={t('teamProfiles.seedKey')}
+                                value={profileForm.seed_key || ''}
+                                onChange={event => setProfileForm({ ...profileForm, seed_key: event.target.value })}
+                                placeholder={t('teamProfiles.seedKeyPlaceholder')}
+                                readOnly={editingProfileId !== null}
+                            />
+                            <p id="profile-seed-key-help" className="mt-1 text-xs text-content-tertiary">
+                                {editingProfileId !== null
+                                    ? t('teamProfiles.seedKeyImmutableHelp')
+                                    : t('teamProfiles.seedKeyHelp')}
+                            </p>
+                        </div>
+                        <Input label={t('teamProfiles.displayName')} value={profileForm.display_name} onChange={event => setProfileForm({ ...profileForm, display_name: event.target.value })} required />
+                        <Input label={t('teamProfiles.email')} type="email" value={profileForm.email || ''} onChange={event => setProfileForm({ ...profileForm, email: event.target.value })} />
+                        <Input label={t('teamProfiles.headline')} value={profileForm.headline || ''} onChange={event => setProfileForm({ ...profileForm, headline: event.target.value })} placeholder={t('teamProfiles.headlinePlaceholder')} />
+                        <textarea
+                            aria-label={t('teamProfiles.summaryPlaceholder')}
+                            value={profileForm.summary || ''}
+                            onChange={event => setProfileForm({ ...profileForm, summary: event.target.value })}
+                            placeholder={t('teamProfiles.summaryPlaceholder')}
+                            className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                        <div className="field">
+                            <label htmlFor="profile-kind" className="field-lbl">
+                                {t('teamProfiles.profileKind')}
+                            </label>
+                            <select
+                                id="profile-kind"
+                                className="input"
+                                value={profileForm.profile_kind}
+                                onChange={event => setProfileForm({
+                                    ...profileForm,
+                                    profile_kind: event.target.value as TeamMemberProfileKind,
+                                })}
+                            >
+                                {PROFILE_KINDS.map(profileKind => (
+                                    <option key={profileKind} value={profileKind}>
+                                        {t(`teamProfiles.profileKinds.${profileKind}`)}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <fieldset className="rounded-md border border-border-subtle p-3">
+                            <legend className="px-1 text-sm font-medium text-content-primary">
+                                {t('teamProfiles.assignmentModes')}
+                            </legend>
+                            <div className="mt-1 grid gap-2 sm:grid-cols-2">
+                                {ASSIGNMENT_MODES.map(assignmentMode => (
+                                    <label
+                                        key={assignmentMode}
+                                        className="flex items-center gap-2 text-sm text-content-primary"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={profileForm.assignment_modes.includes(assignmentMode)}
+                                            onChange={event => toggleAssignmentMode(assignmentMode, event.target.checked)}
+                                            className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
+                                        />
+                                        {t(`teamProfiles.assignmentModeOptions.${assignmentMode}`)}
+                                    </label>
+                                ))}
+                            </div>
+                        </fieldset>
+                        <div>
+                            <label className="flex items-center gap-2 text-sm text-content-primary">
+                                <input
+                                    type="checkbox"
+                                    aria-describedby="profile-automation-help"
+                                    checked={profileForm.automation_enabled}
+                                    onChange={event => setProfileForm({ ...profileForm, automation_enabled: event.target.checked })}
+                                    className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
+                                />
+                                {t('teamProfiles.useForRecommendations')}
+                            </label>
+                            <p id="profile-automation-help" className="mt-1 text-xs text-content-tertiary">
+                                {t('teamProfiles.automationEligibilityHelp')}
+                            </p>
+                        </div>
+                        <div className="flex justify-between gap-2">
+                            <Button type="button" variant="ghost" onClick={() => {
+                                setEditingProfileId(null);
+                                setProfileForm(emptyProfileForm);
+                                setProfileFormOpen(false);
+                            }}>
+                                {t('actions.cancel')}
+                            </Button>
+                            <Button type="submit" disabled={Boolean(editingProfileId) && (!profileContext.observation || profileContext.loading)} isLoading={createProfileMutation.isPending || updateProfileMutation.isPending}>
+                                <Plus className="mr-2 h-4 w-4" />
+                                {editingProfileId ? t('teamProfiles.save') : t('teamProfiles.create')}
+                            </Button>
+                        </div>
+                    </form>
                 )}
                 {confirmationDialog}
             </div>

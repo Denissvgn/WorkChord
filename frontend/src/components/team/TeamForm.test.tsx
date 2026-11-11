@@ -66,7 +66,7 @@ describe('TeamForm', () => {
         expect(await screen.findByRole('combobox', { name: 'Existing profile' })).toBeDisabled();
 
         await user.type(await screen.findByRole('textbox', { name: 'Person' }), 'Grace Hopper');
-        await user.click(screen.getByRole('button', { name: 'Add to Iteration' }));
+        await user.click(screen.getByRole('button', { name: 'Add capacity' }));
 
         await waitFor(() => {
             expect(teamServiceMock.create).toHaveBeenCalledWith(9, {
@@ -107,7 +107,7 @@ describe('TeamForm', () => {
             expect(onStateChange).toHaveBeenLastCalledWith({ dirty: true, pending: false });
         });
 
-        await user.click(screen.getByRole('button', { name: 'Add to Iteration' }));
+        await user.click(screen.getByRole('button', { name: 'Add capacity' }));
         await waitFor(() => {
             expect(onStateChange).toHaveBeenLastCalledWith({ dirty: true, pending: true });
         });
@@ -147,7 +147,7 @@ describe('TeamForm', () => {
 
         const nameInput = await screen.findByRole('textbox', { name: 'Person' });
         await user.type(nameInput, 'Duplicate Person');
-        await user.click(screen.getByRole('button', { name: 'Add to Iteration' }));
+        await user.click(screen.getByRole('button', { name: 'Add capacity' }));
 
         expect(await screen.findByRole('alert')).toHaveTextContent(
             'This profile is already assigned.',

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Plus, Upload } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
@@ -140,14 +141,16 @@ const TeamPage = () => {
                 actions={hasIterations && (
                     <>
                         <IterationSelector showLabel disabled={isCreating || !!editingMember} />
-                        <button className="btn" onClick={() => setIsImporting(true)}
+                        <button type="button" className="btn" onClick={() => setIsImporting(true)}
                             disabled={isCreating || !!editingMember || selectedIterationId === 0}>
-                            ↑ {t('teamPage.importCapacity')}
+                            <Upload className="h-4 w-4" aria-hidden="true" />
+                            {t('teamPage.importCapacity')}
                         </button>
-                        <button className="btn primary"
+                        <button type="button" className="btn primary"
                             onClick={() => { setAssignmentProfile(null); setIsCreating(true); }}
                             disabled={isCreating || !!editingMember || selectedIterationId === 0}>
-                            + {t('teamPage.assignProfile')}
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            {t('teamPage.assignProfile')}
                         </button>
                     </>
                 )}
