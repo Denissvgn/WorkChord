@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
+import { QuickCapture } from '../components/tasks/QuickCapture';
 import { Modal } from '../components/common/Modal';
 import { Input, RequiredIndicator } from '../components/common/Input';
 import { CollapsibleSection } from '../components/common/CollapsibleSection';
@@ -236,10 +237,12 @@ interface CreateTriageModalProps {
     error?: string | null;
     onSubmit: (payload: TriageItemCreate) => void;
     onClose: () => void;
+    /** A title carried over from quick capture. */
+    initialTitle?: string;
 }
 
-const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit, onClose }: CreateTriageModalProps) => {
-    const [title, setTitle] = useState('');
+const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit, onClose, initialTitle = '' }: CreateTriageModalProps) => {
+    const [title, setTitle] = useState(initialTitle);
     const [description, setDescription] = useState('');
     const [source, setSource] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
@@ -1943,8 +1946,10 @@ const TriagePage = () => {
         setStatusFilter('');
         setActiveOnly(true);
     };
-    const startNewIntake = () => {
+    const [createTitle, setCreateTitle] = useState('');
+    const startNewIntake = (title = '') => {
         createMutation.reset();
+        setCreateTitle(title);
         setIsCreating(true);
     };
 
@@ -2118,7 +2123,7 @@ const TriagePage = () => {
                 title={t('surfaces.triagePage.triageIntake')}
                 subtitle={t('surfaces.triagePage.reviewRawIntakeAndConvertAcceptedWorkIntoPlannedTasks')}
                 actions={(
-                    <Button onClick={startNewIntake}>
+                    <Button onClick={() => startNewIntake()}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('surfaces.triagePage.newIntake')}
                     </Button>
@@ -2158,6 +2163,8 @@ const TriagePage = () => {
                     </div>
                 </div>
             )}
+
+            <QuickCapture target={{ kind: 'triage' }} onExpand={startNewIntake} />
 
             <div className="wc-toolbar">
                 <div className="flex flex-wrap items-center gap-2" style={{flex:1}}>
@@ -2306,7 +2313,7 @@ const TriagePage = () => {
                                     <>
                                         <p className="font-medium text-content-primary">{t('surfaces.triagePage.inboxZeroTitle')}</p>
                                         <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.inboxZeroBody')}</p>
-                                        <Button className="mt-3" onClick={startNewIntake}>
+                                        <Button className="mt-3" onClick={() => startNewIntake()}>
                                             <Plus className="h-4 w-4" aria-hidden="true" />
                                             {t('surfaces.triagePage.newIntake')}
                                         </Button>
@@ -2365,6 +2372,7 @@ const TriagePage = () => {
                     error={createErrorMessage}
                     onSubmit={payload => createMutation.mutate(payload)}
                     onClose={() => setIsCreating(false)}
+                    initialTitle={createTitle}
                 />
             )}
 

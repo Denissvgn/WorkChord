@@ -28,7 +28,7 @@ import { TaskWorkPanel } from './TaskWorkPanel';
 import { emptyTaskBrief, newCriterion } from './taskEditorContract';
 import { TaskTimelinePanel } from './TaskTimelinePanel';
 import { AssigneeRecommendationsPanel } from '../team/AssigneeRecommendationsPanel';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import {
     getPayloadBoolean,
     getPayloadString,
@@ -70,6 +70,8 @@ interface TaskFormProps {
     onPendingChange?: (pending: boolean) => void;
     onDiscardReady?: (handler: (() => void) | null) => void;
     confirmUnsavedOnCancel?: boolean;
+    /** A title carried over from quick capture; the new task starts with it, unsaved. */
+    initialTitle?: string;
 }
 
 export const TaskForm = ({
@@ -87,6 +89,7 @@ export const TaskForm = ({
     onPendingChange,
     onDiscardReady,
     confirmUnsavedOnCancel = true,
+    initialTitle,
 }: TaskFormProps) => {
     const { t } = useTranslation();
     const formId = useId();
@@ -114,6 +117,8 @@ export const TaskForm = ({
     const [timeDirty, setTimeDirty] = useState(false);
     const [showAssistant, setShowAssistant] = useState(false);
     const [showDiscardWarning, setShowDiscardWarning] = useState(false);
+    // The plan changed between reading it and saving: only then is a fresh read offered.
+    const [creationConflict, setCreationConflict] = useState(false);
     const canApplyTemplates = !currentTask && mode === 'direct';
     const canSendToTriage = !currentTask && !parentId && mode === 'direct';
     const initialValues = useMemo(() => buildTaskEditorDefaults({
@@ -126,7 +131,8 @@ export const TaskForm = ({
     const [recoveredDraft] = useState(() => readTaskDraft(draftKey, initialValues));
     const [pendingWrite, setPendingWrite] = useState(() => readPendingTaskWrite(draftKey));
     const [writeComparison, setWriteComparison] = useState<{ items: { id: number; title: string; version?: number; kind?: 'task' | 'triage' }[]; has_more: boolean } | null>(null);
-    const [formData, setFormData] = useState<TaskEditorValues>(() => recoveredDraft ?? initialValues);
+    const [formData, setFormData] = useState<TaskEditorValues>(() => recoveredDraft
+        ?? (initialTitle && !initialData ? { ...initialValues, title: initialTitle } : initialValues));
     const [baseline, setBaseline] = useState<TaskEditorValues>(() => initialValues);
     const isDirty = JSON.stringify(formData) !== JSON.stringify(baseline);
     const clearDraft = useCallback(() => removeTaskDraft(draftKey, true), [draftKey]);
@@ -164,7 +170,10 @@ export const TaskForm = ({
     const compareCreationContext = async () => {
         if (iterationId === null) return;
         const observed = await readCreationContext('iteration', iterationId, true);
-        if (observed) setFormData(values => ({ ...values, expected_revision: observed.expected_revisions[iterationId] }));
+        if (observed) {
+            setFormData(values => ({ ...values, expected_revision: observed.expected_revisions[iterationId] }));
+            setCreationConflict(false);
+        }
     };
 
     // Fetch team for assignee dropdown
@@ -242,6 +251,7 @@ export const TaskForm = ({
         },
         onError: (err: unknown) => {
             definiteRejection(err);
+            setCreationConflict([409, 412].includes(getApiErrorStatus(err) ?? 0));
             setError(getApiErrorMessage(err, t('surfaces.taskForm.createFailed')));
         },
     });
@@ -559,10 +569,13 @@ export const TaskForm = ({
 
     return (
         <form onSubmit={handleSubmit} className="task-form space-y-6">
-            {!currentTask && iterationId !== null && <div className="space-y-2">
+            {!currentTask && iterationId !== null && (creationContext.loading || Boolean(creationContext.error) || creationConflict) && <div className="space-y-2">
                 {creationContext.loading && <p role="status">{t('common.loading')}</p>}
                 {Boolean(creationContext.error) && <QueryErrorState error={creationContext.error} onRetry={() => void compareCreationContext()} />}
-                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting || creationContext.loading} onClick={() => void compareCreationContext()}>{t('planningInput.reviewAgain')}</Button>
+                {creationConflict && <>
+                    <p className="text-sm text-content-secondary">{t('surfaces.taskForm.planChanged')}</p>
+                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting || creationContext.loading} onClick={() => void compareCreationContext()}>{t('planningInput.reviewAgain')}</Button>
+                </>}
             </div>}
             {sessionUnavailable && <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
                 <p>{t('identity.expired')}</p>
@@ -688,8 +701,9 @@ export const TaskForm = ({
                 <Input
  disabled={Boolean(currentTask?.is_composite)}                    type="number"
                     label={t('surfaces.taskForm.priority')}
-                    value={formData.priority}
-                    onChange={e => setFormData({ ...formData, priority: parseInt(e.target.value) })}
+                    value={formData.priority ?? ''}
+                    placeholder={t('surfaces.taskForm.priorityUnset')}
+                    onChange={e => setFormData({ ...formData, priority: e.target.value === '' ? null : parseInt(e.target.value) })}
                     min="1"
                     max="10"
                 />

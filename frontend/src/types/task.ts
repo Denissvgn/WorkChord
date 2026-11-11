@@ -174,7 +174,8 @@ export interface TaskCreate {
     parent_id?: number | null;
     title: string;
     description?: string;
-    priority: number;
+    /** Left out, the server stores its middle default; capture never implies top priority. */
+    priority?: number;
     effort_days: number | null;
     effort_hours?: number | null;
     assignee_id?: number | null;

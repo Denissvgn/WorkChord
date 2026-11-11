@@ -28,6 +28,7 @@ import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
 import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
 import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
+import { QuickCapture } from '../components/tasks/QuickCapture';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
 import { TASK_PART_PARAM } from '../components/tasks/TaskReadView';
@@ -88,6 +89,7 @@ const TasksPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const [isCreating, setIsCreating] = useState(false);
+    const [createTitle, setCreateTitle] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [filters, setFilters] = useState<TaskFilters>(defaultFilters);
     const [sortKey, setSortKey] = useState<SortKey>('priority');
@@ -347,6 +349,7 @@ const TasksPage = () => {
 
     const closeTaskCreator = useCallback(() => {
         setIsCreating(false);
+        setCreateTitle('');
         if (!createTaskRequested) return;
 
         const nextSearchParams = new URLSearchParams(searchParams);
@@ -737,6 +740,10 @@ const TasksPage = () => {
                                     'tasks-list-content',
                                     isFullScreen ? 'p-6' : 'px-6 pb-6',
                                 )}>
+                                    <div className="mb-3">
+                                        <QuickCapture target={{ kind: 'task', iterationId: selectedIterationId }}
+                                            onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />
+                                    </div>
                                     <TaskList
                                         iterationId={selectedIterationId}
                                         filters={filters}
@@ -768,7 +775,7 @@ const TasksPage = () => {
 
             {isCreateModalOpen && <GuardedTaskModal
                 title={t('tasks.createNewTask')} closeLabel={t('actions.close')}
-                onClose={closeTaskCreator} iterationId={selectedIterationId}
+                onClose={closeTaskCreator} iterationId={selectedIterationId} initialTitle={createTitle}
             />}
 
             {isImporting && (

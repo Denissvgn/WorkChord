@@ -10,7 +10,8 @@ export type TaskEditorAvailability =
 export interface TaskEditorValues {
     title: string;
     description: string;
-    priority: number;
+    /** Null until someone sets it: a new task is not top priority by default. */
+    priority: number | null;
     effort_days: number | null;
     effort_hours: number | null;
     owner_profile_id: number | null;
@@ -85,7 +86,7 @@ export const TASK_EDITOR_FIELD_SCHEMA: {
     priority: {
         section: 'essential',
         availability: 'all-editors',
-        defaultValue: ({ task, parentPriority }) => task?.priority ?? parentPriority ?? 1,
+        defaultValue: ({ task, parentPriority }) => task?.priority ?? parentPriority ?? null,
     },
     effort_days: {
         section: 'planning',
@@ -204,7 +205,7 @@ export const validateTaskEditor = (
 ): TaskEditorValidationIssue[] => {
     const issues: TaskEditorValidationIssue[] = [];
     if (!values.title.trim()) issues.push({ field: 'title', code: 'titleRequired' });
-    if (!Number.isFinite(values.priority) || values.priority < 1 || values.priority > 10) {
+    if (values.priority !== null && (!Number.isFinite(values.priority) || values.priority < 1 || values.priority > 10)) {
         issues.push({ field: 'priority', code: 'priorityRange' });
     }
     if (values.effort_hours !== null && (!Number.isFinite(values.effort_hours) || values.effort_hours < 0)) {
@@ -233,7 +234,7 @@ const mutationFields = (values: TaskEditorValues): TaskCreate => ({
     brief: values.brief ?? undefined,
     owner_profile_id: values.owner_profile_id,
     estimate_provenance: values.effort_hours === null ? "unknown" : values.estimate_provenance === "unknown" ? "estimated" : values.estimate_provenance,
-    priority: values.priority,
+    priority: values.priority ?? undefined,
     effort_days: values.effort_days,
     effort_hours: values.effort_hours,
     assignee_id: values.assignee_id,

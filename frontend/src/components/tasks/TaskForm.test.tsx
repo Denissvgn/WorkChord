@@ -64,6 +64,18 @@ describe('task template application', () => {
             acceptance_criteria: [{ id: expect.any(String), revision: 1, text: 'Legacy criterion', verification: '' }] });
     });
 
+    it('starts a new task with no priority and leaves it to the server default', async () => {
+        configure(template());
+        const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} initialTitle="Captured title" onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByRole('textbox', { name: /Task Title/i })).toHaveValue('Captured title');
+        const priority = screen.getByRole('spinbutton', { name: 'Priority' });
+        expect(priority).toHaveValue(null);
+        expect(priority).toHaveAttribute('placeholder', 'Not set');
+        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalled());
+        expect(JSON.parse(JSON.stringify(api.post.mock.calls[0][1]))).not.toHaveProperty('priority');
+    });
+
     it('does not blindly create again after an uncertain result without a current comparison', async () => {
         configure(template());
         api.post.mockRejectedValueOnce(new TypeError('No verified response'));
