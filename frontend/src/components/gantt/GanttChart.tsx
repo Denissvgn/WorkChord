@@ -1207,7 +1207,7 @@ export const GanttChart = ({
                         <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-muted border-r border-border" style={{ width: `${SIDEBAR_WIDTH}px` }} />
                         {monthGroups.map((group, idx) => (
                             <div key={idx}
-                                className={clsx("absolute top-0 bottom-0 text-center border-r border-border flex items-center justify-center truncate px-1", idx % 2 === 0 ? "bg-feedback-indigo-muted/50" : "bg-feedback-success-muted/50")}
+                                className={clsx("absolute top-0 bottom-0 text-center border-r border-border flex items-center justify-center truncate px-1", idx % 2 === 0 ? "bg-surface-muted" : "bg-surface-card")}
                                 style={{
                                     left: `${SIDEBAR_WIDTH + group.startIndex * zoomLevel}px`,
                                     width: `${group.count * zoomLevel}px`

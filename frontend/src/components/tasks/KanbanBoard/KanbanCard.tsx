@@ -6,6 +6,7 @@ import { Bot, Clock, User as UserIcon, AlertCircle, GripVertical } from 'lucide-
 import clsx from 'clsx';
 import { formatEffortDays } from '../../../utils/workNumbers';
 import { formatClaimUntil } from './claimTime';
+import { priorityChipClassName } from '../../ui/tone';
 
 
 interface KanbanCardProps {
@@ -37,14 +38,6 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
         transition,
     };
 
-    const getPriorityColor = (priority: number) => {
-        if (priority <= 3) return 'bg-feedback-danger'; // High
-        if (priority <= 6) return 'bg-feedback-warning'; // Medium
-        return 'bg-feedback-info'; // Low
-    };
-
-    const priorityColor = getPriorityColor(task.priority);
-
     if (isDragging) {
         return (
             <div
@@ -62,13 +55,11 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
 
             className="group relative bg-surface-card p-4 rounded-xl border border-border-subtle shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing select-none hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
-            {/* Priority Strip */}
-            <div className={clsx("absolute left-0 top-3 bottom-3 w-1 rounded-r-full", priorityColor)} />
-
-            <div className="pl-3">
+            <div>
                 {/* Header: the one task ID, its priority and the move handle */}
                 <div className="flex items-start justify-between gap-2">
-                    <span className="pt-1 text-xs tabular-nums text-content-secondary">#{task.id} · P{task.priority}</span>
+                    <span className="flex items-center gap-1.5 pt-1 text-xs tabular-nums text-content-secondary">#{task.id}
+                        <span className={clsx('rounded px-1 font-medium', priorityChipClassName(task.priority))}>P{task.priority}</span></span>
                     <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })}
                         className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <GripVertical className="h-4 w-4" aria-hidden="true" />

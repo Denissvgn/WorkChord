@@ -26,11 +26,8 @@ const viewTypeIcons = {
     projects: FolderOpen,
 };
 
-const viewTypeTone: Record<SavedViewType, string> = {
-    tasks: 'bg-action-muted text-action border-action',
-    triage: 'bg-feedback-purple-muted text-feedback-purple-foreground border-feedback-purple-border',
-    projects: 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border',
-};
+// A view's type is a category: one neutral chip, told apart by its icon and word, not by status hues.
+const viewTypeChip = 'border-border bg-surface-subtle text-content-secondary';
 
 /** One saved view as a compact row: what it is, how many items it holds, and where it opens. */
 const DashboardRow = ({ card }: { card: SavedViewDashboardCard }) => {
@@ -38,7 +35,7 @@ const DashboardRow = ({ card }: { card: SavedViewDashboardCard }) => {
     const Icon = viewTypeIcons[card.view_type];
     const display = savedViewDisplay(card);
     const body = <>
-        <span className={clsx('inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-wc-micro font-medium', viewTypeTone[card.view_type])}>
+        <span className={clsx('inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-wc-micro font-medium', viewTypeChip)}>
             <Icon aria-hidden="true" className="mr-1 h-3 w-3" />
             {t(viewTypeLabelKeys[card.view_type])}
         </span>

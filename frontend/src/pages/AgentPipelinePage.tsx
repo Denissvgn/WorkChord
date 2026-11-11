@@ -27,6 +27,7 @@ import { protectedQueryRetry } from '../utils/protectedQueries';
 import { formatDateTime } from '../utils/formatDate';
 import { TaskRoutingPanel } from '../components/agent/TaskRoutingPanel';
 import clsx from 'clsx';
+import { priorityChipClassName } from '../components/ui/tone';
 
 const EMPTY_PIPELINE = {
     needs_definition: [],
@@ -203,56 +204,42 @@ export default function AgentPipelinePage() {
         {
             id: 'needs_definition' as const,
             title: t('agentPipeline.columns.needs_definition.title'),
-            color: 'text-feedback-warning-foreground',
-            bgColor: 'bg-feedback-warning-muted border-feedback-warning-border',
             tasks: filterAndSegment(pipeline.needs_definition),
             description: t('agentPipeline.columns.needs_definition.description')
         },
         {
             id: 'ready_to_assign' as const,
             title: t('agentPipeline.columns.ready_to_assign.title'),
-            color: 'text-feedback-info-foreground',
-            bgColor: 'bg-feedback-info-muted border-feedback-info-border',
             tasks: filterAndSegment(pipeline.ready_to_assign),
             description: t('agentPipeline.columns.ready_to_assign.description')
         },
         {
             id: 'assigned_waiting' as const,
             title: t('agentPipeline.columns.assigned_waiting.title'),
-            color: 'text-content-secondary',
-            bgColor: 'bg-surface-muted border-border',
             tasks: filterAndSegment(pipeline.assigned_waiting),
             description: t('agentPipeline.columns.assigned_waiting.description')
         },
         {
             id: 'start_ready' as const,
             title: t('agentPipeline.columns.start_ready.title'),
-            color: 'text-feedback-indigo-foreground',
-            bgColor: 'bg-feedback-indigo-muted border-feedback-indigo-border',
             tasks: filterAndSegment(pipeline.start_ready),
             description: t('agentPipeline.columns.start_ready.description')
         },
         {
             id: 'executing' as const,
             title: t('agentPipeline.columns.executing.title'),
-            color: 'text-action-muted-foreground',
-            bgColor: 'bg-action-muted border-action',
             tasks: filterAndSegment(pipeline.executing),
             description: t('agentPipeline.columns.executing.description')
         },
         {
             id: 'verification_required' as const,
             title: t('agentPipeline.columns.verification_required.title'),
-            color: 'text-feedback-success-foreground',
-            bgColor: 'bg-feedback-success-muted border-feedback-success-border',
             tasks: filterAndSegment(pipeline.verification_required),
             description: t('agentPipeline.columns.verification_required.description')
         },
         {
             id: 'recovery_required' as const,
             title: t('agentPipeline.columns.recovery_required.title'),
-            color: 'text-feedback-danger-foreground',
-            bgColor: 'bg-feedback-danger-muted border-feedback-danger-border',
             tasks: filterAndSegment(pipeline.recovery_required),
             description: t('agentPipeline.columns.recovery_required.description')
         }
@@ -435,7 +422,7 @@ export default function AgentPipelinePage() {
                                             {task.claimed_by
                                                 ? <span className="inline-flex items-center gap-1"><User aria-hidden="true" className="h-3.5 w-3.5" />{t('agentPipeline.claimed', { name: task.claimed_by.display_name })}</span>
                                                 : task.assignee ? <span className="inline-flex items-center gap-1"><User aria-hidden="true" className="h-3.5 w-3.5" />{task.assignee.name}</span> : null}
-                                            {task.priority === 1 && <span className="rounded bg-feedback-danger-muted px-1 font-semibold text-feedback-danger-foreground">{t('agentPipeline.urgent')}</span>}
+                                            {task.priority === 1 && <span className={`rounded px-1 ${priorityChipClassName(task.priority)}`}>{t('agentPipeline.urgent')}</span>}
                                         </p>
                                     </div>
                                     <div className="flex shrink-0 flex-wrap gap-2">

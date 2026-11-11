@@ -1,6 +1,7 @@
 import { isGraphLimitError } from '../../utils/graphLimitError';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
-import { statusTextClassName } from '../ui/tone';
+import { priorityChipClassName, statusTextClassName } from '../ui/tone';
+import { LabelChip } from '../labels/LabelChip';
 import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -933,13 +934,6 @@ const TaskItemContent = ({
     const isSelectable = isBulkMode ? true : canSelectForMerge(task);
     const isSelected = isBulkMode ? selectedBulkTaskIds.has(task.id) : selectedTaskIds.has(task.id);
 
-    const getPriorityBadge = (priority: number) => {
-        if (priority <= 3) return { bg: 'bg-feedback-danger-muted', text: 'text-feedback-danger-foreground', label: `P${priority}` };
-        if (priority <= 6) return { bg: 'bg-feedback-warning-muted', text: 'text-feedback-warning-foreground', label: `P${priority}` };
-        return { bg: 'bg-surface-subtle', text: 'text-content-secondary', label: `P${priority}` };
-    };
-
-    const priorityBadge = getPriorityBadge(task.priority);
     const detailsCount = Number(task.is_optional)
         + Number(task.is_deferred)
         + Number(Boolean(task.claimed_by))
@@ -1031,8 +1025,8 @@ const TaskItemContent = ({
                     {showStatusLabel && <span className="sr-only md:hidden">{statusText}</span>}
                 </span>
 
-                <span className={clsx("shrink-0 rounded px-1.5 py-0.5 text-xs font-medium", priorityBadge.bg, priorityBadge.text)}>
-                    {priorityBadge.label}
+                <span className={clsx("shrink-0 rounded px-1.5 py-0.5 text-xs font-medium", priorityChipClassName(task.priority))}>
+                    P{task.priority}
                 </span>
 
                 <button type="button" onClick={() => onEdit(task)} title={task.title}
@@ -1146,23 +1140,7 @@ const TaskItemContent = ({
                     )}
                     {task.tags.map((tag, idx) => {
                         const label = labelsBySlug.get(tag);
-                        return label ? (
-                            <span
-                                key={idx}
-                                className="rounded-full border px-2 py-0.5"
-                                style={{
-                                    color: label.color,
-                                    backgroundColor: `${label.color}1A`,
-                                    borderColor: `${label.color}66`,
-                                }}
-                            >
-                                {tag}
-                            </span>
-                        ) : (
-                            <span key={idx} className="rounded-full bg-feedback-purple-muted px-2 py-0.5 text-feedback-purple-foreground">
-                                {tag}
-                            </span>
-                        );
+                        return <LabelChip key={idx} color={label?.color}>{tag}</LabelChip>;
                     })}
                 </div>
             )}

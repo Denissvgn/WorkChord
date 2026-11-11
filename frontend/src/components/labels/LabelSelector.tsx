@@ -7,6 +7,7 @@ import { labelService } from '../../services/labelService';
 import type { Label } from '../../types/label';
 import { labelDisplay, labelGroupDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { LabelChip } from './LabelChip';
 
 interface LabelSelectorProps {
     value: string[];
@@ -120,15 +121,7 @@ export const LabelSelector = ({
                         const option = labelsBySlug.get(slug);
                         const isArchived = option ? !option.is_active || option.group?.is_active === false : false;
                         return (
-                            <span
-                                key={slug}
-                                className="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-sm"
-                                style={option ? {
-                                    color: option.color,
-                                    backgroundColor: `${option.color}1A`,
-                                    borderColor: `${option.color}66`,
-                                } : undefined}
-                            >
+                            <LabelChip key={slug} color={option?.color} size="md">
                                 <span>{option ? labelDisplay(option).name : slug}</span>
                                 {option && option.slug !== option.name && (
                                     <span className="text-xs">{option.slug}</span>
@@ -146,7 +139,7 @@ export const LabelSelector = ({
                                 >
                                     <X className="h-3 w-3" aria-hidden="true" />
                                 </button>
-                            </span>
+                            </LabelChip>
                         );
                     })}
                 </div>

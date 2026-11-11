@@ -230,7 +230,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                 <div className="flex items-center gap-2 text-sm font-medium text-content-primary">
                     <History className="w-4 h-4 text-content-secondary" />
                     {t('surfaces.taskTimeline.timeline')}
-                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-wc-micro font-medium text-action">
+                    <span className="rounded-full border border-border bg-surface-subtle px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
                         {task.request_count ?? 0} {t('surfaces.taskTimeline.requests')}
                     </span>
                 </div>
@@ -250,7 +250,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                         "inline-flex items-center gap-1 px-2 py-1 rounded-full border",
                         claimIsStale
                             ? "bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border"
-                            : "bg-action-muted text-action border-action"
+                            : "border-border bg-surface-subtle text-content-secondary"
                     )}>
                         <Bot className="w-3 h-3" />
                         {claimIsStale ? t('surfaces.taskTimeline.staleClaim') : t('surfaces.taskTimeline.claimed')}: {task.claimed_by.display_name}
@@ -328,7 +328,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                             {details || providerLabel(link.provider)}
                                         </span>
                                         {link.status && (
-                                            <span className="shrink-0 rounded-full bg-action-muted px-1.5 py-0.5 text-wc-micro font-medium text-action">
+                                            <span className="shrink-0 rounded-full border border-border bg-surface-subtle px-1.5 py-0.5 text-wc-micro font-medium text-content-secondary">
                                                 {link.status}
                                             </span>
                                         )}
