@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 | `../../services/templateService` | `templateService` | — | compiler-dependent |
 | `../../types/project` | `Project`, `ProjectCreate`, `ProjectHealth`, `ProjectStatus` | Declaration | erased |
 | `../../types/template` | `WorkTemplate` | Declaration | erased |
-| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 | `../../utils/teamMemberLabels` | `formatTeamMemberProfileLabel` | — | compiler-dependent |
 | `../../utils/templateDefaults` | `appendChecklistToDescription`, `getPayloadNumber` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
@@ -62,7 +62,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
+| Inbound | `frontend` (3) |
 | Outbound | `frontend` (17) |
 
 ### External packages
@@ -71,7 +71,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

@@ -41,25 +41,28 @@ _Auto-generated from `Project` in `frontend/src/types/project.ts`._
 ```mermaid
 flowchart LR
     n0["Project (frontend/src/types/project.ts)"]
-    n1["ProjectForm (frontend/src/components/projects/ProjectForm.tsx)"]
-    n2["frontend/src/pages/ProjectDetailPage.tsx"]
-    n3["frontend/src/pages/ProjectsPage.tsx"]
-    n4["frontend/src/pages/RoadmapPage.tsx"]
-    n5["frontend/src/pages/TriagePage.tsx"]
-    n6["frontend/src/services/projectService.ts"]
+    n1["frontend/src/components/projects/ProjectForm.test.tsx"]
+    n2["ProjectForm (frontend/src/components/projects/ProjectForm.tsx)"]
+    n3["frontend/src/pages/ProjectDetailPage.tsx"]
+    n4["frontend/src/pages/ProjectsPage.tsx"]
+    n5["frontend/src/pages/RoadmapPage.tsx"]
+    n6["frontend/src/pages/TriagePage.tsx"]
+    n7["frontend/src/services/projectService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/types_project.md"
-    click n1 "../modules/ProjectForm.md"
-    click n2 "../modules/ProjectDetailPage.md"
-    click n3 "../modules/ProjectsPage.md"
-    click n4 "../modules/RoadmapPage.md"
-    click n5 "../modules/TriagePage.md"
-    click n6 "../modules/projectService.md"
+    click n1 "../modules/ProjectForm.test.md"
+    click n2 "../modules/ProjectForm.md"
+    click n3 "../modules/ProjectDetailPage.md"
+    click n4 "../modules/ProjectsPage.md"
+    click n5 "../modules/RoadmapPage.md"
+    click n6 "../modules/TriagePage.md"
+    click n7 "../modules/projectService.md"
 ```
 
 ### Summary
@@ -72,6 +75,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `ProjectForm.test` | import | [ProjectForm.test](../modules/ProjectForm.test.md) | — |
 | `ProjectForm` | type_reference | [ProjectForm](../modules/ProjectForm.md) | — |
 | `ProjectDetailPage` | import | [ProjectDetailPage](../modules/ProjectDetailPage.md) | — |
 | `ProjectsPage` | import | [ProjectsPage](../modules/ProjectsPage.md) | — |

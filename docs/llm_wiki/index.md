@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1550 | [Open section](#entities) |
-| Modules | 801 | [Open section](#modules) |
+| Modules | 802 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1722,6 +1722,7 @@ Retained history; these declarations are absent from the selected source invento
 - [PlanningWorkflowGuide.test](modules/PlanningWorkflowGuide.test.md) - `frontend/src/components/planning/PlanningWorkflowGuide.test.tsx`
 - [ProjectDetailPage](modules/ProjectDetailPage.md) - `frontend/src/pages/ProjectDetailPage.tsx`
 - [ProjectForm](modules/ProjectForm.md) - `frontend/src/components/projects/ProjectForm.tsx`
+- [ProjectForm.test](modules/ProjectForm.test.md) - `frontend/src/components/projects/ProjectForm.test.tsx`
 - [ProjectIterationsSection](modules/ProjectIterationsSection.md) - `frontend/src/components/projects/ProjectIterationsSection.tsx`
 - [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) - `frontend/src/pages/ProjectReleaseDetailPage.tsx`
 - [ProjectTaskTree](modules/ProjectTaskTree.md) - `frontend/src/components/projects/ProjectTaskTree.tsx`

@@ -75,6 +75,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanningInputBoundary](modules/PlanningInputBoundary.md) | [planningInputService](modules/planningInputService.md) |
 | [InitiativeForm](modules/InitiativeForm.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [InitiativeForm](modules/InitiativeForm.md) | [types_project](modules/types_project.md) |
+| [ProjectForm.test](modules/ProjectForm.test.md) | [types_project](modules/types_project.md) |
 | [ProjectForm](modules/ProjectForm.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [ProjectForm](modules/ProjectForm.md) | [planningInputService](modules/planningInputService.md) |
 | [ProjectForm](modules/ProjectForm.md) | [types_project](modules/types_project.md) |
@@ -371,10 +372,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 |--------|--------|---------|
 | [models_task](modules/models_task.md) | 94 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
-| [Button](modules/Button.md) | 83 | 0 |
+| [Button](modules/Button.md) | 84 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
 | [time](modules/time.md) | 77 | 0 |
-| [renderWithProviders](modules/renderWithProviders.md) | 74 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 75 | 2 |
 | [config](modules/config.md) | 72 | 1 |
 | [types_task](modules/types_task.md) | 72 | 2 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
@@ -459,6 +460,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planningTaskIssues](modules/planningTaskIssues.md) | 10 | 2 |
 | [useAdminAccess](modules/useAdminAccess.md) | 10 | 2 |
 | [types_gantt](modules/types_gantt.md) | 10 | 2 |
+| [types_project](modules/types_project.md) | 10 | 3 |
 | [models_capacity](modules/models_capacity.md) | 9 | 1 |
 | [models_time_entry](modules/models_time_entry.md) | 9 | 2 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
@@ -470,7 +472,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [sql_semantics](modules/sql_semantics.md) | 9 | 0 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 9 | 0 |
 | [taskEditorContract](modules/taskEditorContract.md) | 9 | 2 |
-| [types_project](modules/types_project.md) | 9 | 3 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [database_config](modules/database_config.md) | 8 | 0 |
 | [source](modules/source.md) | 8 | 5 |
@@ -583,7 +584,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [Breadcrumbs](modules/Breadcrumbs.md) | 4 | 0 |
 | [PlanningWorkbenchFrame](modules/PlanningWorkbenchFrame.md) | 4 | 2 |
 | [projectStatusStyles](modules/projectStatusStyles.md) | 4 | 2 |
-| [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 6 |
+| [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 7 |
 | [WithheldValuesNote](modules/WithheldValuesNote.md) | 4 | 0 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 4 | 3 |
 | [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 10 |
@@ -638,6 +639,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AppSidebar](modules/AppSidebar.md) | 3 | 5 |
 | [CommandMenu](modules/CommandMenu.md) | 3 | 6 |
 | [commandMenuEvents](modules/commandMenuEvents.md) | 3 | 0 |
+| [ProjectForm](modules/ProjectForm.md) | 3 | 17 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
@@ -730,7 +732,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SidebarIterationCard](modules/SidebarIterationCard.md) | 2 | 1 |
 | [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) | 2 | 7 |
 | [PlanningWorkflowGuide](modules/PlanningWorkflowGuide.md) | 2 | 2 |
-| [ProjectForm](modules/ProjectForm.md) | 2 | 17 |
 | [TimeEntriesReport](modules/TimeEntriesReport.md) | 2 | 10 |
 | [ReleaseForm](modules/ReleaseForm.md) | 2 | 10 |
 | [AccessKeysSummary](modules/AccessKeysSummary.md) | 2 | 0 |
@@ -1027,6 +1028,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanningInputBoundary.test](modules/PlanningInputBoundary.test.md) | 0 | 2 |
 | [PlanningWorkbenchFrame.test](modules/PlanningWorkbenchFrame.test.md) | 0 | 3 |
 | [PlanningWorkflowGuide.test](modules/PlanningWorkflowGuide.test.md) | 0 | 2 |
+| [ProjectForm.test](modules/ProjectForm.test.md) | 0 | 3 |
 | [TimeEntriesReport.test](modules/TimeEntriesReport.test.md) | 0 | 3 |
 | [projectStatusStyles.test](modules/projectStatusStyles.test.md) | 0 | 1 |
 | [RequestSourceLinksPanel.test](modules/RequestSourceLinksPanel.test.md) | 0 | 2 |
