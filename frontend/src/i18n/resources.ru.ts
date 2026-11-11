@@ -1604,7 +1604,7 @@ export const russianResources = {
                     blue: 'Синяя',
                     green: 'Зелёная',
                 },
-                aboutVersion: 'WorkChord v1.7.0',
+                aboutVersion: 'WorkChord v1.8.0',
                 checkSystemStatus: 'Проверить состояние системы',
                 checkConsole: 'Смотрите детали в console',
             },

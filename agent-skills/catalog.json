@@ -107,7 +107,7 @@
         "team:write"
       ],
       "role": "pm",
-      "server_compatibility": ">=1.7.0,<2.0.0",
+      "server_compatibility": ">=1.8.0,<2.0.0",
       "version": "1.11.0"
     },
     {
@@ -176,7 +176,7 @@
         "verification:write"
       ],
       "role": "verifier",
-      "server_compatibility": ">=1.7.0,<2.0.0",
+      "server_compatibility": ">=1.8.0,<2.0.0",
       "version": "1.0.0"
     },
     {
@@ -268,7 +268,7 @@
         "work:execute"
       ],
       "role": "worker",
-      "server_compatibility": ">=1.7.0,<2.0.0",
+      "server_compatibility": ">=1.8.0,<2.0.0",
       "version": "1.10.0"
     }
   ],

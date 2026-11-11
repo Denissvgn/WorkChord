@@ -6,6 +6,23 @@ review. An external runtime executes the model and tools. The
 outbound events; the `workchord-worker` **role package** guides an external
 execution agent. Provisioning either does not start a model runtime.
 
+## Upgrade to 1.8.0
+
+Server 1.8.0 changes what role packages and clients read, with no
+compatibility period. Upgrade the server and every agent runtime together:
+
+1. Install the role packages from the 1.8.0 skill catalog: `workchord-pm`,
+   `workchord-worker`, and the new `workchord-reviewer`. The catalog requires
+   server 1.8.0 or later.
+2. Move every verifier to `workchord-reviewer`, as described in
+   [agent-team setup](agent-team-setup.md#move-verifiers-to-the-reviewer-package),
+   and acknowledge each runtime's new handoff.
+3. Update any client that reads `GET /api/agent/pipeline`: the
+   `ready_for_agent` and `definition_ready_unassigned` lists are replaced by
+   one `ready_to_assign` list, and every stage list is always present.
+4. Expect a worker's claim-fenced `agent.blocker` task event to mark the task
+   Blocked. Only the PM or a person removes the block.
+
 ## Provision and connect
 
 1. Follow [agent-team setup](agent-team-setup.md) to create the exact actors,

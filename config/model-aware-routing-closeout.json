@@ -12,8 +12,8 @@
   },
   "release": {
     "agent_team_report_schema": "agent-team-setup-report-v1",
-    "backend_version": "1.7.0",
-    "frontend_version": "1.7.0",
+    "backend_version": "1.8.0",
+    "frontend_version": "1.8.0",
     "model_aware_routing_feature": "model-aware-routing-v1",
     "setup_feature": "agent-team-master-v1"
   },

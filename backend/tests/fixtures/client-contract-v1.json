@@ -1,5 +1,5 @@
 {
-  "api_version": "1.7.0",
+  "api_version": "1.8.0",
   "components": {
     "schemas": {
       "Body_import_iteration_api_iterations__iteration_id__import_post": {

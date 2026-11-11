@@ -1565,7 +1565,7 @@ export const englishResources = {
                     blue: 'Blue',
                     green: 'Green',
                 },
-                aboutVersion: 'WorkChord v1.7.0',
+                aboutVersion: 'WorkChord v1.8.0',
                 checkSystemStatus: 'Check System Status',
                 checkConsole: 'Check console for details',
             },
