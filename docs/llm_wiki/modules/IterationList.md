@@ -23,10 +23,11 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `./IterationImportDialog` | `IterationImportDialog` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `Calendar`, `Trash2`, `ArrowRight`, `Download`, `Upload`, `FolderOpen` | — | compiler-dependent |
 | `react` | `useState`, `useRef` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useNavigate` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -61,7 +62,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 5 | 0 |
+| typescript | 6 | 0 |
 
 > All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
@@ -69,7 +70,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationListProps](../entities/IterationListProps.md) | Interface | 18 | — | — |
+| [IterationListProps](../entities/IterationListProps.md) | Interface | 19 | — | — |
 
 ## Functions
 

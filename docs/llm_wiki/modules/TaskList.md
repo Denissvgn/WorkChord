@@ -4,7 +4,7 @@
 
 ## Description
 
-Merge drafts capture the aggregate revision when their confirmation editor opens. Live list updates do not replace it at submission; conflicts retain title/selection and expose explicit current-input review.
+Merge drafts capture the aggregate revision when their confirmation editor opens. Live list updates do not replace it at submission; conflicts retain title/selection and expose explicit current-input review. Bulk selection is a visible toolbar action; a hand-off into bulk mode selects every matching task once.
 
 ## Imports
 
@@ -83,8 +83,8 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskListProps](../entities/TaskListProps.md) | Interface | 70 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 740 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 792 | `TaskItemProps` | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 742 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 794 | `TaskItemProps` | — |
 | [SortKey](../entities/SortKey.md) | Type alias | 48 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
 | [TaskMode](../entities/TaskMode.md) | Type alias | 49 | `'bulk' \| 'merge'` | — |
 | [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | `Parameters<typeof taskService.reorder>[0]` | — |
@@ -94,4 +94,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |
+| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;    preselectAllInBulk &#61; false&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |

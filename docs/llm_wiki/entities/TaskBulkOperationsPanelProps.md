@@ -18,6 +18,7 @@ _Auto-generated from `TaskBulkOperationsPanelProps` in `frontend/src/components/
 | `selectedTaskIds` | `number[]` | Yes | — | — |
 | `onClearSelection` | `() => void` | Yes | — | — |
 | `onApplied` | `() => void` | Yes | — | — |
+| `focusAssignee` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | 0 | `iterationId`, `onApplied`, `onClearSelection`, `selectedTaskIds`, `selectedTasks` |
+| [TaskBulkOperationsPanel](../modules/TaskBulkOperationsPanel.md) | 0 | `focusAssignee`, `iterationId`, `onApplied`, `onClearSelection`, `selectedTaskIds`, `selectedTasks` |
 
 ### References
 

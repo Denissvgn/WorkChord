@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1526 | [Open section](#entities) |
-| Modules | 758 | [Open section](#modules) |
+| Entities | 1527 | [Open section](#entities) |
+| Modules | 759 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 550 | [Open section](#entry-point-flows) |
@@ -297,6 +297,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DateInput](entities/DateInput.md)
 - [DateListProps](entities/DateListProps.md)
 - [DateRange](entities/DateRange.md)
+- [DatedIteration](entities/DatedIteration.md)
 - [DeliveryDatabase](entities/DeliveryDatabase.md)
 - [DeliveryDependency](entities/DeliveryDependency.md)
 - [DeliveryDependencyInput](entities/DeliveryDependencyInput.md)
@@ -1912,6 +1913,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [isolated_rehearsal](modules/isolated_rehearsal.md) - Own isolated Compose resources without reusing operator credentials or data.
 - [iterationService](modules/iterationService.md) - `frontend/src/services/iterationService.ts`
 - [iterationStore](modules/iterationStore.md) - `frontend/src/store/iterationStore.ts`
+- [iterationStore.test](modules/iterationStore.test.md) - `frontend/src/store/iterationStore.test.ts`
 - [iteration_service](modules/iteration_service.md) - Iteration service with business logic.
 - [iterations](modules/iterations.md) - Iteration API router.
 - [labelService](modules/labelService.md) - `frontend/src/services/labelService.ts`

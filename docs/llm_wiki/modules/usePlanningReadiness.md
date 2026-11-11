@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../services/triageService` | `triageService` | — | compiler-dependent |
-| `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../../types/gantt` | `GanttResponse` | Declaration | erased |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `Task` | Declaration | erased |
@@ -82,4 +82,4 @@ flowchart LR
 | `enrichPlanningTeamMembers` | <pre><code>&#40;&#123;&#10;    members&#44;&#10;    tasks&#44;&#10;    iteration&#44;&#10;    gantt&#44;&#10;&#125;&#58; &#123;&#10;    members&#58; TeamMember&#91;&#93;&#59;&#10;    tasks&#58; Task&#91;&#93;&#59;&#10;    iteration&#58; Iteration &#124; null&#59;&#10;    gantt&#63;&#58; GanttResponse&#59;&#10;&#125;&#41; &#45;&#62; PlanningTeamMember&#91;&#93;</code></pre> | — | — |
 | `hasSavedPlanningSchedule` | `(tasks: Task[])` | — | — |
 | `countPlanningExceptions` | `(tasks: Task[], members: PlanningTeamMember[])` | — | — |
-| `usePlanningReadiness` | <pre><code>&#40;&#123;&#10;    includeInbox &#61; false&#44;&#10;    autoSelectFirst &#61; false&#44;&#10;&#125;&#58; PlanningReadinessOptions &#61; &#123;&#125;&#41;</code></pre> | — | — |
+| `usePlanningReadiness` | <pre><code>&#40;&#123;&#10;    includeInbox &#61; false&#44;&#10;    &#47;&#47; Every planning surface selects the same default iteration&#44; so readiness&#10;    &#47;&#47; never depends on which page was opened first&#46;&#10;    autoSelectFirst &#61; true&#44;&#10;&#125;&#58; PlanningReadinessOptions &#61; &#123;&#125;&#41;</code></pre> | — | — |

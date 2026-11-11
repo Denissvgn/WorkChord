@@ -1,6 +1,6 @@
 # MasterStepDef
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:14`
+**Location:** `frontend/src/features/planningMasters/masters.ts:15`
 **Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

@@ -26,7 +26,7 @@ Calendar reads and writes retain resource and draft generation boundaries. Pendi
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../services/teamService` | `teamService` | — | compiler-dependent |
-| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../types/calendar` | `Calendar`, `CalendarCreate`, `CalendarUpdate` | Declaration | erased |
 | `../types/team` | `TeamMember`, `Vacation` | Declaration | erased |
 | `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |

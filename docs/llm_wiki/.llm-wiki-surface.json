@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1526,
+      "entities": 1527,
       "flows": 550,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 758,
+      "modules": 759,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3042
+    "total": 3044
   },
   "dependency_pages": {
     "count": 2,
@@ -43327,6 +43327,7 @@
         "entities/DatabaseStatus.md",
         "entities/DatabaseUnavailableError.md",
         "entities/DateChipProps.md",
+        "entities/DatedIteration.md",
         "entities/DateInput.md",
         "entities/DateListProps.md",
         "entities/DateRange.md",
@@ -45348,6 +45349,7 @@
         "modules/iterationService.md",
         "modules/IterationsPage.md",
         "modules/iterationStore.md",
+        "modules/iterationStore.test.md",
         "modules/KanbanBoard.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
@@ -50329,6 +50331,18 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/CalendarPage.tsx",
       "title": "DateChipProps"
+    },
+    {
+      "canonical_path": "entities/DatedIteration.md",
+      "id": "DatedIteration",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/DatedIteration",
+      "outgoing_internal_links": [
+        "modules/iterationStore.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/store/iterationStore.ts",
+      "title": "DatedIteration"
     },
     {
       "canonical_path": "entities/DateInput.md",
@@ -71078,6 +71092,7 @@
         "modules/iterationStore.md",
         "modules/QueryState.md",
         "modules/TasksPage.md",
+        "modules/TeamPage.md",
         "modules/types_iteration.md"
       ],
       "role": "semantic",
@@ -71120,12 +71135,26 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/iterationStore",
       "outgoing_internal_links": [
+        "entities/DatedIteration.md",
         "entities/IterationStore.md",
         "modules/iterationStore.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/store/iterationStore.ts",
       "title": "iterationStore Module"
+    },
+    {
+      "canonical_path": "modules/iterationStore.test.md",
+      "id": "iterationStore.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/iterationStore.test",
+      "outgoing_internal_links": [
+        "modules/iterationStore.md",
+        "modules/iterationStore.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/store/iterationStore.test.ts",
+      "title": "iterationStore.test Module"
     },
     {
       "canonical_path": "modules/KanbanBoard.md",
@@ -72836,6 +72865,7 @@
         "entities/StepState.md",
         "entities/StepStatus.md",
         "entities/Translate.md",
+        "modules/formatDate.md",
         "modules/OverviewPage.md",
         "modules/PlanMasterPage.md",
         "modules/PlanMasterPage.test.md",
@@ -72918,6 +72948,7 @@
       "mcp_uri": "llm-wiki://modules/planningTaskIssues",
       "outgoing_internal_links": [
         "entities/PlanningTaskIssue.md",
+        "modules/GanttChart.md",
         "modules/PlanMasterPage.md",
         "modules/planningMasters_masters.md",
         "modules/planningReturn.md",
@@ -77218,18 +77249,7 @@
       "mcp_uri": "llm-wiki://modules/TeamPage",
       "outgoing_internal_links": [
         "entities/TeamPageAction.md",
-        "modules/ImportTeamModal.md",
-        "modules/index.md",
-        "modules/iterationService.md",
-        "modules/iterationStore.md",
-        "modules/PlanReturnBar.md",
-        "modules/QueryState.md",
-        "modules/TeamForm.md",
-        "modules/TeamList.md",
-        "modules/TeamPage.md",
-        "modules/TeamProfileManager.md",
-        "modules/teamService.md",
-        "modules/types_team.md"
+        "modules/TeamPage.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/pages/TeamPage.tsx",
@@ -94077,6 +94097,7 @@
         "modules/iterationService.md",
         "modules/IterationsPage.md",
         "modules/iterationStore.md",
+        "modules/iterationStore.test.md",
         "modules/KanbanBoard.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
@@ -94846,6 +94867,7 @@
         "modules/iterationService.md",
         "modules/IterationsPage.md",
         "modules/iterationStore.md",
+        "modules/iterationStore.test.md",
         "modules/KanbanBoard.md",
         "modules/KanbanBoard.test.md",
         "modules/KanbanCard.md",
@@ -95375,5 +95397,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2e8d7c8d1a9a819a9eeea81c2db68525574d5a82909245c0e5dd82871c67df54"
+  "source_hash": "sha256:77b60fa87b395d969b4b49dbfb60f4a516374ad8ddc04e54b14a02233b6f67b9"
 }

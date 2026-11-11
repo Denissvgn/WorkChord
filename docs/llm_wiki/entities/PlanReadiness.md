@@ -1,6 +1,6 @@
 # PlanReadiness
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:93`
+**Location:** `frontend/src/features/planningMasters/masters.ts:94`
 **Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

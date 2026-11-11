@@ -28,7 +28,7 @@ Snapshot restore captures the target iteration identity and its observed revisio
 | `../services/snapshotService` | `IterationSnapshot` | Declaration | erased |
 | `../services/snapshotService` | `snapshotService` | — | compiler-dependent |
 | `../services/taskService` | `taskService` | — | compiler-dependent |
-| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../types/gantt` | `ExplainScheduleResponse`, `GanttTask` | Declaration | erased |
 | `../types/iteration` | `Iteration` | Declaration | erased |
 | `../types/task` | `TaskBatchUpdateItem`, `TaskUpdate` | Declaration | erased |

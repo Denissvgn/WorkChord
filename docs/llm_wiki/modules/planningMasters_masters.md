@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/features/planningMasters/masters.ts`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `./planningReturn` | `PlanningStepId` | Declaration | erased |
 | `./planningTaskIssues` | `PlanningTaskIssue` | Declaration | erased |
 
@@ -38,15 +39,18 @@ flowchart LR
     n8["frontend/src/pages/PlanMasterPage.tsx"]
     n9["frontend/src/pages/PlanPage.test.tsx"]
     n10["frontend/src/pages/PlanPage.tsx"]
+    n11["frontend/src/utils/formatDate.ts"]
     n0 --> n1
     n1 --> n2
     n1 --> n3
+    n1 --> n11
     n3 --> n2
     n4 --> n1
     n5 --> n1
     n5 --> n3
     n6 --> n1
     n6 --> n5
+    n6 --> n11
     n7 --> n1
     n7 --> n5
     n7 --> n8
@@ -54,10 +58,12 @@ flowchart LR
     n8 --> n2
     n8 --> n3
     n8 --> n5
+    n8 --> n11
     n9 --> n1
     n9 --> n10
     n10 --> n1
     n10 --> n5
+    n10 --> n11
     click n0 "../modules/planningMasters_masters.test.md"
     click n1 "../modules/planningMasters_masters.md"
     click n2 "../modules/planningReturn.md"
@@ -69,6 +75,7 @@ flowchart LR
     click n8 "../modules/PlanMasterPage.md"
     click n9 "../modules/PlanPage.test.md"
     click n10 "../modules/PlanPage.md"
+    click n11 "../modules/formatDate.md"
 ```
 
 ### Internal neighbors
@@ -85,18 +92,19 @@ flowchart LR
 | Inbound | [PlanPage](../modules/PlanPage.md) |
 | Outbound | [planningReturn](../modules/planningReturn.md) |
 | Outbound | [planningTaskIssues](../modules/planningTaskIssues.md) |
+| Outbound | [formatDate](../modules/formatDate.md) |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [StepStatus](../entities/StepStatus.md) | Interface | 8 | — | — |
-| [MasterStepDef](../entities/MasterStepDef.md) | Interface | 14 | — | — |
-| [PlanReadiness](../entities/PlanReadiness.md) | Interface | 93 | — | — |
-| [PlanningRecoveryAction](../entities/PlanningRecoveryAction.md) | Interface | 122 | — | — |
-| [StepState](../entities/StepState.md) | Type alias | 6 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
-| [PlanningRecoveryKind](../entities/PlanningRecoveryKind.md) | Type alias | 112 | <pre><code>&#124; &#39;create&#45;period&#39;&#10;    &#124; &#39;add&#45;team&#39;&#10;    &#124; &#39;repair&#45;capacity&#39;&#10;    &#124; &#39;add&#45;work&#39;&#10;    &#124; &#39;repair&#45;assignee&#39;&#10;    &#124; &#39;repair&#45;effort&#39;&#10;    &#124; &#39;build&#45;schedule&#39;&#10;    &#124; &#39;review&#45;plan&#39;</code></pre> | — |
-| [Translate](../entities/Translate.md) | Type alias | 338 | `(key: string, options?: Record<string, unknown>) => string` | — |
+| [StepStatus](../entities/StepStatus.md) | Interface | 9 | — | — |
+| [MasterStepDef](../entities/MasterStepDef.md) | Interface | 15 | — | — |
+| [PlanReadiness](../entities/PlanReadiness.md) | Interface | 94 | — | — |
+| [PlanningRecoveryAction](../entities/PlanningRecoveryAction.md) | Interface | 123 | — | — |
+| [StepState](../entities/StepState.md) | Type alias | 7 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
+| [PlanningRecoveryKind](../entities/PlanningRecoveryKind.md) | Type alias | 113 | <pre><code>&#124; &#39;create&#45;period&#39;&#10;    &#124; &#39;add&#45;team&#39;&#10;    &#124; &#39;repair&#45;capacity&#39;&#10;    &#124; &#39;add&#45;work&#39;&#10;    &#124; &#39;repair&#45;assignee&#39;&#10;    &#124; &#39;repair&#45;effort&#39;&#10;    &#124; &#39;build&#45;schedule&#39;&#10;    &#124; &#39;review&#45;plan&#39;</code></pre> | — |
+| [Translate](../entities/Translate.md) | Type alias | 344 | `(key: string, options?: Record<string, unknown>) => string` | — |
 
 ## Functions
 

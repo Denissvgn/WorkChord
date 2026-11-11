@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/store/iterationStore.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `useIterationStore` |
+| Exports | `pickDefaultIteration`, `useIterationStore` |
 | Constants | `useIterationStore` |
 | Module calls | `useIterationStore = create<IterationStore>()` |
 
@@ -38,7 +38,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (13) |
+| Inbound | `frontend` (14) |
 
 ### External packages
 
@@ -46,10 +46,17 @@ flowchart LR
 |---|---:|---:|
 | typescript | 1 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [IterationStore](../entities/IterationStore.md) | Interface | 4 | — | — |
+| [DatedIteration](../entities/DatedIteration.md) | Type alias | 21 | `{ id: number; start_date: string; end_date: string }` | — |
+
+## Functions
+
+| Function | Signature | Decorators | Description |
+|----------|-----------|------------|-------------|
+| `pickDefaultIteration` | `<T extends DatedIteration>(iterations: readonly T[], today: string = new Date().toISOString().slice(0, 10)) -> T \| undefined` | — | The one rule every page uses when no valid iteration is selected: the |
