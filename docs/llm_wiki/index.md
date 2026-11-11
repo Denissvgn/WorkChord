@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1550 | [Open section](#entities) |
-| Modules | 800 | [Open section](#modules) |
+| Modules | 801 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1666,6 +1666,7 @@ Retained history; these declarations are absent from the selected source invento
 - [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
 - [IterationImportDialog](modules/IterationImportDialog.md) - `frontend/src/components/iteration/IterationImportDialog.tsx`
 - [IterationList](modules/IterationList.md) - `frontend/src/components/iteration/IterationList.tsx`
+- [IterationList.test](modules/IterationList.test.md) - `frontend/src/components/iteration/IterationList.test.tsx`
 - [IterationOutlook.test](modules/IterationOutlook.test.md) - `frontend/src/components/analytics/IterationOutlook.test.tsx`
 - [IterationSelector](modules/IterationSelector.md) - `frontend/src/components/iteration/IterationSelector.tsx`
 - [IterationsPage](modules/IterationsPage.md) - `frontend/src/pages/IterationsPage.tsx`

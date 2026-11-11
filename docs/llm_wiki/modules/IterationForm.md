@@ -20,6 +20,7 @@ _Auto-generated from `frontend/src/components/iteration/IterationForm.tsx`._
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
 | `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -64,18 +65,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationFormProps](../entities/IterationFormProps.md) | Interface | 24 | — | — |
-| [EditorMode](../entities/EditorMode.md) | Type alias | 36 | `'single' \| 'series'` | — |
-| [StopMode](../entities/StopMode.md) | Type alias | 37 | `'count' \| 'until_date'` | — |
-| [SingleDraft](../entities/SingleDraft.md) | Type alias | 39 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    project&#95;id&#58; string&#59;&#10;    start&#95;date&#58; string&#59;&#10;    end&#95;date&#58; string&#59;&#10;    manager&#95;email&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [SeriesDraft](../entities/SeriesDraft.md) | Type alias | 47 | <pre><code>&#123;&#10;    base&#95;name&#58; string&#59;&#10;    project&#95;id&#58; string&#59;&#10;    start&#95;date&#58; string&#59;&#10;    duration&#95;days&#58; number&#59;&#10;    stop&#95;mode&#58; StopMode&#59;&#10;    count&#58; number&#59;&#10;    until&#95;date&#58; string&#59;&#10;    manager&#95;email&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [EditorBaseline](../entities/EditorBaseline.md) | Type alias | 58 | <pre><code>&#123;&#10;    mode&#58; EditorMode&#59;&#10;    singleDraft&#58; SingleDraft&#59;&#10;    seriesDraft&#58; SeriesDraft&#59;&#10;&#125;</code></pre> | — |
+| [IterationFormProps](../entities/IterationFormProps.md) | Interface | 25 | — | — |
+| [EditorMode](../entities/EditorMode.md) | Type alias | 37 | `'single' \| 'series'` | — |
+| [StopMode](../entities/StopMode.md) | Type alias | 38 | `'count' \| 'until_date'` | — |
+| [SingleDraft](../entities/SingleDraft.md) | Type alias | 40 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    project&#95;id&#58; string&#59;&#10;    start&#95;date&#58; string&#59;&#10;    end&#95;date&#58; string&#59;&#10;    manager&#95;email&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [SeriesDraft](../entities/SeriesDraft.md) | Type alias | 48 | <pre><code>&#123;&#10;    base&#95;name&#58; string&#59;&#10;    project&#95;id&#58; string&#59;&#10;    start&#95;date&#58; string&#59;&#10;    duration&#95;days&#58; number&#59;&#10;    stop&#95;mode&#58; StopMode&#59;&#10;    count&#58; number&#59;&#10;    until&#95;date&#58; string&#59;&#10;    manager&#95;email&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [EditorBaseline](../entities/EditorBaseline.md) | Type alias | 59 | <pre><code>&#123;&#10;    mode&#58; EditorMode&#59;&#10;    singleDraft&#58; SingleDraft&#59;&#10;    seriesDraft&#58; SeriesDraft&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

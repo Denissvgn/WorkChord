@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 800,
+      "modules": 801,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3118
+    "total": 3119
   },
   "dependency_pages": {
     "count": 2,
@@ -45898,6 +45898,7 @@
         "modules/IterationForm.test.md",
         "modules/IterationImportDialog.md",
         "modules/IterationList.md",
+        "modules/IterationList.test.md",
         "modules/IterationOutlook.test.md",
         "modules/iterations.md",
         "modules/IterationSelector.md",
@@ -72069,6 +72070,20 @@
       "title": "IterationList Module"
     },
     {
+      "canonical_path": "modules/IterationList.test.md",
+      "id": "IterationList.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/IterationList.test",
+      "outgoing_internal_links": [
+        "modules/IterationList.md",
+        "modules/IterationList.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/iteration/IterationList.test.tsx",
+      "title": "IterationList.test Module"
+    },
+    {
       "canonical_path": "modules/IterationOutlook.test.md",
       "id": "IterationOutlook.test",
       "kind": "modules",
@@ -95828,6 +95843,7 @@
         "modules/IterationForm.test.md",
         "modules/IterationImportDialog.md",
         "modules/IterationList.md",
+        "modules/IterationList.test.md",
         "modules/IterationOutlook.test.md",
         "modules/iterations.md",
         "modules/IterationSelector.md",
@@ -96639,6 +96655,7 @@
         "modules/IterationForm.test.md",
         "modules/IterationImportDialog.md",
         "modules/IterationList.md",
+        "modules/IterationList.test.md",
         "modules/IterationOutlook.test.md",
         "modules/iterations.md",
         "modules/IterationSelector.md",
@@ -97207,5 +97224,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:58c2e01100133dd2d640d5ad5417fcf2f4d65b0e25fe01ad2c2a6dc4130c68d9"
+  "source_hash": "sha256:9e6cfa7465c6a747b8831987de92f98c4389d2ea2c264f94e70406ec12ee2267"
 }

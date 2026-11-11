@@ -374,7 +374,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [Button](modules/Button.md) | 83 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
 | [time](modules/time.md) | 77 | 0 |
-| [renderWithProviders](modules/renderWithProviders.md) | 73 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 74 | 2 |
 | [config](modules/config.md) | 72 | 1 |
 | [types_task](modules/types_task.md) | 72 | 2 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
@@ -438,13 +438,13 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [runtime_telemetry](modules/runtime_telemetry.md) | 13 | 0 |
 | [schemas_triage](modules/schemas_triage.md) | 13 | 3 |
 | [Checkbox](modules/Checkbox.md) | 13 | 0 |
+| [useConfirmDialog](modules/useConfirmDialog.md) | 13 | 1 |
 | [useDraftDismissal](modules/useDraftDismissal.md) | 13 | 0 |
 | [database_migration_manifest](modules/database_migration_manifest.md) | 12 | 0 |
 | [models_outbound_webhook](modules/models_outbound_webhook.md) | 12 | 2 |
 | [schemas_iteration](modules/schemas_iteration.md) | 12 | 2 |
 | [schemas_task_domain](modules/schemas_task_domain.md) | 12 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 12 | 18 |
-| [useConfirmDialog](modules/useConfirmDialog.md) | 12 | 1 |
 | [savedView](modules/savedView.md) | 12 | 0 |
 | [system_settings_service](modules/system_settings_service.md) | 11 | 5 |
 | [url_policy](modules/url_policy.md) | 11 | 1 |
@@ -632,7 +632,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [delivery](modules/delivery.md) | 3 | 8 |
 | [transactions](modules/transactions.md) | 3 | 0 |
 | [ToastProvider](modules/ToastProvider.md) | 3 | 2 |
-| [IterationForm](modules/IterationForm.md) | 3 | 12 |
+| [IterationForm](modules/IterationForm.md) | 3 | 13 |
 | [IterationSelector](modules/IterationSelector.md) | 3 | 4 |
 | [LabelSelector](modules/LabelSelector.md) | 3 | 5 |
 | [AppSidebar](modules/AppSidebar.md) | 3 | 5 |
@@ -722,6 +722,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
 | [IterationCapacityLine](modules/IterationCapacityLine.md) | 2 | 3 |
 | [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 7 |
+| [IterationList](modules/IterationList.md) | 2 | 12 |
 | [AppShell](modules/AppShell.md) | 2 | 7 |
 | [AppTopNav](modules/AppTopNav.md) | 2 | 9 |
 | [ContextHelp](modules/ContextHelp.md) | 2 | 8 |
@@ -831,7 +832,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 1 | 1 |
 | [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 4 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
-| [IterationList](modules/IterationList.md) | 1 | 12 |
 | [RouteErrorBoundary](modules/RouteErrorBoundary.md) | 1 | 1 |
 | [NotificationsPanel](modules/NotificationsPanel.md) | 1 | 4 |
 | [OverviewTaskReturnBar](modules/OverviewTaskReturnBar.md) | 1 | 1 |
@@ -1015,6 +1015,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ToastProvider.test](modules/ToastProvider.test.md) | 0 | 2 |
 | [GanttChart.test](modules/GanttChart.test.md) | 0 | 5 |
 | [IterationForm.test](modules/IterationForm.test.md) | 0 | 3 |
+| [IterationList.test](modules/IterationList.test.md) | 0 | 2 |
 | [AppShell.test](modules/AppShell.test.md) | 0 | 2 |
 | [AppSidebar.test](modules/AppSidebar.test.md) | 0 | 3 |
 | [AppTopNav.test](modules/AppTopNav.test.md) | 0 | 2 |

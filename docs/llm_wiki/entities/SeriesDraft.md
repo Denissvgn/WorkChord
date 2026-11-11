@@ -1,6 +1,6 @@
 # SeriesDraft
 
-**Location:** `frontend/src/components/iteration/IterationForm.tsx:47`
+**Location:** `frontend/src/components/iteration/IterationForm.tsx:48`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [IterationForm](../modules/IterationForm.md)

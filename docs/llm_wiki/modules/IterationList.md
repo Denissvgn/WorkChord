@@ -56,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (1) |
+| Inbound | `frontend` (2) |
 | Outbound | `frontend` (12) |
 
 ### External packages
@@ -65,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
