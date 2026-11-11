@@ -19,6 +19,8 @@ Human discussion and personal notification boundary. It validates mentions, prot
 |--------|-----------|------------|-------------|
 | `__init__` | `(db)` | — | — |
 | `principal_id` | `()` | — | — |
+| `author` | *(async)* `()` | — | Return (principal_id, profile_id) for the writer: a signed-in person, or a |
+| `author_names` | *(async)* `(rows)` | — | Name each author; a local author is named by the profile it chose. |
 | `task` | *(async)* `(task_id, *, writing = False, lock = False)` | — | — |
 | `mention_options` | *(async)* `(task_id, *, query = '', limit = 25, after_id = 0)` | — | — |
 | `recipient_authorized` | *(async)* `(principal_id, task_id)` | — | — |
@@ -84,7 +86,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [discussion_service](../modules/discussion_service.md) | 17 | — |
+| [discussion_service](../modules/discussion_service.md) | 19 | — |
 
 ### References
 
@@ -103,4 +105,4 @@ flowchart LR
 | `task_mention_options` | call | [routers_discussion](../modules/routers_discussion.md) | 1 |
 | `update_task_comment` | call | [routers_discussion](../modules/routers_discussion.md) | 1 |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

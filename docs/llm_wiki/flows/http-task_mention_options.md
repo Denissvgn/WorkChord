@@ -187,8 +187,8 @@ flowchart LR
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_mention_options | DiscussionService.mention_options | 44 | `DiscussionService(db).mention_options(task_id, query=q, limit=limit, after_id=after_id)` |
-| DiscussionService.mention_options | DiscussionService.task | 47 | `self.task(task_id)` |
-| DiscussionService.task | self.db.scalar | 30 | `self.db.scalar(...)` |
+| DiscussionService.mention_options | DiscussionService.task | 71 | `self.task(task_id)` |
+| DiscussionService.task | self.db.scalar | 54 | `self.db.scalar(...)` |
 
 ### Boundary effects
 
@@ -203,7 +203,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `DiscussionService.task` | `self.db.scalar` | 30 |
+| unresolved_call | `DiscussionService.task` | `self.db.scalar` | 54 |
 | step_limit | `task_mention_options` | `first 12 steps` | 0 |
 
 ## Behavior

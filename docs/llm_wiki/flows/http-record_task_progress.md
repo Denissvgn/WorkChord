@@ -208,7 +208,7 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `signals.pop` | `TaskService.task_to_response` | 1667 |
+| mutation | `signals.pop` | `TaskService.task_to_response` | 1669 |
 
 ### Static analysis gaps
 

@@ -1,6 +1,6 @@
 # InboxNotification
 
-**Location:** `backend/app/models/discussion.py:50`
+**Location:** `backend/app/models/discussion.py:54`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_discussion](../modules/models_discussion.md)

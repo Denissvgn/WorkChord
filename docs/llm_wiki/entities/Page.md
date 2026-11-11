@@ -1,6 +1,6 @@
 # Page
 
-**Location:** `frontend/src/services/discussionService.ts:12`
+**Location:** `frontend/src/services/discussionService.ts:14`
 **Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)

@@ -16,7 +16,8 @@ Current comment projection with durable human authorship, an independent version
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True)` | — |
 | `task_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('tasks.id', ondelete='SET NULL'), index=True)` | — |
 | `original_task_id` | `Mapped[int]` | `mapped_column(Integer, nullable=False)` | — |
-| `principal_id` | `Mapped[int]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
+| `principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'), nullable=True)` | — |
+| `author_profile_id` | `Mapped[int \| None]` | `mapped_column(Integer, nullable=True)` | — |
 | `body` | `Mapped[str]` | `mapped_column(Text, nullable=False)` | — |
 | `mentions` | `Mapped[list]` | `mapped_column(JSON, nullable=False, default=list)` | — |
 | `version` | `Mapped[int]` | `mapped_column(Integer, nullable=False, default=1)` | — |
@@ -53,7 +54,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_discussion](../modules/models_discussion.md) | 0 | `body`, `created_at`, `deleted`, `id`, `mentions`, `original_task_id`, `principal_id`, `task_id`, `updated_at`, `version` |
+| [models_discussion](../modules/models_discussion.md) | 0 | `author_profile_id`, `body`, `created_at`, `deleted`, `id`, `mentions`, `original_task_id`, `principal_id`, `task_id`, `updated_at`, `version` |
 
 ### Structure
 

@@ -16,7 +16,8 @@ Owns bounded human discussion, validated mentions, subscriptions and personal in
 | `app.models.identity` | `Principal`, `ProjectMembership`, `WorkspaceMembership` |
 | `app.models.outbound_webhook` | `OutboundWebhookDelivery`, `OutboundWebhookEvent` |
 | `app.models.task` | `Task` |
-| `app.services.identity_service` | `IdentityService` |
+| `app.models.team_member` | `TeamMemberProfile` |
+| `app.services.identity_service` | `local_work_profile`, `IdentityService` |
 | `app.services.outbound_webhook_service` | `OutboundDeliveryAttemptError` |
 | `app.sql_semantics` | `portable_contains` |
 | `app.utils.time` | `utc_now` |
@@ -42,7 +43,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (4) |
-| Outbound | `backend` (10) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -50,7 +51,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

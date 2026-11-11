@@ -101,4 +101,4 @@ flowchart LR
 | `IdentityService.finish_login` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `initialize_control_plane` | call | [identity_service](../modules/identity_service.md) | 1 |
 
-> References: showing 12 of 31 logical references; 19 omitted by the 12-row generated summary limit.
+> References: showing 12 of 32 logical references; 20 omitted by the 12-row generated summary limit.

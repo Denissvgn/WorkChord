@@ -1,6 +1,6 @@
 # Subscription
 
-**Location:** `frontend/src/services/discussionService.ts:9`
+**Location:** `frontend/src/services/discussionService.ts:11`
 **Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)

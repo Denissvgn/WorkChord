@@ -1,6 +1,6 @@
 # CommentRevision
 
-**Location:** `frontend/src/services/discussionService.ts:8`
+**Location:** `frontend/src/services/discussionService.ts:10`
 **Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)

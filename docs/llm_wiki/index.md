@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1538 | [Open section](#entities) |
-| Modules | 777 | [Open section](#modules) |
+| Modules | 778 | [Open section](#modules) |
 | Workflows | 194 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 554 | [Open section](#entry-point-flows) |
@@ -1572,6 +1572,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261009_0010_allocation_identity](modules/20261009_0010_allocation_identity.md) - Preserve allocation lifetimes across recovery and deletion.
 - [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) - Preserve profile lifetimes across recovery and deletion.
 - [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
+- [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`

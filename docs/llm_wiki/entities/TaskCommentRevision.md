@@ -1,6 +1,6 @@
 # TaskCommentRevision
 
-**Location:** `backend/app/models/discussion.py:27`
+**Location:** `backend/app/models/discussion.py:29`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_discussion](../modules/models_discussion.md)
@@ -16,7 +16,8 @@ Append-only comment body, mention targets, attribution and removal state for one
 | `id` | `Mapped[int]` | `mapped_column(Integer, primary_key=True)` | — |
 | `comment_id` | `Mapped[int]` | `mapped_column(ForeignKey('task_comments.id', ondelete='RESTRICT'), index=True)` | — |
 | `original_task_id` | `Mapped[int]` | `mapped_column(Integer, nullable=False, index=True)` | — |
-| `principal_id` | `Mapped[int]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'))` | — |
+| `principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'), nullable=True)` | — |
+| `author_profile_id` | `Mapped[int \| None]` | `mapped_column(Integer, nullable=True)` | — |
 | `version` | `Mapped[int]` | `mapped_column(Integer, nullable=False)` | — |
 | `body` | `Mapped[str]` | `mapped_column(Text, nullable=False)` | — |
 | `mentions` | `Mapped[list]` | `mapped_column(JSON, nullable=False)` | — |
@@ -52,7 +53,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_discussion](../modules/models_discussion.md) | 0 | `body`, `comment_id`, `created_at`, `deleted`, `id`, `mentions`, `original_task_id`, `principal_id`, `version` |
+| [models_discussion](../modules/models_discussion.md) | 0 | `author_profile_id`, `body`, `comment_id`, `created_at`, `deleted`, `id`, `mentions`, `original_task_id`, `principal_id`, `version` |
 
 ### Structure
 

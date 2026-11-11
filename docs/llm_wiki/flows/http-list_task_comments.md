@@ -24,73 +24,76 @@ sequenceDiagram
     participant p2 as domain_result
     participant p3 as DiscussionService
     participant p4 as DiscussionService.task
-    participant p5 as require_project
-    participant p6 as get_settings
-    participant p7 as DiscussionService.serialize
-    participant p8 as AuthorityError
+    participant p5 as DiscussionService.author_names
+    participant p6 as require_project
+    participant p7 as get_settings
+    participant p8 as DiscussionService.serialize
     participant p9 as internal_authority
-    participant p10 as Settings
-    participant p11 as HTTPException
-    participant p12 as exc.detail
-    participant p13 as ValueError (backend/app/services/disc….py:DiscussionService.list)
-    participant p14 as (…).all
-    participant p15 as str
-    participant p16 as self.db.execute (backend/app/services/disc….py:DiscussionService.list)
-    participant p17 as select(…).join(…).where(…).order_by(…).limit
-    participant p18 as select(…).join(…).where(…).order_by
-    participant p19 as select(…).join(…).where
-    participant p20 as select(…).join
+    participant p10 as AuthorityError
+    participant p11 as Settings
+    participant p12 as HTTPException
+    participant p13 as exc.detail
+    participant p14 as ValueError (backend/app/services/disc….py:DiscussionService.list)
+    participant p15 as (…).all
+    participant p16 as str
+    participant p17 as self.db.scalars
+    participant p18 as select(…).where(…).order_by(…).limit
+    participant p19 as select(…).where(…).order_by
+    participant p20 as select(…).where (backend/app/services/disc….py:DiscussionService.list)
     participant p21 as select (backend/app/services/disc….py:DiscussionService.list)
-    participant p22 as len
-    participant p23 as self.db.scalar
-    participant p24 as select(…).where(…).execution_options
-    participant p25 as select(…).where
+    participant p22 as name
+    participant p23 as len
+    participant p24 as self.db.scalar
+    participant p25 as select(…).where(…).execution_options
     p0->>p1: DiscussionService.list
     p0->>p2: domain_result
     p0->>p3: DiscussionService
     p1->>p4: DiscussionService.task
-    p4->>p5: require_project
-    p5->>p6: get_settings
-    p1->>p7: DiscussionService.serialize
-    p4->>p8: AuthorityError
-    p4->>p9: internal_authority
-    p6->>p10: Settings
-    p2-->>p11: HTTPException(409, detail=exc.detail(...))
-    p2-->>p12: exc.detail
-    p1-->>p13: ValueError (backend/app/services/disc….py:DiscussionService.list)('Use a limit from 1 to 100 and a nonnegative cursor')
-    p2-->>p11: HTTPException(404, detail=str(...))
-    p1-->>p14: (…).all
-    p2-->>p15: str(exc)
-    p1-->>p16: self.db.execute (backend/app/services/disc….py:DiscussionService.list)(...)
-    p2-->>p11: HTTPException(422, detail=[...])
-    p1-->>p17: select(…).join(…).where(…).order_by(…).limit(...)
-    p2-->>p15: str(exc)
-    p1-->>p18: select(…).join(…).where(…).order_by(TaskComment.id)
-    p2-->>p11: HTTPException(404, detail='Task not found or inaccessible')
-    p1-->>p19: select(…).join(…).where(..., ...)
-    p1-->>p20: select(…).join(Principal, ...)
-    p1-->>p21: select (backend/app/services/disc….py:DiscussionService.list)(TaskComment, Principal.display_name)
-    p1-->>p22: len(rows)
-    p1-->>p22: len(rows)
-    p4-->>p23: self.db.scalar(...)
-    p4-->>p24: select(…).where(…).execution_options(populate_existing=True)
-    p4-->>p25: select(…).where(...)
+    p1->>p5: DiscussionService.author_names
+    p4->>p6: require_project
+    p6->>p7: get_settings
+    p1->>p8: DiscussionService.serialize
+    p5->>p9: internal_authority
+    p4->>p10: AuthorityError
+    p7->>p11: Settings
+    p2-->>p12: HTTPException(409, detail=exc.detail(...))
+    p2-->>p13: exc.detail
+    p1-->>p14: ValueError (backend/app/services/disc….py:DiscussionService.list)('Use a limit from 1 to 100 and a nonnegative cursor')
+    p2-->>p12: HTTPException(404, detail=str(...))
+    p1-->>p15: (…).all
+    p2-->>p16: str(exc)
+    p1-->>p17: self.db.scalars(...)
+    p2-->>p12: HTTPException(422, detail=[...])
+    p1-->>p18: select(…).where(…).order_by(…).limit(...)
+    p2-->>p16: str(exc)
+    p1-->>p19: select(…).where(…).order_by(TaskComment.id)
+    p2-->>p12: HTTPException(404, detail='Task not found or inaccessible')
+    p1-->>p20: select(…).where (backend/app/services/disc….py:DiscussionService.list)(..., ...)
+    p1-->>p21: select (backend/app/services/disc….py:DiscussionService.list)(TaskComment)
+    p1-->>p22: name(comment)
+    p1-->>p23: len(rows)
+    p1-->>p23: len(rows)
+    p4-->>p24: self.db.scalar(...)
+    p4-->>p25: select(…).where(…).execution_options(populate_existing=True)
 ```
 
-> Call sequence diagram shows 30 of 46 interactions; 16 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 64 interactions; 34 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 10 of 14 (4 omitted); unresolved 10 of 19 (9 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 10 of 18 (8 omitted); unresolved 9 of 31 (22 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
+| `backend/app/services/discussion_service.py:DiscussionService.task` | 11 | - | unresolved | 7 |
 | `backend/app/services/discussion_service.py:DiscussionService.task` | 11 | - | external | 4 |
 | `backend/app/authority.py:require_project` | 17 | - | unresolved | 2 |
 | `backend/app/authority.py:require_project` | 17 | [backend/app/authority.py](../modules/authority.md) | internal | 2 |
-| `backend/app/services/discussion_service.py:DiscussionService.task` | 11 | - | unresolved | 6 |
+| `backend/app/services/discussion_service.py:DiscussionService.task` | 11 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/authority.py:internal_authority` | 28 | - | unresolved | 1 |
 | `backend/app/services/discussion_service.py:DiscussionService.task` | 11 | [backend/app/services/discussion_service.py](../modules/discussion_service.md) | internal | 1 |
+| `backend/app/services/discussion_service.py:DiscussionService.author_names` | 43 | - | external | 4 |
+> Omission summary shows 8 of 9 groups; 1 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -101,9 +104,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 14; effect analysis evaluated: 9, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
+Source steps: 16; effect analysis evaluated: 11, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
 
-Collector observations for 9 source steps with known totals: observed: 37, emitted: 37, omitted: 0. Unavailable totals are excluded.
+Collector observations for 11 source steps with known totals: observed: 43, emitted: 43, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -184,8 +187,8 @@ flowchart LR
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | list_task_comments | DiscussionService.list | 39 | `DiscussionService(db).list(task_id, after_id=after_id, limit=limit)` |
-| DiscussionService.list | DiscussionService.task | 81 | `self.task(task_id)` |
-| DiscussionService.task | self.db.scalar | 30 | `self.db.scalar(...)` |
+| DiscussionService.list | DiscussionService.task | 105 | `self.task(task_id)` |
+| DiscussionService.task | self.db.scalar | 54 | `self.db.scalar(...)` |
 
 ### Boundary effects
 
@@ -200,7 +203,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `DiscussionService.task` | `self.db.scalar` | 30 |
+| unresolved_call | `DiscussionService.task` | `self.db.scalar` | 54 |
 | step_limit | `list_task_comments` | `first 12 steps` | 0 |
 
 ## Behavior

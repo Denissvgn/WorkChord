@@ -179,12 +179,12 @@ flowchart LR
 |---|---|---:|---|
 | formalize_task | TaskService | 178 | `TaskService(db)` |
 | formalize_task | TaskService.get_by_id | 179 | `task_service.get_by_id(task_id)` |
-| TaskService.get_by_id | (…).first | 570 | `(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first(data not statically known)` |
-| TaskService.get_by_id | self.db.execute (backend/app/services/task…e.py:TaskService.get_by_id) | 570 | `self.db.execute(...)` |
-| TaskService.get_by_id | select(…).where (backend/app/services/task…e.py:TaskService.get_by_id) | 570 | `select(Task.iteration_id, Task.project_id).where(...)` |
-| TaskService.get_by_id | select (backend/app/services/task…e.py:TaskService.get_by_id) | 570 | `select(Task.iteration_id, Task.project_id)` |
-| TaskService.get_by_id | TaskService._load_iteration_tree | 573 | `self._load_iteration_tree(row.iteration_id, project_id=row.project_id)` |
-| TaskService._load_iteration_tree | TaskHierarchyService._load_iteration_tree | 561 | `TaskHierarchyService(self.db, self.load_owner_names)._load_iteration_tree(iteration_id, max_tasks=max_tasks, project_id=project_id)` |
+| TaskService.get_by_id | (…).first | 572 | `(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first(data not statically known)` |
+| TaskService.get_by_id | self.db.execute (backend/app/services/task…e.py:TaskService.get_by_id) | 572 | `self.db.execute(...)` |
+| TaskService.get_by_id | select(…).where (backend/app/services/task…e.py:TaskService.get_by_id) | 572 | `select(Task.iteration_id, Task.project_id).where(...)` |
+| TaskService.get_by_id | select (backend/app/services/task…e.py:TaskService.get_by_id) | 572 | `select(Task.iteration_id, Task.project_id)` |
+| TaskService.get_by_id | TaskService._load_iteration_tree | 575 | `self._load_iteration_tree(row.iteration_id, project_id=row.project_id)` |
+| TaskService._load_iteration_tree | TaskHierarchyService._load_iteration_tree | 563 | `TaskHierarchyService(self.db, self.load_owner_names)._load_iteration_tree(iteration_id, max_tasks=max_tasks, project_id=project_id)` |
 | TaskHierarchyService._load_iteration_tree | select(…).where(…).limit | 46 | `select(Task.id).where(Task.iteration_id == iteration_id, *([Task.project_id == project_id] if iteration_id is None else [])).limit(...)` |
 | TaskHierarchyService._load_iteration_tree | select(…).where (backend/app/services/task…rvice._load_iteration_tree) | 46 | `select(Task.id).where(..., ...)` |
 | TaskHierarchyService._load_iteration_tree | select (backend/app/services/task…rvice._load_iteration_tree) | 46 | `select(Task.id)` |
@@ -200,10 +200,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `TaskService.get_by_id` | `(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first` | 570 |
-| unresolved_call | `TaskService.get_by_id` | `self.db.execute` | 570 |
-| unresolved_call | `TaskService.get_by_id` | `select(Task.iteration_id, Task.project_id).where` | 570 |
-| external_call | `TaskService.get_by_id` | `select` | 570 |
+| unresolved_call | `TaskService.get_by_id` | `(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first` | 572 |
+| unresolved_call | `TaskService.get_by_id` | `self.db.execute` | 572 |
+| unresolved_call | `TaskService.get_by_id` | `select(Task.iteration_id, Task.project_id).where` | 572 |
+| external_call | `TaskService.get_by_id` | `select` | 572 |
 | unresolved_call | `TaskHierarchyService._load_iteration_tree` | `select(Task.id).where(Task.iteration_id == iteration_id, *([Task.project_id == project_id] if iteration_id is None else [])).limit` | 46 |
 | unresolved_call | `TaskHierarchyService._load_iteration_tree` | `select(Task.id).where` | 46 |
 | external_call | `TaskHierarchyService._load_iteration_tree` | `select` | 46 |

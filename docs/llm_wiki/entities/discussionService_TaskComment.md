@@ -15,8 +15,10 @@ _Auto-generated from `TaskComment` in `frontend/src/services/discussionService.t
 |------|------|----------|---------|-------------|
 | `id` | `number` | Yes | — | — |
 | `task_id` | `number` | Yes | — | — |
-| `principal_id` | `number` | Yes | — | — |
-| `author_name` | `string` | Yes | — | — |
+| `principal_id` | `number \| null` | Yes | — | — |
+| `author_name` | `string \| null` | Yes | — | — |
+| `author_profile_id` | `number \| null` | No | — | — |
+| `author_local` | `boolean` | No | — | — |
 | `body` | `string` | Yes | — | — |
 | `mentions` | `number[]` | Yes | — | — |
 | `version` | `number` | Yes | — | — |
@@ -44,7 +46,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [discussionService](../modules/discussionService.md) | 0 | `author_name`, `body`, `created_at`, `deleted`, `id`, `mentions`, `principal_id`, `task_id`, `updated_at`, `version` |
+| [discussionService](../modules/discussionService.md) | 0 | `author_local`, `author_name`, `author_profile_id`, `body`, `created_at`, `deleted`, `id`, `mentions`, `principal_id`, `task_id`, `updated_at`, `version` |
 
 ### References
 
