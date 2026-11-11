@@ -11,6 +11,7 @@ Iteration service with business logic.
 Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
 
 Readiness and summary capacity use actual person calendar hours, short days, absence unions and allocation factors. Readiness includes shared booking and committed capacity conflicts without exposing private work details.
+The planning-readiness summary also returns the six plan checkpoints (`iteration`, `team`, `work`, `blockers`, `schedule`, `review`) derived once by `plan_checkpoints`, so the plan page, the sidebar and the PM agent read the same states and the same "n of 6".
 
 ## Imports
 
@@ -27,6 +28,7 @@ Readiness and summary capacity use actual person calendar hours, short days, abs
 | `app.services.bounded_scope_reads` | `scope_page` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService` |
+| `app.services.plan_checkpoints` | `PLAN_CHECKPOINT_IDS`, `plan_checkpoints` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_domain_service` | `nominal_day_hours`, `refresh_nominal_day_hours` |
 | `app.services.task_service` | `TaskService` |
@@ -59,7 +61,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (17) |
-| Outbound | `backend` (16) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -67,7 +69,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 32 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

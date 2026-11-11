@@ -1,6 +1,6 @@
 # AgentConflictError
 
-**Location:** `backend/app/services/agent_service.py:56`
+**Location:** `backend/app/services/agent_service.py:70`
 **Kind:** Class
 **Bases:** `Exception`
 **Module:** [agent_service](../modules/agent_service.md)

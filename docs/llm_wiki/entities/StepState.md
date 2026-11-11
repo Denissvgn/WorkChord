@@ -1,6 +1,6 @@
 # StepState
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:6`
+**Location:** `frontend/src/features/planningMasters/masters.ts:7`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

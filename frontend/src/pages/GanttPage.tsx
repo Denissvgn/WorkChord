@@ -16,7 +16,7 @@ import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { Modal } from '../components/common/Modal';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { AlertTriangle, Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History, RefreshCw } from 'lucide-react';
-import { useIterationStore } from '../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import { OverflowMenu } from '../components/ui';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
@@ -306,7 +306,7 @@ const GanttPage = () => {
         if (iterations && iterations.length > 0) {
             const iterationExists = iterations.some(i => i.id === selectedIterationId);
             if (selectedIterationId === 0 || !iterationExists) {
-                setSelectedIterationId(iterations[0].id);
+                setSelectedIterationId(pickDefaultIteration(iterations)!.id);
             }
         }
     }, [iterations, selectedIterationId, setSelectedIterationId]);
@@ -379,6 +379,7 @@ const GanttPage = () => {
             description={t('gantt.description')}
             contextControl={(
                 <IterationSelector
+                    showLabel
                     className="min-w-0"
                     onChange={() => {
                         latestExplainIterationRef.current = null;

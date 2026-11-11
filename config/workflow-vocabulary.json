@@ -31,7 +31,7 @@
       "person": "Triage → New intake, or Tasks → New task.",
       "pm": "Runs Triage and records one disposition; files WorkChord defects as Triage items.",
       "worker": "Reports out-of-scope findings as linked Triage items.",
-      "reviewer": "Reports out-of-scope findings as linked Triage items."
+      "reviewer": "Reports out-of-scope findings to the PM in its review result."
     },
     {
       "id": "plan",
@@ -53,7 +53,7 @@
       "id": "review",
       "name": "Review",
       "person": "My Work → To review; Accept or Request changes.",
-      "pm": "Routes the review to an independent reviewer; reviews only as the accountable PM.",
+      "pm": "Routes each review to an independent reviewer; never accepts work itself.",
       "worker": "Takes rework only when it is assigned back.",
       "reviewer": "Records a result per acceptance criterion, then accepts or requests changes."
     },
@@ -74,8 +74,8 @@
   ],
   "actions": [
     { "id": "start_work", "name": { "en": "Start work", "ru": "Начать работу" }, "effect": "Planned → Active.", "agents": "Atomic begin on the assigned work." },
-    { "id": "report_blocker", "name": { "en": "Report blocker", "ru": "Сообщить о блокере" }, "effect": "Marks the task blocked, with a reason.", "agents": "`agent.blocker` event with blocker, impact, checks tried, and the owner or action needed; the PM decides whether to mark the task blocked." },
-    { "id": "remove_block", "name": { "en": "Remove block", "ru": "Снять блокировку" }, "effect": "Clears the blocker.", "agents": "PM decision; workers do not clear blockers." },
+    { "id": "report_blocker", "name": { "en": "Report blocker", "ru": "Сообщить о блокере" }, "effect": "Marks the task blocked, with a reason.", "agents": "Claim-fenced `agent.blocker` task event with blocker, impact, checks tried, and the owner or action needed; it marks the task blocked." },
+    { "id": "remove_block", "name": { "en": "Remove block", "ru": "Снять блокировку" }, "effect": "Clears the blocker.", "agents": "The PM or a person removes it; workers never clear blockers." },
     { "id": "submit_for_review", "name": { "en": "Submit for review", "ru": "Отправить на проверку" }, "effect": "Active → Resolved (Implemented), with evidence per criterion.", "agents": "Atomic submit with criterion progress and artifact links." },
     { "id": "accept", "name": { "en": "Accept", "ru": "Принять" }, "effect": "Resolved → Closed (Accepted).", "agents": "Typed review verdict that passes every criterion." },
     { "id": "request_changes", "name": { "en": "Request changes", "ru": "Запросить изменения" }, "effect": "Resolved → Active as rework, with the failed criteria and a named owner.", "agents": "Typed review verdict that rejects, with the rework handoff." },
@@ -88,6 +88,23 @@
     { "id": "in_review", "name": { "en": "In review", "ru": "На проверке" }, "means": "You submitted it; a reviewer has not decided yet.", "agents": "Resolved work waiting for its review assignment." },
     { "id": "to_review", "name": { "en": "To review", "ru": "К проверке" }, "means": "Work waiting for your review.", "agents": "Review-purpose assignments; never in the worker loop." },
     { "id": "inbox", "name": { "en": "Inbox", "ru": "Уведомления" }, "means": "Notifications and delivery status.", "agents": "Hints to refetch, never a reason to act." }
+  ],
+  "triage_dispositions": [
+    { "id": "convert", "name": { "en": "Convert", "ru": "Преобразовать" }, "means": "Turns the item into a task in a real iteration, with a complete brief.", "agents": "Triage convert-to-task with the typed brief, effort, dependencies, and assignee." },
+    { "id": "accept", "name": { "en": "Accept", "ru": "Принять" }, "means": "Keeps the item for planning when it is not ready to become a task yet.", "agents": "Triage accept with the outcome, owner, priority rationale, and next planning step." },
+    { "id": "ask_for_clarification", "name": { "en": "Ask for clarification", "ru": "Запросить уточнение" }, "means": "Waits until a review time, with the open question as its reason.", "agents": "Triage snooze until the next review time, with the question as the reason; also ask the requester or owner." },
+    { "id": "snooze", "name": { "en": "Snooze", "ru": "Отложить" }, "means": "Waits until a known date or input.", "agents": "Triage snooze with `snoozed_until`, the reason, and the expected input." },
+    { "id": "mark_duplicate", "name": { "en": "Mark duplicate", "ru": "Отметить как дубликат" }, "means": "Points the item at the one Triage item or task that already owns the outcome.", "agents": "Triage mark-duplicate with exactly one target." },
+    { "id": "decline", "name": { "en": "Decline", "ru": "Отклонить" }, "means": "Records that the request will not be pursued.", "agents": "Triage decline with the reason and the decision owner." }
+  ],
+  "pipeline_stages": [
+    { "id": "needs_definition", "name": { "en": "Needs definition", "ru": "Требует уточнения" }, "description": { "en": "The brief or planning fields are not complete yet.", "ru": "Описание задачи или поля планирования ещё не заполнены." }, "pm_action": "Complete the typed brief, effort, dependencies, schedule, and assignee." },
+    { "id": "ready_to_assign", "name": { "en": "Ready to assign", "ru": "Готово к назначению" }, "description": { "en": "Defined and ready, but not assigned to an agent yet.", "ru": "Задача описана и готова, но ещё не назначена агенту." }, "pm_action": "Create one agent assignment with queue rank, not-before time, and reviewer." },
+    { "id": "assigned_waiting", "name": { "en": "Assigned, waiting", "ru": "Назначено, ожидает" }, "description": { "en": "Assigned to an agent that cannot start yet because of the schedule, a dependency, or its start time.", "ru": "Назначено агенту, который пока не может начать из-за расписания, зависимости или времени начала." }, "pm_action": "Clear the start blocker or wait for it; never reassign to get around it." },
+    { "id": "start_ready", "name": { "en": "Ready to start", "ru": "Можно начинать" }, "description": { "en": "Assigned to an agent that may start it now.", "ru": "Назначено агенту, который может начать сейчас." }, "pm_action": "Nothing; the assigned agent starts it from My Work." },
+    { "id": "executing", "name": { "en": "In progress", "ru": "В работе" }, "description": { "en": "An agent is working on it now.", "ru": "Агент сейчас работает над задачей." }, "pm_action": "Watch the claim expiry, progress, and blockers; recover only through typed recovery." },
+    { "id": "verification_required", "name": { "en": "Waiting for review", "ru": "Ждёт проверки" }, "description": { "en": "Submitted for review and waiting for an independent reviewer.", "ru": "Отправлено на проверку и ждёт независимого проверяющего." }, "pm_action": "Make sure an independent reviewer has a verification assignment." },
+    { "id": "recovery_required", "name": { "en": "Needs recovery", "ru": "Требует восстановления" }, "description": { "en": "The assignment, claim, and run disagree, so the work cannot continue on its own.", "ru": "Назначение, захват и запуск не согласованы, поэтому работа не может продолжиться сама." }, "pm_action": "Read the recovery diagnosis and requeue through typed recovery." }
   ],
   "terms": [
     { "id": "owner", "name": "Owner", "means": "The person or profile accountable for the task across iterations.", "not": "The assignee who carries the effort in one iteration." },

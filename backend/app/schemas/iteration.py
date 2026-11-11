@@ -107,6 +107,14 @@ class IterationSummary(WorkMetricSummary):
     overdue_tasks_count: int
 
 
+class PlanCheckpoint(BaseModel):
+    """One of the six plan checkpoints, in the order people and the PM work them."""
+    id: Literal["iteration", "team", "work", "blockers", "schedule", "review"]
+    state: Literal["done", "warn", "todo", "blocked"]
+    reason_codes: list[str] = Field(default_factory=list)
+    counts: dict[str, int] = Field(default_factory=dict)
+
+
 class IterationPlanningReadinessSummary(BaseModel):
     """Compact planning inputs used by persistent navigation."""
     iteration_id: int
@@ -118,6 +126,9 @@ class IterationPlanningReadinessSummary(BaseModel):
     tasks_without_effort: int
     has_schedule: bool
     risk_count: int
+    checkpoints: list[PlanCheckpoint] = Field(default_factory=list)
+    checkpoints_done: int = 0
+    checkpoints_total: int = 6
 
 
 class IterationPage(BaseModel):

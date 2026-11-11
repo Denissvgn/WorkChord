@@ -28,56 +28,60 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/TaskFiltersBar.tsx"]
-    n1["frontend/src/features/planningMasters/masters.ts"]
-    n2["frontend/src/features/planningMasters/planningReturn.ts"]
-    n3["frontend/src/features/planningMasters/planningTaskIssues.test.ts"]
-    n4["frontend/src/features/planningMasters/planningTaskIssues.ts"]
-    n5["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
-    n6["frontend/src/features/savedViews/taskViewState.ts"]
-    n7["frontend/src/pages/PlanMasterPage.tsx"]
-    n8["frontend/src/pages/TasksPage.tsx"]
-    n9["frontend/src/types/task.ts"]
-    n10["frontend/src/utils/taskFilters.ts"]
-    n0 --> n4
-    n1 --> n2
-    n1 --> n4
-    n3 --> n4
-    n3 --> n9
-    n4 --> n2
-    n4 --> n9
-    n5 --> n1
-    n5 --> n4
-    n5 --> n9
-    n6 --> n0
-    n6 --> n4
+    n0["frontend/src/components/gantt/GanttChart.tsx"]
+    n1["frontend/src/components/tasks/TaskFiltersBar.tsx"]
+    n2["frontend/src/features/planningMasters/masters.ts"]
+    n3["frontend/src/features/planningMasters/planningReturn.ts"]
+    n4["frontend/src/features/planningMasters/planningTaskIssues.test.ts"]
+    n5["frontend/src/features/planningMasters/planningTaskIssues.ts"]
+    n6["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
+    n7["frontend/src/features/savedViews/taskViewState.ts"]
+    n8["frontend/src/pages/PlanMasterPage.tsx"]
+    n9["frontend/src/pages/TasksPage.tsx"]
+    n10["frontend/src/types/task.ts"]
+    n11["frontend/src/utils/taskFilters.ts"]
+    n0 --> n5
+    n1 --> n5
+    n2 --> n3
+    n2 --> n5
+    n4 --> n5
+    n4 --> n10
+    n5 --> n3
+    n5 --> n10
+    n6 --> n2
+    n6 --> n5
+    n6 --> n10
     n7 --> n1
-    n7 --> n2
-    n7 --> n4
     n7 --> n5
-    n8 --> n0
-    n8 --> n4
+    n8 --> n2
+    n8 --> n3
+    n8 --> n5
     n8 --> n6
-    n10 --> n0
-    n10 --> n4
-    n10 --> n9
-    click n0 "../modules/TaskFiltersBar.md"
-    click n1 "../modules/planningMasters_masters.md"
-    click n2 "../modules/planningReturn.md"
-    click n3 "../modules/planningTaskIssues.test.md"
-    click n4 "../modules/planningTaskIssues.md"
-    click n5 "../modules/usePlanningReadiness.md"
-    click n6 "../modules/taskViewState.md"
-    click n7 "../modules/PlanMasterPage.md"
-    click n8 "../modules/TasksPage.md"
-    click n9 "../modules/types_task.md"
-    click n10 "../modules/taskFilters.md"
+    n9 --> n1
+    n9 --> n5
+    n9 --> n7
+    n11 --> n1
+    n11 --> n5
+    n11 --> n10
+    click n0 "../modules/GanttChart.md"
+    click n1 "../modules/TaskFiltersBar.md"
+    click n2 "../modules/planningMasters_masters.md"
+    click n3 "../modules/planningReturn.md"
+    click n4 "../modules/planningTaskIssues.test.md"
+    click n5 "../modules/planningTaskIssues.md"
+    click n6 "../modules/usePlanningReadiness.md"
+    click n7 "../modules/taskViewState.md"
+    click n8 "../modules/PlanMasterPage.md"
+    click n9 "../modules/TasksPage.md"
+    click n10 "../modules/types_task.md"
+    click n11 "../modules/taskFilters.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [GanttChart](../modules/GanttChart.md) |
 | Inbound | [TaskFiltersBar](../modules/TaskFiltersBar.md) |
 | Inbound | [planningMasters_masters](../modules/planningMasters_masters.md) |
 | Inbound | [planningTaskIssues.test](../modules/planningTaskIssues.test.md) |

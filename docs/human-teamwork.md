@@ -91,8 +91,11 @@ reason. Humans can start urgent backlog work manually. Record criterion progress
 and evidence, then resolve the task for review. Another authorized reviewer
 accepts it or requests rework. A resolved task is awaiting review; **closed**
 means accepted work and uses the violet status color. Explicit blocks and
-cancellation are separate from lifecycle status. Unblocking or reopening requires
-the corresponding action; reopening invalidates current acceptance.
+cancellation are separate from lifecycle status. A block comes from **Report
+blocker**, used by a person or an agent; either way the task shows the reason,
+appears in the **Blocked** view, and its Activity names who reported it.
+Unblocking or reopening requires the corresponding action; reopening invalidates
+current acceptance.
 
 Use **Discussion** for questions and coordination. Choose mention recipients
 from the authorized people search. Comments retain authorship, edit history,

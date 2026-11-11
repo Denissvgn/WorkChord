@@ -182,6 +182,12 @@ def test_master_rejects_role_identity_binding_and_size_mutations() -> None:
     )
     invalid.append(incompatible_package)
 
+    verifier_with_pm_package = deepcopy(base)
+    verifier_with_pm_package["verifiers"][0]["skill_package"]["name"] = (
+        "workchord-pm"
+    )
+    invalid.append(verifier_with_pm_package)
+
     unknown_scope = deepcopy(base)
     unknown_scope["workers"][0]["scope_preset"] = "worker-v2"
     invalid.append(unknown_scope)

@@ -87,7 +87,7 @@ describe('planning task issue contract', () => {
             iterationId: 7,
             returnStepId: 'schedule',
         })).toBe(
-            '/tasks?panel=filters&planningIssue=missing-effort&iterationId=7&fromPlanStep=schedule',
+            '/tasks?planningIssue=missing-effort&iterationId=7&fromPlanStep=schedule',
         );
     });
 });

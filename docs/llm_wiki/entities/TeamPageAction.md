@@ -1,6 +1,6 @@
 # TeamPageAction
 
-**Location:** `frontend/src/pages/TeamPage.tsx:17`
+**Location:** `frontend/src/pages/TeamPage.tsx:19`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TeamPage](../modules/TeamPage.md)

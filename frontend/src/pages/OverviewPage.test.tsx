@@ -336,7 +336,7 @@ describe('Overview partial-data resilience', () => {
         expect(screen.getAllByRole('button', { name: 'Retry affected data' })).toHaveLength(1);
         expect(screen.getAllByRole('link', { name: 'Check system status' })).toHaveLength(1);
         expect(screen.getByRole('link', { name: 'Open task board' }))
-            .toHaveAttribute('href', '/tasks');
+            .toHaveAttribute('href', '/tasks?layout=board');
         expect(screen.queryByRole('link', { name: 'Add first task' }))
             .not.toBeInTheDocument();
         expect(screen.queryByText('No open tasks need attention in this planning period.'))
@@ -529,6 +529,27 @@ describe('Overview partial-data resilience', () => {
         expect(screen.getByRole('button', {
             name: 'Review 1 remaining exception',
         })).toBeVisible();
+    });
+
+    it('leads with planning-scale unassigned work and links to assigning it in bulk', async () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(
+            overviewPlanningState({
+                // An iteration that covers today, so no pace warning competes.
+                currentIteration: {
+                    ...iteration,
+                    start_date: new Date(Date.now() - 86_400_000).toISOString().slice(0, 10),
+                    end_date: new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10),
+                },
+                inboxCount: 2,
+                tasks: [30, 31, 32, 33, 34, 35].map(id => task(id, 'planned')),
+            }),
+        );
+
+        renderWithProviders(<OverviewPage />);
+
+        expect(await screen.findByRole('heading', { name: '6 unassigned tasks' })).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Assign 6 tasks' }).getAttribute('href'))
+            .toMatch(/^\/tasks\?mode=bulk&planningIssue=unassigned&iterationId=\d+$/);
     });
 
     it('excludes completed tasks from overdue and unassigned attention', async () => {

@@ -14,8 +14,7 @@ _Auto-generated from `AgentPipeline` in `frontend/src/types/agent.ts`._
 | Name | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `needs_definition` | `Task[]` | Yes | — | — |
-| `ready_for_agent` | `Task[]` | Yes | — | — |
-| `definition_ready_unassigned` | `Task[]` | Yes | — | — |
+| `ready_to_assign` | `Task[]` | Yes | — | — |
 | `assigned_waiting` | `Task[]` | Yes | — | — |
 | `start_ready` | `Task[]` | Yes | — | — |
 | `executing` | `Task[]` | Yes | — | — |
@@ -45,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `assigned_waiting`, `definition_ready_unassigned`, `executing`, `needs_definition`, `ready_for_agent`, `recovery_required`, `start_ready`, `verification_required` |
+| [types_agent](../modules/types_agent.md) | 0 | `assigned_waiting`, `executing`, `needs_definition`, `ready_to_assign`, `recovery_required`, `start_ready`, `verification_required` |
 
 ### References
 

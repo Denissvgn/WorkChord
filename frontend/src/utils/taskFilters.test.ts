@@ -92,3 +92,19 @@ describe('Planning readiness task filters', () => {
         },
     );
 });
+
+describe('Blocked task filter', () => {
+    const blocked = taskFixture({ id: 4, blocked_reason: 'Database credentials are missing' });
+    const clear = taskFixture({ id: 5, blocked_reason: null });
+    const blank = taskFixture({ id: 6, blocked_reason: '   ' });
+
+    it('matches only tasks with a reported blocker', () => {
+        const filters = { ...defaultFilters, isBlocked: true };
+        expect([blocked, clear, blank].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([4]);
+    });
+
+    it('matches tasks without a blocker when set to not blocked', () => {
+        const filters = { ...defaultFilters, isBlocked: false };
+        expect([blocked, clear, blank].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([5, 6]);
+    });
+});

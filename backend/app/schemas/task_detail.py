@@ -21,6 +21,8 @@ class TaskReference(BaseModel):
     blocked_reason: str | None = None
     canceled_at: datetime | None = None
     acceptance_current: bool = False
+    # Display name of the agent holding the live review assignment, if any.
+    reviewer_name: str | None = None
 
 
 class TaskReferencePage(BaseModel):
@@ -38,6 +40,7 @@ class TaskDetailResponse(BaseModel):
     children: TaskReferencePage
     dependencies: TaskReferencePage
     execution_context_complete: bool = False
+    reviewer_name: str | None = None
 
 
 class HumanWorkReference(TaskReference):

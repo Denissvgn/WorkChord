@@ -6,6 +6,8 @@
 
 Agent integration services.
 
+The supervision pipeline places every open task in exactly one stage, in the order the shared workflow vocabulary lists them; defined but unassigned planned work is `ready_to_assign`. A claim-fenced `agent.blocker` task event from an assigned worker sets the task's `blocked_reason` from the payload's first readable text field, bounded to 1,000 characters, without advancing the task version, so the blocker people see and the one agents report are the same state.
+
 ## Imports
 
 | Source | Symbols |
@@ -54,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (29) |
+| Inbound | `backend` (30) |
 | Outbound | `backend` (16) |
 
 ### External packages
@@ -63,20 +65,21 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 43 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 44 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentConflictError](../entities/AgentConflictError.md) | 56 | `Exception` | Raised when an agent operation conflicts with current task state. |
-| [AgentPermissionError](../entities/AgentPermissionError.md) | 60 | `Exception` | Raised when an agent lacks a required scope. |
-| [AgentService](../entities/AgentService.md) | 110 | — | Service for agent authentication, task control, and run tracing. |
+| [AgentConflictError](../entities/AgentConflictError.md) | 70 | `Exception` | Raised when an agent operation conflicts with current task state. |
+| [AgentPermissionError](../entities/AgentPermissionError.md) | 74 | `Exception` | Raised when an agent lacks a required scope. |
+| [AgentService](../entities/AgentService.md) | 124 | — | Service for agent authentication, task control, and run tracing. |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `blocker_reason_from_payload` | `(payload: Any) -> str` | — | Derive the bounded, human-readable blocker reason from an agent.blocker payload. |
 | `hash_api_key` | `(api_key: str) -> str` | — | Hash an agent API key for storage and lookup. |
 | `actor_scopes` | `(actor: AgentActor) -> list[str]` | — | Parse an actor scope list. |
 | `actor_has_scope` | `(actor: AgentActor, scope: str) -> bool` | — | Return whether an actor has the requested scope. |

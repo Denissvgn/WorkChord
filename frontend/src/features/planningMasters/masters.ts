@@ -1,3 +1,4 @@
+import { formatDate } from '../../utils/formatDate';
 import type { PlanningStepId } from './planningReturn';
 import type { PlanningTaskIssue } from './planningTaskIssues';
 
@@ -107,6 +108,8 @@ export interface PlanReadiness {
     ganttLastBuilt: string;
     riskCount: number;
     inboxCount: number;
+    /** Server-owned checkpoint states; when present they decide each step's state. */
+    checkpointStates?: Partial<Record<PlanningStepId, StepState>>;
 }
 
 export type PlanningRecoveryKind =
@@ -196,6 +199,11 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
             ? { state: 'warn', missing: [`${r.riskCount} risk${r.riskCount === 1 ? '' : 's'} to acknowledge`] }
             : { state: 'done', summary: 'Plan ready to share' };
 
+    // People and the PM agent read the same server checkpoints, so the server's
+    // state wins; the local inputs above only supply the wording.
+    for (const [id, state] of Object.entries(r.checkpointStates ?? {})) {
+        if (state && out[id] && out[id].state !== state) out[id] = { ...out[id], state };
+    }
     return out;
 }
 
@@ -277,7 +285,12 @@ export const derivePlanningRecovery = (
                 query: { create: '1' },
             };
         }
-        return rankedTaskRecovery(r) ?? {
+        const taskRecovery = rankedTaskRecovery(r);
+        // Assigning needs people on the iteration: send the user to step 2 first.
+        if (taskRecovery?.kind === 'repair-assignee' && r.teamMemberCount === 0) {
+            return { kind: 'add-team', ownerStep: 'team', route: '/team' };
+        }
+        return taskRecovery ?? {
             kind: 'add-work',
             ownerStep: 'blockers',
             route: '/tasks',
@@ -353,8 +366,8 @@ export function localizeStatus(
             summary = current.state === 'done'
                 ? translate('plan.status.periodReady', {
                     name: r.currentIterationName,
-                    start: r.currentIterationStart,
-                    end: r.currentIterationEnd,
+                    start: formatDate(r.currentIterationStart),
+                    end: formatDate(r.currentIterationEnd),
                 })
                 : undefined;
             missing = current.state === 'done' ? undefined : [translate('plan.status.noPeriod')];

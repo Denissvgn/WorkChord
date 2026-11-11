@@ -5,6 +5,7 @@
 ## Description
 
 Merged history is read in bounded per-source queries and sorted by timestamp, source and stable record ID. Opaque task-bound cursors are validated and every request rechecks task visibility. Run-event actor provenance comes from the owning run. The compatible timeline preserves chronological output and explicitly rejects overflow.
+Agent-authored items carry the actor's display name, looked up once per page, so task Activity names the agent that reported progress or a blocker.
 
 Bounded, permission-scoped keyset reads of the merged task timeline.
 
@@ -12,7 +13,7 @@ Bounded, permission-scoped keyset reads of the merged task timeline.
 
 | Source | Symbols |
 |--------|---------|
-| `app.models.agent` | `AgentRun`, `AgentRunEvent`, `TaskEvent` |
+| `app.models.agent` | `AgentActor`, `AgentRun`, `AgentRunEvent`, `TaskEvent` |
 | `app.models.task` | `Task` |
 | `app.models.task_status_log` | `TaskStatusLog` |
 | `app.services.agent_service` | `AgentService` |

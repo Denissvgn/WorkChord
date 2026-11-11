@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskBulkOperationsPanel.tsx`
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Bot`, `CheckCircle2`, `ClipboardCheck`, `Trash2`, `XCircle` | — | compiler-dependent |
-| `react` | `useMemo`, `useState` | — | compiler-dependent |
+| `react` | `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -113,4 +113,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskBulkOperationsPanel` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    selectedTasks&#44;&#10;    selectedTaskIds&#44;&#10;    onClearSelection&#44;&#10;    onApplied&#44;&#10;&#125;&#58; TaskBulkOperationsPanelProps&#41;</code></pre> | — | — |
+| `TaskBulkOperationsPanel` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    selectedTasks&#44;&#10;    selectedTaskIds&#44;&#10;    onClearSelection&#44;&#10;    onApplied&#44;&#10;    focusAssignee &#61; false&#44;&#10;&#125;&#58; TaskBulkOperationsPanelProps&#41;</code></pre> | — | — |

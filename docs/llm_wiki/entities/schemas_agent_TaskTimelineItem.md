@@ -19,6 +19,7 @@ Merged timeline item for a task.
 | `payload` | `dict[str, Any]` | `payload` | No | No | factory: `dict` | — | — | — |
 | `actor_type` | `Optional[str]` | `actor_type` | No | Yes | `None` | — | — | — |
 | `actor_id` | `Optional[int]` | `actor_id` | No | Yes | `None` | — | — | — |
+| `actor_name` | `Optional[str]` | `actor_name` | No | Yes | `None` | — | — | — |
 | `trace_id` | `Optional[str]` | `trace_id` | No | Yes | `None` | — | — | — |
 
 ## Methods
@@ -46,7 +47,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `actor_type`, `item_type`, `payload`, `timestamp`, `title`, `trace_id` |
+| [schemas_agent](../modules/schemas_agent.md) | 0 | `actor_id`, `actor_name`, `actor_type`, `item_type`, `payload`, `timestamp`, `title`, `trace_id` |
 
 ### Structure
 

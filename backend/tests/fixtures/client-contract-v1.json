@@ -1,5 +1,5 @@
 {
-  "api_version": "1.7.0",
+  "api_version": "1.8.0",
   "components": {
     "schemas": {
       "Body_import_iteration_api_iterations__iteration_id__import_post": {
@@ -497,6 +497,17 @@
               }
             ],
             "title": "Project Name"
+          },
+          "reviewer_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer Name"
           },
           "status": {
             "title": "Status",
@@ -2303,6 +2314,17 @@
             "title": "Execution Context Complete",
             "type": "boolean"
           },
+          "reviewer_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer Name"
+          },
           "task": {
             "$ref": "#/components/schemas/TaskResponse"
           }
@@ -2530,6 +2552,17 @@
               }
             ],
             "title": "Project Name"
+          },
+          "reviewer_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reviewer Name"
           },
           "status": {
             "title": "Status",
@@ -3462,6 +3495,17 @@
               }
             ],
             "title": "Actor Id"
+          },
+          "actor_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Name"
           },
           "actor_type": {
             "anyOf": [

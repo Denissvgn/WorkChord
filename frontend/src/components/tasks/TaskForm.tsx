@@ -1096,7 +1096,10 @@ export const TaskForm = ({
             {currentTask && iterationId !== null && mode === 'direct' && (
                 <div className="border-t pt-4">
                     <label className="block text-sm font-medium text-content-primary mb-2">{t('surfaces.taskForm.statusManagement')}</label>
-                    {iterationId !== null && <fieldset disabled={isDirty || workDirty || discussionDirty || timeDirty || isSubmitting}><StatusChangeControl
+                    {(isDirty || workDirty || discussionDirty || timeDirty) && (
+                        <p id="task-status-locked" className="mb-2 text-sm text-content-secondary">{t('surfaces.taskForm.statusLockedByEdits')}</p>
+                    )}
+                    {iterationId !== null && <fieldset aria-describedby={isDirty || workDirty || discussionDirty || timeDirty ? 'task-status-locked' : undefined} disabled={isDirty || workDirty || discussionDirty || timeDirty || isSubmitting}><StatusChangeControl
                         onPendingChange={handleStatusPending}
                         task={currentTask}
                         iterationId={iterationId}

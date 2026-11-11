@@ -19,6 +19,7 @@ _Auto-generated from `TaskTimelineItem` in `frontend/src/types/task.ts`._
 | `payload` | `Record<string, unknown>` | Yes | — | — |
 | `actor_type` | `string \| null` | No | — | — |
 | `actor_id` | `number \| null` | No | — | — |
+| `actor_name` | `string \| null` | No | — | — |
 | `trace_id` | `string \| null` | No | — | — |
 
 ## Methods
@@ -34,4 +35,4 @@ _Auto-generated from `TaskTimelineItem` in `frontend/src/types/task.ts`._
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `actor_id`, `actor_type`, `item_type`, `payload`, `timestamp`, `title`, `trace_id` |
+| [types_task](../modules/types_task.md) | 0 | `actor_id`, `actor_name`, `actor_type`, `item_type`, `payload`, `timestamp`, `title`, `trace_id` |

@@ -9,6 +9,7 @@ export const defaultFilters: TaskFilters = {
     hasDependency: null,
     isOverdue: null,
     isIterationOverflow: null,
+    isBlocked: null,
     agentReady: null,
     startDateFrom: '',
     startDateTo: '',

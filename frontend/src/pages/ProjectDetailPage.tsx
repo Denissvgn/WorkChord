@@ -45,6 +45,7 @@ import { ReleaseForm } from '../components/releases/ReleaseForm';
 import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage, getApiErrorStatus } from '../utils/apiError';
+import { useToast } from '../components/feedback/toast';
 import { formatPortfolioOwnerLabel } from '../utils/teamMemberLabels';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import type {
@@ -740,11 +741,11 @@ const PostUpdateDrawer = ({
                     )}
 
                     <div>
-                        <label className="mb-1.5 block text-xs font-semibold text-content-primary" htmlFor="drawer-health">
-                            {t('surfaces.projectDetail.health')} <span className="text-feedback-danger">*</span>
-                        </label>
-                        <div className="grid grid-cols-3 gap-2">
-                            {(Object.entries(healthLabelKeys) as [ProjectHealth, string][]).filter(([k]) => k !== 'unknown').map(([value, labelKey]) => {
+                        <span id="drawer-health-label" className="mb-1.5 block text-xs font-semibold text-content-primary">
+                            {t('surfaces.projectDetail.health')}
+                        </span>
+                        <div role="radiogroup" aria-labelledby="drawer-health-label" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                            {(Object.entries(healthLabelKeys) as [ProjectHealth, string][]).map(([value, labelKey]) => {
                                 const active = form.health === value;
                                 const tone = healthToTone(value);
                                 const dot = healthDotClass(value);
@@ -758,6 +759,8 @@ const PostUpdateDrawer = ({
                                     <button
                                         key={value}
                                         type="button"
+                                        role="radio"
+                                        aria-checked={active}
                                         onClick={() => setField('health', value)}
                                         className={clsx(
                                             'inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm transition-colors',
@@ -774,11 +777,13 @@ const PostUpdateDrawer = ({
 
                     <div>
                         <div className="mb-1.5 flex items-baseline justify-between">
-                            <label className="text-xs font-semibold text-content-primary" htmlFor="drawer-summary">{t('surfaces.projectDetail.summary')}</label>
+                            <label className="text-xs font-semibold text-content-primary" htmlFor="drawer-summary">{t('surfaces.projectDetail.summary')} <RequiredIndicator /></label>
                             <span className="text-wc-micro text-content-tertiary">{t('surfaces.projectDetail.oneLineStakeholdersWillSkim')}</span>
                         </div>
                         <input
                             id="drawer-summary"
+                            required
+                            aria-required="true"
                             value={form.summary}
                             onChange={event => setField('summary', event.target.value)}
                             placeholder={t('surfaces.projectDetail.eGSpecLandedEngKickoffTuesday')}
@@ -870,6 +875,7 @@ const ProjectDetailPage = () => {
         message: null,
     });
     const [postUpdateOpen, setPostUpdateOpen] = useState(false);
+    const toast = useToast();
     const [historyOpen, setHistoryOpen] = useState(false);
     const [newBacklogTask, setNewBacklogTask] = useState(false);
 
@@ -1062,6 +1068,8 @@ const ProjectDetailPage = () => {
             queryClient.invalidateQueries({ queryKey: ['project', numericProjectId] });
             queryClient.invalidateQueries({ queryKey: ['projectSummary', numericProjectId] });
             queryClient.invalidateQueries({ queryKey: ['projectUpdates', numericProjectId] });
+            setPostUpdateOpen(false);
+            toast.success(t('surfaces.projectDetail.updatePosted'));
         },
         onError: (err: unknown) => {
             setUpdateErrorStore({
@@ -1583,7 +1591,7 @@ const ProjectDetailPage = () => {
                 error={updateError}
                 isPending={createUpdateMutation.isPending}
                 setField={setUpdateField}
-                onSubmit={(event) => { handleCreateUpdate(event); if (!updateSummaryIsBlank) setPostUpdateOpen(false); }}
+                onSubmit={handleCreateUpdate}
                 onDismissError={() => setUpdateErrorStore({ projectId: numericProjectId, message: null })}
                 summaryIsBlank={updateSummaryIsBlank}
                 projectName={project.name}

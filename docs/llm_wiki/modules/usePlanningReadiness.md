@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../services/triageService` | `triageService` | — | compiler-dependent |
-| `../../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../../types/gantt` | `GanttResponse` | Declaration | erased |
 | `../../types/iteration` | `Iteration` | Declaration | erased |
 | `../../types/task` | `Task` | Declaration | erased |
@@ -23,6 +23,7 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | `./masters` | `PlanReadiness` | Declaration | erased |
 | `./masters` | `deriveStatus`, `nextStep`, `readiness` | — | compiler-dependent |
 | `./planningTaskIssues` | `hasPositivePlanningEffort`, `isPlanningLeafTask` | — | compiler-dependent |
+| `./usePlanningNavigationSummary` | `planningNavigationSummaryKey` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `react` | `useEffect`, `useMemo` | — | compiler-dependent |
 
@@ -54,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (6) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,16 +63,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 2 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PlanningReadinessOptions](../entities/PlanningReadinessOptions.md) | Type alias | 20 | <pre><code>&#123;&#10;    includeInbox&#63;&#58; boolean&#59;&#10;    autoSelectFirst&#63;&#58; boolean&#59;&#10;&#125;</code></pre> | — |
-| [PlanningTeamMember](../entities/PlanningTeamMember.md) | Type alias | 29 | <pre><code>TeamMember &#38; &#123;&#10;    capacity&#95;hours&#58; number&#59;&#10;    planned&#95;hours&#58; number&#59;&#10;&#125;</code></pre> | — |
-| [PlanningQueryFeedback](../entities/PlanningQueryFeedback.md) | Type alias | 34 | <pre><code>&#123;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    isBlockingError&#58; boolean&#59;&#10;    isRefetchError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
-| [QueryFeedbackSource](../entities/QueryFeedbackSource.md) | Type alias | 47 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
+| [PlanningReadinessOptions](../entities/PlanningReadinessOptions.md) | Type alias | 21 | <pre><code>&#123;&#10;    includeInbox&#63;&#58; boolean&#59;&#10;    autoSelectFirst&#63;&#58; boolean&#59;&#10;&#125;</code></pre> | — |
+| [PlanningTeamMember](../entities/PlanningTeamMember.md) | Type alias | 30 | <pre><code>TeamMember &#38; &#123;&#10;    capacity&#95;hours&#58; number&#59;&#10;    planned&#95;hours&#58; number&#59;&#10;&#125;</code></pre> | — |
+| [PlanningQueryFeedback](../entities/PlanningQueryFeedback.md) | Type alias | 35 | <pre><code>&#123;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    isBlockingError&#58; boolean&#59;&#10;    isRefetchError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
+| [QueryFeedbackSource](../entities/QueryFeedbackSource.md) | Type alias | 48 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
@@ -82,4 +83,4 @@ flowchart LR
 | `enrichPlanningTeamMembers` | <pre><code>&#40;&#123;&#10;    members&#44;&#10;    tasks&#44;&#10;    iteration&#44;&#10;    gantt&#44;&#10;&#125;&#58; &#123;&#10;    members&#58; TeamMember&#91;&#93;&#59;&#10;    tasks&#58; Task&#91;&#93;&#59;&#10;    iteration&#58; Iteration &#124; null&#59;&#10;    gantt&#63;&#58; GanttResponse&#59;&#10;&#125;&#41; &#45;&#62; PlanningTeamMember&#91;&#93;</code></pre> | — | — |
 | `hasSavedPlanningSchedule` | `(tasks: Task[])` | — | — |
 | `countPlanningExceptions` | `(tasks: Task[], members: PlanningTeamMember[])` | — | — |
-| `usePlanningReadiness` | <pre><code>&#40;&#123;&#10;    includeInbox &#61; false&#44;&#10;    autoSelectFirst &#61; false&#44;&#10;&#125;&#58; PlanningReadinessOptions &#61; &#123;&#125;&#41;</code></pre> | — | — |
+| `usePlanningReadiness` | <pre><code>&#40;&#123;&#10;    includeInbox &#61; false&#44;&#10;    &#47;&#47; Every planning surface selects the same default iteration&#44; so readiness&#10;    &#47;&#47; never depends on which page was opened first&#46;&#10;    autoSelectFirst &#61; true&#44;&#10;&#125;&#58; PlanningReadinessOptions &#61; &#123;&#125;&#41;</code></pre> | — | — |

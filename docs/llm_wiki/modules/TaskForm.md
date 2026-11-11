@@ -4,7 +4,7 @@
 
 ## Description
 
-Places title, durable owner, capacity assignment, estimates and commitment state before the canonical brief. AI assistance is an intentional disclosure. The shared editor guards task, work and discussion drafts, preserves conflicts, and separates delivery prerequisites and discussion from current execution evidence.
+Places title, durable owner, capacity assignment, estimates and commitment state before the canonical brief. AI assistance is an intentional disclosure. The shared editor guards task, work and discussion drafts, preserves conflicts, and separates delivery prerequisites and discussion from current execution evidence. Status changes stay locked while any draft is unsaved, and the form says so.
 
 Task writes persist an uncertain-outcome checkpoint before the request. Restored or unverified outcomes require an authoritative current read and explicit comparison before submitting again; bounded missing matches do not prove failure. Inputs and original observations remain intact, and completion of a removed editor cannot clear or navigate its replacement.
 

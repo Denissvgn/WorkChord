@@ -115,4 +115,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `ConfirmDialog` | <pre><code>&#40;&#123;&#10;    open&#44;&#10;    title&#44;&#10;    description&#44;&#10;    confirmLabel&#44;&#10;    cancelLabel&#44;&#10;    closeLabel&#44;&#10;    onConfirm&#44;&#10;    onCancel&#44;&#10;    tone &#61; &#39;danger&#39;&#44;&#10;    pending &#61; false&#44;&#10;&#125;&#58; ConfirmDialogProps&#41;</code></pre> | — | A deliberately small destructive-action contract layered on the shared |
+| `ConfirmDialog` | <pre><code>&#40;&#123;&#10;    open&#44;&#10;    title&#44;&#10;    description&#44;&#10;    confirmLabel&#44;&#10;    cancelLabel&#44;&#10;    closeLabel&#44;&#10;    onConfirm&#44;&#10;    onCancel&#44;&#10;    tone &#61; &#39;danger&#39;&#44;&#10;    pending &#61; false&#44;&#10;    confirmDisabled &#61; false&#44;&#10;&#125;&#58; ConfirmDialogProps&#41;</code></pre> | — | A deliberately small destructive-action contract layered on the shared |

@@ -34,7 +34,7 @@ import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
-import { useIterationStore } from '../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import type { SavedView } from '../types/savedView';
@@ -136,6 +136,7 @@ const TasksPage = () => {
         Number(filters.hasDependency !== null) +
         Number(filters.isOverdue !== null) +
         Number(filters.isIterationOverflow != null) +
+        Number(filters.isBlocked != null) +
         Number(filters.agentReady !== null) +
         Number(Boolean(filters.startDateFrom)) +
         Number(Boolean(filters.startDateTo)) +
@@ -242,7 +243,7 @@ const TasksPage = () => {
 
         const iterationExists = iterations.some(i => i.id === selectedIterationId);
         if (selectedIterationId === 0 || !iterationExists) {
-            setSelectedIterationId(iterations[0].id);
+            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
         }
     }, [
         iterations,
@@ -446,7 +447,7 @@ const TasksPage = () => {
                 <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
                     <Link className="text-sm font-medium text-action hover:underline" to="/tasks?scope=backlog">{t('teamwork.projectBacklog')}</Link>
                     <TaskSearch />
-                    {savedViewModified(selectedSavedView, filters, sortKey) && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
+                    {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
                 </div>
                 <PlanReturnBar />
                 <OverviewTaskReturnBar
@@ -463,6 +464,7 @@ const TasksPage = () => {
                         </div>
                         <div className="row tasks-header-actions">
                         <IterationSelector
+                            showLabel
                             className="tasks-iteration-selector"
                             onChange={clearIterationViewContext}
                         />
@@ -732,6 +734,7 @@ const TasksPage = () => {
                                         onCreateTask={() => setIsCreating(true)}
                                         requestedMode={taskMode}
                                         onModeChange={mode => setTaskContextParam('mode', mode)}
+                                        preselectAllInBulk={taskMode === 'bulk' && filters.planningIssue === 'unassigned'}
                                     />
                                 </div>
                             </div>

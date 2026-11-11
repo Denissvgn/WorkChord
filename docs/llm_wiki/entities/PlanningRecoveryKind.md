@@ -1,6 +1,6 @@
 # PlanningRecoveryKind
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:112`
+**Location:** `frontend/src/features/planningMasters/masters.ts:115`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

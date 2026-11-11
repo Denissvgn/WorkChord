@@ -117,3 +117,17 @@ describe('planning master readiness status', () => {
         });
     });
 });
+
+describe('server-owned plan checkpoints', () => {
+    it('lets the server checkpoint state decide each step, as agents read it', () => {
+        const local = deriveStatus(readinessFixture({ hasGanttSchedule: false }));
+        expect(local.schedule.state).toBe('todo');
+        const status = deriveStatus(readinessFixture({
+            hasGanttSchedule: false,
+            checkpointStates: { schedule: 'done', review: 'warn' },
+        }));
+        expect(status.schedule.state).toBe('done');
+        expect(status.review.state).toBe('warn');
+        expect(status.team.state).toBe(local.team.state);
+    });
+});

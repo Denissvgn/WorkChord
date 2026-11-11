@@ -49,7 +49,7 @@ will remain effective `off`.
    bindings through the protected operator API.
 3. Reconcile the operator-owned planner/worker topology, acknowledge its
    runtimes, and verify the live roster. Do not infer readiness from UI state.
-4. Upgrade compatible planner and worker role packages.
+4. Upgrade compatible planner, worker, and reviewer role packages.
 5. Confirm the deployment's server-side topology authority reports the expected
    topology identity and revision. Stop at `off` when that authority is absent.
 6. Set every application replica to `shadow`, restart them, and confirm the

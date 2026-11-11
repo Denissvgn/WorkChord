@@ -1,8 +1,9 @@
+import clsx from 'clsx';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Trash2, ArrowRight, Download, Upload, FolderOpen } from 'lucide-react';
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { iterationService } from '../../services/iterationService';
 import { IterationImportDialog } from './IterationImportDialog';
 import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
@@ -22,9 +23,11 @@ interface IterationListProps {
 export const IterationList = ({ onEdit }: IterationListProps) => {
     const queryClient = useQueryClient();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const toast = useToast();
-    const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions } | null>(null);
+    const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions; name: string; taskCount: number | null } | null>(null);
+    const [deleteConfirmation, setDeleteConfirmation] = useState('');
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const [importingId, setImportingId] = useState<number | null>(null);
     const [importFile, setImportFile] = useState<File | null>(null);
@@ -85,14 +88,20 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     const openDelete = async (id: number) => {
         try {
             const observed = await planningInputService.readInitial<Iteration>('iteration', id);
-            setDeleteContext({ id, revisions: observed.expected_revisions }); setDeletingId(id);
+            // The task count makes the loss explicit; the dialog still works when it cannot be read.
+            const taskCount = await iterationService.getPlanningReadiness(id)
+                .then(summary => summary.task_count)
+                .catch(() => null);
+            const name = iterations?.find(item => item.id === id)?.name ?? '';
+            setDeleteConfirmation('');
+            setDeleteContext({ id, revisions: observed.expected_revisions, name, taskCount }); setDeletingId(id);
         } catch (cause) { toast.error(getApiErrorMessage(cause, t('feedback.iterationDeleteFailed'))); }
     };
 
     if (isLoading) return <div>{t('common.loading')}</div>;
     if (isError) return (
         <div role="alert" className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted p-4 text-feedback-danger-foreground">
-            <p>{getApiErrorMessage(error, t('feedback.iterationDeleteFailed'))}</p>
+            <p>{getApiErrorMessage(error, t('iterations.loadFailed'))}</p>
             <Button className="mt-3" variant="secondary" onClick={() => void refetch()}>{t('queryFeedback.retry')}</Button>
         </div>
     );
@@ -109,7 +118,11 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                 onChange={handleImportFile}
             />
             {iterations?.map((iteration) => (
-                <div key={iteration.id} className="card hover:shadow-md transition-shadow">
+                <div
+                    key={iteration.id}
+                    className={clsx('card card-pad', iteration.id === selectedIterationId && 'border-action')}
+                    aria-current={iteration.id === selectedIterationId ? 'true' : undefined}
+                >
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-feedback-purple-muted rounded-lg text-feedback-purple-foreground">
@@ -117,6 +130,9 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-lg">{iteration.name}</h3>
+                                {iteration.id === selectedIterationId && (
+                                    <span className="pill sm">{t('iterations.currentPlanningPeriod')}</span>
+                                )}
                                 <div className="flex items-center text-sm text-content-secondary gap-1">
                                     <span>{formatDate(iteration.start_date)}</span>
                                     <ArrowRight className="w-3 h-3" />
@@ -154,7 +170,22 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-2 pt-4 border-t border-border-subtle">
+                    <div className="flex flex-wrap justify-end gap-2 pt-4 border-t border-border-subtle">
+                        {iteration.id !== selectedIterationId ? (
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                className="mr-auto"
+                                onClick={() => {
+                                    setSelectedIterationId(iteration.id);
+                                    navigate('/plan/master');
+                                }}
+                            >
+                                {t('iterations.planThisIteration')}
+                            </Button>
+                        ) : (
+                            <Link to="/plan/master" className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
+                        )}
                         <Button
                             variant="ghost"
                             size="sm"
@@ -204,12 +235,31 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
 
             <ConfirmDialog
                 open={deletingId !== null}
-                title={t('iterations.deleteTitle')}
-                description={<>{t('iterations.deleteBody')}{deleteMutation.isError && <p role="alert">{getApiErrorMessage(deleteMutation.error, t('feedback.iterationDeleteFailed'))}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => { if (deletingId) void openDelete(deletingId); }}>{t('planningInput.reviewAgain')}</Button></p>}</>}
-                confirmLabel={t('actions.delete')}
+                title={t('iterations.deleteNamedTitle', { name: deleteContext?.name ?? '' })}
+                description={<>
+                    <p>{deleteContext?.taskCount == null
+                        ? t('iterations.deleteBody')
+                        : t('iterations.deleteBodyWithCount', { count: deleteContext.taskCount })}</p>
+                    {(deleteContext?.taskCount ?? 1) > 0 && deleteContext?.name && (
+                        <label className="mt-3 block text-sm">
+                            <span className="field-lbl">{t('iterations.deleteTypeName', { name: deleteContext.name })}</span>
+                            <input
+                                className="input mt-1 w-full"
+                                value={deleteConfirmation}
+                                onChange={event => setDeleteConfirmation(event.target.value)}
+                                autoComplete="off"
+                            />
+                        </label>
+                    )}
+                    {deleteMutation.isError && <p role="alert">{getApiErrorMessage(deleteMutation.error, t('feedback.iterationDeleteFailed'))}<Button type="button" variant="secondary" disabled={deleteMutation.isPending} onClick={() => { if (deletingId) void openDelete(deletingId); }}>{t('planningInput.reviewAgain')}</Button></p>}</>}
+                confirmLabel={deleteContext?.taskCount
+                    ? t('iterations.deleteConfirmWithCount', { count: deleteContext.taskCount })
+                    : t('iterations.deleteConfirm')}
                 cancelLabel={t('actions.cancel')}
                 closeLabel={t('actions.close')}
                 pending={deleteMutation.isPending}
+                confirmDisabled={(deleteContext?.taskCount ?? 1) > 0 && Boolean(deleteContext?.name)
+                    && deleteConfirmation.trim() !== deleteContext?.name.trim()}
                 onCancel={() => setDeletingId(null)}
                 onConfirm={() => { if (deleteContext) deleteMutation.mutate(deleteContext); }}
             />

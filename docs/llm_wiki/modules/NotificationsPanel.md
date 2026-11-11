@@ -26,6 +26,7 @@ _Auto-generated from `frontend/src/components/notifications/NotificationsPanel.t
 | Signal | Values |
 |--------|--------|
 | Exports | `NotificationsPanel` |
+| Constants | `ACTOR_LABEL_KEYS` |
 
 ## Local dependency map
 
@@ -73,8 +74,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [NotificationsPanelProps](../entities/NotificationsPanelProps.md) | Interface | 12 | — | — |
-| [Tab](../entities/Tab.md) | Type alias | 17 | `'history' \| 'overdue'` | — |
+| [NotificationsPanelProps](../entities/NotificationsPanelProps.md) | Interface | 20 | — | — |
+| [Tab](../entities/Tab.md) | Type alias | 25 | `'history' \| 'overdue'` | — |
 
 ## Functions
 

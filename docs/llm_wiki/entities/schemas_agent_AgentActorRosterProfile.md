@@ -1,6 +1,6 @@
 # AgentActorRosterProfile
 
-**Location:** `backend/app/schemas/agent.py:737`
+**Location:** `backend/app/schemas/agent.py:740`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

@@ -53,6 +53,20 @@ ALLOWED_ASSIGNED_RUN_EVENT_TYPES = {
 }
 
 
+MAX_BLOCKER_REASON_CHARS = 1000
+BLOCKER_REASON_FIELDS = ("blocker", "summary", "reason", "message")
+
+
+def blocker_reason_from_payload(payload: Any) -> str:
+    """Derive the bounded, human-readable blocker reason from an agent.blocker payload."""
+    if isinstance(payload, dict):
+        for field in BLOCKER_REASON_FIELDS:
+            value = payload.get(field)
+            if isinstance(value, str) and value.strip():
+                return value.strip()[:MAX_BLOCKER_REASON_CHARS]
+    return "Blocker reported by the assigned agent."
+
+
 class AgentConflictError(Exception):
     """Raised when an agent operation conflicts with current task state."""
 
@@ -964,6 +978,11 @@ class AgentService:
                     "Task event idempotency key was reused with a different request."
                 )
             return existing
+        if assigned_worker and data.event_type == "agent.blocker":
+            # A claim-fenced blocker is the same Blocked state people set with
+            # "Block work"; only the PM or a person removes it. The task
+            # version stays unchanged so the worker's lease fields stay valid.
+            task.blocked_reason = blocker_reason_from_payload(data.payload)
         if assigned_worker:
             self._record_command_receipt(
                 actor,
@@ -1490,8 +1509,7 @@ class AgentService:
             )
 
         needs_definition = []
-        ready_for_agent = []
-        definition_ready_unassigned = []
+        ready_to_assign = []
         assigned_waiting = []
         start_ready = []
         executing = []
@@ -1573,17 +1591,16 @@ class AgentService:
                     recovery_required.append(task_resp)
                 continue
 
-            # 3. Ready for Agent vs Needs Definition (Planned)
+            # 3. Planned work without an execution assignment: ready to
+            # assign once defined. Agents never pick work from this stage.
             if task_resp.agent_readiness.definition_ready:
-                ready_for_agent.append(task_resp)
-                definition_ready_unassigned.append(task_resp)
+                ready_to_assign.append(task_resp)
             else:
                 needs_definition.append(task_resp)
 
         return {
             "needs_definition": needs_definition,
-            "ready_for_agent": ready_for_agent,
-            "definition_ready_unassigned": definition_ready_unassigned,
+            "ready_to_assign": ready_to_assign,
             "assigned_waiting": assigned_waiting,
             "start_ready": start_ready,
             "executing": executing,

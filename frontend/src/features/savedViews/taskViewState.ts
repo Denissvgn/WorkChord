@@ -37,6 +37,7 @@ export const filtersFromSavedView = (view: SavedView): TaskFilters => {
         hasDependency: nullableBooleanFromValue(raw.hasDependency),
         isOverdue: nullableBooleanFromValue(raw.isOverdue),
         isIterationOverflow: nullableBooleanFromValue(raw.isIterationOverflow),
+        isBlocked: nullableBooleanFromValue(raw.isBlocked),
         agentReady: nullableBooleanFromValue(raw.agentReady),
         startDateFrom: stringFromValue(raw.startDateFrom),
         startDateTo: stringFromValue(raw.startDateTo),

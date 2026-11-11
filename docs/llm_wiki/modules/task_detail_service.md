@@ -9,6 +9,7 @@ Reference lookup supports bounded ascending-ID reads, status/search/scope filter
 Provides bounded task references, title/ID lookup and human ownership queues without loading the full execution graph. Human work can be filtered by authorized project, iteration or backlog before pagination. Queue categorization remains server-owned, including blocked prerequisites and acceptance reconciliation. Reference projections do not establish complete execution context.
 
 UI detail computes inherited flags through a bounded parent-policy projection, authorizing every parent scope before serialization. It does not hydrate execution children/dependencies. Displayed ancestors remain separately bounded; unavailable roots fail closed, and a changed task version during the read requires reloading initial context.
+Detail and the In review queue items carry `reviewer_name`, the display name of the agent holding the task's live verification assignment, read in one bounded query per page; it is empty when any authorized person may review.
 
 Human ownership queues apply complete inherited deferral policy to every bounded candidate and exclude deferred descendants from ordinary work queues. Pagination retains the underlying candidate cursor and has-more indication even when eligibility filtering empties a page, so later eligible work remains discoverable without an unbounded fill scan. Policy ancestry and authorization failures remain explicit.
 
@@ -18,6 +19,7 @@ Human ownership queues apply complete inherited deferral policy to every bounded
 |--------|---------|
 | `app.authority` | `require_project`, `internal_authority`, `require_project` |
 | `app.commands` | `PlanningConflict` |
+| `app.models.agent` | `AgentActor`, `AgentTaskAssignment` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.task` | `Task`, `TaskDependency` |
@@ -53,7 +55,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (6) |
 | Inbound | `scripts` (1) |
-| Outbound | `backend` (12) |
+| Outbound | `backend` (13) |
 
 ### External packages
 
@@ -61,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

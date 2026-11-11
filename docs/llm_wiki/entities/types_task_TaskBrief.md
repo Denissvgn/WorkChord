@@ -1,6 +1,6 @@
 # TaskBrief
 
-**Location:** `frontend/src/types/task.ts:431`
+**Location:** `frontend/src/types/task.ts:432`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

@@ -10,7 +10,9 @@ Generated submission tables include the optional typed `criterion_progress` pack
 
 Canonical role guidance requires stable criterion IDs and revisions for submission and independent review. Package identities and example manifest checksum pins must advance together; frozen published role and catalog identities remain append-only.
 
-`config/workflow-vocabulary.json` is the shared source for role display names, workflow steps, task states, action verbs, My Work queues, and terms. The script validates it, renders one identical generated block into each role's `references/workflow-and-names.md`, and fails validation when that block drifts; the frontend checks its interface labels against the same file.
+`config/workflow-vocabulary.json` is the shared source for role display names, workflow steps, task states, action verbs, My Work queues, and terms. The script validates it, renders one identical generated block into each role's `references/workflow-and-names.md`, and fails validation when that block drifts; the frontend checks its interface labels against the same file. Each role's `SKILL.md` also carries a generated list of the live features that role's package requires, so the prose gate cannot drift from the catalog metadata.
+
+Three role packages exist, one per code role: `workchord-pm` (`pm`), `workchord-worker` (`worker`), and `workchord-reviewer` (`verifier`). The reviewer package declares only scopes inside the `verifier-v1` preset, carries its own copy of the generated assigned-work contract, and owns the review packet and verdict guidance; the PM package routes work to review but never records a verdict, matching the server rule that only a `verifier`-role agent can accept.
 
 Validate and reproducibly package WorkChord role skills.
 
@@ -52,7 +54,7 @@ Validate and reproducibly package WorkChord role skills.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [SkillPackError](../entities/SkillPackError.md) | 841 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
+| [SkillPackError](../entities/SkillPackError.md) | 874 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
 
 ## Functions
 
@@ -83,6 +85,8 @@ Validate and reproducibly package WorkChord role skills.
 | `_require_localized` | `(value: Any, *, field: str) -> dict[str, str]` | — | — |
 | `load_workflow_vocabulary` | `(repository_root: Path = REPOSITORY_ROOT) -> dict[str, Any]` | — | Load and validate the shared workflow vocabulary used by role skills and UI. |
 | `render_workflow_vocabulary_markdown` | `(vocabulary: dict[str, Any]) -> str` | — | Render the shared workflow vocabulary as one identical block for every role. |
+| `render_role_features_markdown` | `(role_name: str) -> str` | — | Render one role's required live features from its package metadata. |
+| `_role_features_block` | `(text: str, *, context: str) -> str` | — | — |
 | `_workflow_vocabulary_block` | `(text: str, *, context: str) -> str` | — | — |
 | `render_openai_adapter` | `(role_dir: Path) -> bytes` | — | Derive deterministic optional UI metadata from one portable SKILL.md. |
 | `sync_generated_skill_sources` | `(repository_root: Path = REPOSITORY_ROOT, skills_dir: Path = DEFAULT_SKILLS_DIR) -> list[Path]` | — | Synchronize shared references and optional adapters from canonical sources. |

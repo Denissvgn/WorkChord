@@ -24,6 +24,18 @@ vi.mock('../../services/labelService', () => ({
     labelService: labelServiceMock,
 }));
 
+vi.mock('../../services/teamService', () => ({
+    teamService: { getByIteration: vi.fn().mockResolvedValue([{ id: 5, name: 'Ada' }]) },
+}));
+
+vi.mock('../../services/projectService', () => ({
+    projectService: { getAll: vi.fn().mockResolvedValue([]) },
+}));
+
+vi.mock('../../services/iterationService', () => ({
+    iterationService: { getById: vi.fn().mockResolvedValue({ id: 1, name: 'Iteration', project_id: null }) },
+}));
+
 vi.mock('./TaskAgentReadinessBadge', () => ({
     TaskAgentReadinessBadge: () => null,
 }));
@@ -135,4 +147,29 @@ it('retains the merge opening revision while a live list refreshes', async () =>
     await waitFor(() => expect(title).toHaveValue('Retained merged intent'));
     await user.click(screen.getByRole('button', { name: 'Merge tasks' }));
     await waitFor(() => expect(taskServiceMock.mergeTasks.mock.lastCall?.[1].expected_revision).toBe(9));
+});
+
+it('selects every matching task and focuses the assignee picker when a hand-off opens bulk mode', async () => {
+    taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2), task(3)]);
+    renderWithProviders(
+        <TaskList
+            iterationId={1}
+            sortKey="priority"
+            onSortKeyChange={() => undefined}
+            requestedMode="bulk"
+            preselectAllInBulk
+        />,
+    );
+
+    expect(await screen.findByText('Selected tasks: 3')).toBeInTheDocument();
+    const assignee = await screen.findByRole('combobox', { name: 'Choose assignee' });
+    await waitFor(() => expect(assignee).toHaveFocus());
+});
+
+it('offers selection as a visible action instead of a menu', async () => {
+    taskServiceMock.getByIteration.mockResolvedValue([task(1)]);
+    renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} />);
+
+    expect(await screen.findByRole('button', { name: 'Select' })).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Merge tasks' })).toBeVisible();
 });

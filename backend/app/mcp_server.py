@@ -1540,6 +1540,14 @@ def create_mcp_server() -> FastMCP:
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_iteration(db, iteration_id))
 
     @mcp.tool()
+    async def agent_get_iteration_plan_readiness(iteration_id: int) -> dict[str, Any] | None:
+        """Read the six plan checkpoints and their states, as the plan page shows them."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id),
+        )
+
+    @mcp.tool()
     async def workspace_get_iteration_summary(iteration_id: int) -> dict[str, Any] | None:
         """Return vacation-aware iteration progress and capacity totals."""
         return await _tool_call(
@@ -2339,6 +2347,16 @@ def create_mcp_server() -> FastMCP:
             "then read workchord://skill-bundles/workchord-worker/{version}/SKILL.md. "
             "Follow that skill, call workchord://agent/me/work, and execute only the exact "
             "server-selected assignment."
+        )
+
+    @mcp.prompt()
+    async def workchord_reviewer_role() -> str:
+        """Point a reviewer client to the exact canonical verification role."""
+        return await _skill_bundle_prompt(
+            "Read workchord://agent/capabilities, resolve its recommended verifier skill version, "
+            "then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. "
+            "Follow that skill, read your review queue, and record a verdict only for the "
+            "exact review assignment it returns."
         )
 
     @mcp.prompt()

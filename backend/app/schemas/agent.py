@@ -450,6 +450,7 @@ class TaskTimelineItem(BaseModel):
     payload: dict[str, Any] = Field(default_factory=dict)
     actor_type: Optional[str] = None
     actor_id: Optional[int] = None
+    actor_name: Optional[str] = None
     trace_id: Optional[str] = None
 
 
@@ -473,15 +474,17 @@ class TaskTimelinePage(BaseModel):
 
 
 class AgentPipelineResponse(BaseModel):
-    """Segmented task list representing the agent supervision pipeline board."""
+    """Agent supervision pipeline; every open task appears in exactly one stage.
+
+    Stage names and meanings come from ``config/workflow-vocabulary.json``.
+    """
     needs_definition: list[TaskResponse]
-    ready_for_agent: list[TaskResponse]
-    definition_ready_unassigned: list[TaskResponse] = []
-    assigned_waiting: list[TaskResponse] = []
-    start_ready: list[TaskResponse] = []
+    ready_to_assign: list[TaskResponse]
+    assigned_waiting: list[TaskResponse]
+    start_ready: list[TaskResponse]
     executing: list[TaskResponse]
     verification_required: list[TaskResponse]
-    recovery_required: list[TaskResponse] = []
+    recovery_required: list[TaskResponse]
 
 
 class AgentRunDetailResponse(AgentRunResponse):

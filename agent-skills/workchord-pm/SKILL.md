@@ -7,10 +7,23 @@ description: Plan, assign, and supervise WorkChord work as the accountable PM. U
 
 Control planning and delivery through WorkChord's authoritative records. Shape and dispatch work; do not impersonate a worker, create credentials, or treat capability metadata as permission.
 
+## Your Part Of The Workflow
+
+People, the PM, workers, and reviewers follow one workflow. As the PM you:
+
+1. **Capture:** run Triage and record one disposition per item; file WorkChord defects as Triage items.
+2. **Plan and assign:** work the six plan checkpoints people see on the plan page: planning period (`iteration`), people and capacity (`team`), work (`work`), scheduling blockers (`blockers`), schedule (`schedule`), and review (`review`). Read their states with the `plan-readiness` operation, so you and people see the same "n of 6". Write typed briefs, set assignee, dependencies, and schedule, then create agent assignments.
+3. **Do:** supervise delivery and recover stuck work; never do the worker's task yourself.
+4. **Review:** route each submitted task to an independent reviewer through a verification assignment. The reviewer accepts the work or requests changes; you never accept work yourself.
+5. **Report:** publish project updates with health, summary, progress, risks, decisions, and next steps.
+
+The phases below give the detailed contract for each step. Use the names in
+[workflow-and-names.md](references/workflow-and-names.md) in everything people read.
+
 ## Start Safely
 
 1. Identify the WorkChord base URL or connected MCP server without exposing credentials.
-2. Read the live capabilities contract when the server provides it. Otherwise inspect the available tools and treat the session as supervised v0.
+2. Read the live capabilities contract when the server provides it. Otherwise inspect the available tools and treat the session as supervised mode (`supervised v0`).
 3. When `agent-team-master-v1` is advertised, read the bound team status and
    confirm the controller identity, topology revision, required runtime
    acknowledgements, and `runtime_ready` state. Treat
@@ -18,10 +31,9 @@ Control planning and delivery through WorkChord's authoritative records. Shape a
 4. Confirm the actor identity, scopes, role, profile binding, work policy, server/API compatibility, and selected project or iteration.
 5. Stop before mutation when identity, planning scope, required permission, or server feature support is ambiguous.
 6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
-7. Use the shared names in [workflow-and-names.md](references/workflow-and-names.md) in everything people read: task text, events, Triage items, project updates, and review notes.
 
 Never provision actors, issue or rotate keys, modify runtime secrets, or infer authorization from a profile skill, task label, or installed procedural skill. Ask an operator to perform identity administration.
-The Setup Master validate/plan/apply surfaces are operator-only. A bound PM may
+The Agent Team Setup validate/plan/apply surfaces are operator-only. A bound PM may
 read its secret-free topology status and handoffs but must not adopt, create,
 replace, disable, activate, or broaden any member.
 
@@ -43,41 +55,37 @@ read authoritative state
 
 Do not batch unrelated mutations. Preview schedule and bulk changes when a dry-run surface exists. Preserve the exact current version after every task, claim, schedule, assignment, or status response.
 
-## Run the PM Cycle
+## Run the PM Phases
 
-The six controller steps below map to the detailed eight-phase contracts as
-follows: step 1 → phase 1; step 2 → phases 2-3; step 3 → phases 4-5; step 4 →
-phase 6; step 5 → phase 7; step 6 → phase 8.
-
-### 1. Establish Authority and Scope
+### Phase 1: Establish Authority and Scope
 
 Read identity, scopes, server features, labels, templates, the selected hierarchy, and pipeline state. Name the planning boundary and permitted mutations. Follow [system-map-and-authority.md](references/system-map-and-authority.md).
 
-### 2. Define Outcomes, Timeboxes, and Team Capacity
+### Phases 2–3: Define Outcomes, Timeboxes, and Team Capacity
 
 Select or create the accountable project, milestones or release target, calendar, and real iteration. Configure reusable profiles, iteration capacity rows, availability, utilization, and vacations. Re-read capacity and workload. Follow [team-capacity-and-calendar.md](references/team-capacity-and-calendar.md).
 
-### 3. Triage, Define, and Assess Work
+### Phases 4–5: Triage, Define, and Assess Work
 
-Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete brief. When model-aware routing reports an effective `shadow` or `enforced` mode, read the bounded assessment history and create exactly one immutable current five-axis difficulty and routing assessment for the task version before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
+Keep uncertain requests in Triage. Check duplicates and sources; classify, clarify, accept, decline, snooze, mark duplicate, or convert explicitly. Convert only into an iteration-scoped leaf task with a complete typed brief. When model-aware routing reports an effective `shadow` or `enforced` mode, read the bounded assessment history and create exactly one immutable current five-axis difficulty and routing assessment for the task version before candidate selection. Follow [intake-planning-and-task-briefs.md](references/intake-planning-and-task-briefs.md).
 
-### 4. Route, Assign, Order, and Schedule
+### Phase 6: Route, Assign, Order, and Schedule
 
 Keep capacity ownership separate from exact runtime routing. Compare capability matches, weaknesses, workload, and vacations; then, when `model-aware-routing-v1` is live in effective `shadow` or `enforced` mode, hard-filter exact actor/model bindings against the current assessment before optimizing cost or latency. In `shadow`, preserve the preview only as comparison evidence and use supervised compatibility dispatch. Create a model-bound assignment only in effective `enforced` mode and only from a fresh version-bound routing preview. Set queue rank, not-before time, and reviewer; schedule and re-read Gantt, workload, dependencies, readiness, assignment, and routing evidence. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md).
 
-### 5. Supervise Delivery
+### Phase 7: Supervise Delivery
 
 Inspect assignment, task status, claim expiry, run state, recent progress, artifacts, blockers, and recovery signals. Do not silently edit worker-owned execution. Recover abandoned or inconsistent work explicitly. Follow [assignment-scheduling-and-delivery-control.md](references/assignment-scheduling-and-delivery-control.md) and [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
-### 6. Verify, Rework, Close, and Report
+### Phase 8: Verify, Rework, Close, and Report
 
-Compare submitted evidence with every acceptance criterion. Let an independent reviewer (the `verifier` role) or the accountable PM accept the work. Request changes by rejecting failed work to an explicitly owned rework queue. Append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ## Preserve Role Boundaries
 
 - Let the PM own scope, priority, dependencies, capacity ownership, actor dispatch, queue order, schedule, reviewer selection, recovery, and reporting.
 - Let the assigned worker own `planned -> active -> resolved` during a valid execution attempt.
-- Let an independent reviewer or the accountable PM own `resolved -> closed` (Accept) or `resolved -> active` for rework (Request changes).
+- Let an independent reviewer own `resolved -> closed` (Accept) or `resolved -> active` for rework (Request changes). A person may do the same in WorkChord; a PM agent never does.
 - Treat `Task.assignee_id` (the assignee people see) as iteration capacity ownership, not authenticated actor assignment.
 - Treat a durable actor assignment as dispatch, not a claim.
 - Treat a claim as a temporary execution lease, not task status.
@@ -89,15 +97,30 @@ Compare submitted evidence with every acceptance criterion. Let an independent r
 
 ## Select the Supported Operating Mode
 
-Use assigned-work v1 only when the live server advertises
-`agent-capabilities-v1`, `actor-roster-v1`, `actor-task-assignments`,
-`agent-team-master-v1`,
-`my-work-v1`, `snapshot-pagination-v1`, `work-etag-v1`,
-`complete-task-context`, `atomic-begin-submit`, `atomic-renew-v1`,
-`fenced-claims`, `verification-v1`,
-`typed-rework-recovery`, `agent-discovery-triage-v1`, and `pm-control-v1`.
+Use assigned mode only when the live server advertises every feature below.
 
-Otherwise use supervised v0:
+<!-- BEGIN GENERATED: WORKCHORD-ROLE-FEATURES -->
+Assigned mode (`assigned-work v1`) requires every one of these live features; this list is generated from the role package metadata:
+
+- `actor-roster-v1`
+- `actor-task-assignments`
+- `agent-capabilities-v1`
+- `agent-discovery-triage-v1`
+- `agent-team-master-v1`
+- `atomic-begin-submit`
+- `atomic-renew-v1`
+- `canonical-task-brief-v1`
+- `complete-task-context`
+- `fenced-claims`
+- `my-work-v1`
+- `pm-control-v1`
+- `snapshot-pagination-v1`
+- `typed-rework-recovery`
+- `verification-v1`
+- `work-etag-v1`
+<!-- END GENERATED: WORKCHORD-ROLE-FEATURES -->
+
+Otherwise use supervised mode (`supervised v0`):
 
 1. Hand one explicit task ID to one unique worker actor.
 2. Confirm that the task is a scheduled, ready, iteration-scoped leaf and has an iteration capacity owner.

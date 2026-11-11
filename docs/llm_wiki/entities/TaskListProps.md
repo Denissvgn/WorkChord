@@ -23,6 +23,7 @@ _Auto-generated from `TaskListProps` in `frontend/src/components/tasks/TaskList.
 | `onCreateTask` | `() => void` | No | — | — |
 | `requestedMode` | `TaskMode \| null` | No | — | — |
 | `onModeChange` | `(mode: TaskMode \| null) => void` | No | — | — |
+| `preselectAllInBulk` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -44,7 +45,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskList](../modules/TaskList.md) | 0 | `activeViewName`, `filters`, `hasActiveFilters`, `iterationId`, `onClearFilters`, `onCreateTask`, `onModeChange`, `onSortKeyChange`, `requestedMode`, `sortKey` |
+| [TaskList](../modules/TaskList.md) | 0 | `activeViewName`, `filters`, `hasActiveFilters`, `iterationId`, `onClearFilters`, `onCreateTask`, `onModeChange`, `onSortKeyChange`, `preselectAllInBulk`, `requestedMode`, `sortKey` |
 
 ### References
 

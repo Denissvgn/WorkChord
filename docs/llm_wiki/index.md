@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1526 | [Open section](#entities) |
-| Modules | 757 | [Open section](#modules) |
+| Entities | 1529 | [Open section](#entities) |
+| Modules | 763 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 550 | [Open section](#entry-point-flows) |
+| Entry-point flows | 553 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -297,6 +297,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DateInput](entities/DateInput.md)
 - [DateListProps](entities/DateListProps.md)
 - [DateRange](entities/DateRange.md)
+- [DatedIteration](entities/DatedIteration.md)
 - [DeliveryDatabase](entities/DeliveryDatabase.md)
 - [DeliveryDependency](entities/DeliveryDependency.md)
 - [DeliveryDependencyInput](entities/DeliveryDependencyInput.md)
@@ -1216,6 +1217,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_iteration_IterationSeriesStop](entities/schemas_iteration_IterationSeriesStop.md)
 - [schemas_iteration_IterationSummary](entities/schemas_iteration_IterationSummary.md)
 - [schemas_iteration_IterationUpdate](entities/schemas_iteration_IterationUpdate.md)
+- [schemas_iteration_PlanCheckpoint](entities/schemas_iteration_PlanCheckpoint.md)
 - [schemas_label_LabelCreate](entities/schemas_label_LabelCreate.md)
 - [schemas_label_LabelGroupBrief](entities/schemas_label_LabelGroupBrief.md)
 - [schemas_label_LabelGroupCreate](entities/schemas_label_LabelGroupCreate.md)
@@ -1431,6 +1433,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_iteration_IterationSeriesStop](entities/types_iteration_IterationSeriesStop.md)
 - [types_iteration_IterationSummary](entities/types_iteration_IterationSummary.md)
 - [types_iteration_IterationUpdate](entities/types_iteration_IterationUpdate.md)
+- [types_iteration_PlanCheckpoint](entities/types_iteration_PlanCheckpoint.md)
 - [types_label_Label](entities/types_label_Label.md)
 - [types_label_LabelCreate](entities/types_label_LabelCreate.md)
 - [types_label_LabelGroup](entities/types_label_LabelGroup.md)
@@ -1728,6 +1731,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskForm.test](modules/TaskForm.test.md) - `frontend/src/components/tasks/TaskForm.test.tsx`
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
+- [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
 - [TaskSearch](modules/TaskSearch.md) - `frontend/src/components/tasks/TaskSearch.tsx`
@@ -1769,6 +1773,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [agentAccess](modules/agentAccess.md) - `frontend/src/utils/agentAccess.ts`
 - [agentService](modules/agentService.md) - `frontend/src/services/agentService.ts`
 - [agentService.test](modules/agentService.test.md) - `frontend/src/services/agentService.test.ts`
+- [agentTeamSetup.ru](modules/agentTeamSetup.ru.md) - `frontend/src/i18n/agentTeamSetup.ru.ts`
 - [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) - `frontend/src/features/agentTeamSetup/manifest.ts`
 - [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) - `frontend/src/features/agentTeamSetup/masters.ts`
 - [agentTeamSetup_masters.test](modules/agentTeamSetup_masters.test.md) - `frontend/src/features/agentTeamSetup/masters.test.ts`
@@ -1911,6 +1916,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [isolated_rehearsal](modules/isolated_rehearsal.md) - Own isolated Compose resources without reusing operator credentials or data.
 - [iterationService](modules/iterationService.md) - `frontend/src/services/iterationService.ts`
 - [iterationStore](modules/iterationStore.md) - `frontend/src/store/iterationStore.ts`
+- [iterationStore.test](modules/iterationStore.test.md) - `frontend/src/store/iterationStore.test.ts`
 - [iteration_service](modules/iteration_service.md) - Iteration service with business logic.
 - [iterations](modules/iterations.md) - Iteration API router.
 - [labelService](modules/labelService.md) - `frontend/src/services/labelService.ts`
@@ -1967,6 +1973,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [overviewTaskThread](modules/overviewTaskThread.md) - `frontend/src/features/overview/overviewTaskThread.ts`
 - [pagination](modules/pagination.md) - `frontend/src/i18n/pagination.ts`
 - [planShareService](modules/planShareService.md) - `frontend/src/services/planShareService.ts`
+- [plan_checkpoints](modules/plan_checkpoints.md) - The six plan checkpoints people and the PM read, derived once on the server.
 - [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.
 - [plan_shares](modules/plan_shares.md) - Read-only iteration plan sharing API.
 - [planning-masters.test](modules/planning-masters.test.md) - `frontend/src/styles/planning-masters.test.ts`
@@ -2146,6 +2153,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [template_service](modules/template_service.md) - Service for reusable work templates and built-in defaults.
 - [templates](modules/templates.md) - Template API router.
 - [test_acceptance_artifacts](modules/test_acceptance_artifacts.md) - Public exports retain exact signed bytes and reject secret or failed evidence.
+- [test_agent_blocker_reason](modules/test_agent_blocker_reason.md) - An agent-reported blocker becomes the task's human-readable Blocked reason.
 - [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) - Focused Wave 2 model administration and actor-roster qualification.
 - [test_agent_routing_contract](modules/test_agent_routing_contract.md) - Focused contract tests for model-aware routing vocabulary and compatibility.
 - [test_agent_routing_data](modules/test_agent_routing_data.md) - Focused model and schema coverage for MAR-DATA-001 and MAR-DATA-002.
@@ -2200,6 +2208,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
+- [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
 - [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
@@ -2643,6 +2652,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_initiative](flows/http-get_initiative.md) - entry: `get_initiative`
 - [http-get_iteration](flows/http-get_iteration.md) - entry: `get_iteration`
 - [http-get_iteration_page](flows/http-get_iteration_page.md) - entry: `get_iteration_page`
+- [http-get_iteration_plan_readiness](flows/http-get_iteration_plan_readiness.md) - entry: `get_iteration_plan_readiness`
 - [http-get_iteration_planning_readiness](flows/http-get_iteration_planning_readiness.md) - entry: `get_iteration_planning_readiness`
 - [http-get_iteration_status_history](flows/http-get_iteration_status_history.md) - entry: `get_iteration_status_history`
 - [http-get_iteration_summary](flows/http-get_iteration_summary.md) - entry: `get_iteration_summary`
@@ -2901,6 +2911,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [mcp-agent_get_complete_task_context](flows/mcp-agent_get_complete_task_context.md) - entry: `agent_get_complete_task_context`
 - [mcp-agent_get_execution_usage](flows/mcp-agent_get_execution_usage.md) - entry: `agent_get_execution_usage`
 - [mcp-agent_get_execution_usage_summary](flows/mcp-agent_get_execution_usage_summary.md) - entry: `agent_get_execution_usage_summary`
+- [mcp-agent_get_iteration_plan_readiness](flows/mcp-agent_get_iteration_plan_readiness.md) - entry: `agent_get_iteration_plan_readiness`
 - [mcp-agent_get_model_binding](flows/mcp-agent_get_model_binding.md) - entry: `agent_get_model_binding`
 - [mcp-agent_get_model_catalog_entry](flows/mcp-agent_get_model_catalog_entry.md) - entry: `agent_get_model_catalog_entry`
 - [mcp-agent_get_my_reviews](flows/mcp-agent_get_my_reviews.md) - entry: `agent_get_my_reviews`
@@ -2972,6 +2983,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [mcp-triage_resource](flows/mcp-triage_resource.md) - entry: `triage_resource`
 - [mcp-triage_to_task_draft](flows/mcp-triage_to_task_draft.md) - entry: `triage_to_task_draft`
 - [mcp-workchord_pm_role](flows/mcp-workchord_pm_role.md) - entry: `workchord_pm_role`
+- [mcp-workchord_reviewer_role](flows/mcp-workchord_reviewer_role.md) - entry: `workchord_reviewer_role`
 - [mcp-workchord_worker_role](flows/mcp-workchord_worker_role.md) - entry: `workchord_worker_role`
 - [mcp-workspace_accept_triage_item](flows/mcp-workspace_accept_triage_item.md) - entry: `workspace_accept_triage_item`
 - [mcp-workspace_apply_agent_profile_preset](flows/mcp-workspace_apply_agent_profile_preset.md) - entry: `workspace_apply_agent_profile_preset`

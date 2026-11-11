@@ -197,17 +197,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_planning_triage_item | require_scope | 595 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 86 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
-| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 72 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 87 | `AgentPermissionError(...)` |
-| create_planning_triage_item | create_triage_item | 596 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| create_triage_item | _triage_command_context | 2239 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
-| _triage_command_context | validate_idempotency_key | 216 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 96 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 100 | `value.strip(data not statically known)` |
+| create_planning_triage_item | require_scope | 619 | `require_scope(actor, 'planning:write')` |
+| require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
+| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 86 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
+| create_planning_triage_item | create_triage_item | 620 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| create_triage_item | _triage_command_context | 2253 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
+| validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 110 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | value.strip | 114 | `value.strip(data not statically known)` |
 
 ### Boundary effects
 
@@ -217,10 +217,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 72 |
-| external_call | `actor_scopes` | `isinstance` | 75 |
-| external_call | `validate_idempotency_key` | `ValueError` | 96 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 100 |
+| external_call | `actor_scopes` | `json.loads` | 86 |
+| external_call | `actor_scopes` | `isinstance` | 89 |
+| external_call | `validate_idempotency_key` | `ValueError` | 110 |
+| unresolved_call | `validate_idempotency_key` | `value.strip` | 114 |
 | step_limit | `create_planning_triage_item` | `first 12 steps` | 0 |
 | truncated_flow | `create_planning_triage_item` | `depth limit` | 0 |
 

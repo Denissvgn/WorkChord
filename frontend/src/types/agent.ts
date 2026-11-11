@@ -609,8 +609,7 @@ export interface AgentRun {
 
 export interface AgentPipeline {
     needs_definition: Task[];
-    ready_for_agent: Task[];
-    definition_ready_unassigned: Task[];
+    ready_to_assign: Task[];
     assigned_waiting: Task[];
     start_ready: Task[];
     executing: Task[];
@@ -625,6 +624,7 @@ export interface TaskTimelineItem {
     payload: JsonObject;
     actor_type?: string | null;
     actor_id?: number | null;
+    actor_name?: string | null;
     trace_id?: string | null;
 }
 

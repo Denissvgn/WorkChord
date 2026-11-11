@@ -46,7 +46,7 @@ RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
 CATALOG_VERSION = "1.11.0"
 API_CONTRACT = "workchord-agent/v1"
-SERVER_COMPATIBILITY = ">=1.7.0,<2.0.0"
+SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
 AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
 ARTIFACT_LICENSE = "MIT"
@@ -70,6 +70,7 @@ ASSIGNED_WORK_CONTRACT_END = (
 )
 ASSIGNED_WORK_CONTRACT_DOCUMENTS = (
     "agent-skills/workchord-pm/references/api-and-mcp.md",
+    "agent-skills/workchord-reviewer/references/api-and-mcp.md",
     "agent-skills/workchord-worker/references/api-and-mcp.md",
 )
 
@@ -83,6 +84,8 @@ WORKFLOW_VOCABULARY_END = (
 )
 WORKFLOW_VOCABULARY_REFERENCE = "references/workflow-and-names.md"
 WORKFLOW_VOCABULARY_LANGUAGES = ("en", "ru")
+ROLE_FEATURES_BEGIN = "<!-- BEGIN GENERATED: WORKCHORD-ROLE-FEATURES -->"
+ROLE_FEATURES_END = "<!-- END GENERATED: WORKCHORD-ROLE-FEATURES -->"
 
 
 def _contract_parameters(
@@ -153,7 +156,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
     "operations": [
         _assigned_work_operation(
             "capabilities",
-            "PM/worker",
+            "PM/worker/verifier",
             "GET",
             "/api/agent/capabilities",
             "agent_get_capabilities",
@@ -722,6 +725,16 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "Inspect definition through verification and recovery.",
         ),
         _assigned_work_operation(
+            "plan-readiness",
+            "PM",
+            "GET",
+            "/api/agent/planning/iterations/{iteration_id}/readiness",
+            "agent_get_iteration_plan_readiness",
+            "Read the six plan checkpoints people see, with one state each.",
+            path_required=("iteration_id",),
+            tool_required=("iteration_id",),
+        ),
+        _assigned_work_operation(
             "run-detail",
             "PM",
             "GET",
@@ -819,6 +832,26 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
             "work:execute",
         ],
         "optional_scopes": ["skills:read", "tasks:read"],
+    },
+    "workchord-reviewer": {
+        "role": "verifier",
+        "version": "1.0.0",
+        "required_features": [
+            "agent-capabilities-v1",
+            AGENT_TEAM_MASTER_FEATURE,
+            "actor-task-assignments",
+            "canonical-task-brief-v1",
+            "complete-task-context",
+            "snapshot-pagination-v1",
+            "typed-rework-recovery",
+            "verification-v1",
+        ],
+        "required_scopes": [
+            "assignments:read",
+            "verification:read",
+            "verification:write",
+        ],
+        "optional_scopes": ["skills:read"],
     },
 }
 
@@ -1232,6 +1265,8 @@ _WORKFLOW_VOCABULARY_SECTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...],
     "task_states": (("means",), ("name",), ("product_term",)),
     "actions": (("effect", "agents"), ("name",), ()),
     "queues": (("means", "agents"), ("name",), ()),
+    "triage_dispositions": (("means", "agents"), ("name",), ()),
+    "pipeline_stages": (("pm_action",), ("name", "description"), ()),
     "terms": (("name", "means", "not"), (), ()),
 }
 
@@ -1369,6 +1404,24 @@ def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
                 for queue in vocabulary["queues"]
             ),
         ),
+        "Triage dispositions, with the same names for people and the PM:",
+        "",
+        *table(
+            ("Disposition", "Means", "Agents"),
+            (
+                (item["name"]["en"], item["means"], item["agents"])
+                for item in vocabulary["triage_dispositions"]
+            ),
+        ),
+        "Agent pipeline stages, in order; each task is in exactly one stage:",
+        "",
+        *table(
+            ("Stage", "Means", "PM action"),
+            (
+                (f"{stage['name']['en']} (`{stage['id']}`)", stage["description"]["en"], stage["pm_action"])
+                for stage in vocabulary["pipeline_stages"]
+            ),
+        ),
         "Terms:",
         "",
         *table(
@@ -1386,6 +1439,31 @@ def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
         WORKFLOW_VOCABULARY_END,
     ]
     return "\n".join(lines)
+
+
+def render_role_features_markdown(role_name: str) -> str:
+    """Render one role's required live features from its package metadata."""
+    features = sorted(ROLE_METADATA[role_name]["required_features"])
+    return "\n".join(
+        (
+            ROLE_FEATURES_BEGIN,
+            "Assigned mode (`assigned-work v1`) requires every one of these live "
+            "features; this list is generated from the role package metadata:",
+            "",
+            *(f"- `{feature}`" for feature in features),
+            ROLE_FEATURES_END,
+        )
+    )
+
+
+def _role_features_block(text: str, *, context: str) -> str:
+    return _generated_block(
+        text,
+        begin=ROLE_FEATURES_BEGIN,
+        end=ROLE_FEATURES_END,
+        label="role-features",
+        context=context,
+    )
 
 
 def _workflow_vocabulary_block(text: str, *, context: str) -> str:
@@ -1477,6 +1555,21 @@ def sync_generated_skill_sources(
             path.write_text(rendered, encoding="utf-8")
             updated.append(path)
     for role_name in sorted(ROLE_METADATA):
+        path = skills_dir / role_name / "SKILL.md"
+        context = f"{role_name}/SKILL.md"
+        try:
+            current = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise SkillPackError(f"Cannot read role-features target {path}") from exc
+        rendered = current.replace(
+            _role_features_block(current, context=context),
+            render_role_features_markdown(role_name),
+            1,
+        )
+        if rendered != current:
+            path.write_text(rendered, encoding="utf-8")
+            updated.append(path)
+    for role_name in sorted(ROLE_METADATA):
         role_dir = skills_dir / role_name
         path = role_dir / "agents" / "openai.yaml"
         rendered = render_openai_adapter(role_dir)
@@ -1525,6 +1618,15 @@ def validate_generated_skill_sources(
             raise SkillPackError(
                 f"Shared workflow vocabulary drift in {context}; run sync-generated"
             )
+    for role_name in sorted(ROLE_METADATA):
+        path = skills_dir / role_name / "SKILL.md"
+        context = f"{role_name}/SKILL.md"
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise SkillPackError(f"Cannot read role-features target {path}") from exc
+        if _role_features_block(text, context=context) != render_role_features_markdown(role_name):
+            raise SkillPackError(f"Role feature list drift in {context}; run sync-generated")
     for role_name in sorted(ROLE_METADATA):
         role_dir = skills_dir / role_name
         path = role_dir / "agents" / "openai.yaml"
@@ -2124,14 +2226,14 @@ def build_codex_plugin(skills_dir: Path, output_dir: Path) -> Path:
         "name": "workchord-agent-roles",
         "version": catalog["catalog_version"],
         "license": ARTIFACT_LICENSE,
-        "description": "Installable WorkChord PM and Worker role skills.",
+        "description": "Installable WorkChord PM, Worker, and Reviewer role skills.",
         "author": {"name": "WorkChord maintainers"},
         "skills": "./skills/",
         "interface": {
             "displayName": "WorkChord Agent Roles",
-            "shortDescription": "Work in WorkChord as a PM or an assigned Worker.",
+            "shortDescription": "Work in WorkChord as a PM, Worker, or Reviewer.",
             "longDescription": (
-                "Adds the WorkChord PM and Worker role skills, generated from the "
+                "Adds the WorkChord PM, Worker, and Reviewer role skills, generated from the "
                 "versioned role pack and the shared workflow vocabulary."
             ),
             "developerName": "WorkChord maintainers",

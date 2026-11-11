@@ -20,6 +20,7 @@ _Auto-generated from `TaskDetailService` in `backend/app/services/task_detail_se
 | `__init__` | `(db)` | — | — |
 | `_policy_flags` | *(async)* `(task_id)` | — | Observe only bounded parent identities and policy flags, without hydrating execution relationships. |
 | `references` | `()` | `@staticmethod` | — |
+| `reviewer_names` | *(async)* `(task_ids)` | — | Name the agent that holds each task's live review assignment. |
 | `page` | *(async)* `(query, *, limit = 50, after_id = 0)` | — | — |
 | `lookup` | *(async)* `(*, project_id = None, iteration_id = None, query = None, backlog_only = False, limit = 50, after_id = 0, status = None, parent_id = None, roots_only = False)` | — | — |
 | `my_work` | *(async)* `(*, limit = 50, after_id = 0, project_id = None, iteration_id = None, backlog_only = False)` | — | Bounded human ownership queues, independent of exact-agent assignment decisions. |
@@ -74,7 +75,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_detail_service](../modules/task_detail_service.md) | 7 | — |
+| [task_detail_service](../modules/task_detail_service.md) | 8 | — |
 
 ### References
 

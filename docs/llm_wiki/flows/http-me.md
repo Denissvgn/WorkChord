@@ -223,7 +223,7 @@ flowchart LR
 | resolve_http_identity | internal_authority | 48 | `internal_authority(db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
 | resolve_http_identity | AgentService.authenticate | 51 | `AgentService(db).authenticate(agent_key, touch=False)` |
-| AgentService.authenticate | hash_api_key | 119 | `hash_api_key(api_key)` |
+| AgentService.authenticate | hash_api_key | 133 | `hash_api_key(api_key)` |
 
 ### Boundary effects
 

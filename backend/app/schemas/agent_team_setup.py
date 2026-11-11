@@ -73,9 +73,7 @@ ROLE_SCOPE_PRESET_BY_ROLE = {
 ROLE_PACKAGE_COMPATIBILITY: dict[str, tuple[str, ...]] = {
     "pm": ("workchord-pm",),
     "worker": ("workchord-worker",),
-    # Verification is a control operation in the PM bundle. The narrower
-    # verifier-v1 scope preset prevents the runtime from exercising PM powers.
-    "verifier": ("workchord-pm",),
+    "verifier": ("workchord-reviewer",),
 }
 ROLE_ASSIGNMENT_MODE = {
     "pm": "ownership",

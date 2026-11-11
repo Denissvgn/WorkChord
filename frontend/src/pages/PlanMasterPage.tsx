@@ -650,7 +650,7 @@ const StepCheckpoint = ({
                             <p>
                                 {recovery.planningIssue && taskRecoverySummary
                                     ? taskRecoverySummary
-                                    : stepStatus.state === 'blocked'
+                                    : stepStatus.state === 'blocked' || actionStep.id !== definition.id
                                     ? t('plan.master.resolveFirst', {
                                         step: t(`plan.steps.${actionStep.id}.title`),
                                     })

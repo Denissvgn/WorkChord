@@ -2,7 +2,7 @@
   "author": {
     "name": "WorkChord maintainers"
   },
-  "description": "Installable WorkChord PM and Worker role skills.",
+  "description": "Installable WorkChord PM, Worker, and Reviewer role skills.",
   "interface": {
     "capabilities": [
       "Planning",
@@ -13,8 +13,8 @@
     "defaultPrompt": "Use the appropriate WorkChord role skill for this work.",
     "developerName": "WorkChord maintainers",
     "displayName": "WorkChord Agent Roles",
-    "longDescription": "Adds the WorkChord PM and Worker role skills, generated from the versioned role pack and the shared workflow vocabulary.",
-    "shortDescription": "Work in WorkChord as a PM or an assigned Worker."
+    "longDescription": "Adds the WorkChord PM, Worker, and Reviewer role skills, generated from the versioned role pack and the shared workflow vocabulary.",
+    "shortDescription": "Work in WorkChord as a PM, Worker, or Reviewer."
   },
   "license": "MIT",
   "name": "workchord-agent-roles",

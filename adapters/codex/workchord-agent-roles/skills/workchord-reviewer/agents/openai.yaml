@@ -1,0 +1,4 @@
+interface:
+  display_name: "WorkChord Reviewer"
+  short_description: "Review submitted WorkChord work as the independent reviewer"
+  default_prompt: "Use $workchord-reviewer to follow the WorkChord Reviewer workflow for this work."

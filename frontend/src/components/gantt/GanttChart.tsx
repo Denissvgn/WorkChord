@@ -5,6 +5,7 @@ import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays
 import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, ListFilter, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
+import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
 import { Checkbox } from '../common/Checkbox';
 import { TaskEditModal } from './TaskEditModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -104,6 +105,7 @@ export const GanttChart = ({
 
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const [hideUnassigned, setHideUnassigned] = useState(false);
+    const [hideUnscheduled, setHideUnscheduled] = useState(false);
     const [zoomLevel, setZoomLevel] = useState(40); // Width of day column
     const [isCompressed, setIsCompressed] = useState(false);
     const [isSortedByDate, setIsSortedByDate] = useState(false);
@@ -280,10 +282,30 @@ export const GanttChart = ({
         return false;
     }, []);
 
+    const unscheduledTaskCount = useMemo(() => {
+        let count = 0;
+        const visit = (task: GanttTask) => {
+            if (task.children?.length) task.children.forEach(visit);
+            else if (!hasCompleteTimelineDates(getTaskTimelineDates(task))) count += 1;
+        };
+        tasks.forEach(visit);
+        return count;
+    }, [tasks]);
+    const unassignedTaskCount = useMemo(() => {
+        let count = 0;
+        const visit = (task: GanttTask) => {
+            if (task.children?.length) task.children.forEach(visit);
+            else if (!task.assignee) count += 1;
+        };
+        tasks.forEach(visit);
+        return count;
+    }, [tasks]);
+
     const displayTasks = useMemo(() => {
         const flattened: FlattenedTask[] = [];
         const processTask = (task: GanttTask, depth: number) => {
             if (!taskMatchesFilter(task, selectedAssigneeId, hideUnassigned)) return;
+            if (hideUnscheduled && !task.children?.length && !hasCompleteTimelineDates(getTaskTimelineDates(task))) return;
             flattened.push({ ...task, depth });
             if (
                 task.children
@@ -295,7 +317,7 @@ export const GanttChart = ({
         };
         sortedTasks.forEach(task => processTask(task, 0));
         return flattened;
-    }, [activeFilterCount, sortedTasks, expandedTasks, selectedAssigneeId, hideUnassigned, taskMatchesFilter]);
+    }, [activeFilterCount, sortedTasks, expandedTasks, selectedAssigneeId, hideUnassigned, hideUnscheduled, taskMatchesFilter]);
 
     const currentTaskDatesById = useMemo(() => {
         const datesById = new Map<number, TaskTimelineDates>();
@@ -627,6 +649,25 @@ export const GanttChart = ({
 
     return (
         <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow">
+            {unscheduledTaskCount > 0 && (
+                // One summary replaces a warning on every unscheduled row.
+                <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
+                    <CalendarOff aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
+                    <span className="min-w-0 flex-1">
+                        {unassignedTaskCount > 0
+                            ? t('surfaces.ganttChart.unscheduledSummaryUnassigned', { count: unscheduledTaskCount })
+                            : t('surfaces.ganttChart.unscheduledSummary', { count: unscheduledTaskCount })}
+                    </span>
+                    {unassignedTaskCount > 0 && (
+                        <Link className="btn sm" to={planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' })}>
+                            {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
+                        </Link>
+                    )}
+                    <Button size="sm" variant="ghost" aria-pressed={hideUnscheduled} onClick={() => setHideUnscheduled(value => !value)}>
+                        {hideUnscheduled ? t('surfaces.ganttChart.showUnscheduled') : t('surfaces.ganttChart.hideUnscheduled')}
+                    </Button>
+                </div>
+            )}
             {/* Toolbar */}
             <div className="z-10 flex shrink-0 justify-end border-b border-border bg-surface-card p-3 sm:p-4">
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -1119,7 +1160,7 @@ export const GanttChart = ({
                                     ) : (
                                         <button
                                             type="button"
-                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-2 text-xs text-feedback-warning-foreground transition-colors hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-dashed border-border-strong bg-surface-card px-2 text-xs text-content-secondary transition-colors hover:bg-surface-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 setEditingTask(task);
@@ -1129,9 +1170,6 @@ export const GanttChart = ({
                                         >
                                             <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                                             <span className="shrink-0 font-medium">{t('gantt.notScheduled')}</span>
-                                            <span aria-hidden="true" className="truncate text-content-secondary">
-                                                · {getUnscheduledTaskGuidance(task)}
-                                            </span>
                                         </button>
                                     )}
                                 </div>

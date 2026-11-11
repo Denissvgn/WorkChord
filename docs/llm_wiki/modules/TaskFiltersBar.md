@@ -66,7 +66,7 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskFilters](../entities/TaskFilters.md) | Interface | 15 | — | — |
-| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Interface | 33 | — | — |
+| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Interface | 34 | — | — |
 
 ## Functions
 

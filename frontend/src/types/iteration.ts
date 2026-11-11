@@ -81,4 +81,15 @@ export interface IterationPlanningReadinessSummary {
     tasks_without_effort: number;
     has_schedule: boolean;
     risk_count: number;
+    /** The six plan checkpoints, derived on the server; the PM agent reads the same list. */
+    checkpoints?: PlanCheckpoint[];
+    checkpoints_done?: number;
+    checkpoints_total?: number;
+}
+
+export interface PlanCheckpoint {
+    id: 'iteration' | 'team' | 'work' | 'blockers' | 'schedule' | 'review';
+    state: 'done' | 'warn' | 'todo' | 'blocked';
+    reason_codes: string[];
+    counts: Record<string, number>;
 }

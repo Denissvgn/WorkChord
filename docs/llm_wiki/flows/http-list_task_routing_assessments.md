@@ -127,17 +127,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_task_routing_assessments | service.list_assessments | 147 | `service.list_assessments(task_id, actor, limit=limit)` |
-| list_task_routing_assessments | _handle_agent_error | 153 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance | 102 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException | 103 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
-| _handle_agent_error | str | 103 | `str(exc)` |
-| _handle_agent_error | isinstance | 104 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 105 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 105 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 106 | `isinstance(exc, TaskVersionConflictError)` |
-| _handle_agent_error | HTTPException | 107 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 107 | `exc.detail(data not statically known)` |
+| list_task_routing_assessments | service.list_assessments | 171 | `service.list_assessments(task_id, actor, limit=limit)` |
+| list_task_routing_assessments | _handle_agent_error | 177 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance | 106 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException | 107 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| _handle_agent_error | str | 107 | `str(exc)` |
+| _handle_agent_error | isinstance | 108 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 109 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 109 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 110 | `isinstance(exc, TaskVersionConflictError)` |
+| _handle_agent_error | HTTPException | 111 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 111 | `exc.detail(data not statically known)` |
 
 ### Boundary effects
 
@@ -147,15 +147,15 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_task_routing_assessments` | `service.list_assessments` | 147 |
-| external_call | `_handle_agent_error` | `isinstance` | 102 |
-| external_call | `_handle_agent_error` | `HTTPException` | 103 |
-| external_call | `_handle_agent_error` | `isinstance` | 104 |
-| external_call | `_handle_agent_error` | `HTTPException` | 105 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 105 |
+| unresolved_call | `list_task_routing_assessments` | `service.list_assessments` | 171 |
 | external_call | `_handle_agent_error` | `isinstance` | 106 |
 | external_call | `_handle_agent_error` | `HTTPException` | 107 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 107 |
+| external_call | `_handle_agent_error` | `isinstance` | 108 |
+| external_call | `_handle_agent_error` | `HTTPException` | 109 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 109 |
+| external_call | `_handle_agent_error` | `isinstance` | 110 |
+| external_call | `_handle_agent_error` | `HTTPException` | 111 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 111 |
 | step_limit | `list_task_routing_assessments` | `first 12 steps` | 0 |
 
 ## Behavior

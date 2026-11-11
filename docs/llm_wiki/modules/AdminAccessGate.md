@@ -29,31 +29,36 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessGate.tsx`._
 flowchart LR
     n0["frontend/src/components/settings/AdminAccessGate.tsx"]
     n1["frontend/src/components/settings/AdminAccessPanel.tsx"]
-    n2["frontend/src/hooks/useAdminAccess.ts"]
-    n3["frontend/src/pages/AgentPipelinePage.tsx"]
-    n4["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
-    n5["frontend/src/pages/SettingsPage.tsx"]
+    n2["frontend/src/components/settings/GitHubSettingsPanel.tsx"]
+    n3["frontend/src/hooks/useAdminAccess.ts"]
+    n4["frontend/src/pages/AgentPipelinePage.tsx"]
+    n5["frontend/src/pages/AgentTeamSetupMasterPage.tsx"]
+    n6["frontend/src/pages/SettingsPage.tsx"]
     n0 --> n1
-    n0 --> n2
-    n1 --> n2
-    n3 --> n0
-    n3 --> n2
+    n0 --> n3
+    n1 --> n3
+    n2 --> n0
     n4 --> n0
+    n4 --> n3
     n5 --> n0
-    n5 --> n1
-    n5 --> n2
+    n6 --> n0
+    n6 --> n1
+    n6 --> n2
+    n6 --> n3
     click n0 "../modules/AdminAccessGate.md"
     click n1 "../modules/AdminAccessPanel.md"
-    click n2 "../modules/useAdminAccess.md"
-    click n3 "../modules/AgentPipelinePage.md"
-    click n4 "../modules/AgentTeamSetupMasterPage.md"
-    click n5 "../modules/SettingsPage.md"
+    click n2 "../modules/GitHubSettingsPanel.md"
+    click n3 "../modules/useAdminAccess.md"
+    click n4 "../modules/AgentPipelinePage.md"
+    click n5 "../modules/AgentTeamSetupMasterPage.md"
+    click n6 "../modules/SettingsPage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md) |
 | Inbound | [AgentPipelinePage](../modules/AgentPipelinePage.md) |
 | Inbound | [AgentTeamSetupMasterPage](../modules/AgentTeamSetupMasterPage.md) |
 | Inbound | [SettingsPage](../modules/SettingsPage.md) |

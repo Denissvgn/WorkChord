@@ -14,7 +14,7 @@ Versioned compatibility and integrity manifest for one role skill.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `name` | `str` | `name` | Yes | No | — | pattern='^[a-z0-9]+(?:-[a-z0-9]+)*$' | — | — |
-| `role` | `Literal['pm', 'worker']` | `role` | Yes | No | — | — | — | — |
+| `role` | `Literal['pm', 'worker', 'verifier']` | `role` | Yes | No | — | — | — | — |
 | `version` | `str` | `version` | Yes | No | — | pattern='^\\d+\\.\\d+\\.\\d+$' | — | — |
 | `path` | `str` | `path` | Yes | No | — | min_length=1 | — | — |
 | `entrypoint` | `Literal['SKILL.md']` | `entrypoint` | Yes | No | — | — | — | — |

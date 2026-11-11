@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bot, CheckCircle2, ClipboardCheck, Trash2, XCircle } from 'lucide-react';
@@ -27,6 +27,8 @@ interface TaskBulkOperationsPanelProps {
     selectedTaskIds: number[];
     onClearSelection: () => void;
     onApplied: () => void;
+    /** Focus the assignee picker on open, for hand-offs that arrive to assign work. */
+    focusAssignee?: boolean;
 }
 
 const ACTION_OPTIONS: { value: TaskBulkAction; labelKey: string }[] = [
@@ -70,11 +72,17 @@ export const TaskBulkOperationsPanel = ({
     selectedTaskIds,
     onClearSelection,
     onApplied,
+    focusAssignee = false,
 }: TaskBulkOperationsPanelProps) => {
     useTranslation();
     const queryClient = useQueryClient();
     const [action, setAction] = useState<TaskBulkAction>('set_assignee');
     const [assigneeId, setAssigneeId] = useState('');
+    const assigneeSelectRef = useRef<HTMLSelectElement>(null);
+    // Hand-offs that arrive to assign work start in the assignee picker.
+    useEffect(() => {
+        if (focusAssignee) assigneeSelectRef.current?.focus();
+    }, [focusAssignee]);
     const [projectId, setProjectId] = useState('');
     const [milestoneId, setMilestoneId] = useState('');
     const [priority, setPriority] = useState('5');
@@ -265,7 +273,13 @@ export const TaskBulkOperationsPanel = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {effectiveAction === 'set_assignee' && (
-                    <select value={assigneeId} onChange={event => setAssigneeId(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
+                    <select
+                        value={assigneeId}
+                        onChange={event => setAssigneeId(event.target.value)}
+                        aria-label={t('surfaces.taskBulk.chooseAssignee')}
+                        ref={assigneeSelectRef}
+                        className="text-sm border rounded-md px-2 py-2 bg-surface-card"
+                    >
                         <option value="">{t('surfaces.taskBulk.chooseAssignee')}</option>
                         {teamMembers.map(member => (
                             <option key={member.id} value={member.id}>{member.name}</option>

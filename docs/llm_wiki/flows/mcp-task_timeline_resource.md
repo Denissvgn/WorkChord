@@ -94,9 +94,9 @@ sequenceDiagram
     p4-->>p30: service.task_service.get_by_id(task_id)
 ```
 
-> Call sequence diagram shows 30 of 286 interactions; 256 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 298 interactions; 268 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 103 (102 omitted); unresolved 1 of 110 (109 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 105 (104 omitted); unresolved 1 of 119 (118 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -110,7 +110,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | external | 1 |
 | `backend/app/commands.py:command_transaction` | 24 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-> Omission summary shows 8 of 67 groups; 59 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 69 groups; 61 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -123,9 +123,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 74; effect analysis evaluated: 48, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 75; effect analysis evaluated: 49, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 50 source steps with known totals: observed: 224, emitted: 214, omitted: 10. Unavailable totals are excluded.
+Collector observations for 51 source steps with known totals: observed: 227, emitted: 217, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,7 +201,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_timeline_resource | _json_resource | 2130 | `_json_resource('tasks:read', ...)` |
+| task_timeline_resource | _json_resource | 2138 | `_json_resource('tasks:read', ...)` |
 | _json_resource | _tool_call | 332 | `_tool_call(required_scope, func)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |

@@ -17,6 +17,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         isLoading = false,
         disabled,
         children,
+        type = 'button',
         'aria-busy': ariaBusy,
         ...props
     }, ref) => {
@@ -24,6 +25,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             <button
                 {...props}
                 ref={ref}
+                type={type}
                 className={clsx(
                     'btn',
                     {
@@ -36,7 +38,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         warning: variant === 'warning',
                         ghost: variant === 'ghost',
                         'btn-ghost': variant === 'ghost',
-                        outline: variant === 'outline',
                         'btn-outline': variant === 'outline',
                         sm: size === 'sm',
                         lg: size === 'lg',

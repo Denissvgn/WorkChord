@@ -120,6 +120,15 @@ export const CalendarPeriodNavigator = ({
                     <ChevronRight className="h-4 w-4" />
                 </button>
             </div>
+            {year === new Date().getFullYear() && month !== new Date().getMonth() && (
+                <button
+                    type="button"
+                    className="btn sm"
+                    onClick={() => onMonthChange(new Date().getMonth())}
+                >
+                    {t('calendar.currentMonth')}
+                </button>
+            )}
             <p className="calendar-period-summary">
                 {t('calendar.monthSummary', { weekends: monthWeekendCount, holidays: monthHolidayCount })}
             </p>

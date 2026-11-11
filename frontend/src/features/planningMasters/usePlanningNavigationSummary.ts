@@ -53,6 +53,7 @@ export const usePlanningNavigationSummary = () => {
         ganttLastBuilt: '',
         riskCount: summaryQuery.data?.risk_count ?? 0,
         inboxCount: 0,
+        checkpointStates: Object.fromEntries((summaryQuery.data?.checkpoints ?? []).map(item => [item.id, item.state])),
     }), [currentIteration, hasCurrentIteration, iterations.length, summaryQuery.data]);
     const ready = useMemo(
         () => readiness(deriveStatus(readinessData)),

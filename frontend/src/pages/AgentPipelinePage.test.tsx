@@ -89,8 +89,7 @@ const taskFixture: Task = {
 
 const pipelineFixture: AgentPipeline = {
     needs_definition: [],
-    ready_for_agent: [],
-    definition_ready_unassigned: [],
+    ready_to_assign: [],
     assigned_waiting: [],
     start_ready: [],
     executing: [taskFixture],

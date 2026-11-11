@@ -1,6 +1,6 @@
 # StepStatus
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:8`
+**Location:** `frontend/src/features/planningMasters/masters.ts:9`
 **Kind:** Interface
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

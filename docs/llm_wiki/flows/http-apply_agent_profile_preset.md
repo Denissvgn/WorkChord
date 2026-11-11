@@ -188,14 +188,14 @@ flowchart LR
 | apply_agent_profile_preset | AgentPlanningService.apply_profile_preset | 124 | `AgentPlanningService(db).apply_profile_preset(preset_key, actor, command=command)` |
 | AgentPlanningService.apply_profile_preset | AgentPlanningService._execute | 691 | `self._execute(actor=actor, scope='team:write', operation='planning.profile_preset.apply', target_type='team_member_profile', idempotency_target_id=0, command=command, request_payload=payload, mutate=mutate)` |
 | AgentPlanningService._execute | require_scope | 147 | `require_scope(actor, scope)` |
-| require_scope | actor_has_scope | 86 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
-| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 72 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 87 | `AgentPermissionError(...)` |
+| require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
+| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 86 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
 | AgentPlanningService._execute | validate_idempotency_key | 149 | `validate_idempotency_key(command.idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError | 96 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 100 | `value.strip(data not statically known)` |
+| validate_idempotency_key | ValueError | 110 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | value.strip | 114 | `value.strip(data not statically known)` |
 
 ### Boundary effects
 
@@ -207,10 +207,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 72 |
-| external_call | `actor_scopes` | `isinstance` | 75 |
-| external_call | `validate_idempotency_key` | `ValueError` | 96 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 100 |
+| external_call | `actor_scopes` | `json.loads` | 86 |
+| external_call | `actor_scopes` | `isinstance` | 89 |
+| external_call | `validate_idempotency_key` | `ValueError` | 110 |
+| unresolved_call | `validate_idempotency_key` | `value.strip` | 114 |
 | step_limit | `apply_agent_profile_preset` | `first 12 steps` | 0 |
 
 ## Behavior

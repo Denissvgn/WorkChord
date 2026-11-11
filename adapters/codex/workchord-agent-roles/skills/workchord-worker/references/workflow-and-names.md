@@ -26,10 +26,10 @@ One workflow, seen from each side:
 
 | Step | Person in the UI | PM | Worker | Reviewer |
 | --- | --- | --- | --- | --- |
-| Capture | Triage → New intake, or Tasks → New task. | Runs Triage and records one disposition; files WorkChord defects as Triage items. | Reports out-of-scope findings as linked Triage items. | Reports out-of-scope findings as linked Triage items. |
+| Capture | Triage → New intake, or Tasks → New task. | Runs Triage and records one disposition; files WorkChord defects as Triage items. | Reports out-of-scope findings as linked Triage items. | Reports out-of-scope findings to the PM in its review result. |
 | Plan and assign | Plan an iteration: planning period, people and capacity, work, scheduling blockers, schedule, review. | Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments. | — | — |
 | Do | Start work, Report blocker, Submit for review. | Supervises delivery and recovers stuck work through typed recovery. | Reads My Work, starts the assigned task, reports progress or a blocker, then submits for review. | — |
-| Review | My Work → To review; Accept or Request changes. | Routes the review to an independent reviewer; reviews only as the accountable PM. | Takes rework only when it is assigned back. | Records a result per acceptance criterion, then accepts or requests changes. |
+| Review | My Work → To review; Accept or Request changes. | Routes each review to an independent reviewer; never accepts work itself. | Takes rework only when it is assigned back. | Records a result per acceptance criterion, then accepts or requests changes. |
 | Report | Post update on the project. | Publishes a project update with health, summary, progress, risks, decisions, and next steps. | — | — |
 
 Task states:
@@ -46,8 +46,8 @@ Actions, with the same names for people and agents:
 | Action | Effect | Agents |
 | --- | --- | --- |
 | Start work | Planned → Active. | Atomic begin on the assigned work. |
-| Report blocker | Marks the task blocked, with a reason. | `agent.blocker` event with blocker, impact, checks tried, and the owner or action needed; the PM decides whether to mark the task blocked. |
-| Remove block | Clears the blocker. | PM decision; workers do not clear blockers. |
+| Report blocker | Marks the task blocked, with a reason. | Claim-fenced `agent.blocker` task event with blocker, impact, checks tried, and the owner or action needed; it marks the task blocked. |
+| Remove block | Clears the blocker. | The PM or a person removes it; workers never clear blockers. |
 | Submit for review | Active → Resolved (Implemented), with evidence per criterion. | Atomic submit with criterion progress and artifact links. |
 | Accept | Resolved → Closed (Accepted). | Typed review verdict that passes every criterion. |
 | Request changes | Resolved → Active as rework, with the failed criteria and a named owner. | Typed review verdict that rejects, with the rework handoff. |
@@ -63,6 +63,29 @@ My Work queues people see, and the matching agent work state:
 | In review | You submitted it; a reviewer has not decided yet. | Resolved work waiting for its review assignment. |
 | To review | Work waiting for your review. | Review-purpose assignments; never in the worker loop. |
 | Inbox | Notifications and delivery status. | Hints to refetch, never a reason to act. |
+
+Triage dispositions, with the same names for people and the PM:
+
+| Disposition | Means | Agents |
+| --- | --- | --- |
+| Convert | Turns the item into a task in a real iteration, with a complete brief. | Triage convert-to-task with the typed brief, effort, dependencies, and assignee. |
+| Accept | Keeps the item for planning when it is not ready to become a task yet. | Triage accept with the outcome, owner, priority rationale, and next planning step. |
+| Ask for clarification | Waits until a review time, with the open question as its reason. | Triage snooze until the next review time, with the question as the reason; also ask the requester or owner. |
+| Snooze | Waits until a known date or input. | Triage snooze with `snoozed_until`, the reason, and the expected input. |
+| Mark duplicate | Points the item at the one Triage item or task that already owns the outcome. | Triage mark-duplicate with exactly one target. |
+| Decline | Records that the request will not be pursued. | Triage decline with the reason and the decision owner. |
+
+Agent pipeline stages, in order; each task is in exactly one stage:
+
+| Stage | Means | PM action |
+| --- | --- | --- |
+| Needs definition (`needs_definition`) | The brief or planning fields are not complete yet. | Complete the typed brief, effort, dependencies, schedule, and assignee. |
+| Ready to assign (`ready_to_assign`) | Defined and ready, but not assigned to an agent yet. | Create one agent assignment with queue rank, not-before time, and reviewer. |
+| Assigned, waiting (`assigned_waiting`) | Assigned to an agent that cannot start yet because of the schedule, a dependency, or its start time. | Clear the start blocker or wait for it; never reassign to get around it. |
+| Ready to start (`start_ready`) | Assigned to an agent that may start it now. | Nothing; the assigned agent starts it from My Work. |
+| In progress (`executing`) | An agent is working on it now. | Watch the claim expiry, progress, and blockers; recover only through typed recovery. |
+| Waiting for review (`verification_required`) | Submitted for review and waiting for an independent reviewer. | Make sure an independent reviewer has a verification assignment. |
+| Needs recovery (`recovery_required`) | The assignment, claim, and run disagree, so the work cannot continue on its own. | Read the recovery diagnosis and requeue through typed recovery. |
 
 Terms:
 

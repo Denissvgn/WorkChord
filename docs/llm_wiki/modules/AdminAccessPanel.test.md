@@ -20,8 +20,8 @@ _Auto-generated from `frontend/src/components/settings/AdminAccessPanel.test.tsx
 
 | Signal | Values |
 |--------|--------|
-| Constants | `adminAccessHookMock`, `adminAccessStorageMock`, `PROTECTED_QUERY_PREFIXES` |
-| Module calls | `adminAccessHookMock = hoisted`, `adminAccessStorageMock = hoisted`, `mock`, `mock`, `describe` |
+| Constants | `adminAccessHookMock`, `adminAccessStorageMock`, `schedulingRulesMock`, `PROTECTED_QUERY_PREFIXES` |
+| Module calls | `adminAccessHookMock = hoisted`, `adminAccessStorageMock = hoisted`, `schedulingRulesMock = hoisted`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 

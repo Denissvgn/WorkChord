@@ -26,7 +26,7 @@ Calendar reads and writes retain resource and draft generation boundaries. Pendi
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../services/teamService` | `teamService` | — | compiler-dependent |
-| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../types/calendar` | `Calendar`, `CalendarCreate`, `CalendarUpdate` | Declaration | erased |
 | `../types/team` | `TeamMember`, `Vacation` | Declaration | erased |
 | `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
@@ -81,5 +81,5 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [CalendarDraft](../entities/CalendarDraft.md) | Interface | 39 | — | — |
 | [VacationRow](../entities/VacationRow.md) | Interface | 46 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Interface | 1127 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Interface | 1190 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Interface | 1147 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Interface | 1210 | — | — |

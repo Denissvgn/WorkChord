@@ -1,6 +1,6 @@
 # UnsupportedAgentTeamMasterVersion
 
-**Location:** `backend/app/schemas/agent_team_setup.py:100`
+**Location:** `backend/app/schemas/agent_team_setup.py:98`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

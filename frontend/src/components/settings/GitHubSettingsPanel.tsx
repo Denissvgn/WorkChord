@@ -9,7 +9,8 @@ import { useConfirmDialog } from '../common/useConfirmDialog';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { githubService } from '../../services/githubService';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
+import { AdminAccessGate } from './AdminAccessGate';
 import type {
     GitHubAutomationEventType,
     GitHubAutomationTargetStatus,
@@ -264,6 +265,11 @@ export const GitHubSettingsPanel = () => {
                 <span className="ml-3 text-content-secondary">{t('settingsGithubAutomation.loading')}</span>
             </div>
         );
+    }
+
+    if (error && getApiErrorStatus(error) === 403) {
+        // A permission denial is an access state, not a load failure: retrying cannot succeed.
+        return <AdminAccessGate accessGranted={false}>{null}</AdminAccessGate>;
     }
 
     if (error) {

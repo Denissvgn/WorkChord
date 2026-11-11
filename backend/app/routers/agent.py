@@ -1313,16 +1313,7 @@ async def get_agent_pipeline(
 ):
     """Retrieve all current tasks grouped by their agent pipeline columns."""
     cols = await service.get_pipeline()
-    return AgentPipelineResponse(
-        needs_definition=cols["needs_definition"],
-        ready_for_agent=cols["ready_for_agent"],
-        definition_ready_unassigned=cols.get("definition_ready_unassigned", []),
-        assigned_waiting=cols.get("assigned_waiting", []),
-        start_ready=cols.get("start_ready", []),
-        executing=cols["executing"],
-        verification_required=cols["verification_required"],
-        recovery_required=cols.get("recovery_required", []),
-    )
+    return AgentPipelineResponse(**cols)
 
 
 @router.get("/agent/runs/{run_id}", response_model=AgentRunDetailResponse)

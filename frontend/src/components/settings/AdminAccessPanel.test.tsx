@@ -16,8 +16,13 @@ const adminAccessStorageMock = vi.hoisted(() => ({
     clearAdminApiKey: vi.fn(),
 }));
 
+const schedulingRulesMock = vi.hoisted(() => ({
+    schedulingRulesService: { getRules: vi.fn() },
+}));
+
 vi.mock('../../hooks/useAdminAccess', () => adminAccessHookMock);
 vi.mock('../../utils/adminAccess', () => adminAccessStorageMock);
+vi.mock('../../services/schedulingRulesService', () => schedulingRulesMock);
 
 const PROTECTED_QUERY_PREFIXES = [
     'system-settings',
@@ -43,6 +48,7 @@ describe('AdminAccessPanel', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         adminAccessHookMock.useAdminAccess.mockReturnValue({ hasAdminKey: true });
+        schedulingRulesMock.schedulingRulesService.getRules.mockResolvedValue({ rules: {}, source: 'defaults' });
     });
 
     it('purges protected caches before refreshing with a replacement key', async () => {
@@ -72,6 +78,7 @@ describe('AdminAccessPanel', () => {
         expect(adminAccessStorageMock.setAdminApiKey).toHaveBeenCalledWith(
             'replacement-admin-key',
         );
+        expect(await screen.findByText(i18n.t('settings.adminAccessAccepted'))).toBeInTheDocument();
         PROTECTED_QUERY_PREFIXES.forEach(queryKey => {
             expect(removeQueries).toHaveBeenCalledWith({
                 queryKey: [queryKey],
@@ -97,5 +104,19 @@ describe('AdminAccessPanel', () => {
                 queryKey: [queryKey],
             });
         });
+    });
+
+    it('does not keep a key the server rejects', async () => {
+        schedulingRulesMock.schedulingRulesService.getRules.mockRejectedValue(
+            Object.assign(new Error('Unauthorized'), { isAxiosError: true, response: { status: 401, data: {} } }),
+        );
+        const { user } = renderWithProviders(<AdminAccessPanel />, { queryClient: createTestQueryClient() });
+
+        await user.type(screen.getByLabelText(i18n.t('settings.adminAccessField')), 'wrong-key');
+        await user.click(screen.getByRole('button', { name: i18n.t('settings.adminAccessSave') }));
+
+        expect(await screen.findByText(i18n.t('settings.adminAccessRejected'))).toBeInTheDocument();
+        expect(adminAccessStorageMock.clearAdminApiKey).toHaveBeenCalledOnce();
+        expect(screen.getByLabelText(i18n.t('settings.adminAccessField'))).toHaveValue('wrong-key');
     });
 });

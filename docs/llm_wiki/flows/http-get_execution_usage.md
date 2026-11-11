@@ -182,13 +182,13 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_execution_usage | ExecutionUsageService.latest | 1345 | `ExecutionUsageService(db).latest(actor, run_id)` |
+| get_execution_usage | ExecutionUsageService.latest | 1336 | `ExecutionUsageService(db).latest(actor, run_id)` |
 | ExecutionUsageService.latest | ExecutionUsageService._run | 93 | `self._run(actor, run_id)` |
 | ExecutionUsageService._run | any | 62 | `any(...)` |
 | ExecutionUsageService._run | actor_has_scope | 62 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
+| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 86 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
 | ExecutionUsageService._run | AgentPermissionError | 63 | `AgentPermissionError('The actor cannot access execution usage')` |
 | ExecutionUsageService._run | select(…).where (backend/app/services/exec…ExecutionUsageService._run) | 64 | `select(AgentRun).where(...)` |
 | ExecutionUsageService._run | select (backend/app/services/exec…ExecutionUsageService._run) | 64 | `select(AgentRun)` |
@@ -203,8 +203,8 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | external_call | `ExecutionUsageService._run` | `any` | 62 |
-| external_call | `actor_scopes` | `json.loads` | 72 |
-| external_call | `actor_scopes` | `isinstance` | 75 |
+| external_call | `actor_scopes` | `json.loads` | 86 |
+| external_call | `actor_scopes` | `isinstance` | 89 |
 | unresolved_call | `ExecutionUsageService._run` | `select(AgentRun).where` | 64 |
 | external_call | `ExecutionUsageService._run` | `select` | 64 |
 | unresolved_call | `ExecutionUsageService._run` | `statement.with_for_update` | 66 |

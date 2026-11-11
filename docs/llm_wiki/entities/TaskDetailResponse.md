@@ -1,6 +1,6 @@
 # TaskDetailResponse
 
-**Location:** `backend/app/schemas/task_detail.py:34`
+**Location:** `backend/app/schemas/task_detail.py:36`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)
@@ -19,6 +19,7 @@ _Auto-generated from `TaskDetailResponse` in `backend/app/schemas/task_detail.py
 | `children` | `TaskReferencePage` | `children` | Yes | No | — | — | — | — |
 | `dependencies` | `TaskReferencePage` | `dependencies` | Yes | No | — | — | — | — |
 | `execution_context_complete` | `bool` | `execution_context_complete` | No | No | `False` | — | — | — |
+| `reviewer_name` | `str \| None` | `reviewer_name` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -48,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_detail](../modules/task_detail.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `task` |
+| [task_detail](../modules/task_detail.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `reviewer_name`, `task` |
 
 ### Structure
 

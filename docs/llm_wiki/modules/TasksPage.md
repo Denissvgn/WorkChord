@@ -36,7 +36,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../services/savedViewService` | `savedViewService` | — | compiler-dependent |
 | `../services/taskService` | `taskService` | — | compiler-dependent |
-| `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
+| `../store/iterationStore` | `useIterationStore`, `pickDefaultIteration` | — | compiler-dependent |
 | `../types/savedView` | `SavedView` | Declaration | erased |
 | `../utils/savedViewState` | `savedViewModified` | — | compiler-dependent |
 | `../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |

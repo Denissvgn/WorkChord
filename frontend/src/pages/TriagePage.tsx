@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     Clock3,
     CopyCheck,
+    MessageCircleQuestion,
     ExternalLink,
     Inbox,
     ListFilter,
@@ -398,7 +399,13 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
     );
 };
 
-type TriageLifecycleAction = 'accept' | 'decline' | 'snooze' | 'duplicate';
+type TriageLifecycleAction = 'accept' | 'decline' | 'snooze' | 'clarify' | 'duplicate';
+
+// Sources the agent role skills write, shown by name in the source filter.
+const AGENT_SOURCE_LABEL_KEYS: Record<string, string> = {
+    'agent-observed-defect': 'surfaces.triagePage.sourceAgentDefect',
+    'agent-discovery': 'surfaces.triagePage.sourceAgentDiscovery',
+};
 
 interface DuplicateActionDefaults {
     targetType: 'triage' | 'task';
@@ -493,6 +500,7 @@ const TriageActionModal = ({
         accept: 'surfaces.triagePage.acceptIntake',
         decline: 'surfaces.triagePage.declineIntake',
         snooze: 'surfaces.triagePage.snoozeIntake',
+        clarify: 'surfaces.triagePage.askForClarification',
         duplicate: 'surfaces.triagePage.markDuplicate',
     }[action]);
 
@@ -500,6 +508,7 @@ const TriageActionModal = ({
         accept: 'surfaces.triagePage.accept',
         decline: 'surfaces.triagePage.decline',
         snooze: 'surfaces.triagePage.snooze',
+        clarify: 'surfaces.triagePage.askForClarification',
         duplicate: 'surfaces.triagePage.markDuplicate',
     }[action]);
 
@@ -507,7 +516,7 @@ const TriageActionModal = ({
         event.preventDefault();
         const trimmedReason = optionalText(reason);
 
-        if (action === 'snooze') {
+        if (action === 'snooze' || action === 'clarify') {
             onSubmit({
                 snoozed_until: new Date(snoozedUntil).toISOString(),
                 reason: trimmedReason,
@@ -564,9 +573,13 @@ const TriageActionModal = ({
                     {item.source && <p className="mt-1 text-xs text-content-secondary">{item.source}{item.external_key ? ` / ${item.external_key}` : ''}</p>}
                 </div>
 
-                {action === 'snooze' && (
+                {action === 'clarify' && (
+                    <p className="text-sm text-content-secondary">{t('surfaces.triagePage.clarificationHelp')}</p>
+                )}
+
+                {(action === 'snooze' || action === 'clarify') && (
                     <Input
-                        label={t('surfaces.triagePage.snoozedUntil')}
+                        label={t(action === 'clarify' ? 'surfaces.triagePage.reviewAgainOn' : 'surfaces.triagePage.snoozedUntil')}
                         type="datetime-local"
                         value={snoozedUntil}
                         onChange={event => setSnoozedUntil(event.target.value)}
@@ -682,9 +695,14 @@ const TriageActionModal = ({
                 )}
 
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.reason')}</label>
+                    <label htmlFor="triage-action-reason" className="mb-1 block text-sm font-medium text-content-primary">
+                        {t(action === 'clarify' ? 'surfaces.triagePage.clarificationQuestion' : 'surfaces.triagePage.reason')}
+                        {action === 'clarify' && <RequiredIndicator />}
+                    </label>
                     <textarea
+                        id="triage-action-reason"
                         value={reason}
+                        required={action === 'clarify'}
                         onChange={event => setReason(event.target.value)}
                         className="min-h-[90px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     />
@@ -1356,7 +1374,12 @@ const TriageDetailPanel = ({
                                 onSelect: () => onAction('snooze', item),
                             },
                             {
-                                label: t('surfaces.triagePage.duplicate'),
+                                label: t('surfaces.triagePage.askForClarification'),
+                                icon: <MessageCircleQuestion className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onAction('clarify', item),
+                            },
+                            {
+                                label: t('surfaces.triagePage.markDuplicate'),
                                 icon: <CopyCheck className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => onAction('duplicate', item),
                             },
@@ -1897,7 +1920,10 @@ const TriagePage = () => {
     const iterationsById = useMemo(() => makeLookup(iterations), [iterations]);
     const selectedItem = useMemo(() => triageItems.find(item => item.id === selectedId) ?? triageItems[0] ?? null, [selectedId, triageItems]);
     const effectiveSelectedId = selectedItem?.id ?? null;
-    const sources = useMemo(() => Array.from(new Set(allTriageItems.map(item => item.source).filter((source): source is string => Boolean(source)))).sort(), [allTriageItems]);
+    const sources = useMemo(() => Array.from(new Set([
+        ...Object.keys(AGENT_SOURCE_LABEL_KEYS),
+        ...allTriageItems.map(item => item.source).filter((source): source is string => Boolean(source)),
+    ])).sort(), [allTriageItems]);
 
     const dueSnoozedCount = useMemo(
         () => allTriageItems.filter(isDueSnoozed).length,
@@ -1908,6 +1934,17 @@ const TriagePage = () => {
         Number(Boolean(sourceFilter)) +
         Number(Boolean(statusFilter)) +
         Number(!activeOnly);
+    const resetFilters = () => {
+        clearRequestedViewParam();
+        setSearch('');
+        setSourceFilter('');
+        setStatusFilter('');
+        setActiveOnly(true);
+    };
+    const startNewIntake = () => {
+        createMutation.reset();
+        setIsCreating(true);
+    };
 
     const invalidateTriageQueries = () => {
         queryClient.invalidateQueries({ queryKey: ['triage'] });
@@ -2014,7 +2051,9 @@ const TriagePage = () => {
             });
             return;
         }
-        if (actionState.action === 'snooze') {
+        if (actionState.action === 'snooze' || actionState.action === 'clarify') {
+            // Asking for clarification snoozes the item until the stated review
+            // time, with the question as its reason, as the PM skill does.
             actionMutation.mutate({
                 type: 'snooze',
                 itemId: actionState.item.id,
@@ -2074,14 +2113,10 @@ const TriagePage = () => {
                 title={t('surfaces.triagePage.triageIntake')}
                 subtitle={t('surfaces.triagePage.reviewRawIntakeAndConvertAcceptedWorkIntoPlannedTasks')}
                 actions={(
-                    <OverflowMenu
-                        label={t('actions.moreActions')}
-                        items={[{
-                            label: t('surfaces.triagePage.newIntake'),
-                            icon: <Plus className="h-4 w-4" aria-hidden="true" />,
-                            onSelect: () => { createMutation.reset(); setIsCreating(true); },
-                        }]}
-                    />
+                    <Button onClick={startNewIntake}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.triagePage.newIntake')}
+                    </Button>
                 )}
             />
 
@@ -2130,6 +2165,7 @@ const TriagePage = () => {
                                 setSearch(event.target.value);
                             }}
                             placeholder={t('surfaces.triagePage.searchTitleDescriptionSourceKey')}
+                            aria-label={t('surfaces.triagePage.searchIntake')}
                             className="pl-9"
                         />
                     </div>
@@ -2149,13 +2185,7 @@ const TriagePage = () => {
                     {activeFilterCount > 0 && (
                         <Button
                             variant="ghost"
-                            onClick={() => {
-                                clearRequestedViewParam();
-                                setSearch('');
-                                setSourceFilter('');
-                                setStatusFilter('');
-                                setActiveOnly(true);
-                            }}
+                            onClick={resetFilters}
                         >
                             {t('surfaces.triagePage.reset')}
                         </Button>
@@ -2191,12 +2221,12 @@ const TriagePage = () => {
                             >
                                 <option value="">{t('surfaces.triagePage.allSources')}</option>
                                 {sources.map(source => (
-                                    <option key={source} value={source}>{source}</option>
+                                    <option key={source} value={source}>{AGENT_SOURCE_LABEL_KEYS[source] ? t(AGENT_SOURCE_LABEL_KEYS[source]) : source}</option>
                                 ))}
                             </select>
                         </label>
                         <div>
-                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-content-secondary">{t('surfaces.triagePage.status')}</span>
+                            <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-content-secondary">{t('surfaces.triagePage.show')}</span>
                             <div className="seg">
                                 <button
                                     type="button"
@@ -2247,7 +2277,7 @@ const TriagePage = () => {
                 </div>
             )}
 
-            <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_420px]">
+            <div className={clsx('grid min-h-0 flex-1 grid-cols-1 gap-4', (triageItems.length > 0 || selectedItem) && 'xl:grid-cols-[minmax(0,1fr)_420px]')}>
                 <div className="min-h-0 overflow-hidden rounded-lg border border-border bg-surface-card">
                     {listErrorMessage ? (
                         <QueryErrorState
@@ -2261,8 +2291,22 @@ const TriagePage = () => {
                         <div className="flex h-full items-center justify-center p-8 text-center">
                             <div>
                                 <Inbox className="mx-auto mb-3 h-10 w-10 text-content-tertiary" />
-                                <p className="font-medium text-content-primary">{t('surfaces.triagePage.noIntakeItemsMatchTheCurrentFilters')}</p>
-                                <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.convertedDeclinedDuplicateAndFutureSnoozedItemsAreHiddenByTheActiveInboxUnlessFiltered')}</p>
+                                {activeFilterCount > 0 ? (
+                                    <>
+                                        <p className="font-medium text-content-primary">{t('surfaces.triagePage.noIntakeItemsMatchTheCurrentFilters')}</p>
+                                        <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.convertedDeclinedDuplicateAndFutureSnoozedItemsAreHiddenByTheActiveInboxUnlessFiltered')}</p>
+                                        <Button className="mt-3" variant="secondary" onClick={resetFilters}>{t('surfaces.triagePage.reset')}</Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <p className="font-medium text-content-primary">{t('surfaces.triagePage.inboxZeroTitle')}</p>
+                                        <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.inboxZeroBody')}</p>
+                                        <Button className="mt-3" onClick={startNewIntake}>
+                                            <Plus className="h-4 w-4" aria-hidden="true" />
+                                            {t('surfaces.triagePage.newIntake')}
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -2294,7 +2338,7 @@ const TriagePage = () => {
                     )}
                 </div>
 
-                <div className="min-h-[420px] xl:min-h-0">
+                {(triageItems.length > 0 || selectedItem) && <div className="min-h-[420px] xl:min-h-0">
                     <TriageDetailPanel
                         item={selectedItem}
                         projectsById={projectsById}
@@ -2305,7 +2349,7 @@ const TriagePage = () => {
                         onConvert={openConvert}
                         onRequestLinksChanged={invalidateTriageQueries}
                     />
-                </div>
+                </div>}
             </div>
 
             {isCreating && (

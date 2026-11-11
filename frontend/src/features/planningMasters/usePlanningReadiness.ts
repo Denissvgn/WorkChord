@@ -5,12 +5,13 @@ import { iterationService } from '../../services/iterationService';
 import { taskService } from '../../services/taskService';
 import { teamService } from '../../services/teamService';
 import { triageService } from '../../services/triageService';
-import { useIterationStore } from '../../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../../store/iterationStore';
 import type { GanttResponse } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
 import type { TeamMember } from '../../types/team';
 import { deriveStatus, nextStep, readiness } from './masters';
+import { planningNavigationSummaryKey } from './usePlanningNavigationSummary';
 import type { PlanReadiness } from './masters';
 import {
     hasPositivePlanningEffort,
@@ -244,7 +245,9 @@ export const countPlanningExceptions = (
 
 export const usePlanningReadiness = ({
     includeInbox = false,
-    autoSelectFirst = false,
+    // Every planning surface selects the same default iteration, so readiness
+    // never depends on which page was opened first.
+    autoSelectFirst = true,
 }: PlanningReadinessOptions = {}) => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
 
@@ -267,7 +270,7 @@ export const usePlanningReadiness = ({
         }
 
         if (autoSelectFirst && selectedIterationId === 0 && iterations.length > 0) {
-            setSelectedIterationId(iterations[0].id);
+            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
         }
     }, [
         autoSelectFirst,
@@ -304,6 +307,14 @@ export const usePlanningReadiness = ({
     const ganttQuery = useQuery({
         queryKey: ['gantt', selectedIterationId],
         queryFn: () => ganttService.getChart(selectedIterationId),
+        enabled: hasCurrentIteration,
+        staleTime: 60000,
+    });
+
+    // feedback-policy: query loading,error,retry,empty - aggregate state is returned to the owning workspace.
+    const checkpointsQuery = useQuery({
+        queryKey: planningNavigationSummaryKey(selectedIterationId),
+        queryFn: () => iterationService.getPlanningReadiness(selectedIterationId),
         enabled: hasCurrentIteration,
         staleTime: 60000,
     });
@@ -365,7 +376,9 @@ export const usePlanningReadiness = ({
         ganttLastBuilt: '',
         riskCount: planningExceptionCount,
         inboxCount: includeInbox ? (inboxQuery.data?.length ?? 0) : 0,
+        checkpointStates: Object.fromEntries((checkpointsQuery.data?.checkpoints ?? []).map(item => [item.id, item.state])),
     }), [
+        checkpointsQuery.data,
         currentIteration,
         hasCurrentIteration,
         inboxQuery.data,

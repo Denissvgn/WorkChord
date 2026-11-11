@@ -44,7 +44,7 @@ EXPECTED_TASK_IDS = {
     "MAR-CLOSE-001",
 }
 EXPECTED_GATE_IDS = {f"G{index}" for index in range(1, 14)}
-EXPECTED_VERSION = "1.7.0"
+EXPECTED_VERSION = "1.8.0"
 MAX_RECEIPT_BYTES = 16_384
 
 

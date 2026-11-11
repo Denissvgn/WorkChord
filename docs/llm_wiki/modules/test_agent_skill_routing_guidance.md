@@ -18,6 +18,7 @@ Contract coverage for MAR-SKILL-001, MAR-SKILL-002, and MAR-PKG-001.
 | `app.routers` | `agent` |
 | `app.schemas.agent` | `AgentWorkSubmit`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin` |
 | `app.schemas.agent_routing` | `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
+| `app.schemas.agent_team_setup` | `ROLE_PACKAGE_COMPATIBILITY`, `ROLE_SCOPE_PRESETS` |
 | `app.schemas.execution_usage` | `ExecutionUsageWrite` |
 | `json` | `json` |
 | `pathlib` | `Path` |
@@ -37,28 +38,31 @@ flowchart LR
     n4["backend/app/routers/agent.py"]
     n5["backend/app/schemas/agent.py"]
     n6["backend/app/schemas/agent_routing.py"]
-    n7["backend/app/schemas/execution_usage.py"]
-    n8["backend/tests/test_agent_skill_routing_guidance.py"]
+    n7["backend/app/schemas/agent_team_setup.py"]
+    n8["backend/app/schemas/execution_usage.py"]
+    n9["backend/tests/test_agent_skill_routing_guidance.py"]
     n1 --> n3
     n1 --> n4
     n2 --> n0
     n2 --> n5
     n2 --> n6
-    n2 --> n7
+    n2 --> n8
     n3 --> n2
     n4 --> n0
     n4 --> n5
     n4 --> n6
     n4 --> n7
+    n4 --> n8
     n5 --> n6
-    n8 --> n0
-    n8 --> n1
-    n8 --> n2
-    n8 --> n3
-    n8 --> n4
-    n8 --> n5
-    n8 --> n6
-    n8 --> n7
+    n9 --> n0
+    n9 --> n1
+    n9 --> n2
+    n9 --> n3
+    n9 --> n4
+    n9 --> n5
+    n9 --> n6
+    n9 --> n7
+    n9 --> n8
     click n0 "../modules/agent_contract.md"
     click n1 "../modules/app_main.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -66,8 +70,9 @@ flowchart LR
     click n4 "../modules/routers_agent.md"
     click n5 "../modules/schemas_agent.md"
     click n6 "../modules/agent_routing.md"
-    click n7 "../modules/schemas_execution_usage.md"
-    click n8 "../modules/test_agent_skill_routing_guidance.md"
+    click n7 "../modules/agent_team_setup.md"
+    click n8 "../modules/schemas_execution_usage.md"
+    click n9 "../modules/test_agent_skill_routing_guidance.md"
 ```
 
 ### Internal neighbors
@@ -81,6 +86,7 @@ flowchart LR
 | Outbound | [routers_agent](../modules/routers_agent.md) |
 | Outbound | [schemas_agent](../modules/schemas_agent.md) |
 | Outbound | [agent_routing](../modules/agent_routing.md) |
+| Outbound | [agent_team_setup](../modules/agent_team_setup.md) |
 | Outbound | [schemas_execution_usage](../modules/schemas_execution_usage.md) |
 
 ### External packages
@@ -102,6 +108,7 @@ flowchart LR
 | `test_pm_skill_hard_gates_selection_before_cost` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_pm_skill_distinguishes_model_and_external_blockers` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_worker_skill_obeys_selected_binding_without_expanding_authority` | `() -> None` | `@pytest.mark.contract` | — |
+| `test_reviewer_role_has_its_own_package_within_the_verifier_preset` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_model_aware_operation_contract_is_feature_gated` | `() -> None` | `@pytest.mark.contract` | — |
 | `test_model_aware_package_contract_matches_live_rest_and_mcp` | *(async)* `() -> None` | `@pytest.mark.contract`, `@pytest.mark.asyncio` | — |
 | `test_server_advertises_complete_model_aware_feature` | `() -> None` | `@pytest.mark.contract` | — |

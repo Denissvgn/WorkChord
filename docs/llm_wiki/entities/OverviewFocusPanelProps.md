@@ -1,6 +1,6 @@
 # OverviewFocusPanelProps
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:1008`
+**Location:** `frontend/src/pages/OverviewPage.tsx:1024`
 **Kind:** Interface
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)

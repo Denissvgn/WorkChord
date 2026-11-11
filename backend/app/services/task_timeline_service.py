@@ -7,7 +7,7 @@ from datetime import datetime
 from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import selectinload
 
-from app.models.agent import AgentRun, AgentRunEvent, TaskEvent
+from app.models.agent import AgentActor, AgentRun, AgentRunEvent, TaskEvent
 from app.models.task import Task
 from app.models.task_status_log import TaskStatusLog
 from app.utils.time import as_utc
@@ -63,6 +63,7 @@ class TaskTimelineService:
         more = len(selected) > limit
         selected = selected[:limit]
         items = [self.item(source, row, at) for at, source, _, row in selected]
+        await self._attach_agent_names(items)
         next_cursor = None
         if more:
             at, source, identifier, _ = selected[-1]
@@ -70,6 +71,19 @@ class TaskTimelineService:
                 "at": at.isoformat(), "source": source, "id": identifier}, separators=(",", ":")).encode()).decode()
         return dict(task_id=task_id, items=items, has_more=more, next_cursor=next_cursor,
                     limit=limit, consistency="live_timestamp_id_desc")
+
+    async def _attach_agent_names(self, items):
+        """Show which agent wrote each item, so Activity names the reporter."""
+        actor_ids = {item["actor_id"] for item in items
+                     if item.get("actor_type") == "agent" and isinstance(item.get("actor_id"), int)}
+        if not actor_ids:
+            return
+        rows = (await self.db.execute(select(AgentActor.id, AgentActor.display_name, AgentActor.name)
+                                      .where(AgentActor.id.in_(actor_ids)))).all()
+        names = {row.id: row.display_name or row.name for row in rows}
+        for item in items:
+            if item.get("actor_type") == "agent":
+                item["actor_name"] = names.get(item.get("actor_id"))
 
     def item(self, source, row, at):
         parse = self.serializer.event_to_payload

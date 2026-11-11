@@ -31,23 +31,24 @@ sequenceDiagram
     participant p8 as CollectionLimitExceededError
     participant p9 as as_utc
     participant p10 as TaskTimelineService.item
-    participant p11 as select (backend/app/routers/tasks.py:get_task_timeline)
-    participant p12 as db.scalar
-    participant p13 as select(…).where (backend/app/routers/tasks.py:get_task_timeline)
-    participant p14 as HTTPException
-    participant p15 as self.db.scalar (backend/app/services/agen…tService.get_task_timeline)
-    participant p16 as select(…).where (backend/app/services/agen…tService.get_task_timeline)
-    participant p17 as select (backend/app/services/agen…tService.get_task_timeline)
-    participant p18 as item.items
-    participant p19 as reversed
-    participant p20 as ValueError (backend/app/services/task…y:TaskTimelineService.page)
-    participant p21 as self.db.scalar (backend/app/services/task…y:TaskTimelineService.page)
-    participant p22 as select(…).where (backend/app/services/task…askTimelineService.page, 1)
-    participant p23 as select (backend/app/services/task…y:TaskTimelineService.page)
-    participant p24 as LookupError
-    participant p25 as select(…).where (backend/app/services/task…askTimelineService.page, 2)
-    participant p26 as select(…).where (backend/app/services/task…askTimelineService.page, 3)
-    participant p27 as select(…).where (backend/app/services/task…y:TaskTimelineService.page)
+    participant p11 as TaskTimelineService._attach_agent_names
+    participant p12 as select (backend/app/routers/tasks.py:get_task_timeline)
+    participant p13 as db.scalar
+    participant p14 as select(…).where (backend/app/routers/tasks.py:get_task_timeline)
+    participant p15 as HTTPException
+    participant p16 as self.db.scalar (backend/app/services/agen…tService.get_task_timeline)
+    participant p17 as select(…).where (backend/app/services/agen…tService.get_task_timeline)
+    participant p18 as select (backend/app/services/agen…tService.get_task_timeline)
+    participant p19 as item.items
+    participant p20 as reversed
+    participant p21 as ValueError (backend/app/services/task…y:TaskTimelineService.page)
+    participant p22 as self.db.scalar (backend/app/services/task…y:TaskTimelineService.page)
+    participant p23 as select(…).where (backend/app/services/task…askTimelineService.page, 1)
+    participant p24 as select (backend/app/services/task…y:TaskTimelineService.page)
+    participant p25 as LookupError
+    participant p26 as select(…).where (backend/app/services/task…askTimelineService.page, 2)
+    participant p27 as select(…).where (backend/app/services/task…askTimelineService.page, 3)
+    participant p28 as select(…).where (backend/app/services/task…y:TaskTimelineService.page)
     p0->>p1: AgentService.get_task_timeline
     p0->>p2: AgentService
     p0->>p3: TaskTimelineResponse
@@ -58,31 +59,31 @@ sequenceDiagram
     p1->>p8: CollectionLimitExceededError
     p5->>p9: as_utc
     p5->>p10: TaskTimelineService.item
-    p0-->>p11: select (backend/app/routers/tasks.py:get_task_timeline)(Task.id)
-    p0-->>p12: db.scalar(...)
-    p0-->>p13: select(…).where (backend/app/routers/tasks.py:get_task_timeline)(...)
-    p0-->>p14: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
-    p1-->>p15: self.db.scalar (backend/app/services/agen…tService.get_task_timeline)(...)
-    p1-->>p16: select(…).where (backend/app/services/agen…tService.get_task_timeline)(...)
-    p1-->>p17: select (backend/app/services/agen…tService.get_task_timeline)(Task.id)
-    p1-->>p18: item.items
-    p1-->>p19: reversed(page[...])
-    p5-->>p20: ValueError (backend/app/services/task…y:TaskTimelineService.page)('Use a timeline page limit from 1 to 500')
-    p5-->>p21: self.db.scalar (backend/app/services/task…y:TaskTimelineService.page)(...)
-    p5-->>p22: select(…).where (backend/app/services/task…askTimelineService.page, 1)(...)
-    p5-->>p23: select (backend/app/services/task…y:TaskTimelineService.page)(Task.id)
-    p5-->>p24: LookupError('Task not found or inaccessible')
-    p5-->>p25: select(…).where (backend/app/services/task…askTimelineService.page, 2)(...)
-    p5-->>p23: select (backend/app/services/task…y:TaskTimelineService.page)(TaskEvent)
-    p5-->>p26: select(…).where (backend/app/services/task…askTimelineService.page, 3)(...)
-    p5-->>p23: select (backend/app/services/task…y:TaskTimelineService.page)(TaskStatusLog)
-    p5-->>p27: select(…).where (backend/app/services/task…y:TaskTimelineService.page)(...)
-    p5-->>p23: select (backend/app/services/task…y:TaskTimelineService.page)(AgentRun)
+    p5->>p11: TaskTimelineService._attach_agent_names
+    p0-->>p12: select (backend/app/routers/tasks.py:get_task_timeline)(Task.id)
+    p0-->>p13: db.scalar(...)
+    p0-->>p14: select(…).where (backend/app/routers/tasks.py:get_task_timeline)(...)
+    p0-->>p15: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
+    p1-->>p16: self.db.scalar (backend/app/services/agen…tService.get_task_timeline)(...)
+    p1-->>p17: select(…).where (backend/app/services/agen…tService.get_task_timeline)(...)
+    p1-->>p18: select (backend/app/services/agen…tService.get_task_timeline)(Task.id)
+    p1-->>p19: item.items
+    p1-->>p20: reversed(page[...])
+    p5-->>p21: ValueError (backend/app/services/task…y:TaskTimelineService.page)('Use a timeline page limit from 1 to 500')
+    p5-->>p22: self.db.scalar (backend/app/services/task…y:TaskTimelineService.page)(...)
+    p5-->>p23: select(…).where (backend/app/services/task…askTimelineService.page, 1)(...)
+    p5-->>p24: select (backend/app/services/task…y:TaskTimelineService.page)(Task.id)
+    p5-->>p25: LookupError('Task not found or inaccessible')
+    p5-->>p26: select(…).where (backend/app/services/task…askTimelineService.page, 2)(...)
+    p5-->>p24: select (backend/app/services/task…y:TaskTimelineService.page)(TaskEvent)
+    p5-->>p27: select(…).where (backend/app/services/task…askTimelineService.page, 3)(...)
+    p5-->>p24: select (backend/app/services/task…y:TaskTimelineService.page)(TaskStatusLog)
+    p5-->>p28: select(…).where (backend/app/services/task…y:TaskTimelineService.page)(...)
 ```
 
-> Call sequence diagram shows 30 of 84 interactions; 54 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 96 interactions; 66 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 10 of 41 (31 omitted); unresolved 10 of 32 (22 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 9 of 43 (34 omitted); unresolved 10 of 41 (31 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -91,10 +92,12 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_timeline_service.py:TaskTimelineService.decode` | 17 | - | external | 14 |
 | `backend/app/services/task_timeline_service.py:TaskTimelineService.decode` | 17 | [backend/app/utils/time.py](../modules/time.md) | internal | 1 |
 | `backend/app/utils/time.py:as_utc` | 31 | - | unresolved | 2 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService.page` | 11 | - | external | 11 |
 | `backend/app/services/task_timeline_service.py:TaskTimelineService.page` | 11 | - | unresolved | 16 |
-| `backend/app/services/task_timeline_service.py:TaskTimelineService.page` | 11 | - | external | 10 |
 | `backend/app/services/task_timeline_service.py:TaskTimelineService.item` | 62 | - | external | 7 |
 | `backend/app/services/task_timeline_service.py:TaskTimelineService.item` | 62 | - | unresolved | 4 |
+| `backend/app/services/task_timeline_service.py:TaskTimelineService._attach_agent_names` | 74 | - | unresolved | 9 |
+> Omission summary shows 8 of 9 groups; 1 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -105,9 +108,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 12; effect analysis evaluated: 7, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
+Source steps: 13; effect analysis evaluated: 8, partial: 0, unavailable: 5. Counts include steps omitted from the displayed trace.
 
-Collector observations for 7 source steps with known totals: observed: 45, emitted: 45, omitted: 0. Unavailable totals are excluded.
+Collector observations for 8 source steps with known totals: observed: 48, emitted: 48, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -192,10 +195,10 @@ flowchart LR
 | get_task_timeline | select (backend/app/routers/tasks.py:get_task_timeline) | 1006 | `select(Task.id)` |
 | get_task_timeline | HTTPException | 1008 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
 | get_task_timeline | AgentService.get_task_timeline | 1013 | `agent_service.get_task_timeline(task_id)` |
-| AgentService.get_task_timeline | self.db.scalar (backend/app/services/agen…tService.get_task_timeline) | 1431 | `self.db.scalar(...)` |
-| AgentService.get_task_timeline | select(…).where (backend/app/services/agen…tService.get_task_timeline) | 1431 | `select(Task.id).where(...)` |
-| AgentService.get_task_timeline | select (backend/app/services/agen…tService.get_task_timeline) | 1431 | `select(Task.id)` |
-| AgentService.get_task_timeline | TaskTimelineService.page | 1433 | `TaskTimelineService(self.db, self).page(task_id, limit=MAX_BOUNDED_LIST_ITEMS)` |
+| AgentService.get_task_timeline | self.db.scalar (backend/app/services/agen…tService.get_task_timeline) | 1450 | `self.db.scalar(...)` |
+| AgentService.get_task_timeline | select(…).where (backend/app/services/agen…tService.get_task_timeline) | 1450 | `select(Task.id).where(...)` |
+| AgentService.get_task_timeline | select (backend/app/services/agen…tService.get_task_timeline) | 1450 | `select(Task.id)` |
+| AgentService.get_task_timeline | TaskTimelineService.page | 1452 | `TaskTimelineService(self.db, self).page(task_id, limit=MAX_BOUNDED_LIST_ITEMS)` |
 | TaskTimelineService.page | ValueError (backend/app/services/task…y:TaskTimelineService.page) | 45 | `ValueError('Use a timeline page limit from 1 to 500')` |
 
 ### Boundary effects
@@ -213,9 +216,9 @@ flowchart LR
 | unresolved_call | `get_task_timeline` | `select(Task.id).where` | 1006 |
 | external_call | `get_task_timeline` | `select` | 1006 |
 | external_call | `get_task_timeline` | `HTTPException` | 1008 |
-| unresolved_call | `AgentService.get_task_timeline` | `self.db.scalar` | 1431 |
-| unresolved_call | `AgentService.get_task_timeline` | `select(Task.id).where` | 1431 |
-| external_call | `AgentService.get_task_timeline` | `select` | 1431 |
+| unresolved_call | `AgentService.get_task_timeline` | `self.db.scalar` | 1450 |
+| unresolved_call | `AgentService.get_task_timeline` | `select(Task.id).where` | 1450 |
+| external_call | `AgentService.get_task_timeline` | `select` | 1450 |
 | external_call | `TaskTimelineService.page` | `ValueError` | 45 |
 | step_limit | `get_task_timeline` | `first 12 steps` | 0 |
 

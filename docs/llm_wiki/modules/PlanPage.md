@@ -39,6 +39,7 @@ flowchart LR
     n4["frontend/src/pages/PlanPage.test.tsx"]
     n5["frontend/src/pages/PlanPage.tsx"]
     n6["frontend/src/utils/formatDate.ts"]
+    n2 --> n6
     n3 --> n2
     n4 --> n2
     n4 --> n5

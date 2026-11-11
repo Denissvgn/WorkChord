@@ -21,6 +21,7 @@ export interface TaskFilters {
     hasDependency: boolean | null;
     isOverdue: boolean | null;
     isIterationOverflow?: boolean | null;
+    isBlocked?: boolean | null;
     agentReady: boolean | null;
     startDateFrom: string;
     startDateTo: string;
@@ -131,6 +132,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
         filters.hasDependency !== null ||
         filters.isOverdue !== null ||
         filters.isIterationOverflow != null ||
+        filters.isBlocked != null ||
         filters.agentReady !== null ||
         filters.startDateFrom ||
         filters.startDateTo ||
@@ -211,6 +213,10 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     if (filters.isIterationOverflow != null) activeBadges.push({
         label: t('workStatus.iterationOverflow'), value: t(filters.isIterationOverflow ? 'workStatus.iterationOverflow' : 'workStatus.withinIteration'),
         onRemove: () => onFiltersChange({ ...filters, isIterationOverflow: null }),
+    });
+    if (filters.isBlocked != null) activeBadges.push({
+        label: t('workStatus.blocked'), value: t(filters.isBlocked ? 'workStatus.blocked' : 'workStatus.notBlocked'),
+        onRemove: () => onFiltersChange({ ...filters, isBlocked: null }),
     });
     if (filters.planningIssue) {
         activeBadges.push({
@@ -345,6 +351,13 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                     onChange={event => onFiltersChange({ ...filters, isIterationOverflow: event.target.value === '' ? null : event.target.value === 'true' })}>
                     <option value="">{t('workStatus.any')}</option><option value="true">{t('workStatus.iterationOverflow')}</option>
                     <option value="false">{t('workStatus.withinIteration')}</option>
+                </select>
+                <label htmlFor={`${advancedId}-blocked`} className="text-sm text-content-secondary">{t('workStatus.blocked')}</label>
+                <select id={`${advancedId}-blocked`} className="min-h-11 rounded-md border border-border bg-surface-card px-3 text-sm"
+                    value={filters.isBlocked === null || filters.isBlocked === undefined ? '' : String(filters.isBlocked)}
+                    onChange={event => onFiltersChange({ ...filters, isBlocked: event.target.value === '' ? null : event.target.value === 'true' })}>
+                    <option value="">{t('workStatus.any')}</option><option value="true">{t('workStatus.blocked')}</option>
+                    <option value="false">{t('workStatus.notBlocked')}</option>
                 </select>
             </div>
             {/* Advanced toggle + actions */}

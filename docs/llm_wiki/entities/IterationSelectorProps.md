@@ -16,6 +16,7 @@ _Auto-generated from `IterationSelectorProps` in `frontend/src/components/iterat
 | `className` | `string` | No | — | — |
 | `onChange` | `(iterationId: number) => void` | No | — | — |
 | `showLabel` | `boolean` | No | — | — |
+| `disabled` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -37,7 +38,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [IterationSelector](../modules/IterationSelector.md) | 0 | `className`, `onChange`, `showLabel` |
+| [IterationSelector](../modules/IterationSelector.md) | 0 | `className`, `disabled`, `onChange`, `showLabel` |
 
 ### References
 

@@ -64,6 +64,7 @@ describe('TeamProfileManager profile parity', () => {
         const { user } = renderWithProviders(<TeamProfileManager />);
 
         await screen.findByText('No capability profiles yet.');
+        await user.click(screen.getByRole('button', { name: 'New profile' }));
         await user.type(screen.getByRole('textbox', { name: 'Seed key' }), 'frontend-specialist');
         await user.type(screen.getByRole('textbox', { name: 'Display name' }), 'Frontend Specialist');
         await user.selectOptions(screen.getByRole('combobox', { name: 'Profile kind' }), 'agent');
@@ -163,6 +164,7 @@ describe('TeamProfileManager profile parity', () => {
         const { user } = renderWithProviders(<TeamProfileManager />);
 
         await screen.findByText('No capability profiles yet.');
+        await user.click(screen.getByRole('button', { name: 'New profile' }));
         await user.type(
             screen.getByRole('textbox', { name: 'Display name' }),
             'Unavailable Worker',

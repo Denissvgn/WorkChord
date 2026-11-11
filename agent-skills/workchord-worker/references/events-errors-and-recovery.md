@@ -39,6 +39,13 @@ task/run event types consistently, for example:
 | Discovery | typed `agent_report_discovery` | Triage ID, impact, blocking classification |
 | Final evidence | typed submit/fail evidence | criteria/results, checks, artifacts, residual risks |
 
+A claim-fenced `agent.blocker` task event marks the task Blocked: its first
+non-empty `blocker`, `summary`, `reason`, or `message` text (at most 1,000
+characters) becomes the reason people see, and the task's Activity shows your
+name. Write that text for a person. The task version does not change, so keep
+using your current lease values. You never clear a block; the PM or a person
+does.
+
 Use server-defined event names when they differ. Keep payloads small and
 structured. Include trace/correlation identifiers where supported. Never put
 API keys, claim identifiers/fences, private prompts, credentials, personal

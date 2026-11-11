@@ -21,7 +21,11 @@ from app.schemas.agent_routing import (
     TaskRoutingAssessmentMutationReceipt,
     TaskRoutingAssessmentState,
 )
-from app.schemas.iteration import IterationCreate, IterationUpdate
+from app.schemas.iteration import (
+    IterationCreate,
+    IterationPlanningReadinessSummary,
+    IterationUpdate,
+)
 from app.schemas.project import (
     ProjectCreate,
     ProjectMilestoneCreateRequest,
@@ -114,6 +118,26 @@ def _handle_agent_error(exc: Exception) -> NoReturn:
     if isinstance(exc, ValueError):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))
     raise exc
+
+
+@router.get(
+    "/agent/planning/iterations/{iteration_id}/readiness",
+    response_model=IterationPlanningReadinessSummary,
+)
+async def get_iteration_plan_readiness(
+    iteration_id: int,
+    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+):
+    """Read the six plan checkpoints people see, with one state each."""
+    try:
+        require_scope(actor, "planning:read")
+        summary = await mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)
+    except Exception as exc:
+        _handle_agent_error(exc)
+    if summary is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Iteration not found")
+    return summary
 
 
 @router.get(

@@ -18,6 +18,8 @@ export interface ConfirmDialogProps {
     onCancel: () => void;
     tone?: ConfirmDialogTone;
     pending?: boolean;
+    /** Keeps the confirm action unavailable until the caller's own check passes. */
+    confirmDisabled?: boolean;
 }
 
 const toneTitleClassName: Record<ConfirmDialogTone, string> = {
@@ -41,6 +43,7 @@ export const ConfirmDialog = ({
     onCancel,
     tone = 'danger',
     pending = false,
+    confirmDisabled = false,
 }: ConfirmDialogProps) => {
     const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -72,6 +75,7 @@ export const ConfirmDialog = ({
                             ? 'border-feedback-warning bg-feedback-warning text-feedback-warning-emphasis hover:bg-feedback-warning/90'
                             : undefined}
                         isLoading={pending}
+                        disabled={confirmDisabled}
                         onClick={onConfirm}
                     >
                         {confirmLabel}

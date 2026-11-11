@@ -62,7 +62,8 @@ export const planningIssueTasksHref = ({
     iterationId: number;
     returnStepId: PlanningStepId;
 }) => withPlanMasterReturn('/tasks', returnStepId, {
-    panel: 'filters',
+    // Unassigned work opens ready to assign in bulk; the filter drawer stays closed.
+    ...(issue === 'unassigned' ? { mode: 'bulk' } : {}),
     [PLANNING_TASK_ISSUE_PARAM]: issue,
     ...(iterationId > 0
         ? { [PLANNING_ITERATION_PARAM]: String(iterationId) }

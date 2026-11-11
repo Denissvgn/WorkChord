@@ -12,8 +12,8 @@
   },
   "release": {
     "agent_team_report_schema": "agent-team-setup-report-v1",
-    "backend_version": "1.7.0",
-    "frontend_version": "1.7.0",
+    "backend_version": "1.8.0",
+    "frontend_version": "1.8.0",
     "model_aware_routing_feature": "model-aware-routing-v1",
     "setup_feature": "agent-team-master-v1"
   },
@@ -136,7 +136,7 @@
     }
   ],
   "representative_master": {
-    "expected_digest": "a220cff49eb4b7f612aae43f7422354688cc0634ebf080831a4e35e9dbb4cfd8",
+    "expected_digest": "471f3789ef946b3c15a41dde2a0c46a55d6e9341ab8c2a2cbdd3fff702b2d1dc",
     "path": "config/examples/agent-team-master.json"
   },
   "schema_version": "model-aware-routing-closeout-v1",

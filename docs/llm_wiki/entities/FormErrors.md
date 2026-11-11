@@ -1,6 +1,6 @@
 # FormErrors
 
-**Location:** `frontend/src/components/settings/GitHubSettingsPanel.tsx:45`
+**Location:** `frontend/src/components/settings/GitHubSettingsPanel.tsx:46`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md)

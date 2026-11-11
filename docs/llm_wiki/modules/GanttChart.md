@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/planningMasters/planningTaskIssues` | `planningIssueTasksHref` | — | compiler-dependent |
 | `../../i18n/dateLocale` | `dateFnsLocale` | — | compiler-dependent |
 | `../../services/ganttService` | `ganttService` | — | compiler-dependent |
 | `../../types/gantt` | `GanttTask`, `SchedulePreviewResponse` | Declaration | erased |
@@ -57,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -65,15 +66,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 8 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 22 | — | — |
-| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 35 | `GanttTask` | — |
-| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 39 | — | — |
+| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 23 | — | — |
+| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 36 | `GanttTask` | — |
+| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 40 | — | — |
 
 ## Functions
 

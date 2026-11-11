@@ -77,3 +77,44 @@ it('keeps the initial aggregate map through a failed uncommit and explicit curre
     await waitFor(() => expect(JSON.parse(sessionStorage.getItem('scoped-command:progress')!).commandRevisions).toEqual({ 1: 99 }));
     expect(screen.getByRole('textbox', { name: 'Reason for the action or review'  })).toHaveValue('Keep this reason');
 });
+
+describe('review by a person', () => {
+    const resolved: Task = { ...task, status: 'resolved', assignee: { id: 7, name: 'Sam' } };
+    beforeEach(() => {
+        sessionStorage.clear();
+        vi.clearAllMocks();
+        service.actions.mockResolvedValue({ task_id: 42, version: 3, actions: [
+            { action: 'review', allowed: true, blockers: [] }, { action: 'accept_review', allowed: true, blockers: [] },
+        ], claim_generation: 0, running_run_ids: [], live_assignment_ids: [] });
+        service.getDetail.mockResolvedValue({ task: resolved, reviewer_name: 'Independent Verification Runtime' });
+        service.review.mockResolvedValue({ ...resolved, status: 'active', version: 4 });
+    });
+
+    it('names the reviewer and the rework owner', async () => {
+        renderPanel2(resolved);
+        expect(await screen.findByText('Independent Verification Runtime')).toBeInTheDocument();
+        expect(screen.getByText(/Rework goes to Sam/)).toBeInTheDocument();
+    });
+
+    it('sends a result per criterion and needs a failing criterion to request changes', async () => {
+        const { user } = renderPanel2(resolved);
+        await user.type(await screen.findByRole('textbox', { name: 'Reason for the action or review' }), 'The output is missing a section');
+        const requestChanges = screen.getByRole('button', { name: 'Request changes' });
+        expect(requestChanges).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Accept' })).toBeDisabled();
+        await user.selectOptions(await screen.findByLabelText('Result: Inspect the result'), 'fail');
+        await user.type(screen.getByRole('textbox', { name: 'What you checked or what must change' }), 'Add the summary section');
+        await user.click(requestChanges);
+        await waitFor(() => expect(service.review).toHaveBeenCalled());
+        const payload = service.review.mock.lastCall?.[1];
+        expect(payload.verdict).toBe('reject');
+        expect(JSON.parse(payload.evidence)).toEqual({ criteria: [
+            { id: 'criterion', revision: 1, result: 'fail', note: 'Add the summary section' },
+        ] });
+    });
+});
+
+function renderPanel2(current: Task) {
+    return renderWithProviders(<TaskWorkPanel task={current} disabled={false} draftKey={null}
+        onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} />);
+}

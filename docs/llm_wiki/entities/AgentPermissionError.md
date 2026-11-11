@@ -1,6 +1,6 @@
 # AgentPermissionError
 
-**Location:** `backend/app/services/agent_service.py:60`
+**Location:** `backend/app/services/agent_service.py:74`
 **Kind:** Class
 **Bases:** `Exception`
 **Module:** [agent_service](../modules/agent_service.md)

@@ -68,7 +68,12 @@ from app.schemas.agent_skill_bundle import (
     SkillBundleCatalogResponse,
     SkillBundleManifestResponse,
 )
-from app.schemas.iteration import IterationCreate, IterationSummary, IterationUpdate
+from app.schemas.iteration import (
+    IterationCreate,
+    IterationPlanningReadinessSummary,
+    IterationSummary,
+    IterationUpdate,
+)
 from app.schemas.label import LabelGroupResponse, LabelResponse
 from app.schemas.project import (
     ProjectCreate,
@@ -633,6 +638,15 @@ async def get_iteration(db: AsyncSession, iteration_id: int) -> dict[str, Any] |
         "end_date": iteration.end_date.isoformat(),
         "manager_email": iteration.manager_email,
     }
+
+
+async def get_iteration_plan_readiness(
+    db: AsyncSession,
+    iteration_id: int,
+) -> dict[str, Any] | None:
+    """MCP handler: the six plan checkpoints people see on the plan page."""
+    summary = await IterationService(db).get_planning_readiness_summary(iteration_id)
+    return _response(IterationPlanningReadinessSummary, summary) if summary else None
 
 
 async def get_iteration_summary(

@@ -13,6 +13,7 @@ import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { TaskReviewer } from './TaskReviewer';
 
 export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
@@ -74,12 +75,22 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         queryKey: ['iterations'], queryFn: iterationService.getAll, enabled: action === 'commit',
         // feedback-policy: query loading,error,retry,empty
     });
+    const reviewCriteria = task.brief?.acceptance_criteria ?? [];
+    const [reviewResults, setReviewResults] = useState<Record<string, { result: '' | 'pass' | 'fail'; note: string }>>({});
+    const resultFor = (criterionId: string) => reviewResults[criterionId] ?? { result: '' as const, note: '' };
+    // The same per-criterion packet the reviewer skill records, so a worker reads one rework format.
+    const reviewEvidence = reviewCriteria.length === 0 ? '' : JSON.stringify({ criteria: reviewCriteria.map(criterion => ({
+        id: criterion.id, revision: criterion.revision, result: resultFor(criterion.id).result || 'not_checked', note: resultFor(criterion.id).note.trim(),
+    })) });
+    const allCriteriaPass = reviewCriteria.every(criterion => resultFor(criterion.id).result === 'pass');
+    const someCriterionFails = reviewCriteria.some(criterion => resultFor(criterion.id).result === 'fail');
+    const reviewEvidenceTooLong = reviewEvidence.length > 8000;
     // feedback-policy: mutation pending,inline
     const command = useMutation({
         mutationFn: async (operation: 'progress' | 'command' | 'accept' | 'reject') => {
             if (operation === 'progress') return taskService.progress(task.id, { expected_version: draftVersion, criteria, artifacts: task.progress?.artifacts ?? [] });
             if (operation === 'accept' || operation === 'reject') return taskService.review(task.id, { expected_version: task.version,
-                brief_revision: task.brief_revision ?? 0, artifact_revision: task.artifact_revision ?? 0, verdict: operation, reason });
+                brief_revision: task.brief_revision ?? 0, artifact_revision: task.artifact_revision ?? 0, verdict: operation, reason, evidence: reviewEvidence });
             return taskService.command(task.id, { action, expected_version: task.version, reason,
                 iteration_id: action === 'commit' ? Number(iterationId) : undefined,
                 expected_revisions: ['commit', 'uncommit'].includes(action) ? commandRevisions : undefined,
@@ -113,6 +124,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         <h3 id={`${id}-heading`} className="text-base font-semibold text-content-primary">{t('domain.workAndReview')}</h3>
         {task.canceled_at && <p className="text-sm text-content-secondary">{t('domain.canceled')}: {task.canceled_reason}</p>}
         {task.blocked_reason && <p className="text-sm text-feedback-warning-foreground">{t('domain.blocked')}: {task.blocked_reason}</p>}
+        <TaskReviewer task={task} />
         {actions.isLoading && <QueryLoadingState className="min-h-12" />}
         {actions.isError && <QueryErrorState error={actions.error} fallback={t('domain.actionsFailed')} onRetry={() => void actions.refetch()} />}
         {Boolean(contextError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(contextError, t('domain.reloadReview'))}</p>}
@@ -170,9 +182,29 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                     {iterations.data?.filter(item => item.project_id === task.project_id || item.project_id === null).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
                 </select>
             </div>}
+            {task.status === 'resolved' && canReview && reviewCriteria.length > 0 && <fieldset className="space-y-3">
+                <legend className="mb-1 font-medium text-content-primary">{t('domain.reviewResults')}</legend>
+                <p className="text-sm text-content-secondary">{t('domain.reviewResultsHelp')}</p>
+                {reviewCriteria.map(criterion => <div key={criterion.id} className="space-y-2">
+                    <label className="field-lbl" htmlFor={`${id}-${criterion.id}-result`}>{t('domain.resultFor', { criterion: criterion.text })}</label>
+                    <select id={`${id}-${criterion.id}-result`} className="input w-full" value={resultFor(criterion.id).result}
+                        onChange={event => setReviewResults(values => ({ ...values, [criterion.id]: { ...resultFor(criterion.id), result: event.target.value as '' | 'pass' | 'fail' } }))}>
+                        <option value="">{t('domain.resultNotChecked')}</option>
+                        <option value="pass">{t('domain.resultPass')}</option>
+                        <option value="fail">{t('domain.resultFail')}</option>
+                    </select>
+                    <label className="field-lbl" htmlFor={`${id}-${criterion.id}-note`}>{t('domain.resultNote')}</label>
+                    <textarea id={`${id}-${criterion.id}-note`} className="input min-h-16 w-full" maxLength={1000} value={resultFor(criterion.id).note}
+                        onChange={event => setReviewResults(values => ({ ...values, [criterion.id]: { ...resultFor(criterion.id), note: event.target.value } }))} />
+                </div>)}
+                {reviewEvidenceTooLong && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('domain.reviewEvidenceTooLong')}</p>}
+            </fieldset>}
+            {task.status === 'resolved' && <p className="text-sm text-content-secondary">{task.assignee?.name
+                ? t('domain.reworkOwner', { name: task.assignee.name })
+                : t('domain.reworkOwnerNone')}</p>}
             {task.status === 'resolved' && <div className="flex flex-wrap gap-2">
-                <Button type="button" disabled={!canAccept || !reason.trim() || JSON.stringify(criteria) !== JSON.stringify(initial)} onClick={() => run('accept')}>{t('domain.accept')}</Button>
-                <Button type="button" variant="secondary" disabled={!canReview || !reason.trim()} onClick={() => run('reject')}>{t('domain.requestRework')}</Button>
+                <Button type="button" disabled={!canAccept || !reason.trim() || JSON.stringify(criteria) !== JSON.stringify(initial) || !allCriteriaPass || reviewEvidenceTooLong} onClick={() => run('accept')}>{t('domain.accept')}</Button>
+                <Button type="button" variant="secondary" disabled={!canReview || !reason.trim() || (reviewCriteria.length > 0 && !someCriterionFails) || reviewEvidenceTooLong} onClick={() => run('reject')}>{t('domain.requestRework')}</Button>
             </div>}
         </fieldset>
         <details className="text-sm text-content-secondary">
