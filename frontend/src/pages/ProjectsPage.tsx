@@ -368,6 +368,8 @@ const ProjectsPage = () => {
     }, [projects]);
     const activeProjectCount = projects.filter(project => !['completed', 'canceled'].includes(project.status)).length;
     const atRiskProjectCount = projects.filter(project => ['at_risk', 'off_track'].includes(project.health)).length;
+    // "No risk flags" is only true when every project's health has been assessed.
+    const unassessedProjectCount = projects.filter(project => project.health === 'unknown').length;
     const unassignedProjectCount = projects.filter(project => !project.initiative_id).length;
 
     const deleteInitiativeMutation = useMutation({
@@ -454,6 +456,10 @@ const ProjectsPage = () => {
                                     <span className="projects-exception is-risk">
                                         <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                                         {t('surfaces.projectsPage.atRiskCount', { count: atRiskProjectCount })}
+                                    </span>
+                                ) : unassessedProjectCount > 0 ? (
+                                    <span className="projects-exception">
+                                        {t('surfaces.projectsPage.healthNotAssessed', { count: unassessedProjectCount })}
                                     </span>
                                 ) : (
                                     <span className="projects-exception is-clear">

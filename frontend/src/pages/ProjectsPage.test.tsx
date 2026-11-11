@@ -108,6 +108,13 @@ describe('ProjectsPage', () => {
         expect(screen.getAllByRole('button', { name: 'New Project' })).toHaveLength(1);
     });
 
+    it('never says "No risk flags" while a project health is unassessed', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'unknown' }]);
+        renderWithProviders(<ProjectsPage />, { initialEntries: ['/projects'] });
+        expect(await screen.findByText('1 project not assessed')).toBeInTheDocument();
+        expect(screen.queryByText('No risk flags')).not.toBeInTheDocument();
+    });
+
     it('keeps the project table primary and initiative management collapsed', async () => {
         const { user } = renderWithProviders(<ProjectsPage />, {
             initialEntries: ['/projects'],
@@ -146,7 +153,7 @@ describe('ProjectsPage', () => {
             initialEntries: ['/projects'],
         });
 
-        expect(await screen.findByText('2 blocked tasks')).toHaveClass('sr-only');
+        expect(await screen.findByText('2 tasks blocked or waiting on dependencies')).toHaveClass('sr-only');
         expect(screen.getByText('1 overdue task')).toHaveClass('sr-only');
         expect(screen.getByText(new Intl.NumberFormat(i18n.language, {
             style: 'unit',

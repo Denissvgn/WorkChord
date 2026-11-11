@@ -1283,23 +1283,37 @@ const ProjectDetailPage = () => {
                 meta={(
                     <>
                         <span className={`pill ${projectStatusPillClassName(projectStatus)}`}>
-                            <span className="pdot"/>{t(projectStatusLabelKeys[projectStatus])}
+                            <span className="pdot"/>{t('surfaces.projectDetail.statusChip', { status: t(projectStatusLabelKeys[projectStatus]) })}
                         </span>
                         <span className={`pill ${healthToTone(projectHealth) === 'green' ? 'done' : healthToTone(projectHealth) === 'yellow' ? 'warn' : healthToTone(projectHealth) === 'red' ? 'blocked' : 'opt'}`}>
-                            <span className="pdot"/>{t(healthLabelKeys[projectHealth])}
+                            <span className="pdot"/>{t('surfaces.projectDetail.healthChip', { health: t(healthLabelKeys[projectHealth]) })}
                         </span>
                         {summary && (
                             <span className={`pill ${summary.update_freshness === 'fresh' ? 'done' : summary.update_freshness === 'stale' ? 'warn' : summary.update_freshness === 'missing' ? 'blocked' : 'opt'}`}>
                                 <span className="pdot"/>{t(updateFreshnessLabelKeys[summary.update_freshness])}{latestUpdateAge ? ` · ${latestUpdateAge.toLowerCase()}` : ''}
                             </span>
                         )}
-                        <span><CalendarDays className="inline h-3.5 w-3.5 mr-1"/>
-                            {formatDate(project.start_date)} – {formatDate(project.target_date)}
-                            {typeof summary?.days_until_target === 'number' && ` · ${summary.days_until_target}d left`}
-                        </span>
-                        <span><User className="inline h-3.5 w-3.5 mr-1"/>
-                            {formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id, '—')}
-                        </span>
+                        {project.start_date || project.target_date ? (
+                            <span><CalendarDays className="inline h-3.5 w-3.5 mr-1" aria-hidden="true"/>
+                                <span className="sr-only">{t('surfaces.projectDetail.datesLabel')}: </span>
+                                {formatDate(project.start_date)} – {formatDate(project.target_date)}
+                                {typeof summary?.days_until_target === 'number' && ` · ${t('surfaces.projectDetail.daysLeft', { count: summary.days_until_target })}`}
+                            </span>
+                        ) : (
+                            <button type="button" className="btn sm" onClick={() => setIsEditing(true)}>
+                                <CalendarDays className="h-3.5 w-3.5" aria-hidden="true"/>{t('surfaces.projectDetail.setDates')}
+                            </button>
+                        )}
+                        {project.owner_profile || project.owner || project.owner_id ? (
+                            <span><User className="inline h-3.5 w-3.5 mr-1" aria-hidden="true"/>
+                                <span className="sr-only">{t('surfaces.projectDetail.ownerLabel')}: </span>
+                                {formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id, '—')}
+                            </span>
+                        ) : (
+                            <button type="button" className="btn sm" onClick={() => setIsEditing(true)}>
+                                <User className="h-3.5 w-3.5" aria-hidden="true"/>{t('surfaces.projectDetail.assignOwner')}
+                            </button>
+                        )}
                     </>
                 )}
                 actions={(
