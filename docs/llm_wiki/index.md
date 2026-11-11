@@ -6,7 +6,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1559 | [Open section](#entities) |
+| Entities | 1560 | [Open section](#entities) |
 | Modules | 822 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
@@ -404,6 +404,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GitHubWebhookResponse](entities/GitHubWebhookResponse.md)
 - [GitHubWebhookService](entities/GitHubWebhookService.md)
 - [GitHubWebhookSignatureError](entities/GitHubWebhookSignatureError.md)
+- [GlossaryTerm](entities/GlossaryTerm.md)
 - [GuestTransferRequest](entities/GuestTransferRequest.md)
 - [GuideItem](entities/GuideItem.md)
 - [HandoffEvidenceReference](entities/HandoffEvidenceReference.md)

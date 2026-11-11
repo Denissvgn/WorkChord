@@ -20,6 +20,7 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `WorkRefreshStatus` |
+| Constants | `STALE_AFTER_MS`, `RECHECK_MS` |
 
 ## Local dependency map
 
@@ -53,4 +54,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `WorkRefreshStatus` | `()` | — | — |
+| `WorkRefreshStatus` | `()` | — | Silent while work data is fresh; says so, with a way to refresh, only when it may be out of date. |

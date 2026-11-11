@@ -1,6 +1,6 @@
 # WorkspaceKey
 
-**Location:** `frontend/src/navigation/workspaces.ts:19`
+**Location:** `frontend/src/navigation/workspaces.ts:21`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)

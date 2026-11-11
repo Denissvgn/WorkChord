@@ -27,7 +27,7 @@ _Auto-generated from `frontend/src/components/layout/AppSidebar.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `AppSidebar`, `SidebarAttentionAction`, `SidebarContent` |
-| Constants | `SYSTEM_VIEW_ORDER`, `SAVED_VIEW_ROUTE_PATHS`, `COMPACT_SAVED_VIEW_LIMIT`, `SAVED_VIEW_SEARCH_LIMIT`, `SAVED_VIEW_TYPES` |
+| Constants | `SYSTEM_VIEW_ORDER`, `SAVED_VIEW_ROUTE_PATHS`, `COMPACT_SAVED_VIEW_LIMIT`, `SAVED_VIEW_TYPES` |
 | Module calls | `SAVED_VIEW_ROUTE_PATHS = Set` |
 
 ## Local dependency map
@@ -93,7 +93,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SidebarAttentionAction](../entities/SidebarAttentionAction.md) | Interface | 24 | — | — |
+| [SidebarAttentionAction](../entities/SidebarAttentionAction.md) | Interface | 23 | — | — |
 
 ## Functions
 

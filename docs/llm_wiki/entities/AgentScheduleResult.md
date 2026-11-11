@@ -18,7 +18,7 @@ Schedule outcome plus the complete optimistic task-version token set.
 | `workload_balanced` | `bool` | `workload_balanced` | No | No | `True` | — | — | — |
 | `workload_issues` | `list[dict[str, Any]]` | `workload_issues` | No | No | factory: `list` | — | — | — |
 | `unscheduled` | `list[dict[str, Any]]` | `unscheduled` | No | No | factory: `list` | — | — | — |
-| `input_digest` | `str` | `input_digest` | Yes | No | — | min_length=64; max_length=64 | — | — |
+| `input_digest` | `str` | `input_digest` | Yes | No | — | max_length=64; min_length=64 | — | — |
 | `task_states` | `list[AgentScheduleTaskState]` | `task_states` | No | No | factory: `list` | — | — | — |
 
 ## Methods

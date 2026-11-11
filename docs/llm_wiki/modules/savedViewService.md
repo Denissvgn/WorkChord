@@ -29,37 +29,41 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/dashboard/SavedViewDashboardCards.tsx"]
     n1["frontend/src/components/layout/AppSidebar.tsx"]
-    n2["frontend/src/components/tasks/SavedViewsControl.tsx"]
-    n3["frontend/src/pages/ProjectsPage.tsx"]
-    n4["frontend/src/pages/TasksPage.tsx"]
-    n5["frontend/src/pages/TriagePage.tsx"]
-    n6["frontend/src/services/api.ts"]
-    n7["frontend/src/services/savedViewService.ts"]
-    n8["frontend/src/types/savedView.ts"]
-    n0 --> n7
+    n2["frontend/src/components/layout/CommandMenu.tsx"]
+    n3["frontend/src/components/tasks/SavedViewsControl.tsx"]
+    n4["frontend/src/pages/ProjectsPage.tsx"]
+    n5["frontend/src/pages/TasksPage.tsx"]
+    n6["frontend/src/pages/TriagePage.tsx"]
+    n7["frontend/src/services/api.ts"]
+    n8["frontend/src/services/savedViewService.ts"]
+    n9["frontend/src/types/savedView.ts"]
     n0 --> n8
-    n1 --> n7
+    n0 --> n9
     n1 --> n8
-    n2 --> n7
+    n1 --> n9
     n2 --> n8
-    n3 --> n7
+    n2 --> n9
     n3 --> n8
-    n4 --> n2
-    n4 --> n7
+    n3 --> n9
     n4 --> n8
-    n5 --> n7
+    n4 --> n9
+    n5 --> n3
     n5 --> n8
-    n7 --> n6
-    n7 --> n8
+    n5 --> n9
+    n6 --> n8
+    n6 --> n9
+    n8 --> n7
+    n8 --> n9
     click n0 "../modules/SavedViewDashboardCards.md"
     click n1 "../modules/AppSidebar.md"
-    click n2 "../modules/SavedViewsControl.md"
-    click n3 "../modules/ProjectsPage.md"
-    click n4 "../modules/TasksPage.md"
-    click n5 "../modules/TriagePage.md"
-    click n6 "../modules/api.md"
-    click n7 "../modules/savedViewService.md"
-    click n8 "../modules/savedView.md"
+    click n2 "../modules/CommandMenu.md"
+    click n3 "../modules/SavedViewsControl.md"
+    click n4 "../modules/ProjectsPage.md"
+    click n5 "../modules/TasksPage.md"
+    click n6 "../modules/TriagePage.md"
+    click n7 "../modules/api.md"
+    click n8 "../modules/savedViewService.md"
+    click n9 "../modules/savedView.md"
 ```
 
 ### Internal neighbors
@@ -68,6 +72,7 @@ flowchart LR
 |---|---|
 | Inbound | [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md) |
 | Inbound | [AppSidebar](../modules/AppSidebar.md) |
+| Inbound | [CommandMenu](../modules/CommandMenu.md) |
 | Inbound | [SavedViewsControl](../modules/SavedViewsControl.md) |
 | Inbound | [ProjectsPage](../modules/ProjectsPage.md) |
 | Inbound | [TasksPage](../modules/TasksPage.md) |

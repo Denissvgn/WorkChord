@@ -68,6 +68,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AppSidebar](modules/AppSidebar.md) | [savedView](modules/savedView.md) |
 | [AppTopNav](modules/AppTopNav.md) | [AppSidebar](modules/AppSidebar.md) |
 | [AppTopNav](modules/AppTopNav.md) | [workspaces](modules/workspaces.md) |
+| [CommandMenu](modules/CommandMenu.md) | [savedView](modules/savedView.md) |
 | [ContextHelp](modules/ContextHelp.md) | [helpContexts](modules/helpContexts.md) |
 | [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) | [types_iteration](modules/types_iteration.md) |
 | [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) | [types_team](modules/types_team.md) |
@@ -394,8 +395,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [api](modules/api.md) | 37 | 2 |
 | [formatDate](modules/formatDate.md) | 37 | 1 |
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
+| [i18n](modules/i18n.md) | 36 | 1 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
-| [i18n](modules/i18n.md) | 35 | 1 |
 | [taskService](modules/taskService.md) | 32 | 3 |
 | [Input](modules/Input.md) | 31 | 0 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
@@ -428,11 +429,11 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
+| [projectService](modules/projectService.md) | 17 | 5 |
 | [schemas_common](modules/schemas_common.md) | 16 | 0 |
 | [agent_work_service](modules/agent_work_service.md) | 16 | 26 |
 | [language_service](modules/language_service.md) | 16 | 2 |
 | [outbound_webhook_service](modules/outbound_webhook_service.md) | 16 | 12 |
-| [projectService](modules/projectService.md) | 16 | 5 |
 | [agent_routing](modules/agent_routing.md) | 15 | 1 |
 | [schemas_task_brief](modules/schemas_task_brief.md) | 15 | 1 |
 | [agent_routing_policy](modules/agent_routing_policy.md) | 15 | 0 |
@@ -446,16 +447,16 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [Checkbox](modules/Checkbox.md) | 13 | 0 |
 | [useConfirmDialog](modules/useConfirmDialog.md) | 13 | 1 |
 | [useDraftDismissal](modules/useDraftDismissal.md) | 13 | 0 |
+| [savedView](modules/savedView.md) | 13 | 0 |
 | [database_migration_manifest](modules/database_migration_manifest.md) | 12 | 0 |
 | [models_outbound_webhook](modules/models_outbound_webhook.md) | 12 | 2 |
 | [schemas_iteration](modules/schemas_iteration.md) | 12 | 2 |
 | [schemas_task_domain](modules/schemas_task_domain.md) | 12 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 12 | 18 |
-| [savedView](modules/savedView.md) | 12 | 0 |
+| [seedDisplay](modules/seedDisplay.md) | 12 | 5 |
 | [system_settings_service](modules/system_settings_service.md) | 11 | 5 |
 | [url_policy](modules/url_policy.md) | 11 | 1 |
 | [test_managed_authority](modules/test_managed_authority.md) | 11 | 16 |
-| [seedDisplay](modules/seedDisplay.md) | 11 | 5 |
 | [types_gantt](modules/types_gantt.md) | 11 | 2 |
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [load_common](modules/load_common.md) | 11 | 1 |
@@ -514,6 +515,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SlideOverDrawer](modules/SlideOverDrawer.md) | 7 | 1 |
 | [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 7 | 4 |
 | [agentService](modules/agentService.md) | 7 | 2 |
+| [savedViewService](modules/savedViewService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
 | [evidence](modules/evidence.md) | 6 | 2 |
 | [signing](modules/signing.md) | 6 | 1 |
@@ -529,7 +531,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [DisabledReason](modules/DisabledReason.md) | 6 | 0 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
-| [savedViewService](modules/savedViewService.md) | 6 | 2 |
+| [workspaces](modules/workspaces.md) | 6 | 0 |
 | [triageService](modules/triageService.md) | 6 | 3 |
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
 | [result](modules/result.md) | 6 | 1 |
@@ -560,7 +562,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planningReturn](modules/planningReturn.md) | 5 | 0 |
 | [dateLocale](modules/dateLocale.md) | 5 | 1 |
 | [resources.en](modules/resources.en.md) | 5 | 5 |
-| [workspaces](modules/workspaces.md) | 5 | 0 |
 | [labelService](modules/labelService.md) | 5 | 2 |
 | [types_triage](modules/types_triage.md) | 5 | 1 |
 | [workMetrics](modules/workMetrics.md) | 5 | 0 |
@@ -646,7 +647,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [IterationSelector](modules/IterationSelector.md) | 3 | 4 |
 | [LabelSelector](modules/LabelSelector.md) | 3 | 6 |
 | [AppSidebar](modules/AppSidebar.md) | 3 | 5 |
-| [CommandMenu](modules/CommandMenu.md) | 3 | 6 |
+| [CommandMenu](modules/CommandMenu.md) | 3 | 10 |
 | [commandMenuEvents](modules/commandMenuEvents.md) | 3 | 0 |
 | [ProjectForm](modules/ProjectForm.md) | 3 | 19 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
@@ -1041,7 +1042,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AppShell.test](modules/AppShell.test.md) | 0 | 2 |
 | [AppSidebar.test](modules/AppSidebar.test.md) | 0 | 3 |
 | [AppTopNav.test](modules/AppTopNav.test.md) | 0 | 2 |
-| [CommandMenu.test](modules/CommandMenu.test.md) | 0 | 3 |
+| [CommandMenu.test](modules/CommandMenu.test.md) | 0 | 5 |
 | [ContextHelp.test](modules/ContextHelp.test.md) | 0 | 4 |
 | [SidebarIterationCard.test](modules/SidebarIterationCard.test.md) | 0 | 2 |
 | [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) | 0 | 4 |

@@ -11,36 +11,36 @@ Task representation for Gantt chart.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `int` | *required* | — |
-| `title` | `str` | *required* | — |
-| `project_id` | `Optional[int]` | `None` | — |
-| `milestone_id` | `Optional[int]` | `None` | — |
-| `start_date` | `Optional[date]` | *required* | — |
-| `end_date` | `Optional[date]` | *required* | — |
-| `actual_start_date` | `Optional[date]` | `None` | — |
-| `actual_end_date` | `Optional[date]` | `None` | — |
-| `min_start_date` | `Optional[date]` | `None` | — |
-| `max_end_date` | `Optional[date]` | `None` | — |
-| `status` | `Optional[str]` | `None` | — |
-| `milestone` | `Optional[GanttMilestone]` | `None` | — |
-| `assignee` | `Optional[GanttAssignee]` | `None` | — |
-| `assignees` | `list[GanttAssignee]` | `[]` | — |
-| `priority` | `int` | *required* | — |
-| `progress` | `float` | `0.0` | — |
-| `effort_days` | `Optional[float]` | *required* | — |
-| `calculated_effort_days` | `Optional[float]` | `None` | — |
-| `effort_hours` | `Optional[float]` | *required* | — |
-| `version` | `int` | `1` | — |
-| `is_overdue` | `bool` | `False` | — |
-| `is_delayed` | `bool` | `False` | — |
-| `tags` | `list[str]` | `[]` | — |
-| `is_composite` | `bool` | `False` | — |
-| `is_optional` | `bool` | `False` | — |
-| `is_outside_constraints` | `bool` | `False` | — |
-| `children` | `list['GanttTask']` | `[]` | — |
-| `dependencies` | `list[int]` | `[]` | — |
+| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
+|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `id` | `int` | `id` | Yes | No | — | — | — | — |
+| `title` | `str` | `title` | Yes | No | — | — | — | — |
+| `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
+| `milestone_id` | `Optional[int]` | `milestone_id` | No | Yes | `None` | — | — | — |
+| `start_date` | `Optional[date]` | `start_date` | Yes | Yes | — | — | — | — |
+| `end_date` | `Optional[date]` | `end_date` | Yes | Yes | — | — | — | — |
+| `actual_start_date` | `Optional[date]` | `actual_start_date` | No | Yes | `None` | — | — | — |
+| `actual_end_date` | `Optional[date]` | `actual_end_date` | No | Yes | `None` | — | — | — |
+| `min_start_date` | `Optional[date]` | `min_start_date` | No | Yes | `None` | — | — | — |
+| `max_end_date` | `Optional[date]` | `max_end_date` | No | Yes | `None` | — | — | — |
+| `status` | `Optional[str]` | `status` | No | Yes | `None` | — | — | — |
+| `milestone` | `Optional[GanttMilestone]` | `milestone` | No | Yes | `None` | — | — | — |
+| `assignee` | `Optional[GanttAssignee]` | `assignee` | No | Yes | `None` | — | — | — |
+| `assignees` | `list[GanttAssignee]` | `assignees` | No | No | `[]` | — | — | — |
+| `priority` | `int` | `priority` | Yes | No | — | — | — | — |
+| `progress` | `float` | `progress` | No | No | `0.0` | — | — | — |
+| `effort_days` | `Optional[float]` | `effort_days` | Yes | Yes | — | — | — | — |
+| `calculated_effort_days` | `Optional[float]` | `calculated_effort_days` | No | Yes | `None` | — | — | — |
+| `effort_hours` | `Optional[float]` | `effort_hours` | Yes | Yes | — | — | — | — |
+| `version` | `int` | `version` | No | No | `1` | — | — | — |
+| `is_overdue` | `bool` | `is_overdue` | No | No | `False` | — | — | — |
+| `is_delayed` | `bool` | `is_delayed` | No | No | `False` | — | — | — |
+| `tags` | `list[str]` | `tags` | No | No | `[]` | — | — | — |
+| `is_composite` | `bool` | `is_composite` | No | No | `False` | — | — | — |
+| `is_optional` | `bool` | `is_optional` | No | No | `False` | — | — | — |
+| `is_outside_constraints` | `bool` | `is_outside_constraints` | No | No | `False` | — | — | — |
+| `children` | `list['GanttTask']` | `children` | No | No | `[]` | — | — | — |
+| `dependencies` | `list[int]` | `dependencies` | No | No | `[]` | — | — | — |
 
 ## Methods
 

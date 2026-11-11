@@ -11,14 +11,18 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../hooks/useSingleKeyShortcutPreference` | `useSingleKeyShortcutPreference` | — | compiler-dependent |
-| `../../navigation/workspaces` | `getWorkspaceForPath` | — | compiler-dependent |
+| `../../i18n/seedDisplay` | `savedViewDisplay` | — | compiler-dependent |
+| `../../navigation/workspaces` | `getWorkspaceForPath`, `WORKSPACES` | — | compiler-dependent |
+| `../../services/projectService` | `projectService` | — | compiler-dependent |
+| `../../services/savedViewService` | `savedViewService` | — | compiler-dependent |
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
+| `../../types/savedView` | `SavedView` | Declaration | erased |
 | `../common/Checkbox` | `Checkbox` | — | compiler-dependent |
 | `../common/Modal` | `Modal` | — | compiler-dependent |
 | `./commandMenuEvents` | `OPEN_COMMAND_MENU_EVENT` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `lucide-react` | `LucideIcon` | Declaration | erased |
-| `lucide-react` | `ArrowUpDown`, `ClipboardCheck`, `Command`, `GanttChartSquare`, `Layers`, `List`, `LayoutGrid`, `ListFilter`, `ListTodo`, `MapPin`, `Maximize2`, `Minimize2`, `Plus`, `Search`, `Settings`, `Users` | — | compiler-dependent |
+| `lucide-react` | `ArrowUpDown`, `Bookmark`, `ClipboardCheck`, `FolderOpen`, `Command`, `Layers`, `List`, `LayoutGrid`, `ListFilter`, `ListTodo`, `MapPin`, `Maximize2`, `Minimize2`, `Plus`, `Search` | — | compiler-dependent |
 | `react` | `KeyboardEvent` | Declaration | erased |
 | `react` | `useCallback`, `useEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -29,57 +33,30 @@ _Auto-generated from `frontend/src/components/layout/CommandMenu.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `CommandMenu`, `RECENT_COMMANDS_STORAGE_KEY` |
-| Constants | `TASKS_FIRST_GROUPS`, `CURRENT_FIRST_GROUPS`, `COMPACT_GROUPS`, `MAX_COMPACT_SUGGESTIONS`, `MAX_RECENT_COMMANDS`, `RECENT_COMMANDS_STORAGE_KEY`, `WORKSPACE_SUGGESTION_IDS` |
+| Constants | `NAV_COMMAND_IDS`, `NAV_COMMAND_KEYS`, `MAX_ENTITY_RESULTS`, `SAVED_VIEW_TYPES`, `TASKS_FIRST_GROUPS`, `CURRENT_FIRST_GROUPS`, `COMPACT_GROUPS`, `MAX_COMPACT_SUGGESTIONS`, `MAX_RECENT_COMMANDS`, `RECENT_COMMANDS_STORAGE_KEY`, `WORKSPACE_SUGGESTION_IDS` |
 
 ## Local dependency map
 
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
+This graph shows full source coupling. Type dependencies can be erased; compiler-dependent cycle groups are runtime candidates, not confirmed initialization cycles.
+
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Checkbox.tsx"]
-    n1["frontend/src/components/common/Modal.tsx"]
-    n2["frontend/src/components/layout/AppShell.tsx"]
-    n3["frontend/src/components/layout/CommandMenu.test.tsx"]
-    n4["frontend/src/components/layout/CommandMenu.tsx"]
-    n5["frontend/src/components/layout/commandMenuEvents.ts"]
-    n6["frontend/src/hooks/useSingleKeyShortcutPreference.ts"]
-    n7["frontend/src/navigation/workspaces.ts"]
-    n8["frontend/src/pages/SettingsPage.test.tsx"]
-    n9["frontend/src/services/taskService.ts"]
-    n2 --> n4
-    n3 --> n4
-    n4 --> n0
-    n4 --> n1
-    n4 --> n5
-    n4 --> n6
-    n4 --> n7
-    n4 --> n9
-    n8 --> n4
-    click n0 "../modules/Checkbox.md"
-    click n1 "../modules/Modal.md"
-    click n2 "../modules/AppShell.md"
-    click n3 "../modules/CommandMenu.test.md"
-    click n4 "../modules/CommandMenu.md"
-    click n5 "../modules/commandMenuEvents.md"
-    click n6 "../modules/useSingleKeyShortcutPreference.md"
-    click n7 "../modules/workspaces.md"
-    click n8 "../modules/SettingsPage.test.md"
-    click n9 "../modules/taskService.md"
+    n0["frontend"]
+    n1["frontend/src/components/layout/CommandMenu.tsx"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/CommandMenu.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [AppShell](../modules/AppShell.md) |
-| Inbound | [CommandMenu.test](../modules/CommandMenu.test.md) |
-| Inbound | [SettingsPage.test](../modules/SettingsPage.test.md) |
-| Outbound | [Checkbox](../modules/Checkbox.md) |
-| Outbound | [Modal](../modules/Modal.md) |
-| Outbound | [commandMenuEvents](../modules/commandMenuEvents.md) |
-| Outbound | [useSingleKeyShortcutPreference](../modules/useSingleKeyShortcutPreference.md) |
-| Outbound | [workspaces](../modules/workspaces.md) |
-| Outbound | [taskService](../modules/taskService.md) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (10) |
 
 ### External packages
 
@@ -87,12 +64,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CommandAction](../entities/CommandAction.md) | Interface | 34 | — | — |
-| [CommandGroup](../entities/CommandGroup.md) | Type alias | 32 | `'results' \| 'tasks' \| 'current' \| 'navigate' \| 'suggested'` | — |
+| [CommandAction](../entities/CommandAction.md) | Interface | 37 | — | — |
+| [CommandGroup](../entities/CommandGroup.md) | Type alias | 35 | `'results' \| 'tasks' \| 'current' \| 'navigate' \| 'suggested'` | — |
 
 ## Functions
 

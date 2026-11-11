@@ -1,6 +1,6 @@
 # SidebarAttentionAction
 
-**Location:** `frontend/src/components/layout/AppSidebar.tsx:24`
+**Location:** `frontend/src/components/layout/AppSidebar.tsx:23`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AppSidebar](../modules/AppSidebar.md)

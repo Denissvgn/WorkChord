@@ -26,7 +26,7 @@ Optimistic scheduling command bound to observed task versions.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `expected_task_versions` | `dict[int, int]` | `expected_task_versions` | No | No | factory: `dict` | — | — | — |
-| `expected_input_digest` | `str` | `expected_input_digest` | Yes | No | — | min_length=64; max_length=64; pattern='^[0-9a-f]{64}$' | — | — |
+| `expected_input_digest` | `str` | `expected_input_digest` | Yes | No | — | max_length=64; min_length=64; pattern='^[0-9a-f]{64}$' | — | — |
 
 ## Methods
 

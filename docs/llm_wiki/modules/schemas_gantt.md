@@ -77,7 +77,7 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [GanttAssignee](../entities/GanttAssignee.md) | Pydantic model | 13 | `BaseModel` | Assignee info for Gantt task. |
 | [GanttMilestone](../entities/GanttMilestone.md) | Pydantic model | 19 | `BaseModel` | Milestone info for Gantt task editing. |
-| [GanttTask](../entities/schemas_gantt_GanttTask.md) | Class | 28 | `TaskMetricSignals` | Task representation for Gantt chart. |
+| [GanttTask](../entities/schemas_gantt_GanttTask.md) | Pydantic model | 28 | `TaskMetricSignals` | Task representation for Gantt chart. |
 | [SchedulingDecision](../entities/schemas_gantt_SchedulingDecision.md) | Pydantic model | 60 | `BaseModel` | Explanation for a scheduling decision. |
 | [UnscheduledReason](../entities/schemas_gantt_UnscheduledReason.md) | Type alias | 69 | `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'deferred', 'blocked', 'not_placed']` | — |
 | [UnscheduledTask](../entities/schemas_gantt_UnscheduledTask.md) | Pydantic model | 82 | `BaseModel` | A planned task the scheduler left without dates, and what would change that. |

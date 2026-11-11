@@ -18,8 +18,8 @@ _Auto-generated from `frontend/src/navigation/helpContexts.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `HelpContentProvider`, `HelpRelatedLink`, `getHelpContext` |
-| Constants | `CONTENT_PROVIDER_BY_ROUTE`, `RELATED_PATHS_BY_ROUTE`, `SPECIAL_RELATED_LINKS` |
+| Exports | `GlossaryTerm`, `HelpContentProvider`, `HelpRelatedLink`, `getHelpContext` |
+| Constants | `CONTENT_PROVIDER_BY_ROUTE`, `RELATED_PATHS_BY_ROUTE`, `DELIVERY_TERMS`, `SCHEDULE_TERMS`, `GLOSSARY_BY_ROUTE`, `SPECIAL_RELATED_LINKS` |
 
 ## Local dependency map
 
@@ -55,6 +55,7 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [HelpContentProvider](../entities/HelpContentProvider.md) | Type alias | 10 | `'plan' \| 'gantt' \| 'tasks' \| 'settings' \| 'workspace'` | — |
 | [HelpRelatedLink](../entities/HelpRelatedLink.md) | Type alias | 12 | <pre><code>&#123;&#10;    to&#58; string&#59;&#10;    labelKey&#58; string&#59;&#10;    defaultLabel&#58; string&#59;&#10;    descriptionKey&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [GlossaryTerm](../entities/GlossaryTerm.md) | Type alias | 50 | <pre><code>&#39;implemented&#39; &#124; &#39;accepted&#39; &#124; &#39;blocked&#39; &#124; &#39;overdue&#39; &#124; &#39;lateStart&#39; &#124; &#39;iterationOverflow&#39;&#10;    &#124; &#39;unknownEstimate&#39; &#124; &#39;scheduled&#39; &#124; &#39;capacity&#39; &#124; &#39;triage&#39; &#124; &#39;agentReady&#39;</code></pre> | — |
 
 ## Functions
 

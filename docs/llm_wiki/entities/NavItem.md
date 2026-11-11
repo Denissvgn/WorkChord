@@ -1,6 +1,6 @@
 # NavItem
 
-**Location:** `frontend/src/navigation/workspaces.ts:21`
+**Location:** `frontend/src/navigation/workspaces.ts:23`
 **Kind:** Interface
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)

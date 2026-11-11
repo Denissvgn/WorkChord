@@ -18,7 +18,7 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1559,
+      "entities": 1560,
       "flows": 556,
       "guides": 0,
       "index": 1,
@@ -29,7 +29,7 @@
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3149
+    "total": 3150
   },
   "dependency_pages": {
     "count": 2,
@@ -43965,6 +43965,7 @@
         "entities/GitHubWebhookResponse.md",
         "entities/GitHubWebhookService.md",
         "entities/GitHubWebhookSignatureError.md",
+        "entities/GlossaryTerm.md",
         "entities/GuestTransferRequest.md",
         "entities/GuideItem.md",
         "entities/HandoffEvidenceReference.md",
@@ -52541,6 +52542,18 @@
       "title": "GitHubWebhookSignatureError"
     },
     {
+      "canonical_path": "entities/GlossaryTerm.md",
+      "id": "GlossaryTerm",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GlossaryTerm",
+      "outgoing_internal_links": [
+        "modules/helpContexts.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/navigation/helpContexts.ts",
+      "title": "GlossaryTerm"
+    },
+    {
       "canonical_path": "entities/GuestTransferRequest.md",
       "id": "GuestTransferRequest",
       "kind": "entities",
@@ -58130,11 +58143,11 @@
       "outgoing_internal_links": [
         "modules/AppSidebar.md",
         "modules/AppSidebar.test.md",
+        "modules/CommandMenu.md",
         "modules/ProjectsPage.md",
         "modules/savedView.md",
         "modules/SavedViewsControl.md",
         "modules/savedViewService.md",
-        "modules/savedViewState.md",
         "modules/savedViewState.test.md",
         "modules/seedDisplay.md",
         "modules/TasksPage.md",
@@ -70288,16 +70301,7 @@
       "outgoing_internal_links": [
         "entities/CommandAction.md",
         "entities/CommandGroup.md",
-        "modules/AppShell.md",
-        "modules/Checkbox.md",
-        "modules/CommandMenu.md",
-        "modules/CommandMenu.test.md",
-        "modules/commandMenuEvents.md",
-        "modules/Modal.md",
-        "modules/SettingsPage.test.md",
-        "modules/taskService.md",
-        "modules/useSingleKeyShortcutPreference.md",
-        "modules/workspaces.md"
+        "modules/CommandMenu.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/layout/CommandMenu.tsx",
@@ -70311,8 +70315,10 @@
       "outgoing_internal_links": [
         "modules/CommandMenu.md",
         "modules/CommandMenu.test.md",
+        "modules/i18n.md",
         "modules/renderWithProviders.md",
-        "modules/singleKeyShortcutPreference.md"
+        "modules/singleKeyShortcutPreference.md",
+        "modules/workspaces.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/layout/CommandMenu.test.tsx",
@@ -71797,6 +71803,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/helpContexts",
       "outgoing_internal_links": [
+        "entities/GlossaryTerm.md",
         "entities/HelpContentProvider.md",
         "entities/HelpRelatedLink.md",
         "modules/ContextHelp.md",
@@ -76030,6 +76037,7 @@
         "entities/FrontendSavedViewService.md",
         "modules/api.md",
         "modules/AppSidebar.md",
+        "modules/CommandMenu.md",
         "modules/ProjectsPage.md",
         "modules/savedView.md",
         "modules/SavedViewDashboardCards.md",
@@ -82302,6 +82310,7 @@
         "modules/AppSidebar.md",
         "modules/AppTopNav.md",
         "modules/CommandMenu.md",
+        "modules/CommandMenu.test.md",
         "modules/helpContexts.md",
         "modules/workspaces.md",
         "modules/workspaces.test.md"
@@ -97734,5 +97743,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0a180ce7b38f32eab9c38d0f0ee9f75d4daf160a5001dbee7e9d7ebb471aaffb"
+  "source_hash": "sha256:98784e02e1221a992484bfcaaf2b2307608ae27b2e089e0971dbacc6ea671f04"
 }

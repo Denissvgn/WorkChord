@@ -11,7 +11,7 @@ _Auto-generated from `frontend/src/components/layout/AppTopNav.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/planningMasters/usePlanningNavigationSummary` | `usePlanningNavigationSummary` | — | compiler-dependent |
-| `../../navigation/routeModules` | `warmRouteModule` | — | compiler-dependent |
+| `../../navigation/routeModules` | `metadataForPath`, `warmRouteModule` | — | compiler-dependent |
 | `../../navigation/workspaces` | `WorkspaceMetadata` | Declaration | erased |
 | `../../navigation/workspaces` | `getWorkspaceForPath`, `WORKSPACES` | — | compiler-dependent |
 | `../../services/triageService` | `triageService` | — | compiler-dependent |
