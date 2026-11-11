@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n/i18n';
 import { renderWithProviders } from '../../test/renderWithProviders';
@@ -378,5 +378,35 @@ describe('Gantt bar inputs in Try changes', () => {
         await screen.findByRole('dialog', { name: 'Current task' });
         await user.keyboard('{Escape}');
         expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
+    });
+});
+
+describe('Gantt drag in Try changes', () => {
+    it('pins the earliest start when a bar is dragged, without opening the popover', async () => {
+        const onSaveSandbox = vi.fn();
+        renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} sandboxMode onSaveSandbox={onSaveSandbox} />,
+        );
+        const bar = screen.getByRole('button', { name: scheduledTaskName(taskFixture) });
+        fireEvent.pointerDown(bar, { clientX: 100, clientY: 10, button: 0 });
+        fireEvent.pointerMove(window, { clientX: 180, clientY: 10 });
+        fireEvent.pointerUp(window, { clientX: 180, clientY: 10 });
+        fireEvent.click(bar);
+        // Default zoom is 40 px a day, so 80 px moves the earliest start by two days.
+        expect(onSaveSandbox).toHaveBeenCalledWith(101, expect.objectContaining({ min_start_date: '2026-01-07', sandbox_update: undefined }));
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('does not drag outside Try changes', () => {
+        const onSaveSandbox = vi.fn();
+        renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} onSaveSandbox={onSaveSandbox} />,
+        );
+        const bar = screen.getByRole('button', { name: scheduledTaskName(taskFixture) });
+        fireEvent.pointerDown(bar, { clientX: 100, clientY: 10, button: 0 });
+        fireEvent.pointerUp(window, { clientX: 180, clientY: 10 });
+        expect(onSaveSandbox).not.toHaveBeenCalled();
     });
 });

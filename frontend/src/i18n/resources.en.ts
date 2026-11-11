@@ -948,6 +948,9 @@ export const englishResources = {
                 reason: 'Reason: {{reason}}',
             },
             gantt: {
+                dragToChangeEffort: 'Drag to change effort',
+                dragToLink: 'Drag onto another task to make it wait for this one',
+                removeStartPin: 'Remove the earliest-start pin on {{title}} ({{date}})',
                 datesAreCalculated: 'Dates are calculated. To move a task, change who does it, its effort, what it waits for, or its earliest start.',
                 inputAssignee: 'Who does it',
                 inputEffort: 'Effort (days)',

@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
 import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
@@ -159,6 +159,10 @@ export const GanttChart = ({
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
     // In "Try changes", a bar opens its five date inputs first; the drawer is "More fields".
+    // Drag in "Try changes": each gesture changes one scheduler input, never a date.
+    type BarDrag = { kind: 'move' | 'resize' | 'link'; task: GanttTask; startX: number; dayDelta: number; pointerX: number; pointerY: number };
+    const [barDrag, setBarDrag] = useState<BarDrag | null>(null);
+    const suppressBarClick = useRef(false);
     const [barInputs, setBarInputs] = useState<{ task: GanttTask; anchor: { top: number; left: number }; origin: HTMLElement } | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [showLinks, setShowLinksState] = useState(readStoredShowLinks);
@@ -777,6 +781,45 @@ export const GanttChart = ({
     };
 
     const SIDEBAR_WIDTH = taskColumnWidth;
+    const startBarDrag = (event: ReactPointerEvent<HTMLElement>, task: GanttTask, kind: BarDrag['kind']) => {
+        if (!sandboxMode || schedulePreview || event.button !== 0) return;
+        event.stopPropagation();
+        const startX = event.clientX;
+        const drag: BarDrag = { kind, task, startX, dayDelta: 0, pointerX: event.clientX, pointerY: event.clientY };
+        setBarDrag(drag);
+        const move = (moveEvent: PointerEvent) => {
+            const dayDelta = Math.round((moveEvent.clientX - startX) / zoomLevel);
+            setBarDrag(current => current && { ...current, dayDelta, pointerX: moveEvent.clientX, pointerY: moveEvent.clientY });
+        };
+        const finish = (upEvent: PointerEvent) => {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', finish);
+            const dayDelta = Math.round((upEvent.clientX - startX) / zoomLevel);
+            setBarDrag(null);
+            if (kind === 'link') {
+                const target = document.elementFromPoint(upEvent.clientX, upEvent.clientY)?.closest<HTMLElement>('[data-gantt-task-id]');
+                const targetId = Number(target?.dataset.ganttTaskId);
+                const successor = Number.isFinite(targetId) ? rows.find(row => row.kind === 'task' && row.task.id === targetId) : undefined;
+                if (successor?.kind === 'task' && successor.task.id !== task.id && !successor.task.dependencies?.includes(task.id)) {
+                    suppressBarClick.current = true;
+                    onSaveSandbox?.(successor.task.id, { dependencies: [...(successor.task.dependencies ?? []), task.id], sandbox_update: undefined });
+                }
+                return;
+            }
+            if (dayDelta === 0) return;
+            suppressBarClick.current = true;
+            const dates = getTaskTimelineDates(task);
+            if (kind === 'move' && dates.start) {
+                // Dragging the bar pins its earliest start; the scheduler still decides the dates.
+                onSaveSandbox?.(task.id, { min_start_date: format(addDays(parseISO(dates.start), dayDelta), 'yyyy-MM-dd'), sandbox_update: undefined });
+            } else if (kind === 'resize') {
+                const effort = Math.max(0.5, (task.effort_days ?? 1) + dayDelta);
+                onSaveSandbox?.(task.id, { effort_days: effort, sandbox_update: undefined });
+            }
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', finish);
+    };
     const focusTaskId = hoveredTaskId ?? editingTask?.id ?? null;
     const focusTask = focusTaskId === null ? undefined : rows.find(row => row.kind === 'task' && row.task.id === focusTaskId);
     const highlightedTaskIds = new Set<number>(focusTask && focusTask.kind === 'task'
@@ -1434,7 +1477,7 @@ export const GanttChart = ({
                                         />
                                     ))}
 
-                                    {taskPosition ? (
+                                    {taskPosition ? (<>
                                         <button
                                             type="button"
                                             className={clsx(
@@ -1449,7 +1492,12 @@ export const GanttChart = ({
                                                     ? "cursor-not-allowed opacity-80"
                                                     : "cursor-pointer hover:brightness-110 active:brightness-90"
                                             )}
-                                            style={{ left: `${taskPosition.left}px`, width: `${taskPosition.width}px` }}
+                                            style={{
+                                                left: `${taskPosition.left + (barDrag?.kind === 'move' && barDrag.task.id === task.id ? barDrag.dayDelta * zoomLevel : 0)}px`,
+                                                width: `${Math.max(zoomLevel, taskPosition.width + (barDrag?.kind === 'resize' && barDrag.task.id === task.id ? barDrag.dayDelta * zoomLevel : 0))}px`,
+                                            }}
+                                            data-gantt-task-id={task.id}
+                                            onPointerDown={event => startBarDrag(event, task, 'move')}
                                             onMouseEnter={() => setHoveredTaskId(task.id)}
                                             onMouseLeave={() => setHoveredTaskId(null)}
                                             onFocus={() => setHoveredTaskId(task.id)}
@@ -1457,6 +1505,7 @@ export const GanttChart = ({
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 if (schedulePreview) return;
+                                                if (suppressBarClick.current) { suppressBarClick.current = false; return; }
                                                 if (sandboxMode) {
                                                     const rect = event.currentTarget.getBoundingClientRect();
                                                     setBarInputs({
@@ -1479,7 +1528,30 @@ export const GanttChart = ({
                                                 : getTaskAccessibleLabel(task)}
                                         >
                                             <span className="truncate font-medium drop-shadow-md">{getTaskBarText(task)}</span>
+                                            {sandboxMode && !schedulePreview && (
+                                                <>
+                                                    {/* Right edge: drag to change effort. */}
+                                                    <span aria-hidden="true" title={t('gantt.dragToChangeEffort')}
+                                                        className="absolute right-0 top-0 h-full w-2 cursor-ew-resize rounded-r bg-surface-card/40"
+                                                        onPointerDown={event => startBarDrag(event, task, 'resize')} />
+                                                    {/* End handle: drag onto another bar to make it wait for this one. */}
+                                                    <span aria-hidden="true" title={t('gantt.dragToLink')}
+                                                        className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 cursor-crosshair rounded-full border border-action bg-surface-card"
+                                                        onPointerDown={event => startBarDrag(event, task, 'link')} />
+                                                </>
+                                            )}
                                         </button>
+                                        {sandboxMode && task.isSandboxModified && task.min_start_date && (
+                                            <button type="button"
+                                                className="absolute top-3 z-10 flex h-6 items-center gap-1 rounded border border-border bg-surface-card px-1.5 text-xs text-content-secondary hover:bg-surface-muted"
+                                                style={{ left: `${Math.max(0, taskPosition.left - 64)}px` }}
+                                                aria-label={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
+                                                title={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
+                                                onClick={event => { event.stopPropagation(); onSaveSandbox?.(task.id, { min_start_date: null, sandbox_update: undefined }); }}>
+                                                <Pin className="h-3 w-3" aria-hidden="true" /><X className="h-3 w-3" aria-hidden="true" />
+                                            </button>
+                                        )}
+                                        </>
                                     ) : schedulePreview ? (
                                         <div
                                             className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-2 text-xs text-feedback-warning-foreground"

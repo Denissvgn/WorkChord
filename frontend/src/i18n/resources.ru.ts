@@ -959,6 +959,9 @@ export const russianResources = {
                 reason: 'Причина: {{reason}}',
             },
             gantt: {
+                dragToChangeEffort: 'Перетащите, чтобы изменить трудозатраты',
+                dragToLink: 'Перетащите на другую задачу, чтобы она ждала эту',
+                removeStartPin: 'Убрать закрепление начала у «{{title}}» ({{date}})',
                 datesAreCalculated: 'Даты рассчитываются. Чтобы сдвинуть задачу, измените исполнителя, трудозатраты, то, чего она ждёт, или самое раннее начало.',
                 inputAssignee: 'Исполнитель',
                 inputEffort: 'Трудозатраты (дни)',
