@@ -12,6 +12,7 @@ import { TaskEditModal } from './TaskEditModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ganttService } from '../../services/ganttService';
 import clsx from 'clsx';
+import { UnscheduledTasks } from './UnscheduledTasks';
 import type { GanttTask, SchedulePreviewResponse } from '../../types/gantt';
 import { STATUS_TONE, toneSolidClassName } from '../ui/tone';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
@@ -1090,6 +1091,7 @@ export const GanttChart = ({
                                         : 'gantt.schedulePreviewBody')}
                                 </p>
                                 {Boolean(schedulePreview.schedule_result?.capacity_issues?.length) && <p className="mt-2 text-sm text-feedback-warning-foreground">{t('teamwork.capacityConflicts')}</p>}
+                                {!scheduleMutation.isPending && <UnscheduledTasks items={schedulePreview.schedule_result?.unscheduled} />}
                                 {!scheduleMutation.isPending && (
                                     <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-content-secondary">
                                         {previewChangedTaskIds.size > 0 ? (

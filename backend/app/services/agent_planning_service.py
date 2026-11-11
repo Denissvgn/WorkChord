@@ -1135,6 +1135,9 @@ class AgentPlanningService:
             workload_issues=[
                 item.model_dump(mode="json") for item in schedule.workload_issues
             ],
+            unscheduled=[
+                item.model_dump(mode="json") for item in schedule.unscheduled
+            ],
             input_digest=input_digest,
             task_states=AgentPlanningService._schedule_task_states(tasks),
         ).model_dump(mode="json")

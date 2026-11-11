@@ -66,6 +66,27 @@ class SchedulingDecision(BaseModel):
     affected_tasks: list[int] = []
 
 
+UnscheduledReason = Literal[
+    "no_assignee",
+    "assignee_not_in_iteration",
+    "no_estimate",
+    "no_capacity",
+    "prerequisites_pending",
+    "predecessor_unscheduled",
+    "deferred",
+    "blocked",
+    "not_placed",
+]
+
+
+class UnscheduledTask(BaseModel):
+    """A planned task the scheduler left without dates, and what would change that."""
+    task_id: int
+    task_title: str
+    reason: UnscheduledReason
+    message: str
+
+
 class WorkloadIssue(BaseModel):
     """Workload issue for a team member."""
     member_id: int
@@ -81,6 +102,8 @@ class ScheduleResult(BaseModel):
     decisions: list[SchedulingDecision] = []
     workload_balanced: bool = True
     workload_issues: list[WorkloadIssue] = []
+    # Planned leaf tasks still without dates after this run, each with its cause.
+    unscheduled: list[UnscheduledTask] = []
 
 
 class GanttResponse(BaseModel):

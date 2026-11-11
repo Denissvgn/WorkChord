@@ -20,7 +20,7 @@ from app.services.calendar_service import CalendarService
 from app.services.task_service import TaskService
 from app.services.team_service import TeamService
 from app.services.scheduling_rules_service import SchedulingRulesService
-from app.schemas.gantt import SchedulingDecision, ScheduleResult, WorkloadIssue
+from app.schemas.gantt import SchedulingDecision, ScheduleResult, UnscheduledTask, WorkloadIssue
 
 
 class ChangeType(Enum):
@@ -289,6 +289,19 @@ class SchedulerService:
         self.team_service = TeamService(db)
         self.rules_service = SchedulingRulesService.get_instance()
 
+    # What leaves a planned task without dates, and what would change that.
+    UNSCHEDULED_MESSAGES = {
+        "no_assignee": "Assign this task to a capacity row in this iteration (a person or an agent profile), then schedule again.",
+        "assignee_not_in_iteration": "The assignee has no capacity row in this iteration. Add them to the iteration or reassign the task, then schedule again.",
+        "no_estimate": "Provide a positive effort estimate to schedule this task.",
+        "no_capacity": "The assigned person has no productive capacity. Adjust the allocation before scheduling.",
+        "prerequisites_pending": "Accept the delivery prerequisites before scheduling this work.",
+        "predecessor_unscheduled": "Estimate and schedule the prerequisite first.",
+        "deferred": "Deferred work is left out of scheduling. Undefer it to schedule it.",
+        "blocked": "Blocked work is left out of scheduling. Clear the block to schedule it.",
+        "not_placed": "The scheduler could not place this task. Check its constraint dates and dependencies.",
+    }
+
     @atomic_command
     async def schedule_iteration(
         self,
@@ -328,6 +341,7 @@ class SchedulerService:
         )
 
         decisions: list[SchedulingDecision] = []
+        unscheduled_reasons: dict[int, str] = {}
 
         # Build task map for dependency lookup during scheduling
         task_map = {t.id: t for t in all_tasks}
@@ -347,6 +361,7 @@ class SchedulerService:
         locked_tasks = [t for t in all_leaf_tasks if t.status != TaskStatus.PLANNED.value]
         unavailable_estimates = [task for task in leaf_tasks if task.effort_hours is None or task.effort_hours == 0]
         for task in unavailable_estimates:
+            unscheduled_reasons[task.id] = "no_estimate"
             task.start_date = task.end_date = task.calculated_effort_days = None
             decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
                 reason="Provide a positive effort estimate to schedule this task."))
@@ -354,6 +369,7 @@ class SchedulerService:
         for task in leaf_tasks:
             if task.assignee and (task.assignee.availability_percent <= 0 or task.assignee.operational_utilization >= 100):
                 unavailable_ids.add(task.id)
+                unscheduled_reasons[task.id] = "no_capacity"
                 task.start_date = task.end_date = task.calculated_effort_days = None
                 decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
                     reason="The assigned person has no productive capacity. Adjust the allocation before scheduling."))
@@ -361,6 +377,7 @@ class SchedulerService:
         for task in leaf_tasks:
             if not await DeliveryDependencyService(self.db).ready(task.id):
                 unavailable_ids.add(task.id)
+                unscheduled_reasons.setdefault(task.id, "prerequisites_pending")
                 task.start_date = task.end_date = task.calculated_effort_days = None
                 decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
                     reason="Accept the delivery prerequisites before scheduling this work."))
@@ -371,6 +388,7 @@ class SchedulerService:
             for task in leaf_tasks:
                 if task.id not in unavailable_ids and any(dep.depends_on_id in unavailable_ids for dep in task.dependencies):
                     unavailable_ids.add(task.id)
+                    unscheduled_reasons[task.id] = "predecessor_unscheduled"
                     task.start_date = task.end_date = task.calculated_effort_days = None
                     decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable", reason="Estimate and schedule the prerequisite first."))
                     changed = True
@@ -783,6 +801,12 @@ class SchedulerService:
 
         # Check workload balance
         workload_issues = self._check_workload_balance(member_schedules)
+        unscheduled = self._unscheduled_tasks(all_tasks, member_schedules, unscheduled_reasons)
+        # Causes found only now (no assignee, assignee outside the iteration) also explain themselves as decisions.
+        for item in unscheduled:
+            if item.reason in {"no_assignee", "assignee_not_in_iteration", "not_placed"}:
+                decisions.append(SchedulingDecision(task_id=item.task_id, task_title=item.task_title,
+                    decision_type="unavailable", reason=item.message))
 
         return ScheduleResult(
             success=True,
@@ -791,7 +815,39 @@ class SchedulerService:
             decisions=decisions,
             workload_balanced=len(workload_issues) == 0,
             workload_issues=workload_issues,
+            unscheduled=unscheduled,
         )
+
+    def _unscheduled_tasks(
+        self,
+        all_tasks: Sequence[Task],
+        member_schedules: dict[int, "MemberSchedule"],
+        known_reasons: dict[int, str],
+    ) -> list[UnscheduledTask]:
+        """Planned leaf tasks still without dates, each with the first cause that applies."""
+        from app.models.task import TaskStatus
+
+        unscheduled: list[UnscheduledTask] = []
+        for task in all_tasks:
+            if task.children or task.is_summary or task.canceled_at or task.status != TaskStatus.PLANNED.value:
+                continue
+            if task.start_date is not None and task.end_date is not None:
+                continue
+            if self._effective_flags(task)["effective_is_deferred"]:
+                reason = "deferred"
+            elif task.blocked_reason:
+                reason = "blocked"
+            elif task.id in known_reasons:
+                reason = known_reasons[task.id]
+            elif not task.assignee_id:
+                reason = "no_assignee"
+            elif task.assignee_id not in member_schedules:
+                reason = "assignee_not_in_iteration"
+            else:
+                reason = "not_placed"
+            unscheduled.append(UnscheduledTask(task_id=task.id, task_title=task.title, reason=reason,
+                message=self.UNSCHEDULED_MESSAGES[reason]))
+        return unscheduled
 
     async def _build_member_schedules(
         self,
