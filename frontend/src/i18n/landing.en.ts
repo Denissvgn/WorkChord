@@ -40,7 +40,7 @@ export const landingEnglish = {
             surfaces: ['Roadmap', 'Releases', 'Analytics', 'Audit history'],
         },
     },
-    operatingTitle: 'Fewer planning gaps.',
+    operatingTitle: 'Planning and delivery in one record.',
     operatingIntro: 'Not another report. A shared operating record for the work itself.',
     benefits: {
         source: { term: 'One source of work', detail: 'Requests, plans, dependencies, and delivery views share the same underlying project context.' },

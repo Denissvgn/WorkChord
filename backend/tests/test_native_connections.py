@@ -66,6 +66,30 @@ async def test_native_handoff_requires_browser_consent_and_exact_proof(managed_s
     assert (await exchange(connection)).status_code == 410
 
 
+async def test_browser_can_deny_a_pending_connection(managed_store):
+    _, _, tokens, _ = managed_store
+    connection = await start_connection()
+    async with client(tokens[0]) as browser:
+        denied = await browser.post(f"/api/auth/native-connections/{connection['request_id']}/deny",
+            headers={"X-CSRF-Token": "csrf-0", "Origin": "https://test"})
+        assert denied.status_code == 200, denied.text
+        assert denied.json() == {"denied": True}
+        assert denied.headers["cache-control"] == "no-store"
+    # The device can no longer finish, and the browser cannot approve it afterwards.
+    assert (await exchange(connection)).status_code == 410
+    assert (await approve(connection, tokens[0])).status_code == 410
+
+
+async def test_another_account_cannot_deny_an_approved_connection(managed_store):
+    _, _, tokens, _ = managed_store
+    connection = await start_connection()
+    assert (await approve(connection, tokens[0])).status_code == 200
+    async with client(tokens[1]) as other:
+        response = await other.post(f"/api/auth/native-connections/{connection['request_id']}/deny",
+            headers={"X-CSRF-Token": "csrf-1", "Origin": "https://test"})
+        assert response.status_code == 409
+
+
 async def test_native_approval_cannot_be_switched_to_another_account(managed_store):
     _, _, tokens, _ = managed_store
     connection = await start_connection()

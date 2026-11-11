@@ -106,6 +106,30 @@ html:has(.landing-page) {
   white-space: nowrap;
 }
 
+.landing-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-landing-md);
+}
+
+.landing-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 1.25rem;
+  border-radius: 0.375rem;
+  background: var(--color-landing-accent-text);
+  color: var(--color-landing-paper);
+  font-family: var(--font-landing-body);
+  font-size: var(--text-landing-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.landing-button:hover { background: var(--color-landing-ink); }
+.landing-button:focus-visible { outline: 2px solid var(--color-landing-focus); outline-offset: 2px; }
+
 .landing-nav__action,
 .landing-text-link {
   position: relative;
@@ -529,8 +553,14 @@ html:has(.landing-page) {
     display: block;
   }
 
+  /* The diagram is decorative at this width; its list stays as the text alternative for assistive technology. */
   .landing-map__mobile {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .landing-workflow__intro,

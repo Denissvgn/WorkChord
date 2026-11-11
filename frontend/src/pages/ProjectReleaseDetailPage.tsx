@@ -18,13 +18,13 @@ import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { ReleaseForm } from '../components/releases/ReleaseForm';
-import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
+import { PageHeader, PageLayout } from '../components/ui';
 import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage } from '../utils/apiError';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import type { Release, ReleaseStatus, ReleaseTaskSummary } from '../types/release';
-import { isTaskStatus, pillToneClassName, STATUS_TONE, statusTextClassName } from '../components/ui/tone';
+import { isTaskStatus, pillToneClassName, STATUS_TONE, statusTextClassName, wcPillClass } from '../components/ui/tone';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 
@@ -195,7 +195,8 @@ const ProjectReleaseDetailPage = () => {
                 subtitle={release.description}
                 meta={(
                     <>
-                        <span className={`pill ${releaseStatusTone(release.status) === 'green' ? 'done' : releaseStatusTone(release.status) === 'blue' ? 'accent' : releaseStatusTone(release.status) === 'red' ? 'blocked' : 'opt'}`}>
+                        {/* The canonical status pill for the tone; cobalt is not a record status. */}
+                        <span className={`pill ${wcPillClass[releaseStatusTone(release.status)]}`}>
                             <span className="pdot"/>{t(releaseStatusLabelKeys[release.status])}
                         </span>
                         <span><CalendarDays className="inline h-3.5 w-3.5 mr-1"/>{formatDate(release.target_date)}</span>
@@ -205,10 +206,8 @@ const ProjectReleaseDetailPage = () => {
                 actions={(
                     <>
                     {release.status !== 'shipped' && (
-                        <button
-                            type="button"
-                            className="btn primary"
-                            disabled={markShippedMutation.isPending}
+                        <Button
+                            isLoading={markShippedMutation.isPending}
                             onClick={() => {
                                 // Shipping writes a release entry into every linked task's history,
                                 // so confirm with the unresolved count before committing it.
@@ -227,33 +226,30 @@ const ProjectReleaseDetailPage = () => {
                                 });
                             }}
                         >
-                            <CheckCircle2 className="h-4 w-4"/> {t('surfaces.releaseDetail.markShipped')}
-                        </button>
+                            <CheckCircle2 aria-hidden="true" className="h-4 w-4"/> {t('surfaces.releaseDetail.markShipped')}
+                        </Button>
                     )}
-                    <button className="btn" onClick={() => setIsEditing(true)}>
-                        <Edit className="h-4 w-4"/> {t('surfaces.releaseDetail.edit')}
-                    </button>
+                    <Button variant="secondary" onClick={() => setIsEditing(true)}>
+                        <Edit aria-hidden="true" className="h-4 w-4"/> {t('surfaces.releaseDetail.edit')}
+                    </Button>
                     </>
                 )}
             />
             <WorkMetricsLine metrics={release} scope={numericReleaseId > 0 ? { release_id: numericReleaseId } : null} />
-            <MetricGrid>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.linkedTasks')}</div><div className="kpi-val tnum">{release.tasks.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.status')}</div><div className="kpi-val" style={{fontSize:16}}>{t(releaseStatusLabelKeys[release.status])}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.shipped')}</div><div className="kpi-val" style={{fontSize:16}}>{formatDate(release.shipped_at)}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.environment')}</div><div className="kpi-val" style={{fontSize:16}}>{release.environment || '—'}</div></div>
-            </MetricGrid>
+            {/* Release facts are metadata, not metrics: a definition list, not KPI tiles. */}
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
+                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.status')}</dt><dd className="font-medium text-content-primary">{t(releaseStatusLabelKeys[release.status])}</dd></div>
+                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.linkedTasks')}</dt><dd className="font-medium tabular-nums text-content-primary">{release.tasks.length}</dd></div>
+                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.shipped')}</dt><dd className="font-medium text-content-primary">{formatDate(release.shipped_at)}</dd></div>
+                <div><dt className="text-content-secondary">{t('surfaces.releaseDetail.environment')}</dt><dd className="font-medium text-content-primary">{release.environment || '—'}</dd></div>
+            </dl>
 
             {shipError && (
                 <div className="flex items-start justify-between gap-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">
                     <span>{shipError}</span>
-                    <button
-                        type="button"
-                        className="text-xs font-medium text-feedback-danger-foreground hover:underline"
-                        onClick={() => setShipError(null)}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => setShipError(null)}>
                         {t('surfaces.releaseDetail.dismiss')}
-                    </button>
+                    </Button>
                 </div>
             )}
 

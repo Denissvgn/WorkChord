@@ -62,6 +62,10 @@ class NativeApprovalResponse(BaseModel):
     approved: Literal[True]
 
 
+class NativeDenialResponse(BaseModel):
+    denied: Literal[True]
+
+
 class NativePendingResponse(BaseModel):
     status: Literal["pending"]
 
@@ -99,6 +103,13 @@ async def approve_native_connection(request_id: str, data: NativeConnectionAppro
     from app.services.native_session_service import NativeSessionService
     response.headers["Cache-Control"] = "no-store"
     return await NativeSessionService(db).approve(request_id, data.verification_code)
+
+
+@router.post("/native-connections/{request_id}/deny", response_model=NativeDenialResponse)
+async def deny_native_connection(request_id: str, response: Response, db: Database):
+    from app.services.native_session_service import NativeSessionService
+    response.headers["Cache-Control"] = "no-store"
+    return await NativeSessionService(db).deny(request_id)
 
 
 class MembershipChange(BaseModel):

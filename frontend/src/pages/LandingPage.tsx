@@ -4,10 +4,10 @@ import '../styles/landing.css';
 
 // Copy lives in the landing catalog (EN and RU); the numbering stays in code.
 const STAGES = [
-    { number: '1.0', key: 'capture' },
-    { number: '2.0', key: 'shape' },
-    { number: '3.0', key: 'coordinate' },
-    { number: '4.0', key: 'review' },
+    { number: '1', key: 'capture' },
+    { number: '2', key: 'shape' },
+    { number: '3', key: 'coordinate' },
+    { number: '4', key: 'review' },
 ] as const;
 
 const BENEFITS = ['source', 'constraints', 'agent', 'evidence'] as const;
@@ -26,19 +26,19 @@ const WorkflowMap = () => {
 
             <g className="landing-map__node">
                 <rect x="20" y="50" width="120" height="92" rx="6" />
-                <text className="landing-map__index" x="38" y="78">1.0</text>
+                <text className="landing-map__index" x="38" y="78">1</text>
                 <text className="landing-map__label" x="38" y="108">{t('landing.map.capture')}</text>
                 <text className="landing-map__detail" x="80" y="126" textAnchor="middle">{t('landing.map.captureDetail')}</text>
             </g>
             <g className="landing-map__node landing-map__node--active">
                 <rect x="270" y="38" width="180" height="116" rx="6" />
-                <text className="landing-map__index" x="292" y="70">2.0 + 3.0</text>
+                <text className="landing-map__index" x="292" y="70">2 + 3</text>
                 <text className="landing-map__label" x="292" y="103">{t('landing.map.plan')}</text>
                 <text className="landing-map__detail" x="360" y="125" textAnchor="middle">{t('landing.map.planDetail')}</text>
             </g>
             <g className="landing-map__node">
                 <rect x="580" y="50" width="120" height="92" rx="6" />
-                <text className="landing-map__index" x="598" y="78">4.0</text>
+                <text className="landing-map__index" x="598" y="78">4</text>
                 <text className="landing-map__label" x="598" y="108">{t('landing.map.review')}</text>
                 <text className="landing-map__detail" x="640" y="126" textAnchor="middle">{t('landing.map.reviewDetail')}</text>
             </g>
@@ -46,10 +46,10 @@ const WorkflowMap = () => {
             <text className="landing-map__loop-label" x="360" y="280" textAnchor="middle">{t('landing.map.loop')}</text>
         </svg>
         <ol className="landing-map__mobile" aria-label={t('landing.map.flow')}>
-            <li><span>1.0</span> {t('landing.map.steps.capture')}</li>
-            <li><span>2.0</span> {t('landing.map.steps.shape')}</li>
-            <li><span>3.0</span> {t('landing.map.steps.coordinate')}</li>
-            <li><span>4.0</span> {t('landing.map.steps.review')}</li>
+            <li><span>1</span> {t('landing.map.steps.capture')}</li>
+            <li><span>2</span> {t('landing.map.steps.shape')}</li>
+            <li><span>3</span> {t('landing.map.steps.coordinate')}</li>
+            <li><span>4</span> {t('landing.map.steps.review')}</li>
         </ol>
     </figure>
     );
@@ -80,9 +80,13 @@ const LandingPage = () => {
                         <p className="landing-hero__context">{t('landing.heroContext')}</p>
                         <h1 id="landing-title">{t('landing.heroTitle')}</h1>
                         <p className="landing-hero__lede">{t('landing.heroLede')}</p>
-                        <a className="landing-text-link landing-action" href="#workflow">
-                            {t('landing.followWorkflow')} <span aria-hidden="true">↓</span>
-                        </a>
+                        {/* The hero's one button; the workflow link stays a quiet text link. */}
+                        <div className="landing-hero__actions">
+                            <Link className="landing-button" to="/">{t('landing.openTheWorkspace')}</Link>
+                            <a className="landing-text-link landing-action" href="#workflow">
+                                {t('landing.followWorkflow')} <span aria-hidden="true">↓</span>
+                            </a>
+                        </div>
                     </div>
                     <WorkflowMap />
                 </section>
