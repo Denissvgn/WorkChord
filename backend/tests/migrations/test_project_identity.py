@@ -76,6 +76,13 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
         profiles = after_catalog["team_member_profiles"]
         assert profiles["columns"].pop("profile_token") == {"type": {"family": "text"}, "nullable": False}
         profiles["unique_constraints"].remove(("profile_token",))
+        # Later revisions: the profile a trusted-local session works as, and comments it writes.
+        assert after_catalog["user_sessions"]["columns"].pop("local_profile_id") == {"type": {"family": "integer"}, "nullable": True}
+        for table in ("task_comments", "task_comment_revisions"):
+            comments = after_catalog[table]["columns"]
+            assert comments.pop("author_profile_id") == {"type": {"family": "integer"}, "nullable": True}
+            assert comments["principal_id"]["nullable"] is True
+            comments["principal_id"]["nullable"] = False
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))
