@@ -174,6 +174,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [statusScopes.test](modules/statusScopes.test.md) | [types_agent](modules/types_agent.md) |
 | [statusScopes](modules/statusScopes.md) | [types_agent](modules/types_agent.md) |
 | [IdentityProvider](modules/IdentityProvider.md) | [identityService](modules/identityService.md) |
+| [LocalProfilePicker](modules/LocalProfilePicker.md) | [identityService](modules/identityService.md) |
 | [identityContext](modules/identityContext.md) | [identityService](modules/identityService.md) |
 | [attentionRanking.test](modules/attentionRanking.test.md) | [attentionRanking](modules/attentionRanking.md) |
 | [attentionRanking.test](modules/attentionRanking.test.md) | [types_task](modules/types_task.md) |
@@ -339,7 +340,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_task](modules/models_task.md) | 94 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
 | [commands](modules/commands.md) | 82 | 12 |
-| [Button](modules/Button.md) | 80 | 0 |
+| [Button](modules/Button.md) | 81 | 0 |
 | [time](modules/time.md) | 77 | 0 |
 | [config](modules/config.md) | 71 | 1 |
 | [types_task](modules/types_task.md) | 70 | 2 |
@@ -349,8 +350,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [task_service](modules/task_service.md) | 61 | 28 |
 | [models_iteration](modules/models_iteration.md) | 58 | 6 |
 | [authority](modules/authority.md) | 54 | 6 |
-| [apiError](modules/apiError.md) | 51 | 0 |
-| [team_member](modules/team_member.md) | 47 | 6 |
+| [apiError](modules/apiError.md) | 52 | 0 |
+| [team_member](modules/team_member.md) | 50 | 6 |
 | [models_project](modules/models_project.md) | 44 | 9 |
 | [api](modules/api.md) | 37 | 2 |
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
@@ -372,16 +373,16 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
 | [services_work_metrics](modules/services_work_metrics.md) | 21 | 8 |
 | [toast](modules/toast.md) | 21 | 0 |
+| [teamService](modules/teamService.md) | 21 | 3 |
 | [types_team](modules/types_team.md) | 21 | 0 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
-| [teamService](modules/teamService.md) | 20 | 3 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [recovery](modules/recovery.md) | 19 | 3 |
+| [identity_service](modules/identity_service.md) | 18 | 10 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
 | [Modal](modules/Modal.md) | 18 | 1 |
-| [identity_service](modules/identity_service.md) | 17 | 9 |
 | [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
@@ -434,6 +435,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [session_service](modules/session_service.md) | 9 | 9 |
 | [triage_service](modules/triage_service.md) | 9 | 18 |
 | [sql_semantics](modules/sql_semantics.md) | 9 | 0 |
+| [test_managed_authority](modules/test_managed_authority.md) | 9 | 16 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 9 | 0 |
 | [taskEditorContract](modules/taskEditorContract.md) | 9 | 2 |
 | [types_project](modules/types_project.md) | 9 | 3 |
@@ -448,7 +450,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [agent_team_setup_service](modules/agent_team_setup_service.md) | 8 | 17 |
 | [backlog_snapshot_service](modules/backlog_snapshot_service.md) | 8 | 13 |
-| [test_managed_authority](modules/test_managed_authority.md) | 8 | 16 |
 | [planningMasters_masters](modules/planningMasters_masters.md) | 8 | 3 |
 | [useLiveWindow](modules/useLiveWindow.md) | 8 | 0 |
 | [usePlanningObservation](modules/usePlanningObservation.md) | 8 | 2 |
@@ -466,7 +467,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) | 7 | 2 |
 | [planning_input_context](modules/planning_input_context.md) | 7 | 11 |
 | [scheduler_service](modules/scheduler_service.md) | 7 | 15 |
-| [task_detail_service](modules/task_detail_service.md) | 7 | 13 |
+| [task_detail_service](modules/task_detail_service.md) | 7 | 15 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
@@ -608,7 +609,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 3 | 1 |
 | [taskDraftStorage](modules/taskDraftStorage.md) | 3 | 1 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
-| [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
+| [IdentityProvider](modules/IdentityProvider.md) | 3 | 10 |
+| [identityService](modules/identityService.md) | 3 | 1 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
 | [resources.ru](modules/resources.ru.md) | 3 | 6 |
@@ -711,7 +713,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 2 | 1 |
 | [statusScopes](modules/statusScopes.md) | 2 | 1 |
 | [useAgentTeamReadiness](modules/useAgentTeamReadiness.md) | 2 | 2 |
-| [identityService](modules/identityService.md) | 2 | 1 |
+| [LocalProfilePicker](modules/LocalProfilePicker.md) | 2 | 4 |
 | [attentionRanking](modules/attentionRanking.md) | 2 | 1 |
 | [planningNavigationInvalidation](modules/planningNavigationInvalidation.md) | 2 | 1 |
 | [useTimeEntries](modules/useTimeEntries.md) | 2 | 2 |
@@ -819,7 +821,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) | 1 | 12 |
 | [CalendarPage](modules/CalendarPage.md) | 1 | 19 |
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
-| [MyWorkPage](modules/MyWorkPage.md) | 1 | 12 |
+| [MyWorkPage](modules/MyWorkPage.md) | 1 | 13 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
 | [OverviewPage](modules/OverviewPage.md) | 1 | 18 |
 | [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 14 |
@@ -857,6 +859,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) | 0 | 1 |
 | [20261009_0010_allocation_identity](modules/20261009_0010_allocation_identity.md) | 0 | 1 |
 | [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) | 0 | 1 |
+| [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) | 0 | 0 |
 | [routers___init__](modules/routers___init__.md) | 0 | 23 |
 | [schemas___init__](modules/schemas___init__.md) | 0 | 19 |
 | [exceptions](modules/exceptions.md) | 0 | 1 |
@@ -919,7 +922,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_effective_deferral](modules/test_effective_deferral.md) | 0 | 15 |
 | [test_execution_usage](modules/test_execution_usage.md) | 0 | 11 |
 | [test_execution_working_dates](modules/test_execution_working_dates.md) | 0 | 14 |
-| [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 8 |
+| [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 10 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |
 | [test_mobile_contract](modules/test_mobile_contract.md) | 0 | 0 |
 | [test_mutation_versions](modules/test_mutation_versions.md) | 0 | 15 |

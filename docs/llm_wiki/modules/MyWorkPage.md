@@ -18,6 +18,7 @@ Only the selected work/review/inbox consumers remain enabled. Paged queues use r
 | `../components/tasks/GuardedTaskModal` | `CurrentTaskModal` | — | compiler-dependent |
 | `../components/tasks/PersonCapacity` | `PersonCapacity` | — | compiler-dependent |
 | `../components/ui` | `PageLayout`, `PageHeader` | — | compiler-dependent |
+| `../features/identity/LocalProfilePicker` | `LocalProfilePicker` | — | compiler-dependent |
 | `../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../features/useLiveWindow` | `useLiveWindow` | — | compiler-dependent |
 | `../services/api` | `api` | — | compiler-dependent |
@@ -33,7 +34,7 @@ Only the selected work/review/inbox consumers remain enabled. Paged queues use r
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `QUEUES` |
+| Constants | `QUEUES`, `WORK_QUEUES` |
 
 ## Local dependency map
 
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -64,11 +65,11 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkPage](../entities/WorkPage.md) | Interface | 19 | — | — |
-| [Queue](../entities/Queue.md) | Type alias | 18 | `typeof QUEUES[number]` | — |
+| [WorkPage](../entities/WorkPage.md) | Interface | 21 | — | — |
+| [Queue](../entities/Queue.md) | Type alias | 20 | `typeof QUEUES[number]` | — |

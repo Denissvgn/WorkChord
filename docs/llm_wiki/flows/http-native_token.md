@@ -190,29 +190,29 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| native_token | AuthorityError | 296 | `AuthorityError(data not statically known)` |
-| native_token | IdentityService.issue_session | 297 | `IdentityService(db).issue_session(authority.principal_id, ..., request.headers.get(...))` |
-| IdentityService.issue_session | require_identity_writes | 216 | `require_identity_writes(data not statically known)` |
+| native_token | AuthorityError | 319 | `AuthorityError(data not statically known)` |
+| native_token | IdentityService.issue_session | 320 | `IdentityService(db).issue_session(authority.principal_id, ..., request.headers.get(...))` |
+| IdentityService.issue_session | require_identity_writes | 226 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| IdentityService.issue_session | secrets.token_urlsafe | 217 | `secrets.token_urlsafe(32)` |
-| IdentityService.issue_session | internal_authority | 218 | `internal_authority(self.db)` |
+| IdentityService.issue_session | secrets.token_urlsafe | 227 | `secrets.token_urlsafe(32)` |
+| IdentityService.issue_session | internal_authority | 228 | `internal_authority(self.db)` |
 | internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| IdentityService.issue_session | UserSession | 219 | `UserSession(principal_id=principal_id, session_token_hash=digest(...), csrf_token=secrets.token_urlsafe(...), authenticated_at=utc_now(...), ip_address=..., user_agent=..., expires_at=...)` |
+| IdentityService.issue_session | UserSession | 229 | `UserSession(principal_id=principal_id, session_token_hash=digest(...), csrf_token=secrets.token_urlsafe(...), authenticated_at=utc_now(...), ip_address=..., user_agent=..., expires_at=...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `self.db.add` | `IdentityService.issue_session` | 223 |
+| mutation | `self.db.add` | `IdentityService.issue_session` | 233 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `IdentityService.issue_session` | `secrets.token_urlsafe` | 217 |
+| external_call | `IdentityService.issue_session` | `secrets.token_urlsafe` | 227 |
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
 | step_limit | `native_token` | `first 12 steps` | 0 |
 

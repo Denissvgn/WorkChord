@@ -1,6 +1,6 @@
 # WorkspaceIdentity
 
-**Location:** `frontend/src/features/identity/identityService.ts:3`
+**Location:** `frontend/src/features/identity/identityService.ts:6`
 **Kind:** Interface
 **Bases:** —
 **Module:** [identityService](../modules/identityService.md)
@@ -17,7 +17,7 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 | `authenticated` | `boolean` | Yes | — | — |
 | `configured` | `boolean` | Yes | — | — |
 | `principal` | `{ id: number; kind: 'human' \| 'agent' \| 'system'; display_name: string } \| null` | Yes | — | — |
-| `profile` | `{ id: number; display_name: string } \| null` | Yes | — | — |
+| `profile` | `WorkProfile \| null` | Yes | — | — |
 | `workspace_role` | `'owner' \| 'operator' \| 'member' \| null` | Yes | — | — |
 | `projects` | `Record<string, string>` | Yes | — | — |
 | `csrf_token` | `string \| null` | Yes | — | — |

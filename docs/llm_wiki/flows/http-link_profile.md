@@ -162,24 +162,24 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| link_profile | require_operator | 260 | `require_operator(db)` |
+| link_profile | require_operator | 283 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 79 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| link_profile | require_identity_writes | 261 | `require_identity_writes(data not statically known)` |
+| link_profile | require_identity_writes | 284 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| link_profile | internal_authority | 263 | `internal_authority(db)` |
+| link_profile | internal_authority | 286 | `internal_authority(db)` |
 | internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 87 | `db.info.get('authority_internal', False)` |
-| link_profile | db.get | 264 | `db.get(Principal, principal_id)` |
+| link_profile | db.get | 287 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `link_profile` | 275 |
-| mutation | `db.add` | `link_profile` | 277 |
+| mutation | `db.add` | `link_profile` | 298 |
+| mutation | `db.add` | `link_profile` | 300 |
 
 ### Static analysis gaps
 
@@ -187,7 +187,7 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `require_operator` | `db.info.get` | 79 |
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `link_profile` | `db.get` | 264 |
+| unresolved_call | `link_profile` | `db.get` | 287 |
 | step_limit | `link_profile` | `first 12 steps` | 0 |
 
 ## Behavior

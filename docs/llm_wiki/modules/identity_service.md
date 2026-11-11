@@ -21,6 +21,7 @@ An agent principal retains the actor’s explicit profile binding. Principal acc
 | `app.models.identity` | `Principal`, `IdentitySubject`, `WorkspaceMembership`, `WorkspaceAuthorityState`, `ProjectMembership`, `PrincipalProfileLink`, `OIDCLoginAttempt`, `OwnershipTransfer`, `CommandAudit` |
 | `app.models.plan_share` | `PlanShare` |
 | `app.models.saved_view` | `SavedView` |
+| `app.models.team_member` | `TeamMemberProfile` |
 | `app.models.user_session` | `UserSession` |
 | `app.utils.time` | `utc_now`, `as_utc` |
 | `base64` | `base64` |
@@ -53,8 +54,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (17) |
-| Outbound | `backend` (9) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (10) |
 
 ### External packages
 
@@ -62,13 +63,13 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [IdentityService](../entities/IdentityService.md) | 130 | — | — |
+| [IdentityService](../entities/IdentityService.md) | 140 | — | — |
 
 ## Functions
 
@@ -76,6 +77,7 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `digest` | `(value: str) -> str` | — | — |
 | `require_identity_writes` | `()` | — | — |
+| `local_work_profile` | *(async)* `(db, profile_id)` | — | Return a person profile a local session may work as, or None. |
 | `safe_return_path` | `(value: str) -> str` | — | — |
 | `oidc_url` | `(value: str) -> str` | — | — |
 | `provider_json` | *(async)* `(client: httpx.AsyncClient, method, url, **kwargs)` | — | — |

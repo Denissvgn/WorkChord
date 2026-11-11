@@ -18,7 +18,7 @@ _Auto-generated from `backend/app/models/user_session.py`._
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `datetime` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `ForeignKey`, `String` |
+| `sqlalchemy` | `ForeignKey`, `Integer`, `String` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING` |
 

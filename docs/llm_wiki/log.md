@@ -2728,3 +2728,39 @@ Team setup now consumes the bundle service’s integrity-validated release catal
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-11
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6c50b1d4abd1810cd1a67107b7c7890ed52e709ea3d4204370fb6a1f22d230c8`
+- Pages created: 7
+- Pages updated: 52
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3008
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+## 2026-11-11
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6c50b1d4abd1810cd1a67107b7c7890ed52e709ea3d4204370fb6a1f22d230c8`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3063
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

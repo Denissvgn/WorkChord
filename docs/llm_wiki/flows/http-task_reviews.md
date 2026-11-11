@@ -207,15 +207,15 @@ flowchart LR
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_reviews | TaskDetailService.detail | 214 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| TaskDetailService.detail | self.db.scalar | 145 | `self.db.scalar(...)` |
-| TaskDetailService.detail | select(…).where(…).options | 145 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
+| TaskDetailService.detail | self.db.scalar | 153 | `self.db.scalar(...)` |
+| TaskDetailService.detail | select(…).where(…).options | 153 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `seen.add` | `TaskDetailService.detail` | 164 |
-| mutation | `ancestors.append` | `TaskDetailService.detail` | 168 |
+| mutation | `seen.add` | `TaskDetailService.detail` | 172 |
+| mutation | `ancestors.append` | `TaskDetailService.detail` | 176 |
 
 ### Static analysis gaps
 
@@ -226,8 +226,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 145 |
-| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 145 |
+| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 153 |
+| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 153 |
 | step_limit | `task_reviews` | `first 12 steps` | 0 |
 
 ## Behavior

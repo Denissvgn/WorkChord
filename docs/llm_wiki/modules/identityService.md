@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/features/identity/identityService.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `WorkspaceIdentity`, `identityService` |
+| Exports | `WorkProfile`, `WorkspaceIdentity`, `identityService` |
 | Constants | `identityService` |
 
 ## Local dependency map
@@ -29,16 +29,20 @@ flowchart LR
     n0["frontend/src/features/identity/identityContext.ts"]
     n1["frontend/src/features/identity/IdentityProvider.tsx"]
     n2["frontend/src/features/identity/identityService.ts"]
-    n3["frontend/src/services/api.ts"]
+    n3["frontend/src/features/identity/LocalProfilePicker.tsx"]
+    n4["frontend/src/services/api.ts"]
     n0 --> n2
     n1 --> n0
     n1 --> n2
     n1 --> n3
-    n2 --> n3
+    n1 --> n4
+    n2 --> n4
+    n3 --> n2
     click n0 "../modules/identityContext.md"
     click n1 "../modules/IdentityProvider.md"
     click n2 "../modules/identityService.md"
-    click n3 "../modules/api.md"
+    click n3 "../modules/LocalProfilePicker.md"
+    click n4 "../modules/api.md"
 ```
 
 ### Internal neighbors
@@ -47,10 +51,12 @@ flowchart LR
 |---|---|
 | Inbound | [identityContext](../modules/identityContext.md) |
 | Inbound | [IdentityProvider](../modules/IdentityProvider.md) |
+| Inbound | [LocalProfilePicker](../modules/LocalProfilePicker.md) |
 | Outbound | [api](../modules/api.md) |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [WorkspaceIdentity](../entities/WorkspaceIdentity.md) | Interface | 3 | — | — |
+| [WorkProfile](../entities/WorkProfile.md) | Interface | 4 | — | A linked profile is verified; a trusted-local session's own choice is not. |
+| [WorkspaceIdentity](../entities/WorkspaceIdentity.md) | Interface | 6 | — | — |

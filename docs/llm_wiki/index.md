@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1536 | [Open section](#entities) |
-| Modules | 775 | [Open section](#modules) |
-| Workflows | 192 | [Open section](#workflows) |
+| Entities | 1538 | [Open section](#entities) |
+| Modules | 777 | [Open section](#modules) |
+| Workflows | 194 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 553 | [Open section](#entry-point-flows) |
+| Entry-point flows | 554 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -476,6 +476,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LegacySnapshotImport](entities/LegacySnapshotImport.md)
 - [LegacySnapshotImportRequest](entities/LegacySnapshotImportRequest.md)
 - [LoadedRelease](entities/LoadedRelease.md)
+- [LocalProfileChoice](entities/LocalProfileChoice.md)
 - [Localized](entities/Localized.md)
 - [LocalizedStepStatus](entities/LocalizedStepStatus.md)
 - [LockedAcceptanceObject](entities/LockedAcceptanceObject.md)
@@ -1045,6 +1046,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [WorkMetrics](entities/WorkMetrics.md)
 - [WorkPackageContract](entities/WorkPackageContract.md)
 - [WorkPage](entities/WorkPage.md)
+- [WorkProfile](entities/WorkProfile.md)
 - [WorkTemplateResponse](entities/WorkTemplateResponse.md)
 - [WorkflowContracts](entities/WorkflowContracts.md)
 - [WorkflowFocusIntent](entities/WorkflowFocusIntent.md)
@@ -1569,6 +1571,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) - Preserve project allocation identity across retained history.
 - [20261009_0010_allocation_identity](modules/20261009_0010_allocation_identity.md) - Preserve allocation lifetimes across recovery and deletion.
 - [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) - Preserve profile lifetimes across recovery and deletion.
+- [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
@@ -1650,6 +1653,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
 - [LiveWindowStatus](modules/LiveWindowStatus.md) - `frontend/src/components/feedback/LiveWindowStatus.tsx`
+- [LocalProfilePicker](modules/LocalProfilePicker.md) - `frontend/src/features/identity/LocalProfilePicker.tsx`
 - [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
@@ -2476,6 +2480,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [build_examples](workflows/build_examples.md) - entry: `generate_mobile_contract_fixtures.build_examples`
 - [callback](workflows/callback.md) - entry: `identity.callback`
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
+- [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
@@ -2496,6 +2501,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [login](workflows/login.md) - entry: `identity.login`
 - [logout](workflows/logout.md) - entry: `identity.logout`
 - [main](workflows/main.md) - entry: `server_acceptance.main`
+- [me](workflows/me.md) - entry: `identity.me`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
 - [planning_input_reservation](workflows/planning_input_reservation.md) - entry: `commands.planning_input_reservation`
 - [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
@@ -2557,6 +2563,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-callback](flows/http-callback.md) - entry: `callback`
 - [http-capabilities](flows/http-capabilities.md) - entry: `capabilities`
 - [http-change_task_status](flows/http-change_task_status.md) - entry: `change_task_status`
+- [http-choose_local_profile](flows/http-choose_local_profile.md) - entry: `choose_local_profile`
 - [http-claim_task](flows/http-claim_task.md) - entry: `claim_task`
 - [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
 - [http-classify_triage_item](flows/http-classify_triage_item.md) - entry: `classify_triage_item`

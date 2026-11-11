@@ -162,23 +162,23 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| recover_principal | require_operator | 350 | `require_operator(db)` |
+| recover_principal | require_operator | 373 | `require_operator(db)` |
 | require_operator | db.info.get (backend/app/authority.py:require_operator) | 79 | `db.info.get('authority')` |
 | require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| recover_principal | require_identity_writes | 351 | `require_identity_writes(data not statically known)` |
+| recover_principal | require_identity_writes | 374 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| recover_principal | internal_authority | 353 | `internal_authority(db)` |
+| recover_principal | internal_authority | 376 | `internal_authority(db)` |
 | internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 87 | `db.info.get('authority_internal', False)` |
-| recover_principal | db.get | 354 | `db.get(Principal, principal_id)` |
+| recover_principal | db.get | 377 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `recover_principal` | 361 |
+| mutation | `db.add` | `recover_principal` | 384 |
 
 ### Static analysis gaps
 
@@ -186,7 +186,7 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `require_operator` | `db.info.get` | 79 |
 | unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `recover_principal` | `db.get` | 354 |
+| unresolved_call | `recover_principal` | `db.get` | 377 |
 | step_limit | `recover_principal` | `first 12 steps` | 0 |
 
 ## Behavior

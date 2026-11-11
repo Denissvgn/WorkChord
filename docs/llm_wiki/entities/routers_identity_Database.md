@@ -27,15 +27,15 @@ flowchart LR
     n1["approve_native_connection (backend/app/routers/identity.py)"]
     n2["bootstrap (backend/app/routers/identity.py)"]
     n3["callback (backend/app/routers/identity.py)"]
-    n4["cleanup (backend/app/routers/identity.py)"]
-    n5["describe_native_connection (backend/app/routers/identity.py)"]
-    n6["exchange_native_connection (backend/app/routers/identity.py)"]
-    n7["link_profile (backend/app/routers/identity.py)"]
-    n8["list_principals (backend/app/routers/identity.py)"]
-    n9["login (backend/app/routers/identity.py)"]
-    n10["logout (backend/app/routers/identity.py)"]
-    n11["me (backend/app/routers/identity.py)"]
-    n12["native_token (backend/app/routers/identity.py)"]
+    n4["choose_local_profile (backend/app/routers/identity.py)"]
+    n5["cleanup (backend/app/routers/identity.py)"]
+    n6["describe_native_connection (backend/app/routers/identity.py)"]
+    n7["exchange_native_connection (backend/app/routers/identity.py)"]
+    n8["link_profile (backend/app/routers/identity.py)"]
+    n9["list_principals (backend/app/routers/identity.py)"]
+    n10["login (backend/app/routers/identity.py)"]
+    n11["logout (backend/app/routers/identity.py)"]
+    n12["me (backend/app/routers/identity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -76,6 +76,7 @@ flowchart LR
 | `approve_native_connection` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `bootstrap` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `callback` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
+| `choose_local_profile` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `cleanup` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `describe_native_connection` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `exchange_native_connection` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
@@ -84,6 +85,5 @@ flowchart LR
 | `login` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `logout` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 | `me` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
-| `native_token` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.

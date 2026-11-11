@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1536,
-      "flows": 553,
+      "entities": 1538,
+      "flows": 554,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 775,
-      "workflows": 192
+      "modules": 777,
+      "workflows": 194
     },
     "dependency_architecture": 2,
-    "total": 3072
+    "total": 3079
   },
   "dependency_pages": {
     "count": 2,
@@ -1364,7 +1364,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 192,
+              "line": 215,
               "step": "bootstrap",
               "step_index": 1,
               "target": "db.add"
@@ -1372,7 +1372,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 193,
+              "line": 216,
               "step": "bootstrap",
               "step_index": 1,
               "target": "db.add"
@@ -1387,13 +1387,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 180,
+              "line": 203,
               "step": "bootstrap",
               "target": "db.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 183,
+              "line": 206,
               "step": "bootstrap",
               "target": "db.get"
             },
@@ -1626,13 +1626,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 166,
+              "line": 189,
               "step": "callback",
               "target": "IdentityService(db).finish_login"
             },
             {
               "kind": "unresolved_call",
-              "line": 166,
+              "line": 189,
               "step": "callback",
               "target": "request.cookies.get"
             },
@@ -1809,6 +1809,63 @@
         }
       },
       "id": "http-change_task_status",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "choose_local_profile",
+        "source_path": "backend/app/routers/identity.py",
+        "symbol": "choose_local_profile"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 87,
+              "step": "internal_authority",
+              "target": "db.info.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 41,
+              "step": "local_work_profile",
+              "target": "db.get"
+            },
+            {
+              "kind": "external_call",
+              "line": 73,
+              "step": "current_command",
+              "target": "getattr"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "choose_local_profile",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/identity.py",
+            "backend/app/config.py",
+            "backend/app/authority.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/commands.py"
+          ],
+          "step_count": 16,
+          "truncated": false
+        }
+      },
+      "id": "http-choose_local_profile",
       "language": "python"
     },
     {
@@ -2056,7 +2113,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 340,
+              "line": 363,
               "step": "cleanup",
               "target": "IdentityService(db).cleanup_sessions"
             }
@@ -5630,7 +5687,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 164,
+              "line": 172,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -5638,7 +5695,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 168,
+              "line": 176,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -5677,13 +5734,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 153,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 153,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -12727,7 +12784,31 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 114,
+              "line": 87,
+              "step": "internal_authority",
+              "target": "db.info.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 41,
+              "step": "local_work_profile",
+              "target": "db.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 121,
+              "step": "TaskDetailService.my_work",
+              "target": "select(TeamMember.id).where"
+            },
+            {
+              "kind": "external_call",
+              "line": 121,
+              "step": "TaskDetailService.my_work",
+              "target": "select"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 122,
               "step": "TaskDetailService.my_work",
               "target": "self.references().where"
             },
@@ -12736,42 +12817,6 @@
               "line": 39,
               "step": "TaskDetailService.references",
               "target": "select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin(Project, Project.id == Task.project_id).outerjoin"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 39,
-              "step": "TaskDetailService.references",
-              "target": "select(Task.id, Task.title, Task.version, Task.status, Task.project_id, Task.iteration_id, Task.parent_id, Task.owner_profile_id, Project.name.label('project_name'), Iteration.name.label('iteration_name'), Task.blocked_reason, Task.canceled_at, and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label('acceptance_current')).outerjoin"
-            },
-            {
-              "kind": "external_call",
-              "line": 39,
-              "step": "TaskDetailService.references",
-              "target": "select"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 40,
-              "step": "TaskDetailService.references",
-              "target": "Project.name.label"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 40,
-              "step": "TaskDetailService.references",
-              "target": "Iteration.name.label"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 42,
-              "step": "TaskDetailService.references",
-              "target": "and_(Task.status == 'closed', Task.accepted_at.is_not(None), Task.accepted_by_principal_id.is_not(None), Task.accepted_version.is_not(None), Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label"
-            },
-            {
-              "kind": "external_call",
-              "line": 42,
-              "step": "TaskDetailService.references",
-              "target": "and_"
             },
             {
               "kind": "step_limit",
@@ -12795,6 +12840,7 @@
           "modules_touched": [
             "backend/app/routers/task_domain.py",
             "backend/app/services/task_detail_service.py",
+            "backend/app/services/identity_service.py",
             "backend/app/authority.py",
             "backend/app/config.py",
             "backend/app/schemas/task_detail.py",
@@ -12813,7 +12859,7 @@
             "backend/app/utils/time.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 394,
+          "step_count": 401,
           "truncated": true
         }
       },
@@ -13566,7 +13612,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 275,
+              "line": 298,
               "step": "link_profile",
               "step_index": 1,
               "target": "db.add"
@@ -13574,7 +13620,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 277,
+              "line": 300,
               "step": "link_profile",
               "step_index": 1,
               "target": "db.add"
@@ -13595,7 +13641,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 264,
+              "line": 287,
               "step": "link_profile",
               "target": "db.get"
             },
@@ -14762,31 +14808,31 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 225,
               "step": "list_principals",
               "target": "(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 225,
               "step": "list_principals",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 225,
               "step": "list_principals",
               "target": "select(Principal).order_by(Principal.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 225,
               "step": "list_principals",
               "target": "select(Principal).order_by"
             },
             {
               "kind": "external_call",
-              "line": 202,
+              "line": 225,
               "step": "list_principals",
               "target": "select"
             }
@@ -16053,25 +16099,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 152,
+              "line": 175,
               "step": "login",
               "target": "IdentityService(db).begin_login"
             },
             {
               "kind": "external_call",
-              "line": 153,
+              "line": 176,
               "step": "login",
               "target": "RedirectResponse"
             },
             {
               "kind": "unresolved_call",
-              "line": 155,
+              "line": 178,
               "step": "login",
               "target": "response.set_cookie"
             },
             {
               "kind": "unresolved_call",
-              "line": 156,
+              "line": 179,
               "step": "login",
               "target": "request.cookies.get"
             },
@@ -16128,7 +16174,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 330,
+              "line": 353,
               "step": "logout",
               "target": "db.get"
             },
@@ -16459,7 +16505,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 138,
+              "line": 143,
               "step": "me",
               "step_index": 1,
               "target": "result.update"
@@ -16565,7 +16611,7 @@
             "backend/app/security.py",
             "backend/app/services/session_service.py"
           ],
-          "step_count": 131,
+          "step_count": 134,
           "truncated": false
         }
       },
@@ -16906,7 +16952,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 223,
+              "line": 233,
               "step": "IdentityService.issue_session",
               "step_index": 3,
               "target": "self.db.add"
@@ -16915,7 +16961,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 217,
+              "line": 227,
               "step": "IdentityService.issue_session",
               "target": "secrets.token_urlsafe"
             },
@@ -17847,7 +17893,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 251,
+              "line": 274,
               "step": "project_member",
               "step_index": 1,
               "target": "db.add"
@@ -17855,7 +17901,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 252,
+              "line": 275,
               "step": "project_member",
               "step_index": 1,
               "target": "db.add"
@@ -17864,7 +17910,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 235,
+              "line": 258,
               "step": "project_member",
               "target": "authority.allows"
             },
@@ -17876,7 +17922,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 242,
+              "line": 265,
               "step": "project_member",
               "target": "db.get"
             },
@@ -18449,7 +18495,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 361,
+              "line": 384,
               "step": "recover_principal",
               "step_index": 1,
               "target": "db.add"
@@ -18470,7 +18516,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 354,
+              "line": 377,
               "step": "recover_principal",
               "target": "db.get"
             },
@@ -19806,19 +19852,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 340,
               "step": "revoke_owned_session",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 317,
+              "line": 340,
               "step": "revoke_owned_session",
               "target": "select(UserSession).where"
             },
             {
               "kind": "external_call",
-              "line": 317,
+              "line": 340,
               "step": "revoke_owned_session",
               "target": "select"
             },
@@ -20247,43 +20293,43 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "select(UserSession).where"
             },
             {
               "kind": "external_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 307,
+              "line": 330,
               "step": "sessions",
               "target": "UserSession.created_at.desc"
             }
@@ -21556,7 +21602,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 164,
+              "line": 172,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -21564,7 +21610,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 168,
+              "line": 176,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -21603,13 +21649,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 153,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 153,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -22066,7 +22112,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 164,
+              "line": 172,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -22074,7 +22120,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 168,
+              "line": 176,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -22113,13 +22159,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 153,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 145,
+              "line": 153,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -22471,19 +22517,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 286,
+              "line": 309,
               "step": "transfer_guest",
               "target": "IdentityService(db).transfer_guest"
             },
             {
               "kind": "unresolved_call",
-              "line": 286,
+              "line": 309,
               "step": "transfer_guest",
               "target": "request.cookies.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 288,
+              "line": 311,
               "step": "transfer_guest",
               "target": "response.delete_cookie"
             }
@@ -25268,7 +25314,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 225,
+              "line": 248,
               "step": "workspace_member",
               "step_index": 1,
               "target": "db.add"
@@ -25276,7 +25322,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 226,
+              "line": 249,
               "step": "workspace_member",
               "step_index": 1,
               "target": "db.add"
@@ -43774,6 +43820,7 @@
         "entities/LoadedRelease.md",
         "entities/Localized.md",
         "entities/LocalizedStepStatus.md",
+        "entities/LocalProfileChoice.md",
         "entities/LockedAcceptanceObject.md",
         "entities/MaintenanceModeError.md",
         "entities/ManagementSection.md",
@@ -44800,6 +44847,7 @@
         "entities/WorkMetricSummary.md",
         "entities/WorkPackageContract.md",
         "entities/WorkPage.md",
+        "entities/WorkProfile.md",
         "entities/WorkspaceAttention.md",
         "entities/WorkspaceAuthorityState.md",
         "entities/WorkspaceIdentity.md",
@@ -44831,6 +44879,7 @@
         "flows/http-callback.md",
         "flows/http-capabilities.md",
         "flows/http-change_task_status.md",
+        "flows/http-choose_local_profile.md",
         "flows/http-claim_task.md",
         "flows/http-classify_planning_triage_item.md",
         "flows/http-classify_triage_item.md",
@@ -45387,6 +45436,7 @@
         "modules/20261008_0009_project_identity.md",
         "modules/20261009_0010_allocation_identity.md",
         "modules/20261009_0011_profile_identity.md",
+        "modules/20261111_0012_session_work_profile.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -45630,6 +45680,7 @@
         "modules/load_common.md",
         "modules/loader.md",
         "modules/local_baseline.md",
+        "modules/LocalProfilePicker.md",
         "modules/maintenance.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
@@ -46208,6 +46259,7 @@
         "workflows/CapacityService_save_absence.md",
         "workflows/CapacityService_set_calendar.md",
         "workflows/change_task_status.md",
+        "workflows/choose_local_profile.md",
         "workflows/convert_triage_item_to_backlog.md",
         "workflows/convert_triage_to_task.md",
         "workflows/create_request_source_link.md",
@@ -46257,6 +46309,7 @@
         "workflows/login.md",
         "workflows/logout.md",
         "workflows/main.md",
+        "workflows/me.md",
         "workflows/native_token.md",
         "workflows/NativeSessionService_approve.md",
         "workflows/NativeSessionService_connection.md",
@@ -53187,6 +53240,18 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/PlanPage.tsx",
       "title": "LocalizedStepStatus"
+    },
+    {
+      "canonical_path": "entities/LocalProfileChoice.md",
+      "id": "LocalProfileChoice",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/LocalProfileChoice",
+      "outgoing_internal_links": [
+        "modules/routers_identity.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "LocalProfileChoice"
     },
     {
       "canonical_path": "entities/LockedAcceptanceObject.md",
@@ -67528,6 +67593,19 @@
       "title": "WorkPage"
     },
     {
+      "canonical_path": "entities/WorkProfile.md",
+      "id": "WorkProfile",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/WorkProfile",
+      "outgoing_internal_links": [
+        "modules/identityService.md",
+        "modules/LocalProfilePicker.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/identity/identityService.ts",
+      "title": "WorkProfile"
+    },
+    {
       "canonical_path": "entities/WorkspaceAttention.md",
       "id": "WorkspaceAttention",
       "kind": "entities",
@@ -67774,6 +67852,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261009_0011_profile_identity.py",
       "title": "20261009_0011_profile_identity Module"
+    },
+    {
+      "canonical_path": "modules/20261111_0012_session_work_profile.md",
+      "id": "20261111_0012_session_work_profile",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261111_0012_session_work_profile",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261111_0012_session_work_profile.py",
+      "title": "20261111_0012_session_work_profile Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -71149,11 +71237,13 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/identityService",
       "outgoing_internal_links": [
+        "entities/WorkProfile.md",
         "entities/WorkspaceIdentity.md",
         "modules/api.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
-        "modules/identityService.md"
+        "modules/identityService.md",
+        "modules/LocalProfilePicker.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/identity/identityService.ts",
@@ -71871,6 +71961,24 @@
       "role": "semantic",
       "source_path": "scripts/load/local_baseline.py",
       "title": "local_baseline Module"
+    },
+    {
+      "canonical_path": "modules/LocalProfilePicker.md",
+      "id": "LocalProfilePicker",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/LocalProfilePicker",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/IdentityProvider.md",
+        "modules/identityService.md",
+        "modules/LocalProfilePicker.md",
+        "modules/MyWorkPage.md",
+        "modules/teamService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/identity/LocalProfilePicker.tsx",
+      "title": "LocalProfilePicker Module"
     },
     {
       "canonical_path": "modules/maintenance.md",
@@ -74495,6 +74603,7 @@
       "outgoing_internal_links": [
         "entities/BootstrapOwner.md",
         "entities/GuestTransferRequest.md",
+        "entities/LocalProfileChoice.md",
         "entities/MembershipChange.md",
         "entities/NativeApprovalResponse.md",
         "entities/NativeConnectionApproval.md",
@@ -78663,8 +78772,10 @@
         "modules/schemas_task.md",
         "modules/task_detail_service.md",
         "modules/task_service.md",
+        "modules/team_member.md",
         "modules/test_delivery_scenarios.md",
         "modules/test_human_work_queries.md",
+        "modules/test_managed_authority.md",
         "modules/test_task_domain.md",
         "modules/time.md"
       ],
@@ -81885,6 +81996,22 @@
       "title": "change_task_status"
     },
     {
+      "canonical_path": "workflows/choose_local_profile.md",
+      "id": "choose_local_profile",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/choose_local_profile",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/routers_identity.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "choose_local_profile"
+    },
+    {
       "canonical_path": "workflows/convert_triage_item_to_backlog.md",
       "id": "convert_triage_item_to_backlog",
       "kind": "workflows",
@@ -82655,6 +82782,21 @@
       "role": "mixed",
       "source_path": "backend/app/cli/server_acceptance.py",
       "title": "main"
+    },
+    {
+      "canonical_path": "workflows/me.md",
+      "id": "me",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/me",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/http_authority.md",
+        "modules/identity_service.md",
+        "modules/routers_identity.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "me"
     },
     {
       "canonical_path": "workflows/native_token.md",
@@ -83519,6 +83661,7 @@
       "outgoing_internal_links": [
         "modules/authority.md",
         "modules/delivery_dependency_service.md",
+        "modules/identity_service.md",
         "modules/task_detail_service.md",
         "modules/task_domain_service.md"
       ],
@@ -84369,6 +84512,22 @@
       "role": "mixed",
       "source_path": "backend/app/routers/tasks.py",
       "title": "change_task_status"
+    },
+    {
+      "canonical_path": "flows/http-choose_local_profile.md",
+      "id": "http-choose_local_profile",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-choose_local_profile",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/routers_identity.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/identity.py",
+      "title": "choose_local_profile"
     },
     {
       "canonical_path": "flows/http-claim_task.md",
@@ -86721,6 +86880,7 @@
         "modules/commands.md",
         "modules/config.md",
         "modules/delivery_dependency_service.md",
+        "modules/identity_service.md",
         "modules/routers_task_domain.md",
         "modules/schemas_task_domain.md",
         "modules/services_work_metrics.md",
@@ -94580,6 +94740,7 @@
         "modules/20261008_0009_project_identity.md",
         "modules/20261009_0010_allocation_identity.md",
         "modules/20261009_0011_profile_identity.md",
+        "modules/20261111_0012_session_work_profile.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -94823,6 +94984,7 @@
         "modules/load_common.md",
         "modules/loader.md",
         "modules/local_baseline.md",
+        "modules/LocalProfilePicker.md",
         "modules/maintenance.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
@@ -95366,6 +95528,7 @@
         "modules/20261008_0009_project_identity.md",
         "modules/20261009_0010_allocation_identity.md",
         "modules/20261009_0011_profile_identity.md",
+        "modules/20261111_0012_session_work_profile.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -95609,6 +95772,7 @@
         "modules/load_common.md",
         "modules/loader.md",
         "modules/local_baseline.md",
+        "modules/LocalProfilePicker.md",
         "modules/maintenance.md",
         "modules/MasterProgress.md",
         "modules/MasterProgress.test.md",
@@ -96136,5 +96300,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:06492acba245f08414c24b84debf2cd0508648d37ded14f2f98534293302e90f"
+  "source_hash": "sha256:2bc168012b9877a7ca53f338a72c70d9ed3eec718ba1080c0b794d5c2db057de"
 }
