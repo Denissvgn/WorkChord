@@ -2133,7 +2133,7 @@ export const russianResources = {
                     resume: 'Продолжить план',
                     done: 'Готово',
                     needsAttention: 'Требует внимания',
-                    locked: 'Заблокировано',
+                    locked: 'Ждёт',
                     nextStep: 'Далее',
                     notStarted: 'Не начато',
                     acrossIterations: 'Между итерациями',
@@ -2151,7 +2151,7 @@ export const russianResources = {
                 sidebar: {
                     start: 'Начать планирование',
                     review: 'Проверить план',
-                    resume: 'Готово {{percent}}% — продолжить',
+                    resume: 'Продолжить · готово {{done}} из {{total}}',
                     setupFirst: 'Настройте первую итерацию',
                     open: 'Открыть планирование',
                     loadingPeriods: 'Загрузка периодов планирования…',
@@ -2223,7 +2223,7 @@ export const russianResources = {
                 master: {
                     done: 'Готово',
                     needsAttention: 'Требует внимания',
-                    blocked: 'Заблокировано',
+                    blocked: 'Ждёт предыдущего шага',
                     notStarted: 'Не начато',
                     incomplete: 'Не завершено',
                     noPeriodYet: 'Период планирования ещё не выбран',

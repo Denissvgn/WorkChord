@@ -111,7 +111,8 @@ const STEP_PRESENTATION_LABEL_KEYS: Record<StepPresentationState, string> = {
 
 const stepPresentationTone = (state: StepPresentationState) => {
     if (state === 'loading') return 'todo';
-    if (state === 'unavailable') return 'blocked';
+    // A failed status read needs attention; "blocked" now only means waiting.
+    if (state === 'unavailable') return 'warn';
     return state;
 };
 

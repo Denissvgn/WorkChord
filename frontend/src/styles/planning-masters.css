@@ -2384,7 +2384,8 @@
 .wc .step-item.done .step-num    { background: var(--done);         border-color: var(--done);         color: var(--wc-done-on); }
 .wc .step-item.current .step-num { background: var(--thread);       border-color: var(--thread);       color: var(--thread-on); }
 .wc .step-item.warn .step-num    { background: var(--warn-soft);    border-color: var(--warn-line);    color: var(--warn-ink); }
-.wc .step-item.blocked .step-num { background: var(--blocked-soft); border-color: var(--blocked-line); color: var(--blocked-ink); }
+/* A blocked step is only waiting on an earlier one: neutral, not an error. */
+.wc .step-item.blocked .step-num { background: var(--panel-3); border-color: var(--border-2); color: var(--ink-3); }
 .wc .step-item.current .step-title { color: var(--thread-ink); }
 .wc .step-title { font-size: var(--wc-type-base); font-weight: 500; color: var(--ink); line-height: var(--wc-leading-ui); }
 .wc .step-sub   { font-size: var(--wc-type-meta); color: var(--ink-3); margin-top: 2px; }
@@ -2719,7 +2720,7 @@
 .wc .mini-step.done    .ms-dot { background: var(--done);         border-color: var(--done);         color: var(--wc-done-on); }
 .wc .mini-step.warn    .ms-dot { background: var(--warn-soft);    border-color: var(--warn-line);    color: var(--warn-ink); }
 .wc .mini-step.current .ms-dot { background: var(--thread);       border-color: var(--thread);       color: var(--thread-on); }
-.wc .mini-step.blocked .ms-dot { background: var(--blocked-soft); border-color: var(--blocked-line); color: var(--blocked-ink); }
+.wc .mini-step.blocked .ms-dot { background: var(--panel-3); border-color: var(--border-2); color: var(--ink-3); }
 
 /* ── Overview decision surface ────────────────────────────────────────────── */
 .wc .overview-page-title-focus {

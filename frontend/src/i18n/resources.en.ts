@@ -2307,7 +2307,7 @@ export const englishResources = {
                     resume: 'Resume plan',
                     done: 'Done',
                     needsAttention: 'Needs attention',
-                    locked: 'Locked',
+                    locked: 'Waiting',
                     nextStep: 'Next',
                     notStarted: 'Not started',
                     acrossIterations: 'Across iterations',
@@ -2323,7 +2323,7 @@ export const englishResources = {
                 sidebar: {
                     start: 'Start Plan Work',
                     review: 'Review plan',
-                    resume: '{{percent}}% complete - resume',
+                    resume: 'Resume · {{done}} of {{total}} done',
                     setupFirst: 'Set up your first iteration',
                     open: 'Open Plan Work',
                     loadingPeriods: 'Loading planning periods…',
@@ -2385,7 +2385,7 @@ export const englishResources = {
                 master: {
                     done: 'Done',
                     needsAttention: 'Needs attention',
-                    blocked: 'Blocked',
+                    blocked: 'Waiting for an earlier step',
                     notStarted: 'Not started',
                     incomplete: 'Incomplete',
                     noPeriodYet: 'No planning period yet',

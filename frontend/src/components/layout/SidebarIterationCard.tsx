@@ -83,7 +83,7 @@ export const SidebarIterationCard = ({ onNavigate }: { onNavigate?: () => void }
         ? t('plan.sidebar.start')
         : mode === 'review'
             ? t('plan.sidebar.review')
-            : t('plan.sidebar.resume', { percent: ready.pct });
+            : t('plan.sidebar.resume', { done: ready.done, total: ready.total });
 
     if (iterations.length === 0) {
         return (

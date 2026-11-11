@@ -147,7 +147,8 @@ export const AppTopNav = () => {
             }
             : actionablePendingSteps > 0
                 ? {
-                    badge: String(actionablePendingSteps),
+                    // Same "n of 6" notation as the plan page and the sidebar card.
+                    badge: `${ready.done}/${ready.total}`,
                     label: t('nav.planningAttention', { count: actionablePendingSteps }),
                 }
                 : undefined;

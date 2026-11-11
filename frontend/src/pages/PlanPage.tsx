@@ -150,7 +150,7 @@ function PlanningReadinessLauncher({
                 </div>
             </div>
 
-            <details className="plan-hub-checkpoints">
+            <details className="plan-hub-checkpoints" open>
                 <summary>
                     <span>
                         {t('plan.hub.checkpointProgress', {
