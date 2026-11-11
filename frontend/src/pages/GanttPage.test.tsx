@@ -103,7 +103,7 @@ describe('GanttPage hardening', () => {
         const previewAlert = await screen.findByRole('alert');
         expect(previewAlert).toHaveTextContent(i18n.t('gantt.simulationWarning'));
         expect(previewAlert).toHaveTextContent(i18n.t('gantt.simulationFailedDescription'));
-        expect(screen.getByRole('button', { name: i18n.t('gantt.applyChanges') })).toBeDisabled();
+        expect(screen.getByRole('button', { name: i18n.t('gantt.applyChangesCount', { count: 1 }) })).toBeDisabled();
         expect(taskServiceMock.batchUpdate).not.toHaveBeenCalled();
 
         await user.click(screen.getByRole('button', { name: i18n.t('gantt.retrySimulation') }));

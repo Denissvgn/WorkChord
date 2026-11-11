@@ -468,7 +468,7 @@ const GanttPage = () => {
                             title={sandboxChangeCount > 0 && !canApplySandboxChanges ? t('gantt.applyPreviewRequired') : undefined}
                             className="bg-feedback-success hover:bg-feedback-success/90 text-feedback-success-emphasis ring-feedback-success"
                         >
-                            <Check className="w-4 h-4 mr-2" /> {t('gantt.applyChanges')}
+                            <Check className="w-4 h-4 mr-2" /> {sandboxChangeCount > 0 ? t('gantt.applyChangesCount', { count: sandboxChangeCount }) : t('gantt.applyChanges')}
                         </Button>
                     </div>
                 </div>
