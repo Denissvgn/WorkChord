@@ -568,6 +568,11 @@ export const englishResources = {
                 },
             },
             taskList: {
+                dependsOnCount_one: 'Waits for {{count}}',
+                dependsOnCount_other: 'Waits for {{count}}',
+                readyToStart: 'Ready to start',
+                readyToSchedule: 'Defined',
+                needsDefinition: 'Needs definition',
                 loading: 'Loading tasks...',
                 reorderFailed: 'The task order could not be saved.',
                 reorderSaved: 'Task order saved.',

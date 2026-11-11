@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Task } from '../types/task';
 import { defaultFilters } from './taskFilterDefaults';
 import {
+    filterTaskBySearch,
     filterTaskWithChildren,
     taskMatchesFilters,
 } from './taskFilters';
@@ -106,5 +107,19 @@ describe('Blocked task filter', () => {
     it('matches tasks without a blocker when set to not blocked', () => {
         const filters = { ...defaultFilters, isBlocked: false };
         expect([blocked, clear, blank].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([5, 6]);
+    });
+});
+
+describe('search narrows the task list', () => {
+    const child = taskFixture({ id: 21, title: 'Write migration notes' });
+    const parent = taskFixture({ id: 20, title: 'Release', is_composite: true, children: [child, taskFixture({ id: 22, title: 'Tag build' })] });
+
+    it('keeps a parent for a matching child and drops non-matching children', () => {
+        expect(filterTaskBySearch(parent, 'migration')?.children.map(task => task.id)).toEqual([21]);
+    });
+
+    it('matches by #ID and returns nothing when nothing matches', () => {
+        expect(filterTaskBySearch(parent, '#22')?.children.map(task => task.id)).toEqual([22]);
+        expect(filterTaskBySearch(parent, 'payroll')).toBeNull();
     });
 });

@@ -37,6 +37,10 @@ export interface TaskAgentReadinessCriterion {
 export interface TaskAgentReadiness {
     blocker_codes?: string[];
     is_ready: boolean;
+    /** Server-owned: the brief and planning fields are complete enough to route. */
+    definition_ready?: boolean;
+    /** Server-owned: definition-ready and free to start now. */
+    start_ready?: boolean;
     blockers: string[];
     warnings: string[];
     criteria: TaskAgentReadinessCriterion[];

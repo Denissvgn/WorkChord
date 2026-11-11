@@ -79,6 +79,8 @@ export const teamworkEnglish = {
     "inBacklog": "Backlog: no iteration commitment",
     "inIteration": "Assigned to an iteration",
     "searchTasks": "Search tasks",
+    "searchNarrowsList": "The list below shows only matching tasks.",
+    "searchEverywhere": "Matches in every iteration and the backlog",
     "searchHint": "Title or task ID, across your projects",
     "taskResults": "Task results",
     "noResults": "No matching tasks found.",

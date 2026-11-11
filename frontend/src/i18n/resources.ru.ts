@@ -571,6 +571,13 @@ export const russianResources = {
                 },
             },
             taskList: {
+                dependsOnCount_one: 'Ждёт {{count}}',
+                dependsOnCount_few: 'Ждёт {{count}}',
+                dependsOnCount_many: 'Ждёт {{count}}',
+                dependsOnCount_other: 'Ждёт {{count}}',
+                readyToStart: 'Можно начинать',
+                readyToSchedule: 'Описана',
+                needsDefinition: 'Требует уточнения',
                 loading: 'Загрузка задач...',
                 reorderFailed: 'Не удалось сохранить порядок задач.',
                 reorderSaved: 'Порядок задач сохранён.',

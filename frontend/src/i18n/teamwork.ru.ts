@@ -79,6 +79,8 @@ export const teamworkRussian = {
     "inBacklog": "Бэклог: итерация не назначена",
     "inIteration": "Назначена итерация",
     "searchTasks": "Поиск задач",
+    "searchNarrowsList": "В списке ниже остались только подходящие задачи.",
+    "searchEverywhere": "Совпадения во всех итерациях и бэклоге",
     "searchHint": "Название или ID задачи во всех доступных проектах",
     "taskResults": "Найденные задачи",
     "noResults": "Подходящие задачи не найдены.",

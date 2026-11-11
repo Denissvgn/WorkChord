@@ -142,6 +142,16 @@ export const taskMatchesFilters = (
 };
 
 // Recursively filter children
+/** Keep a task when its title or #ID matches, or when any child does (children are narrowed too). */
+export const filterTaskBySearch = (task: Task, query: string): Task | null => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return task;
+    const selfMatches = task.title.toLowerCase().includes(normalized) || `#${task.id}` === normalized || String(task.id) === normalized;
+    if (selfMatches) return task;
+    const children = (task.children ?? []).map(child => filterTaskBySearch(child, normalized)).filter((child): child is Task => child !== null);
+    return children.length > 0 ? { ...task, children } : null;
+};
+
 export const filterTaskWithChildren = (
     task: Task,
     filters: TaskFilters | undefined,

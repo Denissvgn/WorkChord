@@ -22,7 +22,8 @@ import type { Task } from '../../types/task';
 import type { Label } from '../../types/label';
 import type { TaskFilters } from './TaskFiltersBar';
 import clsx from 'clsx';
-import { filterTaskWithChildren } from '../../utils/taskFilters';
+import { filterTaskBySearch, filterTaskWithChildren } from '../../utils/taskFilters';
+import { useSearchParams } from 'react-router-dom';
 import {
     DndContext,
     closestCenter,
@@ -99,6 +100,8 @@ export const TaskList = ({
     const { t } = useTranslation();
     const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
+    const [searchParams] = useSearchParams();
+    const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
     const [addingChildTo, setAddingChildTo] = useState<number | null>(null);
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
@@ -271,8 +274,11 @@ export const TaskList = ({
         if (!tasks) return [];
 
         // Apply filters
+        // Search narrows this list in place, by title or #ID.
         const filtered = tasks
             .map(task => filterTaskWithChildren(task, filters, labelGroups))
+            .filter((t): t is Task => t !== null)
+            .map(task => filterTaskBySearch(task, searchText))
             .filter((t): t is Task => t !== null);
 
         // Sort
@@ -288,7 +294,7 @@ export const TaskList = ({
             return 0;
         });
         return sorted;
-    }, [tasks, sortKey, filters, labelGroups]);
+    }, [tasks, sortKey, filters, labelGroups, searchText]);
 
     const visibleTasks = useMemo(() => selectVisibleWork(filteredAndSortedTasks).leaves, [filteredAndSortedTasks]);
     const selectedBulkTasks = useMemo(
@@ -924,9 +930,26 @@ const TaskItemContent = ({
                             {priorityBadge.label}
                         </span>
 
-                        <span className={clsx("min-w-0 font-medium", task.status === 'closed' && "line-through text-content-secondary")}>
+                        <button type="button" onClick={() => onEdit(task)}
+                            className={clsx("min-w-0 text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus", task.status === 'closed' && "line-through text-content-secondary")}>
                             {task.title}
-                        </span>
+                        </button>
+
+                        {task.dependencies.length > 0 && (
+                            <span className="rounded border border-border px-1.5 py-0.5 text-xs text-content-secondary">
+                                {t('taskList.dependsOnCount', { count: task.dependencies.length })}
+                            </span>
+                        )}
+
+                        {task.status === 'planned' && (
+                            <span className={clsx('rounded-full px-2 py-0.5 text-xs',
+                                (task.agent_readiness.start_ready ?? task.agent_readiness.is_ready) ? 'bg-feedback-success-muted text-feedback-success-foreground'
+                                    : task.agent_readiness.definition_ready ? 'bg-surface-subtle text-content-secondary'
+                                        : 'bg-feedback-warning-muted text-feedback-warning-foreground')}>
+                                {t((task.agent_readiness.start_ready ?? task.agent_readiness.is_ready) ? 'taskList.readyToStart'
+                                    : task.agent_readiness.definition_ready ? 'taskList.readyToSchedule' : 'taskList.needsDefinition')}
+                            </span>
+                        )}
 
                         {task.is_overdue && (
                             <span className="flex items-center text-xs text-feedback-danger-foreground bg-feedback-danger-muted px-2 py-0.5 rounded-full">

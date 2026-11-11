@@ -446,7 +446,7 @@ const TasksPage = () => {
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
                 <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
                     <Link className="text-sm font-medium text-action hover:underline" to="/tasks?scope=backlog">{t('teamwork.projectBacklog')}</Link>
-                    <TaskSearch />
+                    <TaskSearch narrowsList />
                     {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
                 </div>
                 <PlanReturnBar />
