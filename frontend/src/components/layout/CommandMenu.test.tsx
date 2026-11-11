@@ -4,9 +4,15 @@ import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { CommandMenu, RECENT_COMMANDS_STORAGE_KEY } from './CommandMenu';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../../utils/singleKeyShortcutPreference';
+import { PRIMARY_NAV_ITEMS } from '../../navigation/workspaces';
+import i18n from '../../i18n/i18n';
 
 const lookup = vi.hoisted(() => vi.fn());
 vi.mock('../../services/taskService', () => ({ taskService: { lookup } }));
+const projects = vi.hoisted(() => vi.fn());
+vi.mock('../../services/projectService', () => ({ projectService: { getAll: projects } }));
+const savedViews = vi.hoisted(() => vi.fn());
+vi.mock('../../services/savedViewService', () => ({ savedViewService: { getAll: savedViews } }));
 
 const LocationProbe = () => {
     const location = useLocation();
@@ -18,7 +24,34 @@ describe('CommandMenu', () => {
         window.localStorage.clear();
         lookup.mockReset();
         lookup.mockResolvedValue({ items: [], has_more: false });
+        projects.mockReset();
+        projects.mockResolvedValue([]);
+        savedViews.mockReset();
+        savedViews.mockResolvedValue([]);
         Element.prototype.scrollIntoView = vi.fn();
+    });
+
+    it('reaches every navigation destination by search', async () => {
+        const { user } = renderWithProviders(<CommandMenu />, { initialEntries: ['/settings'] });
+        await user.keyboard('{Control>}k{/Control}');
+        const search = screen.getByRole('combobox', { name: 'Search commands' });
+        for (const item of PRIMARY_NAV_ITEMS) {
+            await user.clear(search);
+            await user.type(search, i18n.t(item.labelKey, item.defaultLabel));
+            expect(screen.getAllByRole('option').length, item.to).toBeGreaterThan(0);
+        }
+    });
+
+    it('finds projects and saved views and opens them', async () => {
+        projects.mockResolvedValue([{ id: 7, name: 'Orchard rollout' }]);
+        savedViews.mockImplementation(async ({ view_type }: { view_type: string }) => view_type === 'tasks'
+            ? [{ id: 31, name: 'Orchard blockers', view_type: 'tasks', scope: 'personal' }] : []);
+        const { user } = renderWithProviders(<><CommandMenu /><LocationProbe /></>, { initialEntries: ['/'] });
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), 'orchard');
+        expect(await screen.findByRole('option', { name: /Orchard rollout/ })).toBeInTheDocument();
+        await user.click(await screen.findByRole('option', { name: /Orchard blockers/ }));
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?view=31');
     });
 
     it('opens from the platform shortcut, filters commands, and navigates', async () => {
@@ -48,12 +81,12 @@ describe('CommandMenu', () => {
         await user.keyboard('{Control>}k{/Control}');
         await user.type(screen.getByRole('combobox', { name: 'Search commands' }), '#42');
         await screen.findByRole('option', { name: /Repair endpoint/ });
-        expect(screen.getByRole('group', { name: 'Task results' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Search results' })).toBeInTheDocument();
         await user.keyboard('{Enter}');
         expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?view=12&task=42');
     });
 
-    it('keeps single-key task shortcuts off until users opt in', async () => {
+    it('runs single-key task shortcuts by default and shows their keys', async () => {
         const { user } = renderWithProviders(
             <>
                 <CommandMenu />
@@ -62,19 +95,20 @@ describe('CommandMenu', () => {
             { initialEntries: ['/tasks'] },
         );
 
-        await user.keyboard('f');
-        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks');
-
         await user.keyboard('{Control>}k{/Control}');
         const dialog = screen.getByRole('dialog', { name: 'Command menu' });
         expect(within(dialog).getByRole('checkbox', {
-            name: 'Enable single-key task shortcuts',
-        })).not.toBeChecked();
+            name: 'Single-key task shortcuts',
+        })).toBeChecked();
         const filterCommand = within(dialog).getByRole('option', {
             name: /Show task filters/,
         });
-        expect(filterCommand).not.toHaveAttribute('aria-keyshortcuts');
-        expect(filterCommand.querySelector('kbd')).not.toBeInTheDocument();
+        expect(filterCommand).toHaveAttribute('aria-keyshortcuts', 'F');
+        expect(filterCommand.querySelector('kbd')).toHaveTextContent('F');
+        await user.keyboard('{Escape}');
+
+        await user.keyboard('f');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?panel=filters');
     });
 
     it('runs task shortcuts after an explicit stored opt-in', async () => {
@@ -91,7 +125,7 @@ describe('CommandMenu', () => {
         expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?panel=filters');
     });
 
-    it('lets users opt in and still ignores keys from controls', async () => {
+    it('lets users turn shortcuts off and ignores keys from controls', async () => {
         const { user } = renderWithProviders(
             <>
                 <button type="button">Focused control</button>
@@ -109,16 +143,17 @@ describe('CommandMenu', () => {
         await user.keyboard('{Control>}k{/Control}');
         const dialog = screen.getByRole('dialog', { name: 'Command menu' });
         const shortcutToggle = within(dialog).getByRole('checkbox', {
-            name: 'Enable single-key task shortcuts',
+            name: 'Single-key task shortcuts',
         });
-        expect(shortcutToggle).not.toBeChecked();
+        expect(shortcutToggle).toBeChecked();
         await user.click(shortcutToggle);
         await user.keyboard('{Escape}');
 
         await user.click(screen.getByTestId('neutral-target'));
         await user.keyboard('f');
-        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?panel=filters');
-        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks');
+        expect(screen.getByTestId('command-location')).not.toHaveTextContent('panel=filters');
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('false');
     });
 
     it('does not run opted-in shortcuts while an application dialog is open', async () => {
@@ -184,7 +219,8 @@ describe('CommandMenu', () => {
 
         await user.click(within(dialog).getByRole('button', { name: 'All commands' }));
 
-        expect(within(dialog).getAllByRole('option')).toHaveLength(12);
+        // Every registry destination except the workspace home already offered above, plus seven task actions.
+        expect(within(dialog).getAllByRole('option')).toHaveLength(22);
         expect(within(dialog).getAllByRole('heading', { level: 3 }).map(heading => heading.textContent))
             .toEqual(['Current workspace', 'Go to', 'Task actions']);
         expect(within(dialog).getByRole('button', { name: 'Suggested commands' }))

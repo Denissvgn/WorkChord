@@ -32,7 +32,6 @@ describe('formats and wording', () => {
         expect(i18n.t('units.days', { count: 1 })).toBe('1 day');
         expect(i18n.t('units.days', { count: 40 })).toBe('40 days');
         expect(i18n.t('surfaces.projectTaskTree.dependencies', { count: 1 })).toBe('1 dependency');
-        expect(i18n.t('teamwork.refreshAge', { count: 1 })).toBe('Oldest active work view updated 1 second ago.');
     });
 
     it('formats dates and times through the shared formatter', () => {

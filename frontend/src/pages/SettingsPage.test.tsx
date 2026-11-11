@@ -110,7 +110,7 @@ describe('SettingsPage', () => {
         expect(darkTheme).toHaveFocus();
     });
 
-    it('exposes an off-by-default shortcut preference and synchronizes Commands immediately', async () => {
+    it('exposes an on-by-default shortcut preference and synchronizes Commands immediately', async () => {
         const { user } = renderWithProviders(
             <>
                 <SettingsPage />
@@ -120,17 +120,17 @@ describe('SettingsPage', () => {
         );
 
         const settingsToggle = screen.getByRole('checkbox', {
-            name: 'Enable single-key task shortcuts',
+            name: 'Single-key task shortcuts',
         });
-        expect(settingsToggle).not.toBeChecked();
+        expect(settingsToggle).toBeChecked();
 
         await user.click(settingsToggle);
-        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('false');
 
         await user.keyboard('{Control>}k{/Control}');
         const commandDialog = screen.getByRole('dialog', { name: 'Command menu' });
         expect(within(commandDialog).getByRole('checkbox', {
-            name: 'Enable single-key task shortcuts',
-        })).toBeChecked();
+            name: 'Single-key task shortcuts',
+        })).not.toBeChecked();
     });
 });

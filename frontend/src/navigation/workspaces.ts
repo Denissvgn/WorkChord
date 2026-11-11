@@ -14,6 +14,8 @@ import {
     Bot,
     MapPin,
     Network,
+    Truck,
+    UserCheck,
 } from 'lucide-react';
 
 export type WorkspaceKey = 'delivery' | 'planning' | 'resource';
@@ -44,11 +46,12 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         defaultLabel: 'Delivery Hub',
         descriptionKey: 'nav.workAreaDescriptions.delivery',
         defaultDescription: 'Tasks, intake, projects, and delivery flow.',
-        icon: ListTodo,
+        // Distinct marks: the hub, your own queue and the task list are three different places.
+        icon: Truck,
         defaultPath: '/',
         items: [
             { to: '/', labelKey: 'nav.overview', defaultLabel: 'Overview', icon: LayoutDashboard },
-            { to: '/my-work', labelKey: 'teamwork.myWork', defaultLabel: 'My Work', icon: ListTodo },
+            { to: '/my-work', labelKey: 'teamwork.myWork', defaultLabel: 'My Work', icon: UserCheck },
             { to: '/tasks', labelKey: 'nav.tasks', defaultLabel: 'Tasks', icon: ListTodo },
             { to: '/triage', labelKey: 'nav.triage', defaultLabel: 'Triage', icon: Inbox },
             { to: '/projects', labelKey: 'nav.projects', defaultLabel: 'Projects', icon: FolderOpen },

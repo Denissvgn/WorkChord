@@ -9,7 +9,7 @@ const PreferenceProbe = () => {
     return (
         <>
             <output>{enabled ? 'enabled' : 'disabled'}</output>
-            <button type="button" onClick={() => setEnabled(true)}>Enable</button>
+            <button type="button" onClick={() => setEnabled(false)}>Disable</button>
         </>
     );
 };
@@ -19,14 +19,14 @@ describe('useSingleKeyShortcutPreference', () => {
         window.localStorage.clear();
     });
 
-    it('defaults to disabled and persists explicit opt-in', async () => {
+    it('defaults to enabled and persists an explicit opt-out', async () => {
         const { user } = renderWithProviders(<PreferenceProbe />);
 
-        expect(screen.getByText('disabled')).toBeVisible();
-        await user.click(screen.getByRole('button', { name: 'Enable' }));
-
         expect(screen.getByText('enabled')).toBeVisible();
-        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+        await user.click(screen.getByRole('button', { name: 'Disable' }));
+
+        expect(screen.getByText('disabled')).toBeVisible();
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('false');
     });
 
     it('synchronizes cross-tab changes and storage clearing', () => {
@@ -35,17 +35,18 @@ describe('useSingleKeyShortcutPreference', () => {
         act(() => {
             window.dispatchEvent(new StorageEvent('storage', {
                 key: SINGLE_KEY_SHORTCUTS_STORAGE_KEY,
-                newValue: 'true',
+                newValue: 'false',
             }));
         });
-        expect(screen.getByText('enabled')).toBeVisible();
+        expect(screen.getByText('disabled')).toBeVisible();
 
+        // Cleared storage falls back to the default: on.
         act(() => {
             window.dispatchEvent(new StorageEvent('storage', {
                 key: null,
                 newValue: null,
             }));
         });
-        expect(screen.getByText('disabled')).toBeVisible();
+        expect(screen.getByText('enabled')).toBeVisible();
     });
 });

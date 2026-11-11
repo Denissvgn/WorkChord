@@ -136,8 +136,6 @@ export const englishResources = {
 },
             workFreshness: {
                 "stale": "Refresh failed. Showing the last loaded data.",
-                "updated": "Updated {{time}}",
-                "loading": "Waiting for current work",
                 "refresh": "Refresh"
 },
             identity: {
@@ -2071,7 +2069,6 @@ export const englishResources = {
                 searchSavedViewsPlaceholder: 'Search views…',
                 savedViewSearchResults_one: '{{count}} matching view',
                 savedViewSearchResults_other: '{{count}} matching views',
-                savedViewSearchLimit: 'Showing the first {{shown}} of {{count}} matches. Refine your search to find another view.',
                 noSavedViewMatches: 'No saved views match this search.',
                 savedViewGroups: {
                     tasks: 'Tasks',
@@ -2121,9 +2118,24 @@ export const englishResources = {
                 agentTeamSetup: 'Agent Team Setup',
                 primaryNavigation: 'Primary navigation',
                 openMenu: 'Open navigation menu',
+                workspacePages: '{{area}} pages',
                 navigationMenu: 'Navigation',
             },
             contextHelp: {
+                glossaryTitle: 'Terms on this page',
+                glossary: {
+                    implemented: { term: 'Implemented', definition: 'Resolved or closed: the work is done, whether or not anyone has accepted it yet.' },
+                    accepted: { term: 'Accepted', definition: 'Closed and accepted by a person for the task as it is now. Closed work without that is counted as acceptance unknown.' },
+                    blocked: { term: 'Blocked or waiting', definition: 'Has a block reason, or waits on a delivery prerequisite that is not ready.' },
+                    overdue: { term: 'Overdue', definition: 'Not implemented, and its scheduled end date has passed.' },
+                    lateStart: { term: 'Late start', definition: 'Started after its scheduled start, or still planned after its start date passed.' },
+                    iterationOverflow: { term: 'Iteration overflow', definition: 'Scheduled to end after its iteration ends.' },
+                    unknownEstimate: { term: 'Unknown estimate', definition: 'Has no effort estimate, so it cannot be scheduled or counted in effort totals.' },
+                    scheduled: { term: 'Scheduled', definition: 'Has start and end dates from the scheduler. Only work assigned to someone with capacity in the iteration gets dates.' },
+                    capacity: { term: 'Capacity', definition: 'The working hours a person or agent profile can give this iteration, after availability, holidays and absences.' },
+                    triage: { term: 'Triage', definition: 'Incoming requests waiting to be accepted as tasks, declined, snoozed or marked as duplicates.' },
+                    agentReady: { term: 'Agent-ready', definition: 'A planned leaf task with agent labels, a complete brief, an estimate, scheduled dates, finished dependencies and no active claim.' },
+                },
                 trigger: 'Help',
                 openForPage: 'Open help for {{page}}',
                 title: 'Help & shortcuts',
@@ -2176,18 +2188,22 @@ export const englishResources = {
                 searchPlaceholder: 'Search actions and destinations…',
                 resultsLabel: 'Available commands',
                 noResults: 'No commands match this search.',
+                openPage: 'Open {{page}}',
+                projectResult: 'Project',
+                savedViewResult: 'Saved view · {{type}}',
                 suggestedCommandsHint: 'Showing what matters here and your recent commands.',
                 allCommandsHint: 'Showing all {{count}} commands.',
                 showAllCommands: 'All commands',
                 showSuggestedCommands: 'Suggested commands',
                 singleKeyShortcuts: {
-                    label: 'Enable single-key task shortcuts',
-                    description: 'On Tasks, N creates, F filters, R reorders, B bulk edits, and M merges. They stay off while you type or use a dialog. This browser-only preference is off by default.',
+                    label: 'Single-key task shortcuts',
+                    description: 'On Tasks, N creates, F filters, R reorders, B bulk edits, and M merges. They never fire while you type or use a dialog. On by default; clear this to turn them off in this browser.',
                 },
                 groups: {
                     tasks: 'Task actions',
                     current: 'Current workspace',
                     navigate: 'Go to',
+                    results: 'Search results',
                     suggested: 'Recent & relevant',
                 },
                 commands: {

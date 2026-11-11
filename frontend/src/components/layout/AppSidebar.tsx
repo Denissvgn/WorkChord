@@ -18,7 +18,6 @@ const SYSTEM_VIEW_ORDER = [
 
 const SAVED_VIEW_ROUTE_PATHS = new Set(['/tasks', '/triage', '/projects']);
 const COMPACT_SAVED_VIEW_LIMIT = 5;
-const SAVED_VIEW_SEARCH_LIMIT = 8;
 const SAVED_VIEW_TYPES = ['tasks', 'triage', 'projects'] as const;
 
 export interface SidebarAttentionAction {
@@ -162,7 +161,8 @@ const SavedViewsDisclosure = ({
             || savedViewTypeLabels[view.view_type].toLocaleLowerCase().includes(normalizedSearchQuery)
         ))
         : allViews;
-    const browseViews = matchingViews.slice(0, SAVED_VIEW_SEARCH_LIMIT);
+    // The browse list shows every match and scrolls; it never hides views behind a search.
+    const browseViews = matchingViews;
     const browseGroups = SAVED_VIEW_TYPES
         .map(viewType => ({
             viewType,
@@ -225,9 +225,7 @@ const SavedViewsDisclosure = ({
                             className="sb-count"
                             aria-label={t('nav.savedViewCount', { count: allViews.length })}
                         >
-                            {allViews.length > COMPACT_SAVED_VIEW_LIMIT && !showAll
-                                ? `${COMPACT_SAVED_VIEW_LIMIT}+`
-                                : allViews.length}
+                            {allViews.length}
                         </span>
                     )}
                     <ChevronRight aria-hidden="true" className="sb-views-chevron h-3.5 w-3.5" />
@@ -263,14 +261,6 @@ const SavedViewsDisclosure = ({
                         ))}
                         {matchingViews.length === 0 && (
                             <div className="sb-status">{t('nav.noSavedViewMatches')}</div>
-                        )}
-                        {matchingViews.length > SAVED_VIEW_SEARCH_LIMIT && (
-                            <div className="sb-status">
-                                {t('nav.savedViewSearchLimit', {
-                                    shown: SAVED_VIEW_SEARCH_LIMIT,
-                                    count: matchingViews.length,
-                                })}
-                            </div>
                         )}
                     </>
                 ) : compactViews.map(renderViewLink)}

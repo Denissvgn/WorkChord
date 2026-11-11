@@ -155,6 +155,22 @@ export const ContextHelp = () => {
                         </div>
                     </section>
 
+                    {helpContext.glossary.length > 0 && (
+                        <section className="context-help-section" aria-labelledby="context-help-glossary-heading">
+                            <header>
+                                <h4 id="context-help-glossary-heading">{t('contextHelp.glossaryTitle')}</h4>
+                            </header>
+                            <dl className="space-y-2 text-sm">
+                                {helpContext.glossary.map(term => (
+                                    <div key={term}>
+                                        <dt className="font-semibold text-content-primary">{t(`contextHelp.glossary.${term}.term`)}</dt>
+                                        <dd className="text-content-secondary">{t(`contextHelp.glossary.${term}.definition`)}</dd>
+                                    </div>
+                                ))}
+                            </dl>
+                        </section>
+                    )}
+
                     <section
                         className="context-help-section"
                         aria-labelledby="context-help-shortcuts-heading"

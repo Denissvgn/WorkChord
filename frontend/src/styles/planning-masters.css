@@ -4241,6 +4241,15 @@
   text-decoration: none;
 }
 .wc .brand:hover { color: var(--wc-shell-thread); }
+/* Where you are, shown only when the workspace tabs fold into the menu. */
+.wc .topnav-location { display: none; margin: 0; min-width: 0; font-size: var(--wc-type-base); color: var(--wc-shell-ink); }
+.wc .topnav-location-area { color: var(--wc-shell-muted); }
+.wc .topnav-location-area::after { content: " / "; }
+.wc .topnav-location-page { font-weight: 600; }
+@media (max-width: 640px) { .wc .topnav-location-area { display: none; } }
+.wc .mobile-workspace-pages { display: grid; gap: 4px; margin-block-start: 8px; }
+.wc .mobile-workspace-pages summary { cursor: pointer; padding: 8px; min-height: 44px; display: flex; align-items: center; font-weight: 500; color: var(--ink-2); }
+.wc .mobile-workspace-pages ul { list-style: none; margin: 0; padding: 0 0 4px 8px; display: grid; gap: 2px; }
 .wc .brand-mark { width: 24px; height: 24px; flex-shrink: 0; }
 .wc .brand-mark svg { display: block; width: 24px; height: 24px; }
 .wc .brand-meta { color: var(--wc-shell-muted); font-size: var(--wc-type-meta); font-weight: 400; }
@@ -4984,6 +4993,9 @@
   gap: 2px;
   padding-block-start: 2px;
   padding-inline-start: 8px;
+  /* The full list scrolls instead of being cut at a fixed count. */
+  max-height: 60vh;
+  overflow-y: auto;
 }
 .wc .sb-views-search {
   position: relative;
@@ -5189,8 +5201,9 @@
 @media (max-width: 1180px) {
   .wc .workspace { grid-template-columns: 1fr; }
   .wc .sidebar { display: none; }
-  .wc .topnav { grid-template-columns: minmax(0, 1fr) auto; }
+  .wc .topnav { grid-template-columns: auto minmax(0, 1fr) auto; }
   .wc .workspace-switcher { display: none; }
+  .wc .topnav-location { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .wc .brand,
   .wc .command-menu-trigger,
   .wc .context-help-trigger,
