@@ -196,6 +196,10 @@ try {
   await reviewerPage.getByRole('link', { name: 'Continue as Charlie' }).click();
   await reviewerPage.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
   await reviewerPage.getByRole('textbox', { name: 'Reason for the action or review', exact: true }).fill('Independently inspected the criterion evidence');
+  // A person records a result for every criterion before Accept is enabled.
+  assert.equal(await reviewerPage.getByRole('button', { name: 'Accept', exact: true }).isDisabled(), true);
+  await reviewerPage.getByLabel('Result: The result can be inspected independently', { exact: true }).selectOption('pass');
+  await reviewerPage.getByRole('textbox', { name: 'What you checked or what must change', exact: true }).fill('Reproduced and inspected the result.');
   const accepted = reviewerPage.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/review`) && response.request().method() === 'POST');
   await reviewerPage.getByRole('button', { name: 'Accept', exact: true }).click();
   const verdict = await accepted;
