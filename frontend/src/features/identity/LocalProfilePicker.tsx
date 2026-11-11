@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,8 @@ export const LocalProfilePicker = ({ current, onChosen }: { current: WorkProfile
     const ids = useId();
     const [profileId, setProfileId] = useState(current ? String(current.id) : '');
     const [name, setName] = useState('');
+    // A profile created by "Add me" whose choice then failed: a retry chooses it instead of creating another.
+    const createdProfile = useRef<number | null>(null);
     // feedback-policy: query loading,error,retry,empty
     const profiles = useQuery({ queryKey: ['teamMemberProfiles'], queryFn: teamService.getProfiles });
     // feedback-policy: mutation pending,inline
@@ -24,8 +26,10 @@ export const LocalProfilePicker = ({ current, onChosen }: { current: WorkProfile
     // feedback-policy: mutation pending,inline
     const addMe = useMutation({
         mutationFn: async (displayName: string) => {
-            const created = await teamService.createProfile({ display_name: displayName, profile_kind: 'human', automation_enabled: true, assignment_modes: [] });
-            return identityService.chooseLocalProfile(created.id);
+            createdProfile.current ??= (await teamService.createProfile({ display_name: displayName, profile_kind: 'human', automation_enabled: true, assignment_modes: [] })).id;
+            const chosen = await identityService.chooseLocalProfile(createdProfile.current);
+            createdProfile.current = null;
+            return chosen;
         },
         onSuccess: onChosen,
     });
@@ -53,7 +57,7 @@ export const LocalProfilePicker = ({ current, onChosen }: { current: WorkProfile
         <form className="space-y-2" onSubmit={submitName}>
             <label className="block font-medium" htmlFor={`${ids}-name`}>{t('identity.yourName')}</label>
             <input id={`${ids}-name`} className="min-h-11 w-full rounded-md border border-border bg-surface-card px-2" value={name} maxLength={255}
-                autoComplete="name" aria-describedby={`${ids}-name-help`} onChange={event => setName(event.target.value)} />
+                autoComplete="name" aria-describedby={`${ids}-name-help`} onChange={event => { setName(event.target.value); createdProfile.current = null; }} />
             <p id={`${ids}-name-help`} className="text-xs text-content-secondary">{t('identity.addMeHelp')}</p>
             <Button type="submit" size="sm" variant="secondary" disabled={!name.trim() || pending}>{t('identity.addMe')}</Button>
         </form>

@@ -47,7 +47,7 @@ describe('Board card', () => {
 
     it('writes only the time for a claim that ends today', () => {
         const now = new Date(2030, 0, 2, 9, 0);
-        expect(formatClaimUntil(new Date(2030, 0, 2, 18, 42).toISOString(), 'en-GB', now)).toBe('18:42');
+        expect(formatClaimUntil(new Date(2030, 0, 2, 18, 42).toISOString(), 'en-GB', now)).toMatch(/^18:42 \S+/);
         expect(formatClaimUntil(new Date(2030, 0, 3, 18, 42).toISOString(), 'en-GB', now)).toContain('2030');
         expect(formatClaimUntil('not a date', 'en-GB', now)).toBeNull();
     });

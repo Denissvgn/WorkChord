@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Label, LabelGroup } from '../../types/label';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { TemplateLabelSettings } from './TemplateLabelSettings';
+import { MutationSuccessFeedback } from '../../features/MutationSuccessFeedback';
 
 const labelServiceMock = vi.hoisted(() => ({
     getGroups: vi.fn(),
@@ -236,7 +237,8 @@ describe('TemplateLabelSettings hardening', () => {
     it('keeps 23 labels under 40 buttons and lets an archive be undone', async () => {
         const labels = Array.from({ length: 23 }, (_, index) => labelFixture({ id: 200 + index, slug: `label-${index}`, name: `Label ${index}`, sort_order: index }));
         labelServiceMock.getGroups.mockResolvedValue([groupFixture({ labels })]);
-        const { user } = renderWithProviders(<TemplateLabelSettings />);
+        // The archive toast and its Undo come from the shared mutation feedback, mounted as in the app.
+        const { user } = renderWithProviders(<><MutationSuccessFeedback /><TemplateLabelSettings /></>);
         await openLabels();
         const panel = screen.getByRole('tabpanel', { name: 'Labels' });
         expect(within(panel).getAllByRole('button').length).toBeLessThan(40);

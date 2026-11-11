@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type FormEvent } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { CornerDownLeft, Plus } from 'lucide-react';
 import { Button } from '../common/Button';
@@ -20,7 +20,6 @@ export type QuickCaptureTarget = { kind: 'task'; iterationId: number } | { kind:
 export const QuickCapture = ({ target, onExpand }: { target: QuickCaptureTarget; onExpand: (title: string) => void }) => {
     const { t } = useTranslation();
     const id = useId();
-    const queryClient = useQueryClient();
     const inputRef = useRef<HTMLInputElement>(null);
     const [title, setTitle] = useState('');
     // feedback-policy: mutation pending,inline - the row is read-only while saving and keeps the title on failure.
@@ -39,15 +38,9 @@ export const QuickCapture = ({ target, onExpand }: { target: QuickCaptureTarget;
             const iteration = await iterationService.getById(target.iterationId);
             return taskService.create(target.iterationId, { title: value, effort_days: null, depends_on: [], expected_revision: iteration.revision });
         },
+        // The shared mutation listener (installWorkFreshness) refetches every active work view.
         onSuccess: () => {
             setTitle('');
-            if (target.kind === 'triage') {
-                void queryClient.invalidateQueries({ queryKey: ['triage'] });
-            } else {
-                for (const key of ['tasks', 'workload', 'gantt', 'projects', 'projectSummary', 'projectTasks']) {
-                    void queryClient.invalidateQueries({ queryKey: [key] });
-                }
-            }
             inputRef.current?.focus();
         },
     });

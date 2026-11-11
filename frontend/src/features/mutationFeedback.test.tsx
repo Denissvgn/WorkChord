@@ -33,6 +33,20 @@ describe('mutation success feedback', () => {
         expect(await screen.findByText('Back as it was.')).toBeInTheDocument();
     });
 
+    it('gives Undo the context the mutation captured, and offers none when undo returns nothing', async () => {
+        const undo = vi.fn((_data: unknown, _variables: unknown, context: unknown) => (
+            (context as { previous: string }).previous === 'planned' ? null : { run: vi.fn() }));
+        const Captured = () => {
+            const write = useMutation({ mutationFn: async () => ({ id: 7 }), onMutate: () => ({ previous: 'planned' }), meta: { success: 'Started.', undo } });
+            return <button type="button" onClick={() => write.mutate()}>Write</button>;
+        };
+        const { user } = renderWithProviders(<><MutationSuccessFeedback /><Captured /></>);
+        await user.click(screen.getByRole('button', { name: 'Write' }));
+        expect(await screen.findByText('Started.')).toBeInTheDocument();
+        expect(undo).toHaveBeenCalledWith({ id: 7 }, undefined, { previous: 'planned' });
+        expect(screen.queryByRole('button', { name: 'Undo' })).toBeNull();
+    });
+
     it('says when Undo failed and shows nothing for a failed write', async () => {
         const run = vi.fn().mockRejectedValue(new Error('Server refused'));
         const { user, unmount } = renderWithProviders(<><MutationSuccessFeedback />

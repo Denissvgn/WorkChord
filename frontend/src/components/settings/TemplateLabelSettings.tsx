@@ -25,6 +25,7 @@ import { labelDisplay, labelGroupDisplay, templateDisplay } from '../../i18n/see
 import { useToast } from '../feedback/toast';
 import { OverflowMenu } from '../ui';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const arrayMove = <T,>(items: T[], from: number, to: number) => {
     const next = [...items];
@@ -418,40 +419,40 @@ export const TemplateLabelSettings = () => {
 
     // feedback-policy: mutation pending,toast - the taxonomy locks while the row action is recoverable by retry.
     const toggleGroupMutation = useMutation({
+        // Archiving is reversible, so it says so and offers the way back through the shared feedback.
+        meta: {
+            success: (_data, variables) => {
+                const { isActive, name } = variables as { isActive: boolean; name: string };
+                return t(isActive ? 'surfaces.templateLabels.groupRestored' : 'surfaces.templateLabels.groupArchived', { name });
+            },
+            undo: (_data, variables) => {
+                const { id, isActive, name } = variables as { id: number; isActive: boolean; name: string };
+                return isActive ? null : { run: () => labelService.updateGroup(id, { is_active: true }), done: t('surfaces.templateLabels.groupRestored', { name }) };
+            },
+        } satisfies MutationFeedbackMeta,
         mutationFn: ({ id, isActive }: { id: number; isActive: boolean; name: string }) => (
             labelService.updateGroup(id, { is_active: isActive })
         ),
-        onSuccess: (_result, { id, isActive, name }) => {
-            invalidateLabels();
-            // Archiving is reversible, so it says so and offers the way back.
-            if (isActive) { toast.success(t('surfaces.templateLabels.groupRestored', { name })); return; }
-            toast.success(t('surfaces.templateLabels.groupArchived', { name }), {
-                actionLabel: t('feedback.undo'), durationMs: 10000,
-                onAction: async () => {
-                    try { await labelService.updateGroup(id, { is_active: true }); await invalidateLabels(); toast.success(t('surfaces.templateLabels.groupRestored', { name })); }
-                    catch (error) { toast.error(getApiErrorMessage(error, t('feedback.undoFailed'))); }
-                },
-            });
-        },
+        onSuccess: () => { invalidateLabels(); },
         onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
     });
 
     // feedback-policy: mutation pending,toast - the taxonomy locks while the row action is recoverable by retry.
     const toggleLabelMutation = useMutation({
+        meta: {
+            success: (_data, variables) => {
+                const { isActive, name } = variables as { isActive: boolean; name: string };
+                return t(isActive ? 'surfaces.templateLabels.labelRestored' : 'surfaces.templateLabels.labelArchived', { name });
+            },
+            undo: (_data, variables) => {
+                const { id, isActive, name } = variables as { id: number; isActive: boolean; name: string };
+                return isActive ? null : { run: () => labelService.updateLabel(id, { is_active: true }), done: t('surfaces.templateLabels.labelRestored', { name }) };
+            },
+        } satisfies MutationFeedbackMeta,
         mutationFn: ({ id, isActive }: { id: number; isActive: boolean; name: string }) => (
             labelService.updateLabel(id, { is_active: isActive })
         ),
-        onSuccess: (_result, { id, isActive, name }) => {
-            invalidateLabels();
-            if (isActive) { toast.success(t('surfaces.templateLabels.labelRestored', { name })); return; }
-            toast.success(t('surfaces.templateLabels.labelArchived', { name }), {
-                actionLabel: t('feedback.undo'), durationMs: 10000,
-                onAction: async () => {
-                    try { await labelService.updateLabel(id, { is_active: true }); await invalidateLabels(); toast.success(t('surfaces.templateLabels.labelRestored', { name })); }
-                    catch (error) { toast.error(getApiErrorMessage(error, t('feedback.undoFailed'))); }
-                },
-            });
-        },
+        onSuccess: () => { invalidateLabels(); },
         onError: (error: unknown) => toast.error(getApiErrorMessage(error, t('queryFeedback.fallback'))),
     });
 

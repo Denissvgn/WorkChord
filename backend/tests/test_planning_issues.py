@@ -44,3 +44,13 @@ def test_agent_held_work_is_not_unassigned() -> None:
 @pytest.mark.parametrize("effort", [None, 0, -1, float("nan"), True])
 def test_missing_effort(effort) -> None:
     assert missing_effort(_task(effort_days=effort))
+
+
+def test_loaded_orm_tasks_read_the_attached_agent_flag() -> None:
+    # TaskService.load_owner_names attaches the flag as __dict__["_agent_working"], not as an attribute.
+    class LoadedTask:
+        status, is_deferred, effective_is_deferred, is_composite, children, assignee = "planned", False, None, False, [], None
+    task = LoadedTask()
+    task.__dict__["_agent_working"] = True
+    assert not needs_assignee(task)
+    assert agent_working_without_capacity(task)

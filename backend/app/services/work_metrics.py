@@ -228,13 +228,14 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
             target.c.status.notin_(["resolved", "closed"]), target.c.canceled_at.is_not(None))).exists()
     blocked = or_(and_(t.c.blocked_reason.is_not(None), t.c.blocked_reason != ""), unavailable_dependency)
     joined = t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id)
+    # One predicate per countable metric: the counts below and the lists they open both use these.
+    predicates = {"total": included, "implemented": and_(included, implemented), "accepted": and_(included, accepted),
+        "blocked": and_(included, blocked), "overdue": and_(included, overdue), "late_start": and_(included, late),
+        "iteration_overflow": and_(included, t.c.end_date > iterations.c.end_date),
+        "acceptance_unknown": and_(included, t.c.status == "closed", ~accepted),
+        "unknown_estimate": and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)),
+        **{state: and_(included, t.c.status == state) for state in ["planned", "active", "resolved", "closed"]}}
     if matching is not None:
-        predicates = {"total": included, "implemented": and_(included, implemented), "accepted": and_(included, accepted),
-            "blocked": and_(included, blocked), "overdue": and_(included, overdue), "late_start": and_(included, late),
-            "iteration_overflow": and_(included, t.c.end_date > iterations.c.end_date),
-            "acceptance_unknown": and_(included, t.c.status == "closed", ~accepted),
-            "unknown_estimate": and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)),
-            **{state: and_(included, t.c.status == state) for state in ["planned", "active", "resolved", "closed"]}}
         if matching not in predicates:
             raise ValueError("Unknown work metric")
         query = select(t.c.id, t.c.title, t.c.status, projects.c.name.label("project_name"), iterations.c.name.label("iteration_name")) \
@@ -245,19 +246,19 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
         return {"metric": matching, "items": [dict(row) for row in rows[:limit]], "has_more": len(rows) > limit}
     def count(predicate, name):
         return func.coalesce(func.sum(case((predicate, 1), else_=0)), 0).label(name)
-    columns = [count(included, "total_tasks"), count(required, "required_tasks"), count(and_(included, tree.c.optional), "optional_tasks"),
+    columns = [count(predicates["total"], "total_tasks"), count(required, "required_tasks"), count(and_(included, tree.c.optional), "optional_tasks"),
         count(and_(leaf, tree.c.deferred), "deferred_tasks"), count(composite, "structural_tasks"),
-        count(and_(included, implemented), "implemented_tasks"), count(and_(included, accepted), "accepted_tasks"),
+        count(predicates["implemented"], "implemented_tasks"), count(predicates["accepted"], "accepted_tasks"),
         count(and_(required, implemented), "required_implemented_tasks"), count(and_(required, accepted), "required_accepted_tasks"),
-        count(and_(included, overdue), "overdue_tasks"), count(and_(included, late), "late_start_tasks"),
-        count(and_(included, t.c.end_date > iterations.c.end_date), "iteration_overflow_tasks"),
+        count(predicates["overdue"], "overdue_tasks"), count(predicates["late_start"], "late_start_tasks"),
+        count(predicates["iteration_overflow"], "iteration_overflow_tasks"),
         count(and_(included, t.c.end_date > projects.c.target_date), "project_target_overflow_tasks"),
-        count(and_(included, t.c.status == "closed", ~accepted), "acceptance_unknown_tasks"),
-        count(and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)), "unknown_estimate_tasks"), count(and_(included, blocked), "blocked_tasks"),
+        count(predicates["acceptance_unknown"], "acceptance_unknown_tasks"),
+        count(predicates["unknown_estimate"], "unknown_estimate_tasks"), count(predicates["blocked"], "blocked_tasks"),
         func.coalesce(func.sum(case((included, (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("total_effort_days"),
         func.coalesce(func.sum(case((and_(included, ~implemented), (t.c.effort_hours / t.c.nominal_day_hours)), else_=0.0)), 0.0).label("remaining_effort_days"),
         func.min(case((included, t.c.start_date))).label("task_start_date"), func.max(case((included, t.c.end_date))).label("task_end_date"),
-        *[count(and_(included, t.c.status == state), "status_" + state) for state in ["planned", "active", "resolved", "closed"]]]
+        *[count(predicates[state], "status_" + state) for state in ["planned", "active", "resolved", "closed"]]]
     grouping = {"project": t.c.project_id, "milestone": t.c.milestone_id}.get(group_by)
     if grouping is not None:
         columns.insert(0, grouping.label("group_id"))

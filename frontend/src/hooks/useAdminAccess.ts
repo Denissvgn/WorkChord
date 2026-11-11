@@ -30,7 +30,8 @@ export const useKeylessReader = () => {
     const identity = useIdentity()?.identity;
     if (!identity) return { settings: false, workViews: false };
     const local = identity.mode === 'trusted_local' && !identity.principal;
-    const member = identity.principal?.kind === 'human' && identity.workspace_role !== null;
+    // `!= null`: an absent role is not membership, matching the server's `is not None`.
+    const member = identity.principal?.kind === 'human' && identity.workspace_role != null;
     const projectMember = identity.principal?.kind === 'human' && Object.keys(identity.projects ?? {}).length > 0;
     return { settings: local || member, workViews: local || member || projectMember };
 };

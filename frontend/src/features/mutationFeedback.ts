@@ -14,7 +14,8 @@ export interface MutationUndo {
  */
 export interface MutationFeedbackMeta extends Record<string, unknown> {
     success?: string | ((data: unknown, variables: unknown) => string | null | undefined);
-    undo?: (data: unknown, variables: unknown) => MutationUndo | null | undefined;
+    /** Return nothing when the change cannot be reversed; `context` is what the mutation's onMutate returned. */
+    undo?: (data: unknown, variables: unknown, context: unknown) => MutationUndo | null | undefined;
 }
 
 export type FeedbackAction = 'created' | 'saved' | 'deleted';

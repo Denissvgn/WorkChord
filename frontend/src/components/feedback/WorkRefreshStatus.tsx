@@ -28,7 +28,7 @@ export const WorkRefreshStatus = () => {
     return <div className="flex items-center gap-2 px-4 py-1 text-xs text-content-secondary" role="status">
         <span>{t(failed ? 'teamwork.staleWork' : 'teamwork.mayBeStale')}</span>
         <button type="button" className="font-medium text-action underline disabled:opacity-60" disabled={refreshing}
-            onClick={() => { void Promise.all(active.map(query => query.fetch())); }}>
+            onClick={() => { void client.refetchQueries({ predicate: query => active.includes(query) }); }}>
             {t('workFreshness.refresh')}
         </button>
     </div>;

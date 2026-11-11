@@ -143,7 +143,7 @@ export const TaskList = ({
         return () => window.clearInterval(timer);
     }, []);
 
-    const { data: tasks, isLoading, error: tasksError, refetch: refetchTasks, dataUpdatedAt, isRefetchError, isFetching } = useQuery({
+    const { data: tasks, isLoading, error: tasksError, refetch: refetchTasks, isRefetchError, isFetching } = useQuery({
         queryKey: ['tasks', iterationId],
         queryFn: () => taskService.getByIteration(iterationId),
     });
@@ -484,7 +484,7 @@ export const TaskList = ({
 
     return (
         <div className="space-y-4">
-            <WorkFreshness updatedAt={dataUpdatedAt} stale={isRefetchError} refreshing={isFetching} onRefresh={() => { void refetchTasks(); }} />
+            <WorkFreshness stale={isRefetchError} refreshing={isFetching} onRefresh={() => { void refetchTasks(); }} />
             {reorderMutation.isError && (
                 <QueryErrorState
                     error={reorderMutation.error}

@@ -16,10 +16,10 @@ export const MutationSuccessFeedback = () => {
         if (event.type !== 'updated' || event.action.type !== 'success') return;
         const meta = event.mutation.options.meta as MutationFeedbackMeta | undefined;
         if (!meta?.success) return;
-        const { data, variables } = event.mutation.state;
+        const { data, variables, context } = event.mutation.state;
         const message = typeof meta.success === 'function' ? meta.success(data, variables) : meta.success;
         if (!message) return;
-        const undo = meta.undo?.(data, variables);
+        const undo = meta.undo?.(data, variables, context);
         toast.success(message, undo ? {
             actionLabel: t('feedback.undo'),
             durationMs: UNDO_TOAST_MS,

@@ -33,6 +33,7 @@ import { Button } from '../../common/Button';
 import { Modal } from '../../common/Modal';
 import { feedbackMessage } from '../../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../../features/mutationFeedback';
+import { canTransition } from '../../../features/taskTransitions';
 
 interface KanbanBoardProps {
     iterationId: number;
@@ -50,12 +51,6 @@ const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus }[] = [
     { id: 'closed', titleKey: 'closed', status: 'closed' },
 ];
 
-const VALID_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
-    planned: ['active'],
-    active: ['resolved'],
-    resolved: ['active', 'closed'],
-    closed: [],
-};
 
 type BoardTaskUpdate = Pick<TaskUpdate, 'assignee_id'> & {
     status?: TaskStatus;
@@ -106,6 +101,8 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                 const { task, updates } = variables as { task: Task; updates: BoardTaskUpdate };
                 const moved = (data as TaskBatchUpdateResponse).updated_tasks.find(item => item.id === task.id);
                 if (!moved) return null;
+                // A status the server cannot move back to directly gets no Undo.
+                if (updates.status && updates.status !== task.status && !canTransition(updates.status, task.status)) return null;
                 const restore: TaskUpdate = {};
                 if (updates.status && updates.status !== task.status) restore.status = task.status;
                 if ('assignee_id' in updates) restore.assignee_id = task.assignee?.id ?? null;
@@ -115,7 +112,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
         } satisfies MutationFeedbackMeta,
         mutationFn: async ({ task, updates }: { task: Task; updates: BoardTaskUpdate }) => {
             const { status, ...fieldUpdates } = updates;
-            if (status && status !== task.status && !VALID_TRANSITIONS[task.status]?.includes(status)) {
+            if (status && status !== task.status && !canTransition(task.status, status)) {
                 throw new Error(t('surfaces.kanbanBoard.invalidTransition', { from: task.status, to: status }));
             }
             return taskService.batchUpdate(iterationId, {
@@ -318,7 +315,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
             onDragCancel={() => setActiveId(null)}
         >
             <div className="space-y-3" aria-busy={updateTaskMutation.isPending}>
-                <WorkFreshness updatedAt={tasksQuery.dataUpdatedAt} stale={tasksQuery.isRefetchError}
+                <WorkFreshness stale={tasksQuery.isRefetchError}
                     refreshing={tasksQuery.isFetching} onRefresh={() => { void tasksQuery.refetch(); }} />
                 <TaskEditorDrawer open={openedTaskId !== null} taskId={openedTaskId} iterationId={iterationId}
                     onClose={() => setOpenedTaskId(null)} restoreFocusRef={openTrigger} />

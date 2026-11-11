@@ -27,12 +27,21 @@ def is_planning_gap_candidate(task: Any) -> bool:
     )
 
 
+def _agent_working(task: Any) -> bool:
+    """Whether an agent holds live execution work: a response's ``agent_working`` field,
+    or the flag TaskService.load_owner_names attaches to loaded ORM tasks."""
+    working = getattr(task, "agent_working", None)
+    if working is None:
+        working = getattr(task, "__dict__", {}).get("_agent_working")
+    return bool(working)
+
+
 def needs_assignee(task: Any) -> bool:
-    return is_planning_gap_candidate(task) and task.assignee is None and not getattr(task, "agent_working", False)
+    return is_planning_gap_candidate(task) and task.assignee is None and not _agent_working(task)
 
 
 def agent_working_without_capacity(task: Any) -> bool:
-    return is_planning_gap_candidate(task) and task.assignee is None and bool(getattr(task, "agent_working", False))
+    return is_planning_gap_candidate(task) and task.assignee is None and _agent_working(task)
 
 
 def missing_effort(task: Any) -> bool:

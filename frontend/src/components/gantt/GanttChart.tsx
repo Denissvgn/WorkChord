@@ -853,7 +853,9 @@ export const GanttChart = ({
     };
     // "+" and "-" zoom and "T" jumps to today, unless the person is typing.
     const handleChartShortcut = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-        if (event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target)) return;
+        // Keys from the filters drawer (a portal whose events bubble here) belong to the drawer.
+        const inDialog = event.target instanceof Element && Boolean(event.target.closest('[role="dialog"]'));
+        if (event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target) || inDialog) return;
         if (event.key === '+' || event.key === '=') { event.preventDefault(); zoomIn(); }
         else if (event.key === '-' || event.key === '_') { event.preventDefault(); zoomOut(); }
         else if (event.key === 't' || event.key === 'T') { event.preventDefault(); scrollToToday(); }
