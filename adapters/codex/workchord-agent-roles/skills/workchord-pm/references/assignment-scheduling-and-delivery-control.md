@@ -175,6 +175,11 @@ In supervised v0, order work manually and hand off only the current explicit tas
 
 ## Schedule and Re-read
 
+Dates are calculated. To move a task, change who does it, its effort, what it
+waits for, or its earliest start. People see the same sentence on the Gantt
+chart, and its "Try changes" popover edits exactly those inputs. Never set a
+task's dates directly to force a schedule; the next calculation overrules them.
+
 1. Read the iteration, calendar, tasks, dependency graph, constraints, capacity, workload, vacations, and current Gantt before scheduling.
 2. Capture the affected task versions, dates, owners, effort, and current overload warnings.
 3. Call `agent_preview_schedule` or the REST `/api/agent/planning/iterations/{id}/schedule/preview` command with required idempotency, rationale, and correlation metadata. It persists an exact receipt but rolls back hypothetical task dates.

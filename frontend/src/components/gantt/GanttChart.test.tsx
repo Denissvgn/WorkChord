@@ -27,6 +27,8 @@ vi.mock('@tanstack/react-virtual', () => ({
 }));
 
 vi.mock('./TaskEditModal', () => ({ TaskEditModal: () => null }));
+const teamServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn().mockResolvedValue([{ id: 7, name: 'Sam' }]) }));
+vi.mock('../../services/teamService', () => ({ teamService: teamServiceMock }));
 
 const taskFixture: GanttTask = {
     id: 101,
@@ -340,5 +342,41 @@ describe('Gantt dependency links', () => {
         await user.click(toggle);
         expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(0);
         expect(window.localStorage.getItem('workchord:gantt-show-dependency-links')).toBe('false');
+    });
+});
+
+
+describe('Gantt bar inputs in Try changes', () => {
+    it('opens the five date inputs from a bar and recalculates with them', async () => {
+        const onSaveSandbox = vi.fn();
+        const { user } = renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} sandboxMode onSaveSandbox={onSaveSandbox} />,
+        );
+        await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
+        const dialog = await screen.findByRole('dialog', { name: 'Current task' });
+        expect(screen.getByRole('combobox', { name: 'Who does it' })).toHaveFocus();
+        expect(dialog).toHaveTextContent('Dates are calculated.');
+        await screen.findByRole('option', { name: 'Sam' });
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Who does it' }), '7');
+        const effort = screen.getByRole('spinbutton', { name: 'Effort (days)' });
+        await user.clear(effort);
+        await user.type(effort, '3');
+        await user.click(screen.getByRole('button', { name: 'Recalculate with these' }));
+        expect(onSaveSandbox).toHaveBeenCalledWith(101, expect.objectContaining({
+            assignee: { id: 7, name: 'Sam' }, effort_days: 3, sandbox_update: undefined,
+        }));
+        expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
+    });
+
+    it('closes with Escape', async () => {
+        const { user } = renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} sandboxMode onSaveSandbox={vi.fn()} />,
+        );
+        await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
+        await screen.findByRole('dialog', { name: 'Current task' });
+        await user.keyboard('{Escape}');
+        expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
     });
 });

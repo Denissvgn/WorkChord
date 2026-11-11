@@ -20,6 +20,7 @@ import { dateFnsLocale } from '../../i18n/dateLocale';
 import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
 import { OverflowMenu, SlideOverDrawer } from '../ui';
+import { GanttBarInputs } from './GanttBarInputs';
 
 interface GanttChartProps {
     iterationId: number;
@@ -157,6 +158,8 @@ export const GanttChart = ({
     };
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
+    // In "Try changes", a bar opens its five date inputs first; the drawer is "More fields".
+    const [barInputs, setBarInputs] = useState<{ task: GanttTask; anchor: { top: number; left: number }; origin: HTMLElement } | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [showLinks, setShowLinksState] = useState(readStoredShowLinks);
     const setShowLinks = (value: boolean) => {
@@ -952,6 +955,7 @@ export const GanttChart = ({
 
             <details className="shrink-0 border-b border-border bg-surface-card px-4 py-2 text-xs text-content-secondary">
                 <summary className="cursor-pointer font-medium text-content-primary">{t('surfaces.ganttChart.legend')}</summary>
+                <p className="mt-2">{t('gantt.datesAreCalculated')}</p>
                 <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
                     {LEGEND_STATUSES.map(status => <li key={status} className="flex items-center gap-1.5">
                         <span aria-hidden="true" className={clsx('inline-block h-3 w-5 rounded', toneSolidClassName[STATUS_TONE[status]])} />
@@ -1453,9 +1457,22 @@ export const GanttChart = ({
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 if (schedulePreview) return;
+                                                if (sandboxMode) {
+                                                    const rect = event.currentTarget.getBoundingClientRect();
+                                                    setBarInputs({
+                                                        task,
+                                                        origin: event.currentTarget,
+                                                        anchor: {
+                                                            top: Math.min(rect.bottom + 8, window.innerHeight - 440),
+                                                            left: Math.max(16, Math.min(rect.left, window.innerWidth - 336)),
+                                                        },
+                                                    });
+                                                    return;
+                                                }
                                                 setEditingTask(task);
                                             }}
                                             aria-disabled={schedulePreview ? true : undefined}
+                                            aria-haspopup={sandboxMode ? 'dialog' : undefined}
                                             title={schedulePreview ? getPreviewTaskDescription(task) : getTaskTooltip(task)}
                                             aria-label={schedulePreview
                                                 ? getPreviewTaskDescription(task)
@@ -1494,6 +1511,24 @@ export const GanttChart = ({
                     })}
                 </div>
                 </div>
+            )}
+
+            {barInputs && (
+                <GanttBarInputs
+                    task={barInputs.task}
+                    iterationId={iterationId}
+                    anchor={barInputs.anchor}
+                    taskOptions={displayTasks.filter(item => !item.children?.length).map(item => ({ id: item.id, title: item.title }))}
+                    onApply={changes => {
+                        // Clear any full-form payload so these inputs are what the dry-run sends.
+                        onSaveSandbox?.(barInputs.task.id, { ...changes, sandbox_update: undefined });
+                        const origin = barInputs.origin;
+                        setBarInputs(null);
+                        origin.focus();
+                    }}
+                    onMoreFields={() => { const task = barInputs.task; setBarInputs(null); setEditingTask(task); }}
+                    onClose={() => { const origin = barInputs.origin; setBarInputs(null); origin.focus(); }}
+                />
             )}
 
             <TaskEditModal

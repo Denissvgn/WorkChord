@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.11.0",
+  "catalog_version": "1.11.1",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,15 +8,15 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.11.0.tar.gz",
-          "sha256": "d974e1c3a759a9c7aa311e0dccafe6a098040edb5d1aea552e8aabd0cc499e77",
+          "path": "workchord-pm-1.11.1.tar.gz",
+          "sha256": "b6fe733a650da7450447fddab0b5e1e2e9f02a24933bad76821316ce59ca5eb0",
           "size": 143393
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.11.0.zip",
-          "sha256": "187d5dc0bf2f26242cc131e0d1264f4b42bcc35625c7677c2ef29293dbc73285",
-          "size": 134812
+          "path": "workchord-pm-1.11.1.zip",
+          "sha256": "3c2e2d11a623817c87c4107aa748d43b07a4f487fae048fe1b1691bce1ab4f60",
+          "size": 135124
         }
       ],
       "entrypoint": "SKILL.md",
@@ -38,8 +38,8 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "90fe3dffe9eb658d8aa965504d41e5c9a2f898ed778447b0b06b21e6d44907b4",
-          "size": 17493
+          "sha256": "d34e3836ddbe790df953c136ddafd3851f177505a2d0290d1da5d0ea5ceb6486",
+          "size": 17805
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -108,7 +108,7 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.11.0"
+      "version": "1.11.1"
     },
     {
       "api_contract": "workchord-agent/v1",
@@ -272,5 +272,5 @@
       "version": "1.10.0"
     }
   ],
-  "source_revision": "sha256:04894c166ff1783541068f73772eab4a4d83e25a98cb5d88660d2cc090e509fe"
+  "source_revision": "sha256:7c5cc0c6f1bba0f1d377788c1d865d3327fc99741825fb363a303a5a1a12ea5d"
 }
