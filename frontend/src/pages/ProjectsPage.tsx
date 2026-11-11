@@ -36,6 +36,7 @@ import type {
 } from '../types/project';
 import { feedbackMessage } from '../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
+import { formatEffortDays } from '../utils/workNumbers';
 const projectStatusLabelKeys: Record<ProjectStatus, string> = {
     proposed: 'surfaces.projectsPage.proposed',
     planned: 'surfaces.projectsPage.planned',
@@ -85,12 +86,6 @@ const riskClassName = (risk: string) => {
     }
 };
 
-const formatEffortDays = (value: number | undefined, language: string) => new Intl.NumberFormat(language, {
-    style: 'unit',
-    unit: 'day',
-    unitDisplay: 'narrow',
-    maximumFractionDigits: 1,
-}).format(value ?? 0);
 
 const projectFiltersFromSavedView = (view: SavedView) => {
     const raw = view.filters_json;
@@ -149,10 +144,10 @@ const ProjectSummaryCells = ({
             </td>
             <td className="px-4 py-3 text-center">
                 <span className="font-medium text-content-primary">
-                    {formatEffortDays(summary?.remaining_effort_days, i18n.language)}
+                    {formatEffortDays(summary?.remaining_effort_days, i18n.language) ?? t('common.unknown')}
                 </span>
                 <span className="ml-1 text-xs text-content-secondary">
-                    / {formatEffortDays(summary?.total_effort_days, i18n.language)}
+                    / {formatEffortDays(summary?.total_effort_days, i18n.language) ?? t('common.unknown')}
                 </span>
             </td>
             <td className="px-4 py-3">
@@ -259,6 +254,8 @@ const ProjectsPage = () => {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<ProjectStatus | ''>('');
     const [healthFilter, setHealthFilter] = useState<ProjectHealth | ''>('');
+    // A portfolio count opens the projects it counts.
+    const [exceptionFilter, setExceptionFilter] = useState<'at_risk' | 'unassessed' | 'unassigned' | null>(null);
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
     const appliedSavedViewIdRef = useRef<number | null>(null);
 
@@ -342,13 +339,17 @@ const ProjectsPage = () => {
             if (healthFilter && project.health !== healthFilter) {
                 return false;
             }
+            if (exceptionFilter === 'at_risk' && !['at_risk', 'off_track'].includes(project.health)) return false;
+            if (exceptionFilter === 'unassessed' && project.health !== 'unknown') return false;
+            if (exceptionFilter === 'unassigned' && project.initiative_id) return false;
             return true;
         });
-    }, [projects, search, statusFilter, healthFilter]);
+    }, [projects, search, statusFilter, healthFilter, exceptionFilter]);
     const hasActiveProjectFilters = Boolean(
         search.trim()
         || statusFilter
         || healthFilter
+        || exceptionFilter
         || activeSavedView,
     );
 
@@ -356,6 +357,7 @@ const ProjectsPage = () => {
         setSearch('');
         setStatusFilter('');
         setHealthFilter('');
+        setExceptionFilter(null);
         clearRequestedViewParam();
     };
 
@@ -456,23 +458,26 @@ const ProjectsPage = () => {
                                 aria-label={t('surfaces.projectsPage.portfolioExceptions')}
                             >
                                 {atRiskProjectCount > 0 ? (
-                                    <span className="projects-exception is-risk">
+                                    <button type="button" className="projects-exception is-risk" aria-pressed={exceptionFilter === 'at_risk'}
+                                        onClick={() => setExceptionFilter(value => value === 'at_risk' ? null : 'at_risk')}>
                                         <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                                         {t('surfaces.projectsPage.atRiskCount', { count: atRiskProjectCount })}
-                                    </span>
+                                    </button>
                                 ) : unassessedProjectCount > 0 ? (
-                                    <span className="projects-exception">
+                                    <button type="button" className="projects-exception" aria-pressed={exceptionFilter === 'unassessed'}
+                                        onClick={() => setExceptionFilter(value => value === 'unassessed' ? null : 'unassessed')}>
                                         {t('surfaces.projectsPage.healthNotAssessed', { count: unassessedProjectCount })}
-                                    </span>
+                                    </button>
                                 ) : (
                                     <span className="projects-exception is-clear">
                                         {t('surfaces.projectsPage.noRiskFlags')}
                                     </span>
                                 )}
                                 {unassignedProjectCount > 0 && (
-                                    <span className="projects-exception">
+                                    <button type="button" className="projects-exception" aria-pressed={exceptionFilter === 'unassigned'}
+                                        onClick={() => setExceptionFilter(value => value === 'unassigned' ? null : 'unassigned')}>
                                         {t('surfaces.projectsPage.unassignedCount', { count: unassignedProjectCount })}
-                                    </span>
+                                    </button>
                                 )}
                             </div>
                         )}

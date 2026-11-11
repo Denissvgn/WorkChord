@@ -66,7 +66,7 @@ const AnalyticsPage = () => {
             {summaryQuery.isLoading && <p role="status">{t('common.loading')}</p>}
             <DeliveryAnalytics iterationId={selectedIterationId} />
             {summaryQuery.isError && <QueryErrorState error={summaryQuery.error} onRetry={() => { void summaryQuery.refetch(); }} />}
-            <WorkMetricsLine metrics={summaryQuery.data} />
+            <WorkMetricsLine metrics={summaryQuery.data} scope={selectedIterationId > 0 ? { iteration_id: selectedIterationId } : null} />
             <SavedViewDashboardCards iterationId={selectedIterationId} title={t('analytics.savedViewDashboard')}/>
 
             {isHistoryError && (

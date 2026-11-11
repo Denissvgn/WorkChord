@@ -51,6 +51,7 @@ import {
     type AttentionKind,
     type AttentionSeverity,
 } from '../features/overview/attentionRanking';
+import { formatDecimal, formatPercent } from '../utils/workNumbers';
 
 type CapacityException = {
     id: number;
@@ -185,11 +186,7 @@ const parseIsoDate = (value?: string | null) => {
     return Number.isNaN(timestamp) ? null : timestamp;
 };
 
-const formatNumber = (value: number, locale: string, digits = 1) => (
-    new Intl.NumberFormat(locale, {
-        maximumFractionDigits: digits,
-    }).format(value)
-);
+const formatNumber = (value: number, locale: string, digits = 1) => formatDecimal(value, locale, digits) ?? '';
 
 const initialsFor = (name?: string | null) => {
     if (!name) return '?';
@@ -764,7 +761,7 @@ const OverviewPage = () => {
                     </>
                 )}
             />
-            <WorkMetricsLine metrics={iterationSummary} />
+            <WorkMetricsLine metrics={iterationSummary} scope={selectedIterationId > 0 ? { iteration_id: selectedIterationId } : null} />
             {recoveryAnnouncement && (
                 <p className="sr-only" role="status" aria-atomic="true">
                     {recoveryAnnouncement}
@@ -1130,7 +1127,7 @@ const OverviewDeliverySnapshot = ({
     progress,
     workingDays,
 }: OverviewDeliverySnapshotProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const completion = completionPercent === null
         ? null
         : Math.max(0, Math.min(100, Math.round(completionPercent)));
@@ -1153,7 +1150,7 @@ const OverviewDeliverySnapshot = ({
                 <span>{t('overview.focus.deliveryProgress')}</span>
                 <strong className="tnum">
                     {deliveryDataAvailable && completion !== null
-                        ? `${completion}%`
+                        ? formatPercent(completion, i18n.resolvedLanguage ?? i18n.language)
                         : t('overview.dataStatus.valueUnavailable')}
                 </strong>
             </div>

@@ -115,6 +115,19 @@ describe('ProjectsPage', () => {
         expect(screen.queryByText('No risk flags')).not.toBeInTheDocument();
     });
 
+    it('filters the table to the projects a portfolio count names', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'at_risk' }, { ...project, id: 3, name: 'Comet', health: 'off_track' }]);
+        const { user } = renderWithProviders(<ProjectsPage />, { initialEntries: ['/projects'] });
+        const count = await screen.findByRole('button', { name: /2 at risk/i });
+        await user.click(count);
+        expect(count).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.queryByRole('link', { name: 'Atlas' })).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Beacon' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Comet' })).toBeInTheDocument();
+        await user.click(count);
+        expect(await screen.findByRole('link', { name: 'Atlas' })).toBeInTheDocument();
+    });
+
     it('keeps the project table primary and initiative management collapsed', async () => {
         const { user } = renderWithProviders(<ProjectsPage />, {
             initialEntries: ['/projects'],

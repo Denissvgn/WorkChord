@@ -48,6 +48,8 @@ import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage, getApiErrorStatus } from '../utils/apiError';
 import { useToast } from '../components/feedback/toast';
+import { MetricCount } from '../components/tasks/MetricCount';
+import { formatDecimal, formatEffortDays } from '../utils/workNumbers';
 import { feedbackMessage } from '../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 import { formatPortfolioOwnerLabel } from '../utils/teamMemberLabels';
@@ -154,7 +156,7 @@ const riskTone = (risk?: string): 'gray' | 'green' | 'yellow' | 'red' => {
     }
 };
 
-const formatNumber = (value?: number) => (value ?? 0).toFixed(1).replace(/\.0$/, '');
+const formatNumber = (value?: number) => formatDecimal(value ?? 0, i18n.language) ?? '0';
 
 type ProjectUpdateFormState = {
     health: ProjectHealth;
@@ -887,6 +889,7 @@ const ProjectDetailPage = () => {
 
     const enabled = Number.isInteger(numericProjectId) && numericProjectId > 0;
 
+    const metricScope = Number.isFinite(numericProjectId) && numericProjectId > 0 ? { project_id: numericProjectId } : null;
     const { data: project, isLoading: isProjectLoading, error: projectError, refetch: refetchProject } = useQuery({
         queryKey: ['project', numericProjectId],
         queryFn: () => projectService.getById(numericProjectId),
@@ -1351,11 +1354,14 @@ const ProjectDetailPage = () => {
             {/* One summary line in the shared words; exception counts only when non-zero. */}
             <div>
                 <p className="mb-1.5 text-sm text-content-secondary">
-                    <b className="font-semibold text-content-primary">{t('surfaces.projectDetail.summaryImplemented', { done: summary?.implemented_tasks ?? 0, total: summary?.total_tasks ?? 0 })}</b>
-                    {' · '}{t('surfaces.projectDetail.summaryAccepted', { count: summary?.accepted_tasks ?? 0 })}
-                    {' · '}{t('surfaces.projectDetail.summaryActive', { count: summary?.active_tasks ?? 0 })}
-                    {(summary?.blocked_tasks ?? 0) > 0 && <>{' · '}<span className="text-feedback-warning-foreground">{t('surfaces.projectDetail.summaryBlocked', { count: summary?.blocked_tasks })}</span></>}
-                    {(summary?.overdue_tasks ?? 0) > 0 && <>{' · '}<span className="text-feedback-danger-foreground">{t('surfaces.projectDetail.summaryOverdue', { count: summary?.overdue_tasks })}</span></>}
+                    {/* Each count opens the tasks it counts. */}
+                    <MetricCount metric="implemented" scope={metricScope} title={t('metricList.implemented')} className="font-semibold text-content-primary">
+                        {t('surfaces.projectDetail.summaryImplemented', { done: summary?.implemented_tasks ?? 0, total: summary?.total_tasks ?? 0 })}
+                    </MetricCount>
+                    {' · '}<MetricCount metric="accepted" scope={metricScope} title={t('metricList.accepted')}>{t('surfaces.projectDetail.summaryAccepted', { count: summary?.accepted_tasks ?? 0 })}</MetricCount>
+                    {' · '}<MetricCount metric="active" scope={metricScope} title={t('metricList.active')}>{t('surfaces.projectDetail.summaryActive', { count: summary?.active_tasks ?? 0 })}</MetricCount>
+                    {(summary?.blocked_tasks ?? 0) > 0 && <>{' · '}<MetricCount metric="blocked" scope={metricScope} title={t('metricList.blocked')} className="text-feedback-warning-foreground">{t('surfaces.projectDetail.summaryBlocked', { count: summary?.blocked_tasks })}</MetricCount></>}
+                    {(summary?.overdue_tasks ?? 0) > 0 && <>{' · '}<MetricCount metric="overdue" scope={metricScope} title={t('metricList.overdue')} className="text-feedback-danger-foreground">{t('surfaces.projectDetail.summaryOverdue', { count: summary?.overdue_tasks })}</MetricCount></>}
                 </p>
                 <div style={{height:6, background:'var(--panel-3)', borderRadius:999, overflow:'hidden'}} aria-hidden="true">
                     <div style={{height:'100%', width:`${completionPercent}%`, background:'var(--done)', borderRadius:999}}/>
@@ -1629,7 +1635,7 @@ const ProjectDetailPage = () => {
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-content-secondary">{t('surfaces.projectDetail.total')}</span>
-                                <span className="font-medium tabular-nums text-content-primary">{formatNumber(summary?.total_effort_days)}d</span>
+                                <span className="font-medium tabular-nums text-content-primary">{formatEffortDays(summary?.total_effort_days, i18n.language) ?? t('common.unknown')}</span>
                             </div>
                         </div>
                     </div>

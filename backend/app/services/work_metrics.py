@@ -149,8 +149,18 @@ async def scoped_metric_tasks(db, *, project_id=None, iteration_id=None):
     return rows
 
 
-async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None, now=None):
-    """Aggregate all authorized leaves in SQL, including inherited scheduling facets."""
+# Counts a person can open: each names the predicate the aggregate counts with.
+METRIC_MATCHES = ("total", "planned", "active", "resolved", "closed", "implemented", "accepted", "blocked",
+                  "overdue", "late_start", "iteration_overflow", "acceptance_unknown", "unknown_estimate")
+
+
+async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_ids=None, group_by=None, task_ids=None, zone_map=None, now=None,
+                            matching=None, limit=200):
+    """Aggregate all authorized leaves in SQL, including inherited scheduling facets.
+
+    With ``matching``, return the tasks behind one count instead, chosen by the
+    same predicate, so a count and the list it opens always agree.
+    """
     from sqlalchemy import select, case, func, or_, and_, false, literal
     from app.models.task import Task, TaskDependency
     from app.models.project import Project
@@ -217,6 +227,22 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
         or_(target.c.id.is_(None), dependency.c.depends_on_id.notin_(visible_ids),
             target.c.status.notin_(["resolved", "closed"]), target.c.canceled_at.is_not(None))).exists()
     blocked = or_(and_(t.c.blocked_reason.is_not(None), t.c.blocked_reason != ""), unavailable_dependency)
+    joined = t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id)
+    if matching is not None:
+        predicates = {"total": included, "implemented": and_(included, implemented), "accepted": and_(included, accepted),
+            "blocked": and_(included, blocked), "overdue": and_(included, overdue), "late_start": and_(included, late),
+            "iteration_overflow": and_(included, t.c.end_date > iterations.c.end_date),
+            "acceptance_unknown": and_(included, t.c.status == "closed", ~accepted),
+            "unknown_estimate": and_(included, (t.c.effort_hours / t.c.nominal_day_hours).is_(None)),
+            **{state: and_(included, t.c.status == state) for state in ["planned", "active", "resolved", "closed"]}}
+        if matching not in predicates:
+            raise ValueError("Unknown work metric")
+        query = select(t.c.id, t.c.title, t.c.status, projects.c.name.label("project_name"), iterations.c.name.label("iteration_name")) \
+            .select_from(joined).where(predicates[matching])
+        if task_ids is not None:
+            query = query.where(t.c.id.in_(task_ids))
+        rows = (await db.execute(query.order_by(t.c.id).limit(limit + 1))).mappings().all()
+        return {"metric": matching, "items": [dict(row) for row in rows[:limit]], "has_more": len(rows) > limit}
     def count(predicate, name):
         return func.coalesce(func.sum(case((predicate, 1), else_=0)), 0).label(name)
     columns = [count(included, "total_tasks"), count(required, "required_tasks"), count(and_(included, tree.c.optional), "optional_tasks"),
@@ -236,7 +262,7 @@ async def aggregate_metrics(db, *, project_id=None, iteration_id=None, project_i
     if grouping is not None:
         columns.insert(0, grouping.label("group_id"))
     validation = [visible_count.label("_visible"), reached_count.label("_reachable")]
-    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(t.join(tree, tree.c.id == t.c.id).outerjoin(parent_ids, parent_ids.c.parent_id == t.c.id).outerjoin(iterations, iterations.c.id == t.c.iteration_id).outerjoin(projects, projects.c.id == t.c.project_id))
+    query = select(*columns, *validation, literal(False).label("_validation_only")).select_from(joined)
     if task_ids is not None:
         query = query.where(t.c.id.in_(task_ids))
     if grouping is not None:

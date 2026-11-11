@@ -236,7 +236,7 @@ const ProjectReleaseDetailPage = () => {
                     </>
                 )}
             />
-            <WorkMetricsLine metrics={release} />
+            <WorkMetricsLine metrics={release} scope={numericReleaseId > 0 ? { release_id: numericReleaseId } : null} />
             <MetricGrid>
                 <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.linkedTasks')}</div><div className="kpi-val tnum">{release.tasks.length}</div></div>
                 <div className="kpi"><div className="kpi-lbl">{t('surfaces.releaseDetail.status')}</div><div className="kpi-val" style={{fontSize:16}}>{t(releaseStatusLabelKeys[release.status])}</div></div>

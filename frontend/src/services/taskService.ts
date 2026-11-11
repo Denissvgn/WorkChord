@@ -263,4 +263,19 @@ export const taskService = {
         const response = await api.post<TaskBatchUpdateResponse>(`/iterations/${iterationId}/tasks/batch-update`, data);
         return response.data;
     },
+
+    /** The tasks behind one work-metric count, chosen by the predicate that counts them. */
+    metricMatches: async (params: MetricScope & { metric: WorkMetricName }, signal?: AbortSignal) => {
+        const response = await api.get<MetricMatchPage>('/tasks/metric-matches', { params, signal });
+        return response.data;
+    },
 };
+
+export type WorkMetricName = 'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'implemented' | 'accepted' | 'blocked'
+    | 'overdue' | 'late_start' | 'iteration_overflow' | 'acceptance_unknown' | 'unknown_estimate';
+export type MetricScope = { project_id: number } | { iteration_id: number } | { release_id: number };
+export interface MetricMatchPage {
+    metric: WorkMetricName;
+    items: Array<{ id: number; title: string; status: string; project_name: string | null; iteration_name: string | null }>;
+    has_more: boolean;
+}
