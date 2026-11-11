@@ -1,6 +1,6 @@
 # GanttRow
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:77`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:78`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)
@@ -8,7 +8,7 @@
 
 ```typescript
 | { kind: 'task'; task: FlattenedTask }
-    | { kind: 'group'; key: string; label: string; count: number }
+    | { kind: 'group'; key: string; label: string; count: number; unassigned: number; start: string | null; end: string | null }
 ```
 
 ## Description

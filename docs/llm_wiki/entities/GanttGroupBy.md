@@ -1,13 +1,13 @@
 # GanttGroupBy
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:75`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:76`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)
 **Target:**
 
 ```typescript
-'none' | 'milestone' | 'prefix' | 'status'
+typeof GROUP_OPTIONS[number]
 ```
 
 ## Description
