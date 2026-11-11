@@ -64,7 +64,8 @@ const ToastItem = ({ toast, dismiss }: { toast: ToastRecord; dismiss: (id: numbe
         <div
             className={`pointer-events-auto flex w-full items-start gap-3 rounded-lg border p-4 shadow-lg ${toastClasses[toast.tone]}`}
             data-toast-tone={toast.tone}
-            role="status"
+            // Errors interrupt and stay until dismissed; other results are announced politely.
+            role={toast.tone === 'error' ? 'alert' : 'status'}
         >
             <Icon aria-hidden="true" className={`mt-0.5 h-5 w-5 shrink-0 ${iconClasses[toast.tone]}`} />
             <div className="min-w-0 flex-1">
@@ -115,7 +116,8 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                 message: input.message,
                 title: input.title,
                 tone,
-                durationMs: input.durationMs ?? 5000,
+                // An error toast never times out unless the caller asks for it.
+                durationMs: input.durationMs ?? (tone === 'error' ? 0 : 5000),
                 actionLabel: input.actionLabel,
                 onAction: input.onAction,
             }];
