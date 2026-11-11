@@ -19,7 +19,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { taskService } from '../../../services/taskService';
 import { teamService } from '../../../services/teamService';
 import { labelService } from '../../../services/labelService';
-import type { Task, TaskStatus, TaskUpdate } from '../../../types/task';
+import type { Task, TaskBatchUpdateResponse, TaskStatus, TaskUpdate } from '../../../types/task';
 import type { TaskFilters } from '../TaskFiltersBar';
 import { selectVisibleWork } from '../../../utils/visibleWork';
 import { TaskEditorDrawer } from '../TaskEditorDrawer';
@@ -31,6 +31,8 @@ import { STATUS_TONE } from '../../ui/tone';
 import { QueryErrorState, QueryLoadingState } from '../../feedback/QueryState';
 import { Button } from '../../common/Button';
 import { Modal } from '../../common/Modal';
+import { feedbackMessage } from '../../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../../features/mutationFeedback';
 
 interface KanbanBoardProps {
     iterationId: number;
@@ -96,6 +98,20 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
 
     // feedback-policy: mutation pending,inline - drag is locked while saving and selection failures stay recoverable.
     const updateTaskMutation = useMutation({
+        meta: {
+            success: (_data, variables) => feedbackMessage(t, 'saved', 'task', (variables as { task: Task }).task.title),
+            // Moves the card back: same status and assignee as before the move.
+            undo: (data, variables) => {
+                const { task, updates } = variables as { task: Task; updates: BoardTaskUpdate };
+                const moved = (data as TaskBatchUpdateResponse).updated_tasks.find(item => item.id === task.id);
+                if (!moved) return null;
+                const restore: TaskUpdate = {};
+                if (updates.status && updates.status !== task.status) restore.status = task.status;
+                if ('assignee_id' in updates) restore.assignee_id = task.assignee?.id ?? null;
+                return { run: () => taskService.batchUpdate(iterationId, { expected_revision: moved.iteration_revision,
+                    tasks: [{ task_id: task.id, expected_version: moved.version, update: restore, status_reason: t('feedback.undoReason') }] }) };
+            },
+        } satisfies MutationFeedbackMeta,
         mutationFn: async ({ task, updates }: { task: Task; updates: BoardTaskUpdate }) => {
             const { status, ...fieldUpdates } = updates;
             if (status && status !== task.status && !VALID_TRANSITIONS[task.status]?.includes(status)) {

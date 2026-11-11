@@ -52,6 +52,8 @@ import { formatDate } from '../../utils/formatDate';
 import { useIdentity } from '../../features/identity/identityContext';
 import { readTaskDraft, writeTaskDraft, removeTaskDraft, readPendingTaskWrite } from './taskDraftStorage';
 import { useActiveMount } from './useDraftDismissal';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface TaskFormProps {
     iterationId: number | null;
@@ -225,6 +227,11 @@ export const TaskForm = ({
 
     const createMutation = useMutation({
         mutationFn: (data: TaskCreate) => taskService.create(iterationId, data),
+        meta: {
+            success: data => feedbackMessage(t, 'created', 'task', (data as Task).title),
+            // A task just created can be deleted again while nothing else depends on it.
+            undo: data => ({ run: () => taskService.delete((data as Task).id, (data as Task).version, (data as Task).iteration_revision ?? undefined) }),
+        } satisfies MutationFeedbackMeta,
         onMutate: () => checkpointWrite('task'),
         onSuccess: () => {
             invalidateTaskProjectQueries();
@@ -241,6 +248,7 @@ export const TaskForm = ({
 
     const createTriageMutation = useMutation({
         mutationFn: (data: TriageItemCreate) => triageService.create(data),
+        meta: { success: data => feedbackMessage(t, 'created', 'triageItem', (data as { title?: string }).title) } satisfies MutationFeedbackMeta,
         onMutate: () => checkpointWrite('triage'),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['triage'] });
@@ -257,6 +265,7 @@ export const TaskForm = ({
 
     const updateMutation = useMutation({
         mutationFn: (data: TaskUpdate) => taskService.update(currentTask!.id, data),
+        meta: { success: data => feedbackMessage(t, 'saved', 'task', (data as Task).title) } satisfies MutationFeedbackMeta,
         onMutate: () => checkpointWrite('task'),
         onSuccess: () => {
             invalidateTaskProjectQueries();

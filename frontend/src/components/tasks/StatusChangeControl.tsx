@@ -9,6 +9,7 @@ import { taskService } from '../../services/taskService';
 import type { Task, TaskStatus, CascadeUpdateInfo } from '../../types/task';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
 import { formatDate } from '../../utils/formatDate';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface StatusChangeControlProps {
     task: Task;
@@ -35,6 +36,15 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPend
     const [showConfirm, setShowConfirm] = useState<TaskStatus | null>(null);
 
     const mutation = useMutation({
+        meta: {
+            success: data => t('feedback.statusChanged', { name: (data as { task: Task }).task.title, status: t(`statuses.${(data as { task: Task }).task.status}`) }),
+            // Moves back to the status it had; the server refuses a transition its rules do not allow.
+            undo: data => {
+                const changed = (data as { task: Task }).task;
+                const previous = task.status;
+                return { run: () => taskService.changeStatus(changed.id, previous, t('feedback.undoReason'), changed.version) };
+            },
+        } satisfies MutationFeedbackMeta,
         mutationFn: (newStatus: TaskStatus) => taskService.changeStatus(
             task.id,
             newStatus,

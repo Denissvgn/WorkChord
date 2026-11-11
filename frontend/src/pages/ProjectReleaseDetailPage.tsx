@@ -26,6 +26,7 @@ import { formatDate, formatDateTime } from '../utils/formatDate';
 import type { Release, ReleaseStatus, ReleaseTaskSummary } from '../types/release';
 import { isTaskStatus, pillToneClassName, STATUS_TONE, statusTextClassName } from '../components/ui/tone';
 import { Breadcrumbs } from '../components/layout/Breadcrumbs';
+import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 
 const releaseStatusLabelKeys: Record<ReleaseStatus, string> = {
     planned: 'surfaces.releaseDetail.statuses.planned',
@@ -127,6 +128,7 @@ const ProjectReleaseDetailPage = () => {
     });
 
     const markShippedMutation = useMutation({
+        meta: { success: data => t('feedback.releaseShipped', { name: (data as Release).name }) } satisfies MutationFeedbackMeta,
         mutationFn: () => releaseService.update(numericReleaseId, {
             status: 'shipped',
             shipped_at: new Date().toISOString(),

@@ -22,6 +22,8 @@ import type { Project, ProjectCreate, ProjectHealth, ProjectStatus } from '../..
 import type { WorkTemplate } from '../../types/template';
 import { templateDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface ProjectFormProps {
     initialData?: Project;
@@ -118,6 +120,7 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
 
     const createMutation = useMutation({
         mutationFn: (data: ProjectCreate) => projectService.create(data),
+        meta: { success: data => feedbackMessage(t, 'created', 'project', (data as Project).name) } satisfies MutationFeedbackMeta,
         onSuccess: (project) => {
             invalidateProjectQueries(project.id);
             if (isActive()) onSuccess(project);
@@ -129,6 +132,7 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
 
     const updateMutation = useMutation({
         mutationFn: (data: typeof formData) => projectService.update(initialData!.id, data, revisions!),
+        meta: { success: data => feedbackMessage(t, 'saved', 'project', (data as Project).name) } satisfies MutationFeedbackMeta,
         onSuccess: (project) => {
             invalidateProjectQueries(project.id);
             if (isActive()) onSuccess(project);

@@ -19,6 +19,7 @@ import type { WorkspaceIdentity } from './identityService';
 
 import { IdentityContext, useIdentity } from './identityContext';
 import { LocalProfilePicker } from './LocalProfilePicker';
+import { MutationSuccessFeedback } from '../MutationSuccessFeedback';
 
 const clearDrafts = (scope?: string) => {
     for (const key of Object.keys(sessionStorage)) {
@@ -144,7 +145,7 @@ export const IdentityProvider = ({ children, navigateAfterSignOut = target => wi
         {error && <p role="alert" className="wc p-3 text-feedback-danger">{error}</p>}
         {identity?.authenticated && !identity.workspace_role && Object.keys(identity.projects).length === 0 &&
             <p role="status" className="wc border-b border-border bg-surface-muted px-4 py-3 text-sm text-content-secondary">{t('identity.membershipMissing')}</p>}
-        <QueryClientProvider client={workClient}><div key={accessKey}>{children}</div></QueryClientProvider>
+        <QueryClientProvider client={workClient}><MutationSuccessFeedback /><div key={accessKey}>{children}</div></QueryClientProvider>
     </IdentityContext.Provider>;
 };
 

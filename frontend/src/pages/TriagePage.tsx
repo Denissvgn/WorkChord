@@ -73,6 +73,8 @@ import type {
     TriageSnoozeRequest,
     TriageTaskDraftResponse,
 } from '../types/triage';
+import { feedbackMessage } from '../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 
 const t = i18n.t.bind(i18n);
 
@@ -1969,6 +1971,7 @@ const TriagePage = () => {
 
     const createMutation = useMutation({
         mutationFn: (payload: TriageItemCreate) => triageService.create(payload),
+    meta: { success: data => feedbackMessage(t, 'created', 'triageItem', (data as TriageItem).title) } satisfies MutationFeedbackMeta,
         onSuccess: item => {
             setIsCreating(false);
             setSelectedId(item.id);
@@ -1977,6 +1980,7 @@ const TriagePage = () => {
     });
 
     const actionMutation = useMutation<TriageItem, unknown, ActionMutationInput>({
+        meta: { success: (data, variables) => t(`feedback.triage_${(variables as ActionMutationInput).type}`, { name: (data as TriageItem).title }) } satisfies MutationFeedbackMeta,
         mutationFn: input => {
             switch (input.type) {
                 case 'accept':
@@ -2004,6 +2008,7 @@ const TriagePage = () => {
 
     const convertMutation = useMutation<TriageConvertToTaskResponse, unknown, ConvertMutationInput>({
         mutationFn: input => triageService.convertToTask(input.itemId, input.payload),
+        meta: { success: data => t('feedback.triageConverted', { name: (data as TriageConvertToTaskResponse).task.title }) } satisfies MutationFeedbackMeta,
         onSuccess: (response, variables) => {
             setConvertItem(null);
             setConversionResult({ taskId: response.task.id, taskTitle: response.task.title });

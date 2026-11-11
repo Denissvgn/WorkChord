@@ -48,6 +48,8 @@ import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage, getApiErrorStatus } from '../utils/apiError';
 import { useToast } from '../components/feedback/toast';
+import { feedbackMessage } from '../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 import { formatPortfolioOwnerLabel } from '../utils/teamMemberLabels';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import type {
@@ -971,6 +973,7 @@ const ProjectDetailPage = () => {
 
     const deleteMutation = useMutation({
         mutationFn: (detachTasks: boolean) => projectService.delete(numericProjectId, deleteContext!.expected_revisions, detachTasks),
+        meta: { success: () => feedbackMessage(t, 'deleted', 'project', project?.name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             invalidateAfterDelete();
             navigate('/projects');
@@ -988,6 +991,11 @@ const ProjectDetailPage = () => {
 
     const createMilestoneMutation = useMutation({
         mutationFn: (data: ProjectMilestoneCreateRequest) => projectService.createMilestone(numericProjectId, data),
+        meta: {
+            success: data => feedbackMessage(t, 'created', 'milestone', (data as ProjectMilestone).name),
+            // A milestone just created can be removed again.
+            undo: data => ({ run: () => projectService.deleteMilestone(numericProjectId, (data as ProjectMilestone).id) }),
+        } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             setMilestoneEditor(null);
             setMilestoneActionError(null);
@@ -1004,6 +1012,7 @@ const ProjectDetailPage = () => {
         mutationFn: ({ milestoneId, data }: { milestoneId: number; data: ProjectMilestoneUpdateRequest }) => (
             projectService.updateMilestone(numericProjectId, milestoneId, data)
         ),
+        meta: { success: data => feedbackMessage(t, 'saved', 'milestone', (data as ProjectMilestone).name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             setMilestoneEditor(null);
             setMilestoneActionError(null);
@@ -1018,6 +1027,7 @@ const ProjectDetailPage = () => {
 
     const deleteMilestoneMutation = useMutation({
         mutationFn: (milestoneId: number) => projectService.deleteMilestone(numericProjectId, milestoneId),
+        meta: { success: () => feedbackMessage(t, 'deleted', 'milestone', deleteMilestoneTarget?.name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             setDeleteMilestoneTarget(null);
             setMilestoneActionError(null);

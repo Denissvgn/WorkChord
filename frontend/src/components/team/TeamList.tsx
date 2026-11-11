@@ -11,6 +11,8 @@ import type { MemberCapacity, MemberWorkload, TeamMember } from '../../types/tea
 import { QueryErrorState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface TeamListProps {
     iterationId: number;
@@ -31,6 +33,7 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
 
     const deleteMutation = useMutation({
         mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => teamService.delete(id, revisions),
+        meta: { success: (_data, variables) => feedbackMessage(t, 'deleted', 'teamMember', members?.find(member => member.id === (variables as { id: number }).id)?.name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
         },

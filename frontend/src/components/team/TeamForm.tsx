@@ -13,6 +13,8 @@ import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import type { TeamMember, TeamMemberCreate, TeamMemberProfile } from '../../types/team';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface TeamFormProps {
     iterationId: number;
@@ -104,6 +106,7 @@ const TeamFormEditor = ({
 
     const createMutation = useMutation({
         mutationFn: (data: TeamMemberCreate) => teamService.create(iterationId, data, revisions),
+        meta: { success: data => feedbackMessage(t, 'created', 'teamMember', (data as { name?: string }).name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] });
@@ -118,6 +121,7 @@ const TeamFormEditor = ({
 
     const updateMutation = useMutation({
         mutationFn: (data: TeamMemberCreate) => teamService.update(initialData!.id, data, revisions),
+        meta: { success: data => feedbackMessage(t, 'saved', 'teamMember', (data as { name?: string }).name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });

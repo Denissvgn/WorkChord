@@ -18,6 +18,7 @@ import type {
     TaskBulkOperationResult,
     TaskStatus,
 } from '../../types/task';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const t = i18n.t.bind(i18n);
 
@@ -182,6 +183,7 @@ export const TaskBulkOperationsPanel = ({
 
     const mutation = useMutation({
         mutationFn: (request: TaskBulkOperationRequest) => taskService.runBulkOperation(request),
+        meta: { success: (data, variables) => (data as { dry_run?: boolean }).dry_run ? null : t('feedback.bulkApplied', { count: (variables as TaskBulkOperationRequest).task_ids.length }) } satisfies MutationFeedbackMeta,
         onSuccess: async (response, variables) => {
             setPreview(response);
             setPreviewSignature(JSON.stringify([variables.task_ids, variables.action, variables.payload]));

@@ -7,6 +7,7 @@ import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const MAX_IMPORT_ROWS = 500;
 
@@ -39,6 +40,7 @@ export const ImportTeamModal = ({
 
     const importMutation = useMutation({
         mutationFn: (text: string) => teamService.importFromText(iterationId, text, context.observation!.expected_revisions),
+        meta: { success: t('feedback.teamImported') } satisfies MutationFeedbackMeta,
         onSuccess: async () => {
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['team', iterationId] }),

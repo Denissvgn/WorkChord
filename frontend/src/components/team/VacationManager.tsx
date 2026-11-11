@@ -14,6 +14,7 @@ import { useConfirmDialog } from '../common/useConfirmDialog';
 import type { Vacation, TeamMember } from '../../types/team';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface VacationManagerProps {
     member: TeamMember;
@@ -29,6 +30,7 @@ const VacationManagerEditor = ({ member, onClose, revisions, controls, onSaved }
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
 
     const addMutation = useMutation({
+        meta: { success: t('feedback.absenceAdded', { name: member.name }) } satisfies MutationFeedbackMeta,
         mutationFn: (data: { start_date: string; end_date: string }) =>
             teamService.addVacation(member.id, data, revisions),
         onSuccess: () => {
@@ -43,6 +45,7 @@ const VacationManagerEditor = ({ member, onClose, revisions, controls, onSaved }
 
     const deleteMutation = useMutation({
         mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => teamService.deleteVacation(id, revisions),
+        meta: { success: t('feedback.absenceRemoved', { name: member.name }) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             onSaved();
             // Invalidate all team queries to refresh member data

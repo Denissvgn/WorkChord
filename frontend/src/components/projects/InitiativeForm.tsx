@@ -11,6 +11,8 @@ import { getApiErrorMessage } from '../../utils/apiError';
 import { formatTeamMemberProfileLabel } from '../../utils/teamMemberLabels';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import type { Initiative, InitiativeCreate, ProjectHealth } from '../../types/project';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface InitiativeFormProps {
     initialData?: Initiative;
@@ -60,6 +62,7 @@ export const InitiativeForm = ({ initialData, onSuccess, onCancel }: InitiativeF
 
     const createMutation = useMutation({
         mutationFn: (data: InitiativeCreate) => projectService.createInitiative(data),
+        meta: { success: data => feedbackMessage(t, 'created', 'initiative', (data as Initiative).name) } satisfies MutationFeedbackMeta,
         onSuccess: initiative => {
             invalidateInitiativeQueries();
             onSuccess(initiative);
@@ -71,6 +74,7 @@ export const InitiativeForm = ({ initialData, onSuccess, onCancel }: InitiativeF
 
     const updateMutation = useMutation({
         mutationFn: (data: InitiativeFormState) => projectService.updateInitiative(initialData!.id, data),
+        meta: { success: data => feedbackMessage(t, 'saved', 'initiative', (data as Initiative).name) } satisfies MutationFeedbackMeta,
         onSuccess: initiative => {
             invalidateInitiativeQueries();
             onSuccess(initiative);

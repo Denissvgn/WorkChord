@@ -18,6 +18,8 @@ import type {
 } from '../../types/release';
 import { QueryErrorState } from '../feedback/QueryState';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface ReleaseFormProps {
     projectId: number;
@@ -107,6 +109,7 @@ export const ReleaseForm = ({
 
     const createMutation = useMutation({
         mutationFn: (payload: ReleaseCreateRequest) => releaseService.createForProject(projectId, payload),
+        meta: { success: data => feedbackMessage(t, 'created', 'release', (data as Release).name) } satisfies MutationFeedbackMeta,
         onSuccess: (release) => {
             invalidateReleaseQueries(release);
             onSuccess(release);
@@ -118,6 +121,7 @@ export const ReleaseForm = ({
 
     const updateMutation = useMutation({
         mutationFn: (payload: ReleaseUpdateRequest) => releaseService.update(initialData!.id, payload),
+        meta: { success: data => feedbackMessage(t, 'saved', 'release', (data as Release).name) } satisfies MutationFeedbackMeta,
         onSuccess: (release) => {
             invalidateReleaseQueries(release);
             onSuccess(release);

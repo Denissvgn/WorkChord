@@ -34,6 +34,8 @@ import type {
     ProjectPortfolioSummary,
     ProjectStatus,
 } from '../types/project';
+import { feedbackMessage } from '../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 const projectStatusLabelKeys: Record<ProjectStatus, string> = {
     proposed: 'surfaces.projectsPage.proposed',
     planned: 'surfaces.projectsPage.planned',
@@ -374,6 +376,7 @@ const ProjectsPage = () => {
 
     const deleteInitiativeMutation = useMutation({
         mutationFn: (initiativeId: number) => projectService.deleteInitiative(initiativeId),
+        meta: { success: (_data, initiativeId) => feedbackMessage(t, 'deleted', 'initiative', initiatives.find(item => item.id === initiativeId)?.name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['initiatives'] });
             queryClient.invalidateQueries({ queryKey: ['projects'] });
