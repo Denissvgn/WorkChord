@@ -43,6 +43,20 @@ class TaskDetailService:
                  Task.accepted_version == Task.version, Task.canceled_at.is_(None)).label("acceptance_current")
             ).outerjoin(Project, Project.id == Task.project_id).outerjoin(Iteration, Iteration.id == Task.iteration_id)
 
+    async def reviewer_names(self, task_ids):
+        """Name the agent that holds each task's live review assignment."""
+        if not task_ids:
+            return {}
+        from app.models.agent import AgentActor, AgentTaskAssignment
+        rows = (await self.db.execute(
+            select(AgentTaskAssignment.task_id, AgentActor.display_name, AgentActor.name)
+            .join(AgentActor, AgentActor.id == AgentTaskAssignment.actor_id)
+            .where(AgentTaskAssignment.task_id.in_(list(task_ids)),
+                   AgentTaskAssignment.purpose == "verification",
+                   AgentTaskAssignment.state.in_(("queued", "accepted")))
+            .order_by(AgentTaskAssignment.id))).all()
+        return {row.task_id: row.display_name or row.name for row in rows}
+
     async def page(self, query, *, limit=50, after_id=0):
         if not 1 <= limit <= 100 or after_id < 0:
             raise ValueError("Use a limit from 1 to 100 and a nonnegative cursor")
@@ -111,7 +125,9 @@ class TaskDetailService:
         if backlog_only:
             statement = statement.where(Task.iteration_id.is_(None))
         page = await self.page(statement, limit=limit, after_id=after_id)
+        reviewers = await self.reviewer_names([item.id for item in page.items if item.status == "resolved"])
         for item in page.items:
+            item.reviewer_name = reviewers.get(item.id)
             if (await self._policy_flags(item.id))['effective_is_deferred']:
                 continue
             actions = await TaskDomainService(self.db).allowed_actions(item.id)
@@ -156,4 +172,6 @@ class TaskDetailService:
         if observed_version != task.version:
             from app.commands import PlanningConflict
             raise PlanningConflict('task_context_changed', 'This task changed during the initial read. Reload before opening a draft.')
-        return TaskDetailResponse(task=response, ancestors=list(reversed(ancestors)), ancestors_complete=parent_id is None, children=children, dependencies=dependencies)
+        reviewer_name = (await self.reviewer_names([task.id])).get(task.id) if task.status == "resolved" else None
+        return TaskDetailResponse(task=response, ancestors=list(reversed(ancestors)), ancestors_complete=parent_id is None, children=children, dependencies=dependencies,
+                                  reviewer_name=reviewer_name)

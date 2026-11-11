@@ -49,8 +49,11 @@ Do not treat a succeeded run, a green local check, a commit link, or the
 worker's summary as enough by itself. Check the task's stated outcome.
 
 Shape `evidence` as one entry per criterion, for example
-`{"criteria": [{"id": "...", "revision": 1, "result": "pass", "check": "...",
-"observed": "..."}], "limitations": "..."}`, within 100 bounded fields.
+`{"criteria": [{"id": "...", "revision": 1, "result": "pass", "note": "..."}],
+"limitations": "..."}`, within 100 bounded fields. `result` is `pass`, `fail`,
+or `not_checked`, and `note` says what you checked or what must change. People
+who review in WorkChord record the same `criteria` packet, so a worker reads one
+rework format.
 
 ## Check Model Evidence
 

@@ -457,6 +457,7 @@ export interface TaskProgress {
 export interface TaskReference {
     acceptance_current?: boolean;
     project_name?: string | null; iteration_name?: string | null; blocked_reason?: string | null; canceled_at?: string | null;
+    reviewer_name?: string | null;
     id: number; title: string; version: number; status: TaskStatus;
     project_id: number | null; iteration_id: number | null; parent_id: number | null; owner_profile_id: number | null;
 }
@@ -464,6 +465,7 @@ export interface TaskReferencePage { items: TaskReference[]; has_more: boolean; 
 export interface TaskDetail {
     task: Task; ancestors: TaskReference[]; ancestors_complete: boolean;
     children: TaskReferencePage; dependencies: TaskReferencePage; execution_context_complete: false;
+    reviewer_name?: string | null;
 }
 export interface TaskActionAvailability { action: string; allowed: boolean; blockers: { code: string; message: string }[] }
 export interface TaskActions {

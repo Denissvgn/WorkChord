@@ -1255,6 +1255,7 @@ _WORKFLOW_VOCABULARY_SECTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...],
     "task_states": (("means",), ("name",), ("product_term",)),
     "actions": (("effect", "agents"), ("name",), ()),
     "queues": (("means", "agents"), ("name",), ()),
+    "triage_dispositions": (("means", "agents"), ("name",), ()),
     "pipeline_stages": (("pm_action",), ("name", "description"), ()),
     "terms": (("name", "means", "not"), (), ()),
 }
@@ -1391,6 +1392,15 @@ def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
             (
                 (queue["name"]["en"], queue["means"], queue["agents"])
                 for queue in vocabulary["queues"]
+            ),
+        ),
+        "Triage dispositions, with the same names for people and the PM:",
+        "",
+        *table(
+            ("Disposition", "Means", "Agents"),
+            (
+                (item["name"]["en"], item["means"], item["agents"])
+                for item in vocabulary["triage_dispositions"]
             ),
         ),
         "Agent pipeline stages, in order; each task is in exactly one stage:",

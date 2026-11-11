@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.11.0.tar.gz",
-          "sha256": "a89ea99e928719b2c1133e7d3e19fc2fe943265d1712ae18e92e1cdf579bfdc1",
+          "sha256": "21e88562e0ed49cab1b93fd92d3af5f5ac2607426fcfc7ba5570efa678d192f3",
           "size": 143393
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.11.0.zip",
-          "sha256": "dc89e4ff5c69f7027226e9a2ba6816b8fe6e73fc02d4f3fedb91dbaa74af30a3",
-          "size": 133067
+          "sha256": "2d596128890e6a9f79a2e74f2bbc7505b35d89931bbd60a34627109dd2b5051a",
+          "size": 134390
         }
       ],
       "entrypoint": "SKILL.md",
@@ -43,8 +43,8 @@
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
-          "sha256": "af877d4f807a7cb8c25fa59584e8595e7ef2c021fa94915bcc445e8198145f14",
-          "size": 18283
+          "sha256": "20db6405e3165e752776e17d792924086e3e13c53283c9931036dd13ebb1527d",
+          "size": 18560
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "bc93b8c3c7d6147984779f7bcf254655abfdcee36d83baf3efbc52f3b5fb9b28",
-          "size": 8160
+          "sha256": "e78de43b0feef1cd5896052f7cd8c4882e5461b8a85ca5e65b9eb50d46c388b4",
+          "size": 9206
         }
       ],
       "license": "MIT",
@@ -116,14 +116,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-reviewer-1.0.0.tar.gz",
-          "sha256": "5914dacb89a16484efa76839618bcad03c4156b2721ce1e0bc4c84e5e0bb9327",
+          "sha256": "4fb7fa8acff01f5a3e610d1e28d2aac2e1e6b12a108a00734943f6eb59ed0b6d",
           "size": 40983
         },
         {
           "format": "zip",
           "path": "workchord-reviewer-1.0.0.zip",
-          "sha256": "79dc0645cf4525660aab55eef44208f94d4b3aeb426136e7068db78a550f6c52",
-          "size": 34357
+          "sha256": "32e4f8c143171ee948627243a13b7112b101e7f7eb69f0d5d174f6375e850150",
+          "size": 35586
         }
       ],
       "entrypoint": "SKILL.md",
@@ -145,13 +145,13 @@
         },
         {
           "path": "references/review-packet-and-verdict.md",
-          "sha256": "a0a5badec3487b564c5816a5f28f3a59473b09cac77b4b094fe48f00d3834b11",
-          "size": 4798
+          "sha256": "e0b0b3775320b2905a2cb126ec445b28a0dba17e695aff6460a8f14a7f69e5bc",
+          "size": 4981
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "fcf6604a9edfbbc42d80bc6d38b073ca79a8ec5c044e2cf54c3f405b4fdf4033",
-          "size": 8245
+          "sha256": "633334b16eb43488c6ccba14e56c6354bb2523cccdc4cd215a12cf5b524e50a8",
+          "size": 9291
         }
       ],
       "license": "MIT",
@@ -185,14 +185,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-worker-1.10.0.tar.gz",
-          "sha256": "a28d416eeb48f59290f5e0166ae04d80318be7da0141973404ab1e2e9cb9cd18",
+          "sha256": "6cd23c7cd9795fd7011db83c472bc03c0d0f367d693ff525ba059858195190be",
           "size": 81948
         },
         {
           "format": "zip",
           "path": "workchord-worker-1.10.0.zip",
-          "sha256": "8c9bd4789c6cfd1f6d6e5a506e4f77ede04981290746cc62a16c91d6190e7a58",
-          "size": 73955
+          "sha256": "b7865ccb413665a4dfca1b4945f081c46be2babb6990350c6375936894226312",
+          "size": 75281
         }
       ],
       "entrypoint": "SKILL.md",
@@ -229,13 +229,13 @@
         },
         {
           "path": "references/task-context-and-scope.md",
-          "sha256": "b98accd7b39c5e81ab570b4b715aa5296d303300a90b0286952ae1a52cbfa72f",
-          "size": 6851
+          "sha256": "1a6e6abe43111a889d6ecd193e0f86cf8bd52598691e2dc616a1f652030f7ab6",
+          "size": 7131
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "28e8df207d904b89123db6c73cb74e8709131fd4ec571870cfdff37554bdfcfa",
-          "size": 8176
+          "sha256": "4a47a93bac24e7d97535cec4745b1bbc705f229f1345ef8292d265ba2aa67558",
+          "size": 9222
         }
       ],
       "license": "MIT",
@@ -272,5 +272,5 @@
       "version": "1.10.0"
     }
   ],
-  "source_revision": "sha256:a1a9b4a2b59129117bcbc2dafcc40667c6809d6d847f581f2139951a18910cf0"
+  "source_revision": "sha256:4eb42b399a89176b4f77b15bd9e60d0f9fa9f6182b6fe091e0f1d404886a554d"
 }

@@ -8,7 +8,7 @@ import { russianResources } from './resources.ru';
 
 type Localized = { en: string; ru: string };
 type Entry = { id: string; name: Localized | string; group?: Localized; description?: Localized };
-type Vocabulary = Record<'roles' | 'task_states' | 'actions' | 'queues' | 'pipeline_stages', Entry[]>;
+type Vocabulary = Record<'roles' | 'task_states' | 'actions' | 'queues' | 'triage_dispositions' | 'pipeline_stages', Entry[]>;
 
 // The same vocabulary generates the shared block in every agent role skill.
 const vocabulary = JSON.parse(
@@ -41,6 +41,12 @@ const LABEL_KEYS: Array<{ section: keyof Vocabulary; id: string; field: 'name' |
     { section: 'queues', id: 'in_review', field: 'name', keys: ['teamwork.queue_awaiting_review'] },
     { section: 'queues', id: 'to_review', field: 'name', keys: ['teamwork.queue_review'] },
     { section: 'queues', id: 'inbox', field: 'name', keys: ['teamwork.queue_inbox'] },
+    { section: 'triage_dispositions', id: 'convert', field: 'name', keys: ['surfaces.triagePage.convert'] },
+    { section: 'triage_dispositions', id: 'accept', field: 'name', keys: ['surfaces.triagePage.accept'] },
+    { section: 'triage_dispositions', id: 'ask_for_clarification', field: 'name', keys: ['surfaces.triagePage.askForClarification'] },
+    { section: 'triage_dispositions', id: 'snooze', field: 'name', keys: ['surfaces.triagePage.snooze'] },
+    { section: 'triage_dispositions', id: 'mark_duplicate', field: 'name', keys: ['surfaces.triagePage.markDuplicate'] },
+    { section: 'triage_dispositions', id: 'decline', field: 'name', keys: ['surfaces.triagePage.decline'] },
     { section: 'pipeline_stages', id: 'needs_definition', field: 'name', keys: ['agentPipeline.columns.needs_definition.title'] },
     { section: 'pipeline_stages', id: 'needs_definition', field: 'description', keys: ['agentPipeline.columns.needs_definition.description'] },
     { section: 'pipeline_stages', id: 'ready_to_assign', field: 'name', keys: ['agentPipeline.columns.ready_to_assign.title'] },
@@ -79,9 +85,9 @@ describe('shared workflow vocabulary', () => {
         expect(lookup(catalogs[language], key)).toBe(names?.[language]);
     });
 
-    it('maps every role, task state, action, queue and pipeline stage to an interface label', () => {
+    it('maps every role, task state, action, queue, disposition and pipeline stage to an interface label', () => {
         const mapped = new Set(LABEL_KEYS.map(entry => `${entry.section}.${entry.id}`));
-        const required = (['roles', 'task_states', 'actions', 'queues', 'pipeline_stages'] as const)
+        const required = (['roles', 'task_states', 'actions', 'queues', 'triage_dispositions', 'pipeline_stages'] as const)
             .flatMap(section => vocabulary[section].map(item => `${section}.${item.id}`));
         expect(required.filter(item => !mapped.has(item))).toEqual([]);
     });

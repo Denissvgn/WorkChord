@@ -51,8 +51,8 @@ defect follows the same intake mechanics below.
 3. Preserve any trace ID, correlation ID, run ID, or timestamp already in
    hand. Never fetch or paste credentials, private keys, or full raw logs to
    document it.
-4. Set a source value that marks agent self-detection (for example
-   `agent-observed-defect`) and a priority hint from actual user or data
+4. Set the source to `agent-observed-defect`, which people can filter on in
+   Triage as "WorkChord defect reported by an agent", and a priority hint from actual user or data
    impact, not investigative convenience.
 5. Link the source task, assignment, or run the defect surfaced in when one
    exists; do not block that unrelated object's own disposition on this new
@@ -63,6 +63,8 @@ defect follows the same intake mechanics below.
 
 ## Choose a Disposition
 
+Use the six disposition names people see in Triage; the generated "Triage dispositions" table in [workflow-and-names.md](workflow-and-names.md) lists them.
+
 | Disposition | Apply when | Required evidence |
 | --- | --- | --- |
 | Accept | The problem is understood and should enter planning, but task conversion is not yet ready or is intentionally separate | Outcome, owner, priority rationale, remaining planning step |
@@ -70,7 +72,7 @@ defect follows the same intake mechanics below.
 | Decline | The request should not be pursued | Reason and accountable decision owner |
 | Snooze | A known date or input should trigger reconsideration | `snoozed_until`, reason, expected input |
 | Mark duplicate | An existing Triage item or task owns the outcome | Exactly one duplicate target and optional source-link action |
-| Clarify | A missing fact changes scope, value, acceptance, access, or routing | Question, requester/owner, next review time; preserve `new` or snooze |
+| Ask for clarification | A missing fact changes scope, value, acceptance, access, or routing | Question, requester/owner, next review time; snooze until that time with the question as the reason, as people do with Ask for clarification |
 
 Before conversion:
 

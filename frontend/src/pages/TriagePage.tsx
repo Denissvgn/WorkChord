@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     Clock3,
     CopyCheck,
+    MessageCircleQuestion,
     ExternalLink,
     Inbox,
     ListFilter,
@@ -398,7 +399,13 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
     );
 };
 
-type TriageLifecycleAction = 'accept' | 'decline' | 'snooze' | 'duplicate';
+type TriageLifecycleAction = 'accept' | 'decline' | 'snooze' | 'clarify' | 'duplicate';
+
+// Sources the agent role skills write, shown by name in the source filter.
+const AGENT_SOURCE_LABEL_KEYS: Record<string, string> = {
+    'agent-observed-defect': 'surfaces.triagePage.sourceAgentDefect',
+    'agent-discovery': 'surfaces.triagePage.sourceAgentDiscovery',
+};
 
 interface DuplicateActionDefaults {
     targetType: 'triage' | 'task';
@@ -493,6 +500,7 @@ const TriageActionModal = ({
         accept: 'surfaces.triagePage.acceptIntake',
         decline: 'surfaces.triagePage.declineIntake',
         snooze: 'surfaces.triagePage.snoozeIntake',
+        clarify: 'surfaces.triagePage.askForClarification',
         duplicate: 'surfaces.triagePage.markDuplicate',
     }[action]);
 
@@ -500,6 +508,7 @@ const TriageActionModal = ({
         accept: 'surfaces.triagePage.accept',
         decline: 'surfaces.triagePage.decline',
         snooze: 'surfaces.triagePage.snooze',
+        clarify: 'surfaces.triagePage.askForClarification',
         duplicate: 'surfaces.triagePage.markDuplicate',
     }[action]);
 
@@ -507,7 +516,7 @@ const TriageActionModal = ({
         event.preventDefault();
         const trimmedReason = optionalText(reason);
 
-        if (action === 'snooze') {
+        if (action === 'snooze' || action === 'clarify') {
             onSubmit({
                 snoozed_until: new Date(snoozedUntil).toISOString(),
                 reason: trimmedReason,
@@ -564,9 +573,13 @@ const TriageActionModal = ({
                     {item.source && <p className="mt-1 text-xs text-content-secondary">{item.source}{item.external_key ? ` / ${item.external_key}` : ''}</p>}
                 </div>
 
-                {action === 'snooze' && (
+                {action === 'clarify' && (
+                    <p className="text-sm text-content-secondary">{t('surfaces.triagePage.clarificationHelp')}</p>
+                )}
+
+                {(action === 'snooze' || action === 'clarify') && (
                     <Input
-                        label={t('surfaces.triagePage.snoozedUntil')}
+                        label={t(action === 'clarify' ? 'surfaces.triagePage.reviewAgainOn' : 'surfaces.triagePage.snoozedUntil')}
                         type="datetime-local"
                         value={snoozedUntil}
                         onChange={event => setSnoozedUntil(event.target.value)}
@@ -682,9 +695,14 @@ const TriageActionModal = ({
                 )}
 
                 <div>
-                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.reason')}</label>
+                    <label htmlFor="triage-action-reason" className="mb-1 block text-sm font-medium text-content-primary">
+                        {t(action === 'clarify' ? 'surfaces.triagePage.clarificationQuestion' : 'surfaces.triagePage.reason')}
+                        {action === 'clarify' && <RequiredIndicator />}
+                    </label>
                     <textarea
+                        id="triage-action-reason"
                         value={reason}
+                        required={action === 'clarify'}
                         onChange={event => setReason(event.target.value)}
                         className="min-h-[90px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     />
@@ -1356,7 +1374,12 @@ const TriageDetailPanel = ({
                                 onSelect: () => onAction('snooze', item),
                             },
                             {
-                                label: t('surfaces.triagePage.duplicate'),
+                                label: t('surfaces.triagePage.askForClarification'),
+                                icon: <MessageCircleQuestion className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => onAction('clarify', item),
+                            },
+                            {
+                                label: t('surfaces.triagePage.markDuplicate'),
                                 icon: <CopyCheck className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => onAction('duplicate', item),
                             },
@@ -1897,7 +1920,10 @@ const TriagePage = () => {
     const iterationsById = useMemo(() => makeLookup(iterations), [iterations]);
     const selectedItem = useMemo(() => triageItems.find(item => item.id === selectedId) ?? triageItems[0] ?? null, [selectedId, triageItems]);
     const effectiveSelectedId = selectedItem?.id ?? null;
-    const sources = useMemo(() => Array.from(new Set(allTriageItems.map(item => item.source).filter((source): source is string => Boolean(source)))).sort(), [allTriageItems]);
+    const sources = useMemo(() => Array.from(new Set([
+        ...Object.keys(AGENT_SOURCE_LABEL_KEYS),
+        ...allTriageItems.map(item => item.source).filter((source): source is string => Boolean(source)),
+    ])).sort(), [allTriageItems]);
 
     const dueSnoozedCount = useMemo(
         () => allTriageItems.filter(isDueSnoozed).length,
@@ -2025,7 +2051,9 @@ const TriagePage = () => {
             });
             return;
         }
-        if (actionState.action === 'snooze') {
+        if (actionState.action === 'snooze' || actionState.action === 'clarify') {
+            // Asking for clarification snoozes the item until the stated review
+            // time, with the question as its reason, as the PM skill does.
             actionMutation.mutate({
                 type: 'snooze',
                 itemId: actionState.item.id,
@@ -2193,7 +2221,7 @@ const TriagePage = () => {
                             >
                                 <option value="">{t('surfaces.triagePage.allSources')}</option>
                                 {sources.map(source => (
-                                    <option key={source} value={source}>{source}</option>
+                                    <option key={source} value={source}>{AGENT_SOURCE_LABEL_KEYS[source] ? t(AGENT_SOURCE_LABEL_KEYS[source]) : source}</option>
                                 ))}
                             </select>
                         </label>

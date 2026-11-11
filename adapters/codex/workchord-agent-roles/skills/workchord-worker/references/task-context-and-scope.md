@@ -69,7 +69,11 @@ Require `start_ready` for normal autonomous work. Confirm that:
 
 For assigned rework or recovery, require an `active` task with rejection or
 recovery evidence, no current execution owner, and a fresh exact assignment.
-Do not force it through the normal planned-ready list.
+Do not force it through the normal planned-ready list. Read the latest review's
+`criteria` packet, whether an agent reviewer or a person wrote it: each entry
+names a criterion `id` and `revision`, a `result` of `pass`, `fail`, or
+`not_checked`, and a `note`. Fix every `fail`, and check `not_checked` criteria
+again before you submit.
 
 ## Preserve PM-Owned Fields
 

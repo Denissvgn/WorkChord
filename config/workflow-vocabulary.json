@@ -89,6 +89,14 @@
     { "id": "to_review", "name": { "en": "To review", "ru": "К проверке" }, "means": "Work waiting for your review.", "agents": "Review-purpose assignments; never in the worker loop." },
     { "id": "inbox", "name": { "en": "Inbox", "ru": "Уведомления" }, "means": "Notifications and delivery status.", "agents": "Hints to refetch, never a reason to act." }
   ],
+  "triage_dispositions": [
+    { "id": "convert", "name": { "en": "Convert", "ru": "Преобразовать" }, "means": "Turns the item into a task in a real iteration, with a complete brief.", "agents": "Triage convert-to-task with the typed brief, effort, dependencies, and assignee." },
+    { "id": "accept", "name": { "en": "Accept", "ru": "Принять" }, "means": "Keeps the item for planning when it is not ready to become a task yet.", "agents": "Triage accept with the outcome, owner, priority rationale, and next planning step." },
+    { "id": "ask_for_clarification", "name": { "en": "Ask for clarification", "ru": "Запросить уточнение" }, "means": "Waits until a review time, with the open question as its reason.", "agents": "Triage snooze until the next review time, with the question as the reason; also ask the requester or owner." },
+    { "id": "snooze", "name": { "en": "Snooze", "ru": "Отложить" }, "means": "Waits until a known date or input.", "agents": "Triage snooze with `snoozed_until`, the reason, and the expected input." },
+    { "id": "mark_duplicate", "name": { "en": "Mark duplicate", "ru": "Отметить как дубликат" }, "means": "Points the item at the one Triage item or task that already owns the outcome.", "agents": "Triage mark-duplicate with exactly one target." },
+    { "id": "decline", "name": { "en": "Decline", "ru": "Отклонить" }, "means": "Records that the request will not be pursued.", "agents": "Triage decline with the reason and the decision owner." }
+  ],
   "pipeline_stages": [
     { "id": "needs_definition", "name": { "en": "Needs definition", "ru": "Требует уточнения" }, "description": { "en": "The brief or planning fields are not complete yet.", "ru": "Описание задачи или поля планирования ещё не заполнены." }, "pm_action": "Complete the typed brief, effort, dependencies, schedule, and assignee." },
     { "id": "ready_to_assign", "name": { "en": "Ready to assign", "ru": "Готово к назначению" }, "description": { "en": "Defined and ready, but not assigned to an agent yet.", "ru": "Задача описана и готова, но ещё не назначена агенту." }, "pm_action": "Create one agent assignment with queue rank, not-before time, and reviewer." },

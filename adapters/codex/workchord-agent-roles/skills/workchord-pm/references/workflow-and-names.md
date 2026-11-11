@@ -64,6 +64,17 @@ My Work queues people see, and the matching agent work state:
 | To review | Work waiting for your review. | Review-purpose assignments; never in the worker loop. |
 | Inbox | Notifications and delivery status. | Hints to refetch, never a reason to act. |
 
+Triage dispositions, with the same names for people and the PM:
+
+| Disposition | Means | Agents |
+| --- | --- | --- |
+| Convert | Turns the item into a task in a real iteration, with a complete brief. | Triage convert-to-task with the typed brief, effort, dependencies, and assignee. |
+| Accept | Keeps the item for planning when it is not ready to become a task yet. | Triage accept with the outcome, owner, priority rationale, and next planning step. |
+| Ask for clarification | Waits until a review time, with the open question as its reason. | Triage snooze until the next review time, with the question as the reason; also ask the requester or owner. |
+| Snooze | Waits until a known date or input. | Triage snooze with `snoozed_until`, the reason, and the expected input. |
+| Mark duplicate | Points the item at the one Triage item or task that already owns the outcome. | Triage mark-duplicate with exactly one target. |
+| Decline | Records that the request will not be pursued. | Triage decline with the reason and the decision owner. |
+
 Agent pipeline stages, in order; each task is in exactly one stage:
 
 | Stage | Means | PM action |
