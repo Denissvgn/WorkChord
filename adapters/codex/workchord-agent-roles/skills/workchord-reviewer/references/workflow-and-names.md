@@ -65,6 +65,18 @@ My Work queues people see, and the matching agent work state:
 | To review | Work waiting for your review. | Review-purpose assignments; never in the worker loop. |
 | Inbox | Notifications and delivery status. | Hints to refetch, never a reason to act. |
 
+Agent pipeline stages, in order; each task is in exactly one stage:
+
+| Stage | Means | PM action |
+| --- | --- | --- |
+| Needs definition (`needs_definition`) | The brief or planning fields are not complete yet. | Complete the typed brief, effort, dependencies, schedule, and assignee. |
+| Ready to assign (`ready_to_assign`) | Defined and ready, but not assigned to an agent yet. | Create one agent assignment with queue rank, not-before time, and reviewer. |
+| Assigned, waiting (`assigned_waiting`) | Assigned to an agent that cannot start yet because of the schedule, a dependency, or its start time. | Clear the start blocker or wait for it; never reassign to get around it. |
+| Ready to start (`start_ready`) | Assigned to an agent that may start it now. | Nothing; the assigned agent starts it from My Work. |
+| In progress (`executing`) | An agent is working on it now. | Watch the claim expiry, progress, and blockers; recover only through typed recovery. |
+| Waiting for review (`verification_required`) | Submitted for review and waiting for an independent reviewer. | Make sure an independent reviewer has a verification assignment. |
+| Needs recovery (`recovery_required`) | The assignment, claim, and run disagree, so the work cannot continue on its own. | Read the recovery diagnosis and requeue through typed recovery. |
+
 Terms:
 
 | Term | Means | Not | Older labels |

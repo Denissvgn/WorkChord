@@ -1224,36 +1224,32 @@ export const englishResources = {
                 showingActiveTasks: 'Showing {{count}} active tasks',
                 columns: {
                     needs_definition: {
-                        title: 'Needs Definition',
-                        description: 'Tasks needing descriptions, requirements, or capability tags.',
+                        title: 'Needs definition',
+                        description: 'The brief or planning fields are not complete yet.',
                     },
-                    ready_for_agent: {
-                        title: 'Ready for Agent',
-                        description: 'Fully qualified tasks immediately ready for agent pickup.',
-                    },
-                    definition_ready_unassigned: {
-                        title: 'Definition Ready',
-                        description: 'Executable tasks that still need an exact actor assignment.',
+                    ready_to_assign: {
+                        title: 'Ready to assign',
+                        description: 'Defined and ready, but not assigned to an agent yet.',
                     },
                     assigned_waiting: {
-                        title: 'Assigned / Waiting',
-                        description: 'Dispatched work waiting for schedule, dependency, or not-before gates.',
+                        title: 'Assigned, waiting',
+                        description: 'Assigned to an agent that cannot start yet because of the schedule, a dependency, or its start time.',
                     },
                     start_ready: {
-                        title: 'Start Ready',
-                        description: 'Exact assignments the selected actor may begin now.',
+                        title: 'Ready to start',
+                        description: 'Assigned to an agent that may start it now.',
                     },
                     executing: {
-                        title: 'Executing',
-                        description: 'Tasks under active development, checkout lease, or pipeline run.',
+                        title: 'In progress',
+                        description: 'An agent is working on it now.',
                     },
                     verification_required: {
-                        title: 'Verification Required',
-                        description: 'Completed tasks waiting for human verification or test checks.',
+                        title: 'Waiting for review',
+                        description: 'Submitted for review and waiting for an independent reviewer.',
                     },
                     recovery_required: {
-                        title: 'Recovery Required',
-                        description: 'Active or resolved work with inconsistent assignment, lease, or run state.',
+                        title: 'Needs recovery',
+                        description: 'The assignment, claim, and run disagree, so the work cannot continue on its own.',
                     },
                 },
                 noTasksInState: 'No tasks in this state',

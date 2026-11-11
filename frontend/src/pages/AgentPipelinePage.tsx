@@ -30,8 +30,7 @@ import clsx from 'clsx';
 
 const EMPTY_PIPELINE = {
     needs_definition: [],
-    ready_for_agent: [],
-    definition_ready_unassigned: [],
+    ready_to_assign: [],
     assigned_waiting: [],
     start_ready: [],
     executing: [],
@@ -108,8 +107,7 @@ export default function AgentPipelinePage() {
     const allTasks = useMemo(() => {
         return [
             ...pipeline.needs_definition,
-            ...pipeline.ready_for_agent,
-            ...pipeline.definition_ready_unassigned,
+            ...pipeline.ready_to_assign,
             ...pipeline.assigned_waiting,
             ...pipeline.start_ready,
             ...pipeline.executing,
@@ -197,20 +195,12 @@ export default function AgentPipelinePage() {
             description: t('agentPipeline.columns.needs_definition.description')
         },
         {
-            id: 'ready_for_agent' as const,
-            title: t('agentPipeline.columns.ready_for_agent.title'),
-            color: 'text-action',
-            bgColor: 'bg-action-muted border-action',
-            tasks: filterAndSegment(pipeline.ready_for_agent),
-            description: t('agentPipeline.columns.ready_for_agent.description')
-        },
-        {
-            id: 'definition_ready_unassigned' as const,
-            title: t('agentPipeline.columns.definition_ready_unassigned.title'),
+            id: 'ready_to_assign' as const,
+            title: t('agentPipeline.columns.ready_to_assign.title'),
             color: 'text-feedback-info-foreground',
             bgColor: 'bg-feedback-info-muted border-feedback-info-border',
-            tasks: filterAndSegment(pipeline.definition_ready_unassigned),
-            description: t('agentPipeline.columns.definition_ready_unassigned.description')
+            tasks: filterAndSegment(pipeline.ready_to_assign),
+            description: t('agentPipeline.columns.ready_to_assign.description')
         },
         {
             id: 'assigned_waiting' as const,
@@ -313,7 +303,7 @@ export default function AgentPipelinePage() {
             <>
             <MetricGrid columns={6}>
                 <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.needs_definition.title')}</div><div className="kpi-val tnum">{pipeline.needs_definition.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.ready_for_agent.title')}</div><div className="kpi-val tnum">{pipeline.ready_for_agent.length}</div></div>
+                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.ready_to_assign.title')}</div><div className="kpi-val tnum">{pipeline.ready_to_assign.length}</div></div>
                 <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.verification_required.title')}</div><div className="kpi-val tnum">{pipeline.verification_required.length}</div></div>
                 <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.start_ready.title')}</div><div className="kpi-val tnum">{pipeline.start_ready.length}</div></div>
                 <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.executing.title')}</div><div className="kpi-val tnum">{pipeline.executing.length}</div></div>

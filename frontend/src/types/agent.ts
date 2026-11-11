@@ -609,8 +609,7 @@ export interface AgentRun {
 
 export interface AgentPipeline {
     needs_definition: Task[];
-    ready_for_agent: Task[];
-    definition_ready_unassigned: Task[];
+    ready_to_assign: Task[];
     assigned_waiting: Task[];
     start_ready: Task[];
     executing: Task[];

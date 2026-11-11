@@ -9,14 +9,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.11.0.tar.gz",
-          "sha256": "9200c4d88e807123c83c42aa95932e6173dd3cf252618847dc5f31f4ce339544",
+          "sha256": "ef25331b4ce854d629a0608a19cf8dca83b9cfd22871f95c005438fb3a28aceb",
           "size": 143393
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.11.0.zip",
-          "sha256": "98e79710584a2107ecd29211216fb56df98e75c77c7c72965cf8a07a49ac5d94",
-          "size": 131519
+          "sha256": "d74a87c482c2924b67120aed40a402192704b5aab60acf4239ea98a72ebd1ccc",
+          "size": 132743
         }
       ],
       "entrypoint": "SKILL.md",
@@ -38,8 +38,8 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "b050338ee9c48adadd2edd35b37c119302faae23d7e3229e30be7c66d4234372",
-          "size": 17607
+          "sha256": "90fe3dffe9eb658d8aa965504d41e5c9a2f898ed778447b0b06b21e6d44907b4",
+          "size": 17493
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -63,8 +63,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "f1f78828473208fb73e7460d8c6fff85a2268c4239c75bd70c4f754b1e79d6e0",
-          "size": 6809
+          "sha256": "f326d2e8a87bdf6caf2667286f6a76a52b8666fd699d0624038e46a047bf088a",
+          "size": 8147
         }
       ],
       "license": "MIT",
@@ -116,14 +116,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-reviewer-1.0.0.tar.gz",
-          "sha256": "e8467803be27ca1d52bf5a13174a4d8499d0eb69fbc93c5cc47d8ce19c483db3",
+          "sha256": "bc984cd6eb4082a2e8163615805acd9be2832765ba8bb25ea02b77b120174500",
           "size": 40983
         },
         {
           "format": "zip",
           "path": "workchord-reviewer-1.0.0.zip",
-          "sha256": "a66770e4f282c28ffcfdf0810d707af61ebd678ef4c60cfc79f84d488aabd05b",
-          "size": 33006
+          "sha256": "4cbb7aa9b7721e7b337cadd4a900a4249b04d1c3cdc4839eb6e69738423718fb",
+          "size": 34344
         }
       ],
       "entrypoint": "SKILL.md",
@@ -150,8 +150,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "ff54ac77859673c40340c3f33a2d8262449b13980e50495130f0ee7aef4d41aa",
-          "size": 6894
+          "sha256": "89bbc3a7d11a86b38bf619942cac5db8218a96b1775ab7d4137de3f9185d8959",
+          "size": 8232
         }
       ],
       "license": "MIT",
@@ -185,14 +185,14 @@
         {
           "format": "tar.gz",
           "path": "workchord-worker-1.10.0.tar.gz",
-          "sha256": "764f7c01b4c4347ad424971ce1a58b84b483432aa0ef50b302b4dcfa47d27d0c",
+          "sha256": "9b18b78295fd41bcf63fa17a122910bc9cb3bedfa784de432a0888339b738025",
           "size": 81948
         },
         {
           "format": "zip",
           "path": "workchord-worker-1.10.0.zip",
-          "sha256": "a399145004921876944d6da8deb8569e5b77722514e1688b689f06fe1d4063bb",
-          "size": 71973
+          "sha256": "bb62d37a32c51506fe95f3ab18432dd10cea956f4aa5844d3c2d8f805600528e",
+          "size": 73311
         }
       ],
       "entrypoint": "SKILL.md",
@@ -234,8 +234,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "981244ca7b0e0a95bce80f0b925823aa9521fddf93beb6b82f6be628e997f28e",
-          "size": 6825
+          "sha256": "b212230c90ca7d54d6cde4f30e09151e20439d8e791bcd73825c411964f0c3e0",
+          "size": 8163
         }
       ],
       "license": "MIT",
@@ -272,5 +272,5 @@
       "version": "1.10.0"
     }
   ],
-  "source_revision": "sha256:de4503edd7511d3b156ea94411ed4c6eb9bf7fc810cea108697169551bf4d9b9"
+  "source_revision": "sha256:d08284e69dbae0d3fefd5eaeaaf2f29553b75823aa8b45ab57aca96f65cbcdc3"
 }

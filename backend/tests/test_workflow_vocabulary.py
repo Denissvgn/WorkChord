@@ -49,6 +49,17 @@ def test_vocabulary_names_every_agent_role_once() -> None:
     assert names == {"pm": "PM", "worker": "Worker", "verifier": "Reviewer"}
 
 
+def test_pipeline_response_has_exactly_the_vocabulary_stages_in_order() -> None:
+    from app.schemas.agent import AgentPipelineResponse
+
+    vocabulary = build_agent_skills.load_workflow_vocabulary(REPOSITORY_ROOT)
+    stage_ids = [stage["id"] for stage in vocabulary["pipeline_stages"]]
+    assert list(AgentPipelineResponse.model_fields) == stage_ids
+    assert all(field.is_required() for field in AgentPipelineResponse.model_fields.values())
+    for stage in vocabulary["pipeline_stages"]:
+        assert "pick" not in stage["description"]["en"].lower()
+
+
 @pytest.mark.parametrize(
     ("mutate", "message"),
     [

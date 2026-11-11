@@ -1490,8 +1490,7 @@ class AgentService:
             )
 
         needs_definition = []
-        ready_for_agent = []
-        definition_ready_unassigned = []
+        ready_to_assign = []
         assigned_waiting = []
         start_ready = []
         executing = []
@@ -1573,17 +1572,16 @@ class AgentService:
                     recovery_required.append(task_resp)
                 continue
 
-            # 3. Ready for Agent vs Needs Definition (Planned)
+            # 3. Planned work without an execution assignment: ready to
+            # assign once defined. Agents never pick work from this stage.
             if task_resp.agent_readiness.definition_ready:
-                ready_for_agent.append(task_resp)
-                definition_ready_unassigned.append(task_resp)
+                ready_to_assign.append(task_resp)
             else:
                 needs_definition.append(task_resp)
 
         return {
             "needs_definition": needs_definition,
-            "ready_for_agent": ready_for_agent,
-            "definition_ready_unassigned": definition_ready_unassigned,
+            "ready_to_assign": ready_to_assign,
             "assigned_waiting": assigned_waiting,
             "start_ready": start_ready,
             "executing": executing,

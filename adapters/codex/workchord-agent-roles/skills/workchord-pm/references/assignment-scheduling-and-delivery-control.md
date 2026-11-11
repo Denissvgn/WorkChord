@@ -200,14 +200,12 @@ appear feasible.
 
 ## Supervise Delivery
 
-Use the pipeline states as a control view:
-
-| Pipeline view | PM action |
-| --- | --- |
-| Needs definition | Return to the task brief, labels, effort, dependencies, schedule, and capacity owner. |
-| Ready for agent | Confirm start readiness, exact dispatch mode, reviewer, and handoff evidence. |
-| Executing | Inspect assignment, task status, claim expiry, run, latest checkpoint, artifacts, blockers, and lease health. |
-| Verification required | Route to an independent verifier; do not send back to the implementation loop without a rejection verdict. |
+Use the agent pipeline as a control view. `GET /api/agent/pipeline` places
+each open task in exactly one stage. The stage names, what each means, and the
+one PM action for each are in the generated "Agent pipeline stages" table in
+[workflow-and-names.md](workflow-and-names.md); people see the same names on
+the Agent Pipeline page. Agents never pick work from a stage: a task moves past
+Ready to assign only through an exact agent assignment.
 
 For executing work:
 
