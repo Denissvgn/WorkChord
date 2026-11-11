@@ -5,17 +5,20 @@
 ## Description
 
 Each drawer opening now retains its initial coherent snapshot while the user types. Explicit context reload goes through the established dirty/pending dismissal guard and remounts the form only with the deliberately chosen current version. Snapshot requests are abortable and lower-version responses are ignored.
+In direct mode the drawer opens `TaskReadView` (Brief, Work & review, Activity) and switches to the full `TaskForm` only on "Edit all fields"; sandbox mode keeps the form. The read view saves brief edits through the brief endpoint and keeps the open part in the `part` URL parameter beside `task`.
 
 ## Imports
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../../types/task` | `Task`, `TaskUpdate` | Declaration | erased |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
 | `./DraftDismissalDialog` | `DraftDismissalDialog` | — | compiler-dependent |
 | `./TaskContextSummary` | `TaskContextSummary` | — | compiler-dependent |
 | `./TaskForm` | `TaskForm` | — | compiler-dependent |
+| `./TaskReadView` | `TaskReadView` | — | compiler-dependent |
 | `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` | — | compiler-dependent |
 | `./useDraftDismissal` | `useDraftDismissal` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
@@ -52,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (8) |
+| Outbound | `frontend` (10) |
 
 ### External packages
 
@@ -60,13 +63,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 16 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
+| [DrawerCopy](../entities/DrawerCopy.md) | Type alias | 18 | `ReactNode \| ((task: Task \| null) => ReactNode)` | — |
 
 ## Functions
 

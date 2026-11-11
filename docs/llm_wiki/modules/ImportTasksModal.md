@@ -63,6 +63,7 @@ flowchart LR
     n5 --> n3
     n5 --> n6
     n5 --> n7
+    n5 --> n8
     n7 --> n8
     click n0 "../modules/Button.md"
     click n1 "../modules/Modal.md"

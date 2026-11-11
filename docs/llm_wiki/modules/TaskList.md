@@ -84,8 +84,8 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskListProps](../entities/TaskListProps.md) | Interface | 71 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 748 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 800 | `TaskItemProps` | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 751 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 803 | `TaskItemProps` | — |
 | [SortKey](../entities/SortKey.md) | Type alias | 49 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
 | [TaskMode](../entities/TaskMode.md) | Type alias | 50 | `'bulk' \| 'merge'` | — |
 | [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 51 | `Parameters<typeof taskService.reorder>[0]` | — |
@@ -95,4 +95,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;    preselectAllInBulk &#61; false&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |
+| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;    preselectAllInBulk &#61; false&#44;&#10;    onOpenTask&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |

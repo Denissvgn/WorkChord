@@ -23,7 +23,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `iterationServiceMock`, `iterationStoreMock`, `savedViewServiceMock`, `taskServiceMock`, `focusedTask` |
-| Module calls | `iterationServiceMock = hoisted`, `iterationStoreMock = hoisted`, `savedViewServiceMock = hoisted`, `taskServiceMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
+| Module calls | `iterationServiceMock = hoisted`, `iterationStoreMock = hoisted`, `savedViewServiceMock = hoisted`, `taskServiceMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 
@@ -39,6 +39,7 @@ flowchart LR
     n0 --> n1
     n0 --> n2
     n0 --> n3
+    n1 --> n3
     click n0 "../modules/TasksPage.test.md"
     click n1 "../modules/TasksPage.md"
     click n2 "../modules/renderWithProviders.md"

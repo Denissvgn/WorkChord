@@ -44,41 +44,46 @@ flowchart LR
     n3["frontend/src/components/tasks/TaskDiscussion.test.tsx"]
     n4["frontend/src/components/tasks/TaskDiscussion.tsx"]
     n5["frontend/src/components/tasks/TaskForm.tsx"]
-    n6["frontend/src/components/tasks/useDraftDismissal.ts"]
-    n7["frontend/src/features/identity/identityContext.ts"]
-    n8["frontend/src/features/useLiveWindow.ts"]
-    n9["frontend/src/services/discussionService.ts"]
-    n10["frontend/src/utils/apiError.ts"]
+    n6["frontend/src/components/tasks/TaskReadView.tsx"]
+    n7["frontend/src/components/tasks/useDraftDismissal.ts"]
+    n8["frontend/src/features/identity/identityContext.ts"]
+    n9["frontend/src/features/useLiveWindow.ts"]
+    n10["frontend/src/services/discussionService.ts"]
+    n11["frontend/src/utils/apiError.ts"]
     n1 --> n0
     n2 --> n0
-    n2 --> n10
+    n2 --> n11
     n3 --> n4
-    n3 --> n7
+    n3 --> n8
     n4 --> n0
     n4 --> n1
     n4 --> n2
-    n4 --> n6
     n4 --> n7
     n4 --> n8
     n4 --> n9
     n4 --> n10
+    n4 --> n11
     n5 --> n0
     n5 --> n2
     n5 --> n4
-    n5 --> n6
     n5 --> n7
-    n5 --> n10
+    n5 --> n8
+    n5 --> n11
+    n6 --> n0
+    n6 --> n4
+    n6 --> n11
     click n0 "../modules/Button.md"
     click n1 "../modules/LiveWindowStatus.md"
     click n2 "../modules/QueryState.md"
     click n3 "../modules/TaskDiscussion.test.md"
     click n4 "../modules/TaskDiscussion.md"
     click n5 "../modules/TaskForm.md"
-    click n6 "../modules/useDraftDismissal.md"
-    click n7 "../modules/identityContext.md"
-    click n8 "../modules/useLiveWindow.md"
-    click n9 "../modules/discussionService.md"
-    click n10 "../modules/apiError.md"
+    click n6 "../modules/TaskReadView.md"
+    click n7 "../modules/useDraftDismissal.md"
+    click n8 "../modules/identityContext.md"
+    click n9 "../modules/useLiveWindow.md"
+    click n10 "../modules/discussionService.md"
+    click n11 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -87,6 +92,7 @@ flowchart LR
 |---|---|
 | Inbound | [TaskDiscussion.test](../modules/TaskDiscussion.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [TaskReadView](../modules/TaskReadView.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [LiveWindowStatus](../modules/LiveWindowStatus.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |

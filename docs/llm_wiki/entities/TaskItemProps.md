@@ -1,6 +1,6 @@
 # TaskItemProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:748`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:751`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)

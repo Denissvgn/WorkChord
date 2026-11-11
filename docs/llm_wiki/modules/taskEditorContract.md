@@ -33,45 +33,49 @@ flowchart LR
     n3["frontend/src/components/tasks/taskEditorContract.ts"]
     n4["frontend/src/components/tasks/TaskForm.test.tsx"]
     n5["frontend/src/components/tasks/TaskForm.tsx"]
-    n6["frontend/src/components/tasks/TaskWorkPanel.test.tsx"]
-    n7["frontend/src/pages/MyWorkPage.test.tsx"]
-    n8["frontend/src/pages/TriagePage.tsx"]
-    n9["frontend/src/types/task.ts"]
-    n10["frontend/src/utils/apiError.ts"]
+    n6["frontend/src/components/tasks/TaskReadView.test.tsx"]
+    n7["frontend/src/components/tasks/TaskWorkPanel.test.tsx"]
+    n8["frontend/src/pages/MyWorkPage.test.tsx"]
+    n9["frontend/src/pages/TriagePage.tsx"]
+    n10["frontend/src/types/task.ts"]
+    n11["frontend/src/utils/apiError.ts"]
     n0 --> n1
     n0 --> n3
     n1 --> n3
-    n1 --> n9
+    n1 --> n10
     n2 --> n3
-    n3 --> n9
     n3 --> n10
+    n3 --> n11
     n4 --> n3
     n4 --> n5
     n5 --> n1
     n5 --> n2
     n5 --> n3
-    n5 --> n9
     n5 --> n10
+    n5 --> n11
     n6 --> n3
-    n6 --> n9
-    n7 --> n2
+    n6 --> n10
     n7 --> n3
-    n7 --> n9
-    n8 --> n1
+    n7 --> n10
+    n8 --> n2
     n8 --> n3
-    n8 --> n9
     n8 --> n10
+    n9 --> n1
+    n9 --> n3
+    n9 --> n10
+    n9 --> n11
     click n0 "../modules/TaskBriefEditor.test.md"
     click n1 "../modules/TaskBriefEditor.md"
     click n2 "../modules/taskDraftStorage.md"
     click n3 "../modules/taskEditorContract.md"
     click n4 "../modules/TaskForm.test.md"
     click n5 "../modules/TaskForm.md"
-    click n6 "../modules/TaskWorkPanel.test.md"
-    click n7 "../modules/MyWorkPage.test.md"
-    click n8 "../modules/TriagePage.md"
-    click n9 "../modules/types_task.md"
-    click n10 "../modules/apiError.md"
+    click n6 "../modules/TaskReadView.test.md"
+    click n7 "../modules/TaskWorkPanel.test.md"
+    click n8 "../modules/MyWorkPage.test.md"
+    click n9 "../modules/TriagePage.md"
+    click n10 "../modules/types_task.md"
+    click n11 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -83,6 +87,7 @@ flowchart LR
 | Inbound | [taskDraftStorage](../modules/taskDraftStorage.md) |
 | Inbound | [TaskForm.test](../modules/TaskForm.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [TaskReadView.test](../modules/TaskReadView.test.md) |
 | Inbound | [TaskWorkPanel.test](../modules/TaskWorkPanel.test.md) |
 | Inbound | [MyWorkPage.test](../modules/MyWorkPage.test.md) |
 | Inbound | [TriagePage](../modules/TriagePage.md) |

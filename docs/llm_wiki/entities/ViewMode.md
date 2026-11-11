@@ -1,6 +1,6 @@
 # ViewMode
 
-**Location:** `frontend/src/pages/TasksPage.tsx:66`
+**Location:** `frontend/src/pages/TasksPage.tsx:68`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TasksPage](../modules/TasksPage.md)

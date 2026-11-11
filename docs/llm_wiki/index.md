@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1535 | [Open section](#entities) |
-| Modules | 772 | [Open section](#modules) |
+| Entities | 1536 | [Open section](#entities) |
+| Modules | 775 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 553 | [Open section](#entry-point-flows) |
@@ -932,6 +932,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskUnmerge](entities/TaskUnmerge.md)
 - [TaskVersionConflictDetail](entities/TaskVersionConflictDetail.md)
 - [TaskVersionConflictError](entities/TaskVersionConflictError.md)
+- [TaskViewPart](entities/TaskViewPart.md)
 - [TeamFormProps](entities/TeamFormProps.md)
 - [TeamImportRequest](entities/TeamImportRequest.md)
 - [TeamImportResponse](entities/TeamImportResponse.md)
@@ -1742,6 +1743,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskForm.test](modules/TaskForm.test.md) - `frontend/src/components/tasks/TaskForm.test.tsx`
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
+- [TaskReadView](modules/TaskReadView.md) - `frontend/src/components/tasks/TaskReadView.tsx`
+- [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
@@ -1985,6 +1988,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [outbound_webhooks](modules/outbound_webhooks.md) - Outbound webhook target and delivery API router.
 - [overviewTaskThread](modules/overviewTaskThread.md) - `frontend/src/features/overview/overviewTaskThread.ts`
 - [pagination](modules/pagination.md) - `frontend/src/i18n/pagination.ts`
+- [plan.ru](modules/plan.ru.md) - `frontend/src/i18n/plan.ru.ts`
 - [planShareService](modules/planShareService.md) - `frontend/src/services/planShareService.ts`
 - [plan_checkpoints](modules/plan_checkpoints.md) - The six plan checkpoints people and the PM read, derived once on the server.
 - [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.

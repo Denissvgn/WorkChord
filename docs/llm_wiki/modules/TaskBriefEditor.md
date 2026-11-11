@@ -35,29 +35,34 @@ flowchart LR
     n2["frontend/src/components/tasks/TaskBriefEditor.tsx"]
     n3["frontend/src/components/tasks/taskEditorContract.ts"]
     n4["frontend/src/components/tasks/TaskForm.tsx"]
-    n5["frontend/src/pages/TriagePage.tsx"]
-    n6["frontend/src/types/task.ts"]
+    n5["frontend/src/components/tasks/TaskReadView.tsx"]
+    n6["frontend/src/pages/TriagePage.tsx"]
+    n7["frontend/src/types/task.ts"]
     n1 --> n2
     n1 --> n3
     n2 --> n0
     n2 --> n3
-    n2 --> n6
-    n3 --> n6
+    n2 --> n7
+    n3 --> n7
     n4 --> n0
     n4 --> n2
     n4 --> n3
-    n4 --> n6
+    n4 --> n7
     n5 --> n0
     n5 --> n2
-    n5 --> n3
-    n5 --> n6
+    n5 --> n7
+    n6 --> n0
+    n6 --> n2
+    n6 --> n3
+    n6 --> n7
     click n0 "../modules/Button.md"
     click n1 "../modules/TaskBriefEditor.test.md"
     click n2 "../modules/TaskBriefEditor.md"
     click n3 "../modules/taskEditorContract.md"
     click n4 "../modules/TaskForm.md"
-    click n5 "../modules/TriagePage.md"
-    click n6 "../modules/types_task.md"
+    click n5 "../modules/TaskReadView.md"
+    click n6 "../modules/TriagePage.md"
+    click n7 "../modules/types_task.md"
 ```
 
 ### Internal neighbors
@@ -66,6 +71,7 @@ flowchart LR
 |---|---|
 | Inbound | [TaskBriefEditor.test](../modules/TaskBriefEditor.test.md) |
 | Inbound | [TaskForm](../modules/TaskForm.md) |
+| Inbound | [TaskReadView](../modules/TaskReadView.md) |
 | Inbound | [TriagePage](../modules/TriagePage.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [taskEditorContract](../modules/taskEditorContract.md) |

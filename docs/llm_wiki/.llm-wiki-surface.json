@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1535,
+      "entities": 1536,
       "flows": 553,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 772,
+      "modules": 775,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3068
+    "total": 3072
   },
   "dependency_pages": {
     "count": 2,
@@ -44484,6 +44484,7 @@
         "entities/TaskUnmerge.md",
         "entities/TaskVersionConflictDetail.md",
         "entities/TaskVersionConflictError.md",
+        "entities/TaskViewPart.md",
         "entities/team_member_TeamMember.md",
         "entities/team_member_TeamMemberProfile.md",
         "entities/team_member_TeamMemberProfileSkill.md",
@@ -45695,6 +45696,7 @@
         "modules/PersonCapacity.md",
         "modules/PersonCapacity.test.md",
         "modules/Pill.md",
+        "modules/plan.ru.md",
         "modules/plan_checkpoints.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
@@ -45934,6 +45936,8 @@
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
+        "modules/TaskReadView.md",
+        "modules/TaskReadView.test.md",
         "modules/TaskReviewer.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
@@ -63122,6 +63126,18 @@
       "title": "TaskVersionConflictError"
     },
     {
+      "canonical_path": "entities/TaskViewPart.md",
+      "id": "TaskViewPart",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskViewPart",
+      "outgoing_internal_links": [
+        "modules/TaskReadView.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReadView.tsx",
+      "title": "TaskViewPart"
+    },
+    {
       "canonical_path": "entities/team_member_TeamMember.md",
       "id": "team_member_TeamMember",
       "kind": "entities",
@@ -65988,6 +66004,7 @@
       "outgoing_internal_links": [
         "modules/TaskBriefEditor.md",
         "modules/taskEditorContract.md",
+        "modules/TaskReadView.md",
         "modules/taskService.md",
         "modules/types_task.md",
         "modules/types_triage.md"
@@ -70089,6 +70106,7 @@
         "modules/projectService.md",
         "modules/QueryState.md",
         "modules/TaskForm.md",
+        "modules/TaskReadView.md",
         "modules/taskService.md",
         "modules/types_task.md"
       ],
@@ -73047,6 +73065,19 @@
       "title": "Pill Module"
     },
     {
+      "canonical_path": "modules/plan.ru.md",
+      "id": "plan.ru",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/plan.ru",
+      "outgoing_internal_links": [
+        "modules/plan.ru.md",
+        "modules/resources.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/plan.ru.ts",
+      "title": "plan.ru Module"
+    },
+    {
       "canonical_path": "modules/plan_checkpoints.md",
       "id": "plan_checkpoints",
       "kind": "modules",
@@ -74230,6 +74261,7 @@
         "modules/agentTeamSetup.ru.md",
         "modules/i18n.test.md",
         "modules/pagination.md",
+        "modules/plan.ru.md",
         "modules/PlanMasterPage.test.md",
         "modules/planningInputMessages.md",
         "modules/resources.ru.md",
@@ -76953,6 +76985,7 @@
         "modules/TaskBriefEditor.test.md",
         "modules/taskEditorContract.md",
         "modules/TaskForm.md",
+        "modules/TaskReadView.md",
         "modules/TriagePage.md",
         "modules/types_task.md"
       ],
@@ -77065,6 +77098,7 @@
         "modules/TaskDiscussion.md",
         "modules/TaskDiscussion.test.md",
         "modules/TaskForm.md",
+        "modules/TaskReadView.md",
         "modules/useDraftDismissal.md",
         "modules/useLiveWindow.md"
       ],
@@ -77165,6 +77199,7 @@
         "modules/taskEditorContract.md",
         "modules/TaskForm.md",
         "modules/TaskForm.test.md",
+        "modules/TaskReadView.test.md",
         "modules/TaskWorkPanel.test.md",
         "modules/TriagePage.md",
         "modules/types_task.md"
@@ -77364,6 +77399,35 @@
       "title": "TaskList.test Module"
     },
     {
+      "canonical_path": "modules/TaskReadView.md",
+      "id": "TaskReadView",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskReadView",
+      "outgoing_internal_links": [
+        "entities/TaskViewPart.md",
+        "modules/TaskReadView.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReadView.tsx",
+      "title": "TaskReadView Module"
+    },
+    {
+      "canonical_path": "modules/TaskReadView.test.md",
+      "id": "TaskReadView.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskReadView.test",
+      "outgoing_internal_links": [
+        "modules/renderWithProviders.md",
+        "modules/taskEditorContract.md",
+        "modules/TaskReadView.md",
+        "modules/TaskReadView.test.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReadView.test.tsx",
+      "title": "TaskReadView.test Module"
+    },
+    {
       "canonical_path": "modules/TaskReviewer.md",
       "id": "TaskReviewer",
       "kind": "modules",
@@ -77546,6 +77610,7 @@
         "modules/RequestSourceLinksPanel.md",
         "modules/safeUrl.md",
         "modules/TaskForm.md",
+        "modules/TaskReadView.md",
         "modules/taskService.md",
         "modules/TaskTimelinePanel.md",
         "modules/TaskTimelinePanel.test.md",
@@ -94825,6 +94890,7 @@
         "modules/PersonCapacity.md",
         "modules/PersonCapacity.test.md",
         "modules/Pill.md",
+        "modules/plan.ru.md",
         "modules/plan_checkpoints.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
@@ -95064,6 +95130,8 @@
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
+        "modules/TaskReadView.md",
+        "modules/TaskReadView.test.md",
         "modules/TaskReviewer.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
@@ -95608,6 +95676,7 @@
         "modules/PersonCapacity.md",
         "modules/PersonCapacity.test.md",
         "modules/Pill.md",
+        "modules/plan.ru.md",
         "modules/plan_checkpoints.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
@@ -95847,6 +95916,8 @@
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
+        "modules/TaskReadView.md",
+        "modules/TaskReadView.test.md",
         "modules/TaskReviewer.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
@@ -96066,5 +96137,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:1538541c9475a3c60a56f7d161c926aaf6a649fb4afe5fe9208f6bffc04128eb"
+  "source_hash": "sha256:3eb72f0cc4d12a30f5c94a67e86f648244b94e5c1d84c64b70a2f9da7f09d2f4"
 }
