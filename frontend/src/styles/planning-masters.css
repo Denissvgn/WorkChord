@@ -3448,6 +3448,8 @@
     display: none;
   }
   .wc .wc-content-rail { grid-template-columns: 1fr; }
+  /* At one column, date risk and effort sit under the header, not under every task. */
+  .wc .wc-content-rail > .sticky-rail { order: -1; position: static; }
   .wc .calendar-period-controls { justify-content: flex-start; }
   .wc .calendar-month-field { flex: 1 1 180px; }
   .wc .calendar-year-field { flex: 1 1 118px; }

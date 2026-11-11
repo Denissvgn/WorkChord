@@ -257,6 +257,14 @@ const TasksPage = () => {
         setSelectedIterationId,
     ]);
 
+    // A project page links here with ?projectId=<id>; apply it as the project filter once.
+    const requestedProjectId = Number(searchParams.get('projectId')) || null;
+    const [appliedProjectId, setAppliedProjectId] = useState<number | null>(null);
+    if (requestedProjectId !== null && appliedProjectId !== requestedProjectId) {
+        setAppliedProjectId(requestedProjectId);
+        setFilters(current => ({ ...current, projectId: requestedProjectId }));
+    }
+
     useEffect(() => {
         const context = `${rawPlanningIssue}:${requestedSavedViewId}`;
         if (appliedPlanningContext.current === context) return;

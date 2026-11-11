@@ -1,7 +1,7 @@
 import { normalizeApiError } from '../utils/apiError';
 import type { Project } from '../types/project';
 import { planningInputService, type ObservedPlanningInput } from '../services/planningInputService';
-import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
+import type { Task } from '../types/task';
 import { TimeEntriesReport } from '../components/projects/TimeEntriesReport';
 import i18n from '../i18n/i18n';
 import { useEffect, useState } from 'react';
@@ -40,6 +40,8 @@ import { ProjectForm } from '../components/projects/ProjectForm';
 import { ProjectIterationsSection } from '../components/projects/ProjectIterationsSection';
 import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
 import { ProjectTaskTree } from '../components/projects/ProjectTaskTree';
+
+const PROJECT_TASK_PREVIEW = 10;
 import { RequestSourceLinksPanel } from '../components/requestSources/RequestSourceLinksPanel';
 import { ReleaseForm } from '../components/releases/ReleaseForm';
 import { projectService } from '../services/projectService';
@@ -64,7 +66,6 @@ import type { Release, ReleaseStatus } from '../types/release';
 import {
     InlineEmptyState,
     OverflowMenu,
-    MetricGrid,
     PageHeader,
     PageLayout,
     Pill,
@@ -304,7 +305,7 @@ const MilestonesSection = ({
             title={t('surfaces.projectDetail.projectMilestones')}
             count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{milestones.length}</span>}
             actions={(
-                <Button size="sm" onClick={onCreate}>
+                <Button size="sm" variant="secondary" onClick={onCreate}>
                     <Plus className="mr-2 h-4 w-4" />
                     {t('surfaces.projectDetail.newMilestone')}
                 </Button>
@@ -632,7 +633,7 @@ const ProjectReleasesSection = ({
             title={t('surfaces.projectDetail.releases')}
             count={<span className="rounded-full bg-surface-subtle px-1.5 text-wc-micro font-bold tabular-nums text-content-secondary">{releases.length}</span>}
             actions={(
-                <Button size="sm" onClick={onCreate}>
+                <Button size="sm" variant="secondary" onClick={onCreate}>
                     <Plus className="mr-2 h-4 w-4" />
                     {t('surfaces.projectDetail.newRelease')}
                 </Button>
@@ -1249,10 +1250,14 @@ const ProjectDetailPage = () => {
         );
     }
 
-    const completionText = summary
-        ? `${summary.completed_tasks}/${summary.total_tasks}`
-        : '0/0';
     const statusCounts = summary?.status_counts || {};
+    // The first ten root tasks, grouped by status in working order; the rest open in Tasks.
+    const groupedPreview = (['active', 'planned', 'resolved', 'closed'] as const).reduce<{ status: Task['status']; total: number; tasks: Task[] }[]>((groups, status) => {
+        const inStatus = tasks.filter(task => task.status === status);
+        const shown = groups.reduce((count, group) => count + group.tasks.length, 0);
+        const take = inStatus.slice(0, Math.max(0, PROJECT_TASK_PREVIEW - shown));
+        return inStatus.length > 0 && take.length > 0 ? [...groups, { status, total: inStatus.length, tasks: take }] : groups;
+    }, []);
     const latestUpdate = summary?.latest_update ?? projectUpdates[0] ?? null;
     const latestUpdateAge = summary?.latest_update
         ? formatUpdateAge(summary.days_since_latest_update)
@@ -1333,25 +1338,19 @@ const ProjectDetailPage = () => {
                     </>
                 )}
             />
-            <WorkMetricsLine metrics={summary} />
-
-            {/* Progress bar */}
+            {/* One summary line in the shared words; exception counts only when non-zero. */}
             <div>
-                <div style={{display:'flex', justifyContent:'space-between', fontSize:11.5, color:'var(--ink-3)', marginBottom:6}}>
-                    <span style={{fontWeight:500, color:'var(--ink)'}}>{t('surfaces.projectDetail.completion')}</span>
-                    <span className="tnum">{completionText} {t('surfaces.projectDetail.tasks')} · <b style={{color:'var(--ink)'}}>{formatNumber(summary?.completion_percent)}%</b></span>
-                </div>
-                <div style={{height:6, background:'var(--panel-3)', borderRadius:999, overflow:'hidden'}}>
+                <p className="mb-1.5 text-sm text-content-secondary">
+                    <b className="font-semibold text-content-primary">{t('surfaces.projectDetail.summaryImplemented', { done: summary?.implemented_tasks ?? 0, total: summary?.total_tasks ?? 0 })}</b>
+                    {' · '}{t('surfaces.projectDetail.summaryAccepted', { count: summary?.accepted_tasks ?? 0 })}
+                    {' · '}{t('surfaces.projectDetail.summaryActive', { count: summary?.active_tasks ?? 0 })}
+                    {(summary?.blocked_tasks ?? 0) > 0 && <>{' · '}<span className="text-feedback-warning-foreground">{t('surfaces.projectDetail.summaryBlocked', { count: summary?.blocked_tasks })}</span></>}
+                    {(summary?.overdue_tasks ?? 0) > 0 && <>{' · '}<span className="text-feedback-danger-foreground">{t('surfaces.projectDetail.summaryOverdue', { count: summary?.overdue_tasks })}</span></>}
+                </p>
+                <div style={{height:6, background:'var(--panel-3)', borderRadius:999, overflow:'hidden'}} aria-hidden="true">
                     <div style={{height:'100%', width:`${completionPercent}%`, background:'var(--done)', borderRadius:999}}/>
                 </div>
             </div>
-
-            <MetricGrid>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.projectDetail.active')}</div><div className="kpi-val tnum">{summary?.active_tasks ?? 0}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.projectDetail.blocked')}</div><div className="kpi-val tnum">{summary?.blocked_tasks ?? 0}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.projectDetail.overdue')}</div><div className="kpi-val tnum">{summary?.overdue_tasks ?? 0}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('surfaces.projectDetail.requests')}</div><div className="kpi-val tnum">{summary?.request_count ?? 0}</div></div>
-            </MetricGrid>
 
             {/* ── Two-column workspace: main content + sticky right rail ─── */}
             <div className="wc-content-rail">
@@ -1395,104 +1394,15 @@ const ProjectDetailPage = () => {
                             <InlineEmptyState
                                 title={t('surfaces.projectDetail.noProjectUpdatesYet')}
                                 actions={(
-                                    <Button size="sm" onClick={() => setPostUpdateOpen(true)}>
+                                    <Button size="sm" variant="secondary" onClick={() => setPostUpdateOpen(true)}>
                                         <Send className="mr-1.5 h-3.5 w-3.5" />
                                         {t('surfaces.projectDetail.postFirstUpdate')}
                                     </Button>
                                 )}
                             />
                         )}
-                    </SectionCard>
-
-                    {/* Releases */}
-                    <ProjectReleasesSection
-                        releases={projectReleases}
-                        isLoading={areReleasesLoading}
-                        onCreate={() => setShowCreateRelease(true)}
-                    />
-
-                    <ProjectIterationsSection
-                        projectId={numericProjectId}
-                        projectName={project.name}
-                        iterations={projectIterations}
-                        isLoading={areProjectIterationsLoading}
-                    />
-
-                    {/* Milestones */}
-                    <MilestonesSection
-                        milestones={projectMilestones}
-                        groups={summary?.milestone_groups ?? []}
-                        isLoading={areMilestonesLoading}
-                        isActionPending={isMilestoneActionPending}
-                        actionError={milestoneActionError}
-                        onCreate={openCreateMilestone}
-                        onEdit={openEditMilestone}
-                        onComplete={completeMilestone}
-                        onCancel={cancelMilestone}
-                        onDelete={setDeleteMilestoneTarget}
-                        onMove={(milestoneId, direction) => reorderMilestoneMutation.mutate({ milestoneId, direction })}
-                    />
-
-                    <TimeEntriesReport projectId={numericProjectId} />
-                    {/* Project Requests */}
-                    <RequestSourceLinksPanel
-                        targetType="project"
-                        targetId={numericProjectId}
-                        initialCount={summary?.request_count ?? 0}
-                        title={t('surfaces.projectDetail.projectRequests')}
-                        onChanged={invalidateProjectRequestLinks}
-                    />
-
-                    {/* Linked Tasks (Status Counts folded in as the scope strip) */}
-                    <SectionCard
-                        icon={<CheckCircle2 className="h-4 w-4 text-action" />}
-                        title={t('surfaces.projectDetail.linkedTasks')}
-                        count={<span className="text-xs text-content-secondary">· {tasks.length} {t('surfaces.projectDetail.rootTasks')}</span>}
-                        actions={(
-                            <div className="flex flex-wrap gap-2">
-                                <Button variant="secondary" size="sm" onClick={() => setNewBacklogTask(true)}>{t('domain.newBacklogTask')}</Button>
-                                <Button variant="secondary" size="sm" onClick={() => navigate('/tasks')}>{t('surfaces.projectDetail.openTaskBoard')}</Button>
-                            </div>
-                        )}
-                    >
-
-                        {newBacklogTask && <GuardedTaskModal title={t('domain.newBacklogTask')} closeLabel={t('common.close')}
-                            iterationId={null} parentProjectId={numericProjectId} onClose={() => setNewBacklogTask(false)} />}
-                        {/* Status segments — moved from a standalone "Status Counts" card to here, where they actually scope the list below */}
-                        <StatusSegmentStrip
-                            className="mb-4"
-                            segments={[
-                                { key: 'planned', label: t('statuses.planned'), value: statusCounts.planned ?? 0, tone: STATUS_TONE.planned },
-                                { key: 'active', label: t('statuses.active'), value: statusCounts.active ?? 0, tone: STATUS_TONE.active },
-                                { key: 'resolved', label: t('statuses.resolved'), value: statusCounts.resolved ?? 0, tone: STATUS_TONE.resolved },
-                                { key: 'closed', label: t('statuses.closed'), value: statusCounts.closed ?? 0, tone: STATUS_TONE.closed },
-                            ]}
-                        />
-
-                        {areTasksLoading ? (
-                            <div className="py-8 text-center text-sm text-content-secondary">{t('surfaces.projectDetail.loadingTasks')}</div>
-                        ) : tasks.length === 0 ? (
-                            <InlineEmptyState
-                                title={t('surfaces.projectDetail.noTasksLinkedYet')}
-                                actions={(
-                                    <>
-                                    <Button size="sm" onClick={() => navigate('/tasks')}>
-                                        <Plus className="mr-1.5 h-3.5 w-3.5" />
-                                        {t('surfaces.projectDetail.createTask')}
-                                    </Button>
-                                    <Button size="sm" variant="outline" onClick={() => navigate('/triage')}>
-                                        {t('surfaces.projectDetail.pullFromTriage')}
-                                    </Button>
-                                    </>
-                                )}
-                            />
-                        ) : (
-                            <ProjectTaskTree tasks={tasks} />
-                        )}
-                    </SectionCard>
-
                     {/* Update History — collapsed by default */}
-                    <div className="rounded-xl border border-border bg-surface-card shadow-sm">
+                    <div className="mt-4 rounded-lg border border-border-subtle">
                         <button
                             type="button"
                             onClick={() => setHistoryOpen(open => !open)}
@@ -1544,6 +1454,107 @@ const ProjectDetailPage = () => {
                             </div>
                         )}
                     </div>
+                    </SectionCard>
+
+                    {/* Releases */}
+                    <ProjectReleasesSection
+                        releases={projectReleases}
+                        isLoading={areReleasesLoading}
+                        onCreate={() => setShowCreateRelease(true)}
+                    />
+
+                    <ProjectIterationsSection
+                        projectId={numericProjectId}
+                        projectName={project.name}
+                        iterations={projectIterations}
+                        isLoading={areProjectIterationsLoading}
+                    />
+
+                    {/* Milestones */}
+                    <MilestonesSection
+                        milestones={projectMilestones}
+                        groups={summary?.milestone_groups ?? []}
+                        isLoading={areMilestonesLoading}
+                        isActionPending={isMilestoneActionPending}
+                        actionError={milestoneActionError}
+                        onCreate={openCreateMilestone}
+                        onEdit={openEditMilestone}
+                        onComplete={completeMilestone}
+                        onCancel={cancelMilestone}
+                        onDelete={setDeleteMilestoneTarget}
+                        onMove={(milestoneId, direction) => reorderMilestoneMutation.mutate({ milestoneId, direction })}
+                    />
+
+                    <TimeEntriesReport projectId={numericProjectId} />
+                    {/* Project Requests */}
+                    <RequestSourceLinksPanel
+                        targetType="project"
+                        targetId={numericProjectId}
+                        initialCount={summary?.request_count ?? 0}
+                        title={t('surfaces.projectDetail.projectRequests')}
+                        onChanged={invalidateProjectRequestLinks}
+                    />
+
+                    {/* Linked Tasks (Status Counts folded in as the scope strip) */}
+                    <SectionCard
+                        icon={<CheckCircle2 className="h-4 w-4 text-action" />}
+                        title={t('surfaces.projectDetail.linkedTasks')}
+                        count={<span className="text-xs text-content-secondary">· {tasks.length} {t('surfaces.projectDetail.rootTasks')}</span>}
+                        actions={(
+                            <div className="flex flex-wrap gap-2">
+                                <Button variant="secondary" size="sm" onClick={() => setNewBacklogTask(true)}>{t('domain.newBacklogTask')}</Button>
+                                <Button variant="secondary" size="sm" onClick={() => navigate(`/tasks?layout=board&projectId=${numericProjectId}`)}>{t('surfaces.projectDetail.openTaskBoard')}</Button>
+                            </div>
+                        )}
+                    >
+
+                        {newBacklogTask && <GuardedTaskModal title={t('domain.newBacklogTask')} closeLabel={t('common.close')}
+                            iterationId={null} parentProjectId={numericProjectId} onClose={() => setNewBacklogTask(false)} />}
+                        {/* Status segments — moved from a standalone "Status Counts" card to here, where they actually scope the list below */}
+                        <StatusSegmentStrip
+                            className="mb-4"
+                            segments={[
+                                { key: 'planned', label: t('statuses.planned'), value: statusCounts.planned ?? 0, tone: STATUS_TONE.planned },
+                                { key: 'active', label: t('statuses.active'), value: statusCounts.active ?? 0, tone: STATUS_TONE.active },
+                                { key: 'resolved', label: t('statuses.resolved'), value: statusCounts.resolved ?? 0, tone: STATUS_TONE.resolved },
+                                { key: 'closed', label: t('statuses.closed'), value: statusCounts.closed ?? 0, tone: STATUS_TONE.closed },
+                            ]}
+                        />
+
+                        {areTasksLoading ? (
+                            <div className="py-8 text-center text-sm text-content-secondary">{t('surfaces.projectDetail.loadingTasks')}</div>
+                        ) : tasks.length === 0 ? (
+                            <InlineEmptyState
+                                title={t('surfaces.projectDetail.noTasksLinkedYet')}
+                                actions={(
+                                    <>
+                                    <Button size="sm" variant="secondary" onClick={() => setNewBacklogTask(true)}>
+                                        <Plus className="mr-1.5 h-3.5 w-3.5" />
+                                        {t('surfaces.projectDetail.createTask')}
+                                    </Button>
+                                    <Button size="sm" variant="outline" onClick={() => navigate('/triage')}>
+                                        {t('surfaces.projectDetail.pullFromTriage')}
+                                    </Button>
+                                    </>
+                                )}
+                            />
+                        ) : (
+                            <>
+                                {groupedPreview.map(group => (
+                                    <div key={group.status} className="mb-4">
+                                        <h3 className="mb-2 text-sm font-semibold text-content-primary">{t(`statuses.${group.status}`)} · {group.total}</h3>
+                                        <ProjectTaskTree tasks={group.tasks} />
+                                    </div>
+                                ))}
+                                {tasks.length > PROJECT_TASK_PREVIEW && (
+                                    <Link className="btn sm secondary" to={`/tasks?projectId=${numericProjectId}`}>
+                                        {t('surfaces.projectDetail.viewAllTasks', { count: tasks.length })}
+                                    </Link>
+                                )}
+                            </>
+                        )}
+                    </SectionCard>
+
                 </div>
 
                 {/* ── Sticky right rail: facts at a glance ─────────────────── */}
@@ -1588,15 +1599,19 @@ const ProjectDetailPage = () => {
                         <div className="space-y-3">
                             <div>
                                 <div className="mb-1 flex justify-between text-sm">
-                                    <span className="text-content-secondary">{t('surfaces.projectDetail.remaining')}</span>
-                                    <span className="font-semibold tabular-nums text-content-primary">{formatNumber(summary?.remaining_effort_days)}d</span>
+                                    <span className="text-content-secondary">{t('surfaces.projectDetail.effortDone', {
+                                        done: formatNumber(Math.max(0, (summary?.total_effort_days ?? 0) - (summary?.remaining_effort_days ?? 0))),
+                                        total: formatNumber(summary?.total_effort_days),
+                                    })}</span>
+                                    <span className="font-semibold tabular-nums text-content-primary">{t('surfaces.projectDetail.effortRemaining', { days: formatNumber(summary?.remaining_effort_days) })}</span>
                                 </div>
-                                <div className="h-1.5 overflow-hidden rounded-full bg-surface-subtle">
+                                <div className="h-1.5 overflow-hidden rounded-full bg-surface-subtle" aria-hidden="true">
+                                    {/* The bar fills with done work, like the completion bar above. */}
                                     <div
-                                        className="h-full rounded-full bg-action"
+                                        className="h-full rounded-full bg-feedback-success"
                                         style={{
                                             width: `${summary?.total_effort_days
-                                                ? Math.min(100, (summary.remaining_effort_days / summary.total_effort_days) * 100)
+                                                ? Math.min(100, Math.max(0, ((summary.total_effort_days - summary.remaining_effort_days) / summary.total_effort_days) * 100))
                                                 : 0}%`,
                                         }}
                                     />

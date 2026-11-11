@@ -120,7 +120,7 @@ export const ProjectIterationsSection = ({
                             <Link2 className="mr-1.5 h-3.5 w-3.5" />
                             {t('projectIterations.attach')}
                         </Button>
-                        <Button size="sm" onClick={() => setEditor({ mode: 'create', iteration: null })}>
+                        <Button size="sm" variant="secondary" onClick={() => setEditor({ mode: 'create', iteration: null })}>
                             <Plus className="mr-1.5 h-3.5 w-3.5" />
                             {t('projectIterations.create')}
                         </Button>
