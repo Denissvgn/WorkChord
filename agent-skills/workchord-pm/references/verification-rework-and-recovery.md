@@ -1,38 +1,24 @@
 # Verification, Rework, and Recovery
 
-Use this reference to evaluate resolved work independently, close accepted tasks, return failed work through an explicit rework handoff, recover stale execution, and publish durable project updates.
+Use this reference to route resolved work to an independent reviewer, follow its verdict and rework handoff, recover stale execution, and publish durable project updates. The reviewer's own checks live in the `workchord-reviewer` skill; a PM agent never records Accept or Request changes.
 
 ## Contents
 
-- [Build an independent verification packet](#build-an-independent-verification-packet)
+- [Route work to review](#route-work-to-review)
 - [Handle model evidence and escalation](#handle-model-evidence-and-escalation)
-- [Record a verdict](#record-a-verdict)
+- [Read the verdict](#read-the-verdict)
 - [Return work for rework](#return-work-for-rework)
 - [Recover stale or inconsistent execution](#recover-stale-or-inconsistent-execution)
 - [Triage discoveries](#triage-discoveries)
 - [Publish project updates](#publish-project-updates)
 - [Complete the phase contract](#complete-the-phase-contract)
 
-## Build an Independent Verification Packet
+## Route Work to Review
 
-1. Read the current task, version, complete brief, acceptance criteria, verification instructions, dependencies, source links, and timeline.
-2. Read the execution assignment, claim/release state, run detail, terminal result, artifact links, commit or PR link, summary, and error.
-3. Confirm that no run remains active and no worker still holds a live execution lease.
-4. Map each acceptance criterion to submitted evidence.
-5. Re-run or independently inspect the required verification when authorized and safe. Record commands, environment, result, and limitations.
-6. Review scope and out-of-scope boundaries for silent expansion or missing deliverables.
-7. Review unresolved risks, warnings, partial checks, skipped tests, migration/rollback evidence, and required human approvals.
-8. Keep the verifier independent from the implementation actor for high-risk work. Require a human or separately scoped verifier when independence cannot be established.
-
-Do not accept a succeeded run, green local check, commit link, or worker summary as sufficient by itself. Verify the task's stated outcome.
-
-When `task.brief` exists, review its ordered canonical criteria by stable `id`
-and `revision`, their verification instructions, and the current
-`brief_revision`/`artifact_revision`. The legacy Markdown `task_brief` is not
-authoritative. Require current criterion-level progress and independently
-check each artifact. Evidence from an older brief or artifact revision cannot
-support acceptance. Read the task again before sending the versioned verdict;
-on conflict, re-evaluate the changed packet instead of retrying blindly.
+1. Confirm the task is Implemented (`resolved`), no run remains active, and no worker still holds a live execution lease.
+2. Choose a reviewer actor with the `verifier` role who did not do or report this work. Require a person or a separately scoped reviewer when independence cannot be established; the server refuses a non-independent verdict with `independent_review_required`.
+3. Confirm the typed brief, criterion progress, and artifacts are current enough to review. When `task.brief` exists, evidence from an older `brief_revision` or `artifact_revision` cannot support acceptance; return incomplete submissions to the worker through recovery instead of routing them to review.
+4. Name the rework owner in the assignment reason when it should differ from the worker who submitted; otherwise the reviewer hands rework back to that worker.
 
 Create a verification-purpose assignment only after the task is `resolved`, its
 execution run is terminal, and its claim is released. Under
@@ -88,48 +74,28 @@ scope are non-model blockers: correct or escalate their actual cause without
 buying a higher model tier. Never downgrade an independent/specialist review
 requirement during rework.
 
-## Record a Verdict
+## Read the Verdict
 
-### Pass
+The reviewer records Accept (`pass`) or Request changes (`reject`) through the typed verdict operation. Accept atomically performs the server-owned `resolved -> closed` transition. Request changes atomically reopens the task and creates ordered rework for the named worker. After either verdict, re-read the task, review and rework assignments, pipeline, milestone/project progress, and timeline.
 
-Pass only when every acceptance criterion has evidence and remaining risk is explicitly accepted by the accountable owner.
+In supervised v0, let the accountable person transition `resolved -> closed` with the current task version and reason after reviewing the evidence. Re-read the response because closure sets actual end data and can roll up parents.
 
-In assigned-work v1, submit the typed review verdict with the review assignment, current `expected_task_version`, criterion results, evidence links, limitations, required rationale/correlation metadata, and optional rejection handoff. A pass atomically performs the server-owned `resolved -> closed` transition; a rejection atomically reopens the task and creates ordered rework. Re-read task, review/rework assignments, pipeline, milestone/project progress, and timeline from the verdict response.
-
-In supervised v0, append a concise `agent.checkpoint` with verification evidence only when separately authorized, then let the accountable human or PM transition `resolved -> closed` with the current task version and reason. Re-read the response because closure sets actual end data and can roll up parents.
-
-### Reject
-
-Reject when any acceptance criterion fails, evidence is missing, required verification cannot be trusted, or unresolved risk exceeds the task's acceptance boundary.
-
-Record:
-
-- failed criterion and expected versus observed result;
-- exact reproduction or check output summary;
-- evidence and artifact links;
-- severity and impact;
-- whether the original scope remains valid;
-- minimum required rework;
-- proposed owner, rank, and not-before condition;
-- verifier identity and task/run versions.
-
-Do not close partially accepted work. Split follow-up work only when the original criterion can be truthfully accepted without it; otherwise reject the current task.
+Do not close partially accepted work. Split follow-up work only when the original criterion can be truthfully accepted without it; otherwise the reviewer requests changes on the current task.
 
 ## Return Work for Rework
 
 In assigned-work v1:
 
-1. Submit one typed rejection verdict with the rework actor, rank, evidence,
-   reason, and current task/review versions through the advertised verdict
-   operation.
-2. Require that transaction to transition `resolved -> active`, fulfill the
-   verification assignment, and create an ordered execution assignment with
+1. The reviewer's Request changes verdict names the rework actor, rank,
+   evidence, reason, and current task/review versions.
+2. That transaction transitions `resolved -> active`, fulfills the
+   verification assignment, and creates an ordered execution assignment with
    `queue_class=rework`; there is no separate client-side send-to-rework call in
    stable v1.
-3. Set the exact actor, queue rank, reviewer, rejection evidence, and expected
-   task/review versions. If a not-before condition is required but the verdict
-   schema does not support it, update the newly returned queued assignment with
-   its current queue revision as a separate idempotent PM action.
+3. Check the returned actor, queue rank, and rejection evidence. To change the
+   owner or rank, or to add a not-before condition the verdict schema does not
+   carry, update the queued rework assignment with its current queue revision
+   as a separate idempotent PM action.
 4. Confirm that no old execution claim or run remains current.
 5. Re-read the worker queue and require the server to surface the item as rework, not normal planned work.
 
@@ -208,7 +174,7 @@ decision. If a live verification assignment or any other ownership changes,
 the server rejects the command; refetch and decide explicitly instead of
 cancelling it indirectly.
 
-Review verdict and recovery writes also require a deterministic idempotency
+Recovery and assignment writes also require a deterministic idempotency
 key, rationale, and correlation ID. Preserve the same three values only for an
 exact retry; changing rationale or correlation creates a different audited
 request and must not replay the prior command.
@@ -253,7 +219,7 @@ the human owner and state clearly that no durable update was written.
 
 ## Complete the Phase Contract
 
-### Phase 8: Verify, report, and learn
+### Phase 8: Route review, report, and learn
 
 **Preconditions**
 
@@ -269,9 +235,10 @@ the human owner and state clearly that no durable update was written.
 
 **Allowed mutations**
 
-- Submit a typed pass/reject verdict when available, preserving model-routing
-  lineage and independent/specialist requirements.
-- Transition `resolved -> closed` on pass or `resolved -> active` through explicit rework on reject.
+- Create the verification assignment for an independent reviewer, preserving
+  model-routing lineage and independent/specialist requirements.
+- Adjust the owner, rank, or not-before time of the rework assignment the
+  reviewer's verdict created.
 - Create linked Triage, perform audited recovery, and append a project update within granted authority.
 
 **Exit and postcondition checks**
@@ -283,7 +250,7 @@ the human owner and state clearly that no durable update was written.
 
 **Evidence and stop rules**
 
-- Record criterion-by-criterion results, commands/checks, artifacts, limitations, verdict, status transition, project impact, and next owner.
+- Record the reviewer, verdict, status transition, project impact, and next owner.
 - Stop when independence is missing, model trust is mismatch, unreported, or
   unverifiable without accepted supervised handling, evidence conflicts, a run
   remains active, current versions are stale, durable rework/recovery is

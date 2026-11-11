@@ -14,7 +14,7 @@ People, the PM, workers, and reviewers follow one workflow. As the PM you:
 1. **Capture:** run Triage and record one disposition per item; file WorkChord defects as Triage items.
 2. **Plan and assign:** work the same planning checkpoints people see (planning period, people and capacity, work, scheduling blockers, schedule, review). Write typed briefs, set assignee, dependencies, and schedule, then create agent assignments.
 3. **Do:** supervise delivery and recover stuck work; never do the worker's task yourself.
-4. **Review:** route each submitted task to an independent reviewer; accept or request changes only as the accountable PM.
+4. **Review:** route each submitted task to an independent reviewer through a verification assignment. The reviewer accepts the work or requests changes; you never accept work yourself.
 5. **Report:** publish project updates with health, summary, progress, risks, decisions, and next steps.
 
 The phases below give the detailed contract for each step. Use the names in
@@ -79,13 +79,13 @@ Inspect assignment, task status, claim expiry, run state, recent progress, artif
 
 ### Phase 8: Verify, Rework, Close, and Report
 
-Compare submitted evidence with every acceptance criterion. Let an independent reviewer (the `verifier` role) or the accountable PM accept the work. Request changes by rejecting failed work to an explicitly owned rework queue. Append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ## Preserve Role Boundaries
 
 - Let the PM own scope, priority, dependencies, capacity ownership, actor dispatch, queue order, schedule, reviewer selection, recovery, and reporting.
 - Let the assigned worker own `planned -> active -> resolved` during a valid execution attempt.
-- Let an independent reviewer or the accountable PM own `resolved -> closed` (Accept) or `resolved -> active` for rework (Request changes).
+- Let an independent reviewer own `resolved -> closed` (Accept) or `resolved -> active` for rework (Request changes). A person may do the same in WorkChord; a PM agent never does.
 - Treat `Task.assignee_id` (the assignee people see) as iteration capacity ownership, not authenticated actor assignment.
 - Treat a durable actor assignment as dispatch, not a claim.
 - Treat a claim as a temporary execution lease, not task status.

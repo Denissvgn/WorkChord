@@ -170,6 +170,33 @@ def test_worker_skill_obeys_selected_binding_without_expanding_authority() -> No
 
 
 @pytest.mark.contract
+def test_reviewer_role_has_its_own_package_within_the_verifier_preset() -> None:
+    from app.schemas.agent_team_setup import (
+        ROLE_PACKAGE_COMPATIBILITY,
+        ROLE_SCOPE_PRESETS,
+    )
+
+    metadata = build_agent_skills.ROLE_METADATA["workchord-reviewer"]
+    assert metadata["role"] == "verifier"
+    assert ROLE_PACKAGE_COMPATIBILITY["verifier"] == ("workchord-reviewer",)
+    preset = set(ROLE_SCOPE_PRESETS["verifier-v1"])
+    assert set(metadata["required_scopes"]) | set(metadata["optional_scopes"]) <= preset
+    for operation_id in ("review-queue", "review-verdict", "complete-context"):
+        assert "verifier" in _operation(operation_id)["audience"]
+
+    skill = _normalized("agent-skills/workchord-reviewer/SKILL.md")
+    packet = _normalized(
+        "agent-skills/workchord-reviewer/references/review-packet-and-verdict.md"
+    )
+    assert "Never accept part of a task" in skill
+    assert "Stop and ask the PM when that worker is unknown or disabled" in skill
+    assert "`independent_review_required`" in packet
+    assert "Evidence from an older revision cannot support Accept" in packet
+    pm_skill = _normalized("agent-skills/workchord-pm/SKILL.md")
+    assert "you never accept work yourself" in pm_skill
+
+
+@pytest.mark.contract
 def test_model_aware_operation_contract_is_feature_gated() -> None:
     operation_ids = {
         "model-catalog",
@@ -318,6 +345,7 @@ def test_role_versions_are_new_frozen_identities() -> None:
     assert build_agent_skills.CATALOG_VERSION == "1.11.0"
     assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.11.0"
     assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.10.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-reviewer"]["version"] == "1.0.0"
     assert ("workchord-pm", "1.3.0") in releases
     assert ("workchord-worker", "1.2.0") in releases
     assert "1.3.0" in catalogs
@@ -345,6 +373,7 @@ def test_role_versions_are_new_frozen_identities() -> None:
     assert ("workchord-pm", "1.11.0") in releases
     assert ("workchord-worker", "1.10.0") in releases
     assert "1.11.0" in catalogs
+    assert ("workchord-reviewer", "1.0.0") in releases
 
 
 @pytest.mark.contract

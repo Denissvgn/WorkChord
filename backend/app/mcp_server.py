@@ -2342,6 +2342,16 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.prompt()
+    async def workchord_reviewer_role() -> str:
+        """Point a reviewer client to the exact canonical verification role."""
+        return await _skill_bundle_prompt(
+            "Read workchord://agent/capabilities, resolve its recommended verifier skill version, "
+            "then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. "
+            "Follow that skill, read your review queue, and record a verdict only for the "
+            "exact review assignment it returns."
+        )
+
+    @mcp.prompt()
     def task_implementation_brief(task_id: str) -> str:
         """Prompt for implementing one WorkChord task."""
         return (

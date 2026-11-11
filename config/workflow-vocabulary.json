@@ -31,7 +31,7 @@
       "person": "Triage → New intake, or Tasks → New task.",
       "pm": "Runs Triage and records one disposition; files WorkChord defects as Triage items.",
       "worker": "Reports out-of-scope findings as linked Triage items.",
-      "reviewer": "Reports out-of-scope findings as linked Triage items."
+      "reviewer": "Reports out-of-scope findings to the PM in its review result."
     },
     {
       "id": "plan",
@@ -53,7 +53,7 @@
       "id": "review",
       "name": "Review",
       "person": "My Work → To review; Accept or Request changes.",
-      "pm": "Routes the review to an independent reviewer; reviews only as the accountable PM.",
+      "pm": "Routes each review to an independent reviewer; never accepts work itself.",
       "worker": "Takes rework only when it is assigned back.",
       "reviewer": "Records a result per acceptance criterion, then accepts or requests changes."
     },

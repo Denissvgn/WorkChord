@@ -414,6 +414,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_capacity](modules/models_capacity.md) | 9 | 1 |
 | [models_time_entry](modules/models_time_entry.md) | 9 | 2 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
+| [agent_team_setup](modules/agent_team_setup.md) | 9 | 1 |
 | [calendar_service](modules/calendar_service.md) | 9 | 7 |
 | [capacity_service](modules/capacity_service.md) | 9 | 11 |
 | [session_service](modules/session_service.md) | 9 | 9 |
@@ -432,7 +433,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models___init__](modules/models___init__.md) | 8 | 31 |
 | [delivery_dependency](modules/delivery_dependency.md) | 8 | 3 |
 | [mutation_versions](modules/mutation_versions.md) | 8 | 2 |
-| [agent_team_setup](modules/agent_team_setup.md) | 8 | 1 |
 | [agent_routing_rollout](modules/agent_routing_rollout.md) | 8 | 1 |
 | [agent_team_setup_service](modules/agent_team_setup_service.md) | 8 | 17 |
 | [backlog_snapshot_service](modules/backlog_snapshot_service.md) | 8 | 13 |
@@ -884,7 +884,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_agent_routing_service](modules/test_agent_routing_service.md) | 0 | 10 |
 | [test_agent_routing_wave3_contract](modules/test_agent_routing_wave3_contract.md) | 0 | 2 |
 | [test_agent_run_trust_compatibility](modules/test_agent_run_trust_compatibility.md) | 0 | 4 |
-| [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) | 0 | 8 |
+| [test_agent_skill_routing_guidance](modules/test_agent_skill_routing_guidance.md) | 0 | 9 |
 | [test_agent_team_catalog](modules/test_agent_team_catalog.md) | 0 | 7 |
 | [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) | 0 | 0 |
 | [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) | 0 | 12 |

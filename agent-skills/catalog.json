@@ -9,22 +9,22 @@
         {
           "format": "tar.gz",
           "path": "workchord-pm-1.11.0.tar.gz",
-          "sha256": "a1ac37fb11c92a3fec0e870a9b81aa4de377c4c98ce4f173d66f9d775ec3b2de",
+          "sha256": "9200c4d88e807123c83c42aa95932e6173dd3cf252618847dc5f31f4ce339544",
           "size": 143393
         },
         {
           "format": "zip",
           "path": "workchord-pm-1.11.0.zip",
-          "sha256": "90fb18bd14887ed2495cc7ad1b7afed95d1738d255d16577528b4b6370519857",
-          "size": 132871
+          "sha256": "98e79710584a2107ecd29211216fb56df98e75c77c7c72965cf8a07a49ac5d94",
+          "size": 131519
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "707b6bdb2111877d51bb45f2dcc049a92f4a6eda5ceb93831ccca7b7de70619e",
-          "size": 12368
+          "sha256": "bd00b97f94be010e2298aee3bece3c2af7040fdbf5054d2c28dc963f719cd5b0",
+          "size": 12535
         },
         {
           "path": "agents/openai.yaml",
@@ -33,8 +33,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "ea1fa1ea4d54f5c76778fc0050badf198a4304a7e338c8b2b029fb859c8dacba",
-          "size": 38364
+          "sha256": "d9e8baa3bfbf288b6d8671c2c1765910ab90201b2f3b2f065696f2a0781181c0",
+          "size": 38460
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
@@ -48,8 +48,8 @@
         },
         {
           "path": "references/system-map-and-authority.md",
-          "sha256": "ac19b0795daba042bf1057e23bdc537575a3986dd5bcb6a428673b856a8649aa",
-          "size": 9584
+          "sha256": "6822d7608ca89a829faee05632787b950e3114fe5ef3661f47e66bd8506ba381",
+          "size": 9627
         },
         {
           "path": "references/team-capacity-and-calendar.md",
@@ -58,12 +58,12 @@
         },
         {
           "path": "references/verification-rework-and-recovery.md",
-          "sha256": "4c2d5ccb8acf221aee096dbd39a38960f2ab459fe5e5ba7cfb8945247e7b69ab",
-          "size": 18017
+          "sha256": "d853597366625a9c8f0107b084da63ab203a97ccca9575ed8be70c8e748719f3",
+          "size": 16359
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "1fa550221590afd1a59f96fe89c17af241fcc4d88b38b3467b9af28fd8b7a7c1",
+          "sha256": "f1f78828473208fb73e7460d8c6fff85a2268c4239c75bd70c4f754b1e79d6e0",
           "size": 6809
         }
       ],
@@ -115,15 +115,84 @@
       "archives": [
         {
           "format": "tar.gz",
+          "path": "workchord-reviewer-1.0.0.tar.gz",
+          "sha256": "e8467803be27ca1d52bf5a13174a4d8499d0eb69fbc93c5cc47d8ce19c483db3",
+          "size": 40983
+        },
+        {
+          "format": "zip",
+          "path": "workchord-reviewer-1.0.0.zip",
+          "sha256": "a66770e4f282c28ffcfdf0810d707af61ebd678ef4c60cfc79f84d488aabd05b",
+          "size": 33006
+        }
+      ],
+      "entrypoint": "SKILL.md",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "sha256": "306108394152caeb1746a134635fde73fbc43765a6ce95230eaf59244aa0961d",
+          "size": 4807
+        },
+        {
+          "path": "agents/openai.yaml",
+          "sha256": "307b7cf0311ed5cc226408d8befbedf082df2a3bd6f078682b44371221065712",
+          "size": 232
+        },
+        {
+          "path": "references/api-and-mcp.md",
+          "sha256": "50d941b67ce2dd4b870fff8a2333fc1058af668c05787941cc11f6dc3489bc88",
+          "size": 15439
+        },
+        {
+          "path": "references/review-packet-and-verdict.md",
+          "sha256": "a0a5badec3487b564c5816a5f28f3a59473b09cac77b4b094fe48f00d3834b11",
+          "size": 4798
+        },
+        {
+          "path": "references/workflow-and-names.md",
+          "sha256": "ff54ac77859673c40340c3f33a2d8262449b13980e50495130f0ee7aef4d41aa",
+          "size": 6894
+        }
+      ],
+      "license": "MIT",
+      "name": "workchord-reviewer",
+      "optional_scopes": [
+        "skills:read"
+      ],
+      "path": "workchord-reviewer",
+      "required_features": [
+        "actor-task-assignments",
+        "agent-capabilities-v1",
+        "agent-team-master-v1",
+        "canonical-task-brief-v1",
+        "complete-task-context",
+        "snapshot-pagination-v1",
+        "typed-rework-recovery",
+        "verification-v1"
+      ],
+      "required_scopes": [
+        "assignments:read",
+        "verification:read",
+        "verification:write"
+      ],
+      "role": "verifier",
+      "server_compatibility": ">=1.7.0,<2.0.0",
+      "version": "1.0.0"
+    },
+    {
+      "api_contract": "workchord-agent/v1",
+      "archives": [
+        {
+          "format": "tar.gz",
           "path": "workchord-worker-1.10.0.tar.gz",
-          "sha256": "6871fd550189d026b906770bd4c53ed0287371e798492d19a61c92c40b132671",
+          "sha256": "764f7c01b4c4347ad424971ce1a58b84b483432aa0ef50b302b4dcfa47d27d0c",
           "size": 81948
         },
         {
           "format": "zip",
           "path": "workchord-worker-1.10.0.zip",
-          "sha256": "fedd0ba7757afbd85b43144c74282154f6b75645a3ce5bbfb02a5b1e846a27e7",
-          "size": 71964
+          "sha256": "a399145004921876944d6da8deb8569e5b77722514e1688b689f06fe1d4063bb",
+          "size": 71973
         }
       ],
       "entrypoint": "SKILL.md",
@@ -140,8 +209,8 @@
         },
         {
           "path": "references/api-and-mcp.md",
-          "sha256": "329664e3bf2df863b3900f025e758b8206e6ab86192917adc243cc1be7b9f1a0",
-          "size": 21616
+          "sha256": "894f8527a21ff945849a8b451ed95ceebe2eaa40a2256b1901a06bcc931e6bf2",
+          "size": 21625
         },
         {
           "path": "references/claim-run-and-task-state.md",
@@ -165,7 +234,7 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "855ce110b6bbce6630b48c7416a7de8a737a8b5d75abfe4ef2e46d0f0f0dbf10",
+          "sha256": "981244ca7b0e0a95bce80f0b925823aa9521fddf93beb6b82f6be628e997f28e",
           "size": 6825
         }
       ],
@@ -203,5 +272,5 @@
       "version": "1.10.0"
     }
   ],
-  "source_revision": "sha256:687f7007f7e7e6aac363cbb6635c3318c3aaa85620d17bc231a52c8aff349cd2"
+  "source_revision": "sha256:de4503edd7511d3b156ea94411ed4c6eb9bf7fc810cea108697169551bf4d9b9"
 }

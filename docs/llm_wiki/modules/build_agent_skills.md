@@ -12,6 +12,8 @@ Canonical role guidance requires stable criterion IDs and revisions for submissi
 
 `config/workflow-vocabulary.json` is the shared source for role display names, workflow steps, task states, action verbs, My Work queues, and terms. The script validates it, renders one identical generated block into each role's `references/workflow-and-names.md`, and fails validation when that block drifts; the frontend checks its interface labels against the same file. Each role's `SKILL.md` also carries a generated list of the live features that role's package requires, so the prose gate cannot drift from the catalog metadata.
 
+Three role packages exist, one per code role: `workchord-pm` (`pm`), `workchord-worker` (`worker`), and `workchord-reviewer` (`verifier`). The reviewer package declares only scopes inside the `verifier-v1` preset, carries its own copy of the generated assigned-work contract, and owns the review packet and verdict guidance; the PM package routes work to review but never records a verdict, matching the server rule that only a `verifier`-role agent can accept.
+
 Validate and reproducibly package WorkChord role skills.
 
 ## Imports
@@ -52,7 +54,7 @@ Validate and reproducibly package WorkChord role skills.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [SkillPackError](../entities/SkillPackError.md) | 843 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
+| [SkillPackError](../entities/SkillPackError.md) | 864 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
 
 ## Functions
 

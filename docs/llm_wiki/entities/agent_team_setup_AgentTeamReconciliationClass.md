@@ -1,6 +1,6 @@
 # AgentTeamReconciliationClass
 
-**Location:** `backend/app/schemas/agent_team_setup.py:104`
+**Location:** `backend/app/schemas/agent_team_setup.py:102`
 **Kind:** Enum
 **Bases:** `StrEnum`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

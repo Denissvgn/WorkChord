@@ -70,6 +70,7 @@ ASSIGNED_WORK_CONTRACT_END = (
 )
 ASSIGNED_WORK_CONTRACT_DOCUMENTS = (
     "agent-skills/workchord-pm/references/api-and-mcp.md",
+    "agent-skills/workchord-reviewer/references/api-and-mcp.md",
     "agent-skills/workchord-worker/references/api-and-mcp.md",
 )
 
@@ -155,7 +156,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
     "operations": [
         _assigned_work_operation(
             "capabilities",
-            "PM/worker",
+            "PM/worker/verifier",
             "GET",
             "/api/agent/capabilities",
             "agent_get_capabilities",
@@ -821,6 +822,26 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
             "work:execute",
         ],
         "optional_scopes": ["skills:read", "tasks:read"],
+    },
+    "workchord-reviewer": {
+        "role": "verifier",
+        "version": "1.0.0",
+        "required_features": [
+            "agent-capabilities-v1",
+            AGENT_TEAM_MASTER_FEATURE,
+            "actor-task-assignments",
+            "canonical-task-brief-v1",
+            "complete-task-context",
+            "snapshot-pagination-v1",
+            "typed-rework-recovery",
+            "verification-v1",
+        ],
+        "required_scopes": [
+            "assignments:read",
+            "verification:read",
+            "verification:write",
+        ],
+        "optional_scopes": ["skills:read"],
     },
 }
 
@@ -2175,14 +2196,14 @@ def build_codex_plugin(skills_dir: Path, output_dir: Path) -> Path:
         "name": "workchord-agent-roles",
         "version": catalog["catalog_version"],
         "license": ARTIFACT_LICENSE,
-        "description": "Installable WorkChord PM and Worker role skills.",
+        "description": "Installable WorkChord PM, Worker, and Reviewer role skills.",
         "author": {"name": "WorkChord maintainers"},
         "skills": "./skills/",
         "interface": {
             "displayName": "WorkChord Agent Roles",
-            "shortDescription": "Work in WorkChord as a PM or an assigned Worker.",
+            "shortDescription": "Work in WorkChord as a PM, Worker, or Reviewer.",
             "longDescription": (
-                "Adds the WorkChord PM and Worker role skills, generated from the "
+                "Adds the WorkChord PM, Worker, and Reviewer role skills, generated from the "
                 "versioned role pack and the shared workflow vocabulary."
             ),
             "developerName": "WorkChord maintainers",

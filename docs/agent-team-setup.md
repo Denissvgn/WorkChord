@@ -21,6 +21,8 @@ for a particular task.
 4. Create and enable the provider-neutral model catalog entries referenced by
    the master. Provider credentials do not belong in the catalog or master.
 5. Use immutable package identities from the server's agent skill catalog.
+   Each role has its own package: `workchord-pm` for the controller,
+   `workchord-worker` for workers, and `workchord-reviewer` for verifiers.
 
 Start from
 [`config/examples/agent-team-master.json`](../config/examples/agent-team-master.json).
@@ -147,6 +149,19 @@ evidence.
   actors, receipts, assignments, and runs remain intact.
 - Package, profile, binding, credential-delivery, acknowledgement, and
   connection drift remain separate status evidence.
+
+### Move verifiers to the reviewer package
+
+Verifier members must use the `workchord-reviewer` package; validation rejects
+a verifier that still declares `workchord-pm`. To upgrade an existing team:
+
+1. Upgrade the server so its skill catalog lists `workchord-reviewer`.
+2. In the master, set each verifier's `skill_package` to the
+   `workchord-reviewer` name, version, and archive checksum from that catalog.
+3. Validate and plan, review the action proposed for each verifier, then
+   apply it.
+4. Install the reviewer package in each verifier runtime and acknowledge the
+   new handoff. Verifiers stay out of dispatch until they acknowledge it.
 
 Export the bounded aggregate setup report through
 `GET /api/agent/team-setup/report` or the operator CLI. It contains the topology

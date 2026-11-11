@@ -37,7 +37,7 @@ class SkillBundleCatalogEntry(StrictBundleModel):
     """Versioned compatibility and integrity manifest for one role skill."""
 
     name: str = Field(..., pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-    role: Literal["pm", "worker"]
+    role: Literal["pm", "worker", "verifier"]
     version: str = Field(..., pattern=r"^\d+\.\d+\.\d+$")
     path: str = Field(..., min_length=1)
     entrypoint: Literal["SKILL.md"]

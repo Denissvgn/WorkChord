@@ -10,7 +10,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Modules | 759 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 550 | [Open section](#entry-point-flows) |
+| Entry-point flows | 551 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -2975,6 +2975,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [mcp-triage_resource](flows/mcp-triage_resource.md) - entry: `triage_resource`
 - [mcp-triage_to_task_draft](flows/mcp-triage_to_task_draft.md) - entry: `triage_to_task_draft`
 - [mcp-workchord_pm_role](flows/mcp-workchord_pm_role.md) - entry: `workchord_pm_role`
+- [mcp-workchord_reviewer_role](flows/mcp-workchord_reviewer_role.md) - entry: `workchord_reviewer_role`
 - [mcp-workchord_worker_role](flows/mcp-workchord_worker_role.md) - entry: `workchord_worker_role`
 - [mcp-workspace_accept_triage_item](flows/mcp-workspace_accept_triage_item.md) - entry: `workspace_accept_triage_item`
 - [mcp-workspace_apply_agent_profile_preset](flows/mcp-workspace_apply_agent_profile_preset.md) - entry: `workspace_apply_agent_profile_preset`

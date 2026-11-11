@@ -122,4 +122,5 @@ reviewer or baseline observations remain unavailable.
 
 Role references: [planner](../agent-skills/workchord-pm/SKILL.md) ·
 [execution worker](../agent-skills/workchord-worker/SKILL.md) ·
+[reviewer](../agent-skills/workchord-reviewer/SKILL.md) ·
 [model routing](runbooks/model-aware-routing.md).

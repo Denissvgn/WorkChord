@@ -19,7 +19,7 @@
       "api-contracts": 0,
       "dependencies": 1,
       "entities": 1527,
-      "flows": 550,
+      "flows": 551,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
@@ -29,7 +29,7 @@
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3044
+    "total": 3045
   },
   "dependency_pages": {
     "count": 2,
@@ -34069,6 +34069,113 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "workchord_reviewer_role",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "workchord_reviewer_role"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 200,
+              "step": "_current_agent_key",
+              "step_index": 4,
+              "target": "os.getenv"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 107,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 120,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 121,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 123,
+              "step": "command_transaction",
+              "step_index": 11,
+              "target": "db.info.pop"
+            }
+          ],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 181,
+              "step": "_open_db_session",
+              "target": "_session_factory"
+            },
+            {
+              "kind": "external_call",
+              "line": 182,
+              "step": "_open_db_session",
+              "target": "hasattr"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "workchord_reviewer_role",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "workchord_reviewer_role",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/config.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/maintenance.py",
+            "backend/app/models/identity.py"
+          ],
+          "step_count": 201,
+          "truncated": true
+        }
+      },
+      "id": "mcp-workchord_reviewer_role",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "workchord_worker_role",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "workchord_worker_role"
@@ -38417,7 +38524,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3382,
+              "line": 3403,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38425,7 +38532,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3387,
+              "line": 3408,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38433,39 +38540,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3390,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3393,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3396,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3402,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3405,
+              "line": 3411,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38477,66 +38552,98 @@
               "step": "main",
               "step_index": 1,
               "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3417,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3423,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3426,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3435,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
             }
           ],
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3373,
+              "line": 3394,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3314,
+              "line": 3335,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3315,
+              "line": 3336,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3321,
+              "line": 3342,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3322,
+              "line": 3343,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3326,
+              "line": 3347,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3330,
+              "line": 3351,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3331,
+              "line": 3352,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3335,
+              "line": 3356,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3336,
+              "line": 3357,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -40863,7 +40970,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 2434,
+              "line": 2444,
               "step": "main",
               "step_index": 1,
               "target": "os.getenv"
@@ -40871,7 +40978,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2435,
+              "line": 2445,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40880,37 +40987,37 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2425,
+              "line": 2435,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2426,
+              "line": 2436,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2432,
+              "line": 2442,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 2436,
+              "line": 2446,
               "step": "main",
               "target": "SystemExit"
             },
             {
               "kind": "external_call",
-              "line": 2440,
+              "line": 2450,
               "step": "main",
               "target": "redirect_stdout"
             },
             {
               "kind": "external_call",
-              "line": 2441,
+              "line": 2451,
               "step": "main",
               "target": "asyncio.run"
             },
@@ -45012,6 +45119,7 @@
         "flows/mcp-triage_resource.md",
         "flows/mcp-triage_to_task_draft.md",
         "flows/mcp-workchord_pm_role.md",
+        "flows/mcp-workchord_reviewer_role.md",
         "flows/mcp-workchord_worker_role.md",
         "flows/mcp-workspace_accept_triage_item.md",
         "flows/mcp-workspace_apply_agent_profile_preset.md",
@@ -67911,6 +68019,7 @@
         "modules/generate_agent_team_contract.md",
         "modules/generate_agent_team_report_contract.md",
         "modules/routers_agent.md",
+        "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_qualification.md"
@@ -77669,6 +77778,7 @@
       "outgoing_internal_links": [
         "modules/agent_contract.md",
         "modules/agent_routing.md",
+        "modules/agent_team_setup.md",
         "modules/app_main.md",
         "modules/mcp_agent_tools.md",
         "modules/mcp_server.md",
@@ -91627,6 +91737,31 @@
       "title": "workchord_pm_role"
     },
     {
+      "canonical_path": "flows/mcp-workchord_reviewer_role.md",
+      "id": "mcp-workchord_reviewer_role",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-workchord_reviewer_role",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/maintenance.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "workchord_reviewer_role"
+    },
+    {
       "canonical_path": "flows/mcp-workchord_worker_role.md",
       "id": "mcp-workchord_worker_role",
       "kind": "flows",
@@ -95397,5 +95532,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:77b60fa87b395d969b4b49dbfb60f4a516374ad8ddc04e54b14a02233b6f67b9"
+  "source_hash": "sha256:c4aa07fb790e2f45e7be043ecd39c00baf4139e0517235f016ec6e2e94f8038d"
 }

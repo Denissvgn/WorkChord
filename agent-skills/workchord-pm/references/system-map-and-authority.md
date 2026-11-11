@@ -123,7 +123,7 @@ Do not call a global ready-list result an actor assignment. Do not direct unatte
 | Scope, priority, dependencies, labels, capacity assignee, schedule, queue, reviewer | PM or planner |
 | Actor/key provisioning and scope grants | Operator or administrator |
 | Claim, run, progress, `planned -> active`, `active -> resolved` | Assigned worker |
-| Acceptance verdict, `resolved -> closed`, or rejection `resolved -> active` | Independent verifier or accountable PM |
+| Acceptance verdict, `resolved -> closed`, or rejection `resolved -> active` | Independent reviewer (`verifier` role) or an accountable person; never a PM agent |
 | Recovery of abandoned or inconsistent execution | PM/recovery owner, using an audited server action when available |
 | Automatic parent roll-up | Server |
 

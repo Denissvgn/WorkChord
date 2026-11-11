@@ -26,10 +26,10 @@ One workflow, seen from each side:
 
 | Step | Person in the UI | PM | Worker | Reviewer |
 | --- | --- | --- | --- | --- |
-| Capture | Triage → New intake, or Tasks → New task. | Runs Triage and records one disposition; files WorkChord defects as Triage items. | Reports out-of-scope findings as linked Triage items. | Reports out-of-scope findings as linked Triage items. |
+| Capture | Triage → New intake, or Tasks → New task. | Runs Triage and records one disposition; files WorkChord defects as Triage items. | Reports out-of-scope findings as linked Triage items. | Reports out-of-scope findings to the PM in its review result. |
 | Plan and assign | Plan an iteration: planning period, people and capacity, work, scheduling blockers, schedule, review. | Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments. | — | — |
 | Do | Start work, Report blocker, Submit for review. | Supervises delivery and recovers stuck work through typed recovery. | Reads My Work, starts the assigned task, reports progress or a blocker, then submits for review. | — |
-| Review | My Work → To review; Accept or Request changes. | Routes the review to an independent reviewer; reviews only as the accountable PM. | Takes rework only when it is assigned back. | Records a result per acceptance criterion, then accepts or requests changes. |
+| Review | My Work → To review; Accept or Request changes. | Routes each review to an independent reviewer; never accepts work itself. | Takes rework only when it is assigned back. | Records a result per acceptance criterion, then accepts or requests changes. |
 | Report | Post update on the project. | Publishes a project update with health, summary, progress, risks, decisions, and next steps. | — | — |
 
 Task states:
