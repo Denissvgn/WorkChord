@@ -65,11 +65,15 @@ function PlanningReadinessLauncher({
 }) {
     const { t } = useTranslation();
     const nextStep = STEP_DEFS.find(step => step.id === nextId);
-    const action = ready.done === 0
-        ? t('plan.hub.start')
-        : ready.done === ready.total
-            ? t('plan.hub.review')
-            : t('plan.hub.resume');
+    // Name the next step on the button so the first click is the next real move.
+    const action = ready.done === ready.total
+        ? t('plan.hub.review')
+        : nextStep
+            ? t(`plan.steps.${nextStep.id}.title`)
+            : ready.done === 0 ? t('plan.hub.start') : t('plan.hub.resume');
+    const actionHref = ready.done < ready.total && nextStep
+        ? `/plan/master?step=${nextStep.id}`
+        : '/plan/master';
     const recommendation = ready.done === 0
         ? t('plan.hub.recommendedStart')
         : ready.done === ready.total
@@ -112,7 +116,7 @@ function PlanningReadinessLauncher({
                         <p className="mc-desc">{t('plan.hub.planIterationDescription')}</p>
                     </div>
                 </div>
-                <Link className="btn primary lg plan-hub-primary-action" to="/plan/master">
+                <Link className="btn primary lg plan-hub-primary-action" to={actionHref}>
                     {action}
                     <ArrowRight aria-hidden="true" size={14} />
                 </Link>

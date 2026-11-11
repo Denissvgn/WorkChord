@@ -29,7 +29,7 @@ import { calendarService } from '../services/calendarService';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
 import { dateFnsLocale } from '../i18n/dateLocale';
-import { useIterationStore } from '../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
 import type { Calendar as WorkCalendar, CalendarCreate, CalendarUpdate } from '../types/calendar';
 import type { TeamMember, Vacation } from '../types/team';
 import { usePlanningObservation } from '../features/usePlanningObservation';
@@ -171,7 +171,7 @@ const CalendarPage = () => {
         }
         const exists = iterations.some(iteration => iteration.id === selectedIterationId);
         if (selectedIterationId === 0 || !exists) {
-            setSelectedIterationId(iterations[0].id);
+            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
         }
     }, [iterations, selectedIterationId, setSelectedIterationId]);
 

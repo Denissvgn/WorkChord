@@ -5,7 +5,7 @@ import { iterationService } from '../../services/iterationService';
 import { taskService } from '../../services/taskService';
 import { teamService } from '../../services/teamService';
 import { triageService } from '../../services/triageService';
-import { useIterationStore } from '../../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../../store/iterationStore';
 import type { GanttResponse } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
@@ -244,7 +244,9 @@ export const countPlanningExceptions = (
 
 export const usePlanningReadiness = ({
     includeInbox = false,
-    autoSelectFirst = false,
+    // Every planning surface selects the same default iteration, so readiness
+    // never depends on which page was opened first.
+    autoSelectFirst = true,
 }: PlanningReadinessOptions = {}) => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
 
@@ -267,7 +269,7 @@ export const usePlanningReadiness = ({
         }
 
         if (autoSelectFirst && selectedIterationId === 0 && iterations.length > 0) {
-            setSelectedIterationId(iterations[0].id);
+            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
         }
     }, [
         autoSelectFirst,

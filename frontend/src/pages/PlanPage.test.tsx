@@ -99,8 +99,9 @@ describe('PlanPage mixed planning launcher', () => {
         expect(screen.getAllByRole('progressbar')).toHaveLength(1);
         expect(screen.getByText('Plan readiness')).toBeVisible();
 
-        const primaryAction = screen.getByRole('link', { name: 'Resume plan' });
-        expect(primaryAction).toHaveAttribute('href', '/plan/master');
+        // The primary action names and opens the next incomplete step.
+        const primaryAction = screen.getByRole('link', { name: 'Build schedule' });
+        expect(primaryAction).toHaveAttribute('href', '/plan/master?step=schedule');
 
         await user.click(screen.getByText(
             `${state.ready.done} of ${state.ready.total} checkpoints complete`,

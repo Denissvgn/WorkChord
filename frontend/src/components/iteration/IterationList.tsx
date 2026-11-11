@@ -1,8 +1,9 @@
+import clsx from 'clsx';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Trash2, ArrowRight, Download, Upload, FolderOpen } from 'lucide-react';
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { iterationService } from '../../services/iterationService';
 import { IterationImportDialog } from './IterationImportDialog';
 import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
@@ -22,6 +23,7 @@ interface IterationListProps {
 export const IterationList = ({ onEdit }: IterationListProps) => {
     const queryClient = useQueryClient();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const toast = useToast();
     const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions; name: string; taskCount: number | null } | null>(null);
@@ -116,7 +118,11 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                 onChange={handleImportFile}
             />
             {iterations?.map((iteration) => (
-                <div key={iteration.id} className="card hover:shadow-md transition-shadow">
+                <div
+                    key={iteration.id}
+                    className={clsx('card card-pad', iteration.id === selectedIterationId && 'border-action')}
+                    aria-current={iteration.id === selectedIterationId ? 'true' : undefined}
+                >
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-feedback-purple-muted rounded-lg text-feedback-purple-foreground">
@@ -124,6 +130,9 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-lg">{iteration.name}</h3>
+                                {iteration.id === selectedIterationId && (
+                                    <span className="pill sm">{t('iterations.currentPlanningPeriod')}</span>
+                                )}
                                 <div className="flex items-center text-sm text-content-secondary gap-1">
                                     <span>{formatDate(iteration.start_date)}</span>
                                     <ArrowRight className="w-3 h-3" />
@@ -161,7 +170,22 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-2 pt-4 border-t border-border-subtle">
+                    <div className="flex flex-wrap justify-end gap-2 pt-4 border-t border-border-subtle">
+                        {iteration.id !== selectedIterationId ? (
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                className="mr-auto"
+                                onClick={() => {
+                                    setSelectedIterationId(iteration.id);
+                                    navigate('/plan/master');
+                                }}
+                            >
+                                {t('iterations.planThisIteration')}
+                            </Button>
+                        ) : (
+                            <Link to="/plan/master" className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
+                        )}
                         <Button
                             variant="ghost"
                             size="sm"

@@ -9,7 +9,8 @@ import { TeamProfileManager } from '../components/team/TeamProfileManager';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
-import { useIterationStore } from '../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
+import { IterationSelector } from '../components/iteration/IterationSelector';
 import { PageHeader, PageLayout } from '../components/ui';
 import type { TeamMember, TeamMemberProfile } from '../types/team';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
@@ -78,7 +79,7 @@ const TeamPage = () => {
         if (!iterations) return;
         if (iterations.length === 0) { if (selectedIterationId !== 0) setSelectedIterationId(0); return; }
         const exists = iterations.some(i => i.id === selectedIterationId);
-        if (selectedIterationId === 0 || !exists) setSelectedIterationId(iterations[0].id);
+        if (selectedIterationId === 0 || !exists) setSelectedIterationId(pickDefaultIteration(iterations)!.id);
     }, [iterations, selectedIterationId, setSelectedIterationId]);
 
     useEffect(() => {
@@ -138,12 +139,7 @@ const TeamPage = () => {
                 subtitle={selectedIteration ? t('teamPage.capacityBelongsTo', {iteration: selectedIteration.name}) : t('teamPage.description')}
                 actions={hasIterations && (
                     <>
-                        <select className="input" style={{width:'auto'}}
-                            value={selectedIterationId}
-                            onChange={e => setSelectedIterationId(parseInt(e.target.value))}
-                            disabled={isCreating || !!editingMember}>
-                            {iterations?.map(it => <option key={it.id} value={it.id}>{it.name}</option>)}
-                        </select>
+                        <IterationSelector showLabel disabled={isCreating || !!editingMember} />
                         <button className="btn" onClick={() => setIsImporting(true)}
                             disabled={isCreating || !!editingMember || selectedIterationId === 0}>
                             ↑ {t('teamPage.importCapacity')}

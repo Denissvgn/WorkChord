@@ -849,6 +849,9 @@ export const russianResources = {
                 noIterations: 'Итераций нет. Создайте итерацию, чтобы начать планирование.',
                 deleteTitle: 'Удалить итерацию?',
                 deleteBody: 'Это действие нельзя отменить. Все задачи и данные итерации будут удалены.',
+                currentPlanningPeriod: 'Текущий период планирования',
+                planThisIteration: 'Планировать эту итерацию',
+                openPlan: 'Открыть план',
                 deleteNamedTitle: 'Удалить «{{name}}»?',
                 deleteBodyWithCount_one: 'Это нельзя отменить. Будут удалены {{count}} задача и все данные итерации.',
                 deleteBodyWithCount_few: 'Это нельзя отменить. Будут удалены {{count}} задачи и все данные итерации.',
@@ -4705,7 +4708,7 @@ export const russianResources = {
                 dates: 'Даты',
             },
             iterationIndicator: {
-                currentIteration: 'Текущая итерация',
+                currentIteration: 'Итерация',
                 selectIteration: 'Выбрать итерацию',
                 noIterations: 'Нет итераций',
                 loading: 'Загрузка...',

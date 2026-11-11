@@ -34,7 +34,7 @@ import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
-import { useIterationStore } from '../store/iterationStore';
+import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import type { SavedView } from '../types/savedView';
@@ -242,7 +242,7 @@ const TasksPage = () => {
 
         const iterationExists = iterations.some(i => i.id === selectedIterationId);
         if (selectedIterationId === 0 || !iterationExists) {
-            setSelectedIterationId(iterations[0].id);
+            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
         }
     }, [
         iterations,
@@ -463,6 +463,7 @@ const TasksPage = () => {
                         </div>
                         <div className="row tasks-header-actions">
                         <IterationSelector
+                            showLabel
                             className="tasks-iteration-selector"
                             onChange={clearIterationViewContext}
                         />
