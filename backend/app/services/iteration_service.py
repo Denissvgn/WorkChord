@@ -506,28 +506,38 @@ class IterationService:
             Task.id.in_(included),
             ~exists(select(child_task.id).where(child_task.parent_id == Task.id)),
         )
+        # One rule with the task filters (app.services.planning_issues): only planned,
+        # non-deferred leaves are scheduling gaps, and agent-held work is not unassigned.
+        from app.models.agent import AgentTaskAssignment
+        from app.services.planning_issues import LIVE_EXECUTION_ASSIGNMENT_STATES, PLANNING_ISSUE_STATUS
+        is_gap_candidate = and_(Task.status == PLANNING_ISSUE_STATUS, Task.is_deferred.is_(False))
+        agent_working = exists(select(AgentTaskAssignment.id).where(
+            AgentTaskAssignment.task_id == Task.id,
+            AgentTaskAssignment.purpose == "execution",
+            AgentTaskAssignment.state.in_(LIVE_EXECUTION_ASSIGNMENT_STATES),
+        ))
         task_row = (
             await self.db.execute(
                 select(
                     func.count(Task.id),
                     func.coalesce(
-                        func.sum(case((Task.assignee_id.is_(None), 1), else_=0)),
+                        func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), ~agent_working), 1), else_=0)),
                         0,
                     ),
                     func.coalesce(
-                        func.sum(case((or_(Task.effort_hours.is_(None), Task.effort_hours <= 0), 1), else_=0)),
+                        func.sum(case((and_(is_gap_candidate, or_(Task.effort_hours.is_(None), Task.effort_hours <= 0)), 1), else_=0)),
                         0,
                     ),
                     func.coalesce(
                         func.sum(
                             case(
                                 (
-                                    or_(
+                                    and_(is_gap_candidate, or_(
                                         or_(Task.effort_hours.is_(None), Task.effort_hours <= 0),
                                         Task.start_date.is_(None),
                                         Task.end_date.is_(None),
                                         Task.start_date > Task.end_date,
-                                    ),
+                                    )),
                                     1,
                                 ),
                                 else_=0,
@@ -555,6 +565,10 @@ class IterationService:
                         ),
                         0,
                     ),
+                    func.coalesce(
+                        func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), agent_working), 1), else_=0)),
+                        0,
+                    ),
                 ).where(is_planning_leaf)
             )
         ).one()
@@ -575,18 +589,26 @@ class IterationService:
         uncertain_count = len(shared_issues)
 
         from app.services.plan_checkpoints import PLAN_CHECKPOINT_IDS, plan_checkpoints
+        from app.models.team_member import TeamMember, TeamMemberProfile
+        agent_rows = int(await self.db.scalar(
+            select(func.count(TeamMember.id))
+            .join(TeamMemberProfile, TeamMemberProfile.id == TeamMember.profile_id)
+            .where(TeamMember.iteration_id == iteration_id, TeamMemberProfile.profile_kind == "agent")
+        ) or 0)
         inputs = dict(
             team_member_count=len(members),
             team_members_no_capacity=no_capacity,
             task_count=task_count,
             tasks_without_assignee=int(task_row[1]),
             tasks_without_effort=int(task_row[2]),
+            tasks_agent_without_capacity=int(task_row[5]),
             has_schedule=task_count > 0 and unscheduled_count == 0,
             risk_count=int(task_row[4]) + overloaded_count + uncertain_count,
         )
         checkpoints = plan_checkpoints(**inputs)
         return IterationPlanningReadinessSummary(
             iteration_id=iteration_id,
+            team_agent_count=agent_rows,
             team_capacity_hours=round(total_hours, 2),
             checkpoints=checkpoints,
             checkpoints_done=sum(item["state"] == "done" for item in checkpoints),

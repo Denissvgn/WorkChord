@@ -2681,6 +2681,17 @@
             "agent_readiness": {
               "$ref": "#/components/schemas/TaskAgentReadiness"
             },
+            "agent_working": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Agent Working"
+            },
             "artifact_revision": {
               "default": 0,
               "title": "Artifact Revision",
@@ -8600,6 +8611,7 @@
         "start_ready": false,
         "warnings": []
       },
+      "agent_working": null,
       "artifact_revision": 2,
       "assignee": null,
       "baseline_end_date": null,
@@ -8714,6 +8726,7 @@
             "start_ready": false,
             "warnings": []
           },
+          "agent_working": null,
           "artifact_revision": 2,
           "assignee": null,
           "baseline_end_date": null,
@@ -8886,6 +8899,7 @@
           "start_ready": false,
           "warnings": []
         },
+        "agent_working": null,
         "artifact_revision": 2,
         "assignee": null,
         "baseline_end_date": null,
@@ -8998,6 +9012,7 @@
         "start_ready": false,
         "warnings": []
       },
+      "agent_working": null,
       "assignee": null,
       "baseline_end_date": null,
       "baseline_provenance": "legacy_unknown",
@@ -9070,6 +9085,7 @@
         "start_ready": false,
         "warnings": []
       },
+      "agent_working": null,
       "artifact_revision": 2,
       "assignee": null,
       "baseline_end_date": null,
@@ -9098,6 +9114,7 @@
             "start_ready": false,
             "warnings": []
           },
+          "agent_working": null,
           "artifact_revision": 2,
           "assignee": null,
           "baseline_end_date": null,
@@ -9288,6 +9305,7 @@
           "start_ready": false,
           "warnings": []
         },
+        "agent_working": null,
         "artifact_revision": 2,
         "assignee": null,
         "baseline_end_date": null,

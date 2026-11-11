@@ -36,6 +36,14 @@ export const isPlanningLeafTask = (task: Task) => (
     && !task.children?.length
 );
 
+/** The server's rule (app/services/planning_issues.py): only planned leaves are scheduling gaps. */
+export const isPlanningGapCandidate = (task: Task) => task.status === 'planned' && isPlanningLeafTask(task);
+
+/** An agent is working on it, so it is not unassigned, but it still has no capacity row. */
+export const isAgentWorkingWithoutCapacity = (task: Task) => (
+    isPlanningGapCandidate(task) && !task.assignee && Boolean(task.agent_working)
+);
+
 export const hasPositivePlanningEffort = (value: number | null): value is number => (
     Number.isFinite(value) && value !== null && value > 0
 );
@@ -44,8 +52,8 @@ export const taskMatchesPlanningIssue = (
     task: Task,
     issue: PlanningTaskIssue,
 ) => {
-    if (!isPlanningLeafTask(task)) return false;
-    const isUnassigned = !task.assignee;
+    if (!isPlanningGapCandidate(task)) return false;
+    const isUnassigned = !task.assignee && !task.agent_working;
     const isMissingEffort = !hasPositivePlanningEffort(task.effort_days);
 
     if (issue === 'unassigned') return isUnassigned;

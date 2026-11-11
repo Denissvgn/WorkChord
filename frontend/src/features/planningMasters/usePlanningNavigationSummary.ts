@@ -49,6 +49,8 @@ export const usePlanningNavigationSummary = () => {
         taskCount: summaryQuery.data?.task_count ?? 0,
         tasksWithoutAssignee: summaryQuery.data?.tasks_without_assignee ?? 0,
         tasksWithoutEffort: summaryQuery.data?.tasks_without_effort ?? 0,
+        tasksAgentWithoutCapacity: summaryQuery.data?.tasks_agent_without_capacity ?? 0,
+        teamAgentCount: summaryQuery.data?.team_agent_count ?? 0,
         hasGanttSchedule: summaryQuery.data?.has_schedule ?? false,
         ganttLastBuilt: '',
         riskCount: summaryQuery.data?.risk_count ?? 0,

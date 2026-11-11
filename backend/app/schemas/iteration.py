@@ -119,11 +119,15 @@ class IterationPlanningReadinessSummary(BaseModel):
     """Compact planning inputs used by persistent navigation."""
     iteration_id: int
     team_member_count: int
+    # Capacity rows whose profile is an agent; the rest are people (decision: agents count as capacity).
+    team_agent_count: int = 0
     team_capacity_hours: float
     team_members_no_capacity: int
     task_count: int
     tasks_without_assignee: int
     tasks_without_effort: int
+    # Planned leaves an agent is working on that have no capacity row.
+    tasks_agent_without_capacity: int = 0
     has_schedule: bool
     risk_count: int
     checkpoints: list[PlanCheckpoint] = Field(default_factory=list)

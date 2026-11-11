@@ -104,6 +104,10 @@ export interface PlanReadiness {
     taskCount: number;
     tasksWithoutAssignee: number;
     tasksWithoutEffort: number;
+    /** Planned leaves an agent is working on that have no capacity row. */
+    tasksAgentWithoutCapacity?: number;
+    /** Capacity rows whose profile is an agent. */
+    teamAgentCount?: number;
     hasGanttSchedule: boolean;
     ganttLastBuilt: string;
     riskCount: number;
@@ -172,6 +176,7 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
     const blockerDetails = [
         r.tasksWithoutAssignee > 0 ? `${r.tasksWithoutAssignee} unassigned` : null,
         r.tasksWithoutEffort > 0 ? `${r.tasksWithoutEffort} missing effort` : null,
+        (r.tasksAgentWithoutCapacity ?? 0) > 0 ? `${r.tasksAgentWithoutCapacity} agent working, no capacity row` : null,
     ].filter(Boolean) as string[];
     out.blockers = r.taskCount === 0
         ? { state: 'blocked', missing: ['Add work first'] }
@@ -286,6 +291,10 @@ export const derivePlanningRecovery = (
             };
         }
         const taskRecovery = rankedTaskRecovery(r);
+        // Only agent-held work is left: one action adds the capacity rows.
+        if (!taskRecovery && (r.tasksAgentWithoutCapacity ?? 0) > 0) {
+            return { kind: 'repair-capacity', ownerStep: 'team', route: '/team', count: r.tasksAgentWithoutCapacity };
+        }
         // Assigning needs people on the iteration: send the user to step 2 first.
         if (taskRecovery?.kind === 'repair-assignee' && r.teamMemberCount === 0) {
             return { kind: 'add-team', ownerStep: 'team', route: '/team' };
@@ -372,8 +381,12 @@ export function localizeStatus(
                 : undefined;
             missing = current.state === 'done' ? undefined : [translate('plan.status.noPeriod')];
         } else if (definition.id === 'team') {
+            // Agents count as capacity: show the mix, for example "2 people · 3 agents · 412 h".
+            const agents = r.teamAgentCount ?? 0;
             summary = current.state === 'done'
-                ? translate('plan.status.teamReady', { count: r.teamMemberCount, capacity: r.teamCapacity })
+                ? (agents > 0
+                    ? translate('plan.status.capacityMixReady', { people: r.teamMemberCount - agents, agents, capacity: r.teamCapacity })
+                    : translate('plan.status.teamReady', { count: r.teamMemberCount, capacity: r.teamCapacity }))
                 : undefined;
             missing = current.state === 'done'
                 ? undefined
@@ -402,6 +415,11 @@ export function localizeStatus(
                         ...(r.tasksWithoutEffort > 0
                             ? [translate('plan.status.tasksWithoutEffort', {
                                 count: r.tasksWithoutEffort,
+                            })]
+                            : []),
+                        ...((r.tasksAgentWithoutCapacity ?? 0) > 0
+                            ? [translate('plan.status.agentWorkingNoCapacity', {
+                                count: r.tasksAgentWithoutCapacity,
                             })]
                             : []),
                     ];

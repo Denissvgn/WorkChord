@@ -210,6 +210,8 @@ class TaskResponse(TaskMetricSignals):
     owner_profile_id: Optional[int] = None
     owner: Optional[TaskAssignee] = None
     ownership_provenance: str = "unassigned"
+    # True when an agent holds a live execution assignment; None when not loaded.
+    agent_working: Optional[bool] = None
     blocked_reason: Optional[str] = None
     canceled_at: Optional[datetime] = None
     canceled_reason: Optional[str] = None

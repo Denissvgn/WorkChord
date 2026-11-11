@@ -2,7 +2,6 @@
 
 from app.commands import commit_or_flush
 from datetime import date
-from math import isfinite
 from typing import Any, Optional, Sequence
 
 from sqlalchemy import Select, or_, select
@@ -569,23 +568,13 @@ class SavedViewService:
     ) -> bool:
         if planning_issue is None:
             return True
-        if getattr(task, "effective_is_deferred", task.is_deferred) or task.is_composite or task.children:
-            return False
-
-        effort_days = task.effort_days
-        missing_effort = (
-            isinstance(effort_days, bool)
-            or not isinstance(effort_days, (int, float))
-            or not isfinite(effort_days)
-            or effort_days <= 0
-        )
-        unassigned = task.assignee is None
-
+        # The same rule as the plan checkpoints and the readiness counts.
+        from app.services.planning_issues import missing_effort, needs_assignee
         if planning_issue == "unassigned":
-            return unassigned
+            return needs_assignee(task)
         if planning_issue == "missing-effort":
-            return missing_effort
-        return unassigned or missing_effort
+            return missing_effort(task)
+        return needs_assignee(task) or missing_effort(task)
 
     def _task_matches_filters(
         self,

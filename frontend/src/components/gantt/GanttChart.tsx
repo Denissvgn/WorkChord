@@ -361,7 +361,8 @@ export const GanttChart = ({
         let count = 0;
         const visit = (task: GanttTask) => {
             if (task.children?.length) task.children.forEach(visit);
-            else if (!task.assignee) count += 1;
+            // Same rule as the plan: only planned work can block the schedule.
+            else if (!task.assignee && task.status === 'planned' && !task.is_deferred) count += 1;
         };
         tasks.forEach(visit);
         return count;

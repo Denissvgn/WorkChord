@@ -67,3 +67,10 @@ async def test_agents_can_read_plan_readiness_over_rest_and_mcp() -> None:
     paths = app.openapi()["paths"]
     assert "get" in paths["/api/agent/planning/iterations/{iteration_id}/readiness"]
     assert "agent_get_iteration_plan_readiness" in {tool.name for tool in await mcp.list_tools()}
+
+
+def test_agent_held_work_is_reported_apart_from_unassigned() -> None:
+    items = {item["id"]: item for item in plan_checkpoints(**{**READY, "tasks_agent_without_capacity": 2})}
+    assert items["blockers"]["state"] == "warn"
+    assert items["blockers"]["reason_codes"] == ["agent_working_no_capacity"]
+    assert items["blockers"]["counts"] == {"agent_working_no_capacity": 2}

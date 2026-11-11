@@ -40,6 +40,7 @@ import type { PillTone } from '../components/ui/tone';
 import { STATUS_TONE, toneVar, toneSoftVar } from '../components/ui/tone';
 import { selectWorkNowTasks } from '../utils/selectWorkNowTasks';
 import { getApiErrorStatus } from '../utils/apiError';
+import { taskMatchesPlanningIssue } from '../features/planningMasters/planningTaskIssues';
 import {
     overviewTaskDrawerHref,
     overviewTaskReturnFocusId,
@@ -388,7 +389,7 @@ const OverviewPage = () => {
     );
     const unassignedTaskList = useMemo(
         () => rankAttentionTaskCandidates(
-            openTaskList.filter(task => !task.assignee),
+            openTaskList.filter(task => taskMatchesPlanningIssue(task, 'unassigned')),
         ),
         [openTaskList],
     );

@@ -79,6 +79,8 @@ export interface IterationPlanningReadinessSummary {
     task_count: number;
     tasks_without_assignee: number;
     tasks_without_effort: number;
+    tasks_agent_without_capacity?: number;
+    team_agent_count?: number;
     has_schedule: boolean;
     risk_count: number;
     /** The six plan checkpoints, derived on the server; the PM agent reads the same list. */

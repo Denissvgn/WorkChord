@@ -154,6 +154,8 @@ export interface Task {
     agent_readiness: TaskAgentReadiness;
     version: number;
     claimed_by?: TaskClaimedBy | null;
+    /** An agent holds live execution work on this task. */
+    agent_working?: boolean | null;
     claim_expires_at?: string | null;
     updated_at?: string | null;
     children: Task[];
