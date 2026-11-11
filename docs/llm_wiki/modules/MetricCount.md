@@ -33,36 +33,44 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Modal.tsx"]
-    n1["frontend/src/components/feedback/QueryState.tsx"]
-    n2["frontend/src/components/tasks/MetricCount.test.tsx"]
-    n3["frontend/src/components/tasks/MetricCount.tsx"]
-    n4["frontend/src/components/tasks/WorkMetricsLine.tsx"]
-    n5["frontend/src/pages/ProjectDetailPage.tsx"]
-    n6["frontend/src/services/taskService.ts"]
-    n2 --> n3
-    n2 --> n4
-    n3 --> n0
-    n3 --> n1
-    n3 --> n6
-    n4 --> n3
+    n0["frontend/src/components/analytics/OnTrackSummary.tsx"]
+    n1["frontend/src/components/analytics/StatusDistribution.tsx"]
+    n2["frontend/src/components/common/Modal.tsx"]
+    n3["frontend/src/components/feedback/QueryState.tsx"]
+    n4["frontend/src/components/tasks/MetricCount.test.tsx"]
+    n5["frontend/src/components/tasks/MetricCount.tsx"]
+    n6["frontend/src/components/tasks/WorkMetricsLine.tsx"]
+    n7["frontend/src/pages/ProjectDetailPage.tsx"]
+    n8["frontend/src/services/taskService.ts"]
+    n0 --> n5
+    n1 --> n5
+    n4 --> n5
     n4 --> n6
-    n5 --> n0
-    n5 --> n1
+    n5 --> n2
     n5 --> n3
-    click n0 "../modules/Modal.md"
-    click n1 "../modules/QueryState.md"
-    click n2 "../modules/MetricCount.test.md"
-    click n3 "../modules/MetricCount.md"
-    click n4 "../modules/WorkMetricsLine.md"
-    click n5 "../modules/ProjectDetailPage.md"
-    click n6 "../modules/taskService.md"
+    n5 --> n8
+    n6 --> n5
+    n6 --> n8
+    n7 --> n2
+    n7 --> n3
+    n7 --> n5
+    click n0 "../modules/OnTrackSummary.md"
+    click n1 "../modules/StatusDistribution.md"
+    click n2 "../modules/Modal.md"
+    click n3 "../modules/QueryState.md"
+    click n4 "../modules/MetricCount.test.md"
+    click n5 "../modules/MetricCount.md"
+    click n6 "../modules/WorkMetricsLine.md"
+    click n7 "../modules/ProjectDetailPage.md"
+    click n8 "../modules/taskService.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [OnTrackSummary](../modules/OnTrackSummary.md) |
+| Inbound | [StatusDistribution](../modules/StatusDistribution.md) |
 | Inbound | [MetricCount.test](../modules/MetricCount.test.md) |
 | Inbound | [WorkMetricsLine](../modules/WorkMetricsLine.md) |
 | Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |

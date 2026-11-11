@@ -1,6 +1,6 @@
 # Queue
 
-**Location:** `frontend/src/pages/MyWorkPage.tsx:20`
+**Location:** `frontend/src/pages/MyWorkPage.tsx:22`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [MyWorkPage](../modules/MyWorkPage.md)

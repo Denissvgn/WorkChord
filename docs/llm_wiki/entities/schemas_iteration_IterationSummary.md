@@ -25,6 +25,11 @@ Summary statistics for an iteration.
 | `total_effort_days` | `float` | `total_effort_days` | Yes | No | — | — | — | — |
 | `team_capacity_days` | `float` | `team_capacity_days` | Yes | No | — | — | — | — |
 | `overdue_tasks_count` | `int` | `overdue_tasks_count` | Yes | No | — | — | — | — |
+| `status_counts` | `dict[str, int]` | `status_counts` | No | No | factory: `dict` | — | — | — |
+| `blocked_tasks` | `int` | `blocked_tasks` | No | No | `0` | — | — | — |
+| `remaining_effort_days` | `float` | `remaining_effort_days` | No | No | `0.0` | — | — | — |
+| `scheduled_finish` | `Optional[date]` | `scheduled_finish` | No | Yes | `None` | — | — | — |
+| `remaining_working_days` | `Optional[int]` | `remaining_working_days` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -58,7 +63,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `start_date`, `team_capacity_days`, `total_effort_days`, `total_tasks`, `working_days` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish`, `start_date` |
 
 ### Structure
 

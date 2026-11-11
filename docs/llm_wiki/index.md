@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1546 | [Open section](#entities) |
-| Modules | 792 | [Open section](#modules) |
+| Entities | 1547 | [Open section](#entities) |
+| Modules | 795 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 555 | [Open section](#entry-point-flows) |
@@ -925,7 +925,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskSkillLevel](entities/TaskSkillLevel.md)
 - [TaskStatusAmendment](entities/TaskStatusAmendment.md)
 - [TaskStatusChange](entities/TaskStatusChange.md)
-- [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
 - [TaskStatusLogResponse](entities/TaskStatusLogResponse.md)
 - [TaskStatusService](entities/TaskStatusService.md)
 - [TaskSubscription](entities/TaskSubscription.md)
@@ -1022,6 +1021,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [VacationUpdate](entities/VacationUpdate.md)
 - [ValidationException](entities/ValidationException.md)
 - [ValkeyCasClient](entities/ValkeyCasClient.md)
+- [Verdict](entities/Verdict.md)
 - [VerificationBeginRequest](entities/VerificationBeginRequest.md)
 - [VerificationClaimRequest](entities/VerificationClaimRequest.md)
 - [VerificationCriterionResult](entities/VerificationCriterionResult.md)
@@ -1565,6 +1565,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_triage_TriageTaskDraftResponse](entities/types_triage_TriageTaskDraftResponse.md)
 - [user_session_UserSession](entities/user_session_UserSession.md)
 
+### Retired source members
+
+Retained history; these declarations are absent from the selected source inventory.
+
+- [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
+
 ## Modules
 
 - [0001_wave0_probe](modules/0001_wave0_probe.md) - Create the Wave 0 PostgreSQL lifecycle probe.
@@ -1655,6 +1661,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
 - [IterationImportDialog](modules/IterationImportDialog.md) - `frontend/src/components/iteration/IterationImportDialog.tsx`
 - [IterationList](modules/IterationList.md) - `frontend/src/components/iteration/IterationList.tsx`
+- [IterationOutlook.test](modules/IterationOutlook.test.md) - `frontend/src/components/analytics/IterationOutlook.test.tsx`
 - [IterationSelector](modules/IterationSelector.md) - `frontend/src/components/iteration/IterationSelector.tsx`
 - [IterationsPage](modules/IterationsPage.md) - `frontend/src/pages/IterationsPage.tsx`
 - [KanbanBoard](modules/KanbanBoard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
@@ -1677,6 +1684,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NativeConnectionPage.test](modules/NativeConnectionPage.test.md) - `frontend/src/pages/NativeConnectionPage.test.tsx`
 - [NotFoundPage](modules/NotFoundPage.md) - `frontend/src/pages/NotFoundPage.tsx`
 - [NotificationsPanel](modules/NotificationsPanel.md) - `frontend/src/components/notifications/NotificationsPanel.tsx`
+- [OnTrackSummary](modules/OnTrackSummary.md) - `frontend/src/components/analytics/OnTrackSummary.tsx`
 - [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) - `frontend/src/components/settings/OutboundWebhooksPanel.tsx`
 - [OutboundWebhooksPanel.test](modules/OutboundWebhooksPanel.test.md) - `frontend/src/components/settings/OutboundWebhooksPanel.test.tsx`
 - [OverflowMenu](modules/OverflowMenu.md) - `frontend/src/components/ui/OverflowMenu.tsx`
@@ -1741,6 +1749,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SlideOverDrawer](modules/SlideOverDrawer.md) - `frontend/src/components/ui/SlideOverDrawer.tsx`
 - [SortableTaskItem](modules/SortableTaskItem.md) - `frontend/src/components/tasks/SortableTaskItem.tsx`
 - [StatusChangeControl](modules/StatusChangeControl.md) - `frontend/src/components/tasks/StatusChangeControl.tsx`
+- [StatusDistribution](modules/StatusDistribution.md) - `frontend/src/components/analytics/StatusDistribution.tsx`
 - [StatusSegmentStrip](modules/StatusSegmentStrip.md) - `frontend/src/components/ui/StatusSegmentStrip.tsx`
 - [StickyRail](modules/StickyRail.md) - `frontend/src/components/ui/StickyRail.tsx`
 - [SystemHealthPanel](modules/SystemHealthPanel.md) - `frontend/src/components/settings/SystemHealthPanel.tsx`

@@ -36,7 +36,7 @@ The planning-readiness summary also returns the six plan checkpoints (`iteration
 | `app.services.task_domain_service` | `nominal_day_hours`, `refresh_nominal_day_hours` |
 | `app.services.task_service` | `TaskService` |
 | `app.services.team_service` | `TeamService`, `TeamService` |
-| `app.services.work_metrics` | `aggregate_metrics`, `included_work_ids`, `working_today` |
+| `app.services.work_metrics` | `aggregate_metrics`, `working_today`, `included_work_ids`, `working_today` |
 | `dataclasses` | `dataclass` |
 | `datetime` | `date`, `timedelta` |
 | `re` | `re` |

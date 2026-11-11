@@ -28,7 +28,7 @@ _Auto-generated from `TaskStatus` in `frontend/src/types/task.ts`._
 ```mermaid
 flowchart LR
     n0["TaskStatus (frontend/src/types/task.ts)"]
-    n1["frontend/src/components/analytics/TaskStatusFlow.tsx"]
+    n1["frontend/src/components/analytics/StatusDistribution.tsx"]
     n2["frontend/src/components/settings/GitHubSettingsPanel.tsx"]
     n3["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
     n4["frontend/src/components/tasks/StatusChangeControl.tsx"]
@@ -53,7 +53,7 @@ flowchart LR
     n11 --> n0
     n12 --> n0
     click n0 "../modules/types_task.md"
-    click n1 "../modules/TaskStatusFlow.md"
+    click n1 "../modules/StatusDistribution.md"
     click n2 "../modules/GitHubSettingsPanel.md"
     click n3 "../modules/KanbanBoard.md"
     click n4 "../modules/StatusChangeControl.md"
@@ -77,7 +77,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TaskStatusFlow` | import | [TaskStatusFlow](../modules/TaskStatusFlow.md) | — |
+| `StatusDistribution` | import | [StatusDistribution](../modules/StatusDistribution.md) | — |
 | `GitHubSettingsPanel` | import | [GitHubSettingsPanel](../modules/GitHubSettingsPanel.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 | `StatusChangeControl` | import | [StatusChangeControl](../modules/StatusChangeControl.md) | — |

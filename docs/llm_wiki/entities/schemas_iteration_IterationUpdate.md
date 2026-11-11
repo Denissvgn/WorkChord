@@ -13,7 +13,7 @@ Schema for updating an iteration.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `name` | `Optional[str]` | `name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `name` | `Optional[str]` | `name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `calendar_id` | `Optional[int]` | `calendar_id` | No | Yes | `None` | — | — | — |
 | `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
 | `start_date` | `Optional[date]` | `start_date` | No | Yes | `None` | — | — | — |

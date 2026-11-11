@@ -36,7 +36,7 @@ flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
     n1["frontend/src/components/notifications/NotificationsPanel.tsx"]
     n2["frontend/src/components/ui/tone.ts"]
-    n3["frontend/src/pages/AnalyticsPage.tsx"]
+    n3["frontend/src/pages/MyWorkPage.tsx"]
     n4["frontend/src/services/taskService.ts"]
     n5["frontend/src/utils/formatDate.ts"]
     n1 --> n0
@@ -45,11 +45,10 @@ flowchart LR
     n1 --> n5
     n3 --> n0
     n3 --> n1
-    n3 --> n4
     click n0 "../modules/QueryState.md"
     click n1 "../modules/NotificationsPanel.md"
     click n2 "../modules/tone.md"
-    click n3 "../modules/AnalyticsPage.md"
+    click n3 "../modules/MyWorkPage.md"
     click n4 "../modules/taskService.md"
     click n5 "../modules/formatDate.md"
 ```
@@ -58,7 +57,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
+| Inbound | [MyWorkPage](../modules/MyWorkPage.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
 | Outbound | [tone](../modules/tone.md) |
 | Outbound | [taskService](../modules/taskService.md) |

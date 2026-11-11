@@ -52,21 +52,21 @@ sequenceDiagram
     participant p11 as IterationService._calculate_team_capacity
     participant p12 as _require_scope_requirement
     participant p13 as IdentityService.actor_context
-    participant p14 as TeamService.get_by_iteration
-    participant p15 as require_scope
-    participant p16 as AgentService.authenticate
-    participant p17 as TeamService.calculate_capacity
-    participant p18 as require_identity_writes
-    participant p19 as DeliveryDependencyService.reconcile
-    participant p20 as DiscussionService.enqueue
-    participant p21 as working_today
-    participant p22 as actor_has_scope
-    participant p23 as TeamService.get_by_id
-    participant p24 as CapacityService.calendar_for
-    participant p25 as CapacityService.calendar_status
-    participant p26 as CapacityService.absence_ranges
-    participant p27 as commit_or_flush
-    participant p28 as DeliveryDependencyService.validate_cycles
+    participant p14 as IterationService._remaining_working_days
+    participant p15 as TeamService.get_by_iteration
+    participant p16 as require_scope
+    participant p17 as AgentService.authenticate
+    participant p18 as TeamService.calculate_capacity
+    participant p19 as require_identity_writes
+    participant p20 as DeliveryDependencyService.reconcile
+    participant p21 as DiscussionService.enqueue
+    participant p22 as working_today
+    participant p23 as actor_has_scope
+    participant p24 as TeamService.get_by_id
+    participant p25 as CapacityService.calendar_for
+    participant p26 as CapacityService.calendar_status
+    participant p27 as CapacityService.absence_ranges
+    participant p28 as commit_or_flush
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -82,28 +82,28 @@ sequenceDiagram
     p4->>p11: IterationService._calculate_team_capacity
     p5->>p12: _require_scope_requirement
     p5->>p13: IdentityService.actor_context
-    p11->>p14: TeamService.get_by_iteration
-    p12->>p15: require_scope
-    p10->>p16: AgentService.authenticate
-    p11->>p17: TeamService.calculate_capacity
-    p13->>p18: require_identity_writes
-    p8->>p19: DeliveryDependencyService.reconcile
-    p8->>p20: DiscussionService.enqueue
-    p9->>p21: working_today
-    p15->>p22: actor_has_scope
-    p17->>p23: TeamService.get_by_id
-    p17->>p24: CapacityService.calendar_for
-    p17->>p25: CapacityService.calendar_status
-    p17->>p26: CapacityService.absence_ranges
-    p16->>p27: commit_or_flush
-    p19->>p28: DeliveryDependencyService.validate_cycles
+    p4->>p14: IterationService._remaining_working_days
+    p11->>p15: TeamService.get_by_iteration
+    p12->>p16: require_scope
+    p10->>p17: AgentService.authenticate
+    p11->>p18: TeamService.calculate_capacity
+    p13->>p19: require_identity_writes
+    p8->>p20: DeliveryDependencyService.reconcile
+    p8->>p21: DiscussionService.enqueue
+    p9->>p22: working_today
+    p16->>p23: actor_has_scope
+    p18->>p24: TeamService.get_by_id
+    p18->>p25: CapacityService.calendar_for
+    p18->>p26: CapacityService.calendar_status
+    p18->>p27: CapacityService.absence_ranges
+    p17->>p28: commit_or_flush
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 641 interactions; 611 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 645 interactions; 615 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 222 (221 omitted); unresolved 1 of 302 (301 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 223 (222 omitted); unresolved 1 of 303 (302 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,7 +117,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 125 groups; 117 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 128 groups; 120 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -130,9 +130,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 118; effect analysis evaluated: 79, partial: 3, unavailable: 36. Counts include steps omitted from the displayed trace.
+Source steps: 120; effect analysis evaluated: 81, partial: 3, unavailable: 36. Counts include steps omitted from the displayed trace.
 
-Collector observations for 82 source steps with known totals: observed: 348, emitted: 336, omitted: 12. Unavailable totals are excluded.
+Collector observations for 84 source steps with known totals: observed: 355, emitted: 343, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
