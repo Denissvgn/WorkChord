@@ -23,6 +23,7 @@ _Auto-generated from `frontend/src/features/planningMasters/usePlanningReadiness
 | `./masters` | `PlanReadiness` | Declaration | erased |
 | `./masters` | `deriveStatus`, `nextStep`, `readiness` | — | compiler-dependent |
 | `./planningTaskIssues` | `hasPositivePlanningEffort`, `isPlanningLeafTask` | — | compiler-dependent |
+| `./usePlanningNavigationSummary` | `planningNavigationSummaryKey` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `react` | `useEffect`, `useMemo` | — | compiler-dependent |
 
@@ -54,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (6) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,16 +63,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 2 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [PlanningReadinessOptions](../entities/PlanningReadinessOptions.md) | Type alias | 20 | <pre><code>&#123;&#10;    includeInbox&#63;&#58; boolean&#59;&#10;    autoSelectFirst&#63;&#58; boolean&#59;&#10;&#125;</code></pre> | — |
-| [PlanningTeamMember](../entities/PlanningTeamMember.md) | Type alias | 29 | <pre><code>TeamMember &#38; &#123;&#10;    capacity&#95;hours&#58; number&#59;&#10;    planned&#95;hours&#58; number&#59;&#10;&#125;</code></pre> | — |
-| [PlanningQueryFeedback](../entities/PlanningQueryFeedback.md) | Type alias | 34 | <pre><code>&#123;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    isBlockingError&#58; boolean&#59;&#10;    isRefetchError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
-| [QueryFeedbackSource](../entities/QueryFeedbackSource.md) | Type alias | 47 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
+| [PlanningReadinessOptions](../entities/PlanningReadinessOptions.md) | Type alias | 21 | <pre><code>&#123;&#10;    includeInbox&#63;&#58; boolean&#59;&#10;    autoSelectFirst&#63;&#58; boolean&#59;&#10;&#125;</code></pre> | — |
+| [PlanningTeamMember](../entities/PlanningTeamMember.md) | Type alias | 30 | <pre><code>TeamMember &#38; &#123;&#10;    capacity&#95;hours&#58; number&#59;&#10;    planned&#95;hours&#58; number&#59;&#10;&#125;</code></pre> | — |
+| [PlanningQueryFeedback](../entities/PlanningQueryFeedback.md) | Type alias | 35 | <pre><code>&#123;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    isBlockingError&#58; boolean&#59;&#10;    isRefetchError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
+| [QueryFeedbackSource](../entities/QueryFeedbackSource.md) | Type alias | 48 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

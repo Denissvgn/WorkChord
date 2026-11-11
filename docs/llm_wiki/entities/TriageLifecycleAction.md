@@ -1,13 +1,13 @@
 # TriageLifecycleAction
 
-**Location:** `frontend/src/pages/TriagePage.tsx:401`
+**Location:** `frontend/src/pages/TriagePage.tsx:402`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
 **Target:**
 
 ```typescript
-'accept' | 'decline' | 'snooze' | 'duplicate'
+'accept' | 'decline' | 'snooze' | 'clarify' | 'duplicate'
 ```
 
 ## Description

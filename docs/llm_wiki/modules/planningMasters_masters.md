@@ -48,6 +48,7 @@ flowchart LR
     n4 --> n1
     n5 --> n1
     n5 --> n3
+    n5 --> n4
     n6 --> n1
     n6 --> n5
     n6 --> n11
@@ -101,10 +102,10 @@ flowchart LR
 | [StepStatus](../entities/StepStatus.md) | Interface | 9 | — | — |
 | [MasterStepDef](../entities/MasterStepDef.md) | Interface | 15 | — | — |
 | [PlanReadiness](../entities/PlanReadiness.md) | Interface | 94 | — | — |
-| [PlanningRecoveryAction](../entities/PlanningRecoveryAction.md) | Interface | 123 | — | — |
+| [PlanningRecoveryAction](../entities/PlanningRecoveryAction.md) | Interface | 125 | — | — |
 | [StepState](../entities/StepState.md) | Type alias | 7 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
-| [PlanningRecoveryKind](../entities/PlanningRecoveryKind.md) | Type alias | 113 | <pre><code>&#124; &#39;create&#45;period&#39;&#10;    &#124; &#39;add&#45;team&#39;&#10;    &#124; &#39;repair&#45;capacity&#39;&#10;    &#124; &#39;add&#45;work&#39;&#10;    &#124; &#39;repair&#45;assignee&#39;&#10;    &#124; &#39;repair&#45;effort&#39;&#10;    &#124; &#39;build&#45;schedule&#39;&#10;    &#124; &#39;review&#45;plan&#39;</code></pre> | — |
-| [Translate](../entities/Translate.md) | Type alias | 344 | `(key: string, options?: Record<string, unknown>) => string` | — |
+| [PlanningRecoveryKind](../entities/PlanningRecoveryKind.md) | Type alias | 115 | <pre><code>&#124; &#39;create&#45;period&#39;&#10;    &#124; &#39;add&#45;team&#39;&#10;    &#124; &#39;repair&#45;capacity&#39;&#10;    &#124; &#39;add&#45;work&#39;&#10;    &#124; &#39;repair&#45;assignee&#39;&#10;    &#124; &#39;repair&#45;effort&#39;&#10;    &#124; &#39;build&#45;schedule&#39;&#10;    &#124; &#39;review&#45;plan&#39;</code></pre> | — |
+| [Translate](../entities/Translate.md) | Type alias | 351 | `(key: string, options?: Record<string, unknown>) => string` | — |
 
 ## Functions
 

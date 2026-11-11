@@ -54,7 +54,7 @@ Validate and reproducibly package WorkChord role skills.
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [SkillPackError](../entities/SkillPackError.md) | 864 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
+| [SkillPackError](../entities/SkillPackError.md) | 874 | `ValueError` | Raised when skill source, catalog, or archive validation fails. |
 
 ## Functions
 

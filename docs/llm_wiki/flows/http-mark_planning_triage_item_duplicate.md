@@ -155,17 +155,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| mark_planning_triage_item_duplicate | _run_triage_action | 774 | `_run_triage_action(mcp_agent_tools.mark_triage_item_duplicate, db=db, actor=actor, triage_item_id=triage_item_id, data=data, command=command)` |
-| _run_triage_action | require_scope | 673 | `require_scope(actor, 'planning:write')` |
+| mark_planning_triage_item_duplicate | _run_triage_action | 798 | `_run_triage_action(mcp_agent_tools.mark_triage_item_duplicate, db=db, actor=actor, triage_item_id=triage_item_id, data=data, command=command)` |
+| _run_triage_action | require_scope | 697 | `require_scope(actor, 'planning:write')` |
 | require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 86 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
-| _run_triage_action | adapter | 674 | `adapter(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| _run_triage_action | data.model_dump | 678 | `data.model_dump(mode='json', exclude_unset=True)` |
-| _run_triage_action | _require_triage_result | 683 | `_require_triage_result(result, triage_item_id)` |
-| _require_triage_result | LookupError | 578 | `LookupError(...)` |
+| _run_triage_action | adapter | 698 | `adapter(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
+| _run_triage_action | data.model_dump | 702 | `data.model_dump(mode='json', exclude_unset=True)` |
+| _run_triage_action | _require_triage_result | 707 | `_require_triage_result(result, triage_item_id)` |
+| _require_triage_result | LookupError | 602 | `LookupError(...)` |
 
 ### Boundary effects
 
@@ -177,9 +177,9 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 86 |
 | external_call | `actor_scopes` | `isinstance` | 89 |
-| unresolved_call | `_run_triage_action` | `adapter` | 674 |
-| unresolved_call | `_run_triage_action` | `data.model_dump` | 678 |
-| external_call | `_require_triage_result` | `LookupError` | 578 |
+| unresolved_call | `_run_triage_action` | `adapter` | 698 |
+| unresolved_call | `_run_triage_action` | `data.model_dump` | 702 |
+| external_call | `_require_triage_result` | `LookupError` | 602 |
 | step_limit | `mark_planning_triage_item_duplicate` | `first 12 steps` | 0 |
 
 ## Behavior

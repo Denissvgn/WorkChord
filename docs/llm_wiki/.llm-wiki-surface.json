@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1527,
-      "flows": 551,
+      "entities": 1529,
+      "flows": 553,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 760,
+      "modules": 763,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3046
+    "total": 3053
   },
   "dependency_pages": {
     "count": 2,
@@ -63,19 +63,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 674,
+              "line": 698,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 678,
+              "line": 702,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 578,
+              "line": 602,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -757,39 +757,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 565,
+              "line": 589,
               "step": "apply_schedule",
               "target": "service.apply_schedule"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -804,8 +774,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -2812,13 +2812,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -2896,13 +2896,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -3414,39 +3414,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 360,
+              "line": 384,
               "step": "create_iteration",
               "target": "service.create_iteration"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -3461,8 +3431,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -3828,39 +3828,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 314,
+              "line": 338,
               "step": "create_planning_task",
               "target": "service.create_task"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -3875,8 +3845,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -3993,39 +3993,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 405,
+              "line": 429,
               "step": "create_profile",
               "target": "service.create_profile"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -4040,8 +4010,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -4082,39 +4082,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 196,
+              "line": 220,
               "step": "create_project",
               "target": "service.create_project"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -4129,8 +4099,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -4240,39 +4240,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 242,
+              "line": 266,
               "step": "create_project_milestone",
               "target": "service.create_milestone"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -4287,8 +4257,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -5051,39 +5051,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 173,
+              "line": 197,
               "step": "create_task_routing_assessment",
               "target": "service.create_assessment"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -5098,8 +5068,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -5140,39 +5140,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 451,
+              "line": 475,
               "step": "create_team_member",
               "target": "service.create_team_member"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -5187,8 +5157,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -5456,39 +5456,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 498,
+              "line": 522,
               "step": "create_vacation",
               "target": "service.create_vacation"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -5503,8 +5473,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -5630,7 +5630,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 148,
+              "line": 164,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -5638,7 +5638,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 152,
+              "line": 168,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -5677,13 +5677,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 145,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 145,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -5716,7 +5716,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 228,
+          "step_count": 239,
           "truncated": false
         }
       },
@@ -5790,19 +5790,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 674,
+              "line": 698,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 678,
+              "line": 702,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 578,
+              "line": 602,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -6325,39 +6325,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 290,
+              "line": 314,
               "step": "delete_project_milestone",
               "target": "service.delete_milestone"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -6372,8 +6342,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -7022,13 +7022,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -7106,13 +7106,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -8416,13 +8416,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -9734,6 +9734,79 @@
         }
       },
       "id": "http-get_iteration_page",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "get_iteration_plan_readiness",
+        "source_path": "backend/app/routers/agent_planning.py",
+        "symbol": "get_iteration_plan_readiness"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 86,
+              "step": "actor_scopes",
+              "target": "json.loads"
+            },
+            {
+              "kind": "external_call",
+              "line": 89,
+              "step": "actor_scopes",
+              "target": "isinstance"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 323,
+              "step": "IterationService.get_by_id",
+              "target": "self.db.execute"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 324,
+              "step": "IterationService.get_by_id",
+              "target": "select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "get_iteration_plan_readiness",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_planning.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/iteration_service.py",
+            "backend/app/services/work_metrics.py",
+            "backend/app/utils/time.py",
+            "backend/app/commands.py",
+            "backend/app/services/team_service.py",
+            "backend/app/query_limits.py",
+            "backend/app/services/capacity_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/calendar_service.py",
+            "backend/app/schemas/team.py",
+            "backend/app/services/plan_checkpoints.py",
+            "backend/app/schemas/iteration.py"
+          ],
+          "step_count": 373,
+          "truncated": false
+        }
+      },
+      "id": "http-get_iteration_plan_readiness",
       "language": "python"
     },
     {
@@ -11297,39 +11370,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 154,
               "step": "get_task_routing_assessment",
               "target": "service.get_assessment_state"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -11344,8 +11387,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -12648,13 +12721,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 94,
+              "line": 108,
               "step": "TaskDetailService.my_work",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 100,
+              "line": 114,
               "step": "TaskDetailService.my_work",
               "target": "self.references().where"
             },
@@ -12740,7 +12813,7 @@
             "backend/app/utils/time.py",
             "backend/app/schemas/task_domain.py"
           ],
-          "step_count": 383,
+          "step_count": 394,
           "truncated": true
         }
       },
@@ -13770,13 +13843,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -13854,13 +13927,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -15583,39 +15656,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 147,
+              "line": 171,
               "step": "list_task_routing_assessments",
               "target": "service.list_assessments"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -15630,8 +15673,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -16263,19 +16336,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 674,
+              "line": 698,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 678,
+              "line": 702,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 578,
+              "line": 602,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -17007,39 +17080,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 337,
+              "line": 361,
               "step": "patch_planning_task",
               "target": "service.patch_task"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -17054,8 +17097,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -17602,39 +17675,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 543,
+              "line": 567,
               "step": "preview_schedule",
               "target": "service.preview_schedule"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -17649,8 +17692,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -20361,19 +20434,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 674,
+              "line": 698,
               "step": "_run_triage_action",
               "target": "adapter"
             },
             {
               "kind": "unresolved_call",
-              "line": 678,
+              "line": 702,
               "step": "_run_triage_action",
               "target": "data.model_dump"
             },
             {
               "kind": "external_call",
-              "line": 578,
+              "line": 602,
               "step": "_require_triage_result",
               "target": "LookupError"
             },
@@ -21483,7 +21556,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 148,
+              "line": 164,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -21491,7 +21564,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 152,
+              "line": 168,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -21530,13 +21603,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 145,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 145,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -21569,7 +21642,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 222,
+          "step_count": 233,
           "truncated": false
         }
       },
@@ -21993,7 +22066,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 148,
+              "line": 164,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "seen.add"
@@ -22001,7 +22074,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 152,
+              "line": 168,
               "step": "TaskDetailService.detail",
               "step_index": 10,
               "target": "ancestors.append"
@@ -22040,13 +22113,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 145,
               "step": "TaskDetailService.detail",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 129,
+              "line": 145,
               "step": "TaskDetailService.detail",
               "target": "select(Task).where(Task.id == task_id).options"
             },
@@ -22079,7 +22152,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 229,
+          "step_count": 240,
           "truncated": false
         }
       },
@@ -22786,13 +22859,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -22870,13 +22943,13 @@
             },
             {
               "kind": "external_call",
-              "line": 102,
+              "line": 106,
               "step": "_handle_agent_error",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 103,
+              "line": 107,
               "step": "_handle_agent_error",
               "target": "HTTPException"
             },
@@ -23304,39 +23377,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 382,
+              "line": 406,
               "step": "update_iteration",
               "target": "service.update_iteration"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -23351,8 +23394,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -23764,39 +23837,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 427,
+              "line": 451,
               "step": "update_profile",
               "target": "service.update_profile"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -23811,8 +23854,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -23853,39 +23926,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 218,
+              "line": 242,
               "step": "update_project",
               "target": "service.update_project"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -23900,8 +23943,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -24014,39 +24087,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 266,
+              "line": 290,
               "step": "update_project_milestone",
               "target": "service.update_milestone"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -24061,8 +24104,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -24522,39 +24595,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 474,
+              "line": 498,
               "step": "update_team_member",
               "target": "service.update_team_member"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -24569,8 +24612,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -24887,39 +24960,9 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 521,
+              "line": 545,
               "step": "update_vacation",
               "target": "service.update_vacation"
-            },
-            {
-              "kind": "external_call",
-              "line": 102,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 103,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "external_call",
-              "line": 104,
-              "step": "_handle_agent_error",
-              "target": "isinstance"
-            },
-            {
-              "kind": "external_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "HTTPException"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 105,
-              "step": "_handle_agent_error",
-              "target": "exc.detail"
             },
             {
               "kind": "external_call",
@@ -24934,8 +24977,38 @@
               "target": "HTTPException"
             },
             {
+              "kind": "external_call",
+              "line": 108,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
               "kind": "unresolved_call",
-              "line": 107,
+              "line": 109,
+              "step": "_handle_agent_error",
+              "target": "exc.detail"
+            },
+            {
+              "kind": "external_call",
+              "line": 110,
+              "step": "_handle_agent_error",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 111,
+              "step": "_handle_agent_error",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 111,
               "step": "_handle_agent_error",
               "target": "exc.detail"
             },
@@ -28183,6 +28256,100 @@
       "category": "mcp",
       "detector": "builtin",
       "entry_point": {
+        "label": "agent_get_iteration_plan_readiness",
+        "source_path": "backend/app/mcp_server.py",
+        "symbol": "agent_get_iteration_plan_readiness"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 100,
+              "step": "scope_requirement_is_mutating",
+              "target": "isinstance"
+            },
+            {
+              "kind": "external_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 101,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "external_call",
+              "line": 102,
+              "step": "scope_requirement_is_mutating",
+              "target": "any"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 103,
+              "step": "scope_requirement_is_mutating",
+              "target": "scope.endswith"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "agent_get_iteration_plan_readiness",
+              "target": "first 12 steps"
+            },
+            {
+              "kind": "truncated_flow",
+              "line": 0,
+              "step": "agent_get_iteration_plan_readiness",
+              "target": "depth limit"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": true
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/mcp_server.py",
+            "backend/app/maintenance.py",
+            "backend/app/config.py",
+            "backend/app/commands.py",
+            "backend/app/services/delivery_dependency_service.py",
+            "backend/app/authority.py",
+            "backend/app/services/task_service.py",
+            "backend/app/services/task_brief_service.py",
+            "backend/app/services/discussion_service.py",
+            "backend/app/models/outbound_webhook.py",
+            "backend/app/services/identity_service.py",
+            "backend/app/services/agent_service.py",
+            "backend/app/utils/time.py",
+            "backend/app/models/identity.py",
+            "backend/app/mcp_agent_tools.py",
+            "backend/app/services/iteration_service.py",
+            "backend/app/services/work_metrics.py",
+            "backend/app/services/team_service.py",
+            "backend/app/query_limits.py",
+            "backend/app/services/capacity_service.py",
+            "backend/app/services/calendar_service.py",
+            "backend/app/schemas/team.py",
+            "backend/app/services/plan_checkpoints.py",
+            "backend/app/schemas/iteration.py"
+          ],
+          "step_count": 583,
+          "truncated": true
+        }
+      },
+      "id": "mcp-agent_get_iteration_plan_readiness",
+      "language": "python"
+    },
+    {
+      "category": "mcp",
+      "detector": "builtin",
+      "entry_point": {
         "label": "agent_get_model_binding",
         "source_path": "backend/app/mcp_server.py",
         "symbol": "agent_get_model_binding"
@@ -28977,7 +29144,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 451,
+          "step_count": 462,
           "truncated": true
         }
       },
@@ -38500,46 +38667,6 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3413,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3418,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3421,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3424,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
-              "line": 3427,
-              "step": "main",
-              "step_index": 1,
-              "target": "print"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "output",
               "line": 3433,
               "step": "main",
               "step_index": 1,
@@ -38548,7 +38675,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3436,
+              "line": 3438,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38556,7 +38683,47 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3445,
+              "line": 3441,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3444,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3447,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3453,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3456,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 3465,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38565,61 +38732,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3404,
+              "line": 3424,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3345,
+              "line": 3365,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3346,
+              "line": 3366,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3352,
+              "line": 3372,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3353,
+              "line": 3373,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3357,
+              "line": 3377,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3361,
+              "line": 3381,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3362,
+              "line": 3382,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3366,
+              "line": 3386,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3367,
+              "line": 3387,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -38645,7 +38812,7 @@
           "modules_touched": [
             "scripts/build_agent_skills.py"
           ],
-          "step_count": 1268,
+          "step_count": 1269,
           "truncated": true
         }
       },
@@ -40946,7 +41113,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 2444,
+              "line": 2452,
               "step": "main",
               "step_index": 1,
               "target": "os.getenv"
@@ -40954,7 +41121,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2445,
+              "line": 2453,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -40963,37 +41130,37 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2435,
+              "line": 2443,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2436,
+              "line": 2444,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2442,
+              "line": 2450,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 2446,
+              "line": 2454,
               "step": "main",
               "target": "SystemExit"
             },
             {
               "kind": "external_call",
-              "line": 2450,
+              "line": 2458,
               "step": "main",
               "target": "redirect_stdout"
             },
             {
               "kind": "external_call",
-              "line": 2451,
+              "line": 2459,
               "step": "main",
               "target": "asyncio.run"
             },
@@ -44006,6 +44173,7 @@
         "entities/schemas_iteration_IterationSeriesStop.md",
         "entities/schemas_iteration_IterationSummary.md",
         "entities/schemas_iteration_IterationUpdate.md",
+        "entities/schemas_iteration_PlanCheckpoint.md",
         "entities/schemas_label_LabelCreate.md",
         "entities/schemas_label_LabelGroupBrief.md",
         "entities/schemas_label_LabelGroupCreate.md",
@@ -44461,6 +44629,7 @@
         "entities/types_iteration_IterationSeriesStop.md",
         "entities/types_iteration_IterationSummary.md",
         "entities/types_iteration_IterationUpdate.md",
+        "entities/types_iteration_PlanCheckpoint.md",
         "entities/types_label_Label.md",
         "entities/types_label_LabelCreate.md",
         "entities/types_label_LabelGroup.md",
@@ -44769,6 +44938,7 @@
         "flows/http-get_initiative.md",
         "flows/http-get_iteration.md",
         "flows/http-get_iteration_page.md",
+        "flows/http-get_iteration_plan_readiness.md",
         "flows/http-get_iteration_planning_readiness.md",
         "flows/http-get_iteration_status_history.md",
         "flows/http-get_iteration_summary.md",
@@ -45024,6 +45194,7 @@
         "flows/mcp-agent_get_complete_task_context.md",
         "flows/mcp-agent_get_execution_usage.md",
         "flows/mcp-agent_get_execution_usage_summary.md",
+        "flows/mcp-agent_get_iteration_plan_readiness.md",
         "flows/mcp-agent_get_model_binding.md",
         "flows/mcp-agent_get_model_catalog_entry.md",
         "flows/mcp-agent_get_my_reviews.md",
@@ -45516,6 +45687,7 @@
         "modules/PersonCapacity.md",
         "modules/PersonCapacity.test.md",
         "modules/Pill.md",
+        "modules/plan_checkpoints.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
         "modules/PlanMasterPage.md",
@@ -45750,6 +45922,7 @@
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
+        "modules/TaskReviewer.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
         "modules/tasks.md",
@@ -45840,6 +46013,7 @@
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
+        "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
         "modules/test_planning_read_models.md",
@@ -52490,7 +52664,6 @@
       "outgoing_internal_links": [
         "modules/export.md",
         "modules/iteration_service.md",
-        "modules/iterations.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_gantt.md"
       ],
@@ -58454,6 +58627,8 @@
       "outgoing_internal_links": [
         "modules/iteration_service.md",
         "modules/iterations.md",
+        "modules/mcp_agent_tools.md",
+        "modules/routers_agent_planning.md",
         "modules/schemas_iteration.md"
       ],
       "role": "semantic",
@@ -58538,6 +58713,18 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/iteration.py",
       "title": "IterationUpdate"
+    },
+    {
+      "canonical_path": "entities/schemas_iteration_PlanCheckpoint.md",
+      "id": "schemas_iteration_PlanCheckpoint",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_iteration_PlanCheckpoint",
+      "outgoing_internal_links": [
+        "modules/schemas_iteration.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/iteration.py",
+      "title": "PlanCheckpoint"
     },
     {
       "canonical_path": "entities/schemas_label_LabelCreate.md",
@@ -64931,6 +65118,18 @@
       "role": "semantic",
       "source_path": "frontend/src/types/iteration.ts",
       "title": "IterationUpdate"
+    },
+    {
+      "canonical_path": "entities/types_iteration_PlanCheckpoint.md",
+      "id": "types_iteration_PlanCheckpoint",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_iteration_PlanCheckpoint",
+      "outgoing_internal_links": [
+        "modules/types_iteration.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/iteration.ts",
+      "title": "PlanCheckpoint"
     },
     {
       "canonical_path": "entities/types_label_Label.md",
@@ -72733,6 +72932,20 @@
       "title": "Pill Module"
     },
     {
+      "canonical_path": "modules/plan_checkpoints.md",
+      "id": "plan_checkpoints",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/plan_checkpoints",
+      "outgoing_internal_links": [
+        "modules/iteration_service.md",
+        "modules/plan_checkpoints.md",
+        "modules/test_plan_checkpoints.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/plan_checkpoints.py",
+      "title": "plan_checkpoints Module"
+    },
+    {
       "canonical_path": "modules/plan_share_service.md",
       "id": "plan_share_service",
       "kind": "modules",
@@ -75060,6 +75273,7 @@
         "entities/schemas_iteration_IterationSeriesStop.md",
         "entities/schemas_iteration_IterationSummary.md",
         "entities/schemas_iteration_IterationUpdate.md",
+        "entities/schemas_iteration_PlanCheckpoint.md",
         "modules/schemas_iteration.md"
       ],
       "role": "semantic",
@@ -76977,6 +77191,22 @@
       "title": "TaskList.test Module"
     },
     {
+      "canonical_path": "modules/TaskReviewer.md",
+      "id": "TaskReviewer",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskReviewer",
+      "outgoing_internal_links": [
+        "modules/QueryState.md",
+        "modules/TaskReviewer.md",
+        "modules/taskService.md",
+        "modules/TaskWorkPanel.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskReviewer.tsx",
+      "title": "TaskReviewer Module"
+    },
+    {
       "canonical_path": "modules/TaskRoutingPanel.md",
       "id": "TaskRoutingPanel",
       "kind": "modules",
@@ -78352,6 +78582,21 @@
       "title": "test_observability Module"
     },
     {
+      "canonical_path": "modules/test_plan_checkpoints.md",
+      "id": "test_plan_checkpoints",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_plan_checkpoints",
+      "outgoing_internal_links": [
+        "modules/app_main.md",
+        "modules/mcp_server.md",
+        "modules/plan_checkpoints.md",
+        "modules/test_plan_checkpoints.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_plan_checkpoints.py",
+      "title": "test_plan_checkpoints Module"
+    },
+    {
       "canonical_path": "modules/test_plan_shares.md",
       "id": "test_plan_shares",
       "kind": "modules",
@@ -79541,6 +79786,7 @@
         "entities/types_iteration_IterationSeriesStop.md",
         "entities/types_iteration_IterationSummary.md",
         "entities/types_iteration_IterationUpdate.md",
+        "entities/types_iteration_PlanCheckpoint.md",
         "modules/types_iteration.md"
       ],
       "role": "semantic",
@@ -79963,7 +80209,8 @@
         "modules/planningNavigationInvalidation.test.md",
         "modules/SidebarIterationCard.md",
         "modules/types_iteration.md",
-        "modules/usePlanningNavigationSummary.md"
+        "modules/usePlanningNavigationSummary.md",
+        "modules/usePlanningReadiness.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/planningMasters/usePlanningNavigationSummary.ts",
@@ -82005,6 +82252,7 @@
       "outgoing_internal_links": [
         "modules/capacity_service.md",
         "modules/iteration_service.md",
+        "modules/plan_checkpoints.md",
         "modules/schemas_iteration.md",
         "modules/services_work_metrics.md",
         "modules/team_service.md"
@@ -85539,6 +85787,32 @@
       "role": "mixed",
       "source_path": "backend/app/routers/iterations.py",
       "title": "get_iteration_page"
+    },
+    {
+      "canonical_path": "flows/http-get_iteration_plan_readiness.md",
+      "id": "http-get_iteration_plan_readiness",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_iteration_plan_readiness",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/calendar_service.md",
+        "modules/capacity_service.md",
+        "modules/commands.md",
+        "modules/iteration_service.md",
+        "modules/mcp_agent_tools.md",
+        "modules/plan_checkpoints.md",
+        "modules/query_limits.md",
+        "modules/routers_agent_planning.md",
+        "modules/schemas_iteration.md",
+        "modules/schemas_team.md",
+        "modules/services_work_metrics.md",
+        "modules/team_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_planning.py",
+      "title": "get_iteration_plan_readiness"
     },
     {
       "canonical_path": "flows/http-get_iteration_planning_readiness.md",
@@ -89762,6 +90036,41 @@
       "role": "mixed",
       "source_path": "backend/app/mcp_server.py",
       "title": "agent_get_execution_usage_summary"
+    },
+    {
+      "canonical_path": "flows/mcp-agent_get_iteration_plan_readiness.md",
+      "id": "mcp-agent_get_iteration_plan_readiness",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/mcp-agent_get_iteration_plan_readiness",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/authority.md",
+        "modules/calendar_service.md",
+        "modules/capacity_service.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/delivery_dependency_service.md",
+        "modules/discussion_service.md",
+        "modules/identity_service.md",
+        "modules/iteration_service.md",
+        "modules/maintenance.md",
+        "modules/mcp_agent_tools.md",
+        "modules/mcp_server.md",
+        "modules/models_identity.md",
+        "modules/models_outbound_webhook.md",
+        "modules/plan_checkpoints.md",
+        "modules/query_limits.md",
+        "modules/schemas_iteration.md",
+        "modules/schemas_team.md",
+        "modules/services_work_metrics.md",
+        "modules/task_brief_service.md",
+        "modules/task_service.md",
+        "modules/team_service.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/mcp_server.py",
+      "title": "agent_get_iteration_plan_readiness"
     },
     {
       "canonical_path": "flows/mcp-agent_get_model_binding.md",
@@ -94309,6 +94618,7 @@
         "modules/PersonCapacity.md",
         "modules/PersonCapacity.test.md",
         "modules/Pill.md",
+        "modules/plan_checkpoints.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
         "modules/PlanMasterPage.md",
@@ -94543,6 +94853,7 @@
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
+        "modules/TaskReviewer.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
         "modules/tasks.md",
@@ -94633,6 +94944,7 @@
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
+        "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
         "modules/test_planning_read_models.md",
@@ -95080,6 +95392,7 @@
         "modules/PersonCapacity.md",
         "modules/PersonCapacity.test.md",
         "modules/Pill.md",
+        "modules/plan_checkpoints.md",
         "modules/plan_share_service.md",
         "modules/plan_shares.md",
         "modules/PlanMasterPage.md",
@@ -95314,6 +95627,7 @@
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
         "modules/TaskList.test.md",
+        "modules/TaskReviewer.md",
         "modules/TaskRoutingPanel.md",
         "modules/TaskRoutingPanel.test.md",
         "modules/tasks.md",
@@ -95404,6 +95718,7 @@
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
+        "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
         "modules/test_planning_read_models.md",
@@ -95528,5 +95843,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:eb6f147de028c988f0f6f766d94a3ac03e4f537ae54be0a1e057049292e5d478"
+  "source_hash": "sha256:04116aa4c2030bbeb22cf3ebd0af96309e4ff4a7471b1994ebe9fd2d873ce6e0"
 }

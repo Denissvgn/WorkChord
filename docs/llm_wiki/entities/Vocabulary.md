@@ -7,7 +7,7 @@
 **Target:**
 
 ```typescript
-Record<'roles' | 'task_states' | 'actions' | 'queues' | 'pipeline_stages', Entry[]>
+Record<'roles' | 'task_states' | 'actions' | 'queues' | 'triage_dispositions' | 'pipeline_stages', Entry[]>
 ```
 
 ## Description

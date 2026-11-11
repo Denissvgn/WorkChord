@@ -1,6 +1,6 @@
 # HumanWorkResponse
 
-**Location:** `backend/app/schemas/task_detail.py:47`
+**Location:** `backend/app/schemas/task_detail.py:50`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [task_detail](../modules/task_detail.md)

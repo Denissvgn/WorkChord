@@ -1,6 +1,6 @@
 # TaskDetail
 
-**Location:** `frontend/src/types/task.ts:464`
+**Location:** `frontend/src/types/task.ts:465`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -19,6 +19,7 @@ _Auto-generated from `TaskDetail` in `frontend/src/types/task.ts`._
 | `children` | `TaskReferencePage` | Yes | — | — |
 | `dependencies` | `TaskReferencePage` | Yes | — | — |
 | `execution_context_complete` | `false` | Yes | — | — |
+| `reviewer_name` | `string \| null` | No | — | — |
 
 ## Methods
 
@@ -49,7 +50,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `task` |
+| [types_task](../modules/types_task.md) | 0 | `ancestors`, `ancestors_complete`, `children`, `dependencies`, `execution_context_complete`, `reviewer_name`, `task` |
 
 ### References
 

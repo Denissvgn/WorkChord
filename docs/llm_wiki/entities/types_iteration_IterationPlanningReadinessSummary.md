@@ -22,6 +22,9 @@ _Auto-generated from `IterationPlanningReadinessSummary` in `frontend/src/types/
 | `tasks_without_effort` | `number` | Yes | — | — |
 | `has_schedule` | `boolean` | Yes | — | — |
 | `risk_count` | `number` | Yes | — | — |
+| `checkpoints` | `PlanCheckpoint[]` | No | — | — |
+| `checkpoints_done` | `number` | No | — | — |
+| `checkpoints_total` | `number` | No | — | — |
 
 ## Methods
 
@@ -43,7 +46,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_without_assignee`, `tasks_without_effort`, `team_capacity_hours`, `team_member_count`, `team_members_no_capacity` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_without_assignee`, `tasks_without_effort`, `team_capacity_hours`, `team_member_count`, `team_members_no_capacity` |
 
 ### References
 

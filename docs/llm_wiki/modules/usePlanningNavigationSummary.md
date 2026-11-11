@@ -38,9 +38,10 @@ flowchart LR
     n4["frontend/src/features/planningMasters/planningNavigationInvalidation.test.ts"]
     n5["frontend/src/features/planningMasters/planningNavigationInvalidation.ts"]
     n6["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
-    n7["frontend/src/services/iterationService.ts"]
-    n8["frontend/src/store/iterationStore.ts"]
-    n9["frontend/src/types/iteration.ts"]
+    n7["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
+    n8["frontend/src/services/iterationService.ts"]
+    n9["frontend/src/store/iterationStore.ts"]
+    n10["frontend/src/types/iteration.ts"]
     n0 --> n6
     n1 --> n6
     n2 --> n6
@@ -48,10 +49,15 @@ flowchart LR
     n4 --> n6
     n5 --> n6
     n6 --> n3
-    n6 --> n7
     n6 --> n8
     n6 --> n9
+    n6 --> n10
+    n7 --> n3
+    n7 --> n6
+    n7 --> n8
     n7 --> n9
+    n7 --> n10
+    n8 --> n10
     click n0 "../modules/AppTopNav.md"
     click n1 "../modules/SidebarIterationCard.md"
     click n2 "../modules/IdentityProvider.test.md"
@@ -59,9 +65,10 @@ flowchart LR
     click n4 "../modules/planningNavigationInvalidation.test.md"
     click n5 "../modules/planningNavigationInvalidation.md"
     click n6 "../modules/usePlanningNavigationSummary.md"
-    click n7 "../modules/iterationService.md"
-    click n8 "../modules/iterationStore.md"
-    click n9 "../modules/types_iteration.md"
+    click n7 "../modules/usePlanningReadiness.md"
+    click n8 "../modules/iterationService.md"
+    click n9 "../modules/iterationStore.md"
+    click n10 "../modules/types_iteration.md"
 ```
 
 ### Internal neighbors
@@ -73,6 +80,7 @@ flowchart LR
 | Inbound | [IdentityProvider.test](../modules/IdentityProvider.test.md) |
 | Inbound | [planningNavigationInvalidation.test](../modules/planningNavigationInvalidation.test.md) |
 | Inbound | [planningNavigationInvalidation](../modules/planningNavigationInvalidation.md) |
+| Inbound | [usePlanningReadiness](../modules/usePlanningReadiness.md) |
 | Outbound | [planningMasters_masters](../modules/planningMasters_masters.md) |
 | Outbound | [iterationService](../modules/iterationService.md) |
 | Outbound | [iterationStore](../modules/iterationStore.md) |

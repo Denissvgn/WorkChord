@@ -149,8 +149,8 @@ flowchart LR
 | _handle_model_error | HTTPException (backend/app/routers/agent…log.py:_handle_model_error) | 57 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={...})` |
 | _handle_model_error | str (backend/app/routers/agent…log.py:_handle_model_error) | 61 | `str(exc)` |
 | _handle_model_error | _handle_agent_error | 64 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 102 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 103 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| _handle_agent_error | isinstance (backend/app/routers/agent…ing.py:_handle_agent_error) | 106 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException (backend/app/routers/agent…ing.py:_handle_agent_error) | 107 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
 
 ### Boundary effects
 
@@ -166,8 +166,8 @@ flowchart LR
 | unresolved_call | `_handle_model_error` | `exc.detail` | 54 |
 | external_call | `_handle_model_error` | `isinstance` | 56 |
 | external_call | `_handle_model_error` | `HTTPException` | 57 |
-| external_call | `_handle_agent_error` | `isinstance` | 102 |
-| external_call | `_handle_agent_error` | `HTTPException` | 103 |
+| external_call | `_handle_agent_error` | `isinstance` | 106 |
+| external_call | `_handle_agent_error` | `HTTPException` | 107 |
 | step_limit | `get_agent_model_binding` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -50,16 +50,16 @@ flowchart LR
     n0["IterationService (backend/app/services/iteration_service.py)"]
     n1["get_iteration (backend/app/mcp_agent_tools.py)"]
     n2["get_iteration_gantt (backend/app/mcp_agent_tools.py)"]
-    n3["get_iteration_summary (backend/app/mcp_agent_tools.py)"]
-    n4["list_iterations (backend/app/mcp_agent_tools.py)"]
-    n5["export_iteration (backend/app/routers/export.py)"]
-    n6["import_iteration (backend/app/routers/export.py)"]
-    n7["import_new_iteration (backend/app/routers/export.py)"]
-    n8["preview_iteration_import (backend/app/routers/export.py)"]
-    n9["get_gantt_data (backend/app/routers/gantt.py)"]
-    n10["preview_iteration_schedule (backend/app/routers/gantt.py)"]
-    n11["schedule_iteration (backend/app/routers/gantt.py)"]
-    n12["create_iteration (backend/app/routers/iterations.py)"]
+    n3["get_iteration_plan_readiness (backend/app/mcp_agent_tools.py)"]
+    n4["get_iteration_summary (backend/app/mcp_agent_tools.py)"]
+    n5["list_iterations (backend/app/mcp_agent_tools.py)"]
+    n6["export_iteration (backend/app/routers/export.py)"]
+    n7["import_iteration (backend/app/routers/export.py)"]
+    n8["import_new_iteration (backend/app/routers/export.py)"]
+    n9["preview_iteration_import (backend/app/routers/export.py)"]
+    n10["get_gantt_data (backend/app/routers/gantt.py)"]
+    n11["preview_iteration_schedule (backend/app/routers/gantt.py)"]
+    n12["schedule_iteration (backend/app/routers/gantt.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -77,14 +77,14 @@ flowchart LR
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/mcp_agent_tools.md"
     click n4 "../modules/mcp_agent_tools.md"
-    click n5 "../modules/export.md"
+    click n5 "../modules/mcp_agent_tools.md"
     click n6 "../modules/export.md"
     click n7 "../modules/export.md"
     click n8 "../modules/export.md"
-    click n9 "../modules/routers_gantt.md"
+    click n9 "../modules/export.md"
     click n10 "../modules/routers_gantt.md"
     click n11 "../modules/routers_gantt.md"
-    click n12 "../modules/iterations.md"
+    click n12 "../modules/routers_gantt.md"
 ```
 
 ### Summary
@@ -99,6 +99,7 @@ flowchart LR
 |---|---|---|---:|
 | `get_iteration` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `get_iteration_gantt` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
+| `get_iteration_plan_readiness` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `get_iteration_summary` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_iterations` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `export_iteration` | call | [export](../modules/export.md) | 1 |
@@ -108,6 +109,5 @@ flowchart LR
 | `get_gantt_data` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `preview_iteration_schedule` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `schedule_iteration` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
-| `create_iteration` | type_reference | [iterations](../modules/iterations.md) | — |
 
-> References: showing 12 of 57 logical references; 45 omitted by the 12-row generated summary limit.
+> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.

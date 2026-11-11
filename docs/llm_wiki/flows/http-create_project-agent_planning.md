@@ -127,17 +127,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_project | service.create_project | 196 | `service.create_project(actor, data, command=command)` |
-| create_project | _handle_agent_error | 202 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance | 102 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | HTTPException | 103 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
-| _handle_agent_error | str | 103 | `str(exc)` |
-| _handle_agent_error | isinstance | 104 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 105 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 105 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 106 | `isinstance(exc, TaskVersionConflictError)` |
-| _handle_agent_error | HTTPException | 107 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 107 | `exc.detail(data not statically known)` |
+| create_project | service.create_project | 220 | `service.create_project(actor, data, command=command)` |
+| create_project | _handle_agent_error | 226 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance | 106 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | HTTPException | 107 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(...))` |
+| _handle_agent_error | str | 107 | `str(exc)` |
+| _handle_agent_error | isinstance | 108 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 109 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 109 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 110 | `isinstance(exc, TaskVersionConflictError)` |
+| _handle_agent_error | HTTPException | 111 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 111 | `exc.detail(data not statically known)` |
 
 ### Boundary effects
 
@@ -147,15 +147,15 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_project` | `service.create_project` | 196 |
-| external_call | `_handle_agent_error` | `isinstance` | 102 |
-| external_call | `_handle_agent_error` | `HTTPException` | 103 |
-| external_call | `_handle_agent_error` | `isinstance` | 104 |
-| external_call | `_handle_agent_error` | `HTTPException` | 105 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 105 |
+| unresolved_call | `create_project` | `service.create_project` | 220 |
 | external_call | `_handle_agent_error` | `isinstance` | 106 |
 | external_call | `_handle_agent_error` | `HTTPException` | 107 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 107 |
+| external_call | `_handle_agent_error` | `isinstance` | 108 |
+| external_call | `_handle_agent_error` | `HTTPException` | 109 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 109 |
+| external_call | `_handle_agent_error` | `isinstance` | 110 |
+| external_call | `_handle_agent_error` | `HTTPException` | 111 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 111 |
 | step_limit | `create_project` | `first 12 steps` | 0 |
 
 ## Behavior

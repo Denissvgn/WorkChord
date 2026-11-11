@@ -22,7 +22,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskWorkPanel.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `service`, `task` |
-| Module calls | `service = hoisted`, `mock`, `mock`, `describe`, `it` |
+| Module calls | `service = hoisted`, `mock`, `mock`, `describe`, `it`, `describe` |
 
 ## Local dependency map
 

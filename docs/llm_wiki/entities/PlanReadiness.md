@@ -29,6 +29,7 @@ _Auto-generated from `PlanReadiness` in `frontend/src/features/planningMasters/m
 | `ganttLastBuilt` | `string` | Yes | — | — |
 | `riskCount` | `number` | Yes | — | — |
 | `inboxCount` | `number` | Yes | — | — |
+| `checkpointStates` | `Partial<Record<PlanningStepId, StepState>>` | No | — | — |
 
 ## Methods
 
@@ -71,7 +72,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [planningMasters_masters](../modules/planningMasters_masters.md) | 0 | `currentIterationDays`, `currentIterationEnd`, `currentIterationName`, `currentIterationStart`, `ganttLastBuilt`, `hasCurrentIteration`, `hasGanttSchedule`, `inboxCount`, `iterationCount`, `riskCount`, `taskCount`, `tasksWithoutAssignee` |
+| [planningMasters_masters](../modules/planningMasters_masters.md) | 0 | `checkpointStates`, `currentIterationDays`, `currentIterationEnd`, `currentIterationName`, `currentIterationStart`, `ganttLastBuilt`, `hasCurrentIteration`, `hasGanttSchedule`, `inboxCount`, `iterationCount`, `riskCount`, `taskCount` |
 
 ### References
 

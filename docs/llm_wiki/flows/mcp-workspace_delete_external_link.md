@@ -205,7 +205,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_delete_external_link | _tool_call | 2026 | `_tool_call('planning:write', ...)` |
+| workspace_delete_external_link | _tool_call | 2034 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |

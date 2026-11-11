@@ -39,10 +39,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (65) |
+| Inbound | `frontend` (66) |
 | Outbound | `frontend` (2) |
 
-> All 66 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 67 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -91,11 +91,11 @@ flowchart LR
 | [CriterionProgress](../entities/types_task_CriterionProgress.md) | Interface | 443 | — | — |
 | [TaskProgress](../entities/TaskProgress.md) | Interface | 450 | — | — |
 | [TaskReference](../entities/types_task_TaskReference.md) | Interface | 457 | — | — |
-| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 463 | — | — |
-| [TaskDetail](../entities/TaskDetail.md) | Interface | 464 | — | — |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 468 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Interface | 469 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Interface | 473 | — | — |
+| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 464 | — | — |
+| [TaskDetail](../entities/TaskDetail.md) | Interface | 465 | — | — |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 470 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Interface | 471 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Interface | 475 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 45 | `'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 46 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| string` | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 276 | `'tasks' \| 'triage' \| 'auto'` | — |

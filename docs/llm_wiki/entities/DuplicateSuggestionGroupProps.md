@@ -1,6 +1,6 @@
 # DuplicateSuggestionGroupProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1531`
+**Location:** `frontend/src/pages/TriagePage.tsx:1554`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

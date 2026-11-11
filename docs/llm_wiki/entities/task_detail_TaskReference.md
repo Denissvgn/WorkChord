@@ -32,6 +32,7 @@ _Auto-generated from `TaskReference` in `backend/app/schemas/task_detail.py`._
 | `blocked_reason` | `str \| None` | `blocked_reason` | No | Yes | `None` | — | — | — |
 | `canceled_at` | `datetime \| None` | `canceled_at` | No | Yes | `None` | — | — | — |
 | `acceptance_current` | `bool` | `acceptance_current` | No | No | `False` | — | — | — |
+| `reviewer_name` | `str \| None` | `reviewer_name` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -61,7 +62,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_detail](../modules/task_detail.md) | 0 | `acceptance_current`, `blocked_reason`, `canceled_at`, `id`, `iteration_id`, `iteration_name`, `owner_profile_id`, `parent_id`, `project_id`, `project_name`, `status`, `title` |
+| [task_detail](../modules/task_detail.md) | 0 | `acceptance_current`, `blocked_reason`, `canceled_at`, `id`, `iteration_id`, `iteration_name`, `owner_profile_id`, `parent_id`, `project_id`, `project_name`, `reviewer_name`, `status` |
 
 ### Structure
 

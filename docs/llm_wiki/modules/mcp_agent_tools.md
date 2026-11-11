@@ -24,7 +24,7 @@ the same audited command and read-model paths.
 | `app.schemas.agent_routing` | `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogUpdate`, `AgentRoutingPreviewCreate`, `TaskRoutingAssessmentCommand` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse`, `SkillBundleManifestResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageWrite` |
-| `app.schemas.iteration` | `IterationCreate`, `IterationSummary`, `IterationUpdate` |
+| `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationSummary`, `IterationUpdate` |
 | `app.schemas.label` | `LabelGroupResponse`, `LabelResponse` |
 | `app.schemas.project` | `ProjectCreate`, `ProjectMilestoneCreateRequest`, `ProjectMilestoneResponse`, `ProjectMilestoneUpdate`, `ProjectResponse`, `ProjectUpdate`, `ProjectUpdateEntryResponse` |
 | `app.schemas.release` | `ReleaseResponse` |
@@ -135,6 +135,7 @@ flowchart LR
 | `get_agent_skill_reference` | *(async)* `(skill_name: str, skill_version: str, reference_name: str) -> str` | — | Return one direct Markdown reference from a validated role archive. |
 | `list_iterations` | *(async)* `(db: AsyncSession) -> list[dict[str, Any]]` | — | MCP handler: list iterations. |
 | `get_iteration` | *(async)* `(db: AsyncSession, iteration_id: int) -> dict[str, Any] \| None` | — | MCP handler: get one iteration. |
+| `get_iteration_plan_readiness` | *(async)* `(db: AsyncSession, iteration_id: int) -> dict[str, Any] \| None` | — | MCP handler: the six plan checkpoints people see on the plan page. |
 | `get_iteration_summary` | *(async)* `(db: AsyncSession, iteration_id: int) -> dict[str, Any] \| None` | — | MCP handler: return the vacation-aware iteration summary. |
 | `get_iteration_gantt` | *(async)* `(db: AsyncSession, iteration_id: int) -> dict[str, Any]` | — | MCP handler: return the existing read-only Gantt projection. |
 | `list_team_member_profiles` | *(async)* `(db: AsyncSession) -> list[dict[str, Any]]` | — | MCP handler: list reusable profiles with their advisory skills. |

@@ -21,6 +21,7 @@ Commit and uncommit commands retain original source and selected-target aggregat
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `./TaskReviewer` | `TaskReviewer` | — | compiler-dependent |
 | `./useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery` | — | compiler-dependent |
 | `react` | `useEffect`, `useId`, `useState` | — | compiler-dependent |
@@ -53,7 +54,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -61,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

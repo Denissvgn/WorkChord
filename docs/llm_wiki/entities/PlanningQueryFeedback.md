@@ -1,6 +1,6 @@
 # PlanningQueryFeedback
 
-**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:34`
+**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:35`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)

@@ -57,4 +57,4 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [Localized](../entities/Localized.md) | Type alias | 9 | `{ en: string; ru: string }` | — |
 | [Entry](../entities/Entry.md) | Type alias | 10 | `{ id: string; name: Localized \| string; group?: Localized; description?: Localized }` | — |
-| [Vocabulary](../entities/Vocabulary.md) | Type alias | 11 | `Record<'roles' \| 'task_states' \| 'actions' \| 'queues' \| 'pipeline_stages', Entry[]>` | — |
+| [Vocabulary](../entities/Vocabulary.md) | Type alias | 11 | `Record<'roles' \| 'task_states' \| 'actions' \| 'queues' \| 'triage_dispositions' \| 'pipeline_stages', Entry[]>` | — |

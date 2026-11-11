@@ -1,6 +1,6 @@
 # TaskListOption
 
-**Location:** `frontend/src/pages/TriagePage.tsx:178`
+**Location:** `frontend/src/pages/TriagePage.tsx:179`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

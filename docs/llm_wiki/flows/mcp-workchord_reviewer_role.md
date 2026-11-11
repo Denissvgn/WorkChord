@@ -214,7 +214,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_reviewer_role | _skill_bundle_prompt | 2347 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended verifier skill version, then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. Follow that skill, read your review queue, and record a verdict only for the exact review assignment it returns.')` |
+| workchord_reviewer_role | _skill_bundle_prompt | 2355 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended verifier skill version, then read workchord://skill-bundles/workchord-reviewer/{version}/SKILL.md. Follow that skill, read your review queue, and record a verdict only for the exact review assignment it returns.')` |
 | _skill_bundle_prompt | _agent_context | 338 | `_agent_context(_skill_bundle_scope_requirement(...))` |
 | _agent_context | _current_agent_key | 247 | `_current_agent_key(data not statically known)` |
 | _current_agent_key | _http_agent_key.get | 200 | `_http_agent_key.get(data not statically known)` |

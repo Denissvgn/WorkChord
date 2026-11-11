@@ -1,6 +1,6 @@
 # PlanningReadinessOptions
 
-**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:20`
+**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:21`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)

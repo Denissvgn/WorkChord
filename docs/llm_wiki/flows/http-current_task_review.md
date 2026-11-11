@@ -49,14 +49,14 @@ sequenceDiagram
     participant p18 as TaskAgentReadiness
     participant p19 as TaskDetailService.references
     participant p20 as PlanningConflict
-    participant p21 as TaskDetailResponse
-    participant p22 as current_command
-    participant p23 as internal_authority
-    participant p24 as AuthorityError
-    participant p25 as TaskReferencePage
-    participant p26 as TaskAssignee
-    participant p27 as TaskProject
-    participant p28 as TaskMilestone
+    participant p21 as TaskDetailService.reviewer_names
+    participant p22 as TaskDetailResponse
+    participant p23 as current_command
+    participant p24 as internal_authority
+    participant p25 as AuthorityError
+    participant p26 as TaskReferencePage
+    participant p27 as TaskAssignee
+    participant p28 as TaskProject
     participant p29 as select (backend/app/routers/task_…in.py:current_task_review)
     participant p30 as db.scalar
     p0->>p1: TaskDetailService.detail
@@ -79,21 +79,21 @@ sequenceDiagram
     p1->>p18: TaskAgentReadiness
     p1->>p19: TaskDetailService.references
     p1->>p20: PlanningConflict
-    p1->>p21: TaskDetailResponse
-    p6->>p22: current_command
-    p5->>p23: internal_authority
-    p4->>p24: AuthorityError
-    p8->>p25: TaskReferencePage
-    p6->>p26: TaskAssignee
-    p6->>p27: TaskProject
-    p6->>p28: TaskMilestone
+    p1->>p21: TaskDetailService.reviewer_names
+    p1->>p22: TaskDetailResponse
+    p6->>p23: current_command
+    p5->>p24: internal_authority
+    p4->>p25: AuthorityError
+    p8->>p26: TaskReferencePage
+    p6->>p27: TaskAssignee
+    p6->>p28: TaskProject
     p0-->>p29: select (backend/app/routers/task_…in.py:current_task_review)(TaskReviewRecord)
     p0-->>p30: db.scalar(...)
 ```
 
-> Call sequence diagram shows 30 of 227 interactions; 197 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 238 interactions; 208 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 72 (71 omitted); unresolved 1 of 92 (91 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 74 (73 omitted); unresolved 1 of 100 (99 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -101,13 +101,13 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | --- | --- | --- | --- | --- |
 | `backend/app/routers/task_domain.py:domain_result` | 2 | - | external | 6 |
 | `backend/app/routers/task_domain.py:domain_result` | 2 | - | unresolved | 1 |
-| `backend/app/services/task_detail_service.py:TaskDetailService.detail` | 10 | - | unresolved | 14 |
+| `backend/app/services/task_detail_service.py:TaskDetailService.detail` | 10 | - | unresolved | 15 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.detail` | 10 | - | external | 14 |
 | `backend/app/authority.py:require_project` | 22 | - | unresolved | 2 |
 | `backend/app/config.py:get_settings` | 24 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/authority.py:require_project` | 22 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
 | `backend/app/services/task_service.py:TaskService.load_owner_names` | 29 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
-> Omission summary shows 8 of 55 groups; 47 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 57 groups; 49 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -118,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 64; effect analysis evaluated: 43, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
+Source steps: 65; effect analysis evaluated: 44, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
 
-Collector observations for 43 source steps with known totals: observed: 218, emitted: 218, omitted: 0. Unavailable totals are excluded.
+Collector observations for 44 source steps with known totals: observed: 221, emitted: 221, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -207,15 +207,15 @@ flowchart LR
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | current_task_review | TaskDetailService.detail | 220 | `TaskDetailService(db).detail(task_id, limit=1)` |
-| TaskDetailService.detail | self.db.scalar | 129 | `self.db.scalar(...)` |
-| TaskDetailService.detail | select(…).where(…).options | 129 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
+| TaskDetailService.detail | self.db.scalar | 145 | `self.db.scalar(...)` |
+| TaskDetailService.detail | select(…).where(…).options | 145 | `select(Task).where(Task.id == task_id).options(raiseload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...), selectinload(...))` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `seen.add` | `TaskDetailService.detail` | 148 |
-| mutation | `ancestors.append` | `TaskDetailService.detail` | 152 |
+| mutation | `seen.add` | `TaskDetailService.detail` | 164 |
+| mutation | `ancestors.append` | `TaskDetailService.detail` | 168 |
 
 ### Static analysis gaps
 
@@ -226,8 +226,8 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 129 |
-| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 129 |
+| unresolved_call | `TaskDetailService.detail` | `self.db.scalar` | 145 |
+| unresolved_call | `TaskDetailService.detail` | `select(Task).where(Task.id == task_id).options` | 145 |
 | step_limit | `current_task_review` | `first 12 steps` | 0 |
 
 ## Behavior

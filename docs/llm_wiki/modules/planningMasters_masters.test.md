@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/features/planningMasters/masters.test.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe` |
+| Module calls | `describe`, `describe` |
 
 ## Local dependency map
 
