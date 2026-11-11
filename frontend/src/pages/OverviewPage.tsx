@@ -499,15 +499,23 @@ const OverviewPage = () => {
             items.push({
                 id: 'unassigned',
                 kind: 'unassigned',
-                severity: 'advisory',
-                urgency: unassignedTaskList.some(task => task.status === 'active') ? 2 : 1,
+                // Unassigned work cannot be scheduled or dispatched. When it covers at
+                // least half of the open work (five tasks or more) it is a planning-scale
+                // exception that outranks reminders; a few stray tasks stay advisory.
+                severity: unassignedTaskList.length >= 5 && unassignedTaskList.length * 2 >= openTaskList.length
+                    ? 'warning'
+                    : 'advisory',
+                urgency: unassignedTaskList.some(task => task.status === 'active')
+                    || (unassignedTaskList.length >= 5 && unassignedTaskList.length * 2 >= openTaskList.length) ? 2 : 1,
                 magnitude: unassignedTaskList.length,
                 tone: 'gray',
                 icon: User,
                 title: t('overview.attention.unassignedTitle', { count: unassignedTaskList.length }),
                 meta: unassignedTaskList[0]?.title ?? t('common.unassigned'),
-                to: overviewTaskDrawerHref(unassignedTaskList[0].id, 'attention'),
-                actionLabel: t('overview.focus.reviewTasks'),
+                to: selectedIteration
+                    ? `/tasks?${new URLSearchParams({ mode: 'bulk', planningIssue: 'unassigned', iterationId: String(selectedIteration.id) }).toString()}`
+                    : '/tasks',
+                actionLabel: t('overview.focus.assignTasks', { count: unassignedTaskList.length }),
             });
         }
         if (inboxSource.hasUsableData && planR.inboxCount > 0) {
@@ -528,6 +536,13 @@ const OverviewPage = () => {
         if (
             projectSummarySource.hasUsableData
             && linkedProjectSummary?.is_update_stale
+            // A missing first update is not overdue until one update period has passed.
+            && !(
+                linkedProjectSummary.update_freshness === 'missing'
+                && selectedIteration?.start_date
+                && Date.now() - Date.parse(`${selectedIteration.start_date.slice(0, 10)}T00:00:00`)
+                    < linkedProjectSummary.stale_update_threshold_days * 86_400_000
+            )
             && (
                 linkedProjectSummary.update_freshness === 'missing'
                 || linkedProjectSummary.update_freshness === 'stale'
@@ -536,9 +551,8 @@ const OverviewPage = () => {
             items.push({
                 id: 'project-update',
                 kind: 'project-update',
-                severity: linkedProjectSummary.update_freshness === 'missing'
-                    ? 'critical'
-                    : 'warning',
+                // A late update is a reminder, not a failure.
+                severity: 'warning',
                 urgency: linkedProjectSummary.update_freshness === 'missing' ? 2 : 1,
                 magnitude: 1,
                 tone: freshnessTone(linkedProjectSummary.update_freshness),
@@ -576,12 +590,14 @@ const OverviewPage = () => {
         effortCompletionPercent,
         inboxSource.hasUsableData,
         linkedProjectSummary,
+        openTaskList,
         overdueTaskList,
         paceGapPoints,
         planR.inboxCount,
         progress.percent,
         projectSummarySource.hasUsableData,
         scopedProjectId,
+        selectedIteration,
         t,
         tasksDataAvailable,
         unassignedTaskList,
@@ -636,7 +652,7 @@ const OverviewPage = () => {
         if (!iterationDetailsOpen || !focusIterationDetailsOnOpenRef.current) return;
         focusIterationDetailsOnOpenRef.current = false;
         const summary = iterationDetailsSummaryRef.current;
-        summary?.scrollIntoView?.({ block: 'nearest', behavior: 'auto' });
+        summary?.scrollIntoView?.({ block: 'start', behavior: 'auto' });
         summary?.focus({ preventScroll: true });
     }, [iterationDetailsOpen]);
 
@@ -648,7 +664,7 @@ const OverviewPage = () => {
     const revealIterationDetails = () => {
         if (iterationDetailsOpen) {
             const summary = iterationDetailsSummaryRef.current;
-            summary?.scrollIntoView?.({ block: 'nearest', behavior: 'auto' });
+            summary?.scrollIntoView?.({ block: 'start', behavior: 'auto' });
             summary?.focus({ preventScroll: true });
             return;
         }
@@ -1341,7 +1357,7 @@ const WorkNowPreview = ({
         && openTaskCount === 0
     );
     const shouldCreateTask = hasConfirmedNoTasks || hasConfirmedAllTasksComplete;
-    const taskBoardPath = shouldCreateTask ? '/tasks?create=1' : '/tasks';
+    const taskBoardPath = shouldCreateTask ? '/tasks?create=1' : '/tasks?layout=board';
     const taskBoardLabel = hasConfirmedNoTasks
         ? t('overview.addFirstTask')
         : hasConfirmedAllTasksComplete

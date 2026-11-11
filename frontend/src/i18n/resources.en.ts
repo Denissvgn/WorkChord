@@ -1140,6 +1140,8 @@ export const englishResources = {
                     planReadyMeta: 'No delivery exceptions are open. Review the plan with the team before the next commitment.',
                     continuePlanning: 'Continue planning',
                     reviewPlan: 'Review plan',
+                    assignTasks_one: 'Assign {{count}} task',
+                    assignTasks_other: 'Assign {{count}} tasks',
                     reviewTasks: 'Review tasks',
                     openProject: 'Open project',
                     reviewIntake: 'Open Triage',

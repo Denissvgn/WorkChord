@@ -295,16 +295,15 @@ export const TaskList = ({
         () => visibleTasks.filter(task => selectedBulkTaskIds.has(task.id)),
         [visibleTasks, selectedBulkTaskIds]
     );
-    const didPreselect = useRef(false);
-    useEffect(() => {
-        if (!isBulkMode) {
-            didPreselect.current = false;
-            return;
-        }
-        if (!preselectAllInBulk || didPreselect.current || visibleTasks.length === 0) return;
-        didPreselect.current = true;
+    // A hand-off into bulk mode starts with every matching task selected, once.
+    // Adjusting state during render (not in an effect) avoids a cascading render.
+    const [preselectApplied, setPreselectApplied] = useState(false);
+    if (!isBulkMode && preselectApplied) {
+        setPreselectApplied(false);
+    } else if (isBulkMode && preselectAllInBulk && !preselectApplied && visibleTasks.length > 0) {
+        setPreselectApplied(true);
         setSelectedBulkTaskIds(new Set(visibleTasks.map(task => task.id)));
-    }, [isBulkMode, preselectAllInBulk, visibleTasks]);
+    }
 
     const labelsBySlug = useMemo(() => {
         const map = new Map<string, Label>();
