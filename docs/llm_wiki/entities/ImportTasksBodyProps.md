@@ -1,6 +1,6 @@
 # ImportTasksBodyProps
 
-**Location:** `frontend/src/components/tasks/ImportTasksModal.tsx:28`
+**Location:** `frontend/src/components/tasks/ImportTasksModal.tsx:29`
 **Kind:** Interface
 **Bases:** `ImportTasksModalProps`
 **Module:** [ImportTasksModal](../modules/ImportTasksModal.md)

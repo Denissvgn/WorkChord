@@ -10,6 +10,8 @@ Profile and skill writes send the original complete observed revisions. Deletion
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
@@ -38,68 +40,21 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/common/Input.tsx"]
-    n2["frontend/src/components/common/useConfirmDialog.tsx"]
-    n3["frontend/src/components/feedback/QueryState.tsx"]
-    n4["frontend/src/components/team/TeamProfileManager.test.tsx"]
-    n5["frontend/src/components/team/TeamProfileManager.tsx"]
-    n6["frontend/src/features/usePlanningObservation.ts"]
-    n7["frontend/src/pages/TeamPage.tsx"]
-    n8["frontend/src/services/planningInputService.ts"]
-    n9["frontend/src/services/teamService.ts"]
-    n10["frontend/src/types/team.ts"]
-    n11["frontend/src/utils/apiError.ts"]
-    n3 --> n0
-    n3 --> n11
-    n4 --> n5
-    n4 --> n10
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n3
-    n5 --> n6
-    n5 --> n8
-    n5 --> n9
-    n5 --> n10
-    n5 --> n11
-    n6 --> n8
-    n6 --> n11
-    n7 --> n3
-    n7 --> n5
-    n7 --> n9
-    n7 --> n10
-    n9 --> n8
-    n9 --> n10
-    click n0 "../modules/Button.md"
-    click n1 "../modules/Input.md"
-    click n2 "../modules/useConfirmDialog.md"
-    click n3 "../modules/QueryState.md"
-    click n4 "../modules/TeamProfileManager.test.md"
-    click n5 "../modules/TeamProfileManager.md"
-    click n6 "../modules/usePlanningObservation.md"
-    click n7 "../modules/TeamPage.md"
-    click n8 "../modules/planningInputService.md"
-    click n9 "../modules/teamService.md"
-    click n10 "../modules/types_team.md"
-    click n11 "../modules/apiError.md"
+    n0["frontend"]
+    n1["frontend/src/components/team/TeamProfileManager.tsx"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/TeamProfileManager.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [TeamProfileManager.test](../modules/TeamProfileManager.test.md) |
-| Inbound | [TeamPage](../modules/TeamPage.md) |
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [Input](../modules/Input.md) |
-| Outbound | [useConfirmDialog](../modules/useConfirmDialog.md) |
-| Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [usePlanningObservation](../modules/usePlanningObservation.md) |
-| Outbound | [planningInputService](../modules/planningInputService.md) |
-| Outbound | [teamService](../modules/teamService.md) |
-| Outbound | [types_team](../modules/types_team.md) |
-| Outbound | [apiError](../modules/apiError.md) |
+| Inbound | `frontend` (2) |
+| Outbound | `frontend` (10) |
 
 ### External packages
 
@@ -107,11 +62,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamProfileManagerProps](../entities/TeamProfileManagerProps.md) | Interface | 66 | — | — |
+| [TeamProfileManagerProps](../entities/TeamProfileManagerProps.md) | Interface | 68 | — | — |
 
 ## Functions
 

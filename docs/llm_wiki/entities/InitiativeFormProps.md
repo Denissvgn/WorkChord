@@ -1,6 +1,6 @@
 # InitiativeFormProps
 
-**Location:** `frontend/src/components/projects/InitiativeForm.tsx:15`
+**Location:** `frontend/src/components/projects/InitiativeForm.tsx:17`
 **Kind:** Interface
 **Bases:** —
 **Module:** [InitiativeForm](../modules/InitiativeForm.md)

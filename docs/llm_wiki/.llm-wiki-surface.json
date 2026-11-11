@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1539,
+      "entities": 1543,
       "flows": 554,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 785,
+      "modules": 788,
       "workflows": 195
     },
     "dependency_architecture": 2,
-    "total": 3089
+    "total": 3096
   },
   "dependency_pages": {
     "count": 2,
@@ -43758,6 +43758,8 @@
         "entities/FakeRemoteSigner.md",
         "entities/FakeRevocationResolver.md",
         "entities/FakeTrustResolver.md",
+        "entities/FeedbackAction.md",
+        "entities/FeedbackKind.md",
         "entities/FilesystemAgentTeamCredentialSink.md",
         "entities/FilterConfig.md",
         "entities/FilterConfigSchema.md",
@@ -43960,7 +43962,9 @@
         "entities/models_triage_TriageItem.md",
         "entities/models_triage_TriageItemStatus.md",
         "entities/Money.md",
+        "entities/MutationFeedbackMeta.md",
         "entities/MutationResult.md",
+        "entities/MutationUndo.md",
         "entities/NativeApprovalResponse.md",
         "entities/NativeChecks.md",
         "entities/NativeConnection.md",
@@ -45775,6 +45779,9 @@
         "modules/models_time_entry.md",
         "modules/models_triage.md",
         "modules/mutation_versions.md",
+        "modules/mutationFeedback.md",
+        "modules/mutationFeedback.test.md",
+        "modules/MutationSuccessFeedback.md",
         "modules/MyWorkPage.md",
         "modules/MyWorkPage.test.md",
         "modules/native_connection.md",
@@ -51801,6 +51808,30 @@
       "title": "FakeTrustResolver"
     },
     {
+      "canonical_path": "entities/FeedbackAction.md",
+      "id": "FeedbackAction",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FeedbackAction",
+      "outgoing_internal_links": [
+        "modules/mutationFeedback.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/mutationFeedback.ts",
+      "title": "FeedbackAction"
+    },
+    {
+      "canonical_path": "entities/FeedbackKind.md",
+      "id": "FeedbackKind",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FeedbackKind",
+      "outgoing_internal_links": [
+        "modules/mutationFeedback.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/mutationFeedback.ts",
+      "title": "FeedbackKind"
+    },
+    {
       "canonical_path": "entities/FilesystemAgentTeamCredentialSink.md",
       "id": "FilesystemAgentTeamCredentialSink",
       "kind": "entities",
@@ -54612,6 +54643,30 @@
       "title": "Money"
     },
     {
+      "canonical_path": "entities/MutationFeedbackMeta.md",
+      "id": "MutationFeedbackMeta",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/MutationFeedbackMeta",
+      "outgoing_internal_links": [
+        "modules/DeliveryDependencies.md",
+        "modules/ImportTasksModal.md",
+        "modules/ImportTeamModal.md",
+        "modules/InitiativeForm.md",
+        "modules/KanbanBoard.md",
+        "modules/mutationFeedback.md",
+        "modules/ProjectForm.md",
+        "modules/ReleaseForm.md",
+        "modules/StatusChangeControl.md",
+        "modules/TaskBulkOperationsPanel.md",
+        "modules/TaskForm.md",
+        "modules/TaskWorkPanel.md",
+        "modules/TeamForm.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/mutationFeedback.ts",
+      "title": "MutationFeedbackMeta"
+    },
+    {
       "canonical_path": "entities/MutationResult.md",
       "id": "MutationResult",
       "kind": "entities",
@@ -54622,6 +54677,18 @@
       "role": "semantic",
       "source_path": "backend/app/services/agent_model_catalog_service.py",
       "title": "_MutationResult"
+    },
+    {
+      "canonical_path": "entities/MutationUndo.md",
+      "id": "MutationUndo",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/MutationUndo",
+      "outgoing_internal_links": [
+        "modules/mutationFeedback.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/mutationFeedback.ts",
+      "title": "MutationUndo"
     },
     {
       "canonical_path": "entities/NativeApprovalResponse.md",
@@ -66120,6 +66187,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_task_TaskBatchUpdateResponse",
       "outgoing_internal_links": [
+        "modules/KanbanBoard.md",
         "modules/taskService.md",
         "modules/types_task.md"
       ],
@@ -70313,6 +70381,7 @@
         "modules/apiError.md",
         "modules/Button.md",
         "modules/DeliveryDependencies.md",
+        "modules/mutationFeedback.md",
         "modules/projectService.md",
         "modules/QueryState.md",
         "modules/TaskForm.md",
@@ -71420,6 +71489,7 @@
         "modules/ImportTasksModal.md",
         "modules/iterationService.md",
         "modules/Modal.md",
+        "modules/mutationFeedback.md",
         "modules/QueryState.md",
         "modules/taskService.md",
         "modules/TasksPage.md",
@@ -71442,6 +71512,7 @@
         "modules/ImportTeamModal.md",
         "modules/ImportTeamModal.test.md",
         "modules/Modal.md",
+        "modules/mutationFeedback.md",
         "modules/TeamPage.md",
         "modules/teamService.md",
         "modules/usePlanningObservation.md"
@@ -71491,6 +71562,7 @@
         "modules/CollapsibleSection.md",
         "modules/InitiativeForm.md",
         "modules/Input.md",
+        "modules/mutationFeedback.md",
         "modules/projectService.md",
         "modules/ProjectsPage.md",
         "modules/QueryState.md",
@@ -72782,6 +72854,55 @@
       "role": "semantic",
       "source_path": "backend/app/mutation_versions.py",
       "title": "mutation_versions Module"
+    },
+    {
+      "canonical_path": "modules/mutationFeedback.md",
+      "id": "mutationFeedback",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/mutationFeedback",
+      "outgoing_internal_links": [
+        "entities/FeedbackAction.md",
+        "entities/FeedbackKind.md",
+        "entities/MutationFeedbackMeta.md",
+        "entities/MutationUndo.md",
+        "modules/mutationFeedback.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/mutationFeedback.ts",
+      "title": "mutationFeedback Module"
+    },
+    {
+      "canonical_path": "modules/mutationFeedback.test.md",
+      "id": "mutationFeedback.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/mutationFeedback.test",
+      "outgoing_internal_links": [
+        "modules/i18n.md",
+        "modules/mutationFeedback.md",
+        "modules/mutationFeedback.test.md",
+        "modules/MutationSuccessFeedback.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/mutationFeedback.test.tsx",
+      "title": "mutationFeedback.test Module"
+    },
+    {
+      "canonical_path": "modules/MutationSuccessFeedback.md",
+      "id": "MutationSuccessFeedback",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/MutationSuccessFeedback",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/IdentityProvider.md",
+        "modules/mutationFeedback.md",
+        "modules/mutationFeedback.test.md",
+        "modules/MutationSuccessFeedback.md",
+        "modules/toast.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/MutationSuccessFeedback.tsx",
+      "title": "MutationSuccessFeedback Module"
     },
     {
       "canonical_path": "modules/MyWorkPage.md",
@@ -74281,18 +74402,7 @@
         "entities/ReleaseForm_FlattenedTask.md",
         "entities/ReleaseFormProps.md",
         "entities/ReleaseFormState.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/CollapsibleSection.md",
-        "modules/ProjectDetailPage.md",
-        "modules/ProjectReleaseDetailPage.md",
-        "modules/projectService.md",
-        "modules/QueryState.md",
-        "modules/ReleaseForm.md",
-        "modules/releaseService.md",
-        "modules/tone.md",
-        "modules/types_release.md",
-        "modules/types_task.md"
+        "modules/ReleaseForm.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/releases/ReleaseForm.tsx",
@@ -76766,6 +76876,7 @@
         "modules/Button.md",
         "modules/formatDate.md",
         "modules/Modal.md",
+        "modules/mutationFeedback.md",
         "modules/QueryState.md",
         "modules/StatusChangeControl.md",
         "modules/TaskForm.md",
@@ -77310,6 +77421,7 @@
         "modules/Button.md",
         "modules/i18n.md",
         "modules/iterationService.md",
+        "modules/mutationFeedback.md",
         "modules/projectService.md",
         "modules/QueryState.md",
         "modules/TaskBulkOperationsPanel.md",
@@ -78054,6 +78166,7 @@
         "entities/TeamListProps.md",
         "modules/apiError.md",
         "modules/Button.md",
+        "modules/mutationFeedback.md",
         "modules/planningInputService.md",
         "modules/QueryState.md",
         "modules/TeamList.md",
@@ -78109,18 +78222,7 @@
       "mcp_uri": "llm-wiki://modules/TeamProfileManager",
       "outgoing_internal_links": [
         "entities/TeamProfileManagerProps.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/Input.md",
-        "modules/planningInputService.md",
-        "modules/QueryState.md",
-        "modules/TeamPage.md",
-        "modules/TeamProfileManager.md",
-        "modules/TeamProfileManager.test.md",
-        "modules/teamService.md",
-        "modules/types_team.md",
-        "modules/useConfirmDialog.md",
-        "modules/usePlanningObservation.md"
+        "modules/TeamProfileManager.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/team/TeamProfileManager.tsx",
@@ -95262,6 +95364,9 @@
         "modules/models_time_entry.md",
         "modules/models_triage.md",
         "modules/mutation_versions.md",
+        "modules/mutationFeedback.md",
+        "modules/mutationFeedback.test.md",
+        "modules/MutationSuccessFeedback.md",
         "modules/MyWorkPage.md",
         "modules/MyWorkPage.test.md",
         "modules/native_connection.md",
@@ -96058,6 +96163,9 @@
         "modules/models_time_entry.md",
         "modules/models_triage.md",
         "modules/mutation_versions.md",
+        "modules/mutationFeedback.md",
+        "modules/mutationFeedback.test.md",
+        "modules/MutationSuccessFeedback.md",
         "modules/MyWorkPage.md",
         "modules/MyWorkPage.test.md",
         "modules/native_connection.md",
@@ -96554,5 +96662,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2788c6a6db1e36ef2ec40877e57f329bab2e2434247b55be900a36d3a325360b"
+  "source_hash": "sha256:2efd0fe1e2ade1658f367598791e96ecb9b3fdb0285af97e028dfcdc170594ae"
 }

@@ -1,6 +1,6 @@
 # ProjectUpdateErrorStore
 
-**Location:** `frontend/src/pages/ProjectDetailPage.tsx:171`
+**Location:** `frontend/src/pages/ProjectDetailPage.tsx:173`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [ProjectDetailPage](../modules/ProjectDetailPage.md)

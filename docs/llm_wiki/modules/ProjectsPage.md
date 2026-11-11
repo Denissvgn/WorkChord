@@ -19,6 +19,8 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | `../components/projects/ProjectForm` | `ProjectForm` | — | compiler-dependent |
 | `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName` | — | compiler-dependent |
 | `../components/ui` | `InlineEmptyState`, `PageHeader`, `PageLayout`, `TableFrame` | — | compiler-dependent |
+| `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
 | `../services/savedViewService` | `savedViewService` | — | compiler-dependent |
 | `../types/project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectPortfolioSummary`, `ProjectStatus` | Declaration | erased |
@@ -61,7 +63,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (16) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
@@ -69,4 +71,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1539 | [Open section](#entities) |
-| Modules | 785 | [Open section](#modules) |
+| Entities | 1543 | [Open section](#entities) |
+| Modules | 788 | [Open section](#modules) |
 | Workflows | 195 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 554 | [Open section](#entry-point-flows) |
@@ -364,6 +364,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FakeRemoteSigner](entities/FakeRemoteSigner.md)
 - [FakeRevocationResolver](entities/FakeRevocationResolver.md)
 - [FakeTrustResolver](entities/FakeTrustResolver.md)
+- [FeedbackAction](entities/FeedbackAction.md)
+- [FeedbackKind](entities/FeedbackKind.md)
 - [FilesystemAgentTeamCredentialSink](entities/FilesystemAgentTeamCredentialSink.md)
 - [FilterConfig](entities/FilterConfig.md)
 - [FilterConfigSchema](entities/FilterConfigSchema.md)
@@ -518,7 +520,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ModelLatencyTier](entities/ModelLatencyTier.md)
 - [ModelReasoningTier](entities/ModelReasoningTier.md)
 - [Money](entities/Money.md)
+- [MutationFeedbackMeta](entities/MutationFeedbackMeta.md)
 - [MutationResult](entities/MutationResult.md)
+- [MutationUndo](entities/MutationUndo.md)
 - [NativeApprovalResponse](entities/NativeApprovalResponse.md)
 - [NativeChecks](entities/NativeChecks.md)
 - [NativeConnection](entities/NativeConnection.md)
@@ -1661,6 +1665,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
+- [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) - `frontend/src/features/MutationSuccessFeedback.tsx`
 - [MyWorkPage](modules/MyWorkPage.md) - `frontend/src/pages/MyWorkPage.tsx`
 - [MyWorkPage.test](modules/MyWorkPage.test.md) - `frontend/src/pages/MyWorkPage.test.tsx`
 - [NativeConnectionPage](modules/NativeConnectionPage.md) - `frontend/src/pages/NativeConnectionPage.tsx`
@@ -1987,6 +1992,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_time_entry](modules/models_time_entry.md) - Private explicit work records and retained corrections, independent of task state.
 - [models_triage](modules/models_triage.md) - Triage item model.
+- [mutationFeedback](modules/mutationFeedback.md) - `frontend/src/features/mutationFeedback.ts`
+- [mutationFeedback.test](modules/mutationFeedback.test.md) - `frontend/src/features/mutationFeedback.test.tsx`
 - [mutation_versions](modules/mutation_versions.md) - Server-controlled version rollout with explicit offline repair separation.
 - [native_connection](modules/native_connection.md) - Short-lived browser consent for a proof-bound native session.
 - [native_session_service](modules/native_session_service.md) - Explicit browser consent and one-use proof-bound native authentication.

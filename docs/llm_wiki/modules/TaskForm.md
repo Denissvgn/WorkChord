@@ -17,6 +17,8 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
@@ -85,7 +87,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (36) |
+| Outbound | `frontend` (37) |
 
 ### External packages
 
@@ -93,13 +95,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 56 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 58 | — | — |
 
 ## Functions
 

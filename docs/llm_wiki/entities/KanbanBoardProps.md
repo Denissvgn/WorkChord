@@ -1,6 +1,6 @@
 # KanbanBoardProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:35`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx:37`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanBoard](../modules/KanbanBoard.md)

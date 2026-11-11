@@ -10,6 +10,7 @@ Commit and uncommit commands retain original source and selected-target aggregat
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
@@ -54,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,7 +63,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

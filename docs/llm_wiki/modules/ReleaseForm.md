@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/releases/ReleaseForm.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/releaseService` | `releaseService` | — | compiler-dependent |
 | `../../types/release` | `Release`, `ReleaseCreateRequest`, `ReleaseStatus`, `ReleaseUpdateRequest` | Declaration | erased |
@@ -40,79 +42,21 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/common/CollapsibleSection.tsx"]
-    n2["frontend/src/components/feedback/QueryState.tsx"]
-    n3["frontend/src/components/releases/ReleaseForm.tsx"]
-    n4["frontend/src/components/ui/tone.ts"]
-    n5["frontend/src/pages/ProjectDetailPage.tsx"]
-    n6["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
-    n7["frontend/src/services/projectService.ts"]
-    n8["frontend/src/services/releaseService.ts"]
-    n9["frontend/src/types/release.ts"]
-    n10["frontend/src/types/task.ts"]
-    n11["frontend/src/utils/apiError.ts"]
-    n2 --> n0
-    n2 --> n11
-    n3 --> n0
-    n3 --> n1
-    n3 --> n2
-    n3 --> n4
-    n3 --> n7
-    n3 --> n8
-    n3 --> n9
-    n3 --> n10
-    n3 --> n11
-    n4 --> n10
-    n5 --> n0
-    n5 --> n2
-    n5 --> n3
-    n5 --> n4
-    n5 --> n7
-    n5 --> n8
-    n5 --> n9
-    n5 --> n10
-    n5 --> n11
-    n6 --> n0
-    n6 --> n2
-    n6 --> n3
-    n6 --> n4
-    n6 --> n7
-    n6 --> n8
-    n6 --> n9
-    n6 --> n11
-    n7 --> n10
-    n8 --> n9
-    n9 --> n10
-    click n0 "../modules/Button.md"
-    click n1 "../modules/CollapsibleSection.md"
-    click n2 "../modules/QueryState.md"
-    click n3 "../modules/ReleaseForm.md"
-    click n4 "../modules/tone.md"
-    click n5 "../modules/ProjectDetailPage.md"
-    click n6 "../modules/ProjectReleaseDetailPage.md"
-    click n7 "../modules/projectService.md"
-    click n8 "../modules/releaseService.md"
-    click n9 "../modules/types_release.md"
-    click n10 "../modules/types_task.md"
-    click n11 "../modules/apiError.md"
+    n0["frontend"]
+    n1["frontend/src/components/releases/ReleaseForm.tsx"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/ReleaseForm.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
-| Inbound | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) |
-| Outbound | [Button](../modules/Button.md) |
-| Outbound | [CollapsibleSection](../modules/CollapsibleSection.md) |
-| Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [tone](../modules/tone.md) |
-| Outbound | [projectService](../modules/projectService.md) |
-| Outbound | [releaseService](../modules/releaseService.md) |
-| Outbound | [types_release](../modules/types_release.md) |
-| Outbound | [types_task](../modules/types_task.md) |
-| Outbound | [apiError](../modules/apiError.md) |
+| Inbound | `frontend` (2) |
+| Outbound | `frontend` (10) |
 
 ### External packages
 
@@ -120,13 +64,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 22 | — | — |
-| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 29 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
-| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 34 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormProps](../entities/ReleaseFormProps.md) | Interface | 24 | — | — |
+| [FlattenedTask](../entities/ReleaseForm_FlattenedTask.md) | Type alias | 31 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    level&#58; number&#59;&#10;&#125;</code></pre> | — |
+| [ReleaseFormState](../entities/ReleaseFormState.md) | Type alias | 36 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    status&#58; ReleaseStatus&#59;&#10;    target&#95;date&#58; string&#59;&#10;    shipped&#95;at&#58; string&#59;&#10;    version&#58; string&#59;&#10;    environment&#58; string&#59;&#10;    task&#95;ids&#58; number&#91;&#93;&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

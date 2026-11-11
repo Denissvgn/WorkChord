@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/team/VacationManager.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../services/planningInputService` | `ObservedRevisions` | Specifier | compiler-dependent |
 | `../../services/planningInputService` | `planningInputService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
@@ -55,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -63,13 +64,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [VacationManagerProps](../entities/VacationManagerProps.md) | Interface | 18 | — | — |
+| [VacationManagerProps](../entities/VacationManagerProps.md) | Interface | 19 | — | — |
 
 ## Functions
 

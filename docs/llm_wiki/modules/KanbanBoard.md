@@ -10,10 +10,12 @@ _Auto-generated from `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../../services/labelService` | `labelService` | — | compiler-dependent |
 | `../../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../../services/teamService` | `teamService` | — | compiler-dependent |
-| `../../../types/task` | `Task`, `TaskStatus`, `TaskUpdate` | Declaration | erased |
+| `../../../types/task` | `Task`, `TaskBatchUpdateResponse`, `TaskStatus`, `TaskUpdate` | Declaration | erased |
 | `../../../utils/graphLimitError` | `isGraphLimitError` | — | compiler-dependent |
 | `../../../utils/visibleWork` | `selectVisibleWork` | — | compiler-dependent |
 | `../../common/Button` | `Button` | — | compiler-dependent |
@@ -63,7 +65,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (16) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
@@ -71,16 +73,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Interface | 35 | — | — |
-| [ColumnId](../entities/ColumnId.md) | Type alias | 40 | `'planned-unassigned' \| 'planned-assigned' \| 'active' \| 'resolved' \| 'closed'` | — |
-| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 57 | <pre><code>Pick&#60;TaskUpdate&#44; &#39;assignee&#95;id&#39;&#62; &#38; &#123;&#10;    status&#63;&#58; TaskStatus&#59;&#10;&#125;</code></pre> | — |
-| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 61 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    updates&#58; BoardTaskUpdate&#59;&#10;    targetColumn&#58; ColumnId&#59;&#10;&#125;</code></pre> | — |
+| [KanbanBoardProps](../entities/KanbanBoardProps.md) | Interface | 37 | — | — |
+| [ColumnId](../entities/ColumnId.md) | Type alias | 42 | `'planned-unassigned' \| 'planned-assigned' \| 'active' \| 'resolved' \| 'closed'` | — |
+| [BoardTaskUpdate](../entities/BoardTaskUpdate.md) | Type alias | 59 | <pre><code>Pick&#60;TaskUpdate&#44; &#39;assignee&#95;id&#39;&#62; &#38; &#123;&#10;    status&#63;&#58; TaskStatus&#59;&#10;&#125;</code></pre> | — |
+| [OwnershipSelection](../entities/OwnershipSelection.md) | Type alias | 63 | <pre><code>&#123;&#10;    task&#58; Task&#59;&#10;    updates&#58; BoardTaskUpdate&#59;&#10;    targetColumn&#58; ColumnId&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

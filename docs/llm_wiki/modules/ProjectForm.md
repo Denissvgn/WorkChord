@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
 | `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
@@ -61,7 +63,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (16) |
+| Outbound | `frontend` (17) |
 
 ### External packages
 
@@ -69,13 +71,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 26 | — | — |
+| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 28 | — | — |
 
 ## Functions
 

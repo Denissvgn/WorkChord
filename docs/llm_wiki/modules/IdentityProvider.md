@@ -20,6 +20,7 @@ The workspace factory owns both query freshness and planning invalidation. Accou
 | `../../utils/adminAccess` | `clearAdminApiKey`, `ADMIN_API_KEY_CHANGED_EVENT` | — | compiler-dependent |
 | `../../utils/agentAccess` | `clearAgentApiKey`, `AGENT_API_KEY_CHANGED_EVENT` | — | compiler-dependent |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../MutationSuccessFeedback` | `MutationSuccessFeedback` | — | compiler-dependent |
 | `../workspaceQueryPolicy` | `createWorkspaceQueryClient`, `installWorkspaceQueryPolicy` | — | compiler-dependent |
 | `./LocalProfilePicker` | `LocalProfilePicker` | — | compiler-dependent |
 | `./identityContext` | `IdentityContext`, `useIdentity` | — | compiler-dependent |
@@ -59,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (10) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
@@ -67,7 +68,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

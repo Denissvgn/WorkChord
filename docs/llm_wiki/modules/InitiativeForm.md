@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/projects/InitiativeForm.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../types/project` | `Initiative`, `InitiativeCreate`, `ProjectHealth` | Declaration | erased |
@@ -43,43 +45,47 @@ flowchart LR
     n2["frontend/src/components/common/Input.tsx"]
     n3["frontend/src/components/feedback/QueryState.tsx"]
     n4["frontend/src/components/projects/InitiativeForm.tsx"]
-    n5["frontend/src/pages/ProjectsPage.tsx"]
-    n6["frontend/src/services/projectService.ts"]
-    n7["frontend/src/services/teamService.ts"]
-    n8["frontend/src/types/project.ts"]
-    n9["frontend/src/utils/apiError.ts"]
-    n10["frontend/src/utils/teamMemberLabels.ts"]
+    n5["frontend/src/features/mutationFeedback.ts"]
+    n6["frontend/src/pages/ProjectsPage.tsx"]
+    n7["frontend/src/services/projectService.ts"]
+    n8["frontend/src/services/teamService.ts"]
+    n9["frontend/src/types/project.ts"]
+    n10["frontend/src/utils/apiError.ts"]
+    n11["frontend/src/utils/teamMemberLabels.ts"]
     n3 --> n0
-    n3 --> n9
+    n3 --> n10
     n4 --> n0
     n4 --> n1
     n4 --> n2
     n4 --> n3
-    n4 --> n6
+    n4 --> n5
     n4 --> n7
     n4 --> n8
     n4 --> n9
     n4 --> n10
-    n5 --> n0
-    n5 --> n2
-    n5 --> n3
-    n5 --> n4
-    n5 --> n6
-    n5 --> n8
-    n5 --> n9
-    n5 --> n10
-    n6 --> n8
+    n4 --> n11
+    n6 --> n0
+    n6 --> n2
+    n6 --> n3
+    n6 --> n4
+    n6 --> n5
+    n6 --> n7
+    n6 --> n9
+    n6 --> n10
+    n6 --> n11
+    n7 --> n9
     click n0 "../modules/Button.md"
     click n1 "../modules/CollapsibleSection.md"
     click n2 "../modules/Input.md"
     click n3 "../modules/QueryState.md"
     click n4 "../modules/InitiativeForm.md"
-    click n5 "../modules/ProjectsPage.md"
-    click n6 "../modules/projectService.md"
-    click n7 "../modules/teamService.md"
-    click n8 "../modules/types_project.md"
-    click n9 "../modules/apiError.md"
-    click n10 "../modules/teamMemberLabels.md"
+    click n5 "../modules/mutationFeedback.md"
+    click n6 "../modules/ProjectsPage.md"
+    click n7 "../modules/projectService.md"
+    click n8 "../modules/teamService.md"
+    click n9 "../modules/types_project.md"
+    click n10 "../modules/apiError.md"
+    click n11 "../modules/teamMemberLabels.md"
 ```
 
 ### Internal neighbors
@@ -91,6 +97,7 @@ flowchart LR
 | Outbound | [CollapsibleSection](../modules/CollapsibleSection.md) |
 | Outbound | [Input](../modules/Input.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
+| Outbound | [mutationFeedback](../modules/mutationFeedback.md) |
 | Outbound | [projectService](../modules/projectService.md) |
 | Outbound | [teamService](../modules/teamService.md) |
 | Outbound | [types_project](../modules/types_project.md) |
@@ -107,8 +114,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [InitiativeFormProps](../entities/InitiativeFormProps.md) | Interface | 15 | — | — |
-| [InitiativeFormState](../entities/InitiativeFormState.md) | Type alias | 21 | `InitiativeCreate` | — |
+| [InitiativeFormProps](../entities/InitiativeFormProps.md) | Interface | 17 | — | — |
+| [InitiativeFormState](../entities/InitiativeFormState.md) | Type alias | 23 | `InitiativeCreate` | — |
 
 ## Functions
 

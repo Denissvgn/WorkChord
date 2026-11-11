@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/team/TeamForm.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../services/planningInputService` | `MemberPlanningIntent`, `ObservedRevisions` | Declaration | erased |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
 | `../../types/team` | `TeamMember`, `TeamMemberCreate`, `TeamMemberProfile` | Declaration | erased |
@@ -53,7 +55,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (10) |
+| Outbound | `frontend` (11) |
 
 ### External packages
 
@@ -61,13 +63,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 17 | — | — |
+| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 19 | — | — |
 
 ## Functions
 
