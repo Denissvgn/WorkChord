@@ -39,14 +39,14 @@ flowchart LR
     n2["IterationForm (frontend/src/components/iteration/IterationForm.tsx)"]
     n3["IterationList (frontend/src/components/iteration/IterationList.tsx)"]
     n4["IterationSelector (frontend/src/components/iteration/IterationSelector.tsx)"]
-    n5["ProjectIterationsSection (frontend/src/components/projects/ProjectIterationsSection.tsx)"]
-    n6["frontend/src/components/tasks/TaskForm.tsx"]
-    n7["frontend/src/components/tasks/TaskWorkPanel.tsx"]
-    n8["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
-    n9["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n10["enrichPlanningTeamMembers (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
-    n11["frontend/src/pages/GanttPage.test.tsx"]
-    n12["frontend/src/pages/GanttPage.tsx"]
+    n5["frontend/src/components/planning/PlanQuickAddCapacity.test.tsx"]
+    n6["PlanQuickAddCapacity (frontend/src/components/planning/PlanQuickAddCapacity.tsx)"]
+    n7["ProjectIterationsSection (frontend/src/components/projects/ProjectIterationsSection.tsx)"]
+    n8["frontend/src/components/tasks/TaskForm.tsx"]
+    n9["frontend/src/components/tasks/TaskWorkPanel.tsx"]
+    n10["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
+    n11["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
+    n12["enrichPlanningTeamMembers (frontend/src/features/planningMasters/usePlanningReadiness.ts)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -64,14 +64,14 @@ flowchart LR
     click n2 "../modules/IterationForm.md"
     click n3 "../modules/IterationList.md"
     click n4 "../modules/IterationSelector.md"
-    click n5 "../modules/ProjectIterationsSection.md"
-    click n6 "../modules/TaskForm.md"
-    click n7 "../modules/TaskWorkPanel.md"
-    click n8 "../modules/usePlanningNavigationSummary.md"
-    click n9 "../modules/usePlanningReadiness.test.md"
-    click n10 "../modules/usePlanningReadiness.md"
-    click n11 "../modules/GanttPage.test.md"
-    click n12 "../modules/GanttPage.md"
+    click n5 "../modules/PlanQuickAddCapacity.test.md"
+    click n6 "../modules/PlanQuickAddCapacity.md"
+    click n7 "../modules/ProjectIterationsSection.md"
+    click n8 "../modules/TaskForm.md"
+    click n9 "../modules/TaskWorkPanel.md"
+    click n10 "../modules/usePlanningNavigationSummary.md"
+    click n11 "../modules/usePlanningReadiness.test.md"
+    click n12 "../modules/usePlanningReadiness.md"
 ```
 
 ### Summary
@@ -88,13 +88,13 @@ flowchart LR
 | `IterationForm` | type_reference | [IterationForm](../modules/IterationForm.md) | — |
 | `IterationList` | type_reference | [IterationList](../modules/IterationList.md) | — |
 | `IterationSelector` | type_reference | [IterationSelector](../modules/IterationSelector.md) | — |
+| `PlanQuickAddCapacity.test` | import | [PlanQuickAddCapacity.test](../modules/PlanQuickAddCapacity.test.md) | — |
+| `PlanQuickAddCapacity` | type_reference | [PlanQuickAddCapacity](../modules/PlanQuickAddCapacity.md) | — |
 | `ProjectIterationsSection` | type_reference | [ProjectIterationsSection](../modules/ProjectIterationsSection.md) | — |
 | `TaskForm` | import | [TaskForm](../modules/TaskForm.md) | — |
 | `TaskWorkPanel` | import | [TaskWorkPanel](../modules/TaskWorkPanel.md) | — |
 | `usePlanningNavigationSummary` | import | [usePlanningNavigationSummary](../modules/usePlanningNavigationSummary.md) | — |
 | `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
 | `enrichPlanningTeamMembers` | type_reference | [usePlanningReadiness](../modules/usePlanningReadiness.md) | — |
-| `GanttPage.test` | import | [GanttPage.test](../modules/GanttPage.test.md) | — |
-| `GanttPage` | import | [GanttPage](../modules/GanttPage.md) | — |
 
-> References: showing 12 of 20 logical references; 8 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

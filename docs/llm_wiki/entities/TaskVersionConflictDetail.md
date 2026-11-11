@@ -1,6 +1,6 @@
 # TaskVersionConflictDetail
 
-**Location:** `frontend/src/types/task.ts:202`
+**Location:** `frontend/src/types/task.ts:204`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

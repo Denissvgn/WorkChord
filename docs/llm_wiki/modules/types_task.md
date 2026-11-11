@@ -59,45 +59,45 @@ flowchart LR
 | [GitHubExternalLinkCreate](../entities/types_task_GitHubExternalLinkCreate.md) | Interface | 72 | — | — |
 | [ExternalLinkUpdate](../entities/types_task_ExternalLinkUpdate.md) | Interface | 76 | — | — |
 | [Task](../entities/types_task_Task.md) | Interface | 85 | — | — |
-| [TaskCreate](../entities/types_task_TaskCreate.md) | Interface | 163 | — | — |
-| [TaskUpdate](../entities/types_task_TaskUpdate.md) | Interface | 189 | `Partial<TaskCreate>` | — |
-| [TaskMoveRequest](../entities/types_task_TaskMoveRequest.md) | Interface | 195 | — | — |
-| [TaskVersionConflictDetail](../entities/TaskVersionConflictDetail.md) | Interface | 202 | — | — |
-| [SuggestedSubtask](../entities/types_task_SuggestedSubtask.md) | Interface | 209 | — | — |
-| [TaskFormalizeResponse](../entities/TaskFormalizeResponse.md) | Interface | 214 | — | — |
-| [TaskImproveDescriptionResponse](../entities/TaskImproveDescriptionResponse.md) | Interface | 223 | — | — |
-| [GroundedFact](../entities/types_task_GroundedFact.md) | Interface | 228 | — | — |
-| [TaskAISuggestRequest](../entities/types_task_TaskAISuggestRequest.md) | Interface | 233 | — | — |
-| [GroundedAISuggestionResponse](../entities/types_task_GroundedAISuggestionResponse.md) | Interface | 258 | — | — |
-| [TasksImportRequest](../entities/types_task_TasksImportRequest.md) | Interface | 278 | — | — |
-| [TaskTextContext](../entities/types_task_TaskTextContext.md) | Interface | 284 | — | — |
-| [TasksImportResponse](../entities/types_task_TasksImportResponse.md) | Interface | 290 | — | — |
-| [TaskMergeRequest](../entities/TaskMergeRequest.md) | Interface | 298 | — | — |
-| [TaskBulkOperationRequest](../entities/types_task_TaskBulkOperationRequest.md) | Interface | 322 | — | — |
-| [TaskBulkOperationResult](../entities/types_task_TaskBulkOperationResult.md) | Interface | 331 | — | — |
-| [TaskBulkOperationResponse](../entities/types_task_TaskBulkOperationResponse.md) | Interface | 341 | — | — |
-| [CascadeUpdateInfo](../entities/types_task_CascadeUpdateInfo.md) | Interface | 351 | — | — |
-| [TaskStatusChangeResponse](../entities/types_task_TaskStatusChangeResponse.md) | Interface | 360 | — | — |
-| [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Interface | 366 | — | — |
-| [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Interface | 378 | — | — |
-| [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Interface | 384 | — | — |
-| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Interface | 395 | — | — |
-| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Interface | 400 | — | — |
-| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Interface | 407 | — | — |
-| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Interface | 413 | — | — |
-| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Interface | 419 | — | — |
-| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Interface | 425 | — | — |
-| [TaskBrief](../entities/types_task_TaskBrief.md) | Interface | 432 | — | — |
-| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Interface | 443 | — | — |
-| [TaskProgress](../entities/TaskProgress.md) | Interface | 450 | — | — |
-| [TaskReference](../entities/types_task_TaskReference.md) | Interface | 457 | — | — |
-| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 464 | — | — |
-| [TaskDetail](../entities/TaskDetail.md) | Interface | 465 | — | — |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 470 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Interface | 471 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Interface | 475 | — | — |
+| [TaskCreate](../entities/types_task_TaskCreate.md) | Interface | 165 | — | — |
+| [TaskUpdate](../entities/types_task_TaskUpdate.md) | Interface | 191 | `Partial<TaskCreate>` | — |
+| [TaskMoveRequest](../entities/types_task_TaskMoveRequest.md) | Interface | 197 | — | — |
+| [TaskVersionConflictDetail](../entities/TaskVersionConflictDetail.md) | Interface | 204 | — | — |
+| [SuggestedSubtask](../entities/types_task_SuggestedSubtask.md) | Interface | 211 | — | — |
+| [TaskFormalizeResponse](../entities/TaskFormalizeResponse.md) | Interface | 216 | — | — |
+| [TaskImproveDescriptionResponse](../entities/TaskImproveDescriptionResponse.md) | Interface | 225 | — | — |
+| [GroundedFact](../entities/types_task_GroundedFact.md) | Interface | 230 | — | — |
+| [TaskAISuggestRequest](../entities/types_task_TaskAISuggestRequest.md) | Interface | 235 | — | — |
+| [GroundedAISuggestionResponse](../entities/types_task_GroundedAISuggestionResponse.md) | Interface | 260 | — | — |
+| [TasksImportRequest](../entities/types_task_TasksImportRequest.md) | Interface | 280 | — | — |
+| [TaskTextContext](../entities/types_task_TaskTextContext.md) | Interface | 286 | — | — |
+| [TasksImportResponse](../entities/types_task_TasksImportResponse.md) | Interface | 292 | — | — |
+| [TaskMergeRequest](../entities/TaskMergeRequest.md) | Interface | 300 | — | — |
+| [TaskBulkOperationRequest](../entities/types_task_TaskBulkOperationRequest.md) | Interface | 324 | — | — |
+| [TaskBulkOperationResult](../entities/types_task_TaskBulkOperationResult.md) | Interface | 333 | — | — |
+| [TaskBulkOperationResponse](../entities/types_task_TaskBulkOperationResponse.md) | Interface | 343 | — | — |
+| [CascadeUpdateInfo](../entities/types_task_CascadeUpdateInfo.md) | Interface | 353 | — | — |
+| [TaskStatusChangeResponse](../entities/types_task_TaskStatusChangeResponse.md) | Interface | 362 | — | — |
+| [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Interface | 368 | — | — |
+| [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Interface | 380 | — | — |
+| [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Interface | 386 | — | — |
+| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Interface | 397 | — | — |
+| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Interface | 402 | — | — |
+| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Interface | 409 | — | — |
+| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Interface | 415 | — | — |
+| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Interface | 421 | — | — |
+| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Interface | 427 | — | — |
+| [TaskBrief](../entities/types_task_TaskBrief.md) | Interface | 434 | — | — |
+| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Interface | 445 | — | — |
+| [TaskProgress](../entities/TaskProgress.md) | Interface | 452 | — | — |
+| [TaskReference](../entities/types_task_TaskReference.md) | Interface | 459 | — | — |
+| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 466 | — | — |
+| [TaskDetail](../entities/TaskDetail.md) | Interface | 467 | — | — |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 472 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Interface | 473 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Interface | 477 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 45 | `'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 46 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| string` | — |
-| [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 276 | `'tasks' \| 'triage' \| 'auto'` | — |
-| [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 305 | <pre><code>&#124; &#39;set&#95;assignee&#39;&#10;    &#124; &#39;clear&#95;assignee&#39;&#10;    &#124; &#39;auto&#95;assign&#39;&#10;    &#124; &#39;set&#95;project&#39;&#10;    &#124; &#39;clear&#95;project&#39;&#10;    &#124; &#39;set&#95;milestone&#39;&#10;    &#124; &#39;clear&#95;milestone&#39;&#10;    &#124; &#39;set&#95;priority&#39;&#10;    &#124; &#39;add&#95;labels&#39;&#10;    &#124; &#39;remove&#95;labels&#39;&#10;    &#124; &#39;set&#95;flags&#39;&#10;    &#124; &#39;change&#95;status&#39;&#10;    &#124; &#39;delete&#39;</code></pre> | — |
-| [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 320 | `'updated' \| 'deleted' \| 'skipped' \| 'failed' \| 'would_update' \| 'would_delete'` | — |
+| [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 278 | `'tasks' \| 'triage' \| 'auto'` | — |
+| [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 307 | <pre><code>&#124; &#39;set&#95;assignee&#39;&#10;    &#124; &#39;clear&#95;assignee&#39;&#10;    &#124; &#39;auto&#95;assign&#39;&#10;    &#124; &#39;set&#95;project&#39;&#10;    &#124; &#39;clear&#95;project&#39;&#10;    &#124; &#39;set&#95;milestone&#39;&#10;    &#124; &#39;clear&#95;milestone&#39;&#10;    &#124; &#39;set&#95;priority&#39;&#10;    &#124; &#39;add&#95;labels&#39;&#10;    &#124; &#39;remove&#95;labels&#39;&#10;    &#124; &#39;set&#95;flags&#39;&#10;    &#124; &#39;change&#95;status&#39;&#10;    &#124; &#39;delete&#39;</code></pre> | — |
+| [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 322 | `'updated' \| 'deleted' \| 'skipped' \| 'failed' \| 'would_update' \| 'would_delete'` | — |

@@ -83,6 +83,7 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 | `agent_readiness` | `TaskAgentReadiness` | Yes | — | — |
 | `version` | `number` | Yes | — | — |
 | `claimed_by` | `TaskClaimedBy \| null` | No | — | — |
+| `agent_working` | `boolean \| null` | No | — | — |
 | `claim_expires_at` | `string \| null` | No | — | — |
 | `updated_at` | `string \| null` | No | — | — |
 | `children` | `Task[]` | Yes | — | — |
@@ -141,7 +142,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `blocked_reason` |
+| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `agent_working`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date` |
 
 ### References
 
@@ -160,4 +161,4 @@ flowchart LR
 | `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
 | `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
 
-> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.
+> References: showing 12 of 64 logical references; 52 omitted by the 12-row generated summary limit.

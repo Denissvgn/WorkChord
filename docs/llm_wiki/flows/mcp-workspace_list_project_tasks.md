@@ -53,16 +53,16 @@ sequenceDiagram
     participant p14 as evaluate_agent_readiness
     participant p15 as ExternalLinkService.task_links_to_response
     participant p16 as TaskService.load_owner_names
-    participant p17 as require_project
-    participant p18 as working_today
-    participant p19 as ExternalLinkService.link_to_response
-    participant p20 as require_scope
-    participant p21 as ExternalLinkService.legacy_task_link_response
-    participant p22 as AgentService.authenticate
-    participant p23 as ProjectService._project_query
-    participant p24 as require_identity_writes
-    participant p25 as _add_criterion
-    participant p26 as DeliveryDependencyService.reconcile
+    participant p17 as working_today
+    participant p18 as ExternalLinkService.link_to_response
+    participant p19 as require_scope
+    participant p20 as ExternalLinkService.legacy_task_link_response
+    participant p21 as AgentService.authenticate
+    participant p22 as ProjectService._project_query
+    participant p23 as require_identity_writes
+    participant p24 as _add_criterion
+    participant p25 as DeliveryDependencyService.reconcile
+    participant p26 as require_project
     participant p27 as DiscussionService.enqueue
     participant p28 as actor_has_scope
     participant p29 as ToolError
@@ -83,25 +83,25 @@ sequenceDiagram
     p6->>p14: evaluate_agent_readiness
     p6->>p15: ExternalLinkService.task_links_to_response
     p4->>p16: TaskService.load_owner_names
-    p16->>p17: require_project
-    p12->>p18: working_today
-    p15->>p19: ExternalLinkService.link_to_response
-    p11->>p20: require_scope
-    p15->>p21: ExternalLinkService.legacy_task_link_response
-    p10->>p22: AgentService.authenticate
-    p8->>p23: ProjectService._project_query
-    p13->>p24: require_identity_writes
-    p14->>p25: _add_criterion
-    p9->>p26: DeliveryDependencyService.reconcile
+    p12->>p17: working_today
+    p15->>p18: ExternalLinkService.link_to_response
+    p11->>p19: require_scope
+    p15->>p20: ExternalLinkService.legacy_task_link_response
+    p10->>p21: AgentService.authenticate
+    p8->>p22: ProjectService._project_query
+    p13->>p23: require_identity_writes
+    p14->>p24: _add_criterion
+    p9->>p25: DeliveryDependencyService.reconcile
+    p16->>p26: require_project
     p9->>p27: DiscussionService.enqueue
-    p20->>p28: actor_has_scope
+    p19->>p28: actor_has_scope
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 446 interactions; 416 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 455 interactions; 425 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 133 (132 omitted); unresolved 1 of 187 (186 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 135 (134 omitted); unresolved 1 of 193 (192 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -128,9 +128,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 127; effect analysis evaluated: 84, partial: 2, unavailable: 41. Counts include steps omitted from the displayed trace.
+Source steps: 128; effect analysis evaluated: 85, partial: 2, unavailable: 41. Counts include steps omitted from the displayed trace.
 
-Collector observations for 86 source steps with known totals: observed: 396, emitted: 386, omitted: 10. Unavailable totals are excluded.
+Collector observations for 87 source steps with known totals: observed: 402, emitted: 392, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

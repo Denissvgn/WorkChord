@@ -51,8 +51,8 @@ sequenceDiagram
     participant p20 as PlanningConflict
     participant p21 as TaskDetailService.reviewer_names
     participant p22 as TaskDetailResponse
-    participant p23 as current_command
-    participant p24 as internal_authority
+    participant p23 as internal_authority
+    participant p24 as current_command
     participant p25 as AuthorityError
     participant p26 as TaskReferencePage
     participant p27 as TaskAssignee
@@ -81,8 +81,8 @@ sequenceDiagram
     p1->>p20: PlanningConflict
     p1->>p21: TaskDetailService.reviewer_names
     p1->>p22: TaskDetailResponse
-    p6->>p23: current_command
-    p5->>p24: internal_authority
+    p5->>p23: internal_authority
+    p6->>p24: current_command
     p4->>p25: AuthorityError
     p8->>p26: TaskReferencePage
     p6->>p27: TaskAssignee
@@ -91,9 +91,9 @@ sequenceDiagram
     p0-->>p30: db.scalar(...)
 ```
 
-> Call sequence diagram shows 30 of 238 interactions; 208 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 247 interactions; 217 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 74 (73 omitted); unresolved 1 of 100 (99 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 76 (75 omitted); unresolved 1 of 106 (105 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -106,7 +106,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/authority.py:require_project` | 22 | - | unresolved | 2 |
 | `backend/app/config.py:get_settings` | 24 | [backend/app/config.py](../modules/config.md) | internal | 1 |
 | `backend/app/authority.py:require_project` | 22 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
-| `backend/app/services/task_service.py:TaskService.load_owner_names` | 29 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
+| `backend/app/authority.py:internal_authority` | 30 | - | unresolved | 1 |
 > Omission summary shows 8 of 57 groups; 49 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
@@ -118,9 +118,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 65; effect analysis evaluated: 44, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
+Source steps: 66; effect analysis evaluated: 45, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
 
-Collector observations for 44 source steps with known totals: observed: 221, emitted: 221, omitted: 0. Unavailable totals are excluded.
+Collector observations for 45 source steps with known totals: observed: 227, emitted: 227, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.

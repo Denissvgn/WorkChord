@@ -1,6 +1,6 @@
 # PlanCheckpoint
 
-**Location:** `frontend/src/types/iteration.ts:90`
+**Location:** `frontend/src/types/iteration.ts:92`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_iteration](../modules/types_iteration.md)

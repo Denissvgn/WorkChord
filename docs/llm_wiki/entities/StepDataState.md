@@ -1,6 +1,6 @@
 # StepDataState
 
-**Location:** `frontend/src/pages/PlanMasterPage.tsx:56`
+**Location:** `frontend/src/pages/PlanMasterPage.tsx:58`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)

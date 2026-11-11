@@ -1,6 +1,6 @@
 # SavedViewValidationError
 
-**Location:** `backend/app/services/saved_view_service.py:30`
+**Location:** `backend/app/services/saved_view_service.py:29`
 **Kind:** Class
 **Bases:** `ValueError`
 **Module:** [saved_view_service](../modules/saved_view_service.md)

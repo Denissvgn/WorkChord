@@ -1,6 +1,6 @@
 # GanttChartProps
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:24`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:25`
 **Kind:** Interface
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)

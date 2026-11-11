@@ -21,13 +21,14 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.tsx`._
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `../ui` | `OverflowMenu`, `SlideOverDrawer` | — | compiler-dependent |
 | `../ui/tone` | `STATUS_TONE`, `toneSolidClassName` | — | compiler-dependent |
+| `./GanttBarInputs` | `GanttBarInputs` | — | compiler-dependent |
 | `./TaskEditModal` | `TaskEditModal` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `@tanstack/react-virtual` | `useVirtualizer` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `date-fns` | `eachDayOfInterval`, `format`, `isSameDay`, `addDays`, `differenceInCalendarDays`, `parseISO`, `startOfDay` | — | compiler-dependent |
-| `lucide-react` | `RefreshCw`, `ChevronRight`, `ChevronDown`, `ZoomIn`, `ZoomOut`, `Minimize2`, `Maximize2`, `Calendar`, `CalendarOff`, `CalendarRange`, `Crosshair`, `GitBranch`, `ListFilter`, `Eye` | — | compiler-dependent |
-| `react` | `KeyboardEvent` | Declaration | erased |
+| `lucide-react` | `RefreshCw`, `ChevronRight`, `ChevronDown`, `ZoomIn`, `ZoomOut`, `Minimize2`, `Maximize2`, `Calendar`, `CalendarOff`, `CalendarRange`, `Crosshair`, `GitBranch`, `ListFilter`, `Eye`, `Pin`, `X` | — | compiler-dependent |
+| `react` | `KeyboardEvent`, `PointerEvent` | Declaration | erased |
 | `react` | `useState`, `useMemo`, `useRef`, `useEffect`, `useCallback`, `useId` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `Link` | — | compiler-dependent |
@@ -60,7 +61,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -68,18 +69,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 8 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 24 | — | — |
-| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 69 | `GanttTask` | — |
-| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 81 | — | — |
-| [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 73 | `'none' \| 'milestone' \| 'prefix' \| 'status'` | — |
-| [GanttStatusFilter](../entities/GanttStatusFilter.md) | Type alias | 74 | `'' \| 'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
-| [GanttRow](../entities/GanttRow.md) | Type alias | 75 | <pre><code>&#124; &#123; kind&#58; &#39;task&#39;&#59; task&#58; FlattenedTask &#125;&#10;    &#124; &#123; kind&#58; &#39;group&#39;&#59; key&#58; string&#59; label&#58; string&#59; count&#58; number &#125;</code></pre> | — |
+| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 25 | — | — |
+| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 70 | `GanttTask` | — |
+| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 82 | — | — |
+| [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 74 | `'none' \| 'milestone' \| 'prefix' \| 'status'` | — |
+| [GanttStatusFilter](../entities/GanttStatusFilter.md) | Type alias | 75 | `'' \| 'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
+| [GanttRow](../entities/GanttRow.md) | Type alias | 76 | <pre><code>&#124; &#123; kind&#58; &#39;task&#39;&#59; task&#58; FlattenedTask &#125;&#10;    &#124; &#123; kind&#58; &#39;group&#39;&#59; key&#58; string&#59; label&#58; string&#59; count&#58; number &#125;</code></pre> | — |
 
 ## Functions
 

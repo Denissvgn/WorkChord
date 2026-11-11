@@ -1,6 +1,6 @@
 # SavedViewPermissionError
 
-**Location:** `backend/app/services/saved_view_service.py:26`
+**Location:** `backend/app/services/saved_view_service.py:25`
 **Kind:** Class
 **Bases:** `PermissionError`
 **Module:** [saved_view_service](../modules/saved_view_service.md)

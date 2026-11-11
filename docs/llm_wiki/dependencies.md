@@ -43,6 +43,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [useConfirmDialog](modules/useConfirmDialog.md) | [ConfirmDialog](modules/ConfirmDialog.md) |
 | [SavedViewDashboardCards](modules/SavedViewDashboardCards.md) | [savedView](modules/savedView.md) |
 | [ToastProvider](modules/ToastProvider.md) | [toast](modules/toast.md) |
+| [GanttBarInputs](modules/GanttBarInputs.md) | [types_gantt](modules/types_gantt.md) |
 | [GanttChart.test](modules/GanttChart.test.md) | [types_gantt](modules/types_gantt.md) |
 | [GanttChart](modules/GanttChart.md) | [types_gantt](modules/types_gantt.md) |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | [types_gantt](modules/types_gantt.md) |
@@ -62,6 +63,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AppTopNav](modules/AppTopNav.md) | [AppSidebar](modules/AppSidebar.md) |
 | [AppTopNav](modules/AppTopNav.md) | [workspaces](modules/workspaces.md) |
 | [ContextHelp](modules/ContextHelp.md) | [helpContexts](modules/helpContexts.md) |
+| [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) | [types_iteration](modules/types_iteration.md) |
+| [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) | [types_team](modules/types_team.md) |
+| [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) | [types_iteration](modules/types_iteration.md) |
+| [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) | [types_team](modules/types_team.md) |
 | [PlanningInputBoundary](modules/PlanningInputBoundary.md) | [planningInputService](modules/planningInputService.md) |
 | [InitiativeForm](modules/InitiativeForm.md) | [types_project](modules/types_project.md) |
 | [ProjectForm](modules/ProjectForm.md) | [planningInputService](modules/planningInputService.md) |
@@ -330,17 +335,17 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [models_task](modules/models_task.md) | 94 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
 | [commands](modules/commands.md) | 82 | 12 |
+| [Button](modules/Button.md) | 79 | 0 |
 | [time](modules/time.md) | 77 | 0 |
-| [Button](modules/Button.md) | 77 | 0 |
 | [config](modules/config.md) | 71 | 1 |
-| [QueryState](modules/QueryState.md) | 66 | 2 |
+| [QueryState](modules/QueryState.md) | 68 | 2 |
 | [types_task](modules/types_task.md) | 66 | 2 |
-| [models_agent](modules/models_agent.md) | 64 | 5 |
-| [renderWithProviders](modules/renderWithProviders.md) | 64 | 2 |
-| [task_service](modules/task_service.md) | 61 | 27 |
+| [models_agent](modules/models_agent.md) | 65 | 5 |
+| [renderWithProviders](modules/renderWithProviders.md) | 65 | 2 |
+| [task_service](modules/task_service.md) | 61 | 28 |
 | [models_iteration](modules/models_iteration.md) | 58 | 6 |
 | [authority](modules/authority.md) | 54 | 6 |
-| [apiError](modules/apiError.md) | 49 | 0 |
+| [apiError](modules/apiError.md) | 50 | 0 |
 | [team_member](modules/team_member.md) | 47 | 6 |
 | [models_project](modules/models_project.md) | 44 | 9 |
 | [api](modules/api.md) | 37 | 2 |
@@ -357,23 +362,23 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [query_limits](modules/query_limits.md) | 26 | 0 |
 | [upgrade_service](modules/upgrade_service.md) | 25 | 13 |
 | [user_session](modules/user_session.md) | 24 | 6 |
+| [planningInputService](modules/planningInputService.md) | 23 | 1 |
 | [index](modules/index.md) | 22 | 0 |
-| [planningInputService](modules/planningInputService.md) | 22 | 1 |
+| [types_iteration](modules/types_iteration.md) | 22 | 1 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
 | [services_work_metrics](modules/services_work_metrics.md) | 21 | 8 |
+| [types_team](modules/types_team.md) | 21 | 0 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
+| [teamService](modules/teamService.md) | 20 | 3 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
-| [types_iteration](modules/types_iteration.md) | 20 | 1 |
 | [recovery](modules/recovery.md) | 19 | 3 |
 | [toast](modules/toast.md) | 19 | 0 |
-| [types_team](modules/types_team.md) | 19 | 0 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
 | [Modal](modules/Modal.md) | 18 | 1 |
-| [teamService](modules/teamService.md) | 18 | 3 |
 | [identity_service](modules/identity_service.md) | 17 | 9 |
-| [iteration_service](modules/iteration_service.md) | 17 | 17 |
+| [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
 | [iterationService](modules/iterationService.md) | 17 | 3 |
@@ -412,7 +417,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_project](modules/schemas_project.md) | 10 | 3 |
 | [security](modules/security.md) | 10 | 1 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 10 | 2 |
+| [planningTaskIssues](modules/planningTaskIssues.md) | 10 | 2 |
 | [useAdminAccess](modules/useAdminAccess.md) | 10 | 2 |
+| [types_gantt](modules/types_gantt.md) | 10 | 2 |
 | [models_capacity](modules/models_capacity.md) | 9 | 1 |
 | [models_time_entry](modules/models_time_entry.md) | 9 | 2 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
@@ -424,8 +431,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [sql_semantics](modules/sql_semantics.md) | 9 | 0 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 9 | 0 |
 | [TaskFiltersBar](modules/TaskFiltersBar.md) | 9 | 9 |
-| [planningTaskIssues](modules/planningTaskIssues.md) | 9 | 2 |
-| [types_gantt](modules/types_gantt.md) | 9 | 2 |
 | [types_project](modules/types_project.md) | 9 | 3 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [database_config](modules/database_config.md) | 8 | 0 |
@@ -492,7 +497,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [assignee_recommendation_service](modules/assignee_recommendation_service.md) | 5 | 5 |
 | [delivery_metrics_service](modules/delivery_metrics_service.md) | 5 | 9 |
 | [label_service](modules/label_service.md) | 5 | 6 |
-| [saved_view_service](modules/saved_view_service.md) | 5 | 8 |
+| [saved_view_service](modules/saved_view_service.md) | 5 | 9 |
 | [task_context_revision_service](modules/task_context_revision_service.md) | 5 | 5 |
 | [support_database](modules/support_database.md) | 5 | 0 |
 | [test_task_domain](modules/test_task_domain.md) | 5 | 25 |
@@ -524,6 +529,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [email_settings_service](modules/email_settings_service.md) | 4 | 6 |
 | [execution_usage_service](modules/execution_usage_service.md) | 4 | 14 |
 | [external_link_service](modules/external_link_service.md) | 4 | 6 |
+| [planning_issues](modules/planning_issues.md) | 4 | 0 |
 | [request_source_service](modules/request_source_service.md) | 4 | 9 |
 | [task_hierarchy_service](modules/task_hierarchy_service.md) | 4 | 4 |
 | [time_entry_service](modules/time_entry_service.md) | 4 | 9 |
@@ -660,7 +666,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [FullscreenWorkspace](modules/FullscreenWorkspace.md) | 2 | 1 |
 | [ToastProvider](modules/ToastProvider.md) | 2 | 2 |
 | [WorkFreshness](modules/WorkFreshness.md) | 2 | 1 |
-| [GanttChart](modules/GanttChart.md) | 2 | 12 |
+| [GanttChart](modules/GanttChart.md) | 2 | 13 |
 | [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
 | [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 7 |
 | [AppShell](modules/AppShell.md) | 2 | 7 |
@@ -668,6 +674,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ContextHelp](modules/ContextHelp.md) | 2 | 8 |
 | [DocumentMetadata](modules/DocumentMetadata.md) | 2 | 1 |
 | [SidebarIterationCard](modules/SidebarIterationCard.md) | 2 | 1 |
+| [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) | 2 | 7 |
 | [PlanningWorkflowGuide](modules/PlanningWorkflowGuide.md) | 2 | 2 |
 | [ProjectForm](modules/ProjectForm.md) | 2 | 16 |
 | [TimeEntriesReport](modules/TimeEntriesReport.md) | 2 | 10 |
@@ -768,6 +775,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) | 1 | 1 |
 | [SavedViewDashboardCards](modules/SavedViewDashboardCards.md) | 1 | 4 |
 | [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 1 | 1 |
+| [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 4 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
 | [IterationList](modules/IterationList.md) | 1 | 11 |
 | [RouteErrorBoundary](modules/RouteErrorBoundary.md) | 1 | 1 |
@@ -807,8 +815,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
 | [MyWorkPage](modules/MyWorkPage.md) | 1 | 12 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
-| [OverviewPage](modules/OverviewPage.md) | 1 | 17 |
-| [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 13 |
+| [OverviewPage](modules/OverviewPage.md) | 1 | 18 |
+| [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 14 |
 | [PlanPage](modules/PlanPage.md) | 1 | 5 |
 | [PlanSharePage](modules/PlanSharePage.md) | 1 | 7 |
 | [ProjectsPage](modules/ProjectsPage.md) | 1 | 16 |
@@ -913,6 +921,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_plan_checkpoints](modules/test_plan_checkpoints.md) | 0 | 3 |
 | [test_plan_shares](modules/test_plan_shares.md) | 0 | 6 |
 | [test_planning_input_context](modules/test_planning_input_context.md) | 0 | 18 |
+| [test_planning_issues](modules/test_planning_issues.md) | 0 | 1 |
 | [test_planning_read_models](modules/test_planning_read_models.md) | 0 | 13 |
 | [test_postgresql_lifecycle](modules/test_postgresql_lifecycle.md) | 0 | 0 |
 | [test_process_roles](modules/test_process_roles.md) | 0 | 3 |
@@ -953,6 +962,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [CommandMenu.test](modules/CommandMenu.test.md) | 0 | 3 |
 | [ContextHelp.test](modules/ContextHelp.test.md) | 0 | 4 |
 | [SidebarIterationCard.test](modules/SidebarIterationCard.test.md) | 0 | 2 |
+| [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) | 0 | 4 |
 | [PlanReturnBar.test](modules/PlanReturnBar.test.md) | 0 | 3 |
 | [PlanningInputBoundary.test](modules/PlanningInputBoundary.test.md) | 0 | 2 |
 | [PlanningWorkbenchFrame.test](modules/PlanningWorkbenchFrame.test.md) | 0 | 3 |

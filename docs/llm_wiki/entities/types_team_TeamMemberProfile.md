@@ -37,22 +37,25 @@ _Auto-generated from `TeamMemberProfile` in `frontend/src/types/team.ts`._
 ```mermaid
 flowchart LR
     n0["TeamMemberProfile (frontend/src/types/team.ts)"]
-    n1["frontend/src/components/team/TeamForm.tsx"]
-    n2["frontend/src/components/team/TeamProfileManager.test.tsx"]
-    n3["frontend/src/components/team/TeamProfileManager.tsx"]
-    n4["frontend/src/pages/TeamPage.tsx"]
-    n5["frontend/src/services/teamService.ts"]
+    n1["frontend/src/components/planning/PlanQuickAddCapacity.tsx"]
+    n2["frontend/src/components/team/TeamForm.tsx"]
+    n3["frontend/src/components/team/TeamProfileManager.test.tsx"]
+    n4["frontend/src/components/team/TeamProfileManager.tsx"]
+    n5["frontend/src/pages/TeamPage.tsx"]
+    n6["frontend/src/services/teamService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/types_team.md"
-    click n1 "../modules/TeamForm.md"
-    click n2 "../modules/TeamProfileManager.test.md"
-    click n3 "../modules/TeamProfileManager.md"
-    click n4 "../modules/TeamPage.md"
-    click n5 "../modules/teamService.md"
+    click n1 "../modules/PlanQuickAddCapacity.md"
+    click n2 "../modules/TeamForm.md"
+    click n3 "../modules/TeamProfileManager.test.md"
+    click n4 "../modules/TeamProfileManager.md"
+    click n5 "../modules/TeamPage.md"
+    click n6 "../modules/teamService.md"
 ```
 
 ### Summary
@@ -65,6 +68,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `PlanQuickAddCapacity` | import | [PlanQuickAddCapacity](../modules/PlanQuickAddCapacity.md) | — |
 | `TeamForm` | import | [TeamForm](../modules/TeamForm.md) | — |
 | `TeamProfileManager.test` | import | [TeamProfileManager.test](../modules/TeamProfileManager.test.md) | — |
 | `TeamProfileManager` | import | [TeamProfileManager](../modules/TeamProfileManager.md) | — |

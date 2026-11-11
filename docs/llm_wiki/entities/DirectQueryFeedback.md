@@ -1,6 +1,6 @@
 # DirectQueryFeedback
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:92`
+**Location:** `frontend/src/pages/OverviewPage.tsx:93`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)

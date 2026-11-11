@@ -87,9 +87,9 @@ sequenceDiagram
     p2-->>p30: HTTPException (backend/app/routers/task_domain.py:domain_result)(409, detail=exc.detail(...))
 ```
 
-> Call sequence diagram shows 30 of 129 interactions; 99 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 130 interactions; 100 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 44 (42 omitted); unresolved 2 of 44 (42 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 44 (42 omitted); unresolved 2 of 45 (43 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -99,7 +99,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/task_domain.py:domain_result` | 3 | - | external | 5 |
 | `backend/app/commands.py:current_command` | 15 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 15 | - | unresolved | 1 |
-| `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | unresolved | 5 |
+| `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | unresolved | 6 |
 | `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | external | 5 |
 | `backend/app/services/work_metrics.py:working_today` | 24 | - | unresolved | 2 |
 | `backend/app/services/work_metrics.py:working_today` | 24 | [backend/app/utils/time.py](../modules/time.md) | internal | 2 |

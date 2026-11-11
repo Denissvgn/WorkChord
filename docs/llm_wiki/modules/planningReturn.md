@@ -10,8 +10,8 @@ _Auto-generated from `frontend/src/features/planningMasters/planningReturn.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `PLANNING_RETURN_STEP_PARAM`, `PLANNING_STEP_IDS`, `PlanningStepId`, `isPlanningStepId`, `planMasterStepHref`, `withPlanMasterReturn` |
-| Constants | `PLANNING_RETURN_STEP_PARAM`, `PLANNING_STEP_IDS` |
+| Exports | `PLANNING_RETURN_STEP_PARAM`, `PLANNING_STEP_IDS`, `PLAN_RETURNED_PARAM`, `PlanningStepId`, `isPlanningStepId`, `planMasterStepHref`, `withPlanMasterReturn` |
+| Constants | `PLANNING_RETURN_STEP_PARAM`, `PLANNING_STEP_IDS`, `PLAN_RETURNED_PARAM` |
 
 ## Local dependency map
 
@@ -59,5 +59,5 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `isPlanningStepId` | `(value: string \| null) -> value is PlanningStepId` | — | — |
-| `planMasterStepHref` | `(stepId: PlanningStepId)` | — | — |
+| `planMasterStepHref` | `(stepId: PlanningStepId, { returned = false }: { returned?: boolean } = {})` | — | Link back to a plan step; `returned` makes the step re-check and advance when done. |
 | `withPlanMasterReturn` | `(route: string, returnStepId: PlanningStepId, options: Record<string, string> = {})` | — | — |

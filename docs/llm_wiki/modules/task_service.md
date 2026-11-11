@@ -6,6 +6,8 @@
 
 Task service with business logic.
 
+The owner-name loader also marks each loaded task with whether an agent holds a live execution assignment (`agent_working`), in one query, so lists and filters can tell agent-held work from unassigned work without exposing assignment details.
+
 Task and aggregate versions fence edits and structural commands. Merge/unmerge reconcile old/new ancestors with leaf-only effort and lower-number-is-higher priority; claimed descendants require recovery. Pure rearrangement preserves valid accepted leaf evidence and effective optional/deferred meaning with audit, while content changes invalidate old acceptance. An empty summary remains structural rather than becoming invented leaf work.
 
 Task commands share transaction ownership and task/iteration version fences. Unscheduled project work uses a project lock and transactional backlog recovery points. Human ownership survives schedule moves while capacity is cleared when the iteration changes. The complete graph loader remains authoritative for execution and structural mutation; bounded UI detail is a separate service. Public owner names are projected only through authorized task scope.
@@ -18,7 +20,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 |--------|---------|
 | `app.authority` | `require_project`, `internal_authority`, `internal_authority`, `AuthorityError`, `internal_authority` |
 | `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `current_command`, `lock_planning`, `lock_backlog_project`, `lock_backlog_project`, `current_command` |
-| `app.models.agent` | `TaskEvent`, `AgentTaskAssignment` |
+| `app.models.agent` | `TaskEvent`, `AgentTaskAssignment`, `AgentTaskAssignment` |
 | `app.models.delivery_dependency` | `DeliveryDependency` |
 | `app.models.iteration` | `Iteration`, `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
@@ -36,6 +38,7 @@ Backlog project changes require edit permission in both scopes. Project locks ar
 | `app.services.external_link_service` | `ExternalLinkService` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
+| `app.services.planning_issues` | `LIVE_EXECUTION_ASSIGNMENT_STATES` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `clear_execution_evidence`, `TaskBriefService`, `TaskBriefService`, `render_brief`, `clear_acceptance`, `clear_execution_evidence`, `clear_execution_evidence`, `clear_execution_evidence` |
 | `app.services.task_domain_service` | `require_owner`, `normalize_effort`, `require_owner`, `nominal_day_hours`, `normalize_effort`, `require_owner`, `require_owner`, `nominal_day_hours` |
@@ -72,7 +75,7 @@ flowchart LR
 |---|---|
 | Inbound | `backend` (59) |
 | Inbound | `scripts` (2) |
-| Outbound | `backend` (27) |
+| Outbound | `backend` (28) |
 
 ### External packages
 
@@ -80,7 +83,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 80 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 81 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

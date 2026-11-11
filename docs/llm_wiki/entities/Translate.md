@@ -1,6 +1,6 @@
 # Translate
 
-**Location:** `frontend/src/features/planningMasters/masters.ts:351`
+**Location:** `frontend/src/features/planningMasters/masters.ts:360`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [planningMasters_masters](../modules/planningMasters_masters.md)

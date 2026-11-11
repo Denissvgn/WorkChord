@@ -11,14 +11,14 @@ _Auto-generated from `frontend/src/features/planningMasters/planningTaskIssues.t
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../types/task` | `Task` | Declaration | erased |
-| `./planningTaskIssues` | `hasPositivePlanningEffort`, `isPlanningLeafTask`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `planningIssueTasksHref`, `taskMatchesPlanningIssue` | — | compiler-dependent |
+| `./planningTaskIssues` | `hasPositivePlanningEffort`, `isAgentWorkingWithoutCapacity`, `isPlanningLeafTask`, `parsePlanningIterationId`, `parsePlanningTaskIssue`, `planningIssueTasksHref`, `taskMatchesPlanningIssue` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe` |
+| Module calls | `describe`, `describe` |
 
 ## Local dependency map
 

@@ -1,6 +1,6 @@
 # GanttGroupBy
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:73`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:74`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)

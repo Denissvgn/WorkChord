@@ -20,6 +20,8 @@ _Auto-generated from `IterationPlanningReadinessSummary` in `frontend/src/types/
 | `task_count` | `number` | Yes | — | — |
 | `tasks_without_assignee` | `number` | Yes | — | — |
 | `tasks_without_effort` | `number` | Yes | — | — |
+| `tasks_agent_without_capacity` | `number` | No | — | — |
+| `team_agent_count` | `number` | No | — | — |
 | `has_schedule` | `boolean` | Yes | — | — |
 | `risk_count` | `number` | Yes | — | — |
 | `checkpoints` | `PlanCheckpoint[]` | No | — | — |
@@ -46,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_without_assignee`, `tasks_without_effort`, `team_capacity_hours`, `team_member_count`, `team_members_no_capacity` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee`, `tasks_without_effort`, `team_agent_count`, `team_capacity_hours` |
 
 ### References
 

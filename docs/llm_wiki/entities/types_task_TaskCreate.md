@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `frontend/src/types/task.ts:163`
+**Location:** `frontend/src/types/task.ts:165`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

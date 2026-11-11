@@ -15,11 +15,13 @@ Compact planning inputs used by persistent navigation.
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `iteration_id` | `int` | `iteration_id` | Yes | No | — | — | — | — |
 | `team_member_count` | `int` | `team_member_count` | Yes | No | — | — | — | — |
+| `team_agent_count` | `int` | `team_agent_count` | No | No | `0` | — | — | — |
 | `team_capacity_hours` | `float` | `team_capacity_hours` | Yes | No | — | — | — | — |
 | `team_members_no_capacity` | `int` | `team_members_no_capacity` | Yes | No | — | — | — | — |
 | `task_count` | `int` | `task_count` | Yes | No | — | — | — | — |
 | `tasks_without_assignee` | `int` | `tasks_without_assignee` | Yes | No | — | — | — | — |
 | `tasks_without_effort` | `int` | `tasks_without_effort` | Yes | No | — | — | — | — |
+| `tasks_agent_without_capacity` | `int` | `tasks_agent_without_capacity` | No | No | `0` | — | — | — |
 | `has_schedule` | `bool` | `has_schedule` | Yes | No | — | — | — | — |
 | `risk_count` | `int` | `risk_count` | Yes | No | — | — | — | — |
 | `checkpoints` | `list[PlanCheckpoint]` | `checkpoints` | No | No | factory: `list` | — | — | — |
@@ -57,7 +59,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_without_assignee`, `tasks_without_effort`, `team_capacity_hours`, `team_member_count`, `team_members_no_capacity` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee`, `tasks_without_effort`, `team_agent_count`, `team_capacity_hours` |
 
 ### Structure
 

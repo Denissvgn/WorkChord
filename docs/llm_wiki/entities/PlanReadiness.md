@@ -25,6 +25,8 @@ _Auto-generated from `PlanReadiness` in `frontend/src/features/planningMasters/m
 | `taskCount` | `number` | Yes | — | — |
 | `tasksWithoutAssignee` | `number` | Yes | — | — |
 | `tasksWithoutEffort` | `number` | Yes | — | — |
+| `tasksAgentWithoutCapacity` | `number` | No | — | — |
+| `teamAgentCount` | `number` | No | — | — |
 | `hasGanttSchedule` | `boolean` | Yes | — | — |
 | `ganttLastBuilt` | `string` | Yes | — | — |
 | `riskCount` | `number` | Yes | — | — |

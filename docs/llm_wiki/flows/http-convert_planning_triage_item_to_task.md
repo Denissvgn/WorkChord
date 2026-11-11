@@ -101,9 +101,9 @@ sequenceDiagram
     p0-->>p30: data.model_dump (backend/app/routers/agent…nning_triage_item_to_task)(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 393 interactions; 363 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 394 interactions; 364 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 168 (167 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 102 (101 omitted); unresolved 1 of 169 (168 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 

@@ -26,77 +26,23 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/gantt/GanttChart.test.tsx"]
-    n1["frontend/src/components/gantt/GanttChart.tsx"]
-    n2["frontend/src/components/gantt/ScheduleExplanationDetails.tsx"]
-    n3["frontend/src/components/gantt/TaskEditModal.tsx"]
-    n4["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n5["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
-    n6["frontend/src/pages/GanttPage.test.tsx"]
-    n7["frontend/src/pages/GanttPage.tsx"]
-    n8["frontend/src/services/ganttService.ts"]
-    n9["frontend/src/types/gantt.ts"]
-    n10["frontend/src/types/iteration.ts"]
-    n11["frontend/src/types/task.ts"]
+    n0["frontend"]
+    n1["frontend/src/types/gantt.ts"]
     n0 --> n1
-    n0 --> n9
-    n1 --> n3
-    n1 --> n8
-    n1 --> n9
-    n2 --> n9
-    n3 --> n9
-    n3 --> n11
-    n4 --> n5
-    n4 --> n9
-    n4 --> n10
-    n4 --> n11
-    n5 --> n8
-    n5 --> n9
-    n5 --> n10
-    n5 --> n11
-    n6 --> n7
-    n6 --> n9
-    n6 --> n10
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n8
-    n7 --> n9
-    n7 --> n10
-    n7 --> n11
-    n8 --> n9
-    n8 --> n11
-    n9 --> n10
-    n9 --> n11
-    click n0 "../modules/GanttChart.test.md"
-    click n1 "../modules/GanttChart.md"
-    click n2 "../modules/ScheduleExplanationDetails.md"
-    click n3 "../modules/TaskEditModal.md"
-    click n4 "../modules/usePlanningReadiness.test.md"
-    click n5 "../modules/usePlanningReadiness.md"
-    click n6 "../modules/GanttPage.test.md"
-    click n7 "../modules/GanttPage.md"
-    click n8 "../modules/ganttService.md"
-    click n9 "../modules/types_gantt.md"
-    click n10 "../modules/types_iteration.md"
-    click n11 "../modules/types_task.md"
+    n1 --> n0
+    click n1 "../modules/types_gantt.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [GanttChart.test](../modules/GanttChart.test.md) |
-| Inbound | [GanttChart](../modules/GanttChart.md) |
-| Inbound | [ScheduleExplanationDetails](../modules/ScheduleExplanationDetails.md) |
-| Inbound | [TaskEditModal](../modules/TaskEditModal.md) |
-| Inbound | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) |
-| Inbound | [usePlanningReadiness](../modules/usePlanningReadiness.md) |
-| Inbound | [GanttPage.test](../modules/GanttPage.test.md) |
-| Inbound | [GanttPage](../modules/GanttPage.md) |
-| Inbound | [ganttService](../modules/ganttService.md) |
-| Outbound | [types_iteration](../modules/types_iteration.md) |
-| Outbound | [types_task](../modules/types_task.md) |
+| Inbound | `frontend` (10) |
+| Outbound | `frontend` (2) |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

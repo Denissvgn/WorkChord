@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1533,
+      "entities": 1535,
       "flows": 553,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 765,
+      "modules": 770,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3059
+    "total": 3066
   },
   "dependency_pages": {
     "count": 2,
@@ -2194,7 +2194,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 394,
+          "step_count": 395,
           "truncated": true
         }
       },
@@ -3175,7 +3175,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 130,
+          "step_count": 131,
           "truncated": false
         }
       },
@@ -5716,7 +5716,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 239,
+          "step_count": 248,
           "truncated": false
         }
       },
@@ -8166,25 +8166,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first"
             },
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "select(Task.iteration_id, Task.project_id).where"
             },
             {
               "kind": "external_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "select"
             },
@@ -9802,7 +9802,7 @@
             "backend/app/services/plan_checkpoints.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 373,
+          "step_count": 394,
           "truncated": false
         }
       },
@@ -10906,7 +10906,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 186,
+          "step_count": 187,
           "truncated": true
         }
       },
@@ -13344,25 +13344,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first"
             },
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "select(Task.iteration_id, Task.project_id).where"
             },
             {
               "kind": "external_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "select"
             },
@@ -18360,7 +18360,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1653,
+              "line": 1667,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -18428,7 +18428,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 128,
+          "step_count": 129,
           "truncated": false
         }
       },
@@ -19711,7 +19711,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1653,
+              "line": 1667,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -19779,7 +19779,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 128,
+          "step_count": 129,
           "truncated": false
         }
       },
@@ -20904,25 +20904,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "(await self.db.execute(select(Task.iteration_id, Task.project_id).where(Task.id == task_id))).first"
             },
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "select(Task.iteration_id, Task.project_id).where"
             },
             {
               "kind": "external_call",
-              "line": 556,
+              "line": 570,
               "step": "TaskService.get_by_id",
               "target": "select"
             },
@@ -21391,7 +21391,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1653,
+              "line": 1667,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -21460,7 +21460,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 128,
+          "step_count": 129,
           "truncated": false
         }
       },
@@ -21642,7 +21642,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 233,
+          "step_count": 242,
           "truncated": false
         }
       },
@@ -22152,7 +22152,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 240,
+          "step_count": 249,
           "truncated": false
         }
       },
@@ -25331,7 +25331,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 1653,
+              "line": 1667,
               "step": "TaskService.task_to_response",
               "step_index": 12,
               "target": "signals.pop"
@@ -25399,7 +25399,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 128,
+          "step_count": 129,
           "truncated": false
         }
       },
@@ -25840,7 +25840,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 360,
+          "step_count": 361,
           "truncated": true
         }
       },
@@ -26202,7 +26202,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 506,
+          "step_count": 507,
           "truncated": true
         }
       },
@@ -26378,7 +26378,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 362,
+          "step_count": 363,
           "truncated": true
         }
       },
@@ -28339,7 +28339,7 @@
             "backend/app/services/plan_checkpoints.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 583,
+          "step_count": 604,
           "truncated": true
         }
       },
@@ -29144,7 +29144,7 @@
             "backend/app/schemas/external_link.py",
             "backend/app/schemas/task_detail.py"
           ],
-          "step_count": 462,
+          "step_count": 471,
           "truncated": true
         }
       },
@@ -32962,7 +32962,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 360,
+          "step_count": 361,
           "truncated": true
         }
       },
@@ -34786,7 +34786,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 559,
+          "step_count": 560,
           "truncated": true
         }
       },
@@ -37183,7 +37183,7 @@
             "backend/app/services/external_link_service.py",
             "backend/app/schemas/external_link.py"
           ],
-          "step_count": 447,
+          "step_count": 456,
           "truncated": true
         }
       },
@@ -43673,6 +43673,8 @@
         "entities/FrontendTriageService.md",
         "entities/FrozenClock.md",
         "entities/GanttAssignee.md",
+        "entities/GanttBarInputChanges.md",
+        "entities/GanttBarInputsProps.md",
         "entities/GanttChart_FlattenedTask.md",
         "entities/GanttChartProps.md",
         "entities/GanttGroupBy.md",
@@ -45554,6 +45556,7 @@
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
         "modules/FullscreenWorkspace.md",
+        "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
         "modules/GanttChart.test.md",
         "modules/GanttPage.md",
@@ -45700,6 +45703,7 @@
         "modules/planning-masters.test.md",
         "modules/planning_input_context.md",
         "modules/planning_inputs.md",
+        "modules/planning_issues.md",
         "modules/PlanningInputBoundary.md",
         "modules/PlanningInputBoundary.test.md",
         "modules/planningInputMessages.md",
@@ -45718,6 +45722,8 @@
         "modules/PlanningWorkflowGuide.test.md",
         "modules/PlanPage.md",
         "modules/PlanPage.test.md",
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
         "modules/PlanReturnBar.md",
         "modules/PlanReturnBar.test.md",
         "modules/PlanSharePage.md",
@@ -46021,6 +46027,7 @@
         "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
+        "modules/test_planning_issues.md",
         "modules/test_planning_read_models.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
@@ -51859,6 +51866,30 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/gantt.py",
       "title": "GanttAssignee"
+    },
+    {
+      "canonical_path": "entities/GanttBarInputChanges.md",
+      "id": "GanttBarInputChanges",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GanttBarInputChanges",
+      "outgoing_internal_links": [
+        "modules/GanttBarInputs.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/GanttBarInputs.tsx",
+      "title": "GanttBarInputChanges"
+    },
+    {
+      "canonical_path": "entities/GanttBarInputsProps.md",
+      "id": "GanttBarInputsProps",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GanttBarInputsProps",
+      "outgoing_internal_links": [
+        "modules/GanttBarInputs.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/GanttBarInputs.tsx",
+      "title": "GanttBarInputsProps"
     },
     {
       "canonical_path": "entities/GanttChart_FlattenedTask.md",
@@ -64858,6 +64889,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_gantt_GanttTask",
       "outgoing_internal_links": [
+        "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
         "modules/GanttChart.test.md",
         "modules/GanttPage.md",
@@ -65048,12 +65080,12 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_iteration_Iteration",
       "outgoing_internal_links": [
-        "modules/GanttPage.md",
-        "modules/GanttPage.test.md",
         "modules/IterationForm.md",
         "modules/IterationForm.test.md",
         "modules/IterationList.md",
         "modules/IterationSelector.md",
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
         "modules/ProjectIterationsSection.md",
         "modules/TaskForm.md",
         "modules/TaskWorkPanel.md",
@@ -66319,11 +66351,11 @@
         "modules/CalendarPage.md",
         "modules/ImportTeamModal.test.md",
         "modules/KanbanBoard.test.md",
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
         "modules/TeamForm.md",
         "modules/TeamForm.test.md",
         "modules/TeamList.md",
-        "modules/TeamPage.md",
-        "modules/TriagePage.md",
         "modules/types_team.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
@@ -66354,6 +66386,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_team_TeamMemberProfile",
       "outgoing_internal_links": [
+        "modules/PlanQuickAddCapacity.md",
         "modules/TeamForm.md",
         "modules/TeamPage.md",
         "modules/TeamProfileManager.md",
@@ -70615,6 +70648,25 @@
       "title": "FullscreenWorkspace Module"
     },
     {
+      "canonical_path": "modules/GanttBarInputs.md",
+      "id": "GanttBarInputs",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/GanttBarInputs",
+      "outgoing_internal_links": [
+        "entities/GanttBarInputChanges.md",
+        "entities/GanttBarInputsProps.md",
+        "modules/Button.md",
+        "modules/GanttBarInputs.md",
+        "modules/GanttChart.md",
+        "modules/QueryState.md",
+        "modules/teamService.md",
+        "modules/types_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/GanttBarInputs.tsx",
+      "title": "GanttBarInputs Module"
+    },
+    {
       "canonical_path": "modules/GanttChart.md",
       "id": "GanttChart",
       "kind": "modules",
@@ -73135,6 +73187,22 @@
       "title": "planning_inputs Module"
     },
     {
+      "canonical_path": "modules/planning_issues.md",
+      "id": "planning_issues",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/planning_issues",
+      "outgoing_internal_links": [
+        "modules/iteration_service.md",
+        "modules/planning_issues.md",
+        "modules/saved_view_service.md",
+        "modules/task_service.md",
+        "modules/test_planning_issues.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/services/planning_issues.py",
+      "title": "planning_issues Module"
+    },
+    {
       "canonical_path": "modules/PlanningInputBoundary.md",
       "id": "PlanningInputBoundary",
       "kind": "modules",
@@ -73309,18 +73377,7 @@
       "mcp_uri": "llm-wiki://modules/planningTaskIssues",
       "outgoing_internal_links": [
         "entities/PlanningTaskIssue.md",
-        "modules/GanttChart.md",
-        "modules/PlanMasterPage.md",
-        "modules/planningMasters_masters.md",
-        "modules/planningReturn.md",
-        "modules/planningTaskIssues.md",
-        "modules/planningTaskIssues.test.md",
-        "modules/taskFilters.md",
-        "modules/TaskFiltersBar.md",
-        "modules/TasksPage.md",
-        "modules/taskViewState.md",
-        "modules/types_task.md",
-        "modules/usePlanningReadiness.md"
+        "modules/planningTaskIssues.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/planningMasters/planningTaskIssues.ts",
@@ -73442,6 +73499,43 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/PlanPage.test.tsx",
       "title": "PlanPage.test Module"
+    },
+    {
+      "canonical_path": "modules/PlanQuickAddCapacity.md",
+      "id": "PlanQuickAddCapacity",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/PlanQuickAddCapacity",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/PlanMasterPage.md",
+        "modules/planningInputService.md",
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
+        "modules/QueryState.md",
+        "modules/teamService.md",
+        "modules/types_iteration.md",
+        "modules/types_team.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/planning/PlanQuickAddCapacity.tsx",
+      "title": "PlanQuickAddCapacity Module"
+    },
+    {
+      "canonical_path": "modules/PlanQuickAddCapacity.test.md",
+      "id": "PlanQuickAddCapacity.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/PlanQuickAddCapacity.test",
+      "outgoing_internal_links": [
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
+        "modules/renderWithProviders.md",
+        "modules/types_iteration.md",
+        "modules/types_team.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/planning/PlanQuickAddCapacity.test.tsx",
+      "title": "PlanQuickAddCapacity.test Module"
     },
     {
       "canonical_path": "modules/PlanReturnBar.md",
@@ -78688,6 +78782,19 @@
       "title": "test_planning_input_context Module"
     },
     {
+      "canonical_path": "modules/test_planning_issues.md",
+      "id": "test_planning_issues",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_planning_issues",
+      "outgoing_internal_links": [
+        "modules/planning_issues.md",
+        "modules/test_planning_issues.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_planning_issues.py",
+      "title": "test_planning_issues Module"
+    },
+    {
       "canonical_path": "modules/test_planning_read_models.md",
       "id": "test_planning_read_models",
       "kind": "modules",
@@ -79791,18 +79898,7 @@
         "entities/types_gantt_SchedulingDecision.md",
         "entities/types_gantt_WorkloadAnalysis.md",
         "entities/types_gantt_WorkloadIssue.md",
-        "modules/GanttChart.md",
-        "modules/GanttChart.test.md",
-        "modules/GanttPage.md",
-        "modules/GanttPage.test.md",
-        "modules/ganttService.md",
-        "modules/ScheduleExplanationDetails.md",
-        "modules/TaskEditModal.md",
-        "modules/types_gantt.md",
-        "modules/types_iteration.md",
-        "modules/types_task.md",
-        "modules/usePlanningReadiness.md",
-        "modules/usePlanningReadiness.test.md"
+        "modules/types_gantt.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/types/gantt.ts",
@@ -94557,6 +94653,7 @@
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
         "modules/FullscreenWorkspace.md",
+        "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
         "modules/GanttChart.test.md",
         "modules/GanttPage.md",
@@ -94703,6 +94800,7 @@
         "modules/planning-masters.test.md",
         "modules/planning_input_context.md",
         "modules/planning_inputs.md",
+        "modules/planning_issues.md",
         "modules/PlanningInputBoundary.md",
         "modules/PlanningInputBoundary.test.md",
         "modules/planningInputMessages.md",
@@ -94721,6 +94819,8 @@
         "modules/PlanningWorkflowGuide.test.md",
         "modules/PlanPage.md",
         "modules/PlanPage.test.md",
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
         "modules/PlanReturnBar.md",
         "modules/PlanReturnBar.test.md",
         "modules/PlanSharePage.md",
@@ -95024,6 +95124,7 @@
         "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
+        "modules/test_planning_issues.md",
         "modules/test_planning_read_models.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
@@ -95333,6 +95434,7 @@
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
         "modules/FullscreenWorkspace.md",
+        "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
         "modules/GanttChart.test.md",
         "modules/GanttPage.md",
@@ -95479,6 +95581,7 @@
         "modules/planning-masters.test.md",
         "modules/planning_input_context.md",
         "modules/planning_inputs.md",
+        "modules/planning_issues.md",
         "modules/PlanningInputBoundary.md",
         "modules/PlanningInputBoundary.test.md",
         "modules/planningInputMessages.md",
@@ -95497,6 +95600,8 @@
         "modules/PlanningWorkflowGuide.test.md",
         "modules/PlanPage.md",
         "modules/PlanPage.test.md",
+        "modules/PlanQuickAddCapacity.md",
+        "modules/PlanQuickAddCapacity.test.md",
         "modules/PlanReturnBar.md",
         "modules/PlanReturnBar.test.md",
         "modules/PlanSharePage.md",
@@ -95800,6 +95905,7 @@
         "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
+        "modules/test_planning_issues.md",
         "modules/test_planning_read_models.md",
         "modules/test_postgresql_closeout.md",
         "modules/test_postgresql_concurrency.md",
@@ -95923,5 +96029,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:8fa7a3ed116c408554bfabf0e6b67b208406d56e02e5a243a313236edc3d1908"
+  "source_hash": "sha256:f8c98c92ada5dcda6e34c15c3bcb50d8c988609e9418a319652a923ef96fb925"
 }

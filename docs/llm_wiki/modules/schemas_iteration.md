@@ -59,4 +59,4 @@ flowchart LR
 | [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 94 | `WorkMetricSummary` | Summary statistics for an iteration. |
 | [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 110 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
 | [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 118 | `BaseModel` | Compact planning inputs used by persistent navigation. |
-| [IterationPage](../entities/IterationPage.md) | 134 | `BaseModel` | — |
+| [IterationPage](../entities/IterationPage.md) | 138 | `BaseModel` | — |

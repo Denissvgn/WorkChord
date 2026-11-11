@@ -98,9 +98,9 @@ sequenceDiagram
     p2-->>p30: TaskDomainService(…).command(task_id, TaskActionRequest.model_validate(...))
 ```
 
-> Call sequence diagram shows 30 of 359 interactions; 329 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 360 interactions; 330 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 101 (100 omitted); unresolved 1 of 144 (143 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 101 (100 omitted); unresolved 1 of 145 (144 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 

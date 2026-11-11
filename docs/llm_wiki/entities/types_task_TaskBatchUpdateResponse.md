@@ -1,6 +1,6 @@
 # TaskBatchUpdateResponse
 
-**Location:** `frontend/src/types/task.ts:419`
+**Location:** `frontend/src/types/task.ts:421`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

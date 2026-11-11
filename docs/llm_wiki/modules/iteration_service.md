@@ -11,6 +11,7 @@ Iteration service with business logic.
 Calendar reassignment refreshes nominal workday and derived effort-day values under the existing planning transaction and version reservations. Canonical hours, unknown or zero estimates, estimate provenance and actual execution records are preserved.
 
 Readiness and summary capacity use actual person calendar hours, short days, absence unions and allocation factors. Readiness includes shared booking and committed capacity conflicts without exposing private work details.
+Its unassigned and missing-effort counts apply the same planned-leaf rule as the task filters, count agent-held tasks without a capacity row separately, and report how many capacity rows belong to agent profiles.
 The planning-readiness summary also returns the six plan checkpoints (`iteration`, `team`, `work`, `blockers`, `schedule`, `review`) derived once by `plan_checkpoints`, so the plan page, the sidebar and the PM agent read the same states and the same "n of 6".
 
 ## Imports
@@ -18,10 +19,11 @@ The planning-readiness summary also returns the six plan checkpoints (`iteration
 | Source | Symbols |
 |--------|---------|
 | `app.commands` | `commit_or_flush`, `schedule_input_command` |
+| `app.models.agent` | `AgentTaskAssignment` |
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectMilestone` |
 | `app.models.task` | `Task`, `TaskStatus` |
-| `app.models.team_member` | `TeamMember` |
+| `app.models.team_member` | `TeamMember`, `TeamMember`, `TeamMemberProfile` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_ITERATION_LIST_ITEMS`, `MAX_ITERATION_TREE_TASKS` |
 | `app.schemas.iteration` | `IterationCreate`, `IterationPlanningReadinessSummary`, `IterationProjectSummary`, `IterationResponse`, `IterationSeriesCreate`, `IterationSummary`, `IterationUpdate` |
 | `app.schemas.work_metrics` | `WorkMetricSummary` |
@@ -29,6 +31,7 @@ The planning-readiness summary also returns the six plan checkpoints (`iteration
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService` |
 | `app.services.plan_checkpoints` | `PLAN_CHECKPOINT_IDS`, `plan_checkpoints` |
+| `app.services.planning_issues` | `LIVE_EXECUTION_ASSIGNMENT_STATES`, `PLANNING_ISSUE_STATUS` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_domain_service` | `nominal_day_hours`, `refresh_nominal_day_hours` |
 | `app.services.task_service` | `TaskService` |
@@ -61,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (17) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (19) |
 
 ### External packages
 
@@ -69,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 33 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

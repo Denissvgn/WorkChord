@@ -42,6 +42,7 @@ Schema for task response.
 | `owner_profile_id` | `Optional[int]` | `owner_profile_id` | No | Yes | `None` | — | — | — |
 | `owner` | `Optional[TaskAssignee]` | `owner` | No | Yes | `None` | — | — | — |
 | `ownership_provenance` | `str` | `ownership_provenance` | No | No | `'unassigned'` | — | — | — |
+| `agent_working` | `Optional[bool]` | `agent_working` | No | Yes | `None` | — | — | — |
 | `blocked_reason` | `Optional[str]` | `blocked_reason` | No | Yes | `None` | — | — | — |
 | `canceled_at` | `Optional[datetime]` | `canceled_at` | No | Yes | `None` | — | — | — |
 | `canceled_reason` | `Optional[str]` | `canceled_reason` | No | Yes | `None` | — | — | — |
@@ -140,7 +141,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_task](../modules/schemas_task.md) | 0 | `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `blocked_reason`, `brief` |
+| [schemas_task](../modules/schemas_task.md) | 0 | `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `agent_working`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `blocked_reason` |
 
 ### Structure
 

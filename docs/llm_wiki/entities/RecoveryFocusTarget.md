@@ -1,6 +1,6 @@
 # RecoveryFocusTarget
 
-**Location:** `frontend/src/pages/PlanMasterPage.tsx:72`
+**Location:** `frontend/src/pages/PlanMasterPage.tsx:74`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)

@@ -1,6 +1,6 @@
 # GanttStatusFilter
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:74`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:75`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)

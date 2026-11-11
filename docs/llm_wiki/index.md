@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1533 | [Open section](#entities) |
-| Modules | 765 | [Open section](#modules) |
+| Entities | 1535 | [Open section](#entities) |
+| Modules | 770 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 553 | [Open section](#entry-point-flows) |
@@ -379,6 +379,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FrontendTriageService](entities/FrontendTriageService.md)
 - [FrozenClock](entities/FrozenClock.md)
 - [GanttAssignee](entities/GanttAssignee.md)
+- [GanttBarInputChanges](entities/GanttBarInputChanges.md)
+- [GanttBarInputsProps](entities/GanttBarInputsProps.md)
 - [GanttChartProps](entities/GanttChartProps.md)
 - [GanttChart_FlattenedTask](entities/GanttChart_FlattenedTask.md)
 - [GanttGroupBy](entities/GanttGroupBy.md)
@@ -1614,6 +1616,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ExecutionUsagePanel](modules/ExecutionUsagePanel.md) - `frontend/src/components/analytics/ExecutionUsagePanel.tsx`
 - [ExecutionUsagePanel.test](modules/ExecutionUsagePanel.test.md) - `frontend/src/components/analytics/ExecutionUsagePanel.test.tsx`
 - [FullscreenWorkspace](modules/FullscreenWorkspace.md) - `frontend/src/components/common/FullscreenWorkspace.tsx`
+- [GanttBarInputs](modules/GanttBarInputs.md) - `frontend/src/components/gantt/GanttBarInputs.tsx`
 - [GanttChart](modules/GanttChart.md) - `frontend/src/components/gantt/GanttChart.tsx`
 - [GanttChart.test](modules/GanttChart.test.md) - `frontend/src/components/gantt/GanttChart.test.tsx`
 - [GanttPage](modules/GanttPage.md) - `frontend/src/pages/GanttPage.tsx`
@@ -1672,6 +1675,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanMasterPage.test](modules/PlanMasterPage.test.md) - `frontend/src/pages/PlanMasterPage.test.tsx`
 - [PlanPage](modules/PlanPage.md) - `frontend/src/pages/PlanPage.tsx`
 - [PlanPage.test](modules/PlanPage.test.md) - `frontend/src/pages/PlanPage.test.tsx`
+- [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) - `frontend/src/components/planning/PlanQuickAddCapacity.tsx`
+- [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) - `frontend/src/components/planning/PlanQuickAddCapacity.test.tsx`
 - [PlanReturnBar](modules/PlanReturnBar.md) - `frontend/src/components/planning/PlanReturnBar.tsx`
 - [PlanReturnBar.test](modules/PlanReturnBar.test.md) - `frontend/src/components/planning/PlanReturnBar.test.tsx`
 - [PlanSharePage](modules/PlanSharePage.md) - `frontend/src/pages/PlanSharePage.tsx`
@@ -1995,6 +2000,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [planningTaskIssues.test](modules/planningTaskIssues.test.md) - `frontend/src/features/planningMasters/planningTaskIssues.test.ts`
 - [planning_input_context](modules/planning_input_context.md) - Complete permission-safe observations for shared planning input mutations.
 - [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
+- [planning_issues](modules/planning_issues.md) - One rule for the planning gaps people and the PM see: "needs an assignee" and "missing effort".
 - [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
 - [postgres_runtime](modules/postgres_runtime.md) - Own an isolated PostgreSQL cluster on a native runner.
 - [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
@@ -2217,6 +2223,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
+- [test_planning_issues](modules/test_planning_issues.md) - The "needs an assignee" and "missing effort" rule shared by counts and filters.
 - [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
 - [test_postgresql_concurrency](modules/test_postgresql_concurrency.md) - DBM-RUN-001 real-PostgreSQL concurrency and invariant matrix.

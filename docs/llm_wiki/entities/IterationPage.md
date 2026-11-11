@@ -1,6 +1,6 @@
 # IterationPage
 
-**Location:** `backend/app/schemas/iteration.py:134`
+**Location:** `backend/app/schemas/iteration.py:138`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
