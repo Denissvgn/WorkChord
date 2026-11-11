@@ -346,9 +346,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
 | [i18n](modules/i18n.md) | 35 | 1 |
 | [models_identity](modules/models_identity.md) | 33 | 2 |
+| [agent_service](modules/agent_service.md) | 30 | 16 |
 | [formatDate](modules/formatDate.md) | 30 | 1 |
 | [models_calendar](modules/models_calendar.md) | 29 | 2 |
-| [agent_service](modules/agent_service.md) | 29 | 16 |
 | [Input](modules/Input.md) | 29 | 0 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 27 | 9 |
 | [taskService](modules/taskService.md) | 27 | 3 |
@@ -358,9 +358,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [user_session](modules/user_session.md) | 24 | 6 |
 | [index](modules/index.md) | 23 | 0 |
 | [planningInputService](modules/planningInputService.md) | 22 | 1 |
+| [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
 | [services_work_metrics](modules/services_work_metrics.md) | 21 | 8 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
-| [schemas_agent](modules/schemas_agent.md) | 20 | 8 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
@@ -873,6 +873,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_local_baseline](modules/test_local_baseline.md) | 0 | 0 |
 | [test_routing_evidence](modules/test_routing_evidence.md) | 0 | 0 |
 | [runtime_peer](modules/runtime_peer.md) | 0 | 4 |
+| [test_agent_blocker_reason](modules/test_agent_blocker_reason.md) | 0 | 1 |
 | [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) | 0 | 18 |
 | [test_agent_routing_contract](modules/test_agent_routing_contract.md) | 0 | 7 |
 | [test_agent_routing_data](modules/test_agent_routing_data.md) | 0 | 8 |
@@ -925,7 +926,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_task_pagination](modules/test_task_pagination.md) | 0 | 15 |
 | [test_time_reports](modules/test_time_reports.md) | 0 | 18 |
 | [test_work_correctness](modules/test_work_correctness.md) | 0 | 27 |
-| [test_workflow_vocabulary](modules/test_workflow_vocabulary.md) | 0 | 0 |
+| [test_workflow_vocabulary](modules/test_workflow_vocabulary.md) | 0 | 1 |
 | [eslint.config](modules/eslint.config.md) | 0 | 0 |
 | [postcss.config](modules/postcss.config.md) | 0 | 0 |
 | [check-bundle-budget](modules/check-bundle-budget.md) | 0 | 0 |

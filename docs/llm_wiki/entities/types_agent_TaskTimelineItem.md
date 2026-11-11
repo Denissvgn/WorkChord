@@ -1,6 +1,6 @@
 # TaskTimelineItem
 
-**Location:** `frontend/src/types/agent.ts:621`
+**Location:** `frontend/src/types/agent.ts:620`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)
@@ -19,6 +19,7 @@ _Auto-generated from `TaskTimelineItem` in `frontend/src/types/agent.ts`._
 | `payload` | `JsonObject` | Yes | — | — |
 | `actor_type` | `string \| null` | No | — | — |
 | `actor_id` | `number \| null` | No | — | — |
+| `actor_name` | `string \| null` | No | — | — |
 | `trace_id` | `string \| null` | No | — | — |
 
 ## Methods
@@ -41,7 +42,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_agent](../modules/types_agent.md) | 0 | `actor_id`, `actor_type`, `item_type`, `payload`, `timestamp`, `title`, `trace_id` |
+| [types_agent](../modules/types_agent.md) | 0 | `actor_id`, `actor_name`, `actor_type`, `item_type`, `payload`, `timestamp`, `title`, `trace_id` |
 
 ### References
 

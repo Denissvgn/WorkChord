@@ -116,9 +116,9 @@ flowchart LR
 | get_profile_skill_catalog | _require_catalog_read | 84 | `_require_catalog_read(actor)` |
 | _require_catalog_read | any | 68 | `any(...)` |
 | _require_catalog_read | actor_has_scope | 69 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance | 75 | `isinstance(scopes, list)` |
+| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 86 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance | 89 | `isinstance(scopes, list)` |
 | _require_catalog_read | HTTPException | 72 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Missing catalog read scope')` |
 | get_profile_skill_catalog | AgentProfileCatalogService.catalog | 85 | `AgentProfileCatalogService(db).catalog(data not statically known)` |
 | get_profile_skill_catalog | AgentProfileCatalogService | 85 | `AgentProfileCatalogService(db)` |
@@ -132,8 +132,8 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | external_call | `_require_catalog_read` | `any` | 68 |
-| external_call | `actor_scopes` | `json.loads` | 72 |
-| external_call | `actor_scopes` | `isinstance` | 75 |
+| external_call | `actor_scopes` | `json.loads` | 86 |
+| external_call | `actor_scopes` | `isinstance` | 89 |
 | external_call | `_require_catalog_read` | `HTTPException` | 72 |
 
 ## Behavior

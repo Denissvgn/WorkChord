@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/utils/taskFilters.test.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe` |
+| Module calls | `describe`, `describe` |
 
 ## Local dependency map
 

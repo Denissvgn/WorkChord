@@ -84,7 +84,7 @@ flowchart LR
 | [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 569 | — | — |
 | [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 582 | — | — |
 | [AgentPipeline](../entities/AgentPipeline.md) | Interface | 610 | — | — |
-| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 621 | — | — |
+| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 620 | — | — |
 | [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 631 | — | — |
 | [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 647 | — | — |
 | [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 653 | — | — |

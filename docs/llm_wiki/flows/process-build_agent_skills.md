@@ -74,7 +74,7 @@ sequenceDiagram
     p0-->>p30: _parser().parse_args(argv)
 ```
 
-> Call sequence diagram shows 30 of 1266 interactions; 1236 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 1267 interactions; 1237 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
 > Captured boundary calls: external 1 of 310 (309 omitted); unresolved 1 of 424 (423 omitted). These counts cover the captured static trace.
 
@@ -103,9 +103,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 533; effect analysis evaluated: 301, partial: 11, unavailable: 221. Counts include steps omitted from the displayed trace.
+Source steps: 534; effect analysis evaluated: 302, partial: 11, unavailable: 221. Counts include steps omitted from the displayed trace.
 
-Collector observations for 312 source steps with known totals: observed: 1411, emitted: 1384, omitted: 27. Unavailable totals are excluded.
+Collector observations for 313 source steps with known totals: observed: 1414, emitted: 1387, omitted: 27. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,45 +201,45 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | _parser().parse_args | 3394 | `_parser().parse_args(argv)` |
-| main | _parser | 3394 | `_parser(data not statically known)` |
-| _parser | argparse.ArgumentParser | 3335 | `argparse.ArgumentParser(description=__doc__)` |
-| _parser | parser.add_argument | 3336 | `parser.add_argument('--skills-dir', type=Path, default=DEFAULT_SKILLS_DIR, help='Canonical agent-skills directory (default: repository agent-skills)')` |
-| _parser | parser.add_subparsers | 3342 | `parser.add_subparsers(dest='command', required=True)` |
-| _parser | subparsers.add_parser | 3343 | `subparsers.add_parser('sync-generated', help='Synchronize shared contract blocks and role openai.yaml adapters')` |
-| _parser | subparsers.add_parser | 3347 | `subparsers.add_parser('contract-json', help='Print the canonical machine-readable assigned-work v1 contract')` |
-| _parser | subparsers.add_parser | 3351 | `subparsers.add_parser('generate', help='Regenerate catalog.json from role folders')` |
-| _parser | subparsers.add_parser | 3352 | `subparsers.add_parser('freeze-release', help='Append current exact role versions to the immutable release baseline')` |
-| _parser | subparsers.add_parser | 3356 | `subparsers.add_parser('validate', help='Validate role folders and catalog.json')` |
-| _parser | subparsers.add_parser | 3357 | `subparsers.add_parser('build', help='Build reproducible role archives')` |
+| main | _parser().parse_args | 3404 | `_parser().parse_args(argv)` |
+| main | _parser | 3404 | `_parser(data not statically known)` |
+| _parser | argparse.ArgumentParser | 3345 | `argparse.ArgumentParser(description=__doc__)` |
+| _parser | parser.add_argument | 3346 | `parser.add_argument('--skills-dir', type=Path, default=DEFAULT_SKILLS_DIR, help='Canonical agent-skills directory (default: repository agent-skills)')` |
+| _parser | parser.add_subparsers | 3352 | `parser.add_subparsers(dest='command', required=True)` |
+| _parser | subparsers.add_parser | 3353 | `subparsers.add_parser('sync-generated', help='Synchronize shared contract blocks and role openai.yaml adapters')` |
+| _parser | subparsers.add_parser | 3357 | `subparsers.add_parser('contract-json', help='Print the canonical machine-readable assigned-work v1 contract')` |
+| _parser | subparsers.add_parser | 3361 | `subparsers.add_parser('generate', help='Regenerate catalog.json from role folders')` |
+| _parser | subparsers.add_parser | 3362 | `subparsers.add_parser('freeze-release', help='Append current exact role versions to the immutable release baseline')` |
+| _parser | subparsers.add_parser | 3366 | `subparsers.add_parser('validate', help='Validate role folders and catalog.json')` |
+| _parser | subparsers.add_parser | 3367 | `subparsers.add_parser('build', help='Build reproducible role archives')` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| output | `print` | `main` | 3403 |
-| output | `print` | `main` | 3408 |
-| output | `print` | `main` | 3411 |
-| output | `print` | `main` | 3414 |
-| output | `print` | `main` | 3417 |
-| output | `print` | `main` | 3423 |
-| output | `print` | `main` | 3426 |
-| output | `print` | `main` | 3435 |
+| output | `print` | `main` | 3413 |
+| output | `print` | `main` | 3418 |
+| output | `print` | `main` | 3421 |
+| output | `print` | `main` | 3424 |
+| output | `print` | `main` | 3427 |
+| output | `print` | `main` | 3433 |
+| output | `print` | `main` | 3436 |
+| output | `print` | `main` | 3445 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `main` | `_parser().parse_args` | 3394 |
-| external_call | `_parser` | `argparse.ArgumentParser` | 3335 |
-| unresolved_call | `_parser` | `parser.add_argument` | 3336 |
-| unresolved_call | `_parser` | `parser.add_subparsers` | 3342 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3343 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3347 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3351 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3352 |
-| unresolved_call | `_parser` | `subparsers.add_parser` | 3356 |
+| unresolved_call | `main` | `_parser().parse_args` | 3404 |
+| external_call | `_parser` | `argparse.ArgumentParser` | 3345 |
+| unresolved_call | `_parser` | `parser.add_argument` | 3346 |
+| unresolved_call | `_parser` | `parser.add_subparsers` | 3352 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3353 |
 | unresolved_call | `_parser` | `subparsers.add_parser` | 3357 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3361 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3362 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3366 |
+| unresolved_call | `_parser` | `subparsers.add_parser` | 3367 |
 | step_limit | `main` | `first 12 steps` | 0 |
 | truncated_flow | `main` | `depth limit` | 0 |
 

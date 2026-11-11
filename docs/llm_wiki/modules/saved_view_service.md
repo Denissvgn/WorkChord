@@ -7,6 +7,7 @@
 Service for saved view persistence and filter payload compatibility.
 
 Task dashboard cards count matching leaves. Personal ownership follows the durable principal after explicit guest transfer, retaining original session attribution. Legacy overdue predicates migrate to explicit iteration overflow with a disclosure note, while new overdue predicates mean open delivery already past its expected finish.
+The built-in Blocked view filters on the reported blocker state (`isBlocked`), not on a label, so it matches the project's blocked count and agent-reported blockers.
 
 ## Imports
 
@@ -61,4 +62,4 @@ flowchart LR
 |-------|------|-------|-------------|
 | [SavedViewPermissionError](../entities/SavedViewPermissionError.md) | 26 | `PermissionError` | Raised when a session cannot mutate a saved view. |
 | [SavedViewValidationError](../entities/SavedViewValidationError.md) | 30 | `ValueError` | Raised when a saved view payload is invalid. |
-| [SavedViewService](../entities/SavedViewService.md) | 174 | — | Service for saved view CRUD and compatibility-safe read models. |
+| [SavedViewService](../entities/SavedViewService.md) | 175 | — | Service for saved view CRUD and compatibility-safe read models. |

@@ -157,11 +157,11 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | create_agent_actor | require_scope | 558 | `require_scope(actor, 'admin')` |
-| require_scope | actor_has_scope | 86 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 80 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 72 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 75 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 87 | `AgentPermissionError(...)` |
+| require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 86 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
 | create_agent_actor | service.create_actor | 559 | `service.create_actor(data, principal=actor)` |
 | create_agent_actor | _handle_agent_error | 564 | `_handle_agent_error(exc)` |
 | _handle_agent_error | isinstance (backend/app/routers/agent.py:_handle_agent_error) | 254 | `isinstance(exc, AgentPermissionError)` |
@@ -176,8 +176,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 72 |
-| external_call | `actor_scopes` | `isinstance` | 75 |
+| external_call | `actor_scopes` | `json.loads` | 86 |
+| external_call | `actor_scopes` | `isinstance` | 89 |
 | unresolved_call | `create_agent_actor` | `service.create_actor` | 559 |
 | external_call | `_handle_agent_error` | `isinstance` | 254 |
 | step_limit | `create_agent_actor` | `first 12 steps` | 0 |

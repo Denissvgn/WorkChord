@@ -1,6 +1,6 @@
 # TaskProgress
 
-**Location:** `frontend/src/types/task.ts:449`
+**Location:** `frontend/src/types/task.ts:450`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

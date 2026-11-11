@@ -21,6 +21,7 @@ _Auto-generated from `TaskFilters` in `frontend/src/components/tasks/TaskFilters
 | `hasDependency` | `boolean \| null` | Yes | — | — |
 | `isOverdue` | `boolean \| null` | Yes | — | — |
 | `isIterationOverflow` | `boolean \| null` | No | — | — |
+| `isBlocked` | `boolean \| null` | No | — | — |
 | `agentReady` | `boolean \| null` | Yes | — | — |
 | `startDateFrom` | `string` | Yes | — | — |
 | `startDateTo` | `string` | Yes | — | — |
@@ -82,7 +83,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentReady`, `assigneeId`, `endDateFrom`, `endDateTo`, `hasDependency`, `isIterationOverflow`, `isOverdue`, `labelGroupKeys`, `labelSlugs`, `planningIssue`, `priority`, `projectId` |
+| [TaskFiltersBar](../modules/TaskFiltersBar.md) | 0 | `agentReady`, `assigneeId`, `endDateFrom`, `endDateTo`, `hasDependency`, `isBlocked`, `isIterationOverflow`, `isOverdue`, `labelGroupKeys`, `labelSlugs`, `planningIssue`, `priority` |
 
 ### References
 

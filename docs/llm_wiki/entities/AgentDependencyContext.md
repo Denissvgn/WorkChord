@@ -1,6 +1,6 @@
 # AgentDependencyContext
 
-**Location:** `backend/app/schemas/agent.py:764`
+**Location:** `backend/app/schemas/agent.py:767`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1527 | [Open section](#entities) |
-| Modules | 759 | [Open section](#modules) |
+| Modules | 760 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 551 | [Open section](#entry-point-flows) |
@@ -2149,6 +2149,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [template_service](modules/template_service.md) - Service for reusable work templates and built-in defaults.
 - [templates](modules/templates.md) - Template API router.
 - [test_acceptance_artifacts](modules/test_acceptance_artifacts.md) - Public exports retain exact signed bytes and reject secret or failed evidence.
+- [test_agent_blocker_reason](modules/test_agent_blocker_reason.md) - An agent-reported blocker becomes the task's human-readable Blocked reason.
 - [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) - Focused Wave 2 model administration and actor-roster qualification.
 - [test_agent_routing_contract](modules/test_agent_routing_contract.md) - Focused contract tests for model-aware routing vocabulary and compatibility.
 - [test_agent_routing_data](modules/test_agent_routing_data.md) - Focused model and schema coverage for MAR-DATA-001 and MAR-DATA-002.

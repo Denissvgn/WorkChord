@@ -44,7 +44,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (20) |
+| Inbound | `backend` (21) |
 | Outbound | `backend` (8) |
 
 ### External packages
@@ -53,7 +53,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -76,50 +76,50 @@ flowchart LR
 | [AgentRunEventResponse](../entities/AgentRunEventResponse.md) | Pydantic model | 390 | `BaseModel` | Agent run event response. |
 | [AgentRunResponse](../entities/AgentRunResponse.md) | Pydantic model | 404 | `BaseModel` | Agent run response. |
 | [TaskTimelineItem](../entities/schemas_agent_TaskTimelineItem.md) | Pydantic model | 445 | `BaseModel` | Merged timeline item for a task. |
-| [TaskTimelineResponse](../entities/schemas_agent_TaskTimelineResponse.md) | Pydantic model | 456 | `BaseModel` | Merged task timeline response. |
-| [TaskTimelinePageItem](../entities/TaskTimelinePageItem.md) | Pydantic model | 462 | `TaskTimelineItem` | — |
-| [TaskTimelinePage](../entities/TaskTimelinePage.md) | Pydantic model | 466 | `BaseModel` | — |
-| [AgentPipelineResponse](../entities/AgentPipelineResponse.md) | Pydantic model | 475 | `BaseModel` | Segmented task list representing the agent supervision pipeline board. |
-| [AgentRunDetailResponse](../entities/AgentRunDetailResponse.md) | Pydantic model | 487 | `AgentRunResponse` | Full detail of an agent run including its list of chronological trace events. |
-| [AgentAssignmentPurpose](../entities/schemas_agent_AgentAssignmentPurpose.md) | Type alias | 494 | `Literal['execution', 'verification']` | — |
-| [AgentAssignmentQueueClass](../entities/schemas_agent_AgentAssignmentQueueClass.md) | Type alias | 495 | `Literal['normal', 'rework', 'recovery']` | — |
-| [AgentAssignmentState](../entities/schemas_agent_AgentAssignmentState.md) | Type alias | 496 | `Literal['queued', 'accepted', 'fulfilled', 'cancelled']` | — |
-| [AgentTaskAssignmentCreate](../entities/AgentTaskAssignmentCreate.md) | Pydantic model | 499 | `BaseModel` | PM command to dispatch a task to an exact actor. |
-| [ModelAwareAgentTaskAssignmentCreate](../entities/schemas_agent_ModelAwareAgentTaskAssignmentCreate.md) | Pydantic model | 546 | `BaseModel` | PM command to dispatch one preview-selected actor/model binding. |
-| [AgentTaskAssignmentUpdate](../entities/AgentTaskAssignmentUpdate.md) | Pydantic model | 591 | `BaseModel` | PM command to reorder, reassign, or cancel a queued assignment. |
-| [ModelAwareAgentTaskAssignmentUpdate](../entities/schemas_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Pydantic model | 605 | `BaseModel` | PM command to reroute queued work through a fresh routing preview. |
-| [AgentTaskAssignmentResponse](../entities/AgentTaskAssignmentResponse.md) | Pydantic model | 640 | `BaseModel` | Durable agent task assignment response. |
-| [AgentRoutingTopologyReadinessResponse](../entities/AgentRoutingTopologyReadinessResponse.md) | Pydantic model | 670 | `BaseModel` | Bounded server-owned topology readiness exposed to agent clients. |
-| [AgentRoutingRolloutStatusResponse](../entities/AgentRoutingRolloutStatusResponse.md) | Pydantic model | 688 | `BaseModel` | Explicit configured and effective model-aware routing rollout state. |
-| [AgentCapabilitiesResponse](../entities/AgentCapabilitiesResponse.md) | Pydantic model | 700 | `BaseModel` | Authenticated compatibility and actor capability handshake. |
-| [AgentActorRosterProfileSkill](../entities/schemas_agent_AgentActorRosterProfileSkill.md) | Pydantic model | 724 | `BaseModel` | Bounded capability evidence attached to one roster profile. |
-| [AgentActorRosterProfile](../entities/schemas_agent_AgentActorRosterProfile.md) | Pydantic model | 737 | `BaseModel` | Secret-free profile projection used for exact-actor routing. |
-| [AgentActorRosterItem](../entities/schemas_agent_AgentActorRosterItem.md) | Pydantic model | 750 | `AgentActorResponse` | Secret-free actor dispatch roster item. |
-| [AgentDependencyContext](../entities/AgentDependencyContext.md) | Pydantic model | 764 | `BaseModel` | Dependency state returned in complete worker context. |
-| [AgentTaskContextResponse](../entities/AgentTaskContextResponse.md) | Pydantic model | 773 | `BaseModel` | Complete task context for an assigned worker. |
-| [AgentWorkItem](../entities/AgentWorkItem.md) | Pydantic model | 799 | `BaseModel` | One ordered assigned-work item. |
-| [AgentPaginationMetadata](../entities/AgentPaginationMetadata.md) | Pydantic model | 812 | `BaseModel` | Opaque snapshot-bound pagination metadata shared by REST and MCP. |
-| [AgentCollectionPageMetadata](../entities/AgentCollectionPageMetadata.md) | Pydantic model | 822 | `BaseModel` | Per-collection counts for compound assigned-work pages. |
-| [AgentWorkPaginationMetadata](../entities/AgentWorkPaginationMetadata.md) | Pydantic model | 829 | `AgentPaginationMetadata` | Pagination metadata for ready and blocked assigned-work collections. |
-| [AgentWorkDecisionResponse](../entities/AgentWorkDecisionResponse.md) | Pydantic model | 836 | `BaseModel` | Server-authoritative current/next work decision. |
-| [AgentReviewQueueResponse](../entities/AgentReviewQueueResponse.md) | Pydantic model | 854 | `BaseModel` | Paginated verifier queue projection. |
-| [AgentWorkBegin](../entities/AgentWorkBegin.md) | Pydantic model | 861 | `BaseModel` | Atomically accept and start a server-selected work assignment. |
-| [ModelAwareAgentWorkBegin](../entities/ModelAwareAgentWorkBegin.md) | Pydantic model | 882 | `BaseModel` | Atomically begin only the model binding selected by routing. |
-| [AgentWorkBeginResponse](../entities/AgentWorkBeginResponse.md) | Pydantic model | 913 | `BaseModel` | Atomic begin result containing all new authoritative state. |
-| [AgentWorkRenew](../entities/AgentWorkRenew.md) | Pydantic model | 925 | `BaseModel` | Renew the live fence for one accepted assignment and running run. |
-| [AgentWorkSubmit](../entities/AgentWorkSubmit.md) | Pydantic model | 941 | `BaseModel` | Atomically submit an active assignment for verification. |
-| [AgentWorkTerminal](../entities/AgentWorkTerminal.md) | Pydantic model | 978 | `BaseModel` | Atomically fail or cancel an active assignment. |
-| [AgentWorkTerminalResponse](../entities/AgentWorkTerminalResponse.md) | Pydantic model | 1001 | `BaseModel` | Atomic submit/fail result. |
-| [AgentReviewVerdict](../entities/AgentReviewVerdict.md) | Pydantic model | 1010 | `BaseModel` | Verifier-scoped pass or rejection command. |
-| [AgentReviewVerdictResponse](../entities/AgentReviewVerdictResponse.md) | Pydantic model | 1032 | `BaseModel` | Verification result plus optional rework assignment. |
-| [AgentRecoveryRequeue](../entities/AgentRecoveryRequeue.md) | Pydantic model | 1040 | `BaseModel` | PM command to replace stale execution ownership with recovery work. |
-| [AgentRecoveryItem](../entities/AgentRecoveryItem.md) | Pydantic model | 1054 | `BaseModel` | Typed PM recovery diagnosis and optimistic ownership tuple. |
-| [AgentRecoveryListResponse](../entities/AgentRecoveryListResponse.md) | Pydantic model | 1069 | `BaseModel` | Paginated PM recovery projection. |
-| [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1076 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
-| [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1085 | `BaseModel` | Agent-authored append-only project status report. |
-| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Pydantic model | 1109 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
-| [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1113 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
-| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Pydantic model | 1138 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
+| [TaskTimelineResponse](../entities/schemas_agent_TaskTimelineResponse.md) | Pydantic model | 457 | `BaseModel` | Merged task timeline response. |
+| [TaskTimelinePageItem](../entities/TaskTimelinePageItem.md) | Pydantic model | 463 | `TaskTimelineItem` | — |
+| [TaskTimelinePage](../entities/TaskTimelinePage.md) | Pydantic model | 467 | `BaseModel` | — |
+| [AgentPipelineResponse](../entities/AgentPipelineResponse.md) | Pydantic model | 476 | `BaseModel` | Agent supervision pipeline; every open task appears in exactly one stage. |
+| [AgentRunDetailResponse](../entities/AgentRunDetailResponse.md) | Pydantic model | 490 | `AgentRunResponse` | Full detail of an agent run including its list of chronological trace events. |
+| [AgentAssignmentPurpose](../entities/schemas_agent_AgentAssignmentPurpose.md) | Type alias | 497 | `Literal['execution', 'verification']` | — |
+| [AgentAssignmentQueueClass](../entities/schemas_agent_AgentAssignmentQueueClass.md) | Type alias | 498 | `Literal['normal', 'rework', 'recovery']` | — |
+| [AgentAssignmentState](../entities/schemas_agent_AgentAssignmentState.md) | Type alias | 499 | `Literal['queued', 'accepted', 'fulfilled', 'cancelled']` | — |
+| [AgentTaskAssignmentCreate](../entities/AgentTaskAssignmentCreate.md) | Pydantic model | 502 | `BaseModel` | PM command to dispatch a task to an exact actor. |
+| [ModelAwareAgentTaskAssignmentCreate](../entities/schemas_agent_ModelAwareAgentTaskAssignmentCreate.md) | Pydantic model | 549 | `BaseModel` | PM command to dispatch one preview-selected actor/model binding. |
+| [AgentTaskAssignmentUpdate](../entities/AgentTaskAssignmentUpdate.md) | Pydantic model | 594 | `BaseModel` | PM command to reorder, reassign, or cancel a queued assignment. |
+| [ModelAwareAgentTaskAssignmentUpdate](../entities/schemas_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Pydantic model | 608 | `BaseModel` | PM command to reroute queued work through a fresh routing preview. |
+| [AgentTaskAssignmentResponse](../entities/AgentTaskAssignmentResponse.md) | Pydantic model | 643 | `BaseModel` | Durable agent task assignment response. |
+| [AgentRoutingTopologyReadinessResponse](../entities/AgentRoutingTopologyReadinessResponse.md) | Pydantic model | 673 | `BaseModel` | Bounded server-owned topology readiness exposed to agent clients. |
+| [AgentRoutingRolloutStatusResponse](../entities/AgentRoutingRolloutStatusResponse.md) | Pydantic model | 691 | `BaseModel` | Explicit configured and effective model-aware routing rollout state. |
+| [AgentCapabilitiesResponse](../entities/AgentCapabilitiesResponse.md) | Pydantic model | 703 | `BaseModel` | Authenticated compatibility and actor capability handshake. |
+| [AgentActorRosterProfileSkill](../entities/schemas_agent_AgentActorRosterProfileSkill.md) | Pydantic model | 727 | `BaseModel` | Bounded capability evidence attached to one roster profile. |
+| [AgentActorRosterProfile](../entities/schemas_agent_AgentActorRosterProfile.md) | Pydantic model | 740 | `BaseModel` | Secret-free profile projection used for exact-actor routing. |
+| [AgentActorRosterItem](../entities/schemas_agent_AgentActorRosterItem.md) | Pydantic model | 753 | `AgentActorResponse` | Secret-free actor dispatch roster item. |
+| [AgentDependencyContext](../entities/AgentDependencyContext.md) | Pydantic model | 767 | `BaseModel` | Dependency state returned in complete worker context. |
+| [AgentTaskContextResponse](../entities/AgentTaskContextResponse.md) | Pydantic model | 776 | `BaseModel` | Complete task context for an assigned worker. |
+| [AgentWorkItem](../entities/AgentWorkItem.md) | Pydantic model | 802 | `BaseModel` | One ordered assigned-work item. |
+| [AgentPaginationMetadata](../entities/AgentPaginationMetadata.md) | Pydantic model | 815 | `BaseModel` | Opaque snapshot-bound pagination metadata shared by REST and MCP. |
+| [AgentCollectionPageMetadata](../entities/AgentCollectionPageMetadata.md) | Pydantic model | 825 | `BaseModel` | Per-collection counts for compound assigned-work pages. |
+| [AgentWorkPaginationMetadata](../entities/AgentWorkPaginationMetadata.md) | Pydantic model | 832 | `AgentPaginationMetadata` | Pagination metadata for ready and blocked assigned-work collections. |
+| [AgentWorkDecisionResponse](../entities/AgentWorkDecisionResponse.md) | Pydantic model | 839 | `BaseModel` | Server-authoritative current/next work decision. |
+| [AgentReviewQueueResponse](../entities/AgentReviewQueueResponse.md) | Pydantic model | 857 | `BaseModel` | Paginated verifier queue projection. |
+| [AgentWorkBegin](../entities/AgentWorkBegin.md) | Pydantic model | 864 | `BaseModel` | Atomically accept and start a server-selected work assignment. |
+| [ModelAwareAgentWorkBegin](../entities/ModelAwareAgentWorkBegin.md) | Pydantic model | 885 | `BaseModel` | Atomically begin only the model binding selected by routing. |
+| [AgentWorkBeginResponse](../entities/AgentWorkBeginResponse.md) | Pydantic model | 916 | `BaseModel` | Atomic begin result containing all new authoritative state. |
+| [AgentWorkRenew](../entities/AgentWorkRenew.md) | Pydantic model | 928 | `BaseModel` | Renew the live fence for one accepted assignment and running run. |
+| [AgentWorkSubmit](../entities/AgentWorkSubmit.md) | Pydantic model | 944 | `BaseModel` | Atomically submit an active assignment for verification. |
+| [AgentWorkTerminal](../entities/AgentWorkTerminal.md) | Pydantic model | 981 | `BaseModel` | Atomically fail or cancel an active assignment. |
+| [AgentWorkTerminalResponse](../entities/AgentWorkTerminalResponse.md) | Pydantic model | 1004 | `BaseModel` | Atomic submit/fail result. |
+| [AgentReviewVerdict](../entities/AgentReviewVerdict.md) | Pydantic model | 1013 | `BaseModel` | Verifier-scoped pass or rejection command. |
+| [AgentReviewVerdictResponse](../entities/AgentReviewVerdictResponse.md) | Pydantic model | 1035 | `BaseModel` | Verification result plus optional rework assignment. |
+| [AgentRecoveryRequeue](../entities/AgentRecoveryRequeue.md) | Pydantic model | 1043 | `BaseModel` | PM command to replace stale execution ownership with recovery work. |
+| [AgentRecoveryItem](../entities/AgentRecoveryItem.md) | Pydantic model | 1057 | `BaseModel` | Typed PM recovery diagnosis and optimistic ownership tuple. |
+| [AgentRecoveryListResponse](../entities/AgentRecoveryListResponse.md) | Pydantic model | 1072 | `BaseModel` | Paginated PM recovery projection. |
+| [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1079 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
+| [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1088 | `BaseModel` | Agent-authored append-only project status report. |
+| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Pydantic model | 1112 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
+| [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1116 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
+| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Pydantic model | 1141 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
 
 ## Functions
 

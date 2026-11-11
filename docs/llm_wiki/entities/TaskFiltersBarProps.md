@@ -1,6 +1,6 @@
 # TaskFiltersBarProps
 
-**Location:** `frontend/src/components/tasks/TaskFiltersBar.tsx:33`
+**Location:** `frontend/src/components/tasks/TaskFiltersBar.tsx:34`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskFiltersBar](../modules/TaskFiltersBar.md)

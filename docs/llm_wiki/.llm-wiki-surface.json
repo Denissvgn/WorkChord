@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 759,
+      "modules": 760,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3045
+    "total": 3046
   },
   "dependency_pages": {
     "count": 2,
@@ -51,13 +51,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -614,25 +614,25 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 110,
               "step": "validate_idempotency_key",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 100,
+              "line": 114,
               "step": "validate_idempotency_key",
               "target": "value.strip"
             },
@@ -1909,25 +1909,25 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 110,
               "step": "validate_idempotency_key",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 100,
+              "line": 114,
               "step": "validate_idempotency_key",
               "target": "value.strip"
             },
@@ -2127,25 +2127,25 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 110,
               "step": "validate_idempotency_key",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 100,
+              "line": 114,
               "step": "validate_idempotency_key",
               "target": "value.strip"
             },
@@ -2632,13 +2632,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -3917,25 +3917,25 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 110,
               "step": "validate_idempotency_key",
               "target": "ValueError"
             },
             {
               "kind": "unresolved_call",
-              "line": 100,
+              "line": 114,
               "step": "validate_idempotency_key",
               "target": "value.strip"
             },
@@ -5778,13 +5778,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -8551,35 +8551,11 @@
               "line": 1315,
               "step": "get_agent_pipeline",
               "target": "service.get_pipeline"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 1319,
-              "step": "get_agent_pipeline",
-              "target": "cols.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 1320,
-              "step": "get_agent_pipeline",
-              "target": "cols.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 1321,
-              "step": "get_agent_pipeline",
-              "target": "cols.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 1324,
-              "step": "get_agent_pipeline",
-              "target": "cols.get"
             }
           ],
           "generated": true,
-          "step_count": 7,
-          "transfer_count": 6,
+          "step_count": 3,
+          "transfer_count": 2,
           "truncated": false
         },
         "flow": {
@@ -8587,7 +8563,7 @@
             "backend/app/routers/agent.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 7,
+          "step_count": 3,
           "truncated": false
         }
       },
@@ -8614,13 +8590,13 @@
             },
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -8669,13 +8645,13 @@
             },
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -8718,13 +8694,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1335,
+              "line": 1326,
               "step": "get_agent_run_detail",
               "target": "service.get_run"
             },
             {
               "kind": "external_call",
-              "line": 1337,
+              "line": 1328,
               "step": "get_agent_run_detail",
               "target": "HTTPException"
             },
@@ -9440,13 +9416,13 @@
             },
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -10578,13 +10554,13 @@
             },
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -11580,19 +11556,19 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 1431,
+              "line": 1450,
               "step": "AgentService.get_task_timeline",
               "target": "self.db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 1431,
+              "line": 1450,
               "step": "AgentService.get_task_timeline",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 1431,
+              "line": 1450,
               "step": "AgentService.get_task_timeline",
               "target": "select"
             },
@@ -11623,7 +11599,7 @@
             "backend/app/query_limits.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 85,
+          "step_count": 97,
           "truncated": false
         }
       },
@@ -11721,7 +11697,7 @@
             "backend/app/utils/time.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 80,
+          "step_count": 92,
           "truncated": false
         }
       },
@@ -16275,13 +16251,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -18233,7 +18209,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 1354,
+              "line": 1345,
               "step": "record_execution_usage",
               "target": "ExecutionUsageService(db).write"
             },
@@ -20373,13 +20349,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -22613,13 +22589,13 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
@@ -23727,19 +23703,19 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 72,
+              "line": 86,
               "step": "actor_scopes",
               "target": "json.loads"
             },
             {
               "kind": "external_call",
-              "line": 75,
+              "line": 89,
               "step": "actor_scopes",
               "target": "isinstance"
             },
             {
               "kind": "external_call",
-              "line": 96,
+              "line": 110,
               "step": "validate_idempotency_key",
               "target": "ValueError"
             },
@@ -25612,7 +25588,7 @@
             "backend/app/services/outbound_webhook_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 317,
+          "step_count": 323,
           "truncated": true
         }
       },
@@ -28018,7 +27994,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 540,
+          "step_count": 552,
           "truncated": true
         }
       },
@@ -28642,7 +28618,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 477,
+          "step_count": 476,
           "truncated": true
         }
       },
@@ -28909,7 +28885,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 324,
+          "step_count": 336,
           "truncated": true
         }
       },
@@ -30310,7 +30286,7 @@
             "backend/app/services/agent_routing_policy.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 440,
+          "step_count": 439,
           "truncated": true
         }
       },
@@ -32934,7 +32910,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 504,
+          "step_count": 516,
           "truncated": true
         }
       },
@@ -33843,7 +33819,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 287,
+          "step_count": 299,
           "truncated": true
         }
       },
@@ -37476,7 +37452,7 @@
             "backend/app/services/saved_view_service.py",
             "backend/app/schemas/saved_view.py"
           ],
-          "step_count": 314,
+          "step_count": 315,
           "truncated": true
         }
       },
@@ -38524,7 +38500,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3403,
+              "line": 3413,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38532,7 +38508,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3408,
+              "line": 3418,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38540,7 +38516,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3411,
+              "line": 3421,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38548,7 +38524,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3414,
+              "line": 3424,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38556,7 +38532,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3417,
+              "line": 3427,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38564,7 +38540,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3423,
+              "line": 3433,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38572,7 +38548,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3426,
+              "line": 3436,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38580,7 +38556,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 3435,
+              "line": 3445,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -38589,61 +38565,61 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3394,
+              "line": 3404,
               "step": "main",
               "target": "_parser().parse_args"
             },
             {
               "kind": "external_call",
-              "line": 3335,
+              "line": 3345,
               "step": "_parser",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 3336,
+              "line": 3346,
               "step": "_parser",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 3342,
+              "line": 3352,
               "step": "_parser",
               "target": "parser.add_subparsers"
             },
             {
               "kind": "unresolved_call",
-              "line": 3343,
-              "step": "_parser",
-              "target": "subparsers.add_parser"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 3347,
-              "step": "_parser",
-              "target": "subparsers.add_parser"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 3351,
-              "step": "_parser",
-              "target": "subparsers.add_parser"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 3352,
-              "step": "_parser",
-              "target": "subparsers.add_parser"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 3356,
+              "line": 3353,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
             {
               "kind": "unresolved_call",
               "line": 3357,
+              "step": "_parser",
+              "target": "subparsers.add_parser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 3361,
+              "step": "_parser",
+              "target": "subparsers.add_parser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 3362,
+              "step": "_parser",
+              "target": "subparsers.add_parser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 3366,
+              "step": "_parser",
+              "target": "subparsers.add_parser"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 3367,
               "step": "_parser",
               "target": "subparsers.add_parser"
             },
@@ -38669,7 +38645,7 @@
           "modules_touched": [
             "scripts/build_agent_skills.py"
           ],
-          "step_count": 1267,
+          "step_count": 1268,
           "truncated": true
         }
       },
@@ -41950,7 +41926,7 @@
             "backend/app/services/task_timeline_service.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 730,
+          "step_count": 742,
           "truncated": true
         }
       },
@@ -45809,6 +45785,7 @@
         "modules/templates.md",
         "modules/templateService.md",
         "modules/test_acceptance_artifacts.md",
+        "modules/test_agent_blocker_reason.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -47218,7 +47195,8 @@
       "mcp_uri": "llm-wiki://entities/AgentPipelineResponse",
       "outgoing_internal_links": [
         "modules/routers_agent.md",
-        "modules/schemas_agent.md"
+        "modules/schemas_agent.md",
+        "modules/test_workflow_vocabulary.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -77561,6 +77539,19 @@
       "title": "test_acceptance_artifacts Module"
     },
     {
+      "canonical_path": "modules/test_agent_blocker_reason.md",
+      "id": "test_agent_blocker_reason",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_agent_blocker_reason",
+      "outgoing_internal_links": [
+        "modules/agent_service.md",
+        "modules/test_agent_blocker_reason.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_blocker_reason.py",
+      "title": "test_agent_blocker_reason Module"
+    },
+    {
       "canonical_path": "modules/test_agent_model_catalog_api.md",
       "id": "test_agent_model_catalog_api",
       "kind": "modules",
@@ -78965,7 +78956,10 @@
       "id": "test_workflow_vocabulary",
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/test_workflow_vocabulary",
-      "outgoing_internal_links": [],
+      "outgoing_internal_links": [
+        "modules/schemas_agent.md",
+        "modules/test_workflow_vocabulary.md"
+      ],
       "role": "semantic",
       "source_path": "backend/tests/test_workflow_vocabulary.py",
       "title": "test_workflow_vocabulary Module"
@@ -94584,6 +94578,7 @@
         "modules/templates.md",
         "modules/templateService.md",
         "modules/test_acceptance_artifacts.md",
+        "modules/test_agent_blocker_reason.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -95354,6 +95349,7 @@
         "modules/templates.md",
         "modules/templateService.md",
         "modules/test_acceptance_artifacts.md",
+        "modules/test_agent_blocker_reason.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -95532,5 +95528,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:c4aa07fb790e2f45e7be043ecd39c00baf4139e0517235f016ec6e2e94f8038d"
+  "source_hash": "sha256:eb6f147de028c988f0f6f766d94a3ac03e4f537ae54be0a1e057049292e5d478"
 }

@@ -20,6 +20,7 @@ _Auto-generated from `TaskTimelineService` in `backend/app/services/task_timelin
 | `__init__` | `(db, serializer = None)` | — | — |
 | `decode` | `(cursor, task_id)` | `@staticmethod` | — |
 | `page` | *(async)* `(task_id, *, limit = 50, cursor = None)` | — | — |
+| `_attach_agent_names` | *(async)* `(items)` | — | Show which agent wrote each item, so Activity names the reporter. |
 | `item` | `(source, row, at)` | — | — |
 
 ## Relationships
@@ -47,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [task_timeline_service](../modules/task_timeline_service.md) | 4 | — |
+| [task_timeline_service](../modules/task_timeline_service.md) | 5 | — |
 
 ### References
 

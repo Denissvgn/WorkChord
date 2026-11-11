@@ -7,7 +7,7 @@
 **Target:**
 
 ```typescript
-{ id: string; name: Localized | string; group?: Localized }
+{ id: string; name: Localized | string; group?: Localized; description?: Localized }
 ```
 
 ## Description

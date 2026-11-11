@@ -81,21 +81,21 @@ flowchart LR
 | [TaskStatusLog](../entities/types_task_TaskStatusLog.md) | Interface | 366 | — | — |
 | [TaskStatusStats](../entities/types_task_TaskStatusStats.md) | Interface | 378 | — | — |
 | [TaskTimelineItem](../entities/types_task_TaskTimelineItem.md) | Interface | 384 | — | — |
-| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Interface | 394 | — | — |
-| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Interface | 399 | — | — |
-| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Interface | 406 | — | — |
-| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Interface | 412 | — | — |
-| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Interface | 418 | — | — |
-| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Interface | 424 | — | — |
-| [TaskBrief](../entities/types_task_TaskBrief.md) | Interface | 431 | — | — |
-| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Interface | 442 | — | — |
-| [TaskProgress](../entities/TaskProgress.md) | Interface | 449 | — | — |
-| [TaskReference](../entities/types_task_TaskReference.md) | Interface | 456 | — | — |
-| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 462 | — | — |
-| [TaskDetail](../entities/TaskDetail.md) | Interface | 463 | — | — |
-| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 467 | — | — |
-| [TaskActions](../entities/TaskActions.md) | Interface | 468 | — | — |
-| [TaskCommand](../entities/TaskCommand.md) | Interface | 472 | — | — |
+| [TaskTimelineResponse](../entities/types_task_TaskTimelineResponse.md) | Interface | 395 | — | — |
+| [TaskBatchUpdateItem](../entities/types_task_TaskBatchUpdateItem.md) | Interface | 400 | — | — |
+| [TaskBatchUpdateRequest](../entities/types_task_TaskBatchUpdateRequest.md) | Interface | 407 | — | — |
+| [TaskBatchUpdateResponseItem](../entities/types_task_TaskBatchUpdateResponseItem.md) | Interface | 413 | — | — |
+| [TaskBatchUpdateResponse](../entities/types_task_TaskBatchUpdateResponse.md) | Interface | 419 | — | — |
+| [BriefCriterion](../entities/types_task_BriefCriterion.md) | Interface | 425 | — | — |
+| [TaskBrief](../entities/types_task_TaskBrief.md) | Interface | 432 | — | — |
+| [CriterionProgress](../entities/types_task_CriterionProgress.md) | Interface | 443 | — | — |
+| [TaskProgress](../entities/TaskProgress.md) | Interface | 450 | — | — |
+| [TaskReference](../entities/types_task_TaskReference.md) | Interface | 457 | — | — |
+| [TaskReferencePage](../entities/types_task_TaskReferencePage.md) | Interface | 463 | — | — |
+| [TaskDetail](../entities/TaskDetail.md) | Interface | 464 | — | — |
+| [TaskActionAvailability](../entities/types_task_TaskActionAvailability.md) | Interface | 468 | — | — |
+| [TaskActions](../entities/TaskActions.md) | Interface | 469 | — | — |
+| [TaskCommand](../entities/TaskCommand.md) | Interface | 473 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 45 | `'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
 | [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 46 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| string` | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 276 | `'tasks' \| 'triage' \| 'auto'` | — |
