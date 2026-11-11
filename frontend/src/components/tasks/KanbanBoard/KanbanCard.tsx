@@ -1,11 +1,12 @@
-import i18n from '../../../i18n/i18n';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useTranslation } from 'react-i18next';
 import type { Task } from '../../../types/task';
 import { Bot, Clock, User as UserIcon, AlertCircle, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
+import { formatEffortDays } from '../../../utils/workNumbers';
+import { formatClaimUntil } from './claimTime';
 
-const t = i18n.t.bind(i18n);
 
 interface KanbanCardProps {
     task: Task;
@@ -13,6 +14,9 @@ interface KanbanCardProps {
 }
 
 export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
+    const { t, i18n } = useTranslation();
+    const effort = formatEffortDays(task.effort_days, i18n.language);
+    const claimUntil = task.claim_expires_at ? formatClaimUntil(task.claim_expires_at, i18n.language) : null;
     const {
         attributes,
         listeners,
@@ -62,26 +66,32 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
             <div className={clsx("absolute left-0 top-3 bottom-3 w-1 rounded-r-full", priorityColor)} />
 
             <div className="pl-3">
-                {/* Header: ID and Badges */}
-                <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs tabular-nums text-content-secondary">#{task.id} · P{task.priority}</span>
+                {/* Header: the one task ID, its priority and the move handle */}
+                <div className="flex items-start justify-between gap-2">
+                    <span className="pt-1 text-xs tabular-nums text-content-secondary">#{task.id} · P{task.priority}</span>
                     <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })}
-                        className="flex h-11 w-11 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                        className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
                     </button>
-                    {task.is_overdue && (
-                        <div className="flex items-center gap-1 text-xs text-feedback-danger-foreground">
-                            <AlertCircle className="w-4 h-4" aria-hidden="true" />
-                            <span>{t('surfaces.kanbanCard.overdue')}</span>
-                        </div>
-                    )}
-                    {task.claimed_by && (
-                        <div className="flex flex-wrap items-center gap-1 text-xs text-content-secondary">
-                            <span>{t('surfaces.kanbanCard.claimedBy', { name: task.claimed_by.display_name })}{task.claim_expires_at ? ` · ${new Date(task.claim_expires_at).toLocaleString()}` : ''}</span>
-                            <Bot className="w-4 h-4" />
-                        </div>
-                    )}
                 </div>
+                {(task.is_overdue || task.claimed_by) && (
+                    <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                        {task.is_overdue && (
+                            <span className="flex items-center gap-1 text-feedback-danger-foreground">
+                                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                                {t('surfaces.kanbanCard.overdue')}
+                            </span>
+                        )}
+                        {task.claimed_by && (
+                            <span className="flex items-center gap-1 text-content-secondary">
+                                <Bot className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                {claimUntil
+                                    ? t('surfaces.kanbanCard.claimHeldUntil', { name: task.claimed_by.display_name, time: claimUntil })
+                                    : t('surfaces.kanbanCard.claimedBy', { name: task.claimed_by.display_name })}
+                            </span>
+                        )}
+                    </div>
+                )}
 
                 {/* Title */}
                 {'parent_context' in task && Array.isArray(task.parent_context) && task.parent_context.length > 0 &&
@@ -111,8 +121,8 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                     </div>
 
                     <div className="flex items-center gap-1 bg-surface-muted px-2 py-1 rounded-md">
-                        <Clock className="w-3 h-3 text-content-tertiary" />
-                        <span>{task.effort_days}d</span>
+                        <Clock className="w-3 h-3 text-content-tertiary" aria-hidden="true" />
+                        <span>{effort ?? t('surfaces.kanbanCard.noEstimate')}</span>
                     </div>
                 </div>
             </div>

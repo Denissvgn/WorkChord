@@ -42,9 +42,10 @@ interface KanbanBoardProps {
 type ColumnId = 'planned-unassigned' | 'planned-assigned' | 'active' | 'resolved' | 'closed';
 
 const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus }[] = [
-    { id: 'planned-unassigned', titleKey: 'backlogUnassigned', status: 'planned' },
-    { id: 'planned-assigned', titleKey: 'readyAssigned', status: 'planned' },
-    { id: 'active', titleKey: 'inProgress', status: 'active' },
+    // Lifecycle names, the same words as status everywhere else; Planned splits by whether someone owns it.
+    { id: 'planned-unassigned', titleKey: 'plannedUnassigned', status: 'planned' },
+    { id: 'planned-assigned', titleKey: 'plannedAssigned', status: 'planned' },
+    { id: 'active', titleKey: 'active', status: 'active' },
     { id: 'resolved', titleKey: 'resolved', status: 'resolved' },
     { id: 'closed', titleKey: 'closed', status: 'closed' },
 ];
@@ -305,7 +306,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const queryError = tasksQuery.error ?? teamQuery.error ?? labelsQuery.error;
     if (queryError) return <QueryErrorState error={queryError} onRetry={() => { void tasksQuery.refetch(); void teamQuery.refetch(); void labelsQuery.refetch(); }} />;
     const ownershipColumnTitle = ownershipSelection
-        ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'inProgress'}`)
+        ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'active'}`)
         : '';
 
     return (
@@ -331,7 +332,8 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                         }}
                     />
                 )}
-                <div className="flex h-full gap-4 overflow-x-auto pb-4 items-start">
+                {/* Fluid columns share the width; empty ones fold, so all five fit at 1440. */}
+                <div className="flex h-full items-start gap-3 overflow-x-auto pb-4">
                     {COLUMNS.map((col) => (
                         <KanbanColumn
                             key={col.id}

@@ -3207,12 +3207,14 @@ export const russianResources = {
                     overdue: "Просрочено",
                     unassigned: "Не назначено",
                     claimedBy: "Назначено агенту {{name}}",
+                    claimHeldUntil: "Взято агентом {{name}} до {{time}}",
+                    noEstimate: "Без оценки",
                 },
                 kanbanBoard: {
                     columns: {
-                        backlogUnassigned: "Бэклог / не назначено",
-                        readyAssigned: "Готово / назначено",
-                        inProgress: "В работе",
+                        plannedUnassigned: "Запланировано, без исполнителя",
+                        plannedAssigned: "Запланировано, назначено",
+                        active: "Активно",
                         resolved: "Решено",
                         closed: "Закрыто",
                     },
@@ -3230,7 +3232,11 @@ export const russianResources = {
                     assignmentMoveFailed: "Не удалось назначить и переместить задачу. Проверьте доску и повторите попытку.",
                 },
                 kanbanColumn: {
-                    dropItemsHere: "Перетащите элементы сюда",
+                    emptyColumn: "{{title}}: задач нет. Перетащите задачу сюда, чтобы переместить её.",
+                    showMore_one: "Показать ещё {{count}} (осталось {{remaining}})",
+                    showMore_few: "Показать ещё {{count}} (осталось {{remaining}})",
+                    showMore_many: "Показать ещё {{count}} (осталось {{remaining}})",
+                    showMore_other: "Показать ещё {{count}} (осталось {{remaining}})",
                 },
                 labelSelector: {
                     labels: "Метки",

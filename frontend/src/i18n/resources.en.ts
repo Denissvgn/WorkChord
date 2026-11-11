@@ -3859,12 +3859,14 @@ export const englishResources = {
                     overdue: "Overdue delivery",
                     unassigned: "Unassigned",
                     claimedBy: "Claimed by {{name}}",
+                    claimHeldUntil: "Claimed by {{name}}, held until {{time}}",
+                    noEstimate: "No estimate",
                 },
                 kanbanBoard: {
                     columns: {
-                        backlogUnassigned: "Backlog / Unassigned",
-                        readyAssigned: "Ready / Assigned",
-                        inProgress: "In Progress",
+                        plannedUnassigned: "Planned, no assignee",
+                        plannedAssigned: "Planned, assigned",
+                        active: "Active",
                         resolved: "Resolved",
                         closed: "Closed",
                     },
@@ -3882,7 +3884,9 @@ export const englishResources = {
                     assignmentMoveFailed: "The task could not be assigned and moved. Review the board and try again.",
                 },
                 kanbanColumn: {
-                    dropItemsHere: "Drop items here",
+                    emptyColumn: "{{title}}: no tasks. Drop a task here to move it.",
+                    showMore_one: "Show {{count}} more ({{remaining}} left)",
+                    showMore_other: "Show {{count}} more ({{remaining}} left)",
                 },
                 labelSelector: {
                     labels: "Labels",

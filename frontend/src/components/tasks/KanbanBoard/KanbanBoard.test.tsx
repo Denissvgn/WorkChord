@@ -152,8 +152,8 @@ describe('KanbanBoard explicit ownership guard', () => {
     });
 
     it.each([
-        ['planned-assigned', 'Ready / Assigned'],
-        ['active', 'In Progress'],
+        ['planned-assigned', 'Planned, assigned'],
+        ['active', 'Active'],
     ])('requires an explicit assignee before a drop into %s', async (target, column) => {
         const { user } = renderBoard();
 
