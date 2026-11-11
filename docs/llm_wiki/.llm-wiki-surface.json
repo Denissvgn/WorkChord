@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 822,
+      "modules": 824,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3153
+    "total": 3155
   },
   "dependency_pages": {
     "count": 2,
@@ -45976,6 +45976,7 @@
         "modules/LandingPage.test.md",
         "modules/language_service.md",
         "modules/leases.md",
+        "modules/literals.ru.md",
         "modules/LiveWindowStatus.md",
         "modules/llm_service.md",
         "modules/load_common.md",
@@ -46261,6 +46262,7 @@
         "modules/StickyRail.md",
         "modules/support___init__.md",
         "modules/support_database.md",
+        "modules/surfaces.ru.md",
         "modules/system_settings_service.md",
         "modules/SystemHealthPanel.md",
         "modules/SystemLanguageProvider.md",
@@ -72752,6 +72754,19 @@
       "title": "leases Module"
     },
     {
+      "canonical_path": "modules/literals.ru.md",
+      "id": "literals.ru",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/literals.ru",
+      "outgoing_internal_links": [
+        "modules/literals.ru.md",
+        "modules/resources.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/literals.ru.ts",
+      "title": "literals.ru Module"
+    },
+    {
       "canonical_path": "modules/LiveWindowStatus.md",
       "id": "LiveWindowStatus",
       "kind": "modules",
@@ -75434,17 +75449,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/resources.ru",
       "outgoing_internal_links": [
-        "modules/agentTeamSetup.ru.md",
-        "modules/i18n.test.md",
-        "modules/landing.ru.md",
-        "modules/pagination.md",
-        "modules/plan.ru.md",
-        "modules/PlanMasterPage.test.md",
-        "modules/planningInputMessages.md",
-        "modules/resources.ru.md",
-        "modules/teamwork.ru.md",
-        "modules/timeEntries.md",
-        "modules/workflowVocabulary.test.md"
+        "modules/resources.ru.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/i18n/resources.ru.ts",
@@ -77895,6 +77900,19 @@
       "role": "semantic",
       "source_path": "backend/tests/support/database.py",
       "title": "database Module"
+    },
+    {
+      "canonical_path": "modules/surfaces.ru.md",
+      "id": "surfaces.ru",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/surfaces.ru",
+      "outgoing_internal_links": [
+        "modules/resources.ru.md",
+        "modules/surfaces.ru.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/i18n/surfaces.ru.ts",
+      "title": "surfaces.ru Module"
     },
     {
       "canonical_path": "modules/system_settings_service.md",
@@ -96432,6 +96450,7 @@
         "modules/LandingPage.test.md",
         "modules/language_service.md",
         "modules/leases.md",
+        "modules/literals.ru.md",
         "modules/LiveWindowStatus.md",
         "modules/llm_service.md",
         "modules/load_common.md",
@@ -96717,6 +96736,7 @@
         "modules/StickyRail.md",
         "modules/support___init__.md",
         "modules/support_database.md",
+        "modules/surfaces.ru.md",
         "modules/system_settings_service.md",
         "modules/SystemHealthPanel.md",
         "modules/SystemLanguageProvider.md",
@@ -97265,6 +97285,7 @@
         "modules/LandingPage.test.md",
         "modules/language_service.md",
         "modules/leases.md",
+        "modules/literals.ru.md",
         "modules/LiveWindowStatus.md",
         "modules/llm_service.md",
         "modules/load_common.md",
@@ -97550,6 +97571,7 @@
         "modules/StickyRail.md",
         "modules/support___init__.md",
         "modules/support_database.md",
+        "modules/surfaces.ru.md",
         "modules/system_settings_service.md",
         "modules/SystemHealthPanel.md",
         "modules/SystemLanguageProvider.md",
@@ -97825,5 +97847,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:e1386563436d55102fc4c8b3612588e78c0fde84a209622aa447443f16b352a4"
+  "source_hash": "sha256:1da826b4be003faf16167261a321ddcf8f75e052a285171301b74bf4afb9ac29"
 }

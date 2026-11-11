@@ -3181,3 +3181,19 @@ Team setup now consumes the bundle service’s integrity-validated release catal
 - Infrastructure moved: 0
 - Infrastructure removed: 0
 - Unsupported infrastructure YAML: 8
+
+## 2026-11-11
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:3f5d8cfee2d055f30379b71251c6baf7fe2f1fc0b72a504762d7b3a167ecdc25`
+- Pages created: 2
+- Pages updated: 4
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3134
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

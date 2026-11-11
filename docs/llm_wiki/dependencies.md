@@ -666,7 +666,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 11 |
 | [overviewTaskThread](modules/overviewTaskThread.md) | 3 | 0 |
 | [workspaceQueryPolicy](modules/workspaceQueryPolicy.md) | 3 | 2 |
-| [resources.ru](modules/resources.ru.md) | 3 | 7 |
+| [resources.ru](modules/resources.ru.md) | 3 | 9 |
 | [ganttService](modules/ganttService.md) | 3 | 3 |
 | [releaseService](modules/releaseService.md) | 3 | 2 |
 | [systemSettingsService](modules/systemSettingsService.md) | 3 | 2 |
@@ -875,7 +875,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agentTeamSetup.ru](modules/agentTeamSetup.ru.md) | 1 | 0 |
 | [landing.en](modules/landing.en.md) | 1 | 0 |
 | [landing.ru](modules/landing.ru.md) | 1 | 0 |
+| [literals.ru](modules/literals.ru.md) | 1 | 0 |
 | [plan.ru](modules/plan.ru.md) | 1 | 0 |
+| [surfaces.ru](modules/surfaces.ru.md) | 1 | 0 |
 | [teamwork.en](modules/teamwork.en.md) | 1 | 0 |
 | [teamwork.ru](modules/teamwork.ru.md) | 1 | 0 |
 | [helpContexts](modules/helpContexts.md) | 1 | 2 |

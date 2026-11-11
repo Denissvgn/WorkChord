@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1561 | [Open section](#entities) |
-| Modules | 822 | [Open section](#modules) |
+| Modules | 824 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 557 | [Open section](#entry-point-flows) |
@@ -2008,6 +2008,7 @@ Retained history; these declarations are absent from the selected source invento
 - [landing.ru](modules/landing.ru.md) - `frontend/src/i18n/landing.ru.ts`
 - [language_service](modules/language_service.md) - Language resolution helpers for UI and AI output.
 - [leases](modules/leases.md) - Short-lived exact-target action leases parented to durable attempt starts.
+- [literals.ru](modules/literals.ru.md) - /** Russian copy for shared literal strings; its own chunk keeps the main Russian catalog under the route budget. */
 - [llm_service](modules/llm_service.md) - LLM service for task formalization and schedule explanation.
 - [load_common](modules/load_common.md) - Shared, fail-closed contracts for the WorkChord load and qualification tools.
 - [loader](modules/loader.md) - Installed-resource loader for the PostgreSQL machine contract bundle.
@@ -2205,6 +2206,7 @@ Retained history; these declarations are absent from the selected source invento
 - [statusScopes.test](modules/statusScopes.test.md) - `frontend/src/features/agentTeamSetup/statusScopes.test.ts`
 - [support___init__](modules/support___init__.md) - Reusable test infrastructure for database and concurrency qualification.
 - [support_database](modules/support_database.md) - Safety-fenced lifecycle management for disposable test databases.
+- [surfaces.ru](modules/surfaces.ru.md) - /** Russian copy for per-surface UI strings; its own chunk keeps the main Russian catalog under the route budget. */
 - [systemSettings](modules/systemSettings.md) - `frontend/src/types/systemSettings.ts`
 - [systemSettingsService](modules/systemSettingsService.md) - `frontend/src/services/systemSettingsService.ts`
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
