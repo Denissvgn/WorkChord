@@ -1137,10 +1137,13 @@
 /* ── Cards ───────────────────────────────────────────────────────────────── */
 :where(.wc .card) {
   background: var(--panel);
-  border: 1px solid var(--border);
+  /* The default border, not the faintest one: a card edge should be visible (subtle was about 1.05:1). */
+  border: 1px solid rgb(var(--color-border-default));
   border-radius: var(--wc-r-md);
   box-shadow: var(--sh-1);
 }
+/* A card without the head/body structure gets its own padding, so content never touches the edge. */
+:where(.wc .card:not(:has(> .card-head, > .card-pad))) { padding: 16px; }
 .wc .card.p-4 { padding: 16px; }
 .wc .card.space-y-3 > * + * { margin-top: 12px; }
 .wc .card.space-y-4 > * + * { margin-top: 16px; }
