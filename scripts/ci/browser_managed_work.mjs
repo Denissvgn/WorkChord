@@ -23,6 +23,10 @@ const signedIn = async name => {
   await page.getByRole('link', { name: `Continue as ${name}` }).click();
   await page.getByText(name, { exact: true }).first().waitFor();
 };
+// The task drawer opens read-first; the full editor is one click away.
+const editAllFields = async (target = page) => {
+  await target.getByRole('button', { name: 'Edit all fields', exact: true }).click();
+};
 const openNested = async () => {
   const board = page.getByRole('button', { name: 'Open task: Nested leaf', exact: true });
   if (new URL(page.url()).searchParams.get('layout') === 'board' || await board.count()) {
@@ -35,6 +39,7 @@ const openNested = async () => {
     if (await expand.count()) await expand.click();
     await page.getByRole('button', { name: 'Edit Task: Nested leaf', exact: true }).click();
   }
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Description', exact: true }).waitFor();
 };
 const closeDirty = async () => {
@@ -151,6 +156,11 @@ try {
   assert.equal(capturedTask.iteration_id, null);
   assert.equal(capturedTask.owner_profile_id, me.profile.id);
   await page.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
+  // Read-first: the brief reads without inputs, with its own Edit and the evidence one click away.
+  await page.getByRole('button', { name: 'Edit brief', exact: true }).waitFor();
+  assert.equal(await page.getByRole('textbox', { name: 'Goal', exact: true }).count(), 0);
+  await page.screenshot({ path: join(artifacts, 'canonical-read-desktop.png'), fullPage: true });
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Goal', exact: true }).waitFor();
   await page.getByRole('textbox', { name: 'Goal', exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'canonical-brief-desktop.png'), fullPage: true });
@@ -171,6 +181,7 @@ try {
   await page.getByRole('textbox', { name: 'Evidence', exact: true }).fill('Discard this evidence draft');
   await closeDirty();
   await page.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Evidence', exact: true }).waitFor();
   assert.equal(await page.getByRole('textbox', { name: 'Evidence', exact: true }).inputValue(), '');
   await page.getByLabel('The result can be inspected independently', { exact: true }).selectOption('completed');
@@ -195,6 +206,7 @@ try {
   await reviewerPage.getByRole('link', { name: 'Sign in', exact: true }).click();
   await reviewerPage.getByRole('link', { name: 'Continue as Charlie' }).click();
   await reviewerPage.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
+  await editAllFields(reviewerPage);
   await reviewerPage.getByRole('textbox', { name: 'Reason for the action or review', exact: true }).fill('Independently inspected the criterion evidence');
   // A person records a result for every criterion before Accept is enabled.
   assert.equal(await reviewerPage.getByRole('button', { name: 'Accept', exact: true }).isDisabled(), true);
@@ -217,6 +229,7 @@ try {
   await page.goto('/tasks?scope=backlog');
   await page.getByRole('searchbox', { name: 'Search tasks', exact: true }).fill(`#${capturedTask.id}`);
   await page.getByRole('region', { name: 'Search tasks', exact: true }).getByRole('link', { name: `#${capturedTask.id} · Canonical browser work`, exact: true }).click();
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Task Title', exact: false }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'teamwork-editor-desktop.png'), fullPage: true });
   await page.getByRole('textbox', { name: 'New comment', exact: true }).fill('Coordinate delivery with the reviewer');

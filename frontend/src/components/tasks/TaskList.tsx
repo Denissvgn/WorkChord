@@ -81,6 +81,8 @@ interface TaskListProps {
     onModeChange?: (mode: TaskMode | null) => void;
     /** Select every matching task once when bulk mode opens from a hand-off. */
     preselectAllInBulk?: boolean;
+    /** Open a task in the page's read-first view (keeps ?task=<id> in the URL). */
+    onOpenTask?: (task: Task) => void;
 }
 
 export const TaskList = ({
@@ -95,6 +97,7 @@ export const TaskList = ({
     requestedMode,
     onModeChange,
     preselectAllInBulk = false,
+    onOpenTask,
 }: TaskListProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
@@ -558,7 +561,7 @@ export const TaskList = ({
                             <SortableTaskItem
                                 key={task.id}
                                 task={task}
-                                onEdit={setEditingTask}
+                                onEdit={onOpenTask ?? setEditingTask}
                                 onAddSubtask={setAddingChildTo}
                                 onDelete={(t) => setDeletingTask(t)}
                                 onUnmerge={(id) => unmergeMutation.mutate(id)}
@@ -586,7 +589,7 @@ export const TaskList = ({
                     <TaskItemContent
                         key={task.id}
                         task={task}
-                        onEdit={setEditingTask}
+                        onEdit={onOpenTask ?? setEditingTask}
                         onAddSubtask={setAddingChildTo}
                         onDelete={(t) => setDeletingTask(t)}
                         onUnmerge={(id) => unmergeMutation.mutate(id)}

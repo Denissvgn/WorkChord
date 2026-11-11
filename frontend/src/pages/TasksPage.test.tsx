@@ -89,6 +89,11 @@ vi.mock('../components/tasks/TaskForm', () => ({
     ),
 }));
 
+vi.mock('../components/tasks/TaskReadView', () => ({
+    TASK_PART_PARAM: 'part',
+    TaskReadView: ({ task }: { task: Task }) => <p>Reading {task.title}</p>,
+}));
+
 const LocationProbe = () => {
     const location = useLocation();
     return (
@@ -316,7 +321,8 @@ describe('TasksPage', () => {
             name: 'Resolve launch blocker',
         })).toBeVisible();
         await waitFor(() => expect(closeTaskEditor).toHaveFocus());
-        expect(within(drawer).getByText('Editing Resolve launch blocker')).toBeVisible();
+        // The drawer opens read-first; editing is one click away.
+        expect(within(drawer).getByText('Reading Resolve launch blocker')).toBeVisible();
         expect(within(drawer).getByText('Planning thread · Work now')).toBeVisible();
         expect(screen.getByRole('complementary', {
             name: 'Planning thread from Overview',

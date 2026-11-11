@@ -30,6 +30,8 @@ import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
 import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
+import { TASK_PART_PARAM } from '../components/tasks/TaskReadView';
+import type { Task } from '../types/task';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
@@ -348,7 +350,15 @@ const TasksPage = () => {
         const nextSearchParams = new URLSearchParams(searchParams);
         nextSearchParams.delete(OVERVIEW_TASK_PARAM);
         nextSearchParams.delete(OVERVIEW_TASK_THREAD_PARAM);
+        nextSearchParams.delete(TASK_PART_PARAM);
         setSearchParams(nextSearchParams, { replace: true });
+    }, [searchParams, setSearchParams]);
+    // Opening a task puts it in the URL, so a refresh or a copied link reopens it.
+    const openTask = useCallback((task: Task) => {
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.set(OVERVIEW_TASK_PARAM, String(task.id));
+        nextSearchParams.delete(TASK_PART_PARAM);
+        setSearchParams(nextSearchParams);
     }, [searchParams, setSearchParams]);
 
     const applySavedView = useCallback((view: SavedView) => {
@@ -735,6 +745,7 @@ const TasksPage = () => {
                                         requestedMode={taskMode}
                                         onModeChange={mode => setTaskContextParam('mode', mode)}
                                         preselectAllInBulk={taskMode === 'bulk' && filters.planningIssue === 'unassigned'}
+                                        onOpenTask={openTask}
                                     />
                                 </div>
                             </div>

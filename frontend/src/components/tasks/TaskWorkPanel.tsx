@@ -15,9 +15,11 @@ import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
 
-export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload }: {
+export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, initialAction }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void;
+    /** Preselects an action, for example when the task view's header sends the person here. */
+    initialAction?: string;
 }) => {
     const { t } = useTranslation();
     const isActive = useActiveMount();
@@ -50,7 +52,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         ? { [task.iteration_id]: savedCommand()?.commandRevisions[task.iteration_id] ?? task.iteration_revision } : {});
     const [commandRevisions, setCommandRevisions] = useState<ObservedRevisions>(() => savedCommand()?.commandRevisions ?? sourceRevisions);
     const targetContext = usePlanningObservation<Iteration>();
-    const [action, setAction] = useState(() => savedCommand()?.action ?? '');
+    const [action, setAction] = useState(() => savedCommand()?.action ?? initialAction ?? '');
     const [contextError, setContextError] = useState<unknown>(null);
     const [iterationId, setIterationId] = useState<string>(() => savedCommand()?.iterationId ?? '');
     const staleDraft = draftVersion !== task.version;

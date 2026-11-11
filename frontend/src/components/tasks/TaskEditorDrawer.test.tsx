@@ -7,6 +7,9 @@ import type { TaskDetail } from '../../types/task';
 const api = vi.hoisted(() => ({ getDetail: vi.fn() }));
 vi.mock('../../services/taskService', () => ({ taskService: api }));
 vi.mock('./TaskContextSummary', () => ({ TaskContextSummary: () => null }));
+vi.mock('./TaskReadView', () => ({ TaskReadView: ({ task }: { task: { version: number } }) => (
+    <div data-testid="editor-version">{task.version}</div>
+) }));
 vi.mock('./TaskForm', () => ({ TaskForm: ({ initialData }: { initialData: { version: number } }) => (
     <div data-testid="editor-version">{initialData.version}</div>
 ) }));

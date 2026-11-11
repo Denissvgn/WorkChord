@@ -5569,3 +5569,6 @@
   from { opacity: 0.82; }
   to { opacity: 1; }
 }
+
+/* Read-first task view: text areas grow with their content, so the drawer has one scroll. */
+.task-read-view textarea { field-sizing: content; min-height: 4.5rem; max-height: none; }
