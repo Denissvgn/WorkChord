@@ -41,8 +41,10 @@ import { useToast } from '../components/feedback/toast';
 import { MasterProgress } from '../components/ui/MasterProgress';
 import {
     isPlanningStepId,
+    PLAN_RETURNED_PARAM,
     withPlanMasterReturn,
 } from '../features/planningMasters/planningReturn';
+import { PlanQuickAddCapacity } from '../components/planning/PlanQuickAddCapacity';
 import type { PlanningStepId } from '../features/planningMasters/planningReturn';
 import {
     PLANNING_ITERATION_PARAM,
@@ -472,7 +474,9 @@ const StepCheckpoint = ({
     onCopyShare,
     onRefreshShare,
     onRevokeShare,
+    quickAction,
 }: {
+    quickAction?: ReactNode;
     stepId: string;
     headingRef: RefObject<HTMLHeadingElement | null>;
     status: Record<string, StepStatus>;
@@ -664,6 +668,15 @@ const StepCheckpoint = ({
                         </Link>
                     </section>
 
+                    {quickAction && stepStatus.state !== 'blocked' && (
+                        <section className="plan-checkpoint-action" aria-labelledby="plan-checkpoint-quick-action-heading">
+                            <div className="w-full">
+                                <h3 id="plan-checkpoint-quick-action-heading">{t('plan.master.quickAction')}</h3>
+                                {quickAction}
+                            </div>
+                        </section>
+                    )}
+
                     {definition.id === 'review' && stepStatus.state !== 'blocked' && (
                         <ShareCheckpoint
                             share={share}
@@ -699,6 +712,7 @@ const PlanMasterPage = () => {
     } = useConfirmDialog();
     const {
         currentIteration,
+        teamMembers,
         readinessData,
         status: rawStatus,
         queryStates,
@@ -871,6 +885,28 @@ const PlanMasterPage = () => {
     const ready = calculateReadiness(status);
     const requestedStep = searchParams.get('step');
     const stepId = isPlanningStepId(requestedStep) ? requestedStep : nextStep(status);
+    // Coming back from the linked page re-checks readiness, then moves on when the step is done.
+    const returnedToStep = searchParams.get(PLAN_RETURNED_PARAM) === '1';
+    const [returnCheckStarted, setReturnCheckStarted] = useState(false);
+    useEffect(() => {
+        if (!returnedToStep || returnCheckStarted) return;
+        setReturnCheckStarted(true);
+        void refetch().then(() => {
+            const fresh = new URLSearchParams(window.location.search);
+            fresh.delete(PLAN_RETURNED_PARAM);
+            setSearchParams(fresh, { replace: true });
+        });
+    }, [refetch, returnCheckStarted, returnedToStep, setSearchParams]);
+    const returnCheckDone = returnCheckStarted && !returnedToStep && !isFetching;
+    const [advancedAfterReturn, setAdvancedAfterReturn] = useState(false);
+    if (returnCheckDone && !advancedAfterReturn) {
+        setAdvancedAfterReturn(true);
+        if (status[stepId]?.state === 'done' && nextStep(status) !== stepId) {
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.set('step', nextStep(status));
+            setSearchParams(nextParams, { replace: true });
+        }
+    }
     const activeDefinition = STEP_DEFS.find(step => step.id === stepId) ?? STEP_DEFS[0]!;
     const hasRefetchError = Object.values(queryStates).some(query => query.isRefetchError);
     const currentShare = shareQuery.data ?? null;
@@ -1300,6 +1336,9 @@ const PlanMasterPage = () => {
                         status={status}
                         readiness={readinessData}
                         iterationId={currentIteration?.id ?? 0}
+                        quickAction={stepId === 'team' && currentIteration
+                            ? <PlanQuickAddCapacity iteration={currentIteration} members={teamMembers} />
+                            : undefined}
                         dataState={stepDataState}
                         share={currentShare}
                         shareLoading={shareQuery.isLoading}

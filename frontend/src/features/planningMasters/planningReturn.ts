@@ -15,8 +15,11 @@ export const isPlanningStepId = (value: string | null): value is PlanningStepId 
     Boolean(value && PLANNING_STEP_IDS.includes(value as PlanningStepId))
 );
 
-export const planMasterStepHref = (stepId: PlanningStepId) => (
-    `/plan/master?step=${stepId}`
+export const PLAN_RETURNED_PARAM = 'returned';
+
+/** Link back to a plan step; `returned` makes the step re-check and advance when done. */
+export const planMasterStepHref = (stepId: PlanningStepId, { returned = false }: { returned?: boolean } = {}) => (
+    `/plan/master?step=${stepId}${returned ? `&${PLAN_RETURNED_PARAM}=1` : ''}`
 );
 
 export const withPlanMasterReturn = (

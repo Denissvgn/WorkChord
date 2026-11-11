@@ -2174,6 +2174,18 @@ export const englishResources = {
                 },
             },
             plan: {
+                quickCapacity: {
+                    profile: 'Profile',
+                    chooseProfile: 'Choose a profile',
+                    agent: 'agent',
+                    add: 'Add capacity',
+                    addFailed: 'The capacity row could not be added.',
+                    profilesFailed: 'Profiles could not be loaded.',
+                    noProfiles: 'Every profile is already on this iteration. Create a new profile on the Team page.',
+                    help: 'Adds the profile with full availability; people keep 20% for meetings and admin, agents none. Adjust it on the Team page.',
+                    agentRole: 'Agent',
+                    personRole: 'Team member',
+                },
                 title: 'Plan Work',
                 description: 'Review iteration readiness and open the page that owns each planning change.',
                 noPeriodSelected: 'No planning period selected. Create or select a planning period to continue.',
@@ -2386,6 +2398,7 @@ export const englishResources = {
                     risksToAcknowledge_other: '{{count}} planning exceptions to review',
                 },
                 master: {
+                    quickAction: 'Do it here',
                     done: 'Done',
                     needsAttention: 'Needs attention',
                     blocked: 'Waiting for an earlier step',
