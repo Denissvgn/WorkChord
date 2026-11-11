@@ -928,6 +928,7 @@ export const englishResources = {
                 reason: 'Reason: {{reason}}',
             },
             gantt: {
+                dependencySummary: 'Depends on {{predecessors}}; {{successors}} depend on it.',
                 taskBarSummary: '{{title}}: {{status}}, scheduled from {{start}} to {{end}}.{{flags}}',
                 flagOverdue: 'Overdue.',
                 flagLateStart: 'Started late.',
@@ -3399,6 +3400,9 @@ export const englishResources = {
                     testSaveFirst: "Save your configuration changes before testing. Tests use the last saved configuration.",
                 },
                 ganttChart: {
+                    dependencyLinks: "Dependency links",
+                    dependencyCount_one: "{{count}} link",
+                    dependencyCount_other: "{{count}} links",
                     searchTasks: "Search tasks",
                     searchPlaceholder: "Search title or #ID",
                     statusFilter: "Status",

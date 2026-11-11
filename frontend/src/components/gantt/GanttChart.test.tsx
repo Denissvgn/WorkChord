@@ -324,3 +324,21 @@ describe('Gantt finding and grouping', () => {
         expect(screen.getByText('Write release notes')).toBeInTheDocument();
     });
 });
+
+describe('Gantt dependency links', () => {
+    const predecessor: GanttTask = { ...taskFixture, id: 301, title: 'Design the schema', start_date: '2026-01-05', end_date: '2026-01-06' };
+    const successor: GanttTask = { ...taskFixture, id: 302, title: 'Build the importer', start_date: '2026-01-07', end_date: '2026-01-08', dependencies: [301] };
+
+    it('draws a link, counts it on both tasks, and remembers the toggle', async () => {
+        window.localStorage.removeItem('workchord:gantt-show-dependency-links');
+        const { user, container } = renderChart(false, [predecessor, successor]);
+        expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(1);
+        expect(screen.getAllByText('1 link')).toHaveLength(2);
+        expect(screen.getByRole('button', { name: /Build the importer.*Depends on 1; 0 depend on it\./ })).toBeInTheDocument();
+        const toggle = screen.getByRole('button', { name: 'Dependency links' });
+        expect(toggle).toHaveAttribute('aria-pressed', 'true');
+        await user.click(toggle);
+        expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(0);
+        expect(window.localStorage.getItem('workchord:gantt-show-dependency-links')).toBe('false');
+    });
+});

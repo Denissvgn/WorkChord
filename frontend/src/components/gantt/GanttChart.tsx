@@ -3,7 +3,7 @@ import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, ListFilter, Eye } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
@@ -43,6 +43,16 @@ const TASK_COLUMN_MAX = 480;
 const TASK_COLUMN_DEFAULT = 300;
 const TASK_COLUMN_STORAGE_KEY = 'workchord:gantt-task-column-width';
 const LEGEND_STATUSES = ['planned', 'active', 'resolved', 'closed'] as const;
+const LINKS_STORAGE_KEY = 'workchord:gantt-show-dependency-links';
+const BAR_CENTER_Y = 24;
+
+const readStoredShowLinks = () => {
+    try {
+        return window.localStorage.getItem(LINKS_STORAGE_KEY) !== 'false';
+    } catch {
+        return true;
+    }
+};
 
 const readStoredTaskColumnWidth = () => {
     try {
@@ -148,6 +158,12 @@ export const GanttChart = ({
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+    const [showLinks, setShowLinksState] = useState(readStoredShowLinks);
+    const setShowLinks = (value: boolean) => {
+        setShowLinksState(value);
+        try { window.localStorage.setItem(LINKS_STORAGE_KEY, String(value)); } catch { /* Storage may be unavailable. */ }
+    };
+    const [hoveredTaskId, setHoveredTaskId] = useState<number | null>(null);
     const [searchText, setSearchText] = useState('');
     const [statusFilter, setStatusFilter] = useState<GanttStatusFilter>('');
     const [groupBy, setGroupBy] = useState<GanttGroupBy>('none');
@@ -399,6 +415,22 @@ export const GanttChart = ({
         return result;
     }, [collapsedGroups, displayTasks, groupBy, t]);
 
+    // Dependencies point from a task to its predecessors; invert them once for successors.
+    const successorsById = useMemo(() => {
+        const map = new Map<number, number[]>();
+        const visit = (task: GanttTask) => {
+            task.dependencies?.forEach(predecessorId => map.set(predecessorId, [...(map.get(predecessorId) ?? []), task.id]));
+            task.children?.forEach(visit);
+        };
+        sourceTasks.forEach(visit);
+        return map;
+    }, [sourceTasks]);
+    const rowIndexByTaskId = useMemo(() => {
+        const map = new Map<number, number>();
+        rows.forEach((row, index) => { if (row.kind === 'task') map.set(row.task.id, index); });
+        return map;
+    }, [rows]);
+
     const currentTaskDatesById = useMemo(() => {
         const datesById = new Map<number, TaskTimelineDates>();
         const collectDates = (taskList: GanttTask[]) => {
@@ -585,7 +617,7 @@ export const GanttChart = ({
             assignee: task.assignee?.name ?? t('common.unassigned'),
             priority: task.priority,
             ...formatTaskTimelineDates(dates),
-        }) + taskTimingFlags(task);
+        }) + taskTimingFlags(task) + (dependencySummary(task) ? ` ${dependencySummary(task)}` : '');
     };
 
     const getUnscheduledTaskGuidance = (task: GanttTask) => (
@@ -741,6 +773,18 @@ export const GanttChart = ({
     };
 
     const SIDEBAR_WIDTH = taskColumnWidth;
+    const focusTaskId = hoveredTaskId ?? editingTask?.id ?? null;
+    const focusTask = focusTaskId === null ? undefined : rows.find(row => row.kind === 'task' && row.task.id === focusTaskId);
+    const highlightedTaskIds = new Set<number>(focusTask && focusTask.kind === 'task'
+        ? [focusTask.task.id, ...(focusTask.task.dependencies ?? []), ...(successorsById.get(focusTask.task.id) ?? [])]
+        : []);
+    const dependencySummary = (task: GanttTask) => {
+        const predecessors = task.dependencies?.length ?? 0;
+        const successors = successorsById.get(task.id)?.length ?? 0;
+        return predecessors + successors > 0
+            ? t('gantt.dependencySummary', { predecessors, successors })
+            : '';
+    };
     const zoomPercent = Math.round((zoomLevel / ZOOM_DEFAULT) * 100);
     const zoomOut = () => setZoomLevel(value => Math.max(ZOOM_MIN, value - ZOOM_STEP));
     const zoomIn = () => setZoomLevel(value => Math.min(ZOOM_MAX, value + ZOOM_STEP));
@@ -813,6 +857,10 @@ export const GanttChart = ({
                     <Button variant="secondary" size="sm" onClick={fitIteration}>
                         <CalendarRange className="mr-2 h-4 w-4" aria-hidden="true" />
                         {t('surfaces.ganttChart.fitIteration')}
+                    </Button>
+                    <Button variant="ghost" size="sm" aria-pressed={showLinks} onClick={() => setShowLinks(!showLinks)}>
+                        <GitBranch className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.ganttChart.dependencyLinks')}
                     </Button>
                 </div>
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -1192,6 +1240,48 @@ export const GanttChart = ({
                         height: `${rowVirtualizer.getTotalSize()}px`,
                     }}
                 >
+                    {/* Dependency links for the rendered rows only, so virtualization stays cheap. */}
+                    {showLinks && (
+                        <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 z-[5] text-content-tertiary"
+                            width={SIDEBAR_WIDTH + columnVirtualizer.getTotalSize()} height={rowVirtualizer.getTotalSize()}>
+                            <defs>
+                                <marker id={`${chartInstructionsId}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                                    <path d="M0,0 L8,4 L0,8 z" fill="currentColor" />
+                                </marker>
+                            </defs>
+                            {rowVirtualizer.getVirtualItems().flatMap(virtualRow => {
+                                const row = rows[virtualRow.index];
+                                if (row.kind !== 'task' || !row.task.dependencies?.length) return [];
+                                const successor = row.task;
+                                const successorDates = getTaskTimelineDates(successor);
+                                if (!hasCompleteTimelineDates(successorDates)) return [];
+                                const successorPosition = getTaskPosition(successor);
+                                return successor.dependencies.flatMap(predecessorId => {
+                                    const predecessorIndex = rowIndexByTaskId.get(predecessorId);
+                                    if (predecessorIndex === undefined) return [];
+                                    const predecessorRow = rows[predecessorIndex];
+                                    if (predecessorRow.kind !== 'task' || !hasCompleteTimelineDates(getTaskTimelineDates(predecessorRow.task))) return [];
+                                    const predecessorPosition = getTaskPosition(predecessorRow.task);
+                                    const x1 = SIDEBAR_WIDTH + predecessorPosition.left + predecessorPosition.width;
+                                    const y1 = predecessorIndex * ROW_HEIGHT + BAR_CENTER_Y;
+                                    const x2 = SIDEBAR_WIDTH + successorPosition.left;
+                                    const y2 = virtualRow.index * ROW_HEIGHT + BAR_CENTER_Y;
+                                    const elbow = Math.max(x1 + 8, Math.min(x2 - 8, x1 + 16));
+                                    const highlighted = highlightedTaskIds.has(successor.id) && highlightedTaskIds.has(predecessorId)
+                                        && (focusTaskId === successor.id || focusTaskId === predecessorId);
+                                    return [(
+                                        <path key={`${predecessorId}-${successor.id}`}
+                                            d={`M${x1},${y1} H${elbow} V${y2} H${x2}`}
+                                            fill="none" stroke="currentColor"
+                                            className={highlighted ? 'text-action' : undefined}
+                                            strokeWidth={highlighted ? 2.5 : 1.25}
+                                            markerEnd={`url(#${chartInstructionsId}-arrow)`} />
+                                    )];
+                                });
+                            })}
+                        </svg>
+                    )}
+
                     {/* A. Background Grid Layer (Absolute, Full Height of visible area) */}
                     <div className="absolute inset-0 pointer-events-none z-0">
                         {columnVirtualizer.getVirtualItems().map(virtualColumn => {
@@ -1312,6 +1402,12 @@ export const GanttChart = ({
                                         >
                                             {t('surfaces.ganttChart.priority', { priority: task.priority })}
                                         </span>
+                                        {dependencySummary(task) && (
+                                            <span className="shrink-0 rounded border border-border px-1 text-content-secondary" title={dependencySummary(task)}
+                                                aria-label={dependencySummary(task)}>
+                                                {t('surfaces.ganttChart.dependencyCount', { count: (task.dependencies?.length ?? 0) + (successorsById.get(task.id)?.length ?? 0) })}
+                                            </span>
+                                        )}
                                         {previewChangedTaskIds.has(task.id) && (
                                             <span className="truncate rounded bg-action-muted px-1 text-action">
                                                 {t('gantt.previewDatesChanged')}
@@ -1343,11 +1439,16 @@ export const GanttChart = ({
                                                 task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
                                                 task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
                                                 previewChangedTaskIds.has(task.id) && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
+                                                highlightedTaskIds.has(task.id) && focusTaskId !== task.id && "outline outline-2 outline-offset-2 outline-action",
                                                 schedulePreview
                                                     ? "cursor-not-allowed opacity-80"
                                                     : "cursor-pointer hover:brightness-110 active:brightness-90"
                                             )}
                                             style={{ left: `${taskPosition.left}px`, width: `${taskPosition.width}px` }}
+                                            onMouseEnter={() => setHoveredTaskId(task.id)}
+                                            onMouseLeave={() => setHoveredTaskId(null)}
+                                            onFocus={() => setHoveredTaskId(task.id)}
+                                            onBlur={() => setHoveredTaskId(null)}
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 if (schedulePreview) return;

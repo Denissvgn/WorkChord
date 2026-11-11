@@ -939,6 +939,7 @@ export const russianResources = {
                 reason: 'Причина: {{reason}}',
             },
             gantt: {
+                dependencySummary: 'Зависит от задач: {{predecessors}}; зависят от неё: {{successors}}.',
                 taskBarSummary: '{{title}}: {{status}}, запланировано с {{start}} по {{end}}.{{flags}}',
                 flagOverdue: 'Просрочено.',
                 flagLateStart: 'Начато позже плана.',
@@ -3247,6 +3248,11 @@ export const russianResources = {
                     testSaveFirst: "Сохраните изменения перед тестом. Для теста используются последние сохранённые настройки.",
                 },
                 ganttChart: {
+                    dependencyLinks: "Связи зависимостей",
+                    dependencyCount_one: "{{count}} связь",
+                    dependencyCount_few: "{{count}} связи",
+                    dependencyCount_many: "{{count}} связей",
+                    dependencyCount_other: "{{count}} связи",
                     searchTasks: "Поиск задач",
                     searchPlaceholder: "Название или #ID",
                     statusFilter: "Статус",
