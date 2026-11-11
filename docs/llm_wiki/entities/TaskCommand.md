@@ -1,6 +1,6 @@
 # TaskCommand
 
-**Location:** `frontend/src/types/task.ts:477`
+**Location:** `frontend/src/types/task.ts:481`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

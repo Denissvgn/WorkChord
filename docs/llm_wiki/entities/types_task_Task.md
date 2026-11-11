@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `frontend/src/types/task.ts:85`
+**Location:** `frontend/src/types/task.ts:89`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -161,4 +161,4 @@ flowchart LR
 | `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
 | `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
 
-> References: showing 12 of 64 logical references; 52 omitted by the 12-row generated summary limit.
+> References: showing 12 of 65 logical references; 53 omitted by the 12-row generated summary limit.

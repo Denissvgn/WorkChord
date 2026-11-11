@@ -19,7 +19,7 @@ _Auto-generated from `frontend/src/utils/taskFilters.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `filterTaskWithChildren`, `taskMatchesFilters` |
+| Exports | `filterTaskBySearch`, `filterTaskWithChildren`, `taskMatchesFilters` |
 
 ## Local dependency map
 
@@ -80,4 +80,5 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `taskMatchesFilters` | `(task: Task, filters: TaskFilters \| undefined, labelGroups: LabelGroup[] = []) -> boolean` | — | — |
+| `filterTaskBySearch` | `(task: Task, query: string) -> Task \| null` | — | Keep a task when its title or #ID matches, or when any child does (children are narrowed too). |
 | `filterTaskWithChildren` | `(task: Task, filters: TaskFilters \| undefined, labelGroups: LabelGroup[] = [], inherited = { deferred: false, optional: false }) -> Task \| null` | — | — |

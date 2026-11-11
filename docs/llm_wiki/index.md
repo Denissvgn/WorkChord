@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1535 | [Open section](#entities) |
-| Modules | 770 | [Open section](#modules) |
+| Modules | 772 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 553 | [Open section](#entry-point-flows) |
@@ -1737,6 +1737,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskEditorDrawer](modules/TaskEditorDrawer.md) - `frontend/src/components/tasks/TaskEditorDrawer.tsx`
 - [TaskEditorDrawer.test](modules/TaskEditorDrawer.test.md) - `frontend/src/components/tasks/TaskEditorDrawer.test.tsx`
 - [TaskFiltersBar](modules/TaskFiltersBar.md) - `frontend/src/components/tasks/TaskFiltersBar.tsx`
+- [TaskFiltersBar.test](modules/TaskFiltersBar.test.md) - `frontend/src/components/tasks/TaskFiltersBar.test.tsx`
 - [TaskForm](modules/TaskForm.md) - `frontend/src/components/tasks/TaskForm.tsx`
 - [TaskForm.test](modules/TaskForm.test.md) - `frontend/src/components/tasks/TaskForm.test.tsx`
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
@@ -1768,6 +1769,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TimeEntriesReport](modules/TimeEntriesReport.md) - `frontend/src/components/projects/TimeEntriesReport.tsx`
 - [TimeEntriesReport.test](modules/TimeEntriesReport.test.md) - `frontend/src/components/projects/TimeEntriesReport.test.tsx`
 - [ToastProvider](modules/ToastProvider.md) - `frontend/src/components/feedback/ToastProvider.tsx`
+- [ToastProvider.test](modules/ToastProvider.test.md) - `frontend/src/components/feedback/ToastProvider.test.tsx`
 - [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
 - [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) - `frontend/src/components/common/UnsavedLeaveGuard.tsx`
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`

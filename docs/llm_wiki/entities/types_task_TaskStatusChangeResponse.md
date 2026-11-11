@@ -1,6 +1,6 @@
 # TaskStatusChangeResponse
 
-**Location:** `frontend/src/types/task.ts:362`
+**Location:** `frontend/src/types/task.ts:366`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

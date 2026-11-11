@@ -1,6 +1,6 @@
 # TaskImproveDescriptionResponse
 
-**Location:** `frontend/src/types/task.ts:225`
+**Location:** `frontend/src/types/task.ts:229`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 770,
+      "modules": 772,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3066
+    "total": 3068
   },
   "dependency_pages": {
     "count": 2,
@@ -45929,6 +45929,7 @@
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
         "modules/TaskFiltersBar.md",
+        "modules/TaskFiltersBar.test.md",
         "modules/TaskForm.md",
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
@@ -46083,6 +46084,7 @@
         "modules/timeEntryService.test.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
+        "modules/ToastProvider.test.md",
         "modules/tone.md",
         "modules/tone.test.md",
         "modules/topology.md",
@@ -77226,6 +77228,7 @@
         "modules/taskFilterDefaults.md",
         "modules/taskFilters.test.md",
         "modules/TaskFiltersBar.md",
+        "modules/TaskFiltersBar.test.md",
         "modules/TasksPage.md",
         "modules/taskViewState.md",
         "modules/visibleWork.test.md"
@@ -77281,6 +77284,21 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskFiltersBar.tsx",
       "title": "TaskFiltersBar Module"
+    },
+    {
+      "canonical_path": "modules/TaskFiltersBar.test.md",
+      "id": "TaskFiltersBar.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskFiltersBar.test",
+      "outgoing_internal_links": [
+        "modules/renderWithProviders.md",
+        "modules/taskFilterDefaults.md",
+        "modules/TaskFiltersBar.md",
+        "modules/TaskFiltersBar.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskFiltersBar.test.tsx",
+      "title": "TaskFiltersBar.test Module"
     },
     {
       "canonical_path": "modules/TaskForm.md",
@@ -79625,11 +79643,26 @@
         "modules/renderWithProviders.md",
         "modules/src_main.md",
         "modules/toast.md",
-        "modules/ToastProvider.md"
+        "modules/ToastProvider.md",
+        "modules/ToastProvider.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/feedback/ToastProvider.tsx",
       "title": "ToastProvider Module"
+    },
+    {
+      "canonical_path": "modules/ToastProvider.test.md",
+      "id": "ToastProvider.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/ToastProvider.test",
+      "outgoing_internal_links": [
+        "modules/toast.md",
+        "modules/ToastProvider.md",
+        "modules/ToastProvider.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/feedback/ToastProvider.test.tsx",
+      "title": "ToastProvider.test Module"
     },
     {
       "canonical_path": "modules/tone.md",
@@ -95026,6 +95059,7 @@
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
         "modules/TaskFiltersBar.md",
+        "modules/TaskFiltersBar.test.md",
         "modules/TaskForm.md",
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
@@ -95180,6 +95214,7 @@
         "modules/timeEntryService.test.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
+        "modules/ToastProvider.test.md",
         "modules/tone.md",
         "modules/tone.test.md",
         "modules/topology.md",
@@ -95807,6 +95842,7 @@
         "modules/taskFilters.md",
         "modules/taskFilters.test.md",
         "modules/TaskFiltersBar.md",
+        "modules/TaskFiltersBar.test.md",
         "modules/TaskForm.md",
         "modules/TaskForm.test.md",
         "modules/TaskList.md",
@@ -95961,6 +95997,7 @@
         "modules/timeEntryService.test.md",
         "modules/toast.md",
         "modules/ToastProvider.md",
+        "modules/ToastProvider.test.md",
         "modules/tone.md",
         "modules/tone.test.md",
         "modules/topology.md",
@@ -96029,5 +96066,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:f8c98c92ada5dcda6e34c15c3bcb50d8c988609e9418a319652a923ef96fb925"
+  "source_hash": "sha256:1538541c9475a3c60a56f7d161c926aaf6a649fb4afe5fe9208f6bffc04128eb"
 }

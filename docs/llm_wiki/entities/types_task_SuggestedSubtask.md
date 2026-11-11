@@ -1,6 +1,6 @@
 # SuggestedSubtask
 
-**Location:** `frontend/src/types/task.ts:211`
+**Location:** `frontend/src/types/task.ts:215`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

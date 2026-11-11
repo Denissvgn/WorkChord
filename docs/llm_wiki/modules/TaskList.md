@@ -16,7 +16,7 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `../../types/task` | `Task` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../../utils/graphLimitError` | `isGraphLimitError` | — | compiler-dependent |
-| `../../utils/taskFilters` | `filterTaskWithChildren` | — | compiler-dependent |
+| `../../utils/taskFilters` | `filterTaskBySearch`, `filterTaskWithChildren` | — | compiler-dependent |
 | `../../utils/visibleWork` | `selectVisibleWork` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
@@ -40,6 +40,7 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck` | — | compiler-dependent |
 | `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -74,7 +75,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 8 | 0 |
+| typescript | 9 | 0 |
 
 > All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
@@ -82,13 +83,13 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Interface | 70 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 742 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 794 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 48 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 49 | `'bulk' \| 'merge'` | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | `Parameters<typeof taskService.reorder>[0]` | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 51 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
+| [TaskListProps](../entities/TaskListProps.md) | Interface | 71 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 748 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 800 | `TaskItemProps` | — |
+| [SortKey](../entities/SortKey.md) | Type alias | 49 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 50 | `'bulk' \| 'merge'` | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 51 | `Parameters<typeof taskService.reorder>[0]` | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 52 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

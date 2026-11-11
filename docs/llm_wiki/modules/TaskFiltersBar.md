@@ -15,6 +15,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskFiltersBar.tsx`._
 | `../../services/labelService` | `labelService` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../services/teamService` | `teamService` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../../utils/taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
@@ -50,8 +51,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (9) |
-| Outbound | `frontend` (9) |
+| Inbound | `frontend` (10) |
+| Outbound | `frontend` (10) |
 
 ### External packages
 
@@ -59,14 +60,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFilters](../entities/TaskFilters.md) | Interface | 15 | — | — |
-| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Interface | 34 | — | — |
+| [TaskFilters](../entities/TaskFilters.md) | Interface | 16 | — | — |
+| [TaskFiltersBarProps](../entities/TaskFiltersBarProps.md) | Interface | 35 | — | — |
 
 ## Functions
 
