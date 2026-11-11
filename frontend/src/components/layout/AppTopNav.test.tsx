@@ -99,6 +99,23 @@ describe('AppTopNav', () => {
         expect(trigger).toHaveFocus();
     });
 
+    it('names the current page in the bar and reaches other workspaces in two steps', async () => {
+        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
+            iterations: [],
+            ready: { total: 0, done: 0 },
+        });
+        triageServiceMock.getAll.mockResolvedValue([]);
+
+        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/projects'] });
+        expect(screen.getByTestId('topnav-location')).toHaveTextContent('Delivery Hub');
+        expect(screen.getByTestId('topnav-location')).toHaveTextContent('Projects');
+
+        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+        await user.click(within(drawer).getByText('Timeline & Planning pages'));
+        expect(within(drawer).getByRole('link', { name: 'Gantt' })).toHaveAttribute('href', '/gantt');
+    });
+
     it('moves focus into the committed workspace after drawer navigation', async () => {
         planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
             iterations: [],

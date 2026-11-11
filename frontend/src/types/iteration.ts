@@ -69,16 +69,29 @@ export interface IterationSummary extends WorkMetrics {
     total_effort_days: number;
     team_capacity_days: number;
     overdue_tasks_count: number;
+    /** Leaf counts by status, from the same aggregate as the other counts. */
+    status_counts?: Partial<Record<'planned' | 'active' | 'resolved' | 'closed', number>>;
+    blocked_tasks?: number;
+    remaining_effort_days?: number;
+    unknown_estimate_tasks?: number;
+    /** Latest scheduled end of the included work; null before the iteration is scheduled. */
+    scheduled_finish?: string | null;
+    remaining_working_days?: number | null;
 }
 
 export interface IterationPlanningReadinessSummary {
     iteration_id: number;
     team_member_count: number;
     team_capacity_hours: number;
+    /** Effort of the iteration's planning leaves, and the part assigned to a capacity row. */
+    planned_hours?: number;
+    assigned_hours?: number;
     team_members_no_capacity: number;
     task_count: number;
     tasks_without_assignee: number;
     tasks_without_effort: number;
+    tasks_agent_without_capacity?: number;
+    team_agent_count?: number;
     has_schedule: boolean;
     risk_count: number;
     /** The six plan checkpoints, derived on the server; the PM agent reads the same list. */

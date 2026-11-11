@@ -44,16 +44,24 @@ describe('OverflowMenu', () => {
             />,
         );
 
-        await user.click(screen.getByRole('button', { name: 'Calendar actions' }));
-
-        const menuItem = screen.getByRole('menuitem', {
+        // A single action is a button, not a menu; unavailable, it stays focusable and inert.
+        const action = screen.getByRole('button', {
             name: 'Create another calendar before deleting this one',
         });
-        expect(menuItem).toHaveFocus();
-        expect(menuItem).toHaveAttribute('aria-disabled', 'true');
+        expect(action).toHaveAttribute('aria-disabled', 'true');
+        action.focus();
+        expect(action).toHaveFocus();
 
-        await user.click(menuItem);
+        await user.click(action);
         expect(unavailableAction).not.toHaveBeenCalled();
-        expect(screen.getByRole('menu')).toBeVisible();
+    });
+
+    it('shows a single action as a labelled button instead of a menu', async () => {
+        const remove = vi.fn();
+        const { user } = renderWithProviders(<OverflowMenu label="Project actions" items={[{ label: 'Delete project', onSelect: remove, tone: 'danger' }]} />);
+
+        expect(screen.queryByRole('button', { name: 'Project actions' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Delete project' }));
+        expect(remove).toHaveBeenCalledTimes(1);
     });
 });

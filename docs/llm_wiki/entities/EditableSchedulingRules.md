@@ -1,6 +1,6 @@
 # EditableSchedulingRules
 
-**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:39`
+**Location:** `frontend/src/components/settings/SchedulingRulesSettings.tsx:40`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SchedulingRulesSettings](../modules/SchedulingRulesSettings.md)

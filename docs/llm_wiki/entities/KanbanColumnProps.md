@@ -1,6 +1,6 @@
 # KanbanColumnProps
 
-**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx:13`
+**Location:** `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx:15`
 **Kind:** Interface
 **Bases:** —
 **Module:** [KanbanColumn](../modules/KanbanColumn.md)

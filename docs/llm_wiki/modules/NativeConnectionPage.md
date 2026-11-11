@@ -11,11 +11,12 @@ Provides explicit browser consent for the Android companion. It shows the signed
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/DisabledReason` | `DisabledReason` | — | compiler-dependent |
 | `../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
 | `../services/api` | `api` | — | compiler-dependent |
 | `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
-| `react` | `useState` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
@@ -31,23 +32,26 @@ Provides explicit browser consent for the Android companion. It shows the signed
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/features/identity/identityContext.ts"]
-    n2["frontend/src/pages/NativeConnectionPage.test.tsx"]
-    n3["frontend/src/pages/NativeConnectionPage.tsx"]
-    n4["frontend/src/services/api.ts"]
-    n5["frontend/src/utils/apiError.ts"]
-    n2 --> n1
-    n2 --> n3
-    n3 --> n0
-    n3 --> n1
+    n1["frontend/src/components/common/DisabledReason.tsx"]
+    n2["frontend/src/features/identity/identityContext.ts"]
+    n3["frontend/src/pages/NativeConnectionPage.test.tsx"]
+    n4["frontend/src/pages/NativeConnectionPage.tsx"]
+    n5["frontend/src/services/api.ts"]
+    n6["frontend/src/utils/apiError.ts"]
+    n3 --> n2
     n3 --> n4
-    n3 --> n5
+    n4 --> n0
+    n4 --> n1
+    n4 --> n2
+    n4 --> n5
+    n4 --> n6
     click n0 "../modules/Button.md"
-    click n1 "../modules/identityContext.md"
-    click n2 "../modules/NativeConnectionPage.test.md"
-    click n3 "../modules/NativeConnectionPage.md"
-    click n4 "../modules/api.md"
-    click n5 "../modules/apiError.md"
+    click n1 "../modules/DisabledReason.md"
+    click n2 "../modules/identityContext.md"
+    click n3 "../modules/NativeConnectionPage.test.md"
+    click n4 "../modules/NativeConnectionPage.md"
+    click n5 "../modules/api.md"
+    click n6 "../modules/apiError.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +60,7 @@ flowchart LR
 |---|---|
 | Inbound | [NativeConnectionPage.test](../modules/NativeConnectionPage.test.md) |
 | Outbound | [Button](../modules/Button.md) |
+| Outbound | [DisabledReason](../modules/DisabledReason.md) |
 | Outbound | [identityContext](../modules/identityContext.md) |
 | Outbound | [api](../modules/api.md) |
 | Outbound | [apiError](../modules/apiError.md) |

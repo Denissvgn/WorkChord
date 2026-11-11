@@ -1,3 +1,4 @@
+import { SettingsUnsavedBar } from './SettingsUnsavedBar';
 import { useId, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -282,6 +283,7 @@ export const GitHubSettingsPanel = () => {
 
     return (
         <div className="max-w-6xl space-y-5">
+            <SettingsUnsavedBar dirty={hasUnsavedChanges} hint={t('settings.unsaved.saveForm')} />
             <div className="card space-y-4">
                 <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex min-w-0 items-center gap-3">

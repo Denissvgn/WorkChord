@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Label, LabelGroup } from '../../types/label';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { TemplateLabelSettings } from './TemplateLabelSettings';
+import { MutationSuccessFeedback } from '../../features/MutationSuccessFeedback';
 
 const labelServiceMock = vi.hoisted(() => ({
     getGroups: vi.fn(),
@@ -100,6 +101,12 @@ const openLabels = async () => {
     expect(await screen.findByRole('heading', { name: 'Workflow' })).toBeInTheDocument();
 };
 
+/** Rows keep their actions in one menu: open it, then choose the action. */
+const rowAction = async (user: ReturnType<typeof renderWithProviders>['user'], row: string, action: string) => {
+    await user.click(screen.getByRole('button', { name: `Actions for ${row}` }));
+    await user.click(screen.getByRole('menuitem', { name: action }));
+};
+
 describe('TemplateLabelSettings hardening', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -126,16 +133,18 @@ describe('TemplateLabelSettings hardening', () => {
         const { user } = renderWithProviders(<TemplateLabelSettings />);
         await openLabels();
 
-        await user.click(screen.getByRole('button', { name: 'Edit group: Workflow' }));
+        await rowAction(user, 'Workflow', 'Edit group');
         const nameField = screen.getByRole('textbox', { name: 'Name' });
         await user.clear(nameField);
         await user.type(nameField, 'Workflow draft');
 
-        await user.click(screen.getByRole('button', { name: 'Archive group: Governance' }));
+        await rowAction(user, 'Governance', 'Archive group');
 
         expect(nameField).toBeDisabled();
         expect(screen.getByRole('tab', { name: 'Templates' })).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'Archive group: Workflow' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: 'Actions for Workflow' }));
+        expect(screen.getByRole('menuitem', { name: 'Archive group' })).toHaveAttribute('aria-disabled', 'true');
+        await user.keyboard('{Escape}');
 
         await act(async () => {
             resolveArchive?.({
@@ -152,12 +161,12 @@ describe('TemplateLabelSettings hardening', () => {
         const { user } = renderWithProviders(<TemplateLabelSettings />);
         await openLabels();
 
-        await user.click(screen.getByRole('button', { name: 'Edit label: Planning' }));
+        await rowAction(user, 'Planning', 'Edit label');
         const nameField = screen.getByRole('textbox', { name: 'Name' });
         await user.clear(nameField);
         await user.type(nameField, 'Planning draft');
 
-        await user.click(screen.getByRole('button', { name: 'Archive label: Delivery' }));
+        await rowAction(user, 'Delivery', 'Archive label');
 
         await waitFor(() => {
             expect(labelServiceMock.updateLabel).toHaveBeenCalledWith(102, {
@@ -170,18 +179,18 @@ describe('TemplateLabelSettings hardening', () => {
     it('associates every manual editor label with its control', async () => {
         const { user } = renderWithProviders(<TemplateLabelSettings />);
 
-        await user.click(await screen.findByRole('button', { name: 'New Template' }));
+        await user.click(await screen.findByRole('button', { name: 'New template' }));
         expect(screen.getByLabelText('Type')).toBeInTheDocument();
         expect(screen.getByLabelText('Description')).toBeInTheDocument();
-        expect(screen.getByLabelText('Default Description')).toBeInTheDocument();
+        expect(screen.getByLabelText('Default description')).toBeInTheDocument();
         expect(screen.getByLabelText('Checklist')).toBeInTheDocument();
-        expect(screen.getByLabelText('Default Payload JSON')).toBeInTheDocument();
+        expect(screen.getByLabelText('Default payload JSON')).toBeInTheDocument();
 
         await openLabels();
-        await user.click(screen.getByRole('button', { name: 'Edit group: Workflow' }));
+        await rowAction(user, 'Workflow', 'Edit group');
         expect(screen.getByLabelText('Description')).toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Edit label: Planning' }));
+        await rowAction(user, 'Planning', 'Edit label');
         const labelEditor = screen.getByRole('heading', { name: 'Edit label' })
             .closest('.border-t') as HTMLElement | null;
         if (!labelEditor) throw new Error('Label editor not found');
@@ -204,7 +213,7 @@ describe('TemplateLabelSettings hardening', () => {
         await openLabels();
         expect(labelServiceMock.getGroups).toHaveBeenCalledTimes(1);
 
-        await user.click(screen.getByRole('button', { name: 'Move group down: Workflow' }));
+        await rowAction(user, 'Workflow', 'Move down');
 
         await act(async () => {
             rejectSecondUpdate?.(new Error('ordering conflict'));
@@ -223,5 +232,35 @@ describe('TemplateLabelSettings hardening', () => {
             ));
             expect(labelServiceMock.getGroups.mock.calls.length).toBeGreaterThan(1);
         });
+    });
+
+    it('keeps 23 labels under 40 buttons and lets an archive be undone', async () => {
+        const labels = Array.from({ length: 23 }, (_, index) => labelFixture({ id: 200 + index, slug: `label-${index}`, name: `Label ${index}`, sort_order: index }));
+        labelServiceMock.getGroups.mockResolvedValue([groupFixture({ labels })]);
+        // The archive toast and its Undo come from the shared mutation feedback, mounted as in the app.
+        const { user } = renderWithProviders(<><MutationSuccessFeedback /><TemplateLabelSettings /></>);
+        await openLabels();
+        const panel = screen.getByRole('tabpanel', { name: 'Labels' });
+        expect(within(panel).getAllByRole('button').length).toBeLessThan(40);
+
+        await rowAction(user, 'Label 3', 'Archive label');
+        await waitFor(() => expect(toastMock.success).toHaveBeenCalledWith('Archived label “Label 3”.', expect.objectContaining({ actionLabel: 'Undo' })));
+        const [, options] = toastMock.success.mock.calls.find(([message]) => message === 'Archived label “Label 3”.')!;
+        await act(async () => { await options.onAction(); });
+        expect(labelServiceMock.updateLabel).toHaveBeenLastCalledWith(203, { is_active: true });
+    });
+
+    it('switches a template off with a labelled Active switch and edits it in the drawer', async () => {
+        templateServiceMock.getAll.mockResolvedValue([{ id: 9, name: 'Bug report', description: null, template_type: 'task', is_active: true, sort_order: 10,
+            seed_key: null, default_priority: null, default_effort_days: null, default_labels: [], default_description: null, default_checklist: [], default_payload: {},
+            created_at: '2026-07-01T10:00:00Z', updated_at: '2026-07-01T10:00:00Z' }]);
+        templateServiceMock.update.mockResolvedValue({});
+        const { user } = renderWithProviders(<TemplateLabelSettings />);
+        const active = await screen.findByRole('switch', { name: 'Active' });
+        expect(active).toBeChecked();
+        await user.click(active);
+        await waitFor(() => expect(templateServiceMock.update).toHaveBeenCalledWith(9, { is_active: false }));
+        await user.click(screen.getByRole('button', { name: 'Edit template: Bug report' }));
+        expect(await screen.findByRole('dialog', { name: 'Edit template' })).toBeInTheDocument();
     });
 });

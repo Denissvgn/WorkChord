@@ -1,23 +1,25 @@
 # TaskDetailService_my_work
 
 **Entry point:** `task_detail_service.TaskDetailService.my_work`
-**Modules involved:** [authority](../modules/authority.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [task_detail_service](../modules/task_detail_service.md), [task_domain_service](../modules/task_domain_service.md)
+**Modules involved:** [authority](../modules/authority.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [identity_service](../modules/identity_service.md), [task_detail_service](../modules/task_detail_service.md), [task_domain_service](../modules/task_domain_service.md)
 
 > Bounded human ownership queues, independent of exact-agent assignment decisions.
 
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
-1. `authority.require_project`
-2. `task_domain_service.TaskDomainService.allowed_actions`
-3. `task_domain_service.TaskDomainService`
-4. `delivery_dependency_service.DeliveryDependencyService.ready`
-5. `delivery_dependency_service.DeliveryDependencyService`
+1. `identity_service.local_work_profile`
+2. `authority.require_project`
+3. `task_domain_service.TaskDomainService.allowed_actions`
+4. `task_domain_service.TaskDomainService`
+5. `delivery_dependency_service.DeliveryDependencyService.ready`
+6. `delivery_dependency_service.DeliveryDependencyService`
 
 ## Touches
 
 - [authority](../modules/authority.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
+- [identity_service](../modules/identity_service.md)
 - [task_detail_service](../modules/task_detail_service.md)
 - [task_domain_service](../modules/task_domain_service.md)
 

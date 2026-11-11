@@ -181,10 +181,10 @@ describe('AppSidebar', () => {
 
         const selected = await screen.findByRole('link', { name: 'Queue view 7' });
         expect(selected).toHaveAttribute('aria-current', 'page');
-        expect(screen.getByLabelText('7 saved views')).toHaveTextContent('5+');
+        expect(screen.getByLabelText('7 saved views')).toHaveTextContent('7');
     });
 
-    it('opens a bounded, searchable saved-view browser', async () => {
+    it('opens a complete, searchable saved-view browser with the real count', async () => {
         const crowdedViews = crowdedSystemViews(10);
         savedViewServiceMock.getAll.mockImplementation(({ view_type }: { view_type: string }) => (
             Promise.resolve(view_type === 'tasks' ? crowdedViews : [])
@@ -194,14 +194,14 @@ describe('AppSidebar', () => {
         await user.click(screen.getByText('Views'));
         const viewAll = await screen.findByRole('button', { name: 'Browse 10 saved views' });
         expect(screen.queryByRole('link', { name: 'Queue view 6' })).not.toBeInTheDocument();
-        expect(screen.getByLabelText('10 saved views')).toHaveTextContent('5+');
+        expect(screen.getByLabelText('10 saved views')).toHaveTextContent('10');
 
         await user.click(viewAll);
         expect(screen.getByRole('searchbox', { name: 'Search saved views' })).toHaveFocus();
         expect(screen.getByRole('heading', { name: 'Tasks' })).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Queue view 8' })).toBeVisible();
-        expect(screen.queryByRole('link', { name: 'Queue view 9' })).not.toBeInTheDocument();
-        expect(screen.getByText(/Showing the first 8 of 10 matches/)).toBeVisible();
+        // Every view is listed; the list scrolls instead of asking for a search.
+        expect(screen.getByRole('link', { name: 'Queue view 9' })).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Queue view 10' })).toBeVisible();
 
         await user.type(screen.getByRole('searchbox', { name: 'Search saved views' }), '10');
         expect(screen.getByRole('link', { name: 'Queue view 10' })).toBeVisible();

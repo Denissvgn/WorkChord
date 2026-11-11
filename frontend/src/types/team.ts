@@ -148,6 +148,11 @@ export interface MemberWorkload {
     free_days: number;
     workload_status: 'green' | 'yellow' | 'red';
     workload_percent: number;
+    /** Hours are the unit people compare; one day is nominal_day_hours on the member's calendar. */
+    capacity_hours?: number;
+    allocated_hours?: number;
+    free_hours?: number;
+    nominal_day_hours?: number;
 }
 
 /** Detailed capacity breakdown from GET /team-members/{id}/capacity. */

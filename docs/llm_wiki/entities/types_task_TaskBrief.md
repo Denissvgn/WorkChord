@@ -1,6 +1,6 @@
 # TaskBrief
 
-**Location:** `frontend/src/types/task.ts:432`
+**Location:** `frontend/src/types/task.ts:439`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -34,17 +34,20 @@ flowchart LR
     n0["TaskBrief (frontend/src/types/task.ts)"]
     n1["TaskBriefEditor (frontend/src/components/tasks/TaskBriefEditor.tsx)"]
     n2["emptyTaskBrief (frontend/src/components/tasks/taskEditorContract.ts)"]
-    n3["frontend/src/services/taskService.ts"]
-    n4["frontend/src/types/triage.ts"]
+    n3["frontend/src/components/tasks/TaskReadView.tsx"]
+    n4["frontend/src/services/taskService.ts"]
+    n5["frontend/src/types/triage.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/types_task.md"
     click n1 "../modules/TaskBriefEditor.md"
     click n2 "../modules/taskEditorContract.md"
-    click n3 "../modules/taskService.md"
-    click n4 "../modules/types_triage.md"
+    click n3 "../modules/TaskReadView.md"
+    click n4 "../modules/taskService.md"
+    click n5 "../modules/types_triage.md"
 ```
 
 ### Summary
@@ -59,5 +62,6 @@ flowchart LR
 |---|---|---|---:|
 | `TaskBriefEditor` | type_reference | [TaskBriefEditor](../modules/TaskBriefEditor.md) | — |
 | `emptyTaskBrief` | type_reference | [taskEditorContract](../modules/taskEditorContract.md) | — |
+| `TaskReadView` | import | [TaskReadView](../modules/TaskReadView.md) | — |
 | `taskService` | import | [taskService](../modules/taskService.md) | — |
 | `triage` | import | [types_triage](../modules/types_triage.md) | — |

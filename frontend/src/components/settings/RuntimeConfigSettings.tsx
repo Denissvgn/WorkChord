@@ -1,3 +1,5 @@
+import { SettingsUnsavedBar } from './SettingsUnsavedBar';
+import { WithheldValuesNote } from './WithheldValuesNote';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Globe2, KeyRound, RefreshCcw, Save, ServerCog, ShieldAlert } from 'lucide-react';
@@ -9,7 +11,7 @@ import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback
 import { useToast } from '../feedback/toast';
 import { systemSettingsService } from '../../services/systemSettingsService';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
-import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { useCanReadSettings } from '../../hooks/useAdminAccess';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
 import type {
     AILanguageMode,
@@ -148,7 +150,7 @@ const fieldSource = (settings: { field_sources: Record<string, RuntimeSettingSou
 export const RuntimeConfigSettings = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { hasAdminKey } = useAdminAccess();
+    const canReadSettings = useCanReadSettings();
     const toast = useToast();
     const [appForm, setAppForm] = useState<AppForm | null>(null);
     const [llmForm, setLlmForm] = useState<LLMForm | null>(null);
@@ -218,7 +220,7 @@ export const RuntimeConfigSettings = () => {
     const { data: settings, isLoading, error, isError, refetch } = useQuery({
         queryKey: ['system-settings'],
         queryFn: systemSettingsService.getSettings,
-        enabled: hasAdminKey,
+        enabled: canReadSettings,
         retry: protectedQueryRetry,
     });
 
@@ -498,6 +500,7 @@ export const RuntimeConfigSettings = () => {
 
     return (
         <div className="max-w-6xl space-y-5">
+            <WithheldValuesNote fields={settings?.redacted_fields} labels={{ 'llm.api_url': t('settings.withheld.llmApiUrl'), 'github.api_url': t('settings.withheld.githubApiUrl') }} />
             {errorMessages.length > 0 && (
                 <section
                     aria-label={runtimeText('runtimeValidationSummary', 'Review the highlighted fields before saving.')}
@@ -852,6 +855,10 @@ export const RuntimeConfigSettings = () => {
                     ))}
                 </div>
             </section>
+            <SettingsUnsavedBar dirty={isAppChanged || isLlmChanged || isGitHubChanged || isWebIntakeChanged}
+                saving={appMutation.isPending || llmMutation.isPending || githubMutation.isPending || webIntakeMutation.isPending}
+                hint={t('settings.unsaved.saveEachSection')}
+                onDiscard={() => { setAppForm(null); setLlmForm(null); setGithubForm(null); setWebIntakeForm(null); setFormErrors({}); setSubmissionErrors({}); }} />
         </div>
     );
 };

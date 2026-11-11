@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
     CheckCircle2,
     User,
@@ -16,17 +16,18 @@ import {
 import { agentService } from '../services/agentService';
 import type { AgentModelTrustState, TaskTimelineItem } from '../types/agent';
 import type { Task, TaskStatus } from '../types/task';
-import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
+import { PageHeader, PageLayout } from '../components/ui';
 import { SlideOverDrawer } from '../components/ui/SlideOverDrawer';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { AdminAccessGate } from '../components/settings/AdminAccessGate';
-import { useAdminAccess } from '../hooks/useAdminAccess';
+import { useAdminAccess, useKeylessReader } from '../hooks/useAdminAccess';
 import { useAgentAccess } from '../hooks/useAgentAccess';
 import { getApiErrorStatus } from '../utils/apiError';
 import { protectedQueryRetry } from '../utils/protectedQueries';
 import { formatDateTime } from '../utils/formatDate';
 import { TaskRoutingPanel } from '../components/agent/TaskRoutingPanel';
 import clsx from 'clsx';
+import { priorityChipClassName } from '../components/ui/tone';
 
 const EMPTY_PIPELINE = {
     needs_definition: [],
@@ -43,6 +44,16 @@ const TIMELINE_ITEM_LABELS: Record<TaskTimelineItem['item_type'], string> = {
     status_log: 'statusChange',
     agent_run: 'agentRun',
     agent_run_event: 'runEvent',
+};
+
+/** Stages that wait on a planning decision rather than on an agent. */
+const HUMAN_GATED_STAGES: ReadonlySet<string> = new Set(['needs_definition', 'ready_to_assign', 'recovery_required']);
+/** The action a row offers in each stage; all open the task's detail with routing and recovery. */
+const STAGE_ACTION_KEYS: Partial<Record<string, string>> = {
+    needs_definition: 'agentPipeline.actions.define',
+    ready_to_assign: 'agentPipeline.actions.assign',
+    recovery_required: 'agentPipeline.actions.recover',
+    verification_required: 'agentPipeline.actions.review',
 };
 
 const RUN_STATUSES = new Set(['running', 'succeeded', 'failed', 'canceled']);
@@ -79,7 +90,11 @@ export default function AgentPipelinePage() {
     const { hasAdminKey } = useAdminAccess();
     const { hasAgentKey } = useAgentAccess();
     const hasProtectedAccess = hasAdminKey || hasAgentKey;
+    // The board is a view of work, readable on the same rule as Tasks; run logs keep the key.
+    const keylessReader = useKeylessReader();
+    const canReadBoard = hasProtectedAccess || keylessReader.workViews;
     const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState('');
     const [projectFilter, setProjectFilter] = useState('');
     const [agentFilter, setAgentFilter] = useState('');
@@ -95,9 +110,9 @@ export default function AgentPipelinePage() {
     } = useQuery({
         queryKey: ['agent-pipeline'],
         queryFn: agentService.getPipeline,
-        enabled: hasProtectedAccess,
+        enabled: canReadBoard,
         retry: protectedQueryRetry,
-        refetchInterval: hasProtectedAccess ? 5000 : false, // short-poll every 5 seconds for board
+        refetchInterval: canReadBoard ? 5000 : false, // short-poll every 5 seconds for board
     });
     const pipelineErrorStatus = getApiErrorStatus(pipelineError);
     const pipelineAuthorizationFailed = pipelineIsError
@@ -123,9 +138,9 @@ export default function AgentPipelinePage() {
     const { data: timelineData, error: timelineError, refetch: refetchTimeline } = useQuery({
         queryKey: ['task-timeline', selectedTask?.id],
         queryFn: () => selectedTask ? agentService.getTaskTimeline(selectedTask.id) : null,
-        enabled: hasProtectedAccess && !!selectedTask,
+        enabled: canReadBoard && !!selectedTask,
         retry: protectedQueryRetry,
-        refetchInterval: hasProtectedAccess && selectedTask ? 3000 : false, // short-poll every 3 seconds for active log console
+        refetchInterval: canReadBoard && selectedTask ? 3000 : false, // short-poll every 3 seconds for active log console
     });
 
     // Extract active run id for the selected task if it's currently executing/running
@@ -189,60 +204,55 @@ export default function AgentPipelinePage() {
         {
             id: 'needs_definition' as const,
             title: t('agentPipeline.columns.needs_definition.title'),
-            color: 'text-feedback-warning-foreground',
-            bgColor: 'bg-feedback-warning-muted border-feedback-warning-border',
             tasks: filterAndSegment(pipeline.needs_definition),
             description: t('agentPipeline.columns.needs_definition.description')
         },
         {
             id: 'ready_to_assign' as const,
             title: t('agentPipeline.columns.ready_to_assign.title'),
-            color: 'text-feedback-info-foreground',
-            bgColor: 'bg-feedback-info-muted border-feedback-info-border',
             tasks: filterAndSegment(pipeline.ready_to_assign),
             description: t('agentPipeline.columns.ready_to_assign.description')
         },
         {
             id: 'assigned_waiting' as const,
             title: t('agentPipeline.columns.assigned_waiting.title'),
-            color: 'text-content-secondary',
-            bgColor: 'bg-surface-muted border-border',
             tasks: filterAndSegment(pipeline.assigned_waiting),
             description: t('agentPipeline.columns.assigned_waiting.description')
         },
         {
             id: 'start_ready' as const,
             title: t('agentPipeline.columns.start_ready.title'),
-            color: 'text-feedback-indigo-foreground',
-            bgColor: 'bg-feedback-indigo-muted border-feedback-indigo-border',
             tasks: filterAndSegment(pipeline.start_ready),
             description: t('agentPipeline.columns.start_ready.description')
         },
         {
             id: 'executing' as const,
             title: t('agentPipeline.columns.executing.title'),
-            color: 'text-action-muted-foreground',
-            bgColor: 'bg-action-muted border-action',
             tasks: filterAndSegment(pipeline.executing),
             description: t('agentPipeline.columns.executing.description')
         },
         {
             id: 'verification_required' as const,
             title: t('agentPipeline.columns.verification_required.title'),
-            color: 'text-feedback-success-foreground',
-            bgColor: 'bg-feedback-success-muted border-feedback-success-border',
             tasks: filterAndSegment(pipeline.verification_required),
             description: t('agentPipeline.columns.verification_required.description')
         },
         {
             id: 'recovery_required' as const,
             title: t('agentPipeline.columns.recovery_required.title'),
-            color: 'text-feedback-danger-foreground',
-            bgColor: 'bg-feedback-danger-muted border-feedback-danger-border',
             tasks: filterAndSegment(pipeline.recovery_required),
             description: t('agentPipeline.columns.recovery_required.description')
         }
     ];
+    // The selected stage lives in the URL; by default the first stage that holds work.
+    const requestedStage = searchParams.get('stage');
+    const activeStage = columns.find(column => column.id === requestedStage)
+        ?? columns.find(column => column.tasks.length > 0) ?? columns[0];
+    const setStageParam = (stage: string) => setSearchParams(previous => {
+        const next = new URLSearchParams(previous);
+        next.set('stage', stage);
+        return next;
+    }, { replace: true });
     const filteredTaskCount = columns.reduce(
         (count, column) => count + column.tasks.length,
         0,
@@ -268,47 +278,42 @@ export default function AgentPipelinePage() {
             <PageHeader
                 title={t('agentPipeline.title')}
                 subtitle={t('agentPipeline.description')}
-                actions={hasProtectedAccess ? (
+                actions={canReadBoard ? (
                     <button className="btn" onClick={() => refetch()} disabled={isFetching}>
                     <RefreshCw className={clsx("h-4 w-4", isFetching && "animate-spin")}/>
                     {isFetching ? t('actions.refreshing') : t('actions.refresh')}
                     </button>
                 ) : null}
             />
-            {!hasProtectedAccess && (
+            {!canReadBoard && (
                 <AdminAccessGate>
                     <span />
                 </AdminAccessGate>
             )}
-            {hasProtectedAccess && pipelinePending && !usablePipelineData && (
+            {canReadBoard && !hasProtectedAccess && (
+                <p className="rounded-md border border-border bg-surface-muted px-4 py-3 text-sm text-content-secondary">{t('agentPipeline.runLogsNeedKey')}</p>
+            )}
+            {canReadBoard && pipelinePending && !usablePipelineData && (
                 <QueryLoadingState message={t('agentPipeline.loading')} />
             )}
-            {hasProtectedAccess && pipelineIsError && !usablePipelineData && (
+            {canReadBoard && pipelineIsError && !usablePipelineData && (
                 <QueryErrorState
                     error={pipelineError}
                     message={t('agentPipeline.pipelineUnavailable')}
                     onRetry={() => { void refetch(); }}
                 />
             )}
-            {hasProtectedAccess && pipelineIsError && usablePipelineData && (
+            {canReadBoard && pipelineIsError && usablePipelineData && (
                 <QueryStaleState message={t('agentPipeline.staleWarning')} onRetry={() => { void refetch(); }} />
             )}
-            {hasProtectedAccess && usablePipelineData && allTasks.length === 0 && (
+            {canReadBoard && usablePipelineData && allTasks.length === 0 && (
                 <QueryEmptyState
                     title={t('agentPipeline.emptyTitle')}
                     description={t('agentPipeline.emptyDescription')}
                 />
             )}
-            {hasProtectedAccess && usablePipelineData && allTasks.length > 0 && (
+            {canReadBoard && usablePipelineData && allTasks.length > 0 && (
             <>
-            <MetricGrid columns={6}>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.needs_definition.title')}</div><div className="kpi-val tnum">{pipeline.needs_definition.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.ready_to_assign.title')}</div><div className="kpi-val tnum">{pipeline.ready_to_assign.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.verification_required.title')}</div><div className="kpi-val tnum">{pipeline.verification_required.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.start_ready.title')}</div><div className="kpi-val tnum">{pipeline.start_ready.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.executing.title')}</div><div className="kpi-val tnum">{pipeline.executing.length}</div></div>
-                <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.recovery_required.title')}</div><div className="kpi-val tnum">{pipeline.recovery_required.length}</div></div>
-            </MetricGrid>
 
             {/* Filter bar */}
             <div className="wc-toolbar">
@@ -357,103 +362,81 @@ export default function AgentPipelinePage() {
                 </div>
             </div>
 
-            {/* Board Columns */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                {columns.map(column => (
-                    <div
-                        key={column.id}
-                        className="flex flex-col rounded-xl border border-border bg-surface-card p-4 shadow-sm min-h-[500px]"
-                        data-testid={`column-${column.id}`}
-                    >
-                        {/* Column Header */}
-                        <div className="pb-3 border-b border-border mb-4">
-                            <div className="flex items-center justify-between">
-                                <h3 className="font-semibold text-sm text-content-primary font-sans flex items-center gap-2">
-                                    <span className={column.color}>•</span>
-                                    <span>{column.title}</span>
-                                </h3>
-                                <span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-xs font-medium text-content-secondary">
-                                    {column.tasks.length}
+            {/* One strip, left to right: the stages a task moves through. */}
+            <nav aria-label={t('agentPipeline.stagesLabel')} className="overflow-x-auto">
+                <ol className="flex min-w-max gap-1 xl:grid xl:min-w-0 xl:grid-cols-7">
+                    {columns.map((column, index) => (
+                        <li key={column.id} className="flex items-stretch">
+                            <button
+                                type="button"
+                                aria-pressed={column.id === activeStage.id}
+                                onClick={() => setStageParam(column.id)}
+                                data-testid={`column-${column.id}`}
+                                className={clsx(
+                                    'flex min-h-16 w-full min-w-36 flex-col items-start gap-1 rounded-md border px-3 py-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+                                    column.id === activeStage.id ? 'border-action bg-action-muted' : 'border-border bg-surface-card hover:bg-surface-hover',
+                                )}
+                            >
+                                <span className="flex w-full items-center justify-between gap-2">
+                                    <span className="font-semibold text-content-primary">{column.title}</span>
+                                    <span className="tabular-nums text-content-secondary">{column.tasks.length}</span>
                                 </span>
-                            </div>
-                            <p className="text-xs text-content-secondary mt-1 leading-snug">
-                                {column.description}
-                            </p>
-                        </div>
+                                {HUMAN_GATED_STAGES.has(column.id) && (
+                                    <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs text-feedback-warning-foreground">{t('agentPipeline.needsDecision')}</span>
+                                )}
+                            </button>
+                            {index < columns.length - 1 && <span aria-hidden="true" className="hidden self-center px-0.5 text-content-tertiary xl:hidden">›</span>}
+                        </li>
+                    ))}
+                </ol>
+            </nav>
 
-                        {/* Column Cards */}
-                        <div className="flex-1 flex flex-col gap-3 overflow-y-auto">
-                            {column.tasks.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-12 px-4 rounded-lg border border-dashed border-border text-center">
-                                    <p className="text-xs text-content-secondary">{t('agentPipeline.noTasksInState')}</p>
-                                </div>
-                            ) : (
-                                column.tasks.map(task => {
-                                    const latestReadinessSignal = task.agent_readiness?.blockers?.[0]
-                                        || t('agentPipeline.stateUpdated');
-                                    return (
-                                        <motion.button
-                                            key={task.id}
-                                            type="button"
-                                            layoutId={`card-${task.id}`}
-                                            onClick={() => setSelectedTaskId(task.id)}
-                                            aria-label={t('agentPipeline.inspectTask', { title: task.title, state: column.title })}
-                                            className="group flex w-full flex-col gap-2 rounded-lg border border-border bg-surface-muted p-3 text-left shadow-xs hover:border-feedback-indigo-border hover:shadow-md cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2"
-                                            data-testid={`task-card-${task.id}`}
-                                        >
-                                            <div className="flex items-start justify-between gap-2">
-                                                <span className="text-wc-micro uppercase tracking-wider font-semibold text-feedback-indigo">
-                                                    {t('agentPipeline.taskNumber', { id: task.id })}
-                                                </span>
-                                                {task.priority === 1 && (
-                                                    <span className="rounded bg-feedback-danger-muted px-1 text-wc-micro font-bold text-feedback-danger-foreground">
-                                                        {t('agentPipeline.urgent')}
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            <h4 className="font-medium text-sm text-content-primary leading-tight group-hover:text-feedback-indigo-foreground transition-colors">
-                                                {task.title}
-                                            </h4>
-
-                                            {/* Micro fields */}
-                                            <div className="flex flex-col gap-1.5 mt-1 border-t border-border/50 pt-2 text-xs text-content-secondary">
-                                                {task.project && (
-                                                    <div className="flex items-center gap-1">
-                                                        <Folder className="h-3.5 w-3.5 shrink-0" />
-                                                        <span className="truncate">{task.project.name}</span>
-                                                    </div>
-                                                )}
-                                                <div className="flex items-center gap-1">
-                                                    <Calendar className="h-3.5 w-3.5 shrink-0" />
-                                                    <span>{t('agentPipeline.effort', { days: t('units.daysCompact', { count: task.effort_days }) })}</span>
-                                                </div>
-                                                {task.claimed_by ? (
-                                                    <div className="flex items-center gap-1 text-feedback-indigo-foreground font-medium font-sans">
-                                                        <User className="h-3.5 w-3.5 shrink-0" />
-                                                        <span className="truncate">{t('agentPipeline.claimed', { name: task.claimed_by.display_name })}</span>
-                                                    </div>
-                                                ) : task.assignee ? (
-                                                    <div className="flex items-center gap-1">
-                                                        <User className="h-3.5 w-3.5 shrink-0" />
-                                                        <span className="truncate">{task.assignee.name}</span>
-                                                    </div>
-                                                ) : null}
-                                            </div>
-
-                                            {/* Footer hint */}
-                                            <div className="mt-1 flex items-center justify-between text-wc-micro text-content-secondary bg-surface-card px-2 py-1 rounded">
-                                                <span className="truncate max-w-[120px]">{latestReadinessSignal}</span>
-                                                <span className="shrink-0 text-content-tertiary">{t('agentPipeline.inspect')}</span>
-                                            </div>
-                                        </motion.button>
-                                    );
-                                })
-                            )}
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <section aria-labelledby="pipeline-stage-title" className="card card-pad space-y-3">
+                <div>
+                    <h3 id="pipeline-stage-title" className="text-base font-semibold">{t('agentPipeline.stageHeading', { stage: activeStage.title, count: activeStage.tasks.length })}</h3>
+                    <p className="text-sm text-content-secondary">{activeStage.description}</p>
+                    {HUMAN_GATED_STAGES.has(activeStage.id) && <p className="mt-1 text-sm text-feedback-warning-foreground">{t(`agentPipeline.decisionHelp.${activeStage.id}`)}</p>}
+                </div>
+                {activeStage.tasks.length === 0 ? (
+                    <p className="text-sm text-content-secondary">{t('agentPipeline.noTasksInState')}</p>
+                ) : (
+                    <ul className="divide-y divide-border-subtle">
+                        {activeStage.tasks.map(task => {
+                            // Why the task is here, in full: its blockers, or what the stage means.
+                            const reasons = task.agent_readiness?.blockers?.length ? task.agent_readiness.blockers.join(' · ') : activeStage.description;
+                            const effort = task.effort_days === null || task.effort_days === undefined
+                                ? t('agentPipeline.estimateUnknown')
+                                : t('agentPipeline.effort', { days: t('units.daysCompact', { count: task.effort_days }) });
+                            return (
+                                <li key={task.id} className="flex flex-wrap items-start justify-between gap-3 py-3">
+                                    <div className="min-w-0 flex-1 space-y-1">
+                                        <button type="button" onClick={() => setSelectedTaskId(task.id)} data-testid={`task-card-${task.id}`}
+                                            aria-label={t('agentPipeline.inspectTask', { title: task.title, state: activeStage.title })}
+                                            className="break-words text-left font-medium text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                                            {t('agentPipeline.taskNumber', { id: task.id })} · {task.title}
+                                        </button>
+                                        <p className="text-sm text-content-primary">{t('agentPipeline.reason', { reason: reasons })}</p>
+                                        <p className="flex flex-wrap gap-x-3 text-xs text-content-secondary">
+                                            {task.project && <span className="inline-flex items-center gap-1"><Folder aria-hidden="true" className="h-3.5 w-3.5" />{task.project.name}</span>}
+                                            <span className="inline-flex items-center gap-1"><Calendar aria-hidden="true" className="h-3.5 w-3.5" />{effort}</span>
+                                            {task.claimed_by
+                                                ? <span className="inline-flex items-center gap-1"><User aria-hidden="true" className="h-3.5 w-3.5" />{t('agentPipeline.claimed', { name: task.claimed_by.display_name })}</span>
+                                                : task.assignee ? <span className="inline-flex items-center gap-1"><User aria-hidden="true" className="h-3.5 w-3.5" />{task.assignee.name}</span> : null}
+                                            {task.priority === 1 && <span className={`rounded px-1 ${priorityChipClassName(task.priority)}`}>{t('agentPipeline.urgent')}</span>}
+                                        </p>
+                                    </div>
+                                    <div className="flex shrink-0 flex-wrap gap-2">
+                                        <Link to={`/tasks?task=${task.id}`} className="btn sm">{t('agentPipeline.openTask')}</Link>
+                                        <button type="button" className="btn sm primary" onClick={() => setSelectedTaskId(task.id)}>
+                                            {t(STAGE_ACTION_KEYS[activeStage.id] ?? 'agentPipeline.inspect')}
+                                        </button>
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </section>
 
             {/* Slide-over Detail & Console panel */}
                 {selectedTask && (
@@ -471,7 +454,7 @@ export default function AgentPipelinePage() {
                             {/* Left Pane: Task Fields & Timeline list */}
                             <div className="w-full md:w-1/2 p-6 overflow-y-auto border-r border-border flex flex-col gap-6 pt-16">
                                 <div>
-                                    <span className="text-xs uppercase tracking-wider font-semibold text-feedback-indigo font-mono">
+                                    <span className="text-xs font-semibold text-feedback-indigo font-mono">
                                         {t('agentPipeline.taskNumber', { id: selectedTask.id })}
                                     </span>
                                     <h2 className="text-xl font-bold text-content-primary mt-1 font-sans">
@@ -485,23 +468,23 @@ export default function AgentPipelinePage() {
                                 {/* Metadata fields */}
                                 <div className="grid grid-cols-2 gap-4 rounded-xl border border-border p-4 bg-surface-muted/40 text-sm">
                                     <div>
-                                        <p className="text-xs text-content-secondary uppercase tracking-wider font-semibold">{t('agentPipeline.priority')}</p>
+                                        <p className="text-xs text-content-secondary font-semibold">{t('agentPipeline.priority')}</p>
                                         <p className="font-semibold text-content-primary mt-0.5">{t('agentPipeline.priorityValue', { priority: selectedTask.priority })}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-content-secondary uppercase tracking-wider font-semibold">{t('agentPipeline.status')}</p>
-                                        <p className="font-semibold text-content-primary uppercase mt-0.5">
+                                        <p className="text-xs text-content-secondary font-semibold">{t('agentPipeline.status')}</p>
+                                        <p className="font-semibold text-content-primary mt-0.5">
                                             {safeTaskStatus(selectedTask.status)
                                                 ? t(`statuses.${selectedTask.status}`)
                                                 : t('common.unknown')}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-content-secondary uppercase tracking-wider font-semibold">{t('agentPipeline.effortDays')}</p>
-                                        <p className="font-semibold text-content-primary mt-0.5">{t('units.days', { count: selectedTask.effort_days })}</p>
+                                        <p className="text-xs text-content-secondary font-semibold">{t('agentPipeline.effortDays')}</p>
+                                        <p className="font-semibold text-content-primary mt-0.5">{selectedTask.effort_days == null ? t('agentPipeline.estimateUnknown') : t('units.days', { count: selectedTask.effort_days })}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs text-content-secondary uppercase tracking-wider font-semibold">{t('agentPipeline.project')}</p>
+                                        <p className="text-xs text-content-secondary font-semibold">{t('agentPipeline.project')}</p>
                                         <p className="font-semibold text-content-primary mt-0.5 truncate">{selectedTask.project?.name || t('common.unassigned')}</p>
                                     </div>
                                 </div>
@@ -556,8 +539,8 @@ export default function AgentPipelinePage() {
                                 </div>
                             </div>
 
-                            {/* Right Pane: rich darkness monospace Console Log Terminal */}
-                            <div className="w-full md:w-1/2 bg-terminal-surface text-terminal-primary p-6 flex flex-col gap-4 font-mono select-text pt-16 h-full border-t md:border-t-0 md:border-l border-terminal-border">
+                            {/* Right pane: the run log for the selected task */}
+                            <div className="w-full md:w-1/2 bg-surface-muted text-content-primary p-6 flex flex-col gap-4 select-text pt-16 h-full border-t md:border-t-0 md:border-l border-border">
                                 {Boolean(runError) && (
                                     <QueryErrorState
                                         error={runError}
@@ -565,17 +548,17 @@ export default function AgentPipelinePage() {
                                         onRetry={() => { void refetchRun(); }}
                                     />
                                 )}
-                                <div className="flex items-center justify-between border-b border-terminal-border pb-3">
+                                <div className="flex items-center justify-between border-b border-border pb-3">
                                     <div className="flex items-center gap-2">
-                                        <Terminal className="h-5 w-5 text-terminal-primary" />
-                                        <span className="font-bold text-sm tracking-wide text-terminal-primary">{t('agentPipeline.consoleTitle')}</span>
+                                        <Terminal className="h-5 w-5 text-content-primary" />
+                                        <span className="font-bold text-sm text-content-primary">{t('agentPipeline.consoleTitle')}</span>
                                     </div>
                                     <span className={clsx(
-                                        "rounded-full px-2 py-0.5 text-wc-micro uppercase font-bold tracking-wider",
+                                        "rounded-full px-2 py-0.5 text-wc-micro font-boldr",
                                         runDetail?.status === 'succeeded' ? "bg-feedback-success-muted text-feedback-success-foreground border border-feedback-success-border" :
                                         runDetail?.status === 'failed' ? "bg-feedback-danger-muted text-feedback-danger-foreground border border-feedback-danger-border" :
                                         runDetail?.status === 'running' ? "bg-feedback-info-muted text-feedback-info-foreground border border-feedback-info-border animate-pulse" :
-                                        "bg-terminal-canvas text-terminal-secondary border border-terminal-border"
+                                        "bg-surface-card text-content-secondary border border-border"
                                     )}>
                                         {runDetail
                                             ? t(`agentPipeline.runStatuses.${runStatus}`)
@@ -585,34 +568,34 @@ export default function AgentPipelinePage() {
 
                                 {/* Only bounded, non-secret run metadata is rendered in this operator view. */}
                                 {runDetail && (
-                                    <div className="grid grid-cols-2 gap-2 text-wc-micro p-3 rounded-lg bg-terminal-canvas border border-terminal-border text-terminal-secondary">
+                                    <div className="grid grid-cols-2 gap-2 text-wc-micro p-3 rounded-lg bg-surface-card border border-border text-content-secondary">
                                         <div>
-                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.runIdentifier')}</span>
-                                            <span className="text-terminal-primary font-semibold">#{activeRunId}</span>
+                                            <span className="text-content-tertiary font-semibold block">{t('agentPipeline.runIdentifier')}</span>
+                                            <span className="text-content-primary font-semibold">#{activeRunId}</span>
                                         </div>
                                         <div>
-                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.eventCount')}</span>
-                                            <span className="text-terminal-primary font-semibold">{runDetail.events?.length ?? 0}</span>
+                                            <span className="text-content-tertiary font-semibold block">{t('agentPipeline.eventCount')}</span>
+                                            <span className="text-content-primary font-semibold">{runDetail.events?.length ?? 0}</span>
                                         </div>
                                         <div>
-                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.modelBindingEvidence')}</span>
-                                            <span className="text-terminal-primary font-semibold">
+                                            <span className="text-content-tertiary font-semibold block">{t('agentPipeline.modelBindingEvidence')}</span>
+                                            <span className="text-content-primary font-semibold">
                                                 {modelBindingEvidence
                                                     ? t('agentPipeline.modelBindingEvidenceValue', modelBindingEvidence)
                                                     : t('agentPipeline.notReported')}
                                             </span>
                                         </div>
                                         <div>
-                                            <span className="text-terminal-muted font-semibold uppercase tracking-wider block">{t('agentPipeline.modelTrust')}</span>
-                                            <span className="text-terminal-primary font-semibold">
+                                            <span className="text-content-tertiary font-semibold block">{t('agentPipeline.modelTrust')}</span>
+                                            <span className="text-content-primary font-semibold">
                                                 {t(`agentPipeline.modelTrustStates.${modelTrustState}`)}
                                             </span>
                                         </div>
-                                        <p className="col-span-2 border-t border-terminal-border/50 pt-2 text-terminal-muted" role="note">
+                                        <p className="col-span-2 border-t border-border/50 pt-2 text-content-tertiary" role="note">
                                             {t('agentPipeline.sensitiveRunFieldsWithheld')}
                                         </p>
                                         {externalReferenceCount > 0 && (
-                                            <p className="col-span-2 text-terminal-muted" role="note">
+                                            <p className="col-span-2 text-content-tertiary" role="note">
                                                 {t('agentPipeline.externalReferencesWithheld', {
                                                     count: externalReferenceCount,
                                                 })}
@@ -622,9 +605,9 @@ export default function AgentPipelinePage() {
                                 )}
 
                                 {/* Console lines Area */}
-                                <div className="flex-1 bg-terminal-canvas rounded-lg border border-terminal-border p-4 overflow-y-auto text-xs flex flex-col gap-2 shadow-inner min-h-[300px]">
+                                <div className="flex-1 bg-surface-card rounded-lg border border-border p-4 overflow-y-auto text-xs flex flex-col gap-2 shadow-inner min-h-[300px]">
                                     {!runDetail?.events || runDetail.events.length === 0 ? (
-                                        <div className="flex-1 flex flex-col items-center justify-center text-center text-terminal-muted select-none py-16 gap-2">
+                                        <div className="flex-1 flex flex-col items-center justify-center text-center text-content-tertiary select-none py-16 gap-2">
                                             <Terminal className="h-8 w-8 opacity-40 animate-pulse" />
                                             <p className="text-xs">{t('agentPipeline.consoleOffline')}</p>
                                         </div>
@@ -632,13 +615,13 @@ export default function AgentPipelinePage() {
                                         runDetail.events.map((evt) => {
                                             const time = formatDateTime(evt.created_at);
                                             return (
-                                                <div key={evt.id} className="flex flex-col gap-1 hover:bg-terminal-surface/50 py-1 px-1 rounded transition-colors group">
+                                                <div key={evt.id} className="flex flex-col gap-1 hover:bg-surface-muted/50 py-1 px-1 rounded transition-colors group">
                                                     <div className="flex items-start gap-2">
-                                                        <span className="text-terminal-muted select-none shrink-0 font-mono">[{time}]</span>
-                                                        <span className="text-terminal-secondary select-none shrink-0 font-semibold uppercase tracking-wider text-wc-micro mt-0.5">
+                                                        <span className="text-content-tertiary select-none shrink-0 font-mono">[{time}]</span>
+                                                        <span className="text-content-secondary select-none shrink-0 font-semibold text-wc-micro mt-0.5">
                                                             {t('agentPipeline.runEvent')}
                                                         </span>
-                                                        <span className="text-terminal-primary break-words flex-1 font-mono font-medium leading-relaxed font-sans">
+                                                        <span className="text-content-primary break-words flex-1 font-mono font-medium leading-relaxed font-sans">
                                                             {t('agentPipeline.runEventDetailsWithheld')}
                                                         </span>
                                                     </div>
@@ -649,8 +632,8 @@ export default function AgentPipelinePage() {
 
                                     {/* Append running cursor if active */}
                                     {runStatus === 'running' && (
-                                        <div className="flex items-center gap-1.5 text-terminal-secondary text-wc-micro animate-pulse py-1 font-semibold pl-1">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-terminal-primary animate-ping" />
+                                        <div className="flex items-center gap-1.5 text-content-secondary text-wc-micro animate-pulse py-1 font-semibold pl-1">
+                                            <span className="h-1.5 w-1.5 rounded-full bg-action animate-ping" />
                                             <span>{t('agentPipeline.streaming')}</span>
                                         </div>
                                     )}

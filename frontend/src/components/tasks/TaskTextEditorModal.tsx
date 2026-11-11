@@ -134,6 +134,7 @@ const TaskTextEditorBody = ({ iterationId, initialText, initialRevision, isLoadi
                             </div>
                         )}
                         <textarea
+                            aria-label={t('taskTextEditor.title')}
                             ref={editorRef}
                             value={text}
                             readOnly={isLoading || updateMutation.isPending || baseRevision === undefined}

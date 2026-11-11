@@ -12,14 +12,14 @@ _Auto-generated from `frontend/src/utils/taskFilters.test.ts`._
 |--------|---------|-----------|------------------|
 | `../types/task` | `Task` | Declaration | erased |
 | `./taskFilterDefaults` | `defaultFilters` | — | compiler-dependent |
-| `./taskFilters` | `filterTaskWithChildren`, `taskMatchesFilters` | — | compiler-dependent |
+| `./taskFilters` | `filterTaskBySearch`, `filterTaskWithChildren`, `taskMatchesFilters` | — | compiler-dependent |
 | `vitest` | `describe`, `expect`, `it` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
-| Module calls | `describe`, `describe` |
+| Module calls | `describe`, `describe`, `describe` |
 
 ## Local dependency map
 

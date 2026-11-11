@@ -1,6 +1,6 @@
 # WorkspaceMetadata
 
-**Location:** `frontend/src/navigation/workspaces.ts:29`
+**Location:** `frontend/src/navigation/workspaces.ts:31`
 **Kind:** Interface
 **Bases:** —
 **Module:** [workspaces](../modules/workspaces.md)

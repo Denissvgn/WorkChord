@@ -1,51 +1,22 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import '../styles/landing.css';
 
-const workflowStages = [
-    {
-        number: '1.0',
-        verb: 'Capture',
-        title: 'Give work a clear entrance.',
-        description: 'Projects, triage, and task trees keep incoming requests attached to the context that turns them into planned work.',
-        result: 'Less intent is lost between intake and planning.',
-        surfaces: ['Projects', 'Triage', 'Task trees'],
-    },
-    {
-        number: '2.0',
-        verb: 'Shape',
-        title: 'Test the plan before commitment.',
-        description: 'Iterations, dependencies, capacity, calendar, and Gantt views expose sequence and constraint decisions while they can still change.',
-        result: 'Trade-offs become visible before dates become promises.',
-        surfaces: ['Iterations', 'Capacity', 'Dependencies', 'Gantt'],
-    },
-    {
-        number: '3.0',
-        verb: 'Coordinate',
-        title: 'Put an agent PM to work—under your control.',
-        description: 'An agent PM can use portable planner roles, authenticated MCP workflows, and the agent pipeline to move qualified work through a visible queue.',
-        result: 'Routine coordination can be automated while the user retains control of priorities, progress, and review.',
-        surfaces: ['Agent pipeline', 'Planner role', 'Work queue', 'MCP'],
-    },
-    {
-        number: '4.0',
-        verb: 'Review',
-        title: 'Follow delivery without rebuilding the story.',
-        description: 'Roadmaps, release planning, analytics, and audit history keep the current plan and the record of change in the same workspace.',
-        result: 'Progress and change stay explainable to the people relying on them.',
-        surfaces: ['Roadmap', 'Releases', 'Analytics', 'Audit history'],
-    },
+// Copy lives in the landing catalog (EN and RU); the numbering stays in code.
+const STAGES = [
+    { number: '1', key: 'capture' },
+    { number: '2', key: 'shape' },
+    { number: '3', key: 'coordinate' },
+    { number: '4', key: 'review' },
 ] as const;
 
-const operatingBenefits = [
-    ['One source of work', 'Requests, plans, dependencies, and delivery views share the same underlying project context.'],
-    ['Constraint-aware planning', 'Capacity and sequencing sit beside the work instead of in a separate spreadsheet.'],
-    ['Controlled agent PM', 'Automate routine planning and coordination while the user directs priorities, watches progress, and reviews the visible work queue.'],
-    ['Delivery evidence', 'Release planning, analytics, and audit history preserve what changed and why.'],
-] as const;
+const BENEFITS = ['source', 'constraints', 'agent', 'evidence'] as const;
 
-const WorkflowMap = () => (
+const WorkflowMap = () => {
+    const { t } = useTranslation();
+    return (
     <figure className="landing-map" aria-labelledby="landing-map-caption">
-        <figcaption id="landing-map-caption">One planning thread, from request to review.</figcaption>
+        <figcaption id="landing-map-caption">{t('landing.map.caption')}</figcaption>
         <svg className="landing-map__diagram" viewBox="0 0 720 330" aria-hidden="true">
             <path className="landing-map__path" d="M 140 96 C 205 96 205 96 270 96" />
             <path className="landing-map__path" d="M 450 96 C 515 96 515 96 580 96" />
@@ -55,35 +26,37 @@ const WorkflowMap = () => (
 
             <g className="landing-map__node">
                 <rect x="20" y="50" width="120" height="92" rx="6" />
-                <text className="landing-map__index" x="38" y="78">1.0</text>
-                <text className="landing-map__label" x="38" y="108">Capture</text>
-                <text className="landing-map__detail" x="80" y="126" textAnchor="middle">intake + tasks</text>
+                <text className="landing-map__index" x="38" y="78">1</text>
+                <text className="landing-map__label" x="38" y="108">{t('landing.map.capture')}</text>
+                <text className="landing-map__detail" x="80" y="126" textAnchor="middle">{t('landing.map.captureDetail')}</text>
             </g>
             <g className="landing-map__node landing-map__node--active">
                 <rect x="270" y="38" width="180" height="116" rx="6" />
-                <text className="landing-map__index" x="292" y="70">2.0 + 3.0</text>
-                <text className="landing-map__label" x="292" y="103">Plan together</text>
-                <text className="landing-map__detail" x="360" y="125" textAnchor="middle">scope + capacity</text>
+                <text className="landing-map__index" x="292" y="70">2 + 3</text>
+                <text className="landing-map__label" x="292" y="103">{t('landing.map.plan')}</text>
+                <text className="landing-map__detail" x="360" y="125" textAnchor="middle">{t('landing.map.planDetail')}</text>
             </g>
             <g className="landing-map__node">
                 <rect x="580" y="50" width="120" height="92" rx="6" />
-                <text className="landing-map__index" x="598" y="78">4.0</text>
-                <text className="landing-map__label" x="598" y="108">Review</text>
-                <text className="landing-map__detail" x="640" y="126" textAnchor="middle">release record</text>
+                <text className="landing-map__index" x="598" y="78">4</text>
+                <text className="landing-map__label" x="598" y="108">{t('landing.map.review')}</text>
+                <text className="landing-map__detail" x="640" y="126" textAnchor="middle">{t('landing.map.reviewDetail')}</text>
             </g>
 
-            <text className="landing-map__loop-label" x="360" y="280" textAnchor="middle">THE RECORD RETURNS TO THE NEXT PLAN</text>
+            <text className="landing-map__loop-label" x="360" y="280" textAnchor="middle">{t('landing.map.loop')}</text>
         </svg>
-        <ol className="landing-map__mobile" aria-label="WorkChord planning flow">
-            <li><span>1.0</span> Capture requests and work</li>
-            <li><span>2.0</span> Shape scope and capacity</li>
-            <li><span>3.0</span> Coordinate people and agents</li>
-            <li><span>4.0</span> Review delivery and change</li>
+        <ol className="landing-map__mobile" aria-label={t('landing.map.flow')}>
+            <li><span>1</span> {t('landing.map.steps.capture')}</li>
+            <li><span>2</span> {t('landing.map.steps.shape')}</li>
+            <li><span>3</span> {t('landing.map.steps.coordinate')}</li>
+            <li><span>4</span> {t('landing.map.steps.review')}</li>
         </ol>
     </figure>
-);
+    );
+};
 
 const LandingPage = () => {
+    const { t } = useTranslation();
     return (
         <div className="landing-page">
             <a
@@ -93,69 +66,70 @@ const LandingPage = () => {
                     document.getElementById('landing-main')?.focus();
                 }}
             >
-                Skip to content
+                {t('landing.skipToContent')}
             </a>
 
-            <header className="landing-nav" aria-label="Landing page navigation">
+            <header className="landing-nav" aria-label={t('landing.navigation')}>
                 <Link className="landing-wordmark landing-action" to="/welcome">WorkChord</Link>
-                <Link className="landing-nav__action landing-action" to="/">Open workspace <span aria-hidden="true">↗</span></Link>
+                <Link className="landing-nav__action landing-action" to="/">{t('landing.openWorkspace')} <span aria-hidden="true">↗</span></Link>
             </header>
 
             <main id="landing-main" tabIndex={-1}>
                 <section className="landing-hero" aria-labelledby="landing-title">
                     <div className="landing-hero__copy">
-                        <p className="landing-hero__context">SELF-HOSTED PLANNING + DELIVERY</p>
-                        <h1 id="landing-title">Plan work that holds.</h1>
-                        <p className="landing-hero__lede">
-                            WorkChord gives product managers one place to shape work, see capacity,
-                            connect dependencies, and follow delivery—across people and agents. It can
-                            also give an agent PM a controlled queue for routine planning and coordination.
-                        </p>
-                        <a className="landing-text-link landing-action" href="#workflow">
-                            Follow the workflow <span aria-hidden="true">↓</span>
-                        </a>
+                        <p className="landing-hero__context">{t('landing.heroContext')}</p>
+                        <h1 id="landing-title">{t('landing.heroTitle')}</h1>
+                        <p className="landing-hero__lede">{t('landing.heroLede')}</p>
+                        {/* The hero's one button; the workflow link stays a quiet text link. */}
+                        <div className="landing-hero__actions">
+                            <Link className="landing-button" to="/">{t('landing.openTheWorkspace')}</Link>
+                            <a className="landing-text-link landing-action" href="#workflow">
+                                {t('landing.followWorkflow')} <span aria-hidden="true">↓</span>
+                            </a>
+                        </div>
                     </div>
                     <WorkflowMap />
                 </section>
 
                 <section id="workflow" className="landing-workflow" aria-labelledby="workflow-title">
                     <div className="landing-workflow__intro">
-                        <h2 id="workflow-title">The system follows the work.</h2>
-                        <p>
-                            WorkChord connects planning surfaces in the order product managers use them.
-                            Each stage leaves context for the next.
-                        </p>
+                        <h2 id="workflow-title">{t('landing.workflowTitle')}</h2>
+                        <p>{t('landing.workflowIntro')}</p>
                     </div>
 
                     <ol className="landing-stages">
-                        {workflowStages.map(stage => (
-                            <li className="landing-stage" key={stage.number}>
-                                <div className="landing-stage__heading">
-                                    <span className="landing-stage__number">{stage.number} · {stage.verb}</span>
-                                    <h3>{stage.title}</h3>
-                                </div>
-                                <div className="landing-stage__body">
-                                    <p>{stage.description}</p>
-                                    <p className="landing-stage__result">Result — {stage.result}</p>
-                                </div>
-                                <ul className="landing-stage__surfaces" aria-label={`${stage.verb} surfaces`}>
-                                    {stage.surfaces.map(surface => <li key={surface}>{surface}</li>)}
-                                </ul>
-                            </li>
-                        ))}
+                        {STAGES.map(({ number, key }) => {
+                            const verb = t(`landing.stages.${key}.verb`);
+                            const surfaces = t(`landing.stages.${key}.surfaces`, { returnObjects: true }) as string[];
+                            return (
+                                <li className="landing-stage" key={number}>
+                                    <div className="landing-stage__heading">
+                                        <span className="landing-stage__number">{number} · {verb}</span>
+                                        <h3>{t(`landing.stages.${key}.title`)}</h3>
+                                    </div>
+                                    <div className="landing-stage__body">
+                                        <p>{t(`landing.stages.${key}.description`)}</p>
+                                        <p className="landing-stage__result">{t('landing.result', { result: t(`landing.stages.${key}.result`) })}</p>
+                                    </div>
+                                    <ul className="landing-stage__surfaces" aria-label={t('landing.stageSurfaces', { verb })}>
+                                        {surfaces.map(surface => <li key={surface}>{surface}</li>)}
+                                    </ul>
+                                </li>
+                            );
+                        })}
                     </ol>
                 </section>
 
                 <section className="landing-operating" aria-labelledby="operating-title">
                     <div className="landing-operating__intro">
-                        <h2 id="operating-title">Fewer planning gaps.</h2>
-                        <p>Not another report. A shared operating record for the work itself.</p>
+                        <h2 id="operating-title">{t('landing.operatingTitle')}</h2>
+                        <p>{t('landing.operatingIntro')}</p>
                     </div>
                     <dl className="landing-benefits">
-                        {operatingBenefits.map(([term, detail]) => (
-                            <div className="landing-benefit" key={term}>
-                                <dt>{term}</dt>
-                                <dd>{detail}</dd>
+                        {BENEFITS.map(key => (
+                            <div className="landing-benefit" key={key}>
+                                <dt>{t(`landing.benefits.${key}.term`)}</dt>
+                                <dd>{t(`landing.benefits.${key}.detail`)}</dd>
                             </div>
                         ))}
                     </dl>
@@ -163,20 +137,20 @@ const LandingPage = () => {
 
                 <section className="landing-close" aria-labelledby="landing-close-title">
                     <div>
-                        <h2 id="landing-close-title">See the plan in its working form.</h2>
-                        <p>The workspace is the product: projects, capacity, sequencing, delivery, and evidence.</p>
+                        <h2 id="landing-close-title">{t('landing.closeTitle')}</h2>
+                        <p>{t('landing.closeBody')}</p>
                     </div>
                     <Link className="landing-text-link landing-action" to="/">
-                        Open the workspace <span aria-hidden="true">→</span>
+                        {t('landing.openTheWorkspace')} <span aria-hidden="true">→</span>
                     </Link>
                 </section>
             </main>
 
             <footer className="landing-footer">
-                <p className="landing-footer__statement">A plan should survive contact with delivery.</p>
+                <p className="landing-footer__statement">{t('landing.footerStatement')}</p>
                 <div className="landing-footer__meta">
                     <span>WorkChord</span>
-                    <span>Self-hosted · MIT licensed</span>
+                    <span>{t('landing.footerMeta')}</span>
                 </div>
             </footer>
         </div>

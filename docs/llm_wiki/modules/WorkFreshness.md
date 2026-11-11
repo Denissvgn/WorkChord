@@ -57,4 +57,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `WorkFreshness` | <pre><code>&#40;&#123; updatedAt&#44; stale&#44; refreshing&#44; onRefresh &#125;&#58; &#123;&#10;    updatedAt&#58; number&#59; stale&#58; boolean&#59; refreshing&#58; boolean&#59; onRefresh&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | Display update age and recovery state for a caller-owned work query. |
+| `WorkFreshness` | <pre><code>&#40;&#123; stale&#44; refreshing&#44; onRefresh &#125;&#58; &#123;&#10;    stale&#58; boolean&#59; refreshing&#58; boolean&#59; onRefresh&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | Recovery for a caller-owned work query: silent while its data is current (the shell |

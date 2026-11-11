@@ -3,7 +3,7 @@ import secrets
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, Integer, String
 from app.database import Base
 from app.utils.time import UTCDateTime, utc_now
 
@@ -28,6 +28,9 @@ class UserSession(Base):
     csrf_token: Mapped[str | None] = mapped_column(String(128))
     authenticated_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
     principal: Mapped["Principal | None"] = relationship("Principal", lazy="selectin")
+    # A trusted-local session's self-chosen person profile: a label for its own
+    # queue, never a verified identity. Validated when chosen and when read.
+    local_profile_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     session_token_hash: Mapped[str | None] = mapped_column(
         String(64),
         unique=True,

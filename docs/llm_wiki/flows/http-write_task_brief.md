@@ -87,9 +87,9 @@ sequenceDiagram
     p2-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 127 interactions; 97 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 128 interactions; 98 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 43 (42 omitted); unresolved 2 of 43 (41 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 43 (42 omitted); unresolved 2 of 44 (42 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -98,7 +98,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/task_domain.py:domain_result` | 2 | - | external | 5 |
 | `backend/app/commands.py:current_command` | 13 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 13 | - | unresolved | 1 |
-| `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | unresolved | 5 |
+| `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | unresolved | 6 |
 | `backend/app/services/task_service.py:TaskService.task_to_response` | 12 | - | external | 5 |
 | `backend/app/services/work_metrics.py:working_today` | 22 | - | unresolved | 2 |
 | `backend/app/services/work_metrics.py:working_today` | 22 | [backend/app/utils/time.py](../modules/time.md) | internal | 2 |
@@ -192,7 +192,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| write_task_brief | domain_result | 191 | `domain_result(...)` |
+| write_task_brief | domain_result | 224 | `domain_result(...)` |
 | domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
@@ -200,15 +200,15 @@ flowchart LR
 | domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| write_task_brief | TaskBriefService(…).write | 191 | `TaskBriefService(db).write(task_id, data)` |
-| write_task_brief | TaskBriefService | 191 | `TaskBriefService(db)` |
-| write_task_brief | TaskService.task_to_response | 192 | `TaskService(db).task_to_response(task)` |
+| write_task_brief | TaskBriefService(…).write | 224 | `TaskBriefService(db).write(task_id, data)` |
+| write_task_brief | TaskBriefService | 224 | `TaskBriefService(db)` |
+| write_task_brief | TaskService.task_to_response | 225 | `TaskService(db).task_to_response(task)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `signals.pop` | `TaskService.task_to_response` | 1653 |
+| mutation | `signals.pop` | `TaskService.task_to_response` | 1669 |
 
 ### Static analysis gaps
 
@@ -219,7 +219,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `write_task_brief` | `TaskBriefService(db).write` | 191 |
+| unresolved_call | `write_task_brief` | `TaskBriefService(db).write` | 224 |
 | step_limit | `write_task_brief` | `first 12 steps` | 0 |
 
 ## Behavior

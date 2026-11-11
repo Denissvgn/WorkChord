@@ -10,19 +10,20 @@ _Auto-generated from `frontend/src/components/analytics/TaskStatusFlow.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../types/task` | `TaskStatus`, `TaskStatusLog` | Declaration | erased |
+| `../../types/task` | `TaskStatusLog` | Declaration | erased |
 | `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
-| `../ui/tone` | `STATUS_TONE`, `toneBorderClassName` | — | compiler-dependent |
-| `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `ArrowRight` | — | compiler-dependent |
-| `react` | `React` | — | compiler-dependent |
+| `../ui/tone` | `STATUS_TONE`, `toneVar` | — | compiler-dependent |
+| `i18next` | `TFunction` | Declaration | erased |
+| `react` | `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Exports | `TaskStatusFlow` |
+| Constants | `HOUR` |
 
 ## Local dependency map
 
@@ -31,28 +32,34 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/analytics/TaskStatusFlow.tsx"]
-    n1["frontend/src/components/ui/tone.ts"]
-    n2["frontend/src/pages/AnalyticsPage.tsx"]
-    n3["frontend/src/types/task.ts"]
-    n4["frontend/src/utils/formatDate.ts"]
+    n0["frontend/src/components/analytics/IterationOutlook.test.tsx"]
+    n1["frontend/src/components/analytics/TaskStatusFlow.tsx"]
+    n2["frontend/src/components/ui/tone.ts"]
+    n3["frontend/src/pages/AnalyticsPage.tsx"]
+    n4["frontend/src/types/task.ts"]
+    n5["frontend/src/utils/formatDate.ts"]
     n0 --> n1
-    n0 --> n3
     n0 --> n4
-    n1 --> n3
-    n2 --> n0
-    n2 --> n3
-    click n0 "../modules/TaskStatusFlow.md"
-    click n1 "../modules/tone.md"
-    click n2 "../modules/AnalyticsPage.md"
-    click n3 "../modules/types_task.md"
-    click n4 "../modules/formatDate.md"
+    n1 --> n2
+    n1 --> n4
+    n1 --> n5
+    n2 --> n4
+    n3 --> n1
+    n3 --> n4
+    n3 --> n5
+    click n0 "../modules/IterationOutlook.test.md"
+    click n1 "../modules/TaskStatusFlow.md"
+    click n2 "../modules/tone.md"
+    click n3 "../modules/AnalyticsPage.md"
+    click n4 "../modules/types_task.md"
+    click n5 "../modules/formatDate.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [IterationOutlook.test](../modules/IterationOutlook.test.md) |
 | Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
 | Outbound | [tone](../modules/tone.md) |
 | Outbound | [types_task](../modules/types_task.md) |
@@ -64,14 +71,8 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-## Classes
-
-| Class | Kind | Line | Bases / Target | Description |
-|-------|------|------|----------------|-------------|
-| [TaskStatusFlowProps](../entities/TaskStatusFlowProps.md) | Interface | 9 | — | — |
-
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskStatusFlow` | `({ logs })` | — | — |
+| `TaskStatusFlow` | `({ taskId, title, logs, nowMs }: { taskId: number; title: string; logs: TaskStatusLog[]; nowMs?: number })` | — | One task's states in order, with the time spent in each. The current state is |

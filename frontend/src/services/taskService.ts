@@ -43,6 +43,7 @@ export const taskService = {
     },
     actions: async (taskId: number) => (await api.get<TaskActions>(`/tasks/${taskId}/actions`)).data,
     command: async (taskId: number, data: TaskCommand) => (await api.post<Task>(`/tasks/${taskId}/commands`, data)).data,
+    writeBrief: async (taskId: number, expected_version: number, brief: TaskBrief) => (await api.put<Task>(`/tasks/${taskId}/brief`, { expected_version, brief })).data,
     convertBrief: async (taskId: number, expected_version: number, apply: boolean) => (await api.post<{ brief: TaskBrief; notes: string[]; already_converted: boolean }>(`/tasks/${taskId}/brief/convert`, { expected_version, apply })).data,
     progress: async (taskId: number, data: { expected_version: number; criteria: CriterionProgress[]; artifacts: string[] }) => (await api.post<Task>(`/tasks/${taskId}/progress`, data)).data,
     review: async (taskId: number, data: { expected_version: number; brief_revision: number; artifact_revision: number; verdict: 'accept' | 'reject'; reason: string; evidence?: string }) => (await api.post<Task>(`/tasks/${taskId}/review`, data)).data,
@@ -262,4 +263,19 @@ export const taskService = {
         const response = await api.post<TaskBatchUpdateResponse>(`/iterations/${iterationId}/tasks/batch-update`, data);
         return response.data;
     },
+
+    /** The tasks behind one work-metric count, chosen by the predicate that counts them. */
+    metricMatches: async (params: MetricScope & { metric: WorkMetricName }, signal?: AbortSignal) => {
+        const response = await api.get<MetricMatchPage>('/tasks/metric-matches', { params, signal });
+        return response.data;
+    },
 };
+
+export type WorkMetricName = 'total' | 'planned' | 'active' | 'resolved' | 'closed' | 'implemented' | 'accepted' | 'blocked'
+    | 'overdue' | 'late_start' | 'iteration_overflow' | 'acceptance_unknown' | 'unknown_estimate';
+export type MetricScope = { project_id: number } | { iteration_id: number } | { release_id: number };
+export interface MetricMatchPage {
+    metric: WorkMetricName;
+    items: Array<{ id: number; title: string; status: string; project_name: string | null; iteration_name: string | null }>;
+    has_more: boolean;
+}

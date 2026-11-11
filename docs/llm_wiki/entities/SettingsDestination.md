@@ -16,6 +16,7 @@ _Auto-generated from `SettingsDestination` in `frontend/src/pages/SettingsPage.t
 | `id` | `SettingsTab` | Yes | — | — |
 | `labelKey` | `string` | Yes | — | — |
 | `descriptionKey` | `string` | Yes | — | — |
+| `keywordsKey` | `string` | Yes | — | — |
 | `icon` | `LucideIcon` | Yes | — | — |
 
 ## Methods
@@ -31,4 +32,4 @@ _Auto-generated from `SettingsDestination` in `frontend/src/pages/SettingsPage.t
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [SettingsPage](../modules/SettingsPage.md) | 0 | `descriptionKey`, `icon`, `id`, `labelKey` |
+| [SettingsPage](../modules/SettingsPage.md) | 0 | `descriptionKey`, `icon`, `id`, `keywordsKey`, `labelKey` |

@@ -2680,6 +2680,17 @@
           "agent_readiness": {
             "$ref": "#/components/schemas/TaskAgentReadiness"
           },
+          "agent_working": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Working"
+          },
           "artifact_revision": {
             "default": 0,
             "title": "Artifact Revision",

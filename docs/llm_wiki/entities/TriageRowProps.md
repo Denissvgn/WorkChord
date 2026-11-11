@@ -1,6 +1,6 @@
 # TriageRowProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1739`
+**Location:** `frontend/src/pages/TriagePage.tsx:1626`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

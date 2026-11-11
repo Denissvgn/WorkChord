@@ -5,6 +5,7 @@
 ## Description
 
 Calendar operations freeze controls while pending, bind delayed completion to the active resource and draft generation, and recheck resource identity after asynchronous CSV reads.
+Day marks, weekends and the year are one draft compared with the last read calendar: Save is enabled only when they differ, Discard restores the saved state, and `UnsavedLeaveGuard` asks before in-app navigation, reload or switching calendars. Imports are immediate writes and say so.
 
 Calendar reads and writes retain resource and draft generation boundaries. Pending reads freeze editable controls; every write invalidates older CSV reads, and explicit reload only applies to the observed resource/generation.
 
@@ -14,7 +15,9 @@ Calendar reads and writes retain resource and draft generation boundaries. Pendi
 |--------|---------|-----------|------------------|
 | `../components/calendar/InteractiveCalendar` | `CalendarPeriodNavigator`, `InteractiveCalendar` | — | compiler-dependent |
 | `../components/common/Button` | `Button` | — | compiler-dependent |
+| `../components/common/DisabledReason` | `DisabledReason` | — | compiler-dependent |
 | `../components/common/Input` | `Input` | — | compiler-dependent |
+| `../components/common/UnsavedLeaveGuard` | `UnsavedLeaveGuard` | — | compiler-dependent |
 | `../components/common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` | — | compiler-dependent |
@@ -65,7 +68,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (18) |
+| Outbound | `frontend` (20) |
 
 ### External packages
 
@@ -73,13 +76,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarDraft](../entities/CalendarDraft.md) | Interface | 39 | — | — |
-| [VacationRow](../entities/VacationRow.md) | Interface | 46 | — | — |
-| [DateListProps](../entities/DateListProps.md) | Interface | 1147 | — | — |
-| [DateChipProps](../entities/DateChipProps.md) | Interface | 1210 | — | — |
+| [CalendarDraft](../entities/CalendarDraft.md) | Interface | 41 | — | — |
+| [VacationRow](../entities/VacationRow.md) | Interface | 48 | — | — |
+| [DateListProps](../entities/DateListProps.md) | Interface | 1189 | — | — |
+| [DateChipProps](../entities/DateChipProps.md) | Interface | 1252 | — | — |

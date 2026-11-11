@@ -13,9 +13,9 @@ Outbound webhook target and delivery API router.
 | `app.database` | `get_db` |
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.outbound_webhook` | `OutboundWebhookDeliveryResponse`, `OutboundWebhookRetryResponse`, `OutboundWebhookTargetCreate`, `OutboundWebhookTargetResponse`, `OutboundWebhookTargetUpdate` |
-| `app.security` | `require_admin_api_key` |
 | `app.services.language_service` | `backend_error_message`, `entity_deleted_message`, `entity_not_found_message`, `resolve_runtime_ui_language` |
 | `app.services.outbound_webhook_service` | `OutboundWebhookNotFoundError`, `OutboundWebhookService`, `OutboundWebhookValidationError` |
+| `app.settings_read` | `redact_webhook_delivery`, `redact_webhook_target`, `require_settings_access`, `withholds` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query`, `status` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
 | `typing` | `Annotated`, `Optional` |
@@ -31,9 +31,9 @@ flowchart LR
     n3["backend/app/routers/outbound_webhooks.py"]
     n4["backend/app/schemas/common.py"]
     n5["backend/app/schemas/outbound_webhook.py"]
-    n6["backend/app/security.py"]
-    n7["backend/app/services/language_service.py"]
-    n8["backend/app/services/outbound_webhook_service.py"]
+    n6["backend/app/services/language_service.py"]
+    n7["backend/app/services/outbound_webhook_service.py"]
+    n8["backend/app/settings_read.py"]
     n1 --> n0
     n1 --> n3
     n2 --> n3
@@ -43,17 +43,17 @@ flowchart LR
     n3 --> n6
     n3 --> n7
     n3 --> n8
-    n8 --> n0
-    n8 --> n5
+    n7 --> n0
+    n7 --> n5
     click n0 "../modules/app_database.md"
     click n1 "../modules/app_main.md"
     click n2 "../modules/routers___init__.md"
     click n3 "../modules/outbound_webhooks.md"
     click n4 "../modules/schemas_common.md"
     click n5 "../modules/schemas_outbound_webhook.md"
-    click n6 "../modules/security.md"
-    click n7 "../modules/language_service.md"
-    click n8 "../modules/outbound_webhook_service.md"
+    click n6 "../modules/language_service.md"
+    click n7 "../modules/outbound_webhook_service.md"
+    click n8 "../modules/settings_read.md"
 ```
 
 ### Internal neighbors
@@ -65,9 +65,9 @@ flowchart LR
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [schemas_common](../modules/schemas_common.md) |
 | Outbound | [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md) |
-| Outbound | [security](../modules/security.md) |
 | Outbound | [language_service](../modules/language_service.md) |
 | Outbound | [outbound_webhook_service](../modules/outbound_webhook_service.md) |
+| Outbound | [settings_read](../modules/settings_read.md) |
 
 ### External packages
 

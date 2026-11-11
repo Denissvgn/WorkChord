@@ -7,7 +7,7 @@ import { triageService } from '../../services/triageService';
 import { usePlanningNavigationSummary } from '../../features/planningMasters/usePlanningNavigationSummary';
 import { getWorkspaceForPath, WORKSPACES } from '../../navigation/workspaces';
 import type { WorkspaceMetadata } from '../../navigation/workspaces';
-import { warmRouteModule } from '../../navigation/routeModules';
+import { metadataForPath, warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
 import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
@@ -147,7 +147,8 @@ export const AppTopNav = () => {
             }
             : actionablePendingSteps > 0
                 ? {
-                    badge: String(actionablePendingSteps),
+                    // Same "n of 6" notation as the plan page and the sidebar card.
+                    badge: `${ready.done}/${ready.total}`,
                     label: t('nav.planningAttention', { count: actionablePendingSteps }),
                 }
                 : undefined;
@@ -236,6 +237,12 @@ export const AppTopNav = () => {
                 <span className="brand-label">{t('common.appName')}</span>
             </Link>
 
+            {/* Below 1180px the workspace tabs fold into the menu; the bar still names where you are. */}
+            <p className="topnav-location" data-testid="topnav-location">
+                <span className="topnav-location-area">{t(currentWorkspace.labelKey, currentWorkspace.defaultLabel)}</span>
+                <span className="topnav-location-page">{t(metadataForPath(location.pathname).titleKey)}</span>
+            </p>
+
             <nav className="nav-tabs workspace-switcher" aria-label={t('nav.workAreaHomes')}>
                 {WORKSPACES.map(workspace => (
                     <WorkspaceSwitchLink
@@ -301,7 +308,7 @@ export const AppTopNav = () => {
                     >
                         <div className="mobile-nav-head">
                             <h2 id={MOBILE_NAV_TITLE_ID}>{t('nav.primaryNavigation')}</h2>
-                            <button type="button" className="btn ghost icon" aria-label={t('actions.close')} onClick={requestClose}>
+                            <button type="button" className="btn ghost icon" aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose}>
                                 <X aria-hidden="true" className="h-4 w-4" />
                             </button>
                         </div>
@@ -335,6 +342,27 @@ export const AppTopNav = () => {
                                         />
                                     ))}
                                 </nav>
+                                {/* Every other workspace's pages, one expandable group each, so any page is two steps away. */}
+                                <div className="mobile-workspace-pages">
+                                    {WORKSPACES.filter(workspace => workspace.key !== currentWorkspace.key).map(workspace => (
+                                        <details key={workspace.key}>
+                                            <summary>{t('nav.workspacePages', { area: t(workspace.labelKey, workspace.defaultLabel) })}</summary>
+                                            <ul>
+                                                {workspace.items.map(item => {
+                                                    const ItemIcon = item.icon;
+                                                    return (
+                                                        <li key={item.to}>
+                                                            <Link to={item.to} className="sb-item" onClick={closeForNavigation}>
+                                                                <ItemIcon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
+                                                                <span className="sb-label">{t(item.labelKey, item.defaultLabel)}</span>
+                                                            </Link>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </details>
+                                    ))}
+                                </div>
                             </section>
                             <nav aria-label={t('nav.areaDestinations', {
                                 area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),

@@ -42,7 +42,11 @@ describe('RequestSourceLinksPanel', () => {
 
         expect(container.querySelectorAll('form')).toHaveLength(1);
 
-        const requestTitle = screen.getByPlaceholderText('Request title');
+        // The form waits behind "Link request" and has real labels.
+        expect(screen.queryByRole('textbox', { name: 'Request title' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Link request' }));
+        const requestTitle = screen.getByRole('textbox', { name: 'Request title' });
+        expect(screen.getByRole('textbox', { name: 'Source name' })).toBeInTheDocument();
         await user.type(requestTitle, 'Customer escalation{Enter}');
 
         await waitFor(() => expect(requestSourceServiceMock.createLink).toHaveBeenCalledWith(
@@ -55,5 +59,6 @@ describe('RequestSourceLinksPanel', () => {
             }),
         ));
         expect(outerSubmit).not.toHaveBeenCalled();
+        await waitFor(() => expect(screen.queryByRole('textbox', { name: 'Request title' })).toBeNull());
     });
 });

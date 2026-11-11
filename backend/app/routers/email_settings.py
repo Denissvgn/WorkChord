@@ -12,11 +12,11 @@ from app.schemas.email_settings import (
     TestEmailRequest,
     TestEmailResponse,
 )
-from app.security import require_admin_api_key
+from app.settings_read import redact_email_settings, require_settings_access, withholds
 from app.services.email_settings_service import EmailSettingsService
 from app.services.system_settings_service import RuntimeSettingsError
 
-router = APIRouter(dependencies=[Depends(require_admin_api_key)])
+router = APIRouter(dependencies=[Depends(require_settings_access)])
 logger = logging.getLogger(__name__)
 
 
@@ -53,7 +53,8 @@ async def get_email_settings(
             detail=str(exc),
         ) from exc
 
-    return _response(settings)
+    response = _response(settings)
+    return redact_email_settings(response) if withholds(service.db.info.get("authority")) else response
 
 
 @router.put("/email-settings", response_model=EmailSettingsResponse)

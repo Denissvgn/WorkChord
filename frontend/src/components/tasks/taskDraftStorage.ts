@@ -8,14 +8,14 @@ export const readTaskDraft = (key: string | null, defaults: TaskEditorValues): T
         const record = JSON.parse(raw);
         if (typeof record.savedAt !== 'number' || Date.now() - record.savedAt > 86400000
             || !record.values || typeof record.values.title !== 'string'
-            || typeof record.values.priority !== 'number' || record.values.effort_days !== null && typeof record.values.effort_days !== 'number') return null;
+            || record.values.priority !== null && typeof record.values.priority !== 'number' || record.values.effort_days !== null && typeof record.values.effort_days !== 'number') return null;
         const values = { ...defaults };
         for (const field of Object.keys(defaults) as (keyof TaskEditorValues)[]) {
             if (!(field in record.values)) continue;
             const value = record.values[field];
             const initial = defaults[field];
             if (field === 'expected_revision' && value !== null && (!Number.isSafeInteger(value) || value < 1)) continue;
-            const nullable = ['brief', 'effort_days', 'owner_profile_id', 'description', 'assignee_id', 'project_id', 'milestone_id', 'parent_id', 'expected_version', 'expected_revision', 'min_start_date', 'max_end_date', 'effort_hours'].includes(field);
+            const nullable = ['brief', 'priority', 'effort_days', 'owner_profile_id', 'description', 'assignee_id', 'project_id', 'milestone_id', 'parent_id', 'expected_version', 'expected_revision', 'min_start_date', 'max_end_date', 'effort_hours'].includes(field);
             if (field === 'brief' && value !== null) {
                 const fields = ['goal', 'context', 'scope', 'exclusions', 'verification', 'artifact_expectations'];
                 if (value?.schema_version === 1 && fields.every(key => typeof value[key] === 'string')

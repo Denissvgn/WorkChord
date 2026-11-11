@@ -1,6 +1,6 @@
 # TeamProfileManagerProps
 
-**Location:** `frontend/src/components/team/TeamProfileManager.tsx:66`
+**Location:** `frontend/src/components/team/TeamProfileManager.tsx:68`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TeamProfileManager](../modules/TeamProfileManager.md)

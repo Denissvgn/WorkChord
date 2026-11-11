@@ -3,7 +3,8 @@ import clsx from 'clsx';
 
 export const SectionCard = ({
     title,
-    headingLevel = 3,
+    // Sections sit right under the page's H1, so their titles are H2 unless nested deeper.
+    headingLevel = 2,
     headingId,
     description,
     icon,

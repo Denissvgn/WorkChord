@@ -4,11 +4,13 @@ import pytest
 
 from app.authority import Authority
 from app.models.task import Task
+from app.models.team_member import TeamMember, TeamMemberProfile
 from app.schemas.task import TaskCreate
 from app.services.task_detail_service import TaskDetailService
 from app.services.task_service import TaskService
 from tests.test_delivery_scenarios import delivery_store
 from tests.test_task_domain import human_context
+from tests.test_managed_authority import client
 
 
 async def test_my_work_includes_nested_and_backlog_without_private_work(delivery_store):
@@ -86,3 +88,34 @@ async def test_my_work_filters_before_pagination_and_preserves_scope(delivery_st
         from app.authority import AuthorityError
         with pytest.raises(AuthorityError):
             await query.my_work(project_id=scenario.projects[1])
+
+
+async def test_local_session_works_as_a_chosen_profile_and_sees_owned_and_assigned_work(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        person = TeamMemberProfile(display_name="Local person", profile_kind="human")
+        agent = TeamMemberProfile(display_name="Build agent", profile_kind="agent")
+        db.add_all([person, agent])
+        await db.flush()
+        row = TeamMember(name="Local person", position="Engineer", profile_id=person.id)
+        db.add(row)
+        await db.flush()
+        owned = Task(title="Owned locally", project_id=scenario.projects[0], owner_profile_id=person.id)
+        assigned = Task(title="Assigned to my capacity row", project_id=scenario.projects[0], assignee_id=row.id)
+        other = Task(title="Someone else's work", project_id=scenario.projects[0])
+        db.add_all([owned, assigned, other])
+        await db.commit()
+        person_id, agent_id, expected = person.id, agent.id, {owned.id, assigned.id}
+    async with client() as browser:
+        assert (await browser.get("/api/tasks/my-work")).json()["state"] == "profile_unlinked"
+        assert (await browser.put("/api/auth/local-profile", json={"profile_id": agent_id})).status_code == 404
+        chosen = await browser.put("/api/auth/local-profile", json={"profile_id": person_id})
+        assert chosen.status_code == 200, chosen.text
+        assert chosen.json()["profile"] == {"id": person_id, "display_name": "Local person", "verified": False}
+        assert (await browser.get("/api/auth/me")).json()["profile"] == chosen.json()["profile"]
+        work = (await browser.get("/api/tasks/my-work")).json()
+        assert work["state"] == "ready"
+        assert {item["id"] for queue in work["queues"].values() for item in queue} == expected
+        cleared = await browser.put("/api/auth/local-profile", json={"profile_id": None})
+        assert cleared.status_code == 200 and cleared.json()["profile"] is None
+        assert (await browser.get("/api/tasks/my-work")).json()["state"] == "profile_unlinked"

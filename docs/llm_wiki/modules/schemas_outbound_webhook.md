@@ -63,9 +63,9 @@ flowchart LR
 | [OutboundWebhookTargetCreate](../entities/schemas_outbound_webhook_OutboundWebhookTargetCreate.md) | Pydantic model | 96 | `OutboundWebhookTargetBase` | Create an outbound webhook target. |
 | [OutboundWebhookTargetUpdate](../entities/schemas_outbound_webhook_OutboundWebhookTargetUpdate.md) | Pydantic model | 100 | `BaseModel` | Partial update for an outbound webhook target. |
 | [OutboundWebhookTargetResponse](../entities/OutboundWebhookTargetResponse.md) | Pydantic model | 134 | `BaseModel` | Outbound webhook target response without exposing the secret. |
-| [OutboundWebhookEventResponse](../entities/OutboundWebhookEventResponse.md) | Pydantic model | 151 | `BaseModel` | Normalized outbound webhook event response. |
-| [OutboundWebhookDeliveryResponse](../entities/OutboundWebhookDeliveryResponse.md) | Pydantic model | 165 | `BaseModel` | Delivery attempt response with embedded event details. |
-| [OutboundWebhookRetryResponse](../entities/schemas_outbound_webhook_OutboundWebhookRetryResponse.md) | Pydantic model | 191 | `BaseModel` | Response returned by retry and test delivery endpoints. |
+| [OutboundWebhookEventResponse](../entities/OutboundWebhookEventResponse.md) | Pydantic model | 153 | `BaseModel` | Normalized outbound webhook event response. |
+| [OutboundWebhookDeliveryResponse](../entities/OutboundWebhookDeliveryResponse.md) | Pydantic model | 167 | `BaseModel` | Delivery attempt response with embedded event details. |
+| [OutboundWebhookRetryResponse](../entities/schemas_outbound_webhook_OutboundWebhookRetryResponse.md) | Pydantic model | 195 | `BaseModel` | Response returned by retry and test delivery endpoints. |
 
 ## Functions
 

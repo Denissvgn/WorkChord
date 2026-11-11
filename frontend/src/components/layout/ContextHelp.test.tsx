@@ -36,10 +36,13 @@ describe('ContextHelp', () => {
         const sectionHeadings = within(drawer).getAllByRole('heading', { level: 4 });
         expect(sectionHeadings.map(heading => heading.textContent)).toEqual([
             i18n.t('gantt.help.title'),
+            i18n.t('contextHelp.glossaryTitle'),
             i18n.t('contextHelp.shortcuts.title'),
             i18n.t('contextHelp.related.title'),
         ]);
         expect(within(drawer).getByText(i18n.t('gantt.help.sandboxBody'))).toBeVisible();
+        // The page's own terms, defined from the server's rules.
+        expect(within(drawer).getByText(i18n.t('contextHelp.glossary.iterationOverflow.definition'))).toBeVisible();
         expect(within(drawer).getByText(i18n.t('contextHelp.shortcuts.globalDescription')))
             .toBeVisible();
         expect(within(drawer).queryByText(i18n.t('contextHelp.shortcuts.taskKeys')))
@@ -59,7 +62,7 @@ describe('ContextHelp', () => {
             .not.toBeInTheDocument();
     });
 
-    it('presents only wired task keys and keeps them explicitly opt-in', async () => {
+    it('presents only wired task keys, on by default and easy to turn off', async () => {
         const { user } = renderWithProviders(<ContextHelp />, {
             initialEntries: ['/tasks'],
         });
@@ -72,20 +75,20 @@ describe('ContextHelp', () => {
 
         const drawer = screen.getByRole('dialog', { name: i18n.t('contextHelp.title') });
         expect(within(drawer).getByText(i18n.t('tasks.guide.readyBody'))).toBeVisible();
-        expect(within(drawer).getByText(i18n.t('contextHelp.shortcuts.disabled'))).toBeVisible();
+        expect(within(drawer).getByText(i18n.t('contextHelp.shortcuts.enabled'))).toBeVisible();
         expect(within(drawer).getAllByText(/^[NFRBM]$/).map(node => node.textContent))
             .toEqual(['N', 'F', 'R', 'B', 'M']);
 
         const shortcutToggle = within(drawer).getByRole('checkbox', {
             name: i18n.t('commandMenu.singleKeyShortcuts.label'),
         });
-        expect(shortcutToggle).not.toBeChecked();
+        expect(shortcutToggle).toBeChecked();
 
         await user.click(shortcutToggle);
 
-        expect(shortcutToggle).toBeChecked();
-        expect(within(drawer).getByText(i18n.t('contextHelp.shortcuts.enabled'))).toBeVisible();
-        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+        expect(shortcutToggle).not.toBeChecked();
+        expect(within(drawer).getByText(i18n.t('contextHelp.shortcuts.disabled'))).toBeVisible();
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('false');
     });
 
     it('reuses setup goals on Settings and falls back to workspace guidance elsewhere', async () => {

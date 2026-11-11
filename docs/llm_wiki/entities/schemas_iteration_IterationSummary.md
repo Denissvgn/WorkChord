@@ -1,7 +1,7 @@
 # IterationSummary
 
 **Location:** `backend/app/schemas/iteration.py:94`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `WorkMetricSummary`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
 
@@ -11,20 +11,25 @@ Summary statistics for an iteration.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `int` | *required* | — |
-| `name` | `str` | *required* | — |
-| `project_id` | `Optional[int]` | `None` | — |
-| `project` | `Optional[IterationProjectSummary]` | `None` | — |
-| `start_date` | `date` | *required* | — |
-| `end_date` | `date` | *required* | — |
-| `working_days` | `int` | *required* | — |
-| `total_tasks` | `int` | *required* | — |
-| `completed_tasks` | `int` | *required* | — |
-| `total_effort_days` | `float` | *required* | — |
-| `team_capacity_days` | `float` | *required* | — |
-| `overdue_tasks_count` | `int` | *required* | — |
+| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
+|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `id` | `int` | `id` | Yes | No | — | — | — | — |
+| `name` | `str` | `name` | Yes | No | — | — | — | — |
+| `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
+| `project` | `Optional[IterationProjectSummary]` | `project` | No | Yes | `None` | — | — | — |
+| `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
+| `end_date` | `date` | `end_date` | Yes | No | — | — | — | — |
+| `working_days` | `int` | `working_days` | Yes | No | — | — | — | — |
+| `total_tasks` | `int` | `total_tasks` | Yes | No | — | — | — | — |
+| `completed_tasks` | `int` | `completed_tasks` | Yes | No | — | — | — | — |
+| `total_effort_days` | `float` | `total_effort_days` | Yes | No | — | — | — | — |
+| `team_capacity_days` | `float` | `team_capacity_days` | Yes | No | — | — | — | — |
+| `overdue_tasks_count` | `int` | `overdue_tasks_count` | Yes | No | — | — | — | — |
+| `status_counts` | `dict[str, int]` | `status_counts` | No | No | factory: `dict` | — | — | — |
+| `blocked_tasks` | `int` | `blocked_tasks` | No | No | `0` | — | — | — |
+| `remaining_effort_days` | `float` | `remaining_effort_days` | No | No | `0.0` | — | — | — |
+| `scheduled_finish` | `Optional[date]` | `scheduled_finish` | No | Yes | `None` | — | — | — |
+| `remaining_working_days` | `Optional[int]` | `remaining_working_days` | No | Yes | `None` | — | — | — |
 
 ## Methods
 
@@ -58,7 +63,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `start_date`, `team_capacity_days`, `total_effort_days`, `total_tasks`, `working_days` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish`, `start_date` |
 
 ### Structure
 

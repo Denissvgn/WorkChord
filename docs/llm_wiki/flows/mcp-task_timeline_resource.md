@@ -52,14 +52,14 @@ sequenceDiagram
     participant p18 as DeliveryDependencyService.reconcile
     participant p19 as IdentityService.context
     participant p20 as DiscussionService.enqueue
-    participant p21 as AgentService
-    participant p22 as _structured_tool_error
-    participant p23 as _current_agent_key
-    participant p24 as scope_requirement_is_mutating
-    participant p25 as MCPAuthError
-    participant p26 as MaintenanceModeError
-    participant p27 as _open_db_session
-    participant p28 as TaskTimelineService
+    participant p21 as TaskTimelineService._attach_person_names
+    participant p22 as AgentService
+    participant p23 as _structured_tool_error
+    participant p24 as _current_agent_key
+    participant p25 as scope_requirement_is_mutating
+    participant p26 as MCPAuthError
+    participant p27 as MaintenanceModeError
+    participant p28 as _open_db_session
     participant p29 as int
     participant p30 as service.task_service.get_by_id
     p0->>p1: _json_resource
@@ -82,21 +82,21 @@ sequenceDiagram
     p9->>p18: DeliveryDependencyService.reconcile
     p13->>p19: IdentityService.context
     p9->>p20: DiscussionService.enqueue
-    p4->>p21: AgentService
-    p3->>p22: _structured_tool_error
-    p6->>p23: _current_agent_key
-    p5->>p24: scope_requirement_is_mutating
-    p6->>p25: MCPAuthError
-    p5->>p26: MaintenanceModeError
-    p6->>p27: _open_db_session
-    p7->>p28: TaskTimelineService
+    p10->>p21: TaskTimelineService._attach_person_names
+    p4->>p22: AgentService
+    p3->>p23: _structured_tool_error
+    p6->>p24: _current_agent_key
+    p5->>p25: scope_requirement_is_mutating
+    p6->>p26: MCPAuthError
+    p5->>p27: MaintenanceModeError
+    p6->>p28: _open_db_session
     p0-->>p29: int(task_id)
     p4-->>p30: service.task_service.get_by_id(task_id)
 ```
 
-> Call sequence diagram shows 30 of 298 interactions; 268 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 323 interactions; 293 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 105 (104 omitted); unresolved 1 of 119 (118 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 110 (109 omitted); unresolved 1 of 137 (136 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -110,7 +110,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | external | 1 |
 | `backend/app/commands.py:command_transaction` | 24 | [backend/app/commands.py](../modules/commands.md) | internal | 2 |
-> Omission summary shows 8 of 69 groups; 61 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 73 groups; 65 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -123,9 +123,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 75; effect analysis evaluated: 49, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 77; effect analysis evaluated: 51, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 51 source steps with known totals: observed: 227, emitted: 217, omitted: 10. Unavailable totals are excluded.
+Collector observations for 53 source steps with known totals: observed: 234, emitted: 224, omitted: 10. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

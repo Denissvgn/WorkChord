@@ -14,6 +14,7 @@ _Auto-generated from `frontend/src/components/calendar/InteractiveCalendar.tsx`.
 | `clsx` | `clsx` | — | compiler-dependent |
 | `date-fns` | `format`, `startOfMonth`, `endOfMonth`, `eachDayOfInterval`, `getDay` | — | compiler-dependent |
 | `lucide-react` | `ChevronLeft`, `ChevronRight` | — | compiler-dependent |
+| `react` | `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -27,21 +28,25 @@ _Auto-generated from `frontend/src/components/calendar/InteractiveCalendar.tsx`.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/calendar/InteractiveCalendar.tsx"]
-    n1["frontend/src/i18n/dateLocale.ts"]
-    n2["frontend/src/pages/CalendarPage.tsx"]
+    n0["frontend/src/components/calendar/InteractiveCalendar.test.tsx"]
+    n1["frontend/src/components/calendar/InteractiveCalendar.tsx"]
+    n2["frontend/src/i18n/dateLocale.ts"]
+    n3["frontend/src/pages/CalendarPage.tsx"]
     n0 --> n1
-    n2 --> n0
-    n2 --> n1
-    click n0 "../modules/InteractiveCalendar.md"
-    click n1 "../modules/dateLocale.md"
-    click n2 "../modules/CalendarPage.md"
+    n1 --> n2
+    n3 --> n1
+    n3 --> n2
+    click n0 "../modules/InteractiveCalendar.test.md"
+    click n1 "../modules/InteractiveCalendar.md"
+    click n2 "../modules/dateLocale.md"
+    click n3 "../modules/CalendarPage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [InteractiveCalendar.test](../modules/InteractiveCalendar.test.md) |
 | Inbound | [CalendarPage](../modules/CalendarPage.md) |
 | Outbound | [dateLocale](../modules/dateLocale.md) |
 
@@ -49,14 +54,14 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 4 | 0 |
+| typescript | 5 | 0 |
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [CalendarPeriodNavigatorProps](../entities/CalendarPeriodNavigatorProps.md) | Interface | 10 | — | — |
-| [InteractiveCalendarProps](../entities/InteractiveCalendarProps.md) | Interface | 20 | — | — |
+| [CalendarPeriodNavigatorProps](../entities/CalendarPeriodNavigatorProps.md) | Interface | 11 | — | — |
+| [InteractiveCalendarProps](../entities/InteractiveCalendarProps.md) | Interface | 21 | — | — |
 
 ## Functions
 

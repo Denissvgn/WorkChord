@@ -1,6 +1,6 @@
 # VacationManagerProps
 
-**Location:** `frontend/src/components/team/VacationManager.tsx:18`
+**Location:** `frontend/src/components/team/VacationManager.tsx:19`
 **Kind:** Interface
 **Bases:** —
 **Module:** [VacationManager](../modules/VacationManager.md)

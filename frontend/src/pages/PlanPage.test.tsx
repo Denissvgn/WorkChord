@@ -211,7 +211,7 @@ describe('PlanPage mixed planning launcher', () => {
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
         expect(screen.getByRole('heading', { name: 'Plan an iteration' })).toBeVisible();
-        const refresh = screen.getByRole('button', { name: 'Refreshing...' });
+        const refresh = screen.getByRole('button', { name: 'Refreshing…' });
         expect(refresh).toBeDisabled();
         expect(refresh).toHaveAttribute('aria-busy', 'true');
     });

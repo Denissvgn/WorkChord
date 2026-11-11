@@ -63,6 +63,17 @@ export interface GanttResponse {
     schedule_result?: ScheduleResult | null;
 }
 
+export type UnscheduledReason = 'no_assignee' | 'assignee_not_in_iteration' | 'no_estimate' | 'no_capacity'
+    | 'prerequisites_pending' | 'predecessor_unscheduled' | 'deferred' | 'blocked' | 'not_placed';
+
+/** A planned task the scheduler left without dates, with the cause and the server's English hint. */
+export interface UnscheduledTask {
+    task_id: number;
+    task_title: string;
+    reason: UnscheduledReason;
+    message: string;
+}
+
 export interface ScheduleResult {
     planning_revision?: number;
     capacity_issues?: { profile_id: number | null; code: string; message: string; dates?: string[] }[];
@@ -70,6 +81,7 @@ export interface ScheduleResult {
     decisions: SchedulingDecision[];
     workload_balanced: boolean;
     workload_issues: WorkloadIssue[];
+    unscheduled?: UnscheduledTask[];
 }
 
 /** Server dry-run of sandbox edits through the real scheduler (nothing persisted). */

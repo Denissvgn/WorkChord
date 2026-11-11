@@ -88,6 +88,22 @@ class NativeSessionService:
         return {"approved": True}
 
     @atomic_command
+    async def deny(self, request_id):
+        """End a pending connection from the browser; the device's next exchange sees it as ended."""
+        require_identity_writes()
+        authority = self.human()
+        with internal_authority(self.db):
+            row = await self.connection(request_id)
+            if row.approved_session_id is not None and row.approved_session_id != authority.session_id:
+                raise AuthorityError("native_connection_already_approved", "This connection already belongs to another session.", 409)
+            changed = await self.db.execute(update(NativeConnection).where(
+                NativeConnection.request_hash == row.request_hash, NativeConnection.consumed_at.is_(None))
+                .values(consumed_at=utc_now()))
+            if changed.rowcount != 1:
+                raise AuthorityError("native_connection_changed", "This connection changed. Reload and try again.", 409)
+        return {"denied": True}
+
+    @atomic_command
     async def exchange(self, request_id, code_verifier, ip_address, user_agent):
         require_identity_writes()
         with internal_authority(self.db):

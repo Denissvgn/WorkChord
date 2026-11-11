@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../i18n/i18n';
 import type {
@@ -23,8 +23,11 @@ vi.mock('../services/agentService', () => ({
     agentService: agentServiceMock,
 }));
 
+const useKeylessReaderMock = vi.hoisted(() => vi.fn(() => ({ settings: false, workViews: false })));
+
 vi.mock('../hooks/useAdminAccess', () => ({
     useAdminAccess: useAdminAccessMock,
+    useKeylessReader: useKeylessReaderMock,
 }));
 
 vi.mock('../hooks/useAgentAccess', () => ({
@@ -286,5 +289,35 @@ describe('AgentPipelinePage bounded run evidence', () => {
             expect(screen.queryByTestId(`task-card-${taskFixture.id}`)).not.toBeInTheDocument();
         });
         expect(document.documentElement.innerHTML).not.toContain(errorSentinel);
+    });
+
+    it('shows the board to a keyless reader and keeps run logs behind the key', async () => {
+        useAdminAccessMock.mockReturnValue({ hasAdminKey: false, hasAdminAccess: false });
+        useAgentAccessMock.mockReturnValue({ hasAgentKey: false });
+        useKeylessReaderMock.mockReturnValue({ settings: true, workViews: true });
+        agentServiceMock.getPipeline.mockResolvedValue(pipelineFixture);
+        renderWithProviders(<AgentPipelinePage />);
+        expect(await screen.findByTestId(`task-card-${taskFixture.id}`)).toBeVisible();
+        expect(screen.getByText(i18n.t('agentPipeline.runLogsNeedKey'))).toBeVisible();
+        expect(agentServiceMock.getRunDetail).not.toHaveBeenCalled();
+    });
+
+    it('reads as one stage strip with counts, marks decision stages, and lists the selected stage with its reasons', async () => {
+        const longReason = 'The brief has no acceptance criteria, so the scheduler cannot place it and no agent may take it yet.';
+        const waiting = { ...taskFixture, id: 77, title: 'Unestimated import', effort_days: null,
+            agent_readiness: { ...taskFixture.agent_readiness, blockers: [longReason] } } as unknown as Task;
+        agentServiceMock.getPipeline.mockResolvedValue({ ...pipelineFixture, needs_definition: [waiting] });
+        const { user } = renderWithProviders(<AgentPipelinePage />);
+        const strip = await screen.findByRole('navigation', { name: i18n.t('agentPipeline.stagesLabel') });
+        expect(within(strip).getAllByRole('button')).toHaveLength(7);
+        expect(within(strip).getAllByText(i18n.t('agentPipeline.needsDecision'))).toHaveLength(3);
+        // The first stage holding work is selected, and its row explains why, in full.
+        expect(within(strip).getByRole('button', { pressed: true })).toHaveTextContent(i18n.t('agentPipeline.columns.needs_definition.title'));
+        expect(screen.getByText(`Why it is here: ${longReason}`)).toBeInTheDocument();
+        expect(screen.getByText(/Estimate unknown/)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: i18n.t('agentPipeline.openTask') })).toHaveAttribute('href', '/tasks?task=77');
+        await user.click(within(strip).getByRole('button', { name: new RegExp(i18n.t('agentPipeline.columns.executing.title')) }));
+        expect(await screen.findByTestId(`task-card-${taskFixture.id}`)).toBeVisible();
+        expect(screen.queryByTestId('task-card-77')).toBeNull();
     });
 });

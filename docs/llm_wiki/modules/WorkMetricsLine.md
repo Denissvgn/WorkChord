@@ -10,7 +10,10 @@ _Auto-generated from `frontend/src/components/tasks/WorkMetricsLine.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../services/taskService` | `MetricScope`, `WorkMetricName` | Declaration | erased |
 | `../../types/workMetrics` | `WorkMetrics` | Declaration | erased |
+| `../../utils/workNumbers` | `formatCount` | — | compiler-dependent |
+| `./MetricCount` | `MetricCount` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
 ## Module Signals
@@ -26,34 +29,51 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/tasks/WorkMetricsLine.tsx"]
-    n1["frontend/src/pages/AnalyticsPage.tsx"]
-    n2["frontend/src/pages/OverviewPage.tsx"]
-    n3["frontend/src/pages/ProjectDetailPage.tsx"]
-    n4["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
-    n5["frontend/src/types/workMetrics.ts"]
-    n0 --> n5
-    n1 --> n0
-    n2 --> n0
-    n3 --> n0
-    n4 --> n0
-    click n0 "../modules/WorkMetricsLine.md"
-    click n1 "../modules/AnalyticsPage.md"
-    click n2 "../modules/OverviewPage.md"
-    click n3 "../modules/ProjectDetailPage.md"
-    click n4 "../modules/ProjectReleaseDetailPage.md"
-    click n5 "../modules/workMetrics.md"
+    n0["frontend/src/components/tasks/MetricCount.test.tsx"]
+    n1["frontend/src/components/tasks/MetricCount.tsx"]
+    n2["frontend/src/components/tasks/WorkMetricsLine.tsx"]
+    n3["frontend/src/pages/AnalyticsPage.tsx"]
+    n4["frontend/src/pages/OverviewPage.tsx"]
+    n5["frontend/src/pages/ProjectReleaseDetailPage.tsx"]
+    n6["frontend/src/services/taskService.ts"]
+    n7["frontend/src/types/workMetrics.ts"]
+    n8["frontend/src/utils/workNumbers.ts"]
+    n0 --> n1
+    n0 --> n2
+    n0 --> n7
+    n1 --> n6
+    n2 --> n1
+    n2 --> n6
+    n2 --> n7
+    n2 --> n8
+    n3 --> n2
+    n3 --> n6
+    n4 --> n2
+    n4 --> n8
+    n5 --> n2
+    click n0 "../modules/MetricCount.test.md"
+    click n1 "../modules/MetricCount.md"
+    click n2 "../modules/WorkMetricsLine.md"
+    click n3 "../modules/AnalyticsPage.md"
+    click n4 "../modules/OverviewPage.md"
+    click n5 "../modules/ProjectReleaseDetailPage.md"
+    click n6 "../modules/taskService.md"
+    click n7 "../modules/workMetrics.md"
+    click n8 "../modules/workNumbers.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [MetricCount.test](../modules/MetricCount.test.md) |
 | Inbound | [AnalyticsPage](../modules/AnalyticsPage.md) |
 | Inbound | [OverviewPage](../modules/OverviewPage.md) |
-| Inbound | [ProjectDetailPage](../modules/ProjectDetailPage.md) |
 | Inbound | [ProjectReleaseDetailPage](../modules/ProjectReleaseDetailPage.md) |
+| Outbound | [MetricCount](../modules/MetricCount.md) |
+| Outbound | [taskService](../modules/taskService.md) |
 | Outbound | [workMetrics](../modules/workMetrics.md) |
+| Outbound | [workNumbers](../modules/workNumbers.md) |
 
 ### External packages
 
@@ -65,4 +85,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `WorkMetricsLine` | `({ metrics }: { metrics?: WorkMetrics \| null })` | — | — |
+| `WorkMetricsLine` | `({ metrics, scope = null }: { metrics?: WorkMetrics \| null; scope?: MetricScope \| null })` | — | Delivery counts; with a scope, each one opens the tasks it counts. |

@@ -12,6 +12,8 @@ import { useDraftDismissal } from './useDraftDismissal';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { TaskContextSummary } from './TaskContextSummary';
 import { TaskForm } from './TaskForm';
+import { TaskReadView } from './TaskReadView';
+import { useIdentity } from '../../features/identity/identityContext';
 
 type DrawerCopy = ReactNode | ((task: Task | null) => ReactNode);
 
@@ -125,6 +127,12 @@ const TaskEditorDrawerContent = ({
         [openingSnapshot, prepareTask, isError],
     );
     const resolvedIterationId = iterationId ?? editorTask?.iteration_id ?? null;
+    // Direct mode opens read-first; "Edit all fields" switches to the full form.
+    const [editAll, setEditAll] = useState(mode === 'sandbox');
+    const identity = useIdentity();
+    const draftScope = identity?.identity?.principal?.id ?? (identity?.identity?.mode === 'trusted_local' ? 'local' : null);
+    const draftKey = draftScope === null || !editorTask ? null
+        : `workchord-draft:${draftScope}:direct:${resolvedIterationId}:${editorTask.project_id ?? 'none'}:${editorTask.id}`;
 
     return (
         <SlideOverDrawer
@@ -171,7 +179,24 @@ const TaskEditorDrawerContent = ({
                     const next = new URLSearchParams(params); next.set('task', String(id));
                     onClose(); navigate(`/tasks?${next}`);
                 })} />}
-                {editorTask && (
+                {editorTask && !editAll && (
+                    <TaskReadView
+                        key={editorTask.version}
+                        task={editorTask}
+                        draftKey={draftKey}
+                        onTaskUpdated={latest => setOpeningSnapshot(latest)}
+                        onEditAll={() => setEditAll(true)}
+                        onDirty={guard.setDirty}
+                        onPending={guard.setPending}
+                        onReload={() => { void refetch().then(result => { if (result.data && !result.isError) setOpeningSnapshot(result.data); }); }}
+                    />
+                )}
+                {editorTask && editAll && mode === 'direct' && (
+                    <Button type="button" variant="ghost" size="sm" className="mb-3 self-start" onClick={() => guard.request(() => { guard.setDirty(false); setEditAll(false); })}>
+                        {t('taskView.backToTask')}
+                    </Button>
+                )}
+                {editorTask && editAll && (
                     <TaskForm
                         key={editorTask.version}
                         iterationId={resolvedIterationId}

@@ -1,66 +1,61 @@
-import React from 'react';
-import type { TaskStatus, TaskStatusLog } from '../../types/task';
-import { ArrowRight } from 'lucide-react';
-import clsx from 'clsx';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { STATUS_TONE, toneBorderClassName } from '../ui/tone';
+import type { TFunction } from 'i18next';
+import { Link } from 'react-router-dom';
+import type { TaskStatusLog } from '../../types/task';
 import { formatDateTime } from '../../utils/formatDate';
+import { STATUS_TONE, toneVar } from '../ui/tone';
 
-interface TaskStatusFlowProps {
-    logs: TaskStatusLog[];
-}
+const HOUR = 3_600_000;
 
-export const TaskStatusFlow: React.FC<TaskStatusFlowProps> = ({ logs }) => {
-    // 1. Sort logs by date ascending
-    const sortedLogs = [...logs].sort((a, b) => new Date(a.changed_at).getTime() - new Date(b.changed_at).getTime());
-
-    if (sortedLogs.length === 0) return null;
-
-    return (
-        <div className="flex items-center overflow-x-auto overflow-y-hidden pt-6 pb-14 px-2">
-            {/* Initial State */}
-            <StatusNode status={sortedLogs[0].from_status} />
-
-            {sortedLogs.map((log, index) => (
-                <React.Fragment key={log.id}>
-                    {/* Transition Arrow */}
-                    <div className="relative w-24 flex-shrink-0 flex items-center justify-center mx-[-4px] z-0">
-                        {/* The Line */}
-                        <div className="h-0.5 w-full bg-action relative">
-                            {/* Arrow Head */}
-                            <ArrowRight className="absolute -right-3 -top-[9px] w-5 h-5 text-action bg-surface-card rounded-full p-0.5" />
-                        </div>
-
-                        {/* Transition Metadata (Absolute positioned below) */}
-                        <div className="absolute top-4 left-0 w-full text-center">
-                            <div className="flex items-center justify-center gap-1 text-wc-micro text-content-secondary font-medium">
-                                <span className="w-4 h-4 rounded-full bg-surface-subtle flex items-center justify-center text-xs text-content-primary">
-                                    {(log.triggered_by || 'U').charAt(0).toUpperCase()}
-                                </span>
-                            </div>
-                            <div className="text-wc-micro text-content-tertiary mt-0.5 whitespace-nowrap">
-                                {formatDateTime(log.changed_at)}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Target State */}
-                    <StatusNode status={log.to_status} isLast={index === sortedLogs.length - 1} />
-                </React.Fragment>
-            ))}
-        </div>
-    );
+const spent = (t: TFunction, ms: number) => {
+    if (ms < HOUR) return t('analytics.lifecycle.underAnHour');
+    if (ms < 24 * HOUR) return t('analytics.lifecycle.hours', { count: Math.round(ms / HOUR) });
+    return t('analytics.lifecycle.days', { count: Math.round(ms / (24 * HOUR)) });
 };
 
-const StatusNode = ({ status, isLast }: { status: TaskStatus, isLast?: boolean }) => {
-    const { t } = useTranslation();
+/**
+ * One task's states in order, with the time spent in each. The current state is
+ * marked with weight and a "Current" tag, not a focus ring.
+ */
+export const TaskStatusFlow = ({ taskId, title, logs, nowMs }: { taskId: number; title: string; logs: TaskStatusLog[]; nowMs?: number }) => {
+    const { t, i18n } = useTranslation();
+    // "So far" is measured from when the list was first shown.
+    const [shownAt] = useState(() => Date.now());
+    const now = nowMs ?? shownAt;
+    const sorted = [...logs].sort((a, b) => new Date(a.changed_at).getTime() - new Date(b.changed_at).getTime());
+    if (sorted.length === 0) return null;
+    const locale = i18n.resolvedLanguage ?? i18n.language;
+    const states = [
+        { status: sorted[0].from_status, enteredAt: null as string | null, by: null as string | null },
+        ...sorted.map(log => ({ status: log.to_status, enteredAt: log.changed_at, by: log.triggered_by })),
+    ];
     return (
-        <div className={clsx(
-            "flex-shrink-0 w-28 h-8 flex items-center justify-center rounded-md text-xs font-semibold border shadow-sm z-10 bg-surface-card",
-            toneBorderClassName[STATUS_TONE[status]],
-            isLast && "ring-2 ring-offset-1 ring-focus border-action"
-        )}>
-            {t(`statuses.${status}`)}
-        </div>
+        <section className="space-y-2" aria-labelledby={`lifecycle-${taskId}`}>
+            <h4 id={`lifecycle-${taskId}`} className="font-medium">
+                <Link to={`/tasks?task=${taskId}`} className="break-words text-action hover:underline">#{taskId} · {title}</Link>
+            </h4>
+            <ol className="space-y-1.5 border-l-2 border-border pl-4">
+                {states.map((state, index) => {
+                    const current = index === states.length - 1;
+                    const start = state.enteredAt ? new Date(state.enteredAt).getTime() : null;
+                    const end = current ? now : new Date(states[index + 1].enteredAt!).getTime();
+                    return (
+                        <li key={`${state.status}-${index}`} className="flex flex-wrap items-baseline gap-x-2 text-sm">
+                            <span aria-hidden="true" className="relative -left-[1.4rem] -mr-3 h-2.5 w-2.5 rounded-full" style={{ background: toneVar[STATUS_TONE[state.status]] }} />
+                            <span className={current ? 'font-semibold text-content-primary' : 'text-content-primary'}>{t(`statuses.${state.status}`)}</span>
+                            {current && <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium">{t('analytics.lifecycle.current')}</span>}
+                            <span className="text-content-secondary">
+                                {start === null
+                                    ? t('analytics.lifecycle.untilFirstChange', { at: formatDateTime(states[1].enteredAt!, locale) })
+                                    : current ? t('analytics.lifecycle.forSoFar', { time: spent(t, end - start) }) : t('analytics.lifecycle.for', { time: spent(t, end - start) })}
+                                {state.enteredAt && <> · {t('analytics.lifecycle.since', { at: formatDateTime(state.enteredAt, locale) })}</>}
+                                {state.by && <> · {t(`analytics.lifecycle.by_${state.by}`, { defaultValue: t('analytics.lifecycle.byUnknown') })}</>}
+                            </span>
+                        </li>
+                    );
+                })}
+            </ol>
+        </section>
     );
 };

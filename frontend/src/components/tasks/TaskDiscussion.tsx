@@ -10,6 +10,7 @@ import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useActiveMount } from './useDraftDismissal';
+import { formatDateTime } from '../../utils/formatDate';
 
 type EditingComment = Pick<TaskComment, 'id' | 'version'>;
 const readDiscussionDraft = (key: string | null): { body: string; mentions: number[]; editing?: EditingComment; uncertain?: boolean; writeId?: string } | null => {
@@ -27,10 +28,17 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
     taskId: number; draftKey: string | null; disabled: boolean;
     onDirty: (dirty: boolean) => void; onPending: (pending: boolean) => void;
 }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const id = useId();
     const identity = useIdentity()?.identity;
-    const enabled = identity?.principal?.kind === 'human';
+    const human = identity?.principal?.kind === 'human';
+    const localSession = identity?.mode === 'trusted_local' && !identity.principal;
+    // A trusted-local session reads the discussion and writes as the profile it works as.
+    const localAuthor = localSession ? identity?.profile ?? null : null;
+    const enabled = human || localSession;
+    const canWrite = human || localAuthor !== null;
+    const ownComment = (comment: TaskComment) => comment.principal_id != null
+        ? comment.principal_id === identity?.principal?.id : localAuthor !== null && comment.author_profile_id === localAuthor.id;
     const storageKey = draftKey ? `${draftKey}:discussion` : null;
     const [recovered] = useState(() => readDiscussionDraft(storageKey));
     const [body, setBody] = useState(recovered?.body ?? '');
@@ -53,10 +61,10 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
         initialPageParam: 0, queryFn: ({ pageParam }) => discussionService.list(taskId, pageParam),
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const options = useQuery({ queryKey: ['mention-options', taskId, mentionSearch], enabled: enabled && mentionSearch.length > 0,
+    const options = useQuery({ queryKey: ['mention-options', taskId, mentionSearch], enabled: canWrite && mentionSearch.length > 0,
         queryFn: () => discussionService.mentions(taskId, mentionSearch) });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const subscription = useQuery({ queryKey: ['subscription', taskId], enabled, queryFn: () => discussionService.subscription(taskId) });
+    const subscription = useQuery({ queryKey: ['subscription', taskId], enabled: human, queryFn: () => discussionService.subscription(taskId) });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const history = useInfiniteQuery({ queryKey: ['comment-history', taskId, historyId], enabled: enabled && historyId !== null,
         initialPageParam: 0, queryFn: ({ pageParam }) => discussionService.history(taskId, historyId!, pageParam),
@@ -98,10 +106,10 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             {comments.isError && <QueryErrorState error={comments.error} fallback={t('teamwork.loadFailed')} onRetry={() => void comments.refetch()} />}
             {comments.data && comments.data.pages.every(page => page.items.length === 0) && <p className="text-sm text-content-secondary">{t('teamwork.noComments')}</p>}
             <ol className="space-y-4">{comments.data?.pages.flatMap(page => page.items).map(comment => <li key={comment.id} className="space-y-1">
-                <p className="text-sm text-content-secondary"><strong className="text-content-primary">{comment.author_name}</strong> · {new Date(comment.updated_at).toLocaleString()}</p>
+                <p className="text-sm text-content-secondary"><strong className="text-content-primary">{comment.author_name}</strong>{comment.author_local && ` · ${t('identity.localNotVerified')}`} · {formatDateTime(comment.updated_at, i18n.language)}</p>
                 <p className="whitespace-pre-wrap break-words text-sm text-content-primary">{comment.deleted ? t('teamwork.commentRemoved') : comment.body}</p>
                 <div className="flex flex-wrap gap-2">
-                    {!comment.deleted && comment.principal_id === identity?.principal?.id && <>
+                    {!comment.deleted && ownComment(comment) && <>
                         <Button type="button" size="sm" variant="ghost" disabled={dirty || disabled} onClick={() => { setEditing(comment); setBody(comment.body); setMentions(comment.mentions); save.reset(); }}>{t('teamwork.edit')}</Button>
                         <Button type="button" size="sm" variant="ghost" disabled={dirty || disabled} onClick={() => save.mutate(comment)}>{t('teamwork.remove')}</Button>
                     </>}
@@ -115,6 +123,8 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
                 </div>}
             </li>)}</ol>
             {comments.hasNextPage && <Button type="button" size="sm" variant="secondary" onClick={() => void comments.fetchNextPage()} disabled={comments.isFetchingNextPage}>{t('teamwork.loadMore')}</Button>}
+            {!canWrite && <p className="text-sm text-content-secondary">{t('teamwork.chooseProfileToComment')}</p>}
+            {canWrite && <>
             <label className="field-lbl" htmlFor={`${id}-body`}>{t(editing ? 'teamwork.editComment' : 'teamwork.newComment')}</label>
             <textarea id={`${id}-body`} className="input min-h-24 w-full" value={body} maxLength={12000} disabled={disabled || pending || uncertain} onChange={event => { setBody(event.target.value); setMessage(''); }} />
             <label className="field-lbl" htmlFor={`${id}-mentions`}>{t('teamwork.mention')}</label>
@@ -153,6 +163,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             </fieldset>}
             {subscribe.isPending && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
             {subscribe.isError && <div role="alert" className="text-sm text-feedback-danger-foreground"><p>{getApiErrorMessage(subscribe.error, t('teamwork.saveFailed'))}</p><Button type="button" size="sm" variant="ghost" onClick={() => { void subscription.refetch(); subscribe.reset(); }}>{t('teamwork.reloadNotifications')}</Button></div>}
+            </>}
         </>}
     </section>;
 };

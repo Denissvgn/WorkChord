@@ -32,7 +32,7 @@ Choose an access mode before starting:
   described in [identity setup](identity-and-recovery.md). For the frontend
   below, use the callback `http://localhost:5173/api/auth/callback`.
 - **Isolated local workspace:** explicitly set `WORKCHORD_AUTH_MODE=trusted_local`
-  in `backend/.env`. Operator settings still require operator credentials.
+  in `backend/.env`. Settings are readable there; changing them still requires operator credentials.
 
 Personal time recording requires human sign-in and `TIME_ENTRIES_ENABLED=true`;
 see [recorded time](time-entries.md).

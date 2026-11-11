@@ -12,8 +12,8 @@ Scheduling rules API router.
 |--------|---------|
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.scheduling_rules` | `SchedulingRulesSchema`, `SchedulingRulesResponse` |
-| `app.security` | `require_admin_api_key` |
 | `app.services.scheduling_rules_service` | `SchedulingRulesService` |
+| `app.settings_read` | `require_settings_access` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `status` |
 | `logging` | `logging` |
 
@@ -27,8 +27,8 @@ flowchart LR
     n2["backend/app/routers/scheduling_rules.py"]
     n3["backend/app/schemas/common.py"]
     n4["backend/app/schemas/scheduling_rules.py"]
-    n5["backend/app/security.py"]
-    n6["backend/app/services/scheduling_rules_service.py"]
+    n5["backend/app/services/scheduling_rules_service.py"]
+    n6["backend/app/settings_read.py"]
     n0 --> n2
     n1 --> n2
     n2 --> n3
@@ -40,8 +40,8 @@ flowchart LR
     click n2 "../modules/routers_scheduling_rules.md"
     click n3 "../modules/schemas_common.md"
     click n4 "../modules/schemas_scheduling_rules.md"
-    click n5 "../modules/security.md"
-    click n6 "../modules/scheduling_rules_service.md"
+    click n5 "../modules/scheduling_rules_service.md"
+    click n6 "../modules/settings_read.md"
 ```
 
 ### Internal neighbors
@@ -52,8 +52,8 @@ flowchart LR
 | Inbound | [routers___init__](../modules/routers___init__.md) |
 | Outbound | [schemas_common](../modules/schemas_common.md) |
 | Outbound | [schemas_scheduling_rules](../modules/schemas_scheduling_rules.md) |
-| Outbound | [security](../modules/security.md) |
 | Outbound | [scheduling_rules_service](../modules/scheduling_rules_service.md) |
+| Outbound | [settings_read](../modules/settings_read.md) |
 
 ### External packages
 

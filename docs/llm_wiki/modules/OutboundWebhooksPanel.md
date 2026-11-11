@@ -10,7 +10,7 @@ _Auto-generated from `frontend/src/components/settings/OutboundWebhooksPanel.tsx
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
-| `../../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../../hooks/useAdminAccess` | `useCanReadSettings` | — | compiler-dependent |
 | `../../services/outboundWebhookService` | `outboundWebhookService` | — | compiler-dependent |
 | `../../types/outboundWebhook` | `OutboundWebhookDelivery`, `OutboundWebhookDeliveryStatus`, `OutboundWebhookTarget`, `OutboundWebhookTargetCreate`, `OutboundWebhookTargetUpdate` | Declaration | erased |
 | `../../utils/adminAccess` | `getAdminAccessErrorMessage` | — | compiler-dependent |
@@ -22,6 +22,8 @@ _Auto-generated from `frontend/src/components/settings/OutboundWebhooksPanel.tsx
 | `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./SettingsUnsavedBar` | `SettingsUnsavedBar` | — | compiler-dependent |
+| `./WithheldValuesNote` | `WithheldValuesNote` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Edit2`, `Loader2`, `Plus`, `RefreshCw`, `Save`, `Send`, `Trash2`, `Webhook`, `X` | — | compiler-dependent |
 | `react` | `FormEvent` | Declaration | erased |
@@ -56,7 +58,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -64,15 +66,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TargetFormState](../entities/TargetFormState.md) | Interface | 35 | — | — |
-| [TargetFormErrors](../entities/TargetFormErrors.md) | Interface | 46 | — | — |
-| [EventOption](../entities/EventOption.md) | Interface | 53 | — | — |
+| [TargetFormState](../entities/TargetFormState.md) | Interface | 37 | — | — |
+| [TargetFormErrors](../entities/TargetFormErrors.md) | Interface | 48 | — | — |
+| [EventOption](../entities/EventOption.md) | Interface | 55 | — | — |
 
 ## Functions
 

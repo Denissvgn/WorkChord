@@ -17,6 +17,8 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/identity/identityContext` | `useIdentity` | — | compiler-dependent |
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
@@ -29,8 +31,8 @@ An unresolved write freezes its submitted draft and every write target. Its pers
 | `../../types/task` | `GroundedAISuggestionResponse`, `TaskAISuggestRequest`, `TaskCreate`, `Task`, `TaskUpdate` | Declaration | erased |
 | `../../types/template` | `WorkTemplate` | Declaration | erased |
 | `../../types/triage` | `TriageItemCreate` | Declaration | erased |
-| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
-| `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
+| `../../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
 | `../../utils/templateDefaults` | `getPayloadBoolean`, `getPayloadString`, `mergeLabels` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
@@ -85,7 +87,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (36) |
+| Outbound | `frontend` (37) |
 
 ### External packages
 
@@ -93,16 +95,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 40 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 56 | — | — |
+| [TaskFormProps](../entities/TaskFormProps.md) | Interface | 58 | — | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskForm` | <pre><code>&#40;&#123;&#10;    iterationId&#58; requestedIterationId&#44;&#10;    initialData&#44;&#10;    parentId&#44;&#10;    parentPriority&#44;&#10;    parentProjectId&#44;&#10;    parentMilestoneId&#44;&#10;    onSuccess&#44;&#10;    onCancel&#44;&#10;    mode &#61; &#39;direct&#39;&#44;&#10;    onSaveSandbox&#44;&#10;    onDirtyChange&#44;&#10;    onPendingChange&#44;&#10;    onDiscardReady&#44;&#10;    confirmUnsavedOnCancel &#61; true&#44;&#10;&#125;&#58; TaskFormProps&#41;</code></pre> | — | — |
+| `TaskForm` | <pre><code>&#40;&#123;&#10;    iterationId&#58; requestedIterationId&#44;&#10;    initialData&#44;&#10;    parentId&#44;&#10;    parentPriority&#44;&#10;    parentProjectId&#44;&#10;    parentMilestoneId&#44;&#10;    onSuccess&#44;&#10;    onCancel&#44;&#10;    mode &#61; &#39;direct&#39;&#44;&#10;    onSaveSandbox&#44;&#10;    onDirtyChange&#44;&#10;    onPendingChange&#44;&#10;    onDiscardReady&#44;&#10;    confirmUnsavedOnCancel &#61; true&#44;&#10;    initialTitle&#44;&#10;&#125;&#58; TaskFormProps&#41;</code></pre> | — | — |

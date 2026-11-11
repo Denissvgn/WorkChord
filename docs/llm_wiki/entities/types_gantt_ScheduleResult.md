@@ -1,6 +1,6 @@
 # ScheduleResult
 
-**Location:** `frontend/src/types/gantt.ts:66`
+**Location:** `frontend/src/types/gantt.ts:77`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)
@@ -19,6 +19,7 @@ _Auto-generated from `ScheduleResult` in `frontend/src/types/gantt.ts`._
 | `decisions` | `SchedulingDecision[]` | Yes | — | — |
 | `workload_balanced` | `boolean` | Yes | — | — |
 | `workload_issues` | `WorkloadIssue[]` | Yes | — | — |
+| `unscheduled` | `UnscheduledTask[]` | No | — | — |
 
 ## Methods
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_gantt](../modules/types_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `workload_balanced`, `workload_issues` |
+| [types_gantt](../modules/types_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `unscheduled`, `workload_balanced`, `workload_issues` |
 
 ### References
 

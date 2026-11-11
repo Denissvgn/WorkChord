@@ -1,6 +1,6 @@
 # InitiativeFormState
 
-**Location:** `frontend/src/components/projects/InitiativeForm.tsx:21`
+**Location:** `frontend/src/components/projects/InitiativeForm.tsx:25`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [InitiativeForm](../modules/InitiativeForm.md)

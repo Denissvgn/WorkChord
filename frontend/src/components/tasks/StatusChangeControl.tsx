@@ -9,6 +9,8 @@ import { taskService } from '../../services/taskService';
 import type { Task, TaskStatus, CascadeUpdateInfo } from '../../types/task';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
 import { formatDate } from '../../utils/formatDate';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { canTransition, TASK_TRANSITIONS } from '../../features/taskTransitions';
 
 interface StatusChangeControlProps {
     task: Task;
@@ -17,13 +19,6 @@ interface StatusChangeControlProps {
     onPendingChange?: (pending: boolean) => void;
 }
 
-// Valid transitions map
-const VALID_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
-    'planned': ['active'],
-    'active': ['resolved'],
-    'resolved': ['active', 'closed'],
-    'closed': []
-};
 
 export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPendingChange }: StatusChangeControlProps) => {
     const queryClient = useQueryClient();
@@ -35,6 +30,18 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPend
     const [showConfirm, setShowConfirm] = useState<TaskStatus | null>(null);
 
     const mutation = useMutation({
+        meta: {
+            success: data => t('feedback.statusChanged', { name: (data as { task: Task }).task.title, status: t(`statuses.${(data as { task: Task }).task.status}`) }),
+            // Moves back to the status it had at the change, only where that move is allowed
+            // (planned → active and resolved → closed cannot be reversed directly).
+            undo: (data, _variables, context) => {
+                const changed = (data as { task: Task }).task;
+                const previous = (context as { previous?: TaskStatus } | undefined)?.previous;
+                if (!previous || !canTransition(changed.status, previous)) return null;
+                return { run: () => taskService.changeStatus(changed.id, previous, t('feedback.undoReason'), changed.version) };
+            },
+        } satisfies MutationFeedbackMeta,
+        onMutate: () => ({ previous: currentTask.status }),
         mutationFn: (newStatus: TaskStatus) => taskService.changeStatus(
             task.id,
             newStatus,
@@ -56,7 +63,7 @@ export const StatusChangeControl = ({ task, iterationId, onStatusChanged, onPend
     });
 
     useEffect(() => { onPendingChange?.(mutation.isPending); }, [mutation.isPending, onPendingChange]);
-    const availableTransitions = currentTask.is_composite ? [] : VALID_TRANSITIONS[currentTask.status] || [];
+    const availableTransitions = currentTask.is_composite ? [] : TASK_TRANSITIONS[currentTask.status] || [];
     const statusLabel = (status: TaskStatus) => t(`statuses.${status}`);
 
     const handleStatusChange = (newStatus: TaskStatus) => {

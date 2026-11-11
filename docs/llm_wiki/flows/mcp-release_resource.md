@@ -41,26 +41,26 @@ sequenceDiagram
     participant p6 as _agent_context
     participant p7 as ReleaseService._attach_work_metrics
     participant p8 as get_settings
-    participant p9 as scoped_metric_tasks
+    participant p9 as ReleaseService.metric_task_ids
     participant p10 as aggregate_metrics
     participant p11 as command_transaction
     participant p12 as _authenticate_agent_key
     participant p13 as _require_scope_requirement
     participant p14 as IdentityService.actor_context
-    participant p15 as require_scope
-    participant p16 as AgentService.authenticate
-    participant p17 as require_identity_writes
-    participant p18 as DeliveryDependencyService.reconcile
-    participant p19 as IdentityService.context
-    participant p20 as DiscussionService.enqueue
-    participant p21 as working_today
-    participant p22 as ReleaseService
-    participant p23 as _response
-    participant p24 as _structured_tool_error
-    participant p25 as ReleaseService._release_options
-    participant p26 as _current_agent_key
-    participant p27 as scope_requirement_is_mutating
-    participant p28 as MCPAuthError
+    participant p15 as scoped_metric_tasks
+    participant p16 as require_scope
+    participant p17 as AgentService.authenticate
+    participant p18 as require_identity_writes
+    participant p19 as DeliveryDependencyService.reconcile
+    participant p20 as IdentityService.context
+    participant p21 as DiscussionService.enqueue
+    participant p22 as working_today
+    participant p23 as ReleaseService
+    participant p24 as _response
+    participant p25 as _structured_tool_error
+    participant p26 as ReleaseService._release_options
+    participant p27 as _current_agent_key
+    participant p28 as scope_requirement_is_mutating
     participant p29 as int (backend/app/mcp_server.py:release_resource)
     participant p30 as self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)
     p0->>p1: _json_resource
@@ -71,33 +71,33 @@ sequenceDiagram
     p3->>p6: _agent_context
     p4->>p7: ReleaseService._attach_work_metrics
     p5->>p8: get_settings
-    p7->>p9: scoped_metric_tasks
+    p7->>p9: ReleaseService.metric_task_ids
     p7->>p10: aggregate_metrics
     p6->>p11: command_transaction
     p6->>p12: _authenticate_agent_key
     p6->>p13: _require_scope_requirement
     p6->>p14: IdentityService.actor_context
-    p13->>p15: require_scope
-    p12->>p16: AgentService.authenticate
-    p14->>p17: require_identity_writes
-    p11->>p18: DeliveryDependencyService.reconcile
-    p14->>p19: IdentityService.context
-    p11->>p20: DiscussionService.enqueue
-    p10->>p21: working_today
-    p2->>p22: ReleaseService
-    p2->>p23: _response
-    p3->>p24: _structured_tool_error
-    p4->>p25: ReleaseService._release_options
-    p6->>p26: _current_agent_key
-    p5->>p27: scope_requirement_is_mutating
-    p6->>p28: MCPAuthError
+    p9->>p15: scoped_metric_tasks
+    p13->>p16: require_scope
+    p12->>p17: AgentService.authenticate
+    p14->>p18: require_identity_writes
+    p11->>p19: DeliveryDependencyService.reconcile
+    p14->>p20: IdentityService.context
+    p11->>p21: DiscussionService.enqueue
+    p10->>p22: working_today
+    p2->>p23: ReleaseService
+    p2->>p24: _response
+    p3->>p25: _structured_tool_error
+    p4->>p26: ReleaseService._release_options
+    p6->>p27: _current_agent_key
+    p5->>p28: scope_requirement_is_mutating
     p0-->>p29: int (backend/app/mcp_server.py:release_resource)(release_id)
     p4-->>p30: self.db.execute (backend/app/services/rele…:ReleaseService.get_by_id)(...)
 ```
 
-> Call sequence diagram shows 30 of 486 interactions; 456 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 502 interactions; 472 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 176 (175 omitted); unresolved 1 of 229 (228 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 180 (179 omitted); unresolved 1 of 240 (239 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -109,7 +109,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/maintenance.py:enforce_mcp_access` | 4 | [backend/app/maintenance.py](../modules/maintenance.md) | internal | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
-| `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 1 |
+| `backend/app/mcp_server.py:_agent_context` | 16 | [backend/app/mcp_server.py](../modules/mcp_server.md) | internal | 2 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
 > Omission summary shows 8 of 77 groups; 69 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
@@ -124,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 82; effect analysis evaluated: 56, partial: 2, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 83; effect analysis evaluated: 56, partial: 3, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 58 source steps with known totals: observed: 243, emitted: 233, omitted: 10. Unavailable totals are excluded.
+Collector observations for 59 source steps with known totals: observed: 249, emitted: 237, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

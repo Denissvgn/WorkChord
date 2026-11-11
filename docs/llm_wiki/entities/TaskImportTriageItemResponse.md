@@ -1,6 +1,6 @@
 # TaskImportTriageItemResponse
 
-**Location:** `backend/app/schemas/task.py:351`
+**Location:** `backend/app/schemas/task.py:353`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_task](../modules/schemas_task.md)

@@ -37,6 +37,10 @@ export interface TaskAgentReadinessCriterion {
 export interface TaskAgentReadiness {
     blocker_codes?: string[];
     is_ready: boolean;
+    /** Server-owned: the brief and planning fields are complete enough to route. */
+    definition_ready?: boolean;
+    /** Server-owned: definition-ready and free to start now. */
+    start_ready?: boolean;
     blockers: string[];
     warnings: string[];
     criteria: TaskAgentReadinessCriterion[];
@@ -154,6 +158,8 @@ export interface Task {
     agent_readiness: TaskAgentReadiness;
     version: number;
     claimed_by?: TaskClaimedBy | null;
+    /** An agent holds live execution work on this task. */
+    agent_working?: boolean | null;
     claim_expires_at?: string | null;
     updated_at?: string | null;
     children: Task[];
@@ -168,7 +174,8 @@ export interface TaskCreate {
     parent_id?: number | null;
     title: string;
     description?: string;
-    priority: number;
+    /** Left out, the server stores its middle default; capture never implies top priority. */
+    priority?: number;
     effort_days: number | null;
     effort_hours?: number | null;
     assignee_id?: number | null;

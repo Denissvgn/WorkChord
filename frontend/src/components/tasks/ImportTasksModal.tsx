@@ -10,6 +10,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
 import type { TaskImportDestination } from '../../types/task';
 import clsx from 'clsx';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface ImportTasksModalProps {
     iterationId: number;
@@ -50,6 +51,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
     useEffect(() => () => { readGeneration.current += 1; readerRef.current?.abort(); }, []);
 
     const importMutation = useMutation({
+        meta: { success: data => t('feedback.imported', { count: (data as { task_count: number }).task_count + ((data as { triage_count?: number }).triage_count ?? 0) }) } satisfies MutationFeedbackMeta,
         mutationFn: (payload: { text: string; destination: TaskImportDestination }) => (
             taskService.importFromText(iterationId, payload.text, { destination: payload.destination, expectedRevision: baseRevision })
         ),
@@ -218,6 +220,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
 
                     {/* Text area */}
                     <textarea
+                        aria-label={t('taskImport.textLabel')}
                         ref={editorRef}
                         value={text}
                         readOnly={importMutation.isPending || isLoading || baseRevision === undefined}

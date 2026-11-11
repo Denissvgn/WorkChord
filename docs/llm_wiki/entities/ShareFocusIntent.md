@@ -1,6 +1,6 @@
 # ShareFocusIntent
 
-**Location:** `frontend/src/pages/PlanMasterPage.tsx:82`
+**Location:** `frontend/src/pages/PlanMasterPage.tsx:84`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)

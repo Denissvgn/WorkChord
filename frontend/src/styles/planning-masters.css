@@ -1137,10 +1137,13 @@
 /* ── Cards ───────────────────────────────────────────────────────────────── */
 :where(.wc .card) {
   background: var(--panel);
-  border: 1px solid var(--border);
+  /* The default border, not the faintest one: a card edge should be visible (subtle was about 1.05:1). */
+  border: 1px solid rgb(var(--color-border-default));
   border-radius: var(--wc-r-md);
   box-shadow: var(--sh-1);
 }
+/* A card without the head/body structure gets its own padding, so content never touches the edge. */
+:where(.wc .card:not(:has(> .card-head, > .card-pad))) { padding: 16px; }
 .wc .card.p-4 { padding: 16px; }
 .wc .card.space-y-3 > * + * { margin-top: 12px; }
 .wc .card.space-y-4 > * + * { margin-top: 16px; }
@@ -1248,6 +1251,14 @@
 }
 :where(.wc .input.error):is(input, select, textarea) { border-color: var(--blocked); }
 :where(.wc .input.with-leading-icon):is(input, select, textarea) { padding-left: 34px; }
+:where(.wc select.input) {
+  /* appearance: none drops the native arrow; draw one so a select reads as a choice. */
+  padding-right: 30px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
 :where(
   .wc input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.input),
   .wc select:not(.input),
@@ -1553,6 +1564,11 @@
   background: transparent;
   color: var(--done-ink);
 }
+/* A count that filters the table to the projects it counts. */
+.wc button.projects-exception { cursor: pointer; font: inherit; font-size: var(--wc-type-meta); font-weight: 600; }
+.wc button.projects-exception:hover { border-color: var(--ink-3); }
+.wc button.projects-exception:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: 2px; }
+.wc button.projects-exception[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .wc .projects-filter-toolbar {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) minmax(150px, 190px) minmax(150px, 190px) auto;
@@ -2384,7 +2400,8 @@
 .wc .step-item.done .step-num    { background: var(--done);         border-color: var(--done);         color: var(--wc-done-on); }
 .wc .step-item.current .step-num { background: var(--thread);       border-color: var(--thread);       color: var(--thread-on); }
 .wc .step-item.warn .step-num    { background: var(--warn-soft);    border-color: var(--warn-line);    color: var(--warn-ink); }
-.wc .step-item.blocked .step-num { background: var(--blocked-soft); border-color: var(--blocked-line); color: var(--blocked-ink); }
+/* A blocked step is only waiting on an earlier one: neutral, not an error. */
+.wc .step-item.blocked .step-num { background: var(--panel-3); border-color: var(--border-2); color: var(--ink-3); }
 .wc .step-item.current .step-title { color: var(--thread-ink); }
 .wc .step-title { font-size: var(--wc-type-base); font-weight: 500; color: var(--ink); line-height: var(--wc-leading-ui); }
 .wc .step-sub   { font-size: var(--wc-type-meta); color: var(--ink-3); margin-top: 2px; }
@@ -2719,7 +2736,7 @@
 .wc .mini-step.done    .ms-dot { background: var(--done);         border-color: var(--done);         color: var(--wc-done-on); }
 .wc .mini-step.warn    .ms-dot { background: var(--warn-soft);    border-color: var(--warn-line);    color: var(--warn-ink); }
 .wc .mini-step.current .ms-dot { background: var(--thread);       border-color: var(--thread);       color: var(--thread-on); }
-.wc .mini-step.blocked .ms-dot { background: var(--blocked-soft); border-color: var(--blocked-line); color: var(--blocked-ink); }
+.wc .mini-step.blocked .ms-dot { background: var(--panel-3); border-color: var(--border-2); color: var(--ink-3); }
 
 /* ── Overview decision surface ────────────────────────────────────────────── */
 .wc .overview-page-title-focus {
@@ -3447,6 +3464,8 @@
     display: none;
   }
   .wc .wc-content-rail { grid-template-columns: 1fr; }
+  /* At one column, date risk and effort sit under the header, not under every task. */
+  .wc .wc-content-rail > .sticky-rail { order: -1; position: static; }
   .wc .calendar-period-controls { justify-content: flex-start; }
   .wc .calendar-month-field { flex: 1 1 180px; }
   .wc .calendar-year-field { flex: 1 1 118px; }
@@ -4225,6 +4244,24 @@
   text-decoration: none;
 }
 .wc .brand:hover { color: var(--wc-shell-thread); }
+/* Where you are, shown only when the workspace tabs fold into the menu. */
+.wc .topnav-location { display: none; margin: 0; min-width: 0; font-size: var(--wc-type-base); color: var(--wc-shell-ink); }
+.wc .topnav-location-area { color: var(--wc-shell-muted); }
+.wc .topnav-location-area::after { content: " / "; }
+.wc .topnav-location-page { font-weight: 600; }
+@media (max-width: 640px) { .wc .topnav-location-area { display: none; } }
+.wc .mobile-workspace-pages { display: grid; gap: 4px; margin-block-start: 8px; }
+.wc .mobile-workspace-pages summary { cursor: pointer; padding: 8px; min-height: 44px; display: flex; align-items: center; font-weight: 500; color: var(--ink-2); }
+.wc .mobile-workspace-pages summary { list-style: none; gap: 10px; }
+.wc .mobile-workspace-pages summary::-webkit-details-marker { display: none; }
+/* A visible disclosure arrow, since a flex summary drops the native marker. */
+.wc .mobile-workspace-pages summary::before {
+  content: ""; width: 7px; height: 7px; flex-shrink: 0;
+  border: solid currentColor; border-width: 0 1.5px 1.5px 0;
+  transform: rotate(-45deg); transition: transform 0.15s;
+}
+.wc .mobile-workspace-pages details[open] > summary::before { transform: rotate(45deg); }
+.wc .mobile-workspace-pages ul { list-style: none; margin: 0; padding: 0 0 4px 8px; display: grid; gap: 2px; }
 .wc .brand-mark { width: 24px; height: 24px; flex-shrink: 0; }
 .wc .brand-mark svg { display: block; width: 24px; height: 24px; }
 .wc .brand-meta { color: var(--wc-shell-muted); font-size: var(--wc-type-meta); font-weight: 400; }
@@ -4776,7 +4813,7 @@
   position: absolute;
   inset: 0;
   border: 0;
-  background: var(--overlay, rgba(0,0,0,.4));
+  background: rgb(var(--color-overlay) / 0.4);
   animation: wc-layer-fade-in 140ms ease-out both;
 }
 .wc .mobile-nav-panel {
@@ -4968,6 +5005,9 @@
   gap: 2px;
   padding-block-start: 2px;
   padding-inline-start: 8px;
+  /* The full list scrolls instead of being cut at a fixed count. */
+  max-height: 60vh;
+  overflow-y: auto;
 }
 .wc .sb-views-search {
   position: relative;
@@ -5173,8 +5213,9 @@
 @media (max-width: 1180px) {
   .wc .workspace { grid-template-columns: 1fr; }
   .wc .sidebar { display: none; }
-  .wc .topnav { grid-template-columns: minmax(0, 1fr) auto; }
+  .wc .topnav { grid-template-columns: auto minmax(0, 1fr) auto; }
   .wc .workspace-switcher { display: none; }
+  .wc .topnav-location { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .wc .brand,
   .wc .command-menu-trigger,
   .wc .context-help-trigger,
@@ -5568,3 +5609,6 @@
   from { opacity: 0.82; }
   to { opacity: 1; }
 }
+
+/* Read-first task view: text areas grow with their content, so the drawer has one scroll. */
+.task-read-view textarea { field-sizing: content; min-height: 4.5rem; max-height: none; }

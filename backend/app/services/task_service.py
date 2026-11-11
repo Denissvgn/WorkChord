@@ -394,6 +394,8 @@ class TaskService:
         authority = self.db.info.get("authority")
         if authority is not None:
             payload = {**(payload or {}), "principal_id": authority.principal_id, "source": authority.source}
+            if authority.local and authority.principal_id is None and authority.profile_id is not None:
+                payload["local_profile_id"] = authority.profile_id
             correlation_id = authority.correlation_id
             actor_id = authority.actor_id
             if actor_type != "auto":
@@ -530,6 +532,20 @@ class TaskService:
         from app.models.team_member import TeamMemberProfile
         for task in tasks:
             task.__dict__["_owner_name"] = None
+            task.__dict__["_agent_working"] = None
+        if tasks:
+            # The tasks are already authorized by the query that loaded them; only a
+            # yes/no reaches the response: whether an agent holds live execution work.
+            from app.models.agent import AgentTaskAssignment
+            from app.services.planning_issues import LIVE_EXECUTION_ASSIGNMENT_STATES
+            with internal_authority(self.db):
+                working = set((await self.db.execute(select(AgentTaskAssignment.task_id).where(
+                    AgentTaskAssignment.task_id.in_([task.id for task in tasks]),
+                    AgentTaskAssignment.purpose == "execution",
+                    AgentTaskAssignment.state.in_(LIVE_EXECUTION_ASSIGNMENT_STATES),
+                ))).scalars())
+            for task in tasks:
+                task.__dict__["_agent_working"] = task.id in working
         ids = {task.owner_profile_id for task in tasks if task.owner_profile_id is not None}
         if not ids:
             return
@@ -1721,6 +1737,7 @@ class TaskService:
             owner_profile_id=task.owner_profile_id,
             owner=TaskAssignee(id=task.owner_profile_id, name=task.__dict__["_owner_name"]) if task.__dict__.get("_owner_name") else None,
             ownership_provenance=task.ownership_provenance,
+            agent_working=task.__dict__.get("_agent_working"),
             blocked_reason=task.blocked_reason, canceled_at=task.canceled_at, canceled_reason=task.canceled_reason,
             execution_mode=task.execution_mode, brief=task.brief, brief_revision=task.brief_revision,
             brief_provenance=task.brief_provenance, legacy_description=task.legacy_description,

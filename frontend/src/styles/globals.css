@@ -209,23 +209,28 @@
   --color-status-closed-on-solid: 30 15 50;
 }
 
+/*
+ * Blue and Green tint the canvas and quiet surfaces only. Ink stays neutral, the action
+ * color stays cobalt (green would read as success or Resolved), selected rows (action tint)
+ * stay distinct from muted surfaces, and the focus ring is the documented cobalt.
+ */
 [data-theme='blue'] {
   color-scheme: light;
 
   --color-surface-canvas: 239 246 255;
   --color-surface-card: 255 255 255;
-  --color-surface-muted: 219 234 254;
-  --color-surface-subtle: 191 219 254;
-  --color-surface-hover: 219 234 254;
+  --color-surface-muted: 241 245 249;
+  --color-surface-subtle: 226 232 240;
+  --color-surface-hover: 241 245 249;
 
-  --color-content-primary: 30 58 138;
-  --color-content-secondary: 30 64 175;
-  --color-content-tertiary: 70 92 136;
+  --color-content-primary: 15 23 42;
+  --color-content-secondary: 71 85 105;
+  --color-content-tertiary: 91 105 125;
   --color-content-inverse: 255 255 255;
 
-  --color-border-subtle: 219 234 254;
-  --color-border-default: 147 197 253;
-  --color-border-strong: 90 112 152;
+  --color-border-subtle: 226 232 240;
+  --color-border-default: 191 219 254;
+  --color-border-strong: 100 116 139;
 
   --color-action-primary: 29 78 216;
   --color-action-primary-hover: 30 64 175;
@@ -233,7 +238,7 @@
   --color-action-muted-hover: 191 219 254;
   --color-action-muted-foreground: 30 64 175;
   --color-action-foreground: 255 255 255;
-  --color-focus-ring: 37 99 235;
+  --color-focus-ring: 59 130 246;
 }
 
 [data-theme='green'] {
@@ -241,26 +246,26 @@
 
   --color-surface-canvas: 240 253 244;
   --color-surface-card: 255 255 255;
-  --color-surface-muted: 220 252 231;
-  --color-surface-subtle: 187 247 208;
-  --color-surface-hover: 220 252 231;
+  --color-surface-muted: 241 245 249;
+  --color-surface-subtle: 226 232 240;
+  --color-surface-hover: 241 245 249;
 
-  --color-content-primary: 20 83 45;
-  --color-content-secondary: 22 101 52;
-  --color-content-tertiary: 48 112 70;
+  --color-content-primary: 15 23 42;
+  --color-content-secondary: 71 85 105;
+  --color-content-tertiary: 91 105 125;
   --color-content-inverse: 255 255 255;
 
-  --color-border-subtle: 220 252 231;
-  --color-border-default: 134 239 172;
-  --color-border-strong: 70 124 87;
+  --color-border-subtle: 226 232 240;
+  --color-border-default: 187 247 208;
+  --color-border-strong: 100 116 139;
 
-  --color-action-primary: 21 128 61;
-  --color-action-primary-hover: 22 101 52;
-  --color-action-muted: 220 252 231;
-  --color-action-muted-hover: 187 247 208;
-  --color-action-muted-foreground: 22 101 52;
+  --color-action-primary: 37 99 235;
+  --color-action-primary-hover: 29 78 216;
+  --color-action-muted: 219 234 254;
+  --color-action-muted-hover: 191 219 254;
+  --color-action-muted-foreground: 29 78 216;
   --color-action-foreground: 255 255 255;
-  --color-focus-ring: 21 128 61;
+  --color-focus-ring: 59 130 246;
 }
 
 body {

@@ -15,6 +15,7 @@ _Auto-generated from `frontend/src/components/analytics/DeliveryAnalytics.tsx`._
 | `../../services/deliveryMetricsService` | `deliveryMetricsService` | — | compiler-dependent |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
 | `../../types/deliveryMetrics` | `DeliveryQueueItem` | Declaration | erased |
+| `../../utils/formatDate` | `formatDateTime` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `./ExecutionUsagePanel` | `ExecutionUsagePanel` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
@@ -43,6 +44,7 @@ flowchart LR
     n5["frontend/src/services/deliveryMetricsService.ts"]
     n6["frontend/src/services/projectService.ts"]
     n7["frontend/src/types/deliveryMetrics.ts"]
+    n8["frontend/src/utils/formatDate.ts"]
     n0 --> n1
     n0 --> n7
     n1 --> n2
@@ -50,9 +52,12 @@ flowchart LR
     n1 --> n5
     n1 --> n6
     n1 --> n7
+    n1 --> n8
     n2 --> n3
+    n2 --> n8
     n4 --> n1
     n4 --> n3
+    n4 --> n8
     n5 --> n7
     click n0 "../modules/DeliveryAnalytics.test.md"
     click n1 "../modules/DeliveryAnalytics.md"
@@ -62,6 +67,7 @@ flowchart LR
     click n5 "../modules/deliveryMetricsService.md"
     click n6 "../modules/projectService.md"
     click n7 "../modules/deliveryMetrics.md"
+    click n8 "../modules/formatDate.md"
 ```
 
 ### Internal neighbors
@@ -75,6 +81,7 @@ flowchart LR
 | Outbound | [deliveryMetricsService](../modules/deliveryMetricsService.md) |
 | Outbound | [projectService](../modules/projectService.md) |
 | Outbound | [deliveryMetrics](../modules/deliveryMetrics.md) |
+| Outbound | [formatDate](../modules/formatDate.md) |
 
 ### External packages
 

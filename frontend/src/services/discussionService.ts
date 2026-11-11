@@ -1,7 +1,9 @@
 import api from './api';
 
 export interface TaskComment {
-    id: number; task_id: number; principal_id: number; author_name: string;
+    id: number; task_id: number; principal_id: number | null; author_name: string | null;
+    /** Set when a trusted-local session wrote it as its chosen profile: local, not verified. */
+    author_profile_id?: number | null; author_local?: boolean;
     body: string; mentions: number[]; version: number; deleted: boolean;
     created_at: string; updated_at: string;
 }

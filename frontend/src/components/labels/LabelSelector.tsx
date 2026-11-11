@@ -7,6 +7,7 @@ import { labelService } from '../../services/labelService';
 import type { Label } from '../../types/label';
 import { labelDisplay, labelGroupDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { LabelChip } from './LabelChip';
 
 interface LabelSelectorProps {
     value: string[];
@@ -84,6 +85,7 @@ export const LabelSelector = ({
     };
 
     const addCustomLabel = () => {
+        if (!customLabel.trim()) return;
         const next = mergeLabels(selectedValues, customLabel);
         onChange(next);
         setCustomLabel('');
@@ -120,15 +122,7 @@ export const LabelSelector = ({
                         const option = labelsBySlug.get(slug);
                         const isArchived = option ? !option.is_active || option.group?.is_active === false : false;
                         return (
-                            <span
-                                key={slug}
-                                className="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-sm"
-                                style={option ? {
-                                    color: option.color,
-                                    backgroundColor: `${option.color}1A`,
-                                    borderColor: `${option.color}66`,
-                                } : undefined}
-                            >
+                            <LabelChip key={slug} color={option?.color} size="md">
                                 <span>{option ? labelDisplay(option).name : slug}</span>
                                 {option && option.slug !== option.name && (
                                     <span className="text-xs">{option.slug}</span>
@@ -142,11 +136,11 @@ export const LabelSelector = ({
                                     type="button"
                                     onClick={() => removeLabel(slug)}
                                     className="rounded-full p-0.5 text-content-secondary hover:bg-surface-card/70 hover:text-content-primary"
-                                    aria-label={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })}
+                                    aria-label={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })} title={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })}
                                 >
                                     <X className="h-3 w-3" aria-hidden="true" />
                                 </button>
-                            </span>
+                            </LabelChip>
                         );
                     })}
                 </div>
@@ -154,6 +148,7 @@ export const LabelSelector = ({
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
                 <select
+                    aria-label={t('surfaces.labelSelector.addGovernedLabel')}
                     disabled={optionsLoading || Boolean(optionError)}
                     value={selectedSuggestion}
                     onChange={event => {
@@ -174,6 +169,7 @@ export const LabelSelector = ({
                     <div className="flex min-w-0 gap-2">
                         <input
                             type="text"
+                            aria-label={t('surfaces.labelSelector.addCustomLabel')}
                             value={customLabel}
                             onChange={event => setCustomLabel(event.target.value)}
                             onKeyDown={event => {
@@ -189,7 +185,6 @@ export const LabelSelector = ({
                             type="button"
                             variant="secondary"
                             onClick={addCustomLabel}
-                            disabled={!customLabel.trim()}
                             aria-label={t('surfaces.labelSelector.addCustomLabel')}
                         >
                             <Plus className="h-4 w-4" aria-hidden="true" />

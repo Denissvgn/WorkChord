@@ -92,9 +92,9 @@ sequenceDiagram
     p3-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 372 interactions; 342 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 401 interactions; 371 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 153 (152 omitted); unresolved 1 of 152 (151 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 174 (173 omitted); unresolved 1 of 160 (159 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -121,7 +121,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 68; effect analysis evaluated: 52, partial: 2, unavailable: 14. Counts include steps omitted from the displayed trace.
 
-Collector observations for 54 source steps with known totals: observed: 262, emitted: 253, omitted: 9. Unavailable totals are excluded.
+Collector observations for 54 source steps with known totals: observed: 265, emitted: 256, omitted: 9. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -137,7 +137,7 @@ Collector observations for 54 source steps with known totals: observed: 262, emi
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `AgentPermissionError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `get_iteration_plan_readiness (backend/app/mcp_agent_tools.py)` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
-| `IterationService.get_planning_readiness_summary` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `IterationService.get_planning_readiness_summary` | `available` | `evaluated` | `available` | `9` | `9` | `0` |
 | `IterationService.get_by_id` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `self.db.execute (backend/app/services/iter…terationService.get_by_id)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `select(…).options(…).where (backend/app/services/iter…terationService.get_by_id)` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
@@ -189,7 +189,7 @@ flowchart LR
 | `isinstance (backend/app/services/agent_service.py:actor_scopes)` | - | - | - | - |
 | `AgentPermissionError` | - | - | - | - |
 | `get_iteration_plan_readiness (backend/app/mcp_agent_tools.py)` | `db: AsyncSession`, `iteration_id: int` | `IterationPlanningReadinessSummary` | - | `...` |
-| `IterationService.get_planning_readiness_summary` | `iteration_id: int` | `self.db`, `Task`, `Task`, `Task` | - | `None`, `IterationPlanningReadinessSummary(...)` |
+| `IterationService.get_planning_readiness_summary` | `iteration_id: int` | `self.db`, `Task`, `Task`, `Task`, `Task`, `Task` | - | `None`, `IterationPlanningReadinessSummary(...)` |
 | `IterationService.get_by_id` | `iteration_id: int` | `Iteration` | - | `result.scalar_one_or_none(...)` |
 | `self.db.execute (backend/app/services/iter…terationService.get_by_id)` | - | - | - | - |
 | `select(…).options(…).where (backend/app/services/iter…terationService.get_by_id)` | - | - | - | - |
@@ -206,7 +206,7 @@ flowchart LR
 | require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
 | get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 135 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
 | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | IterationService.get_planning_readiness_summary | 648 | `IterationService(db).get_planning_readiness_summary(iteration_id)` |
-| IterationService.get_planning_readiness_summary | IterationService.get_by_id | 495 | `self.get_by_id(iteration_id)` |
+| IterationService.get_planning_readiness_summary | IterationService.get_by_id | 511 | `self.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where (backend/app/services/iter…terationService.get_by_id) | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 

@@ -189,8 +189,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_outbound_webhook_target | service.create_target | 66 | `service.create_target(data)` |
-| create_outbound_webhook_target | _bad_request | 68 | `_bad_request(service, exc)` |
+| create_outbound_webhook_target | service.create_target | 69 | `service.create_target(data)` |
+| create_outbound_webhook_target | _bad_request | 71 | `_bad_request(service, exc)` |
 | _bad_request | resolve_runtime_ui_language | 40 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
@@ -209,7 +209,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_outbound_webhook_target` | `service.create_target` | 66 |
+| unresolved_call | `create_outbound_webhook_target` | `service.create_target` | 69 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |

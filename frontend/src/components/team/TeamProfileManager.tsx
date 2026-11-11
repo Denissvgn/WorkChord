@@ -19,6 +19,8 @@ import type {
     TeamMemberProfileSkillCreate,
     TeamMemberProfileUpdate,
 } from '../../types/team';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
 
@@ -123,6 +125,7 @@ export const TeamProfileManager = ({
 
     const createProfileMutation = useMutation({
         mutationFn: (data: TeamMemberProfileCreate) => teamService.createProfile(data),
+        meta: { success: data => feedbackMessage(t, 'created', 'profile', (data as { display_name?: string }).display_name) } satisfies MutationFeedbackMeta,
         onSuccess: profile => {
             invalidate();
             setSelectedProfileId(profile.id);
@@ -135,6 +138,7 @@ export const TeamProfileManager = ({
 
     const updateProfileMutation = useMutation({
         mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data, profileContext.observation!.expected_revisions),
+        meta: { success: data => feedbackMessage(t, 'saved', 'profile', (data as { display_name?: string }).display_name) } satisfies MutationFeedbackMeta,
         onSuccess: profile => {
             invalidate();
             setSelectedProfileId(profile.id);
@@ -147,6 +151,7 @@ export const TeamProfileManager = ({
 
     const deleteProfileMutation = useMutation({
         mutationFn: ({ id, revisions }: { id: number; revisions: Record<number, number> }) => teamService.deleteProfile(id, revisions),
+        meta: { success: (_data, variables) => feedbackMessage(t, 'deleted', 'profile', profiles.find(profile => profile.id === (variables as { id: number }).id)?.display_name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             invalidate();
             setSelectedProfileId(null);

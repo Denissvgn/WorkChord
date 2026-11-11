@@ -20,7 +20,7 @@ _Auto-generated from `frontend/src/pages/RoadmapPage.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `projectServiceMock`, `project`, `milestone` |
-| Module calls | `projectServiceMock = hoisted`, `mock`, `describe` |
+| Module calls | `projectServiceMock = hoisted`, `mock`, `describe`, `describe` |
 
 ## Local dependency map
 

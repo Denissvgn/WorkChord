@@ -18,6 +18,7 @@ import type {
     TaskBulkOperationResult,
     TaskStatus,
 } from '../../types/task';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const t = i18n.t.bind(i18n);
 
@@ -182,6 +183,7 @@ export const TaskBulkOperationsPanel = ({
 
     const mutation = useMutation({
         mutationFn: (request: TaskBulkOperationRequest) => taskService.runBulkOperation(request),
+        meta: { success: (data, variables) => (data as { dry_run?: boolean }).dry_run ? null : t('feedback.bulkApplied', { count: (variables as TaskBulkOperationRequest).task_ids.length }) } satisfies MutationFeedbackMeta,
         onSuccess: async (response, variables) => {
             setPreview(response);
             setPreviewSignature(JSON.stringify([variables.task_ids, variables.action, variables.payload]));
@@ -253,6 +255,7 @@ export const TaskBulkOperationsPanel = ({
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <select
+                        aria-label={t('surfaces.taskBulk.actionLabel')}
                         value={effectiveAction}
                         onChange={event => {
                             setAction(event.target.value as TaskBulkAction);
@@ -309,7 +312,7 @@ export const TaskBulkOperationsPanel = ({
                 )}
 
                 {(effectiveAction === 'set_project' || effectiveAction === 'set_milestone') && scopedProjectId === null && (
-                    <select value={projectId} onChange={event => { setProjectId(event.target.value); setMilestoneId(''); }} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
+                    <select aria-label={t('surfaces.taskBulk.projectLabel')} value={projectId} onChange={event => { setProjectId(event.target.value); setMilestoneId(''); }} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
                         <option value="">{t('surfaces.taskBulk.chooseProject')}</option>
                         {projects.map(project => (
                             <option key={project.id} value={project.id}>{project.name}</option>
@@ -318,7 +321,7 @@ export const TaskBulkOperationsPanel = ({
                 )}
 
                 {effectiveAction === 'set_project' && (
-                    <select value={milestoneId} onChange={event => setMilestoneId(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card" disabled={!selectedProjectId}>
+                    <select aria-label={t('surfaces.taskBulk.milestoneLabel')} value={milestoneId} onChange={event => setMilestoneId(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card" disabled={!selectedProjectId}>
                         <option value="">{t('surfaces.taskBulk.leaveMilestoneUnchangedUnlessIncompatible')}</option>
                         {milestones.map(milestone => (
                             <option key={milestone.id} value={milestone.id}>{milestone.name}</option>
@@ -327,7 +330,7 @@ export const TaskBulkOperationsPanel = ({
                 )}
 
                 {effectiveAction === 'set_milestone' && (
-                    <select value={milestoneId} onChange={event => setMilestoneId(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card" disabled={!selectedProjectId}>
+                    <select aria-label={t('surfaces.taskBulk.milestoneLabel')} value={milestoneId} onChange={event => setMilestoneId(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card" disabled={!selectedProjectId}>
                         <option value="">{t('surfaces.taskBulk.chooseMilestone')}</option>
                         {milestones.map(milestone => (
                             <option key={milestone.id} value={milestone.id}>{milestone.name}</option>
@@ -336,11 +339,12 @@ export const TaskBulkOperationsPanel = ({
                 )}
 
                 {effectiveAction === 'set_priority' && (
-                    <input type="number" min="1" max="10" value={priority} onChange={event => setPriority(event.target.value)} className="text-sm border rounded-md px-2 py-2" />
+                    <input aria-label={t('surfaces.taskBulk.priorityLabel')} type="number" min="1" max="10" value={priority} onChange={event => setPriority(event.target.value)} className="text-sm border rounded-md px-2 py-2" />
                 )}
 
                 {(effectiveAction === 'add_labels' || effectiveAction === 'remove_labels') && (
                     <input
+                        aria-label={t('surfaces.taskBulk.labelsLabel')}
                         value={labelsText}
                         onChange={event => setLabelsText(event.target.value)}
                         placeholder={t('surfaces.taskBulk.labelsCommaSeparated')}
@@ -350,12 +354,12 @@ export const TaskBulkOperationsPanel = ({
 
                 {effectiveAction === 'set_flags' && (
                     <>
-                        <select value={isOptional} onChange={event => setIsOptional(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
+                        <select aria-label={t('surfaces.taskBulk.optionalLabel')} value={isOptional} onChange={event => setIsOptional(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
                             <option value="">{t('surfaces.taskBulk.optionalUnchanged')}</option>
                             <option value="true">{t('surfaces.taskBulk.setOptional')}</option>
                             <option value="false">{t('surfaces.taskBulk.clearOptional')}</option>
                         </select>
-                        <select value={isDeferred} onChange={event => setIsDeferred(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
+                        <select aria-label={t('surfaces.taskBulk.deferredLabel')} value={isDeferred} onChange={event => setIsDeferred(event.target.value)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
                             <option value="">{t('surfaces.taskBulk.deferredUnchanged')}</option>
                             <option value="true">{t('surfaces.taskBulk.setDeferred')}</option>
                             <option value="false">{t('surfaces.taskBulk.clearDeferred')}</option>
@@ -365,10 +369,10 @@ export const TaskBulkOperationsPanel = ({
 
                 {effectiveAction === 'change_status' && (
                     <>
-                        <select value={status} onChange={event => setStatus(event.target.value as TaskStatus)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
-                            {STATUS_OPTIONS.map(item => <option key={item} value={item}>{item}</option>)}
+                        <select aria-label={t('surfaces.taskBulk.statusLabel')} value={status} onChange={event => setStatus(event.target.value as TaskStatus)} className="text-sm border rounded-md px-2 py-2 bg-surface-card">
+                            {STATUS_OPTIONS.map(item => <option key={item} value={item}>{t(`statuses.${item}`, { defaultValue: item })}</option>)}
                         </select>
-                        <input value={reason} onChange={event => setReason(event.target.value)} placeholder={t('surfaces.taskBulk.reasonOptional')} className="text-sm border rounded-md px-2 py-2" />
+                        <input aria-label={t('surfaces.taskBulk.reasonLabel')} value={reason} onChange={event => setReason(event.target.value)} placeholder={t('surfaces.taskBulk.reasonOptional')} className="text-sm border rounded-md px-2 py-2" />
                     </>
                 )}
             </div>

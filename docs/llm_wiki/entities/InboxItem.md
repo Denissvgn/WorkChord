@@ -1,6 +1,6 @@
 # InboxItem
 
-**Location:** `frontend/src/services/discussionService.ts:10`
+**Location:** `frontend/src/services/discussionService.ts:12`
 **Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)

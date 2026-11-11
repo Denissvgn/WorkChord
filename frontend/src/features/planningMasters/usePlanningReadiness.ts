@@ -15,7 +15,9 @@ import { planningNavigationSummaryKey } from './usePlanningNavigationSummary';
 import type { PlanReadiness } from './masters';
 import {
     hasPositivePlanningEffort,
+    isAgentWorkingWithoutCapacity,
     isPlanningLeafTask,
+    taskMatchesPlanningIssue,
 } from './planningTaskIssues';
 
 type PlanningReadinessOptions = {
@@ -359,6 +361,11 @@ export const usePlanningReadiness = ({
         [tasks, teamMembers],
     );
 
+    const teamAgentCount = useMemo(
+        () => teamMembers.filter(member => member.profile?.profile_kind === 'agent').length,
+        [teamMembers],
+    );
+
     const readinessData = useMemo<PlanReadiness>(() => ({
         iterationCount: iterations.length,
         hasCurrentIteration,
@@ -367,11 +374,13 @@ export const usePlanningReadiness = ({
         currentIterationEnd: currentIteration?.end_date ?? '',
         currentIterationDays: currentIteration?.working_days ?? 0,
         teamMemberCount: teamMembers.length,
+        teamAgentCount,
         teamCapacity,
         teamMembersNoCap,
         taskCount: leafTasks.length,
-        tasksWithoutAssignee: leafTasks.filter(task => !task.assignee).length,
-        tasksWithoutEffort: leafTasks.filter(task => !finitePositive(task.effort_days)).length,
+        tasksWithoutAssignee: leafTasks.filter(task => taskMatchesPlanningIssue(task, 'unassigned')).length,
+        tasksWithoutEffort: leafTasks.filter(task => taskMatchesPlanningIssue(task, 'missing-effort')).length,
+        tasksAgentWithoutCapacity: leafTasks.filter(isAgentWorkingWithoutCapacity).length,
         hasGanttSchedule: hasSavedPlanningSchedule(tasks),
         ganttLastBuilt: '',
         riskCount: planningExceptionCount,
@@ -387,6 +396,7 @@ export const usePlanningReadiness = ({
         leafTasks,
         planningExceptionCount,
         tasks,
+        teamAgentCount,
         teamCapacity,
         teamMembers.length,
         teamMembersNoCap,

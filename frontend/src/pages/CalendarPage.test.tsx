@@ -22,7 +22,12 @@ it('locks calendar changes during a save and ignores an obsolete resource comple
     let finish!: (value: unknown) => void;
     api.put.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
     const view = renderWithProviders(<CalendarPage />);
-    const save = await screen.findByRole('button', { name: 'Save settings' });
+    const save = await screen.findByRole('button', { name: 'Save calendar changes' });
+    // Save stays disabled until something changes.
+    expect(save).toBeDisabled();
+    const [workday] = await screen.findAllByRole('button', { name: /: working day$/ });
+    await view.user.click(workday);
+    expect(screen.getByText('Unsaved changes')).toBeInTheDocument();
     await waitFor(() => expect(save).toBeEnabled());
     await view.user.click(save);
     await waitFor(() => expect(finish).toBeTypeOf('function'));
@@ -31,7 +36,8 @@ it('locks calendar changes during a save and ignores an obsolete resource comple
     await act(async () => view.queryClient.setQueryData(['calendars'], current));
     await waitFor(() => expect(api.get.mock.calls.some(([path]) => path === '/tasks/planning-inputs/calendar/2/context')).toBe(true));
     await act(async () => finish({ data: first }));
-    await waitFor(() => expect(save).toBeEnabled());
+    // The save lock is released once the obsolete completion is ignored.
+    await waitFor(() => expect(screen.getByRole('button', { name: 'New calendar' })).toBeEnabled());
     expect(api.get.mock.calls.filter(([path]) => path === '/tasks/planning-inputs/calendar/1/context')).toHaveLength(1);
     expect(screen.queryByText('Calendar settings saved')).not.toBeInTheDocument();
 });

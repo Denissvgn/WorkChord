@@ -6,12 +6,13 @@ export const SINGLE_KEY_SHORTCUTS_CHANGED_EVENT = (
     'workchord:single-key-shortcuts-changed'
 );
 
+// On unless the user turned them off: the keys are shown on command rows, and they never fire while typing or in a dialog.
 export const readSingleKeyShortcutsEnabled = () => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined') return true;
     try {
-        return window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY) === 'true';
+        return window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY) !== 'false';
     } catch {
-        return false;
+        return true;
     }
 };
 

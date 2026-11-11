@@ -47,6 +47,32 @@ const RELATED_PATHS_BY_ROUTE: Partial<Record<RouteModuleKey, readonly string[]>>
     notFound: ['/'],
 };
 
+export type GlossaryTerm = 'implemented' | 'accepted' | 'blocked' | 'overdue' | 'lateStart' | 'iterationOverflow'
+    | 'unknownEstimate' | 'scheduled' | 'capacity' | 'triage' | 'agentReady';
+
+// The terms each page shows, defined once in `contextHelp.glossary` from the server's own rules.
+const DELIVERY_TERMS: readonly GlossaryTerm[] = ['implemented', 'accepted', 'blocked', 'overdue', 'lateStart', 'iterationOverflow'];
+const SCHEDULE_TERMS: readonly GlossaryTerm[] = ['scheduled', 'capacity', 'lateStart', 'iterationOverflow', 'unknownEstimate'];
+const GLOSSARY_BY_ROUTE: Partial<Record<RouteModuleKey, readonly GlossaryTerm[]>> = {
+    overview: DELIVERY_TERMS,
+    tasks: DELIVERY_TERMS,
+    myWork: ['implemented', 'accepted', 'blocked'],
+    projects: DELIVERY_TERMS,
+    projectDetail: DELIVERY_TERMS,
+    projectReleaseDetail: ['implemented', 'accepted'],
+    analytics: DELIVERY_TERMS,
+    triage: ['triage'],
+    plan: SCHEDULE_TERMS,
+    planMaster: SCHEDULE_TERMS,
+    gantt: SCHEDULE_TERMS,
+    roadmap: ['overdue', 'iterationOverflow'],
+    iterations: ['capacity', 'scheduled'],
+    calendar: ['capacity'],
+    team: ['capacity', 'scheduled'],
+    agentPipeline: ['agentReady', 'scheduled', 'blocked'],
+    agentTeamSetup: ['agentReady'],
+};
+
 const SPECIAL_RELATED_LINKS: Record<string, Omit<HelpRelatedLink, 'to'>> = {
     '/plan/master': {
         labelKey: 'documentTitles.planMaster',
@@ -111,5 +137,6 @@ export const getHelpContext = (pathname: string) => {
         workspace,
         provider: CONTENT_PROVIDER_BY_ROUTE[route.key] ?? 'workspace',
         relatedLinks: (configuredPaths ?? fallbackPaths).map(relatedLinkForPath),
+        glossary: GLOSSARY_BY_ROUTE[route.key] ?? [],
     };
 };

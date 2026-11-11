@@ -19,6 +19,7 @@ Service for automatic task scheduling.
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
 | `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, expected_planning_revision: int \| None = None, commit_baseline: bool = False, rebaseline_reason: str \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
+| `_unscheduled_tasks` | `(all_tasks: Sequence[Task], member_schedules: dict[int, 'MemberSchedule'], known_reasons: dict[int, str]) -> list[UnscheduledTask]` | — | Planned leaf tasks still without dates, each with the first cause that applies. |
 | `_build_member_schedules` | *(async)* `(iteration: Iteration, team_members: Sequence[TeamMember]) -> dict[int, MemberSchedule]` | — | Build schedule tracking for each team member. |
 | `_topological_sort` | `(tasks: list[Task]) -> list[Task]` | — | Sort tasks respecting dependencies. |
 | `_topological_sort_children` | `(children: list[Task], child_ids: set[int]) -> list[Task]` | — | Sort child tasks respecting internal dependencies, then by (is_optional, priority). |
@@ -77,7 +78,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 16 | — |
+| [scheduler_service](../modules/scheduler_service.md) | 17 | — |
 
 ### References
 
@@ -96,4 +97,4 @@ flowchart LR
 | `test_incremental_schedule_excludes_inherited_deferred_work` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
 | `test_schedule_preview_does_not_allocate_inherited_deferred_leaf` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
 
-> References: showing 12 of 17 logical references; 5 omitted by the 12-row generated summary limit.
+> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.

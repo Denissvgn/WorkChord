@@ -105,7 +105,27 @@ describe('ProjectsPage', () => {
             .toBeVisible();
         expect(screen.queryByRole('button', { name: 'Clear filters' }))
             .not.toBeInTheDocument();
-        expect(screen.getAllByRole('button', { name: 'New Project' })).toHaveLength(1);
+        expect(screen.getAllByRole('button', { name: 'New project' })).toHaveLength(1);
+    });
+
+    it('never says "No risk flags" while a project health is unassessed', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'unknown' }]);
+        renderWithProviders(<ProjectsPage />, { initialEntries: ['/projects'] });
+        expect(await screen.findByText('1 project not assessed')).toBeInTheDocument();
+        expect(screen.queryByText('No risk flags')).not.toBeInTheDocument();
+    });
+
+    it('filters the table to the projects a portfolio count names', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'at_risk' }, { ...project, id: 3, name: 'Comet', health: 'off_track' }]);
+        const { user } = renderWithProviders(<ProjectsPage />, { initialEntries: ['/projects'] });
+        const count = await screen.findByRole('button', { name: /2 at risk/i });
+        await user.click(count);
+        expect(count).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.queryByRole('link', { name: 'Atlas' })).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Beacon' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Comet' })).toBeInTheDocument();
+        await user.click(count);
+        expect(await screen.findByRole('link', { name: 'Atlas' })).toBeInTheDocument();
     });
 
     it('keeps the project table primary and initiative management collapsed', async () => {
@@ -117,17 +137,17 @@ describe('ProjectsPage', () => {
         const initiativesLabel = screen.getByText('Initiatives');
         const initiativesDisclosure = initiativesLabel.closest('details');
 
-        expect(screen.getAllByRole('button', { name: 'New Project' })).toHaveLength(1);
+        expect(screen.getAllByRole('button', { name: 'New project' })).toHaveLength(1);
         expect(screen.getByRole('heading', { name: 'Project portfolio' })).toBeVisible();
         expect(initiativesDisclosure).not.toHaveAttribute('open');
         expect(projectLink.compareDocumentPosition(initiativesDisclosure!))
             .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-        expect(screen.getByRole('button', { name: 'New Initiative' })).not.toBeVisible();
+        expect(screen.getByRole('button', { name: 'New initiative' })).not.toBeVisible();
 
         await user.click(initiativesLabel.closest('summary')!);
 
         expect(initiativesDisclosure).toHaveAttribute('open');
-        expect(screen.getByRole('button', { name: 'New Initiative' })).toBeVisible();
+        expect(screen.getByRole('button', { name: 'New initiative' })).toBeVisible();
     });
 
     it('names project signals and formats effort with the active locale', async () => {
@@ -146,7 +166,7 @@ describe('ProjectsPage', () => {
             initialEntries: ['/projects'],
         });
 
-        expect(await screen.findByText('2 blocked tasks')).toHaveClass('sr-only');
+        expect(await screen.findByText('2 tasks blocked or waiting on dependencies')).toHaveClass('sr-only');
         expect(screen.getByText('1 overdue task')).toHaveClass('sr-only');
         expect(screen.getByText(new Intl.NumberFormat(i18n.language, {
             style: 'unit',
@@ -155,7 +175,7 @@ describe('ProjectsPage', () => {
             maximumFractionDigits: 1,
         }).format(2.5))).toBeVisible();
         expect(projectServiceMock.getPortfolioSummaries).toHaveBeenCalledTimes(1);
-        expect(screen.queryByText('Loading project summary...')).not.toBeInTheDocument();
+        expect(screen.queryByText('Loading project summary…')).not.toBeInTheDocument();
     });
 
     it('keeps the project table usable when portfolio signals are unavailable', async () => {
@@ -171,5 +191,20 @@ describe('ProjectsPage', () => {
         )).toBeVisible();
         expect(screen.getByRole('columnheader', { name: 'Tasks' })).toBeVisible();
         expect(projectServiceMock.getPortfolioSummaries).toHaveBeenCalledTimes(1);
+    });
+
+    it('fits by merging health into signals, sorts by column, and keeps actions in a pinned row menu', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'at_risk', target_date: '2026-08-15' }]);
+        const { user } = renderWithProviders(<ProjectsPage />, { initialEntries: ['/projects'] });
+        const table = await screen.findByRole('region', { name: 'Projects table' });
+        expect(table).toHaveAttribute('tabindex', '0');
+        expect(within(table).queryByRole('columnheader', { name: /^Health$/ })).toBeNull();
+        expect(within(table).queryByRole('columnheader', { name: /^Initiative$/ })).toBeNull();
+        const rows = () => screen.getAllByRole('link').filter(link => ['Atlas', 'Beacon'].includes(link.textContent ?? '')).map(link => link.textContent);
+        expect(rows()).toEqual(['Atlas', 'Beacon']);
+        await user.click(screen.getByRole('button', { name: /^Target/ }));
+        expect(rows()).toEqual(['Beacon', 'Atlas']);
+        expect(within(table).getByRole('columnheader', { name: /Target/ })).toHaveAttribute('aria-sort', 'ascending');
+        expect(screen.getByRole('button', { name: 'Actions for Atlas' })).toBeInTheDocument();
     });
 });

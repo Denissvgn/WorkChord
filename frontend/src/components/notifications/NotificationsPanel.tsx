@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { taskService } from '../../services/taskService';
 import { AlertCircle, History, CheckCircle } from 'lucide-react';
 import clsx from 'clsx';
+import { SegmentedControl } from '../ui/SegmentedControl';
 import { formatDate, formatDateTime } from '../../utils/formatDate';
 import { QueryErrorState } from '../feedback/QueryState';
 
@@ -53,35 +54,14 @@ export const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ iteratio
                 </h3>
 
                 <Link to="/my-work?queue=inbox" className="mb-3 inline-block text-sm font-medium text-action hover:underline">{t('teamwork.queue_inbox')}</Link>
-                <div className="flex space-x-1 bg-surface-subtle p-1 rounded-lg">
-                    <button
-                        onClick={() => setActiveTab('history')}
-                        className={clsx(
-                            "flex-1 py-1 px-3 text-sm font-medium rounded-md transition-colors",
-                            activeTab === 'history'
-                                ? "bg-surface-card text-content-primary shadow-sm"
-                                : "text-content-secondary hover:text-content-primary hover:bg-surface-hover"
-                        )}
-                    >
-                        {t('notifications.history')}
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('overdue')}
-                        className={clsx(
-                            "flex-1 py-1 px-3 text-sm font-medium rounded-md transition-colors flex items-center justify-center gap-1",
-                            activeTab === 'overdue'
-                                ? "bg-surface-card text-content-primary shadow-sm"
-                                : "text-content-secondary hover:text-content-primary hover:bg-surface-hover"
-                        )}
-                    >
-                        {t('notifications.overdue')}
-                        {overdueTasks && overdueTasks.length > 0 && (
-                            <span className="bg-feedback-danger text-feedback-danger-emphasis text-xs px-1.5 rounded-full">
-                                {overdueTasks.length}
-                            </span>
-                        )}
-                    </button>
-                </div>
+                <SegmentedControl label={t('notifications.title')} value={activeTab} onChange={setActiveTab} className="w-full [&>button]:flex-1"
+                    options={[
+                        { value: 'history', label: t('notifications.history') },
+                        { value: 'overdue', label: <>{t('notifications.overdue')}
+                            {overdueTasks && overdueTasks.length > 0 && (
+                                <span className="rounded-full bg-feedback-danger px-1.5 text-xs text-feedback-danger-emphasis">{overdueTasks.length}</span>
+                            )}</> },
+                    ]} />
             </div>
 
             <div className="flex-1 overflow-y-auto p-4">

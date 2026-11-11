@@ -19,11 +19,11 @@ export const useSingleKeyShortcutPreference = () => {
         const handleStorageChange = (event: StorageEvent) => {
             if (event.storageArea && event.storageArea !== window.localStorage) return;
             if (event.key === null) {
-                setEnabledState(false);
+                setEnabledState(true);
                 return;
             }
             if (event.key !== SINGLE_KEY_SHORTCUTS_STORAGE_KEY) return;
-            setEnabledState(event.newValue === 'true');
+            setEnabledState(event.newValue !== 'false');
         };
 
         window.addEventListener(

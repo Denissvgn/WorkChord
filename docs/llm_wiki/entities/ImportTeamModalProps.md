@@ -1,6 +1,6 @@
 # ImportTeamModalProps
 
-**Location:** `frontend/src/components/team/ImportTeamModal.tsx:13`
+**Location:** `frontend/src/components/team/ImportTeamModal.tsx:15`
 **Kind:** Interface
 **Bases:** —
 **Module:** [ImportTeamModal](../modules/ImportTeamModal.md)

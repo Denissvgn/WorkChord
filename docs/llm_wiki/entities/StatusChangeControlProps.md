@@ -1,6 +1,6 @@
 # StatusChangeControlProps
 
-**Location:** `frontend/src/components/tasks/StatusChangeControl.tsx:13`
+**Location:** `frontend/src/components/tasks/StatusChangeControl.tsx:15`
 **Kind:** Interface
 **Bases:** —
 **Module:** [StatusChangeControl](../modules/StatusChangeControl.md)

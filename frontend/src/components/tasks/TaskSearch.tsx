@@ -6,7 +6,8 @@ import { taskService } from '../../services/taskService';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 
-export const TaskSearch = () => {
+/** `narrowsList`: the page's own list filters in place, so results from everywhere else are collapsed. */
+export const TaskSearch = ({ narrowsList = false }: { narrowsList?: boolean } = {}) => {
     const { t } = useTranslation();
     const id = useId();
     const [params, setParams] = useSearchParams();
@@ -21,7 +22,9 @@ export const TaskSearch = () => {
         <label id={`${id}-label`} htmlFor={`${id}-search`} className="field-lbl">{t('teamwork.searchTasks')}</label>
         <input id={`${id}-search`} type="search" className="input w-full" value={text} maxLength={200} placeholder={t('teamwork.searchHint')}
             onChange={event => { const next = new URLSearchParams(params); if (event.target.value) next.set('q', event.target.value); else next.delete('q'); setParams(next, { replace: true }); }} />
-        {query && <>
+        {query && narrowsList && <p role="status" className="text-sm text-content-secondary">{t('teamwork.searchNarrowsList')}</p>}
+        {query && <details open={!narrowsList} className="space-y-2">
+            <summary className="cursor-pointer text-sm font-medium text-content-primary">{t('teamwork.searchEverywhere')}</summary>
             {results.isLoading && <p role="status">{t('common.loading')}</p>}
             {results.isError && <QueryErrorState error={results.error} fallback={t('teamwork.loadFailed')} onRetry={() => void results.refetch()} />}
             {results.isSuccess && results.data.pages.every(page => page.items.length === 0) && <p role="status" className="text-sm text-content-secondary">{t('teamwork.noResults')}</p>}
@@ -31,6 +34,6 @@ export const TaskSearch = () => {
                     <p className="text-sm text-content-secondary">{task.project_name ?? t('teamwork.workspace')} · {task.iteration_name ?? t('teamwork.backlog')} · {t(`statuses.${task.status}`)}</p></li>;
             })}</ul>
             {results.hasNextPage && <Button size="sm" variant="secondary" disabled={results.isFetchingNextPage} onClick={() => void results.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
-        </>}
+        </details>}
     </section>;
 };

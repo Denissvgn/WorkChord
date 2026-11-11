@@ -2602,6 +2602,51 @@ class AgentTeamSetupService:
             ),
         )
 
+    async def starting_points(self, actor: AgentActor, *, server_url: str) -> dict[str, Any]:
+        """Two places to start editing: the applied manifest, and a template.
+
+        The template is filled from this server's own catalogs (the latest role
+        package per role, with its digest), so it validates without hand-written
+        digests; profile and model keys are the ones a new team usually sets up.
+        """
+        topology, _ = await self._select_status_topology(actor, None)
+        current = json.loads(topology.manifest_payload) if topology is not None else None
+        latest: dict[str, Any] = {}
+        for entry in self._skill_catalog().skills:
+            version = tuple(int(part) for part in entry.version.split("."))
+            if entry.role not in latest or version > latest[entry.role][0]:
+                latest[entry.role] = (version, entry)
+        def package(role: str, fallback: str) -> dict[str, str]:
+            if role not in latest:
+                return {"name": fallback, "version": "", "sha256": ""}
+            entry = latest[role][1]
+            return {"name": entry.name, "version": entry.version, "sha256": entry.archives[0].sha256 if entry.archives else ""}
+        enabled_model = await self.db.scalar(
+            select(AgentModelCatalogEntry.key).where(AgentModelCatalogEntry.enabled.is_(True)).order_by(AgentModelCatalogEntry.key).limit(1))
+        sink = "agent-team-secure-sink"
+        def member(role: str, key: str, display: str, profile: str, modes: list[str], preset: str, binding: str, skill: str) -> dict[str, Any]:
+            model = enabled_model or binding
+            return {"actor_key": key, "actor_name": f"workchord-{key}", "assignment_modes": modes, "credential_ref": f"{sink}/{key}",
+                    "default_model_binding_key": model, "display_name": display, "model_binding_keys": [model],
+                    "profile_key": profile, "role": role, "runtime_ref": f"runtime://{key}", "scope_preset": preset,
+                    "skill_package": package(role, skill)}
+        template = {
+            "schema_version": AGENT_TEAM_MASTER_FEATURE,
+            "topology_key": "default-agent-team",
+            "server_url": server_url,
+            "credential_sink_ref": sink,
+            "required_server_features": sorted({"actor-roster-v1", AGENT_TEAM_MASTER_FEATURE, MODEL_AWARE_ROUTING_FEATURE}),
+            "readiness_policy": {"maximum_runtime_staleness_seconds": 300, "minimum_execution_workers": 1,
+                                 "require_independent_verifier_when_assessed": True},
+            "controller": member("pm", "primary-pm", "Primary Planning Controller", "pm-planning-agent", ["ownership"], "pm-v1",
+                                 "planning-default", "workchord-pm"),
+            "workers": [member("worker", "backend-worker", "Backend Implementation Runtime", "backend-implementation-agent",
+                               ["execution"], "worker-v1", "implementation-default", "workchord-worker")],
+            "verifiers": [member("verifier", "independent-verifier", "Independent Verification Runtime", "qa-verification-agent",
+                                 ["verification"], "verifier-v1", "verification-default", "workchord-reviewer")],
+        }
+        return {"current": current, "template": template}
+
     async def status(
         self,
         actor: AgentActor,

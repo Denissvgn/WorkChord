@@ -1,6 +1,6 @@
 # TestEmailRequest
 
-**Location:** `frontend/src/types/emailSettings.ts:28`
+**Location:** `frontend/src/types/emailSettings.ts:30`
 **Kind:** Interface
 **Bases:** —
 **Module:** [emailSettings](../modules/emailSettings.md)

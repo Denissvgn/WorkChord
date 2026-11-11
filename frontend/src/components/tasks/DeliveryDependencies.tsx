@@ -8,6 +8,7 @@ import type { Task } from '../../types/task';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage } from '../../utils/apiError';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface Dependency { id: number; kind: 'task' | 'milestone'; target_id?: number; title?: string; ready: boolean; reason: string | null }
 
@@ -30,7 +31,9 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
     const milestones = useQuery({ queryKey: ['projectMilestones', projectId], enabled: expanded && kind === 'milestone' && projectId !== null,
         queryFn: () => projectService.getMilestones(projectId!) });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
-    const mutation = useMutation({ mutationFn: async (remove?: number) => {
+    const mutation = useMutation({
+        meta: { success: (_data, remove) => t(remove ? 'feedback.dependencyRemoved' : 'feedback.dependencyAdded', { name: task.title }) } satisfies MutationFeedbackMeta,
+        mutationFn: async (remove?: number) => {
         if (remove) await api.delete(`/tasks/${task.id}/delivery-dependencies/${remove}`, { params: { expected_version: task.version } });
         else await api.post(`/tasks/${task.id}/delivery-dependencies`, { kind, target_id: targetId, expected_version: task.version });
         return taskService.getById(task.id);

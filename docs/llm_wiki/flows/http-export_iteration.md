@@ -87,9 +87,9 @@ sequenceDiagram
     p1-->>p30: self.db.execute (backend/app/services/task…kService.get_by_iteration)(...)
 ```
 
-> Call sequence diagram shows 30 of 374 interactions; 344 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 389 interactions; 359 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 3 of 141 (138 omitted); unresolved 7 of 202 (195 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 3 of 145 (142 omitted); unresolved 7 of 213 (206 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,11 +114,12 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 32; effect analysis evaluated: 22, partial: 0, unavailable: 10. Counts include steps omitted from the displayed trace.
+Source steps: 32; effect analysis evaluated: 21, partial: 1, unavailable: 10. Counts include steps omitted from the displayed trace.
 
-Collector observations for 22 source steps with known totals: observed: 95, emitted: 95, omitted: 0. Unavailable totals are excluded.
+Collector observations for 22 source steps with known totals: observed: 98, emitted: 96, omitted: 2. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
+- Effect collector omitted observations before flow assembly; displayed effects are partial.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |

@@ -1,6 +1,6 @@
 # SavedViewService
 
-**Location:** `backend/app/services/saved_view_service.py:175`
+**Location:** `backend/app/services/saved_view_service.py:174`
 **Kind:** Class
 **Bases:** —
 **Module:** [saved_view_service](../modules/saved_view_service.md)

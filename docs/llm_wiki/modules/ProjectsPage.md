@@ -18,7 +18,9 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | `../components/projects/InitiativeForm` | `InitiativeForm` | — | compiler-dependent |
 | `../components/projects/ProjectForm` | `ProjectForm` | — | compiler-dependent |
 | `../components/projects/projectStatusStyles` | `projectStatusBadgeClassName` | — | compiler-dependent |
-| `../components/ui` | `InlineEmptyState`, `PageHeader`, `PageLayout`, `TableFrame` | — | compiler-dependent |
+| `../components/ui` | `InlineEmptyState`, `OverflowMenu`, `PageHeader`, `PageLayout`, `TableFrame` | — | compiler-dependent |
+| `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
 | `../services/savedViewService` | `savedViewService` | — | compiler-dependent |
 | `../types/project` | `Initiative`, `Project`, `ProjectHealth`, `ProjectPortfolioSummary`, `ProjectStatus` | Declaration | erased |
@@ -26,6 +28,7 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` | — | compiler-dependent |
+| `../utils/workNumbers` | `formatEffortDays` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `AlertTriangle`, `ChevronDown`, `FolderOpen`, `LoaderCircle`, `Plus`, `Search`, `Target` | — | compiler-dependent |
@@ -38,7 +41,7 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `projectStatusLabelKeys`, `projectHealthLabelKeys`, `riskLabelKeys` |
+| Constants | `projectStatusLabelKeys`, `projectHealthLabelKeys`, `riskLabelKeys`, `SORT_COLUMNS`, `RISK_ORDER` |
 
 ## Local dependency map
 
@@ -61,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (16) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -69,4 +72,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
+## Classes
+
+| Class | Kind | Line | Bases / Target | Description |
+|-------|------|------|----------------|-------------|
+| [SortKey](../entities/ProjectsPage_SortKey.md) | Type alias | 106 | `'name' \| 'status' \| 'owner' \| 'target' \| 'tasks' \| 'effort' \| 'signals'` | — |

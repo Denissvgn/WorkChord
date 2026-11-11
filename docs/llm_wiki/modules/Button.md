@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/components/common/Button.tsx`._
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `Loader2` | — | compiler-dependent |
 | `react` | `ButtonHTMLAttributes` | Declaration | erased |
-| `react` | `forwardRef` | — | compiler-dependent |
+| `react` | `Children`, `forwardRef` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -40,7 +40,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (77) |
+| Inbound | `frontend` (86) |
 
 ### External packages
 
@@ -48,7 +48,7 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 77 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 86 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

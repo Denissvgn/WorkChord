@@ -22,6 +22,7 @@ _Auto-generated from `frontend/src/components/settings/GitHubSettingsPanel.tsx`.
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
 | `./AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
+| `./SettingsUnsavedBar` | `SettingsUnsavedBar` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `Edit2`, `Github`, `Loader2`, `Plus`, `Save`, `Trash2`, `X` | — | compiler-dependent |
 | `react` | `useId`, `useMemo`, `useState` | — | compiler-dependent |
@@ -55,7 +56,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -63,13 +64,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [FormErrors](../entities/FormErrors.md) | Type alias | 46 | `Partial<Record<'name' \| 'sort_order', string>>` | — |
+| [FormErrors](../entities/FormErrors.md) | Type alias | 47 | `Partial<Record<'name' \| 'sort_order', string>>` | — |
 
 ## Functions
 

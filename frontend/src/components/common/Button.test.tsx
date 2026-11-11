@@ -42,4 +42,11 @@ describe('Button', () => {
         expect(button).toHaveClass('btn', 'btn-outline');
         expect(button).not.toHaveClass('outline');
     });
+
+    it('shows an icon-only button name as its tooltip, and leaves labelled buttons alone', () => {
+        render(<><Button aria-label="Close panel"><svg aria-hidden="true" /></Button><Button aria-label="Save draft">Save</Button></>);
+
+        expect(screen.getByRole('button', { name: 'Close panel' })).toHaveAttribute('title', 'Close panel');
+        expect(screen.getByRole('button', { name: 'Save draft' })).not.toHaveAttribute('title');
+    });
 });

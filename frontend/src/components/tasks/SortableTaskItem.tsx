@@ -34,7 +34,7 @@ export const SortableTaskItem = ({ id, children, disabled }: SortableTaskItemPro
                 className="mt-3 p-1 text-content-tertiary cursor-grab active:cursor-grabbing hover:text-content-secondary touch-none"
                 {...attributes}
                 {...listeners}
-                aria-label={t('taskList.reorderTask')}
+                aria-label={t('taskList.reorderTask')} title={t('taskList.reorderTask')}
             >
                 <GripVertical className="w-4 h-4" aria-hidden="true" />
             </button>

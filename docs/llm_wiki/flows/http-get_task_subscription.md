@@ -186,7 +186,7 @@ flowchart LR
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | get_task_subscription | DiscussionService.subscription | 65 | `DiscussionService(db).subscription(task_id)` |
-| DiscussionService.subscription | DiscussionService.principal_id | 141 | `self.principal_id(data not statically known)` |
+| DiscussionService.subscription | DiscussionService.principal_id | 167 | `self.principal_id(data not statically known)` |
 | DiscussionService.principal_id | self.db.info.get (backend/app/services/disc…ussionService.principal_id) | 24 | `self.db.info.get('authority')` |
 
 ### Boundary effects

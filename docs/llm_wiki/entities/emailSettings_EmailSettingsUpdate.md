@@ -1,6 +1,6 @@
 # EmailSettingsUpdate
 
-**Location:** `frontend/src/types/emailSettings.ts:16`
+**Location:** `frontend/src/types/emailSettings.ts:18`
 **Kind:** Interface
 **Bases:** —
 **Module:** [emailSettings](../modules/emailSettings.md)

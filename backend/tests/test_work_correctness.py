@@ -200,6 +200,12 @@ async def test_project_iteration_and_portfolio_share_metric_definitions(delivery
         assert project.accepted_tasks == 0
         assert project.acceptance_unknown_tasks == 2
         assert project.overdue_tasks == iteration.overdue_tasks_count
+        # The on-track answer on Analytics reads the same aggregate.
+        assert iteration.status_counts == project.status_counts
+        assert iteration.blocked_tasks == project.blocked_tasks
+        assert iteration.remaining_effort_days == project.remaining_effort_days
+        assert sum(iteration.status_counts.values()) == iteration.total_tasks
+        assert iteration.remaining_working_days is not None and 0 <= iteration.remaining_working_days <= iteration.working_days
 
 
 async def test_late_start_does_not_overwrite_committed_baseline(delivery_store):

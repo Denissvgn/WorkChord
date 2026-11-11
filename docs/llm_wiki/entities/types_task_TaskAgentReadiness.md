@@ -15,6 +15,8 @@ _Auto-generated from `TaskAgentReadiness` in `frontend/src/types/task.ts`._
 |------|------|----------|---------|-------------|
 | `blocker_codes` | `string[]` | No | — | — |
 | `is_ready` | `boolean` | Yes | — | — |
+| `definition_ready` | `boolean` | No | — | — |
+| `start_ready` | `boolean` | No | — | — |
 | `blockers` | `string[]` | Yes | — | — |
 | `warnings` | `string[]` | Yes | — | — |
 | `criteria` | `TaskAgentReadinessCriterion[]` | Yes | — | — |
@@ -42,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `blocker_codes`, `blockers`, `criteria`, `is_ready`, `warnings` |
+| [types_task](../modules/types_task.md) | 0 | `blocker_codes`, `blockers`, `criteria`, `definition_ready`, `is_ready`, `start_ready`, `warnings` |
 
 ### References
 

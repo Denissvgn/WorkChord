@@ -10,6 +10,7 @@ Commit and uncommit commands retain original source and selected-target aggregat
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../../features/usePlanningObservation` | `usePlanningObservation` | — | compiler-dependent |
 | `../../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
@@ -53,8 +54,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
-| Outbound | `frontend` (12) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
@@ -62,10 +63,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskWorkPanel` | <pre><code>&#40;&#123; task&#44; disabled&#44; draftKey&#44; onDirty&#44; onPending&#44; onUpdated&#44; onReload &#125;&#58; &#123;&#10;    task&#58; Task&#59; disabled&#58; boolean&#59; draftKey&#58; string &#124; null&#59; onDirty&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onPending&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void&#59; onUpdated&#58; &#40;task&#58; Task&#41; &#61;&#62; void&#59; onReload&#58; &#40;&#41; &#61;&#62; void&#59;&#10;&#125;&#41;</code></pre> | — | — |
+| `TaskWorkPanel` | <pre><code>&#40;&#123; task&#44; disabled&#44; draftKey&#44; onDirty&#44; onPending&#44; onUpdated&#44; onReload&#44; initialAction &#125;&#58; &#123;&#10;    task&#58; Task&#59; disabled&#58; boolean&#59; draftKey&#58; string &#124; null&#59; onDirty&#58; &#40;dirty&#58; boolean&#41; &#61;&#62; void&#59;&#10;    onPending&#58; &#40;pending&#58; boolean&#41; &#61;&#62; void&#59; onUpdated&#58; &#40;task&#58; Task&#41; &#61;&#62; void&#59; onReload&#58; &#40;&#41; &#61;&#62; void&#59;&#10;    &#47;&#42;&#42; Preselects an action&#44; for example when the task view&#39;s header sends the person here&#46; &#42;&#47;&#10;    initialAction&#63;&#58; string&#59;&#10;&#125;&#41;</code></pre> | — | — |

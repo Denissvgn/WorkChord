@@ -85,7 +85,7 @@ describe('lazy language resources', () => {
         await changeAppLanguage('ru');
 
         expect(i18n.hasResourceBundle('ru', 'translation')).toBe(true);
-        expect(i18n.t('common.loading')).toBe('Загрузка...');
+        expect(i18n.t('common.loading')).toBe('Загрузка…');
     });
 
     it('keeps dynamic master catalogs complete with matching placeholders', () => {

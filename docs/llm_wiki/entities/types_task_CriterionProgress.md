@@ -1,6 +1,6 @@
 # CriterionProgress
 
-**Location:** `frontend/src/types/task.ts:443`
+**Location:** `frontend/src/types/task.ts:450`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

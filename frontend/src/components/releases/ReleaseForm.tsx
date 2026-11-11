@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { Save } from 'lucide-react';
 import { Button } from '../common/Button';
+import { DisabledReason } from '../common/DisabledReason';
 import { CollapsibleSection } from '../common/CollapsibleSection';
 import { projectService } from '../../services/projectService';
 import { releaseService } from '../../services/releaseService';
@@ -18,6 +19,8 @@ import type {
 } from '../../types/release';
 import { QueryErrorState } from '../feedback/QueryState';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 interface ReleaseFormProps {
     projectId: number;
@@ -107,6 +110,7 @@ export const ReleaseForm = ({
 
     const createMutation = useMutation({
         mutationFn: (payload: ReleaseCreateRequest) => releaseService.createForProject(projectId, payload),
+        meta: { success: data => feedbackMessage(t, 'created', 'release', (data as Release).name) } satisfies MutationFeedbackMeta,
         onSuccess: (release) => {
             invalidateReleaseQueries(release);
             onSuccess(release);
@@ -118,6 +122,7 @@ export const ReleaseForm = ({
 
     const updateMutation = useMutation({
         mutationFn: (payload: ReleaseUpdateRequest) => releaseService.update(initialData!.id, payload),
+        meta: { success: data => feedbackMessage(t, 'saved', 'release', (data as Release).name) } satisfies MutationFeedbackMeta,
         onSuccess: (release) => {
             invalidateReleaseQueries(release);
             onSuccess(release);
@@ -326,7 +331,8 @@ export const ReleaseForm = ({
                 )}
             </CollapsibleSection>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex flex-wrap items-center justify-end gap-3">
+                <DisabledReason className="mr-auto" reason={nameIsBlank ? t('disabledReasons.releaseNameRequired') : tasksQuery.isError && t('disabledReasons.tasksUnavailable')} />
                 <Button type="button" variant="secondary" onClick={onCancel}>
                     {t('surfaces.releaseForm.cancel')}
                 </Button>

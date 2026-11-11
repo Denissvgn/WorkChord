@@ -10,6 +10,8 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
+| `../../features/mutationFeedback` | `feedbackMessage` | — | compiler-dependent |
 | `../../i18n/seedDisplay` | `templateDisplay` | — | compiler-dependent |
 | `../../services/planningInputService` | `ObservedRevisions` | Declaration | erased |
 | `../../services/projectService` | `projectService` | — | compiler-dependent |
@@ -17,12 +19,14 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 | `../../services/templateService` | `templateService` | — | compiler-dependent |
 | `../../types/project` | `Project`, `ProjectCreate`, `ProjectHealth`, `ProjectStatus` | Declaration | erased |
 | `../../types/template` | `WorkTemplate` | Declaration | erased |
-| `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
+| `../../utils/apiError` | `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 | `../../utils/teamMemberLabels` | `formatTeamMemberProfileLabel` | — | compiler-dependent |
 | `../../utils/templateDefaults` | `appendChecklistToDescription`, `getPayloadNumber` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/Select` | `Select` | — | compiler-dependent |
+| `../common/Textarea` | `Textarea` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
 | `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
@@ -60,8 +64,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (2) |
-| Outbound | `frontend` (16) |
+| Inbound | `frontend` (3) |
+| Outbound | `frontend` (19) |
 
 ### External packages
 
@@ -69,13 +73,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 26 | — | — |
+| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 30 | — | — |
 
 ## Functions
 

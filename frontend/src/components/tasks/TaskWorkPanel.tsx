@@ -14,10 +14,13 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
-export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload }: {
+export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, initialAction }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void;
+    /** Preselects an action, for example when the task view's header sends the person here. */
+    initialAction?: string;
 }) => {
     const { t } = useTranslation();
     const isActive = useActiveMount();
@@ -50,7 +53,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         ? { [task.iteration_id]: savedCommand()?.commandRevisions[task.iteration_id] ?? task.iteration_revision } : {});
     const [commandRevisions, setCommandRevisions] = useState<ObservedRevisions>(() => savedCommand()?.commandRevisions ?? sourceRevisions);
     const targetContext = usePlanningObservation<Iteration>();
-    const [action, setAction] = useState(() => savedCommand()?.action ?? '');
+    const [action, setAction] = useState(() => savedCommand()?.action ?? initialAction ?? '');
     const [contextError, setContextError] = useState<unknown>(null);
     const [iterationId, setIterationId] = useState<string>(() => savedCommand()?.iterationId ?? '');
     const staleDraft = draftVersion !== task.version;
@@ -87,6 +90,10 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const reviewEvidenceTooLong = reviewEvidence.length > 8000;
     // feedback-policy: mutation pending,inline
     const command = useMutation({
+        meta: { success: (_data, operation) => operation === 'progress' ? t('feedback.progressSaved', { name: task.title })
+            : operation === 'accept' ? t('feedback.accepted', { name: task.title })
+                : operation === 'reject' ? t('feedback.changesRequested', { name: task.title })
+                    : t('feedback.commandDone', { action: t(`domain.action_${action}`, { defaultValue: action }), name: task.title }) } satisfies MutationFeedbackMeta,
         mutationFn: async (operation: 'progress' | 'command' | 'accept' | 'reject') => {
             if (operation === 'progress') return taskService.progress(task.id, { expected_version: draftVersion, criteria, artifacts: task.progress?.artifacts ?? [] });
             if (operation === 'accept' || operation === 'reject') return taskService.review(task.id, { expected_version: task.version,

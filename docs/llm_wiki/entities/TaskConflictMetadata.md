@@ -1,6 +1,6 @@
 # TaskConflictMetadata
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:265`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:266`
 **Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)

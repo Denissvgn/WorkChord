@@ -47,10 +47,10 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [OutboundWebhookTarget](../entities/outboundWebhook_OutboundWebhookTarget.md) | Interface | 3 | — | — |
-| [OutboundWebhookTargetCreate](../entities/outboundWebhook_OutboundWebhookTargetCreate.md) | Interface | 16 | — | — |
-| [OutboundWebhookEvent](../entities/outboundWebhook_OutboundWebhookEvent.md) | Interface | 28 | — | — |
-| [OutboundWebhookDelivery](../entities/outboundWebhook_OutboundWebhookDelivery.md) | Interface | 38 | — | — |
-| [OutboundWebhookRetryResponse](../entities/outboundWebhook_OutboundWebhookRetryResponse.md) | Interface | 57 | — | — |
-| [OutboundWebhookDeliveryListParams](../entities/OutboundWebhookDeliveryListParams.md) | Interface | 61 | — | — |
+| [OutboundWebhookTargetCreate](../entities/outboundWebhook_OutboundWebhookTargetCreate.md) | Interface | 18 | — | — |
+| [OutboundWebhookEvent](../entities/outboundWebhook_OutboundWebhookEvent.md) | Interface | 30 | — | — |
+| [OutboundWebhookDelivery](../entities/outboundWebhook_OutboundWebhookDelivery.md) | Interface | 40 | — | — |
+| [OutboundWebhookRetryResponse](../entities/outboundWebhook_OutboundWebhookRetryResponse.md) | Interface | 61 | — | — |
+| [OutboundWebhookDeliveryListParams](../entities/OutboundWebhookDeliveryListParams.md) | Interface | 65 | — | — |
 | [OutboundWebhookDeliveryStatus](../entities/outboundWebhook_OutboundWebhookDeliveryStatus.md) | Type alias | 1 | `'pending' \| 'delivered' \| 'failed'` | — |
-| [OutboundWebhookTargetUpdate](../entities/outboundWebhook_OutboundWebhookTargetUpdate.md) | Type alias | 26 | `Partial<OutboundWebhookTargetCreate>` | — |
+| [OutboundWebhookTargetUpdate](../entities/outboundWebhook_OutboundWebhookTargetUpdate.md) | Type alias | 28 | `Partial<OutboundWebhookTargetCreate>` | — |

@@ -5,9 +5,10 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
     ArrowUpDown,
+    Bookmark,
     ClipboardCheck,
+    FolderOpen,
     Command,
-    GanttChartSquare,
     Layers,
     List,
     LayoutGrid,
@@ -18,8 +19,6 @@ import {
     Minimize2,
     Plus,
     Search,
-    Settings,
-    Users,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +26,11 @@ import { Checkbox } from '../common/Checkbox';
 import { Modal } from '../common/Modal';
 import { OPEN_COMMAND_MENU_EVENT } from './commandMenuEvents';
 import { useSingleKeyShortcutPreference } from '../../hooks/useSingleKeyShortcutPreference';
-import { getWorkspaceForPath } from '../../navigation/workspaces';
+import { getWorkspaceForPath, WORKSPACES } from '../../navigation/workspaces';
+import { projectService } from '../../services/projectService';
+import { savedViewService } from '../../services/savedViewService';
+import { savedViewDisplay } from '../../i18n/seedDisplay';
+import type { SavedView } from '../../types/savedView';
 
 type CommandGroup = 'results' | 'tasks' | 'current' | 'navigate' | 'suggested';
 
@@ -42,6 +45,13 @@ interface CommandAction {
     ariaShortcut?: string;
     to: string;
 }
+
+// Destinations that keep their established command ids (recent commands and suggestions refer to them) and wording.
+const NAV_COMMAND_IDS: Record<string, string> = { '/plan': 'plan-work', '/tasks': 'tasks', '/gantt': 'gantt', '/team': 'team', '/settings': 'settings' };
+const NAV_COMMAND_KEYS: Record<string, string> = { '/plan': 'planWork', '/tasks': 'tasks', '/gantt': 'gantt', '/team': 'team', '/settings': 'settings' };
+const MAX_ENTITY_RESULTS = 5;
+const SAVED_VIEW_TYPES = ['tasks', 'triage', 'projects'] as const;
+const savedViewPath = (view: SavedView) => `${view.view_type === 'tasks' ? '/tasks' : view.view_type === 'triage' ? '/triage' : '/projects'}?view=${view.id}`;
 
 const TASKS_FIRST_GROUPS = ['tasks', 'current', 'navigate'] as const satisfies readonly CommandGroup[];
 const CURRENT_FIRST_GROUPS = ['current', 'navigate', 'tasks'] as const satisfies readonly CommandGroup[];
@@ -130,6 +140,13 @@ export const CommandMenu = () => {
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const taskResults = useQuery({ queryKey: ['command-task-search', taskQuery], enabled: open && taskQuery.length > 0,
         queryFn: () => taskService.lookup({ q: taskQuery, limit: 8 }) });
+    // feedback-policy: query loading,error,retry,empty - project and view matches are optional extras; tasks and commands still answer.
+    const projectResults = useQuery({ queryKey: ['projects'], enabled: open && taskQuery.length > 0, staleTime: 60000,
+        queryFn: ({ signal }) => projectService.getAll({ signal }) });
+    // feedback-policy: query loading,error,retry,empty - project and view matches are optional extras; tasks and commands still answer.
+    const viewResults = useQuery({ queryKey: ['saved-views', 'command-menu'], enabled: open && taskQuery.length > 0, staleTime: 60000,
+        queryFn: async () => (await Promise.allSettled(SAVED_VIEW_TYPES.map(type => savedViewService.getAll({ view_type: type }))))
+            .flatMap(result => result.status === 'fulfilled' ? result.value : []) });
     const [activeIndex, setActiveIndex] = useState(0);
     const [showAllCommands, setShowAllCommands] = useState(false);
     const [recentCommandIds, setRecentCommandIds] = useState<string[]>(readRecentCommandIds);
@@ -220,46 +237,20 @@ export const CommandMenu = () => {
             icon: isTaskFullscreen ? Minimize2 : Maximize2,
             to: withTaskCommand(location, 'fullscreen', isTaskFullscreen ? null : '1'),
         },
-        {
-            id: 'plan-work',
-            group: 'navigate',
-            label: t('commandMenu.commands.planWork.label'),
-            description: t('commandMenu.commands.planWork.description'),
-            icon: MapPin,
-            to: '/plan',
-        },
-        {
-            id: 'tasks',
-            group: 'navigate',
-            label: t('commandMenu.commands.tasks.label'),
-            description: t('commandMenu.commands.tasks.description'),
-            icon: ListTodo,
-            to: '/tasks',
-        },
-        {
-            id: 'gantt',
-            group: 'navigate',
-            label: t('commandMenu.commands.gantt.label'),
-            description: t('commandMenu.commands.gantt.description'),
-            icon: GanttChartSquare,
-            to: '/gantt',
-        },
-        {
-            id: 'team',
-            group: 'navigate',
-            label: t('commandMenu.commands.team.label'),
-            description: t('commandMenu.commands.team.description'),
-            icon: Users,
-            to: '/team',
-        },
-        {
-            id: 'settings',
-            group: 'navigate',
-            label: t('commandMenu.commands.settings.label'),
-            description: t('commandMenu.commands.settings.description'),
-            icon: Settings,
-            to: '/settings',
-        },
+        // Every destination in the navigation registry, so the menu reaches all of the app.
+        ...WORKSPACES.flatMap(workspace => workspace.items.map((item): CommandAction => {
+            const key = NAV_COMMAND_KEYS[item.to];
+            const page = t(item.labelKey, item.defaultLabel);
+            return {
+                id: NAV_COMMAND_IDS[item.to] ?? `go-${item.to === '/' ? 'overview' : item.to.slice(1).replace(/\//g, '-')}`,
+                group: 'navigate',
+                label: key ? t(`commandMenu.commands.${key}.label`) : t('commandMenu.openPage', { page }),
+                description: key ? t(`commandMenu.commands.${key}.description`) : t(workspace.descriptionKey, workspace.defaultDescription),
+                keywords: [page, t(workspace.labelKey, workspace.defaultLabel)],
+                icon: item.icon,
+                to: item.to,
+            };
+        })),
     ], [isBoardView, isTaskFullscreen, location, t]);
 
     const contextualCommands = useMemo<CommandAction[]>(() => {
@@ -383,12 +374,24 @@ export const CommandMenu = () => {
             description: `${task.project_name ?? t('teamwork.workspace')} · ${task.iteration_name ?? t('teamwork.backlog')} · ${t(`statuses.${task.status}`)}`,
             icon: ListTodo, to: `${withTaskCommand(location, 'task', String(task.id))}`,
         }));
-        return [...taskCommands, ...orderedCommands.filter(command => (
+        const matches = (text: string) => text.toLocaleLowerCase().includes(normalizedQuery);
+        const projectCommands: CommandAction[] = (projectResults.data ?? []).filter(project => matches(project.name))
+            .slice(0, MAX_ENTITY_RESULTS).map(project => ({
+                id: `project-result-${project.id}`, group: 'results', label: project.name,
+                description: t('commandMenu.projectResult'), icon: FolderOpen, to: `/projects/${project.id}`,
+            }));
+        const viewCommands: CommandAction[] = (viewResults.data ?? []).filter(view => matches(savedViewDisplay(view).name))
+            .slice(0, MAX_ENTITY_RESULTS).map(view => ({
+                id: `view-result-${view.id}`, group: 'results', label: savedViewDisplay(view).name,
+                description: t('commandMenu.savedViewResult', { type: t(`surfaces.savedViewDashboard.${view.view_type}`) }),
+                icon: Bookmark, to: savedViewPath(view),
+            }));
+        return [...projectCommands, ...viewCommands, ...taskCommands, ...orderedCommands.filter(command => (
             `${command.label} ${command.description} ${command.keywords?.join(' ') ?? ''}`
                 .toLocaleLowerCase()
                 .includes(normalizedQuery)
         ))];
-    }, [compactCommands, orderedCommands, query, showAllCommands, taskResults.data, taskQuery, location, t]);
+    }, [compactCommands, orderedCommands, query, showAllCommands, taskResults.data, projectResults.data, viewResults.data, taskQuery, location, t]);
 
     useEffect(() => {
         if (!open) return;
@@ -608,7 +611,7 @@ export const CommandMenu = () => {
                                 aria-labelledby={`command-menu-group-${group}`}
                             >
                                 <h3 id={`command-menu-group-${group}`}>
-                                    {group === 'results' ? t('teamwork.taskResults') : t(`commandMenu.groups.${group}`)}
+                                    {t(`commandMenu.groups.${group}`)}
                                 </h3>
                                 <div>
                                     {groupedCommands.map(({ command, index }) => {

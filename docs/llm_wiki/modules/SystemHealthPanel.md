@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/settings/SystemHealthPanel.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `SystemHealthPanel` |
-| Constants | `stateClasses`, `stateIcons` |
+| Constants | `appVersion`, `stateClasses`, `stateIcons` |
 
 ## Local dependency map
 
@@ -29,22 +29,26 @@ _Auto-generated from `frontend/src/components/settings/SystemHealthPanel.tsx`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/Button.tsx"]
-    n1["frontend/src/components/settings/SystemHealthPanel.tsx"]
-    n2["frontend/src/pages/SettingsPage.tsx"]
-    n3["frontend/src/services/healthService.ts"]
-    n1 --> n0
-    n1 --> n3
-    n2 --> n1
+    n1["frontend/src/components/settings/SettingsAccessAndAbout.test.tsx"]
+    n2["frontend/src/components/settings/SystemHealthPanel.tsx"]
+    n3["frontend/src/pages/SettingsPage.tsx"]
+    n4["frontend/src/services/healthService.ts"]
+    n1 --> n2
+    n2 --> n0
+    n2 --> n4
+    n3 --> n2
     click n0 "../modules/Button.md"
-    click n1 "../modules/SystemHealthPanel.md"
-    click n2 "../modules/SettingsPage.md"
-    click n3 "../modules/healthService.md"
+    click n1 "../modules/SettingsAccessAndAbout.test.md"
+    click n2 "../modules/SystemHealthPanel.md"
+    click n3 "../modules/SettingsPage.md"
+    click n4 "../modules/healthService.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [SettingsAccessAndAbout.test](../modules/SettingsAccessAndAbout.test.md) |
 | Inbound | [SettingsPage](../modules/SettingsPage.md) |
 | Outbound | [Button](../modules/Button.md) |
 | Outbound | [healthService](../modules/healthService.md) |
@@ -59,7 +63,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [VisibleHealthState](../entities/VisibleHealthState.md) | Type alias | 7 | `'notChecked' \| 'checking' \| 'healthy' \| 'unhealthy' \| 'unavailable'` | — |
+| [VisibleHealthState](../entities/VisibleHealthState.md) | Type alias | 9 | `'notChecked' \| 'checking' \| 'healthy' \| 'unhealthy' \| 'unavailable'` | — |
 
 ## Functions
 

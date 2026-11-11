@@ -69,6 +69,23 @@ async def test_capacity_projection_does_not_count_inherited_deferred_baseline(db
     assert projection["days"][0]["committed_effort_hours"] == 0
     workload = await TeamService(db_session).get_workload(member_id)
     assert workload.allocated_days == 0
+    assert workload.allocated_hours == 0 and workload.free_hours == workload.capacity_hours
+
+
+async def test_workload_and_readiness_report_hours_with_the_day_length(db_session):
+    member = await allocation(db_session, profile=TeamMemberProfile(display_name="Hours owner"))
+    db_session.add_all([
+        Task(title="Assigned work", iteration_id=member.iteration_id, assignee_id=member.id, effort_hours=4, nominal_day_hours=6),
+        Task(title="Unassigned work", iteration_id=member.iteration_id, effort_hours=3, nominal_day_hours=6),
+    ])
+    await db_session.commit()
+    capacity = await TeamService(db_session).calculate_capacity(member.id)
+    workload = await TeamService(db_session).get_workload(member.id)
+    assert (workload.capacity_hours, workload.allocated_hours) == (capacity.hours, 4)
+    assert workload.free_hours == pytest.approx(capacity.hours - 4)
+    assert workload.capacity_days == pytest.approx(workload.capacity_hours / workload.nominal_day_hours)
+    readiness = await IterationService(db_session).get_planning_readiness_summary(member.iteration_id)
+    assert (readiness.planned_hours, readiness.assigned_hours) == (7, 4)
 
 
 async def test_incremental_schedule_excludes_inherited_deferred_work(db_session):

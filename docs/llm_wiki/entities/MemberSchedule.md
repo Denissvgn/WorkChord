@@ -60,18 +60,21 @@ flowchart LR
     n2["SchedulerService._check_workload_balance (backend/app/services/scheduler_service.py)"]
     n3["SchedulerService._schedule_composite_task (backend/app/services/scheduler_service.py)"]
     n4["SchedulerService._schedule_leaf_task (backend/app/services/scheduler_service.py)"]
-    n5["test_short_workday_and_overflow_are_reserved_for_the_person (backend/tests/test_profile_capacity.py)"]
+    n5["SchedulerService._unscheduled_tasks (backend/app/services/scheduler_service.py)"]
+    n6["test_short_workday_and_overflow_are_reserved_for_the_person (backend/tests/test_profile_capacity.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
+    n6 --> n0
     click n0 "../modules/scheduler_service.md"
     click n1 "../modules/scheduler_service.md"
     click n2 "../modules/scheduler_service.md"
     click n3 "../modules/scheduler_service.md"
     click n4 "../modules/scheduler_service.md"
-    click n5 "../modules/test_profile_capacity.md"
+    click n5 "../modules/scheduler_service.md"
+    click n6 "../modules/test_profile_capacity.md"
 ```
 
 ### Summary
@@ -89,4 +92,5 @@ flowchart LR
 | `SchedulerService._check_workload_balance` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_composite_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `SchedulerService._schedule_leaf_task` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
+| `SchedulerService._unscheduled_tasks` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `test_short_workday_and_overflow_are_reserved_for_the_person` | call | [test_profile_capacity](../modules/test_profile_capacity.md) | 1 |

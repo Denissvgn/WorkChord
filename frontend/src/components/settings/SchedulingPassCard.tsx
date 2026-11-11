@@ -121,7 +121,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     {...attributes}
                     {...listeners}
                     className="touch-none p-1 -m-1 cursor-grab active:cursor-grabbing"
-                    aria-label={t('settingsScheduling.aria.dragToReorder')}
+                    aria-label={t('settingsScheduling.aria.dragToReorder')} title={t('settingsScheduling.aria.dragToReorder')}
                 >
                     <GripVertical className="w-4 h-4 text-content-tertiary hover:text-content-secondary" aria-hidden="true" />
                 </button>
@@ -271,7 +271,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                                 type="button"
                                                 onClick={() => removeCondition(index)}
                                                 className="col-start-2 justify-self-end p-1 text-content-tertiary hover:text-feedback-danger-foreground"
-                                                aria-label={t('settingsScheduling.aria.removeCondition')}
+                                                aria-label={t('settingsScheduling.aria.removeCondition')} title={t('settingsScheduling.aria.removeCondition')}
                                             >
                                                 <X className="w-4 h-4" aria-hidden="true" />
                                             </button>
@@ -335,7 +335,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                                             type="button"
                                             onClick={() => removeSortCriterion(index)}
                                             className="col-start-2 justify-self-end p-1 text-content-tertiary hover:text-feedback-danger-foreground"
-                                            aria-label={t('settingsScheduling.aria.removeSortCriterion')}
+                                            aria-label={t('settingsScheduling.aria.removeSortCriterion')} title={t('settingsScheduling.aria.removeSortCriterion')}
                                         >
                                             <X className="w-4 h-4" aria-hidden="true" />
                                         </button>

@@ -31,50 +31,55 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/layout/AppTopNav.tsx"]
-    n1["frontend/src/components/layout/SidebarIterationCard.tsx"]
-    n2["frontend/src/features/identity/IdentityProvider.test.tsx"]
-    n3["frontend/src/features/planningMasters/masters.ts"]
-    n4["frontend/src/features/planningMasters/planningNavigationInvalidation.test.ts"]
-    n5["frontend/src/features/planningMasters/planningNavigationInvalidation.ts"]
-    n6["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
-    n7["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
-    n8["frontend/src/services/iterationService.ts"]
-    n9["frontend/src/store/iterationStore.ts"]
-    n10["frontend/src/types/iteration.ts"]
-    n0 --> n6
-    n1 --> n6
-    n2 --> n6
-    n4 --> n5
-    n4 --> n6
+    n0["frontend/src/components/iteration/IterationCapacityLine.tsx"]
+    n1["frontend/src/components/layout/AppTopNav.tsx"]
+    n2["frontend/src/components/layout/SidebarIterationCard.tsx"]
+    n3["frontend/src/features/identity/IdentityProvider.test.tsx"]
+    n4["frontend/src/features/planningMasters/masters.ts"]
+    n5["frontend/src/features/planningMasters/planningNavigationInvalidation.test.ts"]
+    n6["frontend/src/features/planningMasters/planningNavigationInvalidation.ts"]
+    n7["frontend/src/features/planningMasters/usePlanningNavigationSummary.ts"]
+    n8["frontend/src/features/planningMasters/usePlanningReadiness.ts"]
+    n9["frontend/src/services/iterationService.ts"]
+    n10["frontend/src/store/iterationStore.ts"]
+    n11["frontend/src/types/iteration.ts"]
+    n0 --> n7
+    n0 --> n9
+    n1 --> n7
+    n2 --> n7
+    n3 --> n7
     n5 --> n6
-    n6 --> n3
-    n6 --> n8
-    n6 --> n9
-    n6 --> n10
-    n7 --> n3
-    n7 --> n6
-    n7 --> n8
+    n5 --> n7
+    n6 --> n7
+    n7 --> n4
     n7 --> n9
     n7 --> n10
+    n7 --> n11
+    n8 --> n4
+    n8 --> n7
+    n8 --> n9
     n8 --> n10
-    click n0 "../modules/AppTopNav.md"
-    click n1 "../modules/SidebarIterationCard.md"
-    click n2 "../modules/IdentityProvider.test.md"
-    click n3 "../modules/planningMasters_masters.md"
-    click n4 "../modules/planningNavigationInvalidation.test.md"
-    click n5 "../modules/planningNavigationInvalidation.md"
-    click n6 "../modules/usePlanningNavigationSummary.md"
-    click n7 "../modules/usePlanningReadiness.md"
-    click n8 "../modules/iterationService.md"
-    click n9 "../modules/iterationStore.md"
-    click n10 "../modules/types_iteration.md"
+    n8 --> n11
+    n9 --> n11
+    click n0 "../modules/IterationCapacityLine.md"
+    click n1 "../modules/AppTopNav.md"
+    click n2 "../modules/SidebarIterationCard.md"
+    click n3 "../modules/IdentityProvider.test.md"
+    click n4 "../modules/planningMasters_masters.md"
+    click n5 "../modules/planningNavigationInvalidation.test.md"
+    click n6 "../modules/planningNavigationInvalidation.md"
+    click n7 "../modules/usePlanningNavigationSummary.md"
+    click n8 "../modules/usePlanningReadiness.md"
+    click n9 "../modules/iterationService.md"
+    click n10 "../modules/iterationStore.md"
+    click n11 "../modules/types_iteration.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [IterationCapacityLine](../modules/IterationCapacityLine.md) |
 | Inbound | [AppTopNav](../modules/AppTopNav.md) |
 | Inbound | [SidebarIterationCard](../modules/SidebarIterationCard.md) |
 | Inbound | [IdentityProvider.test](../modules/IdentityProvider.test.md) |

@@ -10,6 +10,7 @@ _Auto-generated from `frontend/src/components/settings/TemplateLabelSettings.tes
 
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
+| `../../features/MutationSuccessFeedback` | `MutationSuccessFeedback` | — | compiler-dependent |
 | `../../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `../../types/label` | `Label`, `LabelGroup` | Declaration | erased |
 | `./TemplateLabelSettings` | `TemplateLabelSettings` | — | compiler-dependent |
@@ -32,16 +33,19 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 flowchart LR
     n0["frontend/src/components/settings/TemplateLabelSettings.test.tsx"]
     n1["frontend/src/components/settings/TemplateLabelSettings.tsx"]
-    n2["frontend/src/test/renderWithProviders.tsx"]
-    n3["frontend/src/types/label.ts"]
+    n2["frontend/src/features/MutationSuccessFeedback.tsx"]
+    n3["frontend/src/test/renderWithProviders.tsx"]
+    n4["frontend/src/types/label.ts"]
     n0 --> n1
     n0 --> n2
     n0 --> n3
-    n1 --> n3
+    n0 --> n4
+    n1 --> n4
     click n0 "../modules/TemplateLabelSettings.test.md"
     click n1 "../modules/TemplateLabelSettings.md"
-    click n2 "../modules/renderWithProviders.md"
-    click n3 "../modules/types_label.md"
+    click n2 "../modules/MutationSuccessFeedback.md"
+    click n3 "../modules/renderWithProviders.md"
+    click n4 "../modules/types_label.md"
 ```
 
 ### Internal neighbors
@@ -49,6 +53,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Outbound | [TemplateLabelSettings](../modules/TemplateLabelSettings.md) |
+| Outbound | [MutationSuccessFeedback](../modules/MutationSuccessFeedback.md) |
 | Outbound | [renderWithProviders](../modules/renderWithProviders.md) |
 | Outbound | [types_label](../modules/types_label.md) |
 

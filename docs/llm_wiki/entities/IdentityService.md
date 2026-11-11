@@ -1,6 +1,6 @@
 # IdentityService
 
-**Location:** `backend/app/services/identity_service.py:130`
+**Location:** `backend/app/services/identity_service.py:140`
 **Kind:** Class
 **Bases:** —
 **Module:** [identity_service](../modules/identity_service.md)

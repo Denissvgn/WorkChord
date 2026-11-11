@@ -33,12 +33,14 @@ flowchart LR
     n4["initialize_control_plane (backend/app/services/identity_service.py)"]
     n5["backend/tests/test_allocation_recovery.py"]
     n6["managed_store (backend/tests/test_managed_authority.py)"]
+    n7["test_settings_are_readable_without_the_key_and_sensitive_values_are_withheld (backend/tests/test_settings_read_access.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/models_identity.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/http_authority.md"
@@ -46,6 +48,7 @@ flowchart LR
     click n4 "../modules/identity_service.md"
     click n5 "../modules/test_allocation_recovery.md"
     click n6 "../modules/test_managed_authority.md"
+    click n7 "../modules/test_settings_read_access.md"
 ```
 
 ### Summary
@@ -69,3 +72,4 @@ flowchart LR
 | `initialize_control_plane` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `test_allocation_recovery` | import | [test_allocation_recovery](../modules/test_allocation_recovery.md) | — |
 | `managed_store` | call | [test_managed_authority](../modules/test_managed_authority.md) | 1 |
+| `test_settings_are_readable_without_the_key_and_sensitive_values_are_withheld` | call | [test_settings_read_access](../modules/test_settings_read_access.md) | 1 |

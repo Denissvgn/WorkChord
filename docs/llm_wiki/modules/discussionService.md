@@ -53,8 +53,8 @@ flowchart LR
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
 | [TaskComment](../entities/discussionService_TaskComment.md) | Interface | 3 | — | — |
-| [CommentRevision](../entities/CommentRevision.md) | Interface | 8 | — | — |
-| [Subscription](../entities/Subscription.md) | Interface | 9 | — | — |
-| [InboxItem](../entities/InboxItem.md) | Interface | 10 | — | — |
-| [NotificationDelivery](../entities/NotificationDelivery.md) | Interface | 11 | — | — |
-| [Page](../entities/Page.md) | Interface | 12 | — | — |
+| [CommentRevision](../entities/CommentRevision.md) | Interface | 10 | — | — |
+| [Subscription](../entities/Subscription.md) | Interface | 11 | — | — |
+| [InboxItem](../entities/InboxItem.md) | Interface | 12 | — | — |
+| [NotificationDelivery](../entities/NotificationDelivery.md) | Interface | 13 | — | — |
+| [Page](../entities/Page.md) | Interface | 14 | — | — |

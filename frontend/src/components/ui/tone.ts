@@ -62,6 +62,14 @@ export const statusTextClassName: Record<TaskStatus, string> = {
     resolved: 'text-status-resolved-foreground', closed: 'text-status-closed-foreground',
 };
 
+/**
+ * Priority is an attribute, not an alarm: neutral at every level, heavier for
+ * the top three. Red and amber stay for actionable exceptions.
+ */
+export const priorityChipClassName = (priority: number) => (priority <= 3
+    ? 'border border-border-strong bg-surface-card font-semibold text-content-primary'
+    : 'border border-border bg-surface-subtle text-content-secondary');
+
 export const isTaskStatus = (value: string): value is TaskStatus => value in STATUS_TONE;
 
 export const pillToneClassName: Record<PillTone, string> = {

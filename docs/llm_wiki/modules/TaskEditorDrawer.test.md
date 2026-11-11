@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskEditorDrawer.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `api` |
-| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `it` |
+| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `it` |
 
 ## Local dependency map
 

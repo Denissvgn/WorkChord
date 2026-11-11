@@ -14,8 +14,8 @@ _Auto-generated from `frontend/src/pages/SettingsPage.test.tsx`._
 | `../test/renderWithProviders` | `renderWithProviders` | — | compiler-dependent |
 | `../utils/adminAccess` | `ADMIN_API_KEY_STORAGE_KEY` | — | compiler-dependent |
 | `../utils/singleKeyShortcutPreference` | `SINGLE_KEY_SHORTCUTS_STORAGE_KEY` | — | compiler-dependent |
-| `./SettingsPage` | `SettingsPage`, `RECENT_SETTINGS_STORAGE_KEY` | — | compiler-dependent |
-| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
+| `./SettingsPage` | `SettingsPage` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `within` | — | compiler-dependent |
 | `react` | `ReactNode` | Declaration | erased |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 

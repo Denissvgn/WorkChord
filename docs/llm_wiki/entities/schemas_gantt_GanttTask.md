@@ -1,7 +1,7 @@
 # GanttTask
 
 **Location:** `backend/app/schemas/gantt.py:28`
-**Kind:** Pydantic model
+**Kind:** Class
 **Bases:** `TaskMetricSignals`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
 

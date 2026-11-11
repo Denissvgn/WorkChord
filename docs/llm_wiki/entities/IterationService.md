@@ -39,6 +39,7 @@ Calendar reassignment refreshes nominal workday and derived effort-day values un
 | `update` | *(async)* `(iteration_id: int, data: IterationUpdate, *, commit: bool = True) -> Iteration \| None` | `@schedule_input_command('iteration')` | Update an iteration, optionally leaving commit ownership to the caller. |
 | `delete` | *(async)* `(iteration_id: int) -> bool` | `@schedule_input_command('iteration')` | Delete an iteration. |
 | `get_summary` | *(async)* `(iteration_id: int) -> IterationSummary \| None` | — | Get iteration summary with statistics. |
+| `_remaining_working_days` | `(iteration, calendar_service)` | `@staticmethod` | Working days left from today (in the iteration's zone) to its end: all of them before it starts, 0 after it ends. |
 | `get_planning_readiness_summary` | *(async)* `(iteration_id: int) -> IterationPlanningReadinessSummary \| None` | — | Return bounded aggregate planning inputs without loading task graphs. |
 | `_calculate_team_capacity` | *(async)* `(iteration: Iteration) -> float` | — | Calculate total team capacity for iteration. |
 
@@ -91,7 +92,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [iteration_service](../modules/iteration_service.md) | 22 | — |
+| [iteration_service](../modules/iteration_service.md) | 23 | — |
 
 ### References
 
@@ -110,4 +111,4 @@ flowchart LR
 | `preview_iteration_schedule` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 | `schedule_iteration` | call | [routers_gantt](../modules/routers_gantt.md) | 1 |
 
-> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.
+> References: showing 12 of 59 logical references; 47 omitted by the 12-row generated summary limit.

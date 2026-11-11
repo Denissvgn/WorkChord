@@ -1,6 +1,6 @@
 # TargetFormErrors
 
-**Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:46`
+**Location:** `frontend/src/components/settings/OutboundWebhooksPanel.tsx:48`
 **Kind:** Interface
 **Bases:** —
 **Module:** [OutboundWebhooksPanel](../modules/OutboundWebhooksPanel.md)

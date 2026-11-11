@@ -1,6 +1,6 @@
 # Task
 
-**Location:** `frontend/src/types/task.ts:85`
+**Location:** `frontend/src/types/task.ts:89`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -83,6 +83,7 @@ _Auto-generated from `Task` in `frontend/src/types/task.ts`._
 | `agent_readiness` | `TaskAgentReadiness` | Yes | — | — |
 | `version` | `number` | Yes | — | — |
 | `claimed_by` | `TaskClaimedBy \| null` | No | — | — |
+| `agent_working` | `boolean \| null` | No | — | — |
 | `claim_expires_at` | `string \| null` | No | — | — |
 | `updated_at` | `string \| null` | No | — | — |
 | `children` | `Task[]` | Yes | — | — |
@@ -109,7 +110,7 @@ flowchart LR
     n9["frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx"]
     n10["frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx"]
     n11["frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx"]
-    n12["frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx"]
+    n12["frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -134,14 +135,14 @@ flowchart LR
     click n9 "../modules/KanbanBoard.test.md"
     click n10 "../modules/KanbanBoard.md"
     click n11 "../modules/KanbanCard.md"
-    click n12 "../modules/KanbanColumn.md"
+    click n12 "../modules/KanbanColumn.test.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date`, `blocked_reason` |
+| [types_task](../modules/types_task.md) | 0 | `acceptance_unknown`, `accepted_at`, `actual_end_date`, `actual_start_date`, `agent_readiness`, `agent_working`, `artifact_revision`, `assignee`, `baseline_end_date`, `baseline_provenance`, `baseline_revision`, `baseline_start_date` |
 
 ### References
 
@@ -158,6 +159,6 @@ flowchart LR
 | `KanbanBoard.test` | import | [KanbanBoard.test](../modules/KanbanBoard.test.md) | — |
 | `KanbanBoard` | import | [KanbanBoard](../modules/KanbanBoard.md) | — |
 | `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
-| `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
+| `KanbanColumn.test` | import | [KanbanColumn.test](../modules/KanbanColumn.test.md) | — |
 
-> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.
+> References: showing 12 of 71 logical references; 59 omitted by the 12-row generated summary limit.

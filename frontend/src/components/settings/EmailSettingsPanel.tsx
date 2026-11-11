@@ -1,3 +1,4 @@
+import { SettingsUnsavedBar } from './SettingsUnsavedBar';
 import { useRef, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -16,11 +17,12 @@ import { Checkbox } from '../common/Checkbox';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { emailSettingsService } from '../../services/emailSettingsService';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
-import { useAdminAccess } from '../../hooks/useAdminAccess';
+import { useCanReadSettings } from '../../hooks/useAdminAccess';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
 import type { EmailSettings } from '../../types/emailSettings';
 import type { RuntimeSettingSource } from '../../types/systemSettings';
 import { useToast } from '../feedback/toast';
+import { WithheldValuesNote } from './WithheldValuesNote';
 
 const sourceLabelKey: Record<RuntimeSettingSource, string> = {
     runtime: 'common.runtime',
@@ -80,7 +82,7 @@ const FieldError = ({ id, message }: { id: string; message?: string }) => (
 export const EmailSettingsPanel = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { hasAdminKey } = useAdminAccess();
+    const canReadSettings = useCanReadSettings();
     const toast = useToast();
     const [localSettings, setLocalSettings] = useState<EmailSettings | null>(null);
     const [showPassword, setShowPassword] = useState(false);
@@ -95,7 +97,7 @@ export const EmailSettingsPanel = () => {
     const { data: settings, isLoading, error, isError, refetch } = useQuery({
         queryKey: ['email-settings'],
         queryFn: emailSettingsService.getSettings,
-        enabled: hasAdminKey,
+        enabled: canReadSettings,
         retry: protectedQueryRetry,
     });
 
@@ -275,6 +277,7 @@ export const EmailSettingsPanel = () => {
 
     return (
         <div className="max-w-3xl space-y-6">
+            <WithheldValuesNote fields={settings?.redacted_fields} labels={{ smtp_host: t('settings.withheld.smtpHost'), smtp_user: t('settings.withheld.smtpUser') }} />
             {/* Master Toggle */}
             <div className="card flex items-center justify-between gap-4 p-4">
                 <div className="flex min-w-0 items-center gap-3">
@@ -397,7 +400,7 @@ export const EmailSettingsPanel = () => {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 disabled={configurationDisabled || Boolean(editableSettings.clear_smtp_password)}
-                                aria-label={t(showPassword ? 'surfaces.emailSettings.hidePassword' : 'surfaces.emailSettings.showPassword')}
+                                aria-label={t(showPassword ? 'surfaces.emailSettings.hidePassword' : 'surfaces.emailSettings.showPassword')} title={t(showPassword ? 'surfaces.emailSettings.hidePassword' : 'surfaces.emailSettings.showPassword')}
                                 className="absolute right-3 top-[34px] text-content-tertiary hover:text-content-secondary disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {showPassword
@@ -506,6 +509,8 @@ export const EmailSettingsPanel = () => {
                     </Button>
                 </div>
             </div>
+            <SettingsUnsavedBar dirty={hasChanges} saving={saveMutation.isPending} onSave={handleSave}
+                onDiscard={() => { setLocalSettings(null); setValidationErrors({}); }} />
         </div>
     );
 };

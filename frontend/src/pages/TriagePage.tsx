@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
+import { QuickCapture } from '../components/tasks/QuickCapture';
 import { Modal } from '../components/common/Modal';
 import { Input, RequiredIndicator } from '../components/common/Input';
 import { CollapsibleSection } from '../components/common/CollapsibleSection';
@@ -73,6 +74,10 @@ import type {
     TriageSnoozeRequest,
     TriageTaskDraftResponse,
 } from '../types/triage';
+import { feedbackMessage } from '../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../features/mutationFeedback';
+import { Select } from '../components/common/Select';
+import { Textarea } from '../components/common/Textarea';
 
 const t = i18n.t.bind(i18n);
 
@@ -234,10 +239,12 @@ interface CreateTriageModalProps {
     error?: string | null;
     onSubmit: (payload: TriageItemCreate) => void;
     onClose: () => void;
+    /** A title carried over from quick capture. */
+    initialTitle?: string;
 }
 
-const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit, onClose }: CreateTriageModalProps) => {
-    const [title, setTitle] = useState('');
+const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit, onClose, initialTitle = '' }: CreateTriageModalProps) => {
+    const [title, setTitle] = useState(initialTitle);
     const [description, setDescription] = useState('');
     const [source, setSource] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
@@ -308,21 +315,11 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
                 )}
 
                 {triageTemplates.length > 0 && (
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.template')}</label>
-                        <select
-                            value={selectedTemplateId}
-                            onChange={event => handleTemplateSelect(event.target.value)}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.triagePage.noTemplate')}</option>
-                            {triageTemplates.map(template => (
+                    <Select label={t('surfaces.triagePage.template')} value={selectedTemplateId} onChange={event => handleTemplateSelect(event.target.value)}><option value="">{t('surfaces.triagePage.noTemplate')}</option>{triageTemplates.map(template => (
                                 <option key={template.id} value={template.id}>
                                     {templateDisplay(template).name}
                                 </option>
-                            ))}
-                        </select>
-                    </div>
+                            ))}</Select>
                 )}
 
                 <Input
@@ -333,14 +330,7 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
                     maxLength={255}
                 />
 
-                <div>
-                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.description')}</label>
-                    <textarea
-                        value={description}
-                        onChange={event => setDescription(event.target.value)}
-                        className="min-h-[110px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                </div>
+                <Textarea label={t('surfaces.triagePage.description')} value={description} onChange={event => setDescription(event.target.value)} className="min-h-[110px]" />
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Input label={t('surfaces.triagePage.source')} value={source} onChange={event => setSource(event.target.value)} maxLength={100} />
@@ -352,32 +342,12 @@ const CreateTriageModal = ({ projects, iterations, isSubmitting, error, onSubmit
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     <Input label={t('surfaces.triagePage.assigneeHint')} value={assigneeHint} onChange={event => setAssigneeHint(event.target.value)} maxLength={255} />
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.projectHint')}</label>
-                        <select
-                            value={projectHintId}
-                            onChange={event => setProjectHintId(event.target.value)}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.triagePage.noProject')}</option>
-                            {projects.map(project => (
+                    <Select label={t('surfaces.triagePage.projectHint')} value={projectHintId} onChange={event => setProjectHintId(event.target.value)}><option value="">{t('surfaces.triagePage.noProject')}</option>{projects.map(project => (
                                 <option key={project.id} value={project.id}>{project.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.iterationHint')}</label>
-                        <select
-                            value={iterationHintId}
-                            onChange={event => setIterationHintId(event.target.value)}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.triagePage.noIteration')}</option>
-                            {iterations.map(iteration => (
+                            ))}</Select>
+                    <Select label={t('surfaces.triagePage.iterationHint')} value={iterationHintId} onChange={event => setIterationHintId(event.target.value)}><option value="">{t('surfaces.triagePage.noIteration')}</option>{iterations.map(iteration => (
                                 <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                            ))}
-                        </select>
-                    </div>
+                            ))}</Select>
                 </div>
 
                 <LabelSelector
@@ -619,67 +589,24 @@ const TriageActionModal = ({
                         </div>
 
                         {duplicateTargetType === 'triage' ? (
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">
-                                    {t('surfaces.triagePage.duplicateOf')}
-                                    <RequiredIndicator />
-                                </label>
-                                <select
-                                    value={duplicateItemId}
-                                    onChange={event => setDuplicateItemId(event.target.value)}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                    required
-                                >
-                                    <option value="">{t('surfaces.triagePage.selectIntakeItem')}</option>
-                                    {triageDuplicateOptions.map(candidate => (
+                            <Select label={<>{t('surfaces.triagePage.duplicateOf')}<RequiredIndicator /></>} value={duplicateItemId} onChange={event => setDuplicateItemId(event.target.value)} required><option value="">{t('surfaces.triagePage.selectIntakeItem')}</option>{triageDuplicateOptions.map(candidate => (
                                         <option key={candidate.id} value={candidate.id}>
                                             #{candidate.id} {candidate.title}
                                         </option>
-                                    ))}
-                                </select>
-                            </div>
+                                    ))}</Select>
                         ) : (
                             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">
-                                        {t('surfaces.triagePage.taskIteration')}
-                                        <RequiredIndicator />
-                                    </label>
-                                    <select
-                                        value={duplicateIterationId}
-                                        onChange={event => {
+                                <Select label={<>{t('surfaces.triagePage.taskIteration')}<RequiredIndicator /></>} value={duplicateIterationId} onChange={event => {
                                             setDuplicateIterationId(event.target.value);
                                             setDuplicateTaskId('');
-                                        }}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                        required
-                                    >
-                                        <option value="">{t('surfaces.triagePage.selectIteration')}</option>
-                                        {iterations.map(iteration => (
+                                        }} required><option value="">{t('surfaces.triagePage.selectIteration')}</option>{iterations.map(iteration => (
                                             <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">
-                                        {t('surfaces.triagePage.task')}
-                                        <RequiredIndicator />
-                                    </label>
-                                    <select
-                                        value={duplicateTaskId}
-                                        onChange={event => setDuplicateTaskId(event.target.value)}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                        required
-                                        disabled={!parsedDuplicateIterationId}
-                                    >
-                                        <option value="">{t('surfaces.triagePage.selectTask')}</option>
-                                        {taskDuplicateOptions.map(task => (
+                                        ))}</Select>
+                                <Select label={<>{t('surfaces.triagePage.task')}<RequiredIndicator /></>} value={duplicateTaskId} onChange={event => setDuplicateTaskId(event.target.value)} required disabled={!parsedDuplicateIterationId}><option value="">{t('surfaces.triagePage.selectTask')}</option>{taskDuplicateOptions.map(task => (
                                             <option key={task.id} value={task.id}>
                                                 {'-'.repeat(task.depth)} {task.title}
                                             </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                        ))}</Select>
                                 <label className="flex items-start gap-2 rounded-md border border-action bg-action-muted p-3 text-sm text-action md:col-span-2">
                                     <input
                                         type="checkbox"
@@ -850,7 +777,7 @@ const ConvertTriageSplitView = ({
                     type="button"
                     onClick={onClose}
                     className="rounded-md p-1.5 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary transition-colors"
-                    aria-label={t('surfaces.triagePage.close')}
+                    aria-label={t('surfaces.triagePage.close')} title={t('surfaces.triagePage.close')}
                 >
                     <X className="h-5 w-5" />
                 </button>
@@ -998,7 +925,7 @@ const ConvertTriageSplitView = ({
                                                     onClick={() => setBrief(previous => ({ ...previous, acceptance_criteria: [...previous.acceptance_criteria, ...draftPreview.acceptance_criteria.map(text => newCriterion(text))] }))}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
-                                                    {t('surfaces.triagePage.appendToDescription')}
+                                                    <Plus aria-hidden="true" className="mr-0.5 inline h-3 w-3" />{t('surfaces.triagePage.appendToDescription')}
                                                 </button>
                                             </div>
                                             <ul className="list-disc pl-4 text-xs text-action-muted-foreground space-y-0.5">
@@ -1017,7 +944,7 @@ const ConvertTriageSplitView = ({
                                                     onClick={() => setDescription(prev => prev + (prev ? '\n\n' : '') + `${t('surfaces.triagePage.checklist')}:\n${draftPreview.suggested_checklist.map(item => `- ${item}`).join('\n')}`)}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
-                                                    {t('surfaces.triagePage.appendToDescription')}
+                                                    <Plus aria-hidden="true" className="mr-0.5 inline h-3 w-3" />{t('surfaces.triagePage.appendToDescription')}
                                                 </button>
                                             </div>
                                             <ul className="list-disc pl-4 text-xs text-action-muted-foreground space-y-0.5">
@@ -1036,7 +963,7 @@ const ConvertTriageSplitView = ({
                                                     onClick={() => setDescription(prev => prev + (prev ? '\n\n' : '') + `${t('surfaces.triagePage.risks')}:\n${draftPreview.risks.map(item => `- ${item}`).join('\n')}`)}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
-                                                    {t('surfaces.triagePage.appendToDescription')}
+                                                    <Plus aria-hidden="true" className="mr-0.5 inline h-3 w-3" />{t('surfaces.triagePage.appendToDescription')}
                                                 </button>
                                             </div>
                                             <ul className="list-disc pl-4 text-xs text-action-muted-foreground space-y-0.5">
@@ -1082,12 +1009,7 @@ const ConvertTriageSplitView = ({
 
                         {/* Description Textarea with Inline Suggestion */}
                         <div>
-                            <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.description')}</label>
-                            <textarea
-                                value={description}
-                                onChange={event => setDescription(event.target.value)}
-                                className="min-h-[140px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                            />
+                            <Textarea label={t('surfaces.triagePage.description')} value={description} onChange={event => setDescription(event.target.value)} className="min-h-[140px] text-sm" />
                             {draftPreview && draftPreview.suggested_description !== description && (
                                 <div className="mt-1 flex flex-col gap-1 rounded-md bg-action-muted/30 border border-action/50 px-2 py-1 text-xs text-action">
                                     <div className="flex items-center justify-between">
@@ -1117,15 +1039,7 @@ const ConvertTriageSplitView = ({
                         </div>
                         {/* Quick Assignment Row */}
                         <div className="grid grid-cols-2 gap-4 p-4 rounded-lg border border-border bg-surface-muted/50">
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">
-                                    {t('surfaces.triagePage.iteration')}
-                                    {destination === "iteration" && <RequiredIndicator />}
-                                </label>
-                                <select
-                                    disabled={destination === "project_backlog"}
-                                    value={iterationId}
-                                    onChange={event => {
+                            <Select label={<>{t('surfaces.triagePage.iteration')}{destination === "iteration" && <RequiredIndicator />}</>} disabled={destination === "project_backlog"} value={iterationId} onChange={event => {
                                         const nextIterationId = event.target.value;
                                         const nextIteration = iterations.find(iteration => String(iteration.id) === nextIterationId);
                                         setIterationId(nextIterationId);
@@ -1136,16 +1050,9 @@ const ConvertTriageSplitView = ({
                                         }
                                         setAssigneeId('');
                                         setDependsOn([]);
-                                    }}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    required={destination === "iteration"}
-                                >
-                                    <option value="">{t('surfaces.triagePage.select')}</option>
-                                    {iterations.map(iteration => (
+                                    }} required={destination === "iteration"}><option value="">{t('surfaces.triagePage.select')}</option>{iterations.map(iteration => (
                                         <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                                    ))}
-                                </select>
-                            </div>
+                                    ))}</Select>
 
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.project')}</label>
@@ -1155,6 +1062,7 @@ const ConvertTriageSplitView = ({
                                     </div>
                                 ) : (
                                     <select
+                                        aria-label={t('surfaces.triagePage.project')}
                                         value={projectId}
                                         onChange={event => setProjectId(event.target.value)}
                                         className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
@@ -1167,22 +1075,11 @@ const ConvertTriageSplitView = ({
                                 )}
                             </div>
 
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.assignee')}</label>
-                                <select
-                                    value={assigneeId}
-                                    onChange={event => setAssigneeId(event.target.value)}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    disabled={!hasSelectedIteration}
-                                >
-                                    <option value="">{t('surfaces.triagePage.unassigned')}</option>
-                                    {teamMembers.map(member => (
+                            <Select label={t('surfaces.triagePage.assignee')} value={assigneeId} onChange={event => setAssigneeId(event.target.value)} disabled={!hasSelectedIteration}><option value="">{t('surfaces.triagePage.unassigned')}</option>{teamMembers.map(member => (
                                         <option key={member.id} value={member.id}>
                                             {member.name}
                                         </option>
-                                    ))}
-                                </select>
-                            </div>
+                                    ))}</Select>
 
                             <Input
                                 label={t('surfaces.triagePage.priority')}
@@ -1213,21 +1110,11 @@ const ConvertTriageSplitView = ({
                                     placeholder={t('surfaces.triagePage.addCustomTag')}
                                 />
 
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.triagePage.taskTemplate')}</label>
-                                    <select
-                                        value={selectedTaskTemplateId}
-                                        onChange={event => setSelectedTaskTemplateId(event.target.value)}
-                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus text-sm"
-                                    >
-                                        <option value="">{t('surfaces.triagePage.noTemplate')}</option>
-                                        {taskTemplates.map(template => (
+                                <Select label={t('surfaces.triagePage.taskTemplate')} value={selectedTaskTemplateId} onChange={event => setSelectedTaskTemplateId(event.target.value)}><option value="">{t('surfaces.triagePage.noTemplate')}</option>{taskTemplates.map(template => (
                                             <option key={template.id} value={template.id}>
                                                 {templateDisplay(template).name}
                                             </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                        ))}</Select>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <Input
@@ -1941,8 +1828,10 @@ const TriagePage = () => {
         setStatusFilter('');
         setActiveOnly(true);
     };
-    const startNewIntake = () => {
+    const [createTitle, setCreateTitle] = useState('');
+    const startNewIntake = (title = '') => {
         createMutation.reset();
+        setCreateTitle(title);
         setIsCreating(true);
     };
 
@@ -1969,6 +1858,7 @@ const TriagePage = () => {
 
     const createMutation = useMutation({
         mutationFn: (payload: TriageItemCreate) => triageService.create(payload),
+    meta: { success: data => feedbackMessage(t, 'created', 'triageItem', (data as TriageItem).title) } satisfies MutationFeedbackMeta,
         onSuccess: item => {
             setIsCreating(false);
             setSelectedId(item.id);
@@ -1977,6 +1867,7 @@ const TriagePage = () => {
     });
 
     const actionMutation = useMutation<TriageItem, unknown, ActionMutationInput>({
+        meta: { success: (data, variables) => t(`feedback.triage_${(variables as ActionMutationInput).type}`, { name: (data as TriageItem).title }) } satisfies MutationFeedbackMeta,
         mutationFn: input => {
             switch (input.type) {
                 case 'accept':
@@ -2004,6 +1895,7 @@ const TriagePage = () => {
 
     const convertMutation = useMutation<TriageConvertToTaskResponse, unknown, ConvertMutationInput>({
         mutationFn: input => triageService.convertToTask(input.itemId, input.payload),
+        meta: { success: data => t('feedback.triageConverted', { name: (data as TriageConvertToTaskResponse).task.title }) } satisfies MutationFeedbackMeta,
         onSuccess: (response, variables) => {
             setConvertItem(null);
             setConversionResult({ taskId: response.task.id, taskTitle: response.task.title });
@@ -2113,7 +2005,7 @@ const TriagePage = () => {
                 title={t('surfaces.triagePage.triageIntake')}
                 subtitle={t('surfaces.triagePage.reviewRawIntakeAndConvertAcceptedWorkIntoPlannedTasks')}
                 actions={(
-                    <Button onClick={startNewIntake}>
+                    <Button onClick={() => startNewIntake()}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('surfaces.triagePage.newIntake')}
                     </Button>
@@ -2146,13 +2038,15 @@ const TriagePage = () => {
                             type="button"
                             onClick={() => setConversionResult(null)}
                             className="ml-2 rounded p-1 hover:bg-feedback-success-muted-hover"
-                            aria-label={t('surfaces.triagePage.dismissConversionSuccess')}
+                            aria-label={t('surfaces.triagePage.dismissConversionSuccess')} title={t('surfaces.triagePage.dismissConversionSuccess')}
                         >
                             <X className="h-4 w-4" aria-hidden="true" />
                         </button>
                     </div>
                 </div>
             )}
+
+            <QuickCapture target={{ kind: 'triage' }} onExpand={startNewIntake} />
 
             <div className="wc-toolbar">
                 <div className="flex flex-wrap items-center gap-2" style={{flex:1}}>
@@ -2301,7 +2195,7 @@ const TriagePage = () => {
                                     <>
                                         <p className="font-medium text-content-primary">{t('surfaces.triagePage.inboxZeroTitle')}</p>
                                         <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.inboxZeroBody')}</p>
-                                        <Button className="mt-3" onClick={startNewIntake}>
+                                        <Button className="mt-3" onClick={() => startNewIntake()}>
                                             <Plus className="h-4 w-4" aria-hidden="true" />
                                             {t('surfaces.triagePage.newIntake')}
                                         </Button>
@@ -2360,6 +2254,7 @@ const TriagePage = () => {
                     error={createErrorMessage}
                     onSubmit={payload => createMutation.mutate(payload)}
                     onClose={() => setIsCreating(false)}
+                    initialTitle={createTitle}
                 />
             )}
 

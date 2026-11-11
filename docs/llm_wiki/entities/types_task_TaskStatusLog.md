@@ -1,6 +1,6 @@
 # TaskStatusLog
 
-**Location:** `frontend/src/types/task.ts:366`
+**Location:** `frontend/src/types/task.ts:373`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -33,16 +33,19 @@ _Auto-generated from `TaskStatusLog` in `frontend/src/types/task.ts`._
 ```mermaid
 flowchart LR
     n0["TaskStatusLog (frontend/src/types/task.ts)"]
-    n1["frontend/src/components/analytics/TaskStatusFlow.tsx"]
-    n2["frontend/src/pages/AnalyticsPage.tsx"]
-    n3["frontend/src/services/taskService.ts"]
+    n1["frontend/src/components/analytics/IterationOutlook.test.tsx"]
+    n2["TaskStatusFlow (frontend/src/components/analytics/TaskStatusFlow.tsx)"]
+    n3["frontend/src/pages/AnalyticsPage.tsx"]
+    n4["frontend/src/services/taskService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/types_task.md"
-    click n1 "../modules/TaskStatusFlow.md"
-    click n2 "../modules/AnalyticsPage.md"
-    click n3 "../modules/taskService.md"
+    click n1 "../modules/IterationOutlook.test.md"
+    click n2 "../modules/TaskStatusFlow.md"
+    click n3 "../modules/AnalyticsPage.md"
+    click n4 "../modules/taskService.md"
 ```
 
 ### Summary
@@ -55,6 +58,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `TaskStatusFlow` | import | [TaskStatusFlow](../modules/TaskStatusFlow.md) | — |
+| `IterationOutlook.test` | import | [IterationOutlook.test](../modules/IterationOutlook.test.md) | — |
+| `TaskStatusFlow` | type_reference | [TaskStatusFlow](../modules/TaskStatusFlow.md) | — |
 | `AnalyticsPage` | import | [AnalyticsPage](../modules/AnalyticsPage.md) | — |
 | `taskService` | import | [taskService](../modules/taskService.md) | — |

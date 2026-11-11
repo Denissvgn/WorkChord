@@ -42,7 +42,7 @@ describe('task template application', () => {
         await user.selectOptions(await screen.findByRole('combobox', { name: 'Template' }), '7');
         expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveValue('Canonical goal');
         expect(screen.getByRole('textbox', { name: 'Criterion 1' })).toHaveValue('Canonical result');
-        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
         await waitFor(() => expect(api.post).toHaveBeenCalled());
         const [path, saved] = api.post.mock.calls[0];
         expect(path).toBe('/projects/1/backlog');
@@ -58,23 +58,35 @@ describe('task template application', () => {
         configure(source);
         const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
         await user.selectOptions(await screen.findByRole('combobox', { name: 'Template' }), '7');
-        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
         await waitFor(() => expect(api.post).toHaveBeenCalled());
         expect(api.post.mock.calls[0][1].brief).toMatchObject({ goal: 'New deliverable', context: 'Legacy context',
             acceptance_criteria: [{ id: expect.any(String), revision: 1, text: 'Legacy criterion', verification: '' }] });
+    });
+
+    it('starts a new task with no priority and leaves it to the server default', async () => {
+        configure(template());
+        const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} initialTitle="Captured title" onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByRole('textbox', { name: /Task title/i })).toHaveValue('Captured title');
+        const priority = screen.getByRole('spinbutton', { name: 'Priority' });
+        expect(priority).toHaveValue(null);
+        expect(priority).toHaveAttribute('placeholder', 'Not set');
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalled());
+        expect(JSON.parse(JSON.stringify(api.post.mock.calls[0][1]))).not.toHaveProperty('priority');
     });
 
     it('does not blindly create again after an uncertain result without a current comparison', async () => {
         configure(template());
         api.post.mockRejectedValueOnce(new TypeError('No verified response'));
         const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
-        await user.type(await screen.findByRole('textbox', { name: /Task Title/i }), 'Possibly created work');
-        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await user.type(await screen.findByRole('textbox', { name: /Task title/i }), 'Possibly created work');
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
         await screen.findByText('Failed to create task');
-        expect(screen.getByRole('button', { name: 'Create Task' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Create task' })).toBeDisabled();
         await user.click(screen.getByRole('button', { name: 'Reload current server work' }));
         await user.click(await screen.findByRole('button', { name: 'I compared current work; resume this draft' }));
-        expect(screen.getByRole('button', { name: 'Create Task' })).toBeEnabled();
+        expect(screen.getByRole('button', { name: 'Create task' })).toBeEnabled();
         expect(api.post).toHaveBeenCalledTimes(1);
     });
 
@@ -82,11 +94,11 @@ describe('task template application', () => {
         configure(template());
         api.post.mockRejectedValueOnce(new TypeError('No verified response'));
         const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
-        await user.type(await screen.findByRole('textbox', { name: /Task Title/i }), 'Uncertain intake');
+        await user.type(await screen.findByRole('textbox', { name: /Task title/i }), 'Uncertain intake');
         await user.click(screen.getByRole('button', { name: 'Send to Triage' }));
         await screen.findByText('Failed to create triage item');
         expect(screen.getByRole('button', { name: 'Send to Triage' })).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'Create Task' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Create task' })).toBeDisabled();
         await user.click(screen.getByRole('button', { name: 'Reload current server work' }));
         await screen.findByRole('button', { name: 'I compared current work; resume this draft' });
         expect(api.get.mock.calls.some(([path]) => path.startsWith('/triage?'))).toBe(true);
@@ -100,8 +112,8 @@ describe('task template application', () => {
         api.post.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
         const completed = vi.fn();
         const view = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={completed} onCancel={vi.fn()} />);
-        await view.user.type(await screen.findByRole('textbox', { name: /Task Title/i }), 'Deferred creation');
-        await view.user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await view.user.type(await screen.findByRole('textbox', { name: /Task title/i }), 'Deferred creation');
+        await view.user.click(screen.getByRole('button', { name: 'Create task' }));
         await waitFor(() => expect(finish).toBeTypeOf('function'));
         view.unmount();
         await act(async () => finish({ data: { id: 44 } }));
@@ -117,9 +129,9 @@ describe('task template application', () => {
             return original(path);
         });
         const { user, queryClient } = renderWithProviders(<TaskForm iterationId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
-        await user.type(await screen.findByRole('textbox', { name: /Task Title/i }), 'Pinned aggregate draft');
+        await user.type(await screen.findByRole('textbox', { name: /Task title/i }), 'Pinned aggregate draft');
         await act(async () => { queryClient.setQueryData(['iteration', 1], { ...iteration, revision: 9 }); });
-        await user.click(screen.getByRole('button', { name: 'Create Task' }));
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
         await waitFor(() => expect(api.post).toHaveBeenCalled());
         expect(api.post.mock.lastCall?.[0]).toBe('/iterations/1/tasks');
         expect(api.post.mock.lastCall?.[1].expected_revision).toBe(1);

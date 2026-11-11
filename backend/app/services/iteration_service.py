@@ -485,7 +485,23 @@ class IterationService:
             total_effort_days=total_effort_days,
             team_capacity_days=team_capacity,
             overdue_tasks_count=overdue_count,
+            status_counts=metrics["status_counts"],
+            blocked_tasks=metrics["blocked_tasks"],
+            remaining_effort_days=metrics["remaining_effort_days"],
+            scheduled_finish=metrics["task_end_date"],
+            remaining_working_days=self._remaining_working_days(iteration, calendar_service),
         )
+
+    @staticmethod
+    def _remaining_working_days(iteration, calendar_service):
+        """Working days left from today (in the iteration's zone) to its end: all of them before it starts, 0 after it ends."""
+        from app.services.work_metrics import working_today
+        zone = iteration.project.timezone if iteration.project else iteration.calendar.timezone
+        today = working_today(zone)
+        if today > iteration.end_date:
+            return 0
+        start = max(today, iteration.start_date)
+        return calendar_service.calculate_working_days(iteration.calendar, start, iteration.end_date).working_days
 
     async def get_planning_readiness_summary(
         self,
@@ -506,28 +522,38 @@ class IterationService:
             Task.id.in_(included),
             ~exists(select(child_task.id).where(child_task.parent_id == Task.id)),
         )
+        # One rule with the task filters (app.services.planning_issues): only planned,
+        # non-deferred leaves are scheduling gaps, and agent-held work is not unassigned.
+        from app.models.agent import AgentTaskAssignment
+        from app.services.planning_issues import LIVE_EXECUTION_ASSIGNMENT_STATES, PLANNING_ISSUE_STATUS
+        is_gap_candidate = and_(Task.status == PLANNING_ISSUE_STATUS, Task.is_deferred.is_(False))
+        agent_working = exists(select(AgentTaskAssignment.id).where(
+            AgentTaskAssignment.task_id == Task.id,
+            AgentTaskAssignment.purpose == "execution",
+            AgentTaskAssignment.state.in_(LIVE_EXECUTION_ASSIGNMENT_STATES),
+        ))
         task_row = (
             await self.db.execute(
                 select(
                     func.count(Task.id),
                     func.coalesce(
-                        func.sum(case((Task.assignee_id.is_(None), 1), else_=0)),
+                        func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), ~agent_working), 1), else_=0)),
                         0,
                     ),
                     func.coalesce(
-                        func.sum(case((or_(Task.effort_hours.is_(None), Task.effort_hours <= 0), 1), else_=0)),
+                        func.sum(case((and_(is_gap_candidate, or_(Task.effort_hours.is_(None), Task.effort_hours <= 0)), 1), else_=0)),
                         0,
                     ),
                     func.coalesce(
                         func.sum(
                             case(
                                 (
-                                    or_(
+                                    and_(is_gap_candidate, or_(
                                         or_(Task.effort_hours.is_(None), Task.effort_hours <= 0),
                                         Task.start_date.is_(None),
                                         Task.end_date.is_(None),
                                         Task.start_date > Task.end_date,
-                                    ),
+                                    )),
                                     1,
                                 ),
                                 else_=0,
@@ -555,6 +581,11 @@ class IterationService:
                         ),
                         0,
                     ),
+                    func.coalesce(
+                        func.sum(case((and_(is_gap_candidate, Task.assignee_id.is_(None), agent_working), 1), else_=0)),
+                        0,
+                    ),
+                    func.coalesce(func.sum(Task.effort_hours), 0),
                 ).where(is_planning_leaf)
             )
         ).one()
@@ -575,19 +606,29 @@ class IterationService:
         uncertain_count = len(shared_issues)
 
         from app.services.plan_checkpoints import PLAN_CHECKPOINT_IDS, plan_checkpoints
+        from app.models.team_member import TeamMember, TeamMemberProfile
+        agent_rows = int(await self.db.scalar(
+            select(func.count(TeamMember.id))
+            .join(TeamMemberProfile, TeamMemberProfile.id == TeamMember.profile_id)
+            .where(TeamMember.iteration_id == iteration_id, TeamMemberProfile.profile_kind == "agent")
+        ) or 0)
         inputs = dict(
             team_member_count=len(members),
             team_members_no_capacity=no_capacity,
             task_count=task_count,
             tasks_without_assignee=int(task_row[1]),
             tasks_without_effort=int(task_row[2]),
+            tasks_agent_without_capacity=int(task_row[5]),
             has_schedule=task_count > 0 and unscheduled_count == 0,
             risk_count=int(task_row[4]) + overloaded_count + uncertain_count,
         )
         checkpoints = plan_checkpoints(**inputs)
         return IterationPlanningReadinessSummary(
             iteration_id=iteration_id,
+            team_agent_count=agent_rows,
             team_capacity_hours=round(total_hours, 2),
+            planned_hours=round(float(task_row[6] or 0), 2),
+            assigned_hours=round(float(sum(value or 0 for value in planned_hours.values())), 2),
             checkpoints=checkpoints,
             checkpoints_done=sum(item["state"] == "done" for item in checkpoints),
             checkpoints_total=len(PLAN_CHECKPOINT_IDS),

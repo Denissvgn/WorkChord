@@ -182,8 +182,8 @@ flowchart LR
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | task_comment_history | DiscussionService.history | 60 | `DiscussionService(db).history(task_id, comment_id, after_version=after_version, limit=limit)` |
-| DiscussionService.history | DiscussionService.task | 90 | `self.task(task_id)` |
-| DiscussionService.task | self.db.scalar (backend/app/services/disc….py:DiscussionService.task) | 30 | `self.db.scalar(...)` |
+| DiscussionService.history | DiscussionService.task | 115 | `self.task(task_id)` |
+| DiscussionService.task | self.db.scalar (backend/app/services/disc….py:DiscussionService.task) | 54 | `self.db.scalar(...)` |
 
 ### Boundary effects
 
@@ -198,7 +198,7 @@ flowchart LR
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `DiscussionService.task` | `self.db.scalar` | 30 |
+| unresolved_call | `DiscussionService.task` | `self.db.scalar` | 54 |
 | step_limit | `task_comment_history` | `first 12 steps` | 0 |
 
 ## Behavior

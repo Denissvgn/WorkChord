@@ -16,6 +16,8 @@ import type { TaskFilters } from './TaskFiltersBar';
 import type { SortKey } from './TaskList';
 import { savedViewDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState } from '../feedback/QueryState';
+import { Textarea } from '../common/Textarea';
+import { Select } from '../common/Select';
 
 const t = i18n.t.bind(i18n);
 
@@ -312,25 +314,8 @@ export const SavedViewsControl = ({
                                 onChange={event => setFormName(event.target.value)}
                                 maxLength={255}
                             />
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.savedViews.description')}</label>
-                                <textarea
-                                    value={formDescription}
-                                    onChange={event => setFormDescription(event.target.value)}
-                                    className="min-h-20 w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                />
-                            </div>
-                            <div>
-                                <label className="mb-1 block text-sm font-medium text-content-primary">{t('surfaces.savedViews.scope')}</label>
-                                <select
-                                    value={formScope}
-                                    onChange={event => setFormScope(event.target.value as EditableScope)}
-                                    className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                >
-                                    <option value="personal">{t('surfaces.savedViews.personal')}</option>
-                                    <option value="shared">{t('surfaces.savedViews.shared')}</option>
-                                </select>
-                            </div>
+                            <Textarea label={t('surfaces.savedViews.description')} value={formDescription} onChange={event => setFormDescription(event.target.value)} className="min-h-20" />
+                            <Select label={t('surfaces.savedViews.scope')} value={formScope} onChange={event => setFormScope(event.target.value as EditableScope)}><option value="personal">{t('surfaces.savedViews.personal')}</option><option value="shared">{t('surfaces.savedViews.shared')}</option></Select>
                             {formError && (
                                 <p className="rounded-md bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground">{formError}</p>
                             )}

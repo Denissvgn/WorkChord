@@ -155,7 +155,7 @@ flowchart LR
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
 | personal_notification_deliveries | DiscussionService.delivery_status | 80 | `DiscussionService(db).delivery_status(after_id=after_id, limit=limit)` |
-| DiscussionService.delivery_status | DiscussionService.principal_id | 233 | `self.principal_id(data not statically known)` |
+| DiscussionService.delivery_status | DiscussionService.principal_id | 259 | `self.principal_id(data not statically known)` |
 | DiscussionService.principal_id | self.db.info.get | 24 | `self.db.info.get('authority')` |
 
 ### Boundary effects

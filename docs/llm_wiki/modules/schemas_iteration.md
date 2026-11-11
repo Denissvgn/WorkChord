@@ -57,6 +57,6 @@ flowchart LR
 | [IterationResponse](../entities/IterationResponse.md) | 70 | `BaseModel` | — |
 | [IterationSeriesResponse](../entities/schemas_iteration_IterationSeriesResponse.md) | 89 | `BaseModel` | Response returned after creating an iteration series. |
 | [IterationSummary](../entities/schemas_iteration_IterationSummary.md) | 94 | `WorkMetricSummary` | Summary statistics for an iteration. |
-| [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 110 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
-| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 118 | `BaseModel` | Compact planning inputs used by persistent navigation. |
-| [IterationPage](../entities/IterationPage.md) | 134 | `BaseModel` | — |
+| [PlanCheckpoint](../entities/schemas_iteration_PlanCheckpoint.md) | 116 | `BaseModel` | One of the six plan checkpoints, in the order people and the PM work them. |
+| [IterationPlanningReadinessSummary](../entities/schemas_iteration_IterationPlanningReadinessSummary.md) | 124 | `BaseModel` | Compact planning inputs used by persistent navigation. |
+| [IterationPage](../entities/IterationPage.md) | 147 | `BaseModel` | — |

@@ -1,6 +1,6 @@
 # PlanningTeamMember
 
-**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:30`
+**Location:** `frontend/src/features/planningMasters/usePlanningReadiness.ts:32`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [usePlanningReadiness](../modules/usePlanningReadiness.md)

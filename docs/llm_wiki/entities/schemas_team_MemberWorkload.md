@@ -20,6 +20,10 @@ Workload information for a team member.
 | `free_days` | `float` | `free_days` | Yes | No | — | — | — | — |
 | `workload_status` | `Literal['green', 'yellow', 'red']` | `workload_status` | Yes | No | — | — | — | — |
 | `workload_percent` | `float` | `workload_percent` | Yes | No | — | — | — | — |
+| `capacity_hours` | `float` | `capacity_hours` | No | No | `0.0` | — | — | — |
+| `allocated_hours` | `float` | `allocated_hours` | No | No | `0.0` | — | — | — |
+| `free_hours` | `float` | `free_hours` | No | No | `0.0` | — | — | — |
+| `nominal_day_hours` | `float` | `nominal_day_hours` | No | No | `8.0` | — | — | — |
 
 ## Methods
 
@@ -52,7 +56,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_team](../modules/schemas_team.md) | 0 | `allocated_days`, `capacity_days`, `free_days`, `name`, `team_member_id`, `workload_percent`, `workload_status` |
+| [schemas_team](../modules/schemas_team.md) | 0 | `allocated_days`, `allocated_hours`, `capacity_days`, `capacity_hours`, `free_days`, `free_hours`, `name`, `nominal_day_hours`, `team_member_id`, `workload_percent`, `workload_status` |
 
 ### Structure
 

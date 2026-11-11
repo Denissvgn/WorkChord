@@ -80,4 +80,6 @@ export interface SystemSettings {
     github: GitHubRuntimeSettings;
     web_intake: WebIntakeRuntimeSettings;
     restart_required: RestartRequiredSetting[];
+    /** Values left out because this browser has no admin key. */
+    redacted_fields?: string[];
 }

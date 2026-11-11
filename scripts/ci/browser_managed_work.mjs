@@ -23,6 +23,10 @@ const signedIn = async name => {
   await page.getByRole('link', { name: `Continue as ${name}` }).click();
   await page.getByText(name, { exact: true }).first().waitFor();
 };
+// The task drawer opens read-first; the full editor is one click away.
+const editAllFields = async (target = page) => {
+  await target.getByRole('button', { name: 'Edit all fields', exact: true }).click();
+};
 const openNested = async () => {
   const board = page.getByRole('button', { name: 'Open task: Nested leaf', exact: true });
   if (new URL(page.url()).searchParams.get('layout') === 'board' || await board.count()) {
@@ -33,8 +37,9 @@ const openNested = async () => {
     await page.getByText('Parent', { exact: true }).first().waitFor();
     const expand = page.getByRole('button', { name: /Expand: Parent/i });
     if (await expand.count()) await expand.click();
-    await page.getByRole('button', { name: 'Edit Task: Nested leaf', exact: true }).click();
+    await page.getByRole('button', { name: 'Edit task: Nested leaf', exact: true }).click();
   }
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Description', exact: true }).waitFor();
 };
 const closeDirty = async () => {
@@ -82,7 +87,7 @@ try {
     if (route.request().method() === 'PUT') await route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ detail: 'Disposable injected save failure' }) });
     else await route.continue();
   });
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   await page.getByText('Disposable injected save failure', { exact: true }).waitFor();
   assert.match(await description.inputValue(), /Browser draft/);
   await page.unroute(`**/api/tasks/${nested.id}`);
@@ -94,14 +99,14 @@ try {
   const changed = await context.request.put(`/api/tasks/${nested.id}`, { headers, data: { title: 'Nested leaf', description: 'Other writer changed the work', expected_version: nested.version } });
   assert.equal(changed.status(), 200, await changed.text());
   const saveConflict = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${nested.id}`) && response.request().method() === 'PUT');
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   assert.equal((await saveConflict).status(), 409);
   await page.getByText('This task changed while you were editing', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'Keep draft with current version', exact: true }).click();
   await page.getByText('Current version loaded. Your draft is unchanged; review it before saving.', { exact: true }).waitFor();
   assert.match(await description.inputValue(), /Browser draft/);
   const saved = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${nested.id}`) && response.request().method() === 'PUT');
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   assert.equal((await saved).status(), 200);
   await description.waitFor({ state: 'hidden' });
   const readback = await context.request.get(`/api/tasks/${nested.id}`);
@@ -122,7 +127,7 @@ try {
   const cookie = (await context.cookies()).find(cookie => cookie.name === 'workchord_session');
   const expired = await context.request.post(`${issuer}/control/expire`, { headers: { 'X-Fixture-Key': 'disposable-browser-control' }, data: { token: cookie.value } });
   assert.equal((await expired.json()).expired, 1);
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   await page.getByText('Your session expired. Sign in again to continue.', { exact: false }).first().waitFor();
   assert.equal(await mobileDescription.inputValue(), 'Recover this draft after session expiry');
   await signedIn('Alice');
@@ -134,7 +139,7 @@ try {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(`/projects/${projects[0].id}`);
   await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).fill('Canonical browser work');
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Canonical browser work');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Capture and deliver urgent human work');
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('The task starts without a forecast or an invented estimate.');
   await page.getByRole('textbox', { name: 'Scope', exact: true }).fill('One independently checked result');
@@ -143,7 +148,7 @@ try {
   await page.getByRole('textbox', { name: 'Verification approach', exact: true }).fill('Inspect the delivered result');
   await page.getByLabel('Owner', { exact: true }).selectOption({ label: 'Shared owner' });
   const captured = page.waitForResponse(response => response.url().endsWith(`/api/projects/${projects[0].id}/backlog`) && response.request().method() === 'POST');
-  await page.getByRole('button', { name: 'Create Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Create task', exact: true }).click();
   const captureResponse = await captured;
   assert.equal(captureResponse.status(), 201, await captureResponse.text());
   const capturedTask = await captureResponse.json();
@@ -151,6 +156,11 @@ try {
   assert.equal(capturedTask.iteration_id, null);
   assert.equal(capturedTask.owner_profile_id, me.profile.id);
   await page.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
+  // Read-first: the brief reads without inputs, with its own Edit and the evidence one click away.
+  await page.getByRole('button', { name: 'Edit brief', exact: true }).waitFor();
+  assert.equal(await page.getByRole('textbox', { name: 'Goal', exact: true }).count(), 0);
+  await page.screenshot({ path: join(artifacts, 'canonical-read-desktop.png'), fullPage: true });
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Goal', exact: true }).waitFor();
   await page.getByRole('textbox', { name: 'Goal', exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'canonical-brief-desktop.png'), fullPage: true });
@@ -171,11 +181,12 @@ try {
   await page.getByRole('textbox', { name: 'Evidence', exact: true }).fill('Discard this evidence draft');
   await closeDirty();
   await page.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Evidence', exact: true }).waitFor();
   assert.equal(await page.getByRole('textbox', { name: 'Evidence', exact: true }).inputValue(), '');
   await page.getByLabel('The result can be inspected independently', { exact: true }).selectOption('completed');
   await page.getByRole('textbox', { name: 'Evidence', exact: true }).fill('A reviewer can reproduce and inspect the result.');
-  assert.equal(await page.getByRole('textbox', { name: 'Task Title', exact: false }).isDisabled(), true);
+  assert.equal(await page.getByRole('textbox', { name: 'Task title', exact: false }).isDisabled(), true);
   assert.equal(await page.getByLabel('Action', { exact: true }).isDisabled(), true);
   const progressSaved = page.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/progress`) && response.request().method() === 'POST');
   await page.getByRole('button', { name: 'Save progress', exact: true }).click();
@@ -195,6 +206,7 @@ try {
   await reviewerPage.getByRole('link', { name: 'Sign in', exact: true }).click();
   await reviewerPage.getByRole('link', { name: 'Continue as Charlie' }).click();
   await reviewerPage.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
+  await editAllFields(reviewerPage);
   await reviewerPage.getByRole('textbox', { name: 'Reason for the action or review', exact: true }).fill('Independently inspected the criterion evidence');
   // A person records a result for every criterion before Accept is enabled.
   assert.equal(await reviewerPage.getByRole('button', { name: 'Accept', exact: true }).isDisabled(), true);
@@ -206,7 +218,7 @@ try {
   assert.equal(verdict.status(), 200, await verdict.text());
   assert.equal((await verdict.json()).is_accepted, true);
   await reviewerPage.getByRole('dialog').getByText('Accepted', { exact: true }).waitFor();
-  await reviewerPage.getByText('Loading data...', { exact: true }).waitFor({ state: 'hidden' });
+  await reviewerPage.getByText('Loading data…', { exact: true }).waitFor({ state: 'hidden' });
   await reviewerPage.screenshot({ path: join(artifacts, 'canonical-review-desktop.png'), fullPage: true });
   const followed = reviewerPage.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/subscription`) && response.request().method() === 'PUT');
   await reviewerPage.getByRole('checkbox', { name: 'Follow this task', exact: true }).click();
@@ -217,7 +229,8 @@ try {
   await page.goto('/tasks?scope=backlog');
   await page.getByRole('searchbox', { name: 'Search tasks', exact: true }).fill(`#${capturedTask.id}`);
   await page.getByRole('region', { name: 'Search tasks', exact: true }).getByRole('link', { name: `#${capturedTask.id} · Canonical browser work`, exact: true }).click();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).scrollIntoViewIfNeeded();
+  await editAllFields();
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'teamwork-editor-desktop.png'), fullPage: true });
   await page.getByRole('textbox', { name: 'New comment', exact: true }).fill('Coordinate delivery with the reviewer');
   await page.getByRole('textbox', { name: 'Mention a person: search by name', exact: true }).fill('Charlie');
@@ -292,7 +305,7 @@ try {
   assert.equal(started.status(), 200, await started.text());
   await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ state: 'hidden', timeout: 45000 });
   await page.goto(`/my-work?queue=active&task=${observed.id}`);
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).waitFor();
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).waitFor();
   const peerComment = await peerContext.request.post(`/api/tasks/${observed.id}/comments`, {
     headers: peerHeaders, data: { body: 'Peer comment arrives in foreground', mentions: [] } });
   assert.equal(peerComment.status(), 201, await peerComment.text());
@@ -462,7 +475,7 @@ try {
   await reviewerContext.close();
   check('Unestimated backlog capture, durable owner, structured criteria, manual execution, persisted evidence, and independent human acceptance');
   await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).fill('Preserve the structured intake');
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Preserve the structured intake');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Keep the draft through triage');
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('Context must survive the handoff.');
   await page.getByRole('button', { name: 'Add criterion', exact: true }).click();

@@ -20,6 +20,10 @@ _Auto-generated from `MemberWorkload` in `frontend/src/types/team.ts`._
 | `free_days` | `number` | Yes | — | — |
 | `workload_status` | `'green' \| 'yellow' \| 'red'` | Yes | — | — |
 | `workload_percent` | `number` | Yes | — | — |
+| `capacity_hours` | `number` | No | — | — |
+| `allocated_hours` | `number` | No | — | — |
+| `free_hours` | `number` | No | — | — |
+| `nominal_day_hours` | `number` | No | — | — |
 
 ## Methods
 
@@ -44,7 +48,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_team](../modules/types_team.md) | 0 | `allocated_days`, `capacity_days`, `free_days`, `name`, `team_member_id`, `workload_percent`, `workload_status` |
+| [types_team](../modules/types_team.md) | 0 | `allocated_days`, `allocated_hours`, `capacity_days`, `capacity_hours`, `free_days`, `free_hours`, `name`, `nominal_day_hours`, `team_member_id`, `workload_percent`, `workload_status` |
 
 ### References
 

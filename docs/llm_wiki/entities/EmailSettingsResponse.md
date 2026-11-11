@@ -21,6 +21,7 @@ Schema for email settings response (password masked).
 | `smtp_use_tls` | `bool` | `smtp_use_tls` | Yes | No | — | — | — | — |
 | `has_password` | `bool` | `has_password` | Yes | No | — | — | — | — |
 | `field_sources` | `dict[str, RuntimeSettingSource]` | `field_sources` | No | No | factory: `dict` | — | — | — |
+| `redacted_fields` | `list[str]` | `redacted_fields` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -50,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_email_settings](../modules/schemas_email_settings.md) | 0 | `enabled`, `field_sources`, `has_password`, `smtp_from_email`, `smtp_host`, `smtp_port`, `smtp_use_tls`, `smtp_user` |
+| [schemas_email_settings](../modules/schemas_email_settings.md) | 0 | `enabled`, `field_sources`, `has_password`, `redacted_fields`, `smtp_from_email`, `smtp_host`, `smtp_port`, `smtp_use_tls`, `smtp_user` |
 
 ### Structure
 

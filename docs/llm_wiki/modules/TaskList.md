@@ -16,7 +16,7 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `../../types/task` | `Task` | Declaration | erased |
 | `../../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../../utils/graphLimitError` | `isGraphLimitError` | — | compiler-dependent |
-| `../../utils/taskFilters` | `filterTaskWithChildren` | — | compiler-dependent |
+| `../../utils/taskFilters` | `filterTaskBySearch`, `filterTaskWithChildren` | — | compiler-dependent |
 | `../../utils/visibleWork` | `selectVisibleWork` | — | compiler-dependent |
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
@@ -24,8 +24,9 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/WorkFreshness` | `WorkFreshness` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `../labels/LabelChip` | `LabelChip` | — | compiler-dependent |
 | `../ui` | `OverflowMenu` | — | compiler-dependent |
-| `../ui/tone` | `statusTextClassName` | — | compiler-dependent |
+| `../ui/tone` | `priorityChipClassName`, `statusTextClassName` | — | compiler-dependent |
 | `./GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
 | `./PagedTaskBrowser` | `PagedTaskBrowser` | — | compiler-dependent |
 | `./TaskAgentReadinessBadge` | `TaskAgentReadinessBadge` | — | compiler-dependent |
@@ -36,16 +37,20 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` | — | compiler-dependent |
 | `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `@tanstack/react-virtual` | `useVirtualizer` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck` | — | compiler-dependent |
-| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck`, `Info` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `Fragment`, `useCallback`, `useEffect`, `useId`, `useLayoutEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Exports | `SortKey`, `TaskList`, `TaskMode` |
+| Constants | `STATUS_GROUP_ORDER`, `VIRTUALIZE_AFTER_ROWS` |
 
 ## Local dependency map
 
@@ -68,30 +73,31 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (4) |
-| Outbound | `frontend` (21) |
+| Outbound | `frontend` (22) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 8 | 0 |
+| typescript | 10 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 26 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Interface | 70 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 742 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 794 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 48 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 49 | `'bulk' \| 'merge'` | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 50 | `Parameters<typeof taskService.reorder>[0]` | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 51 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
+| [TaskListProps](../entities/TaskListProps.md) | Interface | 80 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 847 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 901 | `TaskItemProps` | — |
+| [SortKey](../entities/TaskList_SortKey.md) | Type alias | 52 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 53 | `'bulk' \| 'merge'` | — |
+| [RowItem](../entities/RowItem.md) | Type alias | 58 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 60 | `Parameters<typeof taskService.reorder>[0]` | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 61 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;    preselectAllInBulk &#61; false&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |
+| `TaskList` | <pre><code>&#40;&#123;&#10;    iterationId&#44;&#10;    filters&#44;&#10;    sortKey&#44;&#10;    onSortKeyChange&#44;&#10;    hasActiveFilters &#61; false&#44;&#10;    activeViewName&#44;&#10;    onClearFilters&#44;&#10;    onCreateTask&#44;&#10;    requestedMode&#44;&#10;    onModeChange&#44;&#10;    preselectAllInBulk &#61; false&#44;&#10;    onOpenTask&#44;&#10;&#125;&#58; TaskListProps&#41;</code></pre> | — | — |

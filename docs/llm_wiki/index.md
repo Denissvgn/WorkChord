@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1529 | [Open section](#entities) |
-| Modules | 763 | [Open section](#modules) |
-| Workflows | 192 | [Open section](#workflows) |
+| Entities | 1561 | [Open section](#entities) |
+| Modules | 826 | [Open section](#modules) |
+| Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 553 | [Open section](#entry-point-flows) |
+| Entry-point flows | 557 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -330,6 +330,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [EditableScope](entities/EditableScope.md)
 - [EditingComment](entities/EditingComment.md)
 - [EditorBaseline](entities/EditorBaseline.md)
+- [EditorIssue](entities/EditorIssue.md)
 - [EditorMode](entities/EditorMode.md)
 - [EffortModifierCard_Props](entities/EffortModifierCard_Props.md)
 - [EffortModifierSchema](entities/EffortModifierSchema.md)
@@ -364,6 +365,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FakeRemoteSigner](entities/FakeRemoteSigner.md)
 - [FakeRevocationResolver](entities/FakeRevocationResolver.md)
 - [FakeTrustResolver](entities/FakeTrustResolver.md)
+- [FeedbackAction](entities/FeedbackAction.md)
+- [FeedbackKind](entities/FeedbackKind.md)
 - [FilesystemAgentTeamCredentialSink](entities/FilesystemAgentTeamCredentialSink.md)
 - [FilterConfig](entities/FilterConfig.md)
 - [FilterConfigSchema](entities/FilterConfigSchema.md)
@@ -379,9 +382,14 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [FrontendTriageService](entities/FrontendTriageService.md)
 - [FrozenClock](entities/FrozenClock.md)
 - [GanttAssignee](entities/GanttAssignee.md)
+- [GanttBarInputChanges](entities/GanttBarInputChanges.md)
+- [GanttBarInputsProps](entities/GanttBarInputsProps.md)
 - [GanttChartProps](entities/GanttChartProps.md)
 - [GanttChart_FlattenedTask](entities/GanttChart_FlattenedTask.md)
+- [GanttGroupBy](entities/GanttGroupBy.md)
 - [GanttMilestone](entities/GanttMilestone.md)
+- [GanttRow](entities/GanttRow.md)
+- [GanttStatusFilter](entities/GanttStatusFilter.md)
 - [GateStatusAmendment](entities/GateStatusAmendment.md)
 - [GitHubAutomationFromStatus](entities/GitHubAutomationFromStatus.md)
 - [GitHubForm](entities/GitHubForm.md)
@@ -396,6 +404,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GitHubWebhookResponse](entities/GitHubWebhookResponse.md)
 - [GitHubWebhookService](entities/GitHubWebhookService.md)
 - [GitHubWebhookSignatureError](entities/GitHubWebhookSignatureError.md)
+- [GlossaryTerm](entities/GlossaryTerm.md)
 - [GuestTransferRequest](entities/GuestTransferRequest.md)
 - [GuideItem](entities/GuideItem.md)
 - [HandoffEvidenceReference](entities/HandoffEvidenceReference.md)
@@ -471,6 +480,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LegacySnapshotImport](entities/LegacySnapshotImport.md)
 - [LegacySnapshotImportRequest](entities/LegacySnapshotImportRequest.md)
 - [LoadedRelease](entities/LoadedRelease.md)
+- [LocalProfileChoice](entities/LocalProfileChoice.md)
 - [Localized](entities/Localized.md)
 - [LocalizedStepStatus](entities/LocalizedStepStatus.md)
 - [LockedAcceptanceObject](entities/LockedAcceptanceObject.md)
@@ -485,14 +495,17 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MappedModelFactory](entities/MappedModelFactory.md)
 - [MasterProgressProps](entities/MasterProgressProps.md)
 - [MasterStepDef](entities/MasterStepDef.md)
+- [Member](entities/Member.md)
 - [MemberSchedule](entities/MemberSchedule.md)
 - [MembershipChange](entities/MembershipChange.md)
 - [MemoryAttemptBackend](entities/MemoryAttemptBackend.md)
 - [MemoryDagJournal](entities/MemoryDagJournal.md)
 - [MemoryWormStore](entities/MemoryWormStore.md)
 - [MessageResponse](entities/MessageResponse.md)
+- [MetricMatchPage](entities/MetricMatchPage.md)
 - [MetricRegistry](entities/MetricRegistry.md)
 - [MetricSample](entities/MetricSample.md)
+- [MetricScope](entities/MetricScope.md)
 - [MigrationDataError](entities/MigrationDataError.md)
 - [MigrationPolicy](entities/MigrationPolicy.md)
 - [MilestoneEditorState](entities/MilestoneEditorState.md)
@@ -512,7 +525,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ModelLatencyTier](entities/ModelLatencyTier.md)
 - [ModelReasoningTier](entities/ModelReasoningTier.md)
 - [Money](entities/Money.md)
+- [MutationFeedbackMeta](entities/MutationFeedbackMeta.md)
 - [MutationResult](entities/MutationResult.md)
+- [MutationUndo](entities/MutationUndo.md)
 - [NativeApprovalResponse](entities/NativeApprovalResponse.md)
 - [NativeChecks](entities/NativeChecks.md)
 - [NativeConnection](entities/NativeConnection.md)
@@ -521,6 +536,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NativeConnectionExchange](entities/NativeConnectionExchange.md)
 - [NativeConnectionResponse](entities/NativeConnectionResponse.md)
 - [NativeConnectionStart](entities/NativeConnectionStart.md)
+- [NativeDenialResponse](entities/NativeDenialResponse.md)
 - [NativePendingResponse](entities/NativePendingResponse.md)
 - [NativeSessionService](entities/NativeSessionService.md)
 - [NativeTokenResponse](entities/NativeTokenResponse.md)
@@ -626,6 +642,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProjectUpdateErrorStore](entities/ProjectUpdateErrorStore.md)
 - [ProjectUpdateFormState](entities/ProjectUpdateFormState.md)
 - [ProjectUpdateFormStore](entities/ProjectUpdateFormStore.md)
+- [ProjectsPage_SortKey](entities/ProjectsPage_SortKey.md)
 - [ProviderActionRequest](entities/ProviderActionRequest.md)
 - [ProviderAuditObservation](entities/ProviderAuditObservation.md)
 - [ProviderMutationAdapter](entities/ProviderMutationAdapter.md)
@@ -645,6 +662,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [QueryPolicy](entities/QueryPolicy.md)
 - [QueryStaleStateProps](entities/QueryStaleStateProps.md)
 - [Queue](entities/Queue.md)
+- [QuickCaptureTarget](entities/QuickCaptureTarget.md)
 - [RankableAttention](entities/RankableAttention.md)
 - [RateLimitWindow](entities/RateLimitWindow.md)
 - [ReadyTopology](entities/ReadyTopology.md)
@@ -714,6 +732,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RoutingSelectionValidation](entities/RoutingSelectionValidation.md)
 - [RoutingSkillDecision](entities/RoutingSkillDecision.md)
 - [RoutingTrustLineage](entities/RoutingTrustLineage.md)
+- [RowItem](entities/RowItem.md)
 - [RunCancelled](entities/RunCancelled.md)
 - [RunReceipt](entities/RunReceipt.md)
 - [RuntimeActivity](entities/RuntimeActivity.md)
@@ -756,6 +775,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ScopeRequirement](entities/ScopeRequirement.md)
 - [SecretMaterialError](entities/SecretMaterialError.md)
 - [SectionId](entities/SectionId.md)
+- [SegmentedOption](entities/SegmentedOption.md)
+- [SelectProps](entities/SelectProps.md)
 - [SeriesDraft](entities/SeriesDraft.md)
 - [ServerAcceptanceCandidate](entities/ServerAcceptanceCandidate.md)
 - [ServerAcceptanceConfig](entities/ServerAcceptanceConfig.md)
@@ -806,9 +827,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SnapshotRestoreRequest](entities/SnapshotRestoreRequest.md)
 - [SnapshotService](entities/SnapshotService.md)
 - [SortCriterionSchema](entities/SortCriterionSchema.md)
-- [SortKey](entities/SortKey.md)
 - [SortableTaskItemProps](entities/SortableTaskItemProps.md)
-- [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
 - [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
 - [StatusAmendmentLedger](entities/StatusAmendmentLedger.md)
@@ -888,6 +907,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskItemProps](entities/TaskItemProps.md)
 - [TaskListOption](entities/TaskListOption.md)
 - [TaskListProps](entities/TaskListProps.md)
+- [TaskList_SortKey](entities/TaskList_SortKey.md)
 - [TaskMerge](entities/TaskMerge.md)
 - [TaskMergeRequest](entities/TaskMergeRequest.md)
 - [TaskMetricSignals](entities/TaskMetricSignals.md)
@@ -912,7 +932,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskSkillLevel](entities/TaskSkillLevel.md)
 - [TaskStatusAmendment](entities/TaskStatusAmendment.md)
 - [TaskStatusChange](entities/TaskStatusChange.md)
-- [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
 - [TaskStatusLogResponse](entities/TaskStatusLogResponse.md)
 - [TaskStatusService](entities/TaskStatusService.md)
 - [TaskSubscription](entities/TaskSubscription.md)
@@ -927,6 +946,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskUnmerge](entities/TaskUnmerge.md)
 - [TaskVersionConflictDetail](entities/TaskVersionConflictDetail.md)
 - [TaskVersionConflictError](entities/TaskVersionConflictError.md)
+- [TaskViewPart](entities/TaskViewPart.md)
 - [TeamFormProps](entities/TeamFormProps.md)
 - [TeamImportRequest](entities/TeamImportRequest.md)
 - [TeamImportResponse](entities/TeamImportResponse.md)
@@ -946,8 +966,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TeamService](entities/TeamService.md)
 - [TemplateFormState](entities/TemplateFormState.md)
 - [TemplateListParams](entities/TemplateListParams.md)
+- [TemplateRowProps](entities/TemplateRowProps.md)
 - [TemplateSeedBaseline](entities/TemplateSeedBaseline.md)
 - [TemplateService](entities/TemplateService.md)
+- [TextareaProps](entities/TextareaProps.md)
 - [Theme](entities/Theme.md)
 - [ThemeState](entities/ThemeState.md)
 - [TimeEntryCapabilities](entities/TimeEntryCapabilities.md)
@@ -997,6 +1019,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [UTCDateTime](entities/UTCDateTime.md)
 - [UnknownRecord](entities/UnknownRecord.md)
 - [UnsafeDatabaseTarget](entities/UnsafeDatabaseTarget.md)
+- [UnsavedLeaveGuardProps](entities/UnsavedLeaveGuardProps.md)
 - [UnsupportedAgentTeamMasterVersion](entities/UnsupportedAgentTeamMasterVersion.md)
 - [UpgradeError](entities/UpgradeError.md)
 - [UsagePricingBasis](entities/UsagePricingBasis.md)
@@ -1007,6 +1030,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [VacationUpdate](entities/VacationUpdate.md)
 - [ValidationException](entities/ValidationException.md)
 - [ValkeyCasClient](entities/ValkeyCasClient.md)
+- [Verdict](entities/Verdict.md)
 - [VerificationBeginRequest](entities/VerificationBeginRequest.md)
 - [VerificationClaimRequest](entities/VerificationClaimRequest.md)
 - [VerificationCriterionResult](entities/VerificationCriterionResult.md)
@@ -1034,10 +1058,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [WebIntakeService](entities/WebIntakeService.md)
 - [WebIntakeUnauthorizedError](entities/WebIntakeUnauthorizedError.md)
 - [WorkChordException](entities/WorkChordException.md)
+- [WorkMetricName](entities/WorkMetricName.md)
 - [WorkMetricSummary](entities/WorkMetricSummary.md)
 - [WorkMetrics](entities/WorkMetrics.md)
 - [WorkPackageContract](entities/WorkPackageContract.md)
 - [WorkPage](entities/WorkPage.md)
+- [WorkProfile](entities/WorkProfile.md)
 - [WorkTemplateResponse](entities/WorkTemplateResponse.md)
 - [WorkflowContracts](entities/WorkflowContracts.md)
 - [WorkflowFocusIntent](entities/WorkflowFocusIntent.md)
@@ -1203,6 +1229,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_gantt_SchedulePreviewResponse](entities/schemas_gantt_SchedulePreviewResponse.md)
 - [schemas_gantt_ScheduleResult](entities/schemas_gantt_ScheduleResult.md)
 - [schemas_gantt_SchedulingDecision](entities/schemas_gantt_SchedulingDecision.md)
+- [schemas_gantt_UnscheduledReason](entities/schemas_gantt_UnscheduledReason.md)
+- [schemas_gantt_UnscheduledTask](entities/schemas_gantt_UnscheduledTask.md)
 - [schemas_gantt_WorkloadIssue](entities/schemas_gantt_WorkloadIssue.md)
 - [schemas_github_GitHubAutomationEventType](entities/schemas_github_GitHubAutomationEventType.md)
 - [schemas_github_GitHubAutomationOutcome](entities/schemas_github_GitHubAutomationOutcome.md)
@@ -1416,6 +1444,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_gantt_SchedulePreviewResponse](entities/types_gantt_SchedulePreviewResponse.md)
 - [types_gantt_ScheduleResult](entities/types_gantt_ScheduleResult.md)
 - [types_gantt_SchedulingDecision](entities/types_gantt_SchedulingDecision.md)
+- [types_gantt_UnscheduledReason](entities/types_gantt_UnscheduledReason.md)
+- [types_gantt_UnscheduledTask](entities/types_gantt_UnscheduledTask.md)
 - [types_gantt_WorkloadAnalysis](entities/types_gantt_WorkloadAnalysis.md)
 - [types_gantt_WorkloadIssue](entities/types_gantt_WorkloadIssue.md)
 - [types_github_GitHubAutomationEventType](entities/types_github_GitHubAutomationEventType.md)
@@ -1548,6 +1578,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_triage_TriageTaskDraftResponse](entities/types_triage_TriageTaskDraftResponse.md)
 - [user_session_UserSession](entities/user_session_UserSession.md)
 
+### Retired source members
+
+Retained history; these declarations are absent from the selected source inventory.
+
+- [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
+- [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
+
 ## Modules
 
 - [0001_wave0_probe](modules/0001_wave0_probe.md) - Create the Wave 0 PostgreSQL lifecycle probe.
@@ -1562,7 +1599,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261008_0009_project_identity](modules/20261008_0009_project_identity.md) - Preserve project allocation identity across retained history.
 - [20261009_0010_allocation_identity](modules/20261009_0010_allocation_identity.md) - Preserve allocation lifetimes across recovery and deletion.
 - [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) - Preserve profile lifetimes across recovery and deletion.
+- [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
+- [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
+- [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
+- [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
 - [AgentAccessPanel](modules/AgentAccessPanel.md) - `frontend/src/components/settings/AgentAccessPanel.tsx`
@@ -1571,6 +1612,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentModelAdministration.test](modules/AgentModelAdministration.test.md) - `frontend/src/components/settings/AgentModelAdministration.test.tsx`
 - [AgentPipelinePage](modules/AgentPipelinePage.md) - `frontend/src/pages/AgentPipelinePage.tsx`
 - [AgentPipelinePage.test](modules/AgentPipelinePage.test.md) - `frontend/src/pages/AgentPipelinePage.test.tsx`
+- [AgentTeamManifestPreview](modules/AgentTeamManifestPreview.md) - `frontend/src/components/settings/AgentTeamManifestPreview.tsx`
 - [AgentTeamSetupMasterPage](modules/AgentTeamSetupMasterPage.md) - `frontend/src/pages/AgentTeamSetupMasterPage.tsx`
 - [AgentTeamSetupMasterPage.test](modules/AgentTeamSetupMasterPage.test.md) - `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`
 - [AgentTeamStepList](modules/AgentTeamStepList.md) - `frontend/src/components/settings/AgentTeamStepList.tsx`
@@ -1601,6 +1643,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DeliveryAnalytics](modules/DeliveryAnalytics.md) - `frontend/src/components/analytics/DeliveryAnalytics.tsx`
 - [DeliveryAnalytics.test](modules/DeliveryAnalytics.test.md) - `frontend/src/components/analytics/DeliveryAnalytics.test.tsx`
 - [DeliveryDependencies](modules/DeliveryDependencies.md) - `frontend/src/components/tasks/DeliveryDependencies.tsx`
+- [DisabledReason](modules/DisabledReason.md) - `frontend/src/components/common/DisabledReason.tsx`
 - [DocumentMetadata](modules/DocumentMetadata.md) - `frontend/src/components/layout/DocumentMetadata.tsx`
 - [DraftDismissalDialog](modules/DraftDismissalDialog.md) - `frontend/src/components/tasks/DraftDismissalDialog.tsx`
 - [EffortModifierCard](modules/EffortModifierCard.md) - `frontend/src/components/settings/EffortModifierCard.tsx`
@@ -1610,6 +1653,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ExecutionUsagePanel](modules/ExecutionUsagePanel.md) - `frontend/src/components/analytics/ExecutionUsagePanel.tsx`
 - [ExecutionUsagePanel.test](modules/ExecutionUsagePanel.test.md) - `frontend/src/components/analytics/ExecutionUsagePanel.test.tsx`
 - [FullscreenWorkspace](modules/FullscreenWorkspace.md) - `frontend/src/components/common/FullscreenWorkspace.tsx`
+- [GanttBarInputs](modules/GanttBarInputs.md) - `frontend/src/components/gantt/GanttBarInputs.tsx`
 - [GanttChart](modules/GanttChart.md) - `frontend/src/components/gantt/GanttChart.tsx`
 - [GanttChart.test](modules/GanttChart.test.md) - `frontend/src/components/gantt/GanttChart.test.tsx`
 - [GanttPage](modules/GanttPage.md) - `frontend/src/pages/GanttPage.tsx`
@@ -1627,29 +1671,41 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Input](modules/Input.md) - `frontend/src/components/common/Input.tsx`
 - [Input.test](modules/Input.test.md) - `frontend/src/components/common/Input.test.tsx`
 - [InteractiveCalendar](modules/InteractiveCalendar.md) - `frontend/src/components/calendar/InteractiveCalendar.tsx`
+- [InteractiveCalendar.test](modules/InteractiveCalendar.test.md) - `frontend/src/components/calendar/InteractiveCalendar.test.tsx`
 - [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) - `frontend/src/components/settings/InterfaceLanguageSettings.tsx`
+- [IterationCapacityLine](modules/IterationCapacityLine.md) - `frontend/src/components/iteration/IterationCapacityLine.tsx`
 - [IterationForm](modules/IterationForm.md) - `frontend/src/components/iteration/IterationForm.tsx`
 - [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
 - [IterationImportDialog](modules/IterationImportDialog.md) - `frontend/src/components/iteration/IterationImportDialog.tsx`
 - [IterationList](modules/IterationList.md) - `frontend/src/components/iteration/IterationList.tsx`
+- [IterationList.test](modules/IterationList.test.md) - `frontend/src/components/iteration/IterationList.test.tsx`
+- [IterationOutlook.test](modules/IterationOutlook.test.md) - `frontend/src/components/analytics/IterationOutlook.test.tsx`
 - [IterationSelector](modules/IterationSelector.md) - `frontend/src/components/iteration/IterationSelector.tsx`
 - [IterationsPage](modules/IterationsPage.md) - `frontend/src/pages/IterationsPage.tsx`
 - [KanbanBoard](modules/KanbanBoard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.tsx`
 - [KanbanBoard.test](modules/KanbanBoard.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanBoard.test.tsx`
 - [KanbanCard](modules/KanbanCard.md) - `frontend/src/components/tasks/KanbanBoard/KanbanCard.tsx`
 - [KanbanColumn](modules/KanbanColumn.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.tsx`
+- [KanbanColumn.test](modules/KanbanColumn.test.md) - `frontend/src/components/tasks/KanbanBoard/KanbanColumn.test.tsx`
+- [LabelChip](modules/LabelChip.md) - `frontend/src/components/labels/LabelChip.tsx`
 - [LabelSelector](modules/LabelSelector.md) - `frontend/src/components/labels/LabelSelector.tsx`
 - [LandingPage](modules/LandingPage.md) - `frontend/src/pages/LandingPage.tsx`
+- [LandingPage.test](modules/LandingPage.test.md) - `frontend/src/pages/LandingPage.test.tsx`
 - [LiveWindowStatus](modules/LiveWindowStatus.md) - `frontend/src/components/feedback/LiveWindowStatus.tsx`
+- [LocalProfilePicker](modules/LocalProfilePicker.md) - `frontend/src/features/identity/LocalProfilePicker.tsx`
 - [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
+- [MetricCount](modules/MetricCount.md) - `frontend/src/components/tasks/MetricCount.tsx`
+- [MetricCount.test](modules/MetricCount.test.md) - `frontend/src/components/tasks/MetricCount.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
+- [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) - `frontend/src/features/MutationSuccessFeedback.tsx`
 - [MyWorkPage](modules/MyWorkPage.md) - `frontend/src/pages/MyWorkPage.tsx`
 - [MyWorkPage.test](modules/MyWorkPage.test.md) - `frontend/src/pages/MyWorkPage.test.tsx`
 - [NativeConnectionPage](modules/NativeConnectionPage.md) - `frontend/src/pages/NativeConnectionPage.tsx`
 - [NativeConnectionPage.test](modules/NativeConnectionPage.test.md) - `frontend/src/pages/NativeConnectionPage.test.tsx`
 - [NotFoundPage](modules/NotFoundPage.md) - `frontend/src/pages/NotFoundPage.tsx`
 - [NotificationsPanel](modules/NotificationsPanel.md) - `frontend/src/components/notifications/NotificationsPanel.tsx`
+- [OnTrackSummary](modules/OnTrackSummary.md) - `frontend/src/components/analytics/OnTrackSummary.tsx`
 - [OutboundWebhooksPanel](modules/OutboundWebhooksPanel.md) - `frontend/src/components/settings/OutboundWebhooksPanel.tsx`
 - [OutboundWebhooksPanel.test](modules/OutboundWebhooksPanel.test.md) - `frontend/src/components/settings/OutboundWebhooksPanel.test.tsx`
 - [OverflowMenu](modules/OverflowMenu.md) - `frontend/src/components/ui/OverflowMenu.tsx`
@@ -1667,6 +1723,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanMasterPage.test](modules/PlanMasterPage.test.md) - `frontend/src/pages/PlanMasterPage.test.tsx`
 - [PlanPage](modules/PlanPage.md) - `frontend/src/pages/PlanPage.tsx`
 - [PlanPage.test](modules/PlanPage.test.md) - `frontend/src/pages/PlanPage.test.tsx`
+- [PlanQuickAddCapacity](modules/PlanQuickAddCapacity.md) - `frontend/src/components/planning/PlanQuickAddCapacity.tsx`
+- [PlanQuickAddCapacity.test](modules/PlanQuickAddCapacity.test.md) - `frontend/src/components/planning/PlanQuickAddCapacity.test.tsx`
 - [PlanReturnBar](modules/PlanReturnBar.md) - `frontend/src/components/planning/PlanReturnBar.tsx`
 - [PlanReturnBar.test](modules/PlanReturnBar.test.md) - `frontend/src/components/planning/PlanReturnBar.test.tsx`
 - [PlanSharePage](modules/PlanSharePage.md) - `frontend/src/pages/PlanSharePage.tsx`
@@ -1679,12 +1737,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [PlanningWorkflowGuide.test](modules/PlanningWorkflowGuide.test.md) - `frontend/src/components/planning/PlanningWorkflowGuide.test.tsx`
 - [ProjectDetailPage](modules/ProjectDetailPage.md) - `frontend/src/pages/ProjectDetailPage.tsx`
 - [ProjectForm](modules/ProjectForm.md) - `frontend/src/components/projects/ProjectForm.tsx`
+- [ProjectForm.test](modules/ProjectForm.test.md) - `frontend/src/components/projects/ProjectForm.test.tsx`
 - [ProjectIterationsSection](modules/ProjectIterationsSection.md) - `frontend/src/components/projects/ProjectIterationsSection.tsx`
 - [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) - `frontend/src/pages/ProjectReleaseDetailPage.tsx`
 - [ProjectTaskTree](modules/ProjectTaskTree.md) - `frontend/src/components/projects/ProjectTaskTree.tsx`
 - [ProjectsPage](modules/ProjectsPage.md) - `frontend/src/pages/ProjectsPage.tsx`
 - [ProjectsPage.test](modules/ProjectsPage.test.md) - `frontend/src/pages/ProjectsPage.test.tsx`
 - [QueryState](modules/QueryState.md) - `frontend/src/components/feedback/QueryState.tsx`
+- [QuickCapture](modules/QuickCapture.md) - `frontend/src/components/tasks/QuickCapture.tsx`
+- [QuickCapture.test](modules/QuickCapture.test.md) - `frontend/src/components/tasks/QuickCapture.test.tsx`
 - [ReleaseForm](modules/ReleaseForm.md) - `frontend/src/components/releases/ReleaseForm.tsx`
 - [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx`
 - [RequestSourceLinksPanel.test](modules/RequestSourceLinksPanel.test.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.test.tsx`
@@ -1702,14 +1763,20 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) - `frontend/src/components/settings/SchedulingRulesSettings.tsx`
 - [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) - `frontend/src/components/settings/SchedulingRulesSettings.test.tsx`
 - [SectionCard](modules/SectionCard.md) - `frontend/src/components/ui/SectionCard.tsx`
+- [SegmentedControl](modules/SegmentedControl.md) - `frontend/src/components/ui/SegmentedControl.tsx`
+- [Select](modules/Select.md) - `frontend/src/components/common/Select.tsx`
+- [Select.test](modules/Select.test.md) - `frontend/src/components/common/Select.test.tsx`
+- [SettingsAccessAndAbout.test](modules/SettingsAccessAndAbout.test.md) - `frontend/src/components/settings/SettingsAccessAndAbout.test.tsx`
 - [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) - `frontend/src/components/settings/SettingsGoalHelpContent.tsx`
 - [SettingsPage](modules/SettingsPage.md) - `frontend/src/pages/SettingsPage.tsx`
 - [SettingsPage.test](modules/SettingsPage.test.md) - `frontend/src/pages/SettingsPage.test.tsx`
+- [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) - `frontend/src/components/settings/SettingsUnsavedBar.tsx`
 - [SidebarIterationCard](modules/SidebarIterationCard.md) - `frontend/src/components/layout/SidebarIterationCard.tsx`
 - [SidebarIterationCard.test](modules/SidebarIterationCard.test.md) - `frontend/src/components/layout/SidebarIterationCard.test.tsx`
 - [SlideOverDrawer](modules/SlideOverDrawer.md) - `frontend/src/components/ui/SlideOverDrawer.tsx`
 - [SortableTaskItem](modules/SortableTaskItem.md) - `frontend/src/components/tasks/SortableTaskItem.tsx`
 - [StatusChangeControl](modules/StatusChangeControl.md) - `frontend/src/components/tasks/StatusChangeControl.tsx`
+- [StatusDistribution](modules/StatusDistribution.md) - `frontend/src/components/analytics/StatusDistribution.tsx`
 - [StatusSegmentStrip](modules/StatusSegmentStrip.md) - `frontend/src/components/ui/StatusSegmentStrip.tsx`
 - [StickyRail](modules/StickyRail.md) - `frontend/src/components/ui/StickyRail.tsx`
 - [SystemHealthPanel](modules/SystemHealthPanel.md) - `frontend/src/components/settings/SystemHealthPanel.tsx`
@@ -1727,10 +1794,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskEditorDrawer](modules/TaskEditorDrawer.md) - `frontend/src/components/tasks/TaskEditorDrawer.tsx`
 - [TaskEditorDrawer.test](modules/TaskEditorDrawer.test.md) - `frontend/src/components/tasks/TaskEditorDrawer.test.tsx`
 - [TaskFiltersBar](modules/TaskFiltersBar.md) - `frontend/src/components/tasks/TaskFiltersBar.tsx`
+- [TaskFiltersBar.test](modules/TaskFiltersBar.test.md) - `frontend/src/components/tasks/TaskFiltersBar.test.tsx`
 - [TaskForm](modules/TaskForm.md) - `frontend/src/components/tasks/TaskForm.tsx`
 - [TaskForm.test](modules/TaskForm.test.md) - `frontend/src/components/tasks/TaskForm.test.tsx`
 - [TaskList](modules/TaskList.md) - `frontend/src/components/tasks/TaskList.tsx`
 - [TaskList.test](modules/TaskList.test.md) - `frontend/src/components/tasks/TaskList.test.tsx`
+- [TaskReadView](modules/TaskReadView.md) - `frontend/src/components/tasks/TaskReadView.tsx`
+- [TaskReadView.test](modules/TaskReadView.test.md) - `frontend/src/components/tasks/TaskReadView.test.tsx`
 - [TaskReviewer](modules/TaskReviewer.md) - `frontend/src/components/tasks/TaskReviewer.tsx`
 - [TaskRoutingPanel](modules/TaskRoutingPanel.md) - `frontend/src/components/agent/TaskRoutingPanel.tsx`
 - [TaskRoutingPanel.test](modules/TaskRoutingPanel.test.md) - `frontend/src/components/agent/TaskRoutingPanel.test.tsx`
@@ -1748,21 +1818,28 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TeamForm](modules/TeamForm.md) - `frontend/src/components/team/TeamForm.tsx`
 - [TeamForm.test](modules/TeamForm.test.md) - `frontend/src/components/team/TeamForm.test.tsx`
 - [TeamList](modules/TeamList.md) - `frontend/src/components/team/TeamList.tsx`
+- [TeamList.test](modules/TeamList.test.md) - `frontend/src/components/team/TeamList.test.tsx`
 - [TeamPage](modules/TeamPage.md) - `frontend/src/pages/TeamPage.tsx`
 - [TeamProfileManager](modules/TeamProfileManager.md) - `frontend/src/components/team/TeamProfileManager.tsx`
 - [TeamProfileManager.test](modules/TeamProfileManager.test.md) - `frontend/src/components/team/TeamProfileManager.test.tsx`
 - [TemplateLabelSettings](modules/TemplateLabelSettings.md) - `frontend/src/components/settings/TemplateLabelSettings.tsx`
 - [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) - `frontend/src/components/settings/TemplateLabelSettings.test.tsx`
+- [Textarea](modules/Textarea.md) - `frontend/src/components/common/Textarea.tsx`
 - [TimeEntriesPanel](modules/TimeEntriesPanel.md) - `frontend/src/components/tasks/TimeEntriesPanel.tsx`
 - [TimeEntriesPanel.test](modules/TimeEntriesPanel.test.md) - `frontend/src/components/tasks/TimeEntriesPanel.test.tsx`
 - [TimeEntriesReport](modules/TimeEntriesReport.md) - `frontend/src/components/projects/TimeEntriesReport.tsx`
 - [TimeEntriesReport.test](modules/TimeEntriesReport.test.md) - `frontend/src/components/projects/TimeEntriesReport.test.tsx`
 - [ToastProvider](modules/ToastProvider.md) - `frontend/src/components/feedback/ToastProvider.tsx`
+- [ToastProvider.test](modules/ToastProvider.test.md) - `frontend/src/components/feedback/ToastProvider.test.tsx`
 - [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
+- [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) - `frontend/src/components/common/UnsavedLeaveGuard.tsx`
+- [UnscheduledTasks](modules/UnscheduledTasks.md) - `frontend/src/components/gantt/UnscheduledTasks.tsx`
+- [UnscheduledTasks.test](modules/UnscheduledTasks.test.md) - `frontend/src/components/gantt/UnscheduledTasks.test.tsx`
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
 - [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
 - [VacationCsvImport](modules/VacationCsvImport.md) - `frontend/src/components/team/VacationCsvImport.tsx`
 - [VacationManager](modules/VacationManager.md) - `frontend/src/components/team/VacationManager.tsx`
+- [WithheldValuesNote](modules/WithheldValuesNote.md) - `frontend/src/components/settings/WithheldValuesNote.tsx`
 - [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
 - [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
 - [WorkRefreshStatus](modules/WorkRefreshStatus.md) - `frontend/src/components/feedback/WorkRefreshStatus.tsx`
@@ -1835,11 +1912,13 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [check_model_aware_routing_closeout](modules/check_model_aware_routing_closeout.md) - Validate the tracked model-aware routing closure inventory.
 - [check_postgresql_documentation](modules/check_postgresql_documentation.md) - Fail closed when the PostgreSQL pre-cutover documentation drifts.
 - [ci_runtime](modules/ci_runtime.md) - Bounded native commands with streamed logs and atomic progress receipts.
+- [claimTime](modules/claimTime.md) - /** * "18:42 GMT+3" for a claim that ends today, a short date and time otherwise: the reader's * local time, with its zone named so it reads unambiguously next to UTC times elsewhere. */
 - [cli_closeout](modules/cli_closeout.md) - Command-line interface for PostgreSQL release publication and closeout.
 - [cli_cutover](modules/cli_cutover.md) - Command-line coordinator for signed PostgreSQL cutover evidence.
 - [cli_database_migration](modules/cli_database_migration.md) - Operational SQLite-to-PostgreSQL migration command.
 - [cli_server_acceptance](modules/cli_server_acceptance.md) - Run the bounded self-hosted server acceptance profile.
 - [collect](modules/collect.md) - Collect sealed PostgreSQL evidence and derive qualification metrics.
+- [colorRoles.test](modules/colorRoles.test.md) - `frontend/src/styles/colorRoles.test.ts`
 - [commandMenuEvents](modules/commandMenuEvents.md) - `frontend/src/components/layout/commandMenuEvents.ts`
 - [commands](modules/commands.md) - Explicit transaction ownership shared by HTTP, MCP and service commands.
 - [compare](modules/compare.md) - Create a sealed, machine-readable baseline versus tuned load comparison.
@@ -1887,7 +1966,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [finalize](modules/finalize.md) - Bind post-run external evidence to one sealed client load result.
 - [focusLifecycle](modules/focusLifecycle.md) - `frontend/src/utils/focusLifecycle.ts`
 - [focusLifecycle.test](modules/focusLifecycle.test.md) - `frontend/src/utils/focusLifecycle.test.ts`
+- [formControlLabels.test](modules/formControlLabels.test.md) - `frontend/src/components/common/formControlLabels.test.ts`
 - [formatDate](modules/formatDate.md) - `frontend/src/utils/formatDate.ts`
+- [formatsAndWording.test](modules/formatsAndWording.test.md) - `frontend/src/i18n/formatsAndWording.test.ts`
 - [ganttService](modules/ganttService.md) - `frontend/src/services/ganttService.ts`
 - [generate_agent_team_contract](modules/generate_agent_team_contract.md) - Generate the published JSON Schema for the portable agent-team master.
 - [generate_agent_team_report_contract](modules/generate_agent_team_report_contract.md) - Generate the JSON Schema for the bounded agent-team setup report.
@@ -1906,6 +1987,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http_authority](modules/http_authority.md) - Fail-closed HTTP identity resolution and explicit public capability boundaries.
 - [i18n](modules/i18n.md) - `frontend/src/i18n/i18n.ts`
 - [i18n.test](modules/i18n.test.md) - `frontend/src/i18n/i18n.test.ts`
+- [iconButtonTooltips.test](modules/iconButtonTooltips.test.md) - `frontend/src/components/common/iconButtonTooltips.test.ts`
 - [identityContext](modules/identityContext.md) - `frontend/src/features/identity/identityContext.ts`
 - [identityService](modules/identityService.md) - `frontend/src/features/identity/identityService.ts`
 - [identity_service](modules/identity_service.md) - Trusted OIDC sign-in and durable principal/session lifecycle.
@@ -1922,13 +2004,18 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [labelService](modules/labelService.md) - `frontend/src/services/labelService.ts`
 - [label_service](modules/label_service.md) - Service for governed label taxonomy and built-in defaults.
 - [labels](modules/labels.md) - Label taxonomy API router.
+- [landing.en](modules/landing.en.md) - `frontend/src/i18n/landing.en.ts`
+- [landing.ru](modules/landing.ru.md) - `frontend/src/i18n/landing.ru.ts`
 - [language_service](modules/language_service.md) - Language resolution helpers for UI and AI output.
 - [leases](modules/leases.md) - Short-lived exact-target action leases parented to durable attempt starts.
+- [literals.ru](modules/literals.ru.md) - /** Russian copy for shared literal strings; its own chunk keeps the main Russian catalog under the route budget. */
 - [llm_service](modules/llm_service.md) - LLM service for task formalization and schedule explanation.
 - [load_common](modules/load_common.md) - Shared, fail-closed contracts for the WorkChord load and qualification tools.
 - [loader](modules/loader.md) - Installed-resource loader for the PostgreSQL machine contract bundle.
 - [local_baseline](modules/local_baseline.md) - Summarize declared local observations without issuing capacity certification.
 - [maintenance](modules/maintenance.md) - Fail-closed maintenance/validation authority shared by REST, MCP, and workers.
+- [manifestLocations](modules/manifestLocations.md) - /** * Where things are in the manifest editor: the line of each JSON path, so a * problem can say "line 12" and the editor can jump there. */
+- [manifestLocations.test](modules/manifestLocations.test.md) - `frontend/src/features/agentTeamSetup/manifestLocations.test.ts`
 - [mcp_agent_tools](modules/mcp_agent_tools.md) - Framework-neutral MCP tool handlers for agent task access.
 - [mcp_server](modules/mcp_server.md) - MCP server facade for external LLM-agent integrations.
 - [migrations_env](modules/migrations_env.md) - Alembic environment configuration.
@@ -1960,6 +2047,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [models_template](modules/models_template.md) - Reusable work template model.
 - [models_time_entry](modules/models_time_entry.md) - Private explicit work records and retained corrections, independent of task state.
 - [models_triage](modules/models_triage.md) - Triage item model.
+- [mutationFeedback](modules/mutationFeedback.md) - `frontend/src/features/mutationFeedback.ts`
+- [mutationFeedback.test](modules/mutationFeedback.test.md) - `frontend/src/features/mutationFeedback.test.tsx`
 - [mutation_versions](modules/mutation_versions.md) - Server-controlled version rollout with explicit offline repair separation.
 - [native_connection](modules/native_connection.md) - Short-lived browser consent for a proof-bound native session.
 - [native_session_service](modules/native_session_service.md) - Explicit browser consent and one-use proof-bound native authentication.
@@ -1972,6 +2061,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [outbound_webhooks](modules/outbound_webhooks.md) - Outbound webhook target and delivery API router.
 - [overviewTaskThread](modules/overviewTaskThread.md) - `frontend/src/features/overview/overviewTaskThread.ts`
 - [pagination](modules/pagination.md) - `frontend/src/i18n/pagination.ts`
+- [plan.ru](modules/plan.ru.md) - `frontend/src/i18n/plan.ru.ts`
 - [planShareService](modules/planShareService.md) - `frontend/src/services/planShareService.ts`
 - [plan_checkpoints](modules/plan_checkpoints.md) - The six plan checkpoints people and the PM read, derived once on the server.
 - [plan_share_service](modules/plan_share_service.md) - Creation, ownership, and revocation of immutable plan shares.
@@ -1989,6 +2079,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [planningTaskIssues.test](modules/planningTaskIssues.test.md) - `frontend/src/features/planningMasters/planningTaskIssues.test.ts`
 - [planning_input_context](modules/planning_input_context.md) - Complete permission-safe observations for shared planning input mutations.
 - [planning_inputs](modules/planning_inputs.md) - Validated working zones and optional aggregate revisions for shared inputs.
+- [planning_issues](modules/planning_issues.md) - One rule for the planning gaps people and the PM see: "needs an assignee" and "missing effort".
 - [postcss.config](modules/postcss.config.md) - `frontend/postcss.config.js`
 - [postgres_runtime](modules/postgres_runtime.md) - Own an isolated PostgreSQL cluster on a native runner.
 - [postgresql___init__](modules/postgresql___init__.md) - Installed PostgreSQL autonomous-program contract bundle.
@@ -2096,6 +2187,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [services_work_metrics](modules/services_work_metrics.md) - Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 - [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
 - [session_service](modules/session_service.md) - Opaque browser-session resolution and trusted request audit metadata.
+- [settings_read](modules/settings_read.md) - Read-only settings for people without the admin key.
 - [setup](modules/setup.md) - `frontend/src/test/setup.ts`
 - [setup_agent_team](modules/setup_agent_team.md) - Validate, plan, apply, and inspect a WorkChord agent-team master.
 - [signing](modules/signing.md) - Detached remote-signing envelopes and pinned public-key verification.
@@ -2114,6 +2206,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [statusScopes.test](modules/statusScopes.test.md) - `frontend/src/features/agentTeamSetup/statusScopes.test.ts`
 - [support___init__](modules/support___init__.md) - Reusable test infrastructure for database and concurrency qualification.
 - [support_database](modules/support_database.md) - Safety-fenced lifecycle management for disposable test databases.
+- [surfaces.ru](modules/surfaces.ru.md) - /** Russian copy for per-surface UI strings; its own chunk keeps the main Russian catalog under the route budget. */
 - [systemSettings](modules/systemSettings.md) - `frontend/src/types/systemSettings.ts`
 - [systemSettingsService](modules/systemSettingsService.md) - `frontend/src/services/systemSettingsService.ts`
 - [system_settings_service](modules/system_settings_service.md) - DB-backed runtime system settings resolution.
@@ -2127,6 +2220,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [taskFilters](modules/taskFilters.md) - `frontend/src/utils/taskFilters.ts`
 - [taskFilters.test](modules/taskFilters.test.md) - `frontend/src/utils/taskFilters.test.ts`
 - [taskService](modules/taskService.md) - `frontend/src/services/taskService.ts`
+- [taskTransitions](modules/taskTransitions.md) - `frontend/src/features/taskTransitions.ts`
+- [taskTransitions.test](modules/taskTransitions.test.md) - `frontend/src/features/taskTransitions.test.ts`
 - [taskViewState](modules/taskViewState.md) - `frontend/src/features/savedViews/taskViewState.ts`
 - [task_brief_service](modules/task_brief_service.md) - Canonical brief rendering, conservative legacy conversion and evidence commands.
 - [task_bulk_operation_service](modules/task_bulk_operation_service.md) - Selected-task bulk operation orchestration.
@@ -2203,6 +2298,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_local_baseline](modules/test_local_baseline.md) - Local measurements retain limits and cannot become formal certification.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_metric_matches](modules/test_metric_matches.md) - A work-metric count and the list it opens are chosen by the same predicate.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
 - [test_mutation_versions](modules/test_mutation_versions.md) - Version rollout rejects missing inputs without weakening identity or rollback.
 - [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
@@ -2211,6 +2307,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
+- [test_planning_issues](modules/test_planning_issues.md) - The "needs an assignee" and "missing effort" rule shared by counts and filters.
 - [test_planning_read_models](modules/test_planning_read_models.md) - Independent synthetic counterexamples for read-model and inherited policy parity.
 - [test_postgresql_closeout](modules/test_postgresql_closeout.md) - Contracts for DBM-DOC-002 publication and DBM-CLOSE-001 decisions.
 - [test_postgresql_concurrency](modules/test_postgresql_concurrency.md) - DBM-RUN-001 real-PostgreSQL concurrency and invariant matrix.
@@ -2234,6 +2331,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
+- [test_settings_read_access](modules/test_settings_read_access.md) - People without the admin key read settings and the pipeline; changes keep the key.
 - [test_shared_member_revisions](modules/test_shared_member_revisions.md) - Shared-input scopes and destructive writes retain initial aggregate guards.
 - [test_shared_profile_revisions](modules/test_shared_profile_revisions.md) - Profile skill writes retain initial complete planning observations.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
@@ -2247,6 +2345,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_time_entries](modules/test_time_entries.md) - Private explicit minutes, retained corrections and independent recovery behavior.
 - [test_time_reports](modules/test_time_reports.md) - Recorded coverage and manager totals preserve private entry boundaries.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
+- [test_unscheduled_tasks](modules/test_unscheduled_tasks.md) - The scheduler says which planned tasks it left without dates, and readiness says how to fix it.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
 - [test_workflow_vocabulary](modules/test_workflow_vocabulary.md) - The shared workflow vocabulary is rendered identically into every role skill.
@@ -2305,6 +2404,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [vitest.config](modules/vitest.config.md) - `frontend/vitest.config.ts`
 - [web_intake_service](modules/web_intake_service.md) - Controlled external web intake service.
 - [workMetrics](modules/workMetrics.md) - `frontend/src/types/workMetrics.ts`
+- [workNumbers](modules/workNumbers.md) - /** * One way to write work numbers everywhere: counts, decimals, percent and effort * in days, in the reader's locale. A missing value returns null so the caller says * "unknown" in words instead of showing 0. */
 - [workQueryFreshness](modules/workQueryFreshness.md) - `frontend/src/features/workQueryFreshness.ts`
 - [workQueryFreshness.test](modules/workQueryFreshness.test.md) - `frontend/src/features/workQueryFreshness.test.ts`
 - [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
@@ -2397,6 +2497,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LabelService_create_label](workflows/LabelService_create_label.md) - entry: `label_service.LabelService.create_label`
 - [NativeSessionService_approve](workflows/NativeSessionService_approve.md) - entry: `native_session_service.NativeSessionService.approve`
 - [NativeSessionService_connection](workflows/NativeSessionService_connection.md) - entry: `native_session_service.NativeSessionService.connection`
+- [NativeSessionService_deny](workflows/NativeSessionService_deny.md) - entry: `native_session_service.NativeSessionService.deny`
 - [NativeSessionService_exchange](workflows/NativeSessionService_exchange.md) - entry: `native_session_service.NativeSessionService.exchange`
 - [NativeSessionService_start](workflows/NativeSessionService_start.md) - entry: `native_session_service.NativeSessionService.start`
 - [OutboundWebhookService__attempt_delivery](workflows/OutboundWebhookService__attempt_delivery.md) - entry: `outbound_webhook_service.OutboundWebhookService._attempt_delivery`
@@ -2457,10 +2558,12 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [build_examples](workflows/build_examples.md) - entry: `generate_mobile_contract_fixtures.build_examples`
 - [callback](workflows/callback.md) - entry: `identity.callback`
 - [change_task_status](workflows/change_task_status.md) - entry: `tasks.change_task_status`
+- [choose_local_profile](workflows/choose_local_profile.md) - entry: `identity.choose_local_profile`
 - [convert_triage_item_to_backlog](workflows/convert_triage_item_to_backlog.md) - entry: `triage.convert_triage_item_to_backlog`
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
+- [enforce_http_authority](workflows/enforce_http_authority.md) - entry: `http_authority.enforce_http_authority`
 - [evaluate_agent_readiness](workflows/evaluate_agent_readiness.md) - entry: `agent_readiness.evaluate_agent_readiness`
 - [export_iteration](workflows/export_iteration.md) - entry: `export.export_iteration`
 - [final_table_results](workflows/final_table_results.md) - entry: `transfer._final_table_results`
@@ -2477,6 +2580,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [login](workflows/login.md) - entry: `identity.login`
 - [logout](workflows/logout.md) - entry: `identity.logout`
 - [main](workflows/main.md) - entry: `server_acceptance.main`
+- [me](workflows/me.md) - entry: `identity.me`
+- [metric_matches](workflows/metric_matches.md) - entry: `task_domain.metric_matches`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
 - [planning_input_reservation](workflows/planning_input_reservation.md) - entry: `commands.planning_input_reservation`
 - [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
@@ -2538,6 +2643,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-callback](flows/http-callback.md) - entry: `callback`
 - [http-capabilities](flows/http-capabilities.md) - entry: `capabilities`
 - [http-change_task_status](flows/http-change_task_status.md) - entry: `change_task_status`
+- [http-choose_local_profile](flows/http-choose_local_profile.md) - entry: `choose_local_profile`
 - [http-claim_task](flows/http-claim_task.md) - entry: `claim_task`
 - [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
 - [http-classify_triage_item](flows/http-classify_triage_item.md) - entry: `classify_triage_item`
@@ -2613,6 +2719,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-delete_team_member_profile_skill](flows/http-delete_team_member_profile_skill.md) - entry: `delete_team_member_profile_skill`
 - [http-delete_vacation](flows/http-delete_vacation.md) - entry: `delete_vacation`
 - [http-delivery_metrics](flows/http-delivery_metrics.md) - entry: `delivery_metrics`
+- [http-deny_native_connection](flows/http-deny_native_connection.md) - entry: `deny_native_connection`
 - [http-describe_native_connection](flows/http-describe_native_connection.md) - entry: `describe_native_connection`
 - [http-disable_agent_model_binding](flows/http-disable_agent_model_binding.md) - entry: `disable_agent_model_binding`
 - [http-disable_agent_model_catalog_entry](flows/http-disable_agent_model_catalog_entry.md) - entry: `disable_agent_model_catalog_entry`
@@ -2641,6 +2748,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-get_agent_task_context](flows/http-get_agent_task_context.md) - entry: `get_agent_task_context`
 - [http-get_agent_team_setup_report](flows/http-get_agent_team_setup_report.md) - entry: `get_agent_team_setup_report`
 - [http-get_agent_team_setup_status](flows/http-get_agent_team_setup_status.md) - entry: `get_agent_team_setup_status`
+- [http-get_agent_team_starting_points](flows/http-get_agent_team_starting_points.md) - entry: `get_agent_team_starting_points`
 - [http-get_availability](flows/http-get_availability.md) - entry: `get_availability`
 - [http-get_calendar](flows/http-get_calendar.md) - entry: `get_calendar`
 - [http-get_calendars](flows/http-get_calendars.md) - entry: `get_calendars`
@@ -2758,6 +2866,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-me](flows/http-me.md) - entry: `me`
 - [http-member_planning_context](flows/http-member_planning_context.md) - entry: `member_planning_context`
 - [http-merge_tasks](flows/http-merge_tasks.md) - entry: `merge_tasks`
+- [http-metric_matches](flows/http-metric_matches.md) - entry: `metric_matches`
 - [http-metrics_endpoint](flows/http-metrics_endpoint.md) - entry: `metrics_endpoint`
 - [http-move_task](flows/http-move_task.md) - entry: `move_task`
 - [http-native_token](flows/http-native_token.md) - entry: `native_token`

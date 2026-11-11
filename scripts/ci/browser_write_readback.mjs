@@ -31,10 +31,10 @@ try {
   await page.getByRole('link', { name: 'Orchard', exact: true }).waitFor();
   await page.getByRole('link', { name: 'Harbor', exact: true }).waitFor();
   const name = 'Browser delivery readback';
-  await page.getByRole('button', { name: 'New Project', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Project Name', exact: true }).fill(name);
+  await page.getByRole('button', { name: 'New project', exact: true }).click();
+  await page.getByRole('textbox', { name: 'Project name', exact: true }).fill(name);
   const saved = page.waitForResponse(response => response.url().endsWith('/api/projects') && response.request().method() === 'POST');
-  await page.getByRole('button', { name: 'Create Project', exact: true }).click();
+  await page.getByRole('button', { name: 'Create project', exact: true }).click();
   const response = await saved;
   assert.equal(response.status(), 201);
   const created = await response.json();

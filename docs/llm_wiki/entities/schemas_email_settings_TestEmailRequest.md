@@ -1,6 +1,6 @@
 # TestEmailRequest
 
-**Location:** `backend/app/schemas/email_settings.py:32`
+**Location:** `backend/app/schemas/email_settings.py:34`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_email_settings](../modules/schemas_email_settings.md)

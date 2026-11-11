@@ -105,6 +105,12 @@ class IterationSummary(WorkMetricSummary):
     total_effort_days: float
     team_capacity_days: float
     overdue_tasks_count: int
+    # What "are we on track for the end date?" needs, from the same leaf aggregate.
+    status_counts: dict[str, int] = Field(default_factory=dict)
+    blocked_tasks: int = 0
+    remaining_effort_days: float = 0.0
+    scheduled_finish: Optional[date] = None
+    remaining_working_days: Optional[int] = None
 
 
 class PlanCheckpoint(BaseModel):
@@ -119,11 +125,18 @@ class IterationPlanningReadinessSummary(BaseModel):
     """Compact planning inputs used by persistent navigation."""
     iteration_id: int
     team_member_count: int
+    # Capacity rows whose profile is an agent; the rest are people (decision: agents count as capacity).
+    team_agent_count: int = 0
     team_capacity_hours: float
+    # Effort of the iteration's planning leaves, and the part assigned to a capacity row.
+    planned_hours: float = 0.0
+    assigned_hours: float = 0.0
     team_members_no_capacity: int
     task_count: int
     tasks_without_assignee: int
     tasks_without_effort: int
+    # Planned leaves an agent is working on that have no capacity row.
+    tasks_agent_without_capacity: int = 0
     has_schedule: bool
     risk_count: int
     checkpoints: list[PlanCheckpoint] = Field(default_factory=list)

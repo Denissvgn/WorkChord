@@ -20,6 +20,7 @@ def plan_checkpoints(
     tasks_without_assignee: int,
     tasks_without_effort: int,
     has_schedule: bool,
+    tasks_agent_without_capacity: int = 0,
     risk_count: int,
 ) -> list[dict[str, Any]]:
     """Return the ordered checkpoints for one existing planning period."""
@@ -43,9 +44,14 @@ def plan_checkpoints(
     items.append(checkpoint("work", "todo", "no_tasks") if task_count == 0 else checkpoint("work", "done", tasks=task_count))
     if task_count == 0:
         items.append(checkpoint("blockers", "blocked", "add_work_first"))
-    elif tasks_without_assignee or tasks_without_effort:
-        codes = [code for code, count in (("unassigned_tasks", tasks_without_assignee), ("tasks_without_effort", tasks_without_effort)) if count]
-        items.append(checkpoint("blockers", "warn", *codes, unassigned_tasks=tasks_without_assignee, tasks_without_effort=tasks_without_effort))
+    elif tasks_without_assignee or tasks_without_effort or tasks_agent_without_capacity:
+        codes = [code for code, count in (
+            ("unassigned_tasks", tasks_without_assignee),
+            ("tasks_without_effort", tasks_without_effort),
+            ("agent_working_no_capacity", tasks_agent_without_capacity),
+        ) if count]
+        items.append(checkpoint("blockers", "warn", *codes, unassigned_tasks=tasks_without_assignee,
+                                tasks_without_effort=tasks_without_effort, agent_working_no_capacity=tasks_agent_without_capacity))
     else:
         items.append(checkpoint("blockers", "done"))
     if not all(item["state"] == "done" for item in items):

@@ -1,9 +1,14 @@
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+
+const appVersion = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version as string
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // About shows the version that was built.
+  define: { 'import.meta.env.VITE_APP_VERSION': JSON.stringify(appVersion) },
   build: {
     manifest: true,
     chunkSizeWarningLimit: 400,
@@ -14,6 +19,10 @@ export default defineConfig({
           if (id.includes('/src/i18n/teamwork.en.ts')) return 'app-teamwork-i18n'
           if (id.includes('/src/i18n/teamwork.ru.ts')) return 'app-teamwork-i18n-ru'
           if (id.includes('/src/i18n/agentTeamSetup.ru.ts')) return 'app-agent-team-i18n-ru'
+          if (id.includes('/src/i18n/plan.ru.ts')) return 'app-plan-i18n-ru'
+          if (id.includes('/src/i18n/landing.ru.ts')) return 'app-landing-i18n-ru'
+          if (id.includes('/src/i18n/surfaces.ru.ts')) return 'app-surfaces-i18n-ru'
+          if (id.includes('/src/i18n/literals.ru.ts')) return 'app-literals-i18n-ru'
           if (id.includes('/src/i18n/resources.en.ts')) return 'app-i18n'
           if (id.includes('/src/i18n/resources.ru.ts')) return 'app-i18n-ru'
           if (id.includes('commonjsHelpers')) return 'vendor-react'

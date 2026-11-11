@@ -53,5 +53,5 @@ flowchart LR
 |-------|------|-------|-------------|
 | [EmailSettingsUpdate](../entities/schemas_email_settings_EmailSettingsUpdate.md) | 7 | `BaseModel` | Schema for updating email settings. |
 | [EmailSettingsResponse](../entities/EmailSettingsResponse.md) | 20 | `BaseModel` | Schema for email settings response (password masked). |
-| [TestEmailRequest](../entities/schemas_email_settings_TestEmailRequest.md) | 32 | `BaseModel` | Schema for test email request. |
-| [TestEmailResponse](../entities/schemas_email_settings_TestEmailResponse.md) | 37 | `BaseModel` | Schema for test email response. |
+| [TestEmailRequest](../entities/schemas_email_settings_TestEmailRequest.md) | 34 | `BaseModel` | Schema for test email request. |
+| [TestEmailResponse](../entities/schemas_email_settings_TestEmailResponse.md) | 39 | `BaseModel` | Schema for test email response. |

@@ -7,6 +7,7 @@ import { projectService } from '../../services/projectService';
 import { QueryErrorState } from '../feedback/QueryState';
 import type { DeliveryQueueItem } from '../../types/deliveryMetrics';
 import { ExecutionUsagePanel } from './ExecutionUsagePanel';
+import { formatDateTime } from '../../utils/formatDate';
 
 export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => {
     const { t, i18n } = useTranslation();
@@ -61,7 +62,7 @@ export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => 
         {enabled && report.isError && <QueryErrorState error={report.error} onRetry={() => { void report.refetch(); }} />}
         {data && <>
             <p className="text-sm text-content-secondary">{t('deliveryAnalytics.observedWindow', {
-                start: new Date(data.window_start).toLocaleString(i18n.language), end: new Date(data.window_end).toLocaleString(i18n.language) })}</p>
+                start: formatDateTime(data.window_start, i18n.language), end: formatDateTime(data.window_end, i18n.language) })}</p>
             <dl className="flex flex-wrap gap-x-8 gap-y-3">
                 {([['accepted', data.accepted_leaf_tasks], ['rejected', data.rejection_events], ['canceled', data.canceled_leaf_tasks], ['reopened', data.reopened_events]] as const)
                     .map(([label, value]) => <div key={label} className="flex items-baseline gap-2"><dt className="text-sm text-content-secondary">{t(`deliveryAnalytics.${label}`)}</dt><dd className="font-semibold tabular-nums">{number.format(value)}</dd></div>)}

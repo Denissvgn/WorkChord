@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._
 | `../test/renderWithProviders` | `createTestQueryClient`, `renderWithProviders` | — | compiler-dependent |
 | `../types/task` | `Task` | Declaration | erased |
 | `./MyWorkPage` | `MyWorkPage` | — | compiler-dependent |
-| `@testing-library/react` | `act`, `screen`, `waitFor` | — | compiler-dependent |
+| `@testing-library/react` | `act`, `fireEvent`, `screen`, `waitFor` | — | compiler-dependent |
 | `vitest` | `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
@@ -24,7 +24,7 @@ _Auto-generated from `frontend/src/pages/MyWorkPage.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `api` |
-| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `it`, `it` |
+| Module calls | `api = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `it`, `it`, `it` |
 
 ## Local dependency map
 

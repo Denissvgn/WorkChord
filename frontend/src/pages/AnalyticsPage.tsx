@@ -1,25 +1,27 @@
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { taskService } from '../services/taskService';
 import { iterationService } from '../services/iterationService';
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
-import { NotificationsPanel } from '../components/notifications/NotificationsPanel';
 import { TaskStatusFlow } from '../components/analytics/TaskStatusFlow';
 import { DeliveryAnalytics } from '../components/analytics/DeliveryAnalytics';
+import { OnTrackSummary } from '../components/analytics/OnTrackSummary';
+import { StatusDistribution } from '../components/analytics/StatusDistribution';
 import { SavedViewDashboardCards } from '../components/dashboard/SavedViewDashboardCards';
 import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { useIterationStore } from '../store/iterationStore';
+import { formatDate } from '../utils/formatDate';
 import type { TaskStatusLog } from '../types/task';
 
 interface HistoryGroup { taskTitle: string; logs: TaskStatusLog[]; }
 
 const AnalyticsPage = () => {
     const { selectedIterationId } = useIterationStore();
-    const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const locale = i18n.resolvedLanguage ?? i18n.language;
 
+    // feedback-policy: query loading,error,retry,empty
     const {
         data: history,
         error: historyError,
@@ -45,63 +47,53 @@ const AnalyticsPage = () => {
     if (selectedIterationId === 0) {
         return (
             <PageLayout>
-                <PageHeader
-                    title={t('analytics.title')}
-                    subtitle={t('analytics.selectIteration')}
-                    actions={<button className="btn" onClick={() => navigate('/')}>{t('actions.backToTasks')}</button>}
-                />
+                <PageHeader title={t('analytics.title')} subtitle={t('analytics.selectIteration')} />
                 <DeliveryAnalytics />
             </PageLayout>
         );
     }
 
+    const summary = summaryQuery.data;
+    // The subtitle names the scope the page answers for.
+    const subtitle = summary
+        ? t('analytics.scope', { name: summary.name, start: formatDate(summary.start_date, locale), end: formatDate(summary.end_date, locale) })
+        : t('analytics.scopeLoading');
+
     return (
         <PageLayout>
-            <PageHeader
-                title={t('analytics.title')}
-                subtitle={t('analytics.taskLifecycle')}
-                actions={<button className="btn" onClick={() => navigate('/')}>{t('actions.backToTasks')}</button>}
-            />
+            <PageHeader title={t('analytics.title')} subtitle={subtitle} />
 
             {summaryQuery.isLoading && <p role="status">{t('common.loading')}</p>}
-            <DeliveryAnalytics iterationId={selectedIterationId} />
             {summaryQuery.isError && <QueryErrorState error={summaryQuery.error} onRetry={() => { void summaryQuery.refetch(); }} />}
-            <WorkMetricsLine metrics={summaryQuery.data} />
+            {summary && <div className="space-y-5">
+                <OnTrackSummary summary={summary} />
+                <StatusDistribution summary={summary} />
+                <WorkMetricsLine metrics={summary} scope={{ iteration_id: selectedIterationId }} />
+            </div>}
+
+            <DeliveryAnalytics iterationId={selectedIterationId} />
             <SavedViewDashboardCards iterationId={selectedIterationId} title={t('analytics.savedViewDashboard')}/>
 
             {isHistoryError && (
                 <QueryErrorState error={historyError} onRetry={() => { void refetchHistory(); }} />
             )}
 
-            <div className="wc-content-rail">
-                <div>
-                    <div className="card">
-                        <div className="card-head"><h3>{t('analytics.taskLifecycle')}</h3></div>
-                        <div className="card-pad">
-                            {isLoadingHistory ? (
-                                <div className="muted" style={{textAlign:'center', padding:32}}>{t('analytics.loadingHistory')}</div>
-                            ) : isHistoryError ? null : groupedHistory && Object.keys(groupedHistory).length > 0 ? (
-                                <div style={{display:'flex', flexDirection:'column', gap:16}}>
-                                    {Object.entries(groupedHistory).map(([taskId, group]) => (
-                                        <div key={taskId} style={{border:'1px solid var(--border)', borderRadius:'var(--r-md)', padding:14, background:'var(--panel-2)'}}>
-                                            <div style={{fontWeight:500, marginBottom:10, display:'flex', alignItems:'center', gap:8}}>
-                                                <span style={{width:8, height:8, borderRadius:'50%', background:'var(--accent)', display:'inline-block'}}/>
-                                                {group.taskTitle}
-                                            </div>
-                                            <TaskStatusFlow logs={group.logs}/>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="muted" style={{textAlign:'center', padding:32}}>{t('analytics.noTransitions')}</div>
-                            )}
+            <section className="card" aria-labelledby="task-lifecycle-title">
+                <div className="card-head"><h3 id="task-lifecycle-title">{t('analytics.taskLifecycle')}</h3></div>
+                <div className="card-pad">
+                    {isLoadingHistory ? (
+                        <p role="status" className="muted py-8 text-center">{t('analytics.loadingHistory')}</p>
+                    ) : isHistoryError ? null : groupedHistory && Object.keys(groupedHistory).length > 0 ? (
+                        <div className="space-y-5">
+                            {Object.entries(groupedHistory).map(([taskId, group]) => (
+                                <TaskStatusFlow key={taskId} taskId={Number(taskId)} title={group.taskTitle} logs={group.logs} />
+                            ))}
                         </div>
-                    </div>
+                    ) : (
+                        <p className="muted py-8 text-center">{t('analytics.noTransitions')}</p>
+                    )}
                 </div>
-                <aside className="sticky-rail">
-                    <NotificationsPanel iterationId={selectedIterationId} className="w-full h-full border-0"/>
-                </aside>
-            </div>
+            </section>
         </PageLayout>
     );
 };

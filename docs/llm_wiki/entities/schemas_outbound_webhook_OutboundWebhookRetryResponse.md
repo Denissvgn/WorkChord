@@ -1,6 +1,6 @@
 # OutboundWebhookRetryResponse
 
-**Location:** `backend/app/schemas/outbound_webhook.py:191`
+**Location:** `backend/app/schemas/outbound_webhook.py:195`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md)

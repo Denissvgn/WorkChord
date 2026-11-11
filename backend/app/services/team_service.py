@@ -700,6 +700,10 @@ class TeamService:
             free_days=round(free_days, 2),
             workload_status=status,
             workload_percent=round(workload_percent, 1),
+            capacity_hours=round(capacity.hours, 2),
+            allocated_hours=round(float(allocated_hours), 2),
+            free_hours=round(capacity.hours - float(allocated_hours), 2),
+            nominal_day_hours=calendar.nominal_day_hours,
         )
 
     @schedule_input_command("member")

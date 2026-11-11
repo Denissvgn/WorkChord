@@ -87,9 +87,9 @@ sequenceDiagram
     p2-->>p30: HTTPException (backend/app/routers/task_domain.py:domain_result)(409, detail=exc.detail(...))
 ```
 
-> Call sequence diagram shows 30 of 129 interactions; 99 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 130 interactions; 100 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 44 (42 omitted); unresolved 2 of 44 (42 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 44 (42 omitted); unresolved 2 of 45 (43 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -99,7 +99,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/routers/task_domain.py:domain_result` | 3 | - | external | 5 |
 | `backend/app/commands.py:current_command` | 15 | - | external | 2 |
 | `backend/app/commands.py:current_command` | 15 | - | unresolved | 1 |
-| `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | unresolved | 5 |
+| `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | unresolved | 6 |
 | `backend/app/services/task_service.py:TaskService.task_to_response` | 14 | - | external | 5 |
 | `backend/app/services/work_metrics.py:working_today` | 24 | - | unresolved | 2 |
 | `backend/app/services/work_metrics.py:working_today` | 24 | [backend/app/utils/time.py](../modules/time.md) | internal | 2 |
@@ -187,8 +187,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_backlog_task | HTTPException (backend/app/routers/task_…in.py:create_backlog_task) | 173 | `HTTPException(422, detail=[...])` |
-| create_backlog_task | domain_result | 174 | `domain_result(...)` |
+| create_backlog_task | HTTPException (backend/app/routers/task_…in.py:create_backlog_task) | 206 | `HTTPException(422, detail=[...])` |
+| create_backlog_task | domain_result | 207 | `domain_result(...)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 51 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 53 | `HTTPException(404, detail=str(...))` |
@@ -196,8 +196,8 @@ flowchart LR
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 55 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
 | domain_result | HTTPException (backend/app/routers/task_domain.py:domain_result) | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| create_backlog_task | TaskService(…).create | 174 | `TaskService(db).create(None, data.model_copy(...))` |
-| create_backlog_task | TaskService | 174 | `TaskService(db)` |
+| create_backlog_task | TaskService(…).create | 207 | `TaskService(db).create(None, data.model_copy(...))` |
+| create_backlog_task | TaskService | 207 | `TaskService(db)` |
 
 ### Boundary effects
 
@@ -207,13 +207,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `create_backlog_task` | `HTTPException` | 173 |
+| external_call | `create_backlog_task` | `HTTPException` | 206 |
 | external_call | `domain_result` | `HTTPException` | 51 |
 | unresolved_call | `domain_result` | `exc.detail` | 51 |
 | external_call | `domain_result` | `HTTPException` | 53 |
 | external_call | `domain_result` | `HTTPException` | 55 |
 | external_call | `domain_result` | `HTTPException` | 57 |
-| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 174 |
+| unresolved_call | `create_backlog_task` | `TaskService(db).create` | 207 |
 | step_limit | `create_backlog_task` | `first 12 steps` | 0 |
 
 ## Behavior

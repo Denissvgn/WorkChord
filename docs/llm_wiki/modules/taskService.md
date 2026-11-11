@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/services/taskService.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `taskService` |
+| Exports | `MetricMatchPage`, `MetricScope`, `WorkMetricName`, `taskService` |
 | Constants | `taskService` |
 
 ## Local dependency map
@@ -41,7 +41,15 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (28) |
+| Inbound | `frontend` (32) |
 | Outbound | `frontend` (3) |
 
-> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+
+## Classes
+
+| Class | Kind | Line | Bases / Target | Description |
+|-------|------|------|----------------|-------------|
+| [MetricMatchPage](../entities/MetricMatchPage.md) | Interface | 277 | — | — |
+| [WorkMetricName](../entities/WorkMetricName.md) | Type alias | 274 | <pre><code>&#39;total&#39; &#124; &#39;planned&#39; &#124; &#39;active&#39; &#124; &#39;resolved&#39; &#124; &#39;closed&#39; &#124; &#39;implemented&#39; &#124; &#39;accepted&#39; &#124; &#39;blocked&#39;&#10;    &#124; &#39;overdue&#39; &#124; &#39;late&#95;start&#39; &#124; &#39;iteration&#95;overflow&#39; &#124; &#39;acceptance&#95;unknown&#39; &#124; &#39;unknown&#95;estimate&#39;</code></pre> | — |
+| [MetricScope](../entities/MetricScope.md) | Type alias | 276 | `{ project_id: number } \| { iteration_id: number } \| { release_id: number }` | — |

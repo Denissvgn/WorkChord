@@ -15,7 +15,7 @@ describe('PlanReturnBar', () => {
         })).toHaveTextContent(i18n.t('plan.steps.schedule.title'));
         expect(screen.getByRole('link', {
             name: i18n.t('plan.master.returnToCheckpoint'),
-        })).toHaveAttribute('href', '/plan/master?step=schedule');
+        })).toHaveAttribute('href', '/plan/master?step=schedule&returned=1');
     });
 
     it('ignores unknown or path-like return values', () => {

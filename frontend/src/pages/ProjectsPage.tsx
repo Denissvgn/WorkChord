@@ -20,7 +20,7 @@ import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../componen
 import { InitiativeForm } from '../components/projects/InitiativeForm';
 import { ProjectForm } from '../components/projects/ProjectForm';
 import { projectStatusBadgeClassName } from '../components/projects/projectStatusStyles';
-import { InlineEmptyState, PageHeader, PageLayout, TableFrame } from '../components/ui';
+import { InlineEmptyState, OverflowMenu, PageHeader, PageLayout, TableFrame } from '../components/ui';
 import { projectService } from '../services/projectService';
 import { savedViewService } from '../services/savedViewService';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -34,6 +34,9 @@ import type {
     ProjectPortfolioSummary,
     ProjectStatus,
 } from '../types/project';
+import { feedbackMessage } from '../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../features/mutationFeedback';
+import { formatEffortDays } from '../utils/workNumbers';
 const projectStatusLabelKeys: Record<ProjectStatus, string> = {
     proposed: 'surfaces.projectsPage.proposed',
     planned: 'surfaces.projectsPage.planned',
@@ -83,12 +86,6 @@ const riskClassName = (risk: string) => {
     }
 };
 
-const formatEffortDays = (value: number | undefined, language: string) => new Intl.NumberFormat(language, {
-    style: 'unit',
-    unit: 'day',
-    unitDisplay: 'narrow',
-    maximumFractionDigits: 1,
-}).format(value ?? 0);
 
 const projectFiltersFromSavedView = (view: SavedView) => {
     const raw = view.filters_json;
@@ -106,12 +103,26 @@ const projectFiltersFromSavedView = (view: SavedView) => {
     };
 };
 
+type SortKey = 'name' | 'status' | 'owner' | 'target' | 'tasks' | 'effort' | 'signals';
+const SORT_COLUMNS: Array<{ key: SortKey; labelKey: string; center?: boolean }> = [
+    { key: 'name', labelKey: 'surfaces.projectsPage.project' },
+    { key: 'status', labelKey: 'surfaces.projectsPage.status' },
+    { key: 'owner', labelKey: 'surfaces.projectsPage.owner' },
+    { key: 'target', labelKey: 'surfaces.projectsPage.target' },
+    { key: 'tasks', labelKey: 'surfaces.projectsPage.tasks', center: true },
+    { key: 'effort', labelKey: 'surfaces.projectsPage.effort', center: true },
+    { key: 'signals', labelKey: 'surfaces.projectsPage.signals' },
+];
+const RISK_ORDER: Record<string, number> = { unknown: 1, on_track: 0, at_risk: 2, off_track: 3 };
+
 const ProjectSummaryCells = ({
     isLoading,
     summary,
+    health,
 }: {
     isLoading: boolean;
     summary?: ProjectPortfolioSummary;
+    health: ProjectHealth;
 }) => {
     const { t, i18n } = useTranslation();
 
@@ -130,34 +141,41 @@ const ProjectSummaryCells = ({
     if (!summary) {
         return (
             <>
-                {[0, 1, 2].map(cell => (
-                    <td key={cell} className="px-4 py-3 text-center text-content-tertiary">—</td>
-                ))}
+                <td className="px-3 py-3 text-center text-content-tertiary">—</td>
+                <td className="px-3 py-3 text-center text-content-tertiary">—</td>
+                <td className="px-3 py-3">
+                    <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(health))}>{t(projectHealthLabelKeys[health])}</span>
+                </td>
             </>
         );
     }
 
     return (
         <>
-            <td className="px-4 py-3 text-center">
+            <td className="px-3 py-3 text-center">
                 <span className="font-medium text-content-primary">{summary?.total_tasks ?? 0}</span>
                 <span className="ml-1 text-xs text-content-secondary">
                     / {summary?.completed_tasks ?? 0} {t('surfaces.projectsPage.done')}
                 </span>
             </td>
-            <td className="px-4 py-3 text-center">
+            <td className="px-3 py-3 text-center">
                 <span className="font-medium text-content-primary">
-                    {formatEffortDays(summary?.remaining_effort_days, i18n.language)}
+                    {formatEffortDays(summary?.remaining_effort_days, i18n.language) ?? t('common.unknown')}
                 </span>
                 <span className="ml-1 text-xs text-content-secondary">
-                    / {formatEffortDays(summary?.total_effort_days, i18n.language)}
+                    / {formatEffortDays(summary?.total_effort_days, i18n.language) ?? t('common.unknown')}
                 </span>
             </td>
-            <td className="px-4 py-3">
-                <div className="flex justify-center gap-2">
-                    {summary && (
+            <td className="px-3 py-3">
+                {/* Health and the delivery signals read together in one place. */}
+                <div className="flex flex-wrap gap-1.5">
+                    {/* Each chip names what it measures; an unknown date risk adds nothing the Target column does not show. */}
+                    <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(health))}>
+                        {t('surfaces.projectsPage.healthSignal', { value: t(projectHealthLabelKeys[health]) })}
+                    </span>
+                    {summary && summary.target_date_risk !== 'unknown' && (
                         <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium', riskClassName(summary.target_date_risk))}>
-                            {t(riskLabelKeys[summary.target_date_risk])}
+                            {t('surfaces.projectsPage.targetSignal', { value: t(riskLabelKeys[summary.target_date_risk]) })}
                         </span>
                     )}
                     {(summary?.blocked_tasks ?? 0) > 0 && (
@@ -200,44 +218,43 @@ const ProjectRow = ({
     summary?: ProjectPortfolioSummary;
 }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    // The whole row opens the project; the name stays a link for keyboard and new-tab use.
+    const openRow = (event: React.MouseEvent<HTMLTableRowElement>) => {
+        if ((event.target as HTMLElement).closest('a, button, [role="menu"]')) return;
+        navigate(`/projects/${project.id}`);
+    };
     return (
-        <tr className="border-b border-border-subtle hover:bg-surface-muted">
-            <td className="px-4 py-3">
+        <tr className="group cursor-pointer border-b border-border-subtle hover:bg-surface-muted" onClick={openRow}>
+            <td className="px-3 py-3">
                 <Link to={`/projects/${project.id}`} className="font-medium text-content-primary hover:text-action">
                     {project.name}
                 </Link>
-                {project.description && (
-                    <p className="mt-1 max-w-md truncate text-xs text-content-secondary">{project.description}</p>
+                {/* The initiative when there is one; "Unassigned" here read as if the project had no owner. */}
+                {(project.initiative || project.description) && (
+                    <p className="mt-1 truncate text-xs text-content-secondary">
+                        {[project.initiative?.name, project.description].filter(Boolean).join(' · ')}
+                    </p>
                 )}
             </td>
-            <td className="px-4 py-3">
-                {project.initiative ? (
-                    <span className="inline-flex max-w-[180px] items-center truncate rounded-full border border-action bg-action-muted px-2 py-0.5 text-xs font-medium text-action">
-                        {project.initiative.name}
-                    </span>
-                ) : (
-                    <span className="text-sm text-content-tertiary">{t('surfaces.projectsPage.unassigned')}</span>
-                )}
-            </td>
-            <td className="px-4 py-3">
-                <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', projectStatusBadgeClassName(project.status))}>
+            <td className="px-3 py-3">
+                <span className={clsx('whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium', projectStatusBadgeClassName(project.status))}>
                     {t(projectStatusLabelKeys[project.status])}
                 </span>
             </td>
-            <td className="px-4 py-3">
-                <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(project.health))}>
-                    {t(projectHealthLabelKeys[project.health])}
-                </span>
-            </td>
-            <td className="px-4 py-3 text-sm text-content-secondary">
+            <td className="px-3 py-3 text-sm text-content-secondary">
                 {formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id, '—')}
             </td>
-            <td className="px-4 py-3 text-sm text-content-secondary">{formatDate(project.target_date)}</td>
-            <ProjectSummaryCells isLoading={isSummaryLoading} summary={summary} />
-            <td className="px-4 py-3 text-right">
-                <Button variant="ghost" size="sm" onClick={() => onEdit(project)}>
-                    {t('surfaces.projectsPage.edit')}
-                </Button>
+            <td className="whitespace-nowrap px-3 py-3 text-sm text-content-secondary">{formatDate(project.target_date)}</td>
+            <ProjectSummaryCells isLoading={isSummaryLoading} summary={summary} health={project.health} />
+            <td className="sticky right-0 bg-surface-card px-2 py-3 text-right group-hover:bg-surface-muted">
+                <OverflowMenu
+                    label={t('surfaces.projectsPage.rowActions', { name: project.name })}
+                    items={[
+                        { label: t('surfaces.projectsPage.open'), onSelect: () => navigate(`/projects/${project.id}`) },
+                        { label: t('surfaces.projectsPage.edit'), onSelect: () => onEdit(project) },
+                    ]}
+                />
             </td>
         </tr>
     );
@@ -257,6 +274,8 @@ const ProjectsPage = () => {
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState<ProjectStatus | ''>('');
     const [healthFilter, setHealthFilter] = useState<ProjectHealth | ''>('');
+    // A portfolio count opens the projects it counts.
+    const [exceptionFilter, setExceptionFilter] = useState<'at_risk' | 'unassessed' | 'unassigned' | null>(null);
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
     const appliedSavedViewIdRef = useRef<number | null>(null);
 
@@ -340,13 +359,40 @@ const ProjectsPage = () => {
             if (healthFilter && project.health !== healthFilter) {
                 return false;
             }
+            if (exceptionFilter === 'at_risk' && !['at_risk', 'off_track'].includes(project.health)) return false;
+            if (exceptionFilter === 'unassessed' && project.health !== 'unknown') return false;
+            if (exceptionFilter === 'unassigned' && project.initiative_id) return false;
             return true;
         });
-    }, [projects, search, statusFilter, healthFilter]);
+    }, [projects, search, statusFilter, healthFilter, exceptionFilter]);
+    const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({ key: 'name', descending: false });
+    const toggleSort = (key: SortKey) => setSort(current => ({ key, descending: current.key === key ? !current.descending : false }));
+    const sortedProjects = useMemo(() => {
+        const value = (project: Project): string | number => {
+            const summary = portfolioSummariesByProject.get(project.id);
+            switch (sort.key) {
+                case 'status': return project.status;
+                case 'owner': return formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id, '').toLocaleLowerCase();
+                case 'target': return project.target_date ?? '9999-12-31';
+                case 'tasks': return summary?.total_tasks ?? -1;
+                case 'effort': return summary?.remaining_effort_days ?? -1;
+                // Worst first when descending: risk, then blocked and overdue work.
+                case 'signals': return (RISK_ORDER[summary?.target_date_risk ?? 'unknown'] ?? 0) * 10000 + (summary?.blocked_tasks ?? 0) + (summary?.overdue_tasks ?? 0);
+                default: return project.name.toLocaleLowerCase();
+            }
+        };
+        return [...filteredProjects].sort((left, right) => {
+            const a = value(left);
+            const b = value(right);
+            const order = typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b));
+            return sort.descending ? -order : order;
+        });
+    }, [filteredProjects, portfolioSummariesByProject, sort]);
     const hasActiveProjectFilters = Boolean(
         search.trim()
         || statusFilter
         || healthFilter
+        || exceptionFilter
         || activeSavedView,
     );
 
@@ -354,6 +400,7 @@ const ProjectsPage = () => {
         setSearch('');
         setStatusFilter('');
         setHealthFilter('');
+        setExceptionFilter(null);
         clearRequestedViewParam();
     };
 
@@ -368,10 +415,13 @@ const ProjectsPage = () => {
     }, [projects]);
     const activeProjectCount = projects.filter(project => !['completed', 'canceled'].includes(project.status)).length;
     const atRiskProjectCount = projects.filter(project => ['at_risk', 'off_track'].includes(project.health)).length;
+    // "No risk flags" is only true when every project's health has been assessed.
+    const unassessedProjectCount = projects.filter(project => project.health === 'unknown').length;
     const unassignedProjectCount = projects.filter(project => !project.initiative_id).length;
 
     const deleteInitiativeMutation = useMutation({
         mutationFn: (initiativeId: number) => projectService.deleteInitiative(initiativeId),
+        meta: { success: (_data, initiativeId) => feedbackMessage(t, 'deleted', 'initiative', initiatives.find(item => item.id === initiativeId)?.name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['initiatives'] });
             queryClient.invalidateQueries({ queryKey: ['projects'] });
@@ -451,19 +501,26 @@ const ProjectsPage = () => {
                                 aria-label={t('surfaces.projectsPage.portfolioExceptions')}
                             >
                                 {atRiskProjectCount > 0 ? (
-                                    <span className="projects-exception is-risk">
+                                    <button type="button" className="projects-exception is-risk" aria-pressed={exceptionFilter === 'at_risk'}
+                                        onClick={() => setExceptionFilter(value => value === 'at_risk' ? null : 'at_risk')}>
                                         <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                                         {t('surfaces.projectsPage.atRiskCount', { count: atRiskProjectCount })}
-                                    </span>
+                                    </button>
+                                ) : unassessedProjectCount > 0 ? (
+                                    <button type="button" className="projects-exception" aria-pressed={exceptionFilter === 'unassessed'}
+                                        onClick={() => setExceptionFilter(value => value === 'unassessed' ? null : 'unassessed')}>
+                                        {t('surfaces.projectsPage.healthNotAssessed', { count: unassessedProjectCount })}
+                                    </button>
                                 ) : (
                                     <span className="projects-exception is-clear">
                                         {t('surfaces.projectsPage.noRiskFlags')}
                                     </span>
                                 )}
                                 {unassignedProjectCount > 0 && (
-                                    <span className="projects-exception">
+                                    <button type="button" className="projects-exception" aria-pressed={exceptionFilter === 'unassigned'}
+                                        onClick={() => setExceptionFilter(value => value === 'unassigned' ? null : 'unassigned')}>
                                         {t('surfaces.projectsPage.unassignedCount', { count: unassignedProjectCount })}
-                                    </span>
+                                    </button>
                                 )}
                             </div>
                         )}
@@ -550,24 +607,28 @@ const ProjectsPage = () => {
                     )}
 
                     <TableFrame className="projects-table">
-                        <div aria-busy={portfolioSummariesLoading} className="overflow-x-auto">
-                            <table className="w-full min-w-[1080px]">
+                        {/* Focusable, so the table can be scrolled with the keyboard when it does not fit. Relative, so
+                            screen-reader-only labels inside stay within it instead of widening the page. */}
+                        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be reachable by keyboard to scroll it. */}
+                        <div aria-busy={portfolioSummariesLoading} className="relative overflow-x-auto" tabIndex={0} role="region" aria-label={t('surfaces.projectsPage.projectsTable')}>
+                            <table className="w-full min-w-[860px]">
                                 <thead className="bg-surface-muted">
-                                    <tr className="border-b border-border text-left text-xs font-medium uppercase tracking-wide text-content-secondary">
-                                        <th className="px-4 py-3">{t('surfaces.projectsPage.project')}</th>
-                                        <th className="px-4 py-3">{t('surfaces.projectsPage.initiative')}</th>
-                                        <th className="px-4 py-3">{t('surfaces.projectsPage.status')}</th>
-                                        <th className="px-4 py-3">{t('surfaces.projectsPage.health')}</th>
-                                        <th className="px-4 py-3">{t('surfaces.projectsPage.owner')}</th>
-                                        <th className="px-4 py-3">{t('surfaces.projectsPage.target')}</th>
-                                        <th className="px-4 py-3 text-center">{t('surfaces.projectsPage.tasks')}</th>
-                                        <th className="px-4 py-3 text-center">{t('surfaces.projectsPage.effort')}</th>
-                                        <th className="px-4 py-3 text-center">{t('surfaces.projectsPage.signals')}</th>
-                                        <th className="px-4 py-3 text-right">{t('surfaces.projectsPage.actions')}</th>
+                                    <tr className="border-b border-border text-left text-xs font-medium text-content-secondary">
+                                        {SORT_COLUMNS.map(column => (
+                                            <th key={column.key} scope="col" className={clsx('px-3 py-3', column.center && 'text-center')}
+                                                aria-sort={sort.key === column.key ? (sort.descending ? 'descending' : 'ascending') : undefined}>
+                                                <button type="button" onClick={() => toggleSort(column.key)}
+                                                    className="inline-flex items-center gap-1 font-medium hover:text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                                                    {t(column.labelKey)}
+                                                    <span aria-hidden="true">{sort.key === column.key ? (sort.descending ? '↓' : '↑') : ''}</span>
+                                                </button>
+                                            </th>
+                                        ))}
+                                        <th scope="col" className="sticky right-0 w-12 bg-surface-muted px-2 py-3"><span className="sr-only">{t('surfaces.projectsPage.actions')}</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredProjects.map(project => (
+                                    {sortedProjects.map(project => (
                                         <ProjectRow
                                             key={project.id}
                                             isSummaryLoading={portfolioSummariesLoading}

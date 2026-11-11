@@ -1,6 +1,6 @@
 # NotificationDelivery
 
-**Location:** `frontend/src/services/discussionService.ts:11`
+**Location:** `frontend/src/services/discussionService.ts:13`
 **Kind:** Interface
 **Bases:** —
 **Module:** [discussionService](../modules/discussionService.md)

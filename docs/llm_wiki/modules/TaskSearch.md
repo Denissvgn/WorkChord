@@ -68,4 +68,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `TaskSearch` | `()` | — | — |
+| `TaskSearch` | `({ narrowsList = false }: { narrowsList?: boolean } = {})` | — | `narrowsList`: the page's own list filters in place, so results from everywhere else are collapsed. |

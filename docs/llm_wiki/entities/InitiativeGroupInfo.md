@@ -1,6 +1,6 @@
 # InitiativeGroupInfo
 
-**Location:** `frontend/src/pages/RoadmapPage.tsx:63`
+**Location:** `frontend/src/pages/RoadmapPage.tsx:69`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [RoadmapPage](../modules/RoadmapPage.md)

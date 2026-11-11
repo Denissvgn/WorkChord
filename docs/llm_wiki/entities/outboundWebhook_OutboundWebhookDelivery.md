@@ -1,6 +1,6 @@
 # OutboundWebhookDelivery
 
-**Location:** `frontend/src/types/outboundWebhook.ts:38`
+**Location:** `frontend/src/types/outboundWebhook.ts:40`
 **Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)
@@ -29,6 +29,7 @@ _Auto-generated from `OutboundWebhookDelivery` in `frontend/src/types/outboundWe
 | `created_at` | `string` | Yes | — | — |
 | `updated_at` | `string` | Yes | — | — |
 | `event` | `OutboundWebhookEvent` | Yes | — | — |
+| `redacted_fields` | `string[]` | No | — | — |
 
 ## Methods
 
@@ -56,7 +57,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [outboundWebhook](../modules/outboundWebhook.md) | 0 | `attempt_count`, `created_at`, `delivered_at`, `event`, `event_id`, `id`, `last_attempt_at`, `last_error`, `last_http_status`, `last_response_body`, `next_retry_at`, `status` |
+| [outboundWebhook](../modules/outboundWebhook.md) | 0 | `attempt_count`, `created_at`, `delivered_at`, `event`, `event_id`, `id`, `last_attempt_at`, `last_error`, `last_http_status`, `last_response_body`, `next_retry_at`, `redacted_fields` |
 
 ### References
 

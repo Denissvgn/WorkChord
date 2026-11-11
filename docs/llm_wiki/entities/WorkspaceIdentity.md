@@ -1,6 +1,6 @@
 # WorkspaceIdentity
 
-**Location:** `frontend/src/features/identity/identityService.ts:3`
+**Location:** `frontend/src/features/identity/identityService.ts:6`
 **Kind:** Interface
 **Bases:** —
 **Module:** [identityService](../modules/identityService.md)
@@ -17,7 +17,7 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 | `authenticated` | `boolean` | Yes | — | — |
 | `configured` | `boolean` | Yes | — | — |
 | `principal` | `{ id: number; kind: 'human' \| 'agent' \| 'system'; display_name: string } \| null` | Yes | — | — |
-| `profile` | `{ id: number; display_name: string } \| null` | Yes | — | — |
+| `profile` | `WorkProfile \| null` | Yes | — | — |
 | `workspace_role` | `'owner' \| 'operator' \| 'member' \| null` | Yes | — | — |
 | `projects` | `Record<string, string>` | Yes | — | — |
 | `csrf_token` | `string \| null` | Yes | — | — |
@@ -33,13 +33,16 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 ```mermaid
 flowchart LR
     n0["WorkspaceIdentity (frontend/src/features/identity/identityService.ts)"]
-    n1["frontend/src/features/identity/identityContext.ts"]
-    n2["frontend/src/features/identity/IdentityProvider.tsx"]
+    n1["frontend/src/components/settings/AdminAccessGate.test.tsx"]
+    n2["frontend/src/features/identity/identityContext.ts"]
+    n3["frontend/src/features/identity/IdentityProvider.tsx"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/identityService.md"
-    click n1 "../modules/identityContext.md"
-    click n2 "../modules/IdentityProvider.md"
+    click n1 "../modules/AdminAccessGate.test.md"
+    click n2 "../modules/identityContext.md"
+    click n3 "../modules/IdentityProvider.md"
 ```
 
 ### Summary
@@ -52,5 +55,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `AdminAccessGate.test` | import | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) | — |
 | `identityContext` | import | [identityContext](../modules/identityContext.md) | — |
 | `IdentityProvider` | import | [IdentityProvider](../modules/IdentityProvider.md) | — |

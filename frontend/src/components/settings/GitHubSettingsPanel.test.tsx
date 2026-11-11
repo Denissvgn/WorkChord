@@ -68,7 +68,7 @@ describe('GitHubSettingsPanel', () => {
         const order = screen.getByLabelText('Order');
         fireEvent.change(name, { target: { value: 'x'.repeat(256) } });
         fireEvent.change(order, { target: { value: '1.5' } });
-        await user.click(screen.getByRole('button', { name: 'Create Rule' }));
+        await user.click(screen.getByRole('button', { name: 'Create rule' }));
 
         expect(githubServiceMock.createStatusAutomationRule).not.toHaveBeenCalled();
         expect(name).toHaveValue('x'.repeat(256));
@@ -89,7 +89,7 @@ describe('GitHubSettingsPanel', () => {
         const name = screen.getByLabelText('Name');
         await user.clear(name);
         await user.type(name, 'Frozen draft');
-        await user.click(screen.getByRole('button', { name: 'Save Rule' }));
+        await user.click(screen.getByRole('button', { name: 'Save rule' }));
 
         await waitFor(() => {
             expect(githubServiceMock.updateStatusAutomationRule).toHaveBeenCalledWith(
@@ -98,9 +98,9 @@ describe('GitHubSettingsPanel', () => {
             );
         });
         expect(name).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'New Rule' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'New rule' })).toBeDisabled();
         expect(within(rowFor('Second rule')).getAllByRole('button')[0]).toBeDisabled();
-        expect(screen.getByText('Saving...')).toBeInTheDocument();
+        expect(screen.getByText('Saving…')).toBeInTheDocument();
 
         fireEvent.change(name, { target: { value: 'Late edit' } });
         expect(name).toHaveValue('Frozen draft');
@@ -110,7 +110,7 @@ describe('GitHubSettingsPanel', () => {
 
         update.resolve(ruleFixture(1, { name: 'Frozen draft' }));
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: 'Create Rule' })).toBeEnabled();
+            expect(screen.getByRole('button', { name: 'Create rule' })).toBeEnabled();
         });
     });
 

@@ -11,19 +11,20 @@ _Auto-generated from `frontend/src/pages/AnalyticsPage.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../components/analytics/DeliveryAnalytics` | `DeliveryAnalytics` | — | compiler-dependent |
+| `../components/analytics/OnTrackSummary` | `OnTrackSummary` | — | compiler-dependent |
+| `../components/analytics/StatusDistribution` | `StatusDistribution` | — | compiler-dependent |
 | `../components/analytics/TaskStatusFlow` | `TaskStatusFlow` | — | compiler-dependent |
 | `../components/dashboard/SavedViewDashboardCards` | `SavedViewDashboardCards` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
-| `../components/notifications/NotificationsPanel` | `NotificationsPanel` | — | compiler-dependent |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
 | `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
 | `../services/taskService` | `taskService` | — | compiler-dependent |
 | `../store/iterationStore` | `useIterationStore` | — | compiler-dependent |
 | `../types/task` | `TaskStatusLog` | Declaration | erased |
+| `../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `useNavigate` | — | compiler-dependent |
 
 ## Module Signals
 
@@ -38,73 +39,30 @@ This graph shows full source coupling. Type dependencies can be erased; compiler
 
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/analytics/DeliveryAnalytics.tsx"]
-    n1["frontend/src/components/analytics/TaskStatusFlow.tsx"]
-    n2["frontend/src/components/dashboard/SavedViewDashboardCards.tsx"]
-    n3["frontend/src/components/feedback/QueryState.tsx"]
-    n4["frontend/src/components/notifications/NotificationsPanel.tsx"]
-    n5["frontend/src/components/tasks/WorkMetricsLine.tsx"]
-    n6["frontend/src/components/ui/index.ts"]
-    n7["frontend/src/pages/AnalyticsPage.tsx"]
-    n8["frontend/src/services/iterationService.ts"]
-    n9["frontend/src/services/taskService.ts"]
-    n10["frontend/src/store/iterationStore.ts"]
-    n11["frontend/src/types/task.ts"]
-    n0 --> n3
-    n1 --> n11
-    n2 --> n3
-    n4 --> n3
-    n4 --> n9
-    n7 --> n0
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n4
-    n7 --> n5
-    n7 --> n6
-    n7 --> n8
-    n7 --> n9
-    n7 --> n10
-    n7 --> n11
-    n9 --> n11
-    click n0 "../modules/DeliveryAnalytics.md"
-    click n1 "../modules/TaskStatusFlow.md"
-    click n2 "../modules/SavedViewDashboardCards.md"
-    click n3 "../modules/QueryState.md"
-    click n4 "../modules/NotificationsPanel.md"
-    click n5 "../modules/WorkMetricsLine.md"
-    click n6 "../modules/index.md"
-    click n7 "../modules/AnalyticsPage.md"
-    click n8 "../modules/iterationService.md"
-    click n9 "../modules/taskService.md"
-    click n10 "../modules/iterationStore.md"
-    click n11 "../modules/types_task.md"
+    n0["frontend"]
+    n1["frontend/src/pages/AnalyticsPage.tsx"]
+    n1 --> n0
+    click n1 "../modules/AnalyticsPage.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [DeliveryAnalytics](../modules/DeliveryAnalytics.md) |
-| Outbound | [TaskStatusFlow](../modules/TaskStatusFlow.md) |
-| Outbound | [SavedViewDashboardCards](../modules/SavedViewDashboardCards.md) |
-| Outbound | [QueryState](../modules/QueryState.md) |
-| Outbound | [NotificationsPanel](../modules/NotificationsPanel.md) |
-| Outbound | [WorkMetricsLine](../modules/WorkMetricsLine.md) |
-| Outbound | [index](../modules/index.md) |
-| Outbound | [iterationService](../modules/iterationService.md) |
-| Outbound | [taskService](../modules/taskService.md) |
-| Outbound | [iterationStore](../modules/iterationStore.md) |
-| Outbound | [types_task](../modules/types_task.md) |
+| Outbound | `frontend` (13) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 3 | 0 |
+| typescript | 2 | 0 |
+
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [HistoryGroup](../entities/HistoryGroup.md) | Interface | 16 | — | — |
+| [HistoryGroup](../entities/HistoryGroup.md) | Interface | 17 | — | — |

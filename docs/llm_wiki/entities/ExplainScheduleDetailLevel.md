@@ -1,6 +1,6 @@
 # ExplainScheduleDetailLevel
 
-**Location:** `frontend/src/types/gantt.ts:98`
+**Location:** `frontend/src/types/gantt.ts:110`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

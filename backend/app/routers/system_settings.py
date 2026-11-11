@@ -17,9 +17,9 @@ from app.schemas.system_settings import (
     WebIntakeRuntimeSettingsUpdate,
 )
 from app.services.system_settings_service import RuntimeSettingsError, RuntimeSettingsService
-from app.security import require_admin_api_key
+from app.settings_read import redact_system_settings, require_settings_access, withholds
 
-router = APIRouter(dependencies=[Depends(require_admin_api_key)])
+router = APIRouter(dependencies=[Depends(require_settings_access)])
 
 
 async def get_runtime_settings_service(
@@ -38,7 +38,8 @@ async def get_system_settings(
     service: Annotated[RuntimeSettingsService, Depends(get_runtime_settings_service)],
 ):
     """Return resolved runtime settings and restart-required env settings."""
-    return await service.system_response()
+    response = await service.system_response()
+    return redact_system_settings(response) if withholds(service.db.info.get("authority")) else response
 
 
 @router.put("/system-settings/llm", response_model=LLMRuntimeSettingsResponse)

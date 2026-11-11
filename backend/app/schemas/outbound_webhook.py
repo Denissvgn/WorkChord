@@ -146,6 +146,8 @@ class OutboundWebhookTargetResponse(BaseModel):
     headers_json: dict[str, str]
     created_at: datetime
     updated_at: datetime
+    # Names of values left out because the reader has no admin key.
+    redacted_fields: list[str] = Field(default_factory=list)
 
 
 class OutboundWebhookEventResponse(BaseModel):
@@ -186,6 +188,8 @@ class OutboundWebhookDeliveryResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     event: OutboundWebhookEventResponse
+    # Names of values left out because the reader has no admin key.
+    redacted_fields: list[str] = Field(default_factory=list)
 
 
 class OutboundWebhookRetryResponse(BaseModel):

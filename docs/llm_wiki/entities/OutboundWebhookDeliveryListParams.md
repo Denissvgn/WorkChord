@@ -1,6 +1,6 @@
 # OutboundWebhookDeliveryListParams
 
-**Location:** `frontend/src/types/outboundWebhook.ts:61`
+**Location:** `frontend/src/types/outboundWebhook.ts:65`
 **Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)

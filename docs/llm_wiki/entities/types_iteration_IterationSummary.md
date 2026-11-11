@@ -25,6 +25,12 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 | `total_effort_days` | `number` | Yes | — | — |
 | `team_capacity_days` | `number` | Yes | — | — |
 | `overdue_tasks_count` | `number` | Yes | — | — |
+| `status_counts` | `Partial<Record<'planned' \| 'active' \| 'resolved' \| 'closed', number>>` | No | — | — |
+| `blocked_tasks` | `number` | No | — | — |
+| `remaining_effort_days` | `number` | No | — | — |
+| `unknown_estimate_tasks` | `number` | No | — | — |
+| `scheduled_finish` | `string \| null` | No | — | — |
+| `remaining_working_days` | `number \| null` | No | — | — |
 
 ## Methods
 
@@ -37,22 +43,31 @@ _Auto-generated from `IterationSummary` in `frontend/src/types/iteration.ts`._
 flowchart LR
     n0["IterationSummary (frontend/src/types/iteration.ts)"]
     n1["WorkMetrics (frontend/src/types/workMetrics.ts)"]
-    n2["frontend/src/pages/OverviewPage.test.tsx"]
-    n3["frontend/src/services/iterationService.ts"]
+    n2["frontend/src/components/analytics/IterationOutlook.test.tsx"]
+    n3["OnTrackSummary (frontend/src/components/analytics/OnTrackSummary.tsx)"]
+    n4["StatusDistribution (frontend/src/components/analytics/StatusDistribution.tsx)"]
+    n5["frontend/src/pages/OverviewPage.test.tsx"]
+    n6["frontend/src/services/iterationService.ts"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
+    n5 --> n0
+    n6 --> n0
     click n0 "../modules/types_iteration.md"
     click n1 "../modules/workMetrics.md"
-    click n2 "../modules/OverviewPage.test.md"
-    click n3 "../modules/iterationService.md"
+    click n2 "../modules/IterationOutlook.test.md"
+    click n3 "../modules/OnTrackSummary.md"
+    click n4 "../modules/StatusDistribution.md"
+    click n5 "../modules/OverviewPage.test.md"
+    click n6 "../modules/iterationService.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [types_iteration](../modules/types_iteration.md) | 0 | `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `start_date`, `team_capacity_days`, `total_effort_days`, `total_tasks`, `working_days` |
+| [types_iteration](../modules/types_iteration.md) | 0 | `blocked_tasks`, `completed_tasks`, `end_date`, `id`, `name`, `overdue_tasks_count`, `project`, `project_id`, `remaining_effort_days`, `remaining_working_days`, `scheduled_finish`, `start_date` |
 
 ### Structure
 
@@ -64,5 +79,8 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `IterationOutlook.test` | import | [IterationOutlook.test](../modules/IterationOutlook.test.md) | — |
+| `OnTrackSummary` | type_reference | [OnTrackSummary](../modules/OnTrackSummary.md) | — |
+| `StatusDistribution` | type_reference | [StatusDistribution](../modules/StatusDistribution.md) | — |
 | `OverviewPage.test` | import | [OverviewPage.test](../modules/OverviewPage.test.md) | — |
 | `iterationService` | import | [iterationService](../modules/iterationService.md) | — |

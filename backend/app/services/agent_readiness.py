@@ -140,13 +140,25 @@ def evaluate_agent_readiness(
     )
 
     has_schedule = task.iteration_id is not None and task.start_date is not None and task.end_date is not None
+    # Scheduled dates come only from the scheduler, which places assigned work; say which step is missing.
+    if has_schedule:
+        schedule_reason = "Task has scheduled start and end dates."
+    elif task.iteration_id is None:
+        schedule_reason = "Task needs scheduled start and end dates: add it to an iteration, assign it, then run the scheduler."
+    elif task.assignee_id is None:
+        schedule_reason = (
+            "Task needs scheduled start and end dates: the scheduler places only assigned work. "
+            "Assign it to a capacity row in this iteration (a person or an agent profile), then run the scheduler."
+        )
+    else:
+        schedule_reason = "Task needs scheduled start and end dates: run the scheduler for this iteration."
     _add_criterion(
         criteria,
         blockers,
         key="schedule",
         label="Scheduled",
         passed=has_schedule,
-        reason="Task has scheduled start and end dates." if has_schedule else "Task needs scheduled start and end dates.",
+        reason=schedule_reason,
     )
 
     unresolved_dependencies: list[str] = []

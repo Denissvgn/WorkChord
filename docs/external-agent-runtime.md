@@ -29,7 +29,7 @@ compatibility period. Upgrade the server and every agent runtime together:
    capability profiles and model bindings. Use the current
    [portable master](../config/examples/agent-team-master.json), validate it,
    inspect its revision-bound plan, and apply only reviewed actions.
-2. Deliver the secret-free handoff and actor credential separately through the
+2. Deliver the secret-free handoff and the agent key separately through the
    configured external sink. Provider credentials stay in the runtime's secret
    store; a WorkChord model binding contains intended configuration metadata.
 3. Obtain the exact role version and checksum from the verified server catalog.

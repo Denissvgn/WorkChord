@@ -1,6 +1,6 @@
 # CommandAction
 
-**Location:** `frontend/src/components/layout/CommandMenu.tsx:34`
+**Location:** `frontend/src/components/layout/CommandMenu.tsx:37`
 **Kind:** Interface
 **Bases:** —
 **Module:** [CommandMenu](../modules/CommandMenu.md)

@@ -17,8 +17,9 @@ _Auto-generated from `frontend/src/pages/ProjectReleaseDetailPage.tsx`._
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
 | `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
 | `../components/tasks/WorkMetricsLine` | `WorkMetricsLine` | — | compiler-dependent |
-| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` | — | compiler-dependent |
-| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui/tone` | `isTaskStatus`, `pillToneClassName`, `STATUS_TONE`, `statusTextClassName`, `wcPillClass` | — | compiler-dependent |
+| `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
 | `../services/projectService` | `projectService` | — | compiler-dependent |
 | `../services/releaseService` | `releaseService` | — | compiler-dependent |
 | `../types/release` | `Release`, `ReleaseStatus`, `ReleaseTaskSummary` | Declaration | erased |
@@ -57,7 +58,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (15) |
 
 ### External packages
 
@@ -65,4 +66,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

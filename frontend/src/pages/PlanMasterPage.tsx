@@ -41,8 +41,10 @@ import { useToast } from '../components/feedback/toast';
 import { MasterProgress } from '../components/ui/MasterProgress';
 import {
     isPlanningStepId,
+    PLAN_RETURNED_PARAM,
     withPlanMasterReturn,
 } from '../features/planningMasters/planningReturn';
+import { PlanQuickAddCapacity } from '../components/planning/PlanQuickAddCapacity';
 import type { PlanningStepId } from '../features/planningMasters/planningReturn';
 import {
     PLANNING_ITERATION_PARAM,
@@ -111,7 +113,8 @@ const STEP_PRESENTATION_LABEL_KEYS: Record<StepPresentationState, string> = {
 
 const stepPresentationTone = (state: StepPresentationState) => {
     if (state === 'loading') return 'todo';
-    if (state === 'unavailable') return 'blocked';
+    // A failed status read needs attention; "blocked" now only means waiting.
+    if (state === 'unavailable') return 'warn';
     return state;
 };
 
@@ -188,6 +191,9 @@ const getStepEvidence = (
     language: string,
     iterationId: number,
 ): EvidenceItem[] => {
+    // Without a planning period these numbers are not known; never print them as 0.
+    const known = readiness.hasCurrentIteration;
+    const count = (value: number) => (known ? String(value) : t('plan.master.unknown'));
     const planningIssueEvidence = ({
         issue,
         label,
@@ -200,9 +206,9 @@ const getStepEvidence = (
         actionKey: string;
     }): EvidenceItem => ({
         label,
-        value: String(count),
-        exception: count > 0,
-        ...(count > 0 ? {
+        value: known ? String(count) : t('plan.master.unknown'),
+        exception: known && count > 0,
+        ...(known && count > 0 ? {
             href: planningIssueTasksHref({
                 issue,
                 iterationId,
@@ -238,18 +244,22 @@ const getStepEvidence = (
         return [
             {
                 label: t('plan.master.people'),
-                value: String(readiness.teamMemberCount),
-                exception: readiness.teamMemberCount === 0,
+                value: count(readiness.teamMemberCount - (readiness.teamAgentCount ?? 0)),
+                exception: known && readiness.teamMemberCount === 0,
             },
+            ...((readiness.teamAgentCount ?? 0) > 0 ? [{
+                label: t('plan.master.agents'),
+                value: count(readiness.teamAgentCount ?? 0),
+            }] : []),
             {
                 label: t('plan.master.totalCapacity'),
-                value: t('units.hoursCompact', { count: readiness.teamCapacity }),
-                exception: readiness.teamCapacity <= 0,
+                value: known ? t('units.hoursCompact', { count: readiness.teamCapacity }) : t('plan.master.unknown'),
+                exception: known && readiness.teamCapacity <= 0,
             },
             {
                 label: t('plan.master.missingAllocation'),
-                value: String(readiness.teamMembersNoCap),
-                exception: readiness.teamMembersNoCap > 0,
+                value: count(readiness.teamMembersNoCap),
+                exception: known && readiness.teamMembersNoCap > 0,
             },
         ];
     }
@@ -257,8 +267,8 @@ const getStepEvidence = (
         return [
             {
                 label: t('plan.master.tasksInPeriod'),
-                value: String(readiness.taskCount),
-                exception: readiness.taskCount === 0,
+                value: count(readiness.taskCount),
+                exception: known && readiness.taskCount === 0,
             },
         ];
     }
@@ -276,9 +286,16 @@ const getStepEvidence = (
                 count: readiness.tasksWithoutEffort,
                 actionKey: 'plan.master.openMissingEffortTasks',
             }),
+            ...((readiness.tasksAgentWithoutCapacity ?? 0) > 0 ? [{
+                label: t('plan.master.agentWorkingNoCapacity'),
+                value: count(readiness.tasksAgentWithoutCapacity ?? 0),
+                exception: true,
+                href: withPlanMasterReturn('/team', stepId as PlanningStepId),
+                actionLabel: t('plan.master.addCapacityRows'),
+            }] : []),
             {
                 label: t('plan.master.tasksInPeriod'),
-                value: String(readiness.taskCount),
+                value: count(readiness.taskCount),
             },
         ];
     }
@@ -471,7 +488,9 @@ const StepCheckpoint = ({
     onCopyShare,
     onRefreshShare,
     onRevokeShare,
+    quickAction,
 }: {
+    quickAction?: ReactNode;
     stepId: string;
     headingRef: RefObject<HTMLHeadingElement | null>;
     status: Record<string, StepStatus>;
@@ -663,6 +682,15 @@ const StepCheckpoint = ({
                         </Link>
                     </section>
 
+                    {quickAction && stepStatus.state !== 'blocked' && (
+                        <section className="plan-checkpoint-action" aria-labelledby="plan-checkpoint-quick-action-heading">
+                            <div className="w-full">
+                                <h3 id="plan-checkpoint-quick-action-heading">{t('plan.master.quickAction')}</h3>
+                                {quickAction}
+                            </div>
+                        </section>
+                    )}
+
                     {definition.id === 'review' && stepStatus.state !== 'blocked' && (
                         <ShareCheckpoint
                             share={share}
@@ -698,6 +726,7 @@ const PlanMasterPage = () => {
     } = useConfirmDialog();
     const {
         currentIteration,
+        teamMembers,
         readinessData,
         status: rawStatus,
         queryStates,
@@ -870,6 +899,28 @@ const PlanMasterPage = () => {
     const ready = calculateReadiness(status);
     const requestedStep = searchParams.get('step');
     const stepId = isPlanningStepId(requestedStep) ? requestedStep : nextStep(status);
+    // Coming back from the linked page re-checks readiness, then moves on when the step is done.
+    const returnedToStep = searchParams.get(PLAN_RETURNED_PARAM) === '1';
+    const [returnCheckStarted, setReturnCheckStarted] = useState(false);
+    useEffect(() => {
+        if (!returnedToStep || returnCheckStarted) return;
+        setReturnCheckStarted(true);
+        void refetch().then(() => {
+            const fresh = new URLSearchParams(window.location.search);
+            fresh.delete(PLAN_RETURNED_PARAM);
+            setSearchParams(fresh, { replace: true });
+        });
+    }, [refetch, returnCheckStarted, returnedToStep, setSearchParams]);
+    const returnCheckDone = returnCheckStarted && !returnedToStep && !isFetching;
+    const [advancedAfterReturn, setAdvancedAfterReturn] = useState(false);
+    if (returnCheckDone && !advancedAfterReturn) {
+        setAdvancedAfterReturn(true);
+        if (status[stepId]?.state === 'done' && nextStep(status) !== stepId) {
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.set('step', nextStep(status));
+            setSearchParams(nextParams, { replace: true });
+        }
+    }
     const activeDefinition = STEP_DEFS.find(step => step.id === stepId) ?? STEP_DEFS[0]!;
     const hasRefetchError = Object.values(queryStates).some(query => query.isRefetchError);
     const currentShare = shareQuery.data ?? null;
@@ -1299,6 +1350,9 @@ const PlanMasterPage = () => {
                         status={status}
                         readiness={readinessData}
                         iterationId={currentIteration?.id ?? 0}
+                        quickAction={stepId === 'team' && currentIteration
+                            ? <PlanQuickAddCapacity iteration={currentIteration} members={teamMembers} />
+                            : undefined}
                         dataState={stepDataState}
                         share={currentShare}
                         shareLoading={shareQuery.isLoading}

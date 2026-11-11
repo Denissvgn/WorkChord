@@ -91,8 +91,9 @@ class ReleaseService:
         result = await self.db.execute(select(Project.id).where(Project.id == project_id))
         return result.scalar_one_or_none() is not None
 
-    async def _attach_work_metrics(self, release, tasks=None):
-        from app.services.work_metrics import scoped_metric_tasks, aggregate_metrics
+    async def metric_task_ids(self, release, tasks=None):
+        """The release's tasks and every task below them: the scope its metrics count."""
+        from app.services.work_metrics import scoped_metric_tasks
         if tasks is None:
             tasks = await scoped_metric_tasks(self.db, project_id=release.project_id)
         selected = {task.id for task in release.tasks}
@@ -100,6 +101,11 @@ class ReleaseService:
         while changed:
             expanded = selected | {task.id for task in tasks if task.parent_id in selected}
             changed, selected = expanded != selected, expanded
+        return selected, tasks
+
+    async def _attach_work_metrics(self, release, tasks=None):
+        from app.services.work_metrics import aggregate_metrics
+        selected, tasks = await self.metric_task_ids(release, tasks)
         values = await aggregate_metrics(self.db, project_id=release.project_id, task_ids=selected)
         for key, value in values.items():
             setattr(release, key, value)

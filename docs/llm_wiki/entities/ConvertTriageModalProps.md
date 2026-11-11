@@ -1,6 +1,6 @@
 # ConvertTriageModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:722`
+**Location:** `frontend/src/pages/TriagePage.tsx:649`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

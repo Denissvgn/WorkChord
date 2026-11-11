@@ -1,6 +1,6 @@
 # WorkloadAnalysis
 
-**Location:** `frontend/src/types/gantt.ts:111`
+**Location:** `frontend/src/types/gantt.ts:123`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_gantt](../modules/types_gantt.md)

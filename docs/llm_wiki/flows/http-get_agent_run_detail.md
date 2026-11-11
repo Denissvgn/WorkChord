@@ -104,14 +104,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_run_detail | service.get_run | 1326 | `service.get_run(run_id)` |
-| get_agent_run_detail | HTTPException | 1328 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Agent run not found')` |
-| get_agent_run_detail | _run_detail_response | 1329 | `_run_detail_response(service, run)` |
-| _run_detail_response | AgentRunEventResponse | 1266 | `AgentRunEventResponse(id=evt.id, run_id=evt.run_id, event_type=evt.event_type, message=evt.message, payload=service.event_to_payload(...), trace_id=evt.trace_id, span_id=evt.span_id, correlation_id=evt.correlation_id, idempotency_key=evt.idempotency_key, created_at=evt.created_at)` |
-| _run_detail_response | service.event_to_payload | 1271 | `service.event_to_payload(evt.payload)` |
-| _run_detail_response | AgentRunDetailResponse | 1280 | `AgentRunDetailResponse(id=run.id, task_id=run.task_id, actor_id=run.actor_id, assignment_id=run.assignment_id, claim_generation=run.claim_generation, status=run.status, trace_id=run.trace_id, model_binding_id=run.model_binding_id, model_binding_revision=run.model_binding_revision, configured_model_alias=run.configured_model_alias, resolved_model_id=run.resolved_model_id, model_trust_state=run.model_trust_state, model_match_basis=run.model_match_basis, model=run.model, tool_name=run.tool_name, metadata=service.event_to_payload(...), artifact_links=service.list_to_payload(...), commit_url=run.commit_url, pr_url=run.pr_url, summary=run.summary, error=run.error, started_at=run.started_at, ended_at=run.ended_at, heartbeat_at=run.heartbeat_at, events=events)` |
-| _run_detail_response | service.event_to_payload | 1296 | `service.event_to_payload(run.run_metadata)` |
-| _run_detail_response | service.list_to_payload | 1297 | `service.list_to_payload(run.artifact_links)` |
+| get_agent_run_detail | service.get_run | 1359 | `service.get_run(run_id)` |
+| get_agent_run_detail | HTTPException | 1361 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Agent run not found')` |
+| get_agent_run_detail | _run_detail_response | 1362 | `_run_detail_response(service, run)` |
+| _run_detail_response | AgentRunEventResponse | 1299 | `AgentRunEventResponse(id=evt.id, run_id=evt.run_id, event_type=evt.event_type, message=evt.message, payload=service.event_to_payload(...), trace_id=evt.trace_id, span_id=evt.span_id, correlation_id=evt.correlation_id, idempotency_key=evt.idempotency_key, created_at=evt.created_at)` |
+| _run_detail_response | service.event_to_payload | 1304 | `service.event_to_payload(evt.payload)` |
+| _run_detail_response | AgentRunDetailResponse | 1313 | `AgentRunDetailResponse(id=run.id, task_id=run.task_id, actor_id=run.actor_id, assignment_id=run.assignment_id, claim_generation=run.claim_generation, status=run.status, trace_id=run.trace_id, model_binding_id=run.model_binding_id, model_binding_revision=run.model_binding_revision, configured_model_alias=run.configured_model_alias, resolved_model_id=run.resolved_model_id, model_trust_state=run.model_trust_state, model_match_basis=run.model_match_basis, model=run.model, tool_name=run.tool_name, metadata=service.event_to_payload(...), artifact_links=service.list_to_payload(...), commit_url=run.commit_url, pr_url=run.pr_url, summary=run.summary, error=run.error, started_at=run.started_at, ended_at=run.ended_at, heartbeat_at=run.heartbeat_at, events=events)` |
+| _run_detail_response | service.event_to_payload | 1329 | `service.event_to_payload(run.run_metadata)` |
+| _run_detail_response | service.list_to_payload | 1330 | `service.list_to_payload(run.artifact_links)` |
 
 ### Boundary effects
 
@@ -121,11 +121,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_run_detail` | `service.get_run` | 1326 |
-| external_call | `get_agent_run_detail` | `HTTPException` | 1328 |
-| unresolved_call | `_run_detail_response` | `service.event_to_payload` | 1271 |
-| unresolved_call | `_run_detail_response` | `service.event_to_payload` | 1296 |
-| unresolved_call | `_run_detail_response` | `service.list_to_payload` | 1297 |
+| unresolved_call | `get_agent_run_detail` | `service.get_run` | 1359 |
+| external_call | `get_agent_run_detail` | `HTTPException` | 1361 |
+| unresolved_call | `_run_detail_response` | `service.event_to_payload` | 1304 |
+| unresolved_call | `_run_detail_response` | `service.event_to_payload` | 1329 |
+| unresolved_call | `_run_detail_response` | `service.list_to_payload` | 1330 |
 
 ## Behavior
 

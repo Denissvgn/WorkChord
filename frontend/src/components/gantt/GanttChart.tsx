@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
 import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, ListFilter, Eye } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
@@ -11,6 +12,7 @@ import { TaskEditModal } from './TaskEditModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ganttService } from '../../services/ganttService';
 import clsx from 'clsx';
+import { UnscheduledTasks } from './UnscheduledTasks';
 import type { GanttTask, SchedulePreviewResponse } from '../../types/gantt';
 import { STATUS_TONE, toneSolidClassName } from '../ui/tone';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
@@ -19,6 +21,7 @@ import { dateFnsLocale } from '../../i18n/dateLocale';
 import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
 import { OverflowMenu, SlideOverDrawer } from '../ui';
+import { GanttBarInputs } from './GanttBarInputs';
 
 interface GanttChartProps {
     iterationId: number;
@@ -33,9 +36,49 @@ interface GanttChartProps {
     onSaveSandbox?: (taskId: number, updatedData: Partial<GanttTask>) => void;
 }
 
+const ZOOM_MIN = 20;
+const ZOOM_MAX = 100;
+const ZOOM_STEP = 10;
+const ZOOM_DEFAULT = 40;
+const TASK_COLUMN_MIN = 200;
+const TASK_COLUMN_MAX = 480;
+const TASK_COLUMN_DEFAULT = 300;
+const TASK_COLUMN_STORAGE_KEY = 'workchord:gantt-task-column-width';
+const LEGEND_STATUSES = ['planned', 'active', 'resolved', 'closed'] as const;
+const LINKS_STORAGE_KEY = 'workchord:gantt-show-dependency-links';
+const BAR_CENTER_Y = 24;
+
+const readStoredShowLinks = () => {
+    try {
+        return window.localStorage.getItem(LINKS_STORAGE_KEY) !== 'false';
+    } catch {
+        return true;
+    }
+};
+
+const readStoredTaskColumnWidth = () => {
+    try {
+        const stored = Number(window.localStorage.getItem(TASK_COLUMN_STORAGE_KEY));
+        return Number.isFinite(stored) && stored >= TASK_COLUMN_MIN && stored <= TASK_COLUMN_MAX ? stored : TASK_COLUMN_DEFAULT;
+    } catch {
+        return TASK_COLUMN_DEFAULT;
+    }
+};
+
+const isTypingTarget = (target: EventTarget | null) => target instanceof HTMLElement
+    && (target.isContentEditable || ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName));
+
 interface FlattenedTask extends GanttTask {
     depth: number;
 }
+
+type GanttGroupBy = 'none' | 'milestone' | 'prefix' | 'status';
+type GanttStatusFilter = '' | 'planned' | 'active' | 'resolved' | 'closed';
+type GanttRow =
+    | { kind: 'task'; task: FlattenedTask }
+    | { kind: 'group'; key: string; label: string; count: number };
+
+const ID_PREFIX_PATTERN = /^([A-Za-z][A-Za-z0-9]*)[-_]\d+/;
 
 interface TaskTimelineDates {
     start: string | null;
@@ -106,15 +149,42 @@ export const GanttChart = ({
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const [hideUnassigned, setHideUnassigned] = useState(false);
     const [hideUnscheduled, setHideUnscheduled] = useState(false);
-    const [zoomLevel, setZoomLevel] = useState(40); // Width of day column
+    const [zoomLevel, setZoomLevel] = useState(ZOOM_DEFAULT); // Width of one day column in pixels
     const [isCompressed, setIsCompressed] = useState(false);
+    const [taskColumnWidth, setTaskColumnWidthState] = useState(readStoredTaskColumnWidth);
+    const setTaskColumnWidth = (width: number) => {
+        const next = Math.min(TASK_COLUMN_MAX, Math.max(TASK_COLUMN_MIN, Math.round(width)));
+        setTaskColumnWidthState(next);
+        try { window.localStorage.setItem(TASK_COLUMN_STORAGE_KEY, String(next)); } catch { /* Storage may be unavailable. */ }
+    };
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
+    // In "Try changes", a bar opens its five date inputs first; the drawer is "More fields".
+    // Drag in "Try changes": each gesture changes one scheduler input, never a date.
+    type BarDrag = { kind: 'move' | 'resize' | 'link'; task: GanttTask; startX: number; dayDelta: number; pointerX: number; pointerY: number };
+    const [barDrag, setBarDrag] = useState<BarDrag | null>(null);
+    const suppressBarClick = useRef(false);
+    const [barInputs, setBarInputs] = useState<{ task: GanttTask; anchor: { top: number; left: number }; origin: HTMLElement } | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-    const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned);
+    const [showLinks, setShowLinksState] = useState(readStoredShowLinks);
+    const setShowLinks = (value: boolean) => {
+        setShowLinksState(value);
+        try { window.localStorage.setItem(LINKS_STORAGE_KEY, String(value)); } catch { /* Storage may be unavailable. */ }
+    };
+    const [hoveredTaskId, setHoveredTaskId] = useState<number | null>(null);
+    const [searchText, setSearchText] = useState('');
+    const [statusFilter, setStatusFilter] = useState<GanttStatusFilter>('');
+    const [groupBy, setGroupBy] = useState<GanttGroupBy>('none');
+    const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+    const normalizedSearch = searchText.trim().toLowerCase();
+    const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned)
+        + Number(Boolean(normalizedSearch)) + Number(statusFilter !== '') + Number(hideUnscheduled);
     const clearFilters = () => {
         setSelectedAssigneeId(null);
         setHideUnassigned(false);
+        setSearchText('');
+        setStatusFilter('');
+        setHideUnscheduled(false);
     };
 
     // --- Data Preparation ---
@@ -277,10 +347,14 @@ export const GanttChart = ({
         let matches = true;
         if (assigneeId) matches = task.assignee?.id === assigneeId;
         if (hideUnassignedTasks && !task.assignee) matches = false;
+        if (matches && statusFilter) matches = task.status === statusFilter;
+        if (matches && normalizedSearch) {
+            matches = task.title.toLowerCase().includes(normalizedSearch) || `#${task.id}` === normalizedSearch || String(task.id) === normalizedSearch;
+        }
         if (matches) return true;
         if (task.children) return task.children.some(child => taskMatchesFilter(child, assigneeId, hideUnassignedTasks));
         return false;
-    }, []);
+    }, [normalizedSearch, statusFilter]);
 
     const unscheduledTaskCount = useMemo(() => {
         let count = 0;
@@ -295,7 +369,8 @@ export const GanttChart = ({
         let count = 0;
         const visit = (task: GanttTask) => {
             if (task.children?.length) task.children.forEach(visit);
-            else if (!task.assignee) count += 1;
+            // Same rule as the plan: only planned work can block the schedule.
+            else if (!task.assignee && task.status === 'planned' && !task.is_deferred) count += 1;
         };
         tasks.forEach(visit);
         return count;
@@ -318,6 +393,52 @@ export const GanttChart = ({
         sortedTasks.forEach(task => processTask(task, 0));
         return flattened;
     }, [activeFilterCount, sortedTasks, expandedTasks, selectedAssigneeId, hideUnassigned, hideUnscheduled, taskMatchesFilter]);
+
+    // Grouping keeps each top-level task with its children and adds one header per group.
+    const rows = useMemo<GanttRow[]>(() => {
+        if (groupBy === 'none') return displayTasks.map(task => ({ kind: 'task' as const, task }));
+        const groupOf = (task: FlattenedTask): { key: string; label: string } => {
+            if (groupBy === 'milestone') {
+                return task.milestone ? { key: `m${task.milestone.id}`, label: task.milestone.name } : { key: 'm-none', label: t('surfaces.ganttChart.noMilestone') };
+            }
+            if (groupBy === 'status') return { key: task.status, label: t(`statuses.${task.status}`) };
+            const prefix = ID_PREFIX_PATTERN.exec(task.title)?.[1]?.toUpperCase();
+            return prefix ? { key: `p${prefix}`, label: prefix } : { key: 'p-none', label: t('surfaces.ganttChart.noIdPrefix') };
+        };
+        const groups = new Map<string, { label: string; tasks: FlattenedTask[]; count: number }>();
+        let current: { label: string; tasks: FlattenedTask[]; count: number } | null = null;
+        displayTasks.forEach(task => {
+            if (task.depth === 0 || current === null) {
+                const { key, label } = groupOf(task);
+                current = groups.get(key) ?? { label, tasks: [], count: 0 };
+                groups.set(key, current);
+                current.count += 1;
+            }
+            current.tasks.push(task);
+        });
+        const result: GanttRow[] = [];
+        groups.forEach((group, key) => {
+            result.push({ kind: 'group', key, label: group.label, count: group.count });
+            if (!collapsedGroups.has(key)) group.tasks.forEach(task => result.push({ kind: 'task', task }));
+        });
+        return result;
+    }, [collapsedGroups, displayTasks, groupBy, t]);
+
+    // Dependencies point from a task to its predecessors; invert them once for successors.
+    const successorsById = useMemo(() => {
+        const map = new Map<number, number[]>();
+        const visit = (task: GanttTask) => {
+            task.dependencies?.forEach(predecessorId => map.set(predecessorId, [...(map.get(predecessorId) ?? []), task.id]));
+            task.children?.forEach(visit);
+        };
+        sourceTasks.forEach(visit);
+        return map;
+    }, [sourceTasks]);
+    const rowIndexByTaskId = useMemo(() => {
+        const map = new Map<number, number>();
+        rows.forEach((row, index) => { if (row.kind === 'task') map.set(row.task.id, index); });
+        return map;
+    }, [rows]);
 
     const currentTaskDatesById = useMemo(() => {
         const datesById = new Map<number, TaskTimelineDates>();
@@ -380,7 +501,7 @@ export const GanttChart = ({
     // Row Virtualizer
     const ROW_HEIGHT = 50;
     const rowVirtualizer = useVirtualizer({
-        count: displayTasks.length,
+        count: rows.length,
         getScrollElement: () => scrollContainerRef.current,
         estimateSize: () => ROW_HEIGHT,
         overscan: 10,
@@ -461,6 +582,21 @@ export const GanttChart = ({
         return toneSolidClassName[STATUS_TONE[task.status]];
     };
 
+    const taskTimingFlags = (task: GanttTask) => [
+        task.is_overdue ? t('gantt.flagOverdue') : null,
+        task.is_delayed ? t('gantt.flagLateStart') : null,
+    ].filter(Boolean).map(flag => ` ${flag}`).join('');
+
+    // The bar repeats nothing from the task column: who carries it and for how long.
+    const getTaskBarText = (task: GanttTask) => {
+        const dates = getTaskTimelineDates(task);
+        const days = hasCompleteTimelineDates(dates)
+            ? differenceInCalendarDays(parseISO(dates.end), parseISO(dates.start)) + 1
+            : null;
+        const owner = task.assignee?.name ?? t('common.unassigned');
+        return days === null ? owner : t('gantt.taskBarText', { owner, count: days });
+    };
+
     const formatTaskTimelineDates = (dates: { start: string; end: string }) => ({
         start: formatDate(dates.start, activeI18n.language),
         end: formatDate(dates.end, activeI18n.language),
@@ -471,8 +607,10 @@ export const GanttChart = ({
         if (!hasCompleteTimelineDates(dates)) {
             return t('gantt.taskDatesUnavailable', { title: task.title });
         }
-        return t('gantt.taskDateRange', {
+        return t('gantt.taskBarSummary', {
             title: task.title,
+            status: t(`statuses.${task.status}`),
+            flags: taskTimingFlags(task),
             ...formatTaskTimelineDates(dates),
         });
     };
@@ -484,10 +622,11 @@ export const GanttChart = ({
         }
         return t('gantt.openScheduledTask', {
             title: task.title,
+            status: t(`statuses.${task.status}`),
             assignee: task.assignee?.name ?? t('common.unassigned'),
             priority: task.priority,
             ...formatTaskTimelineDates(dates),
-        });
+        }) + taskTimingFlags(task) + (dependencySummary(task) ? ` ${dependencySummary(task)}` : '');
     };
 
     const getUnscheduledTaskGuidance = (task: GanttTask) => (
@@ -642,13 +781,91 @@ export const GanttChart = ({
         scrollContainerRef.current.scrollTop = scrollTop - walkY;
     };
 
-    const SIDEBAR_WIDTH = 300;
+    const SIDEBAR_WIDTH = taskColumnWidth;
+    const startBarDrag = (event: ReactPointerEvent<HTMLElement>, task: GanttTask, kind: BarDrag['kind']) => {
+        if (!sandboxMode || schedulePreview || event.button !== 0) return;
+        event.stopPropagation();
+        const startX = event.clientX;
+        const drag: BarDrag = { kind, task, startX, dayDelta: 0, pointerX: event.clientX, pointerY: event.clientY };
+        setBarDrag(drag);
+        const move = (moveEvent: PointerEvent) => {
+            const dayDelta = Math.round((moveEvent.clientX - startX) / zoomLevel);
+            setBarDrag(current => current && { ...current, dayDelta, pointerX: moveEvent.clientX, pointerY: moveEvent.clientY });
+        };
+        const finish = (upEvent: PointerEvent) => {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', finish);
+            const dayDelta = Math.round((upEvent.clientX - startX) / zoomLevel);
+            setBarDrag(null);
+            if (kind === 'link') {
+                const target = document.elementFromPoint(upEvent.clientX, upEvent.clientY)?.closest<HTMLElement>('[data-gantt-task-id]');
+                const targetId = Number(target?.dataset.ganttTaskId);
+                const successor = Number.isFinite(targetId) ? rows.find(row => row.kind === 'task' && row.task.id === targetId) : undefined;
+                if (successor?.kind === 'task' && successor.task.id !== task.id && !successor.task.dependencies?.includes(task.id)) {
+                    suppressBarClick.current = true;
+                    onSaveSandbox?.(successor.task.id, { dependencies: [...(successor.task.dependencies ?? []), task.id], sandbox_update: undefined });
+                }
+                return;
+            }
+            if (dayDelta === 0) return;
+            suppressBarClick.current = true;
+            const dates = getTaskTimelineDates(task);
+            if (kind === 'move' && dates.start) {
+                // Dragging the bar pins its earliest start; the scheduler still decides the dates.
+                onSaveSandbox?.(task.id, { min_start_date: format(addDays(parseISO(dates.start), dayDelta), 'yyyy-MM-dd'), sandbox_update: undefined });
+            } else if (kind === 'resize') {
+                const effort = Math.max(0.5, (task.effort_days ?? 1) + dayDelta);
+                onSaveSandbox?.(task.id, { effort_days: effort, sandbox_update: undefined });
+            }
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', finish);
+    };
+    const focusTaskId = hoveredTaskId ?? editingTask?.id ?? null;
+    const focusTask = focusTaskId === null ? undefined : rows.find(row => row.kind === 'task' && row.task.id === focusTaskId);
+    const highlightedTaskIds = new Set<number>(focusTask && focusTask.kind === 'task'
+        ? [focusTask.task.id, ...(focusTask.task.dependencies ?? []), ...(successorsById.get(focusTask.task.id) ?? [])]
+        : []);
+    const dependencySummary = (task: GanttTask) => {
+        const predecessors = task.dependencies?.length ?? 0;
+        const successors = successorsById.get(task.id)?.length ?? 0;
+        return predecessors + successors > 0
+            ? t('gantt.dependencySummary', { predecessors, successors })
+            : '';
+    };
+    const zoomPercent = Math.round((zoomLevel / ZOOM_DEFAULT) * 100);
+    const zoomOut = () => setZoomLevel(value => Math.max(ZOOM_MIN, value - ZOOM_STEP));
+    const zoomIn = () => setZoomLevel(value => Math.min(ZOOM_MAX, value + ZOOM_STEP));
+    const todayIndex = visibleDays.findIndex(day => isSameDay(day, new Date()));
+    const scrollToToday = () => {
+        const container = scrollContainerRef.current;
+        if (!container || todayIndex < 0) return;
+        const timelineWidth = Math.max(0, container.clientWidth - SIDEBAR_WIDTH);
+        container.scrollTo({ left: Math.max(0, todayIndex * zoomLevel - timelineWidth / 2 + zoomLevel / 2), behavior: 'smooth' });
+    };
+    const fitIteration = () => {
+        const container = scrollContainerRef.current;
+        const iterationDays = differenceInCalendarDays(new Date(endDate), new Date(startDate)) + 1;
+        if (!container || iterationDays <= 0) return;
+        const timelineWidth = Math.max(0, container.clientWidth - SIDEBAR_WIDTH);
+        setZoomLevel(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.floor(timelineWidth / iterationDays))));
+        container.scrollTo({ left: 0 });
+    };
+    // "+" and "-" zoom and "T" jumps to today, unless the person is typing.
+    const handleChartShortcut = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+        // Keys from the filters drawer (a portal whose events bubble here) belong to the drawer.
+        const inDialog = event.target instanceof Element && Boolean(event.target.closest('[role="dialog"]'));
+        if (event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target) || inDialog) return;
+        if (event.key === '+' || event.key === '=') { event.preventDefault(); zoomIn(); }
+        else if (event.key === '-' || event.key === '_') { event.preventDefault(); zoomOut(); }
+        else if (event.key === 't' || event.key === 'T') { event.preventDefault(); scrollToToday(); }
+    };
     const isFilteredEmpty = sourceTasks.length > 0
         && activeFilterCount > 0
         && displayTasks.length === 0;
 
     return (
-        <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow">
+        <div role="region" aria-label={t('surfaces.ganttChart.chartRegion')} className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow" onKeyDown={handleChartShortcut}>
             {unscheduledTaskCount > 0 && (
                 // One summary replaces a warning on every unscheduled row.
                 <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
@@ -669,8 +886,54 @@ export const GanttChart = ({
                 </div>
             )}
             {/* Toolbar */}
-            <div className="z-10 flex shrink-0 justify-end border-b border-border bg-surface-card p-3 sm:p-4">
+            <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-card p-3 sm:p-4">
+                <div role="group" aria-label={t('surfaces.ganttChart.timelineControls')} className="flex min-w-0 flex-wrap items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}
+                        aria-label={t('surfaces.ganttChart.zoomTimelineOut')} title={t('surfaces.ganttChart.zoomOutShortcut')}>
+                        <ZoomOut className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                    <span className="min-w-14 text-center text-sm tabular-nums text-content-secondary" aria-live="polite">
+                        {t('surfaces.ganttChart.zoomLevel', { percent: zoomPercent })}
+                    </span>
+                    <Button variant="ghost" size="sm" onClick={zoomIn} disabled={zoomLevel >= ZOOM_MAX}
+                        aria-label={t('surfaces.ganttChart.zoomTimelineIn')} title={t('surfaces.ganttChart.zoomInShortcut')}>
+                        <ZoomIn className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={scrollToToday} disabled={todayIndex < 0}
+                        title={todayIndex < 0 ? t('surfaces.ganttChart.todayOutsideTimeline') : t('surfaces.ganttChart.todayShortcut')}>
+                        <Crosshair className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.ganttChart.today')}
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={fitIteration}>
+                        <CalendarRange className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.ganttChart.fitIteration')}
+                    </Button>
+                    <Button variant="ghost" size="sm" aria-pressed={showLinks} onClick={() => setShowLinks(!showLinks)}>
+                        <GitBranch className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.ganttChart.dependencyLinks')}
+                    </Button>
+                </div>
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
+                    <input
+                        type="search"
+                        value={searchText}
+                        onChange={event => setSearchText(event.target.value)}
+                        placeholder={t('surfaces.ganttChart.searchPlaceholder')}
+                        aria-label={t('surfaces.ganttChart.searchTasks')}
+                        className="input h-9 w-44 text-sm"
+                    />
+                    <select value={statusFilter} onChange={event => setStatusFilter(event.target.value as GanttStatusFilter)}
+                        aria-label={t('surfaces.ganttChart.statusFilter')} className="input h-9 w-auto text-sm">
+                        <option value="">{t('surfaces.ganttChart.anyStatus')}</option>
+                        {LEGEND_STATUSES.map(status => <option key={status} value={status}>{t(`statuses.${status}`)}</option>)}
+                    </select>
+                    <select value={groupBy} onChange={event => { setGroupBy(event.target.value as GanttGroupBy); setCollapsedGroups(new Set()); }}
+                        aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
+                        <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
+                        <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
+                        <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
+                        <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
+                    </select>
                     <Button
                         variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
                         size="sm"
@@ -723,18 +986,6 @@ export const GanttChart = ({
                                 ),
                             }] : []),
                             {
-                                label: t('surfaces.ganttChart.zoomTimelineOut'),
-                                icon: <ZoomOut className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setZoomLevel(value => Math.max(20, value - 10)),
-                                disabled: zoomLevel <= 20,
-                            },
-                            {
-                                label: t('surfaces.ganttChart.zoomTimelineIn'),
-                                icon: <ZoomIn className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setZoomLevel(value => Math.min(100, value + 10)),
-                                disabled: zoomLevel >= 100,
-                            },
-                            {
                                 label: t(isCompressed
                                     ? 'surfaces.ganttChart.showEveryDate'
                                     : 'surfaces.ganttChart.condenseLongTaskSpans'),
@@ -747,6 +998,24 @@ export const GanttChart = ({
                     />
                 </div>
             </div>
+
+            <details className="shrink-0 border-b border-border bg-surface-card px-4 py-2 text-xs text-content-secondary">
+                <summary className="cursor-pointer font-medium text-content-primary">{t('surfaces.ganttChart.legend')}</summary>
+                <p className="mt-2">{t('gantt.datesAreCalculated')}</p>
+                <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+                    {LEGEND_STATUSES.map(status => <li key={status} className="flex items-center gap-1.5">
+                        <span aria-hidden="true" className={clsx('inline-block h-3 w-5 rounded', toneSolidClassName[STATUS_TONE[status]])} />
+                        {t(`statuses.${status}`)}
+                    </li>)}
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-card ring-2 ring-feedback-danger" />{t('surfaces.ganttChart.legendOverdue')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-card ring-2 ring-feedback-purple" />{t('surfaces.ganttChart.legendLateStart')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-action bg-surface-card ring-2 ring-focus" />{t('surfaces.ganttChart.legendChanged')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-0.5 bg-action" />{t('surfaces.ganttChart.legendToday')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-muted" />{t('surfaces.ganttChart.legendWeekend')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-feedback-danger-muted" />{t('surfaces.ganttChart.legendHoliday')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-dashed border-border-strong" />{t('surfaces.ganttChart.legendNoDates')}</li>
+                </ul>
+            </details>
 
             <SlideOverDrawer
                 open={isFiltersOpen}
@@ -824,6 +1093,7 @@ export const GanttChart = ({
                                         : 'gantt.schedulePreviewBody')}
                                 </p>
                                 {Boolean(schedulePreview.schedule_result?.capacity_issues?.length) && <p className="mt-2 text-sm text-feedback-warning-foreground">{t('teamwork.capacityConflicts')}</p>}
+                                {!scheduleMutation.isPending && <UnscheduledTasks items={schedulePreview.schedule_result?.unscheduled} />}
                                 {!scheduleMutation.isPending && (
                                     <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-content-secondary">
                                         {previewChangedTaskIds.size > 0 ? (
@@ -938,10 +1208,10 @@ export const GanttChart = ({
                     <div className="relative h-7 border-b border-border bg-surface-muted text-xs text-content-secondary font-semibold"
                         style={{ width: '100%' }}
                     >
-                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-muted border-r border-border w-[300px]" />
+                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-muted border-r border-border" style={{ width: `${SIDEBAR_WIDTH}px` }} />
                         {monthGroups.map((group, idx) => (
                             <div key={idx}
-                                className={clsx("absolute top-0 bottom-0 text-center border-r border-border flex items-center justify-center truncate px-1", idx % 2 === 0 ? "bg-feedback-indigo-muted/50" : "bg-feedback-success-muted/50")}
+                                className={clsx("absolute top-0 bottom-0 text-center border-r border-border flex items-center justify-center truncate px-1", idx % 2 === 0 ? "bg-surface-muted" : "bg-surface-card")}
                                 style={{
                                     left: `${SIDEBAR_WIDTH + group.startIndex * zoomLevel}px`,
                                     width: `${group.count * zoomLevel}px`
@@ -954,8 +1224,33 @@ export const GanttChart = ({
 
                     {/* Bottom Row: Days */}
                     <div className="relative h-8 bg-surface-card" style={{ width: '100%' }}>
-                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-card border-r border-border-strong w-[300px] flex items-center pl-4 font-bold text-content-primary shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-card border-r border-border-strong flex items-center pl-4 font-bold text-content-primary shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                            style={{ width: `${SIDEBAR_WIDTH}px` }}>
                             {t('surfaces.ganttChart.task')}
+                            <div
+                                role="separator"
+                                aria-orientation="vertical"
+                                aria-label={t('surfaces.ganttChart.resizeTaskColumn')}
+                                aria-valuemin={TASK_COLUMN_MIN}
+                                aria-valuemax={TASK_COLUMN_MAX}
+                                aria-valuenow={SIDEBAR_WIDTH}
+                                tabIndex={0}
+                                className="absolute right-0 top-0 h-full w-2 cursor-col-resize hover:bg-action-muted focus-visible:bg-action-muted focus-visible:outline-none"
+                                onKeyDown={event => {
+                                    if (event.key === 'ArrowLeft') { event.preventDefault(); event.stopPropagation(); setTaskColumnWidth(SIDEBAR_WIDTH - 20); }
+                                    if (event.key === 'ArrowRight') { event.preventDefault(); event.stopPropagation(); setTaskColumnWidth(SIDEBAR_WIDTH + 20); }
+                                }}
+                                onPointerDown={event => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    const startX = event.clientX;
+                                    const startWidth = SIDEBAR_WIDTH;
+                                    const move = (moveEvent: PointerEvent) => setTaskColumnWidth(startWidth + moveEvent.clientX - startX);
+                                    const stop = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', stop); };
+                                    window.addEventListener('pointermove', move);
+                                    window.addEventListener('pointerup', stop);
+                                }}
+                            />
                         </div>
                         {columnVirtualizer.getVirtualItems().map(virtualColumn => {
                             const day = visibleDays[virtualColumn.index];
@@ -966,7 +1261,7 @@ export const GanttChart = ({
                                     key={virtualColumn.index}
                                     className={clsx(
                                         "absolute top-0 bottom-0 border-r border-border-subtle flex flex-col items-center justify-center text-wc-micro",
-                                        isHol ? "bg-feedback-danger-muted text-feedback-danger-foreground" : isWknd ? "bg-action-muted text-action-muted-foreground" : "bg-surface-card text-content-secondary"
+                                        isSameDay(day, new Date()) ? "bg-action-muted font-semibold text-action" : isHol ? "bg-feedback-danger-muted text-feedback-danger-foreground" : isWknd ? "bg-surface-muted text-content-tertiary" : "bg-surface-card text-content-secondary"
                                     )}
                                     style={{
                                         left: `${SIDEBAR_WIDTH + virtualColumn.start}px`,
@@ -997,6 +1292,48 @@ export const GanttChart = ({
                         height: `${rowVirtualizer.getTotalSize()}px`,
                     }}
                 >
+                    {/* Dependency links for the rendered rows only, so virtualization stays cheap. */}
+                    {showLinks && (
+                        <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 z-[5] text-content-tertiary"
+                            width={SIDEBAR_WIDTH + columnVirtualizer.getTotalSize()} height={rowVirtualizer.getTotalSize()}>
+                            <defs>
+                                <marker id={`${chartInstructionsId}-arrow`} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+                                    <path d="M0,0 L8,4 L0,8 z" fill="currentColor" />
+                                </marker>
+                            </defs>
+                            {rowVirtualizer.getVirtualItems().flatMap(virtualRow => {
+                                const row = rows[virtualRow.index];
+                                if (row.kind !== 'task' || !row.task.dependencies?.length) return [];
+                                const successor = row.task;
+                                const successorDates = getTaskTimelineDates(successor);
+                                if (!hasCompleteTimelineDates(successorDates)) return [];
+                                const successorPosition = getTaskPosition(successor);
+                                return successor.dependencies.flatMap(predecessorId => {
+                                    const predecessorIndex = rowIndexByTaskId.get(predecessorId);
+                                    if (predecessorIndex === undefined) return [];
+                                    const predecessorRow = rows[predecessorIndex];
+                                    if (predecessorRow.kind !== 'task' || !hasCompleteTimelineDates(getTaskTimelineDates(predecessorRow.task))) return [];
+                                    const predecessorPosition = getTaskPosition(predecessorRow.task);
+                                    const x1 = SIDEBAR_WIDTH + predecessorPosition.left + predecessorPosition.width;
+                                    const y1 = predecessorIndex * ROW_HEIGHT + BAR_CENTER_Y;
+                                    const x2 = SIDEBAR_WIDTH + successorPosition.left;
+                                    const y2 = virtualRow.index * ROW_HEIGHT + BAR_CENTER_Y;
+                                    const elbow = Math.max(x1 + 8, Math.min(x2 - 8, x1 + 16));
+                                    const highlighted = highlightedTaskIds.has(successor.id) && highlightedTaskIds.has(predecessorId)
+                                        && (focusTaskId === successor.id || focusTaskId === predecessorId);
+                                    return [(
+                                        <path key={`${predecessorId}-${successor.id}`}
+                                            d={`M${x1},${y1} H${elbow} V${y2} H${x2}`}
+                                            fill="none" stroke="currentColor"
+                                            className={highlighted ? 'text-action' : undefined}
+                                            strokeWidth={highlighted ? 2.5 : 1.25}
+                                            markerEnd={`url(#${chartInstructionsId}-arrow)`} />
+                                    )];
+                                });
+                            })}
+                        </svg>
+                    )}
+
                     {/* A. Background Grid Layer (Absolute, Full Height of visible area) */}
                     <div className="absolute inset-0 pointer-events-none z-0">
                         {columnVirtualizer.getVirtualItems().map(virtualColumn => {
@@ -1012,15 +1349,14 @@ export const GanttChart = ({
                                     key={`grid-${virtualColumn.index}`}
                                     className={clsx(
                                         "absolute top-0 bottom-0 h-full border-r border-border-subtle/50",
-                                        isHol ? "bg-feedback-danger-muted/50" : isWknd ? "bg-action-muted/30" : "bg-transparent",
-                                        isToday && "bg-feedback-warning-muted/30"
+                                        isHol ? "bg-feedback-danger-muted/50" : isWknd ? "bg-surface-muted" : "bg-transparent"
                                     )}
                                     style={{
                                         left: `${SIDEBAR_WIDTH + virtualColumn.start}px`,
                                         width: `${virtualColumn.size}px`,
                                     }}
                                 >
-                                    {isToday && <div className="w-0.5 h-full bg-feedback-warning absolute left-1/2 -translate-x-1/2 opacity-50" />}
+                                    {isToday && <div aria-hidden="true" className="absolute left-1/2 h-full w-0.5 -translate-x-1/2 bg-action" />}
                                 </div>
                             );
                         })}
@@ -1036,7 +1372,26 @@ export const GanttChart = ({
 
                     {/* B. Task Rows Layer */}
                     {rowVirtualizer.getVirtualItems().map(virtualRow => {
-                        const task = displayTasks[virtualRow.index];
+                        const row = rows[virtualRow.index];
+                        if (row.kind === 'group') {
+                            const collapsed = collapsedGroups.has(row.key);
+                            return (
+                                <div key={`group-${row.key}`} className="absolute left-0 w-full border-b border-border bg-surface-muted"
+                                    style={{ top: `${virtualRow.start}px`, height: `${virtualRow.size}px` }}>
+                                    <button type="button" aria-expanded={!collapsed}
+                                        className="sticky left-0 flex h-full items-center gap-2 px-3 text-sm font-semibold text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                        onClick={() => setCollapsedGroups(previous => {
+                                            const next = new Set(previous);
+                                            if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
+                                            return next;
+                                        })}>
+                                        {collapsed ? <ChevronRight className="h-4 w-4" aria-hidden="true" /> : <ChevronDown className="h-4 w-4" aria-hidden="true" />}
+                                        {t('surfaces.ganttChart.groupHeader', { label: row.label, count: row.count })}
+                                    </button>
+                                </div>
+                            );
+                        }
+                        const task = row.task;
                         const taskDates = getTaskTimelineDates(task);
                         const taskPosition = hasCompleteTimelineDates(taskDates)
                             ? getTaskPosition(task)
@@ -1058,7 +1413,8 @@ export const GanttChart = ({
                             >
                                 {/* Fixed Sidebar Cell */}
                                 <div
-                                    className="absolute left-0 top-0 bottom-0 w-[300px] border-r border-border bg-surface-card z-20 flex flex-col justify-center px-2 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                    className="absolute left-0 top-0 bottom-0 border-r border-border bg-surface-card z-20 flex flex-col justify-center px-2 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                    style={{ width: `${SIDEBAR_WIDTH}px` }}
                                 >
                                     <div className="flex items-center gap-1" style={{ paddingLeft: `${task.depth * 16}px` }}>
                                         {task.children && task.children.length > 0 ? (
@@ -1073,6 +1429,8 @@ export const GanttChart = ({
                                                     className="p-0.5 hover:bg-surface-subtle rounded text-content-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                                                     aria-expanded={isTaskExpanded}
                                                     aria-label={isTaskExpanded
+                                                        ? t('gantt.collapseTask', { title: task.title })
+                                                        : t('gantt.expandTask', { title: task.title })} title={isTaskExpanded
                                                         ? t('gantt.collapseTask', { title: task.title })
                                                         : t('gantt.expandTask', { title: task.title })}
                                                 >
@@ -1094,10 +1452,16 @@ export const GanttChart = ({
                                         <span
                                             aria-label={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
                                             title={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
-                                            className={clsx("shrink-0 rounded border px-1", task.priority <= 2 ? "border-feedback-danger-border text-feedback-danger-foreground bg-feedback-danger-muted" : "border-border")}
+                                            className={clsx("shrink-0 rounded border border-border px-1 text-content-secondary", task.priority <= 2 && "font-semibold text-content-primary")}
                                         >
                                             {t('surfaces.ganttChart.priority', { priority: task.priority })}
                                         </span>
+                                        {dependencySummary(task) && (
+                                            <span className="shrink-0 rounded border border-border px-1 text-content-secondary" title={dependencySummary(task)}
+                                                aria-label={dependencySummary(task)}>
+                                                {t('surfaces.ganttChart.dependencyCount', { count: (task.dependencies?.length ?? 0) + (successorsById.get(task.id)?.length ?? 0) })}
+                                            </span>
+                                        )}
                                         {previewChangedTaskIds.has(task.id) && (
                                             <span className="truncate rounded bg-action-muted px-1 text-action">
                                                 {t('gantt.previewDatesChanged')}
@@ -1119,7 +1483,7 @@ export const GanttChart = ({
                                         />
                                     ))}
 
-                                    {taskPosition ? (
+                                    {taskPosition ? (<>
                                         <button
                                             type="button"
                                             className={clsx(
@@ -1129,24 +1493,71 @@ export const GanttChart = ({
                                                 task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
                                                 task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
                                                 previewChangedTaskIds.has(task.id) && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
+                                                highlightedTaskIds.has(task.id) && focusTaskId !== task.id && "outline outline-2 outline-offset-2 outline-action",
                                                 schedulePreview
                                                     ? "cursor-not-allowed opacity-80"
                                                     : "cursor-pointer hover:brightness-110 active:brightness-90"
                                             )}
-                                            style={{ left: `${taskPosition.left}px`, width: `${taskPosition.width}px` }}
+                                            style={{
+                                                left: `${taskPosition.left + (barDrag?.kind === 'move' && barDrag.task.id === task.id ? barDrag.dayDelta * zoomLevel : 0)}px`,
+                                                width: `${Math.max(zoomLevel, taskPosition.width + (barDrag?.kind === 'resize' && barDrag.task.id === task.id ? barDrag.dayDelta * zoomLevel : 0))}px`,
+                                            }}
+                                            data-gantt-task-id={task.id}
+                                            onPointerDown={event => startBarDrag(event, task, 'move')}
+                                            onMouseEnter={() => setHoveredTaskId(task.id)}
+                                            onMouseLeave={() => setHoveredTaskId(null)}
+                                            onFocus={() => setHoveredTaskId(task.id)}
+                                            onBlur={() => setHoveredTaskId(null)}
                                             onClick={(event) => {
                                                 event.stopPropagation();
                                                 if (schedulePreview) return;
+                                                if (suppressBarClick.current) { suppressBarClick.current = false; return; }
+                                                if (sandboxMode) {
+                                                    const rect = event.currentTarget.getBoundingClientRect();
+                                                    setBarInputs({
+                                                        task,
+                                                        origin: event.currentTarget,
+                                                        anchor: {
+                                                            top: Math.min(rect.bottom + 8, window.innerHeight - 440),
+                                                            left: Math.max(16, Math.min(rect.left, window.innerWidth - 336)),
+                                                        },
+                                                    });
+                                                    return;
+                                                }
                                                 setEditingTask(task);
                                             }}
                                             aria-disabled={schedulePreview ? true : undefined}
+                                            aria-haspopup={sandboxMode ? 'dialog' : undefined}
                                             title={schedulePreview ? getPreviewTaskDescription(task) : getTaskTooltip(task)}
                                             aria-label={schedulePreview
                                                 ? getPreviewTaskDescription(task)
                                                 : getTaskAccessibleLabel(task)}
                                         >
-                                            <span className="truncate font-medium drop-shadow-md">{task.title}</span>
+                                            <span className="truncate font-medium drop-shadow-md">{getTaskBarText(task)}</span>
+                                            {sandboxMode && !schedulePreview && (
+                                                <>
+                                                    {/* Right edge: drag to change effort. */}
+                                                    <span aria-hidden="true" title={t('gantt.dragToChangeEffort')}
+                                                        className="absolute right-0 top-0 h-full w-2 cursor-ew-resize rounded-r bg-surface-card/40"
+                                                        onPointerDown={event => startBarDrag(event, task, 'resize')} />
+                                                    {/* End handle: drag onto another bar to make it wait for this one. */}
+                                                    <span aria-hidden="true" title={t('gantt.dragToLink')}
+                                                        className="absolute -right-3 top-1/2 h-2.5 w-2.5 -translate-y-1/2 cursor-crosshair rounded-full border border-action bg-surface-card"
+                                                        onPointerDown={event => startBarDrag(event, task, 'link')} />
+                                                </>
+                                            )}
                                         </button>
+                                        {sandboxMode && task.isSandboxModified && task.min_start_date && (
+                                            <button type="button"
+                                                className="absolute top-3 z-10 flex h-6 items-center gap-1 rounded border border-border bg-surface-card px-1.5 text-xs text-content-secondary hover:bg-surface-muted"
+                                                style={{ left: `${Math.max(0, taskPosition.left - 64)}px` }}
+                                                aria-label={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
+                                                title={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
+                                                onClick={event => { event.stopPropagation(); onSaveSandbox?.(task.id, { min_start_date: null, sandbox_update: undefined }); }}>
+                                                <Pin className="h-3 w-3" aria-hidden="true" /><X className="h-3 w-3" aria-hidden="true" />
+                                            </button>
+                                        )}
+                                        </>
                                     ) : schedulePreview ? (
                                         <div
                                             className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-2 text-xs text-feedback-warning-foreground"
@@ -1178,6 +1589,24 @@ export const GanttChart = ({
                     })}
                 </div>
                 </div>
+            )}
+
+            {barInputs && (
+                <GanttBarInputs
+                    task={barInputs.task}
+                    iterationId={iterationId}
+                    anchor={barInputs.anchor}
+                    taskOptions={displayTasks.filter(item => !item.children?.length).map(item => ({ id: item.id, title: item.title }))}
+                    onApply={changes => {
+                        // Clear any full-form payload so these inputs are what the dry-run sends.
+                        onSaveSandbox?.(barInputs.task.id, { ...changes, sandbox_update: undefined });
+                        const origin = barInputs.origin;
+                        setBarInputs(null);
+                        origin.focus();
+                    }}
+                    onMoreFields={() => { const task = barInputs.task; setBarInputs(null); setEditingTask(task); }}
+                    onClose={() => { const origin = barInputs.origin; setBarInputs(null); origin.focus(); }}
+                />
             )}
 
             <TaskEditModal

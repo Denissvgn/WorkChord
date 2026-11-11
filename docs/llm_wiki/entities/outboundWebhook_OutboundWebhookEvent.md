@@ -1,6 +1,6 @@
 # OutboundWebhookEvent
 
-**Location:** `frontend/src/types/outboundWebhook.ts:28`
+**Location:** `frontend/src/types/outboundWebhook.ts:30`
 **Kind:** Interface
 **Bases:** —
 **Module:** [outboundWebhook](../modules/outboundWebhook.md)

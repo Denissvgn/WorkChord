@@ -230,7 +230,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                 <div className="flex items-center gap-2 text-sm font-medium text-content-primary">
                     <History className="w-4 h-4 text-content-secondary" />
                     {t('surfaces.taskTimeline.timeline')}
-                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-wc-micro font-medium text-action">
+                    <span className="rounded-full border border-border bg-surface-subtle px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
                         {task.request_count ?? 0} {t('surfaces.taskTimeline.requests')}
                     </span>
                 </div>
@@ -250,7 +250,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                         "inline-flex items-center gap-1 px-2 py-1 rounded-full border",
                         claimIsStale
                             ? "bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border"
-                            : "bg-action-muted text-action border-action"
+                            : "border-border bg-surface-subtle text-content-secondary"
                     )}>
                         <Bot className="w-3 h-3" />
                         {claimIsStale ? t('surfaces.taskTimeline.staleClaim') : t('surfaces.taskTimeline.claimed')}: {task.claimed_by.display_name}
@@ -280,6 +280,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                     <div className="mb-3 flex flex-col gap-2 sm:flex-row">
                         <input
                             type="text"
+                            aria-label={t('surfaces.taskTimeline.pasteGitHubPRIssueOrBranchURL')}
                             value={githubUrl}
                             onKeyDown={handleGitHubLinkKeyDown}
                             onChange={event => {
@@ -307,7 +308,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 type="button"
                                 onClick={() => setLinkError(null)}
                                 className="shrink-0 rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
-                                aria-label={t('surfaces.taskTimeline.dismissExternalLinkError')}
+                                aria-label={t('surfaces.taskTimeline.dismissExternalLinkError')} title={t('surfaces.taskTimeline.dismissExternalLinkError')}
                             >
                                 <X className="h-3.5 w-3.5" />
                             </button>
@@ -328,7 +329,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                             {details || providerLabel(link.provider)}
                                         </span>
                                         {link.status && (
-                                            <span className="shrink-0 rounded-full bg-action-muted px-1.5 py-0.5 text-wc-micro font-medium text-action">
+                                            <span className="shrink-0 rounded-full border border-border bg-surface-subtle px-1.5 py-0.5 text-wc-micro font-medium text-content-secondary">
                                                 {link.status}
                                             </span>
                                         )}
@@ -438,6 +439,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                     </div>
                                     <div className="text-xs text-content-secondary mt-0.5">
                                         {item.actor_name || item.actor_type || t('common.system')}
+                                        {item.payload?.local_profile_id != null && <span> · {t('identity.localNotVerified')}</span>}
                                         {item.trace_id && <span> - {item.trace_id}</span>}
                                     </div>
                                     {eventText(item.payload) && (

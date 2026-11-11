@@ -59,3 +59,4 @@ flowchart LR
 | `test_blockers_name_what_is_missing_and_hold_the_schedule` | `() -> None` | — | — |
 | `test_single_gaps_mark_one_checkpoint` | `(overrides, checkpoint, state) -> None` | `@pytest.mark.parametrize(('overrides', 'checkpoint', 'state'), [({'team_members_no_capacity': 1}, 'team', 'warn'), ({'has_schedule': False}, 'schedule', 'todo'), ({'risk_count': 2}, 'review', 'warn')])` | — |
 | `test_agents_can_read_plan_readiness_over_rest_and_mcp` | *(async)* `() -> None` | `@pytest.mark.asyncio` | — |
+| `test_agent_held_work_is_reported_apart_from_unassigned` | `() -> None` | — | — |

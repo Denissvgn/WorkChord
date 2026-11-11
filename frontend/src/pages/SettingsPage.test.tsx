@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { renderWithProviders } from '../test/renderWithProviders';
-import SettingsPage, { RECENT_SETTINGS_STORAGE_KEY } from './SettingsPage';
+import SettingsPage from './SettingsPage';
 import { CommandMenu } from '../components/layout/CommandMenu';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../utils/singleKeyShortcutPreference';
 import { ADMIN_API_KEY_STORAGE_KEY } from '../utils/adminAccess';
@@ -33,8 +33,8 @@ describe('SettingsPage', () => {
         themeStoreMock.setTheme.mockReset();
     });
 
-    it('starts with a warning-focused overview and keeps the full catalog on demand', async () => {
-        const { user } = renderWithProviders(<SettingsPage />, {
+    it('starts with a warning-focused overview and always lists every destination', () => {
+        renderWithProviders(<SettingsPage />, {
             initialEntries: ['/settings'],
         });
 
@@ -42,49 +42,39 @@ describe('SettingsPage', () => {
         expect(screen.getByRole('heading', { name: 'Overview' })).toBeVisible();
         expect(within(navigation).getByRole('link', { name: 'Overview' }))
             .toHaveAttribute('aria-current', 'page');
-        expect(screen.getByText('Protected settings need session authority')).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Open session authority' }))
+        expect(screen.getByText('Changing settings needs the admin key')).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Open access' }))
             .toHaveAttribute('href', '/settings?tab=admin_access');
         expect(screen.getByRole('navigation', { name: 'Common settings jobs' }))
             .toBeVisible();
         expect(screen.queryByRole('button', { name: 'Setup help' })).not.toBeInTheDocument();
-
-        const catalog = within(navigation).getByText('Browse all settings').closest('details')!;
-        expect(catalog).not.toHaveAttribute('open');
-        await user.click(within(navigation).getByText('Browse all settings'));
-        expect(catalog).toHaveAttribute('open');
+        expect(within(navigation).queryByText('Browse all settings')).not.toBeInTheDocument();
         expect(within(navigation).getByRole('heading', { name: 'Personal' })).toBeVisible();
         expect(within(navigation).getByRole('heading', { name: 'Planning' })).toBeVisible();
         expect(within(navigation).getByRole('heading', { name: 'Integrations' })).toBeVisible();
+        // Ten destinations plus Overview, always listed.
+        expect(within(navigation).getAllByRole('link')).toHaveLength(11);
     });
 
-    it('searches the catalog and keeps three deduplicated recent destinations', async () => {
-        window.localStorage.setItem(RECENT_SETTINGS_STORAGE_KEY, JSON.stringify([
-            'github',
-            'github',
-            'scheduling',
-            'about',
-            'runtime',
-        ]));
+    it('searches field labels and keywords, so "key" finds Access and not Appearance', async () => {
         const { user } = renderWithProviders(<SettingsPage />, {
             initialEntries: ['/settings?tab=appearance'],
         });
 
         const navigation = screen.getByRole('navigation', { name: 'Settings navigation' });
-        const recentSection = within(navigation).getByRole('heading', { name: 'Recently opened' })
-            .closest('section')!;
-        expect(within(recentSection).getAllByRole('link')).toHaveLength(3);
-        expect(within(recentSection).getByRole('link', { name: 'Appearance' })).toBeVisible();
-
-        await user.type(within(navigation).getByRole('searchbox', { name: 'Search settings' }), 'repository');
+        const search = within(navigation).getByRole('searchbox', { name: 'Search settings' });
+        await user.type(search, 'repository');
         expect(within(navigation).getByRole('link', { name: 'GitHub' })).toBeVisible();
         expect(within(navigation).queryByRole('link', { name: 'Scheduling' })).not.toBeInTheDocument();
 
-        await user.click(within(navigation).getByRole('link', { name: 'GitHub' }));
-        await waitFor(() => {
-            expect(JSON.parse(window.localStorage.getItem(RECENT_SETTINGS_STORAGE_KEY) ?? '[]'))
-                .toEqual(['github', 'appearance', 'scheduling']);
-        });
+        await user.clear(search);
+        await user.type(search, 'key');
+        expect(within(navigation).getByRole('link', { name: 'Access' })).toBeVisible();
+        expect(within(navigation).queryByRole('link', { name: 'Appearance' })).not.toBeInTheDocument();
+
+        await user.clear(search);
+        await user.type(search, 'SMTP');
+        expect(within(navigation).getByRole('link', { name: 'Notifications' })).toBeVisible();
     });
 
     it('omits the setup warning when protected settings access is available', () => {
@@ -120,7 +110,7 @@ describe('SettingsPage', () => {
         expect(darkTheme).toHaveFocus();
     });
 
-    it('exposes an off-by-default shortcut preference and synchronizes Commands immediately', async () => {
+    it('exposes an on-by-default shortcut preference and synchronizes Commands immediately', async () => {
         const { user } = renderWithProviders(
             <>
                 <SettingsPage />
@@ -130,17 +120,17 @@ describe('SettingsPage', () => {
         );
 
         const settingsToggle = screen.getByRole('checkbox', {
-            name: 'Enable single-key task shortcuts',
+            name: 'Single-key task shortcuts',
         });
-        expect(settingsToggle).not.toBeChecked();
+        expect(settingsToggle).toBeChecked();
 
         await user.click(settingsToggle);
-        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('true');
+        expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('false');
 
         await user.keyboard('{Control>}k{/Control}');
         const commandDialog = screen.getByRole('dialog', { name: 'Command menu' });
         expect(within(commandDialog).getByRole('checkbox', {
-            name: 'Enable single-key task shortcuts',
-        })).toBeChecked();
+            name: 'Single-key task shortcuts',
+        })).not.toBeChecked();
     });
 });

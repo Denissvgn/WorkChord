@@ -13,6 +13,12 @@ import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import type { TeamMember, TeamMemberCreate, TeamMemberProfile } from '../../types/team';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { feedbackMessage } from '../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+
+/** Default overhead (meetings, support) taken out of a capacity row's hours. */
+const PERSON_OVERHEAD = 20;
+const AGENT_OVERHEAD = 0;
 
 interface TeamFormProps {
     iterationId: number;
@@ -101,9 +107,11 @@ const TeamFormEditor = ({
     const profiles = profilesQuery.data ?? [];
     const isLoadingProfiles = profilesQuery.isLoading;
     const hasLinkedProfile = formData.profile_id !== null && formData.profile_id !== undefined;
+    const selectedProfileKind = profiles.find(candidate => candidate.id === formData.profile_id)?.profile_kind ?? 'human';
 
     const createMutation = useMutation({
         mutationFn: (data: TeamMemberCreate) => teamService.create(iterationId, data, revisions),
+        meta: { success: data => feedbackMessage(t, 'created', 'teamMember', (data as { name?: string }).name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] });
@@ -118,6 +126,7 @@ const TeamFormEditor = ({
 
     const updateMutation = useMutation({
         mutationFn: (data: TeamMemberCreate) => teamService.update(initialData!.id, data, revisions),
+        meta: { success: data => feedbackMessage(t, 'saved', 'teamMember', (data as { name?: string }).name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });
@@ -153,8 +162,16 @@ const TeamFormEditor = ({
         if (isPending) return;
         const profile = profiles.find(candidate => candidate.id === profileId) ?? null;
         setError(null);
+        // An agent has no meetings to take out of its hours, so a new agent row starts with no overhead.
+        const overheadDefault = (previous: number) => {
+            if (initialData) return previous;
+            if (profile?.profile_kind === 'agent' && previous === PERSON_OVERHEAD) return AGENT_OVERHEAD;
+            if (profile?.profile_kind !== 'agent' && previous === AGENT_OVERHEAD) return PERSON_OVERHEAD;
+            return previous;
+        };
         setFormData(prev => ({
             ...prev,
+            operational_utilization: overheadDefault(prev.operational_utilization),
             profile_id: profileId,
             name: profile ? profile.display_name : prev.name,
             email: profile ? profile.email || '' : prev.email,
@@ -267,6 +284,9 @@ const TeamFormEditor = ({
                     />
 
                     <CollapsibleSection title={t('teamForm.iterationCapacity')} defaultOpen={initialData?.availability_percent !== 100 || initialData?.professionalism_coefficient !== 1 || initialData?.operational_utilization !== 20}>
+                        <p className="mb-3 text-sm text-content-secondary">
+                            {t(selectedProfileKind === 'agent' ? 'teamForm.capacityMeaningAgent' : 'teamForm.capacityMeaningPerson')}
+                        </p>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <Input
                                 type="number"

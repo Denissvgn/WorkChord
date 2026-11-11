@@ -1,5 +1,5 @@
 import i18n from '../../i18n/i18n';
-import { useMemo, useState, type KeyboardEvent } from 'react';
+import { useId, useMemo, useState, type KeyboardEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, Link2, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
 import clsx from 'clsx';
@@ -13,6 +13,7 @@ import type {
 import { getApiErrorMessage } from '../../utils/apiError';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { safeExternalHref } from '../../utils/safeUrl';
+import { Button } from '../common/Button';
 
 const t = i18n.t.bind(i18n);
 
@@ -60,6 +61,8 @@ export const RequestSourceLinksPanel = ({
     const queryClient = useQueryClient();
     const resolvedTitle = title ?? t('surfaces.requestSourceLinks.requests');
     const linkQueryKey = ['request-source-links', targetType, targetId];
+    const [formOpen, setFormOpen] = useState(false);
+    const fieldId = useId();
     const [newTitle, setNewTitle] = useState('');
     const [newUrl, setNewUrl] = useState('');
     const [sourceType, setSourceType] = useState<RequestSourceType>('customer');
@@ -118,6 +121,7 @@ export const RequestSourceLinksPanel = ({
         mutationFn: (data: RequestSourceLinkCreate) => requestSourceService.createLink(data),
         onSuccess: () => {
             resetCreateForm();
+            setFormOpen(false);
             handleMutationSuccess();
         },
         onError: (err: unknown) => {
@@ -208,9 +212,15 @@ export const RequestSourceLinksPanel = ({
                         {count}
                     </span>
                 </div>
-                {linksAreFetching && !linksAreLoading && (
-                    <Loader2 className="h-4 w-4 animate-spin text-content-tertiary" />
-                )}
+                <div className="flex items-center gap-2">
+                    {linksAreFetching && !linksAreLoading && (
+                        <Loader2 className="h-4 w-4 animate-spin text-content-tertiary" />
+                    )}
+                    <Button type="button" size="sm" variant="secondary" aria-expanded={formOpen} aria-controls={`${fieldId}-form`}
+                        onClick={() => setFormOpen(open => !open)}>
+                        {formOpen ? t('surfaces.requestSourceLinks.closeForm') : <><Plus aria-hidden="true" className="mr-1 h-4 w-4" />{t('surfaces.requestSourceLinks.linkRequest')}</>}
+                    </Button>
+                </div>
             </div>
 
             {linksQuery.isLoading && <QueryLoadingState className="mb-3 min-h-16 py-3" />}
@@ -233,74 +243,82 @@ export const RequestSourceLinksPanel = ({
                         type="button"
                         onClick={() => setError(null)}
                         className="rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
-                        aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
+                        aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')} title={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
                     >
                         <X className="h-3.5 w-3.5" />
                     </button>
                 </div>
             )}
 
+            {/* The form opens on request instead of standing open on every project. */}
+            {formOpen && <div id={`${fieldId}-form`} className="space-y-4 rounded-md border border-border p-3">
             <div className="space-y-2">
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr_auto]">
-                    <input
-                        type="text"
-                        value={newTitle}
-                        onKeyDown={handleCreateKeyDown}
-                        onChange={event => setNewTitle(event.target.value)}
-                        placeholder={t('surfaces.requestSourceLinks.requestTitle')}
-                        className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                    <input
-                        type="url"
-                        value={newUrl}
-                        onKeyDown={handleCreateKeyDown}
-                        onChange={event => setNewUrl(event.target.value)}
-                        placeholder={t('surfaces.requestSourceLinks.requestURL')}
-                        className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                    <button
-                        type="button"
-                        onClick={handleCreate}
-                        disabled={createLinkMutation.isPending || (!newTitle.trim() && !newUrl.trim())}
-                        className="inline-flex items-center justify-center gap-1 rounded-md bg-action px-3 py-2 text-sm font-medium text-content-emphasis hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                        {createLinkMutation.isPending ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                            <Plus className="h-4 w-4" />
-                        )}
+                    <label className="block text-sm">
+                        <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.requestTitle')}</span>
+                        <input
+                            id={`${fieldId}-requestTitle`}
+                            type="text"
+                            value={newTitle}
+                            onKeyDown={handleCreateKeyDown}
+                            onChange={event => setNewTitle(event.target.value)}
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                    </label>
+                    <label className="block text-sm">
+                        <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.requestURL')}</span>
+                        <input
+                            id={`${fieldId}-requestURL`}
+                            type="url"
+                            value={newUrl}
+                            onKeyDown={handleCreateKeyDown}
+                            onChange={event => setNewUrl(event.target.value)}
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                    </label>
+                    <Button type="button" size="sm" className="self-end" onClick={handleCreate} isLoading={createLinkMutation.isPending}
+                        disabled={createLinkMutation.isPending || (!newTitle.trim() && !newUrl.trim())}>
+                        {!createLinkMutation.isPending && <Plus aria-hidden="true" className="mr-1 h-4 w-4" />}
                         {t('surfaces.requestSourceLinks.add')}
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-[150px_1fr_110px]">
+                    <label className="block text-sm"><span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.sourceType')}</span>
                     <select
                         value={sourceType}
                         onChange={event => setSourceType(event.target.value as RequestSourceType)}
-                        className="rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     >
                         {sourceTypeOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                         ))}
                     </select>
-                    <input
-                        type="text"
-                        value={sourceName}
-                        onKeyDown={handleCreateKeyDown}
-                        onChange={event => setSourceName(event.target.value)}
-                        placeholder={t('surfaces.requestSourceLinks.sourceName')}
-                        className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                    <input
-                        type="number"
-                        min={1}
-                        max={10}
-                        value={priorityHint}
-                        onKeyDown={handleCreateKeyDown}
-                        onChange={event => setPriorityHint(event.target.value)}
-                        placeholder={t('surfaces.requestSourceLinks.priority')}
-                        className="rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
+                    </label>
+                    <label className="block text-sm">
+                        <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.sourceName')}</span>
+                        <input
+                            id={`${fieldId}-sourceName`}
+                            type="text"
+                            value={sourceName}
+                            onKeyDown={handleCreateKeyDown}
+                            onChange={event => setSourceName(event.target.value)}
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                    </label>
+                    <label className="block text-sm">
+                        <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.priority')}</span>
+                        <input
+                            id={`${fieldId}-priority`}
+                            type="number"
+                            min={1}
+                            max={10}
+                            value={priorityHint}
+                            onKeyDown={handleCreateKeyDown}
+                            onChange={event => setPriorityHint(event.target.value)}
+                            className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                    </label>
                 </div>
             </div>
 
@@ -308,24 +326,29 @@ export const RequestSourceLinksPanel = ({
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_150px]">
                     <div className="relative">
                         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-content-tertiary" />
+                        <label className="block text-sm">
+                            <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.searchExistingRequests')}</span>
                         <input
-                            type="text"
-                            value={searchText}
-                            onChange={event => setSearchText(event.target.value)}
-                            placeholder={t('surfaces.requestSourceLinks.searchExistingRequests')}
-                            className="w-full rounded-md border border-border-strong py-2 pl-9 pr-3 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                        />
+                                id={`${fieldId}-searchExistingRequests`}
+                                type="text"
+                                value={searchText}
+                                onChange={event => setSearchText(event.target.value)}
+                                                            className="w-full rounded-md border border-border-strong py-2 pl-9 pr-3 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            />
+                        </label>
                     </div>
+                    <label className="block text-sm"><span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.searchType')}</span>
                     <select
                         value={searchType}
                         onChange={event => setSearchType(event.target.value as RequestSourceType | '')}
-                        className="rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                     >
                         <option value="">{t('surfaces.requestSourceLinks.anyType')}</option>
                         {sourceTypeOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                         ))}
                     </select>
+                    </label>
                 </div>
 
                 {trimmedSearch && (
@@ -374,6 +397,7 @@ export const RequestSourceLinksPanel = ({
                     </div>
                 )}
             </div>
+            </div>}
 
             <div className="mt-4 space-y-2">
                 {linksAreLoading ? (

@@ -15,12 +15,12 @@ try {
   await page.goto(`/my-work?task=${task}`);
   await page.getByRole('link', { name: 'Sign in', exact: true }).click();
   await page.getByRole('link', { name: 'Continue as Alice', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).waitFor();
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).waitFor();
   const saved = page.waitForResponse(response => response.request().method() === 'PUT' && new URL(response.url()).pathname === `/api/tasks/${task}`);
-  await page.getByRole('textbox', { name: 'Task Title', exact: false }).fill('Native peer work');
+  await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Native peer work');
   const priority = page.getByLabel('Priority', { exact: true });
   await priority.selectOption((await priority.inputValue()) === '3' ? '4' : '3');
-  await page.getByRole('button', { name: 'Update Task', exact: true }).click();
+  await page.getByRole('button', { name: 'Update task', exact: true }).click();
   const response = await saved; assert.equal(response.status(), 200, await response.text());
   const readback = await context.request.get(`/api/tasks/${task}/detail`);
   assert.equal(readback.headers()['x-workchord-fixture'], nonce); assert.equal(readback.status(), 200);

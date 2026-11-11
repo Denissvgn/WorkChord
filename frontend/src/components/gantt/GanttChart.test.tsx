@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n/i18n';
 import { renderWithProviders } from '../../test/renderWithProviders';
@@ -27,6 +27,8 @@ vi.mock('@tanstack/react-virtual', () => ({
 }));
 
 vi.mock('./TaskEditModal', () => ({ TaskEditModal: () => null }));
+const teamServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn().mockResolvedValue([{ id: 7, name: 'Sam' }]) }));
+vi.mock('../../services/teamService', () => ({ teamService: teamServiceMock }));
 
 const taskFixture: GanttTask = {
     id: 101,
@@ -70,6 +72,7 @@ const previewFixture: SchedulePreviewResponse = {
 
 const scheduledTaskName = (task: GanttTask) => i18n.t('gantt.openScheduledTask', {
     title: task.title,
+    status: i18n.t(`statuses.${task.status}`),
     start: formatDate(task.start_date),
     end: formatDate(task.end_date),
     assignee: task.assignee?.name ?? i18n.t('common.unassigned'),
@@ -216,10 +219,12 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByRole('region', { name: i18n.t('gantt.chartRegion') })).toHaveAccessibleDescription(
             i18n.t('gantt.chartInstructions'),
         );
-        expect(screen.getByTitle(i18n.t('gantt.taskDateRange', {
+        expect(screen.getByTitle(i18n.t('gantt.taskBarSummary', {
             title: taskFixture.title,
+            status: i18n.t('statuses.planned'),
             start: formatDate(taskFixture.start_date),
             end: formatDate(taskFixture.end_date),
+            flags: '',
         }))).toBeInTheDocument();
     });
 
@@ -275,5 +280,133 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByRole('menuitem', {
             name: i18n.t('surfaces.ganttChart.showEveryDate'),
         })).toBeInTheDocument();
+    });
+});
+
+describe('Gantt timeline controls', () => {
+    it('zooms with visible buttons and with + and - shortcuts', async () => {
+        const { user } = renderChart();
+        expect(screen.getByText('Zoom 100%')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zoom timeline in' }));
+        expect(screen.getByText('Zoom 125%')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zoom timeline out' }));
+        await user.click(screen.getByRole('button', { name: 'Zoom timeline out' }));
+        expect(screen.getByText('Zoom 75%')).toBeInTheDocument();
+        screen.getByRole('region', { name: 'Schedule chart' }).focus();
+        await user.keyboard('+');
+        expect(screen.getByText('Zoom 100%')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Fit iteration' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Today/ })).toBeInTheDocument();
+    });
+});
+
+describe('Gantt finding and grouping', () => {
+    const tasks: GanttTask[] = [
+        { ...taskFixture, id: 201, title: 'WC-1 Build the importer', status: 'active' },
+        { ...taskFixture, id: 202, title: 'WC-2 Review the importer', status: 'planned' },
+        { ...taskFixture, id: 203, title: 'Write release notes', status: 'planned' },
+    ];
+
+    it('narrows rows by search and counts it as an active filter', async () => {
+        const { user } = renderChart(false, tasks);
+        await user.type(screen.getByRole('searchbox', { name: 'Search tasks' }), 'release');
+        expect(screen.getByText('Write release notes')).toBeInTheDocument();
+        expect(screen.queryByText('WC-1 Build the importer')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /1/ , expanded: false })).toBeInTheDocument();
+    });
+
+    it('groups top-level tasks by ID prefix with counts and collapses a group', async () => {
+        const { user } = renderChart(false, tasks);
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Group by' }), 'prefix');
+        const group = screen.getByRole('button', { name: 'WC (2)' });
+        expect(screen.getByRole('button', { name: 'No ID prefix (1)' })).toBeInTheDocument();
+        await user.click(group);
+        expect(group).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByText('WC-1 Build the importer')).not.toBeInTheDocument();
+        expect(screen.getByText('Write release notes')).toBeInTheDocument();
+    });
+});
+
+describe('Gantt dependency links', () => {
+    const predecessor: GanttTask = { ...taskFixture, id: 301, title: 'Design the schema', start_date: '2026-01-05', end_date: '2026-01-06' };
+    const successor: GanttTask = { ...taskFixture, id: 302, title: 'Build the importer', start_date: '2026-01-07', end_date: '2026-01-08', dependencies: [301] };
+
+    it('draws a link, counts it on both tasks, and remembers the toggle', async () => {
+        window.localStorage.removeItem('workchord:gantt-show-dependency-links');
+        const { user, container } = renderChart(false, [predecessor, successor]);
+        expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(1);
+        expect(screen.getAllByText('1 link')).toHaveLength(2);
+        expect(screen.getByRole('button', { name: /Build the importer.*Depends on 1; 0 depend on it\./ })).toBeInTheDocument();
+        const toggle = screen.getByRole('button', { name: 'Dependency links' });
+        expect(toggle).toHaveAttribute('aria-pressed', 'true');
+        await user.click(toggle);
+        expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(0);
+        expect(window.localStorage.getItem('workchord:gantt-show-dependency-links')).toBe('false');
+    });
+});
+
+
+describe('Gantt bar inputs in Try changes', () => {
+    it('opens the five date inputs from a bar and recalculates with them', async () => {
+        const onSaveSandbox = vi.fn();
+        const { user } = renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} sandboxMode onSaveSandbox={onSaveSandbox} />,
+        );
+        await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
+        const dialog = await screen.findByRole('dialog', { name: 'Current task' });
+        expect(screen.getByRole('combobox', { name: 'Who does it' })).toHaveFocus();
+        expect(dialog).toHaveTextContent('Dates are calculated.');
+        await screen.findByRole('option', { name: 'Sam' });
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Who does it' }), '7');
+        const effort = screen.getByRole('spinbutton', { name: 'Effort (days)' });
+        await user.clear(effort);
+        await user.type(effort, '3');
+        await user.click(screen.getByRole('button', { name: 'Recalculate with these' }));
+        expect(onSaveSandbox).toHaveBeenCalledWith(101, expect.objectContaining({
+            assignee: { id: 7, name: 'Sam' }, effort_days: 3, sandbox_update: undefined,
+        }));
+        expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
+    });
+
+    it('closes with Escape', async () => {
+        const { user } = renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} sandboxMode onSaveSandbox={vi.fn()} />,
+        );
+        await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
+        await screen.findByRole('dialog', { name: 'Current task' });
+        await user.keyboard('{Escape}');
+        expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
+    });
+});
+
+describe('Gantt drag in Try changes', () => {
+    it('pins the earliest start when a bar is dragged, without opening the popover', async () => {
+        const onSaveSandbox = vi.fn();
+        renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} sandboxMode onSaveSandbox={onSaveSandbox} />,
+        );
+        const bar = screen.getByRole('button', { name: scheduledTaskName(taskFixture) });
+        fireEvent.pointerDown(bar, { clientX: 100, clientY: 10, button: 0 });
+        fireEvent.pointerMove(window, { clientX: 180, clientY: 10 });
+        fireEvent.pointerUp(window, { clientX: 180, clientY: 10 });
+        fireEvent.click(bar);
+        // Default zoom is 40 px a day, so 80 px moves the earliest start by two days.
+        expect(onSaveSandbox).toHaveBeenCalledWith(101, expect.objectContaining({ min_start_date: '2026-01-07', sandbox_update: undefined }));
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('does not drag outside Try changes', () => {
+        const onSaveSandbox = vi.fn();
+        renderWithProviders(
+            <GanttChart iterationId={42} iterationRevision={1} startDate="2026-01-05" endDate="2026-01-16"
+                tasks={[taskFixture]} weekends={[]} holidays={[]} memberVacations={{}} onSaveSandbox={onSaveSandbox} />,
+        );
+        const bar = screen.getByRole('button', { name: scheduledTaskName(taskFixture) });
+        fireEvent.pointerDown(bar, { clientX: 100, clientY: 10, button: 0 });
+        fireEvent.pointerUp(window, { clientX: 180, clientY: 10 });
+        expect(onSaveSandbox).not.toHaveBeenCalled();
     });
 });

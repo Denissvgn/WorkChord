@@ -17,6 +17,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`._
 | `./AgentTeamSetupMasterPage` | `AgentTeamSetupMasterPage` | — | compiler-dependent |
 | `@testing-library/react` | `act`, `fireEvent`, `screen`, `waitFor`, `within` | — | compiler-dependent |
 | `@testing-library/user-event` | `userEvent` | — | compiler-dependent |
+| `axios` | `AxiosError` | — | compiler-dependent |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals
@@ -24,7 +25,7 @@ _Auto-generated from `frontend/src/pages/AgentTeamSetupMasterPage.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `agentServiceMock`, `useAdminAccessMock`, `statusFixture` |
-| Module calls | `agentServiceMock = hoisted`, `useAdminAccessMock = hoisted`, `mock`, `mock`, `describe` |
+| Module calls | `agentServiceMock = hoisted`, `useAdminAccessMock = hoisted`, `mock`, `mock`, `describe`, `describe` |
 
 ## Local dependency map
 
@@ -68,4 +69,4 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 3 | 0 |
+| typescript | 4 | 0 |

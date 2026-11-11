@@ -19,7 +19,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { taskService } from '../../../services/taskService';
 import { teamService } from '../../../services/teamService';
 import { labelService } from '../../../services/labelService';
-import type { Task, TaskStatus, TaskUpdate } from '../../../types/task';
+import type { Task, TaskBatchUpdateResponse, TaskStatus, TaskUpdate } from '../../../types/task';
 import type { TaskFilters } from '../TaskFiltersBar';
 import { selectVisibleWork } from '../../../utils/visibleWork';
 import { TaskEditorDrawer } from '../TaskEditorDrawer';
@@ -31,6 +31,9 @@ import { STATUS_TONE } from '../../ui/tone';
 import { QueryErrorState, QueryLoadingState } from '../../feedback/QueryState';
 import { Button } from '../../common/Button';
 import { Modal } from '../../common/Modal';
+import { feedbackMessage } from '../../../features/mutationFeedback';
+import type { MutationFeedbackMeta } from '../../../features/mutationFeedback';
+import { canTransition } from '../../../features/taskTransitions';
 
 interface KanbanBoardProps {
     iterationId: number;
@@ -40,19 +43,14 @@ interface KanbanBoardProps {
 type ColumnId = 'planned-unassigned' | 'planned-assigned' | 'active' | 'resolved' | 'closed';
 
 const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus }[] = [
-    { id: 'planned-unassigned', titleKey: 'backlogUnassigned', status: 'planned' },
-    { id: 'planned-assigned', titleKey: 'readyAssigned', status: 'planned' },
-    { id: 'active', titleKey: 'inProgress', status: 'active' },
+    // Lifecycle names, the same words as status everywhere else; Planned splits by whether someone owns it.
+    { id: 'planned-unassigned', titleKey: 'plannedUnassigned', status: 'planned' },
+    { id: 'planned-assigned', titleKey: 'plannedAssigned', status: 'planned' },
+    { id: 'active', titleKey: 'active', status: 'active' },
     { id: 'resolved', titleKey: 'resolved', status: 'resolved' },
     { id: 'closed', titleKey: 'closed', status: 'closed' },
 ];
 
-const VALID_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
-    planned: ['active'],
-    active: ['resolved'],
-    resolved: ['active', 'closed'],
-    closed: [],
-};
 
 type BoardTaskUpdate = Pick<TaskUpdate, 'assignee_id'> & {
     status?: TaskStatus;
@@ -96,9 +94,25 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
 
     // feedback-policy: mutation pending,inline - drag is locked while saving and selection failures stay recoverable.
     const updateTaskMutation = useMutation({
+        meta: {
+            success: (_data, variables) => feedbackMessage(t, 'saved', 'task', (variables as { task: Task }).task.title),
+            // Moves the card back: same status and assignee as before the move.
+            undo: (data, variables) => {
+                const { task, updates } = variables as { task: Task; updates: BoardTaskUpdate };
+                const moved = (data as TaskBatchUpdateResponse).updated_tasks.find(item => item.id === task.id);
+                if (!moved) return null;
+                // A status the server cannot move back to directly gets no Undo.
+                if (updates.status && updates.status !== task.status && !canTransition(updates.status, task.status)) return null;
+                const restore: TaskUpdate = {};
+                if (updates.status && updates.status !== task.status) restore.status = task.status;
+                if ('assignee_id' in updates) restore.assignee_id = task.assignee?.id ?? null;
+                return { run: () => taskService.batchUpdate(iterationId, { expected_revision: moved.iteration_revision,
+                    tasks: [{ task_id: task.id, expected_version: moved.version, update: restore, status_reason: t('feedback.undoReason') }] }) };
+            },
+        } satisfies MutationFeedbackMeta,
         mutationFn: async ({ task, updates }: { task: Task; updates: BoardTaskUpdate }) => {
             const { status, ...fieldUpdates } = updates;
-            if (status && status !== task.status && !VALID_TRANSITIONS[task.status]?.includes(status)) {
+            if (status && status !== task.status && !canTransition(task.status, status)) {
                 throw new Error(t('surfaces.kanbanBoard.invalidTransition', { from: task.status, to: status }));
             }
             return taskService.batchUpdate(iterationId, {
@@ -289,7 +303,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const queryError = tasksQuery.error ?? teamQuery.error ?? labelsQuery.error;
     if (queryError) return <QueryErrorState error={queryError} onRetry={() => { void tasksQuery.refetch(); void teamQuery.refetch(); void labelsQuery.refetch(); }} />;
     const ownershipColumnTitle = ownershipSelection
-        ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'inProgress'}`)
+        ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'active'}`)
         : '';
 
     return (
@@ -301,7 +315,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
             onDragCancel={() => setActiveId(null)}
         >
             <div className="space-y-3" aria-busy={updateTaskMutation.isPending}>
-                <WorkFreshness updatedAt={tasksQuery.dataUpdatedAt} stale={tasksQuery.isRefetchError}
+                <WorkFreshness stale={tasksQuery.isRefetchError}
                     refreshing={tasksQuery.isFetching} onRefresh={() => { void tasksQuery.refetch(); }} />
                 <TaskEditorDrawer open={openedTaskId !== null} taskId={openedTaskId} iterationId={iterationId}
                     onClose={() => setOpenedTaskId(null)} restoreFocusRef={openTrigger} />
@@ -315,7 +329,8 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                         }}
                     />
                 )}
-                <div className="flex h-full gap-4 overflow-x-auto pb-4 items-start">
+                {/* Fluid columns share the width; empty ones fold, so all five fit at 1440. */}
+                <div className="flex h-full items-start gap-3 overflow-x-auto pb-4">
                     {COLUMNS.map((col) => (
                         <KanbanColumn
                             key={col.id}

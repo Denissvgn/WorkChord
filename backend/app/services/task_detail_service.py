@@ -107,11 +107,19 @@ class TaskDetailService:
         from app.services.task_domain_service import TaskDomainService
         authority = self.db.info.get("authority")
         queues = {key: [] for key in ("active", "queued", "blocked", "awaiting_review")}
-        if authority is None or authority.kind != "human" or authority.profile_id is None:
-            return {"state": "profile_unlinked", "queues": queues, "has_more": False, "next_after_id": None}
+        unlinked = {"state": "profile_unlinked", "queues": queues, "has_more": False, "next_after_id": None}
+        if authority is None or authority.profile_id is None or authority.kind not in {"human", "local"}:
+            return unlinked
+        if authority.kind == "local":
+            from app.services.identity_service import local_work_profile
+            if await local_work_profile(self.db, authority.profile_id) is None:
+                return unlinked
         if not authority.operator and not authority.local and not authority.projects and not authority.workspace_role:
             return {"state": "membership_required", "queues": queues, "has_more": False, "next_after_id": None}
-        statement = self.references().where(Task.owner_profile_id == authority.profile_id,
+        from app.models.team_member import TeamMember
+        # The person's work: tasks they own, and tasks assigned to a capacity row of their profile.
+        capacity_rows = select(TeamMember.id).where(TeamMember.profile_id == authority.profile_id)
+        statement = self.references().where(or_(Task.owner_profile_id == authority.profile_id, Task.assignee_id.in_(capacity_rows)),
             or_(Task.status != "closed", Task.accepted_at.is_(None), Task.accepted_by_principal_id.is_(None), Task.accepted_version.is_(None), Task.accepted_version != Task.version),
             Task.canceled_at.is_(None), Task.is_summary.is_(False))
         if backlog_only and iteration_id is not None:

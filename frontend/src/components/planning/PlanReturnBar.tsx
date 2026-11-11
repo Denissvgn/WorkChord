@@ -23,7 +23,7 @@ export const PlanReturnBar = () => {
                 })}</strong>
                 <span>{t('plan.master.returnAfterChanges')}</span>
             </div>
-            <Link className="btn sm" to={planMasterStepHref(stepId)}>
+            <Link className="btn sm" to={planMasterStepHref(stepId, { returned: true })}>
                 <ArrowLeft aria-hidden="true" size={13} />
                 {t('plan.master.returnToCheckpoint')}
             </Link>

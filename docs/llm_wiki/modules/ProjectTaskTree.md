@@ -14,7 +14,7 @@ _Auto-generated from `frontend/src/components/projects/ProjectTaskTree.tsx`._
 | `../../types/task` | `Task` | Declaration | erased |
 | `../../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../tasks/TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
-| `../ui/tone` | `pillToneClassName`, `STATUS_TONE`, `statusTextClassName` | — | compiler-dependent |
+| `../ui/tone` | `pillToneClassName`, `priorityChipClassName`, `STATUS_TONE`, `statusTextClassName` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `AlertTriangle`, `CheckCircle2`, `Circle`, `CornerDownRight`, `MessageSquare`, `User` | — | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
@@ -51,6 +51,7 @@ flowchart LR
     n4 --> n0
     n4 --> n2
     n4 --> n3
+    n4 --> n5
     n4 --> n6
     click n0 "../modules/ProjectTaskTree.md"
     click n1 "../modules/TaskEditorDrawer.md"

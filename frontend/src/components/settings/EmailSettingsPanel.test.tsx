@@ -6,6 +6,8 @@ import { EmailSettingsPanel } from './EmailSettingsPanel';
 
 const adminAccessMock = vi.hoisted(() => ({
     useAdminAccess: vi.fn(),
+    // Settings load for key holders, as these tests set up.
+    useCanReadSettings: () => true,
 }));
 
 const emailSettingsServiceMock = vi.hoisted(() => ({
@@ -51,15 +53,15 @@ describe('EmailSettingsPanel', () => {
 
     it('blocks invalid enabled SMTP settings with visible, focused field errors', async () => {
         const { user } = renderWithProviders(<EmailSettingsPanel />);
-        const hostInput = await screen.findByLabelText('SMTP Host');
+        const hostInput = await screen.findByLabelText('SMTP host');
         const portInput = screen.getByLabelText('Port');
-        const senderInput = screen.getByLabelText('From Email Address');
+        const senderInput = screen.getByLabelText('From email address');
 
         await user.clear(hostInput);
         fireEvent.change(portInput, { target: { value: '70000' } });
         await user.clear(senderInput);
         await user.type(senderInput, 'not-an-email');
-        await user.click(screen.getByRole('button', { name: 'Save Settings' }));
+        await user.click(screen.getByRole('button', { name: 'Save settings' }));
 
         expect(emailSettingsServiceMock.updateSettings).not.toHaveBeenCalled();
         expect(hostInput).toHaveFocus();
@@ -79,9 +81,9 @@ describe('EmailSettingsPanel', () => {
 
     it('still validates a configured host, sender address, and port when notifications are disabled', async () => {
         const { user } = renderWithProviders(<EmailSettingsPanel />);
-        const hostInput = await screen.findByLabelText('SMTP Host');
+        const hostInput = await screen.findByLabelText('SMTP host');
         const portInput = screen.getByLabelText('Port');
-        const senderInput = screen.getByLabelText('From Email Address');
+        const senderInput = screen.getByLabelText('From email address');
         const masterToggle = screen.getByRole('checkbox', {
             name: 'Enable email notifications for task updates',
         });
@@ -92,7 +94,7 @@ describe('EmailSettingsPanel', () => {
         await user.clear(senderInput);
         await user.type(senderInput, 'not-an-email');
         await user.click(masterToggle);
-        await user.click(screen.getByRole('button', { name: 'Save Settings' }));
+        await user.click(screen.getByRole('button', { name: 'Save settings' }));
 
         expect(masterToggle).not.toBeChecked();
         expect(emailSettingsServiceMock.updateSettings).not.toHaveBeenCalled();
@@ -103,14 +105,14 @@ describe('EmailSettingsPanel', () => {
 
     it('allows a disabled configuration to save with a blank host when sender and port remain valid', async () => {
         const { user } = renderWithProviders(<EmailSettingsPanel />);
-        const hostInput = await screen.findByLabelText('SMTP Host');
+        const hostInput = await screen.findByLabelText('SMTP host');
         const masterToggle = screen.getByRole('checkbox', {
             name: 'Enable email notifications for task updates',
         });
 
         await user.clear(hostInput);
         await user.click(masterToggle);
-        await user.click(screen.getByRole('button', { name: 'Save Settings' }));
+        await user.click(screen.getByRole('button', { name: 'Save settings' }));
 
         await waitFor(() => {
             expect(emailSettingsServiceMock.updateSettings).toHaveBeenCalledOnce();
@@ -127,7 +129,7 @@ describe('EmailSettingsPanel', () => {
 
     it('makes replacing and clearing the stored password mutually exclusive', async () => {
         const { user } = renderWithProviders(<EmailSettingsPanel />);
-        const passwordInput = await screen.findByLabelText('Password / App Password');
+        const passwordInput = await screen.findByLabelText('Password / app password');
         const clearPassword = screen.getByLabelText('Clear runtime password override');
 
         await user.type(passwordInput, 'replacement-secret');
@@ -154,7 +156,7 @@ describe('EmailSettingsPanel', () => {
         ));
 
         const { user } = renderWithProviders(<EmailSettingsPanel />);
-        const hostInput = await screen.findByLabelText('SMTP Host');
+        const hostInput = await screen.findByLabelText('SMTP host');
         const masterToggle = screen.getByRole('checkbox', {
             name: 'Enable email notifications for task updates',
         });
@@ -171,7 +173,7 @@ describe('EmailSettingsPanel', () => {
             /Save your configuration changes before testing|surfaces\.emailSettings\.testSaveFirst/,
         )).toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Save Settings' }));
+        await user.click(screen.getByRole('button', { name: 'Save settings' }));
         await waitFor(() => {
             expect(emailSettingsServiceMock.updateSettings).toHaveBeenCalledOnce();
         });

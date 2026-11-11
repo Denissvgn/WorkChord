@@ -1,6 +1,6 @@
 # OutboundWebhookDeliveryResponse
 
-**Location:** `backend/app/schemas/outbound_webhook.py:165`
+**Location:** `backend/app/schemas/outbound_webhook.py:167`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md)
@@ -38,6 +38,7 @@ Delivery attempt response with embedded event details.
 | `created_at` | `datetime` | `created_at` | Yes | No | — | — | — | — |
 | `updated_at` | `datetime` | `updated_at` | Yes | No | — | — | — | — |
 | `event` | `OutboundWebhookEventResponse` | `event` | Yes | No | — | — | — | — |
+| `redacted_fields` | `list[str]` | `redacted_fields` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 

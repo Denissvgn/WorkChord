@@ -25,7 +25,7 @@ _Auto-generated from `frontend/src/components/dashboard/SavedViewDashboardCards.
 | Signal | Values |
 |--------|--------|
 | Exports | `SavedViewDashboardCards` |
-| Constants | `viewTypeLabelKeys`, `viewTypeIcons`, `viewTypeTone` |
+| Constants | `viewTypeLabelKeys`, `viewTypeIcons`, `viewTypeChip` |
 
 ## Local dependency map
 

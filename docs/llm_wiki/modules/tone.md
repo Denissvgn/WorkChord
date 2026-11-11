@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/components/ui/tone.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `PillTone`, `STATUS_TONE`, `isTaskStatus`, `pillToneClassName`, `statusTextClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
+| Exports | `PillTone`, `STATUS_TONE`, `isTaskStatus`, `pillToneClassName`, `priorityChipClassName`, `statusTextClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneLineVar`, `toneSoftVar`, `toneSolidClassName`, `toneVar`, `wcPillClass` |
 | Constants | `wcPillClass`, `toneVar`, `toneSoftVar`, `toneLineVar`, `STATUS_TONE`, `statusTextClassName`, `pillToneClassName`, `toneBorderClassName`, `toneDotClassName`, `toneGradientClassName`, `toneSolidClassName` |
 
 ## Local dependency map
@@ -39,10 +39,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (16) |
+| Inbound | `frontend` (21) |
 | Outbound | `frontend` (1) |
 
-> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -54,4 +54,5 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `priorityChipClassName` | `(priority: number)` | — | Priority is an attribute, not an alarm: neutral at every level, heavier for |
 | `isTaskStatus` | `(value: string) -> value is TaskStatus` | — | — |

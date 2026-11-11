@@ -74,9 +74,9 @@ flowchart LR
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
 | [TaskComment](../entities/models_discussion_TaskComment.md) | 12 | `Base` | — |
-| [TaskCommentRevision](../entities/TaskCommentRevision.md) | 27 | `Base` | — |
-| [TaskSubscription](../entities/TaskSubscription.md) | 41 | `Base` | — |
-| [InboxNotification](../entities/InboxNotification.md) | 50 | `Base` | — |
+| [TaskCommentRevision](../entities/TaskCommentRevision.md) | 29 | `Base` | — |
+| [TaskSubscription](../entities/TaskSubscription.md) | 45 | `Base` | — |
+| [InboxNotification](../entities/InboxNotification.md) | 54 | `Base` | — |
 
 ## Functions
 

@@ -1,7 +1,7 @@
 # IterationUpdate
 
 **Location:** `backend/app/schemas/iteration.py:22`
-**Kind:** Class
+**Kind:** Pydantic model
 **Bases:** `PlanningInputRevisions`
 **Module:** [schemas_iteration](../modules/schemas_iteration.md)
 

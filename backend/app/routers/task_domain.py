@@ -80,6 +80,39 @@ async def execution_usage_summary(db: DB, project_id: int | None = Query(default
         lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
 
 
+@router.get("/tasks/metric-matches")
+async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id: int | None = Query(default=None, ge=1),
+                         iteration_id: int | None = Query(default=None, ge=1), release_id: int | None = Query(default=None, ge=1),
+                         limit: int = Query(default=200, ge=1, le=500)):
+    """The tasks behind one work-metric count, chosen by the predicate that counts them."""
+    from app.authority import require_project
+    from app.models.project import Project
+    from app.services.work_metrics import METRIC_MATCHES, aggregate_metrics
+    if metric not in METRIC_MATCHES:
+        raise HTTPException(422, detail=[{"type": "value_error", "loc": ["query", "metric"], "msg": "Unknown work metric"}])
+    if sum(value is not None for value in (project_id, iteration_id, release_id)) != 1:
+        raise HTTPException(422, detail=[{"type": "value_error", "loc": ["query"], "msg": "Choose one project, iteration or release"}])
+    task_ids, zone_map = None, None
+    if release_id is not None:
+        from app.services.release_service import ReleaseService
+        releases = ReleaseService(db)
+        release = await releases.get_by_id(release_id)
+        if release is None:
+            raise HTTPException(404, detail="Release not found")
+        project_id = release.project_id
+        task_ids, _ = await releases.metric_task_ids(release)
+        require_project(db, project_id)
+        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, matching=metric, limit=limit)
+    if project_id is not None:
+        require_project(db, project_id)
+        project = await db.get(Project, project_id)
+        if project is None:
+            raise HTTPException(404, detail="Project not found")
+        zone_map = {project.id: project.timezone}
+    # The same scope and time zones as the summary that shows the count.
+    return await aggregate_metrics(db, project_id=project_id, iteration_id=iteration_id, zone_map=zone_map, matching=metric, limit=limit)
+
+
 @router.get("/tasks/lookup", response_model=TaskReferencePage)
 async def lookup_tasks(db: DB, project_id: int | None = None, iteration_id: int | None = None, q: str | None = Query(default=None, max_length=200), backlog_only: bool = False,
                        limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0),

@@ -14,11 +14,12 @@ _Auto-generated from `frontend/src/pages/PlanMasterPage.tsx`._
 | `../components/feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../components/feedback/toast` | `useToast` | — | compiler-dependent |
 | `../components/layout/Breadcrumbs` | `Breadcrumbs` | — | compiler-dependent |
+| `../components/planning/PlanQuickAddCapacity` | `PlanQuickAddCapacity` | — | compiler-dependent |
 | `../components/ui/MasterProgress` | `MasterProgress` | — | compiler-dependent |
 | `../features/planningMasters/masters` | `PlanReadiness`, `StepStatus` | Declaration | erased |
 | `../features/planningMasters/masters` | `derivePlanningRecovery`, `localizeStatus`, `readiness`, `STEP_DEFS`, `nextStep` | — | compiler-dependent |
 | `../features/planningMasters/planningReturn` | `PlanningStepId` | Declaration | erased |
-| `../features/planningMasters/planningReturn` | `isPlanningStepId`, `withPlanMasterReturn` | — | compiler-dependent |
+| `../features/planningMasters/planningReturn` | `isPlanningStepId`, `PLAN_RETURNED_PARAM`, `withPlanMasterReturn` | — | compiler-dependent |
 | `../features/planningMasters/planningTaskIssues` | `PlanningTaskIssue` | Declaration | erased |
 | `../features/planningMasters/planningTaskIssues` | `PLANNING_ITERATION_PARAM`, `planningIssueTasksHref` | — | compiler-dependent |
 | `../features/planningMasters/usePlanningReadiness` | `PlanningQueryFeedback` | Declaration | erased |
@@ -63,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -71,16 +72,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [RecoveryFocusIntent](../entities/RecoveryFocusIntent.md) | Interface | 75 | — | — |
-| [ShareFocusIntent](../entities/ShareFocusIntent.md) | Interface | 82 | — | — |
-| [StepDataState](../entities/StepDataState.md) | Type alias | 56 | <pre><code>&#123;&#10;    loading&#58; boolean&#59;&#10;    fetching&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    retry&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62; &#124; unknown&#59;&#10;    label&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [EvidenceItem](../entities/EvidenceItem.md) | Type alias | 64 | <pre><code>&#123;&#10;    label&#58; string&#59;&#10;    value&#58; string&#59;&#10;    exception&#63;&#58; boolean&#59;&#10;    href&#63;&#58; string&#59;&#10;    actionLabel&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [RecoveryFocusTarget](../entities/RecoveryFocusTarget.md) | Type alias | 72 | `'iterations' \| 'stale' \| 'step'` | — |
-| [ShareFocusTarget](../entities/ShareFocusTarget.md) | Type alias | 73 | `'ready' \| 'retry' \| 'shared'` | — |
-| [StepPresentationState](../entities/StepPresentationState.md) | Type alias | 104 | `StepStatus['state'] \| 'loading' \| 'unavailable'` | — |
+| [RecoveryFocusIntent](../entities/RecoveryFocusIntent.md) | Interface | 77 | — | — |
+| [ShareFocusIntent](../entities/ShareFocusIntent.md) | Interface | 84 | — | — |
+| [StepDataState](../entities/StepDataState.md) | Type alias | 58 | <pre><code>&#123;&#10;    loading&#58; boolean&#59;&#10;    fetching&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    retry&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62; &#124; unknown&#59;&#10;    label&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [EvidenceItem](../entities/EvidenceItem.md) | Type alias | 66 | <pre><code>&#123;&#10;    label&#58; string&#59;&#10;    value&#58; string&#59;&#10;    exception&#63;&#58; boolean&#59;&#10;    href&#63;&#58; string&#59;&#10;    actionLabel&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [RecoveryFocusTarget](../entities/RecoveryFocusTarget.md) | Type alias | 74 | `'iterations' \| 'stale' \| 'step'` | — |
+| [ShareFocusTarget](../entities/ShareFocusTarget.md) | Type alias | 75 | `'ready' \| 'retry' \| 'shared'` | — |
+| [StepPresentationState](../entities/StepPresentationState.md) | Type alias | 106 | `StepStatus['state'] \| 'loading' \| 'unavailable'` | — |

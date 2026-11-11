@@ -1,6 +1,6 @@
 # Dependency
 
-**Location:** `frontend/src/components/tasks/DeliveryDependencies.tsx:12`
+**Location:** `frontend/src/components/tasks/DeliveryDependencies.tsx:13`
 **Kind:** Interface
 **Bases:** —
 **Module:** [DeliveryDependencies](../modules/DeliveryDependencies.md)

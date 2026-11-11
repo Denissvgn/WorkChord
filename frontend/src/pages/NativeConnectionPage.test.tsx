@@ -18,7 +18,7 @@ const renderPage = () => renderWithProviders(content(),
 describe('native connection consent', () => {
     beforeEach(() => {
         vi.resetAllMocks();
-        service.get.mockResolvedValue({ data: { verification_code: 'ABCD-EFGH', expires_at: '2026-10-03T12:00:00Z', approved: false } });
+        service.get.mockResolvedValue({ data: { verification_code: 'ABCD-EFGH', expires_at: new Date(Date.now() + 5 * 60_000).toISOString(), approved: false } });
         service.post.mockResolvedValue({ data: { approved: true } });
     });
 
@@ -32,6 +32,24 @@ describe('native connection consent', () => {
         await user.click(button);
         await screen.findByText('Connection approved. Return to your device and check the connection.');
         expect(service.post).toHaveBeenCalledWith(`/auth/native-connections/${request}/approve`, { verification_code: 'ABCD-EFGH' });
+    });
+
+    it('shows the expiry and lets the user deny the request', async () => {
+        service.post.mockResolvedValue({ data: { denied: true } });
+        const { user } = renderPage();
+        await screen.findByText('ABCD-EFGH');
+        expect(screen.getByText(/^Expires in [45]:\d\d$/)).toBeInTheDocument();
+        expect(screen.getByText(/gets your access to this workspace/)).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Deny' }));
+        await screen.findByText('Connection denied. Your device was not connected.');
+        expect(service.post).toHaveBeenCalledWith(`/auth/native-connections/${request}/deny`, undefined);
+    });
+
+    it('says when the request has expired instead of offering approval', async () => {
+        service.get.mockResolvedValue({ data: { verification_code: 'ABCD-EFGH', expires_at: new Date(Date.now() - 1000).toISOString(), approved: false } });
+        renderPage();
+        await screen.findByText('This request has expired. Start again on your device.');
+        expect(screen.queryByRole('button', { name: 'Approve connection' })).not.toBeInTheDocument();
     });
 
     it('keeps failed approval recoverable without claiming success', async () => {

@@ -124,15 +124,15 @@ describe('AgentAccessPanel', () => {
             queryClient.setQueryData([...queryKey], { owner: 'old-admin' });
         });
         await user.type(
-            screen.getByLabelText('Agent API key'),
+            screen.getByLabelText('Agent key'),
             'replacement-key',
         );
-        await user.click(screen.getByRole('button', { name: 'Use actor key' }));
+        await user.click(screen.getByRole('button', { name: 'Use agent key' }));
 
         expect(agentAccessStorageMock.setAgentApiKey).toHaveBeenCalledWith('replacement-key');
         await waitFor(() => {
             expect(screen.queryByText('Old Admin')).not.toBeInTheDocument();
-            expect(screen.getByRole('status')).toHaveTextContent('Verifying session authority');
+            expect(screen.getByRole('status')).toHaveTextContent('Checking the agent key');
             otherPrincipalQueries.forEach(queryKey => {
                 expect(queryClient.getQueryData([...queryKey])).toBeUndefined();
             });
@@ -163,7 +163,7 @@ describe('AgentAccessPanel', () => {
             'The replacement key is invalid.',
         );
         expect(screen.queryByText('Old Admin')).not.toBeInTheDocument();
-        expect(screen.getByRole('status')).toHaveTextContent('Session authority denied');
+        expect(screen.getByRole('status')).toHaveTextContent('Agent key refused');
         expect(screen.getByRole('status')).toHaveClass('border-feedback-danger-border');
         expect(screen.getByRole('status')).not.toHaveClass('border-feedback-success-border');
     });

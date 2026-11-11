@@ -30,6 +30,16 @@ Replace deployment-specific URLs, runtime references, and model catalog keys.
 The JSON Schema is generated at
 `docs/contracts/agent-team-master-v1.schema.json`.
 
+In Settings, Agent team setup offers the same two starting points without
+copying files: "Start from the current team" loads the applied master, and
+"Start from a template" loads one filled from this server's own catalogs, with
+the latest role package and its digest for each role and the first enabled
+model catalog entry. `GET /api/agent/team-setup/starting-points` returns both
+(`current` is null before any team is applied). Problems are listed with the
+manifest line they refer to, and safe plan actions (no authority change, no
+confirmation) can be applied together; the rationale is always typed by the
+operator.
+
 ## Validate and plan
 
 Validation checks canonical shape, secret exclusions, role and package

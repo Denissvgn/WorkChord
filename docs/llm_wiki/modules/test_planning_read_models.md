@@ -62,6 +62,7 @@ flowchart LR
 | `deferred_leaf` | *(async)* `(db)` | — | — |
 | `test_schedule_preview_does_not_allocate_inherited_deferred_leaf` | *(async)* `(db_session)` | — | — |
 | `test_capacity_projection_does_not_count_inherited_deferred_baseline` | *(async)* `(db_session)` | — | — |
+| `test_workload_and_readiness_report_hours_with_the_day_length` | *(async)* `(db_session)` | — | — |
 | `test_incremental_schedule_excludes_inherited_deferred_work` | *(async)* `(db_session)` | — | — |
 | `test_yaml_schedule_orders_inherited_optional_after_required_work` | *(async)* `(db_session)` | — | — |
 | `test_readiness_reports_shared_booking_risk_without_private_task_details` | *(async)* `(db_session)` | — | — |

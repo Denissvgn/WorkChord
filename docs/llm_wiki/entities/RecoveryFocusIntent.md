@@ -1,6 +1,6 @@
 # RecoveryFocusIntent
 
-**Location:** `frontend/src/pages/PlanMasterPage.tsx:75`
+**Location:** `frontend/src/pages/PlanMasterPage.tsx:77`
 **Kind:** Interface
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)

@@ -91,6 +91,7 @@ Image defaults, variable expansion, and Docker's inheritance/reset rules also af
 | `COPY` | `/tmp/workchord-frontend-build.json` | `/app/workchord-frontend-build.json` | `frontend-identity` |
 | `COPY` | `agent-skills` | `/app/agent-skills` | — |
 | `COPY` | [`scripts/build_agent_skills.py`](../modules/build_agent_skills.md) | `/app/scripts/build_agent_skills.py` | — |
+| `COPY` | `config/workflow-vocabulary.json` | `/app/config/workflow-vocabulary.json` | — |
 
 #### Labels
 

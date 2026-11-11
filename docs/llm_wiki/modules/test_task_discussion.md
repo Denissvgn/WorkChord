@@ -18,11 +18,13 @@ Discussion is attributable, versioned, private and independent from execution.
 | `app.models.identity` | `ProjectMembership` |
 | `app.models.outbound_webhook` | `OutboundWebhookDelivery` |
 | `app.models.task` | `Task` |
-| `app.schemas.task` | `TaskCreate` |
+| `app.models.team_member` | `TeamMemberProfile` |
+| `app.schemas.task` | `TaskCreate`, `TaskUpdate` |
 | `app.services.backlog_snapshot_service` | `BacklogSnapshotService` |
 | `app.services.discussion_service` | `DiscussionService` |
 | `app.services.outbound_webhook_service` | `OutboundWebhookService` |
 | `app.services.task_service` | `TaskService` |
+| `app.services.task_timeline_service` | `TaskTimelineService` |
 | `app.utils.time` | `utc_now` |
 | `dataclasses` | `replace` |
 | `datetime` | `timedelta` |
@@ -49,7 +51,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `backend` (16) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -57,7 +59,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 1 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -71,3 +73,4 @@ flowchart LR
 | `test_delivery_failure_is_bounded_and_retry_does_not_duplicate_receipts` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_comment_rechecks_task_scope_after_acquiring_its_write_lock` | *(async)* `(delivery_store, monkeypatch)` | — | — |
 | `test_discussion_history_reappears_with_the_restored_task_identity` | *(async)* `(delivery_store, monkeypatch)` | — | — |
+| `test_local_session_comments_and_history_carry_the_chosen_profile` | *(async)* `(delivery_store)` | — | — |

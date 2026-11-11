@@ -1,6 +1,6 @@
 # ActionMutationInput
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1815`
+**Location:** `frontend/src/pages/TriagePage.tsx:1702`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

@@ -57,6 +57,7 @@ Uses the bundle service's deployed, integrity-validated catalog for role-package
 | `apply` | *(async)* `(actor: AgentActor, request: AgentTeamApplyRequest, *, command: AgentPlanningCommandContext) -> AgentTeamApplyResponse` | — | Apply only exact approved action IDs and persist resumable receipts. |
 | `_select_status_topology` | *(async)* `(actor: AgentActor, topology_key: str \| None) -> tuple[AgentTeamTopology \| None, bool]` | — | — |
 | `_absent_steps` | `() -> tuple[AgentTeamSetupStep, ...]` | `@staticmethod` | — |
+| `starting_points` | *(async)* `(actor: AgentActor, *, server_url: str) -> dict[str, Any]` | — | Two places to start editing: the applied manifest, and a template. |
 | `status` | *(async)* `(actor: AgentActor, *, topology_key: str \| None = None) -> AgentTeamStatusResponse` | — | Return backend-derived secret-free setup and runtime readiness. |
 | `report` | *(async)* `(actor: AgentActor, *, topology_key: str \| None = None) -> AgentTeamSetupReport` | — | Return a bounded redacted report without availability overclaims. |
 | `_status_for_topology` | *(async)* `(topology: AgentTeamTopology, *, can_mutate: bool, persist_state: bool) -> AgentTeamStatusResponse` | — | — |
@@ -80,9 +81,9 @@ flowchart LR
     n6["get_agent_team_setup_report (backend/app/routers/agent.py)"]
     n7["get_agent_team_setup_service (backend/app/routers/agent.py)"]
     n8["get_agent_team_setup_status (backend/app/routers/agent.py)"]
-    n9["plan_agent_team_reconciliation (backend/app/routers/agent.py)"]
-    n10["validate_agent_team_master (backend/app/routers/agent.py)"]
-    n11["AgentRoutingService._build_preview (backend/app/services/agent_routing_service.py)"]
+    n9["get_agent_team_starting_points (backend/app/routers/agent.py)"]
+    n10["plan_agent_team_reconciliation (backend/app/routers/agent.py)"]
+    n11["validate_agent_team_master (backend/app/routers/agent.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -105,14 +106,14 @@ flowchart LR
     click n8 "../modules/routers_agent.md"
     click n9 "../modules/routers_agent.md"
     click n10 "../modules/routers_agent.md"
-    click n11 "../modules/agent_routing_service.md"
+    click n11 "../modules/routers_agent.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 46 | — |
+| [agent_team_setup_service](../modules/agent_team_setup_service.md) | 47 | — |
 
 ### References
 
@@ -127,8 +128,8 @@ flowchart LR
 | `get_agent_team_setup_service` | call | [routers_agent](../modules/routers_agent.md) | 1 |
 | `get_agent_team_setup_service` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `get_agent_team_setup_status` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `get_agent_team_starting_points` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `plan_agent_team_reconciliation` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `validate_agent_team_master` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
-| `AgentRoutingService._build_preview` | call | [agent_routing_service](../modules/agent_routing_service.md) | 1 |
 
-> References: showing 12 of 35 logical references; 23 omitted by the 12-row generated summary limit.
+> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.

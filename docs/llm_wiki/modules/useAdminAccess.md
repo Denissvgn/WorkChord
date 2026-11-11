@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/hooks/useAdminAccess.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `useAdminAccess` |
+| Exports | `useAdminAccess`, `useCanReadSettings`, `useKeylessReader` |
 
 ## Local dependency map
 
@@ -54,3 +54,5 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `useAdminAccess` | `()` | — | — |
+| `useKeylessReader` | `()` | — | Whether this person may read settings and views of work without the admin key: |
+| `useCanReadSettings` | `()` | — | Settings panels load for key holders and for keyless readers, who see them read-only. |

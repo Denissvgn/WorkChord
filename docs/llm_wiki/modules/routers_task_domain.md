@@ -10,9 +10,10 @@ Compatible domain commands, canonical briefs and bounded task reads.
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `internal_authority`, `require_project`, `require_operator`, `require_project` |
+| `app.authority` | `require_project`, `internal_authority`, `require_project`, `require_operator`, `require_project` |
 | `app.database` | `get_db` |
 | `app.models.identity` | `Principal`, `PrincipalProfileLink`, `ProjectMembership`, `WorkspaceMembership` |
+| `app.models.project` | `Project` |
 | `app.models.task` | `Task` |
 | `app.models.task_brief` | `TaskBriefRevision`, `TaskProgressRecord`, `TaskReviewRecord` |
 | `app.models.team_member` | `TeamMemberProfile` |
@@ -27,10 +28,12 @@ Compatible domain commands, canonical briefs and bounded task reads.
 | `app.services.delivery_metrics_service` | `DeliveryMetricsService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
 | `app.services.planning_input_context` | `observe_planning_input`, `observe_planning_input` |
+| `app.services.release_service` | `ReleaseService` |
 | `app.services.task_brief_service` | `TaskBriefService` |
 | `app.services.task_detail_service` | `TaskDetailService` |
 | `app.services.task_domain_service` | `TaskDomainService`, `domain_capabilities` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
+| `app.services.work_metrics` | `METRIC_MATCHES`, `aggregate_metrics` |
 | `decimal` | `Decimal` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `Query` |
 | `sqlalchemy` | `select`, `or_`, `or_` |
@@ -56,7 +59,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (6) |
-| Outbound | `backend` (21) |
+| Outbound | `backend` (24) |
 
 ### External packages
 
@@ -64,7 +67,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -81,6 +84,7 @@ flowchart LR
 | `domain_result` | *(async)* `(awaitable)` | — | — |
 | `delivery_metrics` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366))` | `@router.get('/tasks/delivery-metrics', response_model=DeliveryMetricsResponse)` | — |
 | `execution_usage_summary` | *(async)* `(db: DB, project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366), budget_amount: Decimal \| None = Query(default=None, ge=0, max_digits=18, decimal_places=6), budget_currency: str \| None = Query(default=None, pattern='^[A-Z]{3}$'))` | `@router.get('/tasks/execution-usage', response_model=ExecutionUsageSummary)` | — |
+| `metric_matches` | *(async)* `(db: DB, metric: str = Query(max_length=40), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), release_id: int \| None = Query(default=None, ge=1), limit: int = Query(default=200, ge=1, le=500))` | `@router.get('/tasks/metric-matches')` | The tasks behind one work-metric count, chosen by the predicate that counts them. |
 | `lookup_tasks` | *(async)* `(db: DB, project_id: int \| None = None, iteration_id: int \| None = None, q: str \| None = Query(default=None, max_length=200), backlog_only: bool = False, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), task_status: str \| None = None, parent_id: int \| None = Query(default=None, ge=1), roots_only: bool = False)` | `@router.get('/tasks/lookup', response_model=TaskReferencePage)` | — |
 | `task_capabilities` | *(async)* `(db: DB)` | `@router.get('/tasks/capabilities')` | — |
 | `human_my_work` | *(async)* `(db: DB, limit: int = Query(default=50, ge=1, le=100), after_id: int = Query(default=0, ge=0), project_id: int \| None = Query(default=None, ge=1), iteration_id: int \| None = Query(default=None, ge=1), backlog_only: bool = False)` | `@router.get('/tasks/my-work', response_model=HumanWorkResponse)` | — |

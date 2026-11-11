@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Task } from '../../types/task';
 import {
     hasPositivePlanningEffort,
+    isAgentWorkingWithoutCapacity,
     isPlanningLeafTask,
     parsePlanningIterationId,
     parsePlanningTaskIssue,
@@ -89,5 +90,24 @@ describe('planning task issue contract', () => {
         })).toBe(
             '/tasks?planningIssue=missing-effort&iterationId=7&fromPlanStep=schedule',
         );
+    });
+});
+
+describe('one "needs an assignee" rule', () => {
+    const base = { id: 1, title: 'Task', status: 'planned', assignee: null, effort_days: 2, children: [], is_composite: false, is_deferred: false } as unknown as Task;
+
+    it('counts only planned leaves without an assignee', () => {
+        expect(taskMatchesPlanningIssue(base, 'unassigned')).toBe(true);
+        for (const status of ['active', 'resolved', 'closed'] as const) {
+            expect(taskMatchesPlanningIssue({ ...base, status }, 'unassigned')).toBe(false);
+        }
+        expect(taskMatchesPlanningIssue({ ...base, is_deferred: true }, 'unassigned')).toBe(false);
+    });
+
+    it('reports agent-held work separately instead of as unassigned', () => {
+        const agentHeld = { ...base, agent_working: true };
+        expect(taskMatchesPlanningIssue(agentHeld, 'unassigned')).toBe(false);
+        expect(isAgentWorkingWithoutCapacity(agentHeld)).toBe(true);
+        expect(isAgentWorkingWithoutCapacity({ ...agentHeld, assignee: { id: 2, name: 'Sam' } })).toBe(false);
     });
 });

@@ -16,9 +16,9 @@ YAML and fallback scheduling, incremental rescheduling and reservations use comp
 | `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project` |
 | `app.models.recovery` | `TaskScheduleBaseline` |
-| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus` |
+| `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `TaskStatus`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `Vacation` |
-| `app.schemas.gantt` | `SchedulingDecision`, `ScheduleResult`, `WorkloadIssue` |
+| `app.schemas.gantt` | `SchedulingDecision`, `ScheduleResult`, `UnscheduledTask`, `WorkloadIssue` |
 | `app.services.calendar_service` | `CalendarService` |
 | `app.services.capacity_service` | `CapacityService`, `CapacityService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
@@ -56,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (7) |
+| Inbound | `backend` (8) |
 | Outbound | `backend` (15) |
 
 ### External packages
@@ -65,7 +65,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -76,4 +76,4 @@ flowchart LR
 | [RescheduleResult](../entities/RescheduleResult.md) | Class | 51 | — | Result of an incremental reschedule operation. |
 | [MemberSchedule](../entities/MemberSchedule.md) | Class | 61 | — | Optimized schedule tracking with O(D) slot finding using sliding window. |
 | [SchedulerService](../entities/SchedulerService.md) | Class | 282 | — | Service for automatic task scheduling. |
-| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1298 | — | Handles incremental rescheduling when a single task changes. |
+| [IncrementalScheduler](../entities/IncrementalScheduler.md) | Class | 1354 | — | Handles incremental rescheduling when a single task changes. |

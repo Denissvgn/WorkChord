@@ -83,6 +83,8 @@ flowchart LR
 | `approve` | *(async)* `(connection, token, csrf = 'csrf-0')` | — | — |
 | `exchange` | *(async)* `(connection, verifier = VERIFIER)` | — | — |
 | `test_native_handoff_requires_browser_consent_and_exact_proof` | *(async)* `(managed_store)` | — | — |
+| `test_browser_can_deny_a_pending_connection` | *(async)* `(managed_store)` | — | — |
+| `test_another_account_cannot_deny_an_approved_connection` | *(async)* `(managed_store)` | — | — |
 | `test_native_approval_cannot_be_switched_to_another_account` | *(async)* `(managed_store)` | — | — |
 | `test_native_handoff_rechecks_approving_session_revocation` | *(async)* `(managed_store)` | — | — |
 | `test_native_expiration_and_input_bounds` | *(async)* `(managed_store)` | — | — |

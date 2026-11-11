@@ -127,9 +127,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| start_native_connection | NativeSessionService(…).start | 79 | `NativeSessionService(db).start(data.code_challenge, ...)` |
-| start_native_connection | NativeSessionService | 79 | `NativeSessionService(db)` |
-| start_native_connection | get_client_ip | 79 | `get_client_ip(request)` |
+| start_native_connection | NativeSessionService(…).start | 83 | `NativeSessionService(db).start(data.code_challenge, ...)` |
+| start_native_connection | NativeSessionService | 83 | `NativeSessionService(db)` |
+| start_native_connection | get_client_ip | 83 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
@@ -147,7 +147,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `start_native_connection` | `NativeSessionService(db).start` | 79 |
+| unresolved_call | `start_native_connection` | `NativeSessionService(db).start` | 83 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |

@@ -28,8 +28,11 @@ import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
 import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
 import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
+import { QuickCapture } from '../components/tasks/QuickCapture';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
+import { TASK_PART_PARAM } from '../components/tasks/TaskReadView';
+import type { Task } from '../types/task';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
@@ -86,6 +89,7 @@ const TasksPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const [isCreating, setIsCreating] = useState(false);
+    const [createTitle, setCreateTitle] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [filters, setFilters] = useState<TaskFilters>(defaultFilters);
     const [sortKey, setSortKey] = useState<SortKey>('priority');
@@ -255,6 +259,14 @@ const TasksPage = () => {
         setSelectedIterationId,
     ]);
 
+    // A project page links here with ?projectId=<id>; apply it as the project filter once.
+    const requestedProjectId = Number(searchParams.get('projectId')) || null;
+    const [appliedProjectId, setAppliedProjectId] = useState<number | null>(null);
+    if (requestedProjectId !== null && appliedProjectId !== requestedProjectId) {
+        setAppliedProjectId(requestedProjectId);
+        setFilters(current => ({ ...current, projectId: requestedProjectId }));
+    }
+
     useEffect(() => {
         const context = `${rawPlanningIssue}:${requestedSavedViewId}`;
         if (appliedPlanningContext.current === context) return;
@@ -337,6 +349,7 @@ const TasksPage = () => {
 
     const closeTaskCreator = useCallback(() => {
         setIsCreating(false);
+        setCreateTitle('');
         if (!createTaskRequested) return;
 
         const nextSearchParams = new URLSearchParams(searchParams);
@@ -348,7 +361,15 @@ const TasksPage = () => {
         const nextSearchParams = new URLSearchParams(searchParams);
         nextSearchParams.delete(OVERVIEW_TASK_PARAM);
         nextSearchParams.delete(OVERVIEW_TASK_THREAD_PARAM);
+        nextSearchParams.delete(TASK_PART_PARAM);
         setSearchParams(nextSearchParams, { replace: true });
+    }, [searchParams, setSearchParams]);
+    // Opening a task puts it in the URL, so a refresh or a copied link reopens it.
+    const openTask = useCallback((task: Task) => {
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.set(OVERVIEW_TASK_PARAM, String(task.id));
+        nextSearchParams.delete(TASK_PART_PARAM);
+        setSearchParams(nextSearchParams);
     }, [searchParams, setSearchParams]);
 
     const applySavedView = useCallback((view: SavedView) => {
@@ -446,7 +467,7 @@ const TasksPage = () => {
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
                 <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
                     <Link className="text-sm font-medium text-action hover:underline" to="/tasks?scope=backlog">{t('teamwork.projectBacklog')}</Link>
-                    <TaskSearch />
+                    <TaskSearch narrowsList />
                     {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
                 </div>
                 <PlanReturnBar />
@@ -719,6 +740,10 @@ const TasksPage = () => {
                                     'tasks-list-content',
                                     isFullScreen ? 'p-6' : 'px-6 pb-6',
                                 )}>
+                                    <div className="mb-3">
+                                        <QuickCapture target={{ kind: 'task', iterationId: selectedIterationId }}
+                                            onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />
+                                    </div>
                                     <TaskList
                                         iterationId={selectedIterationId}
                                         filters={filters}
@@ -735,6 +760,7 @@ const TasksPage = () => {
                                         requestedMode={taskMode}
                                         onModeChange={mode => setTaskContextParam('mode', mode)}
                                         preselectAllInBulk={taskMode === 'bulk' && filters.planningIssue === 'unassigned'}
+                                        onOpenTask={openTask}
                                     />
                                 </div>
                             </div>
@@ -749,7 +775,7 @@ const TasksPage = () => {
 
             {isCreateModalOpen && <GuardedTaskModal
                 title={t('tasks.createNewTask')} closeLabel={t('actions.close')}
-                onClose={closeTaskCreator} iterationId={selectedIterationId}
+                onClose={closeTaskCreator} iterationId={selectedIterationId} initialTitle={createTitle}
             />}
 
             {isImporting && (

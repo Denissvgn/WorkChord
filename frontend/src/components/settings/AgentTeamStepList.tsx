@@ -10,6 +10,9 @@ const stepScope = (stepId: string): AgentTeamStepScope => {
     return 'topology';
 };
 
+/** Steps that are written in the manifest, so they can open their section. */
+const MANIFEST_STEPS: ReadonlySet<string> = new Set(['master', 'controller', 'workers', 'bindings', 'verifier']);
+
 const AGENT_TEAM_STEP_SCOPES: AgentTeamStepScope[] = [
     'authority',
     'topology',
@@ -18,12 +21,15 @@ const AGENT_TEAM_STEP_SCOPES: AgentTeamStepScope[] = [
 
 export const AgentTeamStepList = ({
     currentStepId,
+    onOpenSection,
     idPrefix,
     steps,
 }: {
     currentStepId: AgentTeamStepId | null;
     idPrefix: string;
     steps: ReturnType<typeof useAgentTeamReadiness>['steps'];
+    /** Open the manifest section a step is written in. */
+    onOpenSection?: (stepId: string) => void;
 }) => {
     const { t } = useTranslation();
 
@@ -65,9 +71,16 @@ export const AgentTeamStepList = ({
                                                 : index + 1}
                                         </span>
                                         <span>
-                                            <span className="step-title">
-                                                {t(definition.titleKey)}
-                                            </span>
+                                            {onOpenSection && MANIFEST_STEPS.has(definition.id) ? (
+                                                <button type="button" className="step-title text-left underline decoration-dotted underline-offset-4 hover:text-action"
+                                                    onClick={() => onOpenSection(definition.id)} aria-label={t('agentTeamSetup.openSection', { step: t(definition.titleKey) })}>
+                                                    {t(definition.titleKey)}
+                                                </button>
+                                            ) : (
+                                                <span className="step-title">
+                                                    {t(definition.titleKey)}
+                                                </span>
+                                            )}
                                             <span className="step-sub">
                                                 {step && step.state !== 'done'
                                                     ? t(`agentTeamSetup.steps.${definition.id}.action`)

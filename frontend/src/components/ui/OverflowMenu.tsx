@@ -76,13 +76,27 @@ export const OverflowMenu = ({
         menuItemRefs.current[nextIndex]?.focus();
     };
 
+    // One action needs no menu: show it as a labelled button.
+    if (items.length === 1) {
+        const [only] = items;
+        return (
+            <div className={clsx('relative', className)}>
+                {/* An unavailable action stays focusable so its label, which says why, can be read. */}
+                <button type="button" className={clsx('btn', only.tone === 'danger' && 'text-feedback-danger-foreground', only.disabled && 'cursor-not-allowed opacity-70')}
+                    aria-disabled={only.disabled || undefined} onClick={() => { if (!only.disabled) only.onSelect(); }}>
+                    {only.icon}{only.label}
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className={clsx('relative', className)}>
             <button
                 ref={triggerRef}
                 type="button"
                 onClick={() => open ? closeMenu() : setOpen(true)}
-                aria-label={accessibleLabel}
+                aria-label={accessibleLabel} title={accessibleLabel}
                 aria-haspopup="menu"
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}

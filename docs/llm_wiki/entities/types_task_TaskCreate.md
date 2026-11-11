@@ -1,6 +1,6 @@
 # TaskCreate
 
-**Location:** `frontend/src/types/task.ts:163`
+**Location:** `frontend/src/types/task.ts:169`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)
@@ -20,7 +20,7 @@ _Auto-generated from `TaskCreate` in `frontend/src/types/task.ts`._
 | `parent_id` | `number \| null` | No | — | — |
 | `title` | `string` | Yes | — | — |
 | `description` | `string` | No | — | — |
-| `priority` | `number` | Yes | — | — |
+| `priority` | `number` | No | — | — |
 | `effort_days` | `number \| null` | Yes | — | — |
 | `effort_hours` | `number \| null` | No | — | — |
 | `assignee_id` | `number \| null` | No | — | — |

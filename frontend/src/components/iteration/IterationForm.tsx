@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { CalendarRange, ListChecks, Repeat, Save } from 'lucide-react';
 import { Button } from '../common/Button';
+import { useConfirmDialog } from '../common/useConfirmDialog';
 import { Input } from '../common/Input';
 import { CollapsibleSection } from '../common/CollapsibleSection';
 import { iterationService } from '../../services/iterationService';
@@ -321,6 +322,30 @@ const IterationFormEditor = ({
         seriesMutation.mutate(payload);
     };
 
+    // Say why Save is unavailable instead of leaving it silently disabled.
+    const saveBlockedReason = isSaving ? null : mode === 'series'
+        ? (!seriesDraft.base_name.trim() ? t('iterationForm.needSeriesName')
+            : !seriesDraft.start_date ? t('iterationForm.needStartDate')
+                : seriesDraft.duration_days < 1 || seriesDraft.duration_days > 366 ? t('iterationForm.needDuration')
+                    : seriesPreview.length === 0 ? t('iterationForm.needSeriesEnd')
+                        : seriesPreview.length > MAX_SERIES_ITERATIONS ? t('iterationForm.tooManyInSeries', { count: MAX_SERIES_ITERATIONS }) : null)
+        : (!singleDraft.name.trim() ? t('iterationForm.needName')
+            : !singleDraft.start_date || !singleDraft.end_date ? t('iterationForm.needDates')
+                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates') : null);
+    const { requestConfirmation, confirmationDialog } = useConfirmDialog();
+    const handleCancel = () => {
+        if (!isDirty) { onCancel(); return; }
+        requestConfirmation({
+            title: t('iterationForm.discardTitle'),
+            description: t('iterationForm.discardBody'),
+            confirmLabel: t('iterationForm.discard'),
+            cancelLabel: t('iterationForm.keepEditing'),
+            closeLabel: t('actions.close'),
+            tone: 'danger',
+            onConfirm: onCancel,
+        });
+    };
+
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         if (mode === 'series') {
@@ -364,6 +389,7 @@ const IterationFormEditor = ({
     );
 
     return (
+        <>
         <form
             onSubmit={handleSubmit}
             className="iteration-period-editor"
@@ -375,22 +401,24 @@ const IterationFormEditor = ({
                 className="m-0 min-w-0 space-y-6 border-0 p-0"
             >
             {!initialData && (
-                <div className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
+                <div role="group" aria-label={t('iterationForm.kind')} className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
                     <button
                         type="button"
-                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm' : 'text-content-secondary hover:text-content-primary'}`}
+                        aria-pressed={mode === 'single'}
+                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                         onClick={() => setMode('single')}
                     >
                         <CalendarRange className="h-4 w-4" />
-                        {t('iterationForm.singleMode', 'Single period')}
+                        {t('iterationForm.singleMode')}
                     </button>
                     <button
                         type="button"
-                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm' : 'text-content-secondary hover:text-content-primary'}`}
+                        aria-pressed={mode === 'series'}
+                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                         onClick={() => setMode('series')}
                     >
                         <Repeat className="h-4 w-4" />
-                        {t('iterationForm.seriesMode', 'Repeating series')}
+                        {t('iterationForm.seriesMode')}
                     </button>
                 </div>
             )}
@@ -423,7 +451,7 @@ const IterationFormEditor = ({
                             required
                             error={
                                 singleDraft.start_date && singleDraft.end_date && !isOrderedRange(singleDraft.start_date, singleDraft.end_date)
-                                    ? t('iterationForm.endBeforeStart', 'End date must be on or after start date')
+                                    ? t('iterationForm.endBeforeStart')
                                     : undefined
                             }
                         />
@@ -432,7 +460,7 @@ const IterationFormEditor = ({
             ) : (
                 <>
                     <Input
-                        label={t('iterationForm.baseName', 'Base name')}
+                        label={t('iterationForm.baseName')}
                         value={seriesDraft.base_name}
                         onChange={event => setSeriesDraft(current => ({ ...current, base_name: event.target.value }))}
                         required
@@ -453,7 +481,7 @@ const IterationFormEditor = ({
                             type="number"
                             min={1}
                             max={366}
-                            label={t('iterationForm.durationDays', 'Duration (calendar days)')}
+                            label={t('iterationForm.durationDays')}
                             value={seriesDraft.duration_days}
                             onChange={event => setSeriesDraft(current => ({ ...current, duration_days: Number(event.target.value) }))}
                             required
@@ -461,7 +489,7 @@ const IterationFormEditor = ({
                     </div>
 
                     <div className="space-y-3 rounded-lg border border-border p-3">
-                        <div className="text-sm font-medium text-content-secondary">{t('iterationForm.seriesStops', 'Series stops')}</div>
+                        <div className="text-sm font-medium text-content-secondary">{t('iterationForm.seriesStops')}</div>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <label className="flex items-start gap-2 rounded-md border border-border p-3 text-sm">
                                 <input
@@ -470,7 +498,7 @@ const IterationFormEditor = ({
                                     onChange={() => setSeriesDraft(current => ({ ...current, stop_mode: 'count' }))}
                                 />
                                 <span>
-                                    <span className="block font-medium text-content-primary">{t('iterationForm.byCount', 'After a count')}</span>
+                                    <span className="block font-medium text-content-primary">{t('iterationForm.byCount')}</span>
                                     <Input
                                         type="number"
                                         min={1}
@@ -479,7 +507,7 @@ const IterationFormEditor = ({
                                         onChange={event => setSeriesDraft(current => ({ ...current, count: Number(event.target.value) }))}
                                         disabled={seriesDraft.stop_mode !== 'count'}
                                         className="mt-2"
-                                        aria-label={t('iterationForm.count', 'Count')}
+                                        aria-label={t('iterationForm.count')}
                                     />
                                 </span>
                             </label>
@@ -490,14 +518,14 @@ const IterationFormEditor = ({
                                     onChange={() => setSeriesDraft(current => ({ ...current, stop_mode: 'until_date' }))}
                                 />
                                 <span>
-                                    <span className="block font-medium text-content-primary">{t('iterationForm.byUntilDate', 'Until a date')}</span>
+                                    <span className="block font-medium text-content-primary">{t('iterationForm.byUntilDate')}</span>
                                     <Input
                                         type="date"
                                         value={seriesDraft.until_date}
                                         onChange={event => setSeriesDraft(current => ({ ...current, until_date: event.target.value }))}
                                         disabled={seriesDraft.stop_mode !== 'until_date'}
                                         className="mt-2"
-                                        aria-label={t('iterationForm.untilDate', 'Until date')}
+                                        aria-label={t('iterationForm.untilDate')}
                                     />
                                 </span>
                             </label>
@@ -507,12 +535,12 @@ const IterationFormEditor = ({
                     <div className="rounded-lg border border-border bg-surface-muted p-3">
                         <div className="mb-2 flex items-center gap-2 text-sm font-medium text-content-secondary">
                             <ListChecks className="h-4 w-4" />
-                            {t('iterationForm.preview', 'Preview')}
+                            {t('iterationForm.preview')}
                         </div>
                         {seriesPreview.length === 0 ? (
-                            <p className="text-sm text-content-tertiary">{t('iterationForm.previewEmpty', 'Enter the required series fields to preview generated iterations.')}</p>
+                            <p className="text-sm text-content-tertiary">{t('iterationForm.previewEmpty')}</p>
                         ) : seriesPreview.length > MAX_SERIES_ITERATIONS ? (
-                            <p className="text-sm text-feedback-danger-foreground">{t('iterationForm.previewTooLarge', 'Series cannot create more than 100 iterations.')}</p>
+                            <p className="text-sm text-feedback-danger-foreground">{t('iterationForm.previewTooLarge')}</p>
                         ) : (
                             <div className="space-y-1 text-sm">
                                 {seriesPreview.slice(0, 6).map(item => (
@@ -556,29 +584,33 @@ const IterationFormEditor = ({
                     className="rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground"
                     role="alert"
                 >
-                    {getApiErrorMessage(mutationError, t('iterationForm.saveFailed', 'Failed to save iteration'))}
+                    {getApiErrorMessage(mutationError, t('iterationForm.saveFailed'))}
                 </div>
             )}
 
-            <div className="flex justify-end gap-2 border-t pt-4">
-                <Button type="button" variant="ghost" onClick={onCancel}>
+            <div className="flex flex-wrap items-center justify-end gap-2 border-t pt-4">
+                {saveBlockedReason && <p id="iteration-save-blocked" className="mr-auto text-sm text-content-secondary">{saveBlockedReason}</p>}
+                <Button type="button" variant="ghost" onClick={handleCancel}>
                     {t('actions.cancel')}
                 </Button>
                 <Button
                     type="submit"
                     isLoading={isSaving}
                     disabled={mode === 'series' ? !seriesValid : !singleValid}
+                    aria-describedby={saveBlockedReason ? 'iteration-save-blocked' : undefined}
                 >
                     <Save className="mr-2 h-4 w-4" />
                     {initialData
                         ? t('iterations.updateIteration')
                         : mode === 'series'
-                            ? t('iterationForm.createSeries', 'Create series')
+                            ? t('iterationForm.createSeries')
                             : t('iterations.saveIteration')}
                 </Button>
             </div>
             </fieldset>
         </form>
+        {confirmationDialog}
+        </>
     );
 };
 

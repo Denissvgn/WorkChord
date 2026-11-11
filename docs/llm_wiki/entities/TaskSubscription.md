@@ -1,6 +1,6 @@
 # TaskSubscription
 
-**Location:** `backend/app/models/discussion.py:41`
+**Location:** `backend/app/models/discussion.py:45`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_discussion](../modules/models_discussion.md)

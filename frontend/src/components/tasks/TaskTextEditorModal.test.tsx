@@ -54,8 +54,8 @@ describe('Revision-bound text commands', () => {
 
     it('sends the observed planning revision for a text import', async () => {
         renderWithProviders(<ImportTasksModal iterationId={9} onClose={vi.fn()} />);
-        await waitFor(() => expect(screen.getByPlaceholderText('Or paste text here...')).not.toHaveAttribute('readonly'));
-        const editor = screen.getByPlaceholderText('Or paste text here...');
+        await waitFor(() => expect(screen.getByPlaceholderText('Or paste text here…')).not.toHaveAttribute('readonly'));
+        const editor = screen.getByPlaceholderText('Or paste text here…');
         fireEvent.change(editor, { target: { value: '- Captured request' } });
         await waitFor(() => expect(screen.getByRole('button', { name: 'Import tasks' })).toBeEnabled());
         fireEvent.click(screen.getByRole('button', { name: 'Import tasks' }));
@@ -75,16 +75,16 @@ describe('Revision-bound text commands', () => {
         }
         vi.stubGlobal('FileReader', Reader);
         renderWithProviders(<ImportTasksModal iterationId={9} onClose={vi.fn()} />);
-        await waitFor(() => expect(screen.getByPlaceholderText('Or paste text here...')).not.toHaveAttribute('readonly'));
+        await waitFor(() => expect(screen.getByPlaceholderText('Or paste text here…')).not.toHaveAttribute('readonly'));
         const input = screen.getByRole('dialog').querySelector<HTMLInputElement>('input[type="file"]');
         if (!input) throw new Error('Missing file chooser');
         fireEvent.change(input, { target: { files: [new File(['first'], 'first.txt')] } });
         fireEvent.change(input, { target: { files: [new File(['second'], 'second.txt')] } });
         expect(screen.getByRole('button', { name: 'Import tasks' })).toBeDisabled();
         act(() => readers[0].finish('- Old file'));
-        expect(screen.getByPlaceholderText('Or paste text here...')).not.toHaveValue('- Old file');
+        expect(screen.getByPlaceholderText('Or paste text here…')).not.toHaveValue('- Old file');
         act(() => readers[1].finish('- Current file'));
-        expect(screen.getByPlaceholderText('Or paste text here...')).toHaveValue('- Current file');
+        expect(screen.getByPlaceholderText('Or paste text here…')).toHaveValue('- Current file');
         expect(screen.getByRole('button', { name: 'Import tasks' })).toBeEnabled();
     });
 });

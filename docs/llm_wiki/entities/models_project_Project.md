@@ -59,8 +59,8 @@ flowchart LR
     n9["backend/app/models/team_member.py"]
     n10["backend/app/models/triage.py"]
     n11["backend/app/routers/identity.py"]
-    n12["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
-    n13["backend/app/services/delivery_metrics_service.py"]
+    n12["backend/app/routers/task_domain.py"]
+    n13["AgentWorkService.create_project_update (backend/app/services/agent_work_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -86,8 +86,8 @@ flowchart LR
     click n9 "../modules/team_member.md"
     click n10 "../modules/models_triage.md"
     click n11 "../modules/routers_identity.md"
-    click n12 "../modules/agent_work_service.md"
-    click n13 "../modules/delivery_metrics_service.md"
+    click n12 "../modules/routers_task_domain.md"
+    click n13 "../modules/agent_work_service.md"
 ```
 
 ### Summary
@@ -116,7 +116,7 @@ flowchart LR
 | `team_member` | import | [team_member](../modules/team_member.md) | — |
 | `triage` | import | [models_triage](../modules/models_triage.md) | — |
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
+| `task_domain` | import | [routers_task_domain](../modules/routers_task_domain.md) | — |
 | `AgentWorkService.create_project_update` | type_reference | [agent_work_service](../modules/agent_work_service.md) | — |
-| `delivery_metrics_service` | import | [delivery_metrics_service](../modules/delivery_metrics_service.md) | — |
 
-> References: showing 12 of 61 logical references; 49 omitted by the 12-row generated summary limit.
+> References: showing 12 of 62 logical references; 50 omitted by the 12-row generated summary limit.

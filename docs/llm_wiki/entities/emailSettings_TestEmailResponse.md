@@ -1,6 +1,6 @@
 # TestEmailResponse
 
-**Location:** `frontend/src/types/emailSettings.ts:32`
+**Location:** `frontend/src/types/emailSettings.ts:34`
 **Kind:** Interface
 **Bases:** —
 **Module:** [emailSettings](../modules/emailSettings.md)

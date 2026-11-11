@@ -18,6 +18,7 @@ Runtime configuration summary.
 | `github` | `GitHubRuntimeSettingsResponse` | `github` | Yes | No | — | — | — | — |
 | `web_intake` | `WebIntakeRuntimeSettingsResponse` | `web_intake` | Yes | No | — | — | — | — |
 | `restart_required` | `list[RestartRequiredSetting]` | `restart_required` | Yes | No | — | — | — | — |
+| `redacted_fields` | `list[str]` | `redacted_fields` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -50,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_system_settings](../modules/schemas_system_settings.md) | 0 | `app`, `github`, `llm`, `restart_required`, `web_intake` |
+| [schemas_system_settings](../modules/schemas_system_settings.md) | 0 | `app`, `github`, `llm`, `redacted_fields`, `restart_required`, `web_intake` |
 
 ### Structure
 

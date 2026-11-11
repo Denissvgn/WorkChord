@@ -4,9 +4,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Upload, FileText, AlertCircle } from 'lucide-react';
 import { Button } from '../common/Button';
+import { DisabledReason } from '../common/DisabledReason';
 import { Modal } from '../common/Modal';
 import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const MAX_IMPORT_ROWS = 500;
 
@@ -39,6 +41,7 @@ export const ImportTeamModal = ({
 
     const importMutation = useMutation({
         mutationFn: (text: string) => teamService.importFromText(iterationId, text, context.observation!.expected_revisions),
+        meta: { success: t('feedback.teamImported') } satisfies MutationFeedbackMeta,
         onSuccess: async () => {
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ['team', iterationId] }),
@@ -191,6 +194,7 @@ export const ImportTeamModal = ({
             closeDisabled={isPending}
             footer={(
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                    <DisabledReason className="mr-auto" reason={!isPending && !context.loading && (!context.observation || previewText !== text) && t('disabledReasons.previewFirst')} />
                     <Button type="button" variant="secondary" onClick={handleClose} disabled={isPending}>
                         {t('actions.cancel')}
                     </Button>
@@ -233,7 +237,7 @@ export const ImportTeamModal = ({
 
                 <div>
                     <label className="sr-only" htmlFor={fileInputId}>
-                        {t('teamImport.fileInputLabel', 'Team import file')}
+                        {t('teamImport.fileInputLabel')}
                     </label>
                     <input
                         ref={fileInputRef}
@@ -257,14 +261,14 @@ export const ImportTeamModal = ({
                     </Button>
                     {isReadingFile && (
                         <p className="mt-2 text-sm text-content-secondary" role="status">
-                            {t('teamImport.readingFile', 'Reading file…')}
+                            {t('teamImport.readingFile')}
                         </p>
                     )}
                 </div>
 
                 <div>
                     <label className="mb-1 block text-sm font-medium text-content-primary" htmlFor={textInputId}>
-                        {t('teamImport.textInputLabel', 'Team members to import')}
+                        {t('teamImport.textInputLabel')}
                     </label>
                     <textarea
                         id={textInputId}

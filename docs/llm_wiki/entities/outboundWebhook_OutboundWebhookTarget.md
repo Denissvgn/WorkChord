@@ -23,6 +23,7 @@ _Auto-generated from `OutboundWebhookTarget` in `frontend/src/types/outboundWebh
 | `headers_json` | `Record<string, string>` | Yes | — | — |
 | `created_at` | `string` | Yes | — | — |
 | `updated_at` | `string` | Yes | — | — |
+| `redacted_fields` | `string[]` | No | — | — |
 
 ## Methods
 
@@ -50,7 +51,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [outboundWebhook](../modules/outboundWebhook.md) | 0 | `created_at`, `description`, `enabled`, `has_secret`, `headers_json`, `id`, `name`, `subscribed_events_json`, `updated_at`, `url` |
+| [outboundWebhook](../modules/outboundWebhook.md) | 0 | `created_at`, `description`, `enabled`, `has_secret`, `headers_json`, `id`, `name`, `redacted_fields`, `subscribed_events_json`, `updated_at`, `url` |
 
 ### References
 

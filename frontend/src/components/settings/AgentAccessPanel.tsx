@@ -151,16 +151,16 @@ export const AgentAccessPanel = () => {
                         <KeyRound aria-hidden="true" className="h-4 w-4" />
                         {t('agentAccess.save')}
                     </Button>
-                    <Button
+                    {/* Nothing stored and nothing typed: there is nothing to clear, so no button. */}
+                    {(hasAgentKey || draftKey) && <Button
                         type="button"
                         variant="outline"
                         onClick={clearKey}
-                        disabled={!hasAgentKey && !draftKey}
                         className="inline-flex items-center gap-2"
                     >
                         <Trash2 aria-hidden="true" className="h-4 w-4" />
                         {t('agentAccess.clear')}
-                    </Button>
+                    </Button>}
                 </div>
             </div>
             <p className="text-xs text-content-tertiary">{t('agentAccess.sessionOnly')}</p>

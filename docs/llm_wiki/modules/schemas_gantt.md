@@ -73,15 +73,17 @@ flowchart LR
 
 ## Classes
 
-| Class | Line | Bases | Description |
-|-------|------|-------|-------------|
-| [GanttAssignee](../entities/GanttAssignee.md) | 13 | `BaseModel` | Assignee info for Gantt task. |
-| [GanttMilestone](../entities/GanttMilestone.md) | 19 | `BaseModel` | Milestone info for Gantt task editing. |
-| [GanttTask](../entities/schemas_gantt_GanttTask.md) | 28 | `TaskMetricSignals` | Task representation for Gantt chart. |
-| [SchedulingDecision](../entities/schemas_gantt_SchedulingDecision.md) | 60 | `BaseModel` | Explanation for a scheduling decision. |
-| [WorkloadIssue](../entities/schemas_gantt_WorkloadIssue.md) | 69 | `BaseModel` | Workload issue for a team member. |
-| [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | 76 | `BaseModel` | Result of scheduling operation. |
-| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | 86 | `BaseModel` | Full Gantt chart response. |
-| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | 97 | `BaseModel` | — |
-| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | 103 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
-| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | 114 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |
+| Class | Kind | Line | Bases / Target | Description |
+|-------|------|------|----------------|-------------|
+| [GanttAssignee](../entities/GanttAssignee.md) | Pydantic model | 13 | `BaseModel` | Assignee info for Gantt task. |
+| [GanttMilestone](../entities/GanttMilestone.md) | Pydantic model | 19 | `BaseModel` | Milestone info for Gantt task editing. |
+| [GanttTask](../entities/schemas_gantt_GanttTask.md) | Pydantic model | 28 | `TaskMetricSignals` | Task representation for Gantt chart. |
+| [SchedulingDecision](../entities/schemas_gantt_SchedulingDecision.md) | Pydantic model | 60 | `BaseModel` | Explanation for a scheduling decision. |
+| [UnscheduledReason](../entities/schemas_gantt_UnscheduledReason.md) | Type alias | 69 | `Literal['no_assignee', 'assignee_not_in_iteration', 'no_estimate', 'no_capacity', 'prerequisites_pending', 'predecessor_unscheduled', 'deferred', 'blocked', 'not_placed']` | — |
+| [UnscheduledTask](../entities/schemas_gantt_UnscheduledTask.md) | Pydantic model | 82 | `BaseModel` | A planned task the scheduler left without dates, and what would change that. |
+| [WorkloadIssue](../entities/schemas_gantt_WorkloadIssue.md) | Pydantic model | 90 | `BaseModel` | Workload issue for a team member. |
+| [ScheduleResult](../entities/schemas_gantt_ScheduleResult.md) | Pydantic model | 97 | `BaseModel` | Result of scheduling operation. |
+| [GanttResponse](../entities/schemas_gantt_GanttResponse.md) | Pydantic model | 109 | `BaseModel` | Full Gantt chart response. |
+| [ScheduleApplyRequest](../entities/ScheduleApplyRequest.md) | Pydantic model | 120 | `BaseModel` | — |
+| [SchedulePreviewRequest](../entities/SchedulePreviewRequest.md) | Pydantic model | 126 | `BaseModel` | Sandbox edits to dry-run through the real scheduler. |
+| [SchedulePreviewResponse](../entities/schemas_gantt_SchedulePreviewResponse.md) | Pydantic model | 137 | `BaseModel` | Projected Gantt state after applying changes and rescheduling. |

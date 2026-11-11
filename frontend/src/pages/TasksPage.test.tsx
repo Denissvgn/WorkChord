@@ -89,6 +89,11 @@ vi.mock('../components/tasks/TaskForm', () => ({
     ),
 }));
 
+vi.mock('../components/tasks/TaskReadView', () => ({
+    TASK_PART_PARAM: 'part',
+    TaskReadView: ({ task }: { task: Task }) => <p>Reading {task.title}</p>,
+}));
+
 const LocationProbe = () => {
     const location = useLocation();
     return (
@@ -157,7 +162,7 @@ describe('TasksPage', () => {
         expect(await screen.findByRole('dialog')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancel draft' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Return to plan' }))
-            .toHaveAttribute('href', '/plan/master?step=work');
+            .toHaveAttribute('href', '/plan/master?step=work&returned=1');
 
         await user.click(screen.getByRole('button', { name: 'Cancel draft' }));
 
@@ -217,7 +222,7 @@ describe('TasksPage', () => {
             'unassigned',
         );
         expect(screen.getByRole('link', { name: 'Return to plan' }))
-            .toHaveAttribute('href', '/plan/master?step=schedule');
+            .toHaveAttribute('href', '/plan/master?step=schedule&returned=1');
         expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
 
         await user.click(screen.getByRole('button', { name: 'Clear view' }));
@@ -276,9 +281,9 @@ describe('TasksPage', () => {
             .toHaveAttribute('aria-pressed', 'true');
         expect(within(viewContext).getByRole('button', { name: 'Filters' })).toBeVisible();
         expect(within(viewContext).getByRole('button', { name: 'List' })).toBeVisible();
-        const newTaskAction = screen.getByRole('button', { name: 'New Task' });
+        const newTaskAction = screen.getByRole('button', { name: 'New task' });
         expect(newTaskAction.closest('.tasks-primary-slot')).not.toBeNull();
-        expect(screen.getAllByRole('button', { name: 'New Task' })).toHaveLength(1);
+        expect(screen.getAllByRole('button', { name: 'New task' })).toHaveLength(1);
         expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
     });
 
@@ -316,7 +321,8 @@ describe('TasksPage', () => {
             name: 'Resolve launch blocker',
         })).toBeVisible();
         await waitFor(() => expect(closeTaskEditor).toHaveFocus());
-        expect(within(drawer).getByText('Editing Resolve launch blocker')).toBeVisible();
+        // The drawer opens read-first; editing is one click away.
+        expect(within(drawer).getByText('Reading Resolve launch blocker')).toBeVisible();
         expect(within(drawer).getByText('Planning thread · Work now')).toBeVisible();
         expect(screen.getByRole('complementary', {
             name: 'Planning thread from Overview',

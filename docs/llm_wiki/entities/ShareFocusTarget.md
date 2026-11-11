@@ -1,6 +1,6 @@
 # ShareFocusTarget
 
-**Location:** `frontend/src/pages/PlanMasterPage.tsx:73`
+**Location:** `frontend/src/pages/PlanMasterPage.tsx:75`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [PlanMasterPage](../modules/PlanMasterPage.md)

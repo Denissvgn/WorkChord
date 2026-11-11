@@ -241,7 +241,7 @@ describe('Overview partial-data resilience', () => {
 
         expect(await screen.findByText('Task 11')).toBeVisible();
         const statusTitle = screen.getByRole('heading', {
-            name: 'Some Overview data could not be refreshed',
+            name: 'Some overview data could not be refreshed',
         });
         const status = statusTitle.closest('section');
         expect(status).not.toBeNull();
@@ -312,7 +312,7 @@ describe('Overview partial-data resilience', () => {
         expect(retry).toHaveFocus();
         expect(screen.queryByText('Overview data updated.')).not.toBeInTheDocument();
         expect(screen.getByRole('heading', {
-            name: 'Some Overview data could not be refreshed',
+            name: 'Some overview data could not be refreshed',
         })).toBeVisible();
     });
 
@@ -409,7 +409,7 @@ describe('Overview partial-data resilience', () => {
                         assignee: { id: overloadedMember.id, name: overloadedMember.name },
                         is_overdue: true,
                     }),
-                    task(22, 'active'),
+                    task(22, 'planned'),
                 ],
             }),
         );
@@ -510,7 +510,7 @@ describe('Overview partial-data resilience', () => {
             overviewPlanningState({
                 inboxCount: 2,
                 tasks: [
-                    task(23, 'active'),
+                    task(23, 'planned'),
                     task(24, 'resolved', {
                         assignee: { id: 7, name: 'Ada Lovelace' },
                         is_overdue: false,

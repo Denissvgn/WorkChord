@@ -187,8 +187,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| delete_outbound_webhook_target | service.delete_target | 100 | `service.delete_target(target_id)` |
-| delete_outbound_webhook_target | resolve_runtime_ui_language | 102 | `resolve_runtime_ui_language(service.db)` |
+| delete_outbound_webhook_target | service.delete_target | 103 | `service.delete_target(target_id)` |
+| delete_outbound_webhook_target | resolve_runtime_ui_language | 105 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
 | normalize_language | str(…).strip (backend/app/services/lang…vice.py:normalize_language) | 35 | `str(value or '').strip(data not statically known)` |
@@ -207,7 +207,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `delete_outbound_webhook_target` | `service.delete_target` | 100 |
+| unresolved_call | `delete_outbound_webhook_target` | `service.delete_target` | 103 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |

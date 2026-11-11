@@ -43,4 +43,4 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
-| `plan_checkpoints` | `(*, team_member_count: int, team_members_no_capacity: int, task_count: int, tasks_without_assignee: int, tasks_without_effort: int, has_schedule: bool, risk_count: int) -> list[dict[str, Any]]` | — | Return the ordered checkpoints for one existing planning period. |
+| `plan_checkpoints` | `(*, team_member_count: int, team_members_no_capacity: int, task_count: int, tasks_without_assignee: int, tasks_without_effort: int, has_schedule: bool, tasks_agent_without_capacity: int = 0, risk_count: int) -> list[dict[str, Any]]` | — | Return the ordered checkpoints for one existing planning period. |

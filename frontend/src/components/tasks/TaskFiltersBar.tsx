@@ -10,6 +10,7 @@ import { TaskTextEditorModal } from './TaskTextEditorModal';
 import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { labelDisplay, labelGroupDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { formatDate } from '../../utils/formatDate';
 import type { PlanningTaskIssue } from '../../features/planningMasters/planningTaskIssues';
 
 export interface TaskFilters {
@@ -55,7 +56,7 @@ const FilterBadge = ({
             <button
                 onClick={onRemove}
                 className="ml-1 hover:text-action hover:bg-status-active-muted rounded-full p-0.5"
-                aria-label={t('taskFilters.removeFilter', { label })}
+                aria-label={t('taskFilters.removeFilter', { label })} title={t('taskFilters.removeFilter', { label })}
             >
                 <XCircle className="w-3 h-3" />
             </button>
@@ -247,6 +248,23 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     if (filters.agentReady !== null) {
         activeBadges.push({ label: t('taskFilters.agentReadiness'), value: filters.agentReady ? t('taskFilters.ready') : t('taskFilters.notReady'), onRemove: removeAgentReadyFilter });
     }
+    // Every active condition gets a chip, so a saved view always shows what it filters on.
+    ([
+        ['startDateFrom', 'taskFilters.startFrom'],
+        ['startDateTo', 'taskFilters.startTo'],
+        ['endDateFrom', 'taskFilters.endFrom'],
+        ['endDateTo', 'taskFilters.endTo'],
+    ] as const).forEach(([key, labelKey]) => {
+        if (filters[key]) activeBadges.push({ label: t(labelKey), value: formatDate(filters[key]), onRemove: () => onFiltersChange({ ...filters, [key]: '' }) });
+    });
+    selectedGroups.forEach(group => activeBadges.push({
+        label: t('taskFilters.labelGroups'), value: labelGroupDisplay(group).name,
+        onRemove: () => onFiltersChange({ ...filters, labelGroupKeys: filters.labelGroupKeys.filter(key => key !== group.key) }),
+    }));
+    selectedLabels.forEach(label => activeBadges.push({
+        label: t('taskFilters.labels'), value: label.name,
+        onRemove: () => onFiltersChange({ ...filters, labelSlugs: filters.labelSlugs.filter(slug => slug !== label.slug) }),
+    }));
 
     return (
         <div className="space-y-3 p-4">
@@ -332,14 +350,9 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                 {/* Active filter badges */}
                 {activeBadges.length > 0 && (
                     <div className="flex gap-1 items-center ml-2 flex-wrap">
-                        {activeBadges.slice(0, 4).map((badge, idx) => (
-                            <FilterBadge key={idx} {...badge} />
+                        {activeBadges.map(badge => (
+                            <FilterBadge key={`${badge.label}:${badge.value}`} {...badge} />
                         ))}
-                        {activeBadges.length > 4 && (
-                            <span className="text-xs text-content-secondary ml-1">
-                                +{activeBadges.length - 4} more
-                            </span>
-                        )}
                     </div>
                 )}
             </div>
@@ -406,7 +419,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
             {/* Advanced filters - collapsible */}
             <div id={advancedId}>
             {isAdvancedOpen && (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-3 pt-3 border-t border-border-subtle">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-3 pt-3 border-t border-border-subtle">
                     {/* Project filter */}
                     <div>
                         <label htmlFor={`${advancedId}-project`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.project')}</label>
