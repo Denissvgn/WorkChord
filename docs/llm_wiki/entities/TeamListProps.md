@@ -1,6 +1,6 @@
 # TeamListProps
 
-**Location:** `frontend/src/components/team/TeamList.tsx:17`
+**Location:** `frontend/src/components/team/TeamList.tsx:18`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TeamList](../modules/TeamList.md)

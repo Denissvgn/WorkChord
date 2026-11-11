@@ -33,6 +33,7 @@ _Auto-generated from `frontend/src/components/team/TeamForm.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `TeamForm` |
+| Constants | `PERSON_OVERHEAD`, `AGENT_OVERHEAD` |
 
 ## Local dependency map
 
@@ -69,7 +70,7 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 19 | — | — |
+| [TeamFormProps](../entities/TeamFormProps.md) | Interface | 23 | — | — |
 
 ## Functions
 

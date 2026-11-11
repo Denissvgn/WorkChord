@@ -21,8 +21,8 @@ Schema for updating a profile skill or weakness.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `skill_key` | `Optional[str]` | `skill_key` | No | Yes | `None` | max_length=120; min_length=1 | — | — |
-| `skill_name` | `Optional[str]` | `skill_name` | No | Yes | `None` | max_length=255; min_length=1 | — | — |
+| `skill_key` | `Optional[str]` | `skill_key` | No | Yes | `None` | min_length=1; max_length=120 | — | — |
+| `skill_name` | `Optional[str]` | `skill_name` | No | Yes | `None` | min_length=1; max_length=255 | — | — |
 | `category` | `Optional[str]` | `category` | No | Yes | `None` | max_length=120 | — | — |
 | `level` | `Optional[int]` | `level` | No | Yes | `None` | ge=1; le=5 | — | — |
 | `interest` | `Optional[int]` | `interest` | No | Yes | `None` | ge=1; le=5 | — | — |

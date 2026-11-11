@@ -1,6 +1,6 @@
 # MemberCapacity
 
-**Location:** `frontend/src/types/team.ts:154`
+**Location:** `frontend/src/types/team.ts:159`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_team](../modules/types_team.md)

@@ -21,6 +21,7 @@ _Auto-generated from `frontend/src/components/iteration/IterationList.tsx`._
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/ConfirmDialog` | `ConfirmDialog` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./IterationCapacityLine` | `IterationCapacityLine` | — | compiler-dependent |
 | `./IterationImportDialog` | `IterationImportDialog` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
@@ -56,7 +57,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (11) |
+| Outbound | `frontend` (12) |
 
 ### External packages
 
@@ -64,13 +65,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [IterationListProps](../entities/IterationListProps.md) | Interface | 19 | — | — |
+| [IterationListProps](../entities/IterationListProps.md) | Interface | 20 | — | — |
 
 ## Functions
 

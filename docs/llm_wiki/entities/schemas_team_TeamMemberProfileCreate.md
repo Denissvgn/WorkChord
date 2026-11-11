@@ -21,7 +21,7 @@ Schema for creating a reusable team-member profile.
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `seed_key` | `Optional[str]` | `seed_key` | No | Yes | `None` | max_length=120 | — | — |
-| `display_name` | `str` | `display_name` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `display_name` | `str` | `display_name` | Yes | No | — | min_length=1; max_length=255 | — | — |
 | `email` | `Optional[str]` | `email` | No | Yes | `None` | max_length=255 | — | — |
 | `headline` | `Optional[str]` | `headline` | No | Yes | `None` | max_length=255 | — | — |
 | `summary` | `Optional[str]` | `summary` | No | Yes | `None` | — | — | — |

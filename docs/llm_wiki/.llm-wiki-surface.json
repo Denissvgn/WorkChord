@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 795,
+      "modules": 797,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3109
+    "total": 3111
   },
   "dependency_pages": {
     "count": 2,
@@ -9872,7 +9872,7 @@
             "backend/app/services/plan_checkpoints.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 394,
+          "step_count": 402,
           "truncated": false
         }
       },
@@ -28529,7 +28529,7 @@
             "backend/app/services/plan_checkpoints.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 604,
+          "step_count": 612,
           "truncated": true
         }
       },
@@ -36674,7 +36674,7 @@
             "backend/app/schemas/team.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 380,
+          "step_count": 385,
           "truncated": true
         }
       },
@@ -45811,6 +45811,7 @@
         "modules/InterfaceLanguageSettings.md",
         "modules/isolated_rehearsal.md",
         "modules/iteration_service.md",
+        "modules/IterationCapacityLine.md",
         "modules/IterationForm.md",
         "modules/IterationForm.test.md",
         "modules/IterationImportDialog.md",
@@ -46179,6 +46180,7 @@
         "modules/TeamForm.md",
         "modules/TeamForm.test.md",
         "modules/TeamList.md",
+        "modules/TeamList.test.md",
         "modules/teamMemberLabels.md",
         "modules/TeamPage.md",
         "modules/TeamProfileManager.md",
@@ -66712,7 +66714,6 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_team_TeamMember",
       "outgoing_internal_links": [
-        "modules/CalendarPage.md",
         "modules/ImportTeamModal.test.md",
         "modules/KanbanBoard.test.md",
         "modules/PlanQuickAddCapacity.md",
@@ -66720,6 +66721,7 @@
         "modules/TeamForm.md",
         "modules/TeamForm.test.md",
         "modules/TeamList.md",
+        "modules/TeamList.test.md",
         "modules/types_team.md",
         "modules/usePlanningReadiness.md",
         "modules/usePlanningReadiness.test.md",
@@ -71847,6 +71849,23 @@
       "role": "semantic",
       "source_path": "backend/app/services/iteration_service.py",
       "title": "iteration_service Module"
+    },
+    {
+      "canonical_path": "modules/IterationCapacityLine.md",
+      "id": "IterationCapacityLine",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/IterationCapacityLine",
+      "outgoing_internal_links": [
+        "modules/IterationCapacityLine.md",
+        "modules/IterationList.md",
+        "modules/iterationService.md",
+        "modules/TeamList.test.md",
+        "modules/usePlanningNavigationSummary.md",
+        "modules/workNumbers.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/iteration/IterationCapacityLine.tsx",
+      "title": "IterationCapacityLine Module"
     },
     {
       "canonical_path": "modules/IterationForm.md",
@@ -78411,22 +78430,27 @@
       "mcp_uri": "llm-wiki://modules/TeamList",
       "outgoing_internal_links": [
         "entities/TeamListProps.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/mutationFeedback.md",
-        "modules/planningInputService.md",
-        "modules/QueryState.md",
-        "modules/TeamList.md",
-        "modules/TeamPage.md",
-        "modules/teamService.md",
-        "modules/toast.md",
-        "modules/types_team.md",
-        "modules/useConfirmDialog.md",
-        "modules/VacationManager.md"
+        "modules/TeamList.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/team/TeamList.tsx",
       "title": "TeamList Module"
+    },
+    {
+      "canonical_path": "modules/TeamList.test.md",
+      "id": "TeamList.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TeamList.test",
+      "outgoing_internal_links": [
+        "modules/IterationCapacityLine.md",
+        "modules/renderWithProviders.md",
+        "modules/TeamList.md",
+        "modules/TeamList.test.md",
+        "modules/types_team.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/team/TeamList.test.tsx",
+      "title": "TeamList.test Module"
     },
     {
       "canonical_path": "modules/teamMemberLabels.md",
@@ -81148,6 +81172,7 @@
       "outgoing_internal_links": [
         "modules/AppTopNav.md",
         "modules/IdentityProvider.test.md",
+        "modules/IterationCapacityLine.md",
         "modules/iterationService.md",
         "modules/iterationStore.md",
         "modules/planningMasters_masters.md",
@@ -81530,11 +81555,13 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/workNumbers",
       "outgoing_internal_links": [
+        "modules/IterationCapacityLine.md",
         "modules/OnTrackSummary.md",
         "modules/OverviewPage.md",
         "modules/ProjectDetailPage.md",
         "modules/ProjectsPage.md",
         "modules/StatusDistribution.md",
+        "modules/TeamList.md",
         "modules/WorkMetricsLine.md",
         "modules/workNumbers.md"
       ],
@@ -95620,6 +95647,7 @@
         "modules/InterfaceLanguageSettings.md",
         "modules/isolated_rehearsal.md",
         "modules/iteration_service.md",
+        "modules/IterationCapacityLine.md",
         "modules/IterationForm.md",
         "modules/IterationForm.test.md",
         "modules/IterationImportDialog.md",
@@ -95988,6 +96016,7 @@
         "modules/TeamForm.md",
         "modules/TeamForm.test.md",
         "modules/TeamList.md",
+        "modules/TeamList.test.md",
         "modules/teamMemberLabels.md",
         "modules/TeamPage.md",
         "modules/TeamProfileManager.md",
@@ -96426,6 +96455,7 @@
         "modules/InterfaceLanguageSettings.md",
         "modules/isolated_rehearsal.md",
         "modules/iteration_service.md",
+        "modules/IterationCapacityLine.md",
         "modules/IterationForm.md",
         "modules/IterationForm.test.md",
         "modules/IterationImportDialog.md",
@@ -96794,6 +96824,7 @@
         "modules/TeamForm.md",
         "modules/TeamForm.test.md",
         "modules/TeamList.md",
+        "modules/TeamList.test.md",
         "modules/teamMemberLabels.md",
         "modules/TeamPage.md",
         "modules/TeamProfileManager.md",
@@ -96995,5 +97026,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:1303e9ec65a42b5d8a1734408ee050e5166188fbdd0d1deb4eca5c33ef87f513"
+  "source_hash": "sha256:98f4c53b9a9d8c8bb0e3caeb6848fc1b8589466736361afb73b843f0ba84dbeb"
 }

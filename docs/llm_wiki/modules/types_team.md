@@ -31,9 +31,9 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (21) |
+| Inbound | `frontend` (22) |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -53,8 +53,8 @@ flowchart LR
 | [TeamMemberOption](../entities/TeamMemberOption.md) | Interface | 124 | — | — |
 | [TeamMemberCreate](../entities/types_team_TeamMemberCreate.md) | Interface | 133 | — | — |
 | [MemberWorkload](../entities/types_team_MemberWorkload.md) | Interface | 143 | — | — |
-| [MemberCapacity](../entities/types_team_MemberCapacity.md) | Interface | 154 | — | Detailed capacity breakdown from GET /team-members/{id}/capacity. |
-| [AssigneeRecommendation](../entities/AssigneeRecommendation.md) | Interface | 164 | — | — |
+| [MemberCapacity](../entities/types_team_MemberCapacity.md) | Interface | 159 | — | Detailed capacity breakdown from GET /team-members/{id}/capacity. |
+| [AssigneeRecommendation](../entities/AssigneeRecommendation.md) | Interface | 169 | — | — |
 | [TeamMemberProfileSkillUpdate](../entities/types_team_TeamMemberProfileSkillUpdate.md) | Type alias | 50 | `Partial<TeamMemberProfileSkillCreate>` | — |
 | [TeamMemberProfileKind](../entities/TeamMemberProfileKind.md) | Type alias | 52 | `'human' \| 'agent' \| 'hybrid'` | — |
 | [TeamMemberAssignmentMode](../entities/TeamMemberAssignmentMode.md) | Type alias | 54 | <pre><code>&#124; &#39;ownership&#39;&#10;    &#124; &#39;execution&#39;&#10;    &#124; &#39;verification&#39;&#10;    &#124; &#39;design&#95;handoff&#39;</code></pre> | — |

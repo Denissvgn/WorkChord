@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1547 | [Open section](#entities) |
-| Modules | 795 | [Open section](#modules) |
+| Modules | 797 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 555 | [Open section](#entry-point-flows) |
@@ -1657,6 +1657,7 @@ Retained history; these declarations are absent from the selected source invento
 - [InteractiveCalendar](modules/InteractiveCalendar.md) - `frontend/src/components/calendar/InteractiveCalendar.tsx`
 - [InteractiveCalendar.test](modules/InteractiveCalendar.test.md) - `frontend/src/components/calendar/InteractiveCalendar.test.tsx`
 - [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) - `frontend/src/components/settings/InterfaceLanguageSettings.tsx`
+- [IterationCapacityLine](modules/IterationCapacityLine.md) - `frontend/src/components/iteration/IterationCapacityLine.tsx`
 - [IterationForm](modules/IterationForm.md) - `frontend/src/components/iteration/IterationForm.tsx`
 - [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
 - [IterationImportDialog](modules/IterationImportDialog.md) - `frontend/src/components/iteration/IterationImportDialog.tsx`
@@ -1791,6 +1792,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TeamForm](modules/TeamForm.md) - `frontend/src/components/team/TeamForm.tsx`
 - [TeamForm.test](modules/TeamForm.test.md) - `frontend/src/components/team/TeamForm.test.tsx`
 - [TeamList](modules/TeamList.md) - `frontend/src/components/team/TeamList.tsx`
+- [TeamList.test](modules/TeamList.test.md) - `frontend/src/components/team/TeamList.test.tsx`
 - [TeamPage](modules/TeamPage.md) - `frontend/src/pages/TeamPage.tsx`
 - [TeamProfileManager](modules/TeamProfileManager.md) - `frontend/src/components/team/TeamProfileManager.tsx`
 - [TeamProfileManager.test](modules/TeamProfileManager.test.md) - `frontend/src/components/team/TeamProfileManager.test.tsx`

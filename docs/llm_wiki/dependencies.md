@@ -179,6 +179,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TeamForm](modules/TeamForm.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [TeamForm](modules/TeamForm.md) | [planningInputService](modules/planningInputService.md) |
 | [TeamForm](modules/TeamForm.md) | [types_team](modules/types_team.md) |
+| [TeamList.test](modules/TeamList.test.md) | [types_team](modules/types_team.md) |
 | [TeamList](modules/TeamList.md) | [mutationFeedback](modules/mutationFeedback.md) |
 | [TeamList](modules/TeamList.md) | [planningInputService](modules/planningInputService.md) |
 | [TeamList](modules/TeamList.md) | [types_team](modules/types_team.md) |
@@ -372,8 +373,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [Button](modules/Button.md) | 83 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
 | [time](modules/time.md) | 77 | 0 |
+| [renderWithProviders](modules/renderWithProviders.md) | 73 | 2 |
 | [config](modules/config.md) | 72 | 1 |
-| [renderWithProviders](modules/renderWithProviders.md) | 72 | 2 |
 | [types_task](modules/types_task.md) | 72 | 2 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
 | [models_agent](modules/models_agent.md) | 65 | 5 |
@@ -402,10 +403,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
 | [toast](modules/toast.md) | 22 | 0 |
 | [index](modules/index.md) | 22 | 0 |
+| [types_team](modules/types_team.md) | 22 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
 | [mutationFeedback](modules/mutationFeedback.md) | 21 | 0 |
 | [teamService](modules/teamService.md) | 21 | 3 |
-| [types_team](modules/types_team.md) | 21 | 0 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
@@ -415,10 +416,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [identity_service](modules/identity_service.md) | 18 | 10 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
 | [tone](modules/tone.md) | 18 | 1 |
+| [iterationService](modules/iterationService.md) | 18 | 3 |
 | [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
-| [iterationService](modules/iterationService.md) | 17 | 3 |
 | [schemas_agent_planning](modules/schemas_agent_planning.md) | 16 | 0 |
 | [schemas_common](modules/schemas_common.md) | 16 | 0 |
 | [agent_work_service](modules/agent_work_service.md) | 16 | 26 |
@@ -487,6 +488,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schedulingRules](modules/schedulingRules.md) | 8 | 0 |
 | [protectedQueries](modules/protectedQueries.md) | 8 | 1 |
 | [taskFilterDefaults](modules/taskFilterDefaults.md) | 8 | 1 |
+| [workNumbers](modules/workNumbers.md) | 8 | 0 |
 | [agent_contract](modules/agent_contract.md) | 7 | 0 |
 | [catalog](modules/catalog.md) | 7 | 2 |
 | [models_request_source](modules/models_request_source.md) | 7 | 5 |
@@ -501,6 +503,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [task_detail_service](modules/task_detail_service.md) | 7 | 15 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) | 7 | 2 |
+| [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 7 | 4 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
 | [evidence](modules/evidence.md) | 6 | 2 |
@@ -516,11 +519,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_planning_service](modules/agent_planning_service.md) | 6 | 19 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
-| [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 6 | 4 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
 | [savedViewService](modules/savedViewService.md) | 6 | 2 |
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
-| [workNumbers](modules/workNumbers.md) | 6 | 0 |
 | [result](modules/result.md) | 6 | 1 |
 | [charter](modules/charter.md) | 5 | 2 |
 | [database_migration_cutover](modules/database_migration_cutover.md) | 5 | 2 |
@@ -718,6 +719,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [WorkFreshness](modules/WorkFreshness.md) | 2 | 1 |
 | [GanttChart](modules/GanttChart.md) | 2 | 13 |
 | [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
+| [IterationCapacityLine](modules/IterationCapacityLine.md) | 2 | 3 |
 | [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 7 |
 | [AppShell](modules/AppShell.md) | 2 | 7 |
 | [AppTopNav](modules/AppTopNav.md) | 2 | 9 |
@@ -750,6 +752,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AssigneeRecommendationsPanel](modules/AssigneeRecommendationsPanel.md) | 2 | 4 |
 | [ImportTeamModal](modules/ImportTeamModal.md) | 2 | 6 |
 | [TeamForm](modules/TeamForm.md) | 2 | 11 |
+| [TeamList](modules/TeamList.md) | 2 | 11 |
 | [TeamProfileManager](modules/TeamProfileManager.md) | 2 | 10 |
 | [VacationCsvImport](modules/VacationCsvImport.md) | 2 | 6 |
 | [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 2 | 3 |
@@ -826,7 +829,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 1 | 1 |
 | [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 4 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
-| [IterationList](modules/IterationList.md) | 1 | 11 |
+| [IterationList](modules/IterationList.md) | 1 | 12 |
 | [RouteErrorBoundary](modules/RouteErrorBoundary.md) | 1 | 1 |
 | [NotificationsPanel](modules/NotificationsPanel.md) | 1 | 4 |
 | [OverviewTaskReturnBar](modules/OverviewTaskReturnBar.md) | 1 | 1 |
@@ -847,7 +850,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskReviewer](modules/TaskReviewer.md) | 1 | 3 |
 | [TaskSearch](modules/TaskSearch.md) | 1 | 3 |
 | [TaskWorkflowGuide](modules/TaskWorkflowGuide.md) | 1 | 2 |
-| [TeamList](modules/TeamList.md) | 1 | 10 |
 | [VacationManager](modules/VacationManager.md) | 1 | 12 |
 | [OverflowMenu](modules/OverflowMenu.md) | 1 | 0 |
 | [taskViewState](modules/taskViewState.md) | 1 | 5 |
@@ -1058,6 +1060,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [useDraftDismissal.test](modules/useDraftDismissal.test.md) | 0 | 1 |
 | [ImportTeamModal.test](modules/ImportTeamModal.test.md) | 0 | 3 |
 | [TeamForm.test](modules/TeamForm.test.md) | 0 | 3 |
+| [TeamList.test](modules/TeamList.test.md) | 0 | 4 |
 | [TeamProfileManager.test](modules/TeamProfileManager.test.md) | 0 | 3 |
 | [InlineEmptyState](modules/InlineEmptyState.md) | 0 | 0 |
 | [MasterProgress.test](modules/MasterProgress.test.md) | 0 | 1 |

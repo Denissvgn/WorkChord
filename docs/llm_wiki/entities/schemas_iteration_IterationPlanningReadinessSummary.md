@@ -17,6 +17,8 @@ Compact planning inputs used by persistent navigation.
 | `team_member_count` | `int` | `team_member_count` | Yes | No | — | — | — | — |
 | `team_agent_count` | `int` | `team_agent_count` | No | No | `0` | — | — | — |
 | `team_capacity_hours` | `float` | `team_capacity_hours` | Yes | No | — | — | — | — |
+| `planned_hours` | `float` | `planned_hours` | No | No | `0.0` | — | — | — |
+| `assigned_hours` | `float` | `assigned_hours` | No | No | `0.0` | — | — | — |
 | `team_members_no_capacity` | `int` | `team_members_no_capacity` | Yes | No | — | — | — | — |
 | `task_count` | `int` | `task_count` | Yes | No | — | — | — | — |
 | `tasks_without_assignee` | `int` | `tasks_without_assignee` | Yes | No | — | — | — | — |
@@ -59,7 +61,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee`, `tasks_without_effort`, `team_agent_count`, `team_capacity_hours` |
+| [schemas_iteration](../modules/schemas_iteration.md) | 0 | `assigned_hours`, `checkpoints`, `checkpoints_done`, `checkpoints_total`, `has_schedule`, `iteration_id`, `planned_hours`, `risk_count`, `task_count`, `tasks_agent_without_capacity`, `tasks_without_assignee`, `tasks_without_effort` |
 
 ### Structure
 
