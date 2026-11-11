@@ -70,18 +70,21 @@ async def test_agent_capacity_row_assignment_and_apply_schedule_an_unassigned_ta
                     project_id=scenario.projects[0], effort_days=1, effort_hours=8)
         db.add_all([profile, lane, task])
         await db.commit()
+        # The preview rolls back and expires loaded objects; keep plain ids from here on.
+        task_id, lane_id = task.id, lane.id
         service = AgentPlanningService(db)
 
         before = await service.preview_schedule(iteration_id, actor, command=AgentPlanningCommandContext(
             idempotency_key="unscheduled-before", rationale="See what stays unscheduled", correlation_id="unscheduled-before"))
-        assert {row["task_id"]: row["reason"] for row in before.result["unscheduled"]}[task.id] == "no_assignee"
+        assert {row["task_id"]: row["reason"] for row in before.result["unscheduled"]}[task_id] == "no_assignee"
 
-        task.assignee_id = lane.id
+        assigned = await db.get(Task, task_id, populate_existing=True)
+        assigned.assignee_id = lane_id
         await db.commit()
         await db.refresh(actor)
         preview = await service.preview_schedule(iteration_id, actor, command=AgentPlanningCommandContext(
             idempotency_key="unscheduled-preview", rationale="Observe schedule inputs", correlation_id="unscheduled-preview"))
-        assert task.id not in {row["task_id"] for row in preview.result["unscheduled"]}
+        assert task_id not in {row["task_id"] for row in preview.result["unscheduled"]}
         data = AgentScheduleCommand(
             expected_task_versions={row["task_id"]: row["version"] for row in preview.result["task_states"]},
             expected_input_digest=preview.result["input_digest"])
@@ -90,7 +93,7 @@ async def test_agent_capacity_row_assignment_and_apply_schedule_an_unassigned_ta
             idempotency_key="unscheduled-apply", rationale="Schedule the agent lane", correlation_id="unscheduled-apply"))
 
     async with factory() as db:
-        scheduled = (await db.scalars(select(Task).where(Task.id == task.id))).one()
+        scheduled = (await db.scalars(select(Task).where(Task.id == task_id))).one()
         assert scheduled.start_date is not None and scheduled.end_date is not None
         passed, _ = _schedule_reason(scheduled)
         assert passed is True
