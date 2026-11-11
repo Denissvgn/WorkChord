@@ -108,6 +108,8 @@ export interface PlanReadiness {
     ganttLastBuilt: string;
     riskCount: number;
     inboxCount: number;
+    /** Server-owned checkpoint states; when present they decide each step's state. */
+    checkpointStates?: Partial<Record<PlanningStepId, StepState>>;
 }
 
 export type PlanningRecoveryKind =
@@ -197,6 +199,11 @@ export function deriveStatus(r: PlanReadiness): Record<string, StepStatus> {
             ? { state: 'warn', missing: [`${r.riskCount} risk${r.riskCount === 1 ? '' : 's'} to acknowledge`] }
             : { state: 'done', summary: 'Plan ready to share' };
 
+    // People and the PM agent read the same server checkpoints, so the server's
+    // state wins; the local inputs above only supply the wording.
+    for (const [id, state] of Object.entries(r.checkpointStates ?? {})) {
+        if (state && out[id] && out[id].state !== state) out[id] = { ...out[id], state };
+    }
     return out;
 }
 

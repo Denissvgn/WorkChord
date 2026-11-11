@@ -725,6 +725,16 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
             "Inspect definition through verification and recovery.",
         ),
         _assigned_work_operation(
+            "plan-readiness",
+            "PM",
+            "GET",
+            "/api/agent/planning/iterations/{iteration_id}/readiness",
+            "agent_get_iteration_plan_readiness",
+            "Read the six plan checkpoints people see, with one state each.",
+            path_required=("iteration_id",),
+            tool_required=("iteration_id",),
+        ),
+        _assigned_work_operation(
             "run-detail",
             "PM",
             "GET",

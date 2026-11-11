@@ -1540,6 +1540,14 @@ def create_mcp_server() -> FastMCP:
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_iteration(db, iteration_id))
 
     @mcp.tool()
+    async def agent_get_iteration_plan_readiness(iteration_id: int) -> dict[str, Any] | None:
+        """Read the six plan checkpoints and their states, as the plan page shows them."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id),
+        )
+
+    @mcp.tool()
     async def workspace_get_iteration_summary(iteration_id: int) -> dict[str, Any] | None:
         """Return vacation-aware iteration progress and capacity totals."""
         return await _tool_call(

@@ -574,16 +574,24 @@ class IterationService:
         shared_issues = await CapacityService(self.db).schedule_issues(iteration, members)
         uncertain_count = len(shared_issues)
 
-        return IterationPlanningReadinessSummary(
-            iteration_id=iteration_id,
+        from app.services.plan_checkpoints import PLAN_CHECKPOINT_IDS, plan_checkpoints
+        inputs = dict(
             team_member_count=len(members),
-            team_capacity_hours=round(total_hours, 2),
             team_members_no_capacity=no_capacity,
             task_count=task_count,
             tasks_without_assignee=int(task_row[1]),
             tasks_without_effort=int(task_row[2]),
             has_schedule=task_count > 0 and unscheduled_count == 0,
             risk_count=int(task_row[4]) + overloaded_count + uncertain_count,
+        )
+        checkpoints = plan_checkpoints(**inputs)
+        return IterationPlanningReadinessSummary(
+            iteration_id=iteration_id,
+            team_capacity_hours=round(total_hours, 2),
+            checkpoints=checkpoints,
+            checkpoints_done=sum(item["state"] == "done" for item in checkpoints),
+            checkpoints_total=len(PLAN_CHECKPOINT_IDS),
+            **inputs,
         )
 
     async def _calculate_team_capacity(self, iteration: Iteration) -> float:
