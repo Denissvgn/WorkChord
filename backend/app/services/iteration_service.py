@@ -485,7 +485,23 @@ class IterationService:
             total_effort_days=total_effort_days,
             team_capacity_days=team_capacity,
             overdue_tasks_count=overdue_count,
+            status_counts=metrics["status_counts"],
+            blocked_tasks=metrics["blocked_tasks"],
+            remaining_effort_days=metrics["remaining_effort_days"],
+            scheduled_finish=metrics["task_end_date"],
+            remaining_working_days=self._remaining_working_days(iteration, calendar_service),
         )
+
+    @staticmethod
+    def _remaining_working_days(iteration, calendar_service):
+        """Working days left from today (in the iteration's zone) to its end: all of them before it starts, 0 after it ends."""
+        from app.services.work_metrics import working_today
+        zone = iteration.project.timezone if iteration.project else iteration.calendar.timezone
+        today = working_today(zone)
+        if today > iteration.end_date:
+            return 0
+        start = max(today, iteration.start_date)
+        return calendar_service.calculate_working_days(iteration.calendar, start, iteration.end_date).working_days
 
     async def get_planning_readiness_summary(
         self,

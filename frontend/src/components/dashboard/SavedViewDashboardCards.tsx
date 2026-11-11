@@ -32,51 +32,29 @@ const viewTypeTone: Record<SavedViewType, string> = {
     projects: 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border',
 };
 
-const DashboardCardContent = ({ card }: { card: SavedViewDashboardCard }) => {
+/** One saved view as a compact row: what it is, how many items it holds, and where it opens. */
+const DashboardRow = ({ card }: { card: SavedViewDashboardCard }) => {
     const { t } = useTranslation();
     const Icon = viewTypeIcons[card.view_type];
     const display = savedViewDisplay(card);
-
-    return (
-        <>
-            <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-wc-micro font-medium', viewTypeTone[card.view_type])}>
-                            <Icon className="mr-1 h-3 w-3" />
-                            {t(viewTypeLabelKeys[card.view_type])}
-                        </span>
-                        <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-wc-micro font-medium text-content-secondary">
-                            {t('surfaces.savedViewDashboard.system')}
-                        </span>
-                    </div>
-                    <h3 className="mt-3 truncate text-sm font-semibold text-content-primary">{display.name}</h3>
-                    {display.description && (
-                        <p className="mt-1 line-clamp-2 min-h-[2rem] text-xs text-content-secondary">
-                            {display.description}
-                        </p>
-                    )}
-                    {!display.description && <div className="mt-1 min-h-[2rem]" />}
-                </div>
-                <div className="shrink-0 text-right">
-                    <div className="text-wc-page font-semibold tabular-nums text-content-primary">{card.count}</div>
-                </div>
-            </div>
-            <div className="mt-4 flex items-center justify-between border-t border-border-subtle pt-3 text-xs font-medium">
-                {card.is_valid ? (
-                    <>
-                        <span className="text-content-secondary">{t('surfaces.savedViewDashboard.openSavedView')}</span>
-                        <ArrowRight className="h-4 w-4 text-content-tertiary" />
-                    </>
-                ) : (
-                    <span className="flex min-w-0 items-center gap-1 text-feedback-danger">
-                        <AlertTriangle className="h-4 w-4 shrink-0" />
-                        <span className="truncate">{card.invalid_reason || t('surfaces.savedViewDashboard.invalidSavedView')}</span>
-                    </span>
-                )}
-            </div>
-        </>
-    );
+    const body = <>
+        <span className={clsx('inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-wc-micro font-medium', viewTypeTone[card.view_type])}>
+            <Icon aria-hidden="true" className="mr-1 h-3 w-3" />
+            {t(viewTypeLabelKeys[card.view_type])}
+        </span>
+        <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-medium text-content-primary">{display.name}</span>
+            {!card.is_valid && <span className="flex items-center gap-1 text-xs text-feedback-danger">
+                <AlertTriangle aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />{card.invalid_reason || t('surfaces.savedViewDashboard.invalidSavedView')}
+            </span>}
+        </span>
+        <span className="shrink-0 text-base font-semibold tabular-nums text-content-primary">{card.count}</span>
+        {card.is_valid && <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />}
+    </>;
+    const className = 'flex min-h-11 items-center gap-3 px-3 py-2';
+    return card.is_valid
+        ? <Link to={card.target_path} className={clsx(className, 'hover:bg-surface-hover')} title={display.description ?? undefined}>{body}</Link>
+        : <div className={clsx(className, 'bg-feedback-danger-muted/40')}>{body}</div>;
 };
 
 export const SavedViewDashboardCards = ({
@@ -117,30 +95,9 @@ export const SavedViewDashboardCards = ({
             )}
 
             {!isLoading && !isError && cards.length > 0 && (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                    {cards.map(card => {
-                    const className = clsx(
-                        'block min-h-40 rounded-lg border border-border bg-surface-card p-4 shadow-sm transition-colors',
-                        card.is_valid
-                            ? 'hover:border-action hover:bg-action-muted/30'
-                            : 'cursor-not-allowed border-feedback-danger-border bg-feedback-danger-muted/40 opacity-80'
-                    );
-
-                    if (!card.is_valid) {
-                        return (
-                            <div key={card.saved_view_id} className={className}>
-                                <DashboardCardContent card={card} />
-                            </div>
-                        );
-                    }
-
-                    return (
-                        <Link key={card.saved_view_id} to={card.target_path} className={className}>
-                            <DashboardCardContent card={card} />
-                        </Link>
-                    );
-                    })}
-                </div>
+                <ul className="divide-y divide-border-subtle rounded-lg border border-border bg-surface-card">
+                    {cards.map(card => <li key={card.saved_view_id}><DashboardRow card={card} /></li>)}
+                </ul>
             )}
         </section>
     );

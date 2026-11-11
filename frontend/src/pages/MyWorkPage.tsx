@@ -4,6 +4,8 @@ import { PageLayout, PageHeader } from '../components/ui';
 import { PersonCapacity } from '../components/tasks/PersonCapacity';
 import { useIdentity } from '../features/identity/identityContext';
 import { LocalProfilePicker } from '../features/identity/LocalProfilePicker';
+import { NotificationsPanel } from '../components/notifications/NotificationsPanel';
+import { useIterationStore } from '../store/iterationStore';
 import { useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +27,7 @@ const MyWorkPage = () => {
     const identityContext = useIdentity();
     const identity = identityContext?.identity;
     const local = identity?.mode === 'trusted_local' && !identity.principal;
+    const { selectedIterationId } = useIterationStore();
     const [params, setParams] = useSearchParams();
     const queue: Queue = QUEUES.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : 'active';
     const selectedId = Number(params.get('task')) || null;
@@ -90,6 +93,9 @@ const MyWorkPage = () => {
                     {item.status === 'failed' && <Button size="sm" variant="secondary" disabled={retry.isPending} onClick={() => retry.mutate(item.id)}>{t('teamwork.retry')}</Button>}</div>)}
                 {deliveries.hasNextPage && <Button size="sm" variant="ghost" disabled={deliveries.isFetchingNextPage} onClick={() => void deliveries.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
             </details>
+            {/* Iteration notifications (status changes and overdue work) live with the personal inbox. */}
+            {selectedIterationId > 0 && <details className="rounded-md border border-border p-3"><summary className="cursor-pointer font-medium">{t('teamwork.iterationNotifications')}</summary>
+                <NotificationsPanel iterationId={selectedIterationId} className="mt-3 w-full border-0" /></details>}
             {(read.isError || retry.isError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(read.error ?? retry.error, t('teamwork.saveFailed'))}</p>}
         </>}
         {selectedQuery.hasNextPage && <Button variant="secondary" disabled={selectedQuery.isFetchingNextPage} onClick={() => void selectedQuery.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}

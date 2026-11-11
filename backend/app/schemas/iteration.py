@@ -105,6 +105,12 @@ class IterationSummary(WorkMetricSummary):
     total_effort_days: float
     team_capacity_days: float
     overdue_tasks_count: int
+    # What "are we on track for the end date?" needs, from the same leaf aggregate.
+    status_counts: dict[str, int] = Field(default_factory=dict)
+    blocked_tasks: int = 0
+    remaining_effort_days: float = 0.0
+    scheduled_finish: Optional[date] = None
+    remaining_working_days: Optional[int] = None
 
 
 class PlanCheckpoint(BaseModel):
