@@ -25,6 +25,7 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 | `../components/releases/ReleaseForm` | `ReleaseForm` | — | compiler-dependent |
 | `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
 | `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
+| `../components/tasks/MetricCount` | `MetricCount` | — | compiler-dependent |
 | `../components/ui` | `InlineEmptyState`, `OverflowMenu`, `PageHeader`, `PageLayout`, `Pill`, `SectionCard`, `SlideOverDrawer`, `StatusSegmentStrip`, `StickyRail` | — | compiler-dependent |
 | `../components/ui/tone` | `STATUS_TONE` | — | compiler-dependent |
 | `../features/mutationFeedback` | `MutationFeedbackMeta` | Declaration | erased |
@@ -40,6 +41,7 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 | `../utils/apiError` | `normalizeApiError`, `getApiErrorMessage`, `getApiErrorStatus` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
 | `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` | — | compiler-dependent |
+| `../utils/workNumbers` | `formatDecimal`, `formatEffortDays` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `Activity`, `AlertTriangle`, `ArrowDown`, `ArrowUp`, `CalendarDays`, `CheckCircle2`, `ChevronRight`, `Edit`, `FolderOpen`, `History`, `MessageSquare`, `Package`, `Plus`, `Send`, `Target`, `Trash2`, `User`, `XCircle` | — | compiler-dependent |
@@ -75,7 +77,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (28) |
+| Outbound | `frontend` (30) |
 
 ### External packages
 
@@ -83,14 +85,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 159 | <pre><code>&#123;&#10;    health&#58; ProjectHealth&#59;&#10;    summary&#58; string&#59;&#10;    progress&#95;text&#58; string&#59;&#10;    risks&#95;text&#58; string&#59;&#10;    decisions&#95;text&#58; string&#59;&#10;    next&#95;steps&#95;text&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 168 | <pre><code>&#123;&#10;    projectId&#58; number &#124; null&#59;&#10;    form&#58; ProjectUpdateFormState&#59;&#10;&#125;</code></pre> | — |
-| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 173 | <pre><code>&#123;&#10;    projectId&#58; number &#124; null&#59;&#10;    message&#58; string &#124; null&#59;&#10;&#125;</code></pre> | — |
-| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 178 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    target&#95;date&#58; string&#59;&#10;    completed&#95;at&#58; string&#59;&#10;    sort&#95;order&#58; string&#59;&#10;    status&#58; ProjectMilestoneStatus&#59;&#10;&#125;</code></pre> | — |
-| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 187 | <pre><code>&#123;&#10;    mode&#58; &#39;create&#39; &#124; &#39;edit&#39;&#59;&#10;    milestone&#58; ProjectMilestone &#124; null&#59;&#10;    form&#58; MilestoneFormState&#59;&#10;    error&#58; string &#124; null&#59;&#10;&#125;</code></pre> | — |
+| [ProjectUpdateFormState](../entities/ProjectUpdateFormState.md) | Type alias | 161 | <pre><code>&#123;&#10;    health&#58; ProjectHealth&#59;&#10;    summary&#58; string&#59;&#10;    progress&#95;text&#58; string&#59;&#10;    risks&#95;text&#58; string&#59;&#10;    decisions&#95;text&#58; string&#59;&#10;    next&#95;steps&#95;text&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [ProjectUpdateFormStore](../entities/ProjectUpdateFormStore.md) | Type alias | 170 | <pre><code>&#123;&#10;    projectId&#58; number &#124; null&#59;&#10;    form&#58; ProjectUpdateFormState&#59;&#10;&#125;</code></pre> | — |
+| [ProjectUpdateErrorStore](../entities/ProjectUpdateErrorStore.md) | Type alias | 175 | <pre><code>&#123;&#10;    projectId&#58; number &#124; null&#59;&#10;    message&#58; string &#124; null&#59;&#10;&#125;</code></pre> | — |
+| [MilestoneFormState](../entities/MilestoneFormState.md) | Type alias | 180 | <pre><code>&#123;&#10;    name&#58; string&#59;&#10;    description&#58; string&#59;&#10;    target&#95;date&#58; string&#59;&#10;    completed&#95;at&#58; string&#59;&#10;    sort&#95;order&#58; string&#59;&#10;    status&#58; ProjectMilestoneStatus&#59;&#10;&#125;</code></pre> | — |
+| [MilestoneEditorState](../entities/MilestoneEditorState.md) | Type alias | 189 | <pre><code>&#123;&#10;    mode&#58; &#39;create&#39; &#124; &#39;edit&#39;&#59;&#10;    milestone&#58; ProjectMilestone &#124; null&#59;&#10;    form&#58; MilestoneFormState&#59;&#10;    error&#58; string &#124; null&#59;&#10;&#125;</code></pre> | — |

@@ -193,7 +193,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| convert_task_brief | domain_result | 197 | `domain_result(...)` |
+| convert_task_brief | domain_result | 230 | `domain_result(...)` |
 | domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
@@ -201,7 +201,7 @@ flowchart LR
 | domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| convert_task_brief | TaskBriefService.conversion | 197 | `TaskBriefService(db).conversion(task_id, data)` |
+| convert_task_brief | TaskBriefService.conversion | 230 | `TaskBriefService(db).conversion(task_id, data)` |
 | TaskBriefService.conversion | self.tasks.get_by_id (backend/app/services/task…skBriefService.conversion) | 211 | `self.tasks.get_by_id(task_id)` |
 | TaskBriefService.conversion | ValueError (backend/app/services/task…skBriefService.conversion) | 213 | `ValueError('Task not found or inaccessible')` |
 

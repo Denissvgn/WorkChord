@@ -28,6 +28,7 @@ _Auto-generated from `frontend/src/pages/ProjectsPage.tsx`._
 | `../utils/apiError` | `getApiErrorMessage` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../utils/teamMemberLabels` | `formatPortfolioOwnerLabel` | — | compiler-dependent |
+| `../utils/workNumbers` | `formatEffortDays` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `AlertTriangle`, `ChevronDown`, `FolderOpen`, `LoaderCircle`, `Plus`, `Search`, `Target` | — | compiler-dependent |
@@ -63,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (17) |
+| Outbound | `frontend` (18) |
 
 ### External packages
 
@@ -71,4 +72,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

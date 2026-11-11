@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1543 | [Open section](#entities) |
-| Modules | 788 | [Open section](#modules) |
-| Workflows | 195 | [Open section](#workflows) |
+| Entities | 1546 | [Open section](#entities) |
+| Modules | 792 | [Open section](#modules) |
+| Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 554 | [Open section](#entry-point-flows) |
+| Entry-point flows | 555 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -499,8 +499,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [MemoryDagJournal](entities/MemoryDagJournal.md)
 - [MemoryWormStore](entities/MemoryWormStore.md)
 - [MessageResponse](entities/MessageResponse.md)
+- [MetricMatchPage](entities/MetricMatchPage.md)
 - [MetricRegistry](entities/MetricRegistry.md)
 - [MetricSample](entities/MetricSample.md)
+- [MetricScope](entities/MetricScope.md)
 - [MigrationDataError](entities/MigrationDataError.md)
 - [MigrationPolicy](entities/MigrationPolicy.md)
 - [MilestoneEditorState](entities/MilestoneEditorState.md)
@@ -1047,6 +1049,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [WebIntakeService](entities/WebIntakeService.md)
 - [WebIntakeUnauthorizedError](entities/WebIntakeUnauthorizedError.md)
 - [WorkChordException](entities/WorkChordException.md)
+- [WorkMetricName](entities/WorkMetricName.md)
 - [WorkMetricSummary](entities/WorkMetricSummary.md)
 - [WorkMetrics](entities/WorkMetrics.md)
 - [WorkPackageContract](entities/WorkPackageContract.md)
@@ -1664,6 +1667,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [LocalProfilePicker](modules/LocalProfilePicker.md) - `frontend/src/features/identity/LocalProfilePicker.tsx`
 - [MasterProgress](modules/MasterProgress.md) - `frontend/src/components/ui/MasterProgress.tsx`
 - [MasterProgress.test](modules/MasterProgress.test.md) - `frontend/src/components/ui/MasterProgress.test.tsx`
+- [MetricCount](modules/MetricCount.md) - `frontend/src/components/tasks/MetricCount.tsx`
+- [MetricCount.test](modules/MetricCount.test.md) - `frontend/src/components/tasks/MetricCount.test.tsx`
 - [Modal](modules/Modal.md) - `frontend/src/components/common/Modal.tsx`
 - [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) - `frontend/src/features/MutationSuccessFeedback.tsx`
 - [MyWorkPage](modules/MyWorkPage.md) - `frontend/src/pages/MyWorkPage.tsx`
@@ -2240,6 +2245,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_local_baseline](modules/test_local_baseline.md) - Local measurements retain limits and cannot become formal certification.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_metric_matches](modules/test_metric_matches.md) - A work-metric count and the list it opens are chosen by the same predicate.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
 - [test_mutation_versions](modules/test_mutation_versions.md) - Version rollout rejects missing inputs without weakening identity or rollback.
 - [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
@@ -2344,6 +2350,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [vitest.config](modules/vitest.config.md) - `frontend/vitest.config.ts`
 - [web_intake_service](modules/web_intake_service.md) - Controlled external web intake service.
 - [workMetrics](modules/workMetrics.md) - `frontend/src/types/workMetrics.ts`
+- [workNumbers](modules/workNumbers.md) - /** * One way to write work numbers everywhere: counts, decimals, percent and effort * in days, in the reader's locale. A missing value returns null so the caller says * "unknown" in words instead of showing 0. */
 - [workQueryFreshness](modules/workQueryFreshness.md) - `frontend/src/features/workQueryFreshness.ts`
 - [workQueryFreshness.test](modules/workQueryFreshness.test.md) - `frontend/src/features/workQueryFreshness.test.ts`
 - [worker](modules/worker.md) - Dedicated durable outbound-delivery worker process.
@@ -2519,6 +2526,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [logout](workflows/logout.md) - entry: `identity.logout`
 - [main](workflows/main.md) - entry: `server_acceptance.main`
 - [me](workflows/me.md) - entry: `identity.me`
+- [metric_matches](workflows/metric_matches.md) - entry: `task_domain.metric_matches`
 - [native_token](workflows/native_token.md) - entry: `identity.native_token`
 - [planning_input_reservation](workflows/planning_input_reservation.md) - entry: `commands.planning_input_reservation`
 - [preflight_source](workflows/preflight_source.md) - entry: `source.preflight_source`
@@ -2801,6 +2809,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [http-me](flows/http-me.md) - entry: `me`
 - [http-member_planning_context](flows/http-member_planning_context.md) - entry: `member_planning_context`
 - [http-merge_tasks](flows/http-merge_tasks.md) - entry: `merge_tasks`
+- [http-metric_matches](flows/http-metric_matches.md) - entry: `metric_matches`
 - [http-metrics_endpoint](flows/http-metrics_endpoint.md) - entry: `metrics_endpoint`
 - [http-move_task](flows/http-move_task.md) - entry: `move_task`
 - [http-native_token](flows/http-native_token.md) - entry: `native_token`

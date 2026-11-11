@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1543,
-      "flows": 554,
+      "entities": 1546,
+      "flows": 555,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 788,
-      "workflows": 195
+      "modules": 792,
+      "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3096
+    "total": 3105
   },
   "dependency_pages": {
     "count": 2,
@@ -3167,7 +3167,7 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 173,
+              "line": 206,
               "step": "create_backlog_task",
               "target": "HTTPException"
             },
@@ -3203,7 +3203,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 174,
+              "line": 207,
               "step": "create_backlog_task",
               "target": "TaskService(db).create"
             },
@@ -8018,7 +8018,7 @@
             "backend/app/authority.py",
             "backend/app/commands.py"
           ],
-          "step_count": 375,
+          "step_count": 400,
           "truncated": false
         }
       },
@@ -16845,6 +16845,96 @@
       "category": "http",
       "detector": "builtin",
       "entry_point": {
+        "label": "metric_matches",
+        "source_path": "backend/app/routers/task_domain.py",
+        "symbol": "metric_matches"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "external_call",
+              "line": 92,
+              "step": "metric_matches",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "external_call",
+              "line": 93,
+              "step": "metric_matches",
+              "target": "sum"
+            },
+            {
+              "kind": "external_call",
+              "line": 94,
+              "step": "metric_matches",
+              "target": "HTTPException"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 117,
+              "step": "ReleaseService.get_by_id",
+              "target": "self.db.execute"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 118,
+              "step": "ReleaseService.get_by_id",
+              "target": "select(Release).options(*self._release_options()).where"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 118,
+              "step": "ReleaseService.get_by_id",
+              "target": "select(Release).options"
+            },
+            {
+              "kind": "external_call",
+              "line": 118,
+              "step": "ReleaseService.get_by_id",
+              "target": "select"
+            },
+            {
+              "kind": "external_call",
+              "line": 37,
+              "step": "ReleaseService._release_options",
+              "target": "selectinload"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "metric_matches",
+              "target": "first 12 steps"
+            }
+          ],
+          "generated": true,
+          "step_count": 12,
+          "transfer_count": 11,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/task_domain.py",
+            "backend/app/services/release_service.py",
+            "backend/app/services/work_metrics.py",
+            "backend/app/query_limits.py",
+            "backend/app/utils/time.py",
+            "backend/app/authority.py",
+            "backend/app/commands.py",
+            "backend/app/config.py"
+          ],
+          "step_count": 324,
+          "truncated": false
+        }
+      },
+      "id": "http-metric_matches",
+      "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
         "label": "metrics_endpoint",
         "source_path": "backend/app/main.py",
         "symbol": "metrics_endpoint"
@@ -18499,7 +18589,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 202,
+              "line": 235,
               "step": "record_task_progress",
               "target": "TaskBriefService(db).write_progress"
             },
@@ -19548,7 +19638,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 255,
+              "line": 288,
               "step": "restore_backlog",
               "target": "BacklogSnapshotService(db).restore"
             }
@@ -19850,7 +19940,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 208,
+              "line": 241,
               "step": "review_task",
               "target": "TaskBriefService(db).review"
             },
@@ -21340,55 +21430,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 229,
+              "line": 262,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 229,
+              "line": 262,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 229,
+              "line": 262,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 230,
+              "line": 263,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -21530,7 +21620,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 185,
+              "line": 218,
               "step": "task_command",
               "target": "TaskDomainService(db).command"
             },
@@ -21845,43 +21935,43 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where"
             },
             {
               "kind": "external_call",
-              "line": 130,
+              "line": 163,
               "step": "task_migration_diagnostics",
               "target": "select"
             },
@@ -21935,25 +22025,25 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 114,
+              "line": 147,
               "step": "task_owner_options",
               "target": "select(TeamMemberProfile.id, TeamMemberProfile.display_name.label('name')).where"
             },
             {
               "kind": "external_call",
-              "line": 114,
+              "line": 147,
               "step": "task_owner_options",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 114,
+              "line": 147,
               "step": "task_owner_options",
               "target": "TeamMemberProfile.display_name.label"
             },
             {
               "kind": "unresolved_call",
-              "line": 115,
+              "line": 148,
               "step": "task_owner_options",
               "target": "db.info.get"
             },
@@ -21996,55 +22086,55 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 229,
+              "line": 262,
               "step": "brief_history_page",
               "target": "db.scalar"
             },
             {
               "kind": "unresolved_call",
-              "line": 229,
+              "line": 262,
               "step": "brief_history_page",
               "target": "select(Task.id).where"
             },
             {
               "kind": "external_call",
-              "line": 229,
+              "line": 262,
               "step": "brief_history_page",
               "target": "select"
             },
             {
               "kind": "external_call",
-              "line": 230,
+              "line": 263,
               "step": "brief_history_page",
               "target": "HTTPException"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "(await db.scalars(select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit(limit + 1))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by(model.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "select(model).where(model.original_task_id == task_id, model.id > after_id).order_by"
             },
             {
               "kind": "unresolved_call",
-              "line": 231,
+              "line": 264,
               "step": "brief_history_page",
               "target": "select(model).where"
             },
@@ -22085,37 +22175,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 140,
+              "line": 173,
               "step": "task_review_queue",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 142,
+              "line": 175,
               "step": "task_review_queue",
               "target": "service.references().where"
             },
             {
               "kind": "unresolved_call",
-              "line": 142,
+              "line": 175,
               "step": "task_review_queue",
               "target": "service.references"
             },
             {
               "kind": "unresolved_call",
-              "line": 142,
+              "line": 175,
               "step": "task_review_queue",
               "target": "Task.canceled_at.is_"
             },
             {
               "kind": "unresolved_call",
-              "line": 142,
+              "line": 175,
               "step": "task_review_queue",
               "target": "Task.is_summary.is_"
             },
             {
               "kind": "external_call",
-              "line": 144,
+              "line": 177,
               "step": "task_review_queue",
               "target": "HTTPException"
             },
@@ -25470,7 +25560,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 191,
+              "line": 224,
               "step": "write_task_brief",
               "target": "TaskBriefService(db).write"
             },
@@ -33673,7 +33763,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 487,
+          "step_count": 513,
           "truncated": true
         }
       },
@@ -35883,7 +35973,7 @@
             "backend/app/schemas/team.py",
             "backend/app/schemas/iteration.py"
           ],
-          "step_count": 617,
+          "step_count": 642,
           "truncated": true
         }
       },
@@ -36231,7 +36321,7 @@
             "backend/app/schemas/project.py",
             "backend/app/services/request_source_service.py"
           ],
-          "step_count": 590,
+          "step_count": 615,
           "truncated": true
         }
       },
@@ -36319,7 +36409,7 @@
             "backend/app/services/work_metrics.py",
             "backend/app/query_limits.py"
           ],
-          "step_count": 525,
+          "step_count": 551,
           "truncated": true
         }
       },
@@ -37545,7 +37635,7 @@
             "backend/app/query_limits.py",
             "backend/app/services/work_metrics.py"
           ],
-          "step_count": 541,
+          "step_count": 567,
           "truncated": true
         }
       },
@@ -43895,8 +43985,10 @@
         "entities/MemoryDagJournal.md",
         "entities/MemoryWormStore.md",
         "entities/MessageResponse.md",
+        "entities/MetricMatchPage.md",
         "entities/MetricRegistry.md",
         "entities/MetricSample.md",
+        "entities/MetricScope.md",
         "entities/MigrationDataError.md",
         "entities/MigrationPolicy.md",
         "entities/MilestoneEditorState.md",
@@ -44902,6 +44994,7 @@
         "entities/WorkflowFocusTarget.md",
         "entities/WorkingDaysRequest.md",
         "entities/WorkingZone.md",
+        "entities/WorkMetricName.md",
         "entities/WorkMetrics.md",
         "entities/WorkMetricSummary.md",
         "entities/WorkPackageContract.md",
@@ -45159,6 +45252,7 @@
         "flows/http-me.md",
         "flows/http-member_planning_context.md",
         "flows/http-merge_tasks.md",
+        "flows/http-metric_matches.md",
         "flows/http-metrics_endpoint.md",
         "flows/http-move_task.md",
         "flows/http-native_token.md",
@@ -45748,6 +45842,8 @@
         "modules/MasterProgress.test.md",
         "modules/mcp_agent_tools.md",
         "modules/mcp_server.md",
+        "modules/MetricCount.md",
+        "modules/MetricCount.test.md",
         "modules/migrations_env.md",
         "modules/Modal.md",
         "modules/modelAwareRouting.md",
@@ -46143,6 +46239,7 @@
         "modules/test_load_tooling.md",
         "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
+        "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
         "modules/test_native_connections.md",
@@ -46264,6 +46361,7 @@
         "modules/WorkFreshness.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
+        "modules/workNumbers.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
         "modules/WorkRefreshStatus.md",
@@ -46381,6 +46479,7 @@
         "workflows/logout.md",
         "workflows/main.md",
         "workflows/me.md",
+        "workflows/metric_matches.md",
         "workflows/native_token.md",
         "workflows/NativeSessionService_approve.md",
         "workflows/NativeSessionService_connection.md",
@@ -53590,6 +53689,18 @@
       "title": "MessageResponse"
     },
     {
+      "canonical_path": "entities/MetricMatchPage.md",
+      "id": "MetricMatchPage",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/MetricMatchPage",
+      "outgoing_internal_links": [
+        "modules/taskService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/taskService.ts",
+      "title": "MetricMatchPage"
+    },
+    {
       "canonical_path": "entities/MetricRegistry.md",
       "id": "MetricRegistry",
       "kind": "entities",
@@ -53615,6 +53726,20 @@
       "role": "semantic",
       "source_path": "backend/app/autonomy/providers.py",
       "title": "MetricSample"
+    },
+    {
+      "canonical_path": "entities/MetricScope.md",
+      "id": "MetricScope",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/MetricScope",
+      "outgoing_internal_links": [
+        "modules/MetricCount.md",
+        "modules/taskService.md",
+        "modules/WorkMetricsLine.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/taskService.ts",
+      "title": "MetricScope"
     },
     {
       "canonical_path": "entities/MigrationDataError.md",
@@ -54263,7 +54388,6 @@
         "modules/app_database.md",
         "modules/authority.md",
         "modules/commands.md",
-        "modules/delivery_metrics_service.md",
         "modules/models___init__.md",
         "modules/models_iteration.md",
         "modules/models_project.md",
@@ -54272,6 +54396,7 @@
         "modules/models_task.md",
         "modules/models_triage.md",
         "modules/routers_identity.md",
+        "modules/routers_task_domain.md",
         "modules/team_member.md"
       ],
       "role": "semantic",
@@ -56853,7 +56978,8 @@
       "outgoing_internal_links": [
         "modules/mcp_agent_tools.md",
         "modules/projects.md",
-        "modules/release_service.md"
+        "modules/release_service.md",
+        "modules/routers_task_domain.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/release_service.py",
@@ -67680,11 +67806,26 @@
       "title": "WorkingZone"
     },
     {
+      "canonical_path": "entities/WorkMetricName.md",
+      "id": "WorkMetricName",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/WorkMetricName",
+      "outgoing_internal_links": [
+        "modules/MetricCount.md",
+        "modules/taskService.md",
+        "modules/WorkMetricsLine.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/services/taskService.ts",
+      "title": "WorkMetricName"
+    },
+    {
       "canonical_path": "entities/WorkMetrics.md",
       "id": "WorkMetrics",
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/WorkMetrics",
       "outgoing_internal_links": [
+        "modules/MetricCount.test.md",
         "modules/types_iteration.md",
         "modules/types_project.md",
         "modules/types_release.md",
@@ -72257,6 +72398,40 @@
       "role": "semantic",
       "source_path": "backend/app/mcp_server.py",
       "title": "mcp_server Module"
+    },
+    {
+      "canonical_path": "modules/MetricCount.md",
+      "id": "MetricCount",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/MetricCount",
+      "outgoing_internal_links": [
+        "modules/MetricCount.md",
+        "modules/MetricCount.test.md",
+        "modules/Modal.md",
+        "modules/ProjectDetailPage.md",
+        "modules/QueryState.md",
+        "modules/taskService.md",
+        "modules/WorkMetricsLine.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/MetricCount.tsx",
+      "title": "MetricCount Module"
+    },
+    {
+      "canonical_path": "modules/MetricCount.test.md",
+      "id": "MetricCount.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/MetricCount.test",
+      "outgoing_internal_links": [
+        "modules/MetricCount.md",
+        "modules/MetricCount.test.md",
+        "modules/renderWithProviders.md",
+        "modules/workMetrics.md",
+        "modules/WorkMetricsLine.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/MetricCount.test.tsx",
+      "title": "MetricCount.test Module"
     },
     {
       "canonical_path": "modules/migrations_env.md",
@@ -77913,6 +78088,9 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/taskService",
       "outgoing_internal_links": [
+        "entities/MetricMatchPage.md",
+        "entities/MetricScope.md",
+        "entities/WorkMetricName.md",
         "modules/taskService.md"
       ],
       "role": "semantic",
@@ -79141,6 +79319,21 @@
       "role": "semantic",
       "source_path": "backend/tests/test_managed_authority.py",
       "title": "test_managed_authority Module"
+    },
+    {
+      "canonical_path": "modules/test_metric_matches.md",
+      "id": "test_metric_matches",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_metric_matches",
+      "outgoing_internal_links": [
+        "modules/services_work_metrics.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_managed_authority.md",
+        "modules/test_metric_matches.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_metric_matches.py",
+      "title": "test_metric_matches Module"
     },
     {
       "canonical_path": "modules/test_mobile_contract.md",
@@ -81231,6 +81424,7 @@
       "mcp_uri": "llm-wiki://modules/workMetrics",
       "outgoing_internal_links": [
         "entities/WorkMetrics.md",
+        "modules/MetricCount.test.md",
         "modules/types_iteration.md",
         "modules/types_project.md",
         "modules/types_release.md",
@@ -81248,14 +81442,34 @@
       "mcp_uri": "llm-wiki://modules/WorkMetricsLine",
       "outgoing_internal_links": [
         "modules/AnalyticsPage.md",
+        "modules/MetricCount.md",
+        "modules/MetricCount.test.md",
         "modules/OverviewPage.md",
         "modules/ProjectReleaseDetailPage.md",
+        "modules/taskService.md",
         "modules/workMetrics.md",
-        "modules/WorkMetricsLine.md"
+        "modules/WorkMetricsLine.md",
+        "modules/workNumbers.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/WorkMetricsLine.tsx",
       "title": "WorkMetricsLine Module"
+    },
+    {
+      "canonical_path": "modules/workNumbers.md",
+      "id": "workNumbers",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/workNumbers",
+      "outgoing_internal_links": [
+        "modules/OverviewPage.md",
+        "modules/ProjectDetailPage.md",
+        "modules/ProjectsPage.md",
+        "modules/WorkMetricsLine.md",
+        "modules/workNumbers.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/utils/workNumbers.ts",
+      "title": "workNumbers Module"
     },
     {
       "canonical_path": "modules/workQueryFreshness.md",
@@ -83131,6 +83345,21 @@
       "role": "mixed",
       "source_path": "backend/app/routers/identity.py",
       "title": "me"
+    },
+    {
+      "canonical_path": "workflows/metric_matches.md",
+      "id": "metric_matches",
+      "kind": "workflows",
+      "mcp_uri": "llm-wiki://workflows/metric_matches",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/release_service.md",
+        "modules/routers_task_domain.md",
+        "modules/services_work_metrics.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/task_domain.py",
+      "title": "metric_matches"
     },
     {
       "canonical_path": "workflows/native_token.md",
@@ -88105,6 +88334,25 @@
       "role": "mixed",
       "source_path": "backend/app/routers/tasks.py",
       "title": "merge_tasks"
+    },
+    {
+      "canonical_path": "flows/http-metric_matches.md",
+      "id": "http-metric_matches",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-metric_matches",
+      "outgoing_internal_links": [
+        "modules/authority.md",
+        "modules/commands.md",
+        "modules/config.md",
+        "modules/query_limits.md",
+        "modules/release_service.md",
+        "modules/routers_task_domain.md",
+        "modules/services_work_metrics.md",
+        "modules/time.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/task_domain.py",
+      "title": "metric_matches"
     },
     {
       "canonical_path": "flows/http-metrics_endpoint.md",
@@ -95333,6 +95581,8 @@
         "modules/MasterProgress.test.md",
         "modules/mcp_agent_tools.md",
         "modules/mcp_server.md",
+        "modules/MetricCount.md",
+        "modules/MetricCount.test.md",
         "modules/migrations_env.md",
         "modules/Modal.md",
         "modules/modelAwareRouting.md",
@@ -95728,6 +95978,7 @@
         "modules/test_load_tooling.md",
         "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
+        "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
         "modules/test_native_connections.md",
@@ -95849,6 +96100,7 @@
         "modules/WorkFreshness.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
+        "modules/workNumbers.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
         "modules/WorkRefreshStatus.md",
@@ -96132,6 +96384,8 @@
         "modules/MasterProgress.test.md",
         "modules/mcp_agent_tools.md",
         "modules/mcp_server.md",
+        "modules/MetricCount.md",
+        "modules/MetricCount.test.md",
         "modules/migrations_env.md",
         "modules/Modal.md",
         "modules/modelAwareRouting.md",
@@ -96527,6 +96781,7 @@
         "modules/test_load_tooling.md",
         "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
+        "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
         "modules/test_native_connections.md",
@@ -96648,6 +96903,7 @@
         "modules/WorkFreshness.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md",
+        "modules/workNumbers.md",
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
         "modules/WorkRefreshStatus.md",
@@ -96662,5 +96918,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2efd0fe1e2ade1658f367598791e96ecb9b3fdb0285af97e028dfcdc170594ae"
+  "source_hash": "sha256:3f2e28ec6ac912e0d39793b049e3257c2752fe651f5da3b5e91d3bb5a07cc463"
 }

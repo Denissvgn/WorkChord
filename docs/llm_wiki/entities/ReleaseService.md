@@ -26,6 +26,7 @@ Service for release CRUD and task link validation.
 | `_release_shipped_payload` | `(release: Release) -> dict` | — | Build the task timeline payload for a shipped release. |
 | `_emit_release_shipped_events` | *(async)* `(release: Release) -> None` | — | Emit missing shipped events for linked release tasks. |
 | `_project_exists` | *(async)* `(project_id: int) -> bool` | — | Return whether a project exists. |
+| `metric_task_ids` | *(async)* `(release, tasks = None)` | — | The release's tasks and every task below them: the scope its metrics count. |
 | `_attach_work_metrics` | *(async)* `(release, tasks = None)` | — | — |
 | `get_by_id` | *(async)* `(release_id: int) -> Optional[Release]` | — | Get a release with linked tasks loaded. |
 | `list_for_project` | *(async)* `(project_id: int) -> Optional[Sequence[Release]]` | — | List releases for a project in project-release order. |
@@ -46,6 +47,7 @@ flowchart LR
     n5["get_release_service (backend/app/routers/projects.py)"]
     n6["list_project_releases (backend/app/routers/projects.py)"]
     n7["update_release (backend/app/routers/projects.py)"]
+    n8["metric_matches (backend/app/routers/task_domain.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -53,6 +55,7 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/release_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/mcp_agent_tools.md"
@@ -61,13 +64,14 @@ flowchart LR
     click n5 "../modules/projects.md"
     click n6 "../modules/projects.md"
     click n7 "../modules/projects.md"
+    click n8 "../modules/routers_task_domain.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [release_service](../modules/release_service.md) | 15 | — |
+| [release_service](../modules/release_service.md) | 16 | — |
 
 ### References
 
@@ -81,3 +85,4 @@ flowchart LR
 | `get_release_service` | type_reference | [projects](../modules/projects.md) | — |
 | `list_project_releases` | type_reference | [projects](../modules/projects.md) | — |
 | `update_release` | type_reference | [projects](../modules/projects.md) | — |
+| `metric_matches` | call | [routers_task_domain](../modules/routers_task_domain.md) | 1 |

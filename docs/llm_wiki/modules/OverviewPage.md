@@ -31,6 +31,7 @@ _Auto-generated from `frontend/src/pages/OverviewPage.tsx`._
 | `../utils/apiError` | `getApiErrorStatus` | — | compiler-dependent |
 | `../utils/formatDate` | `formatDate` | — | compiler-dependent |
 | `../utils/selectWorkNowTasks` | `selectWorkNowTasks` | — | compiler-dependent |
+| `../utils/workNumbers` | `formatDecimal`, `formatPercent` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
 | `i18next` | `TFunction` | Declaration | erased |
@@ -70,7 +71,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (18) |
+| Outbound | `frontend` (19) |
 
 ### External packages
 
@@ -78,16 +79,16 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [OverviewFocusPanelProps](../entities/OverviewFocusPanelProps.md) | Interface | 1025 | — | — |
-| [OverviewDeliverySnapshotProps](../entities/OverviewDeliverySnapshotProps.md) | Interface | 1112 | — | — |
-| [CapacityException](../entities/CapacityException.md) | Type alias | 55 | <pre><code>&#123;&#10;    id&#58; number&#59;&#10;    name&#58; string&#59;&#10;    position&#58; string&#59;&#10;    allocatedDays&#58; number&#59;&#10;    capacityDays&#58; number&#59;&#10;    utilizationPercent&#58; number&#59;&#10;    tone&#58; PillTone&#59;&#10;&#125;</code></pre> | — |
-| [AttentionItem](../entities/AttentionItem.md) | Type alias | 65 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    kind&#58; AttentionKind&#59;&#10;    severity&#58; AttentionSeverity&#59;&#10;    urgency&#58; number&#59;&#10;    magnitude&#58; number&#59;&#10;    tone&#58; PillTone&#59;&#10;    icon&#58; LucideIcon&#59;&#10;    title&#58; string&#59;&#10;    meta&#58; string&#59;&#10;    to&#58; string&#59;&#10;    actionLabel&#58; string&#59;&#10;&#125;</code></pre> | — |
-| [OverviewDataSource](../entities/OverviewDataSource.md) | Type alias | 79 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    label&#58; string&#59;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    hasUsableData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
-| [DirectQueryFeedback](../entities/DirectQueryFeedback.md) | Type alias | 93 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
-| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 103 | <pre><code>&#123;&#10;    returnFocusId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [OverviewFocusPanelProps](../entities/OverviewFocusPanelProps.md) | Interface | 1022 | — | — |
+| [OverviewDeliverySnapshotProps](../entities/OverviewDeliverySnapshotProps.md) | Interface | 1109 | — | — |
+| [CapacityException](../entities/CapacityException.md) | Type alias | 56 | <pre><code>&#123;&#10;    id&#58; number&#59;&#10;    name&#58; string&#59;&#10;    position&#58; string&#59;&#10;    allocatedDays&#58; number&#59;&#10;    capacityDays&#58; number&#59;&#10;    utilizationPercent&#58; number&#59;&#10;    tone&#58; PillTone&#59;&#10;&#125;</code></pre> | — |
+| [AttentionItem](../entities/AttentionItem.md) | Type alias | 66 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    kind&#58; AttentionKind&#59;&#10;    severity&#58; AttentionSeverity&#59;&#10;    urgency&#58; number&#59;&#10;    magnitude&#58; number&#59;&#10;    tone&#58; PillTone&#59;&#10;    icon&#58; LucideIcon&#59;&#10;    title&#58; string&#59;&#10;    meta&#58; string&#59;&#10;    to&#58; string&#59;&#10;    actionLabel&#58; string&#59;&#10;&#125;</code></pre> | — |
+| [OverviewDataSource](../entities/OverviewDataSource.md) | Type alias | 80 | <pre><code>&#123;&#10;    id&#58; string&#59;&#10;    label&#58; string&#59;&#10;    enabled&#58; boolean&#59;&#10;    hasData&#58; boolean&#59;&#10;    hasUsableData&#58; boolean&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    error&#58; unknown&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
+| [DirectQueryFeedback](../entities/DirectQueryFeedback.md) | Type alias | 94 | <pre><code>&#123;&#10;    data&#58; unknown&#59;&#10;    dataUpdatedAt&#58; number&#59;&#10;    error&#58; unknown&#59;&#10;    isLoading&#58; boolean&#59;&#10;    isFetching&#58; boolean&#59;&#10;    isError&#58; boolean&#59;&#10;    refetch&#58; &#40;&#41; &#61;&#62; Promise&#60;unknown&#62;&#59;&#10;&#125;</code></pre> | — |
+| [OverviewLocationState](../entities/OverviewLocationState.md) | Type alias | 104 | <pre><code>&#123;&#10;    returnFocusId&#63;&#58; string&#59;&#10;&#125;</code></pre> | — |

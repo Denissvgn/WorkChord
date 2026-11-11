@@ -41,10 +41,11 @@ flowchart LR
     n2["ProjectPortfolioSummary (frontend/src/types/project.ts)"]
     n3["ProjectSummary (frontend/src/types/project.ts)"]
     n4["Release (frontend/src/types/release.ts)"]
-    n5["WorkMetricsLine (frontend/src/components/tasks/WorkMetricsLine.tsx)"]
-    n6["frontend/src/types/iteration.ts"]
-    n7["frontend/src/types/project.ts"]
-    n8["frontend/src/types/release.ts"]
+    n5["frontend/src/components/tasks/MetricCount.test.tsx"]
+    n6["WorkMetricsLine (frontend/src/components/tasks/WorkMetricsLine.tsx)"]
+    n7["frontend/src/types/iteration.ts"]
+    n8["frontend/src/types/project.ts"]
+    n9["frontend/src/types/release.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -53,15 +54,17 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
     click n0 "../modules/workMetrics.md"
     click n1 "../modules/types_iteration.md"
     click n2 "../modules/types_project.md"
     click n3 "../modules/types_project.md"
     click n4 "../modules/types_release.md"
-    click n5 "../modules/WorkMetricsLine.md"
-    click n6 "../modules/types_iteration.md"
-    click n7 "../modules/types_project.md"
-    click n8 "../modules/types_release.md"
+    click n5 "../modules/MetricCount.test.md"
+    click n6 "../modules/WorkMetricsLine.md"
+    click n7 "../modules/types_iteration.md"
+    click n8 "../modules/types_project.md"
+    click n9 "../modules/types_release.md"
 ```
 
 ### Summary
@@ -83,6 +86,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `MetricCount.test` | import | [MetricCount.test](../modules/MetricCount.test.md) | — |
 | `WorkMetricsLine` | type_reference | [WorkMetricsLine](../modules/WorkMetricsLine.md) | — |
 | `iteration` | import | [types_iteration](../modules/types_iteration.md) | — |
 | `project` | import | [types_project](../modules/types_project.md) | — |

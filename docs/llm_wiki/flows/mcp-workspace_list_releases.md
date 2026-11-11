@@ -46,21 +46,21 @@ sequenceDiagram
     participant p11 as IdentityService.actor_context
     participant p12 as scoped_metric_tasks
     participant p13 as ReleaseService._attach_work_metrics
-    participant p14 as require_scope
-    participant p15 as aggregate_metrics
-    participant p16 as AgentService.authenticate
-    participant p17 as require_identity_writes
-    participant p18 as DeliveryDependencyService.reconcile
-    participant p19 as DiscussionService.enqueue
-    participant p20 as actor_has_scope
-    participant p21 as commit_or_flush
-    participant p22 as DeliveryDependencyService.validate_cycles
-    participant p23 as DiscussionService.recipient_authorized
-    participant p24 as TaskService.reserve_task_version
-    participant p25 as clear_execution_evidence
-    participant p26 as working_today
-    participant p27 as ReleaseService
-    participant p28 as _structured_tool_error
+    participant p14 as ReleaseService.metric_task_ids
+    participant p15 as require_scope
+    participant p16 as aggregate_metrics
+    participant p17 as AgentService.authenticate
+    participant p18 as require_identity_writes
+    participant p19 as DeliveryDependencyService.reconcile
+    participant p20 as DiscussionService.enqueue
+    participant p21 as actor_has_scope
+    participant p22 as commit_or_flush
+    participant p23 as DeliveryDependencyService.validate_cycles
+    participant p24 as DiscussionService.recipient_authorized
+    participant p25 as TaskService.reserve_task_version
+    participant p26 as clear_execution_evidence
+    participant p27 as working_today
+    participant p28 as ReleaseService
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -76,28 +76,28 @@ sequenceDiagram
     p5->>p11: IdentityService.actor_context
     p4->>p12: scoped_metric_tasks
     p4->>p13: ReleaseService._attach_work_metrics
-    p10->>p14: require_scope
-    p13->>p15: aggregate_metrics
-    p9->>p16: AgentService.authenticate
-    p11->>p17: require_identity_writes
-    p8->>p18: DeliveryDependencyService.reconcile
-    p8->>p19: DiscussionService.enqueue
-    p14->>p20: actor_has_scope
-    p16->>p21: commit_or_flush
-    p18->>p22: DeliveryDependencyService.validate_cycles
-    p19->>p23: DiscussionService.recipient_authorized
-    p18->>p24: TaskService.reserve_task_version
-    p18->>p25: clear_execution_evidence
-    p15->>p26: working_today
-    p2->>p27: ReleaseService
-    p1->>p28: _structured_tool_error
+    p13->>p14: ReleaseService.metric_task_ids
+    p10->>p15: require_scope
+    p13->>p16: aggregate_metrics
+    p9->>p17: AgentService.authenticate
+    p11->>p18: require_identity_writes
+    p8->>p19: DeliveryDependencyService.reconcile
+    p8->>p20: DiscussionService.enqueue
+    p15->>p21: actor_has_scope
+    p17->>p22: commit_or_flush
+    p19->>p23: DeliveryDependencyService.validate_cycles
+    p20->>p24: DiscussionService.recipient_authorized
+    p19->>p25: TaskService.reserve_task_version
+    p19->>p26: clear_execution_evidence
+    p16->>p27: working_today
+    p2->>p28: ReleaseService
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 540 interactions; 510 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 566 interactions; 536 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 182 (181 omitted); unresolved 1 of 262 (261 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 195 (194 omitted); unresolved 1 of 274 (273 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -111,7 +111,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 96 groups; 88 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 97 groups; 89 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -124,9 +124,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 97; effect analysis evaluated: 67, partial: 2, unavailable: 28. Counts include steps omitted from the displayed trace.
+Source steps: 98; effect analysis evaluated: 67, partial: 3, unavailable: 28. Counts include steps omitted from the displayed trace.
 
-Collector observations for 69 source steps with known totals: observed: 291, emitted: 281, omitted: 10. Unavailable totals are excluded.
+Collector observations for 70 source steps with known totals: observed: 297, emitted: 285, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

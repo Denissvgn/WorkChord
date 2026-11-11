@@ -123,6 +123,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [KanbanCard](modules/KanbanCard.md) | [types_task](modules/types_task.md) |
 | [KanbanColumn](modules/KanbanColumn.md) | [tone](modules/tone.md) |
 | [KanbanColumn](modules/KanbanColumn.md) | [types_task](modules/types_task.md) |
+| [MetricCount.test](modules/MetricCount.test.md) | [workMetrics](modules/workMetrics.md) |
+| [MetricCount](modules/MetricCount.md) | [taskService](modules/taskService.md) |
 | [SavedViewsControl](modules/SavedViewsControl.md) | [TaskFiltersBar](modules/TaskFiltersBar.md) |
 | [SavedViewsControl](modules/SavedViewsControl.md) | [TaskList](modules/TaskList.md) |
 | [SavedViewsControl](modules/SavedViewsControl.md) | [savedView](modules/savedView.md) |
@@ -161,6 +163,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | [types_iteration](modules/types_iteration.md) |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | [types_task](modules/types_task.md) |
 | [TimeEntriesPanel](modules/TimeEntriesPanel.md) | [timeEntryService](modules/timeEntryService.md) |
+| [WorkMetricsLine](modules/WorkMetricsLine.md) | [taskService](modules/taskService.md) |
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | [workMetrics](modules/workMetrics.md) |
 | [taskDraftStorage](modules/taskDraftStorage.md) | [taskEditorContract](modules/taskEditorContract.md) |
 | [taskEditorContract](modules/taskEditorContract.md) | [types_task](modules/types_task.md) |
@@ -365,36 +368,36 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [commands](modules/commands.md) | 82 | 12 |
 | [time](modules/time.md) | 77 | 0 |
 | [config](modules/config.md) | 72 | 1 |
-| [renderWithProviders](modules/renderWithProviders.md) | 70 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 71 | 2 |
 | [types_task](modules/types_task.md) | 70 | 2 |
-| [QueryState](modules/QueryState.md) | 68 | 2 |
+| [QueryState](modules/QueryState.md) | 69 | 2 |
 | [models_agent](modules/models_agent.md) | 65 | 5 |
 | [task_service](modules/task_service.md) | 61 | 28 |
 | [models_iteration](modules/models_iteration.md) | 58 | 6 |
 | [authority](modules/authority.md) | 55 | 6 |
 | [team_member](modules/team_member.md) | 53 | 6 |
 | [apiError](modules/apiError.md) | 53 | 0 |
-| [models_project](modules/models_project.md) | 44 | 9 |
+| [models_project](modules/models_project.md) | 45 | 9 |
 | [api](modules/api.md) | 37 | 2 |
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
 | [i18n](modules/i18n.md) | 36 | 1 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
 | [formatDate](modules/formatDate.md) | 32 | 1 |
+| [taskService](modules/taskService.md) | 31 | 3 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
 | [models_calendar](modules/models_calendar.md) | 29 | 2 |
+| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 29 | 9 |
 | [Input](modules/Input.md) | 29 | 0 |
-| [taskService](modules/taskService.md) | 29 | 3 |
-| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 28 | 9 |
 | [app_main](modules/app_main.md) | 27 | 47 |
 | [query_limits](modules/query_limits.md) | 26 | 0 |
 | [upgrade_service](modules/upgrade_service.md) | 25 | 13 |
 | [user_session](modules/user_session.md) | 24 | 6 |
+| [services_work_metrics](modules/services_work_metrics.md) | 23 | 8 |
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
 | [toast](modules/toast.md) | 22 | 0 |
 | [index](modules/index.md) | 22 | 0 |
 | [types_iteration](modules/types_iteration.md) | 22 | 1 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
-| [services_work_metrics](modules/services_work_metrics.md) | 21 | 8 |
 | [mutationFeedback](modules/mutationFeedback.md) | 21 | 0 |
 | [teamService](modules/teamService.md) | 21 | 3 |
 | [types_team](modules/types_team.md) | 21 | 0 |
@@ -403,9 +406,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [recovery](modules/recovery.md) | 19 | 3 |
+| [Modal](modules/Modal.md) | 19 | 1 |
 | [identity_service](modules/identity_service.md) | 18 | 10 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
-| [Modal](modules/Modal.md) | 18 | 1 |
 | [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
@@ -438,12 +441,12 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [savedView](modules/savedView.md) | 12 | 0 |
 | [system_settings_service](modules/system_settings_service.md) | 11 | 5 |
 | [url_policy](modules/url_policy.md) | 11 | 1 |
+| [test_managed_authority](modules/test_managed_authority.md) | 11 | 16 |
 | [seedDisplay](modules/seedDisplay.md) | 11 | 5 |
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [load_common](modules/load_common.md) | 11 | 1 |
 | [models_triage](modules/models_triage.md) | 10 | 7 |
 | [schemas_project](modules/schemas_project.md) | 10 | 3 |
-| [test_managed_authority](modules/test_managed_authority.md) | 10 | 16 |
 | [ConfirmDialog](modules/ConfirmDialog.md) | 10 | 2 |
 | [TaskFiltersBar](modules/TaskFiltersBar.md) | 10 | 10 |
 | [planningTaskIssues](modules/planningTaskIssues.md) | 10 | 2 |
@@ -500,7 +503,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [project_identity](modules/project_identity.md) | 6 | 0 |
 | [models_autonomy](modules/models_autonomy.md) | 6 | 2 |
 | [models_external_link](modules/models_external_link.md) | 6 | 2 |
-| [routers_task_domain](modules/routers_task_domain.md) | 6 | 21 |
+| [routers_task_domain](modules/routers_task_domain.md) | 6 | 24 |
 | [agent_skill_bundle](modules/agent_skill_bundle.md) | 6 | 0 |
 | [schemas_execution_usage](modules/schemas_execution_usage.md) | 6 | 0 |
 | [planning_inputs](modules/planning_inputs.md) | 6 | 0 |
@@ -539,6 +542,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [workspaces](modules/workspaces.md) | 5 | 0 |
 | [labelService](modules/labelService.md) | 5 | 2 |
 | [triageService](modules/triageService.md) | 5 | 3 |
+| [workMetrics](modules/workMetrics.md) | 5 | 0 |
 | [singleKeyShortcutPreference](modules/singleKeyShortcutPreference.md) | 5 | 0 |
 | [teamMemberLabels](modules/teamMemberLabels.md) | 5 | 2 |
 | [autonomy_server_acceptance](modules/autonomy_server_acceptance.md) | 4 | 3 |
@@ -576,6 +580,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskForm](modules/TaskForm.md) | 4 | 37 |
 | [TaskList](modules/TaskList.md) | 4 | 21 |
 | [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 4 | 13 |
+| [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 4 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 4 | 1 |
 | [identityService](modules/identityService.md) | 4 | 1 |
 | [planningReturn](modules/planningReturn.md) | 4 | 0 |
@@ -589,9 +594,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [types_github](modules/types_github.md) | 4 | 1 |
 | [types_release](modules/types_release.md) | 4 | 2 |
 | [types_triage](modules/types_triage.md) | 4 | 1 |
-| [workMetrics](modules/workMetrics.md) | 4 | 0 |
 | [agentAccess](modules/agentAccess.md) | 4 | 0 |
 | [modelRouting](modules/modelRouting.md) | 4 | 1 |
+| [workNumbers](modules/workNumbers.md) | 4 | 0 |
 | [acceptance_artifacts](modules/acceptance_artifacts.md) | 3 | 1 |
 | [loader](modules/loader.md) | 3 | 1 |
 | [status](modules/status.md) | 3 | 3 |
@@ -613,6 +618,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [task_detail](modules/task_detail.md) | 3 | 2 |
 | [github_status_automation_service](modules/github_status_automation_service.md) | 3 | 7 |
 | [llm_service](modules/llm_service.md) | 3 | 7 |
+| [release_service](modules/release_service.md) | 3 | 11 |
 | [template_service](modules/template_service.md) | 3 | 3 |
 | [import_parser](modules/import_parser.md) | 3 | 1 |
 | [delivery](modules/delivery.md) | 3 | 8 |
@@ -626,6 +632,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [commandMenuEvents](modules/commandMenuEvents.md) | 3 | 0 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
+| [MetricCount](modules/MetricCount.md) | 3 | 3 |
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
 | [PersonCapacity](modules/PersonCapacity.md) | 3 | 5 |
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
@@ -633,7 +640,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskReadView](modules/TaskReadView.md) | 3 | 13 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 3 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 3 | 13 |
-| [WorkMetricsLine](modules/WorkMetricsLine.md) | 3 | 1 |
 | [taskDraftStorage](modules/taskDraftStorage.md) | 3 | 1 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 11 |
@@ -688,7 +694,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [notification_service](modules/notification_service.md) | 2 | 3 |
 | [plan_checkpoints](modules/plan_checkpoints.md) | 2 | 0 |
 | [plan_share_service](modules/plan_share_service.md) | 2 | 6 |
-| [release_service](modules/release_service.md) | 2 | 11 |
 | [scheduling_rules_service](modules/scheduling_rules_service.md) | 2 | 0 |
 | [task_recovery_service](modules/task_recovery_service.md) | 2 | 5 |
 | [task_status_service](modules/task_status_service.md) | 2 | 17 |
@@ -851,11 +856,11 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [GanttPage](modules/GanttPage.md) | 1 | 23 |
 | [MyWorkPage](modules/MyWorkPage.md) | 1 | 13 |
 | [NativeConnectionPage](modules/NativeConnectionPage.md) | 1 | 4 |
-| [OverviewPage](modules/OverviewPage.md) | 1 | 18 |
+| [OverviewPage](modules/OverviewPage.md) | 1 | 19 |
 | [PlanMasterPage](modules/PlanMasterPage.md) | 1 | 14 |
 | [PlanPage](modules/PlanPage.md) | 1 | 5 |
 | [PlanSharePage](modules/PlanSharePage.md) | 1 | 7 |
-| [ProjectsPage](modules/ProjectsPage.md) | 1 | 17 |
+| [ProjectsPage](modules/ProjectsPage.md) | 1 | 18 |
 | [RoadmapPage](modules/RoadmapPage.md) | 1 | 13 |
 | [SettingsPage](modules/SettingsPage.md) | 1 | 18 |
 | [TasksPage](modules/TasksPage.md) | 1 | 29 |
@@ -953,6 +958,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_execution_working_dates](modules/test_execution_working_dates.md) | 0 | 14 |
 | [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 10 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |
+| [test_metric_matches](modules/test_metric_matches.md) | 0 | 3 |
 | [test_mobile_contract](modules/test_mobile_contract.md) | 0 | 0 |
 | [test_mutation_versions](modules/test_mutation_versions.md) | 0 | 15 |
 | [test_native_connections](modules/test_native_connections.md) | 0 | 6 |
@@ -1024,6 +1030,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) | 0 | 3 |
 | [CurrentTaskModal.test](modules/CurrentTaskModal.test.md) | 0 | 3 |
 | [KanbanBoard.test](modules/KanbanBoard.test.md) | 0 | 4 |
+| [MetricCount.test](modules/MetricCount.test.md) | 0 | 4 |
 | [PagedTaskBrowser.test](modules/PagedTaskBrowser.test.md) | 0 | 2 |
 | [PersonCapacity.test](modules/PersonCapacity.test.md) | 0 | 2 |
 | [SortableTaskItem](modules/SortableTaskItem.md) | 0 | 0 |
@@ -1084,7 +1091,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanMasterPage.test](modules/PlanMasterPage.test.md) | 0 | 10 |
 | [PlanPage.test](modules/PlanPage.test.md) | 0 | 3 |
 | [PlanSharePage.test](modules/PlanSharePage.test.md) | 0 | 2 |
-| [ProjectDetailPage](modules/ProjectDetailPage.md) | 0 | 28 |
+| [ProjectDetailPage](modules/ProjectDetailPage.md) | 0 | 30 |
 | [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | 0 | 15 |
 | [ProjectsPage.test](modules/ProjectsPage.test.md) | 0 | 3 |
 | [RoadmapPage.test](modules/RoadmapPage.test.md) | 0 | 2 |

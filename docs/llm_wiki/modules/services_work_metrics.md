@@ -50,7 +50,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (21) |
+| Inbound | `backend` (23) |
 | Outbound | `backend` (8) |
 
 ### External packages
@@ -59,7 +59,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -71,4 +71,4 @@ flowchart LR
 | `leaf_metrics` | `(tasks, *, iteration_end = None, project_target = None, timezone = 'UTC', now = None)` | — | Use a complete scoped task set; parents never contribute additional delivered work. |
 | `included_work_ids` | *(async)* `(db, iteration_ids)` | — | Select leaves with complete reachable ancestry and inherited work policy. |
 | `scoped_metric_tasks` | *(async)* `(db, *, project_id = None, iteration_id = None)` | — | — |
-| `aggregate_metrics` | *(async)* `(db, *, project_id = None, iteration_id = None, project_ids = None, group_by = None, task_ids = None, zone_map = None, now = None)` | — | Aggregate all authorized leaves in SQL, including inherited scheduling facets. |
+| `aggregate_metrics` | *(async)* `(db, *, project_id = None, iteration_id = None, project_ids = None, group_by = None, task_ids = None, zone_map = None, now = None, matching = None, limit = 200)` | — | Aggregate all authorized leaves in SQL, including inherited scheduling facets. |

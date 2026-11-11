@@ -1,6 +1,6 @@
 # OverviewDeliverySnapshotProps
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:1112`
+**Location:** `frontend/src/pages/OverviewPage.tsx:1109`
 **Kind:** Interface
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)

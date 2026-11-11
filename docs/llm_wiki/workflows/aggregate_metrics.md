@@ -5,6 +5,9 @@
 
 > Aggregate all authorized leaves in SQL, including inherited scheduling facets.
 
+With ``matching``, return the tasks behind one count instead, chosen by the
+same predicate, so a count and the list it opens always agree.
+
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->

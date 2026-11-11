@@ -223,7 +223,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| task_actions | domain_result | 180 | `domain_result(...)` |
+| task_actions | domain_result | 213 | `domain_result(...)` |
 | domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
@@ -231,7 +231,7 @@ flowchart LR
 | domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
 | domain_result | str (backend/app/routers/task_domain.py:domain_result) | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| task_actions | TaskDomainService.allowed_actions | 180 | `TaskDomainService(db).allowed_actions(task_id)` |
+| task_actions | TaskDomainService.allowed_actions | 213 | `TaskDomainService(db).allowed_actions(task_id)` |
 | TaskDomainService.allowed_actions | TaskDomainService._policy_task | 183 | `self._policy_task(task_id)` |
 | TaskDomainService._policy_task | self.tasks.get_by_id (backend/app/services/task…omainService._policy_task) | 178 | `self.tasks.get_by_id(task_id)` |
 

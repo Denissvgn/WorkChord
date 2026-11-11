@@ -1,6 +1,6 @@
 # OverviewDataSource
 
-**Location:** `frontend/src/pages/OverviewPage.tsx:79`
+**Location:** `frontend/src/pages/OverviewPage.tsx:80`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [OverviewPage](../modules/OverviewPage.md)
