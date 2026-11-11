@@ -51,6 +51,7 @@ flowchart LR
     n4 --> n0
     n4 --> n2
     n4 --> n3
+    n4 --> n5
     n4 --> n6
     click n0 "../modules/ProjectTaskTree.md"
     click n1 "../modules/TaskEditorDrawer.md"

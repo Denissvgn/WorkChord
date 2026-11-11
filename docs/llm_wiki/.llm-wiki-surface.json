@@ -80819,7 +80819,6 @@
       "outgoing_internal_links": [
         "modules/AnalyticsPage.md",
         "modules/OverviewPage.md",
-        "modules/ProjectDetailPage.md",
         "modules/ProjectReleaseDetailPage.md",
         "modules/workMetrics.md",
         "modules/WorkMetricsLine.md"
@@ -96137,5 +96136,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:3eb72f0cc4d12a30f5c94a67e86f648244b94e5c1d84c64b70a2f9da7f09d2f4"
+  "source_hash": "sha256:06492acba245f08414c24b84debf2cd0508648d37ded14f2f98534293302e90f"
 }

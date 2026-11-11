@@ -246,6 +246,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ProjectDetailPage](modules/ProjectDetailPage.md) | [planningInputService](modules/planningInputService.md) |
 | [ProjectDetailPage](modules/ProjectDetailPage.md) | [types_project](modules/types_project.md) |
 | [ProjectDetailPage](modules/ProjectDetailPage.md) | [types_release](modules/types_release.md) |
+| [ProjectDetailPage](modules/ProjectDetailPage.md) | [types_task](modules/types_task.md) |
 | [ProjectReleaseDetailPage](modules/ProjectReleaseDetailPage.md) | [types_release](modules/types_release.md) |
 | [ProjectsPage](modules/ProjectsPage.md) | [types_project](modules/types_project.md) |
 | [ProjectsPage](modules/ProjectsPage.md) | [savedView](modules/savedView.md) |
@@ -341,7 +342,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [Button](modules/Button.md) | 80 | 0 |
 | [time](modules/time.md) | 77 | 0 |
 | [config](modules/config.md) | 71 | 1 |
-| [types_task](modules/types_task.md) | 69 | 2 |
+| [types_task](modules/types_task.md) | 70 | 2 |
 | [QueryState](modules/QueryState.md) | 68 | 2 |
 | [renderWithProviders](modules/renderWithProviders.md) | 67 | 2 |
 | [models_agent](modules/models_agent.md) | 65 | 5 |
@@ -547,7 +548,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskForm](modules/TaskForm.md) | 4 | 36 |
 | [TaskList](modules/TaskList.md) | 4 | 21 |
 | [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 4 | 13 |
-| [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 1 |
 | [agentTeamSetup_masters](modules/agentTeamSetup_masters.md) | 4 | 1 |
 | [planningReturn](modules/planningReturn.md) | 4 | 0 |
 | [workQueryFreshness](modules/workQueryFreshness.md) | 4 | 0 |
@@ -605,6 +605,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TaskReadView](modules/TaskReadView.md) | 3 | 13 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 3 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 3 | 12 |
+| [WorkMetricsLine](modules/WorkMetricsLine.md) | 3 | 1 |
 | [taskDraftStorage](modules/taskDraftStorage.md) | 3 | 1 |
 | [MasterProgress](modules/MasterProgress.md) | 3 | 0 |
 | [IdentityProvider](modules/IdentityProvider.md) | 3 | 9 |
