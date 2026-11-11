@@ -237,7 +237,7 @@ export const ImportTeamModal = ({
 
                 <div>
                     <label className="sr-only" htmlFor={fileInputId}>
-                        {t('teamImport.fileInputLabel', 'Team import file')}
+                        {t('teamImport.fileInputLabel')}
                     </label>
                     <input
                         ref={fileInputRef}
@@ -261,14 +261,14 @@ export const ImportTeamModal = ({
                     </Button>
                     {isReadingFile && (
                         <p className="mt-2 text-sm text-content-secondary" role="status">
-                            {t('teamImport.readingFile', 'Reading file…')}
+                            {t('teamImport.readingFile')}
                         </p>
                     )}
                 </div>
 
                 <div>
                     <label className="mb-1 block text-sm font-medium text-content-primary" htmlFor={textInputId}>
-                        {t('teamImport.textInputLabel', 'Team members to import')}
+                        {t('teamImport.textInputLabel')}
                     </label>
                     <textarea
                         id={textInputId}

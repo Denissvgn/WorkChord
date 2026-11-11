@@ -925,7 +925,7 @@ const ConvertTriageSplitView = ({
                                                     onClick={() => setBrief(previous => ({ ...previous, acceptance_criteria: [...previous.acceptance_criteria, ...draftPreview.acceptance_criteria.map(text => newCriterion(text))] }))}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
-                                                    {t('surfaces.triagePage.appendToDescription')}
+                                                    <Plus aria-hidden="true" className="mr-0.5 inline h-3 w-3" />{t('surfaces.triagePage.appendToDescription')}
                                                 </button>
                                             </div>
                                             <ul className="list-disc pl-4 text-xs text-action-muted-foreground space-y-0.5">
@@ -944,7 +944,7 @@ const ConvertTriageSplitView = ({
                                                     onClick={() => setDescription(prev => prev + (prev ? '\n\n' : '') + `${t('surfaces.triagePage.checklist')}:\n${draftPreview.suggested_checklist.map(item => `- ${item}`).join('\n')}`)}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
-                                                    {t('surfaces.triagePage.appendToDescription')}
+                                                    <Plus aria-hidden="true" className="mr-0.5 inline h-3 w-3" />{t('surfaces.triagePage.appendToDescription')}
                                                 </button>
                                             </div>
                                             <ul className="list-disc pl-4 text-xs text-action-muted-foreground space-y-0.5">
@@ -963,7 +963,7 @@ const ConvertTriageSplitView = ({
                                                     onClick={() => setDescription(prev => prev + (prev ? '\n\n' : '') + `${t('surfaces.triagePage.risks')}:\n${draftPreview.risks.map(item => `- ${item}`).join('\n')}`)}
                                                     className="text-action hover:text-action font-semibold underline shrink-0 ml-2"
                                                 >
-                                                    {t('surfaces.triagePage.appendToDescription')}
+                                                    <Plus aria-hidden="true" className="mr-0.5 inline h-3 w-3" />{t('surfaces.triagePage.appendToDescription')}
                                                 </button>
                                             </div>
                                             <ul className="list-disc pl-4 text-xs text-action-muted-foreground space-y-0.5">

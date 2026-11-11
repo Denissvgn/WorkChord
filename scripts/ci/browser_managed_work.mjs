@@ -218,7 +218,7 @@ try {
   assert.equal(verdict.status(), 200, await verdict.text());
   assert.equal((await verdict.json()).is_accepted, true);
   await reviewerPage.getByRole('dialog').getByText('Accepted', { exact: true }).waitFor();
-  await reviewerPage.getByText('Loading data...', { exact: true }).waitFor({ state: 'hidden' });
+  await reviewerPage.getByText('Loading data…', { exact: true }).waitFor({ state: 'hidden' });
   await reviewerPage.screenshot({ path: join(artifacts, 'canonical-review-desktop.png'), fullPage: true });
   const followed = reviewerPage.waitForResponse(response => response.url().endsWith(`/api/tasks/${capturedTask.id}/subscription`) && response.request().method() === 'PUT');
   await reviewerPage.getByRole('checkbox', { name: 'Follow this task', exact: true }).click();

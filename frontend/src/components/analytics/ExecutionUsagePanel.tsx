@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { executionUsageService } from '../../services/executionUsageService';
 import { QueryErrorState } from '../feedback/QueryState';
 import { Button } from '../common/Button';
+import { formatDateTime } from '../../utils/formatDate';
 
 export const ExecutionUsagePanel = ({ scope }: { scope: { project_id?: number; iteration_id?: number; lookback_days: number } }) => {
     const { t, i18n } = useTranslation();
@@ -22,7 +23,7 @@ export const ExecutionUsagePanel = ({ scope }: { scope: { project_id?: number; i
         {query.isLoading && <p role="status">{t('common.loading')}</p>}
         {query.isError && <QueryErrorState error={query.error} onRetry={() => { void query.refetch(); }} />}
         {data && <>
-            <p className="text-sm text-content-secondary">{t('executionUsage.asOf', { time: new Date(data.window_end).toLocaleString(i18n.language) })}</p>
+            <p className="text-sm text-content-secondary">{t('executionUsage.asOf', { time: formatDateTime(data.window_end, i18n.language) })}</p>
             <p className="text-sm">{t('executionUsage.coverage', { reports: data.reported_runs, attempts: data.expected_runs,
                 missing: data.unreported_runs, partial: data.partial_reports, unavailable: data.unavailable_reports })}</p>
             {data.measured_report_count === 0 && <p className="text-sm text-content-secondary">{t('executionUsage.noMeasurements')}</p>}

@@ -208,7 +208,7 @@ describe('RoadmapPage', () => {
         expect(await screen.findByRole('button', { name: /^Launch,/ })).toBeVisible();
         await user.click(screen.getByRole('button', { name: 'Load more' }));
         expect(await screen.findByText(content => (
-            content.startsWith('1 milestone markers and all project date ranges remain visible.')
+            content.startsWith('1 milestone marker and all project date ranges remain visible.')
         ))).toBeVisible();
 
         await user.click(screen.getByRole('button', { name: 'Retry' }));
@@ -231,7 +231,7 @@ describe('RoadmapPage', () => {
 
         await user.click(await screen.findByRole('button', { name: 'Load more' }));
         expect(await screen.findByText(content => (
-            content.startsWith('1 milestone markers and all project date ranges remain visible.')
+            content.startsWith('1 milestone marker and all project date ranges remain visible.')
         ))).toBeVisible();
         await user.click(screen.getByRole('button', { name: 'Filters' }));
         const drawer = screen.getByRole('dialog', { name: 'Filters' });

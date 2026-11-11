@@ -48,7 +48,7 @@ import {
     type TaskEditorValues,
 } from './taskEditorContract';
 import type { TaskUpdate } from '../../types/task';
-import { formatDate } from '../../utils/formatDate';
+import { formatDate, formatDateTime } from '../../utils/formatDate';
 import { useIdentity } from '../../features/identity/identityContext';
 import { readTaskDraft, writeTaskDraft, removeTaskDraft, readPendingTaskWrite } from './taskDraftStorage';
 import { useActiveMount } from './useDraftDismissal';
@@ -91,7 +91,7 @@ export const TaskForm = ({
     confirmUnsavedOnCancel = true,
     initialTitle,
 }: TaskFormProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const formId = useId();
     const identity = useIdentity();
     const isActive = useActiveMount();
@@ -801,9 +801,9 @@ export const TaskForm = ({
             {currentTask && <details><summary className="cursor-pointer text-sm font-medium">{t('teamwork.executionDates')}</summary><dl className="grid grid-cols-1 gap-2 rounded-md border border-border p-3 text-sm sm:grid-cols-2">
                 <div><dt className="text-content-secondary">{t('workMetrics.baseline')}</dt><dd>{currentTask.baseline_start_date ?? '—'} → {currentTask.baseline_end_date ?? '—'}</dd></div>
                 <div><dt className="text-content-secondary">{t('workMetrics.forecast')}</dt><dd>{currentTask.start_date ?? '—'} → {currentTask.end_date ?? '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualStart')}</dt><dd>{currentTask.started_at ? new Date(currentTask.started_at).toLocaleString() : '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualResolve')}</dt><dd>{currentTask.resolved_at ? new Date(currentTask.resolved_at).toLocaleString() : '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{currentTask.accepted_at ? new Date(currentTask.accepted_at).toLocaleString() : '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualStart')}</dt><dd>{formatDateTime(currentTask.started_at, i18n.language)}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualResolve')}</dt><dd>{formatDateTime(currentTask.resolved_at, i18n.language)}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{formatDateTime(currentTask.accepted_at, i18n.language)}</dd></div>
             </dl></details>}
 
             {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={isSubmitting || workDirty || discussionDirty || timeDirty}

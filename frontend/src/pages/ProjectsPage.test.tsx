@@ -175,7 +175,7 @@ describe('ProjectsPage', () => {
             maximumFractionDigits: 1,
         }).format(2.5))).toBeVisible();
         expect(projectServiceMock.getPortfolioSummaries).toHaveBeenCalledTimes(1);
-        expect(screen.queryByText('Loading project summary...')).not.toBeInTheDocument();
+        expect(screen.queryByText('Loading project summary…')).not.toBeInTheDocument();
     });
 
     it('keeps the project table usable when portfolio signals are unavailable', async () => {

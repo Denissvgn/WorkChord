@@ -10,6 +10,7 @@ import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useActiveMount } from './useDraftDismissal';
+import { formatDateTime } from '../../utils/formatDate';
 
 type EditingComment = Pick<TaskComment, 'id' | 'version'>;
 const readDiscussionDraft = (key: string | null): { body: string; mentions: number[]; editing?: EditingComment; uncertain?: boolean; writeId?: string } | null => {
@@ -27,7 +28,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
     taskId: number; draftKey: string | null; disabled: boolean;
     onDirty: (dirty: boolean) => void; onPending: (pending: boolean) => void;
 }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const id = useId();
     const identity = useIdentity()?.identity;
     const human = identity?.principal?.kind === 'human';
@@ -105,7 +106,7 @@ export const TaskDiscussion = ({ taskId, draftKey, disabled, onDirty, onPending 
             {comments.isError && <QueryErrorState error={comments.error} fallback={t('teamwork.loadFailed')} onRetry={() => void comments.refetch()} />}
             {comments.data && comments.data.pages.every(page => page.items.length === 0) && <p className="text-sm text-content-secondary">{t('teamwork.noComments')}</p>}
             <ol className="space-y-4">{comments.data?.pages.flatMap(page => page.items).map(comment => <li key={comment.id} className="space-y-1">
-                <p className="text-sm text-content-secondary"><strong className="text-content-primary">{comment.author_name}</strong>{comment.author_local && ` · ${t('identity.localNotVerified')}`} · {new Date(comment.updated_at).toLocaleString()}</p>
+                <p className="text-sm text-content-secondary"><strong className="text-content-primary">{comment.author_name}</strong>{comment.author_local && ` · ${t('identity.localNotVerified')}`} · {formatDateTime(comment.updated_at, i18n.language)}</p>
                 <p className="whitespace-pre-wrap break-words text-sm text-content-primary">{comment.deleted ? t('teamwork.commentRemoved') : comment.body}</p>
                 <div className="flex flex-wrap gap-2">
                     {!comment.deleted && ownComment(comment) && <>

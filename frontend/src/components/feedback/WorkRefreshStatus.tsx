@@ -19,6 +19,6 @@ export const WorkRefreshStatus = () => {
     const oldest = Math.min(...active.map(query => query.state.dataUpdatedAt));
     const stale = active.some(query => query.state.error !== null);
     return <div className="px-4 py-1 text-xs text-content-secondary" role={stale ? 'status' : undefined}>
-        {t(stale ? 'teamwork.staleWork' : 'teamwork.refreshAge', { seconds: Math.max(0, Math.floor((now - oldest) / 1000)) })}
+        {t(stale ? 'teamwork.staleWork' : 'teamwork.refreshAge', { count: Math.max(0, Math.floor((now - oldest) / 1000)) })}
     </div>;
 };

@@ -6,7 +6,7 @@ import { IterationImportDialog } from '../components/iteration/IterationImportDi
 import type { Iteration } from '../types/iteration';
 import { PageHeader, PageLayout } from '../components/ui';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
-import { Upload } from 'lucide-react';
+import { Plus, Upload } from 'lucide-react';
 
 const IterationsPage = () => {
     const [isCreating, setIsCreating] = useState(false);
@@ -32,7 +32,7 @@ const IterationsPage = () => {
                         <Upload aria-hidden="true" className="h-4 w-4" /> {t('actions.import')}
                     </button>
                     <button className="btn primary" onClick={() => setIsCreating(true)} disabled={isCreating || !!editingIteration}>
-                        + {t('iterations.newIteration')}
+                        <Plus aria-hidden="true" className="h-4 w-4" /> {t('iterations.newIteration')}
                     </button>
                     </>
                 )}

@@ -23,7 +23,7 @@ describe('Reported execution usage', () => {
         expect(screen.getByText('EUR')).toBeVisible();
         expect(screen.getByText('USD')).toBeVisible();
         expect(screen.getByText(/Explicitly reported human effort: Unknown minutes/)).toBeVisible();
-        expect(screen.getByText('1 simulated reports')).toBeVisible();
+        expect(screen.getByText('1 simulated report')).toBeVisible();
         expect(screen.getByText('Reports: 1 of 2 observed attempts. Unreported: 1; partial: 1; unavailable: 0.')).toBeVisible();
     });
 

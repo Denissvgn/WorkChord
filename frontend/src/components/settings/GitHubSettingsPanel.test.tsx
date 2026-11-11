@@ -100,7 +100,7 @@ describe('GitHubSettingsPanel', () => {
         expect(name).toBeDisabled();
         expect(screen.getByRole('button', { name: 'New Rule' })).toBeDisabled();
         expect(within(rowFor('Second rule')).getAllByRole('button')[0]).toBeDisabled();
-        expect(screen.getByText('Saving...')).toBeInTheDocument();
+        expect(screen.getByText('Saving…')).toBeInTheDocument();
 
         fireEvent.change(name, { target: { value: 'Late edit' } });
         expect(name).toHaveValue('Frozen draft');
