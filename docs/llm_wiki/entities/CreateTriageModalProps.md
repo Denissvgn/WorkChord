@@ -1,6 +1,6 @@
 # CreateTriageModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:232`
+**Location:** `frontend/src/pages/TriagePage.tsx:233`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
@@ -19,6 +19,7 @@ _Auto-generated from `CreateTriageModalProps` in `frontend/src/pages/TriagePage.
 | `error` | `string \| null` | No | — | — |
 | `onSubmit` | `(payload: TriageItemCreate) => void` | Yes | — | — |
 | `onClose` | `() => void` | Yes | — | — |
+| `initialTitle` | `string` | No | — | — |
 
 ## Methods
 
@@ -33,4 +34,4 @@ _Auto-generated from `CreateTriageModalProps` in `frontend/src/pages/TriagePage.
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TriagePage](../modules/TriagePage.md) | 0 | `error`, `isSubmitting`, `iterations`, `onClose`, `onSubmit`, `projects` |
+| [TriagePage](../modules/TriagePage.md) | 0 | `error`, `initialTitle`, `isSubmitting`, `iterations`, `onClose`, `onSubmit`, `projects` |

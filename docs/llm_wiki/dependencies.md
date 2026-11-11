@@ -131,6 +131,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [KanbanColumn](modules/KanbanColumn.md) | [types_task](modules/types_task.md) |
 | [MetricCount.test](modules/MetricCount.test.md) | [workMetrics](modules/workMetrics.md) |
 | [MetricCount](modules/MetricCount.md) | [taskService](modules/taskService.md) |
+| [QuickCapture](modules/QuickCapture.md) | [mutationFeedback](modules/mutationFeedback.md) |
+| [QuickCapture](modules/QuickCapture.md) | [types_task](modules/types_task.md) |
+| [QuickCapture](modules/QuickCapture.md) | [types_triage](modules/types_triage.md) |
 | [SavedViewsControl](modules/SavedViewsControl.md) | [TaskFiltersBar](modules/TaskFiltersBar.md) |
 | [SavedViewsControl](modules/SavedViewsControl.md) | [TaskList](modules/TaskList.md) |
 | [SavedViewsControl](modules/SavedViewsControl.md) | [savedView](modules/savedView.md) |
@@ -372,26 +375,26 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 |--------|--------|---------|
 | [models_task](modules/models_task.md) | 94 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
-| [Button](modules/Button.md) | 84 | 0 |
+| [Button](modules/Button.md) | 85 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
 | [time](modules/time.md) | 77 | 0 |
-| [renderWithProviders](modules/renderWithProviders.md) | 75 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 76 | 2 |
+| [types_task](modules/types_task.md) | 73 | 2 |
 | [config](modules/config.md) | 72 | 1 |
-| [types_task](modules/types_task.md) | 72 | 2 |
 | [QueryState](modules/QueryState.md) | 69 | 2 |
 | [models_agent](modules/models_agent.md) | 65 | 5 |
 | [task_service](modules/task_service.md) | 61 | 28 |
 | [models_iteration](modules/models_iteration.md) | 58 | 6 |
 | [authority](modules/authority.md) | 55 | 6 |
+| [apiError](modules/apiError.md) | 54 | 0 |
 | [team_member](modules/team_member.md) | 53 | 6 |
-| [apiError](modules/apiError.md) | 53 | 0 |
 | [models_project](modules/models_project.md) | 45 | 9 |
 | [api](modules/api.md) | 37 | 2 |
 | [schemas_task](modules/schemas_task.md) | 36 | 5 |
 | [i18n](modules/i18n.md) | 36 | 1 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
 | [formatDate](modules/formatDate.md) | 34 | 1 |
-| [taskService](modules/taskService.md) | 31 | 3 |
+| [taskService](modules/taskService.md) | 32 | 3 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
 | [models_calendar](modules/models_calendar.md) | 29 | 2 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 29 | 9 |
@@ -405,20 +408,20 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [toast](modules/toast.md) | 23 | 0 |
 | [index](modules/index.md) | 23 | 0 |
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
+| [mutationFeedback](modules/mutationFeedback.md) | 22 | 0 |
 | [types_team](modules/types_team.md) | 22 | 0 |
 | [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
-| [mutationFeedback](modules/mutationFeedback.md) | 21 | 0 |
 | [teamService](modules/teamService.md) | 21 | 3 |
 | [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
 | [types_agent](modules/types_agent.md) | 20 | 1 |
 | [recovery](modules/recovery.md) | 19 | 3 |
-| [Modal](modules/Modal.md) | 19 | 1 |
+| [iterationService](modules/iterationService.md) | 19 | 3 |
 | [identity_service](modules/identity_service.md) | 18 | 10 |
 | [task_brief_service](modules/task_brief_service.md) | 18 | 10 |
+| [Modal](modules/Modal.md) | 18 | 1 |
 | [tone](modules/tone.md) | 18 | 1 |
-| [iterationService](modules/iterationService.md) | 18 | 3 |
 | [iteration_service](modules/iteration_service.md) | 17 | 19 |
 | [task_domain_service](modules/task_domain_service.md) | 17 | 19 |
 | [team_service](modules/team_service.md) | 17 | 13 |
@@ -505,6 +508,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [task_detail_service](modules/task_detail_service.md) | 7 | 15 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) | 7 | 2 |
+| [SlideOverDrawer](modules/SlideOverDrawer.md) | 7 | 1 |
 | [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 7 | 4 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [types_template](modules/types_template.md) | 7 | 0 |
@@ -521,9 +525,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [agent_planning_service](modules/agent_planning_service.md) | 6 | 19 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
-| [SlideOverDrawer](modules/SlideOverDrawer.md) | 6 | 1 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
 | [savedViewService](modules/savedViewService.md) | 6 | 2 |
+| [triageService](modules/triageService.md) | 6 | 3 |
 | [systemSettings](modules/systemSettings.md) | 6 | 0 |
 | [result](modules/result.md) | 6 | 1 |
 | [charter](modules/charter.md) | 5 | 2 |
@@ -552,7 +556,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [dateLocale](modules/dateLocale.md) | 5 | 1 |
 | [workspaces](modules/workspaces.md) | 5 | 0 |
 | [labelService](modules/labelService.md) | 5 | 2 |
-| [triageService](modules/triageService.md) | 5 | 3 |
+| [types_triage](modules/types_triage.md) | 5 | 1 |
 | [workMetrics](modules/workMetrics.md) | 5 | 0 |
 | [singleKeyShortcutPreference](modules/singleKeyShortcutPreference.md) | 5 | 0 |
 | [teamMemberLabels](modules/teamMemberLabels.md) | 5 | 2 |
@@ -603,7 +607,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [timeEntryService](modules/timeEntryService.md) | 4 | 1 |
 | [types_github](modules/types_github.md) | 4 | 1 |
 | [types_release](modules/types_release.md) | 4 | 2 |
-| [types_triage](modules/types_triage.md) | 4 | 1 |
 | [agentAccess](modules/agentAccess.md) | 4 | 0 |
 | [modelRouting](modules/modelRouting.md) | 4 | 1 |
 | [acceptance_artifacts](modules/acceptance_artifacts.md) | 3 | 1 |
@@ -644,6 +647,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
 | [PagedTaskBrowser](modules/PagedTaskBrowser.md) | 3 | 5 |
 | [PersonCapacity](modules/PersonCapacity.md) | 3 | 5 |
+| [QuickCapture](modules/QuickCapture.md) | 3 | 8 |
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
 | [TaskDiscussion](modules/TaskDiscussion.md) | 3 | 8 |
 | [TaskReadView](modules/TaskReadView.md) | 3 | 13 |
@@ -876,7 +880,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [ProjectsPage](modules/ProjectsPage.md) | 1 | 18 |
 | [RoadmapPage](modules/RoadmapPage.md) | 1 | 13 |
 | [SettingsPage](modules/SettingsPage.md) | 1 | 18 |
-| [TasksPage](modules/TasksPage.md) | 1 | 29 |
+| [TasksPage](modules/TasksPage.md) | 1 | 30 |
 | [deliveryMetricsService](modules/deliveryMetricsService.md) | 1 | 2 |
 | [emailSettingsService](modules/emailSettingsService.md) | 1 | 2 |
 | [executionUsageService](modules/executionUsageService.md) | 1 | 2 |
@@ -1049,6 +1053,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [MetricCount.test](modules/MetricCount.test.md) | 0 | 4 |
 | [PagedTaskBrowser.test](modules/PagedTaskBrowser.test.md) | 0 | 2 |
 | [PersonCapacity.test](modules/PersonCapacity.test.md) | 0 | 2 |
+| [QuickCapture.test](modules/QuickCapture.test.md) | 0 | 2 |
 | [SortableTaskItem](modules/SortableTaskItem.md) | 0 | 0 |
 | [TaskAgentReadinessBadge.test](modules/TaskAgentReadinessBadge.test.md) | 0 | 2 |
 | [TaskBriefEditor.test](modules/TaskBriefEditor.test.md) | 0 | 3 |
@@ -1116,7 +1121,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SettingsPage.test](modules/SettingsPage.test.md) | 0 | 5 |
 | [TasksPage.test](modules/TasksPage.test.md) | 0 | 3 |
 | [TeamPage](modules/TeamPage.md) | 0 | 12 |
-| [TriagePage](modules/TriagePage.md) | 0 | 34 |
+| [TriagePage](modules/TriagePage.md) | 0 | 35 |
 | [agentService.test](modules/agentService.test.md) | 0 | 3 |
 | [planningInputService.test](modules/planningInputService.test.md) | 0 | 2 |
 | [snapshotVersions.test](modules/snapshotVersions.test.md) | 0 | 2 |

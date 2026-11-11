@@ -20,6 +20,7 @@ _Auto-generated from `frontend/src/pages/TasksPage.tsx`._
 | `../components/tasks/GuardedTaskModal` | `GuardedTaskModal` | — | compiler-dependent |
 | `../components/tasks/ImportTasksModal` | `ImportTasksModal` | — | compiler-dependent |
 | `../components/tasks/KanbanBoard/KanbanBoard` | `KanbanBoard` | — | compiler-dependent |
+| `../components/tasks/QuickCapture` | `QuickCapture` | — | compiler-dependent |
 | `../components/tasks/SavedViewsControl` | `SavedViewsControl` | — | compiler-dependent |
 | `../components/tasks/TaskEditorDrawer` | `TaskEditorDrawer` | — | compiler-dependent |
 | `../components/tasks/TaskFiltersBar` | `TaskFilters` | Declaration | erased |
@@ -78,7 +79,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (29) |
+| Outbound | `frontend` (30) |
 
 ### External packages
 
@@ -86,10 +87,10 @@ flowchart LR
 |---|---:|---:|
 | typescript | 7 | 0 |
 
-> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 31 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ViewMode](../entities/ViewMode.md) | Type alias | 68 | `'list' \| 'board'` | — |
+| [ViewMode](../entities/ViewMode.md) | Type alias | 69 | `'list' \| 'board'` | — |

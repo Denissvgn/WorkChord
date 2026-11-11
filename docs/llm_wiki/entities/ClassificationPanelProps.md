@@ -1,6 +1,6 @@
 # ClassificationPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1616`
+**Location:** `frontend/src/pages/TriagePage.tsx:1619`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

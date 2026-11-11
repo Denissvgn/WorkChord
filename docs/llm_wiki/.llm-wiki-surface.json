@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1551,
+      "entities": 1552,
       "flows": 556,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 802,
+      "modules": 804,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3121
+    "total": 3124
   },
   "dependency_pages": {
     "count": 2,
@@ -44279,6 +44279,7 @@
         "entities/QueryPolicy.md",
         "entities/QueryStaleStateProps.md",
         "entities/Queue.md",
+        "entities/QuickCaptureTarget.md",
         "entities/RankableAttention.md",
         "entities/RateLimitWindow.md",
         "entities/ReadyTopology.md",
@@ -46057,6 +46058,8 @@
         "modules/qualify.md",
         "modules/query_limits.md",
         "modules/QueryState.md",
+        "modules/QuickCapture.md",
+        "modules/QuickCapture.test.md",
         "modules/recovery.md",
         "modules/release_service.md",
         "modules/ReleaseForm.md",
@@ -54897,12 +54900,12 @@
         "modules/KanbanBoard.md",
         "modules/mutationFeedback.md",
         "modules/ProjectForm.md",
+        "modules/QuickCapture.md",
         "modules/ReleaseForm.md",
         "modules/StatusChangeControl.md",
         "modules/TaskBulkOperationsPanel.md",
         "modules/TaskForm.md",
-        "modules/TaskWorkPanel.md",
-        "modules/TeamForm.md"
+        "modules/TaskWorkPanel.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/features/mutationFeedback.ts",
@@ -56858,6 +56861,18 @@
       "role": "semantic",
       "source_path": "frontend/src/pages/MyWorkPage.tsx",
       "title": "Queue"
+    },
+    {
+      "canonical_path": "entities/QuickCaptureTarget.md",
+      "id": "QuickCaptureTarget",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/QuickCaptureTarget",
+      "outgoing_internal_links": [
+        "modules/QuickCapture.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/QuickCapture.tsx",
+      "title": "QuickCaptureTarget"
     },
     {
       "canonical_path": "entities/RankableAttention.md",
@@ -67201,6 +67216,7 @@
       "kind": "entities",
       "mcp_uri": "llm-wiki://entities/types_triage_TriageItem",
       "outgoing_internal_links": [
+        "modules/QuickCapture.md",
         "modules/TriagePage.md",
         "modules/triageService.md",
         "modules/types_task.md",
@@ -74817,6 +74833,44 @@
       "title": "QueryState Module"
     },
     {
+      "canonical_path": "modules/QuickCapture.md",
+      "id": "QuickCapture",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/QuickCapture",
+      "outgoing_internal_links": [
+        "entities/QuickCaptureTarget.md",
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/iterationService.md",
+        "modules/mutationFeedback.md",
+        "modules/QuickCapture.md",
+        "modules/QuickCapture.test.md",
+        "modules/taskService.md",
+        "modules/TasksPage.md",
+        "modules/TriagePage.md",
+        "modules/triageService.md",
+        "modules/types_task.md",
+        "modules/types_triage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/QuickCapture.tsx",
+      "title": "QuickCapture Module"
+    },
+    {
+      "canonical_path": "modules/QuickCapture.test.md",
+      "id": "QuickCapture.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/QuickCapture.test",
+      "outgoing_internal_links": [
+        "modules/QuickCapture.md",
+        "modules/QuickCapture.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/QuickCapture.test.tsx",
+      "title": "QuickCapture.test Module"
+    },
+    {
       "canonical_path": "modules/recovery.md",
       "id": "recovery",
       "kind": "modules",
@@ -77133,6 +77187,7 @@
       "outgoing_internal_links": [
         "modules/AgentPipelinePage.md",
         "modules/dialogLayer.md",
+        "modules/GuardedTaskModal.md",
         "modules/PlanningWorkflowGuide.md",
         "modules/SlideOverDrawer.md",
         "modules/TaskEditModal.md",
@@ -80767,6 +80822,7 @@
         "modules/api.md",
         "modules/AppTopNav.md",
         "modules/AssigneeRecommendationsPanel.md",
+        "modules/QuickCapture.md",
         "modules/TaskForm.md",
         "modules/TriagePage.md",
         "modules/triageService.md",
@@ -81188,6 +81244,7 @@
         "entities/types_triage_TriageSnoozeRequest.md",
         "entities/types_triage_TriageTaskDraftRequest.md",
         "entities/types_triage_TriageTaskDraftResponse.md",
+        "modules/QuickCapture.md",
         "modules/TaskForm.md",
         "modules/TriagePage.md",
         "modules/triageService.md",
@@ -96033,6 +96090,8 @@
         "modules/qualify.md",
         "modules/query_limits.md",
         "modules/QueryState.md",
+        "modules/QuickCapture.md",
+        "modules/QuickCapture.test.md",
         "modules/recovery.md",
         "modules/release_service.md",
         "modules/ReleaseForm.md",
@@ -96846,6 +96905,8 @@
         "modules/qualify.md",
         "modules/query_limits.md",
         "modules/QueryState.md",
+        "modules/QuickCapture.md",
+        "modules/QuickCapture.test.md",
         "modules/recovery.md",
         "modules/release_service.md",
         "modules/ReleaseForm.md",
@@ -97258,5 +97319,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:bcc70e83ecbd19b2a3eb54b86acee02c6e50e3da175619cf4308f5af520a2de7"
+  "source_hash": "sha256:a451a22cef3fde627b07dbf49e786798251105d99e71bf6986770ae8eaf31cf9"
 }

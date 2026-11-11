@@ -1,6 +1,6 @@
 # TaskReferencePage
 
-**Location:** `frontend/src/types/task.ts:470`
+**Location:** `frontend/src/types/task.ts:471`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

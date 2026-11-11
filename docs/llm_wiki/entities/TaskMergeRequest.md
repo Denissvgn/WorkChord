@@ -1,6 +1,6 @@
 # TaskMergeRequest
 
-**Location:** `frontend/src/types/task.ts:304`
+**Location:** `frontend/src/types/task.ts:305`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_task](../modules/types_task.md)

@@ -1,6 +1,6 @@
 # TaskEditorDefaultsContext
 
-**Location:** `frontend/src/components/tasks/taskEditorContract.ts:37`
+**Location:** `frontend/src/components/tasks/taskEditorContract.ts:38`
 **Kind:** Interface
 **Bases:** —
 **Module:** [taskEditorContract](../modules/taskEditorContract.md)

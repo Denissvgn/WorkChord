@@ -1,6 +1,6 @@
 # DuplicateActionDefaults
 
-**Location:** `frontend/src/pages/TriagePage.tsx:412`
+**Location:** `frontend/src/pages/TriagePage.tsx:415`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

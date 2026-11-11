@@ -17,6 +17,7 @@ _Auto-generated from `frontend/src/pages/TriagePage.tsx`._
 | `../components/feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `../components/labels/LabelSelector` | `LabelSelector` | — | compiler-dependent |
 | `../components/requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
+| `../components/tasks/QuickCapture` | `QuickCapture` | — | compiler-dependent |
 | `../components/tasks/TaskBriefEditor` | `TaskBriefEditor` | — | compiler-dependent |
 | `../components/tasks/TaskDependencySelector` | `TaskDependencySelector` | — | compiler-dependent |
 | `../components/tasks/taskEditorContract` | `emptyTaskBrief`, `newCriterion` | — | compiler-dependent |
@@ -80,7 +81,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Outbound | `frontend` (34) |
+| Outbound | `frontend` (35) |
 
 ### External packages
 
@@ -88,23 +89,23 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 35 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListOption](../entities/TaskListOption.md) | Interface | 181 | — | — |
-| [ModalFrameProps](../entities/ModalFrameProps.md) | Interface | 209 | — | — |
-| [CreateTriageModalProps](../entities/CreateTriageModalProps.md) | Interface | 232 | — | — |
-| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Interface | 412 | — | — |
-| [TriageActionModalProps](../entities/TriageActionModalProps.md) | Interface | 419 | — | — |
-| [ConvertTriageModalProps](../entities/ConvertTriageModalProps.md) | Interface | 724 | — | — |
-| [TriageDetailPanelProps](../entities/TriageDetailPanelProps.md) | Interface | 1283 | — | — |
-| [DuplicateSuggestionsPanelProps](../entities/DuplicateSuggestionsPanelProps.md) | Interface | 1492 | — | — |
-| [DuplicateSuggestionGroupProps](../entities/DuplicateSuggestionGroupProps.md) | Interface | 1556 | — | — |
-| [ClassificationPanelProps](../entities/ClassificationPanelProps.md) | Interface | 1616 | — | — |
-| [TriageRowProps](../entities/TriageRowProps.md) | Interface | 1741 | — | — |
-| [ConvertMutationInput](../entities/ConvertMutationInput.md) | Interface | 1823 | — | — |
-| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 404 | `'accept' \| 'decline' \| 'snooze' \| 'clarify' \| 'duplicate'` | — |
-| [ActionMutationInput](../entities/ActionMutationInput.md) | Type alias | 1817 | <pre><code>&#124; &#123; type&#58; &#39;accept&#39;&#59; itemId&#58; number&#59; payload&#58; TriageActionRequest &#125;&#10;    &#124; &#123; type&#58; &#39;decline&#39;&#59; itemId&#58; number&#59; payload&#58; TriageActionRequest &#125;&#10;    &#124; &#123; type&#58; &#39;snooze&#39;&#59; itemId&#58; number&#59; payload&#58; TriageSnoozeRequest &#125;&#10;    &#124; &#123; type&#58; &#39;duplicate&#39;&#59; itemId&#58; number&#59; payload&#58; TriageDuplicateRequest &#125;</code></pre> | — |
+| [TaskListOption](../entities/TaskListOption.md) | Interface | 182 | — | — |
+| [ModalFrameProps](../entities/ModalFrameProps.md) | Interface | 210 | — | — |
+| [CreateTriageModalProps](../entities/CreateTriageModalProps.md) | Interface | 233 | — | — |
+| [DuplicateActionDefaults](../entities/DuplicateActionDefaults.md) | Interface | 415 | — | — |
+| [TriageActionModalProps](../entities/TriageActionModalProps.md) | Interface | 422 | — | — |
+| [ConvertTriageModalProps](../entities/ConvertTriageModalProps.md) | Interface | 727 | — | — |
+| [TriageDetailPanelProps](../entities/TriageDetailPanelProps.md) | Interface | 1286 | — | — |
+| [DuplicateSuggestionsPanelProps](../entities/DuplicateSuggestionsPanelProps.md) | Interface | 1495 | — | — |
+| [DuplicateSuggestionGroupProps](../entities/DuplicateSuggestionGroupProps.md) | Interface | 1559 | — | — |
+| [ClassificationPanelProps](../entities/ClassificationPanelProps.md) | Interface | 1619 | — | — |
+| [TriageRowProps](../entities/TriageRowProps.md) | Interface | 1744 | — | — |
+| [ConvertMutationInput](../entities/ConvertMutationInput.md) | Interface | 1826 | — | — |
+| [TriageLifecycleAction](../entities/TriageLifecycleAction.md) | Type alias | 407 | `'accept' \| 'decline' \| 'snooze' \| 'clarify' \| 'duplicate'` | — |
+| [ActionMutationInput](../entities/ActionMutationInput.md) | Type alias | 1820 | <pre><code>&#124; &#123; type&#58; &#39;accept&#39;&#59; itemId&#58; number&#59; payload&#58; TriageActionRequest &#125;&#10;    &#124; &#123; type&#58; &#39;decline&#39;&#59; itemId&#58; number&#59; payload&#58; TriageActionRequest &#125;&#10;    &#124; &#123; type&#58; &#39;snooze&#39;&#59; itemId&#58; number&#59; payload&#58; TriageSnoozeRequest &#125;&#10;    &#124; &#123; type&#58; &#39;duplicate&#39;&#59; itemId&#58; number&#59; payload&#58; TriageDuplicateRequest &#125;</code></pre> | — |

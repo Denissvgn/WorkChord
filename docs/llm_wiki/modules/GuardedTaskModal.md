@@ -11,8 +11,8 @@ Current task modal openings own a unique, abortable authoritative detail read an
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../types/task` | `Task` | Declaration | erased |
-| `../common/Modal` | `Modal` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
+| `../ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
 | `./DraftDismissalDialog` | `DraftDismissalDialog` | — | compiler-dependent |
 | `./TaskForm` | `TaskForm` | — | compiler-dependent |
 | `./taskEditorSnapshot` | `readTaskEditorSnapshot`, `keepNewestTaskSnapshot` | — | compiler-dependent |

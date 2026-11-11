@@ -45,16 +45,19 @@ _Auto-generated from `TriageItem` in `frontend/src/types/triage.ts`._
 ```mermaid
 flowchart LR
     n0["TriageItem (frontend/src/types/triage.ts)"]
-    n1["frontend/src/pages/TriagePage.tsx"]
-    n2["frontend/src/services/triageService.ts"]
-    n3["frontend/src/types/task.ts"]
+    n1["frontend/src/components/tasks/QuickCapture.tsx"]
+    n2["frontend/src/pages/TriagePage.tsx"]
+    n3["frontend/src/services/triageService.ts"]
+    n4["frontend/src/types/task.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/types_triage.md"
-    click n1 "../modules/TriagePage.md"
-    click n2 "../modules/triageService.md"
-    click n3 "../modules/types_task.md"
+    click n1 "../modules/QuickCapture.md"
+    click n2 "../modules/TriagePage.md"
+    click n3 "../modules/triageService.md"
+    click n4 "../modules/types_task.md"
 ```
 
 ### Summary
@@ -67,6 +70,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `QuickCapture` | import | [QuickCapture](../modules/QuickCapture.md) | — |
 | `TriagePage` | import | [TriagePage](../modules/TriagePage.md) | — |
 | `triageService` | import | [triageService](../modules/triageService.md) | — |
 | `task` | import | [types_task](../modules/types_task.md) | — |

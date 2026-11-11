@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1551 | [Open section](#entities) |
-| Modules | 802 | [Open section](#modules) |
+| Entities | 1552 | [Open section](#entities) |
+| Modules | 804 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -660,6 +660,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [QueryPolicy](entities/QueryPolicy.md)
 - [QueryStaleStateProps](entities/QueryStaleStateProps.md)
 - [Queue](entities/Queue.md)
+- [QuickCaptureTarget](entities/QuickCaptureTarget.md)
 - [RankableAttention](entities/RankableAttention.md)
 - [RateLimitWindow](entities/RateLimitWindow.md)
 - [ReadyTopology](entities/ReadyTopology.md)
@@ -1730,6 +1731,8 @@ Retained history; these declarations are absent from the selected source invento
 - [ProjectsPage](modules/ProjectsPage.md) - `frontend/src/pages/ProjectsPage.tsx`
 - [ProjectsPage.test](modules/ProjectsPage.test.md) - `frontend/src/pages/ProjectsPage.test.tsx`
 - [QueryState](modules/QueryState.md) - `frontend/src/components/feedback/QueryState.tsx`
+- [QuickCapture](modules/QuickCapture.md) - `frontend/src/components/tasks/QuickCapture.tsx`
+- [QuickCapture.test](modules/QuickCapture.test.md) - `frontend/src/components/tasks/QuickCapture.test.tsx`
 - [ReleaseForm](modules/ReleaseForm.md) - `frontend/src/components/releases/ReleaseForm.tsx`
 - [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.tsx`
 - [RequestSourceLinksPanel.test](modules/RequestSourceLinksPanel.test.md) - `frontend/src/components/requestSources/RequestSourceLinksPanel.test.tsx`

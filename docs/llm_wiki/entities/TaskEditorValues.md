@@ -15,7 +15,7 @@ _Auto-generated from `TaskEditorValues` in `frontend/src/components/tasks/taskEd
 |------|------|----------|---------|-------------|
 | `title` | `string` | Yes | — | — |
 | `description` | `string` | Yes | — | — |
-| `priority` | `number` | Yes | — | — |
+| `priority` | `number \| null` | Yes | — | — |
 | `effort_days` | `number \| null` | Yes | — | — |
 | `effort_hours` | `number \| null` | Yes | — | — |
 | `owner_profile_id` | `number \| null` | Yes | — | — |

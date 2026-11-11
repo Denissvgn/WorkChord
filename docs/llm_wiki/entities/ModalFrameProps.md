@@ -1,6 +1,6 @@
 # ModalFrameProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:209`
+**Location:** `frontend/src/pages/TriagePage.tsx:210`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

@@ -27,6 +27,7 @@ _Auto-generated from `TaskFormProps` in `frontend/src/components/tasks/TaskForm.
 | `onPendingChange` | `(pending: boolean) => void` | No | — | — |
 | `onDiscardReady` | `(handler: (() => void) \| null) => void` | No | — | — |
 | `confirmUnsavedOnCancel` | `boolean` | No | — | — |
+| `initialTitle` | `string` | No | — | — |
 
 ## Methods
 
@@ -48,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [TaskForm](../modules/TaskForm.md) | 0 | `confirmUnsavedOnCancel`, `initialData`, `iterationId`, `mode`, `onCancel`, `onDirtyChange`, `onDiscardReady`, `onPendingChange`, `onSaveSandbox`, `onSuccess`, `parentId`, `parentMilestoneId` |
+| [TaskForm](../modules/TaskForm.md) | 0 | `confirmUnsavedOnCancel`, `initialData`, `initialTitle`, `iterationId`, `mode`, `onCancel`, `onDirtyChange`, `onDiscardReady`, `onPendingChange`, `onSaveSandbox`, `onSuccess`, `parentId` |
 
 ### References
 

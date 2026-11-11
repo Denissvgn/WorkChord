@@ -161,4 +161,4 @@ flowchart LR
 | `KanbanCard` | import | [KanbanCard](../modules/KanbanCard.md) | — |
 | `KanbanColumn` | import | [KanbanColumn](../modules/KanbanColumn.md) | — |
 
-> References: showing 12 of 69 logical references; 57 omitted by the 12-row generated summary limit.
+> References: showing 12 of 70 logical references; 58 omitted by the 12-row generated summary limit.
