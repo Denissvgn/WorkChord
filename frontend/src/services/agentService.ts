@@ -98,6 +98,33 @@ export const agentService = {
         return response.data;
     },
 
+    /** Apply several plan actions in one request; used for the safe updates only. */
+    async applyAgentTeamActions(
+        manifest: AgentTeamMaster,
+        plan: AgentTeamPlan,
+        actionIds: string[],
+        metadata: AgentCommandMetadata,
+    ): Promise<AgentTeamApplyResponse> {
+        const response = await api.post<AgentTeamApplyResponse>(
+            '/agent/team-setup/apply',
+            {
+                manifest,
+                expected_topology_revision: plan.expected_topology_revision,
+                plan_digest: plan.plan_digest,
+                approved_action_ids: actionIds,
+                confirmed_action_ids: [],
+            },
+            { headers: commandHeaders(metadata) },
+        );
+        return response.data;
+    },
+
+    /** The applied manifest and a catalog-filled template to start editing from. */
+    async getAgentTeamStartingPoints(): Promise<{ current: AgentTeamMaster | null; template: AgentTeamMaster }> {
+        const response = await api.get<{ current: AgentTeamMaster | null; template: AgentTeamMaster }>('/agent/team-setup/starting-points');
+        return response.data;
+    },
+
     async getActorRoster(includeDisabled = false): Promise<AgentActorRosterItem[]> {
         const response = await api.get<AgentActorRosterItem[]>('/agent/actors', {
             params: { include_disabled: includeDisabled },

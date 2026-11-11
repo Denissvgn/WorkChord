@@ -488,6 +488,22 @@ async def apply_agent_team_reconciliation(
     return result
 
 
+@router.get("/agent/team-setup/starting-points")
+async def get_agent_team_starting_points(
+    request: Request,
+    response: Response,
+    actor: Annotated[AgentActor, Depends(get_agent_admin_actor)],
+    service: Annotated[AgentTeamSetupService, Depends(get_agent_team_setup_service)],
+):
+    """The applied manifest and a catalog-filled template, so setup never starts from an empty object."""
+    try:
+        result = await service.starting_points(actor, server_url=str(request.base_url).rstrip("/"))
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+    response.headers["Cache-Control"] = "private, no-store"
+    return result
+
+
 @router.get(
     "/agent/team-setup/status",
     response_model=AgentTeamStatusResponse,

@@ -944,3 +944,24 @@ async def test_revision_bound_acknowledgement_with_database_scenarios(delivery_s
     factory, _, _ = delivery_store
     async with factory() as db:
         await test_fresh_apply_replay_onboarding_and_runtime_readiness(db, onboarding_access_mode)
+
+
+async def test_starting_points_offer_a_valid_catalog_filled_template_and_the_applied_manifest(db_session: AsyncSession) -> None:
+    from app.services.identity_service import initialize_control_plane
+    await initialize_control_plane(db_session)
+    db_session.add(AgentModelCatalogEntry(key="general-default", provider="configured-provider", configured_model_alias="general-default",
+        reasoning_tier=2, context_tier="medium", modality_tags=["text"], cost_tier="medium", latency_tier="balanced", enabled=True, revision=1))
+    await db_session.commit()
+    service = AgentTeamSetupService(db_session, credential_sink=CapturingCredentialSink())
+    admin = operator()
+    points = await service.starting_points(admin, server_url="http://localhost:8001")
+    assert points["current"] is None
+    template = points["template"]
+    example = example_payload()
+    # The template carries this server's own role packages, the same ones the generated example pins.
+    for role_key in ("controller",):
+        assert template[role_key]["skill_package"] == example[role_key]["skill_package"]
+    assert template["workers"][0]["skill_package"] == example["workers"][0]["skill_package"]
+    assert template["verifiers"][0]["skill_package"] == example["verifiers"][0]["skill_package"]
+    validation = await service.validate(admin, AgentTeamManifestRequest(manifest=AgentTeamMaster.model_validate(template)))
+    assert validation.valid is True, validation

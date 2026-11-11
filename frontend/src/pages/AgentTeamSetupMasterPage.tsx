@@ -1,6 +1,6 @@
 import { AgentTeamStepList } from '../components/settings/AgentTeamStepList';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import {
     ChevronDown,
@@ -20,6 +20,10 @@ import {
     stateTone,
 } from '../features/agentTeamSetup/masters';
 import { parseAgentTeamMasterEditor } from '../features/agentTeamSetup/manifest';
+import { fieldIssues, lineForPath, lineRange, pathIssue, syntaxIssue } from '../features/agentTeamSetup/manifestLocations';
+import type { EditorIssue } from '../features/agentTeamSetup/manifestLocations';
+import { AgentTeamManifestPreview } from '../components/settings/AgentTeamManifestPreview';
+import { useToast } from '../components/feedback/toast';
 import {
     deriveAgentTeamStatusScopes,
     type RuntimeReadinessState,
@@ -176,10 +180,12 @@ const AgentTeamSetupMasterPage = () => {
     const [plan, setPlan] = useState<AgentTeamPlan | null>(null);
     const [lastReceipt, setLastReceipt] = useState<AgentTeamApplyResponse | null>(null);
     const [localError, setLocalError] = useState<string | null>(null);
-    const [rationale, setRationale] = useState(
-        t('agentTeamSetup.defaultRationale'),
-    );
-    const rationalePristine = useRef(true);
+    // The reason is the person's own words; nothing is prefilled.
+    const [rationale, setRationale] = useState('');
+    const rationaleReady = rationale.trim().length >= 8;
+    const [editorIssues, setEditorIssues] = useState<EditorIssue[]>([]);
+    const editorRef = useRef<HTMLTextAreaElement>(null);
+    const toast = useToast();
     const [confirmations, setConfirmations] = useState<Record<string, boolean>>({});
     const [preservedStatusError, setPreservedStatusError] = useState<string | null>(null);
     const [statusRecoveryFocusVersion, setStatusRecoveryFocusVersion] = useState(0);
@@ -205,12 +211,6 @@ const AgentTeamSetupMasterPage = () => {
         focusOwnedTarget(intent.origin, target);
         pendingWorkflowFocus.current = null;
     }, [lastReceipt, plan, workflowFocusVersion]);
-
-    useEffect(() => {
-        if (rationalePristine.current) {
-            setRationale(t('agentTeamSetup.defaultRationale'));
-        }
-    }, [i18n.language, t]);
 
     const beginWorkflowFocus = (
         target: WorkflowFocusTarget,
@@ -245,7 +245,11 @@ const AgentTeamSetupMasterPage = () => {
             setLastReceipt(null);
             setLocalError(null);
         },
-        onError: error => setLocalError(errorMessage(error)),
+        onError: error => {
+            const issues = axios.isAxiosError(error) ? fieldIssues(editor, error.response?.data?.detail) : [];
+            setEditorIssues(issues);
+            setLocalError(issues.length > 0 ? null : errorMessage(error));
+        },
         onSettled: () => {
             commandInFlight.current = false;
         },
@@ -329,9 +333,41 @@ const AgentTeamSetupMasterPage = () => {
         },
     });
 
+    // feedback-policy: query loading,error,retry,empty - the start buttons say when a starting point is unavailable.
+    const startingPoints = useQuery({
+        queryKey: ['agent-team-setup', 'starting-points'],
+        queryFn: () => agentService.getAgentTeamStartingPoints(),
+        enabled: readiness.status?.can_mutate === true,
+        staleTime: 60000,
+    });
+    // Apply every safe update at once; authority changes and confirmations keep their own step.
+    // feedback-policy: mutation pending,inline
+    const applySafeMutation = useMutation({
+        mutationFn: ({ manifest, currentPlan, actions }: { manifest: AgentTeamMaster; currentPlan: AgentTeamPlan; actions: AgentTeamPlanAction[]; focusToken: number }) =>
+            agentService.applyAgentTeamActions(manifest, currentPlan, actions.map(action => action.action_id), {
+                idempotencyKey: newCommandId('team-safe-batch'), rationale, correlationId: newCommandId('agent-team-ui'),
+            }),
+        onSuccess: async (result, variables) => {
+            if (pendingWorkflowFocus.current?.token !== variables.focusToken) return;
+            setLastReceipt(result);
+            setPlan(null);
+            setValidation(null);
+            setLocalError(null);
+            settleWorkflowFocus(variables.focusToken);
+            await queryClient.invalidateQueries({ queryKey: ['agent-team-setup'] });
+        },
+        onError: (error, variables) => {
+            cancelWorkflowFocus(variables.focusToken);
+            setLocalError(errorMessage(error));
+        },
+        onSettled: () => {
+            commandInFlight.current = false;
+        },
+    });
     const busy = validateMutation.isPending
         || planMutation.isPending
-        || applyMutation.isPending;
+        || applyMutation.isPending
+        || applySafeMutation.isPending;
     const canMutate = readiness.status?.can_mutate === true;
     // Without an admin or agent key the status cannot be read; say that plainly
     // instead of echoing request headers, and do not offer a retry that cannot work.
@@ -376,11 +412,43 @@ const AgentTeamSetupMasterPage = () => {
         try {
             const manifest = parseAgentTeamMasterEditor(editor);
             setLocalError(null);
+            setEditorIssues([]);
             return manifest;
         } catch (error) {
-            setLocalError(errorMessage(error));
+            // Point at the line: a syntax position, or the JSON path the secret check names.
+            setEditorIssues([syntaxIssue(editor, error) ?? pathIssue(editor, errorMessage(error))]);
+            setLocalError(null);
             return null;
         }
+    };
+    const goToLine = (line: number) => {
+        const target = editorRef.current;
+        if (!target) return;
+        const [start, end] = lineRange(editor, line);
+        target.focus();
+        target.setSelectionRange(start, end);
+        const lineHeight = Number.parseFloat(getComputedStyle(target).lineHeight) || 18;
+        target.scrollTop = Math.max(0, (line - 3) * lineHeight);
+    };
+    const replaceEditor = (text: string) => {
+        const previous = editor;
+        setEditor(text);
+        setValidation(null);
+        setPlan(null);
+        setLastReceipt(null);
+        setLocalError(null);
+        setEditorIssues([]);
+        pendingWorkflowFocus.current = null;
+        toast.success(t('agentTeamSetup.start.replaced'), { actionLabel: t('feedback.undo'), durationMs: 10000, onAction: () => setEditor(previous) });
+    };
+    // Steps that are written in the manifest open the section they describe.
+    const STEP_SECTIONS: Partial<Record<string, string>> = {
+        master: 'schema_version', controller: 'controller', workers: 'workers', bindings: 'controller.model_binding_keys', verifier: 'verifiers',
+    };
+    const openStepSection = (stepId: string) => {
+        const path = STEP_SECTIONS[stepId];
+        const line = path ? lineForPath(editor, path) : null;
+        if (line !== null) goToLine(line);
     };
     const handleValidate = () => {
         if (busy || commandInFlight.current) return;
@@ -420,6 +488,16 @@ const AgentTeamSetupMasterPage = () => {
             action,
             focusToken,
         });
+    };
+    // Safe updates need no confirmation and change no authority, so they can go together.
+    const safeActions = (plan?.actions ?? []).filter(action => actionCanApply(action) && !action.requires_explicit_confirmation && !action.authority_change);
+    const handleApplySafe = (origin: HTMLElement | null) => {
+        if (busy || commandInFlight.current || !plan) return;
+        const manifest = currentManifest();
+        if (!manifest) return;
+        commandInFlight.current = true;
+        const focusToken = beginWorkflowFocus('receipt', origin ?? captureFocusOrigin());
+        applySafeMutation.mutate({ manifest, currentPlan: plan, actions: safeActions, focusToken });
     };
     const loadFile = async (file: File | undefined) => {
         if (!file) return;
@@ -724,6 +802,7 @@ const AgentTeamSetupMasterPage = () => {
                                 currentStepId={currentSetupStepId}
                                 idPrefix="agent-team-desktop"
                                 steps={readiness.steps}
+                                onOpenSection={canMutate ? openStepSection : undefined}
                             />
                         )}
                     </aside>
@@ -765,6 +844,24 @@ const AgentTeamSetupMasterPage = () => {
                                             hidden
                                             onChange={event => loadFile(event.target.files?.[0])}
                                         />
+                                        {/* Start from something real instead of an empty object. */}
+                                        <button
+                                            type="button"
+                                            className="btn"
+                                            disabled={!canMutate || busy || !startingPoints.data?.current}
+                                            title={startingPoints.data && !startingPoints.data.current ? t('agentTeamSetup.start.noCurrent') : undefined}
+                                            onClick={() => startingPoints.data?.current && replaceEditor(`${JSON.stringify(startingPoints.data.current, null, 2)}\n`)}
+                                        >
+                                            {t('agentTeamSetup.start.current')}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn"
+                                            disabled={!canMutate || busy || !startingPoints.data}
+                                            onClick={() => startingPoints.data && replaceEditor(`${JSON.stringify(startingPoints.data.template, null, 2)}\n`)}
+                                        >
+                                            {t('agentTeamSetup.start.template')}
+                                        </button>
                                         <button
                                             type="button"
                                             className="btn"
@@ -776,11 +873,15 @@ const AgentTeamSetupMasterPage = () => {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="field" style={{ marginTop: 14 }}>
+                                {startingPoints.isError && <p className="muted" role="status" style={{ marginTop: 8 }}>{t('agentTeamSetup.start.unavailable')}</p>}
+                                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]" style={{ marginTop: 14 }}>
+                                <div className="field">
                                     <label className="field-lbl" htmlFor="agent-team-master-editor">
                                         {t('agentTeamSetup.secretFreeJson')}
                                     </label>
                                     <textarea
+                                        ref={editorRef}
+                                        aria-describedby={editorIssues.length > 0 ? 'agent-team-editor-issues' : undefined}
                                         id="agent-team-master-editor"
                                         className="input mono agent-team-master-editor"
                                         rows={18}
@@ -793,6 +894,7 @@ const AgentTeamSetupMasterPage = () => {
                                             setPlan(null);
                                             setLastReceipt(null);
                                             setLocalError(null);
+                                            setEditorIssues([]);
                                             pendingWorkflowFocus.current = null;
                                         }}
                                     />
@@ -800,6 +902,21 @@ const AgentTeamSetupMasterPage = () => {
                                         <KeyRound size={12} aria-hidden="true" />{' '}
                                         {t('agentTeamSetup.noSecrets')}
                                     </div>
+                                    {editorIssues.length > 0 && (
+                                        <ul id="agent-team-editor-issues" role="alert" className="mt-2 space-y-1 text-sm text-feedback-danger-foreground">
+                                            {editorIssues.map((issue, index) => (
+                                                <li key={`${issue.line}-${index}`} className="flex flex-wrap items-baseline gap-2">
+                                                    {issue.line !== null
+                                                        ? <button type="button" className="font-semibold underline" onClick={() => goToLine(issue.line!)}>{t('agentTeamSetup.issueLine', { line: issue.line })}</button>
+                                                        : <strong>{t('agentTeamSetup.issueNoLine')}</strong>}
+                                                    {issue.path && <code className="mono">{issue.path}</code>}
+                                                    <span>{issue.message}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                                <AgentTeamManifestPreview text={editor} />
                                 </div>
                                 <div className="between agent-team-master-footer" style={{ marginTop: 12 }}>
                                     <div
@@ -879,16 +996,29 @@ const AgentTeamSetupMasterPage = () => {
                                                     className="input"
                                                     value={rationale}
                                                     disabled={busy}
-                                                    onChange={event => {
-                                                        rationalePristine.current = false;
-                                                        setRationale(event.target.value);
-                                                    }}
+                                                    aria-describedby="agent-team-rationale-hint"
+                                                    placeholder={t('agentTeamSetup.rationalePlaceholder')}
+                                                    onChange={event => setRationale(event.target.value)}
                                                 />
+                                                <div id="agent-team-rationale-hint" className="field-hint">{t('agentTeamSetup.rationaleHint')}</div>
                                             </div>
                                         ) : (
                                             <p className="muted agent-team-no-actions" role="status">
                                                 {t('agentTeamSetup.noActions')}
                                             </p>
+                                        )}
+                                        {safeActions.length > 1 && (
+                                            <div className="between agent-team-safe-batch">
+                                                <p className="muted" style={{ margin: 0 }}>{t('agentTeamSetup.safeBatchHelp')}</p>
+                                                <button
+                                                    type="button"
+                                                    className="btn primary"
+                                                    disabled={busy || !rationaleReady}
+                                                    onClick={event => handleApplySafe(event.currentTarget)}
+                                                >
+                                                    {applySafeMutation.isPending ? t('agentTeamSetup.applying') : t('agentTeamSetup.applySafe', { count: safeActions.length })}
+                                                </button>
+                                            </div>
                                         )}
                                         {plan.actions.map((action, index) => {
                                             const actionHeadingId = `agent-team-plan-action-${index}`;
@@ -977,6 +1107,8 @@ const AgentTeamSetupMasterPage = () => {
                                                             })}
                                                             disabled={
                                                                 applyMutation.isPending
+                                                                || applySafeMutation.isPending
+                                                                || !rationaleReady
                                                                 || !actionCanApply(action)
                                                                 || (
                                                                     action.requires_explicit_confirmation

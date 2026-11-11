@@ -1,5 +1,6 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { AxiosError } from 'axios';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n, { ensureLanguageResources } from '../i18n/i18n';
 import { renderWithProviders } from '../test/renderWithProviders';
@@ -15,6 +16,8 @@ const agentServiceMock = vi.hoisted(() => ({
     validateAgentTeamMaster: vi.fn(),
     planAgentTeamMaster: vi.fn(),
     applyAgentTeamAction: vi.fn(),
+    applyAgentTeamActions: vi.fn(),
+    getAgentTeamStartingPoints: vi.fn(),
 }));
 const useAdminAccessMock = vi.hoisted(() => vi.fn());
 
@@ -477,8 +480,9 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
         await user.click(screen.getByRole('button', {
             name: i18n.t('agentTeamSetup.validate'),
         }));
+        // The problem is named with its line, and the line is one click away.
         expect(screen.getByRole('alert')).toHaveTextContent(
-            i18n.t('agentTeamSetup.errorTitle'),
+            i18n.t('agentTeamSetup.issueLine', { line: 1 }),
         );
 
         fireEvent.change(editor, {
@@ -765,6 +769,9 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
         )).toHaveLength(2);
         expect(screen.queryByText('safe_update')).not.toBeInTheDocument();
         expect(apply).toBeDisabled();
+        // Nothing is prefilled: the operator states the reason before anything applies.
+        expect(screen.getByRole('textbox', { name: i18n.t('agentTeamSetup.rationale') })).toHaveValue('');
+        await user.type(screen.getByRole('textbox', { name: i18n.t('agentTeamSetup.rationale') }), 'Reconcile the reviewed worker update');
         await user.click(screen.getByRole('checkbox', {
             name: i18n.t('agentTeamSetup.confirmActionFor', {
                 action: actionName,
@@ -781,7 +788,7 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
             'safe-update-worker',
             true,
             expect.objectContaining({
-                rationale: i18n.t('agentTeamSetup.defaultRationale'),
+                rationale: 'Reconcile the reviewed worker update',
             }),
         );
         const receiptHeading = await screen.findByRole('heading', {
@@ -991,3 +998,62 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
         expect(readinessRail.querySelectorAll('.step-item')).toHaveLength(0);
     });
 });
+
+describe('AgentTeamSetupMasterPage guided start', () => {
+    const template = { schema_version: 'agent-team-master-v1', topology_key: 'default-agent-team',
+        controller: { actor_key: 'primary-pm', display_name: 'Primary Planning Controller', role: 'pm' },
+        workers: [{ actor_key: 'backend-worker', display_name: 'Backend Implementation Runtime', role: 'worker' }], verifiers: [] };
+
+    beforeEach(() => {
+        useAdminAccessMock.mockReturnValue({ hasAdminKey: true });
+        agentServiceMock.getAgentTeamStatus.mockResolvedValue({ ...statusFixture, can_mutate: true });
+        agentServiceMock.getAgentTeamStartingPoints.mockResolvedValue({ current: null, template });
+    });
+
+    it('starts from a catalog template, previews it, and points server field errors at their line', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<AgentTeamSetupMasterPage />);
+        const editor = await screen.findByRole('textbox', { name: i18n.t('agentTeamSetup.secretFreeJson') });
+        expect(await screen.findByRole('button', { name: i18n.t('agentTeamSetup.start.current') })).toBeDisabled();
+        await user.click(await screen.findByRole('button', { name: i18n.t('agentTeamSetup.start.template') }));
+        expect((editor as HTMLTextAreaElement).value).toContain('"backend-worker"');
+        expect(screen.getByText('Backend Implementation Runtime')).toBeInTheDocument();
+        expect(screen.getByText('1 worker')).toBeInTheDocument();
+
+        agentServiceMock.validateAgentTeamMaster.mockRejectedValue(new AxiosError('Unprocessable', '422', undefined, undefined,
+            { status: 422, data: { detail: [{ loc: ['body', 'manifest', 'workers', 0, 'role'], msg: 'Input should be worker' }] } } as never));
+        await user.click(screen.getByRole('button', { name: i18n.t('agentTeamSetup.validate') }));
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent('workers[0].role');
+        expect(alert).toHaveTextContent('Input should be worker');
+        await user.click(within(alert).getByRole('button', { name: /^Line \d+$/ }));
+        expect(editor).toHaveFocus();
+    });
+
+    it('applies every safe update in one confirmed step once a reason is given', async () => {
+        const user = userEvent.setup();
+        agentServiceMock.validateAgentTeamMaster.mockResolvedValue({ schema_version: 'agent-team-validation-v1', valid: true, manifest_digest: 'b'.repeat(64),
+            normalized_manifest: template, blocker_codes: [] });
+        agentServiceMock.planAgentTeamMaster.mockResolvedValue({ schema_version: 'agent-team-reconciliation-plan-v1', topology_key: 'default-agent-team',
+            expected_topology_revision: 4, manifest_digest: 'b'.repeat(64), plan_digest: 'c'.repeat(64), blocker_codes: [],
+            actions: [{ action_id: 'update-a', action_digest: 'd'.repeat(64), reconciliation_class: 'safe_update', operation: 'update_member', actor_key: 'backend-worker',
+                target_actor_id: 9, expected_object_revision: 2, expected_actor_revision: 4, before: null, after: null, preconditions: {}, blocker_code: null,
+                requires_explicit_confirmation: false, authority_change: false }, { action_id: 'update-b', action_digest: 'd'.repeat(64), reconciliation_class: 'safe_update', operation: 'update_member', actor_key: 'frontend-worker',
+                target_actor_id: 9, expected_object_revision: 2, expected_actor_revision: 4, before: null, after: null, preconditions: {}, blocker_code: null,
+                requires_explicit_confirmation: false, authority_change: false }] });
+        agentServiceMock.applyAgentTeamActions.mockResolvedValue({ schema_version: 'agent-team-apply-v1', topology_key: 'default-agent-team',
+            topology_revision: 5, apply_run_id: 1, status: 'completed', receipts: [], manifest_digest: 'b'.repeat(64), plan_digest: 'c'.repeat(64) });
+        renderWithProviders(<AgentTeamSetupMasterPage />);
+        await user.click(await screen.findByRole('button', { name: i18n.t('agentTeamSetup.start.template') }));
+        await user.click(screen.getByRole('button', { name: i18n.t('agentTeamSetup.validate') }));
+        await user.click(await screen.findByRole('button', { name: i18n.t('agentTeamSetup.dryRun') }));
+        const batch = await screen.findByRole('button', { name: 'Apply 2 safe updates' });
+        expect(batch).toBeDisabled();
+        await user.type(screen.getByRole('textbox', { name: i18n.t('agentTeamSetup.rationale') }), 'Roll out the reviewed workers');
+        await user.click(batch);
+        await waitFor(() => expect(agentServiceMock.applyAgentTeamActions).toHaveBeenCalledWith(
+            expect.objectContaining({ topology_key: 'default-agent-team' }), expect.objectContaining({ plan_digest: 'c'.repeat(64) }),
+            ['update-a', 'update-b'], expect.objectContaining({ rationale: 'Roll out the reviewed workers' })));
+    });
+});
+
