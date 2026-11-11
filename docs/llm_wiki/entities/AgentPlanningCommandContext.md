@@ -25,9 +25,9 @@ Required audit metadata carried by every PM setup command.
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | max_length=255; min_length=1 | — | — |
-| `rationale` | `str` | `rationale` | Yes | No | — | max_length=2000; min_length=1 | — | — |
-| `correlation_id` | `str` | `correlation_id` | Yes | No | — | max_length=255; min_length=1 | — | — |
+| `idempotency_key` | `str` | `idempotency_key` | Yes | No | — | min_length=1; max_length=255 | — | — |
+| `rationale` | `str` | `rationale` | Yes | No | — | min_length=1; max_length=2000 | — | — |
+| `correlation_id` | `str` | `correlation_id` | Yes | No | — | min_length=1; max_length=255 | — | — |
 
 ## Methods
 
@@ -102,4 +102,4 @@ flowchart LR
 | `apply_agent_profile_preset` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `apply_agent_team_reconciliation` | call | [routers_agent](../modules/routers_agent.md) | 1 |
 
-> References: showing 12 of 93 logical references; 81 omitted by the 12-row generated summary limit.
+> References: showing 12 of 94 logical references; 82 omitted by the 12-row generated summary limit.

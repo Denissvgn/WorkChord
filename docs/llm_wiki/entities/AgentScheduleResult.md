@@ -17,7 +17,8 @@ Schedule outcome plus the complete optimistic task-version token set.
 | `decisions` | `list[dict[str, Any]]` | `decisions` | No | No | factory: `list` | — | — | — |
 | `workload_balanced` | `bool` | `workload_balanced` | No | No | `True` | — | — | — |
 | `workload_issues` | `list[dict[str, Any]]` | `workload_issues` | No | No | factory: `list` | — | — | — |
-| `input_digest` | `str` | `input_digest` | Yes | No | — | max_length=64; min_length=64 | — | — |
+| `unscheduled` | `list[dict[str, Any]]` | `unscheduled` | No | No | factory: `list` | — | — | — |
+| `input_digest` | `str` | `input_digest` | Yes | No | — | min_length=64; max_length=64 | — | — |
 | `task_states` | `list[AgentScheduleTaskState]` | `task_states` | No | No | factory: `list` | — | — | — |
 
 ## Methods
@@ -42,7 +43,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_agent_planning](../modules/schemas_agent_planning.md) | 0 | `decisions`, `input_digest`, `success`, `task_states`, `workload_balanced`, `workload_issues` |
+| [schemas_agent_planning](../modules/schemas_agent_planning.md) | 0 | `decisions`, `input_digest`, `success`, `task_states`, `unscheduled`, `workload_balanced`, `workload_issues` |
 
 ### Structure
 

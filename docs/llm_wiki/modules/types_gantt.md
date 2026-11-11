@@ -17,7 +17,7 @@ _Auto-generated from `frontend/src/types/gantt.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `ExplainScheduleDetailLevel`, `ExplainScheduleRequest`, `ExplainScheduleResponse`, `GanttResponse`, `GanttTask`, `ScheduleDecisionExplanation`, `SchedulePreviewResponse`, `ScheduleResult`, `SchedulingDecision`, `WorkloadAnalysis`, `WorkloadIssue` |
+| Exports | `ExplainScheduleDetailLevel`, `ExplainScheduleRequest`, `ExplainScheduleResponse`, `GanttResponse`, `GanttTask`, `ScheduleDecisionExplanation`, `SchedulePreviewResponse`, `ScheduleResult`, `SchedulingDecision`, `UnscheduledReason`, `UnscheduledTask`, `WorkloadAnalysis`, `WorkloadIssue` |
 
 ## Local dependency map
 
@@ -39,10 +39,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (10) |
+| Inbound | `frontend` (11) |
 | Outbound | `frontend` (2) |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -50,12 +50,14 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [GanttTask](../entities/types_gantt_GanttTask.md) | Interface | 6 | — | — |
 | [GanttResponse](../entities/types_gantt_GanttResponse.md) | Interface | 56 | — | — |
-| [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Interface | 66 | — | — |
-| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Interface | 76 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
-| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Interface | 84 | — | — |
-| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Interface | 92 | — | — |
-| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Interface | 100 | — | — |
-| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Interface | 104 | — | — |
-| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Interface | 111 | — | — |
-| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Interface | 116 | — | — |
-| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 98 | `'brief' \| 'full'` | — |
+| [UnscheduledTask](../entities/types_gantt_UnscheduledTask.md) | Interface | 70 | — | A planned task the scheduler left without dates, with the cause and the server's English hint. |
+| [ScheduleResult](../entities/types_gantt_ScheduleResult.md) | Interface | 77 | — | — |
+| [SchedulePreviewResponse](../entities/types_gantt_SchedulePreviewResponse.md) | Interface | 88 | — | Server dry-run of sandbox edits through the real scheduler (nothing persisted). |
+| [SchedulingDecision](../entities/types_gantt_SchedulingDecision.md) | Interface | 96 | — | — |
+| [WorkloadIssue](../entities/types_gantt_WorkloadIssue.md) | Interface | 104 | — | — |
+| [ExplainScheduleRequest](../entities/types_gantt_ExplainScheduleRequest.md) | Interface | 112 | — | — |
+| [ScheduleDecisionExplanation](../entities/types_gantt_ScheduleDecisionExplanation.md) | Interface | 116 | — | — |
+| [WorkloadAnalysis](../entities/types_gantt_WorkloadAnalysis.md) | Interface | 123 | — | — |
+| [ExplainScheduleResponse](../entities/types_gantt_ExplainScheduleResponse.md) | Interface | 128 | — | — |
+| [UnscheduledReason](../entities/types_gantt_UnscheduledReason.md) | Type alias | 66 | <pre><code>&#39;no&#95;assignee&#39; &#124; &#39;assignee&#95;not&#95;in&#95;iteration&#39; &#124; &#39;no&#95;estimate&#39; &#124; &#39;no&#95;capacity&#39;&#10;    &#124; &#39;prerequisites&#95;pending&#39; &#124; &#39;predecessor&#95;unscheduled&#39; &#124; &#39;deferred&#39; &#124; &#39;blocked&#39; &#124; &#39;not&#95;placed&#39;</code></pre> | — |
+| [ExplainScheduleDetailLevel](../entities/ExplainScheduleDetailLevel.md) | Type alias | 110 | `'brief' \| 'full'` | — |

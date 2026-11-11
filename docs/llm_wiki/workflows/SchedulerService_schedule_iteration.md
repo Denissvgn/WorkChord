@@ -29,7 +29,8 @@
 19. `capacity_service.CapacityService`
 20. `commands.PlanningConflict`
 21. `commands.commit_or_flush`
-22. `schemas_gantt.ScheduleResult`
+22. `schemas_gantt.SchedulingDecision`
+23. `schemas_gantt.ScheduleResult`
 
 ## Touches
 

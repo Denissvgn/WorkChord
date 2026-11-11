@@ -1,6 +1,6 @@
 # TaskTimelineDates
 
-**Location:** `frontend/src/components/gantt/GanttChart.tsx:82`
+**Location:** `frontend/src/components/gantt/GanttChart.tsx:83`
 **Kind:** Interface
 **Bases:** —
 **Module:** [GanttChart](../modules/GanttChart.md)

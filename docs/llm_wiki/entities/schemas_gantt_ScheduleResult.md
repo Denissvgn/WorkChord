@@ -1,6 +1,6 @@
 # ScheduleResult
 
-**Location:** `backend/app/schemas/gantt.py:76`
+**Location:** `backend/app/schemas/gantt.py:97`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_gantt](../modules/schemas_gantt.md)
@@ -19,6 +19,7 @@ Result of scheduling operation.
 | `decisions` | `list[SchedulingDecision]` | `decisions` | No | No | `[]` | — | — | — |
 | `workload_balanced` | `bool` | `workload_balanced` | No | No | `True` | — | — | — |
 | `workload_issues` | `list[WorkloadIssue]` | `workload_issues` | No | No | `[]` | — | — | — |
+| `unscheduled` | `list[UnscheduledTask]` | `unscheduled` | No | No | `[]` | — | — | — |
 
 ## Methods
 
@@ -48,7 +49,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `workload_balanced`, `workload_issues` |
+| [schemas_gantt](../modules/schemas_gantt.md) | 0 | `capacity_issues`, `decisions`, `planning_revision`, `success`, `unscheduled`, `workload_balanced`, `workload_issues` |
 
 ### Structure
 

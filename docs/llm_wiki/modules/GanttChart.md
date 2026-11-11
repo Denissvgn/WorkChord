@@ -23,6 +23,7 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.tsx`._
 | `../ui/tone` | `STATUS_TONE`, `toneSolidClassName` | — | compiler-dependent |
 | `./GanttBarInputs` | `GanttBarInputs` | — | compiler-dependent |
 | `./TaskEditModal` | `TaskEditModal` | — | compiler-dependent |
+| `./UnscheduledTasks` | `UnscheduledTasks` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQueryClient` | — | compiler-dependent |
 | `@tanstack/react-virtual` | `useVirtualizer` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
@@ -61,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (13) |
+| Outbound | `frontend` (14) |
 
 ### External packages
 
@@ -69,18 +70,18 @@ flowchart LR
 |---|---:|---:|
 | typescript | 8 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 25 | — | — |
-| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 70 | `GanttTask` | — |
-| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 82 | — | — |
-| [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 74 | `'none' \| 'milestone' \| 'prefix' \| 'status'` | — |
-| [GanttStatusFilter](../entities/GanttStatusFilter.md) | Type alias | 75 | `'' \| 'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
-| [GanttRow](../entities/GanttRow.md) | Type alias | 76 | <pre><code>&#124; &#123; kind&#58; &#39;task&#39;&#59; task&#58; FlattenedTask &#125;&#10;    &#124; &#123; kind&#58; &#39;group&#39;&#59; key&#58; string&#59; label&#58; string&#59; count&#58; number &#125;</code></pre> | — |
+| [GanttChartProps](../entities/GanttChartProps.md) | Interface | 26 | — | — |
+| [FlattenedTask](../entities/GanttChart_FlattenedTask.md) | Interface | 71 | `GanttTask` | — |
+| [TaskTimelineDates](../entities/TaskTimelineDates.md) | Interface | 83 | — | — |
+| [GanttGroupBy](../entities/GanttGroupBy.md) | Type alias | 75 | `'none' \| 'milestone' \| 'prefix' \| 'status'` | — |
+| [GanttStatusFilter](../entities/GanttStatusFilter.md) | Type alias | 76 | `'' \| 'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
+| [GanttRow](../entities/GanttRow.md) | Type alias | 77 | <pre><code>&#124; &#123; kind&#58; &#39;task&#39;&#59; task&#58; FlattenedTask &#125;&#10;    &#124; &#123; kind&#58; &#39;group&#39;&#59; key&#58; string&#59; label&#58; string&#59; count&#58; number &#125;</code></pre> | — |
 
 ## Functions
 

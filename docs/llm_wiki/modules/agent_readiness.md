@@ -37,6 +37,7 @@ flowchart LR
     n6["backend/app/services/task_service.py"]
     n7["backend/app/services/work_metrics.py"]
     n8["backend/app/utils/time.py"]
+    n9["backend/tests/test_unscheduled_tasks.py"]
     n0 --> n8
     n2 --> n0
     n2 --> n1
@@ -58,6 +59,8 @@ flowchart LR
     n6 --> n7
     n7 --> n0
     n7 --> n8
+    n9 --> n0
+    n9 --> n2
     click n0 "../modules/models_task.md"
     click n1 "../modules/schemas_task.md"
     click n2 "../modules/agent_readiness.md"
@@ -67,6 +70,7 @@ flowchart LR
     click n6 "../modules/task_service.md"
     click n7 "../modules/services_work_metrics.md"
     click n8 "../modules/time.md"
+    click n9 "../modules/test_unscheduled_tasks.md"
 ```
 
 ### Internal neighbors
@@ -75,6 +79,7 @@ flowchart LR
 |---|---|
 | Inbound | [agent_service](../modules/agent_service.md) |
 | Inbound | [task_service](../modules/task_service.md) |
+| Inbound | [test_unscheduled_tasks](../modules/test_unscheduled_tasks.md) |
 | Outbound | [models_task](../modules/models_task.md) |
 | Outbound | [schemas_task](../modules/schemas_task.md) |
 | Outbound | [agent_routing_policy](../modules/agent_routing_policy.md) |

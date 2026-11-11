@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1555,
+      "entities": 1559,
       "flows": 556,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 819,
+      "modules": 822,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3142
+    "total": 3149
   },
   "dependency_pages": {
     "count": 2,
@@ -44443,6 +44443,8 @@
         "entities/schemas_gantt_SchedulePreviewResponse.md",
         "entities/schemas_gantt_ScheduleResult.md",
         "entities/schemas_gantt_SchedulingDecision.md",
+        "entities/schemas_gantt_UnscheduledReason.md",
+        "entities/schemas_gantt_UnscheduledTask.md",
         "entities/schemas_gantt_WorkloadIssue.md",
         "entities/schemas_github_GitHubAutomationEventType.md",
         "entities/schemas_github_GitHubAutomationOutcome.md",
@@ -44901,6 +44903,8 @@
         "entities/types_gantt_SchedulePreviewResponse.md",
         "entities/types_gantt_ScheduleResult.md",
         "entities/types_gantt_SchedulingDecision.md",
+        "entities/types_gantt_UnscheduledReason.md",
+        "entities/types_gantt_UnscheduledTask.md",
         "entities/types_gantt_WorkloadAnalysis.md",
         "entities/types_gantt_WorkloadIssue.md",
         "entities/types_github_GitHubAutomationEventType.md",
@@ -46399,6 +46403,7 @@
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
+        "modules/test_unscheduled_tasks.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
         "modules/test_workflow_vocabulary.md",
@@ -46441,6 +46446,8 @@
         "modules/types_template.md",
         "modules/types_triage.md",
         "modules/UnsavedLeaveGuard.md",
+        "modules/UnscheduledTasks.md",
+        "modules/UnscheduledTasks.test.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md",
         "modules/url_policy.md",
@@ -48207,7 +48214,8 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_agent_planning.md",
         "modules/schemas_agent_planning.md",
-        "modules/test_mutation_versions.md"
+        "modules/test_mutation_versions.md",
+        "modules/test_unscheduled_tasks.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_planning.py",
@@ -59081,6 +59089,31 @@
       "title": "SchedulingDecision"
     },
     {
+      "canonical_path": "entities/schemas_gantt_UnscheduledReason.md",
+      "id": "schemas_gantt_UnscheduledReason",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_gantt_UnscheduledReason",
+      "outgoing_internal_links": [
+        "modules/schemas_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/gantt.py",
+      "title": "UnscheduledReason"
+    },
+    {
+      "canonical_path": "entities/schemas_gantt_UnscheduledTask.md",
+      "id": "schemas_gantt_UnscheduledTask",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/schemas_gantt_UnscheduledTask",
+      "outgoing_internal_links": [
+        "modules/scheduler_service.md",
+        "modules/schemas_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/gantt.py",
+      "title": "UnscheduledTask"
+    },
+    {
       "canonical_path": "entities/schemas_gantt_WorkloadIssue.md",
       "id": "schemas_gantt_WorkloadIssue",
       "kind": "entities",
@@ -65522,6 +65555,31 @@
       "title": "SchedulingDecision"
     },
     {
+      "canonical_path": "entities/types_gantt_UnscheduledReason.md",
+      "id": "types_gantt_UnscheduledReason",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_gantt_UnscheduledReason",
+      "outgoing_internal_links": [
+        "modules/types_gantt.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/gantt.ts",
+      "title": "UnscheduledReason"
+    },
+    {
+      "canonical_path": "entities/types_gantt_UnscheduledTask.md",
+      "id": "types_gantt_UnscheduledTask",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/types_gantt_UnscheduledTask",
+      "outgoing_internal_links": [
+        "modules/types_gantt.md",
+        "modules/UnscheduledTasks.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/types/gantt.ts",
+      "title": "UnscheduledTask"
+    },
+    {
       "canonical_path": "entities/types_gantt_WorkloadAnalysis.md",
       "id": "types_gantt_WorkloadAnalysis",
       "kind": "entities",
@@ -68656,6 +68714,7 @@
         "modules/services_work_metrics.md",
         "modules/task_brief_service.md",
         "modules/task_service.md",
+        "modules/test_unscheduled_tasks.md",
         "modules/time.md"
       ],
       "role": "semantic",
@@ -76448,6 +76507,8 @@
         "entities/schemas_gantt_SchedulePreviewResponse.md",
         "entities/schemas_gantt_ScheduleResult.md",
         "entities/schemas_gantt_SchedulingDecision.md",
+        "entities/schemas_gantt_UnscheduledReason.md",
+        "entities/schemas_gantt_UnscheduledTask.md",
         "entities/schemas_gantt_WorkloadIssue.md",
         "modules/llm_service.md",
         "modules/routers_gantt.md",
@@ -80628,6 +80689,26 @@
       "title": "test_transfer_catalog Module"
     },
     {
+      "canonical_path": "modules/test_unscheduled_tasks.md",
+      "id": "test_unscheduled_tasks",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_unscheduled_tasks",
+      "outgoing_internal_links": [
+        "modules/agent_planning_service.md",
+        "modules/agent_readiness.md",
+        "modules/models_agent.md",
+        "modules/models_task.md",
+        "modules/scheduler_service.md",
+        "modules/schemas_agent_planning.md",
+        "modules/team_member.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_unscheduled_tasks.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_unscheduled_tasks.py",
+      "title": "test_unscheduled_tasks Module"
+    },
+    {
       "canonical_path": "modules/test_work_correctness.md",
       "id": "test_work_correctness",
       "kind": "modules",
@@ -81225,6 +81306,8 @@
         "entities/types_gantt_SchedulePreviewResponse.md",
         "entities/types_gantt_ScheduleResult.md",
         "entities/types_gantt_SchedulingDecision.md",
+        "entities/types_gantt_UnscheduledReason.md",
+        "entities/types_gantt_UnscheduledTask.md",
         "entities/types_gantt_WorkloadAnalysis.md",
         "entities/types_gantt_WorkloadIssue.md",
         "modules/types_gantt.md"
@@ -81536,6 +81619,35 @@
       "role": "semantic",
       "source_path": "frontend/src/components/common/UnsavedLeaveGuard.tsx",
       "title": "UnsavedLeaveGuard Module"
+    },
+    {
+      "canonical_path": "modules/UnscheduledTasks.md",
+      "id": "UnscheduledTasks",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/UnscheduledTasks",
+      "outgoing_internal_links": [
+        "modules/GanttChart.md",
+        "modules/types_gantt.md",
+        "modules/UnscheduledTasks.md",
+        "modules/UnscheduledTasks.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/UnscheduledTasks.tsx",
+      "title": "UnscheduledTasks Module"
+    },
+    {
+      "canonical_path": "modules/UnscheduledTasks.test.md",
+      "id": "UnscheduledTasks.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/UnscheduledTasks.test",
+      "outgoing_internal_links": [
+        "modules/renderWithProviders.md",
+        "modules/UnscheduledTasks.md",
+        "modules/UnscheduledTasks.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/UnscheduledTasks.test.tsx",
+      "title": "UnscheduledTasks.test Module"
     },
     {
       "canonical_path": "modules/upgrade.md",
@@ -96695,6 +96807,7 @@
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
+        "modules/test_unscheduled_tasks.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
         "modules/test_workflow_vocabulary.md",
@@ -96737,6 +96850,8 @@
         "modules/types_template.md",
         "modules/types_triage.md",
         "modules/UnsavedLeaveGuard.md",
+        "modules/UnscheduledTasks.md",
+        "modules/UnscheduledTasks.test.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md",
         "modules/url_policy.md",
@@ -97525,6 +97640,7 @@
         "modules/test_time_entries.md",
         "modules/test_time_reports.md",
         "modules/test_transfer_catalog.md",
+        "modules/test_unscheduled_tasks.md",
         "modules/test_work_correctness.md",
         "modules/test_work_package_service.md",
         "modules/test_workflow_vocabulary.md",
@@ -97567,6 +97683,8 @@
         "modules/types_template.md",
         "modules/types_triage.md",
         "modules/UnsavedLeaveGuard.md",
+        "modules/UnscheduledTasks.md",
+        "modules/UnscheduledTasks.test.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md",
         "modules/url_policy.md",
@@ -97616,5 +97734,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:6bfe8463d5e4163afc8abf712ea29df1bee3a60eeb01d7bdaea73d74a57163b1"
+  "source_hash": "sha256:0a180ce7b38f32eab9c38d0f0ee9f75d4daf160a5001dbee7e9d7ebb471aaffb"
 }

@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1555 | [Open section](#entities) |
-| Modules | 819 | [Open section](#modules) |
+| Entities | 1559 | [Open section](#entities) |
+| Modules | 822 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -1227,6 +1227,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_gantt_SchedulePreviewResponse](entities/schemas_gantt_SchedulePreviewResponse.md)
 - [schemas_gantt_ScheduleResult](entities/schemas_gantt_ScheduleResult.md)
 - [schemas_gantt_SchedulingDecision](entities/schemas_gantt_SchedulingDecision.md)
+- [schemas_gantt_UnscheduledReason](entities/schemas_gantt_UnscheduledReason.md)
+- [schemas_gantt_UnscheduledTask](entities/schemas_gantt_UnscheduledTask.md)
 - [schemas_gantt_WorkloadIssue](entities/schemas_gantt_WorkloadIssue.md)
 - [schemas_github_GitHubAutomationEventType](entities/schemas_github_GitHubAutomationEventType.md)
 - [schemas_github_GitHubAutomationOutcome](entities/schemas_github_GitHubAutomationOutcome.md)
@@ -1440,6 +1442,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_gantt_SchedulePreviewResponse](entities/types_gantt_SchedulePreviewResponse.md)
 - [types_gantt_ScheduleResult](entities/types_gantt_ScheduleResult.md)
 - [types_gantt_SchedulingDecision](entities/types_gantt_SchedulingDecision.md)
+- [types_gantt_UnscheduledReason](entities/types_gantt_UnscheduledReason.md)
+- [types_gantt_UnscheduledTask](entities/types_gantt_UnscheduledTask.md)
 - [types_gantt_WorkloadAnalysis](entities/types_gantt_WorkloadAnalysis.md)
 - [types_gantt_WorkloadIssue](entities/types_gantt_WorkloadIssue.md)
 - [types_github_GitHubAutomationEventType](entities/types_github_GitHubAutomationEventType.md)
@@ -1827,6 +1831,8 @@ Retained history; these declarations are absent from the selected source invento
 - [ToastProvider.test](modules/ToastProvider.test.md) - `frontend/src/components/feedback/ToastProvider.test.tsx`
 - [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
 - [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) - `frontend/src/components/common/UnsavedLeaveGuard.tsx`
+- [UnscheduledTasks](modules/UnscheduledTasks.md) - `frontend/src/components/gantt/UnscheduledTasks.tsx`
+- [UnscheduledTasks.test](modules/UnscheduledTasks.test.md) - `frontend/src/components/gantt/UnscheduledTasks.test.tsx`
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
 - [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
 - [VacationCsvImport](modules/VacationCsvImport.md) - `frontend/src/components/team/VacationCsvImport.tsx`
@@ -2333,6 +2339,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_time_entries](modules/test_time_entries.md) - Private explicit minutes, retained corrections and independent recovery behavior.
 - [test_time_reports](modules/test_time_reports.md) - Recorded coverage and manager totals preserve private entry boundaries.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
+- [test_unscheduled_tasks](modules/test_unscheduled_tasks.md) - The scheduler says which planned tasks it left without dates, and readiness says how to fix it.
 - [test_work_correctness](modules/test_work_correctness.md) - Atomic recovery, hierarchy, aggregate versions and cross-surface metric contracts.
 - [test_work_package_service](modules/test_work_package_service.md) - Focused fenced verifier lifecycle integration tests.
 - [test_workflow_vocabulary](modules/test_workflow_vocabulary.md) - The shared workflow vocabulary is rendered identically into every role skill.
