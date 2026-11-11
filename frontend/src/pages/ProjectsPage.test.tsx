@@ -192,4 +192,19 @@ describe('ProjectsPage', () => {
         expect(screen.getByRole('columnheader', { name: 'Tasks' })).toBeVisible();
         expect(projectServiceMock.getPortfolioSummaries).toHaveBeenCalledTimes(1);
     });
+
+    it('fits by merging health into signals, sorts by column, and keeps actions in a pinned row menu', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'at_risk', target_date: '2026-08-15' }]);
+        const { user } = renderWithProviders(<ProjectsPage />, { initialEntries: ['/projects'] });
+        const table = await screen.findByRole('region', { name: 'Projects table' });
+        expect(table).toHaveAttribute('tabindex', '0');
+        expect(within(table).queryByRole('columnheader', { name: /^Health$/ })).toBeNull();
+        expect(within(table).queryByRole('columnheader', { name: /^Initiative$/ })).toBeNull();
+        const rows = () => screen.getAllByRole('link').filter(link => ['Atlas', 'Beacon'].includes(link.textContent ?? '')).map(link => link.textContent);
+        expect(rows()).toEqual(['Atlas', 'Beacon']);
+        await user.click(screen.getByRole('button', { name: /^Target/ }));
+        expect(rows()).toEqual(['Beacon', 'Atlas']);
+        expect(within(table).getByRole('columnheader', { name: /Target/ })).toHaveAttribute('aria-sort', 'ascending');
+        expect(screen.getByRole('button', { name: 'Actions for Atlas' })).toBeInTheDocument();
+    });
 });
