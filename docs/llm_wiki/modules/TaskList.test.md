@@ -21,7 +21,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskList.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `taskServiceMock`, `labelServiceMock` |
-| Module calls | `taskServiceMock = hoisted`, `labelServiceMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe`, `it`, `it`, `it` |
+| Module calls | `taskServiceMock = hoisted`, `labelServiceMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `mock`, `mock`, `describe`, `it`, `it`, `it`, `describe` |
 
 ## Local dependency map
 

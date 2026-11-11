@@ -36,9 +36,11 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | `@dnd-kit/sortable` | `arrayMove`, `SortableContext`, `sortableKeyboardCoordinates`, `useSortable`, `verticalListSortingStrategy` | — | compiler-dependent |
 | `@dnd-kit/utilities` | `CSS` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery`, `useMutation`, `useQueryClient` | — | compiler-dependent |
+| `@tanstack/react-virtual` | `useVirtualizer` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck` | — | compiler-dependent |
-| `react` | `useCallback`, `useEffect`, `useId`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
+| `lucide-react` | `ChevronRight`, `ChevronDown`, `CheckCircle2`, `Circle`, `Trash2`, `Plus`, `Edit`, `CornerDownRight`, `AlertTriangle`, `ArrowUpDown`, `GripVertical`, `Layers`, `Unlink`, `Bot`, `ClipboardCheck`, `Info` | — | compiler-dependent |
+| `react` | `ReactNode` | Declaration | erased |
+| `react` | `Fragment`, `useCallback`, `useEffect`, `useId`, `useLayoutEffect`, `useMemo`, `useRef`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 | `react-router-dom` | `useSearchParams` | — | compiler-dependent |
 
@@ -47,6 +49,7 @@ Merge drafts capture the aggregate revision when their confirmation editor opens
 | Signal | Values |
 |--------|--------|
 | Exports | `SortKey`, `TaskList`, `TaskMode` |
+| Constants | `STATUS_GROUP_ORDER`, `VIRTUALIZE_AFTER_ROWS` |
 
 ## Local dependency map
 
@@ -75,7 +78,7 @@ flowchart LR
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
-| typescript | 9 | 0 |
+| typescript | 10 | 0 |
 
 > All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
@@ -83,13 +86,14 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskListProps](../entities/TaskListProps.md) | Interface | 71 | — | — |
-| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 751 | — | — |
-| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 803 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 49 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
-| [TaskMode](../entities/TaskMode.md) | Type alias | 50 | `'bulk' \| 'merge'` | — |
-| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 51 | `Parameters<typeof taskService.reorder>[0]` | — |
-| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 52 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
+| [TaskListProps](../entities/TaskListProps.md) | Interface | 79 | — | — |
+| [TaskItemProps](../entities/TaskItemProps.md) | Interface | 846 | — | — |
+| [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 900 | `TaskItemProps` | — |
+| [SortKey](../entities/SortKey.md) | Type alias | 51 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [TaskMode](../entities/TaskMode.md) | Type alias | 52 | `'bulk' \| 'merge'` | — |
+| [RowItem](../entities/RowItem.md) | Type alias | 57 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
+| [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 59 | `Parameters<typeof taskService.reorder>[0]` | — |
+| [ReorderVariables](../entities/ReorderVariables.md) | Type alias | 60 | <pre><code>&#123;&#10;    order&#58; TaskOrderRequest&#59;&#10;    undoOrder&#58; TaskOrderRequest&#59;&#10;&#125;</code></pre> | — |
 
 ## Functions
 

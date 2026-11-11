@@ -1,6 +1,6 @@
 # TaskItemProps
 
-**Location:** `frontend/src/components/tasks/TaskList.tsx:751`
+**Location:** `frontend/src/components/tasks/TaskList.tsx:846`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskList](../modules/TaskList.md)
@@ -33,6 +33,7 @@ _Auto-generated from `TaskItemProps` in `frontend/src/components/tasks/TaskList.
 | `toggleBulkTaskSelection` | `(taskId: number) => void` | Yes | — | — |
 | `labelsBySlug` | `Map<string, Label>` | Yes | — | — |
 | `nowMs` | `number` | Yes | — | — |
+| `showStatusLabel` | `boolean` | No | — | — |
 
 ## Methods
 

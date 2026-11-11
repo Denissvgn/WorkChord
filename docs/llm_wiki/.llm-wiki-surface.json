@@ -18,7 +18,7 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1538,
+      "entities": 1539,
       "flows": 554,
       "guides": 0,
       "index": 1,
@@ -29,7 +29,7 @@
       "workflows": 195
     },
     "dependency_architecture": 2,
-    "total": 3088
+    "total": 3089
   },
   "dependency_pages": {
     "count": 2,
@@ -44181,6 +44181,7 @@
         "entities/RoutingSelectionValidation.md",
         "entities/RoutingSkillDecision.md",
         "entities/RoutingTrustLineage.md",
+        "entities/RowItem.md",
         "entities/RunCancelled.md",
         "entities/RunReceipt.md",
         "entities/RuntimeActivity.md",
@@ -57548,6 +57549,18 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_routing.py",
       "title": "RoutingTrustLineage"
+    },
+    {
+      "canonical_path": "entities/RowItem.md",
+      "id": "RowItem",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/RowItem",
+      "outgoing_internal_links": [
+        "modules/TaskList.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskList.tsx",
+      "title": "RowItem"
     },
     {
       "canonical_path": "entities/RunCancelled.md",
@@ -77649,6 +77662,7 @@
       "mcp_uri": "llm-wiki://modules/TaskList",
       "outgoing_internal_links": [
         "entities/ReorderVariables.md",
+        "entities/RowItem.md",
         "entities/SortKey.md",
         "entities/TaskItemContentProps.md",
         "entities/TaskItemProps.md",
@@ -96540,5 +96554,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:a1c65aa96952b9734766a8713eca007736d17464826964d74afbf3264b8461a4"
+  "source_hash": "sha256:2788c6a6db1e36ef2ec40877e57f329bab2e2434247b55be900a36d3a325360b"
 }
