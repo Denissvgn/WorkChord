@@ -6,7 +6,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1550 | [Open section](#entities) |
+| Entities | 1551 | [Open section](#entities) |
 | Modules | 802 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
@@ -640,6 +640,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ProjectUpdateErrorStore](entities/ProjectUpdateErrorStore.md)
 - [ProjectUpdateFormState](entities/ProjectUpdateFormState.md)
 - [ProjectUpdateFormStore](entities/ProjectUpdateFormStore.md)
+- [ProjectsPage_SortKey](entities/ProjectsPage_SortKey.md)
 - [ProviderActionRequest](entities/ProviderActionRequest.md)
 - [ProviderAuditObservation](entities/ProviderAuditObservation.md)
 - [ProviderMutationAdapter](entities/ProviderMutationAdapter.md)
@@ -821,7 +822,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [SnapshotRestoreRequest](entities/SnapshotRestoreRequest.md)
 - [SnapshotService](entities/SnapshotService.md)
 - [SortCriterionSchema](entities/SortCriterionSchema.md)
-- [SortKey](entities/SortKey.md)
 - [SortableTaskItemProps](entities/SortableTaskItemProps.md)
 - [SourceCollectorRegistry](entities/SourceCollectorRegistry.md)
 - [SqlStateFailure](entities/SqlStateFailure.md)
@@ -902,6 +902,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskItemProps](entities/TaskItemProps.md)
 - [TaskListOption](entities/TaskListOption.md)
 - [TaskListProps](entities/TaskListProps.md)
+- [TaskList_SortKey](entities/TaskList_SortKey.md)
 - [TaskMerge](entities/TaskMerge.md)
 - [TaskMergeRequest](entities/TaskMergeRequest.md)
 - [TaskMetricSignals](entities/TaskMetricSignals.md)

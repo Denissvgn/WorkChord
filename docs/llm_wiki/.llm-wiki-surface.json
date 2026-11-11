@@ -18,7 +18,7 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1550,
+      "entities": 1551,
       "flows": 556,
       "guides": 0,
       "index": 1,
@@ -29,7 +29,7 @@
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3120
+    "total": 3121
   },
   "dependency_pages": {
     "count": 2,
@@ -44253,6 +44253,7 @@
         "entities/ProjectRecordStatus.md",
         "entities/ProjectResponse.md",
         "entities/ProjectService.md",
+        "entities/ProjectsPage_SortKey.md",
         "entities/ProjectTask.md",
         "entities/ProjectTaskTreeProps.md",
         "entities/ProjectUpdateEntryResponse.md",
@@ -44629,7 +44630,6 @@
         "entities/SortableTaskItemProps.md",
         "entities/SortableTemplateRowProps.md",
         "entities/SortCriterionSchema.md",
-        "entities/SortKey.md",
         "entities/SourceCollectorRegistry.md",
         "entities/SqlStateFailure.md",
         "entities/StatusAmendmentLedger.md",
@@ -44720,6 +44720,7 @@
         "entities/TaskImproveDescriptionResponse.md",
         "entities/TaskItemContentProps.md",
         "entities/TaskItemProps.md",
+        "entities/TaskList_SortKey.md",
         "entities/TaskListOption.md",
         "entities/TaskListProps.md",
         "entities/TaskMerge.md",
@@ -56529,6 +56530,18 @@
       "title": "ProjectService"
     },
     {
+      "canonical_path": "entities/ProjectsPage_SortKey.md",
+      "id": "ProjectsPage_SortKey",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ProjectsPage_SortKey",
+      "outgoing_internal_links": [
+        "modules/ProjectsPage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/ProjectsPage.tsx",
+      "title": "SortKey"
+    },
+    {
       "canonical_path": "entities/ProjectTask.md",
       "id": "ProjectTask",
       "kind": "entities",
@@ -61735,21 +61748,6 @@
       "title": "SortCriterionSchema"
     },
     {
-      "canonical_path": "entities/SortKey.md",
-      "id": "SortKey",
-      "kind": "entities",
-      "mcp_uri": "llm-wiki://entities/SortKey",
-      "outgoing_internal_links": [
-        "modules/SavedViewsControl.md",
-        "modules/TaskList.md",
-        "modules/TasksPage.md",
-        "modules/taskViewState.md"
-      ],
-      "role": "semantic",
-      "source_path": "frontend/src/components/tasks/TaskList.tsx",
-      "title": "SortKey"
-    },
-    {
       "canonical_path": "entities/SourceCollectorRegistry.md",
       "id": "SourceCollectorRegistry",
       "kind": "entities",
@@ -63001,6 +62999,21 @@
       "role": "semantic",
       "source_path": "frontend/src/components/tasks/TaskList.tsx",
       "title": "TaskItemProps"
+    },
+    {
+      "canonical_path": "entities/TaskList_SortKey.md",
+      "id": "TaskList_SortKey",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TaskList_SortKey",
+      "outgoing_internal_links": [
+        "modules/SavedViewsControl.md",
+        "modules/TaskList.md",
+        "modules/TasksPage.md",
+        "modules/taskViewState.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/tasks/TaskList.tsx",
+      "title": "SortKey"
     },
     {
       "canonical_path": "entities/TaskListOption.md",
@@ -74639,6 +74652,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/ProjectsPage",
       "outgoing_internal_links": [
+        "entities/ProjectsPage_SortKey.md",
         "modules/ProjectsPage.md"
       ],
       "role": "semantic",
@@ -78234,9 +78248,9 @@
       "outgoing_internal_links": [
         "entities/ReorderVariables.md",
         "entities/RowItem.md",
-        "entities/SortKey.md",
         "entities/TaskItemContentProps.md",
         "entities/TaskItemProps.md",
+        "entities/TaskList_SortKey.md",
         "entities/TaskListProps.md",
         "entities/TaskMode.md",
         "entities/TaskOrderRequest.md",
@@ -97244,5 +97258,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:aa9f2acedd5e152c595608ba415ae147e9c0abe41441029e1aabe3d360d22880"
+  "source_hash": "sha256:bcc70e83ecbd19b2a3eb54b86acee02c6e50e3da175619cf4308f5af520a2de7"
 }

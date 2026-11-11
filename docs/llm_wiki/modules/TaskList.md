@@ -89,7 +89,7 @@ flowchart LR
 | [TaskListProps](../entities/TaskListProps.md) | Interface | 79 | — | — |
 | [TaskItemProps](../entities/TaskItemProps.md) | Interface | 846 | — | — |
 | [TaskItemContentProps](../entities/TaskItemContentProps.md) | Interface | 900 | `TaskItemProps` | — |
-| [SortKey](../entities/SortKey.md) | Type alias | 51 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
+| [SortKey](../entities/TaskList_SortKey.md) | Type alias | 51 | `'priority' \| 'sort_order' \| 'status' \| 'title'` | — |
 | [TaskMode](../entities/TaskMode.md) | Type alias | 52 | `'bulk' \| 'merge'` | — |
 | [RowItem](../entities/RowItem.md) | Type alias | 57 | `{ kind: 'group'; status: string; count: number; collapsed: boolean } \| { kind: 'task'; task: Task }` | — |
 | [TaskOrderRequest](../entities/TaskOrderRequest.md) | Type alias | 59 | `Parameters<typeof taskService.reorder>[0]` | — |
