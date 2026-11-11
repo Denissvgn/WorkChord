@@ -33,13 +33,16 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 ```mermaid
 flowchart LR
     n0["WorkspaceIdentity (frontend/src/features/identity/identityService.ts)"]
-    n1["frontend/src/features/identity/identityContext.ts"]
-    n2["frontend/src/features/identity/IdentityProvider.tsx"]
+    n1["frontend/src/components/settings/AdminAccessGate.test.tsx"]
+    n2["frontend/src/features/identity/identityContext.ts"]
+    n3["frontend/src/features/identity/IdentityProvider.tsx"]
     n1 --> n0
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/identityService.md"
-    click n1 "../modules/identityContext.md"
-    click n2 "../modules/IdentityProvider.md"
+    click n1 "../modules/AdminAccessGate.test.md"
+    click n2 "../modules/identityContext.md"
+    click n3 "../modules/IdentityProvider.md"
 ```
 
 ### Summary
@@ -52,5 +55,6 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `AdminAccessGate.test` | import | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) | — |
 | `identityContext` | import | [identityContext](../modules/identityContext.md) | — |
 | `IdentityProvider` | import | [IdentityProvider](../modules/IdentityProvider.md) | — |

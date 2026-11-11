@@ -26,6 +26,7 @@ The restricted onboarding acknowledgement has a dedicated token-only boundary. I
 | `app.services.agent_service` | `AgentService` |
 | `app.services.identity_service` | `IdentityService`, `digest` |
 | `app.services.session_service` | `_get_session_by_token` |
+| `app.settings_read` | `READABLE_SETTINGS_PATHS`, `settings_reader` |
 | `dataclasses` | `replace` |
 | `fastapi` | `Depends`, `Request` |
 | `json` | `json` |
@@ -52,7 +53,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (4) |
-| Outbound | `backend` (10) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
@@ -60,7 +61,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 14 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

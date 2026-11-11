@@ -68,8 +68,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_github_settings | service.update_github | 75 | `service.update_github(data)` |
-| update_github_settings | _bad_request | 77 | `_bad_request(exc)` |
+| update_github_settings | service.update_github | 76 | `service.update_github(data)` |
+| update_github_settings | _bad_request | 78 | `_bad_request(exc)` |
 | _bad_request | HTTPException | 33 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
 | _bad_request | str | 33 | `str(error)` |
 
@@ -81,7 +81,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_github_settings` | `service.update_github` | 75 |
+| unresolved_call | `update_github_settings` | `service.update_github` | 76 |
 | external_call | `_bad_request` | `HTTPException` | 33 |
 
 ## Behavior

@@ -68,8 +68,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_app_settings | service.update_app | 63 | `service.update_app(data)` |
-| update_app_settings | _bad_request | 65 | `_bad_request(exc)` |
+| update_app_settings | service.update_app | 64 | `service.update_app(data)` |
+| update_app_settings | _bad_request | 66 | `_bad_request(exc)` |
 | _bad_request | HTTPException | 33 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
 | _bad_request | str | 33 | `str(error)` |
 
@@ -81,7 +81,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_app_settings` | `service.update_app` | 63 |
+| unresolved_call | `update_app_settings` | `service.update_app` | 64 |
 | external_call | `_bad_request` | `HTTPException` | 33 |
 
 ## Behavior

@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| test_email_settings | service.test_connection | 99 | `service.test_connection(data.recipient)` |
-| test_email_settings | TestEmailResponse | 101 | `TestEmailResponse(success=success, message=message)` |
+| test_email_settings | service.test_connection | 100 | `service.test_connection(data.recipient)` |
+| test_email_settings | TestEmailResponse | 102 | `TestEmailResponse(success=success, message=message)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `test_email_settings` | `service.test_connection` | 99 |
+| unresolved_call | `test_email_settings` | `service.test_connection` | 100 |
 
 ## Behavior
 

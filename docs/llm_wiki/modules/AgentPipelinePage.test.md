@@ -22,8 +22,8 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.test.tsx`._
 
 | Signal | Values |
 |--------|--------|
-| Constants | `agentServiceMock`, `useAdminAccessMock`, `useAgentAccessMock`, `sensitive`, `taskFixture`, `pipelineFixture`, `timelineFixture` |
-| Module calls | `agentServiceMock = hoisted`, `useAdminAccessMock = hoisted`, `useAgentAccessMock = hoisted`, `mock`, `mock`, `mock`, `mock`, `describe` |
+| Constants | `agentServiceMock`, `useAdminAccessMock`, `useAgentAccessMock`, `useKeylessReaderMock`, `sensitive`, `taskFixture`, `pipelineFixture`, `timelineFixture` |
+| Module calls | `agentServiceMock = hoisted`, `useAdminAccessMock = hoisted`, `useAgentAccessMock = hoisted`, `mock`, `useKeylessReaderMock = hoisted`, `mock`, `mock`, `mock`, `describe` |
 
 ## Local dependency map
 

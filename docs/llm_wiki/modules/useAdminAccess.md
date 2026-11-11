@@ -18,7 +18,7 @@ _Auto-generated from `frontend/src/hooks/useAdminAccess.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `useAdminAccess` |
+| Exports | `useAdminAccess`, `useKeylessReader` |
 
 ## Local dependency map
 
@@ -54,3 +54,4 @@ flowchart LR
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
 | `useAdminAccess` | `()` | — | — |
+| `useKeylessReader` | `()` | — | Whether this person may read settings and views of work without the admin key: |

@@ -1,6 +1,6 @@
 # AdminAccessGateProps
 
-**Location:** `frontend/src/components/settings/AdminAccessGate.tsx:7`
+**Location:** `frontend/src/components/settings/AdminAccessGate.tsx:9`
 **Kind:** Interface
 **Bases:** —
 **Module:** [AdminAccessGate](../modules/AdminAccessGate.md)
@@ -18,6 +18,7 @@ _Auto-generated from `AdminAccessGateProps` in `frontend/src/components/settings
 | `recovery` | `ReactNode` | No | — | — |
 | `accessGranted` | `boolean` | No | — | — |
 | `headingLevel` | `2 \| 3` | No | — | — |
+| `readable` | `boolean` | No | — | — |
 
 ## Methods
 
@@ -39,7 +40,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [AdminAccessGate](../modules/AdminAccessGate.md) | 0 | `accessGranted`, `children`, `headingLevel`, `recovery`, `showPanel` |
+| [AdminAccessGate](../modules/AdminAccessGate.md) | 0 | `accessGranted`, `children`, `headingLevel`, `readable`, `recovery`, `showPanel` |
 
 ### References
 

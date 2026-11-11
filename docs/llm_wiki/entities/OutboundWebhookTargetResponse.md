@@ -29,6 +29,7 @@ Outbound webhook target response without exposing the secret.
 | `headers_json` | `dict[str, str]` | `headers_json` | Yes | No | — | — | — | — |
 | `created_at` | `datetime` | `created_at` | Yes | No | — | — | — | — |
 | `updated_at` | `datetime` | `updated_at` | Yes | No | — | — | — | — |
+| `redacted_fields` | `list[str]` | `redacted_fields` | No | No | factory: `list` | — | — | — |
 
 ## Methods
 
@@ -73,7 +74,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md) | 0 | `created_at`, `description`, `enabled`, `has_secret`, `headers_json`, `id`, `name`, `subscribed_events_json`, `updated_at`, `url` |
+| [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md) | 0 | `created_at`, `description`, `enabled`, `has_secret`, `headers_json`, `id`, `name`, `redacted_fields`, `subscribed_events_json`, `updated_at`, `url` |
 
 ### Structure
 

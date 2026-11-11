@@ -2,13 +2,14 @@
 
 **Entry point:** `list_outbound_webhook_deliveries` (`http`)
 **Source:** [outbound_webhooks](../modules/outbound_webhooks.md)
-**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [outbound_webhooks](../modules/outbound_webhooks.md), [system_settings_service](../modules/system_settings_service.md), and 1 more
+**Modules touched:** [config](../modules/config.md), [language_service](../modules/language_service.md), [outbound_webhooks](../modules/outbound_webhooks.md), [settings_read](../modules/settings_read.md), and 2 more
 
 **Complete modules touched:**
 
 - [config](../modules/config.md)
 - [language_service](../modules/language_service.md)
 - [outbound_webhooks](../modules/outbound_webhooks.md)
+- [settings_read](../modules/settings_read.md)
 - [system_settings_service](../modules/system_settings_service.md)
 - [url_policy](../modules/url_policy.md)
 
@@ -21,70 +22,70 @@
 sequenceDiagram
     participant p0 as list_outbound_webhook_deliveries
     participant p1 as _bad_request
-    participant p2 as resolve_runtime_ui_language
-    participant p3 as backend_error_message
-    participant p4 as RuntimeSettingsService.get_app_settings
-    participant p5 as entity_not_found_message
-    participant p6 as get_settings
-    participant p7 as scoped_entity_not_found_message
-    participant p8 as entity_deleted_message
-    participant p9 as RuntimeSettingsService.resolve
-    participant p10 as localized
-    participant p11 as RuntimeSettingsService._definition
-    participant p12 as RuntimeSettingsService._decrypt_secret
-    participant p13 as RuntimeSettingsService._coerce
-    participant p14 as normalize_language
-    participant p15 as RuntimeSettingsService
-    participant p16 as Settings
-    participant p17 as RuntimeSettingsService._row
-    participant p18 as RuntimeSettingsService._env_value
-    participant p19 as RuntimeSettingsError
-    participant p20 as RuntimeSettingsService._fernet
-    participant p21 as RuntimeSettingsEncryptionError
-    participant p22 as normalize_provider_api_url
-    participant p23 as HTTPException
-    participant p24 as service.list_deliveries
-    participant p25 as str (backend/app/routers/outbo…_webhooks.py:_bad_request)
-    participant p26 as message.lower
-    participant p27 as re.fullmatch
-    participant p28 as match.groups
-    participant p29 as getattr (backend/app/services/lang…solve_runtime_ui_language)
-    participant p30 as label.strip().lower().replace
+    participant p2 as redact_webhook_delivery
+    participant p3 as withholds
+    participant p4 as resolve_runtime_ui_language
+    participant p5 as backend_error_message
+    participant p6 as RuntimeSettingsService.get_app_settings
+    participant p7 as entity_not_found_message
+    participant p8 as get_settings
+    participant p9 as scoped_entity_not_found_message
+    participant p10 as entity_deleted_message
+    participant p11 as RuntimeSettingsService.resolve
+    participant p12 as localized
+    participant p13 as RuntimeSettingsService._definition
+    participant p14 as RuntimeSettingsService._decrypt_secret
+    participant p15 as RuntimeSettingsService._coerce
+    participant p16 as host_only
+    participant p17 as normalize_language
+    participant p18 as RuntimeSettingsService
+    participant p19 as Settings
+    participant p20 as RuntimeSettingsService._row
+    participant p21 as RuntimeSettingsService._env_value
+    participant p22 as RuntimeSettingsError
+    participant p23 as RuntimeSettingsService._fernet
+    participant p24 as RuntimeSettingsEncryptionError
+    participant p25 as normalize_provider_api_url
+    participant p26 as HTTPException
+    participant p27 as service.list_deliveries
+    participant p28 as service.db.info.get
+    participant p29 as OutboundWebhookDeliveryResponse.model_validate
+    participant p30 as response.model_copy
     p0->>p1: _bad_request
-    p1->>p2: resolve_runtime_ui_language
-    p1->>p3: backend_error_message
-    p2->>p4: RuntimeSettingsService.get_app_settings
-    p3->>p5: entity_not_found_message
-    p2->>p6: get_settings
-    p3->>p7: scoped_entity_not_found_message
-    p3->>p8: entity_deleted_message
-    p4->>p9: RuntimeSettingsService.resolve
-    p5->>p10: localized
-    p9->>p11: RuntimeSettingsService._definition
-    p9->>p12: RuntimeSettingsService._decrypt_secret
-    p9->>p13: RuntimeSettingsService._coerce
-    p2->>p14: normalize_language
-    p2->>p15: RuntimeSettingsService
-    p6->>p16: Settings
-    p9->>p17: RuntimeSettingsService._row
-    p9->>p18: RuntimeSettingsService._env_value
-    p11->>p19: RuntimeSettingsError
-    p12->>p20: RuntimeSettingsService._fernet
-    p12->>p21: RuntimeSettingsEncryptionError
-    p13->>p22: normalize_provider_api_url
-    p1-->>p23: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
-    p0-->>p24: service.list_deliveries(target_id=target_id, status=status_filter, channel=channel, limit=limit)
-    p1-->>p25: str (backend/app/routers/outbo…_webhooks.py:_bad_request)(error)
-    p3-->>p26: message.lower
-    p3-->>p27: re.fullmatch('(.+) with id ([^ ]+) not found', message)
-    p3-->>p28: match.groups
-    p2-->>p29: getattr (backend/app/services/lang…solve_runtime_ui_language)(settings, 'app_ui_language', None)
-    p3-->>p30: label.strip().lower().replace(' ', '_')
+    p0->>p2: redact_webhook_delivery
+    p0->>p3: withholds
+    p1->>p4: resolve_runtime_ui_language
+    p1->>p5: backend_error_message
+    p4->>p6: RuntimeSettingsService.get_app_settings
+    p5->>p7: entity_not_found_message
+    p4->>p8: get_settings
+    p5->>p9: scoped_entity_not_found_message
+    p5->>p10: entity_deleted_message
+    p6->>p11: RuntimeSettingsService.resolve
+    p7->>p12: localized
+    p11->>p13: RuntimeSettingsService._definition
+    p11->>p14: RuntimeSettingsService._decrypt_secret
+    p11->>p15: RuntimeSettingsService._coerce
+    p2->>p16: host_only
+    p4->>p17: normalize_language
+    p4->>p18: RuntimeSettingsService
+    p8->>p19: Settings
+    p11->>p20: RuntimeSettingsService._row
+    p11->>p21: RuntimeSettingsService._env_value
+    p13->>p22: RuntimeSettingsError
+    p14->>p23: RuntimeSettingsService._fernet
+    p14->>p24: RuntimeSettingsEncryptionError
+    p15->>p25: normalize_provider_api_url
+    p1-->>p26: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=backend_error_message(...))
+    p0-->>p27: service.list_deliveries(target_id=target_id, status=status_filter, channel=channel, limit=limit)
+    p0-->>p28: service.db.info.get('authority')
+    p0-->>p29: OutboundWebhookDeliveryResponse.model_validate(delivery)
+    p2-->>p30: response.model_copy(update={...})
 ```
 
-> Call sequence diagram shows 30 of 161 interactions; 131 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 169 interactions; 139 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 4 of 46 (42 omitted); unresolved 4 of 70 (66 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 47 (46 omitted); unresolved 4 of 74 (70 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -98,7 +99,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._decrypt_secret` | 19 | - | unresolved | 3 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 25 | - | external | 8 |
 | `backend/app/services/system_settings_service.py:RuntimeSettingsService._coerce` | 25 | [backend/app/services/system_settings_service.py](../modules/system_settings_service.md) | internal | 14 |
-> Omission summary shows 8 of 26 groups; 18 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 29 groups; 21 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -111,9 +112,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 46; effect analysis evaluated: 27, partial: 1, unavailable: 18. Counts include steps omitted from the displayed trace.
+Source steps: 49; effect analysis evaluated: 30, partial: 1, unavailable: 18. Counts include steps omitted from the displayed trace.
 
-Collector observations for 28 source steps with known totals: observed: 149, emitted: 123, omitted: 26. Unavailable totals are excluded.
+Collector observations for 31 source steps with known totals: observed: 157, emitted: 131, omitted: 26. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -121,7 +122,7 @@ Collector observations for 28 source steps with known totals: observed: 149, emi
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `list_outbound_webhook_deliveries` | `available` | `evaluated` | `available` | `7` | `7` | `0` |
+| `list_outbound_webhook_deliveries` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
 | `service.list_deliveries` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `_bad_request` | `available` | `evaluated` | `available` | `4` | `4` | `0` |
 | `resolve_runtime_ui_language` | `available` | `evaluated` | `available` | `5` | `5` | `0` |
@@ -172,7 +173,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `list_outbound_webhook_deliveries` | `service: Annotated[OutboundWebhookService, Depends(get_outbound_webhook_service)]`, `target_id: Optional[int]`, `status_filter: Optional[str]`, `channel: str`, `limit: int` | `OutboundWebhookValidationError` | - | `...` |
+| `list_outbound_webhook_deliveries` | `service: Annotated[OutboundWebhookService, Depends(get_outbound_webhook_service)]`, `target_id: Optional[int]`, `status_filter: Optional[str]`, `channel: str`, `limit: int` | `OutboundWebhookValidationError` | - | `deliveries`, `...` |
 | `service.list_deliveries` | - | - | - | - |
 | `_bad_request` | `service: OutboundWebhookService`, `error: Exception` | `status` | - | `HTTPException(...)` |
 | `resolve_runtime_ui_language` | `db: Any`, `default: LanguageCode \| None` | - | - | `normalize_language(...)`, `normalize_language(...)`, `fallback` |
@@ -189,8 +190,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_outbound_webhook_deliveries | service.list_deliveries | 143 | `service.list_deliveries(target_id=target_id, status=status_filter, channel=channel, limit=limit)` |
-| list_outbound_webhook_deliveries | _bad_request | 150 | `_bad_request(service, exc)` |
+| list_outbound_webhook_deliveries | service.list_deliveries | 146 | `service.list_deliveries(target_id=target_id, status=status_filter, channel=channel, limit=limit)` |
+| list_outbound_webhook_deliveries | _bad_request | 153 | `_bad_request(service, exc)` |
 | _bad_request | resolve_runtime_ui_language | 40 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
@@ -209,7 +210,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_outbound_webhook_deliveries` | `service.list_deliveries` | 143 |
+| unresolved_call | `list_outbound_webhook_deliveries` | `service.list_deliveries` | 146 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |

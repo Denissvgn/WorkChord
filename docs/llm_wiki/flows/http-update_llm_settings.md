@@ -68,8 +68,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_llm_settings | service.update_llm | 51 | `service.update_llm(data)` |
-| update_llm_settings | _bad_request | 53 | `_bad_request(exc)` |
+| update_llm_settings | service.update_llm | 52 | `service.update_llm(data)` |
+| update_llm_settings | _bad_request | 54 | `_bad_request(exc)` |
 | _bad_request | HTTPException | 33 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
 | _bad_request | str | 33 | `str(error)` |
 
@@ -81,7 +81,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_llm_settings` | `service.update_llm` | 51 |
+| unresolved_call | `update_llm_settings` | `service.update_llm` | 52 |
 | external_call | `_bad_request` | `HTTPException` | 33 |
 
 ## Behavior

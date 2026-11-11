@@ -43,6 +43,7 @@ flowchart LR
     n7["frontend/src/services/schedulingRulesService.ts"]
     n8["frontend/src/utils/adminAccess.ts"]
     n9["frontend/src/utils/apiError.ts"]
+    n2 --> n0
     n2 --> n4
     n2 --> n5
     n3 --> n4

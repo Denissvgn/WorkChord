@@ -59,7 +59,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `get_agent_pipeline` | `service: Annotated[AgentService, Depends(get_agent_service)]`, `_: Annotated[None, Depends(require_agent_read_access)]` | - | - | `AgentPipelineResponse(...)` |
+| `get_agent_pipeline` | `service: Annotated[AgentService, Depends(get_agent_service)]`, `_: Annotated[None, Depends(require_pipeline_read_access)]` | - | - | `AgentPipelineResponse(...)` |
 | `service.get_pipeline` | - | - | - | - |
 | `AgentPipelineResponse` | - | - | - | - |
 
@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_pipeline | service.get_pipeline | 1315 | `service.get_pipeline(data not statically known)` |
-| get_agent_pipeline | AgentPipelineResponse | 1316 | `AgentPipelineResponse(**=cols)` |
+| get_agent_pipeline | service.get_pipeline | 1332 | `service.get_pipeline(data not statically known)` |
+| get_agent_pipeline | AgentPipelineResponse | 1333 | `AgentPipelineResponse(**=cols)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_pipeline` | `service.get_pipeline` | 1315 |
+| unresolved_call | `get_agent_pipeline` | `service.get_pipeline` | 1332 |
 
 ## Behavior
 

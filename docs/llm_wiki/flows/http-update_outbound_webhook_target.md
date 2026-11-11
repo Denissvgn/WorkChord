@@ -189,8 +189,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_outbound_webhook_target | service.update_target | 82 | `service.update_target(target_id, data)` |
-| update_outbound_webhook_target | _bad_request | 84 | `_bad_request(service, exc)` |
+| update_outbound_webhook_target | service.update_target | 85 | `service.update_target(target_id, data)` |
+| update_outbound_webhook_target | _bad_request | 87 | `_bad_request(service, exc)` |
 | _bad_request | resolve_runtime_ui_language | 40 | `resolve_runtime_ui_language(service.db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
@@ -209,7 +209,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_outbound_webhook_target` | `service.update_target` | 82 |
+| unresolved_call | `update_outbound_webhook_target` | `service.update_target` | 85 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | unresolved_call | `RuntimeSettingsService._definition` | `SETTING_DEFINITIONS.get` | 154 |

@@ -12,9 +12,9 @@ Email settings API router.
 |--------|---------|
 | `app.database` | `get_db` |
 | `app.schemas.email_settings` | `EmailSettingsUpdate`, `EmailSettingsResponse`, `TestEmailRequest`, `TestEmailResponse` |
-| `app.security` | `require_admin_api_key` |
 | `app.services.email_settings_service` | `EmailSettingsService` |
 | `app.services.system_settings_service` | `RuntimeSettingsError` |
+| `app.settings_read` | `redact_email_settings`, `require_settings_access`, `withholds` |
 | `fastapi` | `APIRouter`, `Depends`, `HTTPException`, `status` |
 | `logging` | `logging` |
 | `sqlalchemy.ext.asyncio` | `AsyncSession` |
@@ -30,9 +30,9 @@ flowchart LR
     n2["backend/app/routers/__init__.py"]
     n3["backend/app/routers/email_settings.py"]
     n4["backend/app/schemas/email_settings.py"]
-    n5["backend/app/security.py"]
-    n6["backend/app/services/email_settings_service.py"]
-    n7["backend/app/services/system_settings_service.py"]
+    n5["backend/app/services/email_settings_service.py"]
+    n6["backend/app/services/system_settings_service.py"]
+    n7["backend/app/settings_read.py"]
     n1 --> n0
     n1 --> n3
     n2 --> n3
@@ -41,16 +41,16 @@ flowchart LR
     n3 --> n5
     n3 --> n6
     n3 --> n7
-    n6 --> n4
-    n6 --> n7
+    n5 --> n4
+    n5 --> n6
     click n0 "../modules/app_database.md"
     click n1 "../modules/app_main.md"
     click n2 "../modules/routers___init__.md"
     click n3 "../modules/routers_email_settings.md"
     click n4 "../modules/schemas_email_settings.md"
-    click n5 "../modules/security.md"
-    click n6 "../modules/email_settings_service.md"
-    click n7 "../modules/system_settings_service.md"
+    click n5 "../modules/email_settings_service.md"
+    click n6 "../modules/system_settings_service.md"
+    click n7 "../modules/settings_read.md"
 ```
 
 ### Internal neighbors
@@ -61,9 +61,9 @@ flowchart LR
 | Inbound | [routers___init__](../modules/routers___init__.md) |
 | Outbound | [app_database](../modules/app_database.md) |
 | Outbound | [schemas_email_settings](../modules/schemas_email_settings.md) |
-| Outbound | [security](../modules/security.md) |
 | Outbound | [email_settings_service](../modules/email_settings_service.md) |
 | Outbound | [system_settings_service](../modules/system_settings_service.md) |
+| Outbound | [settings_read](../modules/settings_read.md) |
 
 ### External packages
 

@@ -1,6 +1,6 @@
 # OutboundWebhookEventResponse
 
-**Location:** `backend/app/schemas/outbound_webhook.py:151`
+**Location:** `backend/app/schemas/outbound_webhook.py:153`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_outbound_webhook](../modules/schemas_outbound_webhook.md)

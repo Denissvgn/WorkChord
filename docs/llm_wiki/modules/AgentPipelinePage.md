@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.tsx`._
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
 | `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` | — | compiler-dependent |
 | `../components/ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
-| `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
+| `../hooks/useAdminAccess` | `useAdminAccess`, `useKeylessReader` | — | compiler-dependent |
 | `../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
 | `../services/agentService` | `agentService` | — | compiler-dependent |
 | `../types/agent` | `AgentModelTrustState`, `TaskTimelineItem` | Declaration | erased |

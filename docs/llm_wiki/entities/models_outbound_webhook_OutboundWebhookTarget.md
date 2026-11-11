@@ -45,6 +45,7 @@ flowchart LR
     n8["OutboundWebhookService.get_target (backend/app/services/outbound_webhook_service.py)"]
     n9["OutboundWebhookService.list_targets (backend/app/services/outbound_webhook_service.py)"]
     n10["OutboundWebhookService.update_target (backend/app/services/outbound_webhook_service.py)"]
+    n11["test_settings_are_readable_without_the_key_and_sensitive_values_are_withheld (backend/tests/test_settings_read_access.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -55,6 +56,7 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/models_outbound_webhook.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -66,6 +68,7 @@ flowchart LR
     click n8 "../modules/outbound_webhook_service.md"
     click n9 "../modules/outbound_webhook_service.md"
     click n10 "../modules/outbound_webhook_service.md"
+    click n11 "../modules/test_settings_read_access.md"
 ```
 
 ### Summary
@@ -94,3 +97,4 @@ flowchart LR
 | `OutboundWebhookService.get_target` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService.list_targets` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
 | `OutboundWebhookService.update_target` | type_reference | [outbound_webhook_service](../modules/outbound_webhook_service.md) | — |
+| `test_settings_are_readable_without_the_key_and_sensitive_values_are_withheld` | call | [test_settings_read_access](../modules/test_settings_read_access.md) | 1 |

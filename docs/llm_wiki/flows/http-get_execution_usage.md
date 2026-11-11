@@ -182,7 +182,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_execution_usage | ExecutionUsageService.latest | 1336 | `ExecutionUsageService(db).latest(actor, run_id)` |
+| get_execution_usage | ExecutionUsageService.latest | 1353 | `ExecutionUsageService(db).latest(actor, run_id)` |
 | ExecutionUsageService.latest | ExecutionUsageService._run | 93 | `self._run(actor, run_id)` |
 | ExecutionUsageService._run | any | 62 | `any(...)` |
 | ExecutionUsageService._run | actor_has_scope | 62 | `actor_has_scope(actor, scope)` |

@@ -131,17 +131,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_team_setup_report | service.report | 510 | `service.report(actor, topology_key=topology_key)` |
-| get_agent_team_setup_report | _handle_agent_error | 512 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 254 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 256 | `str(exc)` |
-| _handle_agent_error | str | 258 | `str(exc)` |
-| _handle_agent_error | HTTPException | 260 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 261 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 262 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 262 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 263 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 264 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| get_agent_team_setup_report | service.report | 527 | `service.report(actor, topology_key=topology_key)` |
+| get_agent_team_setup_report | _handle_agent_error | 529 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 271 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 273 | `str(exc)` |
+| _handle_agent_error | str | 275 | `str(exc)` |
+| _handle_agent_error | HTTPException | 277 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 278 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 279 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 279 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 280 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 281 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -151,14 +151,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_agent_team_setup_report` | `service.report` | 510 |
-| external_call | `_handle_agent_error` | `isinstance` | 254 |
-| external_call | `_handle_agent_error` | `HTTPException` | 260 |
-| external_call | `_handle_agent_error` | `isinstance` | 261 |
-| external_call | `_handle_agent_error` | `HTTPException` | 262 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 262 |
-| external_call | `_handle_agent_error` | `isinstance` | 263 |
-| external_call | `_handle_agent_error` | `HTTPException` | 264 |
+| unresolved_call | `get_agent_team_setup_report` | `service.report` | 527 |
+| external_call | `_handle_agent_error` | `isinstance` | 271 |
+| external_call | `_handle_agent_error` | `HTTPException` | 277 |
+| external_call | `_handle_agent_error` | `isinstance` | 278 |
+| external_call | `_handle_agent_error` | `HTTPException` | 279 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 279 |
+| external_call | `_handle_agent_error` | `isinstance` | 280 |
+| external_call | `_handle_agent_error` | `HTTPException` | 281 |
 | step_limit | `get_agent_team_setup_report` | `first 12 steps` | 0 |
 
 ## Behavior

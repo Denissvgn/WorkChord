@@ -102,14 +102,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_email_settings | service.update_settings | 66 | `service.update_settings(enabled=data.enabled, smtp_host=data.smtp_host, smtp_port=data.smtp_port, smtp_user=data.smtp_user, smtp_password=data.smtp_password, smtp_from_email=data.smtp_from_email, smtp_use_tls=data.smtp_use_tls, clear_smtp_password=data.clear_smtp_password)` |
-| update_email_settings | _response | 77 | `_response(settings)` |
+| update_email_settings | service.update_settings | 67 | `service.update_settings(enabled=data.enabled, smtp_host=data.smtp_host, smtp_port=data.smtp_port, smtp_user=data.smtp_user, smtp_password=data.smtp_password, smtp_from_email=data.smtp_from_email, smtp_use_tls=data.smtp_use_tls, clear_smtp_password=data.clear_smtp_password)` |
+| update_email_settings | _response | 78 | `_response(settings)` |
 | _response | EmailSettingsResponse | 24 | `EmailSettingsResponse(enabled=settings.enabled, smtp_host=settings.smtp_host, smtp_port=settings.smtp_port, smtp_user=settings.smtp_user, smtp_from_email=settings.smtp_from_email, smtp_use_tls=settings.smtp_use_tls, has_password=settings.has_password, field_sources=settings.field_sources)` |
-| update_email_settings | HTTPException | 79 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| update_email_settings | str | 81 | `str(e)` |
-| update_email_settings | logger.error | 86 | `logger.error('Failed to save email settings', exc_info=True)` |
-| update_email_settings | HTTPException | 87 | `HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=...)` |
-| update_email_settings | str | 89 | `str(e)` |
+| update_email_settings | HTTPException | 80 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_email_settings | str | 82 | `str(e)` |
+| update_email_settings | logger.error | 87 | `logger.error('Failed to save email settings', exc_info=True)` |
+| update_email_settings | HTTPException | 88 | `HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=...)` |
+| update_email_settings | str | 90 | `str(e)` |
 
 ### Boundary effects
 
@@ -119,10 +119,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `update_email_settings` | `service.update_settings` | 66 |
-| external_call | `update_email_settings` | `HTTPException` | 79 |
-| unresolved_call | `update_email_settings` | `logger.error` | 86 |
-| external_call | `update_email_settings` | `HTTPException` | 87 |
+| unresolved_call | `update_email_settings` | `service.update_settings` | 67 |
+| external_call | `update_email_settings` | `HTTPException` | 80 |
+| unresolved_call | `update_email_settings` | `logger.error` | 87 |
+| external_call | `update_email_settings` | `HTTPException` | 88 |
 
 ## Behavior
 

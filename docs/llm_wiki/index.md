@@ -7,8 +7,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1538 | [Open section](#entities) |
-| Modules | 778 | [Open section](#modules) |
-| Workflows | 194 | [Open section](#workflows) |
+| Modules | 781 | [Open section](#modules) |
+| Workflows | 195 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 554 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
@@ -1574,6 +1574,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
 - [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
+- [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
 - [AdminAccessPanel](modules/AdminAccessPanel.md) - `frontend/src/components/settings/AdminAccessPanel.tsx`
 - [AdminAccessPanel.test](modules/AdminAccessPanel.test.md) - `frontend/src/components/settings/AdminAccessPanel.test.tsx`
 - [AgentAccessPanel](modules/AgentAccessPanel.md) - `frontend/src/components/settings/AgentAccessPanel.tsx`
@@ -2119,6 +2120,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [services_work_metrics](modules/services_work_metrics.md) - Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 - [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
 - [session_service](modules/session_service.md) - Opaque browser-session resolution and trusted request audit metadata.
+- [settings_read](modules/settings_read.md) - Read-only settings for people without the admin key.
 - [setup](modules/setup.md) - `frontend/src/test/setup.ts`
 - [setup_agent_team](modules/setup_agent_team.md) - Validate, plan, apply, and inspect a WorkChord agent-team master.
 - [signing](modules/signing.md) - Detached remote-signing envelopes and pinned public-key verification.
@@ -2258,6 +2260,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
+- [test_settings_read_access](modules/test_settings_read_access.md) - People without the admin key read settings and the pipeline; changes keep the key.
 - [test_shared_member_revisions](modules/test_shared_member_revisions.md) - Shared-input scopes and destructive writes retain initial aggregate guards.
 - [test_shared_profile_revisions](modules/test_shared_profile_revisions.md) - Profile skill writes retain initial complete planning observations.
 - [test_source_preflight](modules/test_source_preflight.md) - Read-only SQLite snapshot and manifest safety tests.
@@ -2486,6 +2489,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [convert_triage_to_task](workflows/convert_triage_to_task.md) - entry: `mcp_agent_tools.convert_triage_to_task`
 - [create_request_source_link](workflows/create_request_source_link.md) - entry: `mcp_agent_tools.create_request_source_link`
 - [create_session](workflows/create_session.md) - entry: `session_service._create_session`
+- [enforce_http_authority](workflows/enforce_http_authority.md) - entry: `http_authority.enforce_http_authority`
 - [evaluate_agent_readiness](workflows/evaluate_agent_readiness.md) - entry: `agent_readiness.evaluate_agent_readiness`
 - [export_iteration](workflows/export_iteration.md) - entry: `export.export_iteration`
 - [final_table_results](workflows/final_table_results.md) - entry: `transfer._final_table_results`
