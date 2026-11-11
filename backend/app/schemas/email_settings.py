@@ -27,6 +27,8 @@ class EmailSettingsResponse(BaseModel):
     smtp_use_tls: bool
     has_password: bool  # Indicates if password is configured
     field_sources: dict[str, RuntimeSettingSource] = Field(default_factory=dict)
+    # Names of values left out because the reader has no admin key.
+    redacted_fields: list[str] = Field(default_factory=list)
 
 
 class TestEmailRequest(BaseModel):

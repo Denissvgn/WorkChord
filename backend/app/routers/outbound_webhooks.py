@@ -24,9 +24,9 @@ from app.services.outbound_webhook_service import (
     OutboundWebhookService,
     OutboundWebhookValidationError,
 )
-from app.security import require_admin_api_key
+from app.settings_read import redact_webhook_delivery, redact_webhook_target, require_settings_access, withholds
 
-router = APIRouter(dependencies=[Depends(require_admin_api_key)])
+router = APIRouter(dependencies=[Depends(require_settings_access)])
 
 
 async def get_outbound_webhook_service(
@@ -49,7 +49,10 @@ async def list_outbound_webhook_targets(
     service: Annotated[OutboundWebhookService, Depends(get_outbound_webhook_service)],
 ):
     """List outbound webhook targets."""
-    return await service.list_targets()
+    targets = await service.list_targets()
+    if not withholds(service.db.info.get("authority")):
+        return targets
+    return [redact_webhook_target(OutboundWebhookTargetResponse.model_validate(target)) for target in targets]
 
 
 @router.post(
@@ -140,7 +143,7 @@ async def list_outbound_webhook_deliveries(
 ):
     """List recent outbound webhook deliveries."""
     try:
-        return await service.list_deliveries(
+        deliveries = await service.list_deliveries(
             target_id=target_id,
             status=status_filter,
             channel=channel,
@@ -148,6 +151,9 @@ async def list_outbound_webhook_deliveries(
         )
     except OutboundWebhookValidationError as exc:
         raise await _bad_request(service, exc)
+    if not withholds(service.db.info.get("authority")):
+        return deliveries
+    return [redact_webhook_delivery(OutboundWebhookDeliveryResponse.model_validate(delivery)) for delivery in deliveries]
 
 
 @router.post(

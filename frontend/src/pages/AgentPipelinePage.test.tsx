@@ -23,8 +23,11 @@ vi.mock('../services/agentService', () => ({
     agentService: agentServiceMock,
 }));
 
+const useKeylessReaderMock = vi.hoisted(() => vi.fn(() => ({ settings: false, workViews: false })));
+
 vi.mock('../hooks/useAdminAccess', () => ({
     useAdminAccess: useAdminAccessMock,
+    useKeylessReader: useKeylessReaderMock,
 }));
 
 vi.mock('../hooks/useAgentAccess', () => ({
@@ -286,5 +289,16 @@ describe('AgentPipelinePage bounded run evidence', () => {
             expect(screen.queryByTestId(`task-card-${taskFixture.id}`)).not.toBeInTheDocument();
         });
         expect(document.documentElement.innerHTML).not.toContain(errorSentinel);
+    });
+
+    it('shows the board to a keyless reader and keeps run logs behind the key', async () => {
+        useAdminAccessMock.mockReturnValue({ hasAdminKey: false, hasAdminAccess: false });
+        useAgentAccessMock.mockReturnValue({ hasAgentKey: false });
+        useKeylessReaderMock.mockReturnValue({ settings: true, workViews: true });
+        agentServiceMock.getPipeline.mockResolvedValue(pipelineFixture);
+        renderWithProviders(<AgentPipelinePage />);
+        expect(await screen.findByTestId(`task-card-${taskFixture.id}`)).toBeVisible();
+        expect(screen.getByText(i18n.t('agentPipeline.runLogsNeedKey'))).toBeVisible();
+        expect(agentServiceMock.getRunDetail).not.toHaveBeenCalled();
     });
 });

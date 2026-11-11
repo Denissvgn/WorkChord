@@ -20,3 +20,17 @@ export const useAdminAccess = () => {
     const hasAdminAccess = hasAdminKey || role === 'owner' || role === 'operator';
     return { hasAdminKey: hasAdminAccess, hasAdminAccess };
 };
+
+/**
+ * Whether this person may read settings and views of work without the admin key:
+ * a trusted-local session or a workspace member. The server applies the same rule
+ * and withholds sensitive values; every change still needs the key.
+ */
+export const useKeylessReader = () => {
+    const identity = useIdentity()?.identity;
+    if (!identity) return { settings: false, workViews: false };
+    const local = identity.mode === 'trusted_local' && !identity.principal;
+    const member = identity.principal?.kind === 'human' && identity.workspace_role !== null;
+    const projectMember = identity.principal?.kind === 'human' && Object.keys(identity.projects ?? {}).length > 0;
+    return { settings: local || member, workViews: local || member || projectMember };
+};

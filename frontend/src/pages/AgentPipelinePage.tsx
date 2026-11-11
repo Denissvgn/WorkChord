@@ -20,7 +20,7 @@ import { MetricGrid, PageHeader, PageLayout } from '../components/ui';
 import { SlideOverDrawer } from '../components/ui/SlideOverDrawer';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { AdminAccessGate } from '../components/settings/AdminAccessGate';
-import { useAdminAccess } from '../hooks/useAdminAccess';
+import { useAdminAccess, useKeylessReader } from '../hooks/useAdminAccess';
 import { useAgentAccess } from '../hooks/useAgentAccess';
 import { getApiErrorStatus } from '../utils/apiError';
 import { protectedQueryRetry } from '../utils/protectedQueries';
@@ -79,6 +79,9 @@ export default function AgentPipelinePage() {
     const { hasAdminKey } = useAdminAccess();
     const { hasAgentKey } = useAgentAccess();
     const hasProtectedAccess = hasAdminKey || hasAgentKey;
+    // The board is a view of work, readable on the same rule as Tasks; run logs keep the key.
+    const keylessReader = useKeylessReader();
+    const canReadBoard = hasProtectedAccess || keylessReader.workViews;
     const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [projectFilter, setProjectFilter] = useState('');
@@ -95,9 +98,9 @@ export default function AgentPipelinePage() {
     } = useQuery({
         queryKey: ['agent-pipeline'],
         queryFn: agentService.getPipeline,
-        enabled: hasProtectedAccess,
+        enabled: canReadBoard,
         retry: protectedQueryRetry,
-        refetchInterval: hasProtectedAccess ? 5000 : false, // short-poll every 5 seconds for board
+        refetchInterval: canReadBoard ? 5000 : false, // short-poll every 5 seconds for board
     });
     const pipelineErrorStatus = getApiErrorStatus(pipelineError);
     const pipelineAuthorizationFailed = pipelineIsError
@@ -123,9 +126,9 @@ export default function AgentPipelinePage() {
     const { data: timelineData, error: timelineError, refetch: refetchTimeline } = useQuery({
         queryKey: ['task-timeline', selectedTask?.id],
         queryFn: () => selectedTask ? agentService.getTaskTimeline(selectedTask.id) : null,
-        enabled: hasProtectedAccess && !!selectedTask,
+        enabled: canReadBoard && !!selectedTask,
         retry: protectedQueryRetry,
-        refetchInterval: hasProtectedAccess && selectedTask ? 3000 : false, // short-poll every 3 seconds for active log console
+        refetchInterval: canReadBoard && selectedTask ? 3000 : false, // short-poll every 3 seconds for active log console
     });
 
     // Extract active run id for the selected task if it's currently executing/running
@@ -268,38 +271,41 @@ export default function AgentPipelinePage() {
             <PageHeader
                 title={t('agentPipeline.title')}
                 subtitle={t('agentPipeline.description')}
-                actions={hasProtectedAccess ? (
+                actions={canReadBoard ? (
                     <button className="btn" onClick={() => refetch()} disabled={isFetching}>
                     <RefreshCw className={clsx("h-4 w-4", isFetching && "animate-spin")}/>
                     {isFetching ? t('actions.refreshing') : t('actions.refresh')}
                     </button>
                 ) : null}
             />
-            {!hasProtectedAccess && (
+            {!canReadBoard && (
                 <AdminAccessGate>
                     <span />
                 </AdminAccessGate>
             )}
-            {hasProtectedAccess && pipelinePending && !usablePipelineData && (
+            {canReadBoard && !hasProtectedAccess && (
+                <p className="rounded-md border border-border bg-surface-muted px-4 py-3 text-sm text-content-secondary">{t('agentPipeline.runLogsNeedKey')}</p>
+            )}
+            {canReadBoard && pipelinePending && !usablePipelineData && (
                 <QueryLoadingState message={t('agentPipeline.loading')} />
             )}
-            {hasProtectedAccess && pipelineIsError && !usablePipelineData && (
+            {canReadBoard && pipelineIsError && !usablePipelineData && (
                 <QueryErrorState
                     error={pipelineError}
                     message={t('agentPipeline.pipelineUnavailable')}
                     onRetry={() => { void refetch(); }}
                 />
             )}
-            {hasProtectedAccess && pipelineIsError && usablePipelineData && (
+            {canReadBoard && pipelineIsError && usablePipelineData && (
                 <QueryStaleState message={t('agentPipeline.staleWarning')} onRetry={() => { void refetch(); }} />
             )}
-            {hasProtectedAccess && usablePipelineData && allTasks.length === 0 && (
+            {canReadBoard && usablePipelineData && allTasks.length === 0 && (
                 <QueryEmptyState
                     title={t('agentPipeline.emptyTitle')}
                     description={t('agentPipeline.emptyDescription')}
                 />
             )}
-            {hasProtectedAccess && usablePipelineData && allTasks.length > 0 && (
+            {canReadBoard && usablePipelineData && allTasks.length > 0 && (
             <>
             <MetricGrid columns={6}>
                 <div className="kpi"><div className="kpi-lbl">{t('agentPipeline.columns.needs_definition.title')}</div><div className="kpi-val tnum">{pipeline.needs_definition.length}</div></div>

@@ -23,6 +23,7 @@ vi.mock('../services/agentService', () => ({
 }));
 vi.mock('../hooks/useAdminAccess', () => ({
     useAdminAccess: useAdminAccessMock,
+    useKeylessReader: () => ({ settings: false, workViews: false }),
 }));
 
 const statusFixture: AgentTeamStatus = {

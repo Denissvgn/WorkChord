@@ -249,6 +249,23 @@ async def require_agent_read_access(
         _handle_agent_error(exc)
 
 
+async def require_pipeline_read_access(
+    service: Annotated[AgentService, Depends(get_agent_service)],
+    agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+    admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None,
+) -> None:
+    """The pipeline is a view of work: people read it on the same rule as Tasks.
+
+    Its task records are scoped to what the reader can see; run traces stay behind
+    the admin or agent key.
+    """
+    authority = service.db.info.get("authority")
+    if authority is not None and authority.kind in {"human", "local"} and (
+            authority.local or authority.workspace_role is not None or authority.projects):
+        return
+    await require_agent_read_access(service, agent_api_key, admin_api_key)
+
+
 def _handle_agent_error(exc: Exception, *, structured: bool = False) -> NoReturn:
     """Convert service errors to HTTP errors."""
     if isinstance(exc, AgentPermissionError):
@@ -1309,7 +1326,7 @@ def _run_detail_response(service: AgentService, run) -> AgentRunDetailResponse:
 @router.get("/agent/pipeline", response_model=AgentPipelineResponse)
 async def get_agent_pipeline(
     service: Annotated[AgentService, Depends(get_agent_service)],
-    _: Annotated[None, Depends(require_agent_read_access)],
+    _: Annotated[None, Depends(require_pipeline_read_access)],
 ):
     """Retrieve all current tasks grouped by their agent pipeline columns."""
     cols = await service.get_pipeline()

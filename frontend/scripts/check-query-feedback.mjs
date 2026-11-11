@@ -143,7 +143,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/layout/AppTopNav.tsx': '78ebdb449b4d7743',
     'src/features/planningMasters/usePlanningNavigationSummary.ts': 'a3c7904176ba9f46',
     'src/features/planningMasters/usePlanningReadiness.ts': '2b782515dca8677c',
-    'src/pages/AgentPipelinePage.tsx': '200e7928fa9ecf11',
+    'src/pages/AgentPipelinePage.tsx': '2625e1b458baf8f5',
     'src/pages/AnalyticsPage.tsx': 'd0ccdf0dc14dee0f',
     'src/pages/CalendarPage.tsx': '42beb00810aeada1',
     'src/pages/GanttPage.tsx': '52c643856293e9d2',

@@ -15,6 +15,7 @@ from app.models.identity import Principal, WorkspaceAuthorityState
 from app.services.identity_service import IdentityService
 from app.services.session_service import _get_session_by_token
 from app.security import admin_api_key_is_valid
+from app.settings_read import READABLE_SETTINGS_PATHS, settings_reader
 
 
 PUBLIC_PATHS = {"/health", "/health/live", "/health/ready", "/.well-known/workchord-build.json", "/openapi.json", "/docs", "/redoc", "/docs/oauth2-redirect"}
@@ -194,7 +195,8 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
             require_project(db, task.project_id, action)
     if relative.startswith("/llm") and request.method not in {"GET", "HEAD"} and not (authority.operator or authority.local or any(role in {"editor", "manager"} for role in authority.projects.values()) or authority.allows(None, "edit")):
         raise AuthorityError()
-    if relative.startswith(OPERATOR_PREFIXES) and not authority.operator:
+    settings_read = request.method in {"GET", "HEAD"} and relative in READABLE_SETTINGS_PATHS and settings_reader(authority)
+    if relative.startswith(OPERATOR_PREFIXES) and not authority.operator and not settings_read:
         raise AuthorityError("operator_required", "Workspace operator permission is required.")
     if relative.startswith("/agent") and authority.kind not in {"agent", "system"} and not authority.operator and not authority.local:
         if request.method not in {"GET", "HEAD"}:

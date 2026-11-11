@@ -8,10 +8,10 @@ from app.schemas.scheduling_rules import (
     SchedulingRulesResponse,
 )
 from app.schemas.common import MessageResponse
-from app.security import require_admin_api_key
+from app.settings_read import require_settings_access
 from app.services.scheduling_rules_service import SchedulingRulesService
 
-router = APIRouter(dependencies=[Depends(require_admin_api_key)])
+router = APIRouter(dependencies=[Depends(require_settings_access)])
 logger = logging.getLogger(__name__)
 
 

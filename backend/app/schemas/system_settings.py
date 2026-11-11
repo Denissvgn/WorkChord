@@ -119,3 +119,5 @@ class SystemSettingsResponse(BaseModel):
     github: GitHubRuntimeSettingsResponse
     web_intake: WebIntakeRuntimeSettingsResponse
     restart_required: list[RestartRequiredSetting]
+    # Names of values left out because the reader has no admin key.
+    redacted_fields: list[str] = Field(default_factory=list)

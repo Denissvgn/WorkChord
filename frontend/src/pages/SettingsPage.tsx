@@ -464,7 +464,7 @@ const SettingsPage = () => {
                         )}
                         {activeTab === 'appearance' && (
                             <div className="settings-panel-narrow wc-panel-stack">
-                                <AdminAccessGate showPanel={false} recovery={adminRecovery}>
+                                <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
                                     <InterfaceLanguageSettings/>
                                 </AdminAccessGate>
                                 <section className="card">
@@ -523,7 +523,7 @@ const SettingsPage = () => {
                             </div>
                         )}
                         {activeTab === 'scheduling' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery}>
+                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
                                 <SchedulingRulesSettings/>
                             </AdminAccessGate>
                         )}
@@ -534,20 +534,24 @@ const SettingsPage = () => {
                                 <AgentModelAdministration />
                             </div>
                         )}
-                        {activeTab === 'github' && <GitHubSettingsPanel/>}
+                        {activeTab === 'github' && (
+                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
+                                <GitHubSettingsPanel/>
+                            </AdminAccessGate>
+                        )}
                         {activeTab === 'webhooks' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery}>
+                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
                                 <OutboundWebhooksPanel/>
                             </AdminAccessGate>
                         )}
                         {activeTab === 'notifications' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery}>
+                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
                                 <EmailSettingsPanel/>
                             </AdminAccessGate>
                         )}
                         {activeTab === 'admin_access' && <AdminAccessPanel/>}
                         {activeTab === 'runtime' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery}>
+                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
                                 <RuntimeConfigSettings/>
                             </AdminAccessGate>
                         )}
