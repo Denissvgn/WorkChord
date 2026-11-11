@@ -297,3 +297,30 @@ describe('Gantt timeline controls', () => {
         expect(screen.getByRole('button', { name: /Today/ })).toBeInTheDocument();
     });
 });
+
+describe('Gantt finding and grouping', () => {
+    const tasks: GanttTask[] = [
+        { ...taskFixture, id: 201, title: 'WC-1 Build the importer', status: 'active' },
+        { ...taskFixture, id: 202, title: 'WC-2 Review the importer', status: 'planned' },
+        { ...taskFixture, id: 203, title: 'Write release notes', status: 'planned' },
+    ];
+
+    it('narrows rows by search and counts it as an active filter', async () => {
+        const { user } = renderChart(false, tasks);
+        await user.type(screen.getByRole('searchbox', { name: 'Search tasks' }), 'release');
+        expect(screen.getByText('Write release notes')).toBeInTheDocument();
+        expect(screen.queryByText('WC-1 Build the importer')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /1/ , expanded: false })).toBeInTheDocument();
+    });
+
+    it('groups top-level tasks by ID prefix with counts and collapses a group', async () => {
+        const { user } = renderChart(false, tasks);
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Group by' }), 'prefix');
+        const group = screen.getByRole('button', { name: 'WC (2)' });
+        expect(screen.getByRole('button', { name: 'No ID prefix (1)' })).toBeInTheDocument();
+        await user.click(group);
+        expect(group).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByText('WC-1 Build the importer')).not.toBeInTheDocument();
+        expect(screen.getByText('Write release notes')).toBeInTheDocument();
+    });
+});

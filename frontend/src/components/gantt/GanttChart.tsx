@@ -60,6 +60,14 @@ interface FlattenedTask extends GanttTask {
     depth: number;
 }
 
+type GanttGroupBy = 'none' | 'milestone' | 'prefix' | 'status';
+type GanttStatusFilter = '' | 'planned' | 'active' | 'resolved' | 'closed';
+type GanttRow =
+    | { kind: 'task'; task: FlattenedTask }
+    | { kind: 'group'; key: string; label: string; count: number };
+
+const ID_PREFIX_PATTERN = /^([A-Za-z][A-Za-z0-9]*)[-_]\d+/;
+
 interface TaskTimelineDates {
     start: string | null;
     end: string | null;
@@ -140,10 +148,19 @@ export const GanttChart = ({
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-    const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned);
+    const [searchText, setSearchText] = useState('');
+    const [statusFilter, setStatusFilter] = useState<GanttStatusFilter>('');
+    const [groupBy, setGroupBy] = useState<GanttGroupBy>('none');
+    const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+    const normalizedSearch = searchText.trim().toLowerCase();
+    const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned)
+        + Number(Boolean(normalizedSearch)) + Number(statusFilter !== '') + Number(hideUnscheduled);
     const clearFilters = () => {
         setSelectedAssigneeId(null);
         setHideUnassigned(false);
+        setSearchText('');
+        setStatusFilter('');
+        setHideUnscheduled(false);
     };
 
     // --- Data Preparation ---
@@ -306,10 +323,14 @@ export const GanttChart = ({
         let matches = true;
         if (assigneeId) matches = task.assignee?.id === assigneeId;
         if (hideUnassignedTasks && !task.assignee) matches = false;
+        if (matches && statusFilter) matches = task.status === statusFilter;
+        if (matches && normalizedSearch) {
+            matches = task.title.toLowerCase().includes(normalizedSearch) || `#${task.id}` === normalizedSearch || String(task.id) === normalizedSearch;
+        }
         if (matches) return true;
         if (task.children) return task.children.some(child => taskMatchesFilter(child, assigneeId, hideUnassignedTasks));
         return false;
-    }, []);
+    }, [normalizedSearch, statusFilter]);
 
     const unscheduledTaskCount = useMemo(() => {
         let count = 0;
@@ -347,6 +368,36 @@ export const GanttChart = ({
         sortedTasks.forEach(task => processTask(task, 0));
         return flattened;
     }, [activeFilterCount, sortedTasks, expandedTasks, selectedAssigneeId, hideUnassigned, hideUnscheduled, taskMatchesFilter]);
+
+    // Grouping keeps each top-level task with its children and adds one header per group.
+    const rows = useMemo<GanttRow[]>(() => {
+        if (groupBy === 'none') return displayTasks.map(task => ({ kind: 'task' as const, task }));
+        const groupOf = (task: FlattenedTask): { key: string; label: string } => {
+            if (groupBy === 'milestone') {
+                return task.milestone ? { key: `m${task.milestone.id}`, label: task.milestone.name } : { key: 'm-none', label: t('surfaces.ganttChart.noMilestone') };
+            }
+            if (groupBy === 'status') return { key: task.status, label: t(`statuses.${task.status}`) };
+            const prefix = ID_PREFIX_PATTERN.exec(task.title)?.[1]?.toUpperCase();
+            return prefix ? { key: `p${prefix}`, label: prefix } : { key: 'p-none', label: t('surfaces.ganttChart.noIdPrefix') };
+        };
+        const groups = new Map<string, { label: string; tasks: FlattenedTask[]; count: number }>();
+        let current: { label: string; tasks: FlattenedTask[]; count: number } | null = null;
+        displayTasks.forEach(task => {
+            if (task.depth === 0 || current === null) {
+                const { key, label } = groupOf(task);
+                current = groups.get(key) ?? { label, tasks: [], count: 0 };
+                groups.set(key, current);
+                current.count += 1;
+            }
+            current.tasks.push(task);
+        });
+        const result: GanttRow[] = [];
+        groups.forEach((group, key) => {
+            result.push({ kind: 'group', key, label: group.label, count: group.count });
+            if (!collapsedGroups.has(key)) group.tasks.forEach(task => result.push({ kind: 'task', task }));
+        });
+        return result;
+    }, [collapsedGroups, displayTasks, groupBy, t]);
 
     const currentTaskDatesById = useMemo(() => {
         const datesById = new Map<number, TaskTimelineDates>();
@@ -409,7 +460,7 @@ export const GanttChart = ({
     // Row Virtualizer
     const ROW_HEIGHT = 50;
     const rowVirtualizer = useVirtualizer({
-        count: displayTasks.length,
+        count: rows.length,
         getScrollElement: () => scrollContainerRef.current,
         estimateSize: () => ROW_HEIGHT,
         overscan: 10,
@@ -765,6 +816,26 @@ export const GanttChart = ({
                     </Button>
                 </div>
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
+                    <input
+                        type="search"
+                        value={searchText}
+                        onChange={event => setSearchText(event.target.value)}
+                        placeholder={t('surfaces.ganttChart.searchPlaceholder')}
+                        aria-label={t('surfaces.ganttChart.searchTasks')}
+                        className="input h-9 w-44 text-sm"
+                    />
+                    <select value={statusFilter} onChange={event => setStatusFilter(event.target.value as GanttStatusFilter)}
+                        aria-label={t('surfaces.ganttChart.statusFilter')} className="input h-9 w-auto text-sm">
+                        <option value="">{t('surfaces.ganttChart.anyStatus')}</option>
+                        {LEGEND_STATUSES.map(status => <option key={status} value={status}>{t(`statuses.${status}`)}</option>)}
+                    </select>
+                    <select value={groupBy} onChange={event => { setGroupBy(event.target.value as GanttGroupBy); setCollapsedGroups(new Set()); }}
+                        aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
+                        <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
+                        <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
+                        <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
+                        <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
+                    </select>
                     <Button
                         variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
                         size="sm"
@@ -1159,7 +1230,26 @@ export const GanttChart = ({
 
                     {/* B. Task Rows Layer */}
                     {rowVirtualizer.getVirtualItems().map(virtualRow => {
-                        const task = displayTasks[virtualRow.index];
+                        const row = rows[virtualRow.index];
+                        if (row.kind === 'group') {
+                            const collapsed = collapsedGroups.has(row.key);
+                            return (
+                                <div key={`group-${row.key}`} className="absolute left-0 w-full border-b border-border bg-surface-muted"
+                                    style={{ top: `${virtualRow.start}px`, height: `${virtualRow.size}px` }}>
+                                    <button type="button" aria-expanded={!collapsed}
+                                        className="sticky left-0 flex h-full items-center gap-2 px-3 text-sm font-semibold text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                        onClick={() => setCollapsedGroups(previous => {
+                                            const next = new Set(previous);
+                                            if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
+                                            return next;
+                                        })}>
+                                        {collapsed ? <ChevronRight className="h-4 w-4" aria-hidden="true" /> : <ChevronDown className="h-4 w-4" aria-hidden="true" />}
+                                        {t('surfaces.ganttChart.groupHeader', { label: row.label, count: row.count })}
+                                    </button>
+                                </div>
+                            );
+                        }
+                        const task = row.task;
                         const taskDates = getTaskTimelineDates(task);
                         const taskPosition = hasCompleteTimelineDates(taskDates)
                             ? getTaskPosition(task)
