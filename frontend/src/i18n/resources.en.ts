@@ -2398,6 +2398,10 @@ export const englishResources = {
                     risksToAcknowledge_other: '{{count}} planning exceptions to review',
                 },
                 master: {
+                    unknown: 'Unknown',
+                    agents: 'Agents',
+                    agentWorkingNoCapacity: 'Agent working · no capacity row',
+                    addCapacityRows: 'Add capacity rows for agent-held tasks',
                     quickAction: 'Do it here',
                     done: 'Done',
                     needsAttention: 'Needs attention',

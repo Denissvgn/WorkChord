@@ -2235,6 +2235,10 @@ export const russianResources = {
                     risksToAcknowledge_other: 'Нужно проверить {{count}} исключения планирования',
                 },
                 master: {
+                    unknown: 'Неизвестно',
+                    agents: 'Агенты',
+                    agentWorkingNoCapacity: 'Работает агент · нет строки мощности',
+                    addCapacityRows: 'Добавить строки мощности для задач агентов',
                     quickAction: 'Сделать здесь',
                     done: 'Готово',
                     needsAttention: 'Требует внимания',

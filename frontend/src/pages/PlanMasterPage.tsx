@@ -191,6 +191,9 @@ const getStepEvidence = (
     language: string,
     iterationId: number,
 ): EvidenceItem[] => {
+    // Without a planning period these numbers are not known; never print them as 0.
+    const known = readiness.hasCurrentIteration;
+    const count = (value: number) => (known ? String(value) : t('plan.master.unknown'));
     const planningIssueEvidence = ({
         issue,
         label,
@@ -203,9 +206,9 @@ const getStepEvidence = (
         actionKey: string;
     }): EvidenceItem => ({
         label,
-        value: String(count),
-        exception: count > 0,
-        ...(count > 0 ? {
+        value: known ? String(count) : t('plan.master.unknown'),
+        exception: known && count > 0,
+        ...(known && count > 0 ? {
             href: planningIssueTasksHref({
                 issue,
                 iterationId,
@@ -241,18 +244,22 @@ const getStepEvidence = (
         return [
             {
                 label: t('plan.master.people'),
-                value: String(readiness.teamMemberCount),
-                exception: readiness.teamMemberCount === 0,
+                value: count(readiness.teamMemberCount - (readiness.teamAgentCount ?? 0)),
+                exception: known && readiness.teamMemberCount === 0,
             },
+            ...((readiness.teamAgentCount ?? 0) > 0 ? [{
+                label: t('plan.master.agents'),
+                value: count(readiness.teamAgentCount ?? 0),
+            }] : []),
             {
                 label: t('plan.master.totalCapacity'),
-                value: t('units.hoursCompact', { count: readiness.teamCapacity }),
-                exception: readiness.teamCapacity <= 0,
+                value: known ? t('units.hoursCompact', { count: readiness.teamCapacity }) : t('plan.master.unknown'),
+                exception: known && readiness.teamCapacity <= 0,
             },
             {
                 label: t('plan.master.missingAllocation'),
-                value: String(readiness.teamMembersNoCap),
-                exception: readiness.teamMembersNoCap > 0,
+                value: count(readiness.teamMembersNoCap),
+                exception: known && readiness.teamMembersNoCap > 0,
             },
         ];
     }
@@ -260,8 +267,8 @@ const getStepEvidence = (
         return [
             {
                 label: t('plan.master.tasksInPeriod'),
-                value: String(readiness.taskCount),
-                exception: readiness.taskCount === 0,
+                value: count(readiness.taskCount),
+                exception: known && readiness.taskCount === 0,
             },
         ];
     }
@@ -279,9 +286,16 @@ const getStepEvidence = (
                 count: readiness.tasksWithoutEffort,
                 actionKey: 'plan.master.openMissingEffortTasks',
             }),
+            ...((readiness.tasksAgentWithoutCapacity ?? 0) > 0 ? [{
+                label: t('plan.master.agentWorkingNoCapacity'),
+                value: count(readiness.tasksAgentWithoutCapacity ?? 0),
+                exception: true,
+                href: withPlanMasterReturn('/team', stepId as PlanningStepId),
+                actionLabel: t('plan.master.addCapacityRows'),
+            }] : []),
             {
                 label: t('plan.master.tasksInPeriod'),
-                value: String(readiness.taskCount),
+                value: count(readiness.taskCount),
             },
         ];
     }
