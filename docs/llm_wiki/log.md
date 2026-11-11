@@ -2924,3 +2924,19 @@ Team setup now consumes the bundle service’s integrity-validated release catal
 - Workflow pages created: 0
 - Dependency pages initialized: 0
 - Surface policy updated: no
+
+## 2026-11-11
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:30a421971e892b16b830724ef497c865be244b5cda126d8518b4e54c988d1d47`
+- Pages created: 0
+- Pages updated: 3
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3100
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

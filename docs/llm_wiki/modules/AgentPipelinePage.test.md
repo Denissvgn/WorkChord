@@ -15,7 +15,7 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.test.tsx`._
 | `../types/agent` | `AgentPipeline`, `AgentRun`, `TaskTimelineResponse` | Declaration | erased |
 | `../types/task` | `Task` | Declaration | erased |
 | `./AgentPipelinePage` | `AgentPipelinePage` | — | compiler-dependent |
-| `@testing-library/react` | `screen`, `waitFor` | — | compiler-dependent |
+| `@testing-library/react` | `screen`, `waitFor`, `within` | — | compiler-dependent |
 | `vitest` | `beforeEach`, `describe`, `expect`, `it`, `vi` | — | compiler-dependent |
 
 ## Module Signals

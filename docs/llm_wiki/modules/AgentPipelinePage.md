@@ -13,7 +13,7 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.tsx`._
 | `../components/agent/TaskRoutingPanel` | `TaskRoutingPanel` | — | compiler-dependent |
 | `../components/feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState`, `QueryStaleState` | — | compiler-dependent |
 | `../components/settings/AdminAccessGate` | `AdminAccessGate` | — | compiler-dependent |
-| `../components/ui` | `MetricGrid`, `PageHeader`, `PageLayout` | — | compiler-dependent |
+| `../components/ui` | `PageHeader`, `PageLayout` | — | compiler-dependent |
 | `../components/ui/SlideOverDrawer` | `SlideOverDrawer` | — | compiler-dependent |
 | `../hooks/useAdminAccess` | `useAdminAccess`, `useKeylessReader` | — | compiler-dependent |
 | `../hooks/useAgentAccess` | `useAgentAccess` | — | compiler-dependent |
@@ -25,18 +25,18 @@ _Auto-generated from `frontend/src/pages/AgentPipelinePage.tsx`._
 | `../utils/protectedQueries` | `protectedQueryRetry` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `framer-motion` | `motion` | — | compiler-dependent |
 | `lucide-react` | `CheckCircle2`, `User`, `Calendar`, `Folder`, `RefreshCw`, `Terminal`, `Search`, `Clock`, `AlertTriangle` | — | compiler-dependent |
 | `react` | `useMemo`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 
 | Signal | Values |
 |--------|--------|
 | Exports | `default` |
-| Constants | `EMPTY_PIPELINE`, `TIMELINE_ITEM_LABELS`, `RUN_STATUSES`, `MODEL_TRUST_STATES`, `TASK_STATUSES` |
-| Module calls | `RUN_STATUSES = Set`, `MODEL_TRUST_STATES = Set`, `TASK_STATUSES = Set` |
+| Constants | `EMPTY_PIPELINE`, `TIMELINE_ITEM_LABELS`, `HUMAN_GATED_STAGES`, `STAGE_ACTION_KEYS`, `RUN_STATUSES`, `MODEL_TRUST_STATES`, `TASK_STATUSES` |
+| Module calls | `HUMAN_GATED_STAGES = Set`, `RUN_STATUSES = Set`, `MODEL_TRUST_STATES = Set`, `TASK_STATUSES = Set` |
 
 ## Local dependency map
 
