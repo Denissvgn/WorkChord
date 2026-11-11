@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
 import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, ListFilter, Eye } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, ListFilter, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
@@ -32,6 +33,28 @@ interface GanttChartProps {
     sandboxMode?: boolean;
     onSaveSandbox?: (taskId: number, updatedData: Partial<GanttTask>) => void;
 }
+
+const ZOOM_MIN = 20;
+const ZOOM_MAX = 100;
+const ZOOM_STEP = 10;
+const ZOOM_DEFAULT = 40;
+const TASK_COLUMN_MIN = 200;
+const TASK_COLUMN_MAX = 480;
+const TASK_COLUMN_DEFAULT = 300;
+const TASK_COLUMN_STORAGE_KEY = 'workchord:gantt-task-column-width';
+const LEGEND_STATUSES = ['planned', 'active', 'resolved', 'closed'] as const;
+
+const readStoredTaskColumnWidth = () => {
+    try {
+        const stored = Number(window.localStorage.getItem(TASK_COLUMN_STORAGE_KEY));
+        return Number.isFinite(stored) && stored >= TASK_COLUMN_MIN && stored <= TASK_COLUMN_MAX ? stored : TASK_COLUMN_DEFAULT;
+    } catch {
+        return TASK_COLUMN_DEFAULT;
+    }
+};
+
+const isTypingTarget = (target: EventTarget | null) => target instanceof HTMLElement
+    && (target.isContentEditable || ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName));
 
 interface FlattenedTask extends GanttTask {
     depth: number;
@@ -106,8 +129,14 @@ export const GanttChart = ({
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const [hideUnassigned, setHideUnassigned] = useState(false);
     const [hideUnscheduled, setHideUnscheduled] = useState(false);
-    const [zoomLevel, setZoomLevel] = useState(40); // Width of day column
+    const [zoomLevel, setZoomLevel] = useState(ZOOM_DEFAULT); // Width of one day column in pixels
     const [isCompressed, setIsCompressed] = useState(false);
+    const [taskColumnWidth, setTaskColumnWidthState] = useState(readStoredTaskColumnWidth);
+    const setTaskColumnWidth = (width: number) => {
+        const next = Math.min(TASK_COLUMN_MAX, Math.max(TASK_COLUMN_MIN, Math.round(width)));
+        setTaskColumnWidthState(next);
+        try { window.localStorage.setItem(TASK_COLUMN_STORAGE_KEY, String(next)); } catch { /* Storage may be unavailable. */ }
+    };
     const [isSortedByDate, setIsSortedByDate] = useState(false);
     const [editingTask, setEditingTask] = useState<GanttTask | null>(null);
     const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -461,6 +490,21 @@ export const GanttChart = ({
         return toneSolidClassName[STATUS_TONE[task.status]];
     };
 
+    const taskTimingFlags = (task: GanttTask) => [
+        task.is_overdue ? t('gantt.flagOverdue') : null,
+        task.is_delayed ? t('gantt.flagLateStart') : null,
+    ].filter(Boolean).map(flag => ` ${flag}`).join('');
+
+    // The bar repeats nothing from the task column: who carries it and for how long.
+    const getTaskBarText = (task: GanttTask) => {
+        const dates = getTaskTimelineDates(task);
+        const days = hasCompleteTimelineDates(dates)
+            ? differenceInCalendarDays(parseISO(dates.end), parseISO(dates.start)) + 1
+            : null;
+        const owner = task.assignee?.name ?? t('common.unassigned');
+        return days === null ? owner : t('gantt.taskBarText', { owner, count: days });
+    };
+
     const formatTaskTimelineDates = (dates: { start: string; end: string }) => ({
         start: formatDate(dates.start, activeI18n.language),
         end: formatDate(dates.end, activeI18n.language),
@@ -471,8 +515,10 @@ export const GanttChart = ({
         if (!hasCompleteTimelineDates(dates)) {
             return t('gantt.taskDatesUnavailable', { title: task.title });
         }
-        return t('gantt.taskDateRange', {
+        return t('gantt.taskBarSummary', {
             title: task.title,
+            status: t(`statuses.${task.status}`),
+            flags: taskTimingFlags(task),
             ...formatTaskTimelineDates(dates),
         });
     };
@@ -484,10 +530,11 @@ export const GanttChart = ({
         }
         return t('gantt.openScheduledTask', {
             title: task.title,
+            status: t(`statuses.${task.status}`),
             assignee: task.assignee?.name ?? t('common.unassigned'),
             priority: task.priority,
             ...formatTaskTimelineDates(dates),
-        });
+        }) + taskTimingFlags(task);
     };
 
     const getUnscheduledTaskGuidance = (task: GanttTask) => (
@@ -642,13 +689,38 @@ export const GanttChart = ({
         scrollContainerRef.current.scrollTop = scrollTop - walkY;
     };
 
-    const SIDEBAR_WIDTH = 300;
+    const SIDEBAR_WIDTH = taskColumnWidth;
+    const zoomPercent = Math.round((zoomLevel / ZOOM_DEFAULT) * 100);
+    const zoomOut = () => setZoomLevel(value => Math.max(ZOOM_MIN, value - ZOOM_STEP));
+    const zoomIn = () => setZoomLevel(value => Math.min(ZOOM_MAX, value + ZOOM_STEP));
+    const todayIndex = visibleDays.findIndex(day => isSameDay(day, new Date()));
+    const scrollToToday = () => {
+        const container = scrollContainerRef.current;
+        if (!container || todayIndex < 0) return;
+        const timelineWidth = Math.max(0, container.clientWidth - SIDEBAR_WIDTH);
+        container.scrollTo({ left: Math.max(0, todayIndex * zoomLevel - timelineWidth / 2 + zoomLevel / 2), behavior: 'smooth' });
+    };
+    const fitIteration = () => {
+        const container = scrollContainerRef.current;
+        const iterationDays = differenceInCalendarDays(new Date(endDate), new Date(startDate)) + 1;
+        if (!container || iterationDays <= 0) return;
+        const timelineWidth = Math.max(0, container.clientWidth - SIDEBAR_WIDTH);
+        setZoomLevel(Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Math.floor(timelineWidth / iterationDays))));
+        container.scrollTo({ left: 0 });
+    };
+    // "+" and "-" zoom and "T" jumps to today, unless the person is typing.
+    const handleChartShortcut = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || isTypingTarget(event.target)) return;
+        if (event.key === '+' || event.key === '=') { event.preventDefault(); zoomIn(); }
+        else if (event.key === '-' || event.key === '_') { event.preventDefault(); zoomOut(); }
+        else if (event.key === 't' || event.key === 'T') { event.preventDefault(); scrollToToday(); }
+    };
     const isFilteredEmpty = sourceTasks.length > 0
         && activeFilterCount > 0
         && displayTasks.length === 0;
 
     return (
-        <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow">
+        <div role="region" aria-label={t('surfaces.ganttChart.chartRegion')} className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow" onKeyDown={handleChartShortcut}>
             {unscheduledTaskCount > 0 && (
                 // One summary replaces a warning on every unscheduled row.
                 <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
@@ -669,7 +741,29 @@ export const GanttChart = ({
                 </div>
             )}
             {/* Toolbar */}
-            <div className="z-10 flex shrink-0 justify-end border-b border-border bg-surface-card p-3 sm:p-4">
+            <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-card p-3 sm:p-4">
+                <div role="group" aria-label={t('surfaces.ganttChart.timelineControls')} className="flex min-w-0 flex-wrap items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}
+                        aria-label={t('surfaces.ganttChart.zoomTimelineOut')} title={t('surfaces.ganttChart.zoomOutShortcut')}>
+                        <ZoomOut className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                    <span className="min-w-14 text-center text-sm tabular-nums text-content-secondary" aria-live="polite">
+                        {t('surfaces.ganttChart.zoomLevel', { percent: zoomPercent })}
+                    </span>
+                    <Button variant="ghost" size="sm" onClick={zoomIn} disabled={zoomLevel >= ZOOM_MAX}
+                        aria-label={t('surfaces.ganttChart.zoomTimelineIn')} title={t('surfaces.ganttChart.zoomInShortcut')}>
+                        <ZoomIn className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={scrollToToday} disabled={todayIndex < 0}
+                        title={todayIndex < 0 ? t('surfaces.ganttChart.todayOutsideTimeline') : t('surfaces.ganttChart.todayShortcut')}>
+                        <Crosshair className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.ganttChart.today')}
+                    </Button>
+                    <Button variant="secondary" size="sm" onClick={fitIteration}>
+                        <CalendarRange className="mr-2 h-4 w-4" aria-hidden="true" />
+                        {t('surfaces.ganttChart.fitIteration')}
+                    </Button>
+                </div>
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                     <Button
                         variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
@@ -723,18 +817,6 @@ export const GanttChart = ({
                                 ),
                             }] : []),
                             {
-                                label: t('surfaces.ganttChart.zoomTimelineOut'),
-                                icon: <ZoomOut className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setZoomLevel(value => Math.max(20, value - 10)),
-                                disabled: zoomLevel <= 20,
-                            },
-                            {
-                                label: t('surfaces.ganttChart.zoomTimelineIn'),
-                                icon: <ZoomIn className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => setZoomLevel(value => Math.min(100, value + 10)),
-                                disabled: zoomLevel >= 100,
-                            },
-                            {
                                 label: t(isCompressed
                                     ? 'surfaces.ganttChart.showEveryDate'
                                     : 'surfaces.ganttChart.condenseLongTaskSpans'),
@@ -747,6 +829,23 @@ export const GanttChart = ({
                     />
                 </div>
             </div>
+
+            <details className="shrink-0 border-b border-border bg-surface-card px-4 py-2 text-xs text-content-secondary">
+                <summary className="cursor-pointer font-medium text-content-primary">{t('surfaces.ganttChart.legend')}</summary>
+                <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+                    {LEGEND_STATUSES.map(status => <li key={status} className="flex items-center gap-1.5">
+                        <span aria-hidden="true" className={clsx('inline-block h-3 w-5 rounded', toneSolidClassName[STATUS_TONE[status]])} />
+                        {t(`statuses.${status}`)}
+                    </li>)}
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-card ring-2 ring-feedback-danger" />{t('surfaces.ganttChart.legendOverdue')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-card ring-2 ring-feedback-purple" />{t('surfaces.ganttChart.legendLateStart')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-action bg-surface-card ring-2 ring-focus" />{t('surfaces.ganttChart.legendChanged')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-0.5 bg-action" />{t('surfaces.ganttChart.legendToday')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-muted" />{t('surfaces.ganttChart.legendWeekend')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-feedback-danger-muted" />{t('surfaces.ganttChart.legendHoliday')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-dashed border-border-strong" />{t('surfaces.ganttChart.legendNoDates')}</li>
+                </ul>
+            </details>
 
             <SlideOverDrawer
                 open={isFiltersOpen}
@@ -938,7 +1037,7 @@ export const GanttChart = ({
                     <div className="relative h-7 border-b border-border bg-surface-muted text-xs text-content-secondary font-semibold"
                         style={{ width: '100%' }}
                     >
-                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-muted border-r border-border w-[300px]" />
+                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-muted border-r border-border" style={{ width: `${SIDEBAR_WIDTH}px` }} />
                         {monthGroups.map((group, idx) => (
                             <div key={idx}
                                 className={clsx("absolute top-0 bottom-0 text-center border-r border-border flex items-center justify-center truncate px-1", idx % 2 === 0 ? "bg-feedback-indigo-muted/50" : "bg-feedback-success-muted/50")}
@@ -954,8 +1053,33 @@ export const GanttChart = ({
 
                     {/* Bottom Row: Days */}
                     <div className="relative h-8 bg-surface-card" style={{ width: '100%' }}>
-                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-card border-r border-border-strong w-[300px] flex items-center pl-4 font-bold text-content-primary shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-card border-r border-border-strong flex items-center pl-4 font-bold text-content-primary shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                            style={{ width: `${SIDEBAR_WIDTH}px` }}>
                             {t('surfaces.ganttChart.task')}
+                            <div
+                                role="separator"
+                                aria-orientation="vertical"
+                                aria-label={t('surfaces.ganttChart.resizeTaskColumn')}
+                                aria-valuemin={TASK_COLUMN_MIN}
+                                aria-valuemax={TASK_COLUMN_MAX}
+                                aria-valuenow={SIDEBAR_WIDTH}
+                                tabIndex={0}
+                                className="absolute right-0 top-0 h-full w-2 cursor-col-resize hover:bg-action-muted focus-visible:bg-action-muted focus-visible:outline-none"
+                                onKeyDown={event => {
+                                    if (event.key === 'ArrowLeft') { event.preventDefault(); event.stopPropagation(); setTaskColumnWidth(SIDEBAR_WIDTH - 20); }
+                                    if (event.key === 'ArrowRight') { event.preventDefault(); event.stopPropagation(); setTaskColumnWidth(SIDEBAR_WIDTH + 20); }
+                                }}
+                                onPointerDown={event => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    const startX = event.clientX;
+                                    const startWidth = SIDEBAR_WIDTH;
+                                    const move = (moveEvent: PointerEvent) => setTaskColumnWidth(startWidth + moveEvent.clientX - startX);
+                                    const stop = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', stop); };
+                                    window.addEventListener('pointermove', move);
+                                    window.addEventListener('pointerup', stop);
+                                }}
+                            />
                         </div>
                         {columnVirtualizer.getVirtualItems().map(virtualColumn => {
                             const day = visibleDays[virtualColumn.index];
@@ -966,7 +1090,7 @@ export const GanttChart = ({
                                     key={virtualColumn.index}
                                     className={clsx(
                                         "absolute top-0 bottom-0 border-r border-border-subtle flex flex-col items-center justify-center text-wc-micro",
-                                        isHol ? "bg-feedback-danger-muted text-feedback-danger-foreground" : isWknd ? "bg-action-muted text-action-muted-foreground" : "bg-surface-card text-content-secondary"
+                                        isSameDay(day, new Date()) ? "bg-action-muted font-semibold text-action" : isHol ? "bg-feedback-danger-muted text-feedback-danger-foreground" : isWknd ? "bg-surface-muted text-content-tertiary" : "bg-surface-card text-content-secondary"
                                     )}
                                     style={{
                                         left: `${SIDEBAR_WIDTH + virtualColumn.start}px`,
@@ -1012,15 +1136,14 @@ export const GanttChart = ({
                                     key={`grid-${virtualColumn.index}`}
                                     className={clsx(
                                         "absolute top-0 bottom-0 h-full border-r border-border-subtle/50",
-                                        isHol ? "bg-feedback-danger-muted/50" : isWknd ? "bg-action-muted/30" : "bg-transparent",
-                                        isToday && "bg-feedback-warning-muted/30"
+                                        isHol ? "bg-feedback-danger-muted/50" : isWknd ? "bg-surface-muted" : "bg-transparent"
                                     )}
                                     style={{
                                         left: `${SIDEBAR_WIDTH + virtualColumn.start}px`,
                                         width: `${virtualColumn.size}px`,
                                     }}
                                 >
-                                    {isToday && <div className="w-0.5 h-full bg-feedback-warning absolute left-1/2 -translate-x-1/2 opacity-50" />}
+                                    {isToday && <div aria-hidden="true" className="absolute left-1/2 h-full w-0.5 -translate-x-1/2 bg-action" />}
                                 </div>
                             );
                         })}
@@ -1058,7 +1181,8 @@ export const GanttChart = ({
                             >
                                 {/* Fixed Sidebar Cell */}
                                 <div
-                                    className="absolute left-0 top-0 bottom-0 w-[300px] border-r border-border bg-surface-card z-20 flex flex-col justify-center px-2 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                    className="absolute left-0 top-0 bottom-0 border-r border-border bg-surface-card z-20 flex flex-col justify-center px-2 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                    style={{ width: `${SIDEBAR_WIDTH}px` }}
                                 >
                                     <div className="flex items-center gap-1" style={{ paddingLeft: `${task.depth * 16}px` }}>
                                         {task.children && task.children.length > 0 ? (
@@ -1094,7 +1218,7 @@ export const GanttChart = ({
                                         <span
                                             aria-label={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
                                             title={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
-                                            className={clsx("shrink-0 rounded border px-1", task.priority <= 2 ? "border-feedback-danger-border text-feedback-danger-foreground bg-feedback-danger-muted" : "border-border")}
+                                            className={clsx("shrink-0 rounded border border-border px-1 text-content-secondary", task.priority <= 2 && "font-semibold text-content-primary")}
                                         >
                                             {t('surfaces.ganttChart.priority', { priority: task.priority })}
                                         </span>
@@ -1145,7 +1269,7 @@ export const GanttChart = ({
                                                 ? getPreviewTaskDescription(task)
                                                 : getTaskAccessibleLabel(task)}
                                         >
-                                            <span className="truncate font-medium drop-shadow-md">{task.title}</span>
+                                            <span className="truncate font-medium drop-shadow-md">{getTaskBarText(task)}</span>
                                         </button>
                                     ) : schedulePreview ? (
                                         <div

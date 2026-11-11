@@ -70,6 +70,7 @@ const previewFixture: SchedulePreviewResponse = {
 
 const scheduledTaskName = (task: GanttTask) => i18n.t('gantt.openScheduledTask', {
     title: task.title,
+    status: i18n.t(`statuses.${task.status}`),
     start: formatDate(task.start_date),
     end: formatDate(task.end_date),
     assignee: task.assignee?.name ?? i18n.t('common.unassigned'),
@@ -216,10 +217,12 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByRole('region', { name: i18n.t('gantt.chartRegion') })).toHaveAccessibleDescription(
             i18n.t('gantt.chartInstructions'),
         );
-        expect(screen.getByTitle(i18n.t('gantt.taskDateRange', {
+        expect(screen.getByTitle(i18n.t('gantt.taskBarSummary', {
             title: taskFixture.title,
+            status: i18n.t('statuses.planned'),
             start: formatDate(taskFixture.start_date),
             end: formatDate(taskFixture.end_date),
+            flags: '',
         }))).toBeInTheDocument();
     });
 
@@ -275,5 +278,22 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByRole('menuitem', {
             name: i18n.t('surfaces.ganttChart.showEveryDate'),
         })).toBeInTheDocument();
+    });
+});
+
+describe('Gantt timeline controls', () => {
+    it('zooms with visible buttons and with + and - shortcuts', async () => {
+        const { user } = renderChart();
+        expect(screen.getByText('Zoom 100%')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zoom timeline in' }));
+        expect(screen.getByText('Zoom 125%')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Zoom timeline out' }));
+        await user.click(screen.getByRole('button', { name: 'Zoom timeline out' }));
+        expect(screen.getByText('Zoom 75%')).toBeInTheDocument();
+        screen.getByRole('region', { name: 'Schedule chart' }).focus();
+        await user.keyboard('+');
+        expect(screen.getByText('Zoom 100%')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Fit iteration' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Today/ })).toBeInTheDocument();
     });
 });

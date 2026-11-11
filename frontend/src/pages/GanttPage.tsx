@@ -18,7 +18,6 @@ import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { AlertTriangle, Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History, RefreshCw } from 'lucide-react';
 import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
-import { OverflowMenu } from '../components/ui';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
 import type { TaskBatchUpdateItem, TaskUpdate } from '../types/task';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -404,31 +403,25 @@ const GanttPage = () => {
                     {sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
                 </Button>
             )}
-            overflowAction={(
-                <OverflowMenu
-                    label={t('actions.moreActions')}
-                    items={[
-                        {
-                            label: t('snapshots.open'),
-                            icon: <History className="h-4 w-4" aria-hidden="true" />,
-                            onSelect: () => setSnapshotsOpen(true),
-                            disabled: selectedIterationId <= 0,
-                        },
-                        {
-                            label: t('gantt.explainSchedule'),
-                            icon: <Sparkles className="h-4 w-4 text-feedback-purple" aria-hidden="true" />,
-                            onSelect: () => explainMutation.mutate(selectedIterationId),
-                            disabled: !canExplainSchedule || sandboxMode || explainMutation.isPending,
-                        },
-                        {
-                            label: isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen'),
-                            icon: isFullScreen
-                                ? <Minimize2 className="h-4 w-4" aria-hidden="true" />
-                                : <Maximize2 className="h-4 w-4" aria-hidden="true" />,
-                            onSelect: () => setIsFullScreen(value => !value),
-                        },
-                    ]}
-                />
+            secondaryActions={(
+                <>
+                    <Button variant="secondary" onClick={() => explainMutation.mutate(selectedIterationId)}
+                        disabled={!canExplainSchedule || sandboxMode || explainMutation.isPending} isLoading={explainMutation.isPending}>
+                        <Sparkles className="h-4 w-4 text-feedback-purple" aria-hidden="true" />
+                        {t('gantt.explainSchedule')}
+                    </Button>
+                    <Button variant="ghost" onClick={() => setSnapshotsOpen(true)} disabled={selectedIterationId <= 0}>
+                        <History className="h-4 w-4" aria-hidden="true" />
+                        {t('snapshots.open')}
+                    </Button>
+                    <Button variant="ghost" onClick={() => setIsFullScreen(value => !value)}
+                        aria-label={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
+                        title={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}>
+                        {isFullScreen
+                            ? <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                            : <Maximize2 className="h-4 w-4" aria-hidden="true" />}
+                    </Button>
+                </>
             )}
             state={(sandboxMode || currentSimulationError || visibleExplanationError || visibleExplanation) ? (
                 <>

@@ -119,8 +119,8 @@ describe('GanttPage hardening', () => {
         const { user } = renderWithProviders(<GanttPage />);
 
         await screen.findByText('Gantt chart');
-        await user.click(screen.getByRole('button', { name: i18n.t('actions.moreActions') }));
-        await user.click(screen.getByRole('menuitem', { name: i18n.t('gantt.explainSchedule') }));
+        // Explain schedule is a visible header action, not hidden in a menu.
+        await user.click(screen.getAllByRole('button', { name: i18n.t('gantt.explainSchedule') })[0]);
 
         const explanationAlert = await screen.findByRole('alert');
         expect(explanationAlert).toHaveTextContent(i18n.t('gantt.explanationFailed'));
