@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1552 | [Open section](#entities) |
-| Modules | 810 | [Open section](#modules) |
+| Entities | 1555 | [Open section](#entities) |
+| Modules | 815 | [Open section](#modules) |
 | Workflows | 196 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 556 | [Open section](#entry-point-flows) |
@@ -773,6 +773,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ScopeRequirement](entities/ScopeRequirement.md)
 - [SecretMaterialError](entities/SecretMaterialError.md)
 - [SectionId](entities/SectionId.md)
+- [SegmentedOption](entities/SegmentedOption.md)
+- [SelectProps](entities/SelectProps.md)
 - [SeriesDraft](entities/SeriesDraft.md)
 - [ServerAcceptanceCandidate](entities/ServerAcceptanceCandidate.md)
 - [ServerAcceptanceConfig](entities/ServerAcceptanceConfig.md)
@@ -965,6 +967,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TemplateRowProps](entities/TemplateRowProps.md)
 - [TemplateSeedBaseline](entities/TemplateSeedBaseline.md)
 - [TemplateService](entities/TemplateService.md)
+- [TextareaProps](entities/TextareaProps.md)
 - [Theme](entities/Theme.md)
 - [ThemeState](entities/ThemeState.md)
 - [TimeEntryCapabilities](entities/TimeEntryCapabilities.md)
@@ -1753,6 +1756,9 @@ Retained history; these declarations are absent from the selected source invento
 - [SchedulingRulesSettings](modules/SchedulingRulesSettings.md) - `frontend/src/components/settings/SchedulingRulesSettings.tsx`
 - [SchedulingRulesSettings.test](modules/SchedulingRulesSettings.test.md) - `frontend/src/components/settings/SchedulingRulesSettings.test.tsx`
 - [SectionCard](modules/SectionCard.md) - `frontend/src/components/ui/SectionCard.tsx`
+- [SegmentedControl](modules/SegmentedControl.md) - `frontend/src/components/ui/SegmentedControl.tsx`
+- [Select](modules/Select.md) - `frontend/src/components/common/Select.tsx`
+- [Select.test](modules/Select.test.md) - `frontend/src/components/common/Select.test.tsx`
 - [SettingsAccessAndAbout.test](modules/SettingsAccessAndAbout.test.md) - `frontend/src/components/settings/SettingsAccessAndAbout.test.tsx`
 - [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) - `frontend/src/components/settings/SettingsGoalHelpContent.tsx`
 - [SettingsPage](modules/SettingsPage.md) - `frontend/src/pages/SettingsPage.tsx`
@@ -1811,6 +1817,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TeamProfileManager.test](modules/TeamProfileManager.test.md) - `frontend/src/components/team/TeamProfileManager.test.tsx`
 - [TemplateLabelSettings](modules/TemplateLabelSettings.md) - `frontend/src/components/settings/TemplateLabelSettings.tsx`
 - [TemplateLabelSettings.test](modules/TemplateLabelSettings.test.md) - `frontend/src/components/settings/TemplateLabelSettings.test.tsx`
+- [Textarea](modules/Textarea.md) - `frontend/src/components/common/Textarea.tsx`
 - [TimeEntriesPanel](modules/TimeEntriesPanel.md) - `frontend/src/components/tasks/TimeEntriesPanel.tsx`
 - [TimeEntriesPanel.test](modules/TimeEntriesPanel.test.md) - `frontend/src/components/tasks/TimeEntriesPanel.test.tsx`
 - [TimeEntriesReport](modules/TimeEntriesReport.md) - `frontend/src/components/projects/TimeEntriesReport.tsx`
@@ -1950,6 +1957,7 @@ Retained history; these declarations are absent from the selected source invento
 - [finalize](modules/finalize.md) - Bind post-run external evidence to one sealed client load result.
 - [focusLifecycle](modules/focusLifecycle.md) - `frontend/src/utils/focusLifecycle.ts`
 - [focusLifecycle.test](modules/focusLifecycle.test.md) - `frontend/src/utils/focusLifecycle.test.ts`
+- [formControlLabels.test](modules/formControlLabels.test.md) - `frontend/src/components/common/formControlLabels.test.ts`
 - [formatDate](modules/formatDate.md) - `frontend/src/utils/formatDate.ts`
 - [ganttService](modules/ganttService.md) - `frontend/src/services/ganttService.ts`
 - [generate_agent_team_contract](modules/generate_agent_team_contract.md) - Generate the published JSON Schema for the portable agent-team master.

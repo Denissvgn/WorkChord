@@ -25,6 +25,8 @@ _Auto-generated from `frontend/src/components/projects/ProjectForm.tsx`._
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/CollapsibleSection` | `CollapsibleSection` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
+| `../common/Select` | `Select` | — | compiler-dependent |
+| `../common/Textarea` | `Textarea` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../planning/PlanningInputBoundary` | `PlanningInputBoundary` | — | compiler-dependent |
 | `../tasks/useDraftDismissal` | `useActiveMount` | — | compiler-dependent |
@@ -63,7 +65,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (3) |
-| Outbound | `frontend` (17) |
+| Outbound | `frontend` (19) |
 
 ### External packages
 
@@ -71,13 +73,13 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 22 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 28 | — | — |
+| [ProjectFormProps](../entities/ProjectFormProps.md) | Interface | 30 | — | — |
 
 ## Functions
 

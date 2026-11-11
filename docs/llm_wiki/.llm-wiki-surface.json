@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1552,
+      "entities": 1555,
       "flows": 556,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 810,
+      "modules": 815,
       "workflows": 196
     },
     "dependency_architecture": 2,
-    "total": 3130
+    "total": 3138
   },
   "dependency_pages": {
     "count": 2,
@@ -44576,6 +44576,8 @@
         "entities/ScopeRequirement.md",
         "entities/SecretMaterialError.md",
         "entities/SectionId.md",
+        "entities/SegmentedOption.md",
+        "entities/SelectProps.md",
         "entities/SeriesDraft.md",
         "entities/ServerAcceptanceCandidate.md",
         "entities/ServerAcceptanceConfig.md",
@@ -44790,6 +44792,7 @@
         "entities/TemplateRowProps.md",
         "entities/TemplateSeedBaseline.md",
         "entities/TemplateService.md",
+        "entities/TextareaProps.md",
         "entities/Theme.md",
         "entities/ThemeState.md",
         "entities/time_entries_DB.md",
@@ -45850,6 +45853,7 @@
         "modules/focusLifecycle.md",
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
+        "modules/formControlLabels.test.md",
         "modules/FullscreenWorkspace.md",
         "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
@@ -46168,6 +46172,9 @@
         "modules/security.md",
         "modules/seed.md",
         "modules/seedDisplay.md",
+        "modules/SegmentedControl.md",
+        "modules/Select.md",
+        "modules/Select.test.md",
         "modules/selectWorkNowTasks.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
@@ -46392,6 +46399,7 @@
         "modules/test_work_package_service.md",
         "modules/test_workflow_vocabulary.md",
         "modules/text_similarity.md",
+        "modules/Textarea.md",
         "modules/themeStore.md",
         "modules/time.md",
         "modules/time_entries.md",
@@ -61042,6 +61050,30 @@
       "title": "SectionId"
     },
     {
+      "canonical_path": "entities/SegmentedOption.md",
+      "id": "SegmentedOption",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/SegmentedOption",
+      "outgoing_internal_links": [
+        "modules/SegmentedControl.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/ui/SegmentedControl.tsx",
+      "title": "SegmentedOption"
+    },
+    {
+      "canonical_path": "entities/SelectProps.md",
+      "id": "SelectProps",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/SelectProps",
+      "outgoing_internal_links": [
+        "modules/Select.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/Select.tsx",
+      "title": "SelectProps"
+    },
+    {
       "canonical_path": "entities/SeriesDraft.md",
       "id": "SeriesDraft",
       "kind": "entities",
@@ -64012,6 +64044,18 @@
       "role": "semantic",
       "source_path": "backend/app/services/template_service.py",
       "title": "TemplateService"
+    },
+    {
+      "canonical_path": "entities/TextareaProps.md",
+      "id": "TextareaProps",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/TextareaProps",
+      "outgoing_internal_links": [
+        "modules/Textarea.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/Textarea.tsx",
+      "title": "TextareaProps"
     },
     {
       "canonical_path": "entities/Theme.md",
@@ -71301,6 +71345,16 @@
       "title": "formatDate Module"
     },
     {
+      "canonical_path": "modules/formControlLabels.test.md",
+      "id": "formControlLabels.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/formControlLabels.test",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/formControlLabels.test.ts",
+      "title": "formControlLabels.test Module"
+    },
+    {
       "canonical_path": "modules/FullscreenWorkspace.md",
       "id": "FullscreenWorkspace",
       "kind": "modules",
@@ -71937,18 +71991,7 @@
       "outgoing_internal_links": [
         "entities/InitiativeFormProps.md",
         "entities/InitiativeFormState.md",
-        "modules/apiError.md",
-        "modules/Button.md",
-        "modules/CollapsibleSection.md",
-        "modules/InitiativeForm.md",
-        "modules/Input.md",
-        "modules/mutationFeedback.md",
-        "modules/projectService.md",
-        "modules/ProjectsPage.md",
-        "modules/QueryState.md",
-        "modules/teamMemberLabels.md",
-        "modules/teamService.md",
-        "modules/types_project.md"
+        "modules/InitiativeForm.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/projects/InitiativeForm.tsx",
@@ -73582,6 +73625,7 @@
         "modules/MyWorkPage.md",
         "modules/NotificationsPanel.md",
         "modules/QueryState.md",
+        "modules/SegmentedControl.md",
         "modules/taskService.md",
         "modules/tone.md"
       ],
@@ -76977,6 +77021,55 @@
       "role": "semantic",
       "source_path": "frontend/src/i18n/seedDisplay.ts",
       "title": "seedDisplay Module"
+    },
+    {
+      "canonical_path": "modules/SegmentedControl.md",
+      "id": "SegmentedControl",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/SegmentedControl",
+      "outgoing_internal_links": [
+        "entities/SegmentedOption.md",
+        "modules/NotificationsPanel.md",
+        "modules/SegmentedControl.md",
+        "modules/Select.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/ui/SegmentedControl.tsx",
+      "title": "SegmentedControl Module"
+    },
+    {
+      "canonical_path": "modules/Select.md",
+      "id": "Select",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/Select",
+      "outgoing_internal_links": [
+        "entities/SelectProps.md",
+        "modules/InitiativeForm.md",
+        "modules/Input.md",
+        "modules/ProjectForm.md",
+        "modules/SavedViewsControl.md",
+        "modules/Select.md",
+        "modules/Select.test.md",
+        "modules/TriagePage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/Select.tsx",
+      "title": "Select Module"
+    },
+    {
+      "canonical_path": "modules/Select.test.md",
+      "id": "Select.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/Select.test",
+      "outgoing_internal_links": [
+        "modules/SegmentedControl.md",
+        "modules/Select.md",
+        "modules/Select.test.md",
+        "modules/Textarea.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/Select.test.tsx",
+      "title": "Select.test Module"
     },
     {
       "canonical_path": "modules/selectWorkNowTasks.md",
@@ -80538,6 +80631,25 @@
       "role": "semantic",
       "source_path": "backend/app/utils/text_similarity.py",
       "title": "text_similarity Module"
+    },
+    {
+      "canonical_path": "modules/Textarea.md",
+      "id": "Textarea",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/Textarea",
+      "outgoing_internal_links": [
+        "entities/TextareaProps.md",
+        "modules/InitiativeForm.md",
+        "modules/Input.md",
+        "modules/ProjectForm.md",
+        "modules/SavedViewsControl.md",
+        "modules/Select.test.md",
+        "modules/Textarea.md",
+        "modules/TriagePage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/Textarea.tsx",
+      "title": "Textarea Module"
     },
     {
       "canonical_path": "modules/themeStore.md",
@@ -95982,6 +96094,7 @@
         "modules/focusLifecycle.md",
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
+        "modules/formControlLabels.test.md",
         "modules/FullscreenWorkspace.md",
         "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
@@ -96300,6 +96413,9 @@
         "modules/security.md",
         "modules/seed.md",
         "modules/seedDisplay.md",
+        "modules/SegmentedControl.md",
+        "modules/Select.md",
+        "modules/Select.test.md",
         "modules/selectWorkNowTasks.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
@@ -96524,6 +96640,7 @@
         "modules/test_work_package_service.md",
         "modules/test_workflow_vocabulary.md",
         "modules/text_similarity.md",
+        "modules/Textarea.md",
         "modules/themeStore.md",
         "modules/time.md",
         "modules/time_entries.md",
@@ -96803,6 +96920,7 @@
         "modules/focusLifecycle.md",
         "modules/focusLifecycle.test.md",
         "modules/formatDate.md",
+        "modules/formControlLabels.test.md",
         "modules/FullscreenWorkspace.md",
         "modules/GanttBarInputs.md",
         "modules/GanttChart.md",
@@ -97121,6 +97239,9 @@
         "modules/security.md",
         "modules/seed.md",
         "modules/seedDisplay.md",
+        "modules/SegmentedControl.md",
+        "modules/Select.md",
+        "modules/Select.test.md",
         "modules/selectWorkNowTasks.md",
         "modules/serve_disposable_api.md",
         "modules/serve_disposable_oidc.md",
@@ -97345,6 +97466,7 @@
         "modules/test_work_package_service.md",
         "modules/test_workflow_vocabulary.md",
         "modules/text_similarity.md",
+        "modules/Textarea.md",
         "modules/themeStore.md",
         "modules/time.md",
         "modules/time_entries.md",
@@ -97431,5 +97553,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0421c085feed9f95df947b3dacbeb7e2fe7bede1d0d14ed4fc43b5f4f0f32c28"
+  "source_hash": "sha256:8cb0ffdbe34b5bffa27e90eddcae9a16f839dff6cf73646b46087fa5ef4ad2c0"
 }

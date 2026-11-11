@@ -20,6 +20,8 @@ Preserves authenticated saved-view ownership and legacy predicate adaptation. It
 | `../common/Button` | `Button` | — | compiler-dependent |
 | `../common/Input` | `Input` | — | compiler-dependent |
 | `../common/Modal` | `Modal` | — | compiler-dependent |
+| `../common/Select` | `Select` | — | compiler-dependent |
+| `../common/Textarea` | `Textarea` | — | compiler-dependent |
 | `../common/useConfirmDialog` | `useConfirmDialog` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
 | `./TaskFiltersBar` | `TaskFilters` | Declaration | erased |
@@ -58,7 +60,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (16) |
 
 ### External packages
 
@@ -66,15 +68,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 3 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Interface | 25 | — | — |
-| [EditableScope](../entities/EditableScope.md) | Type alias | 22 | `Exclude<SavedViewScope, 'system'>` | — |
-| [FormMode](../entities/FormMode.md) | Type alias | 23 | `'create' \| 'duplicate'` | — |
+| [SavedViewsControlProps](../entities/SavedViewsControlProps.md) | Interface | 27 | — | — |
+| [EditableScope](../entities/EditableScope.md) | Type alias | 24 | `Exclude<SavedViewScope, 'system'>` | — |
+| [FormMode](../entities/FormMode.md) | Type alias | 25 | `'create' \| 'duplicate'` | — |
 
 ## Functions
 

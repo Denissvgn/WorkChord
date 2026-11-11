@@ -396,10 +396,10 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [i18n](modules/i18n.md) | 34 | 1 |
 | [formatDate](modules/formatDate.md) | 34 | 1 |
 | [taskService](modules/taskService.md) | 32 | 3 |
+| [Input](modules/Input.md) | 31 | 0 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
 | [models_calendar](modules/models_calendar.md) | 29 | 2 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 29 | 9 |
-| [Input](modules/Input.md) | 29 | 0 |
 | [app_main](modules/app_main.md) | 27 | 47 |
 | [query_limits](modules/query_limits.md) | 26 | 0 |
 | [upgrade_service](modules/upgrade_service.md) | 25 | 13 |
@@ -550,6 +550,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [settings_read](modules/settings_read.md) | 5 | 1 |
 | [support_database](modules/support_database.md) | 5 | 0 |
 | [test_task_domain](modules/test_task_domain.md) | 5 | 25 |
+| [Select](modules/Select.md) | 5 | 1 |
+| [Textarea](modules/Textarea.md) | 5 | 1 |
 | [PlanReturnBar](modules/PlanReturnBar.md) | 5 | 1 |
 | [PlanningInputBoundary](modules/PlanningInputBoundary.md) | 5 | 4 |
 | [AdminAccessGate](modules/AdminAccessGate.md) | 5 | 3 |
@@ -644,7 +646,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [AppSidebar](modules/AppSidebar.md) | 3 | 5 |
 | [CommandMenu](modules/CommandMenu.md) | 3 | 6 |
 | [commandMenuEvents](modules/commandMenuEvents.md) | 3 | 0 |
-| [ProjectForm](modules/ProjectForm.md) | 3 | 17 |
+| [ProjectForm](modules/ProjectForm.md) | 3 | 19 |
 | [AdminAccessPanel](modules/AdminAccessPanel.md) | 3 | 6 |
 | [DraftDismissalDialog](modules/DraftDismissalDialog.md) | 3 | 2 |
 | [KanbanCard](modules/KanbanCard.md) | 3 | 4 |
@@ -767,6 +769,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [TeamList](modules/TeamList.md) | 2 | 11 |
 | [TeamProfileManager](modules/TeamProfileManager.md) | 2 | 10 |
 | [VacationCsvImport](modules/VacationCsvImport.md) | 2 | 6 |
+| [SegmentedControl](modules/SegmentedControl.md) | 2 | 0 |
 | [MutationSuccessFeedback](modules/MutationSuccessFeedback.md) | 2 | 3 |
 | [agentTeamSetup_manifest](modules/agentTeamSetup_manifest.md) | 2 | 1 |
 | [manifestLocations](modules/manifestLocations.md) | 2 | 0 |
@@ -843,9 +846,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 4 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
 | [RouteErrorBoundary](modules/RouteErrorBoundary.md) | 1 | 1 |
-| [NotificationsPanel](modules/NotificationsPanel.md) | 1 | 4 |
+| [NotificationsPanel](modules/NotificationsPanel.md) | 1 | 5 |
 | [OverviewTaskReturnBar](modules/OverviewTaskReturnBar.md) | 1 | 1 |
-| [InitiativeForm](modules/InitiativeForm.md) | 1 | 10 |
+| [InitiativeForm](modules/InitiativeForm.md) | 1 | 12 |
 | [ProjectIterationsSection](modules/ProjectIterationsSection.md) | 1 | 12 |
 | [ProjectTaskTree](modules/ProjectTaskTree.md) | 1 | 5 |
 | [AgentTeamManifestPreview](modules/AgentTeamManifestPreview.md) | 1 | 0 |
@@ -855,7 +858,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SchedulingPassCard](modules/SchedulingPassCard.md) | 1 | 4 |
 | [SettingsGoalHelpContent](modules/SettingsGoalHelpContent.md) | 1 | 0 |
 | [BacklogPanel](modules/BacklogPanel.md) | 1 | 7 |
-| [SavedViewsControl](modules/SavedViewsControl.md) | 1 | 14 |
+| [SavedViewsControl](modules/SavedViewsControl.md) | 1 | 16 |
 | [StatusChangeControl](modules/StatusChangeControl.md) | 1 | 8 |
 | [TaskBulkOperationsPanel](modules/TaskBulkOperationsPanel.md) | 1 | 10 |
 | [TaskContextSummary](modules/TaskContextSummary.md) | 1 | 4 |
@@ -1021,6 +1024,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [InteractiveCalendar.test](modules/InteractiveCalendar.test.md) | 0 | 2 |
 | [Button.test](modules/Button.test.md) | 0 | 1 |
 | [Input.test](modules/Input.test.md) | 0 | 1 |
+| [Select.test](modules/Select.test.md) | 0 | 3 |
+| [formControlLabels.test](modules/formControlLabels.test.md) | 0 | 0 |
 | [iconButtonTooltips.test](modules/iconButtonTooltips.test.md) | 0 | 0 |
 | [ToastProvider.test](modules/ToastProvider.test.md) | 0 | 2 |
 | [GanttChart.test](modules/GanttChart.test.md) | 0 | 5 |
@@ -1127,7 +1132,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [SettingsPage.test](modules/SettingsPage.test.md) | 0 | 5 |
 | [TasksPage.test](modules/TasksPage.test.md) | 0 | 3 |
 | [TeamPage](modules/TeamPage.md) | 0 | 12 |
-| [TriagePage](modules/TriagePage.md) | 0 | 35 |
+| [TriagePage](modules/TriagePage.md) | 0 | 37 |
 | [agentService.test](modules/agentService.test.md) | 0 | 3 |
 | [planningInputService.test](modules/planningInputService.test.md) | 0 | 2 |
 | [snapshotVersions.test](modules/snapshotVersions.test.md) | 0 | 2 |

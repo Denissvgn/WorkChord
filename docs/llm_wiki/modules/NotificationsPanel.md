@@ -13,6 +13,7 @@ _Auto-generated from `frontend/src/components/notifications/NotificationsPanel.t
 | `../../services/taskService` | `taskService` | — | compiler-dependent |
 | `../../utils/formatDate` | `formatDate`, `formatDateTime` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryErrorState` | — | compiler-dependent |
+| `../ui/SegmentedControl` | `SegmentedControl` | — | compiler-dependent |
 | `../ui/tone` | `isTaskStatus`, `statusTextClassName` | — | compiler-dependent |
 | `@tanstack/react-query` | `useQuery` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
@@ -35,22 +36,25 @@ _Auto-generated from `frontend/src/components/notifications/NotificationsPanel.t
 flowchart LR
     n0["frontend/src/components/feedback/QueryState.tsx"]
     n1["frontend/src/components/notifications/NotificationsPanel.tsx"]
-    n2["frontend/src/components/ui/tone.ts"]
-    n3["frontend/src/pages/MyWorkPage.tsx"]
-    n4["frontend/src/services/taskService.ts"]
-    n5["frontend/src/utils/formatDate.ts"]
+    n2["frontend/src/components/ui/SegmentedControl.tsx"]
+    n3["frontend/src/components/ui/tone.ts"]
+    n4["frontend/src/pages/MyWorkPage.tsx"]
+    n5["frontend/src/services/taskService.ts"]
+    n6["frontend/src/utils/formatDate.ts"]
     n1 --> n0
     n1 --> n2
-    n1 --> n4
+    n1 --> n3
     n1 --> n5
-    n3 --> n0
-    n3 --> n1
+    n1 --> n6
+    n4 --> n0
+    n4 --> n1
     click n0 "../modules/QueryState.md"
     click n1 "../modules/NotificationsPanel.md"
-    click n2 "../modules/tone.md"
-    click n3 "../modules/MyWorkPage.md"
-    click n4 "../modules/taskService.md"
-    click n5 "../modules/formatDate.md"
+    click n2 "../modules/SegmentedControl.md"
+    click n3 "../modules/tone.md"
+    click n4 "../modules/MyWorkPage.md"
+    click n5 "../modules/taskService.md"
+    click n6 "../modules/formatDate.md"
 ```
 
 ### Internal neighbors
@@ -59,6 +63,7 @@ flowchart LR
 |---|---|
 | Inbound | [MyWorkPage](../modules/MyWorkPage.md) |
 | Outbound | [QueryState](../modules/QueryState.md) |
+| Outbound | [SegmentedControl](../modules/SegmentedControl.md) |
 | Outbound | [tone](../modules/tone.md) |
 | Outbound | [taskService](../modules/taskService.md) |
 | Outbound | [formatDate](../modules/formatDate.md) |
@@ -73,8 +78,8 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [NotificationsPanelProps](../entities/NotificationsPanelProps.md) | Interface | 20 | — | — |
-| [Tab](../entities/Tab.md) | Type alias | 25 | `'history' \| 'overdue'` | — |
+| [NotificationsPanelProps](../entities/NotificationsPanelProps.md) | Interface | 21 | — | — |
+| [Tab](../entities/Tab.md) | Type alias | 26 | `'history' \| 'overdue'` | — |
 
 ## Functions
 

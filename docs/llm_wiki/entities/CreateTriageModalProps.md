@@ -1,6 +1,6 @@
 # CreateTriageModalProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:233`
+**Location:** `frontend/src/pages/TriagePage.tsx:235`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)

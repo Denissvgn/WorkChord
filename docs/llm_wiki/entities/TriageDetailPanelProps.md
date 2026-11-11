@@ -1,6 +1,6 @@
 # TriageDetailPanelProps
 
-**Location:** `frontend/src/pages/TriagePage.tsx:1286`
+**Location:** `frontend/src/pages/TriagePage.tsx:1168`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TriagePage](../modules/TriagePage.md)
