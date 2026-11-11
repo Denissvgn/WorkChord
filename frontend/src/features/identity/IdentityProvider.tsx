@@ -18,6 +18,7 @@ import api from '../../services/api';
 import type { WorkspaceIdentity } from './identityService';
 
 import { IdentityContext, useIdentity } from './identityContext';
+import { LocalProfilePicker } from './LocalProfilePicker';
 
 const clearDrafts = (scope?: string) => {
     for (const key of Object.keys(sessionStorage)) {
@@ -153,20 +154,38 @@ export const IdentityBadge = () => {
     const [error, setError] = useState<string | null>(null);
     const [profileId, setProfileId] = useState('');
     const operator = context?.identity?.workspace_role === 'owner' || context?.identity?.workspace_role === 'operator';
+    const menu = useRef<HTMLDetailsElement>(null);
+    useEffect(() => {
+        const close = (event: Event) => {
+            const details = menu.current;
+            if (!details?.open) return;
+            if (event instanceof KeyboardEvent ? event.key === 'Escape' : !details.contains(event.target as Node)) {
+                details.open = false;
+                if (event instanceof KeyboardEvent) details.querySelector('summary')?.focus();
+            }
+        };
+        document.addEventListener('pointerdown', close);
+        document.addEventListener('keydown', close);
+        return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', close); };
+    }, []);
     // feedback-policy: query loading,error,retry,empty
     const profilesQuery = useQuery({ queryKey: ['teamMemberProfiles'], queryFn: teamService.getProfiles, enabled: Boolean(operator) });
     if (!context?.identity) return null;
     const { identity } = context;
+    const local = identity.mode === 'trusted_local' && !identity.principal;
     return <div className="flex items-center gap-2">
-        <details className="relative">
+        <details ref={menu} className="relative">
             <summary className="session-badge cursor-pointer list-none" aria-label={t('identity.accountMenu')}>
                 <User className="h-4 w-4" aria-hidden="true" />
-                <strong>{identity.principal?.display_name ?? t('identity.localMode')}</strong>
+                <strong>{identity.principal?.display_name ?? (local && identity.profile ? t('identity.workingAs', { name: identity.profile.display_name }) : t('identity.localMode'))}</strong>
             </summary>
             <div className="absolute right-0 z-50 mt-2 w-80 max-w-[90vw] space-y-3 rounded-xl border border-border bg-surface-card p-4 text-sm text-content-primary shadow-lg">
                 <p className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" aria-hidden="true" />{t(identity.mode === 'trusted_local' ? 'identity.localMode' : 'identity.managedMode')}</p>
                 {identity.principal && <p>{t('identity.accountId', { id: identity.principal.id })}</p>}
-                <p>{identity.profile ? t('identity.linkedProfile', { name: identity.profile.display_name }) : t('identity.profileUnlinked')}</p>
+                {local ? <>
+                    <p className="font-medium">{identity.profile ? t('identity.workingAsLocal', { name: identity.profile.display_name }) : t('identity.notWorkingAs')}</p>
+                    <LocalProfilePicker current={identity.profile} onChosen={context.refresh} />
+                </> : <p>{identity.profile ? t('identity.linkedProfile', { name: identity.profile.display_name }) : t('identity.profileUnlinked')}</p>}
                 {operator && identity.principal?.kind === 'human' && <div className="space-y-2">
                     <label className="block text-sm">{t('identity.chooseProfile')}
                         <select className="mt-1 min-h-11 w-full rounded-md border border-border bg-surface-card px-2" value={profileId}

@@ -106,7 +106,8 @@ async def resolve_http_identity(request, db):
         if origin and origin not in settings.cors_origins or not cookie_session.csrf_token or not secrets.compare_digest(supplied, cookie_session.csrf_token):
             raise AuthorityError("request_integrity_required", "Reload your session before submitting this change.")
     if authority is None and settings.workchord_auth_mode == "trusted_local":
-        authority = Authority(None, "local", session_id=cookie_session.id if cookie_session else None, local=True)
+        authority = Authority(None, "local", session_id=cookie_session.id if cookie_session else None, local=True,
+                              profile_id=cookie_session.local_profile_id if cookie_session else None)
     if authority is not None:
         reason = request.headers.get("X-Command-Reason")
         authority = replace(authority, reason=reason[:2000] if reason else None,

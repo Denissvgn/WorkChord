@@ -3,6 +3,7 @@ import { LiveWindowStatus } from '../components/feedback/LiveWindowStatus';
 import { PageLayout, PageHeader } from '../components/ui';
 import { PersonCapacity } from '../components/tasks/PersonCapacity';
 import { useIdentity } from '../features/identity/identityContext';
+import { LocalProfilePicker } from '../features/identity/LocalProfilePicker';
 import { useMutation } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +16,15 @@ import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
 
 const QUEUES = ['active', 'queued', 'blocked', 'awaiting_review', 'review', 'inbox'] as const;
+const WORK_QUEUES: readonly string[] = ['active', 'queued', 'blocked', 'awaiting_review'];
 type Queue = typeof QUEUES[number];
 interface WorkPage { state: string; queues: Record<string, TaskReference[]>; has_more: boolean; next_after_id: number | null }
 
 const MyWorkPage = () => {
     const { t } = useTranslation();
-    const identity = useIdentity()?.identity;
+    const identityContext = useIdentity();
+    const identity = identityContext?.identity;
+    const local = identity?.mode === 'trusted_local' && !identity.principal;
     const [params, setParams] = useSearchParams();
     const queue: Queue = QUEUES.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : 'active';
     const selectedId = Number(params.get('task')) || null;
@@ -44,22 +48,34 @@ const MyWorkPage = () => {
     const retry = useMutation({ mutationFn: discussionService.retry, onSuccess: () => deliveries.refetch() });
     const selectedQuery = queue === 'inbox' ? inbox : queue === 'review' ? reviews : work;
     const items = queue === 'review' ? reviews.data?.pages.flatMap(page => page.items) ?? [] : work.data?.pages.flatMap(page => page.queues[queue] ?? []) ?? [];
+    const workState = work.data?.pages[0].state;
+    const workQueue = WORK_QUEUES.includes(queue);
+    const queueLabel = (key: Queue) => {
+        if (!WORK_QUEUES.includes(key) || workState !== 'ready' || !work.data) return t(`teamwork.queue_${key}`);
+        const count = work.data.pages.reduce((total, page) => total + (page.queues[key]?.length ?? 0), 0);
+        return `${t(`teamwork.queue_${key}`)} · ${count}${work.hasNextPage ? '+' : ''}`;
+    };
     const selectTask = (id: number | null) => { const next = new URLSearchParams(params); if (id) next.set('task', String(id)); else next.delete('task'); setParams(next); };
 
     return <PageLayout><PageHeader title={t('teamwork.myWork')} subtitle={t('teamwork.myWorkHelp')} /><section className="space-y-5">
+        {local && identity?.profile && <p className="text-sm text-content-secondary">{t('identity.workingAsLocal', { name: identity.profile.display_name })}</p>}
         {identity?.profile && <PersonCapacity key={identity.profile.id} profileId={identity.profile.id} manage />}
         <nav aria-label={t('teamwork.workQueues')} className="flex flex-wrap gap-2">{QUEUES.map(key => <Button key={key} variant={queue === key ? 'primary' : 'secondary'} size="sm" aria-pressed={queue === key}
-            onClick={() => { const next = new URLSearchParams(params); next.set('queue', key); next.delete('task'); setParams(next); }}>{t(`teamwork.queue_${key}`)}</Button>)}</nav>
+            onClick={() => { const next = new URLSearchParams(params); next.set('queue', key); next.delete('task'); setParams(next); }}>{queueLabel(key)}</Button>)}</nav>
         <LiveWindowStatus window={selectedQuery} />
         {selectedQuery.isLoading && <p role="status">{t('common.loading')}</p>}
         {selectedQuery.isError && <QueryErrorState error={selectedQuery.error} fallback={t('teamwork.loadFailed')} onRetry={() => void selectedQuery.refetch()} />}
-        {queue !== 'review' && queue !== 'inbox' && work.data?.pages[0].state !== 'ready' && work.data && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${work.data.pages[0].state}`)}</p>}
+        {workQueue && workState === 'profile_unlinked' && local && <section aria-labelledby="my-work-profile" className="max-w-xl space-y-2 rounded-md border border-border p-4">
+            <h2 id="my-work-profile" className="text-base font-semibold">{t('identity.localProfileTitle')}</h2>
+            <LocalProfilePicker current={null} onChosen={() => identityContext?.refresh()} />
+        </section>}
+        {workQueue && workState && workState !== 'ready' && !(workState === 'profile_unlinked' && local) && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>}
         {queue !== 'inbox' && <ul className="divide-y divide-border">{items.map(task => <li key={task.id} className="flex flex-col gap-1 py-3">
             <button type="button" className="min-h-9 break-words text-left font-medium text-action hover:underline" onClick={() => selectTask(task.id)}>#{task.id} · {task.title}</button>
             <p className="text-sm text-content-secondary">{task.project_name ?? t('teamwork.workspace')} · {task.iteration_name ?? t('teamwork.backlog')} · {task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : t(`statuses.${task.status}`)}</p>
             {task.blocked_reason && <p className="text-sm text-feedback-warning-foreground">{task.blocked_reason}</p>}
         </li>)}</ul>}
-        {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && <p className="text-sm text-content-secondary">{t('teamwork.emptyQueue')}</p>}
+        {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <p className="text-sm text-content-secondary">{t('teamwork.emptyQueue')}</p>}
         {queue === 'inbox' && <>
             <ul className="divide-y divide-border">{inbox.data?.pages.flatMap(page => page.items).map(item => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
                 <div className="min-w-0"><button type="button" className="min-h-9 break-words text-left font-medium text-action hover:underline" onClick={() => selectTask(item.task_id)}>{item.title}</button>

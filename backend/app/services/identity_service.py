@@ -32,6 +32,16 @@ def require_identity_writes():
         raise MaintenanceModeError(operation="identity lifecycle", mode=get_settings().maintenance_mode)
 
 
+async def local_work_profile(db, profile_id):
+    """Return a person profile a local session may work as, or None."""
+    if profile_id is None:
+        return None
+    from app.models.team_member import TeamMemberProfile
+    with internal_authority(db):
+        profile = await db.get(TeamMemberProfile, profile_id)
+    return profile if profile is not None and profile.profile_kind == "human" else None
+
+
 def safe_return_path(value: str) -> str:
     decoded = value
     for _ in range(4):

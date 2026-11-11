@@ -17,8 +17,8 @@ from app.http_authority import resolve_http_identity
 from app.models.identity import Principal, WorkspaceMembership, WorkspaceAuthorityState, ProjectMembership, PrincipalProfileLink, CommandAudit
 from app.models.user_session import UserSession
 from app.security import require_admin_api_key
-from app.services.identity_service import IdentityService, require_identity_writes
-from app.services.session_service import _cookie_options, get_client_ip
+from app.services.identity_service import IdentityService, local_work_profile, require_identity_writes
+from app.services.session_service import _cookie_options, get_client_ip, get_current_session
 from app.utils.time import utc_now
 
 router = APIRouter(prefix="/auth")
@@ -112,6 +112,11 @@ class ProfileLinkRequest(BaseModel):
     reason: str = Field(min_length=8, max_length=2000)
 
 
+class LocalProfileChoice(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    profile_id: int | None = Field(default=None, ge=1)
+
+
 class GuestTransferRequest(BaseModel):
     guest_token: str | None = Field(default=None, max_length=128)
     guest_session_id: int | None = Field(default=None, ge=1)
@@ -140,11 +145,29 @@ async def me(request: Request, response: Response, db: Database):
         if authority.profile_id is not None:
             from app.models.team_member import TeamMemberProfile
             profile = await db.get(TeamMemberProfile, authority.profile_id)
-            result["profile"] = {"id": profile.id, "display_name": profile.display_name} if profile else None
+            result["profile"] = {"id": profile.id, "display_name": profile.display_name, "verified": True} if profile else None
         if authority.session_id:
             session = await db.get(UserSession, authority.session_id)
             result["csrf_token"] = session.csrf_token
+    elif authority is not None and authority.local:
+        profile = await local_work_profile(db, authority.profile_id)
+        result["profile"] = {"id": profile.id, "display_name": profile.display_name, "verified": False} if profile else None
     return result
+
+
+@router.put("/local-profile")
+async def choose_local_profile(data: LocalProfileChoice, response: Response, db: Database,
+                               session: Annotated[UserSession, Depends(get_current_session)]):
+    """Record which person profile a trusted-local session works as; local, not verified."""
+    response.headers["Cache-Control"] = "no-store"
+    if get_settings().workchord_auth_mode != "trusted_local" or session.principal_id is not None:
+        raise AuthorityError("local_profile_unavailable", "Signed-in accounts are linked to a work profile by an operator.", 409)
+    profile = await local_work_profile(db, data.profile_id)
+    if data.profile_id is not None and profile is None:
+        raise AuthorityError("profile_not_found", "Choose an existing person profile.", 404)
+    session.local_profile_id = profile.id if profile else None
+    await commit_or_flush(db)
+    return {"profile": {"id": profile.id, "display_name": profile.display_name, "verified": False} if profile else None}
 
 
 @router.get("/login")
