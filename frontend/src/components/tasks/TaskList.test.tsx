@@ -173,3 +173,50 @@ it('offers selection as a visible action instead of a menu', async () => {
     expect(await screen.findByRole('button', { name: 'Select' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Merge tasks' })).toBeVisible();
 });
+
+describe('TaskList rows and groups', () => {
+    beforeEach(() => {
+        Object.values(taskServiceMock).forEach(mock => mock.mockReset());
+        labelServiceMock.getGroups.mockReset();
+        labelServiceMock.getGroups.mockResolvedValue([]);
+    });
+
+    it('groups by status with counts, work in hand first and finished work collapsed', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' }, { ...task(4), status: 'closed' },
+        ]);
+        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} />);
+        const groups = await screen.findAllByRole('heading', { level: 3 });
+        expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Closed1 task']);
+        expect(screen.getByRole('button', { name: /Closed/ })).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByRole('button', { name: 'Task 4' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: /Closed/ }));
+        expect(screen.getByRole('button', { name: 'Task 4' })).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Group by status' }));
+        expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
+        expect(screen.getByRole('button', { name: 'Group by status' })).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('keeps secondary facts behind Details and one manual-order list without groups', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([{ ...task(1), tags: ['backend'] }]);
+        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="sort_order" onSortKeyChange={() => undefined} />);
+        expect(await screen.findByRole('button', { name: 'Task 1' })).toBeInTheDocument();
+        expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
+        expect(screen.getByRole('button', { name: 'Group by status' })).toBeDisabled();
+        expect(screen.queryByText('backend')).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Details (2): Task 1' }));
+        expect(screen.getByText('backend')).toBeInTheDocument();
+    });
+
+    it('renders only the rows near the viewport for a long list', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue(Array.from({ length: 120 }, (_, index) => task(index + 1)));
+        // jsdom has no layout: give the workspace scroller a viewport-sized box.
+        vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(900);
+        vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(1200);
+        renderWithProviders(<main id="workspace-main"><TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} /></main>);
+        expect(await screen.findByRole('heading', { name: /Planned/ })).toBeInTheDocument();
+        const rendered = screen.getAllByRole('button', { name: /^Task \d+$/ }).length;
+        expect(rendered).toBeGreaterThan(0);
+        expect(rendered).toBeLessThan(120);
+    });
+});

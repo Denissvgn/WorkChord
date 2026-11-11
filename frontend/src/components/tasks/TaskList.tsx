@@ -1,12 +1,14 @@
 import { isGraphLimitError } from '../../utils/graphLimitError';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
 import { statusTextClassName } from '../ui/tone';
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     ChevronRight, ChevronDown, CheckCircle2, Circle,
-    Trash2, Plus, Edit, CornerDownRight, AlertTriangle, ArrowUpDown, GripVertical, Layers, Unlink, Bot, ClipboardCheck
+    Trash2, Plus, Edit, CornerDownRight, AlertTriangle, ArrowUpDown, GripVertical, Layers, Unlink, Bot, ClipboardCheck, Info
 } from 'lucide-react';
 import { taskService } from '../../services/taskService';
 import { labelService } from '../../services/labelService';
@@ -48,6 +50,12 @@ import { OverflowMenu } from '../ui';
 
 export type SortKey = 'priority' | 'sort_order' | 'status' | 'title';
 export type TaskMode = 'bulk' | 'merge';
+/** Lifecycle order for status groups: the work in hand first, finished work last. */
+const STATUS_GROUP_ORDER = ['active', 'planned', 'resolved', 'closed'];
+/** Longer lists render only the rows near the viewport. */
+const VIRTUALIZE_AFTER_ROWS = 80;
+type RowItem = { kind: 'group'; status: string; count: number; collapsed: boolean } | { kind: 'task'; task: Task };
+const rowItemKey = (item: RowItem) => item.kind === 'group' ? `group:${item.status}` : `task:${item.task.id}`;
 type TaskOrderRequest = Parameters<typeof taskService.reorder>[0];
 type ReorderVariables = {
     order: TaskOrderRequest;
@@ -103,7 +111,7 @@ export const TaskList = ({
     const { t } = useTranslation();
     const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
     const [addingChildTo, setAddingChildTo] = useState<number | null>(null);
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
@@ -405,6 +413,70 @@ export const TaskList = ({
 
     const isDraggingEnabled = sortKey === 'sort_order' && !reorderMutation.isPending;
 
+    // Group by status unless the list is in manual order, where one sequence is dragged.
+    const groupByStatus = searchParams.get('group') !== 'none';
+    const grouped = groupByStatus && sortKey !== 'sort_order';
+    const toggleGrouping = () => setSearchParams(previous => {
+        const next = new URLSearchParams(previous);
+        if (groupByStatus) next.set('group', 'none'); else next.delete('group');
+        return next;
+    }, { replace: true });
+    const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set(['closed']));
+    const toggleGroup = (status: string) => setCollapsedGroups(previous => {
+        const next = new Set(previous);
+        if (next.has(status)) next.delete(status); else next.add(status);
+        return next;
+    });
+    const rowItems = useMemo<RowItem[]>(() => {
+        if (!grouped) return filteredAndSortedTasks.map(task => ({ kind: 'task' as const, task }));
+        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => task.status).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
+        return order.flatMap(status => {
+            const inGroup = filteredAndSortedTasks.filter(task => task.status === status);
+            if (inGroup.length === 0) return [];
+            const collapsed = collapsedGroups.has(status);
+            return [{ kind: 'group' as const, status, count: inGroup.length, collapsed },
+                ...(collapsed ? [] : inGroup.map(task => ({ kind: 'task' as const, task })))];
+        });
+    }, [grouped, filteredAndSortedTasks, collapsedGroups]);
+    // The workspace scrolls inside #workspace-main; without it (as in tests) every row renders.
+    const [rowsNode, setRowsNode] = useState<HTMLDivElement | null>(null);
+    const scrollElement = rowsNode?.closest<HTMLElement>('#workspace-main') ?? null;
+    const virtualizeRows = !isDraggingEnabled && scrollElement !== null && rowItems.length > VIRTUALIZE_AFTER_ROWS;
+    const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
+        <h3 className="m-0">
+            <button type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
+                className="flex min-h-11 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
+                <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
+                <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
+            </button>
+        </h3>
+    ) : (
+        <TaskItemContent
+            task={item.task}
+            onEdit={onOpenTask ?? setEditingTask}
+            onAddSubtask={setAddingChildTo}
+            onDelete={(target) => setDeletingTask(target)}
+            onUnmerge={(id) => unmergeMutation.mutate(id)}
+            isUnmergePending={unmergeMutation.isPending}
+            level={0}
+            sensors={sensors}
+            onChildDragEnd={handleChildDragEnd}
+            isDraggingEnabled={false}
+            taskMap={taskMap}
+            isMergeMode={isMergeMode}
+            selectedTaskIds={selectedTaskIds}
+            canSelectForMerge={canSelectForMerge}
+            toggleTaskSelection={toggleTaskSelection}
+            isBulkMode={isBulkMode}
+            selectedBulkTaskIds={selectedBulkTaskIds}
+            toggleBulkTaskSelection={toggleBulkTaskSelection}
+            labelsBySlug={labelsBySlug}
+            nowMs={nowMs}
+            showStatusLabel={!grouped}
+        />
+    );
+
     if (isGraphLimitError(tasksError)) return <PagedTaskBrowser key={iterationId} iterationId={iterationId} />;
     if (isLoading) return <QueryLoadingState message={t('taskList.loading')} />;
     if ((!tasks && tasksError) || labelsError || allLabelsError) return <QueryErrorState error={tasksError ?? labelsError ?? allLabelsError} onRetry={() => { void refetchTasks(); void refetchLabels(); void refetchAllLabels(); }} />;
@@ -525,6 +597,10 @@ export const TaskList = ({
                         </span>
                     )}
                 </div>
+                    <Button variant="ghost" size="sm" aria-pressed={grouped} disabled={sortKey === 'sort_order'}
+                        title={sortKey === 'sort_order' ? t('taskList.groupNeedsSort') : undefined} onClick={toggleGrouping}>
+                        {t('taskList.groupByStatus')}
+                    </Button>
                     <Button variant="secondary" size="sm" onClick={() => setTaskMode('bulk')}>
                         <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
                         {t('taskList.select')}
@@ -547,6 +623,7 @@ export const TaskList = ({
                 />
             )}
 
+            <div ref={setRowsNode} className="rounded-lg border border-border bg-surface-card">
             {isDraggingEnabled ? (
                 <DndContext
                     sensors={sensors}
@@ -584,33 +661,12 @@ export const TaskList = ({
                         ))}
                     </SortableContext>
                 </DndContext>
+            ) : virtualizeRows && rowsNode && scrollElement ? (
+                <VirtualTaskRows items={rowItems} rowsNode={rowsNode} scrollElement={scrollElement} renderItem={renderRowItem} />
             ) : (
-                filteredAndSortedTasks.map((task) => (
-                    <TaskItemContent
-                        key={task.id}
-                        task={task}
-                        onEdit={onOpenTask ?? setEditingTask}
-                        onAddSubtask={setAddingChildTo}
-                        onDelete={(t) => setDeletingTask(t)}
-                        onUnmerge={(id) => unmergeMutation.mutate(id)}
-                        isUnmergePending={unmergeMutation.isPending}
-                        level={0}
-                        sensors={sensors}
-                        onChildDragEnd={handleChildDragEnd}
-                        isDraggingEnabled={false}
-                        taskMap={taskMap}
-                        isMergeMode={isMergeMode}
-                        selectedTaskIds={selectedTaskIds}
-                        canSelectForMerge={canSelectForMerge}
-                        toggleTaskSelection={toggleTaskSelection}
-                        isBulkMode={isBulkMode}
-                        selectedBulkTaskIds={selectedBulkTaskIds}
-                        toggleBulkTaskSelection={toggleBulkTaskSelection}
-                        labelsBySlug={labelsBySlug}
-                        nowMs={nowMs}
-                    />
-                ))
+                rowItems.map(item => <Fragment key={rowItemKey(item)}>{renderRowItem(item)}</Fragment>)
             )}
+            </div>
 
             {filteredAndSortedTasks?.length === 0 && (
                 <div className="rounded-lg border border-dashed border-border bg-surface-muted px-6 py-12 text-center">
@@ -748,6 +804,45 @@ export const TaskList = ({
     );
 };
 
+/**
+ * Renders only the rows near the viewport of the workspace scroller. Rows are
+ * placed with `top`, not a transform, so a row's menu keeps its backdrop and layering.
+ */
+const VirtualTaskRows = ({ items, rowsNode, scrollElement, renderItem }: {
+    items: RowItem[]; rowsNode: HTMLElement; scrollElement: HTMLElement; renderItem: (item: RowItem) => ReactNode;
+}) => {
+    'use no memo';
+    const [scrollMargin, setScrollMargin] = useState(0);
+    useLayoutEffect(() => {
+        // Content above the list (filters, bulk panel) moves its offset in the scroller.
+        const measure = () => setScrollMargin(rowsNode.getBoundingClientRect().top - scrollElement.getBoundingClientRect().top + scrollElement.scrollTop);
+        measure();
+        if (typeof ResizeObserver === 'undefined') return undefined;
+        const observer = new ResizeObserver(measure);
+        observer.observe(scrollElement.firstElementChild ?? scrollElement);
+        return () => observer.disconnect();
+    }, [rowsNode, scrollElement]);
+    // Stable callbacks: new ones on every render would reset the measurements.
+    const estimateSize = useCallback((index: number) => {
+        const item = items[index];
+        return item?.kind === 'task' && item.task.children?.length ? 45 * (1 + item.task.children.length) : 45;
+    }, [items]);
+    const getItemKey = useCallback((index: number) => items[index] ? rowItemKey(items[index]) : index, [items]);
+    const getScrollElement = useCallback(() => scrollElement, [scrollElement]);
+    // eslint-disable-next-line react-hooks/incompatible-library -- 'use no memo' keeps this component uncompiled, so the virtualizer is read fresh each render.
+    const virtualizer = useVirtualizer({ count: items.length, getScrollElement, estimateSize, getItemKey, overscan: 12, scrollMargin });
+    return (
+        <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
+            {virtualizer.getVirtualItems().map(virtualRow => (
+                <div key={virtualRow.key} data-index={virtualRow.index} ref={virtualizer.measureElement}
+                    style={{ position: 'absolute', left: 0, width: '100%', top: virtualRow.start - scrollMargin }}>
+                    {renderItem(items[virtualRow.index])}
+                </div>
+            ))}
+        </div>
+    );
+};
+
 interface TaskItemProps {
     task: Task;
     onEdit: (t: Task) => void;
@@ -770,6 +865,8 @@ interface TaskItemProps {
     toggleBulkTaskSelection: (taskId: number) => void;
     labelsBySlug: Map<string, Label>;
     nowMs: number;
+    /** Status as visible text; off inside a status group, which already names it. */
+    showStatusLabel?: boolean;
 }
 
 // Sortable wrapper for root-level tasks
@@ -826,8 +923,11 @@ const TaskItemContent = ({
     toggleBulkTaskSelection,
     labelsBySlug,
     nowMs,
+    showStatusLabel = true,
 }: TaskItemContentProps) => {
     const [isExpanded, setIsExpanded] = useState(true);
+    const [showDetails, setShowDetails] = useState(false);
+    const detailsId = useId();
     const { t } = useTranslation();
     const hasChildren = task.children && task.children.length > 0;
     const isSelectable = isBulkMode ? true : canSelectForMerge(task);
@@ -847,21 +947,26 @@ const TaskItemContent = ({
         + task.tags.length
         + 1;
     const statusClassName = statusTextClassName[task.status];
+    const statusText = t('taskList.taskStatus', { status: t(`statuses.${task.status}`, { defaultValue: task.status }) });
+    const claimExpired = Boolean(task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs);
+    const effort = getEffectiveEffort(task);
+    const startReady = task.agent_readiness.start_ready ?? task.agent_readiness.is_ready;
 
     return (
         <div className="group">
+            {/* One 44 px line per task; secondary facts open below with Details. */}
             <div
                 className={clsx(
-                    "flex items-center gap-3 p-3 bg-surface-card border rounded-lg hover:shadow-sm transition-all relative",
-                    task.is_overdue ? "border-feedback-danger-border" : "border-border",
+                    "relative flex min-h-11 items-center gap-2 border-b border-border-subtle bg-surface-card py-1 pr-2 hover:bg-surface-hover",
+                    task.is_overdue && "border-l-4 border-l-feedback-danger-border",
                     task.is_deferred && "opacity-75 bg-surface-muted",
-                    isMergeMode && isSelected && "border-feedback-indigo-border bg-feedback-indigo-muted",
-                    isBulkMode && isSelected && "border-action bg-action-muted"
+                    isMergeMode && isSelected && "bg-feedback-indigo-muted",
+                    isBulkMode && isSelected && "bg-action-muted"
                 )}
-                style={{ marginLeft: level * 24 }}
+                style={{ paddingLeft: 8 + level * 24 }}
             >
                 {level > 0 && (
-                    <CornerDownRight className="absolute -left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-content-tertiary" />
+                    <CornerDownRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />
                 )}
 
                 {/* Selection checkbox */}
@@ -879,7 +984,7 @@ const TaskItemContent = ({
                             }
                         }}
                         className={clsx(
-                            "w-5 h-5 rounded border-2 cursor-pointer",
+                            "h-5 w-5 shrink-0 cursor-pointer rounded border-2",
                             isSelectable
                                 ? "border-feedback-indigo-border text-feedback-indigo focus:ring-focus"
                                 : "border-border-strong cursor-not-allowed opacity-50"
@@ -895,7 +1000,7 @@ const TaskItemContent = ({
                         type="button"
                         aria-label={`${t('literalWords.drag')}: ${task.title}`}
 
-                        className="p-1 text-content-tertiary cursor-grab active:cursor-grabbing hover:text-content-secondary touch-none"
+                        className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
                         {...dragHandleProps}
                     >
                         <GripVertical className="w-4 h-4" />
@@ -908,7 +1013,7 @@ const TaskItemContent = ({
                         aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
                         aria-expanded={isExpanded}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="rounded p-1 hover:bg-surface-subtle"
+                        className="shrink-0 rounded p-1 hover:bg-surface-subtle"
                     >
                         {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>
@@ -916,117 +1021,71 @@ const TaskItemContent = ({
                     <span className="h-6 w-6 shrink-0" aria-hidden="true" />
                 )}
 
-                <div className={clsx("shrink-0", statusClassName)}>
+                <span className={clsx("flex shrink-0 items-center gap-1", statusClassName)} title={statusText}>
                     {task.status === 'resolved' || task.status === 'closed'
-                        ? <CheckCircle2 className="h-5 w-5" />
-                        : <Circle className="h-5 w-5" />}
-                    <span className="text-xs">
-                        {t('taskList.taskStatus', {
-                            status: t(`statuses.${task.status}`, { defaultValue: task.status }),
-                        })}
+                        ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
+                        : <Circle aria-hidden="true" className="h-4 w-4" />}
+                    <span className={showStatusLabel ? 'hidden text-xs md:inline' : 'sr-only'}>
+                        {showStatusLabel ? t(`statuses.${task.status}`, { defaultValue: task.status }) : statusText}
                     </span>
-                </div>
+                    {showStatusLabel && <span className="sr-only md:hidden">{statusText}</span>}
+                </span>
 
-                <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <span className={clsx("text-xs font-medium px-1.5 py-0.5 rounded", priorityBadge.bg, priorityBadge.text)}>
-                            {priorityBadge.label}
-                        </span>
+                <span className={clsx("shrink-0 rounded px-1.5 py-0.5 text-xs font-medium", priorityBadge.bg, priorityBadge.text)}>
+                    {priorityBadge.label}
+                </span>
 
-                        <button type="button" onClick={() => onEdit(task)}
-                            className={clsx("min-w-0 text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus", task.status === 'closed' && "line-through text-content-secondary")}>
-                            {task.title}
-                        </button>
+                <button type="button" onClick={() => onEdit(task)} title={task.title}
+                    className={clsx("min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus", task.status === 'closed' && "line-through text-content-secondary")}>
+                    {task.title}
+                </button>
 
-                        {task.dependencies.length > 0 && (
-                            <span className="rounded border border-border px-1.5 py-0.5 text-xs text-content-secondary">
-                                {t('taskList.dependsOnCount', { count: task.dependencies.length })}
-                            </span>
-                        )}
+                {task.dependencies.length > 0 && (
+                    <span className="hidden shrink-0 whitespace-nowrap rounded border border-border px-1.5 py-0.5 text-xs text-content-secondary sm:inline">
+                        {t('taskList.dependsOnCount', { count: task.dependencies.length })}
+                    </span>
+                )}
 
-                        {task.status === 'planned' && (
-                            <span className={clsx('rounded-full px-2 py-0.5 text-xs',
-                                (task.agent_readiness.start_ready ?? task.agent_readiness.is_ready) ? 'bg-feedback-success-muted text-feedback-success-foreground'
-                                    : task.agent_readiness.definition_ready ? 'bg-surface-subtle text-content-secondary'
-                                        : 'bg-feedback-warning-muted text-feedback-warning-foreground')}>
-                                {t((task.agent_readiness.start_ready ?? task.agent_readiness.is_ready) ? 'taskList.readyToStart'
-                                    : task.agent_readiness.definition_ready ? 'taskList.readyToSchedule' : 'taskList.needsDefinition')}
-                            </span>
-                        )}
+                {task.status === 'planned' && (
+                    <span className={clsx('hidden shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs sm:inline',
+                        startReady ? 'bg-feedback-success-muted text-feedback-success-foreground'
+                            : task.agent_readiness.definition_ready ? 'bg-surface-subtle text-content-secondary'
+                                : 'bg-feedback-warning-muted text-feedback-warning-foreground')}>
+                        {t(startReady ? 'taskList.readyToStart'
+                            : task.agent_readiness.definition_ready ? 'taskList.readyToSchedule' : 'taskList.needsDefinition')}
+                    </span>
+                )}
 
-                        {task.is_overdue && (
-                            <span className="flex items-center text-xs text-feedback-danger-foreground bg-feedback-danger-muted px-2 py-0.5 rounded-full">
-                                <AlertTriangle className="w-3 h-3 mr-1" /> {t('taskList.overdue')}
-                            </span>
-                        )}
+                {task.claimed_by && (
+                    <span className={clsx("hidden shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 text-xs lg:flex",
+                        claimExpired ? "bg-feedback-warning-muted text-feedback-warning-foreground" : "bg-status-active-muted text-action")}>
+                        <Bot className="mr-1 h-3 w-3" aria-hidden="true" />
+                        {claimExpired
+                            ? t('taskList.claimExpired', { name: task.claimed_by.display_name })
+                            : t('taskList.claimedBy', { name: task.claimed_by.display_name })}
+                    </span>
+                )}
 
-                        <span className="text-xs tabular-nums text-content-secondary">
-                            {getEffectiveEffort(task) === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: getEffectiveEffort(task)! })}
-                        </span>
-                    </div>
-                    <div className="mt-1 text-xs text-content-secondary">
-                        {t('taskList.assignee')}: {task.assignee?.name ?? t('common.unassigned')}
-                    </div>
-                    <details className="mt-2 text-xs text-content-secondary">
-                        <summary className="w-fit cursor-pointer rounded text-content-secondary hover:text-content-primary focus:outline-none focus:ring-2 focus:ring-focus">
-                            {t('taskList.detailsCount', { count: detailsCount })}
-                        </summary>
-                        <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-border-subtle pt-2">
-                            {task.is_optional && (
-                                <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-content-secondary">
-                                    {t('taskList.optional')}
-                                </span>
-                            )}
-                            {task.is_deferred && (
-                                <span className="rounded-full bg-surface-hover px-2 py-0.5 text-content-secondary">
-                                    {t('taskList.deferred')}
-                                </span>
-                            )}
-                            {task.claimed_by && (
-                                <span className={clsx(
-                                    "flex items-center rounded-full px-2 py-0.5",
-                                    task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs
-                                        ? "text-feedback-warning-foreground bg-feedback-warning-muted"
-                                        : "text-action bg-status-active-muted"
-                                )}>
-                                    <Bot className="mr-1 h-3 w-3" aria-hidden="true" />
-                                    {task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs
-                                        ? t('taskList.claimExpired', { name: task.claimed_by.display_name })
-                                        : t('taskList.claimedBy', { name: task.claimed_by.display_name })}
-                                </span>
-                            )}
-                            <TaskAgentReadinessBadge readiness={task.agent_readiness} />
-                            {task.dependencies.length > 0 && (
-                                <span>
-                                    {t('taskList.dependsOn')}: {getDependencyNames(task.dependencies, taskMap).join(', ')}
-                                    {task.dependencies.length > 3 && ` +${task.dependencies.length - 3}`}
-                                </span>
-                            )}
-                            {task.tags.map((tag, idx) => {
-                                const label = labelsBySlug.get(tag);
-                                return label ? (
-                                    <span
-                                        key={idx}
-                                        className="rounded-full border px-2 py-0.5"
-                                        style={{
-                                            color: label.color,
-                                            backgroundColor: `${label.color}1A`,
-                                            borderColor: `${label.color}66`,
-                                        }}
-                                    >
-                                        {tag}
-                                    </span>
-                                ) : (
-                                    <span key={idx} className="rounded-full bg-feedback-purple-muted px-2 py-0.5 text-feedback-purple-foreground">
-                                        {tag}
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    </details>
-                </div>
+                {task.is_overdue && (
+                    <span className="flex shrink-0 items-center whitespace-nowrap rounded-full bg-feedback-danger-muted px-2 py-0.5 text-xs text-feedback-danger-foreground">
+                        <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" /> {t('taskList.overdue')}
+                    </span>
+                )}
 
-                <div className="flex items-center gap-1">
+                <span className="hidden w-32 shrink-0 truncate text-xs text-content-secondary lg:block" title={task.assignee?.name ?? t('common.unassigned')}>
+                    <span className="sr-only">{t('taskList.assignee')}: </span>{task.assignee?.name ?? t('common.unassigned')}
+                </span>
+
+                <span className="w-12 shrink-0 text-right text-xs tabular-nums text-content-secondary">
+                    {effort === null ? t('domain.unknownEstimate') : t('units.daysCompact', { count: effort })}
+                </span>
+
+                <div className="flex shrink-0 items-center">
+                    <Button variant="ghost" size="sm" aria-expanded={showDetails} aria-controls={detailsId}
+                        aria-label={`${t('taskList.detailsCount', { count: detailsCount })}: ${task.title}`}
+                        title={t('taskList.detailsCount', { count: detailsCount })} onClick={() => setShowDetails(value => !value)}>
+                        <Info className="h-4 w-4" aria-hidden="true" />
+                    </Button>
                     <Button variant="ghost" size="sm" title={t('tasks.editTask')} aria-label={`${t('tasks.editTask')}: ${task.title}`} onClick={() => onEdit(task)}>
                         <Edit className="w-4 h-4" />
                     </Button>
@@ -1055,8 +1114,61 @@ const TaskItemContent = ({
                 </div>
             </div>
 
+            {showDetails && (
+                <div id={detailsId} className="flex flex-wrap items-center gap-1.5 border-b border-border-subtle bg-surface-muted py-2 pr-3 text-xs text-content-secondary"
+                    style={{ paddingLeft: 40 + level * 24 }}>
+                    <span>{t('taskList.assignee')}: {task.assignee?.name ?? t('common.unassigned')}</span>
+                    {task.is_optional && (
+                        <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-content-secondary">
+                            {t('taskList.optional')}
+                        </span>
+                    )}
+                    {task.is_deferred && (
+                        <span className="rounded-full bg-surface-hover px-2 py-0.5 text-content-secondary">
+                            {t('taskList.deferred')}
+                        </span>
+                    )}
+                    {task.claimed_by && (
+                        <span className={clsx("flex items-center rounded-full px-2 py-0.5",
+                            claimExpired ? "text-feedback-warning-foreground bg-feedback-warning-muted" : "text-action bg-status-active-muted")}>
+                            <Bot className="mr-1 h-3 w-3" aria-hidden="true" />
+                            {claimExpired
+                                ? t('taskList.claimExpired', { name: task.claimed_by.display_name })
+                                : t('taskList.claimedBy', { name: task.claimed_by.display_name })}
+                        </span>
+                    )}
+                    <TaskAgentReadinessBadge readiness={task.agent_readiness} />
+                    {task.dependencies.length > 0 && (
+                        <span>
+                            {t('taskList.dependsOn')}: {getDependencyNames(task.dependencies, taskMap).join(', ')}
+                            {task.dependencies.length > 3 && ` +${task.dependencies.length - 3}`}
+                        </span>
+                    )}
+                    {task.tags.map((tag, idx) => {
+                        const label = labelsBySlug.get(tag);
+                        return label ? (
+                            <span
+                                key={idx}
+                                className="rounded-full border px-2 py-0.5"
+                                style={{
+                                    color: label.color,
+                                    backgroundColor: `${label.color}1A`,
+                                    borderColor: `${label.color}66`,
+                                }}
+                            >
+                                {tag}
+                            </span>
+                        ) : (
+                            <span key={idx} className="rounded-full bg-feedback-purple-muted px-2 py-0.5 text-feedback-purple-foreground">
+                                {tag}
+                            </span>
+                        );
+                    })}
+                </div>
+            )}
+
             {hasChildren && isExpanded && (
-                <div className="mt-2 space-y-2">
+                <div>
                     {isDraggingEnabled ? (
                         <DndContext
                             sensors={sensors}
