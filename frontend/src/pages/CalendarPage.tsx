@@ -21,6 +21,7 @@ import {
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
+import { UnsavedLeaveGuard } from '../components/common/UnsavedLeaveGuard';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { CalendarPeriodNavigator, InteractiveCalendar } from '../components/calendar/InteractiveCalendar';
 import { OverflowMenu } from '../components/ui';
@@ -136,6 +137,14 @@ const CalendarPage = () => {
         queryKey: ['iterations'],
         queryFn: iterationService.getAll,
     });
+
+    // One save model: day marks, weekends and the year stay a draft until Save.
+    const savedDraft = useMemo(
+        () => (calendarContext.observation ? makeDraft(calendarContext.observation.resource) : null),
+        [calendarContext.observation],
+    );
+    const hasUnsavedDays = Boolean(draft && savedDraft && JSON.stringify(draft) !== JSON.stringify(savedDraft));
+    const discardDayChanges = () => { if (savedDraft) editDraft(savedDraft); };
 
     const calendarId = calendar?.id;
     const readCalendarContext = calendarContext.read;
@@ -683,7 +692,19 @@ const CalendarPage = () => {
                 <select
                     className="input planning-workbench-select"
                     value={calendar.id}
-                    onChange={event => setSelectedCalendarId(Number(event.target.value))}
+                    onChange={event => {
+                        const nextId = Number(event.target.value);
+                        if (!hasUnsavedDays) { setSelectedCalendarId(nextId); return; }
+                        requestConfirmation({
+                            title: t('calendar.unsavedSwitchTitle'),
+                            description: t('calendar.unsavedSwitchBody'),
+                            confirmLabel: t('calendar.discardAndSwitch'),
+                            cancelLabel: t('calendar.keepEditing'),
+                            closeLabel: t('actions.close'),
+                            tone: 'danger',
+                            onConfirm: () => setSelectedCalendarId(nextId),
+                        });
+                    }}
                     aria-label={t('calendar.selectCalendar')}
                     disabled={calendarBusy || calendarContext.loading}
                 >
@@ -695,16 +716,25 @@ const CalendarPage = () => {
                 </select>
             ) : undefined}
             secondaryActions={(
-                <Button type="button" variant="secondary" disabled={calendarBusy} onClick={startCreateCalendar}>
-                    <Plus className="h-4 w-4" />
-                    {t('calendar.newCalendar')}
-                </Button>
+                <>
+                    {hasUnsavedDays && <span role="status" className="pill warn"><span className="pdot" />{t('calendar.unsavedChanges')}</span>}
+                    {hasUnsavedDays && (
+                        <Button type="button" variant="ghost" disabled={calendarBusy} onClick={discardDayChanges}>
+                            {t('calendar.discardChanges')}
+                        </Button>
+                    )}
+                    <Button type="button" variant="secondary" disabled={calendarBusy} onClick={startCreateCalendar}>
+                        <Plus className="h-4 w-4" />
+                        {t('calendar.newCalendar')}
+                    </Button>
+                </>
             )}
             primaryAction={(
                 <Button
                     type="button"
                     onClick={saveSettings}
-                    disabled={calendarBusy || !calendarContext.observation || calendarContext.loading}
+                    disabled={!hasUnsavedDays || calendarBusy || !calendarContext.observation || calendarContext.loading}
+                    title={hasUnsavedDays ? undefined : t('calendar.nothingToSave')}
                     isLoading={updateCalendarMutation.isPending}
                 >
                     <Save className="h-4 w-4" />
@@ -853,6 +883,7 @@ const CalendarPage = () => {
                             <Download className="w-4 h-4" />
                             {t('calendar.loadPublicHolidays')}
                         </Button>
+                        <p className="w-full text-xs text-content-secondary">{t('calendar.importsSaveImmediately')}</p>
                         <label className="btn secondary cursor-pointer">
                             <Upload className="w-4 h-4" />
                             {t('calendar.importHolidayCsv')}
@@ -1139,6 +1170,14 @@ const CalendarPage = () => {
                     </div>
                 )}
             </section>
+            <UnsavedLeaveGuard
+                when={hasUnsavedDays}
+                title={t('calendar.unsavedLeaveTitle')}
+                description={t('calendar.unsavedLeaveBody')}
+                leaveLabel={t('calendar.leaveWithoutSaving')}
+                stayLabel={t('calendar.keepEditing')}
+                closeLabel={t('actions.close')}
+            />
             {confirmationDialog}
         </PlanningWorkbenchFrame>
     );

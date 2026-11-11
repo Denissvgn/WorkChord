@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     format, startOfMonth, endOfMonth, eachDayOfInterval,
@@ -149,8 +150,13 @@ export const InteractiveCalendar = ({
     onAddShortDay,
     onRemoveShortDay
 }: InteractiveCalendarProps) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const locale = dateFnsLocale(i18n.language);
     const currentMonth = new Date(year, month, 1);
+    // Left click alone applies the chosen mark, so no right-click is needed.
+    const [markMode, setMarkMode] = useState<'holiday' | 'short' | 'workday'>('holiday');
+    const [focusedIndex, setFocusedIndex] = useState(0);
+    const dayRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
@@ -171,30 +177,56 @@ export const InteractiveCalendar = ({
         return isConfiguredWeekend(date, weekendDays);
     };
 
-    // Left click: toggle holiday
-    const handleDayClick = (date: Date) => {
+    const markHoliday = (date: Date) => {
         const dateStr = format(date, 'yyyy-MM-dd');
         if (isHoliday(date)) {
             onRemoveHoliday(dateStr);
         } else {
-            // If it's a short day, remove first
-            if (isShortDay(date)) {
-                onRemoveShortDay(dateStr);
-            }
+            if (isShortDay(date)) onRemoveShortDay(dateStr);
             onAddHoliday(dateStr);
         }
     };
-
-    // Right click: toggle short day
-    const handleDayRightClick = (e: React.MouseEvent, date: Date) => {
-        e.preventDefault();
+    const markShortDay = (date: Date) => {
         const dateStr = format(date, 'yyyy-MM-dd');
-        if (isHoliday(date)) return; // Can't mark holiday as short day
         if (isShortDay(date)) {
             onRemoveShortDay(dateStr);
         } else {
+            if (isHoliday(date)) onRemoveHoliday(dateStr);
             onAddShortDay(dateStr);
         }
+    };
+    const markWorkday = (date: Date) => {
+        const dateStr = format(date, 'yyyy-MM-dd');
+        if (isHoliday(date)) onRemoveHoliday(dateStr);
+        if (isShortDay(date)) onRemoveShortDay(dateStr);
+    };
+    const handleDayClick = (date: Date) => {
+        if (markMode === 'holiday') markHoliday(date);
+        else if (markMode === 'short') markShortDay(date);
+        else markWorkday(date);
+    };
+    const moveFocus = (index: number) => {
+        const next = Math.min(days.length - 1, Math.max(0, index));
+        setFocusedIndex(next);
+        dayRefs.current[next]?.focus();
+    };
+    const handleDayKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+        const moves: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 };
+        if (event.key in moves) { event.preventDefault(); moveFocus(index + moves[event.key]); }
+        else if (event.key === 'Home') { event.preventDefault(); moveFocus(0); }
+        else if (event.key === 'End') { event.preventDefault(); moveFocus(days.length - 1); }
+    };
+    const dayStateLabel = (date: Date) => (
+        isHoliday(date) ? t('calendar.stateHoliday')
+            : isShortDay(date) ? t('calendar.stateShortDay')
+                : isWeekendDate(date) ? t('calendar.stateWeekend')
+                    : t('calendar.stateWorkday')
+    );
+
+    // Right click stays a shortcut for a short day.
+    const handleDayRightClick = (e: React.MouseEvent, date: Date) => {
+        e.preventDefault();
+        markShortDay(date);
     };
 
     const dayNames = t('calendar.dayNames', { returnObjects: true }) as string[];
@@ -210,6 +242,19 @@ export const InteractiveCalendar = ({
                 onMonthChange={onMonthChange}
             />
 
+            <div role="radiogroup" aria-label={t('calendar.markDaysAs')} className="mb-3 flex flex-wrap items-center gap-2 text-sm">
+                <span className="text-content-secondary">{t('calendar.markDaysAs')}</span>
+                {(['holiday', 'short', 'workday'] as const).map(mode => (
+                    <button key={mode} type="button" role="radio" aria-checked={markMode === mode}
+                        onClick={() => setMarkMode(mode)}
+                        className={clsx('rounded-md border px-3 py-1 font-medium', markMode === mode
+                            ? 'border-action bg-action-muted text-action'
+                            : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted')}>
+                        {t(`calendar.mode_${mode}`)}
+                    </button>
+                ))}
+            </div>
+
             <div className="grid grid-cols-7 gap-1">
                 {dayNames.map(day => (
                     <div key={day} className="text-center text-xs font-medium text-content-secondary py-1">
@@ -221,7 +266,7 @@ export const InteractiveCalendar = ({
                     <div key={`pad-${i}`} className="h-8" />
                 ))}
 
-                {days.map(day => {
+                {days.map((day, index) => {
                     const holiday = isHoliday(day);
                     const shortDay = isShortDay(day);
                     const weekend = isWeekendDate(day);
@@ -230,8 +275,13 @@ export const InteractiveCalendar = ({
                         <button
                             key={day.toISOString()}
                             type="button"
+                            ref={element => { dayRefs.current[index] = element; }}
+                            tabIndex={index === Math.min(focusedIndex, days.length - 1) ? 0 : -1}
+                            onFocus={() => setFocusedIndex(index)}
+                            onKeyDown={event => handleDayKeyDown(event, index)}
                             onClick={() => handleDayClick(day)}
                             onContextMenu={(e) => handleDayRightClick(e, day)}
+                            aria-label={t('calendar.dayLabel', { date: format(day, 'EEEE, d MMMM yyyy', { locale }), state: dayStateLabel(day) })}
                             className={clsx(
                                 "h-8 w-full rounded text-sm font-medium transition-all",
                                 "hover:ring-2 hover:ring-focus hover:ring-offset-1",
