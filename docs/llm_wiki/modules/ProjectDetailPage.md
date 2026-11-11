@@ -42,9 +42,9 @@ _Auto-generated from `frontend/src/pages/ProjectDetailPage.tsx`._
 | `clsx` | `clsx` | — | compiler-dependent |
 | `lucide-react` | `Activity`, `AlertTriangle`, `ArrowDown`, `ArrowUp`, `CalendarDays`, `CheckCircle2`, `ChevronRight`, `Edit`, `FolderOpen`, `History`, `MessageSquare`, `Package`, `Plus`, `Send`, `Target`, `Trash2`, `User`, `XCircle` | — | compiler-dependent |
 | `react` | `FormEvent` | Declaration | erased |
-| `react` | `useState` | — | compiler-dependent |
+| `react` | `useEffect`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
-| `react-router-dom` | `Link`, `useNavigate`, `useParams` | — | compiler-dependent |
+| `react-router-dom` | `Link`, `useNavigate`, `useParams`, `useSearchParams` | — | compiler-dependent |
 
 ## Module Signals
 

@@ -1,6 +1,6 @@
 # InteractiveCalendarProps
 
-**Location:** `frontend/src/components/calendar/InteractiveCalendar.tsx:20`
+**Location:** `frontend/src/components/calendar/InteractiveCalendar.tsx:21`
 **Kind:** Interface
 **Bases:** —
 **Module:** [InteractiveCalendar](../modules/InteractiveCalendar.md)

@@ -11,20 +11,20 @@ Summary statistics for an iteration.
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `int` | *required* | — |
-| `name` | `str` | *required* | — |
-| `project_id` | `Optional[int]` | `None` | — |
-| `project` | `Optional[IterationProjectSummary]` | `None` | — |
-| `start_date` | `date` | *required* | — |
-| `end_date` | `date` | *required* | — |
-| `working_days` | `int` | *required* | — |
-| `total_tasks` | `int` | *required* | — |
-| `completed_tasks` | `int` | *required* | — |
-| `total_effort_days` | `float` | *required* | — |
-| `team_capacity_days` | `float` | *required* | — |
-| `overdue_tasks_count` | `int` | *required* | — |
+| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
+|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `id` | `int` | `id` | Yes | No | — | — | — | — |
+| `name` | `str` | `name` | Yes | No | — | — | — | — |
+| `project_id` | `Optional[int]` | `project_id` | No | Yes | `None` | — | — | — |
+| `project` | `Optional[IterationProjectSummary]` | `project` | No | Yes | `None` | — | — | — |
+| `start_date` | `date` | `start_date` | Yes | No | — | — | — | — |
+| `end_date` | `date` | `end_date` | Yes | No | — | — | — | — |
+| `working_days` | `int` | `working_days` | Yes | No | — | — | — | — |
+| `total_tasks` | `int` | `total_tasks` | Yes | No | — | — | — | — |
+| `completed_tasks` | `int` | `completed_tasks` | Yes | No | — | — | — | — |
+| `total_effort_days` | `float` | `total_effort_days` | Yes | No | — | — | — | — |
+| `team_capacity_days` | `float` | `team_capacity_days` | Yes | No | — | — | — | — |
+| `overdue_tasks_count` | `int` | `overdue_tasks_count` | Yes | No | — | — | — | — |
 
 ## Methods
 

@@ -23,7 +23,7 @@ _Auto-generated from `frontend/src/components/gantt/GanttChart.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `ganttServiceMock`, `taskFixture`, `scheduleResult`, `previewFixture` |
-| Module calls | `ganttServiceMock = hoisted`, `mock`, `mock`, `mock`, `describe`, `describe` |
+| Module calls | `ganttServiceMock = hoisted`, `mock`, `mock`, `mock`, `describe`, `describe`, `describe`, `describe`, `describe` |
 
 ## Local dependency map
 

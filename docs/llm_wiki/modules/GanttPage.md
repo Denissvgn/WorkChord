@@ -20,7 +20,6 @@ Snapshot restore captures the target iteration identity and its observed revisio
 | `../components/gantt/TaskEditModal` | `TaskEditModal` | — | compiler-dependent |
 | `../components/iteration/IterationSelector` | `IterationSelector` | — | compiler-dependent |
 | `../components/planning/PlanningWorkbenchFrame` | `PlanningWorkbenchFrame` | — | compiler-dependent |
-| `../components/ui` | `OverflowMenu` | — | compiler-dependent |
 | `../hooks/useAdminAccess` | `useAdminAccess` | — | compiler-dependent |
 | `../services/ganttService` | `ganttService` | — | compiler-dependent |
 | `../services/iterationService` | `iterationService` | — | compiler-dependent |
@@ -70,7 +69,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (24) |
+| Outbound | `frontend` (23) |
 
 ### External packages
 
@@ -78,4 +77,4 @@ flowchart LR
 |---|---:|---:|
 | typescript | 6 | 0 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.

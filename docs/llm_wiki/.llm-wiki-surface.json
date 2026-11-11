@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1529,
+      "entities": 1533,
       "flows": 553,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 763,
+      "modules": 765,
       "workflows": 192
     },
     "dependency_architecture": 2,
-    "total": 3053
+    "total": 3059
   },
   "dependency_pages": {
     "count": 2,
@@ -43675,7 +43675,10 @@
         "entities/GanttAssignee.md",
         "entities/GanttChart_FlattenedTask.md",
         "entities/GanttChartProps.md",
+        "entities/GanttGroupBy.md",
         "entities/GanttMilestone.md",
+        "entities/GanttRow.md",
+        "entities/GanttStatusFilter.md",
         "entities/GateStatusAmendment.md",
         "entities/GitHubAutomationFromStatus.md",
         "entities/GitHubForm.md",
@@ -44744,6 +44747,7 @@
         "entities/types_triage_TriageTaskDraftResponse.md",
         "entities/UnknownRecord.md",
         "entities/UnsafeDatabaseTarget.md",
+        "entities/UnsavedLeaveGuardProps.md",
         "entities/UnsupportedAgentTeamMasterVersion.md",
         "entities/UpgradeError.md",
         "entities/URLPolicyError.md",
@@ -45592,6 +45596,7 @@
         "modules/Input.test.md",
         "modules/installed_wheel_postgresql_qualification.md",
         "modules/InteractiveCalendar.md",
+        "modules/InteractiveCalendar.test.md",
         "modules/InterfaceLanguageSettings.md",
         "modules/isolated_rehearsal.md",
         "modules/iteration_service.md",
@@ -46091,6 +46096,7 @@
         "modules/types_team.md",
         "modules/types_template.md",
         "modules/types_triage.md",
+        "modules/UnsavedLeaveGuard.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md",
         "modules/url_policy.md",
@@ -51880,6 +51886,18 @@
       "title": "GanttChartProps"
     },
     {
+      "canonical_path": "entities/GanttGroupBy.md",
+      "id": "GanttGroupBy",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GanttGroupBy",
+      "outgoing_internal_links": [
+        "modules/GanttChart.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/GanttChart.tsx",
+      "title": "GanttGroupBy"
+    },
+    {
       "canonical_path": "entities/GanttMilestone.md",
       "id": "GanttMilestone",
       "kind": "entities",
@@ -51892,6 +51910,30 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/gantt.py",
       "title": "GanttMilestone"
+    },
+    {
+      "canonical_path": "entities/GanttRow.md",
+      "id": "GanttRow",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GanttRow",
+      "outgoing_internal_links": [
+        "modules/GanttChart.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/GanttChart.tsx",
+      "title": "GanttRow"
+    },
+    {
+      "canonical_path": "entities/GanttStatusFilter.md",
+      "id": "GanttStatusFilter",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/GanttStatusFilter",
+      "outgoing_internal_links": [
+        "modules/GanttChart.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/GanttChart.tsx",
+      "title": "GanttStatusFilter"
     },
     {
       "canonical_path": "entities/GateStatusAmendment.md",
@@ -66741,6 +66783,18 @@
       "title": "UnsafeDatabaseTarget"
     },
     {
+      "canonical_path": "entities/UnsavedLeaveGuardProps.md",
+      "id": "UnsavedLeaveGuardProps",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/UnsavedLeaveGuardProps",
+      "outgoing_internal_links": [
+        "modules/UnsavedLeaveGuard.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/UnsavedLeaveGuard.tsx",
+      "title": "UnsavedLeaveGuardProps"
+    },
+    {
       "canonical_path": "entities/UnsupportedAgentTeamMasterVersion.md",
       "id": "UnsupportedAgentTeamMasterVersion",
       "kind": "entities",
@@ -69542,18 +69596,7 @@
       "outgoing_internal_links": [
         "entities/ConfirmDialogProps.md",
         "entities/ConfirmDialogTone.md",
-        "modules/Button.md",
-        "modules/ConfirmDialog.md",
-        "modules/DraftDismissalDialog.md",
-        "modules/GanttPage.md",
-        "modules/IterationList.md",
-        "modules/Modal.md",
-        "modules/ProjectDetailPage.md",
-        "modules/ProjectIterationsSection.md",
-        "modules/TaskEditModal.md",
-        "modules/TaskForm.md",
-        "modules/TaskList.md",
-        "modules/useConfirmDialog.md"
+        "modules/ConfirmDialog.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/common/ConfirmDialog.tsx",
@@ -70579,6 +70622,9 @@
       "outgoing_internal_links": [
         "entities/GanttChart_FlattenedTask.md",
         "entities/GanttChartProps.md",
+        "entities/GanttGroupBy.md",
+        "entities/GanttRow.md",
+        "entities/GanttStatusFilter.md",
         "entities/TaskTimelineDates.md",
         "modules/GanttChart.md"
       ],
@@ -71229,11 +71275,26 @@
         "entities/InteractiveCalendarProps.md",
         "modules/CalendarPage.md",
         "modules/dateLocale.md",
-        "modules/InteractiveCalendar.md"
+        "modules/InteractiveCalendar.md",
+        "modules/InteractiveCalendar.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/calendar/InteractiveCalendar.tsx",
       "title": "InteractiveCalendar Module"
+    },
+    {
+      "canonical_path": "modules/InteractiveCalendar.test.md",
+      "id": "InteractiveCalendar.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/InteractiveCalendar.test",
+      "outgoing_internal_links": [
+        "modules/InteractiveCalendar.md",
+        "modules/InteractiveCalendar.test.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/calendar/InteractiveCalendar.test.tsx",
+      "title": "InteractiveCalendar.test Module"
     },
     {
       "canonical_path": "modules/InterfaceLanguageSettings.md",
@@ -80033,6 +80094,21 @@
       "role": "semantic",
       "source_path": "frontend/src/types/triage.ts",
       "title": "triage Module"
+    },
+    {
+      "canonical_path": "modules/UnsavedLeaveGuard.md",
+      "id": "UnsavedLeaveGuard",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/UnsavedLeaveGuard",
+      "outgoing_internal_links": [
+        "entities/UnsavedLeaveGuardProps.md",
+        "modules/CalendarPage.md",
+        "modules/ConfirmDialog.md",
+        "modules/UnsavedLeaveGuard.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/common/UnsavedLeaveGuard.tsx",
+      "title": "UnsavedLeaveGuard Module"
     },
     {
       "canonical_path": "modules/upgrade.md",
@@ -94523,6 +94599,7 @@
         "modules/Input.test.md",
         "modules/installed_wheel_postgresql_qualification.md",
         "modules/InteractiveCalendar.md",
+        "modules/InteractiveCalendar.test.md",
         "modules/InterfaceLanguageSettings.md",
         "modules/isolated_rehearsal.md",
         "modules/iteration_service.md",
@@ -95022,6 +95099,7 @@
         "modules/types_team.md",
         "modules/types_template.md",
         "modules/types_triage.md",
+        "modules/UnsavedLeaveGuard.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md",
         "modules/url_policy.md",
@@ -95297,6 +95375,7 @@
         "modules/Input.test.md",
         "modules/installed_wheel_postgresql_qualification.md",
         "modules/InteractiveCalendar.md",
+        "modules/InteractiveCalendar.test.md",
         "modules/InterfaceLanguageSettings.md",
         "modules/isolated_rehearsal.md",
         "modules/iteration_service.md",
@@ -95796,6 +95875,7 @@
         "modules/types_team.md",
         "modules/types_template.md",
         "modules/types_triage.md",
+        "modules/UnsavedLeaveGuard.md",
         "modules/upgrade.md",
         "modules/upgrade_service.md",
         "modules/url_policy.md",
@@ -95843,5 +95923,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:04116aa4c2030bbeb22cf3ebd0af96309e4ff4a7471b1994ebe9fd2d873ce6e0"
+  "source_hash": "sha256:8fa7a3ed116c408554bfabf0e6b67b208406d56e02e5a243a313236edc3d1908"
 }

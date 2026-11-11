@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1529 | [Open section](#entities) |
-| Modules | 763 | [Open section](#modules) |
+| Entities | 1533 | [Open section](#entities) |
+| Modules | 765 | [Open section](#modules) |
 | Workflows | 192 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 553 | [Open section](#entry-point-flows) |
@@ -381,7 +381,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [GanttAssignee](entities/GanttAssignee.md)
 - [GanttChartProps](entities/GanttChartProps.md)
 - [GanttChart_FlattenedTask](entities/GanttChart_FlattenedTask.md)
+- [GanttGroupBy](entities/GanttGroupBy.md)
 - [GanttMilestone](entities/GanttMilestone.md)
+- [GanttRow](entities/GanttRow.md)
+- [GanttStatusFilter](entities/GanttStatusFilter.md)
 - [GateStatusAmendment](entities/GateStatusAmendment.md)
 - [GitHubAutomationFromStatus](entities/GitHubAutomationFromStatus.md)
 - [GitHubForm](entities/GitHubForm.md)
@@ -997,6 +1000,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [UTCDateTime](entities/UTCDateTime.md)
 - [UnknownRecord](entities/UnknownRecord.md)
 - [UnsafeDatabaseTarget](entities/UnsafeDatabaseTarget.md)
+- [UnsavedLeaveGuardProps](entities/UnsavedLeaveGuardProps.md)
 - [UnsupportedAgentTeamMasterVersion](entities/UnsupportedAgentTeamMasterVersion.md)
 - [UpgradeError](entities/UpgradeError.md)
 - [UsagePricingBasis](entities/UsagePricingBasis.md)
@@ -1627,6 +1631,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [Input](modules/Input.md) - `frontend/src/components/common/Input.tsx`
 - [Input.test](modules/Input.test.md) - `frontend/src/components/common/Input.test.tsx`
 - [InteractiveCalendar](modules/InteractiveCalendar.md) - `frontend/src/components/calendar/InteractiveCalendar.tsx`
+- [InteractiveCalendar.test](modules/InteractiveCalendar.test.md) - `frontend/src/components/calendar/InteractiveCalendar.test.tsx`
 - [InterfaceLanguageSettings](modules/InterfaceLanguageSettings.md) - `frontend/src/components/settings/InterfaceLanguageSettings.tsx`
 - [IterationForm](modules/IterationForm.md) - `frontend/src/components/iteration/IterationForm.tsx`
 - [IterationForm.test](modules/IterationForm.test.md) - `frontend/src/components/iteration/IterationForm.test.tsx`
@@ -1759,6 +1764,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TimeEntriesReport.test](modules/TimeEntriesReport.test.md) - `frontend/src/components/projects/TimeEntriesReport.test.tsx`
 - [ToastProvider](modules/ToastProvider.md) - `frontend/src/components/feedback/ToastProvider.tsx`
 - [TriagePage](modules/TriagePage.md) - `frontend/src/pages/TriagePage.tsx`
+- [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) - `frontend/src/components/common/UnsavedLeaveGuard.tsx`
 - [UserSessionBadge](modules/UserSessionBadge.md) - `frontend/src/components/UserSessionBadge.tsx`
 - [UserSessionBadge.test](modules/UserSessionBadge.test.md) - `frontend/src/components/UserSessionBadge.test.tsx`
 - [VacationCsvImport](modules/VacationCsvImport.md) - `frontend/src/components/team/VacationCsvImport.tsx`

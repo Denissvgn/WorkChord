@@ -39,7 +39,6 @@ flowchart LR
     n4 --> n1
     n4 --> n3
     n5 --> n1
-    n5 --> n3
     n6 --> n1
     n6 --> n3
     click n0 "../modules/PlanningWorkbenchFrame.test.md"
