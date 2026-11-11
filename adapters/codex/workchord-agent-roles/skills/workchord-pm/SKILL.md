@@ -12,7 +12,7 @@ Control planning and delivery through WorkChord's authoritative records. Shape a
 People, the PM, workers, and reviewers follow one workflow. As the PM you:
 
 1. **Capture:** run Triage and record one disposition per item; file WorkChord defects as Triage items.
-2. **Plan and assign:** work the six plan checkpoints people see on the plan page: planning period (`iteration`), people and capacity (`team`), work (`work`), scheduling blockers (`blockers`), schedule (`schedule`), and review (`review`). Read their states with the `plan-readiness` operation, so you and people see the same "n of 6". Write typed briefs, set assignee, dependencies, and schedule, then create agent assignments.
+2. **Plan and assign:** work the six plan checkpoints people see on the plan page: planning period (`iteration`), people and capacity (`team`), work (`work`), scheduling blockers (`blockers`), schedule (`schedule`), and review (`review`). Read their states with the `plan-readiness` operation, so you and people see the same "n of 6". Write typed briefs, set assignee, dependencies, and schedule, then create agent assignments. A plan below 6 of 6 is unfinished; pass the gate in [Finish the Plan Before You Report It](#finish-the-plan-before-you-report-it).
 3. **Do:** supervise delivery and recover stuck work; never do the worker's task yourself.
 4. **Review:** route each submitted task to an independent reviewer through a verification assignment. The reviewer accepts the work or requests changes; you never accept work yourself.
 5. **Report:** publish project updates with health, summary, progress, risks, decisions, and next steps.
@@ -80,6 +80,20 @@ Inspect assignment, task status, claim expiry, run state, recent progress, artif
 ### Phase 8: Verify, Rework, Close, and Report
 
 Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+
+## Finish the Plan Before You Report It
+
+Creating tasks is not planning. A plan is finished when a person who opens the Gantt chart can read who carries each task and when it happens. Work the checkpoints in order, and never describe a plan as ready, scheduled, or handed off below 6 of 6.
+
+1. **Staff before you fill.** Add every participating profile to the iteration as a capacity row before you create or import tasks. An iteration without capacity rows cannot hold an assignee, so nothing in it can be scheduled.
+2. **Use records, not labels.** Create a milestone record for each intermediate outcome and set `milestone_id` on its tasks. A label such as `milestone:core` or an ID prefix in a title is not a milestone: people cannot group by it, and it carries no target date.
+3. **Assign every planned leaf.** Set `assignee_id` to a capacity row of the same iteration on every planned leaf task. Do not leave it for dispatch: an agent assignment names the actor that executes, not the row that carries the effort.
+4. **Let the scheduler date the work.** Preview and apply the schedule only after assignment. The scheduler skips a task without an assignee, so a date on such a task is not a calculated date.
+5. **Prove it.** Re-read `plan-readiness` and the Gantt. Require `tasks_without_assignee` and `tasks_without_effort` to be `0`, every checkpoint `done`, and a recorded reason for every task the schedule left without dates. `has_schedule` alone only says that tasks carry dates.
+
+Run this gate once for the whole iteration after every bulk create or import, before any dispatch.
+
+When a checkpoint cannot be completed — a missing `team:write` scope, no suitable profile, or exceeded capacity — stop at that checkpoint. Report "n of 6", the blocking checkpoint with its reason codes and counts, and the person who must act. Do not start a later checkpoint to make the plan look complete.
 
 ## Preserve Role Boundaries
 

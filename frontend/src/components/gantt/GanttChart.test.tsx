@@ -327,6 +327,72 @@ describe('Gantt finding and grouping', () => {
     });
 });
 
+describe('Gantt plans that are not staffed yet', () => {
+    it('says once that dated work without an assignee is not a calculated schedule', () => {
+        renderChart();
+
+        expect(screen.getByText(i18n.t('surfaces.ganttChart.provisionalSummary', { count: 1 }))).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: i18n.t('surfaces.ganttChart.assignOwners', { count: 1 }) })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: scheduledTaskName(taskFixture) })).toHaveClass('border-dashed');
+    });
+
+    it('draws assigned work as a solid bar without the summary', () => {
+        const assigned: GanttTask = { ...taskFixture, assignee: { id: 7, name: 'Sam' } };
+        renderChart(false, [assigned]);
+
+        expect(screen.queryByText(i18n.t('surfaces.ganttChart.provisionalSummary', { count: 1 }))).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: scheduledTaskName(assigned) })).not.toHaveClass('border-dashed');
+    });
+});
+
+describe('Gantt overview of a large plan', () => {
+    const largePlan: GanttTask[] = Array.from({ length: 24 }, (_, index) => ({
+        ...taskFixture,
+        id: 400 + index,
+        title: `${index < 12 ? 'CORE' : 'UI'}-${String(index + 1).padStart(3, '0')} Task ${index + 1}`,
+        start_date: index < 12 ? '2026-01-05' : '2026-01-08',
+        end_date: index < 12 ? '2026-01-07' : '2026-01-12',
+        assignee: index < 12 ? null : { id: 7, name: 'Sam' },
+    }));
+
+    it('opens grouped and collapsed, with the span and unassigned count on each group', async () => {
+        const { user } = renderChart(false, largePlan);
+
+        expect(screen.getByRole('combobox', { name: 'Group by' })).toHaveValue('prefix');
+        const core = screen.getByRole('button', { name: 'CORE (12)' });
+        expect(core).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByText('CORE-001 Task 1')).not.toBeInTheDocument();
+        expect(screen.getByText(i18n.t('surfaces.ganttChart.groupUnassigned', { count: 12 }))).toBeInTheDocument();
+        expect(screen.getByText(i18n.t('surfaces.ganttChart.groupRange', {
+            start: formatDate('2026-01-08'),
+            end: formatDate('2026-01-12'),
+        }))).toBeInTheDocument();
+
+        await user.click(core);
+        expect(screen.getByText('CORE-001 Task 1')).toBeInTheDocument();
+        expect(screen.queryByText('UI-013 Task 13')).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
+        await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.expandAllGroups') }));
+        expect(screen.getByText('UI-013 Task 13')).toBeInTheDocument();
+    });
+
+    it('shows search matches even inside a collapsed group', async () => {
+        const { user } = renderChart(false, largePlan);
+        await user.type(screen.getByRole('searchbox', { name: 'Search tasks' }), 'Task 13');
+        expect(screen.getByText('UI-013 Task 13')).toBeInTheDocument();
+    });
+
+    it('groups by assignee and remembers an explicit choice', async () => {
+        const { user } = renderChart(false, largePlan);
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Group by' }), 'assignee');
+
+        expect(screen.getByRole('button', { name: 'Sam (12)' })).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('button', { name: `${i18n.t('common.unassigned')} (12)` })).toBeInTheDocument();
+        expect(window.localStorage.getItem('workchord:gantt-group-by')).toBe('assignee');
+    });
+});
+
 describe('Gantt dependency links', () => {
     const predecessor: GanttTask = { ...taskFixture, id: 301, title: 'Design the schema', start_date: '2026-01-05', end_date: '2026-01-06' };
     const successor: GanttTask = { ...taskFixture, id: 302, title: 'Build the importer', start_date: '2026-01-07', end_date: '2026-01-08', dependencies: [301] };

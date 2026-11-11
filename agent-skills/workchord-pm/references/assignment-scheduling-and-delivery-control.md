@@ -23,6 +23,8 @@ Use this reference to route definition-ready work, create an ordered dispatch, s
 
 Treat recommendations as explainable advice. Do not auto-assign solely by top score, and never infer permissions from a capability profile.
 
+For a bulk plan, give every planned leaf a capacity owner before the first schedule preview. Group the leaves by capability label, compare the candidate rows once per group, then write `assignee_id` task by task with each task's current version. Spread the effort against each row's free capacity instead of loading one row. The scheduler skips a leaf without an owner and reports it as `no_assignee`.
+
 The top team-member/capacity recommendation is never an exact actor or model
 selection. It may inform `Task.assignee_id`, but exact dispatch requires the
 separate roster, assessment, routing-preview, and assignment contracts below.
@@ -180,6 +182,12 @@ waits for, or its earliest start. People see the same sentence on the Gantt
 chart, and its "Try changes" popover edits exactly those inputs. Never set a
 task's dates directly to force a schedule; the next calculation overrules them.
 
+A date is calculated only for a task that has an assignee in the iteration. Dates
+on an unassigned task are leftovers or imports: people see them on the Gantt as
+dashed "no assignee" bars, and the next calculation clears them. Read
+`plan-readiness` first and require the `team` and `blockers` checkpoints to be
+`done` before you preview.
+
 1. Read the iteration, calendar, tasks, dependency graph, constraints, capacity, workload, vacations, and current Gantt before scheduling.
 2. Capture the affected task versions, dates, owners, effort, and current overload warnings.
 3. Call `agent_preview_schedule` or the REST `/api/agent/planning/iterations/{id}/schedule/preview` command with required idempotency, rationale, and correlation metadata. It persists an exact receipt but rolls back hypothetical task dates.
@@ -256,6 +264,9 @@ Never edit worker-produced artifacts, finish the worker run, or transition activ
 - Re-read task, capacity owner, actor/binding dispatch, routing snapshot, queue,
   dates, readiness, Gantt, workload, and target risk.
 - Confirm each task is start-ready, explicitly waiting, or returned to definition with exact blockers.
+- Re-read `plan-readiness`: `tasks_without_assignee` and `tasks_without_effort`
+  are `0` and the `schedule` checkpoint is `done`. Otherwise report "n of 6"
+  with the blocking checkpoint, its reason codes, and the next owner.
 
 **Evidence and stop rules**
 
