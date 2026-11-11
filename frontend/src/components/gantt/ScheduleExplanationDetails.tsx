@@ -131,6 +131,8 @@ export const ScheduleExplanationDetails = ({
                                     aria-expanded={isExpanded}
                                     aria-label={t(isExpanded
                                         ? 'surfaces.scheduleExplanation.collapseDecisionDetail'
+                                        : 'surfaces.scheduleExplanation.expandDecisionDetail')} title={t(isExpanded
+                                        ? 'surfaces.scheduleExplanation.collapseDecisionDetail'
                                         : 'surfaces.scheduleExplanation.expandDecisionDetail')}
                                 >
                                     {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}

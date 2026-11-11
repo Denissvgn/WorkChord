@@ -6,6 +6,7 @@ import type { ObservedRevisions } from '../../services/planningInputService';
 import { useActiveMount } from '../tasks/useDraftDismissal';
 import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
+import { DisabledReason } from '../common/DisabledReason';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { getApiErrorMessage } from '../../utils/apiError';
 
@@ -26,7 +27,8 @@ export const IterationImportDialog = ({ file, iterationId, onClose }: { file: Fi
             onClose();
         }, onError: () => undefined });
     return <Modal open title={t('planningInput.preview')} description={file.name} closeLabel={t('actions.close')}
-        closeDisabled={write.isPending} onClose={onClose} footer={<div className="flex flex-wrap justify-end gap-2">
+        closeDisabled={write.isPending} onClose={onClose} footer={<div className="flex flex-wrap items-center justify-end gap-2">
+            <DisabledReason className="mr-auto" reason={preview.data && !preview.data.complete && !preview.isFetching && t('disabledReasons.previewIncomplete')} />
             <Button type="button" variant="ghost" disabled={write.isPending} onClick={onClose}>{t('actions.cancel')}</Button>
             <Button type="button" variant="secondary" disabled={write.isPending || preview.isFetching}
                 onClick={() => void preview.refetch()}>{t('planningInput.reviewAgain')}</Button>

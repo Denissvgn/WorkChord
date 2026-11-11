@@ -63,7 +63,7 @@ const MyWorkPage = () => {
     return <PageLayout><PageHeader title={t('teamwork.myWork')} subtitle={t('teamwork.myWorkHelp')} /><section className="space-y-5">
         {local && identity?.profile && <p className="text-sm text-content-secondary">{t('identity.workingAsLocal', { name: identity.profile.display_name })}</p>}
         {identity?.profile && <PersonCapacity key={identity.profile.id} profileId={identity.profile.id} manage />}
-        <nav aria-label={t('teamwork.workQueues')} className="flex flex-wrap gap-2">{QUEUES.map(key => <Button key={key} variant={queue === key ? 'primary' : 'secondary'} size="sm" aria-pressed={queue === key}
+        <nav aria-label={t('teamwork.workQueues')} className="flex flex-wrap gap-2">{QUEUES.map(key => <Button key={key} variant="secondary" size="sm" aria-pressed={queue === key} className={queue === key ? 'border-border-strong bg-surface-subtle font-semibold text-content-primary' : undefined}
             onClick={() => { const next = new URLSearchParams(params); next.set('queue', key); next.delete('task'); setParams(next); }}>{queueLabel(key)}</Button>)}</nav>
         <LiveWindowStatus window={selectedQuery} />
         {selectedQuery.isLoading && <p role="status">{t('common.loading')}</p>}

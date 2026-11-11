@@ -400,7 +400,7 @@ export const EmailSettingsPanel = () => {
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 disabled={configurationDisabled || Boolean(editableSettings.clear_smtp_password)}
-                                aria-label={t(showPassword ? 'surfaces.emailSettings.hidePassword' : 'surfaces.emailSettings.showPassword')}
+                                aria-label={t(showPassword ? 'surfaces.emailSettings.hidePassword' : 'surfaces.emailSettings.showPassword')} title={t(showPassword ? 'surfaces.emailSettings.hidePassword' : 'surfaces.emailSettings.showPassword')}
                                 className="absolute right-3 top-[34px] text-content-tertiary hover:text-content-secondary disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {showPassword

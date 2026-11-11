@@ -110,7 +110,7 @@ export const SlideOverDrawer = ({
                         <button
                             type="button"
                             onClick={requestClose}
-                            aria-label={closeLabel}
+                            aria-label={closeLabel} title={closeLabel}
                             disabled={closeDisabled}
                             className="btn ghost icon"
                         >

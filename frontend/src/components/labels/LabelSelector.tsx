@@ -85,6 +85,7 @@ export const LabelSelector = ({
     };
 
     const addCustomLabel = () => {
+        if (!customLabel.trim()) return;
         const next = mergeLabels(selectedValues, customLabel);
         onChange(next);
         setCustomLabel('');
@@ -135,7 +136,7 @@ export const LabelSelector = ({
                                     type="button"
                                     onClick={() => removeLabel(slug)}
                                     className="rounded-full p-0.5 text-content-secondary hover:bg-surface-card/70 hover:text-content-primary"
-                                    aria-label={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })}
+                                    aria-label={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })} title={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })}
                                 >
                                     <X className="h-3 w-3" aria-hidden="true" />
                                 </button>
@@ -182,7 +183,6 @@ export const LabelSelector = ({
                             type="button"
                             variant="secondary"
                             onClick={addCustomLabel}
-                            disabled={!customLabel.trim()}
                             aria-label={t('surfaces.labelSelector.addCustomLabel')}
                         >
                             <Plus className="h-4 w-4" aria-hidden="true" />

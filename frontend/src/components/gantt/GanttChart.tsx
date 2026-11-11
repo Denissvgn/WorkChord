@@ -1426,6 +1426,8 @@ export const GanttChart = ({
                                                     aria-expanded={isTaskExpanded}
                                                     aria-label={isTaskExpanded
                                                         ? t('gantt.collapseTask', { title: task.title })
+                                                        : t('gantt.expandTask', { title: task.title })} title={isTaskExpanded
+                                                        ? t('gantt.collapseTask', { title: task.title })
                                                         : t('gantt.expandTask', { title: task.title })}
                                                 >
                                                     {isTaskExpanded

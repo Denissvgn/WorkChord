@@ -152,16 +152,16 @@ export const AdminAccessPanel = ({
                         <KeyRound className="h-4 w-4" />
                         {t('settings.adminAccessSave')}
                     </Button>
-                    <Button
+                    {/* Nothing stored and nothing typed: there is nothing to clear, so no button. */}
+                    {(hasAdminKey || draftKey) && <Button
                         type="button"
                         variant="outline"
                         onClick={clearKey}
-                        disabled={!hasAdminKey && !draftKey}
                         className="inline-flex items-center gap-2"
                     >
                         <Trash2 className="h-4 w-4" />
                         {t('settings.adminAccessClear')}
-                    </Button>
+                    </Button>}
                 </div>
             </div>
         </section>

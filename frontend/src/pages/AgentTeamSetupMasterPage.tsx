@@ -41,6 +41,7 @@ import type {
 } from '../types/agent';
 import { captureFocusOrigin, focusOwnedTarget } from '../utils/focusLifecycle';
 import { formatDateTime } from '../utils/formatDate';
+import { DisabledReason } from '../components/common/DisabledReason';
 
 const errorMessage = (error: unknown): string => {
     if (axios.isAxiosError(error)) {
@@ -940,7 +941,8 @@ const AgentTeamSetupMasterPage = () => {
                                         </button>
                                         <button
                                             type="button"
-                                            className="btn primary"
+                                            // The plan step is the next step until a plan exists; then applying it is.
+                                            className={plan ? 'btn' : 'btn primary'}
                                             disabled={!canMutate || busy || validation?.valid !== true}
                                             onClick={event => handlePlan(event.currentTarget)}
                                         >
@@ -957,6 +959,9 @@ const AgentTeamSetupMasterPage = () => {
                                         </button>
                                     </div>
                                 </div>
+                                {canMutate && !busy && validation?.valid !== true && (
+                                    <DisabledReason className="agent-team-technical-line" reason={t(validation ? 'disabledReasons.fixManifest' : 'disabledReasons.validateFirst')} />
+                                )}
                                 {validation && validation.blocker_codes.length > 0 && (
                                     <div className="row wrap" style={{ marginTop: 10 }}>
                                         {validation.blocker_codes.map(code => (
@@ -1098,7 +1103,7 @@ const AgentTeamSetupMasterPage = () => {
                                                         )}
                                                         <button
                                                             type="button"
-                                                            className="btn primary"
+                                                            className="btn"
                                                             aria-busy={actionApplying || undefined}
                                                             aria-label={t('agentTeamSetup.applyActionFor', {
                                                                 action: actionLabel,

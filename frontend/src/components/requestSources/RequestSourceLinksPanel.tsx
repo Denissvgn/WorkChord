@@ -243,7 +243,7 @@ export const RequestSourceLinksPanel = ({
                         type="button"
                         onClick={() => setError(null)}
                         className="rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
-                        aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
+                        aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')} title={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
                     >
                         <X className="h-3.5 w-3.5" />
                     </button>

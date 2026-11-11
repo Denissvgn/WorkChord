@@ -19,6 +19,7 @@ import {
     X,
 } from 'lucide-react';
 import { Button } from '../components/common/Button';
+import { DisabledReason } from '../components/common/DisabledReason';
 import { Input } from '../components/common/Input';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { UnsavedLeaveGuard } from '../components/common/UnsavedLeaveGuard';
@@ -1121,6 +1122,7 @@ const CalendarPage = () => {
                                 />
                                 <Button
                                     type="button"
+                                    variant="secondary"
                                     onClick={addVacation}
                                     disabled={!vacationContext.observation || vacationContext.loading || !selectedMemberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd}
                                     isLoading={addVacationMutation.isPending}
@@ -1128,6 +1130,7 @@ const CalendarPage = () => {
                                     <Plus className="w-4 h-4" />
                                     {t('teamVacations.addVacation')}
                                 </Button>
+                                <DisabledReason reason={(!selectedMemberId || !vacationStart || !vacationEnd || vacationStart > vacationEnd) && t('disabledReasons.vacationFields')} />
                                 <VacationCsvImport key={selectedIterationId} iterationId={selectedIterationId} onBusyChange={setVacationImportBusy}
                                     onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['team'] }); if (vacationMemberId) void readVacationContext('member', vacationMemberId, true); }} />
                             </div>
@@ -1265,7 +1268,7 @@ const DateChip = ({ dateKey, locale, iconTone, label, onRemove }: DateChipProps)
             type="button"
             onClick={onRemove}
             className="rounded p-1 text-feedback-danger hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground"
-            aria-label={label}
+            aria-label={label} title={label}
         >
             <X className="h-4 w-4" />
         </button>

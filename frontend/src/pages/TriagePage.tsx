@@ -855,7 +855,7 @@ const ConvertTriageSplitView = ({
                     type="button"
                     onClick={onClose}
                     className="rounded-md p-1.5 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary transition-colors"
-                    aria-label={t('surfaces.triagePage.close')}
+                    aria-label={t('surfaces.triagePage.close')} title={t('surfaces.triagePage.close')}
                 >
                     <X className="h-5 w-5" />
                 </button>
@@ -2156,7 +2156,7 @@ const TriagePage = () => {
                             type="button"
                             onClick={() => setConversionResult(null)}
                             className="ml-2 rounded p-1 hover:bg-feedback-success-muted-hover"
-                            aria-label={t('surfaces.triagePage.dismissConversionSuccess')}
+                            aria-label={t('surfaces.triagePage.dismissConversionSuccess')} title={t('surfaces.triagePage.dismissConversionSuccess')}
                         >
                             <X className="h-4 w-4" aria-hidden="true" />
                         </button>

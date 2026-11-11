@@ -56,7 +56,7 @@ const FilterBadge = ({
             <button
                 onClick={onRemove}
                 className="ml-1 hover:text-action hover:bg-status-active-muted rounded-full p-0.5"
-                aria-label={t('taskFilters.removeFilter', { label })}
+                aria-label={t('taskFilters.removeFilter', { label })} title={t('taskFilters.removeFilter', { label })}
             >
                 <XCircle className="w-3 h-3" />
             </button>

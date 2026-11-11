@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { Children, forwardRef } from 'react';
 import type { ButtonHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import { Loader2 } from 'lucide-react';
@@ -19,11 +19,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         children,
         type = 'button',
         'aria-busy': ariaBusy,
+        title,
         ...props
     }, ref) => {
+        // An icon-only button shows its accessible name as a tooltip for pointer users.
+        const hasText = Children.toArray(children).some(child => typeof child === 'string' || typeof child === 'number');
+        const tooltip = title ?? (!hasText && typeof props['aria-label'] === 'string' ? props['aria-label'] : undefined);
         return (
             <button
                 {...props}
+                title={tooltip}
                 ref={ref}
                 type={type}
                 className={clsx(

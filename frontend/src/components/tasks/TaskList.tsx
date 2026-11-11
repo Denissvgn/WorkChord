@@ -992,7 +992,7 @@ const TaskItemContent = ({
                 {isDraggingEnabled && dragHandleProps && (
                     <button
                         type="button"
-                        aria-label={`${t('literalWords.drag')}: ${task.title}`}
+                        aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
 
                         className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
                         {...dragHandleProps}
@@ -1004,7 +1004,7 @@ const TaskItemContent = ({
                 {hasChildren ? (
                     <button
                         type="button"
-                        aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
+                        aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`} title={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
                         aria-expanded={isExpanded}
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="shrink-0 rounded p-1 hover:bg-surface-subtle"

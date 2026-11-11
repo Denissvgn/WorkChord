@@ -808,6 +808,16 @@ export const englishResources = {
                 unmergeTitle: 'Split and move child tasks to the top level',
                 reorderTask: 'Reorder task',
             },
+            disabledReasons: {
+                summaryRequired: 'Write a summary to post the update.',
+                releaseNameRequired: 'Give the release a name to save it.',
+                tasksUnavailable: 'Tasks could not load. Retry above, then save.',
+                previewIncomplete: 'The preview is incomplete, so nothing can be imported yet. Review again.',
+                previewFirst: 'Preview the file before importing it.',
+                vacationFields: 'Choose a person, a start date and an end date on or after it.',
+                validateFirst: 'Validate the manifest first; a plan needs a valid one.',
+                fixManifest: 'Fix the manifest problems below, then validate again.',
+            },
             quickCapture: {
                 taskLabel: 'Quick add a task',
                 triageLabel: 'Quick add an intake item',

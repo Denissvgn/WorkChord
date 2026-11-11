@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Upload, FileText, AlertCircle } from 'lucide-react';
 import { Button } from '../common/Button';
+import { DisabledReason } from '../common/DisabledReason';
 import { Modal } from '../common/Modal';
 import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -193,6 +194,7 @@ export const ImportTeamModal = ({
             closeDisabled={isPending}
             footer={(
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                    <DisabledReason className="mr-auto" reason={!isPending && !context.loading && (!context.observation || previewText !== text) && t('disabledReasons.previewFirst')} />
                     <Button type="button" variant="secondary" onClick={handleClose} disabled={isPending}>
                         {t('actions.cancel')}
                     </Button>

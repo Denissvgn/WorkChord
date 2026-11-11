@@ -954,7 +954,7 @@ export const TemplateLabelSettings = () => {
                                         onClick={() => setGroupForm(null)}
                                         disabled={isLabelsBusy}
                                         className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
-                                        aria-label={t('surfaces.templateLabels.closeGroupForm')}
+                                        aria-label={t('surfaces.templateLabels.closeGroupForm')} title={t('surfaces.templateLabels.closeGroupForm')}
                                     >
                                         <X aria-hidden="true" className="h-4 w-4" />
                                     </button>
@@ -1032,7 +1032,7 @@ export const TemplateLabelSettings = () => {
                                         onClick={() => setLabelForm(null)}
                                         disabled={isLabelsBusy}
                                         className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
-                                        aria-label={t('surfaces.templateLabels.closeLabelForm')}
+                                        aria-label={t('surfaces.templateLabels.closeLabelForm')} title={t('surfaces.templateLabels.closeLabelForm')}
                                     >
                                         <X aria-hidden="true" className="h-4 w-4" />
                                     </button>

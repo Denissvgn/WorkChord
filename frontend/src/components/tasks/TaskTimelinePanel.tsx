@@ -307,7 +307,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 type="button"
                                 onClick={() => setLinkError(null)}
                                 className="shrink-0 rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
-                                aria-label={t('surfaces.taskTimeline.dismissExternalLinkError')}
+                                aria-label={t('surfaces.taskTimeline.dismissExternalLinkError')} title={t('surfaces.taskTimeline.dismissExternalLinkError')}
                             >
                                 <X className="h-3.5 w-3.5" />
                             </button>

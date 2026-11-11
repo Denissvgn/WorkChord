@@ -60,7 +60,7 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                 <div className="flex items-start justify-between gap-2">
                     <span className="flex items-center gap-1.5 pt-1 text-xs tabular-nums text-content-secondary">#{task.id}
                         <span className={clsx('rounded px-1 font-medium', priorityChipClassName(task.priority))}>P{task.priority}</span></span>
-                    <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })}
+                    <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })} title={t('workStatus.moveTask', { title: task.title })}
                         className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
                     </button>

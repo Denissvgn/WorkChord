@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
+import { DisabledReason } from '../components/common/DisabledReason';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { RequiredIndicator } from '../components/common/Input';
 import { Modal } from '../components/common/Modal';
@@ -845,7 +846,8 @@ const PostUpdateDrawer = ({
                     </div>
                 </div>
 
-                <footer className="flex items-center justify-end gap-2 border-t border-border-subtle p-4">
+                <footer className="flex flex-wrap items-center justify-end gap-2 border-t border-border-subtle p-4">
+                    <DisabledReason reason={summaryIsBlank && t('disabledReasons.summaryRequired')} className="mr-auto" />
                     <Button type="button" variant="secondary" onClick={onClose}>{t('surfaces.projectDetail.cancel')}</Button>
                     <Button type="submit" isLoading={isPending} disabled={summaryIsBlank}>
                         {!isPending && <Send className="mr-2 h-4 w-4" />}
