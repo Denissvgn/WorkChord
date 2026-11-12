@@ -12,31 +12,30 @@ export default defineConfig({
   build: {
     manifest: true,
     chunkSizeWarningLimit: 400,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('/src/i18n/planningInputMessages.ts')) return 'app-planning-i18n'
-          if (id.includes('/src/i18n/teamwork.en.ts')) return 'app-teamwork-i18n'
-          if (id.includes('/src/i18n/teamwork.ru.ts')) return 'app-teamwork-i18n-ru'
-          if (id.includes('/src/i18n/agentTeamSetup.ru.ts')) return 'app-agent-team-i18n-ru'
-          if (id.includes('/src/i18n/plan.ru.ts')) return 'app-plan-i18n-ru'
-          if (id.includes('/src/i18n/landing.ru.ts')) return 'app-landing-i18n-ru'
-          if (id.includes('/src/i18n/surfaces.ru.ts')) return 'app-surfaces-i18n-ru'
-          if (id.includes('/src/i18n/literals.ru.ts')) return 'app-literals-i18n-ru'
-          if (id.includes('/src/i18n/resources.en.ts')) return 'app-i18n'
-          if (id.includes('/src/i18n/resources.ru.ts')) return 'app-i18n-ru'
-          if (id.includes('commonjsHelpers')) return 'vendor-react'
-          if (!id.includes('node_modules')) return undefined
-          if (id.includes('@tanstack')) return 'vendor-query'
-          if (id.includes('framer-motion')) return 'vendor-motion'
-          if (id.includes('@dnd-kit')) return 'vendor-dnd'
-          if (id.includes('lucide-react')) return 'vendor-icons'
-          if (
-            id.includes('/node_modules/react/')
-            || id.includes('/node_modules/react-dom/')
-            || id.includes('/node_modules/scheduler/')
-          ) return 'vendor-react'
-          return 'vendor-core'
+        // A group also takes the modules its matches import, so groups with a higher
+        // priority claim their files first: the RU split-out bundles before resources.ru.ts,
+        // which imports them, and named vendors before the vendor-core catch-all.
+        codeSplitting: {
+          groups: [
+            { name: 'app-planning-i18n', test: /\/src\/i18n\/planningInputMessages\.ts$/, priority: 100 },
+            { name: 'app-teamwork-i18n', test: /\/src\/i18n\/teamwork\.en\.ts$/, priority: 100 },
+            { name: 'app-teamwork-i18n-ru', test: /\/src\/i18n\/teamwork\.ru\.ts$/, priority: 100 },
+            { name: 'app-agent-team-i18n-ru', test: /\/src\/i18n\/agentTeamSetup\.ru\.ts$/, priority: 100 },
+            { name: 'app-plan-i18n-ru', test: /\/src\/i18n\/plan\.ru\.ts$/, priority: 100 },
+            { name: 'app-landing-i18n-ru', test: /\/src\/i18n\/landing\.ru\.ts$/, priority: 100 },
+            { name: 'app-surfaces-i18n-ru', test: /\/src\/i18n\/surfaces\.ru\.ts$/, priority: 100 },
+            { name: 'app-literals-i18n-ru', test: /\/src\/i18n\/literals\.ru\.ts$/, priority: 100 },
+            { name: 'app-i18n', test: /\/src\/i18n\/resources\.en\.ts$/, priority: 50 },
+            { name: 'app-i18n-ru', test: /\/src\/i18n\/resources\.ru\.ts$/, priority: 50 },
+            { name: 'vendor-query', test: /node_modules[\\/]@tanstack[\\/]/, priority: 20 },
+            { name: 'vendor-motion', test: /node_modules[\\/]framer-motion[\\/]/, priority: 20 },
+            { name: 'vendor-dnd', test: /node_modules[\\/]@dnd-kit[\\/]/, priority: 20 },
+            { name: 'vendor-icons', test: /node_modules[\\/]lucide-react[\\/]/, priority: 20 },
+            { name: 'vendor-react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]|commonjsHelpers/, priority: 20 },
+            { name: 'vendor-core', test: /node_modules/, priority: 10 },
+          ],
         },
       },
     },
