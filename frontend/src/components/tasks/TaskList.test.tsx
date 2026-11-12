@@ -213,6 +213,8 @@ describe('TaskList rows and groups', () => {
         // jsdom has no layout: give the workspace scroller a viewport-sized box.
         vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(900);
         vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(1200);
+        vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(900);
+        vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1200);
         renderWithProviders(<main id="workspace-main"><TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} /></main>);
         expect(await screen.findByRole('heading', { name: /Planned/ })).toBeInTheDocument();
         const rendered = screen.getAllByRole('button', { name: /^Task \d+$/ }).length;
