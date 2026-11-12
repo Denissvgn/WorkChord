@@ -94,7 +94,7 @@ Before conversion:
 4. Add dependencies only for real predecessor constraints. Confirm the dependency graph has no self-edge, duplicate edge, cycle, or cross-iteration edge before mutation.
 5. Set priority from `1` to `10`, where `1` is highest. Do not use priority as a hidden queue rank.
 6. Set positive effort and distinguish effort from elapsed schedule time.
-7. Set project and milestone consistently; never attach a milestone from another project.
+7. Set project and milestone consistently; never attach a milestone from another project. Record an intermediate outcome as a milestone record and set `milestone_id` on its tasks. A `milestone:*` label or an ID prefix in the title is not a milestone: people cannot group the Gantt by it, and it carries no target date.
 
 8. Add the governed `agent` source label plus at least one active capability label, such as `cap:code`, `cap:test`, `cap:docs`, or `cap:research`, for agent-dispatched work.
 9. Mark optional or deferred work explicitly and record the reconsideration trigger for deferral.
@@ -325,6 +325,10 @@ Re-read `agent_readiness.criteria`, blockers, warnings, task version, schedule, 
 - Re-read each leaf task and its readiness criteria.
 - Confirm the brief, links, dependency graph, capacity ownership, definition-ready
   result, and current assessment or explicit supervised-routing fallback.
+- After a bulk create or import, read `plan-readiness` once for the whole
+  iteration. Record `task_count`, `tasks_without_assignee`,
+  `tasks_without_effort`, and each checkpoint state; a nonzero count is open
+  planning work, not a detail for later dispatch.
 
 **Evidence and stop rules**
 

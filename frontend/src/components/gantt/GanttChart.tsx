@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
 import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
+import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X } from 'lucide-react';
+import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
@@ -72,13 +72,34 @@ interface FlattenedTask extends GanttTask {
     depth: number;
 }
 
-type GanttGroupBy = 'none' | 'milestone' | 'prefix' | 'status';
+const GROUP_OPTIONS = ['none', 'milestone', 'prefix', 'assignee', 'status'] as const;
+type GanttGroupBy = typeof GROUP_OPTIONS[number];
 type GanttStatusFilter = '' | 'planned' | 'active' | 'resolved' | 'closed';
 type GanttRow =
     | { kind: 'task'; task: FlattenedTask }
-    | { kind: 'group'; key: string; label: string; count: number };
+    | { kind: 'group'; key: string; label: string; count: number; unassigned: number; start: string | null; end: string | null };
 
 const ID_PREFIX_PATTERN = /^([A-Za-z][A-Za-z0-9]*)[-_]\d+/;
+const GROUP_STORAGE_KEY = 'workchord:gantt-group-by';
+// A long flat list is hard to read, so a large plan opens grouped; a small one stays flat.
+const AUTO_GROUP_MIN_TASKS = 20;
+
+const readStoredGroupBy = (): GanttGroupBy | null => {
+    try {
+        const stored = window.localStorage.getItem(GROUP_STORAGE_KEY);
+        return GROUP_OPTIONS.find(option => option === stored) ?? null;
+    } catch {
+        return null;
+    }
+};
+
+// The scheduler never dates work without an assignee, so such dates are not a calculated schedule.
+const isProvisionalTask = (task: GanttTask) => !task.children?.length
+    && task.status === 'planned' && !task.assignee && !task.is_deferred;
+
+const countProvisionalLeaves = (task: GanttTask): number => task.children?.length
+    ? task.children.reduce((total, child) => total + countProvisionalLeaves(child), 0)
+    : Number(isProvisionalTask(task));
 
 interface TaskTimelineDates {
     start: string | null;
@@ -174,8 +195,31 @@ export const GanttChart = ({
     const [hoveredTaskId, setHoveredTaskId] = useState<number | null>(null);
     const [searchText, setSearchText] = useState('');
     const [statusFilter, setStatusFilter] = useState<GanttStatusFilter>('');
-    const [groupBy, setGroupBy] = useState<GanttGroupBy>('none');
-    const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+    // null means the person has not chosen; the chart then picks a grouping that fits the plan.
+    const [groupChoice, setGroupChoice] = useState<GanttGroupBy | null>(readStoredGroupBy);
+    const autoGroupBy = useMemo<GanttGroupBy>(() => {
+        if (sourceTasks.length < AUTO_GROUP_MIN_TASKS) return 'none';
+        if (sourceTasks.filter(task => task.milestone).length * 2 >= sourceTasks.length) return 'milestone';
+        const prefixes = new Set<string>();
+        let withPrefix = 0;
+        sourceTasks.forEach(task => {
+            const prefix = ID_PREFIX_PATTERN.exec(task.title)?.[1]?.toUpperCase();
+            if (prefix) { prefixes.add(prefix); withPrefix += 1; }
+        });
+        return prefixes.size >= 2 && withPrefix * 5 >= sourceTasks.length * 4 ? 'prefix' : 'none';
+    }, [sourceTasks]);
+    const groupBy = groupChoice ?? autoGroupBy;
+    // An automatic grouping opens as an overview: groups start collapsed. Toggled keys flip that default.
+    const groupsStartCollapsed = groupChoice === null && groupBy !== 'none';
+    const [toggledGroups, setToggledGroups] = useState<Set<string>>(new Set());
+    const chooseGroupBy = (value: GanttGroupBy) => {
+        setGroupChoice(value);
+        setToggledGroups(new Set());
+        try { window.localStorage.setItem(GROUP_STORAGE_KEY, value); } catch { /* Storage may be unavailable. */ }
+    };
+    useEffect(() => {
+        setToggledGroups(new Set());
+    }, [iterationId]);
     const normalizedSearch = searchText.trim().toLowerCase();
     const activeFilterCount = Number(selectedAssigneeId !== null) + Number(hideUnassigned)
         + Number(Boolean(normalizedSearch)) + Number(statusFilter !== '') + Number(hideUnscheduled);
@@ -186,6 +230,9 @@ export const GanttChart = ({
         setStatusFilter('');
         setHideUnscheduled(false);
     };
+    // A filter must never hide its matches inside a collapsed group.
+    const isGroupCollapsed = (key: string) => activeFilterCount === 0
+        && groupsStartCollapsed !== toggledGroups.has(key);
 
     // --- Data Preparation ---
 
@@ -375,6 +422,16 @@ export const GanttChart = ({
         tasks.forEach(visit);
         return count;
     }, [tasks]);
+    // Unassigned work that still shows dates: the chart looks scheduled, but nothing calculated it.
+    const provisionalTaskCount = useMemo(() => {
+        let count = 0;
+        const visit = (task: GanttTask) => {
+            if (task.children?.length) task.children.forEach(visit);
+            else if (isProvisionalTask(task) && hasCompleteTimelineDates(getTaskTimelineDates(task))) count += 1;
+        };
+        tasks.forEach(visit);
+        return count;
+    }, [tasks]);
 
     const displayTasks = useMemo(() => {
         const flattened: FlattenedTask[] = [];
@@ -402,27 +459,45 @@ export const GanttChart = ({
                 return task.milestone ? { key: `m${task.milestone.id}`, label: task.milestone.name } : { key: 'm-none', label: t('surfaces.ganttChart.noMilestone') };
             }
             if (groupBy === 'status') return { key: task.status, label: t(`statuses.${task.status}`) };
+            if (groupBy === 'assignee') {
+                return task.assignee ? { key: `a${task.assignee.id}`, label: task.assignee.name } : { key: 'a-none', label: t('common.unassigned') };
+            }
             const prefix = ID_PREFIX_PATTERN.exec(task.title)?.[1]?.toUpperCase();
             return prefix ? { key: `p${prefix}`, label: prefix } : { key: 'p-none', label: t('surfaces.ganttChart.noIdPrefix') };
         };
-        const groups = new Map<string, { label: string; tasks: FlattenedTask[]; count: number }>();
-        let current: { label: string; tasks: FlattenedTask[]; count: number } | null = null;
+        type Group = { label: string; tasks: FlattenedTask[]; count: number; unassigned: number; start: string | null; end: string | null };
+        const groups = new Map<string, Group>();
+        let current: Group | null = null;
         displayTasks.forEach(task => {
             if (task.depth === 0 || current === null) {
                 const { key, label } = groupOf(task);
-                current = groups.get(key) ?? { label, tasks: [], count: 0 };
+                current = groups.get(key) ?? { label, tasks: [], count: 0, unassigned: 0, start: null, end: null };
                 groups.set(key, current);
                 current.count += 1;
             }
             current.tasks.push(task);
+            // The header summarizes its rows: how much is unassigned and the span they cover.
+            // Counted from each top-level task down, so collapsing a task group changes nothing.
+            if (task.depth === 0) current.unassigned += countProvisionalLeaves(task);
+            const dates = getTaskTimelineDates(task);
+            if (hasCompleteTimelineDates(dates)) {
+                if (current.start === null || dates.start < current.start) current.start = dates.start;
+                if (current.end === null || dates.end > current.end) current.end = dates.end;
+            }
         });
         const result: GanttRow[] = [];
         groups.forEach((group, key) => {
-            result.push({ kind: 'group', key, label: group.label, count: group.count });
-            if (!collapsedGroups.has(key)) group.tasks.forEach(task => result.push({ kind: 'task', task }));
+            result.push({ kind: 'group', key, label: group.label, count: group.count, unassigned: group.unassigned, start: group.start, end: group.end });
+            const collapsed = activeFilterCount === 0 && groupsStartCollapsed !== toggledGroups.has(key);
+            if (!collapsed) group.tasks.forEach(task => result.push({ kind: 'task', task }));
         });
         return result;
-    }, [collapsedGroups, displayTasks, groupBy, t]);
+    }, [activeFilterCount, displayTasks, groupBy, groupsStartCollapsed, t, toggledGroups]);
+    const groupKeys = useMemo(() => rows.flatMap(row => row.kind === 'group' ? [row.key] : []), [rows]);
+    const collapsedGroupCount = groupKeys.filter(key => groupsStartCollapsed !== toggledGroups.has(key)).length;
+    const setAllGroupsCollapsed = (collapsed: boolean) => setToggledGroups(
+        collapsed === groupsStartCollapsed ? new Set() : new Set(groupKeys),
+    );
 
     // Dependencies point from a task to its predecessors; invert them once for successors.
     const successorsById = useMemo(() => {
@@ -695,6 +770,10 @@ export const GanttChart = ({
             ? (typeof endDateStr === 'string' ? parseISO(endDateStr) : endDateStr)
             : addDays(taskStart, task.calculated_effort_days || task.effort_days || 1);
 
+        return getRangePosition(taskStart, taskEnd);
+    };
+
+    const getRangePosition = (taskStart: Date, taskEnd: Date) => {
         const startKey = format(taskStart, 'yyyy-MM-dd');
         let startIndex = visibleDaysIndexMap.get(startKey) ?? -1;
 
@@ -885,6 +964,18 @@ export const GanttChart = ({
                     </Button>
                 </div>
             )}
+            {unscheduledTaskCount === 0 && provisionalTaskCount > 0 && (
+                // Dated but unassigned work looks scheduled; say once that it is not.
+                <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
+                    <UserX aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
+                    <span className="min-w-0 flex-1">
+                        {t('surfaces.ganttChart.provisionalSummary', { count: provisionalTaskCount })}
+                    </span>
+                    <Link className="btn sm" to={planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' })}>
+                        {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
+                    </Link>
+                </div>
+            )}
             {/* Toolbar */}
             <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-card p-3 sm:p-4">
                 <div role="group" aria-label={t('surfaces.ganttChart.timelineControls')} className="flex min-w-0 flex-wrap items-center gap-2">
@@ -927,11 +1018,12 @@ export const GanttChart = ({
                         <option value="">{t('surfaces.ganttChart.anyStatus')}</option>
                         {LEGEND_STATUSES.map(status => <option key={status} value={status}>{t(`statuses.${status}`)}</option>)}
                     </select>
-                    <select value={groupBy} onChange={event => { setGroupBy(event.target.value as GanttGroupBy); setCollapsedGroups(new Set()); }}
+                    <select value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
                         aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
                         <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
                         <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
                         <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
+                        <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
                         <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
                     </select>
                     <Button
@@ -985,6 +1077,16 @@ export const GanttChart = ({
                                     allTaskGroupsExpanded ? new Set() : new Set(expandableTaskIds),
                                 ),
                             }] : []),
+                            ...(collapsedGroupCount > 0 && activeFilterCount === 0 ? [{
+                                label: t('surfaces.ganttChart.expandAllGroups'),
+                                icon: <ChevronsUpDown className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setAllGroupsCollapsed(false),
+                            }] : []),
+                            ...(collapsedGroupCount < groupKeys.length && activeFilterCount === 0 ? [{
+                                label: t('surfaces.ganttChart.collapseAllGroups'),
+                                icon: <ChevronsDownUp className="h-4 w-4" aria-hidden="true" />,
+                                onSelect: () => setAllGroupsCollapsed(true),
+                            }] : []),
                             {
                                 label: t(isCompressed
                                     ? 'surfaces.ganttChart.showEveryDate'
@@ -1013,7 +1115,9 @@ export const GanttChart = ({
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-0.5 bg-action" />{t('surfaces.ganttChart.legendToday')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-surface-muted" />{t('surfaces.ganttChart.legendWeekend')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded bg-feedback-danger-muted" />{t('surfaces.ganttChart.legendHoliday')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-dashed border-border-strong bg-surface-muted" />{t('surfaces.ganttChart.legendProvisional')}</li>
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-3 w-5 rounded border border-dashed border-border-strong" />{t('surfaces.ganttChart.legendNoDates')}</li>
+                    <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-1.5 w-5 rounded-full bg-content-tertiary" />{t('surfaces.ganttChart.legendGroupSpan')}</li>
                 </ul>
             </details>
 
@@ -1183,6 +1287,7 @@ export const GanttChart = ({
                 <div
                     ref={scrollContainerRef}
                     className="flex-1 overflow-auto relative select-none"
+                    style={{ '--gantt-task-column': `${SIDEBAR_WIDTH}px` } as CSSProperties}
                     role="region"
                     tabIndex={0}
                     aria-label={t('gantt.chartRegion')}
@@ -1208,7 +1313,7 @@ export const GanttChart = ({
                     <div className="relative h-7 border-b border-border bg-surface-muted text-xs text-content-secondary font-semibold"
                         style={{ width: '100%' }}
                     >
-                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-muted border-r border-border" style={{ width: `${SIDEBAR_WIDTH}px` }} />
+                        <div className="absolute inset-y-0 left-0 z-50 border-r border-border bg-surface-muted sm:sticky sm:inset-y-auto sm:h-full" style={{ width: `${SIDEBAR_WIDTH}px` }} />
                         {monthGroups.map((group, idx) => (
                             <div key={idx}
                                 className={clsx("absolute top-0 bottom-0 text-center border-r border-border flex items-center justify-center truncate px-1", idx % 2 === 0 ? "bg-surface-muted" : "bg-surface-card")}
@@ -1224,7 +1329,7 @@ export const GanttChart = ({
 
                     {/* Bottom Row: Days */}
                     <div className="relative h-8 bg-surface-card" style={{ width: '100%' }}>
-                        <div className="absolute left-0 top-0 bottom-0 z-50 bg-surface-card border-r border-border-strong flex items-center pl-4 font-bold text-content-primary shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                        <div className="absolute inset-y-0 left-0 z-50 flex items-center border-r border-border-strong bg-surface-card pl-4 font-bold text-content-primary shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] sm:sticky sm:inset-y-auto sm:h-full"
                             style={{ width: `${SIDEBAR_WIDTH}px` }}>
                             {t('surfaces.ganttChart.task')}
                             <div
@@ -1374,20 +1479,42 @@ export const GanttChart = ({
                     {rowVirtualizer.getVirtualItems().map(virtualRow => {
                         const row = rows[virtualRow.index];
                         if (row.kind === 'group') {
-                            const collapsed = collapsedGroups.has(row.key);
+                            const collapsed = isGroupCollapsed(row.key);
+                            const groupDates = row.start && row.end ? { start: row.start, end: row.end } : null;
+                            const groupSpan = groupDates ? getRangePosition(parseISO(groupDates.start), parseISO(groupDates.end)) : null;
+                            const groupRange = groupDates ? t('surfaces.ganttChart.groupRange', formatTaskTimelineDates(groupDates)) : null;
                             return (
                                 <div key={`group-${row.key}`} className="absolute left-0 w-full border-b border-border bg-surface-muted"
                                     style={{ top: `${virtualRow.start}px`, height: `${virtualRow.size}px` }}>
-                                    <button type="button" aria-expanded={!collapsed}
-                                        className="sticky left-0 flex h-full items-center gap-2 px-3 text-sm font-semibold text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                                        onClick={() => setCollapsedGroups(previous => {
-                                            const next = new Set(previous);
-                                            if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
-                                            return next;
-                                        })}>
-                                        {collapsed ? <ChevronRight className="h-4 w-4" aria-hidden="true" /> : <ChevronDown className="h-4 w-4" aria-hidden="true" />}
-                                        {t('surfaces.ganttChart.groupHeader', { label: row.label, count: row.count })}
-                                    </button>
+                                    <div className="absolute inset-y-0 left-0 z-20 flex flex-col justify-center border-r border-border bg-surface-muted px-2 sm:sticky sm:inset-y-auto sm:h-full"
+                                        style={{ width: `${SIDEBAR_WIDTH}px` }}>
+                                        <button type="button" aria-expanded={!collapsed} disabled={activeFilterCount > 0}
+                                            className="flex min-w-0 items-center gap-1 rounded text-left text-sm font-semibold text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                                            onClick={() => setToggledGroups(previous => {
+                                                const next = new Set(previous);
+                                                if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
+                                                return next;
+                                            })}>
+                                            {collapsed ? <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                                            <span className="truncate">{t('surfaces.ganttChart.groupHeader', { label: row.label, count: row.count })}</span>
+                                        </button>
+                                        {(groupRange || row.unassigned > 0) && (
+                                            <div className="mt-1 flex items-center gap-1.5 pl-5 text-wc-micro text-content-tertiary">
+                                                {groupRange && <span className="truncate">{groupRange}</span>}
+                                                {row.unassigned > 0 && (
+                                                    <span className="shrink-0 rounded border border-border px-1 text-content-secondary">
+                                                        {t('surfaces.ganttChart.groupUnassigned', { count: row.unassigned })}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {groupSpan && (
+                                        // One thin bar shows the span of the group, so a collapsed group still reads on the timeline.
+                                        <div aria-hidden="true" title={`${row.label}: ${groupRange}`}
+                                            className="absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-content-tertiary"
+                                            style={{ left: `${SIDEBAR_WIDTH + groupSpan.left}px`, width: `${groupSpan.width}px` }} />
+                                    )}
                                 </div>
                             );
                         }
@@ -1397,6 +1524,7 @@ export const GanttChart = ({
                             ? getTaskPosition(task)
                             : null;
                         const isSelected = editingTask?.id === task.id;
+                        const isProvisional = isProvisionalTask(task);
                         const isTaskExpanded = activeFilterCount > 0 || expandedTasks.has(task.id);
 
                         return (
@@ -1413,7 +1541,7 @@ export const GanttChart = ({
                             >
                                 {/* Fixed Sidebar Cell */}
                                 <div
-                                    className="absolute left-0 top-0 bottom-0 border-r border-border bg-surface-card z-20 flex flex-col justify-center px-2 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                                    className="absolute inset-y-0 left-0 z-20 flex flex-col justify-center border-r border-border bg-surface-card px-2 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] sm:sticky sm:inset-y-auto sm:h-full"
                                     style={{ width: `${SIDEBAR_WIDTH}px` }}
                                 >
                                     <div className="flex items-center gap-1" style={{ paddingLeft: `${task.depth * 16}px` }}>
@@ -1487,9 +1615,13 @@ export const GanttChart = ({
                                         <button
                                             type="button"
                                             className={clsx(
-                                                "absolute top-3 z-10 flex h-6 items-center rounded px-2 text-xs shadow-sm transition-all",
-                                                getTaskBaseColorClass(task),
-                                                task.is_delayed && "ring-2 ring-feedback-purple ring-offset-1",
+                                                "absolute top-3 z-10 flex h-6 items-center rounded px-2 text-xs transition-all",
+                                                // Dashed and unfilled: nobody carries this work, so nothing calculated its dates.
+                                                isProvisional
+                                                    ? "border border-dashed border-border-strong bg-surface-muted text-content-secondary"
+                                                    : clsx("shadow-sm", getTaskBaseColorClass(task)),
+                                                // The summary above the chart speaks for unassigned work; a ring on every bar would only add noise.
+                                                task.is_delayed && !isProvisional && "ring-2 ring-feedback-purple ring-offset-1",
                                                 task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
                                                 task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
                                                 previewChangedTaskIds.has(task.id) && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
@@ -1533,7 +1665,8 @@ export const GanttChart = ({
                                                 ? getPreviewTaskDescription(task)
                                                 : getTaskAccessibleLabel(task)}
                                         >
-                                            <span className="truncate font-medium drop-shadow-md">{getTaskBarText(task)}</span>
+                                            {/* The label follows the visible part of a long bar instead of scrolling away with its start. */}
+                                            <span className={clsx("sticky left-2 min-w-0 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]", !isProvisional && "drop-shadow-md")}>{getTaskBarText(task)}</span>
                                             {sandboxMode && !schedulePreview && (
                                                 <>
                                                     {/* Right edge: drag to change effort. */}

@@ -962,7 +962,7 @@ TypeScript binding imports are possible startup constraints: their emission depe
 | [iconButtonTooltips.test](modules/iconButtonTooltips.test.md) | `root = resolve`, `it` |
 | [ToastProvider.test](modules/ToastProvider.test.md) | `describe` |
 | [toast](modules/toast.md) | `ToastContext = createContext` |
-| [GanttChart.test](modules/GanttChart.test.md) | `ganttServiceMock = hoisted`, `mock`, `mock`, `mock`, `teamServiceMock = hoisted`, `mock`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe` |
+| [GanttChart.test](modules/GanttChart.test.md) | `ganttServiceMock = hoisted`, `mock`, `mock`, `mock`, `teamServiceMock = hoisted`, `mock`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe`, `describe` |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | `t = bind` |
 | [UnscheduledTasks.test](modules/UnscheduledTasks.test.md) | `it`, `it` |
 | [IterationForm.test](modules/IterationForm.test.md) | `planningMock = hoisted`, `mock`, `iterationServiceMock = hoisted`, `projectServiceMock = hoisted`, `iterationStoreMock = hoisted`, `mock`, `mock`, `mock`, `describe` |

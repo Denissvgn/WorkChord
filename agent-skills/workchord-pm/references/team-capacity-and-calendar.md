@@ -65,6 +65,8 @@ Prefer a few specific skills over a keyword dump. Record weaknesses that should 
 
 Add each participating profile to the iteration as a `TeamMember`. Treat this row as capacity ownership for that timebox.
 
+Create these rows before you attach tasks to the iteration. A task's `assignee_id` can only point to a row of its own iteration, so an iteration without rows can hold work but cannot assign or schedule it. Read `plan-readiness` and confirm the `team` checkpoint is `done` before the first task create or import. When you cannot add rows, stop and name the person who must staff the iteration; do not fill it with unassignable work.
+
 Set and review:
 
 | Field | Meaning | Review rule |
@@ -169,6 +171,8 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 **Exit and postcondition checks**
 
 - Re-read each capacity row, vacation list, capacity, and workload.
+- Read `plan-readiness` and confirm the `team` checkpoint is `done` with a
+  nonzero `team_member_count` before any task enters the iteration.
 - Confirm every intended automated target is already provisioned, enabled,
   purpose-compatible, separately authorized, and backed by current live metadata
   before later dispatch. Do not call this task-specific eligibility until a
