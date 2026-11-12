@@ -904,6 +904,7 @@ const PlanMasterPage = () => {
     const [returnCheckStarted, setReturnCheckStarted] = useState(false);
     useEffect(() => {
         if (!returnedToStep || returnCheckStarted) return;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- starts a one-time refetch and URL cleanup; the flag guards against repeats.
         setReturnCheckStarted(true);
         void refetch().then(() => {
             const fresh = new URLSearchParams(window.location.search);

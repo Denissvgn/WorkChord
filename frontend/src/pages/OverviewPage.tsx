@@ -455,6 +455,8 @@ const OverviewPage = () => {
         ));
     }, [planningDataAvailable, teamMembers]);
 
+    // Read once per visit: the first-update grace period is measured in days.
+    const [pageOpenedAt] = useState(() => Date.now());
     const attentionItems = useMemo<AttentionItem[]>(() => {
         const items: AttentionItem[] = [];
         if (tasksDataAvailable && overdueTaskList.length > 0) {
@@ -538,7 +540,7 @@ const OverviewPage = () => {
             && !(
                 linkedProjectSummary.update_freshness === 'missing'
                 && selectedIteration?.start_date
-                && Date.now() - Date.parse(`${selectedIteration.start_date.slice(0, 10)}T00:00:00`)
+                && pageOpenedAt - Date.parse(`${selectedIteration.start_date.slice(0, 10)}T00:00:00`)
                     < linkedProjectSummary.stale_update_threshold_days * 86_400_000
             )
             && (
@@ -590,6 +592,7 @@ const OverviewPage = () => {
         linkedProjectSummary,
         openTaskList,
         overdueTaskList,
+        pageOpenedAt,
         paceGapPoints,
         planR.inboxCount,
         progress.percent,
@@ -654,10 +657,8 @@ const OverviewPage = () => {
         summary?.focus({ preventScroll: true });
     }, [iterationDetailsOpen]);
 
-    useEffect(() => {
-        if (hasIterationDetails || !iterationDetailsOpen) return;
-        setIterationDetailsOpen(false);
-    }, [hasIterationDetails, iterationDetailsOpen]);
+    // Close the details when nothing is left to show, during render rather than in an effect.
+    if (!hasIterationDetails && iterationDetailsOpen) setIterationDetailsOpen(false);
 
     const revealIterationDetails = () => {
         if (iterationDetailsOpen) {
