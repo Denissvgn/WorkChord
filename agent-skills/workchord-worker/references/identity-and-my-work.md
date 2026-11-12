@@ -17,9 +17,9 @@ Keep these concepts independent:
 
 | Concept | Meaning | Never infer it from |
 | --- | --- | --- |
-| Capacity owner | Iteration team member carrying planned effort | Actor identity or claim |
-| Actor profile | Advisory capability and routing information | Permission or exact assignment |
-| Task assignment | Durable dispatch to one exact actor and queue position | Capacity ownership or claim |
+| Assignee | The iteration capacity row that carries the task's planned effort; in a complete plan, the row of your own profile | Actor identity or claim |
+| Actor profile | Advisory capability and routing information; the link between you and your capacity row | Permission or exact assignment |
+| Agent assignment | Durable dispatch to one exact actor and queue position | The assignee or a claim |
 | Selected model binding | Operator-declared intended runtime and capability envelope | Credentials, permission, or observed execution |
 | Claim/fence | Temporary exclusive execution authority | Assignment or task status |
 | Observed model evidence | Worker-reported resolved runtime recorded on a run | Independent or cryptographic attestation |

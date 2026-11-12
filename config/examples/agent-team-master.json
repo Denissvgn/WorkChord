@@ -17,8 +17,8 @@
     "scope_preset": "pm-v1",
     "skill_package": {
       "name": "workchord-pm",
-      "sha256": "59dc188aca4b87a2b9e72f345b666b2641c2fd15ca176e7eec804aba1c474c08",
-      "version": "1.11.2"
+      "sha256": "30814d3a2096107f8fe95c2c6879a563a3f7686483127c67681dd4ab244ff628",
+      "version": "1.12.0"
     }
   },
   "credential_sink_ref": "agent-team-secure-sink",
@@ -54,8 +54,8 @@
       "scope_preset": "verifier-v1",
       "skill_package": {
         "name": "workchord-reviewer",
-        "sha256": "8b70c6a4939a3e1c97c04ed540391629e21ce8882a502bce7d3c7eef1e78fec2",
-        "version": "1.0.0"
+        "sha256": "f7f2ffbae8fcec4fd3d4ad3b8c5dd4279777b535a74bf35a23ea18bed0aa8987",
+        "version": "1.1.0"
       }
     }
   ],
@@ -78,8 +78,8 @@
       "scope_preset": "worker-v1",
       "skill_package": {
         "name": "workchord-worker",
-        "sha256": "d75af08c8c5007cacbb095cc6dd64224c06a4de324942d383148eeaaaaaf32cd",
-        "version": "1.10.0"
+        "sha256": "2be9ffc1d1ad2035d0b43ce1174331c2060f89da1351d3ea3957f0eed21b7b74",
+        "version": "1.11.0"
       }
     }
   ]
