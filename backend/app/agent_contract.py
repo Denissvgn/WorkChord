@@ -28,6 +28,9 @@ AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     "agent-discovery-triage-v1",
     "pm-control-v1",
     "verification-v1",
+    # Work starts once its dependencies are done; calculated dates then follow
+    # the actual start and submit, and a change of dates keeps queued dispatch valid.
+    "schedule-follows-actuals-v1",
     SKILL_BUNDLES_FEATURE,
 )
 

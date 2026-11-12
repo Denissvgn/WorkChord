@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.12.0",
+  "catalog_version": "1.13.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,23 +8,23 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.12.0.tar.gz",
-          "sha256": "30814d3a2096107f8fe95c2c6879a563a3f7686483127c67681dd4ab244ff628",
-          "size": 174113
+          "path": "workchord-pm-1.13.0.tar.gz",
+          "sha256": "279e4465a11ae2a15a0816d41f86622f15fe239886e2260a05ea9246f8aa6d42",
+          "size": 184353
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.12.0.zip",
-          "sha256": "fd0434fad0ab246e3c554af9963c52c82812ce6f18bcd21a23bdc46509a7fa9a",
-          "size": 166187
+          "path": "workchord-pm-1.13.0.zip",
+          "sha256": "46998482827cffd92c2c6ff9ada06f42e05621d01b7679b4d5da78620e33953c",
+          "size": 173790
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "7cac796eab389480066f786f38a50df64d35906111e98d180d75fd138c23d9c4",
-          "size": 16598
+          "sha256": "5d76405b97a04705703459e434b8f7c5607ee4744b248b4e0fa7d0796a9fd236",
+          "size": 17689
         },
         {
           "path": "agents/openai.yaml",
@@ -38,8 +38,8 @@
         },
         {
           "path": "references/assignment-scheduling-and-delivery-control.md",
-          "sha256": "7514d396df5e366c6654960e154e04b42d300f5325f500b6fb32afe667fbdcbd",
-          "size": 21915
+          "sha256": "17a0fa7ef7aec1ba5934d71da14173c91d648556236c6384fce48281611110a3",
+          "size": 24151
         },
         {
           "path": "references/intake-planning-and-task-briefs.md",
@@ -48,8 +48,8 @@
         },
         {
           "path": "references/plan-mapping-and-roadmap.md",
-          "sha256": "04761950507dd1693a60771a8ccd555b9cc48159d58a5a2ee99babde83dffbdd",
-          "size": 16393
+          "sha256": "e9d3404a5acc56619c5f70a5bba5280b51432b6828107cc287d9148052e4b461",
+          "size": 17258
         },
         {
           "path": "references/system-map-and-authority.md",
@@ -58,8 +58,8 @@
         },
         {
           "path": "references/team-capacity-and-calendar.md",
-          "sha256": "8ee42682db1be086ddee70e20845afa6bd1350d66f2e6a6680e36f523a080521",
-          "size": 12534
+          "sha256": "9abd3c4071bdedd36c2495ae2d0070a5de6c629638acd594c66f3387b80a952f",
+          "size": 15945
         },
         {
           "path": "references/verification-rework-and-recovery.md",
@@ -113,7 +113,7 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.12.0"
+      "version": "1.13.0"
     },
     {
       "api_contract": "workchord-agent/v1",
@@ -189,23 +189,23 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.11.0.tar.gz",
-          "sha256": "2be9ffc1d1ad2035d0b43ce1174331c2060f89da1351d3ea3957f0eed21b7b74",
+          "path": "workchord-worker-1.12.0.tar.gz",
+          "sha256": "4c58f0631169aac6a7c85a937b7b895c935b3942b6494d8ed6553b79741a8819",
           "size": 92188
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.11.0.zip",
-          "sha256": "fe7efc3fef83749b10cd9463096e630749fa7292522c4d0d9dc7313df669e53c",
-          "size": 78658
+          "path": "workchord-worker-1.12.0.zip",
+          "sha256": "76e21779dbc3039329415f1d342ca53244de866e31ccc66c9218abb279480c80",
+          "size": 79528
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "5beae0bec07a36a1fb5a09a6320c5d6926857b0ab8f9d6ad4ac759bb104cf4ba",
-          "size": 10282
+          "sha256": "3a7393091fea4bc04090a8ec077b50dbcd96e0b275b82a9355e59a7dc6d551d2",
+          "size": 10357
         },
         {
           "path": "agents/openai.yaml",
@@ -234,8 +234,8 @@
         },
         {
           "path": "references/task-context-and-scope.md",
-          "sha256": "02a6614f8923b75443dbf81284d14579e1102a183eb976678dcf9c60bd8c853b",
-          "size": 9539
+          "sha256": "bb4e4d0143ec3a7c161efd4b49abda194a5b70d9a8ee8375a57a9b1db101fda8",
+          "size": 10334
         },
         {
           "path": "references/workflow-and-names.md",
@@ -274,8 +274,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.11.0"
+      "version": "1.12.0"
     }
   ],
-  "source_revision": "sha256:ebedcf3a251662885fa8b2aceeee4b22bb2d7daadc440d1ca2869417bd250fcf"
+  "source_revision": "sha256:ce6aec6a81872c9cd6992e1b609097e95815f677825fbaf296f12ae5f307607b"
 }

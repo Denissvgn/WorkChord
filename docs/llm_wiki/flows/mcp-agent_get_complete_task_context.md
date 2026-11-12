@@ -63,7 +63,7 @@ sequenceDiagram
     participant p23 as DeliveryDependencyService.reconcile
     participant p24 as AgentWorkService._validate_assignment_actor
     participant p25 as DiscussionService.enqueue
-    participant p26 as working_today
+    participant p26 as AgentWorkService._working_today
     participant p27 as DeliveryDependencyService.ready
     participant p28 as actor_has_scope
     participant p29 as ToolError
@@ -93,16 +93,16 @@ sequenceDiagram
     p8->>p23: DeliveryDependencyService.reconcile
     p13->>p24: AgentWorkService._validate_assignment_actor
     p8->>p25: DiscussionService.enqueue
-    p13->>p26: working_today
+    p13->>p26: AgentWorkService._working_today
     p13->>p27: DeliveryDependencyService.ready
     p17->>p28: actor_has_scope
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 576 interactions; 546 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 582 interactions; 552 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 151 (150 omitted); unresolved 1 of 278 (277 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 152 (151 omitted); unresolved 1 of 281 (280 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +116,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 150 groups; 142 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 153 groups; 145 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +129,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 148; effect analysis evaluated: 104, partial: 4, unavailable: 40. Counts include steps omitted from the displayed trace.
+Source steps: 150; effect analysis evaluated: 106, partial: 4, unavailable: 40. Counts include steps omitted from the displayed trace.
 
-Collector observations for 108 source steps with known totals: observed: 549, emitted: 512, omitted: 37. Unavailable totals are excluded.
+Collector observations for 110 source steps with known totals: observed: 558, emitted: 519, omitted: 39. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

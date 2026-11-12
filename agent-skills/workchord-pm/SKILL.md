@@ -61,11 +61,21 @@ Do not batch unrelated mutations. Preview schedule and bulk changes when a dry-r
 
 Read identity, scopes, server features, labels, templates, the selected hierarchy, and pipeline state. Name the planning boundary and permitted mutations. Follow [system-map-and-authority.md](references/system-map-and-authority.md).
 
-### Phases 2–3: Define Outcomes, Timeboxes, and Team Capacity
+### Phase 2: Define Outcomes and Timeboxes
 
-Select or create the accountable project, milestones or release target, calendar, and real iteration. Give the project a start date, a target date, an owner, and a status that matches the work, and give each milestone a target date; the Roadmap shows nothing else. Configure reusable profiles, iteration capacity rows, availability, utilization, and vacations. Give every agent that will carry work a capacity row through its profile. Re-read capacity and workload. Follow [team-capacity-and-calendar.md](references/team-capacity-and-calendar.md).
+Select or create the accountable project, milestones or release target, calendar, and real iteration. Give the project a start date, a target date, an owner, and a status that matches the work, and give each milestone a target date; the Roadmap shows nothing else. Follow [team-capacity-and-calendar.md](references/team-capacity-and-calendar.md).
 
 When the work already exists as a plan outside WorkChord, or you check a plan someone else loaded, follow [plan-mapping-and-roadmap.md](references/plan-mapping-and-roadmap.md) from here through Phase 6.
+
+### Phase 3: Prepare the Team
+
+Prepare the team before any task enters the iteration:
+
+1. **Check the existing team.** List every worker the plan needs: each agent, person, and reviewer it names. Read the reusable profiles, the iteration's capacity rows, and the agent roster with its profile bindings, and match each planned worker to a profile and a row.
+2. **Add the missing teammates, or ask.** Where the plan names a worker that has no profile or no row, create them. Where the plan names nobody for a task, ask a person who should take it; propose candidates, and assign nothing until the person answers.
+3. **Continue planning.** Go on to Phase 4 only when every planned worker has a row, every task of the plan has a named worker or a recorded answer, and `plan-readiness` reports the `team` checkpoint `done`.
+
+Set availability, utilization, and vacations on each row, and re-read capacity and workload. Follow [Prepare the team for the plan](references/team-capacity-and-calendar.md#prepare-the-team-for-the-plan).
 
 ### Phases 4–5: Triage, Define, and Assess Work
 
@@ -88,11 +98,11 @@ Create a verification assignment for an independent reviewer (the `verifier` rol
 Creating tasks is not planning. A plan is finished when a person can read it without you: the Roadmap shows each project as a dated bar with its milestones, the task list shows an assignee on every planned task, and the Gantt chart shows who carries each task and when it happens. Work the checkpoints in order, and never describe a plan as ready, scheduled, or handed off below 6 of 6.
 
 1. **Date the outcome.** Set `start_date`, `target_date`, `owner_profile_id`, and a true `status` on the project, and a `target_date` on every milestone. A project without dates and without a dated milestone has no bar on the Roadmap.
-2. **Staff before you fill.** Add every participating profile to the iteration as a capacity row before you create or import tasks. An iteration without capacity rows cannot hold an assignee, so nothing in it can be scheduled.
+2. **Prepare the team before you fill.** Check the existing team against the workers the plan names, add the missing profiles and capacity rows, and ask a person who takes the tasks for which the plan names nobody, all before you create or import tasks. An iteration without capacity rows cannot hold an assignee, so nothing in it can be scheduled.
 3. **Give every agent a row.** An agent carries planned work through the capacity row of the profile it is bound to. One row is one agent's queue: the scheduler places a row's tasks one after another, as the agent does them.
 4. **Use records, not labels.** Create a milestone record for each intermediate outcome and set `milestone_id` on its tasks. A label such as `milestone:core`, `phase:2`, or `model:fast`, or an ID prefix in a title, is not a record: people cannot group, date, or assign by it.
 5. **Assign every planned leaf.** Set `assignee_id` to a capacity row of the same iteration on every planned leaf task. Do not leave it for dispatch: an agent assignment names the agent that executes, and the server requires it to match the row that carries the effort.
-6. **Let the scheduler date the work.** Preview and apply the schedule only after assignment. The scheduler skips a task without an assignee, so a date on such a task is not a calculated date. Never write `start_date` or `end_date` to make a task look scheduled or ready to start.
+6. **Let the scheduler date the work.** Preview and apply the schedule only after assignment. The scheduler skips a task without an assignee, so a date on such a task is not a calculated date. Never write `start_date` or `end_date` to make a task look scheduled or ready to start. Dependencies and queue order decide what an agent starts next; when the server advertises `schedule-follows-actuals-v1`, the dates then follow what really happened.
 7. **Prove it.** Re-read `plan-readiness`, the Gantt chart, and the project. Require `tasks_without_assignee` and `tasks_without_effort` to be `0`, every checkpoint `done`, and a recorded reason for every task the schedule left without dates. `has_schedule` alone only says that tasks carry dates.
 
 Run this gate once for the whole iteration after every bulk create or import, before any dispatch. The full check, row by row, is in [plan-mapping-and-roadmap.md](references/plan-mapping-and-roadmap.md#check-the-plan-before-you-report-it).

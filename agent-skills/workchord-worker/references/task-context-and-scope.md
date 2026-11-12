@@ -61,7 +61,8 @@ make a task executable.
 Require `start_ready` for normal autonomous work. Confirm that:
 
 - the definition remains complete;
-- scheduled dates exist and `not_before` is due according to server time;
+- scheduled dates exist, and `not_before` and any earliest-start date are due
+  according to server time;
 - hard dependencies satisfy the advertised policy;
 - the task is not deferred;
 - this actor has the queued execution assignment;
@@ -80,12 +81,22 @@ When the work decision is `wait`, read its blocker codes before you report:
 | Blocker code | Means | Your action |
 | --- | --- | --- |
 | `schedule_missing` | The task has no calculated dates, usually because it has no assignee or no effort. | Start nothing. Report the code and the task to the PM. |
-| `scheduled_start_future` | The calculated start date is later than today. | Start nothing. Wait; report it only when you have no other work and the PM should know you are free. |
 | `not_before_future` | The assignment's not-before time has not arrived. | Wait until that time. |
-| A dependency code | A predecessor is not finished. | Wait; never start the predecessor yourself. |
+| `min_start_future` | The task has an earliest-start date that has not arrived. | Wait until that date. |
+| `iteration_not_started` | The planning period has not begun. | Wait; report it when you have no other work. |
+| `dependency_<id>_unresolved` | A predecessor is not Implemented yet. | Wait; never start the predecessor yourself. |
+| `assignment_task_version_stale` | The task changed after it was assigned to you. | Start nothing. Report the code to the PM, who assigns it again. |
+| `scheduled_start_future` | An older server holds the task until its calculated start date. | Start nothing. Wait; report it when you have no other work. |
 
-Never ask for dates to be written by hand and never write them. The PM clears
-these codes by changing a scheduling input and calculating the schedule again.
+Never ask for dates to be written by hand and never write them.
+
+When the server advertises `schedule-follows-actuals-v1`, the decision is
+`start_assigned` as soon as the task's dependencies are done, even when its
+calculated start date is later than today. Begin it. The server sets its start
+date to today and moves the planned work behind it; when you submit, it sets
+the end date to today and moves the next work up. The dates you read in the
+complete context before you begin can therefore differ from the dates in the
+begin receipt. Use the receipt.
 
 ## Report Plan Gaps Without Repairing Them
 

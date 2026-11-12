@@ -1,7 +1,7 @@
 # AgentWorkService__start_blockers
 
 **Entry point:** `agent_work_service.AgentWorkService._start_blockers`
-**Modules involved:** [agent_work_service](../modules/agent_work_service.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [services_work_metrics](../modules/services_work_metrics.md), [task_brief_service](../modules/task_brief_service.md), [time](../modules/time.md)
+**Modules involved:** [agent_work_service](../modules/agent_work_service.md), [authority](../modules/authority.md), [delivery_dependency_service](../modules/delivery_dependency_service.md), [services_work_metrics](../modules/services_work_metrics.md), [task_brief_service](../modules/task_brief_service.md), [time](../modules/time.md)
 
 ## Sequence
 
@@ -9,7 +9,7 @@
 1. `time.as_utc`
 2. `time.as_utc`
 3. `services_work_metrics.effective_work_flags`
-4. `services_work_metrics.working_today`
+4. `authority.internal_authority`
 5. `delivery_dependency_service.DeliveryDependencyService.ready`
 6. `delivery_dependency_service.DeliveryDependencyService`
 7. `time.as_utc`
@@ -19,6 +19,7 @@
 ## Touches
 
 - [agent_work_service](../modules/agent_work_service.md)
+- [authority](../modules/authority.md)
 - [delivery_dependency_service](../modules/delivery_dependency_service.md)
 - [services_work_metrics](../modules/services_work_metrics.md)
 - [task_brief_service](../modules/task_brief_service.md)

@@ -84,8 +84,9 @@ self-select work.
    - `resume`: resume only the returned current assignment and run.
    - `start_assigned`: begin only the returned next assignment.
    - `wait`: do not begin early; poll at or after the server-provided time.
-     A blocker code of `schedule_missing` or `scheduled_start_future` means the
-     plan holds the task back. Only the PM changes that, by scheduling again.
+     The blocker codes say what holds the task back; only the PM changes the
+     plan. A calculated start date in the future is not a reason to wait when
+     the decision is `start_assigned`: begin, and the server moves the dates.
    - `no_work`: report idle state and stop this cycle.
    - `attention_required`: perform no new work; report the recovery codes and
      request PM/operator action.

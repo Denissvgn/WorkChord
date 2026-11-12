@@ -113,4 +113,4 @@ flowchart LR
 | `test_worker_context_identifies_authoritative_brief` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
 | `accepted_work` | call | [test_delivery_metrics](../modules/test_delivery_metrics.md) | 1 |
 
-> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

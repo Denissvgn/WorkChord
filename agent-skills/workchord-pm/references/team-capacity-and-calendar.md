@@ -6,6 +6,7 @@ Use this reference to create a feasible execution timebox and staff it with reus
 
 - [Create the outcome and timebox](#create-the-outcome-and-timebox)
 - [Configure calendars and iterations](#configure-calendars-and-iterations)
+- [Prepare the team for the plan](#prepare-the-team-for-the-plan)
 - [Configure reusable profiles](#configure-reusable-profiles)
 - [Create iteration capacity rows](#create-iteration-capacity-rows)
 - [Read the live routing inventory](#read-the-live-routing-inventory)
@@ -46,6 +47,47 @@ Do not use a task as a substitute for a project update, milestone, release, or i
 7. Re-read the iteration and its computed `working_days`.
 
 Stop when the calendar year does not cover the iteration, the dates overlap an unintended timebox, or the project boundary is unclear.
+
+## Prepare the Team for the Plan
+
+Do this after the iteration exists and before the first task enters it. A plan is staffed when every one of its tasks can name the capacity row that carries it.
+
+### 1. Check the existing team
+
+1. List the workers the plan needs. Take them from the plan itself: every agent, model or tier, role, and person it names for a task, and every reviewer. Note the tasks for which it names nobody.
+2. Read what exists: the reusable profiles, the iteration's capacity rows, and the agent roster with each agent's profile binding and enabled state.
+3. Match each planned worker to one profile and one row of this iteration. Record the result per worker:
+
+| Result | Meaning | Next |
+| --- | --- | --- |
+| Ready | The worker has a profile and a row in this iteration; an agent is enabled and bound to that profile. | Use the row. |
+| No row | The profile exists, but the iteration has no row for it. | Add the row. |
+| No profile | The plan names the worker, but no profile describes it. | Create the profile, then the row. |
+| No agent | The plan names an agent that is not on the roster, is disabled, or has no profile binding. | Ask the operator; you cannot provision or bind agents. |
+| Not named | The plan names nobody for one or more tasks. | Ask a person, as described below. |
+
+A worker that is on the team but that the plan does not use needs no action. Do not remove rows.
+
+### 2. Add the missing teammates, or ask
+
+- **The plan names the worker.** Create the missing profile and row with `team:write`, as described in [Configure reusable profiles](#configure-reusable-profiles) and [Create iteration capacity rows](#create-iteration-capacity-rows). Create exactly what the plan names; do not add teammates it does not call for.
+- **The plan needs an agent that does not exist or is not bound.** Ask the operator for it, with the agent's role, the profile it must be bound to, and the tasks that wait for it. Keep those tasks out of the schedule until the agent is on the roster.
+- **The plan names nobody.** Ask a person who should take the tasks. Do not choose silently, do not put everything on one row, and do not leave the tasks unassigned for dispatch to sort out. Put one question to the project owner, or to the requester when the project has no owner:
+  - the tasks without a worker, grouped by capability label, with their total effort;
+  - for each group, the rows that could take it, with free capacity, the assignee recommendation, and its rationale;
+  - your proposed worker per group.
+
+  Assign nothing from these groups until the person answers. Record the answer with its date in a project update or the task timeline, and use it as the plan's assignment. When no person can be reached, stop at the `team` checkpoint and report who must answer.
+
+### 3. Continue with planning
+
+Continue only when all of these hold:
+
+- every planned worker is Ready;
+- every task of the plan has a named worker, from the plan or from a person's recorded answer;
+- `plan-readiness` reports the `team` checkpoint `done`.
+
+Report what you added and what you asked, for example: "Team: 4 of 6 planned workers existed; added 2 rows; asked the owner who takes the 7 documentation tasks."
 
 ## Configure Reusable Profiles
 
@@ -197,6 +239,8 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
   nonzero `team_member_count` before any task enters the iteration.
 - Confirm every agent you intend to dispatch is bound to a profile that has a
   row in this iteration, and every row links a profile.
+- Confirm every worker the plan names is Ready, and every task for which the
+  plan names nobody has a person's recorded answer.
 - Confirm every intended automated target is already provisioned, enabled,
   purpose-compatible, separately authorized, and backed by current live metadata
   before later dispatch. Do not call this task-specific eligibility until a

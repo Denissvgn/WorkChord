@@ -12,11 +12,13 @@ Retains planned/active/resolved/closed transitions while separating actual UTC s
 
 Direct lifecycle changes retain planned, active, resolved and closed values; summaries derive status from children. Human manual starts preserve forecast dates while recording actual UTC events. Independent acceptance is checked before closure. A review-authorized rejection returns work to active without attributing execution to the reviewer and requires fresh progress for subsequent acceptance.
 
+For scheduled work, the forecast follows what happened: a start moves the task to the actual day and keeps its length, earlier or later, and a submit ends it on the actual day. A later end shifts planned dependents; the server makes that shift itself, so a caller without planning scope can still start late work.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `AuthorityError`, `require_project` |
+| `app.authority` | `AuthorityError`, `require_project`, `internal_authority` |
 | `app.commands` | `atomic_command`, `command_transaction`, `commit_or_flush`, `lock_iterations`, `PlanningConflict` |
 | `app.models.calendar` | `Calendar` |
 | `app.models.iteration` | `Iteration` |
@@ -27,6 +29,7 @@ Direct lifecycle changes retain planned, active, resolved and closed values; sum
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.language_service` | `automatic_child_status_reason`, `incomplete_dependency_message`, `resolve_runtime_ui_language`, `task_requires_schedule_message` |
 | `app.services.outbound_webhook_service` | `OutboundWebhookService` |
+| `app.services.scheduler_service` | `rebind_queued_assignments` |
 | `app.services.snapshot_service` | `SnapshotService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService` |
 | `app.services.task_hierarchy_service` | `TaskTreeIntegrityError` |
@@ -59,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (2) |
-| Outbound | `backend` (17) |
+| Outbound | `backend` (18) |
 
 ### External packages
 
@@ -67,7 +70,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 18 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

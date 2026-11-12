@@ -56,14 +56,14 @@ sequenceDiagram
     participant p18 as DeliveryDependencyService.reconcile
     participant p19 as AgentWorkService._validate_assignment_actor
     participant p20 as DiscussionService.enqueue
-    participant p21 as working_today
+    participant p21 as AgentWorkService._working_today
     participant p22 as DeliveryDependencyService.ready
     participant p23 as actor_has_scope
     participant p24 as AgentTeamSetupService.routing_readiness
     participant p25 as AgentWorkService._routing_snapshot
     participant p26 as evaluate_actor_authorization
-    participant p27 as DeliveryDependencyService.projection
-    participant p28 as commit_or_flush
+    participant p27 as working_today
+    participant p28 as DeliveryDependencyService.projection
     participant p29 as ToolError
     participant p30 as func
     p0->>p1: _tool_call
@@ -86,21 +86,21 @@ sequenceDiagram
     p7->>p18: DeliveryDependencyService.reconcile
     p11->>p19: AgentWorkService._validate_assignment_actor
     p7->>p20: DiscussionService.enqueue
-    p11->>p21: working_today
+    p11->>p21: AgentWorkService._working_today
     p11->>p22: DeliveryDependencyService.ready
     p13->>p23: actor_has_scope
     p16->>p24: AgentTeamSetupService.routing_readiness
     p12->>p25: AgentWorkService._routing_snapshot
     p19->>p26: evaluate_actor_authorization
-    p22->>p27: DeliveryDependencyService.projection
-    p14->>p28: commit_or_flush
+    p21->>p27: working_today
+    p22->>p28: DeliveryDependencyService.projection
     p1-->>p29: ToolError(_structured_tool_error(...))
     p1-->>p30: func(db, actor)
 ```
 
-> Call sequence diagram shows 30 of 475 interactions; 445 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 481 interactions; 451 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 118 (117 omitted); unresolved 1 of 239 (238 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 119 (118 omitted); unresolved 1 of 242 (241 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 16 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 20 | - | unresolved | 1 |
-> Omission summary shows 8 of 118 groups; 110 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 121 groups; 113 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +127,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 119; effect analysis evaluated: 83, partial: 4, unavailable: 32. Counts include steps omitted from the displayed trace.
+Source steps: 121; effect analysis evaluated: 85, partial: 4, unavailable: 32. Counts include steps omitted from the displayed trace.
 
-Collector observations for 87 source steps with known totals: observed: 451, emitted: 414, omitted: 37. Unavailable totals are excluded.
+Collector observations for 89 source steps with known totals: observed: 460, emitted: 421, omitted: 39. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

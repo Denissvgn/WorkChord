@@ -12,13 +12,17 @@ Assigned definition and start decisions use complete inherited deferral policy. 
 
 Assigned normal execution compares scheduled starts with the project working date at the captured UTC instant, using the same date helper as human lifecycle and schedule signals. Future starts remain blocked across local midnight and DST boundaries. Inherited deferral, exact assignment lineage, dependency readiness, claims and structured verification fences remain mandatory.
 
+A calculated start date in the future does not hold assigned work back. Work may begin once its dependencies are done; only a planning period that has not begun and a real earliest-start date hold it. After an atomic begin or submit, the planned work of the iteration is recalculated around the actual dates inside the same command.
+
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
 | `__future__` | `annotations` |
+| `app.authority` | `internal_authority` |
 | `app.commands` | `atomic_command`, `commit_or_flush` |
 | `app.models.agent` | `AgentActor`, `AgentIdempotencyRecord`, `AgentModelBinding`, `AgentRun`, `AgentTaskAssignment`, `TaskEvent` |
+| `app.models.iteration` | `Iteration` |
 | `app.models.project` | `Project`, `ProjectUpdateEntry` |
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus` |
 | `app.models.team_member` | `TeamMember`, `TeamMemberProfile` |
@@ -38,14 +42,15 @@ Assigned normal execution compares scheduled starts with the project working dat
 | `app.services.agent_team_setup_service` | `AgentTeamSetupService`, `AgentTeamSetupService`, `AgentTeamSetupService` |
 | `app.services.delivery_dependency_service` | `DeliveryDependencyService` |
 | `app.services.project_service` | `ProjectService` |
+| `app.services.scheduler_service` | `SchedulerService` |
 | `app.services.task_brief_service` | `TaskBriefService`, `TaskBriefService`, `brief_definition_blockers`, `brief_definition_blockers` |
 | `app.services.task_service` | `TaskService`, `TaskVersionConflictError` |
 | `app.services.triage_service` | `TriageService` |
-| `app.services.work_metrics` | `effective_work_flags`, `effective_work_flags`, `working_today`, `effective_work_flags`, `effective_work_flags` |
+| `app.services.work_metrics` | `effective_work_flags`, `working_today`, `effective_work_flags`, `effective_work_flags`, `effective_work_flags` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `base64` | `base64` |
 | `binascii` | `binascii` |
-| `datetime` | `datetime`, `timedelta` |
+| `datetime` | `date`, `datetime`, `timedelta` |
 | `hashlib` | `hashlib` |
 | `json` | `json` |
 | `logging` | `logging` |
@@ -73,8 +78,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (16) |
-| Outbound | `backend` (26) |
+| Inbound | `backend` (18) |
+| Outbound | `backend` (29) |
 
 ### External packages
 
@@ -82,13 +87,13 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 41 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 45 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentWorkService](../entities/AgentWorkService.md) | 171 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
+| [AgentWorkService](../entities/AgentWorkService.md) | 172 | — | Coordinate PM dispatch and low-freedom worker lifecycle commands. |
 
 ## Functions
 

@@ -1,6 +1,6 @@
 # SchedulerService
 
-**Location:** `backend/app/services/scheduler_service.py:282`
+**Location:** `backend/app/services/scheduler_service.py:307`
 **Kind:** Class
 **Bases:** —
 **Module:** [scheduler_service](../modules/scheduler_service.md)
@@ -18,7 +18,8 @@ Service for automatic task scheduling.
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db: AsyncSession)` | — | — |
-| `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, expected_planning_revision: int \| None = None, commit_baseline: bool = False, rebaseline_reason: str \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
+| `schedule_iteration` | *(async)* `(iteration_id: int, *, commit: bool = True, expected_revision: int \| None = None, expected_planning_revision: int \| None = None, commit_baseline: bool = False, rebaseline_reason: str \| None = None, follow_date: date \| None = None, anchor_task_id: int \| None = None) -> ScheduleResult` | `@atomic_command` | Schedule an iteration, optionally leaving commit ownership to the caller. |
+| `follow_actual_dates` | *(async)* `(task: Task, today: date, *, started: bool = False) -> list[int]` | — | Move planned work to what really happened after ``task`` started or finished. |
 | `_unscheduled_tasks` | `(all_tasks: Sequence[Task], member_schedules: dict[int, 'MemberSchedule'], known_reasons: dict[int, str]) -> list[UnscheduledTask]` | — | Planned leaf tasks still without dates, each with the first cause that applies. |
 | `_build_member_schedules` | *(async)* `(iteration: Iteration, team_members: Sequence[TeamMember]) -> dict[int, MemberSchedule]` | — | Build schedule tracking for each team member. |
 | `_topological_sort` | `(tasks: list[Task]) -> list[Task]` | — | Sort tasks respecting dependencies. |
@@ -48,9 +49,9 @@ flowchart LR
     n5["batch_update_tasks (backend/app/routers/tasks.py)"]
     n6["get_scheduler_service (backend/app/routers/tasks.py)"]
     n7["AgentPlanningService.__init__ (backend/app/services/agent_planning_service.py)"]
-    n8["IncrementalScheduler.__init__ (backend/app/services/scheduler_service.py)"]
-    n9["test_incremental_schedule_excludes_inherited_deferred_work (backend/tests/test_planning_read_models.py)"]
-    n10["test_schedule_preview_does_not_allocate_inherited_deferred_leaf (backend/tests/test_planning_read_models.py)"]
+    n8["AgentWorkService._follow_actual_dates (backend/app/services/agent_work_service.py)"]
+    n9["IncrementalScheduler.__init__ (backend/app/services/scheduler_service.py)"]
+    n10["test_incremental_schedule_excludes_inherited_deferred_work (backend/tests/test_planning_read_models.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -69,8 +70,8 @@ flowchart LR
     click n5 "../modules/tasks.md"
     click n6 "../modules/tasks.md"
     click n7 "../modules/agent_planning_service.md"
-    click n8 "../modules/scheduler_service.md"
-    click n9 "../modules/test_planning_read_models.md"
+    click n8 "../modules/agent_work_service.md"
+    click n9 "../modules/scheduler_service.md"
     click n10 "../modules/test_planning_read_models.md"
 ```
 
@@ -78,7 +79,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [scheduler_service](../modules/scheduler_service.md) | 17 | — |
+| [scheduler_service](../modules/scheduler_service.md) | 18 | — |
 
 ### References
 
@@ -93,8 +94,8 @@ flowchart LR
 | `get_scheduler_service` | call | [tasks](../modules/tasks.md) | 1 |
 | `get_scheduler_service` | type_reference | [tasks](../modules/tasks.md) | — |
 | `AgentPlanningService.__init__` | call | [agent_planning_service](../modules/agent_planning_service.md) | 1 |
+| `AgentWorkService._follow_actual_dates` | call | [agent_work_service](../modules/agent_work_service.md) | 1 |
 | `IncrementalScheduler.__init__` | type_reference | [scheduler_service](../modules/scheduler_service.md) | — |
 | `test_incremental_schedule_excludes_inherited_deferred_work` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
-| `test_schedule_preview_does_not_allocate_inherited_deferred_leaf` | call | [test_planning_read_models](../modules/test_planning_read_models.md) | 1 |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.

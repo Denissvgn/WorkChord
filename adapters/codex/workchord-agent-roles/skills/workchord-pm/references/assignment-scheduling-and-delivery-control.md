@@ -157,7 +157,7 @@ In assigned-work v1, set queue order explicitly. Expect the server to select wor
 
 Within one queue class, order by explicit queue rank, priority (`1` highest), not-before or scheduled start, task `sort_order`, and task ID as a stable tie-breaker. Require the work response to include its selection reason and complete sort tuple.
 
-Give each agent's queue the order its assignee row has on the Gantt chart. A queue rank that contradicts the calculated dates does not start work early: the server holds a task until its calculated start date.
+Give each agent's queue the order its assignee row has on the Gantt chart. An agent starts the first item of its queue whose dependencies are done, so the queue order and the dependency links are what keep the order of the work. Dates do not: see [Start order and dates](#start-order-and-dates).
 
 Treat pagination cursors as opaque, actor-bound snapshots. Read the first work
 page for the authoritative decision, then follow `pagination.next_cursor` only
@@ -226,7 +226,29 @@ Read the preview's `unscheduled` list before you apply. Each entry names a task 
 
 The calculation moves Planned leaves only. Active, Implemented, and Accepted tasks keep their dates and keep their place on their assignee's row.
 
-The dates also gate the start of work. The server refuses to begin a task with `schedule_missing` when it has no dates, and with `scheduled_start_future` when its start date is later than today in the project's time zone. Clear either one by correcting a scheduling input and calculating again, as described in [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#keep-the-schedule-calculated). Never clear it by writing dates.
+### Start order and dates
+
+The server refuses to begin a task with `schedule_missing` when it has no dates. Clear that by correcting a scheduling input and calculating again, as described in [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#keep-the-schedule-calculated). Never clear it by writing dates.
+
+When the server advertises `schedule-follows-actuals-v1`, a calculated start date in the future does not hold work back:
+
+- An agent may begin a task as soon as every dependency is Implemented or Accepted, every delivery prerequisite is Accepted, and the task is next in its queue.
+- At the start, the server sets the task's start date to today and recalculates the planned work of the iteration. The tasks behind it, on its assignee's row and along its dependencies, move to the dates that now apply, earlier or later.
+- At submit, the server sets the task's end date to today and recalculates again, so the assignee's next task moves up.
+- Each moved task records why on its timeline. You do not preview or apply anything for these moves.
+- Three things still hold a task back: an unfinished dependency (`dependency_<id>_unresolved`), an iteration that has not started (`iteration_not_started`), and a real earliest-start constraint (`min_start_future`). Use `min_start_date` or the assignment's not-before time when work must wait for a date.
+- A task the calculation cannot place, for example one without an assignee, keeps the dates it had.
+
+Without that feature, an older server holds a task until its calculated start date (`scheduled_start_future`) and moves dates only later, never earlier.
+
+### Queued assignments after a change
+
+A queued assignment is bound to the task version it was created for. The server reports a mismatch as `assignment_task_version_stale`, and the agent cannot start.
+
+- A change of dates alone, from a schedule apply or from the automatic moves above, keeps a queued assignment valid when the server advertises `schedule-follows-actuals-v1`.
+- A model-aware assignment is the exception: its routing evidence is bound to the exact task version. After its task's dates move, request a fresh routing preview and update the assignment.
+- Any other change to the task, such as its brief, effort, assignee, or dependencies, makes the queued assignment stale. Cancel it and create a new one with the current task version; updating it does not rebind it.
+- On an older server every date change also stales the assignment. Dispatch a task only after its schedule is applied, and re-create its assignment after each later apply that moves it.
 
 Choose schedule mitigation in this order unless an accountable owner records a
 different policy: first correct bad estimates, calendars, constraints, or
