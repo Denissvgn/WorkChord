@@ -214,23 +214,23 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workchord_pm_role | _skill_bundle_prompt | 2335 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
-| _skill_bundle_prompt | _agent_context | 338 | `_agent_context(_skill_bundle_scope_requirement(...))` |
-| _agent_context | _current_agent_key | 247 | `_current_agent_key(data not statically known)` |
-| _current_agent_key | _http_agent_key.get | 200 | `_http_agent_key.get(data not statically known)` |
-| _current_agent_key | os.getenv | 200 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
-| _agent_context | MCPAuthError | 249 | `MCPAuthError(...)` |
-| _agent_context | _open_db_session | 250 | `_open_db_session(data not statically known)` |
-| _open_db_session | _session_factory | 181 | `_session_factory(data not statically known)` |
-| _open_db_session | hasattr | 182 | `hasattr(session_context, '__aenter__')` |
-| _agent_context | command_transaction | 251 | `command_transaction(db, mode=...)` |
+| workchord_pm_role | _skill_bundle_prompt | 2346 | `_skill_bundle_prompt('Read workchord://agent/capabilities, resolve its recommended PM skill version, then read workchord://skill-bundles/workchord-pm/{version}/SKILL.md. Follow that controller skill and its referenced files; do not infer authority from profile capability matches.')` |
+| _skill_bundle_prompt | _agent_context | 349 | `_agent_context(_skill_bundle_scope_requirement(...))` |
+| _agent_context | _current_agent_key | 258 | `_current_agent_key(data not statically known)` |
+| _current_agent_key | _http_agent_key.get | 201 | `_http_agent_key.get(data not statically known)` |
+| _current_agent_key | os.getenv | 201 | `os.getenv(MCP_AGENT_API_KEY_ENV)` |
+| _agent_context | MCPAuthError | 260 | `MCPAuthError(...)` |
+| _agent_context | _open_db_session | 261 | `_open_db_session(data not statically known)` |
+| _open_db_session | _session_factory | 182 | `_session_factory(data not statically known)` |
+| _open_db_session | hasattr | 183 | `hasattr(session_context, '__aenter__')` |
+| _agent_context | command_transaction | 262 | `command_transaction(db, mode=...)` |
 | command_transaction | current_command | 87 | `current_command(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| environment_read | `os.getenv` | `_current_agent_key` | 200 |
+| environment_read | `os.getenv` | `_current_agent_key` | 201 |
 | mutation | `db.info.pop` | `command_transaction` | 107 |
 | mutation | `db.info.pop` | `command_transaction` | 120 |
 | mutation | `db.info.pop` | `command_transaction` | 121 |
@@ -240,8 +240,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `_open_db_session` | `_session_factory` | 181 |
-| external_call | `_open_db_session` | `hasattr` | 182 |
+| unresolved_call | `_open_db_session` | `_session_factory` | 182 |
+| external_call | `_open_db_session` | `hasattr` | 183 |
 | step_limit | `workchord_pm_role` | `first 12 steps` | 0 |
 | truncated_flow | `workchord_pm_role` | `depth limit` | 0 |
 

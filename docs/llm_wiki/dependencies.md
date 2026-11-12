@@ -52,6 +52,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [GanttChart.test](modules/GanttChart.test.md) | [types_gantt](modules/types_gantt.md) |
 | [GanttChart](modules/GanttChart.md) | [types_gantt](modules/types_gantt.md) |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | [types_gantt](modules/types_gantt.md) |
+| [TaskEditModal.test](modules/TaskEditModal.test.md) | [types_gantt](modules/types_gantt.md) |
+| [TaskEditModal.test](modules/TaskEditModal.test.md) | [types_task](modules/types_task.md) |
 | [TaskEditModal](modules/TaskEditModal.md) | [types_gantt](modules/types_gantt.md) |
 | [TaskEditModal](modules/TaskEditModal.md) | [types_task](modules/types_task.md) |
 | [UnscheduledTasks](modules/UnscheduledTasks.md) | [types_gantt](modules/types_gantt.md) |
@@ -380,14 +382,14 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 |--------|--------|---------|
 | [models_task](modules/models_task.md) | 96 | 9 |
 | [app_database](modules/app_database.md) | 88 | 5 |
-| [Button](modules/Button.md) | 86 | 0 |
+| [Button](modules/Button.md) | 85 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
-| [renderWithProviders](modules/renderWithProviders.md) | 79 | 2 |
+| [renderWithProviders](modules/renderWithProviders.md) | 81 | 2 |
 | [time](modules/time.md) | 78 | 0 |
-| [types_task](modules/types_task.md) | 75 | 2 |
+| [types_task](modules/types_task.md) | 76 | 2 |
 | [config](modules/config.md) | 72 | 1 |
-| [QueryState](modules/QueryState.md) | 69 | 2 |
 | [models_agent](modules/models_agent.md) | 68 | 5 |
+| [QueryState](modules/QueryState.md) | 68 | 2 |
 | [task_service](modules/task_service.md) | 62 | 28 |
 | [models_iteration](modules/models_iteration.md) | 60 | 6 |
 | [authority](modules/authority.md) | 57 | 6 |
@@ -399,9 +401,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [formatDate](modules/formatDate.md) | 37 | 1 |
 | [i18n](modules/i18n.md) | 36 | 1 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
-| [taskService](modules/taskService.md) | 32 | 3 |
 | [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 31 | 9 |
 | [Input](modules/Input.md) | 31 | 0 |
+| [taskService](modules/taskService.md) | 31 | 3 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
 | [models_calendar](modules/models_calendar.md) | 29 | 2 |
 | [app_main](modules/app_main.md) | 28 | 47 |
@@ -456,20 +458,20 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_task_domain](modules/schemas_task_domain.md) | 12 | 0 |
 | [agent_routing_service](modules/agent_routing_service.md) | 12 | 18 |
 | [seedDisplay](modules/seedDisplay.md) | 12 | 5 |
+| [types_gantt](modules/types_gantt.md) | 12 | 2 |
 | [scheduler_service](modules/scheduler_service.md) | 11 | 18 |
 | [system_settings_service](modules/system_settings_service.md) | 11 | 5 |
 | [url_policy](modules/url_policy.md) | 11 | 1 |
 | [test_managed_authority](modules/test_managed_authority.md) | 11 | 16 |
-| [types_gantt](modules/types_gantt.md) | 11 | 2 |
 | [adminAccess](modules/adminAccess.md) | 11 | 1 |
 | [load_common](modules/load_common.md) | 11 | 1 |
 | [models_triage](modules/models_triage.md) | 10 | 7 |
 | [schemas_project](modules/schemas_project.md) | 10 | 3 |
-| [ConfirmDialog](modules/ConfirmDialog.md) | 10 | 2 |
 | [TaskFiltersBar](modules/TaskFiltersBar.md) | 10 | 10 |
 | [planningTaskIssues](modules/planningTaskIssues.md) | 10 | 2 |
 | [useAdminAccess](modules/useAdminAccess.md) | 10 | 2 |
 | [types_project](modules/types_project.md) | 10 | 3 |
+| [mcp_server](modules/mcp_server.md) | 9 | 16 |
 | [models_capacity](modules/models_capacity.md) | 9 | 1 |
 | [models_time_entry](modules/models_time_entry.md) | 9 | 2 |
 | [routers_agent](modules/routers_agent.md) | 9 | 25 |
@@ -481,13 +483,13 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [triage_service](modules/triage_service.md) | 9 | 18 |
 | [sql_semantics](modules/sql_semantics.md) | 9 | 0 |
 | [CollapsibleSection](modules/CollapsibleSection.md) | 9 | 0 |
+| [ConfirmDialog](modules/ConfirmDialog.md) | 9 | 2 |
 | [taskEditorContract](modules/taskEditorContract.md) | 9 | 2 |
 | [workNumbers](modules/workNumbers.md) | 9 | 0 |
 | [postgresql___init__](modules/postgresql___init__.md) | 8 | 1 |
 | [database_config](modules/database_config.md) | 8 | 0 |
 | [source](modules/source.md) | 8 | 5 |
 | [maintenance](modules/maintenance.md) | 8 | 2 |
-| [mcp_server](modules/mcp_server.md) | 8 | 16 |
 | [models___init__](modules/models___init__.md) | 8 | 31 |
 | [delivery_dependency](modules/delivery_dependency.md) | 8 | 3 |
 | [mutation_versions](modules/mutation_versions.md) | 8 | 2 |
@@ -515,7 +517,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [DisabledReason](modules/DisabledReason.md) | 7 | 0 |
 | [LiveWindowStatus](modules/LiveWindowStatus.md) | 7 | 1 |
 | [SettingsUnsavedBar](modules/SettingsUnsavedBar.md) | 7 | 2 |
-| [SlideOverDrawer](modules/SlideOverDrawer.md) | 7 | 1 |
 | [usePlanningNavigationSummary](modules/usePlanningNavigationSummary.md) | 7 | 4 |
 | [agentService](modules/agentService.md) | 7 | 2 |
 | [savedViewService](modules/savedViewService.md) | 7 | 2 |
@@ -532,6 +533,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [schemas_system_settings](modules/schemas_system_settings.md) | 6 | 0 |
 | [support___init__](modules/support___init__.md) | 6 | 4 |
 | [GuardedTaskModal](modules/GuardedTaskModal.md) | 6 | 7 |
+| [SlideOverDrawer](modules/SlideOverDrawer.md) | 6 | 1 |
 | [usePlanningReadiness](modules/usePlanningReadiness.md) | 6 | 13 |
 | [workspaces](modules/workspaces.md) | 6 | 0 |
 | [triageService](modules/triageService.md) | 6 | 3 |
@@ -561,6 +563,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [PlanningInputBoundary](modules/PlanningInputBoundary.md) | 5 | 4 |
 | [AdminAccessGate](modules/AdminAccessGate.md) | 5 | 3 |
 | [MetricCount](modules/MetricCount.md) | 5 | 3 |
+| [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 5 | 10 |
 | [planningReturn](modules/planningReturn.md) | 5 | 0 |
 | [dateLocale](modules/dateLocale.md) | 5 | 1 |
 | [resources.en](modules/resources.en.md) | 5 | 5 |
@@ -600,8 +603,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [RequestSourceLinksPanel](modules/RequestSourceLinksPanel.md) | 4 | 7 |
 | [WithheldValuesNote](modules/WithheldValuesNote.md) | 4 | 0 |
 | [TaskBriefEditor](modules/TaskBriefEditor.md) | 4 | 3 |
-| [TaskEditorDrawer](modules/TaskEditorDrawer.md) | 4 | 10 |
-| [TaskForm](modules/TaskForm.md) | 4 | 37 |
 | [TaskList](modules/TaskList.md) | 4 | 22 |
 | [TimeEntriesPanel](modules/TimeEntriesPanel.md) | 4 | 13 |
 | [WorkMetricsLine](modules/WorkMetricsLine.md) | 4 | 4 |
@@ -645,6 +646,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [delivery](modules/delivery.md) | 3 | 8 |
 | [transactions](modules/transactions.md) | 3 | 0 |
 | [ToastProvider](modules/ToastProvider.md) | 3 | 2 |
+| [TaskEditModal](modules/TaskEditModal.md) | 3 | 4 |
 | [IterationForm](modules/IterationForm.md) | 3 | 13 |
 | [IterationSelector](modules/IterationSelector.md) | 3 | 4 |
 | [LabelSelector](modules/LabelSelector.md) | 3 | 6 |
@@ -660,6 +662,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [QuickCapture](modules/QuickCapture.md) | 3 | 8 |
 | [TaskAgentReadinessBadge](modules/TaskAgentReadinessBadge.md) | 3 | 2 |
 | [TaskDiscussion](modules/TaskDiscussion.md) | 3 | 9 |
+| [TaskForm](modules/TaskForm.md) | 3 | 37 |
 | [TaskReadView](modules/TaskReadView.md) | 3 | 13 |
 | [TaskTimelinePanel](modules/TaskTimelinePanel.md) | 3 | 8 |
 | [TaskWorkPanel](modules/TaskWorkPanel.md) | 3 | 13 |
@@ -735,8 +738,8 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [FullscreenWorkspace](modules/FullscreenWorkspace.md) | 2 | 1 |
 | [UnsavedLeaveGuard](modules/UnsavedLeaveGuard.md) | 2 | 1 |
 | [WorkFreshness](modules/WorkFreshness.md) | 2 | 1 |
+| [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 2 | 1 |
 | [GanttChart](modules/GanttChart.md) | 2 | 14 |
-| [TaskEditModal](modules/TaskEditModal.md) | 2 | 9 |
 | [UnscheduledTasks](modules/UnscheduledTasks.md) | 2 | 1 |
 | [IterationCapacityLine](modules/IterationCapacityLine.md) | 2 | 3 |
 | [IterationImportDialog](modules/IterationImportDialog.md) | 2 | 8 |
@@ -848,7 +851,6 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_time_entries](modules/test_time_entries.md) | 1 | 14 |
 | [App](modules/App.md) | 1 | 3 |
 | [SavedViewDashboardCards](modules/SavedViewDashboardCards.md) | 1 | 4 |
-| [WorkRefreshStatus](modules/WorkRefreshStatus.md) | 1 | 1 |
 | [GanttBarInputs](modules/GanttBarInputs.md) | 1 | 4 |
 | [ScheduleExplanationDetails](modules/ScheduleExplanationDetails.md) | 1 | 4 |
 | [RouteErrorBoundary](modules/RouteErrorBoundary.md) | 1 | 1 |
@@ -993,6 +995,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_execution_working_dates](modules/test_execution_working_dates.md) | 0 | 14 |
 | [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 10 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |
+| [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) | 0 | 1 |
 | [test_metric_matches](modules/test_metric_matches.md) | 0 | 3 |
 | [test_mobile_contract](modules/test_mobile_contract.md) | 0 | 0 |
 | [test_mutation_versions](modules/test_mutation_versions.md) | 0 | 15 |
@@ -1041,7 +1044,9 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [formControlLabels.test](modules/formControlLabels.test.md) | 0 | 0 |
 | [iconButtonTooltips.test](modules/iconButtonTooltips.test.md) | 0 | 0 |
 | [ToastProvider.test](modules/ToastProvider.test.md) | 0 | 2 |
+| [WorkRefreshStatus.test](modules/WorkRefreshStatus.test.md) | 0 | 2 |
 | [GanttChart.test](modules/GanttChart.test.md) | 0 | 5 |
+| [TaskEditModal.test](modules/TaskEditModal.test.md) | 0 | 4 |
 | [UnscheduledTasks.test](modules/UnscheduledTasks.test.md) | 0 | 2 |
 | [IterationForm.test](modules/IterationForm.test.md) | 0 | 3 |
 | [IterationList.test](modules/IterationList.test.md) | 0 | 2 |

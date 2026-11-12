@@ -6,7 +6,7 @@
 
 MCP server facade for external LLM-agent integrations.
 
-MCP uses the shared principal/project authority and command owner. Its established bearer actor-key format is validated and normalized before resolution; conflicting credentials remain rejected. Schedule preview selects a rollback context and returns structured version conflicts through the tool boundary.
+MCP uses the shared principal/project authority and command owner. Its established bearer actor-key format is validated and normalized before resolution; conflicting credentials remain rejected. Schedule preview selects a rollback context and returns structured version conflicts through the tool boundary. Every tool is registered with one of three behavior declarations (read-only, write, removal), all closed-world, because a client with nobody to approve calls refuses a tool it must assume is destructive; only the three tools that remove a record are declared destructive.
 
 ## Imports
 
@@ -36,6 +36,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | `mcp.server.fastmcp` | `FastMCP` |
 | `mcp.server.fastmcp.exceptions` | `ToolError` |
 | `mcp.server.transport_security` | `TransportSecuritySettings` |
+| `mcp.types` | `ToolAnnotations` |
 | `os` | `os` |
 | `pydantic` | `ValidationError` |
 | `starlette.requests` | `Request` |
@@ -63,7 +64,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (8) |
+| Inbound | `backend` (9) |
 | Outbound | `backend` (16) |
 
 ### External packages
@@ -72,17 +73,17 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 24 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MCPAuthError](../entities/MCPAuthError.md) | Class | 47 | `PermissionError` | Raised when MCP agent authentication fails. |
-| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 70 | — | Reject untrusted MCP Host/Origin values before database authentication. |
-| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 105 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
-| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 151 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
-| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 217 | `Optional[str \| tuple[str, ...]]` | — |
+| [MCPAuthError](../entities/MCPAuthError.md) | Class | 48 | `PermissionError` | Raised when MCP agent authentication fails. |
+| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 71 | — | Reject untrusted MCP Host/Origin values before database authentication. |
+| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 106 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
+| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 152 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
+| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 218 | `Optional[str \| tuple[str, ...]]` | — |
 
 ## Functions
 

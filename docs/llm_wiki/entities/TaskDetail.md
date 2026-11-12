@@ -31,19 +31,22 @@ _Auto-generated from `TaskDetail` in `frontend/src/types/task.ts`._
 ```mermaid
 flowchart LR
     n0["TaskDetail (frontend/src/types/task.ts)"]
-    n1["frontend/src/components/tasks/CurrentTaskModal.test.tsx"]
-    n2["TaskContextSummary (frontend/src/components/tasks/TaskContextSummary.tsx)"]
-    n3["frontend/src/components/tasks/TaskEditorDrawer.test.tsx"]
-    n4["frontend/src/services/taskService.ts"]
+    n1["frontend/src/components/gantt/TaskEditModal.test.tsx"]
+    n2["frontend/src/components/tasks/CurrentTaskModal.test.tsx"]
+    n3["TaskContextSummary (frontend/src/components/tasks/TaskContextSummary.tsx)"]
+    n4["frontend/src/components/tasks/TaskEditorDrawer.test.tsx"]
+    n5["frontend/src/services/taskService.ts"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/types_task.md"
-    click n1 "../modules/CurrentTaskModal.test.md"
-    click n2 "../modules/TaskContextSummary.md"
-    click n3 "../modules/TaskEditorDrawer.test.md"
-    click n4 "../modules/taskService.md"
+    click n1 "../modules/TaskEditModal.test.md"
+    click n2 "../modules/CurrentTaskModal.test.md"
+    click n3 "../modules/TaskContextSummary.md"
+    click n4 "../modules/TaskEditorDrawer.test.md"
+    click n5 "../modules/taskService.md"
 ```
 
 ### Summary
@@ -56,6 +59,7 @@ flowchart LR
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
+| `TaskEditModal.test` | import | [TaskEditModal.test](../modules/TaskEditModal.test.md) | — |
 | `CurrentTaskModal.test` | import | [CurrentTaskModal.test](../modules/CurrentTaskModal.test.md) | — |
 | `TaskContextSummary` | type_reference | [TaskContextSummary](../modules/TaskContextSummary.md) | — |
 | `TaskEditorDrawer.test` | import | [TaskEditorDrawer.test](../modules/TaskEditorDrawer.test.md) | — |

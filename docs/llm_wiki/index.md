@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1561 | [Open section](#entities) |
-| Modules | 827 | [Open section](#modules) |
+| Modules | 830 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 557 | [Open section](#entry-point-flows) |
@@ -881,7 +881,6 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [TaskDifficultyBand](entities/TaskDifficultyBand.md)
 - [TaskDifficultyScore](entities/TaskDifficultyScore.md)
 - [TaskDomainService](entities/TaskDomainService.md)
-- [TaskEditModalContentProps](entities/TaskEditModalContentProps.md)
 - [TaskEditModalProps](entities/TaskEditModalProps.md)
 - [TaskEditorAvailability](entities/TaskEditorAvailability.md)
 - [TaskEditorDefaultsContext](entities/TaskEditorDefaultsContext.md)
@@ -1583,6 +1582,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 Retained history; these declarations are absent from the selected source inventory.
 
 - [SortableTemplateRowProps](entities/SortableTemplateRowProps.md)
+- [TaskEditModalContentProps](entities/TaskEditModalContentProps.md)
 - [TaskStatusFlowProps](entities/TaskStatusFlowProps.md)
 
 ## Modules
@@ -1791,6 +1791,7 @@ Retained history; these declarations are absent from the selected source invento
 - [TaskDiscussion](modules/TaskDiscussion.md) - `frontend/src/components/tasks/TaskDiscussion.tsx`
 - [TaskDiscussion.test](modules/TaskDiscussion.test.md) - `frontend/src/components/tasks/TaskDiscussion.test.tsx`
 - [TaskEditModal](modules/TaskEditModal.md) - `frontend/src/components/gantt/TaskEditModal.tsx`
+- [TaskEditModal.test](modules/TaskEditModal.test.md) - `frontend/src/components/gantt/TaskEditModal.test.tsx`
 - [TaskEditorDrawer](modules/TaskEditorDrawer.md) - `frontend/src/components/tasks/TaskEditorDrawer.tsx`
 - [TaskEditorDrawer.test](modules/TaskEditorDrawer.test.md) - `frontend/src/components/tasks/TaskEditorDrawer.test.tsx`
 - [TaskFiltersBar](modules/TaskFiltersBar.md) - `frontend/src/components/tasks/TaskFiltersBar.tsx`
@@ -1843,6 +1844,7 @@ Retained history; these declarations are absent from the selected source invento
 - [WorkFreshness](modules/WorkFreshness.md) - `frontend/src/components/feedback/WorkFreshness.tsx`
 - [WorkMetricsLine](modules/WorkMetricsLine.md) - `frontend/src/components/tasks/WorkMetricsLine.tsx`
 - [WorkRefreshStatus](modules/WorkRefreshStatus.md) - `frontend/src/components/feedback/WorkRefreshStatus.tsx`
+- [WorkRefreshStatus.test](modules/WorkRefreshStatus.test.md) - `frontend/src/components/feedback/WorkRefreshStatus.test.tsx`
 - [acceptance_artifacts](modules/acceptance_artifacts.md) - Bounded public receipt exports and independent offline archive verification.
 - [accessibilityInvariants](modules/accessibilityInvariants.md) - `frontend/src/test/accessibilityInvariants.ts`
 - [accessibilityInvariants.test](modules/accessibilityInvariants.test.md) - `frontend/src/test/accessibilityInvariants.test.ts`
@@ -2127,7 +2129,7 @@ Retained history; these declarations are absent from the selected source invento
 - [routers_team](modules/routers_team.md) - Team API router.
 - [routers_triage](modules/routers_triage.md) - Triage API router.
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
-- [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, SDK 34 and the checksum-pinned Gradle wrapper.
+- [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, the licensed SDK and the checksum-pinned Gradle wrapper.
 - [run_disposable_checks](modules/run_disposable_checks.md) - Run database, frontend and browser checks using isolated native processes.
 - [runtime_peer](modules/runtime_peer.md) - Disposable protocol peer: each invocation uses a new process and connection.
 - [runtime_telemetry](modules/runtime_telemetry.md) - Small dependency-free runtime telemetry used by probes and qualification.
@@ -2298,6 +2300,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_load_tooling](modules/test_load_tooling.md) - Unit contracts for deterministic, sealed, fail-closed load tooling.
 - [test_local_baseline](modules/test_local_baseline.md) - Local measurements retain limits and cannot become formal certification.
 - [test_managed_authority](modules/test_managed_authority.md) - Real principal, transport, scoped-read and command-denial contracts.
+- [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) - Every MCP tool tells clients whether it reads, writes, or removes.
 - [test_metric_matches](modules/test_metric_matches.md) - A work-metric count and the list it opens are chosen by the same predicate.
 - [test_mobile_contract](modules/test_mobile_contract.md) - Android's golden examples are derived from current canonical backend schemas.
 - [test_mutation_versions](modules/test_mutation_versions.md) - Version rollout rejects missing inputs without weakening identity or rollback.

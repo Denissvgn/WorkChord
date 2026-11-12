@@ -3272,3 +3272,28 @@ The Gantt chart now opens a large plan as collapsed groups with a span and unass
 - Semantic fields preserved: 6
 - Moved entities: none
 Agents now begin assigned work as soon as its dependencies are done, and begin and submit recalculate the planned work of the iteration around the actual dates. A change of dates alone keeps plain queued assignments valid. The capability handshake advertises this as `schedule-follows-actuals-v1`.
+
+## 2026-11-12
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:2eb5ac57d23eeb2ae6e6ae4bfee46b242f65d208ff073dcda62e5a8da9ff8ce6`
+- Pages created: 3
+- Pages updated: 177
+- Pages metadata-only: 3
+- Pages skipped (unchanged): 2966
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 3
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9

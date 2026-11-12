@@ -212,8 +212,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_convert_triage_to_backlog | _tool_call | 985 | `_tool_call('triage:write', ...)` |
-| _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
+| agent_convert_triage_to_backlog | _tool_call | 996 | `_tool_call('triage:write', ...)` |
+| _tool_call | enforce_mcp_access | 314 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |

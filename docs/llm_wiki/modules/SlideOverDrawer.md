@@ -30,38 +30,34 @@ _Auto-generated from `frontend/src/components/ui/SlideOverDrawer.tsx`._
 ```mermaid
 flowchart LR
     n0["frontend/src/components/common/dialogLayer.ts"]
-    n1["frontend/src/components/gantt/TaskEditModal.tsx"]
-    n2["frontend/src/components/planning/PlanningWorkflowGuide.tsx"]
-    n3["frontend/src/components/settings/TemplateLabelSettings.tsx"]
-    n4["frontend/src/components/tasks/GuardedTaskModal.tsx"]
-    n5["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
-    n6["frontend/src/components/tasks/TaskWorkflowGuide.tsx"]
-    n7["frontend/src/components/ui/SlideOverDrawer.tsx"]
-    n8["frontend/src/pages/AgentPipelinePage.tsx"]
-    n1 --> n7
-    n2 --> n7
-    n3 --> n7
-    n4 --> n7
-    n5 --> n7
-    n6 --> n7
-    n7 --> n0
-    n8 --> n7
+    n1["frontend/src/components/planning/PlanningWorkflowGuide.tsx"]
+    n2["frontend/src/components/settings/TemplateLabelSettings.tsx"]
+    n3["frontend/src/components/tasks/GuardedTaskModal.tsx"]
+    n4["frontend/src/components/tasks/TaskEditorDrawer.tsx"]
+    n5["frontend/src/components/tasks/TaskWorkflowGuide.tsx"]
+    n6["frontend/src/components/ui/SlideOverDrawer.tsx"]
+    n7["frontend/src/pages/AgentPipelinePage.tsx"]
+    n1 --> n6
+    n2 --> n6
+    n3 --> n6
+    n4 --> n6
+    n5 --> n6
+    n6 --> n0
+    n7 --> n6
     click n0 "../modules/dialogLayer.md"
-    click n1 "../modules/TaskEditModal.md"
-    click n2 "../modules/PlanningWorkflowGuide.md"
-    click n3 "../modules/TemplateLabelSettings.md"
-    click n4 "../modules/GuardedTaskModal.md"
-    click n5 "../modules/TaskEditorDrawer.md"
-    click n6 "../modules/TaskWorkflowGuide.md"
-    click n7 "../modules/SlideOverDrawer.md"
-    click n8 "../modules/AgentPipelinePage.md"
+    click n1 "../modules/PlanningWorkflowGuide.md"
+    click n2 "../modules/TemplateLabelSettings.md"
+    click n3 "../modules/GuardedTaskModal.md"
+    click n4 "../modules/TaskEditorDrawer.md"
+    click n5 "../modules/TaskWorkflowGuide.md"
+    click n6 "../modules/SlideOverDrawer.md"
+    click n7 "../modules/AgentPipelinePage.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [TaskEditModal](../modules/TaskEditModal.md) |
 | Inbound | [PlanningWorkflowGuide](../modules/PlanningWorkflowGuide.md) |
 | Inbound | [TemplateLabelSettings](../modules/TemplateLabelSettings.md) |
 | Inbound | [GuardedTaskModal](../modules/GuardedTaskModal.md) |
