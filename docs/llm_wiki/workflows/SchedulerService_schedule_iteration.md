@@ -5,6 +5,12 @@
 
 > Schedule an iteration, optionally leaving commit ownership to the caller.
 
+``follow_date`` recalculates the plan around what really happened: planned
+work is placed on or after that date, finished work frees its assignee from
+that date, running work holds its assignee at least through it, and a task
+the calculation cannot place keeps its dates. ``anchor_task_id`` names the
+task that started on ``follow_date``; it takes its assignee's row from there.
+
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->

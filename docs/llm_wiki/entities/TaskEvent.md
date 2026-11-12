@@ -102,4 +102,4 @@ flowchart LR
 | `AgentService.create_actor` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentTeamSetupService._stage_event` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 
-> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

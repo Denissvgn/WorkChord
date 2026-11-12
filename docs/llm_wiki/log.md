@@ -3255,3 +3255,20 @@ Team setup now consumes the bundle service’s integrity-validated release catal
 - Infrastructure removed: 0
 - Unsupported infrastructure YAML: 9
 The Gantt chart now opens a large plan as collapsed groups with a span and unassigned count per group, keeps the task column fixed while the timeline scrolls, and draws dated work without an assignee as dashed bars with one summary; the PM role package states the same staffing, milestone, assignment, and scheduling gate before a plan is reported.
+
+## 2026-11-12
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:6402c1b70b72404384ba1717281c3d303c9a42848bf651fabb6f2d96be208005`
+- Pages created: 1
+- Pages updated: 52
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3091
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+Agents now begin assigned work as soon as its dependencies are done, and begin and submit recalculate the planned work of the iteration around the actual dates. A change of dates alone keeps plain queued assignments valid. The capability handshake advertises this as `schedule-follows-actuals-v1`.

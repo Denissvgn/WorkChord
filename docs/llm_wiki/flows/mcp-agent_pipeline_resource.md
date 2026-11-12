@@ -52,18 +52,18 @@ sequenceDiagram
     participant p14 as IdentityService.actor_context
     participant p15 as AgentWorkService._is_model_aware_assignment
     participant p16 as AgentWorkService._validate_assignment_actor
-    participant p17 as working_today
+    participant p17 as AgentWorkService._working_today
     participant p18 as DeliveryDependencyService.ready
     participant p19 as AgentTeamSetupService.routing_readiness
     participant p20 as require_scope
     participant p21 as AgentWorkService._routing_snapshot
     participant p22 as evaluate_actor_authorization
-    participant p23 as DeliveryDependencyService.projection
-    participant p24 as AgentService.authenticate
-    participant p25 as require_identity_writes
-    participant p26 as DeliveryDependencyService.reconcile
-    participant p27 as IdentityService.context
-    participant p28 as DiscussionService.enqueue
+    participant p23 as working_today
+    participant p24 as DeliveryDependencyService.projection
+    participant p25 as AgentService.authenticate
+    participant p26 as require_identity_writes
+    participant p27 as DeliveryDependencyService.reconcile
+    participant p28 as IdentityService.context
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as task.model_dump
     p0->>p1: _json_resource
@@ -82,25 +82,25 @@ sequenceDiagram
     p6->>p14: IdentityService.actor_context
     p7->>p15: AgentWorkService._is_model_aware_assignment
     p7->>p16: AgentWorkService._validate_assignment_actor
-    p7->>p17: working_today
+    p7->>p17: AgentWorkService._working_today
     p7->>p18: DeliveryDependencyService.ready
     p13->>p19: AgentTeamSetupService.routing_readiness
     p12->>p20: require_scope
     p9->>p21: AgentWorkService._routing_snapshot
     p16->>p22: evaluate_actor_authorization
-    p18->>p23: DeliveryDependencyService.projection
-    p11->>p24: AgentService.authenticate
-    p14->>p25: require_identity_writes
-    p10->>p26: DeliveryDependencyService.reconcile
-    p14->>p27: IdentityService.context
-    p10->>p28: DiscussionService.enqueue
+    p17->>p23: working_today
+    p18->>p24: DeliveryDependencyService.projection
+    p11->>p25: AgentService.authenticate
+    p14->>p26: require_identity_writes
+    p10->>p27: DeliveryDependencyService.reconcile
+    p14->>p28: IdentityService.context
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p2-->>p30: task.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 438 interactions; 408 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 444 interactions; 414 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 116 (115 omitted); unresolved 1 of 215 (214 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 117 (116 omitted); unresolved 1 of 218 (217 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -114,7 +114,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 103 groups; 95 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 105 groups; 97 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -127,9 +127,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 108; effect analysis evaluated: 75, partial: 4, unavailable: 29. Counts include steps omitted from the displayed trace.
+Source steps: 110; effect analysis evaluated: 77, partial: 4, unavailable: 29. Counts include steps omitted from the displayed trace.
 
-Collector observations for 79 source steps with known totals: observed: 417, emitted: 380, omitted: 37. Unavailable totals are excluded.
+Collector observations for 81 source steps with known totals: observed: 426, emitted: 387, omitted: 39. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

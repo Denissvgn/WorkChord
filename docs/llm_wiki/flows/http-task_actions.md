@@ -46,20 +46,20 @@ sequenceDiagram
     participant p12 as AgentWorkService._is_model_aware_assignment
     participant p13 as AgentWorkService._validate_assignment_actor
     participant p14 as sha256_hex
-    participant p15 as working_today
+    participant p15 as AgentWorkService._working_today
     participant p16 as AgentTeamSetupService.routing_readiness
     participant p17 as AgentWorkService._routing_snapshot
     participant p18 as evaluate_actor_authorization
-    participant p19 as canonical_json_bytes
-    participant p20 as require_project
-    participant p21 as DeliveryDependencyService._accepted
-    participant p22 as AgentTeamSetupService.membership_boundary
-    participant p23 as get_settings
-    participant p24 as AgentRoutingTopologyReadiness.unavailable
-    participant p25 as _json_value
-    participant p26 as AgentRoutingTopologyReadiness.ready
-    participant p27 as AgentRoutingTopologyReadiness.not_ready
-    participant p28 as TaskDomainService.ownership
+    participant p19 as working_today
+    participant p20 as canonical_json_bytes
+    participant p21 as require_project
+    participant p22 as DeliveryDependencyService._accepted
+    participant p23 as AgentTeamSetupService.membership_boundary
+    participant p24 as get_settings
+    participant p25 as AgentRoutingTopologyReadiness.unavailable
+    participant p26 as _json_value
+    participant p27 as AgentRoutingTopologyReadiness.ready
+    participant p28 as AgentRoutingTopologyReadiness.not_ready
     participant p29 as HTTPException
     participant p30 as exc.detail
     p0->>p1: TaskDomainService.allowed_actions
@@ -76,27 +76,27 @@ sequenceDiagram
     p8->>p12: AgentWorkService._is_model_aware_assignment
     p8->>p13: AgentWorkService._validate_assignment_actor
     p7->>p14: sha256_hex
-    p8->>p15: working_today
+    p8->>p15: AgentWorkService._working_today
     p11->>p16: AgentTeamSetupService.routing_readiness
     p9->>p17: AgentWorkService._routing_snapshot
     p13->>p18: evaluate_actor_authorization
-    p14->>p19: canonical_json_bytes
-    p10->>p20: require_project
-    p10->>p21: DeliveryDependencyService._accepted
-    p16->>p22: AgentTeamSetupService.membership_boundary
-    p20->>p23: get_settings
-    p16->>p24: AgentRoutingTopologyReadiness.unavailable
-    p19->>p25: _json_value
-    p16->>p26: AgentRoutingTopologyReadiness.ready
-    p16->>p27: AgentRoutingTopologyReadiness.not_ready
-    p1->>p28: TaskDomainService.ownership
+    p15->>p19: working_today
+    p14->>p20: canonical_json_bytes
+    p10->>p21: require_project
+    p10->>p22: DeliveryDependencyService._accepted
+    p16->>p23: AgentTeamSetupService.membership_boundary
+    p21->>p24: get_settings
+    p16->>p25: AgentRoutingTopologyReadiness.unavailable
+    p20->>p26: _json_value
+    p16->>p27: AgentRoutingTopologyReadiness.ready
+    p16->>p28: AgentRoutingTopologyReadiness.not_ready
     p2-->>p29: HTTPException(409, detail=exc.detail(...))
     p2-->>p30: exc.detail
 ```
 
-> Call sequence diagram shows 30 of 355 interactions; 325 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 362 interactions; 332 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 85 (84 omitted); unresolved 1 of 188 (187 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 86 (85 omitted); unresolved 1 of 192 (191 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -106,11 +106,11 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_domain_service.py:TaskDomainService._policy_task` | 11 | - | unresolved | 1 |
 | `backend/app/services/task_domain_service.py:TaskDomainService._policy_task` | 11 | [backend/app/commands.py](../modules/commands.md) | internal | 1 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | - | external | 16 |
+| `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | [backend/app/services/task_domain_service.py](../modules/task_domain_service.md) | internal | 1 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.ownership` | 15 | - | unresolved | 11 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.ownership` | 15 | - | external | 4 |
 | `backend/app/services/task_domain_service.py:TaskDomainService.allowed_actions` | 10 | - | unresolved | 24 |
-| `backend/app/services/delivery_dependency_service.py:DeliveryDependencyService.ready` | 43 | - | external | 1 |
-> Omission summary shows 8 of 77 groups; 69 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 81 groups; 73 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -123,9 +123,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 83; effect analysis evaluated: 54, partial: 4, unavailable: 25. Counts include steps omitted from the displayed trace.
+Source steps: 85; effect analysis evaluated: 56, partial: 4, unavailable: 25. Counts include steps omitted from the displayed trace.
 
-Collector observations for 58 source steps with known totals: observed: 382, emitted: 343, omitted: 39. Unavailable totals are excluded.
+Collector observations for 60 source steps with known totals: observed: 391, emitted: 350, omitted: 41. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

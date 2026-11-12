@@ -1,6 +1,6 @@
 # AgentWorkService
 
-**Location:** `backend/app/services/agent_work_service.py:171`
+**Location:** `backend/app/services/agent_work_service.py:172`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_work_service](../modules/agent_work_service.md)
@@ -69,6 +69,8 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `create_project_update` | *(async)* `(actor: AgentActor, project_id: int, data: AgentProjectUpdateCreate, *, idempotency_key: str, rationale: str, correlation_id: str) -> AgentProjectUpdateResponse` | `@atomic_command` | Append one evidence-backed project update with agent attribution. |
 | `report_discovery` | *(async)* `(actor: AgentActor, data: AgentDiscoveryTriageCreate, *, idempotency_key: str) -> AgentDiscoveryTriageResponse` | `@atomic_command` | Create one claim-bound discovery Triage item without expanding scope. |
 | `_definition_blockers` | `(task: Task) -> list[str]` | — | — |
+| `_working_today` | *(async)* `(task: Task, now: datetime) -> date` | — | Today in the task's project time zone, as the schedule counts days. |
+| `_follow_actual_dates` | *(async)* `(task: Task, *, started: bool) -> None` | — | Recalculate planned work around a task that just started or was submitted. |
 | `_start_blockers` | *(async)* `(task: Task, assignment: Optional[AgentTaskAssignment], now: datetime) -> list[str]` | — | — |
 | `_work_item` | *(async)* `(assignment: AgentTaskAssignment, position: int, now: datetime, *, running: Optional[Iterable[AgentRun]] = None) -> AgentWorkItem` | — | — |
 | `_current_recovery_codes` | *(async)* `(actor: AgentActor, accepted: list[AgentTaskAssignment], running: list[AgentRun], now: datetime) -> list[str]` | — | — |
@@ -142,7 +144,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 75 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 77 | — |
 
 ### References
 
@@ -161,4 +163,4 @@ flowchart LR
 | `list_agent_recovery_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `list_my_claims` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 69 logical references; 57 omitted by the 12-row generated summary limit.
+> References: showing 12 of 70 logical references; 58 omitted by the 12-row generated summary limit.

@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1561 | [Open section](#entities) |
-| Modules | 826 | [Open section](#modules) |
+| Modules | 827 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 557 | [Open section](#entry-point-flows) |
@@ -2329,6 +2329,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_runtime_mutation_policy](modules/test_runtime_mutation_policy.md) - Runtime configuration preserves supplied conflicts in either rollout mode.
 - [test_runtime_policy](modules/test_runtime_policy.md) - DBM-RUN-002/003 retry, ordering, and comparison contract tests.
 - [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
+- [test_schedule_follows_actual_dates](modules/test_schedule_follows_actual_dates.md) - Agents start work whose dependencies are done, and the plan's dates follow what happened.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
 - [test_settings_read_access](modules/test_settings_read_access.md) - People without the admin key read settings and the pipeline; changes keep the key.

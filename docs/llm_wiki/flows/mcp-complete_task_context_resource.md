@@ -59,13 +59,13 @@ sequenceDiagram
     participant p19 as IdentityService.actor_context
     participant p20 as AgentWorkService._is_model_aware_assignment
     participant p21 as AgentWorkService._validate_assignment_actor
-    participant p22 as working_today
+    participant p22 as AgentWorkService._working_today
     participant p23 as DeliveryDependencyService.ready
     participant p24 as AgentTeamSetupService.routing_readiness
     participant p25 as require_scope
     participant p26 as AgentWorkService._routing_snapshot
     participant p27 as evaluate_actor_authorization
-    participant p28 as DeliveryDependencyService.projection
+    participant p28 as working_today
     participant p29 as int
     participant p30 as context.model_dump
     p0->>p1: _json_resource
@@ -89,20 +89,20 @@ sequenceDiagram
     p7->>p19: IdentityService.actor_context
     p9->>p20: AgentWorkService._is_model_aware_assignment
     p9->>p21: AgentWorkService._validate_assignment_actor
-    p9->>p22: working_today
+    p9->>p22: AgentWorkService._working_today
     p9->>p23: DeliveryDependencyService.ready
     p18->>p24: AgentTeamSetupService.routing_readiness
     p17->>p25: require_scope
     p13->>p26: AgentWorkService._routing_snapshot
     p21->>p27: evaluate_actor_authorization
-    p23->>p28: DeliveryDependencyService.projection
+    p22->>p28: working_today
     p0-->>p29: int(task_id)
     p2-->>p30: context.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 540 interactions; 510 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 546 interactions; 516 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 150 (149 omitted); unresolved 1 of 254 (253 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 151 (150 omitted); unresolved 1 of 257 (256 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -116,7 +116,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 132 groups; 124 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 135 groups; 127 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -129,9 +129,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 137; effect analysis evaluated: 96, partial: 4, unavailable: 37. Counts include steps omitted from the displayed trace.
+Source steps: 139; effect analysis evaluated: 98, partial: 4, unavailable: 37. Counts include steps omitted from the displayed trace.
 
-Collector observations for 100 source steps with known totals: observed: 514, emitted: 477, omitted: 37. Unavailable totals are excluded.
+Collector observations for 102 source steps with known totals: observed: 523, emitted: 484, omitted: 39. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

@@ -54,15 +54,15 @@ sequenceDiagram
     participant p17 as AgentWorkService._is_model_aware_assignment
     participant p18 as AgentWorkService._validate_assignment_actor
     participant p19 as sha256_hex
-    participant p20 as working_today
+    participant p20 as AgentWorkService._working_today
     participant p21 as AgentTeamSetupService.routing_readiness
     participant p22 as AgentWorkService._routing_snapshot
     participant p23 as evaluate_actor_authorization
-    participant p24 as canonical_json_bytes
-    participant p25 as DeliveryDependencyService._accepted
-    participant p26 as TaskDetailService.references
-    participant p27 as TaskDetailService.reviewer_names
-    participant p28 as TaskDomainService
+    participant p24 as working_today
+    participant p25 as canonical_json_bytes
+    participant p26 as DeliveryDependencyService._accepted
+    participant p27 as TaskDetailService.references
+    participant p28 as TaskDetailService.reviewer_names
     participant p29 as HTTPException
     participant p30 as self.db.info.get (backend/app/services/task…TaskDetailService.my_work)
     p0->>p1: TaskDetailService.my_work
@@ -84,22 +84,22 @@ sequenceDiagram
     p13->>p17: AgentWorkService._is_model_aware_assignment
     p13->>p18: AgentWorkService._validate_assignment_actor
     p12->>p19: sha256_hex
-    p13->>p20: working_today
+    p13->>p20: AgentWorkService._working_today
     p16->>p21: AgentTeamSetupService.routing_readiness
     p14->>p22: AgentWorkService._routing_snapshot
     p18->>p23: evaluate_actor_authorization
-    p19->>p24: canonical_json_bytes
-    p15->>p25: DeliveryDependencyService._accepted
-    p1->>p26: TaskDetailService.references
-    p1->>p27: TaskDetailService.reviewer_names
-    p1->>p28: TaskDomainService
+    p20->>p24: working_today
+    p19->>p25: canonical_json_bytes
+    p15->>p26: DeliveryDependencyService._accepted
+    p1->>p27: TaskDetailService.references
+    p1->>p28: TaskDetailService.reviewer_names
     p0-->>p29: HTTPException(422, detail=[...])
     p1-->>p30: self.db.info.get (backend/app/services/task…TaskDetailService.my_work)('authority')
 ```
 
-> Call sequence diagram shows 30 of 400 interactions; 370 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 405 interactions; 375 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 89 (88 omitted); unresolved 1 of 224 (223 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 89 (88 omitted); unresolved 1 of 227 (226 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -113,7 +113,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | unresolved | 9 |
 | `backend/app/services/task_detail_service.py:TaskDetailService.references` | 11 | - | external | 2 |
 | `backend/app/authority.py:require_project` | 32 | - | unresolved | 2 |
-> Omission summary shows 8 of 85 groups; 77 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 87 groups; 79 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -126,9 +126,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 88; effect analysis evaluated: 61, partial: 3, unavailable: 24. Counts include steps omitted from the displayed trace.
+Source steps: 90; effect analysis evaluated: 63, partial: 3, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 64 source steps with known totals: observed: 366, emitted: 338, omitted: 28. Unavailable totals are excluded.
+Collector observations for 66 source steps with known totals: observed: 375, emitted: 345, omitted: 30. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
