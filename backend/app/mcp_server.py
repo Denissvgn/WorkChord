@@ -14,6 +14,7 @@ from app.authority import AuthorityError
 from app.services.identity_service import IdentityService
 from mcp.server.fastmcp.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
+from mcp.types import ToolAnnotations
 from pydantic import ValidationError as PydanticValidationError
 from starlette.responses import PlainTextResponse
 from starlette.routing import Route
@@ -222,6 +223,16 @@ ROUTING_READ_SCOPE_REQUIREMENT: tuple[str, ...] = (
     "assignments:write",
 )
 
+# Every tool declares one of these. MCP clients treat a tool that declares
+# nothing as destructive and open-world, and a client running without a person
+# to approve calls then refuses it. All tools act only on WorkChord's own
+# records, so none is open-world.
+READ_ONLY_TOOL = ToolAnnotations(readOnlyHint=True, openWorldHint=False)
+# Creates or changes records; the change is attributed and nothing is removed.
+WRITE_TOOL = ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False)
+# Removes a record.
+REMOVAL_TOOL = ToolAnnotations(readOnlyHint=False, destructiveHint=True, openWorldHint=False)
+
 
 def _skill_bundle_scope_requirement() -> ScopeRequirement:
     """Match MCP skill delivery to the configured REST public/private mode."""
@@ -358,7 +369,7 @@ def create_mcp_server() -> FastMCP:
         transport_security=_mcp_transport_security_settings(),
     )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_capabilities() -> dict[str, Any]:
         """Return authenticated actor identity, features, limits, and compatible skills."""
         return await _tool_call(
@@ -366,7 +377,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_agent_capabilities(db, actor),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_team_setup_status() -> dict[str, Any]:
         """Return desired, configured, and runtime readiness for the bound team."""
         return await _tool_call(
@@ -377,7 +388,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_actor_roster(
         include_disabled: bool = False,
     ) -> list[dict[str, Any]]:
@@ -391,7 +402,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_model_catalog(
         include_disabled: bool = False,
     ) -> list[dict[str, Any]]:
@@ -405,7 +416,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_model_catalog_entry(
         catalog_key: str,
     ) -> dict[str, Any]:
@@ -419,7 +430,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_model_bindings(
         actor_id: int | None = None,
         include_disabled: bool = False,
@@ -435,7 +446,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_model_binding(binding_id: int) -> dict[str, Any]:
         """Read one active or historical actor model binding."""
         return await _tool_call(
@@ -447,7 +458,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_task_routing_assessment(
         task_id: int,
     ) -> dict[str, Any]:
@@ -461,7 +472,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_task_routing_assessments(
         task_id: int,
         limit: int = 100,
@@ -477,7 +488,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_task_routing_assessment(
         task_id: int,
         payload: dict[str, Any],
@@ -499,7 +510,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_preview_task_routing(
         task_id: int,
         payload: dict[str, Any],
@@ -515,7 +526,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_model_catalog_entry(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -535,7 +546,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_model_catalog_entry(
         catalog_id: int,
         payload: dict[str, Any],
@@ -557,7 +568,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_disable_model_catalog_entry(
         catalog_id: int,
         payload: dict[str, Any],
@@ -579,7 +590,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_model_binding(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -599,7 +610,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_model_binding(
         binding_id: int,
         payload: dict[str, Any],
@@ -621,7 +632,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_disable_model_binding(
         binding_id: int,
         payload: dict[str, Any],
@@ -643,7 +654,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_assignment(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -663,7 +674,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_assignments(
         task_id: Optional[int] = None,
         actor_id: Optional[int] = None,
@@ -685,7 +696,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_assignment(
         assignment_id: int,
         payload: dict[str, Any],
@@ -707,7 +718,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_my_work(
         limit: int = 20,
         cursor: Optional[str] = None,
@@ -723,7 +734,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_my_claims() -> list[dict[str, Any]]:
         """List claims currently owned by the authenticated actor."""
         return await _tool_call(
@@ -731,7 +742,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_my_claims(db, actor),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_my_runs(limit: int = 50) -> list[dict[str, Any]]:
         """List recent runs owned by the authenticated actor."""
         return await _tool_call(
@@ -743,7 +754,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_complete_task_context(
         task_id: int,
         assignment_id: Optional[int] = None,
@@ -759,7 +770,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_begin_my_work(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -775,7 +786,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_renew_my_work(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -791,7 +802,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_report_discovery(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -807,7 +818,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_submit_my_work(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -823,7 +834,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_fail_my_work(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -839,7 +850,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_my_reviews(
         limit: int = 50,
         cursor: Optional[str] = None,
@@ -855,7 +866,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_submit_review_verdict(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -875,7 +886,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_recovery_tasks(
         limit: int = 50,
         cursor: Optional[str] = None,
@@ -891,7 +902,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_requeue_recovery(
         task_id: int,
         payload: dict[str, Any],
@@ -913,7 +924,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_pipeline() -> dict[str, list[dict[str, Any]]]:
         """Return the complete PM supervision pipeline."""
         return await _tool_call(
@@ -921,7 +932,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_agent_pipeline(db, actor),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_run_detail(run_id: int) -> dict[str, Any] | None:
         """Return one agent run with its chronological events."""
         return await _tool_call(
@@ -933,19 +944,19 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_execution_usage(run_id: int) -> dict[str, Any] | None:
         """Read the current immutable usage report for an authorized attempt."""
         return await _tool_call(("tasks:read", "runs:write", "work:execute", "planning:read"),
             lambda db, actor: mcp_agent_tools.get_execution_usage(db, actor, run_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_record_execution_usage(run_id: int, payload: dict[str, Any]) -> dict[str, Any]:
         """Append an idempotent attempt-total usage report or explicit correction."""
         return await _tool_call(("runs:write", "work:execute"),
             lambda db, actor: mcp_agent_tools.record_execution_usage(db, actor, run_id, payload))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_execution_usage_summary(project_id: Optional[int] = None, iteration_id: Optional[int] = None,
         lookback_days: int = 30, budget_amount: Optional[str] = None, budget_currency: Optional[str] = None) -> dict[str, Any]:
         """Read scoped reported usage, immutable price estimates and advisory coverage."""
@@ -953,7 +964,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_execution_usage_summary(db, actor, project_id=project_id, iteration_id=iteration_id,
                 lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_list_ready_tasks(
         iteration_id: Optional[int] = None,
         tags: Optional[list[str]] = None,
@@ -979,37 +990,37 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_convert_triage_to_backlog(triage_item_id: int, payload: dict[str, Any]) -> dict[str, Any] | None:
         """Convert intake into unscheduled project work."""
         return await _tool_call("triage:write", lambda db, actor: mcp_agent_tools.convert_triage_to_backlog(db, actor, triage_item_id, payload))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_task_actions(task_id: int) -> dict[str, Any]:
         """Read shared allowed actions and typed blockers for the authenticated actor."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_task_actions(db, actor, task_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_task_detail(task_id: int, limit: int = 50) -> dict[str, Any] | None:
         """Read bounded UI context; use complete context for execution."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_task_detail(db, actor, task_id, limit))
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_apply_task_command(task_id: int, payload: dict[str, Any]) -> dict[str, Any]:
         """Apply an explicit domain command with version and reason."""
         return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.apply_task_command(db, actor, task_id, payload))
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_backlog_task(project_id: int, payload: dict[str, Any]) -> dict[str, Any]:
         """Capture project backlog work without an iteration."""
         return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.create_project_backlog_task(db, actor, project_id, payload))
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_write_task_brief(task_id: int, payload: dict[str, Any]) -> dict[str, Any]:
         """Save canonical brief fields with a current task version."""
         return await _tool_call("tasks:write", lambda db, actor: mcp_agent_tools.write_task_brief(db, actor, task_id, payload))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_task_context(task_id: int) -> dict[str, Any] | None:
         """Get task details plus merged timeline context."""
         return await _tool_call(
@@ -1017,7 +1028,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_task_context(db, actor, task_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_claim_task(
         task_id: int,
         lease_seconds: int = 3600,
@@ -1035,7 +1046,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_renew_claim(
         task_id: int,
         lease_seconds: int = 3600,
@@ -1053,7 +1064,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_release_task(
         task_id: int,
         idempotency_key: Optional[str] = None,
@@ -1069,7 +1080,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_task(
         iteration_id: int,
         payload: dict[str, Any],
@@ -1087,7 +1098,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_patch_task(
         task_id: int,
         payload: dict[str, Any],
@@ -1105,7 +1116,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_planning_task(
         iteration_id: int,
         payload: dict[str, Any],
@@ -1127,7 +1138,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_patch_planning_task(
         task_id: int,
         payload: dict[str, Any],
@@ -1149,7 +1160,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_append_task_event(
         task_id: int,
         payload: dict[str, Any],
@@ -1167,7 +1178,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_start_run(
         payload: dict[str, Any],
         idempotency_key: Optional[str] = None,
@@ -1183,7 +1194,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_append_run_event(run_id: int, payload: dict[str, Any]) -> dict[str, Any] | None:
         """Append an event to an agent run."""
         return await _tool_call(
@@ -1191,7 +1202,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.append_run_event(db, actor, run_id, payload),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_finish_run(run_id: int, payload: dict[str, Any]) -> dict[str, Any] | None:
         """Finish an agent run trace."""
         return await _tool_call(
@@ -1199,7 +1210,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.finish_agent_run(db, actor, run_id, payload),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_project(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -1219,7 +1230,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_project(
         project_id: int,
         payload: dict[str, Any],
@@ -1242,7 +1253,7 @@ def create_mcp_server() -> FastMCP:
         )
 
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_project_milestone(
         project_id: int,
         payload: dict[str, Any],
@@ -1264,7 +1275,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_project_milestone(
         project_id: int,
         milestone_id: int,
@@ -1288,7 +1299,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=REMOVAL_TOOL)
     async def agent_delete_project_milestone(
         project_id: int,
         milestone_id: int,
@@ -1310,7 +1321,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_iteration(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -1330,7 +1341,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_iteration(
         iteration_id: int,
         payload: dict[str, Any],
@@ -1352,7 +1363,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_team_profile(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -1372,7 +1383,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_team_profile(
         profile_id: int,
         payload: dict[str, Any],
@@ -1394,7 +1405,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_team_member(
         iteration_id: int,
         payload: dict[str, Any],
@@ -1416,7 +1427,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_team_member(
         member_id: int,
         payload: dict[str, Any],
@@ -1438,7 +1449,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_vacation(
         member_id: int,
         payload: dict[str, Any],
@@ -1460,7 +1471,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_update_vacation(
         vacation_id: int,
         payload: dict[str, Any],
@@ -1482,7 +1493,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_preview_schedule(
         iteration_id: int,
         idempotency_key: str,
@@ -1503,7 +1514,7 @@ def create_mcp_server() -> FastMCP:
             preview=True,
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_apply_schedule(
         iteration_id: int,
         expected_task_versions: dict[int, int],
@@ -1529,17 +1540,17 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_iterations() -> list[dict[str, Any]]:
         """List iterations."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_iterations(db))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_iteration(iteration_id: int) -> dict[str, Any] | None:
         """Get one iteration."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_iteration(db, iteration_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_iteration_plan_readiness(iteration_id: int) -> dict[str, Any] | None:
         """Read the six plan checkpoints and their states, as the plan page shows them."""
         return await _tool_call(
@@ -1547,7 +1558,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_iteration_summary(iteration_id: int) -> dict[str, Any] | None:
         """Return vacation-aware iteration progress and capacity totals."""
         return await _tool_call(
@@ -1555,7 +1566,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_iteration_summary(db, iteration_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_iteration_gantt(iteration_id: int) -> dict[str, Any]:
         """Return the current read-only schedule and Gantt evidence."""
         return await _tool_call(
@@ -1563,7 +1574,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_iteration_gantt(db, iteration_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_team_member_profiles() -> list[dict[str, Any]]:
         """List reusable team profiles with advisory capability skills."""
         return await _tool_call(
@@ -1571,7 +1582,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_team_member_profiles(db),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_team_member_profile(profile_id: int) -> dict[str, Any] | None:
         """Return one reusable team profile with advisory capability skills."""
         return await _tool_call(
@@ -1579,7 +1590,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_team_member_profile(db, profile_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_iteration_team(iteration_id: int) -> list[dict[str, Any]]:
         """List iteration capacity owners, profile details, and vacations."""
         return await _tool_call(
@@ -1587,7 +1598,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_iteration_team(db, iteration_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_team_member_capacity(member_id: int) -> dict[str, Any] | None:
         """Return vacation-aware capacity for one iteration team member."""
         return await _tool_call(
@@ -1595,7 +1606,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_team_member_capacity(db, member_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_team_member_workload(member_id: int) -> dict[str, Any] | None:
         """Return allocated, free, and percentage workload for one team member."""
         return await _tool_call(
@@ -1603,7 +1614,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_team_member_workload(db, member_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_team_member_vacations(
         member_id: int,
     ) -> list[dict[str, Any]] | None:
@@ -1613,7 +1624,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_team_member_vacations(db, member_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_profile_skill_catalog() -> list[dict[str, Any]]:
         """Return code-owned advisory capability definitions."""
         return await _tool_call(
@@ -1621,7 +1632,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_profile_skill_catalog(db),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_agent_profile_presets() -> list[dict[str, Any]]:
         """Return reusable, human-reviewable agent profile presets."""
         return await _tool_call(
@@ -1629,7 +1640,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_agent_profile_presets(db),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_agent_routes() -> list[dict[str, Any]]:
         """Return the explainable, non-authorizing agent route index."""
         return await _tool_call(
@@ -1637,7 +1648,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.get_agent_routes(db),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_apply_agent_profile_preset(
         preset_key: str,
         idempotency_key: str,
@@ -1657,22 +1668,22 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_projects() -> list[dict[str, Any]]:
         """List projects."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_projects(db))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_project(project_id: int) -> dict[str, Any] | None:
         """Get one project."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_project(db, project_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_project_summary(project_id: int) -> dict[str, Any] | None:
         """Get project summary."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_project_summary(db, project_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_project_milestones(
         project_id: int,
     ) -> list[dict[str, Any]] | None:
@@ -1684,7 +1695,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_project_milestone(
         project_id: int,
         milestone_id: int,
@@ -1697,7 +1708,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_project_updates(
         project_id: int,
     ) -> list[dict[str, Any]] | None:
@@ -1707,7 +1718,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_project_updates(db, project_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def agent_create_project_update(
         project_id: int,
         payload: dict[str, Any],
@@ -1729,12 +1740,12 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_project_tasks(project_id: int) -> list[dict[str, Any]] | None:
         """List project-linked tasks."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_project_tasks(db, project_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_triage_items(
         active: Optional[bool] = True,
         statuses: Optional[list[str]] = None,
@@ -1757,12 +1768,12 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_triage_item(triage_item_id: int) -> dict[str, Any] | None:
         """Get one triage item."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_triage_item(db, triage_item_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_create_triage_item(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -1782,7 +1793,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_classify_triage_item(
         triage_item_id: int,
         idempotency_key: str,
@@ -1802,7 +1813,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_draft_triage_task(
         triage_item_id: int,
         payload: Optional[dict[str, Any]] = None,
@@ -1813,7 +1824,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.draft_triage_task(db, triage_item_id, payload),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_update_triage_item(
         triage_item_id: int,
         payload: dict[str, Any],
@@ -1835,7 +1846,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_accept_triage_item(
         triage_item_id: int,
         payload: dict[str, Any],
@@ -1857,7 +1868,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_decline_triage_item(
         triage_item_id: int,
         payload: dict[str, Any],
@@ -1879,7 +1890,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_snooze_triage_item(
         triage_item_id: int,
         payload: dict[str, Any],
@@ -1901,7 +1912,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_mark_triage_item_duplicate(
         triage_item_id: int,
         payload: dict[str, Any],
@@ -1923,7 +1934,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_convert_triage_to_task(
         triage_item_id: int,
         payload: dict[str, Any],
@@ -1945,22 +1956,22 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_releases(project_id: int) -> list[dict[str, Any]] | None:
         """List releases for a project."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_releases_for_project(db, project_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_get_release(release_id: int) -> dict[str, Any] | None:
         """Get one release."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.get_release(db, release_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_label_groups(include_inactive: bool = False) -> list[dict[str, Any]]:
         """List governed label groups."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_label_groups(db, include_inactive))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_labels(
         group_id: Optional[int] = None,
         group_key: Optional[str] = None,
@@ -1977,7 +1988,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_templates(
         template_type: Optional[str] = None,
         include_inactive: bool = False,
@@ -1988,12 +1999,12 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_templates(db, template_type, include_inactive),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_saved_views(view_type: Optional[str] = None) -> list[dict[str, Any]]:
         """List shared and system saved views."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.list_saved_views(db, view_type))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_external_links(entity_type: str, entity_id: int) -> list[dict[str, Any]]:
         """List external links for task, project, or release."""
         return await _tool_call(
@@ -2001,7 +2012,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_external_links(db, entity_type, entity_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_create_task_github_link(
         task_id: int,
         url: str,
@@ -2023,7 +2034,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=REMOVAL_TOOL)
     async def workspace_delete_external_link(
         link_id: int,
         idempotency_key: str,
@@ -2043,7 +2054,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_search_request_sources(
         q: Optional[str] = None,
         source_type: Optional[str] = None,
@@ -2055,7 +2066,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.search_request_sources(db, q, source_type, limit),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def workspace_list_request_source_links(target_type: str, target_id: int) -> list[dict[str, Any]]:
         """List request-source links for a target."""
         return await _tool_call(
@@ -2063,7 +2074,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.list_request_source_links(db, target_type, target_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=WRITE_TOOL)
     async def workspace_create_request_source_link(
         payload: dict[str, Any],
         idempotency_key: str,
@@ -2083,7 +2094,7 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=REMOVAL_TOOL)
     async def workspace_unlink_request_source(
         link_id: int,
         idempotency_key: str,
@@ -2103,12 +2114,12 @@ def create_mcp_server() -> FastMCP:
             ),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def recommendations_for_task(task_id: int) -> list[dict[str, Any]] | None:
         """Return explainable assignee recommendations for a task."""
         return await _tool_call("tasks:read", lambda db, actor: mcp_agent_tools.recommend_assignees_for_task(db, task_id))
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def recommendations_for_triage(
         triage_item_id: int,
         iteration_id: Optional[int] = None,
@@ -2119,7 +2130,7 @@ def create_mcp_server() -> FastMCP:
             lambda db, actor: mcp_agent_tools.recommend_assignees_for_triage(db, triage_item_id, iteration_id),
         )
 
-    @mcp.tool()
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def system_get_runtime_config_status() -> dict[str, Any]:
         """Return redacted runtime configuration status. Requires admin scope."""
         return await _tool_call("admin", lambda db, actor: mcp_agent_tools.system_runtime_config_status(db))
