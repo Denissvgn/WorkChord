@@ -279,6 +279,31 @@ class MemberSchedule:
         raise PlanningConflict("forecast_horizon_exceeded", "No capacity was found within the forecast horizon. Reconcile availability.")
 
 
+async def rebind_queued_assignments(db: AsyncSession, task_id: int, previous_version: int, new_version: int) -> None:
+    """Keep queued dispatch valid when only a task's dates changed.
+
+    A queued agent assignment is bound to the task version it was created for,
+    so that a changed brief sends the PM back to dispatch. Calculated dates are
+    not part of that agreement. Model-aware assignments are left alone: their
+    routing evidence is bound to the exact task version.
+    """
+    if new_version == previous_version:
+        return
+    from app.models.agent import AgentTaskAssignment
+    from app.services.agent_work_service import AgentWorkService
+
+    queued = await db.scalars(
+        select(AgentTaskAssignment).where(
+            AgentTaskAssignment.task_id == task_id,
+            AgentTaskAssignment.state == "queued",
+            AgentTaskAssignment.task_version == previous_version,
+        )
+    )
+    for assignment in queued.all():
+        if not AgentWorkService._is_model_aware_assignment(assignment):
+            assignment.task_version = new_version
+
+
 class SchedulerService:
     """Service for automatic task scheduling."""
 
@@ -312,8 +337,17 @@ class SchedulerService:
         expected_planning_revision: int | None = None,
         commit_baseline: bool = False,
         rebaseline_reason: str | None = None,
+        follow_date: date | None = None,
+        anchor_task_id: int | None = None,
     ) -> ScheduleResult:
-        """Schedule an iteration, optionally leaving commit ownership to the caller."""
+        """Schedule an iteration, optionally leaving commit ownership to the caller.
+
+        ``follow_date`` recalculates the plan around what really happened: planned
+        work is placed on or after that date, finished work frees its assignee from
+        that date, running work holds its assignee at least through it, and a task
+        the calculation cannot place keeps its dates. ``anchor_task_id`` names the
+        task that started on ``follow_date``; it takes its assignee's row from there.
+        """
         from app.services.iteration_service import IterationService
 
         planning_revision = await lock_planning(self.db, expected=expected_planning_revision)
@@ -327,6 +361,7 @@ class SchedulerService:
         # Get all data
         all_tasks = await self.task_service.get_all_tasks(iteration_id)
         before_dates = {task.id: (task.start_date, task.end_date) for task in all_tasks}
+        before_effort = {task.id: task.calculated_effort_days for task in all_tasks}
         team_members = await self.team_service.get_by_iteration(iteration_id)
 
         from app.services.capacity_service import CapacityService
@@ -396,13 +431,43 @@ class SchedulerService:
 
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
 
+        finished_statuses = {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}
+        anchored_ids: set[int] = set()
+        if follow_date is not None and anchor_task_id is not None:
+            anchor = next((task for task in locked_tasks if task.id == anchor_task_id), None)
+            schedule = member_schedules.get(anchor.assignee_id) if anchor is not None else None
+            if anchor is not None and schedule is not None and anchor.effort_hours:
+                # Work that starts now takes its row first; its end follows the row's working days.
+                try:
+                    _, anchor_end = schedule.allocate(
+                        follow_date, self._calculate_adjusted_effort(anchor), anchor.id,
+                        accounting_days=anchor.effort_days, required_hours=anchor.effort_hours,
+                    )
+                except PlanningConflict:
+                    # A row without productive capacity cannot place the work; its dates stay as they are.
+                    for day in [day for day, owner in schedule.allocated_dates.items() if owner == anchor.id]:
+                        del schedule.allocated_dates[day]
+                    schedule._invalidate_cache()
+                else:
+                    anchor.start_date, anchor.end_date = follow_date, max(anchor_end, follow_date)
+                    anchor.calculated_effort_days = float(sum(owner == anchor.id for owner in schedule.allocated_dates.values()))
+                    anchored_ids.add(anchor.id)
+
         # Retained execution dates consume slots before new forecasts are placed.
         for task in locked_tasks:
+            if task.id in anchored_ids:
+                continue
             schedule = member_schedules.get(task.assignee_id)
             if schedule is None or task.start_date is None or task.end_date is None:
                 continue
+            last_day = task.end_date
+            if follow_date is not None:
+                if task.status in finished_statuses:
+                    last_day = min(last_day, follow_date - timedelta(days=1))
+                elif task.status == TaskStatus.ACTIVE.value:
+                    last_day = max(last_day, follow_date)
             day = task.start_date
-            while day <= task.end_date:
+            while day <= last_day:
                 if schedule._is_projectable_working_day(day):
                     schedule.allocated_dates.setdefault(day, task.id)
                 day += timedelta(days=1)
@@ -414,12 +479,15 @@ class SchedulerService:
         for task in leaf_tasks:
             task.start_date = None
             task.end_date = None
+        planned_leaf_ids = {task.id for task in all_leaf_tasks if task.status == TaskStatus.PLANNED.value}
 
         # Calculate earliest_start for each leaf task
         def get_task_earliest_start(task: Task) -> date:
             """Get earliest possible start date for a task."""
             # Start with iteration start
             base = iteration.start_date
+            if follow_date is not None and follow_date > base:
+                base = follow_date
 
             # Apply min_start_date constraint
             if task.min_start_date and task.min_start_date > base:
@@ -429,7 +497,14 @@ class SchedulerService:
             for dep in task.dependencies:
                 dep_task = task_map.get(dep.depends_on_id)
                 if dep_task and dep_task.end_date:
-                    dep_end = dep_task.end_date + timedelta(days=1)
+                    dep_last = dep_task.end_date
+                    if follow_date is not None:
+                        if dep_task.status in finished_statuses:
+                            # A finished predecessor no longer holds its dependents back.
+                            continue
+                        if dep_task.status == TaskStatus.ACTIVE.value:
+                            dep_last = max(dep_last, follow_date)
+                    dep_end = dep_last + timedelta(days=1)
                     if dep_end > base:
                         base = dep_end
 
@@ -753,6 +828,13 @@ class SchedulerService:
 
             await schedule_parallel_by_assignee(leaf_tasks, get_fallback_sort_key)
 
+        if follow_date is not None:
+            # Following actual dates never removes a date; only a deliberate Schedule does.
+            for task in all_tasks:
+                if task.id in planned_leaf_ids and task.start_date is None and task.end_date is None:
+                    task.start_date, task.end_date = before_dates[task.id]
+                    task.calculated_effort_days = before_effort[task.id]
+
         # Update composite (parent) task dates based on their children
         composite_tasks = [t for t in all_tasks if t.children]
         for parent in composite_tasks:
@@ -760,7 +842,9 @@ class SchedulerService:
 
         for task in sorted(all_tasks, key=lambda task: task.id):
             if before_dates[task.id] != (task.start_date, task.end_date):
+                previous_version = task.version
                 await self.task_service.reserve_task_version(task, task.version)
+                await rebind_queued_assignments(self.db, task.id, previous_version, task.version)
 
         if commit_baseline:
             from app.models.recovery import TaskScheduleBaseline
@@ -817,6 +901,65 @@ class SchedulerService:
             workload_issues=workload_issues,
             unscheduled=unscheduled,
         )
+
+    async def follow_actual_dates(self, task: Task, today: date, *, started: bool = False) -> list[int]:
+        """Move planned work to what really happened after ``task`` started or finished.
+
+        The caller owns the command transaction. A plan the calculation cannot
+        place keeps its dates: following actual dates never blocks the work itself.
+        Returns the IDs of the other tasks whose dates moved.
+        """
+        if task.iteration_id is None:
+            return []
+        from app.authority import internal_authority
+        from app.commands import current_command
+
+        moved: list[int] = []
+        # The caller's own change is authorized as the caller; the recalculation is the server's.
+        await self.db.flush()
+        with internal_authority(self.db):
+            await lock_iterations(self.db, [task.iteration_id])
+            tasks = await self.task_service.get_all_tasks(task.iteration_id)
+            before = {item.id: (item.start_date, item.end_date, item.calculated_effort_days) for item in tasks}
+            command = current_command(self.db)
+            try:
+                await self.schedule_iteration(
+                    task.iteration_id,
+                    commit=False,
+                    expected_revision=command.iterations[task.iteration_id] if command is not None else None,
+                    follow_date=today,
+                    anchor_task_id=task.id if started else None,
+                )
+            except PlanningConflict as exc:
+                for item in tasks:
+                    item.start_date, item.end_date, item.calculated_effort_days = before[item.id]
+                logger.warning("[SCHEDULER] Dates did not follow task %s: %s", task.id, exc)
+                return []
+            reason = f"Dates follow the actual {'start' if started else 'finish'} of '{task.title}'"
+            for item in tasks:
+                old_start, old_end, _ = before[item.id]
+                if item.id == task.id or (item.start_date, item.end_date) == (old_start, old_end):
+                    continue
+                moved.append(item.id)
+                await self.task_service.record_task_event(
+                    item.id,
+                    "task_schedule_applied",
+                    {
+                        "changes": {
+                            "start_date": {"old": old_start.isoformat() if old_start else None,
+                                           "new": item.start_date.isoformat() if item.start_date else None},
+                            "end_date": {"old": old_end.isoformat() if old_end else None,
+                                         "new": item.end_date.isoformat() if item.end_date else None},
+                        },
+                        "reason": reason,
+                        "source_task_id": task.id,
+                        "version": item.version,
+                        "iteration_id": task.iteration_id,
+                    },
+                    actor_type="auto",
+                )
+            await self.db.flush()
+        return moved
 
     def _unscheduled_tasks(
         self,

@@ -79,7 +79,7 @@ Set `assignee_id` to the row of the profile whose agent you intend to dispatch. 
 
 - When the source plan names a model or tier per task, find the agent bound to it and assign that agent's row. Do not keep the choice in a tag.
 - When the plan names a ladder of fallbacks, assign the first rung. A later escalation is a reassignment to the next row followed by a new schedule preview.
-- When the plan names nobody, group the leaves by capability label, read the assignee recommendations and each row's workload, and spread the effort across the rows that can do the work.
+- When the plan names nobody, ask a person who should take the tasks. Group the leaves by capability label, read the assignee recommendations and each row's workload, propose a row per group, and assign only after the person answers. The question and its record are described in [Prepare the team for the plan](team-capacity-and-calendar.md#prepare-the-team-for-the-plan).
 - Assign a person's task to that person's row, without the `agent` label.
 
 Choose the reviewer in the same pass. The reviewer's profile must differ from the assignee's profile; enforced model-aware routing refuses the review otherwise with `verification_profile_not_independent`. Record the choice under "Handoff and escalation" in the brief and pass it as `reviewer_profile_id` when you create the execution assignment.
@@ -91,8 +91,8 @@ Each step is one audited command per record, in the order below. Derive each ide
 1. **Authority.** Confirm `planning:write` and `team:write`. Without `team:write` you cannot staff the iteration; stop and name the person who must.
 2. **Project.** Create or update it with `start_date`, `target_date`, `owner_profile_id`, and `initiative_id`. Select an existing initiative. The agent contract has no initiative command, so ask a person to create a missing one.
 3. **Milestones.** Create one record per phase or intermediate outcome, with the target date the plan commits to. Leave the date empty when the plan commits to none; step 9 fills it.
-4. **Iteration.** Create it with a calendar that covers its dates. Start it on the day work may begin: a task cannot start before its calculated start date, and no date is calculated before the iteration starts.
-5. **People and capacity.** Create the capacity rows as described above, and read `plan-readiness` until `team` is `done`.
+4. **Iteration.** Create it with a calendar that covers its dates. Start it on the day work may begin: no task can start, and no date is calculated, before the iteration starts.
+5. **People and capacity.** Prepare the team: check the existing profiles, rows, and agents against the workers the plan names, add the missing ones, and ask a person who takes the tasks for which the plan names nobody. Read `plan-readiness` until `team` is `done`.
 6. **Tasks.** Create predecessors before the tasks that depend on them, because `depends_on` takes WorkChord task IDs. Send for each leaf: `title`, typed `brief`, `effort_hours`, `priority`, `assignee_id`, `milestone_id`, `project_id`, `depends_on`, `tags`, `external_key`, and `source`. Send `min_start_date` or `max_end_date` only for a real constraint. Send no `start_date` and no `end_date`.
 7. **Compare.** Re-read the iteration's tasks. Every plan ID appears once as an `external_key`, and the dependency edges equal the plan's. `depends_on` works inside one iteration; when a task waits for work in another iteration, ask a person to record the delivery prerequisite unless the live contract gives you a command for it.
 8. **Schedule.** Preview, read every `unscheduled` entry with its reason code, correct the input it names, and apply.
@@ -103,12 +103,16 @@ Each step is one audited command per record, in the order below. Derive each ide
 
 ## Keep the Schedule Calculated
 
-The server refuses to begin work on a task with `schedule_missing` when the task has no dates, and with `scheduled_start_future` when its start date is later than today in the project's time zone. Both are answers from the plan, not obstacles to remove. Do not write dates to clear them.
+The server refuses to begin work on a task with `schedule_missing` when the task has no dates. That is an answer from the plan, not an obstacle to remove: the task was never scheduled, usually because it has no assignee or no effort value. Fix the input and schedule. Do not write dates to clear it.
 
-- `schedule_missing` means the task was never scheduled. The usual cause is a missing assignee or a missing effort value. Fix the input and schedule.
-- `scheduled_start_future` means the assignee's row is busy until then, a predecessor ends later, or a constraint holds the task back. When the agent is free now and the task still waits, change an input and preview again: move the task to a free row, raise its priority, or remove a dependency or constraint that is not true.
+The schedule you apply is a forecast. What keeps the order of the work is the dependency links and each agent's queue:
 
-Each new calculation moves planned leaves only. Tasks that are Active, Implemented, or Accepted keep their dates and keep their place on their assignee's row. Preview again after every change to an assignee, effort value, dependency, constraint, capacity row, or vacation.
+- When the server advertises `schedule-follows-actuals-v1`, an agent begins a task as soon as its dependencies are done, whatever its calculated date. The server then moves that task to today and recalculates the planned work behind it, and does the same when the task is submitted. Agents that work faster than the estimates never wait for the calendar, and the Gantt chart keeps showing what is true.
+- Record every real ordering rule as a dependency. An order that exists only in the dates is not enforced.
+- Record a real "not before" as `min_start_date` on the task or as the assignment's not-before time. The server holds such a task back with `min_start_future` or `not_before_future`.
+- On an older server, a task waits for its calculated start date (`scheduled_start_future`), and finishing early frees nothing. Tell the person who owns the plan; do not write dates to work around it.
+
+A calculation you run moves Planned leaves only. Tasks that are Active, Implemented, or Accepted keep their dates. Preview again after every change to an assignee, effort value, dependency, constraint, capacity row, or vacation.
 
 ## Keep the Roadmap True
 
@@ -152,7 +156,7 @@ Each of these makes a plan look loaded while people can read neither who does th
 
 - **Loading tasks into an iteration that has no capacity rows.** Every task stays unassigned, and the plan stops at 2 of 6.
 - **Writing start and end dates so that tasks count as scheduled or ready.** The dates say nothing about capacity or order, and the next calculation clears them. Telling people not to press Schedule is a sign that the dates are not real.
-- **Giving every task the same start date so that agents may start at once.** Order then lives only outside WorkChord. Assign rows and let the calculation place the first tasks today.
+- **Giving every task the same start date so that agents may start at once.** Order then lives only outside WorkChord. Record the order as dependencies, assign rows, and schedule; agents start work whose dependencies are done, and the dates follow.
 - **Keeping phases, models, agents, or reviewers in tags.** People cannot group, date, or assign by them, and the Roadmap stays empty.
 - **Deleting an iteration and loading it again to change dates.** Task IDs, history, and assignments are lost. Change inputs and schedule.
 - **Leaving the project without dates, status, or owner** because the tasks are in. The Roadmap reads the project, not its tasks.

@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 import secrets
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any, Callable, Iterable, Optional
 
 from sqlalchemy import func, or_, select, text
@@ -26,6 +26,7 @@ from app.models.agent import (
     TaskEvent,
 )
 from app.models.task import Task, TaskDependency, TaskStatus
+from app.models.iteration import Iteration
 from app.models.project import Project, ProjectUpdateEntry
 from app.models.team_member import TeamMember, TeamMemberProfile
 from app.models.triage import TriageItem
@@ -2231,6 +2232,7 @@ class AgentWorkService:
             )
             if task is None:
                 raise AgentConflictError("Task could not be activated")
+            await self._follow_actual_dates(task, started=True)
         else:
             await self.task_service.reserve_task_version(task, task.version)
         task.claim_generation += 1
@@ -2585,6 +2587,7 @@ class AgentWorkService:
             )
             if task is None:
                 raise AgentConflictError("Task could not be resolved")
+            await self._follow_actual_dates(task, started=False)
             assignment.state = "fulfilled"
             event_type = "agent.work_submitted"
         else:
@@ -3760,6 +3763,23 @@ class AgentWorkService:
             blockers.append("effort_priority")
         return blockers
 
+    async def _working_today(self, task: Task, now: datetime) -> date:
+        """Today in the task's project time zone, as the schedule counts days."""
+        from app.services.work_metrics import working_today
+
+        project = await self.db.get(Project, task.project_id) if task.project_id is not None else None
+        return working_today(project.timezone if project else "UTC", now)
+
+    async def _follow_actual_dates(self, task: Task, *, started: bool) -> None:
+        """Recalculate planned work around a task that just started or was submitted."""
+        if task.execution_mode == "manual":
+            return
+        from app.services.scheduler_service import SchedulerService
+
+        await SchedulerService(self.db).follow_actual_dates(
+            task, await self._working_today(task, utc_now()), started=started
+        )
+
     async def _start_blockers(
         self,
         task: Task,
@@ -3823,7 +3843,7 @@ class AgentWorkService:
         )
         if task.status != expected_status:
             blockers.append(f"task_status_{expected_status}_required")
-        from app.services.work_metrics import effective_work_flags, working_today
+        from app.services.work_metrics import effective_work_flags
         if effective_work_flags(task)["effective_is_deferred"] or task.canceled_at or task.blocked_reason:
             blockers.append("task_deferred")
         if task.effort_hours is None or task.effort_hours <= 0:
@@ -3833,9 +3853,19 @@ class AgentWorkService:
         if task.iteration_id is None or task.start_date is None or task.end_date is None:
             blockers.append("schedule_missing")
         elif assignment.queue_class == "normal":
-            project = await self.db.get(Project, task.project_id) if task.project_id is not None else None
-            if task.start_date > working_today(project.timezone if project else "UTC", now):
-                blockers.append("scheduled_start_future")
+            # A calculated start date in the future does not hold work back once its
+            # dependencies are done: the dates then follow the actual start. Only a
+            # planning period that has not begun and a real earliest-start constraint do.
+            today = await self._working_today(task, now)
+            from app.authority import internal_authority
+            with internal_authority(self.db):
+                iteration_start = await self.db.scalar(
+                    select(Iteration.start_date).where(Iteration.id == task.iteration_id)
+                )
+            if iteration_start is not None and iteration_start > today:
+                blockers.append("iteration_not_started")
+            if task.min_start_date is not None and task.min_start_date > today:
+                blockers.append("min_start_future")
         from app.services.delivery_dependency_service import DeliveryDependencyService
         if not await DeliveryDependencyService(self.db).ready(task.id):
             blockers.append("delivery_prerequisite_unavailable")

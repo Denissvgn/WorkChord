@@ -223,13 +223,17 @@ class TaskStatusService:
             task.resolved_at = task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
             task.actual_end_date = None
             if old_status == TaskStatus.PLANNED.value and task.execution_mode != "manual":
-                if task.start_date and today > task.start_date and task.end_date:
+                # The forecast follows the actual start, earlier or later, and keeps its length.
+                if task.start_date and today != task.start_date and task.end_date:
                     task.end_date += timedelta(days=(today - task.start_date).days)
                 task.start_date = today
             if task.id not in self.db.info.get("review_rework_tasks", set()):
                 task.executed_by_principal_id = getattr(authority, "principal_id", None)
         elif new_status == TaskStatus.RESOLVED.value:
             task.resolved_at = now
+            if task.execution_mode != "manual" and task.start_date and task.end_date and task.end_date != today:
+                # The forecast ends when the work was really submitted, so its assignee is free from then.
+                task.end_date = max(task.start_date, today)
             task.executed_by_principal_id = getattr(authority, "principal_id", None) or task.executed_by_principal_id
             task.accepted_at = task.accepted_by_principal_id = task.accepted_version = None
         elif new_status == TaskStatus.CLOSED.value:
@@ -258,11 +262,18 @@ class TaskStatusService:
             and task.end_date
             and task.end_date != original_end_date
         ):
-            cascade_updates = await self.cascade_update_dependents(
-                task,
-                original_end_date,
-                reason=f"Predecessor task '{task.title}' dates updated",
-            )
+            # The caller's own change is authorized as the caller. Moving the dates of
+            # the work behind it follows from that change, so the server does it itself;
+            # a worker has no planning scope and could otherwise never start late work.
+            from app.authority import internal_authority
+            await self.db.flush()
+            with internal_authority(self.db):
+                cascade_updates = await self.cascade_update_dependents(
+                    task,
+                    original_end_date,
+                    reason=f"Predecessor task '{task.title}' dates updated",
+                )
+                await self.db.flush()
             status_log.affected_task_ids = json.dumps(
                 [item["task_id"] for item in cascade_updates]
             )
@@ -386,7 +397,10 @@ class TaskStatusService:
                 dependent.start_date += timedelta(days=delta)
             if dependent.end_date:
                 dependent.end_date += timedelta(days=delta)
-            dependent.version += 1
+            previous_version = dependent.version
+            await self.task_service.reserve_task_version(dependent, dependent.version)
+            from app.services.scheduler_service import rebind_queued_assignments
+            await rebind_queued_assignments(self.db, dependent.id, previous_version, dependent.version)
             cascade_updates.append(
                 {
                     "task_id": dependent.id,
