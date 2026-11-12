@@ -189,7 +189,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     const [dispatchReason, setDispatchReason] = useState('');
     const [selectionConfirmed, setSelectionConfirmed] = useState(false);
     const [conflictMessage, setConflictMessage] = useState<string | null>(null);
-    const [clock, setClock] = useState(Date.now());
+    const [clock, setClock] = useState(() => Date.now());
 
     // feedback-policy: query loading,error,retry,empty
     const capabilitiesQuery = useQuery({
@@ -424,6 +424,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
 
     useEffect(() => {
         if (!assessmentState || hydratedAssessmentKey === hydrationKey) return;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrates the draft once per server assessment, keyed by hydrationKey.
         setDraft(assessment ? assessmentToDraft(assessment) : {
             ...DEFAULT_DRAFT,
             axes: { ...DEFAULT_DRAFT.axes },
@@ -439,6 +440,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
     useEffect(() => {
         const preview = previewMutation.data;
         if (!preview) return undefined;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- restarts the countdown clock when a new preview arrives.
         setClock(Date.now());
         const intervalId = window.setInterval(() => setClock(Date.now()), 1_000);
         return () => window.clearInterval(intervalId);

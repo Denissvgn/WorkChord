@@ -22,6 +22,8 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      // The app does not build with React Compiler, so reports of where it would skip a component do not apply.
+      'react-hooks/preserve-manual-memoization': 'off',
       // Keep semantic, keyboard-interaction, and ARIA regressions blocking.
       'jsx-a11y/anchor-is-valid': 'error',
       'jsx-a11y/click-events-have-key-events': 'error',

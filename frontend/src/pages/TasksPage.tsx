@@ -94,9 +94,6 @@ const TasksPage = () => {
     const [filters, setFilters] = useState<TaskFilters>(defaultFilters);
     const [sortKey, setSortKey] = useState<SortKey>('priority');
     const [selectedSavedViewId, setSelectedSavedViewId] = useState<number | null>(null);
-    const [viewMode, setViewMode] = useState<ViewMode>('list');
-    const [isFullScreen, setIsFullScreen] = useState(false);
-    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const appliedRequestedViewIdRef = useRef<number | null>(null);
     const appliedPlanningContext = useRef<string | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
@@ -118,6 +115,10 @@ const TasksPage = () => {
     const fullscreenRequested = searchParams.get('fullscreen') === '1';
     const manualSortRequested = searchParams.get('sort') === 'manual';
     const requestedLayout = searchParams.get('layout');
+    // The filters panel, fullscreen and layout live in the URL, so links and Back restore them.
+    const isFiltersOpen = filtersRequested;
+    const isFullScreen = fullscreenRequested;
+    const viewMode: ViewMode = requestedLayout === 'board' ? 'board' : 'list';
     const requestedTaskMode = searchParams.get('mode');
     const rawPlanningIssue = searchParams.get(PLANNING_TASK_ISSUE_PARAM);
     const requestedPlanningIssue = parsePlanningTaskIssue(rawPlanningIssue);
@@ -160,27 +161,22 @@ const TasksPage = () => {
     }, [searchParams, setSearchParams]);
 
     const openFilters = useCallback(() => {
-        setIsFiltersOpen(true);
         setTaskContextParam('panel', 'filters');
     }, [setTaskContextParam]);
 
     const closeFilters = useCallback(() => {
-        setIsFiltersOpen(false);
         setTaskContextParam('panel', null);
     }, [setTaskContextParam]);
 
     const changeViewMode = useCallback((layout: ViewMode) => {
-        setViewMode(layout);
         setTaskContextParam('layout', layout === 'list' ? null : layout);
     }, [setTaskContextParam]);
 
     const enterFullscreen = useCallback(() => {
-        setIsFullScreen(true);
         setTaskContextParam('fullscreen', '1');
     }, [setTaskContextParam]);
 
     const exitFullscreen = useCallback(() => {
-        setIsFullScreen(false);
         setTaskContextParam('fullscreen', null);
     }, [setTaskContextParam]);
 
@@ -285,6 +281,7 @@ const TasksPage = () => {
                 setSearchParams(nextSearchParams, { replace: true });
             }
             appliedRequestedViewIdRef.current = null;
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- a planning link also rewrites the URL, so this runs after render.
             setSelectedSavedViewId(null);
             setFilters(current => (
                 current.planningIssue === requestedPlanningIssue
@@ -328,19 +325,8 @@ const TasksPage = () => {
     ]);
 
     useEffect(() => {
-        setIsFiltersOpen(filtersRequested);
-    }, [filtersRequested]);
-
-    useEffect(() => {
-        setIsFullScreen(fullscreenRequested);
-    }, [fullscreenRequested]);
-
-    useEffect(() => {
-        setViewMode(requestedLayout === 'board' ? 'board' : 'list');
-    }, [requestedLayout]);
-
-    useEffect(() => {
         if (!manualSortRequested) return;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- applied once, together with removing ?sort from the URL.
         setSortKey('sort_order');
         const nextSearchParams = new URLSearchParams(searchParams);
         nextSearchParams.delete('sort');
