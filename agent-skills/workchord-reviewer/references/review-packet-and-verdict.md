@@ -23,6 +23,11 @@ changes, and hand rework to an explicit owner.
 4. Confirm you did not do this work: you are not the actor that ran it or
    reported its progress. The server rejects a non-independent review with
    `independent_review_required`; never work around it.
+5. Confirm your profile is not the profile of the task's assignee. The PM plans
+   review with a reviewer profile other than the one that carries the work, and
+   enforced model-aware routing refuses the same profile with
+   `verification_profile_not_independent`. Where the server does not check it,
+   stop and report to the PM all the same.
 
 ## Build The Review Packet
 
@@ -44,6 +49,11 @@ Read the complete context with the review assignment ID, then record:
    result, and limitations.
 7. Scope: look for silent expansion, missing deliverables, skipped tests, and
    unresolved risks or warnings.
+8. Plan fit: read the task's assignee, dates, and milestone, and any
+   `plan_gaps` the worker reported. Note a task that was done without an
+   assignee, without calculated dates, or outside its milestone. These are
+   notes for the PM under `limitations`; they are not criteria and never decide
+   the verdict.
 
 Do not treat a succeeded run, a green local check, a commit link, or the
 worker's summary as enough by itself. Check the task's stated outcome.
@@ -98,16 +108,24 @@ worker is unknown, disabled, or not on the team. Request changes atomically
 returns the task to `active`, fulfills your review assignment, and queues one
 `rework` assignment for that worker.
 
-Report out-of-scope findings to the PM in your final message so they can be
-captured in Triage; do not fold them into the failed criteria.
+Rework returns to the same task and the same assignee, so the Gantt chart keeps
+showing who carries it. Never change the assignee, the dates, or the milestone
+to fit the rework; say in your `reason` when you think another capacity row
+should take it, and let the PM decide.
+
+Report out-of-scope findings and plan gaps to the PM in your final message so
+they can be captured in Triage or fixed in the plan; do not fold them into the
+failed criteria.
 
 ## Stop Rules
 
 Stop without a verdict and report to the PM when:
 
 - the task is not Implemented, a run is active, or the assignment is stale;
-- you cannot establish independence from the work;
+- you cannot establish independence from the work, as an actor or as a profile;
 - model trust is `mismatch` or `unreported`;
 - evidence conflicts and you cannot resolve it by checking;
 - the rework owner is unknown or ineligible;
-- the server returns `401`, `403`, or `independent_review_required`.
+- the server returns `401`, `403`, `independent_review_required`,
+  `verification_actor_not_independent`, or
+  `verification_profile_not_independent`.

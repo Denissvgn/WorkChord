@@ -84,6 +84,8 @@ self-select work.
    - `resume`: resume only the returned current assignment and run.
    - `start_assigned`: begin only the returned next assignment.
    - `wait`: do not begin early; poll at or after the server-provided time.
+     A blocker code of `schedule_missing` or `scheduled_start_future` means the
+     plan holds the task back. Only the PM changes that, by scheduling again.
    - `no_work`: report idle state and stop this cycle.
    - `attention_required`: perform no new work; report the recovery codes and
      request PM/operator action.
@@ -107,7 +109,14 @@ routing snapshot match across the assignment and context.
 Stop and escalate before beginning when scope, acceptance criteria,
 verification, dependencies, authority, or assignment identity is missing or
 contradictory. Never repair PM-owned scope, priority, dates, dependencies,
-capacity owner, actor assignment, queue rank, or reviewer yourself.
+assignee, milestone, agent assignment, queue rank, or reviewer yourself.
+
+A task that reaches you should be fully planned: its assignee is the capacity
+row of your own profile, its dates are calculated, and its assignment names a
+reviewer other than you. When one of these is missing, the work decision still
+governs what you do. Report the gap to the PM once, as described in
+[task-context-and-scope.md](references/task-context-and-scope.md#report-plan-gaps-without-repairing-them),
+so the plan people read matches the work you do.
 
 ## Begin Or Resume
 

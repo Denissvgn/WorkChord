@@ -208,6 +208,13 @@ Append a structured project update after a meaningful delivery, verification, ri
 
 Read the current project summary and latest update before appending. Never overwrite history. Re-read update freshness and project target risk after writing.
 
+Keep the records the Roadmap reads in step with the update:
+
+- Set project `status` to `active` when its first task starts, and to `completed` when its outcome is Accepted. A project that still reads `planned` while tasks are Active or Implemented misleads everyone who opens the Roadmap.
+- Set a milestone to `active` when its first task starts and to `completed` when its last task is Accepted.
+- Leave `health` at `unknown` only until the first update.
+- Change a committed project or milestone target date only with the owner's recorded approval. Report a calculated end that passes the target as a risk instead.
+
 In stable v1, use `POST /api/agent/projects/{project_id}/updates` or
 `agent_create_project_update` with `reports:write`, evidence checked,
 required rationale and correlation, and a deterministic idempotency key.

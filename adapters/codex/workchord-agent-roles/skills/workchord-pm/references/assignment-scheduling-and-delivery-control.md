@@ -18,7 +18,7 @@ Use this reference to route definition-ready work, create an ordered dispatch, s
 2. Compare each candidate's score, confidence, matched skills, weakness matches, workload warnings, and rationale.
 3. Read the candidate's current profile, iteration capacity, workload, and vacations. Do not rely only on the recommendation summary.
 4. Consider review independence, production access limits, domain context, and planned operational load.
-5. Choose one iteration `TeamMember` as capacity owner and write its ID to `Task.assignee_id`.
+5. Choose one iteration `TeamMember` as capacity owner and write its ID to `Task.assignee_id`. For agent work, choose the row of the profile that the agent you intend to dispatch is bound to; the later assignment must match it.
 6. Re-read the task, member workload, and readiness after assignment.
 
 Treat recommendations as explainable advice. Do not auto-assign solely by top score, and never infer permissions from a capability profile.
@@ -119,6 +119,14 @@ Use the server's assign, reassign, reorder, cancel, rework, and recovery command
 
 Never let assignment bypass definition or start readiness. Never treat assignment as claim ownership.
 
+Keep dispatch bound to the plan:
+
+- Pass the task's assignee as `team_member_id`. The server refuses a row from another iteration, and refuses a row that differs from the task's assignee. When you omit the field, the server uses the task's assignee.
+- Dispatch to an agent bound to the assignee row's profile. Enforced model-aware routing refuses any other agent with `actor_capacity_profile_mismatch`, and a task without an assignee with `capacity_owner_missing`. In supervised compatibility routing the server does not check this for you; hold to it anyway, or the Gantt chart names one assignee while another agent does the work.
+- To send the task to a different agent, first move the task to that agent's row, preview and apply the schedule, and then create the assignment.
+- An agent that works on a task without an assignee counts against the plan as `agent_working_no_capacity`. Never dispatch such a task to get work moving; assign and schedule it first.
+- Pass `reviewer_profile_id` on every execution assignment. Choose a profile other than the assignee row's profile.
+
 ### Supervised v0
 
 An older or partially upgraded server may expose only an iteration capacity
@@ -148,6 +156,8 @@ In assigned-work v1, set queue order explicitly. Expect the server to select wor
 5. future assigned work as `wait`, never as early-start permission.
 
 Within one queue class, order by explicit queue rank, priority (`1` highest), not-before or scheduled start, task `sort_order`, and task ID as a stable tie-breaker. Require the work response to include its selection reason and complete sort tuple.
+
+Give each agent's queue the order its assignee row has on the Gantt chart. A queue rank that contradicts the calculated dates does not start work early: the server holds a task until its calculated start date.
 
 Treat pagination cursors as opaque, actor-bound snapshots. Read the first work
 page for the authoritative decision, then follow `pagination.next_cursor` only
@@ -202,6 +212,22 @@ dashed "no assignee" bars, and the next calculation clears them. Read
 
 Do not hide schedule failure by deleting dependencies, removing vacations, lowering effort, or changing constraints without evidence. Scheduling can cascade dates; inspect affected tasks before dispatch.
 
+Read the preview's `unscheduled` list before you apply. Each entry names a task and one reason code:
+
+| Reason code | Correct this input |
+| --- | --- |
+| `no_assignee` | Assign the task to a capacity row of this iteration. |
+| `assignee_not_in_iteration` | Add the assignee's profile to the iteration, or reassign the task. |
+| `no_estimate` | Set a positive `effort_hours`. |
+| `no_capacity` | Give the assignee's row productive capacity, or reassign the task. |
+| `prerequisites_pending` | Wait for the delivery prerequisite to be Accepted. |
+| `predecessor_unscheduled` | Correct the predecessor first; this task follows it. |
+| `not_placed` | Check the task's constraint dates and dependencies. |
+
+The calculation moves Planned leaves only. Active, Implemented, and Accepted tasks keep their dates and keep their place on their assignee's row.
+
+The dates also gate the start of work. The server refuses to begin a task with `schedule_missing` when it has no dates, and with `scheduled_start_future` when its start date is later than today in the project's time zone. Clear either one by correcting a scheduling input and calculating again, as described in [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#keep-the-schedule-calculated). Never clear it by writing dates.
+
 Choose schedule mitigation in this order unless an accountable owner records a
 different policy: first correct bad estimates, calendars, constraints, or
 dependency data; then split executable scope or move optional work; then add or
@@ -226,7 +252,7 @@ For executing work:
 2. Read the durable assignment and current-work state when supported.
 3. Read claim actor and expiry, task version, current and recent runs, last run event, artifacts, commit or PR links, and run terminal state.
 4. Compare all states. Flag running run without live claim, active task without an owner, resolved task with running run, expired claim with active execution, disabled actor holding work, or multiple current runs.
-5. Read the worker's blocker or discovery evidence before modifying the plan.
+5. Read the worker's blocker or discovery evidence before modifying the plan. A `plan_gaps` list in a worker's checkpoint event, or a plan note in a reviewer's result, names planning you left unfinished: a missing assignee, missing dates, a missing reviewer, or a missing milestone. Fix the plan in the same control-loop pass; the worker continues meanwhile.
 6. Let healthy work continue. Avoid noisy PM events that obscure worker checkpoints.
 7. Page the complete verifier or recovery collection with its opaque cursor before choosing an intervention; restart on snapshot drift.
 8. Use explicit cancel, reassign, recovery, or rework actions when supported. Under supervised v0, stop additional dispatch and ask the human recovery owner to reconcile the separate claim, run, and task states.
@@ -264,9 +290,12 @@ Never edit worker-produced artifacts, finish the worker run, or transition activ
 - Re-read task, capacity owner, actor/binding dispatch, routing snapshot, queue,
   dates, readiness, Gantt, workload, and target risk.
 - Confirm each task is start-ready, explicitly waiting, or returned to definition with exact blockers.
-- Re-read `plan-readiness`: `tasks_without_assignee` and `tasks_without_effort`
-  are `0` and the `schedule` checkpoint is `done`. Otherwise report "n of 6"
-  with the blocking checkpoint, its reason codes, and the next owner.
+- Re-read `plan-readiness`: `tasks_without_assignee`, `tasks_without_effort`,
+  and `tasks_agent_without_capacity` are `0` and the `schedule` checkpoint is
+  `done`. Otherwise report "n of 6" with the blocking checkpoint, its reason
+  codes, and the next owner.
+- Confirm every execution assignment names the task's assignee as its team
+  member and carries a reviewer profile.
 
 **Evidence and stop rules**
 

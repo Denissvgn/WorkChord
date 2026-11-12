@@ -16,10 +16,17 @@ Use this reference to create a feasible execution timebox and staff it with reus
 
 1. Select an initiative only when several projects contribute to one strategic goal.
 2. Create or select one accountable project for the outcome.
-3. Set a project owner or reusable owner profile, status, health, start date, target date, and initiative link deliberately.
+3. Set `owner_profile_id`, `status`, `start_date`, `target_date`, and
+   `initiative_id` on the project. The Roadmap draws a project's bar from its
+   start and target dates, or else from its dated milestones; a project with
+   neither has no bar. Use `planned` until the first task starts, then `active`.
+   Set health through project updates. The agent contract has no initiative
+   command: select an existing initiative, or ask a person to create one.
 4. Create milestones for intermediate outcomes through
-   `agent_create_project_milestone` or the matching agent-planning REST route;
-   use a release record only for a shipping or rollout boundary.
+   `agent_create_project_milestone` or the matching agent-planning REST route,
+   each with a `target_date`; use a release record only for a shipping or
+   rollout boundary. When no date is committed yet, fill the target date from
+   the calculated schedule after you apply it.
 5. Create a real iteration for executable work. Link it to the project when the timebox is project-scoped.
 6. Keep cross-project work in an unscoped iteration only when the operating model intentionally shares capacity.
 7. Re-read project, milestone, release, and iteration IDs before attaching tasks.
@@ -81,6 +88,18 @@ Set and review:
 Use bulk team or vacation import only after previewing the source text or CSV and identifying the target iteration. Inspect skipped rows and errors; do not treat a partial import as complete.
 
 Ensure every task `assignee_id` points to a team-member row from the same iteration. Do not assign a reusable profile ID or an actor ID to this field.
+
+### Rows for agents
+
+An agent carries planned work the same way a person does: through the capacity row of its profile.
+
+- Read the agent roster and note each agent's profile binding. An operator sets the binding; ask for it when an agent you will dispatch has none.
+- Create one row per profile and pass `profile_id`. An iteration holds at most one row per profile. A row created without `profile_id` is matched by email or name and otherwise creates a new human profile.
+- Expect one sequence per row. The scheduler places a row's tasks one after another and different rows side by side, which matches one current task per agent. Agents that share a profile share a row and a sequence.
+- Add reviewer profiles as rows too, so verification routing finds them and review load is visible.
+- New rows reserve 20 percent for operations. Keep `operational_utilization` at the agent's real share of other duties.
+
+The steps and the server rules behind them are in [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#staff-the-iteration-with-the-agents-that-do-the-work).
 
 ## Read the Live Routing Inventory
 
@@ -145,6 +164,9 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 
 - Re-read the full hierarchy and confirm one accountable project plus one real execution iteration, or record an explicit Triage disposition.
 - Confirm dates and ownership do not conflict.
+- Confirm the project has `start_date`, `target_date`, and `owner_profile_id`,
+  and that every milestone the plan names exists as a record. Report a project
+  that would have no bar on the Roadmap as unfinished planning.
 
 **Evidence and stop rules**
 
@@ -173,6 +195,8 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 - Re-read each capacity row, vacation list, capacity, and workload.
 - Read `plan-readiness` and confirm the `team` checkpoint is `done` with a
   nonzero `team_member_count` before any task enters the iteration.
+- Confirm every agent you intend to dispatch is bound to a profile that has a
+  row in this iteration, and every row links a profile.
 - Confirm every intended automated target is already provisioned, enabled,
   purpose-compatible, separately authorized, and backed by current live metadata
   before later dispatch. Do not call this task-specific eligibility until a

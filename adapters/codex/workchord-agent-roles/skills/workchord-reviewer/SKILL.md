@@ -65,7 +65,11 @@ other secret in evidence, reasons, or rationale.
    one result for every acceptance criterion, with evidence you checked.
 4. Stop and report to the PM, without a verdict, when the task is not
    Implemented (`resolved`), a run is still active, the review assignment is
-   stale, or you did any part of this work yourself.
+   stale, or you did any part of this work yourself. Being bound to the same
+   profile as the task's assignee also counts as doing the work.
+5. Note where the plan around the task is incomplete: no assignee, no
+   calculated dates, or no milestone while sibling tasks have one. A plan gap
+   never changes your verdict; name it for the PM in your result.
 
 ## Accept Or Request Changes
 
@@ -76,6 +80,8 @@ other secret in evidence, reasons, or rationale.
   you expected, what you observed, and the minimum change required.
 - Send rework to the worker the PM named, or else to the worker whose submission
   you reviewed. Stop and ask the PM when that worker is unknown or disabled.
+  Rework stays on the task's assignee; moving it to another capacity row is the
+  PM's decision.
 - Never accept part of a task, close work by another route, or change scope,
   priority, assignee, schedule, or queue order.
 
@@ -84,7 +90,9 @@ other secret in evidence, reasons, or rationale.
 - Treat `401` and `403` as stop conditions; do not seek broader credentials.
 - Treat a version or assignment `409` as a signal to re-read the queue and
   context, then review the changed packet again.
-- Treat `independent_review_required` as final: you cannot review this work.
+- Treat `independent_review_required`, `verification_actor_not_independent`,
+  and `verification_profile_not_independent` as final: you cannot review this
+  work. Report the code to the PM, who routes the review to another reviewer.
 - Correct validation failures before retrying; reuse the same idempotency key,
   rationale, and correlation ID only for an exact retry.
 

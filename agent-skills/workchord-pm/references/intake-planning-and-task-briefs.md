@@ -98,7 +98,11 @@ Before conversion:
 
 8. Add the governed `agent` source label plus at least one active capability label, such as `cap:code`, `cap:test`, `cap:docs`, or `cap:research`, for agent-dispatched work.
 9. Mark optional or deferred work explicitly and record the reconsideration trigger for deferral.
-10. Leave schedule dates to the scheduling flow; use minimum start and maximum end constraints only when they are real.
+10. Leave schedule dates to the scheduling flow; use minimum start and maximum end constraints only when they are real. Never send `start_date` or `end_date` to make a task count as scheduled or ready to start.
+11. Set `assignee_id` when you create the leaf, to a capacity row of the same iteration. For agent work, use the row of the profile the executing agent is bound to.
+12. Keep the source plan's own task ID in `external_key`, and record order as `depends_on` with WorkChord task IDs. Create predecessors first.
+
+When the accepted work is a whole plan from outside WorkChord, follow [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md): it maps each plan concept to a record and gives the load order.
 
 For stable PM automation, create and revise these tasks with
 `agent_create_planning_task` and `agent_patch_planning_task`, or their matching
@@ -249,7 +253,7 @@ Require all of these before routing or scheduling:
 - Set positive effort and priority.
 - Set a valid same-iteration dependency graph.
 - Add `agent` plus at least one active governed capability label for agent work.
-- Set an iteration capacity owner or record the exact recommendation decision still required.
+- Set an assignee from the iteration's capacity rows. When the choice is still open, record the exact recommendation decision required and treat the task as unfinished planning: it cannot be scheduled.
 - Resolve all open questions that could change scope.
 - Set constraints that make the work schedulable.
 - Name expected artifacts, verification evidence, reviewer, and escalation conditions.

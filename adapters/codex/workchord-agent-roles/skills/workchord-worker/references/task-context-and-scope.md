@@ -10,7 +10,7 @@ Require:
 
 - exact execution assignment, actor, purpose, queue class, and assignment state;
 - task ID, current version, `planned` or valid rework/recovery `active` status,
-  iteration, project, milestone, capacity owner, priority, and schedule;
+  iteration, project, milestone, assignee, priority, and schedule;
 - parent chain and confirmation that the task is an executable leaf;
 - every dependency ID, state, and satisfaction rule;
 - readiness result with stable blocker/warning codes;
@@ -75,13 +75,54 @@ names a criterion `id` and `revision`, a `result` of `pass`, `fail`, or
 `not_checked`, and a `note`. Fix every `fail`, and check `not_checked` criteria
 again before you submit.
 
+When the work decision is `wait`, read its blocker codes before you report:
+
+| Blocker code | Means | Your action |
+| --- | --- | --- |
+| `schedule_missing` | The task has no calculated dates, usually because it has no assignee or no effort. | Start nothing. Report the code and the task to the PM. |
+| `scheduled_start_future` | The calculated start date is later than today. | Start nothing. Wait; report it only when you have no other work and the PM should know you are free. |
+| `not_before_future` | The assignment's not-before time has not arrived. | Wait until that time. |
+| A dependency code | A predecessor is not finished. | Wait; never start the predecessor yourself. |
+
+Never ask for dates to be written by hand and never write them. The PM clears
+these codes by changing a scheduling input and calculating the schedule again.
+
+## Report Plan Gaps Without Repairing Them
+
+A task that reaches you should already be fully planned. Read these values from
+the complete context and compare them with your own profile binding from the
+capability response:
+
+| Read | A complete plan shows | Gap to report |
+| --- | --- | --- |
+| `task.assignee` | The capacity row of your own profile | No assignee, or a row of another profile |
+| `assignment.team_member_id` | The same row as the task's assignee | A different row, or none |
+| `task.start_date`, `task.end_date` | Calculated dates | Missing dates on work the server let you begin, such as rework |
+| `assignment.reviewer_profile_id` | A profile other than yours | None, or your own profile |
+| `task.milestone` | The milestone the task belongs to, when its project has milestones | None while sibling tasks have one |
+
+The work decision stays authoritative. A gap in this table is not a reason to
+refuse `start_assigned` or `resume`, and it is never yours to repair.
+
+1. Begin or resume as the decision says.
+2. Report every gap once, in your first `agent.checkpoint` task event of the
+   run. Add a `plan_gaps` list to its payload, one short sentence per gap, for
+   example "Task has no assignee; I am working on it as agent 12."
+3. Do not repeat the report on later events, and do not mark the task Blocked
+   for a plan gap.
+4. Name the same gaps in your submit summary when they still hold, so the
+   reviewer and the PM see them beside the evidence.
+
+Report as a blocker, not as a plan gap, anything that changes scope, safety, or
+the meaning of success.
+
 ## Preserve PM-Owned Fields
 
 Do not change any of these as an execution worker:
 
 - goal, scope, exclusions, acceptance criteria, priority, effort, or labels;
-- project, milestone, iteration, parent, dependency graph, or capacity owner;
-- actor assignment, queue class/rank, schedule, constraints, reviewer, or
+- project, milestone, iteration, parent, dependency graph, or assignee;
+- agent assignment, queue class/rank, schedule, constraints, reviewer, or
   deferral state.
 
 Use only worker lifecycle operations, bounded task/run events, evidence and

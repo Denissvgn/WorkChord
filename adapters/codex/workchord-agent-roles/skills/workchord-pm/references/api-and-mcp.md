@@ -54,6 +54,7 @@ Begin invariant: send `assignment_id` and `queue_revision`, not `task_id`, `expe
 - [Use model-aware routing conditionally](#use-model-aware-routing-conditionally)
 - [Use the current REST agent API](#use-the-current-rest-agent-api)
 - [Use the current MCP tools](#use-the-current-mcp-tools)
+- [Send the planning fields that make a plan readable](#send-the-planning-fields-that-make-a-plan-readable)
 - [Use the application planning API carefully](#use-the-application-planning-api-carefully)
 - [Detect assigned-work v1](#detect-assigned-work-v1)
 - [Supply concurrency and audit fields](#supply-concurrency-and-audit-fields)
@@ -216,6 +217,30 @@ canonical skill resources; they do not grant authority. `status_update_draft`
 does not persist by itself, while `agent_create_project_update` does. Calendar
 CRUD and planning operations not listed above still require an explicitly
 authorized application/human surface; never invent a missing tool.
+
+## Send the Planning Fields That Make a Plan Readable
+
+The planning commands accept more fields than they require. A command that sends only the required ones succeeds and leaves the Roadmap, the task list, or the Gantt chart empty. Send these, and confirm each name against the live operation metadata:
+
+| Command | Required | Send as well |
+| --- | --- | --- |
+| Project create or update | `name` on create | `start_date`, `target_date`, `status`, `owner_profile_id`, `initiative_id`, `description` |
+| Milestone create or update | `name` on create | `target_date`, `status`, `description`, `sort_order` |
+| Iteration create | `name`, `start_date`, `end_date` | `calendar_id`, `project_id` |
+| Team profile create | `display_name` | `profile_kind`, `automation_enabled`, `assignment_modes`, `summary` |
+| Team member create | `name`, `position` | `profile_id`, `availability_percent`, `operational_utilization`, `professionalism_coefficient` |
+| Planning task create | `title` | `brief`, `effort_hours`, `priority`, `assignee_id`, `milestone_id`, `project_id`, `depends_on`, `tags`, `external_key`, `source`, `source_url`; `min_start_date` and `max_end_date` only for a real constraint |
+| Planning task patch | `expected_version` | Any field above except `parent_id`; `depends_on` replaces the whole list |
+
+Field rules:
+
+- `assignee_id` is a team-member row of the task's own iteration, never a profile ID or an agent ID.
+- `depends_on` is a list of WorkChord task IDs from the same iteration.
+- `tags` carries the governed labels, such as `agent` and `cap:code`.
+- `profile_kind` is `human`, `agent`, or `hybrid`. `assignment_modes` holds `ownership`, `execution`, `verification`, or `design_handoff`.
+- No planning command accepts `start_date` or `end_date` for a task. Dates come from schedule preview and apply.
+
+The iteration import routes (`POST /api/iterations/import` and `POST /api/iterations/{id}/import`) require the admin key. They are an operator surface; [plan-mapping-and-roadmap.md](plan-mapping-and-roadmap.md#when-an-operator-imports-the-plan) says what a document for them must contain.
 
 ## Use the Application Planning API Carefully
 
