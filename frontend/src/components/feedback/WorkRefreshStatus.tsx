@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { notifyManager, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { WORKSPACE_QUERY_POLICIES } from '../../features/workQueryFreshness';
 
@@ -14,7 +14,8 @@ export const WorkRefreshStatus = () => {
     const [, refresh] = useReducer(value => value + 1, 0);
     const [now, setNow] = useState(() => Date.now());
     useEffect(() => {
-        const stop = client.getQueryCache().subscribe(() => refresh());
+        // The cache notifies while other components render their queries; re-render after that, not during it.
+        const stop = client.getQueryCache().subscribe(() => notifyManager.schedule(refresh));
         const timer = window.setInterval(() => { if (document.visibilityState !== 'hidden') setNow(Date.now()); }, RECHECK_MS);
         return () => { stop(); window.clearInterval(timer); };
     }, [client]);
