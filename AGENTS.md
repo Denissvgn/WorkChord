@@ -51,3 +51,8 @@ workaround; continue safely and mention the report at handoff.
 ## Agent quality guidelines
 - Keep edits surgical; state uncertainty.
 # --- End LLM Wiki Constraints ---
+# --- Python Environment Rules ---
+- ALWAYS use the project virtual environment at `.venv/` for all Python commands.
+- Run Python tools as `.venv/bin/python`, `.venv/bin/pip`, `.venv/bin/pytest`, etc.
+- Never use bare `python`, `pip`, or other Python tools without the `.venv/bin/` prefix.
+- This applies to all terminal commands: linting, testing, running scripts, installing packages.
