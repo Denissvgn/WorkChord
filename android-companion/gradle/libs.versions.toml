@@ -1,6 +1,6 @@
 [versions]
-agp = "8.5.2"
-kotlin = "2.0.20"
+agp = "9.5.1"
+kotlin = "2.4.21"
 coreKtx = "1.13.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
@@ -16,7 +16,7 @@ material3 = "1.3.0"
 junit = "4.13.2"
 androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
-mockwebserver = "4.12.0"
+mockwebserver = "5.5.1"
 coroutinesTest = "1.8.1"
 
 [libraries]

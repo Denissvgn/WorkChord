@@ -1,13 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
     namespace = "com.workchord.android"
-    compileSdk = 34
+    // okhttp 5 needs API 37 to compile against; the app still targets 34, so runtime behavior is unchanged.
+    compileSdk = 37
     val qualifyRelease = providers.environmentVariable("WORKCHORD_ANDROID_RELEASE_QUALIFICATION").orNull == "true"
     testBuildType = if (qualifyRelease) "release" else "debug"
     if (qualifyRelease) {
@@ -47,9 +47,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     buildFeatures {
         buildConfig = true
