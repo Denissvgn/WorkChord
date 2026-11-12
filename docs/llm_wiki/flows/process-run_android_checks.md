@@ -154,41 +154,41 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| main | argparse.ArgumentParser | 19 | `argparse.ArgumentParser(description=__doc__)` |
-| main | parser.add_argument | 20 | `parser.add_argument('--output', type=Path)` |
-| main | parser.add_argument | 21 | `parser.add_argument('--timeout-seconds', type=positive_seconds, default=1200)` |
-| main | parser.add_argument | 22 | `parser.add_argument('--release-qualification', action='store_true')` |
-| main | parser.add_argument | 23 | `parser.add_argument('--qualification-inputs', type=Path)` |
-| main | parser.parse_args | 24 | `parser.parse_args(data not statically known)` |
-| main | bool | 25 | `bool(args.qualification_inputs)` |
-| main | parser.error | 26 | `parser.error('--release-qualification and --qualification-inputs must be selected together')` |
-| main | Path | 27 | `Path(tempfile.mkdtemp(...))` |
-| main | tempfile.mkdtemp | 27 | `tempfile.mkdtemp(prefix='workchord-android-')` |
-| main | RunReceipt | 29 | `RunReceipt(output, checks=[...], timeout_seconds=args.timeout_seconds)` |
+| main | argparse.ArgumentParser | 22 | `argparse.ArgumentParser(description=__doc__)` |
+| main | parser.add_argument | 23 | `parser.add_argument('--output', type=Path)` |
+| main | parser.add_argument | 24 | `parser.add_argument('--timeout-seconds', type=positive_seconds, default=1200)` |
+| main | parser.add_argument | 25 | `parser.add_argument('--release-qualification', action='store_true')` |
+| main | parser.add_argument | 26 | `parser.add_argument('--qualification-inputs', type=Path)` |
+| main | parser.parse_args | 27 | `parser.parse_args(data not statically known)` |
+| main | bool | 28 | `bool(args.qualification_inputs)` |
+| main | parser.error | 29 | `parser.error('--release-qualification and --qualification-inputs must be selected together')` |
+| main | Path | 30 | `Path(tempfile.mkdtemp(...))` |
+| main | tempfile.mkdtemp | 30 | `tempfile.mkdtemp(prefix='workchord-android-')` |
+| main | RunReceipt | 32 | `RunReceipt(output, checks=[...], timeout_seconds=args.timeout_seconds)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `run.cleanups.append` | `main` | 36 |
-| filesystem_write | `shutil.copytree` | `main` | 38 |
-| filesystem_write | `shutil.copyfile` | `main` | 65 |
-| mutation | `run.finalizers.append` | `main` | 82 |
-| mutation | `run.validators.append` | `main` | 105 |
+| mutation | `run.cleanups.append` | `main` | 39 |
+| filesystem_write | `shutil.copytree` | `main` | 41 |
+| filesystem_write | `shutil.copyfile` | `main` | 68 |
+| mutation | `run.finalizers.append` | `main` | 85 |
+| mutation | `run.validators.append` | `main` | 108 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `main` | `argparse.ArgumentParser` | 19 |
-| unresolved_call | `main` | `parser.add_argument` | 20 |
-| unresolved_call | `main` | `parser.add_argument` | 21 |
-| unresolved_call | `main` | `parser.add_argument` | 22 |
+| external_call | `main` | `argparse.ArgumentParser` | 22 |
 | unresolved_call | `main` | `parser.add_argument` | 23 |
-| unresolved_call | `main` | `parser.parse_args` | 24 |
-| unresolved_call | `main` | `parser.error` | 26 |
-| external_call | `main` | `tempfile.mkdtemp` | 27 |
-| external_call | `main` | `RunReceipt` | 29 |
+| unresolved_call | `main` | `parser.add_argument` | 24 |
+| unresolved_call | `main` | `parser.add_argument` | 25 |
+| unresolved_call | `main` | `parser.add_argument` | 26 |
+| unresolved_call | `main` | `parser.parse_args` | 27 |
+| unresolved_call | `main` | `parser.error` | 29 |
+| external_call | `main` | `tempfile.mkdtemp` | 30 |
+| external_call | `main` | `RunReceipt` | 32 |
 | step_limit | `main` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -11,7 +11,7 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 | Source | Symbols | Type-only | Runtime emission |
 |--------|---------|-----------|------------------|
 | `../../features/workQueryFreshness` | `WORKSPACE_QUERY_POLICIES` | — | compiler-dependent |
-| `@tanstack/react-query` | `useQueryClient` | — | compiler-dependent |
+| `@tanstack/react-query` | `notifyManager`, `useQueryClient` | — | compiler-dependent |
 | `react` | `useEffect`, `useReducer`, `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
 
@@ -27,20 +27,24 @@ _Auto-generated from `frontend/src/components/feedback/WorkRefreshStatus.tsx`._
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["frontend/src/components/feedback/WorkRefreshStatus.tsx"]
-    n1["frontend/src/components/layout/AppShell.tsx"]
-    n2["frontend/src/features/workQueryFreshness.ts"]
-    n0 --> n2
-    n1 --> n0
-    click n0 "../modules/WorkRefreshStatus.md"
-    click n1 "../modules/AppShell.md"
-    click n2 "../modules/workQueryFreshness.md"
+    n0["frontend/src/components/feedback/WorkRefreshStatus.test.tsx"]
+    n1["frontend/src/components/feedback/WorkRefreshStatus.tsx"]
+    n2["frontend/src/components/layout/AppShell.tsx"]
+    n3["frontend/src/features/workQueryFreshness.ts"]
+    n0 --> n1
+    n1 --> n3
+    n2 --> n1
+    click n0 "../modules/WorkRefreshStatus.test.md"
+    click n1 "../modules/WorkRefreshStatus.md"
+    click n2 "../modules/AppShell.md"
+    click n3 "../modules/workQueryFreshness.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [WorkRefreshStatus.test](../modules/WorkRefreshStatus.test.md) |
 | Inbound | [AppShell](../modules/AppShell.md) |
 | Outbound | [workQueryFreshness](../modules/workQueryFreshness.md) |
 

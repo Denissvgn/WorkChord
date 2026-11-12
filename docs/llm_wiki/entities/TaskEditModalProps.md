@@ -1,6 +1,6 @@
 # TaskEditModalProps
 
-**Location:** `frontend/src/components/gantt/TaskEditModal.tsx:15`
+**Location:** `frontend/src/components/gantt/TaskEditModal.tsx:8`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskEditModal](../modules/TaskEditModal.md)

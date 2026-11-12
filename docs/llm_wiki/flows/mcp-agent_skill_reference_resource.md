@@ -199,8 +199,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_skill_reference_resource | _tool_call | 2323 | `_tool_call(_skill_bundle_scope_requirement(...), ...)` |
-| _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
+| agent_skill_reference_resource | _tool_call | 2334 | `_tool_call(_skill_bundle_scope_requirement(...), ...)` |
+| _tool_call | enforce_mcp_access | 314 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |

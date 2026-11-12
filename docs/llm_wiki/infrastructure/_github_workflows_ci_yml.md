@@ -21,8 +21,8 @@
 
 ### packaging
 
-- `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` - uses `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
-- `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405` - uses `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405`
+- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
+- `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` - uses `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`
 - `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238` - uses `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238`
 - `Set up native PostgreSQL` - uses `./.github/actions/native-postgres`
 - `Create the project environment` - runs `python -m venv .venv`
@@ -40,8 +40,8 @@
 ### backend
 
 - `Reserve cleanup and artifact time` - runs `python3 - <<'PYTHON' import os import time deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180 with open(os.environ["GITHUB_ENV"], "a") as output: output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n") PYTHON`
-- `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` - uses `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
-- `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405` - uses `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405`
+- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
+- `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` - uses `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`
 - `Set up native PostgreSQL` - uses `./.github/actions/native-postgres`
 - `Install the backend` - runs `python -m venv .venv .venv/bin/pip install --require-hashes -r backend/build-requirements.lock .venv/bin/pip install --require-hashes -r backend/requirements.lock .venv/bin/pip install --require-hashes -r backend/test-requirements.lock .venv/bin/pip install --no-build-isolation --no-deps -e ./backend`
 - `Run the selected database suite` - runs `.venv/bin/python scripts/ci/run_disposable_checks.py --scope ${{ matrix.scope }} --timeout-seconds ${{ matrix.work_seconds }} --output /tmp/workchord-backend-results`
@@ -51,8 +51,8 @@
 ### frontend
 
 - `Reserve cleanup and artifact time` - runs `python3 - <<'PYTHON' import os import time deadline = time.time() + int(os.environ["JOB_BUDGET_MINUTES"]) * 60 - 180 with open(os.environ["GITHUB_ENV"], "a") as output: output.write(f"WORKCHORD_CI_DEADLINE_EPOCH={deadline}\n") PYTHON`
-- `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` - uses `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
-- `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405` - uses `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405`
+- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
+- `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` - uses `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`
 - `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238` - uses `actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238`
 - `Run frontend checks` - runs `python scripts/ci/run_disposable_checks.py --scope frontend --timeout-seconds 600 --output /tmp/workchord-frontend-results`
 - `Upload frontend results and durations` - uses `actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f`

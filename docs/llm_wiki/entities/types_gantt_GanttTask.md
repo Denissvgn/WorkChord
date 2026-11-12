@@ -62,10 +62,11 @@ flowchart LR
     n3["frontend/src/components/gantt/GanttChart.test.tsx"]
     n4["frontend/src/components/gantt/GanttChart.tsx"]
     n5["frontend/src/components/gantt/ScheduleExplanationDetails.tsx"]
-    n6["frontend/src/components/gantt/TaskEditModal.tsx"]
-    n7["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
-    n8["frontend/src/pages/GanttPage.test.tsx"]
-    n9["frontend/src/pages/GanttPage.tsx"]
+    n6["frontend/src/components/gantt/TaskEditModal.test.tsx"]
+    n7["frontend/src/components/gantt/TaskEditModal.tsx"]
+    n8["frontend/src/features/planningMasters/usePlanningReadiness.test.tsx"]
+    n9["frontend/src/pages/GanttPage.test.tsx"]
+    n10["frontend/src/pages/GanttPage.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -75,16 +76,18 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/types_gantt.md"
     click n1 "../modules/GanttChart.md"
     click n2 "../modules/GanttBarInputs.md"
     click n3 "../modules/GanttChart.test.md"
     click n4 "../modules/GanttChart.md"
     click n5 "../modules/ScheduleExplanationDetails.md"
-    click n6 "../modules/TaskEditModal.md"
-    click n7 "../modules/usePlanningReadiness.test.md"
-    click n8 "../modules/GanttPage.test.md"
-    click n9 "../modules/GanttPage.md"
+    click n6 "../modules/TaskEditModal.test.md"
+    click n7 "../modules/TaskEditModal.md"
+    click n8 "../modules/usePlanningReadiness.test.md"
+    click n9 "../modules/GanttPage.test.md"
+    click n10 "../modules/GanttPage.md"
 ```
 
 ### Summary
@@ -107,6 +110,7 @@ flowchart LR
 | `GanttChart.test` | import | [GanttChart.test](../modules/GanttChart.test.md) | — |
 | `GanttChart` | import | [GanttChart](../modules/GanttChart.md) | — |
 | `ScheduleExplanationDetails` | import | [ScheduleExplanationDetails](../modules/ScheduleExplanationDetails.md) | — |
+| `TaskEditModal.test` | import | [TaskEditModal.test](../modules/TaskEditModal.test.md) | — |
 | `TaskEditModal` | import | [TaskEditModal](../modules/TaskEditModal.md) | — |
 | `usePlanningReadiness.test` | import | [usePlanningReadiness.test](../modules/usePlanningReadiness.test.md) | — |
 | `GanttPage.test` | import | [GanttPage.test](../modules/GanttPage.test.md) | — |

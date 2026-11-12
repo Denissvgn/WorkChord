@@ -15,8 +15,8 @@
 
 ### server-acceptance
 
-- `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd` - uses `actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd`
-- `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405` - uses `actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405`
+- `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1` - uses `actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1`
+- `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0` - uses `actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0`
 - `Prepare public receipt validators` - runs `python -m venv .runtime/acceptance-export-venv .runtime/acceptance-export-venv/bin/pip install --require-hashes -r backend/requirements.lock`
 - `Build and accept the self-hosted stack` - runs `./scripts/server/accept_self_hosted.sh ./scripts/server/accept_self_hosted.sh`
 - `Validate the bounded receipt` - runs `test -s .runtime/autonomy/reports/latest.json test -s .runtime/autonomy/reports/trusted-signer-public-key.b64 test "$(find .runtime/autonomy/reports \ -maxdepth 1 -name 'previous-*.json' \| wc -l)" -ge 1 grep -q '"decision": "SELF-HOSTED-SERVER-ACCEPTED"' \ .runtime/autonomy/reports/latest.json grep -q '"accepted_as_production_evidence": false' \ .runtime/autonomy/reports/latest.json`

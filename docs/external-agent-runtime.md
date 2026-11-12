@@ -59,6 +59,51 @@ runtimes normally connect to the web instance's MCP endpoint or REST API.
 Keep credentials and transient claim/fence receipts out of task text, prompts,
 shared logs and artifacts.
 
+## Run MCP without a person to approve calls
+
+Every WorkChord MCP tool declares how it behaves, and a client can decide from
+that declaration alone:
+
+| Declaration | Tools | Hints |
+| --- | --- | --- |
+| Read | `get`, `list`, `search`, `preview`, `draft` and recommendation tools | `readOnlyHint: true` |
+| Write | Every tool that creates or changes a record | `readOnlyHint: false`, `destructiveHint: false` |
+| Removal | `agent_delete_project_milestone`, `workspace_delete_external_link`, `workspace_unlink_request_source` | `destructiveHint: true` |
+
+All tools act only on WorkChord's own records and declare `openWorldHint: false`.
+The declaration describes behavior; the actor key's scopes still decide what a
+call may do.
+
+Codex asks for approval before any MCP tool it must assume is destructive, and
+a tool that declares nothing is assumed destructive. `codex exec` has nobody to
+ask, so it refuses the call and reports `user cancelled MCP tool call` or
+`MCP tool call requires approval, but approval policy is never`. With the
+declarations above, an unattended Codex session runs every read and write tool
+and refuses only the three removal tools.
+
+Set the approval mode on the `workchord` server entry when the default does not
+fit:
+
+```toml
+[mcp_servers.workchord]
+url = "http://127.0.0.1:8480/api/mcp"
+bearer_token_env_var = "WORKCHORD_AGENT_KEY"
+
+# A PM runtime that must remove milestones or links without a person:
+[mcp_servers.workchord.tools.agent_delete_project_milestone]
+approval_mode = "approve"
+```
+
+- `default_tools_approval_mode = "approve"` runs every tool without asking. Use
+  it for an unattended runtime connected to a server that does not declare its
+  tools yet; the actor key's scopes remain the limit.
+- `default_tools_approval_mode = "writes"` asks before every tool that is not
+  read-only, for an interactive session that should confirm each change.
+
+An MCP call that was refused for approval never reached WorkChord and changed
+no work state. It is a fault in the runtime's configuration, not in the server
+or the actor key.
+
 ## Read the authoritative work decision
 
 Read `/api/agent/capabilities` or `agent_get_capabilities`. Confirm identity,

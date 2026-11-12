@@ -207,8 +207,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_iteration_plan_readiness | _tool_call | 1545 | `_tool_call((...), ...)` |
-| _tool_call | enforce_mcp_access | 303 | `enforce_mcp_access(required_scope)` |
+| agent_get_iteration_plan_readiness | _tool_call | 1556 | `_tool_call((...), ...)` |
+| _tool_call | enforce_mcp_access | 314 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |

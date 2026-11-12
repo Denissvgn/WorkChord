@@ -1,6 +1,6 @@
 # MCPHostValidationMiddleware
 
-**Location:** `backend/app/mcp_server.py:70`
+**Location:** `backend/app/mcp_server.py:71`
 **Kind:** Class
 **Bases:** —
 **Module:** [mcp_server](../modules/mcp_server.md)

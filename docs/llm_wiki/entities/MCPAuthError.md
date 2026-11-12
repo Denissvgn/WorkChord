@@ -1,6 +1,6 @@
 # MCPAuthError
 
-**Location:** `backend/app/mcp_server.py:47`
+**Location:** `backend/app/mcp_server.py:48`
 **Kind:** Class
 **Bases:** `PermissionError`
 **Module:** [mcp_server](../modules/mcp_server.md)

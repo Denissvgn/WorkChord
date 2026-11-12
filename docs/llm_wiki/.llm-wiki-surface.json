@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 827,
+      "modules": 830,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3158
+    "total": 3161
   },
   "dependency_pages": {
     "count": 2,
@@ -34418,7 +34418,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 200,
+              "line": 201,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -34459,13 +34459,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 182,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 182,
+              "line": 183,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -34525,7 +34525,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 200,
+              "line": 201,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -34566,13 +34566,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 182,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 182,
+              "line": 183,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -34632,7 +34632,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 200,
+              "line": 201,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -34673,13 +34673,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 181,
+              "line": 182,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 182,
+              "line": 183,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -41416,7 +41416,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 2452,
+              "line": 2463,
               "step": "main",
               "step_index": 1,
               "target": "os.getenv"
@@ -41424,7 +41424,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2453,
+              "line": 2464,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -41433,37 +41433,37 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2443,
+              "line": 2454,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2444,
+              "line": 2455,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2450,
+              "line": 2461,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
               "kind": "external_call",
-              "line": 2454,
+              "line": 2465,
               "step": "main",
               "target": "SystemExit"
             },
             {
               "kind": "external_call",
-              "line": 2458,
+              "line": 2469,
               "step": "main",
               "target": "redirect_stdout"
             },
             {
               "kind": "external_call",
-              "line": 2459,
+              "line": 2470,
               "step": "main",
               "target": "asyncio.run"
             },
@@ -41985,7 +41985,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 36,
+              "line": 39,
               "step": "main",
               "step_index": 1,
               "target": "run.cleanups.append"
@@ -41993,7 +41993,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 38,
+              "line": 41,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copytree"
@@ -42001,7 +42001,7 @@
             {
               "confidence": "unknown",
               "kind": "filesystem_write",
-              "line": 65,
+              "line": 68,
               "step": "main",
               "step_index": 1,
               "target": "shutil.copyfile"
@@ -42009,7 +42009,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 82,
+              "line": 85,
               "step": "main",
               "step_index": 1,
               "target": "run.finalizers.append"
@@ -42017,7 +42017,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 105,
+              "line": 108,
               "step": "main",
               "step_index": 1,
               "target": "run.validators.append"
@@ -42026,27 +42026,9 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 19,
-              "step": "main",
-              "target": "argparse.ArgumentParser"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 20,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 21,
-              "step": "main",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
               "line": 22,
               "step": "main",
-              "target": "parser.add_argument"
+              "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
@@ -42058,23 +42040,41 @@
               "kind": "unresolved_call",
               "line": 24,
               "step": "main",
-              "target": "parser.parse_args"
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 25,
+              "step": "main",
+              "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
               "line": 26,
               "step": "main",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 27,
+              "step": "main",
+              "target": "parser.parse_args"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "main",
               "target": "parser.error"
             },
             {
               "kind": "external_call",
-              "line": 27,
+              "line": 30,
               "step": "main",
               "target": "tempfile.mkdtemp"
             },
             {
               "kind": "external_call",
-              "line": 29,
+              "line": 32,
               "step": "main",
               "target": "RunReceipt"
             },
@@ -46295,6 +46295,7 @@
         "modules/taskDraftStorage.md",
         "modules/taskDraftStorage.test.md",
         "modules/TaskEditModal.md",
+        "modules/TaskEditModal.test.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskEditorDrawer.test.md",
@@ -46399,6 +46400,7 @@
         "modules/test_load_tooling.md",
         "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
+        "modules/test_mcp_tool_annotations.md",
         "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
@@ -46530,6 +46532,7 @@
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
         "modules/WorkRefreshStatus.md",
+        "modules/WorkRefreshStatus.test.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
@@ -62756,6 +62759,7 @@
       "outgoing_internal_links": [
         "modules/CurrentTaskModal.test.md",
         "modules/TaskContextSummary.md",
+        "modules/TaskEditModal.test.md",
         "modules/TaskEditorDrawer.test.md",
         "modules/taskService.md",
         "modules/types_task.md"
@@ -62849,7 +62853,7 @@
         "modules/TaskEditModal.md"
       ],
       "role": "semantic",
-      "source_path": "frontend/src/components/gantt/TaskEditModal.tsx",
+      "source_path": null,
       "title": "TaskEditModalContentProps"
     },
     {
@@ -65563,6 +65567,7 @@
         "modules/GanttPage.test.md",
         "modules/ScheduleExplanationDetails.md",
         "modules/TaskEditModal.md",
+        "modules/TaskEditModal.test.md",
         "modules/types_gantt.md",
         "modules/usePlanningReadiness.test.md"
       ],
@@ -67002,6 +67007,7 @@
         "modules/GanttPage.md",
         "modules/KanbanBoard.md",
         "modules/TaskEditModal.md",
+        "modules/TaskEditModal.test.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskForm.md",
@@ -70447,7 +70453,18 @@
       "outgoing_internal_links": [
         "entities/ConfirmDialogProps.md",
         "entities/ConfirmDialogTone.md",
-        "modules/ConfirmDialog.md"
+        "modules/Button.md",
+        "modules/ConfirmDialog.md",
+        "modules/DraftDismissalDialog.md",
+        "modules/GanttPage.md",
+        "modules/IterationList.md",
+        "modules/Modal.md",
+        "modules/ProjectDetailPage.md",
+        "modules/ProjectIterationsSection.md",
+        "modules/TaskForm.md",
+        "modules/TaskList.md",
+        "modules/UnsavedLeaveGuard.md",
+        "modules/useConfirmDialog.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/common/ConfirmDialog.tsx",
@@ -77581,7 +77598,6 @@
         "modules/GuardedTaskModal.md",
         "modules/PlanningWorkflowGuide.md",
         "modules/SlideOverDrawer.md",
-        "modules/TaskEditModal.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskWorkflowGuide.md",
         "modules/TemplateLabelSettings.md"
@@ -78482,17 +78498,12 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/TaskEditModal",
       "outgoing_internal_links": [
-        "entities/TaskEditModalContentProps.md",
         "entities/TaskEditModalProps.md",
-        "modules/Button.md",
-        "modules/ConfirmDialog.md",
         "modules/GanttChart.md",
         "modules/GanttPage.md",
-        "modules/QueryState.md",
-        "modules/SlideOverDrawer.md",
         "modules/TaskEditModal.md",
-        "modules/TaskForm.md",
-        "modules/taskService.md",
+        "modules/TaskEditModal.test.md",
+        "modules/TaskEditorDrawer.md",
         "modules/teamService.md",
         "modules/types_gantt.md",
         "modules/types_task.md"
@@ -78500,6 +78511,22 @@
       "role": "semantic",
       "source_path": "frontend/src/components/gantt/TaskEditModal.tsx",
       "title": "TaskEditModal Module"
+    },
+    {
+      "canonical_path": "modules/TaskEditModal.test.md",
+      "id": "TaskEditModal.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/TaskEditModal.test",
+      "outgoing_internal_links": [
+        "modules/renderWithProviders.md",
+        "modules/TaskEditModal.md",
+        "modules/TaskEditModal.test.md",
+        "modules/types_gantt.md",
+        "modules/types_task.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/gantt/TaskEditModal.test.tsx",
+      "title": "TaskEditModal.test Module"
     },
     {
       "canonical_path": "modules/taskEditorContract.md",
@@ -80101,6 +80128,19 @@
       "role": "semantic",
       "source_path": "backend/tests/test_managed_authority.py",
       "title": "test_managed_authority Module"
+    },
+    {
+      "canonical_path": "modules/test_mcp_tool_annotations.md",
+      "id": "test_mcp_tool_annotations",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_mcp_tool_annotations",
+      "outgoing_internal_links": [
+        "modules/mcp_server.md",
+        "modules/test_mcp_tool_annotations.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_mcp_tool_annotations.py",
+      "title": "test_mcp_tool_annotations Module"
     },
     {
       "canonical_path": "modules/test_metric_matches.md",
@@ -82381,11 +82421,26 @@
       "outgoing_internal_links": [
         "modules/AppShell.md",
         "modules/workQueryFreshness.md",
-        "modules/WorkRefreshStatus.md"
+        "modules/WorkRefreshStatus.md",
+        "modules/WorkRefreshStatus.test.md"
       ],
       "role": "semantic",
       "source_path": "frontend/src/components/feedback/WorkRefreshStatus.tsx",
       "title": "WorkRefreshStatus Module"
+    },
+    {
+      "canonical_path": "modules/WorkRefreshStatus.test.md",
+      "id": "WorkRefreshStatus.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/WorkRefreshStatus.test",
+      "outgoing_internal_links": [
+        "modules/renderWithProviders.md",
+        "modules/WorkRefreshStatus.md",
+        "modules/WorkRefreshStatus.test.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/feedback/WorkRefreshStatus.test.tsx",
+      "title": "WorkRefreshStatus.test Module"
     },
     {
       "canonical_path": "modules/workspaceQueryPolicy.md",
@@ -96819,6 +96874,7 @@
         "modules/taskDraftStorage.md",
         "modules/taskDraftStorage.test.md",
         "modules/TaskEditModal.md",
+        "modules/TaskEditModal.test.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskEditorDrawer.test.md",
@@ -96923,6 +96979,7 @@
         "modules/test_load_tooling.md",
         "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
+        "modules/test_mcp_tool_annotations.md",
         "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
@@ -97054,6 +97111,7 @@
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
         "modules/WorkRefreshStatus.md",
+        "modules/WorkRefreshStatus.test.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
@@ -97657,6 +97715,7 @@
         "modules/taskDraftStorage.md",
         "modules/taskDraftStorage.test.md",
         "modules/TaskEditModal.md",
+        "modules/TaskEditModal.test.md",
         "modules/taskEditorContract.md",
         "modules/TaskEditorDrawer.md",
         "modules/TaskEditorDrawer.test.md",
@@ -97761,6 +97820,7 @@
         "modules/test_load_tooling.md",
         "modules/test_local_baseline.md",
         "modules/test_managed_authority.md",
+        "modules/test_mcp_tool_annotations.md",
         "modules/test_metric_matches.md",
         "modules/test_mobile_contract.md",
         "modules/test_mutation_versions.md",
@@ -97892,6 +97952,7 @@
         "modules/workQueryFreshness.md",
         "modules/workQueryFreshness.test.md",
         "modules/WorkRefreshStatus.md",
+        "modules/WorkRefreshStatus.test.md",
         "modules/workspaceQueryPolicy.md",
         "modules/workspaceQueryPolicy.test.md",
         "modules/workspaces.md",
@@ -97903,5 +97964,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:da2faeaed0fa2f54b1e0121c425266e6341b3c4f52ed7a34c238a7476452f3b3"
+  "source_hash": "sha256:4907622fc84f7ea79ba1e1d57ce62759b33b7f76e8bbd9c1d38529abbf58bad6"
 }
