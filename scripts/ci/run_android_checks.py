@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Build Android with native JDK 17, SDK 34 and the checksum-pinned Gradle wrapper."""
+"""Build Android with native JDK 17, the licensed SDK and the checksum-pinned Gradle wrapper.
+
+The workflow installs platform 34 and build-tools 34.0.0; Gradle downloads the compile SDK (37) under the accepted licenses.
+"""
 
 import argparse
 import hashlib
@@ -103,7 +106,7 @@ def main():
             if len(apks) != 1 or apks[0].stat().st_size <= 0:
                 raise ValueError('Android requires one nonempty debug APK')
         run.validators.append(validate_results)
-        run.data['toolchain'] = {'jdk': version.strip(), 'gradle': '8.7', 'agp': '8.5.2', 'compile_sdk': 34, 'build_tools': '34.0.0'}
+        run.data['toolchain'] = {'jdk': version.strip(), 'gradle': '9.9.1', 'agp': '9.5.1', 'compile_sdk': 37, 'target_sdk': 34}
         run.run('gradle', [str(project / 'gradlew'), '--no-daemon', '--max-workers=2',
             '--project-cache-dir', str(Path(workspace.name) / 'gradle-project-cache'),
             'testDebugUnitTest', 'testReleaseUnitTest', 'assembleDebug',
