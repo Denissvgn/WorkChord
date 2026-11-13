@@ -1,6 +1,6 @@
 # AgentTeamApplyRequest
 
-**Location:** `backend/app/schemas/agent_team_setup.py:731`
+**Location:** `backend/app/schemas/agent_team_setup.py:781`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -48,6 +48,7 @@ flowchart LR
     n7["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
     n8["test_uncertain_delivery_requires_explicit_new_reference_recovery (backend/tests/test_agent_team_setup.py)"]
     n9["apply_manifest (backend/tests/test_agent_team_setup_qualification.py)"]
+    n10["apply_every_action (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -57,6 +58,7 @@ flowchart LR
     n7 --> n0
     n8 --> n0
     n9 --> n0
+    n10 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/routers_agent.md"
@@ -67,6 +69,7 @@ flowchart LR
     click n7 "../modules/test_agent_team_setup.md"
     click n8 "../modules/test_agent_team_setup.md"
     click n9 "../modules/test_agent_team_setup_qualification.md"
+    click n10 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -93,3 +96,4 @@ flowchart LR
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 1 |
 | `test_uncertain_delivery_requires_explicit_new_reference_recovery` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `apply_manifest` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
+| `apply_every_action` | call | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | 1 |

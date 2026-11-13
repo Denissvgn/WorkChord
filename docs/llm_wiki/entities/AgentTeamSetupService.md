@@ -1,6 +1,6 @@
 # AgentTeamSetupService
 
-**Location:** `backend/app/services/agent_team_setup_service.py:150`
+**Location:** `backend/app/services/agent_team_setup_service.py:174`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)
@@ -132,4 +132,4 @@ flowchart LR
 | `plan_agent_team_reconciliation` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `validate_agent_team_master` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 
-> References: showing 12 of 37 logical references; 25 omitted by the 12-row generated summary limit.
+> References: showing 12 of 40 logical references; 28 omitted by the 12-row generated summary limit.

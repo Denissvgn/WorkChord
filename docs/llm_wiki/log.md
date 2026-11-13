@@ -3297,3 +3297,36 @@ Agents now begin assigned work as soon as its dependencies are done, and begin a
 - Infrastructure moved: 0
 - Infrastructure removed: 0
 - Unsupported infrastructure YAML: 9
+
+## 2026-11-13
+
+### Wiki sync
+Stored agent-team contracts are read with shape-only loaders; members that break today's role rules are reported as `stored_contract_outdated`, kept out of dispatch and replaced by an ordinary update, with credential recovery allowed to bring them up to date.
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a56d2640c12323ab6aa5394e034d9ec592ffdf00e09ece6488ea4e45d88dc4c6`
+- Pages created: 3
+- Pages updated: 72
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3076
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+
+## 2026-11-14
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a56d2640c12323ab6aa5394e034d9ec592ffdf00e09ece6488ea4e45d88dc4c6`
+- Pages created: 0
+- Pages updated: 4
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3144
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

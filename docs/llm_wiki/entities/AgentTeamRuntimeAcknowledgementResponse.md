@@ -1,6 +1,6 @@
 # AgentTeamRuntimeAcknowledgementResponse
 
-**Location:** `backend/app/schemas/agent_team_setup.py:845`
+**Location:** `backend/app/schemas/agent_team_setup.py:895`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

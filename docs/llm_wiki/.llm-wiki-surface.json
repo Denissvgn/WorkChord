@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1561,
+      "entities": 1563,
       "flows": 557,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 830,
+      "modules": 831,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3161
+    "total": 3164
   },
   "dependency_pages": {
     "count": 2,
@@ -8403,19 +8403,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 3423,
+              "line": 3474,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "self.db.execute"
             },
             {
               "kind": "unresolved_call",
-              "line": 3424,
+              "line": 3475,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where"
             },
             {
               "kind": "unresolved_call",
-              "line": 3424,
+              "line": 3475,
               "step": "AgentTeamSetupService.membership_boundary",
               "target": "select(AgentTeamTopology.topology_key).join"
             },
@@ -8442,8 +8442,8 @@
             "backend/app/routers/agent.py",
             "backend/app/services/agent_routing_rollout.py",
             "backend/app/services/agent_team_setup_service.py",
-            "backend/app/utils/time.py",
             "backend/app/schemas/agent_team_setup.py",
+            "backend/app/utils/time.py",
             "backend/app/services/agent_service.py",
             "backend/app/autonomy/canonical.py",
             "backend/app/agent_contract.py",
@@ -8452,7 +8452,7 @@
             "backend/app/config.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 217,
+          "step_count": 226,
           "truncated": true
         }
       },
@@ -25788,7 +25788,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 450,
+          "step_count": 458,
           "truncated": true
         }
       },
@@ -26316,7 +26316,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 434,
+          "step_count": 442,
           "truncated": true
         }
       },
@@ -28277,7 +28277,7 @@
             "backend/app/services/agent_work_service.py",
             "backend/app/schemas/agent.py"
           ],
-          "step_count": 471,
+          "step_count": 479,
           "truncated": true
         }
       },
@@ -29622,7 +29622,7 @@
             "backend/app/schemas/agent_team_setup.py",
             "backend/app/autonomy/canonical.py"
           ],
-          "step_count": 429,
+          "step_count": 438,
           "truncated": true
         }
       },
@@ -29714,7 +29714,7 @@
             "backend/app/schemas/agent.py",
             "backend/app/schemas/agent_routing.py"
           ],
-          "step_count": 487,
+          "step_count": 495,
           "truncated": true
         }
       },
@@ -43915,6 +43915,7 @@
         "entities/DuplicateActionDefaults.md",
         "entities/DuplicateSuggestionGroupProps.md",
         "entities/DuplicateSuggestionsPanelProps.md",
+        "entities/EarlierTeam.md",
         "entities/EditableEffortModifier.md",
         "entities/EditableSchedulingPass.md",
         "entities/EditableSchedulingRules.md",
@@ -43955,6 +43956,7 @@
         "entities/ExternalLinkResponse.md",
         "entities/ExternalLinkService.md",
         "entities/ExternalLinkValidationError.md",
+        "entities/FailingForOneMemberSink.md",
         "entities/FailingOnceCredentialSink.md",
         "entities/FailingSession.md",
         "entities/FailingSessionContext.md",
@@ -46369,6 +46371,7 @@
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md",
         "modules/test_agent_work_routing_lineage.md",
         "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
@@ -47182,7 +47185,8 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/routers_agent.md"
+        "modules/routers_agent.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -47196,8 +47200,7 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/test_agent_team_catalog.md",
-        "modules/test_agent_team_setup.md"
+        "modules/test_agent_team_catalog.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -47250,7 +47253,8 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/test_agent_team_setup.md"
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -47277,7 +47281,8 @@
       "mcp_uri": "llm-wiki://entities/agent_team_setup_AgentTeamRuntimeHandoff",
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
-        "modules/agent_team_setup_service.md"
+        "modules/agent_team_setup_service.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -48462,7 +48467,8 @@
         "modules/agent_team_setup_service.md",
         "modules/routers_agent.md",
         "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_qualification.md"
+        "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -48505,7 +48511,8 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/test_agent_team_setup.md"
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -48519,7 +48526,8 @@
       "outgoing_internal_links": [
         "modules/agent_team_setup.md",
         "modules/agent_team_setup_service.md",
-        "modules/test_agent_team_setup.md"
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -48687,7 +48695,8 @@
         "modules/agent_team_setup_service.md",
         "modules/routers_agent.md",
         "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_qualification.md"
+        "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -48907,7 +48916,8 @@
         "modules/app_database.md",
         "modules/models___init__.md",
         "modules/models_agent.md",
-        "modules/test_agent_team_setup.md"
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/models/agent.py",
@@ -50142,7 +50152,8 @@
       "mcp_uri": "llm-wiki://entities/CapturingCredentialSink",
       "outgoing_internal_links": [
         "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_qualification.md"
+        "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/tests/test_agent_team_setup.py",
@@ -51472,6 +51483,18 @@
       "title": "DuplicateSuggestionsPanelProps"
     },
     {
+      "canonical_path": "entities/EarlierTeam.md",
+      "id": "EarlierTeam",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/EarlierTeam",
+      "outgoing_internal_links": [
+        "modules/test_agent_team_setup_stored_contract.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_team_setup_stored_contract.py",
+      "title": "EarlierTeam"
+    },
+    {
       "canonical_path": "entities/EditableEffortModifier.md",
       "id": "EditableEffortModifier",
       "kind": "entities",
@@ -52001,6 +52024,19 @@
       "role": "semantic",
       "source_path": "backend/app/services/external_link_service.py",
       "title": "ExternalLinkValidationError"
+    },
+    {
+      "canonical_path": "entities/FailingForOneMemberSink.md",
+      "id": "FailingForOneMemberSink",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/FailingForOneMemberSink",
+      "outgoing_internal_links": [
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_team_setup_stored_contract.py",
+      "title": "FailingForOneMemberSink"
     },
     {
       "canonical_path": "entities/FailingOnceCredentialSink.md",
@@ -69087,7 +69123,8 @@
         "modules/test_agent_skill_routing_guidance.md",
         "modules/test_agent_team_catalog.md",
         "modules/test_agent_team_setup.md",
-        "modules/test_agent_team_setup_qualification.md"
+        "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent_team_setup.py",
@@ -79686,6 +79723,29 @@
       "role": "semantic",
       "source_path": "backend/tests/test_agent_team_setup_qualification.py",
       "title": "test_agent_team_setup_qualification Module"
+    },
+    {
+      "canonical_path": "modules/test_agent_team_setup_stored_contract.md",
+      "id": "test_agent_team_setup_stored_contract",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_agent_team_setup_stored_contract",
+      "outgoing_internal_links": [
+        "entities/EarlierTeam.md",
+        "entities/FailingForOneMemberSink.md",
+        "modules/agent_team_setup.md",
+        "modules/agent_team_setup_service.md",
+        "modules/app_database.md",
+        "modules/app_main.md",
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/models_agent.md",
+        "modules/schemas_agent_planning.md",
+        "modules/test_agent_team_setup.md",
+        "modules/test_agent_team_setup_stored_contract.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_team_setup_stored_contract.py",
+      "title": "test_agent_team_setup_stored_contract Module"
     },
     {
       "canonical_path": "modules/test_agent_work_routing_lineage.md",
@@ -96948,6 +97008,7 @@
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md",
         "modules/test_agent_work_routing_lineage.md",
         "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
@@ -97789,6 +97850,7 @@
         "modules/test_agent_team_setup.md",
         "modules/test_agent_team_setup_cli.md",
         "modules/test_agent_team_setup_qualification.md",
+        "modules/test_agent_team_setup_stored_contract.md",
         "modules/test_agent_work_routing_lineage.md",
         "modules/test_allocation_identity.md",
         "modules/test_allocation_recovery.md",
@@ -97964,5 +98026,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:4907622fc84f7ea79ba1e1d57ce62759b33b7f76e8bbd9c1d38529abbf58bad6"
+  "source_hash": "sha256:0e0b92fba5fefc5bfe030eaa63d50fe76269812e9eac478e78db9a5062bc9a9c"
 }

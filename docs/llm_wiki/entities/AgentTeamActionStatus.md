@@ -1,6 +1,6 @@
 # AgentTeamActionStatus
 
-**Location:** `backend/app/schemas/agent_team_setup.py:122`
+**Location:** `backend/app/schemas/agent_team_setup.py:139`
 **Kind:** Enum
 **Bases:** `StrEnum`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

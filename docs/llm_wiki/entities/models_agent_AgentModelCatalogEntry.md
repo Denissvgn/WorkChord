@@ -110,4 +110,4 @@ flowchart LR
 | `test_binding_schema_round_trip_exposes_selection_state` | call | [test_agent_routing_data](../modules/test_agent_routing_data.md) | 1 |
 | `test_catalog_database_constraints_fail_closed` | call | [test_agent_routing_data](../modules/test_agent_routing_data.md) | 1 |
 
-> References: showing 12 of 28 logical references; 16 omitted by the 12-row generated summary limit.
+> References: showing 12 of 29 logical references; 17 omitted by the 12-row generated summary limit.

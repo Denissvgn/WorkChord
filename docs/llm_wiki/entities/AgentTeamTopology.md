@@ -40,16 +40,16 @@ flowchart LR
     n0["AgentTeamTopology (backend/app/models/agent.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["AgentTeamSetupService._apply_create_or_update (backend/app/services/agent_team_setup_service.py)"]
-    n4["AgentTeamSetupService._apply_disable (backend/app/services/agent_team_setup_service.py)"]
-    n5["AgentTeamSetupService._apply_identity_replacement (backend/app/services/agent_team_setup_service.py)"]
-    n6["AgentTeamSetupService._apply_replace_recovery (backend/app/services/agent_team_setup_service.py)"]
-    n7["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
-    n8["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
-    n9["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
-    n10["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
-    n11["AgentTeamSetupService._reconcile_bindings (backend/app/services/agent_team_setup_service.py)"]
-    n12["AgentTeamSetupService._refresh_handoffs (backend/app/services/agent_team_setup_service.py)"]
+    n3["_member_contract_outdated (backend/app/services/agent_team_setup_service.py)"]
+    n4["AgentTeamSetupService._apply_create_or_update (backend/app/services/agent_team_setup_service.py)"]
+    n5["AgentTeamSetupService._apply_disable (backend/app/services/agent_team_setup_service.py)"]
+    n6["AgentTeamSetupService._apply_identity_replacement (backend/app/services/agent_team_setup_service.py)"]
+    n7["AgentTeamSetupService._apply_replace_recovery (backend/app/services/agent_team_setup_service.py)"]
+    n8["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
+    n9["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
+    n10["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n11["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
+    n12["AgentTeamSetupService._reconcile_bindings (backend/app/services/agent_team_setup_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -94,6 +94,7 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `_member_contract_outdated` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_create_or_update` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_disable` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_identity_replacement` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
@@ -104,6 +105,5 @@ flowchart LR
 | `AgentTeamSetupService._increment_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._member_record` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._reconcile_bindings` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
-| `AgentTeamSetupService._refresh_handoffs` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 22 logical references; 10 omitted by the 12-row generated summary limit.

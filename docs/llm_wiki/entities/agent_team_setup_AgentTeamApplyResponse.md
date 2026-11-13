@@ -1,6 +1,6 @@
 # AgentTeamApplyResponse
 
-**Location:** `backend/app/schemas/agent_team_setup.py:774`
+**Location:** `backend/app/schemas/agent_team_setup.py:824`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -40,15 +40,18 @@ flowchart LR
     n2["apply_agent_team_reconciliation (backend/app/routers/agent.py)"]
     n3["AgentTeamSetupService._replay_apply (backend/app/services/agent_team_setup_service.py)"]
     n4["AgentTeamSetupService.apply (backend/app/services/agent_team_setup_service.py)"]
+    n5["apply_every_action (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/agent_team_setup_service.md"
     click n4 "../modules/agent_team_setup_service.md"
+    click n5 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -71,3 +74,4 @@ flowchart LR
 | `AgentTeamSetupService._replay_apply` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService.apply` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService.apply` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `apply_every_action` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |

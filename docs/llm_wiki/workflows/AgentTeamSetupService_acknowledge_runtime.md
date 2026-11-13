@@ -17,11 +17,13 @@
 7. `models_identity.Principal`
 8. `identity_service.bind_verified_system`
 9. `agent_service.AgentPermissionError`
-10. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
-11. `time.utc_now`
-12. `time.utc_now`
-13. `commands.commit_or_flush`
-14. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
+10. `agent_team_setup.load_stored_agent_team_member`
+11. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
+12. `agent_team_setup.load_stored_agent_team_master`
+13. `time.utc_now`
+14. `time.utc_now`
+15. `commands.commit_or_flush`
+16. `agent_team_setup.AgentTeamRuntimeAcknowledgementResponse`
 
 ## Touches
 
@@ -37,3 +39,5 @@
 ## Behavior
 
 This workflow starts at `agent_team_setup_service.AgentTeamSetupService.acknowledge_runtime`. The generated sequence is a bounded static projection; runtime ordering, branching, and side effects require source-level confirmation.
+
+A member whose stored contract breaks today's role rules is refused with `agent_team_ack_contract_outdated` before the handoff identity is compared, so the reason is the same whichever handoff the runtime holds. Other members acknowledge normally.

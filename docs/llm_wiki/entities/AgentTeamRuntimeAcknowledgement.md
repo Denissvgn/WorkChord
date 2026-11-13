@@ -1,6 +1,6 @@
 # AgentTeamRuntimeAcknowledgement
 
-**Location:** `backend/app/schemas/agent_team_setup.py:799`
+**Location:** `backend/app/schemas/agent_team_setup.py:849`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -51,12 +51,14 @@ flowchart LR
     n4["test_fresh_apply_replay_onboarding_and_runtime_readiness (backend/tests/test_agent_team_setup.py)"]
     n5["acknowledge_member (backend/tests/test_agent_team_setup_qualification.py)"]
     n6["test_setup_scenario_03_runtime_handoff_failure_resumes_in_place (backend/tests/test_agent_team_setup_qualification.py)"]
+    n7["acknowledgement_for (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/routers_agent.md"
@@ -64,6 +66,7 @@ flowchart LR
     click n4 "../modules/test_agent_team_setup.md"
     click n5 "../modules/test_agent_team_setup_qualification.md"
     click n6 "../modules/test_agent_team_setup_qualification.md"
+    click n7 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -87,3 +90,5 @@ flowchart LR
 | `test_fresh_apply_replay_onboarding_and_runtime_readiness` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
 | `acknowledge_member` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `test_setup_scenario_03_runtime_handoff_failure_resumes_in_place` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
+| `acknowledgement_for` | call | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | 1 |
+| `acknowledgement_for` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
