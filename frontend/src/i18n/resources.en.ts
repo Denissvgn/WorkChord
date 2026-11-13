@@ -2287,6 +2287,7 @@ export const englishResources = {
                     runtime_unobserved: 'Connect the runtime so its status can be confirmed.',
                     minimum_workers_not_runtime_ready: 'Connect and verify the required workers.',
                     runtime_observation_stale: 'Reconnect the runtime to refresh its status.',
+                    stored_contract_outdated: 'Plan and apply a master that meets the current role rules.',
                     unknown: 'Review the setup check and follow its recovery action.',
                 },
                 errorTitle: 'Setup request needs attention',

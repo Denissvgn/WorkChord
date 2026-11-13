@@ -210,7 +210,7 @@ describe('AgentTeamSetupMasterPage authority and readiness', () => {
 
     it('explains runtime blockers with localized recovery labels and secondary codes', async () => {
         useAdminAccessMock.mockReturnValue({ hasAdminKey: false });
-        const codes = ['actor_not_active', 'role_package_not_acknowledged', 'runtime_unobserved'];
+        const codes = ['actor_not_active', 'role_package_not_acknowledged', 'runtime_unobserved', 'stored_contract_outdated'];
         agentServiceMock.getAgentTeamStatus.mockResolvedValue({ ...statusFixture, blocker_codes: codes });
         renderWithProviders(<AgentTeamSetupMasterPage />);
         const context = await screen.findByRole('region', {

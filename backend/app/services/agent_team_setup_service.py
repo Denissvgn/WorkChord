@@ -45,6 +45,7 @@ from app.services.agent_skill_bundle_service import (
 )
 from app.schemas.agent_team_setup import (
     AGENT_TEAM_PLAN_SCHEMA_VERSION,
+    AGENT_TEAM_ROLE_RULE_FIELDS,
     MAX_AGENT_TEAM_ACTIONS,
     ROLE_SCOPE_PRESETS,
     AgentTeamActionReceipt,
@@ -74,6 +75,8 @@ from app.schemas.agent_team_setup import (
     AgentTeamStatusResponse,
     AgentTeamValidateResponse,
     ensure_agent_team_secret_free,
+    load_stored_agent_team_master,
+    load_stored_agent_team_member,
     parse_agent_team_master,
     reconcile_agent_team_master,
 )
@@ -145,6 +148,27 @@ def _canonical_json(value: Any) -> str:
 
 def _digest(value: Any) -> str:
     return hashlib.sha256(_canonical_json(value).encode("utf-8")).hexdigest()
+
+
+def _member_contract_outdated(
+    record: AgentTeamTopologyMember | None,
+    desired: AgentTeamMemberSpec,
+) -> bool:
+    """Say whether a member's stored contract breaks today's role rules.
+
+    The member row is what acknowledgement checks, so status reads the same
+    contract; the manifest entry is used only for a member without a row. A
+    row that cannot be read at all is treated as outdated, so the member
+    stays out of dispatch instead of failing status for the whole team.
+    """
+
+    if record is None:
+        return desired.role_rule_violation() is not None
+    try:
+        stored = load_stored_agent_team_member(record.desired_member_payload)
+    except ValueError:
+        return True
+    return stored.role_rule_violation() is not None
 
 
 class AgentTeamSetupService:
@@ -353,7 +377,7 @@ class AgentTeamSetupService:
         members: list[AgentTeamCurrentMember] = []
         for member in topology.members:
             try:
-                desired = AgentTeamMemberSpec.model_validate_json(
+                desired = load_stored_agent_team_member(
                     member.desired_member_payload
                 )
             except ValueError as exc:
@@ -1802,7 +1826,7 @@ class AgentTeamSetupService:
                 False,
             )
         try:
-            stored_member = AgentTeamMemberSpec.model_validate_json(
+            stored_member = load_stored_agent_team_member(
                 record.desired_member_payload
             )
         except ValueError as exc:
@@ -1829,9 +1853,16 @@ class AgentTeamSetupService:
                 ),
                 False,
             )
-        if stored_member.model_copy(
-            update={"credential_ref": member.credential_ref}
-        ) != member:
+        # Recovery changes only credential_ref. A stored contract that breaks
+        # today's role rules may also take the role-governed fields of the
+        # current master, so the same approved recovery brings it up to date.
+        recovery_fields = {"credential_ref"}
+        if stored_member.role_rule_violation() is not None:
+            recovery_fields |= AGENT_TEAM_ROLE_RULE_FIELDS
+        if stored_member.model_dump(
+            mode="json",
+            exclude=recovery_fields,
+        ) != member.model_dump(mode="json", exclude=recovery_fields):
             return (
                 AgentTeamActionReceipt(
                     action_id=action.action_id,
@@ -2781,9 +2812,7 @@ class AgentTeamSetupService:
         persist_state: bool,
     ) -> AgentTeamStatusResponse:
         try:
-            manifest = AgentTeamMaster.model_validate_json(
-                topology.manifest_payload
-            )
+            manifest = load_stored_agent_team_master(topology.manifest_payload)
         except ValueError as exc:
             raise AgentTeamSetupConflictError(
                 "agent_team_stored_manifest_invalid",
@@ -2839,6 +2868,9 @@ class AgentTeamSetupService:
             record = records.get(desired.actor_key)
             actor = record.actor if record is not None else None
             blockers: set[str] = set()
+            contract_outdated = _member_contract_outdated(record, desired)
+            if contract_outdated:
+                blockers.add("stored_contract_outdated")
             profile_revision: str | None = None
             binding_revisions: dict[str, int] = {}
             connection_state = "unobserved"
@@ -3008,7 +3040,7 @@ class AgentTeamSetupService:
                     ),
                     runtime_ready=runtime_ready,
                     blocker_codes=tuple(sorted(blockers)),
-                    handoff=handoff,
+                    handoff=None if contract_outdated else handoff,
                 )
             )
 
@@ -3034,6 +3066,12 @@ class AgentTeamSetupService:
             topology_blockers.add("credential_delivery_uncertain")
         if any(not member.runtime_ready for member in member_statuses):
             topology_blockers.add("declared_member_not_runtime_ready")
+        contracts_outdated = any(
+            "stored_contract_outdated" in member.blocker_codes
+            for member in member_statuses
+        )
+        if contracts_outdated:
+            topology_blockers.add("stored_contract_outdated")
         runtime_ready = not topology_blockers and all(
             member.runtime_ready for member in member_statuses
         )
@@ -3105,8 +3143,15 @@ class AgentTeamSetupService:
             ),
             AgentTeamSetupStep(
                 id="master",
-                state="done",
-                next_action="Reconcile a new manifest revision when desired state changes",
+                state="blocked" if contracts_outdated else "done",
+                blocker_codes=(
+                    ("stored_contract_outdated",) if contracts_outdated else ()
+                ),
+                next_action=(
+                    "Plan and apply a manifest that meets the current role rules"
+                    if contracts_outdated
+                    else "Reconcile a new manifest revision when desired state changes"
+                ),
             ),
             AgentTeamSetupStep(
                 id="controller",
@@ -3287,6 +3332,15 @@ class AgentTeamSetupService:
                 "Onboarding identity is not bound to an agent-team topology"
             )
         await self._increment_ack_attempt(member)
+        # Name an outdated contract first: no handoff can be current for it.
+        desired = load_stored_agent_team_member(member.desired_member_payload)
+        if desired.role_rule_violation() is not None:
+            raise AgentTeamSetupConflictError(
+                "agent_team_ack_contract_outdated",
+                "Stored member contract no longer meets the role rules; "
+                "apply a current manifest before acknowledging",
+                actor_key=member.actor_key,
+            )
         topology = member.topology
         if (
             topology.topology_key != acknowledgement.topology_key
@@ -3298,9 +3352,6 @@ class AgentTeamSetupService:
                 "agent_team_ack_identity_mismatch",
                 "Acknowledgement does not match the exact current handoff",
             )
-        desired = AgentTeamMemberSpec.model_validate_json(
-            member.desired_member_payload
-        )
         ack_content = acknowledgement.model_dump(mode="json", exclude={"expected_previous_acknowledgement_digest"})
         ack_digest = _digest(ack_content)
         if member.runtime_acknowledgement_digest is not None:
@@ -3346,7 +3397,7 @@ class AgentTeamSetupService:
                 "agent_team_ack_assignment_mode_mismatch",
                 "Runtime does not support every assigned mode",
             )
-        manifest = AgentTeamMaster.model_validate_json(topology.manifest_payload)
+        manifest = load_stored_agent_team_master(topology.manifest_payload)
         if not set(manifest.required_server_features).issubset(
             acknowledgement.server_features
         ):
