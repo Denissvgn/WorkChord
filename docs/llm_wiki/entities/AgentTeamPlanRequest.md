@@ -1,6 +1,6 @@
 # AgentTeamPlanRequest
 
-**Location:** `backend/app/schemas/agent_team_setup.py:726`
+**Location:** `backend/app/schemas/agent_team_setup.py:776`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -97,4 +97,4 @@ flowchart LR
 | `test_setup_scenario_06_add_binding_change_and_explicit_disable` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 | `test_setup_scenario_11_compatibility_preflight_is_non_mutating` | call | [test_agent_team_setup_qualification](../modules/test_agent_team_setup_qualification.md) | 1 |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 15 logical references; 3 omitted by the 12-row generated summary limit.

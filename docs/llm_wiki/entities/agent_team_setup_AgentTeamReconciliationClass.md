@@ -1,6 +1,6 @@
 # AgentTeamReconciliationClass
 
-**Location:** `backend/app/schemas/agent_team_setup.py:102`
+**Location:** `backend/app/schemas/agent_team_setup.py:119`
 **Kind:** Enum
 **Bases:** `StrEnum`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -35,14 +35,17 @@ flowchart LR
     n2["_build_action (backend/app/schemas/agent_team_setup.py)"]
     n3["backend/app/services/agent_team_setup_service.py"]
     n4["backend/tests/test_agent_team_setup.py"]
+    n5["backend/tests/test_agent_team_setup_stored_contract.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n2 "../modules/agent_team_setup.md"
     click n3 "../modules/agent_team_setup_service.md"
     click n4 "../modules/test_agent_team_setup.md"
+    click n5 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -64,3 +67,4 @@ flowchart LR
 | `_build_action` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `agent_team_setup_service` | import | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
+| `test_agent_team_setup_stored_contract` | import | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |

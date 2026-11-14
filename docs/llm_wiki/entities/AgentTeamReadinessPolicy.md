@@ -1,6 +1,6 @@
 # AgentTeamReadinessPolicy
 
-**Location:** `backend/app/schemas/agent_team_setup.py:250`
+**Location:** `backend/app/schemas/agent_team_setup.py:278`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

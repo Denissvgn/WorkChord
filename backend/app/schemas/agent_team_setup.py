@@ -7,7 +7,14 @@ from enum import StrEnum
 from typing import Any, Literal, Mapping
 from urllib.parse import parse_qsl, urlsplit
 
-from pydantic import ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    ConfigDict,
+    Field,
+    PrivateAttr,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 
 from app.autonomy.canonical import (
     StrictContractModel,
@@ -80,6 +87,16 @@ ROLE_ASSIGNMENT_MODE = {
     "worker": "execution",
     "verifier": "verification",
 }
+# Validation context used only by the stored-contract loaders below. A
+# contract an earlier apply stored was valid under the role rules of the
+# release that wrote it, so reading it checks the shape only. A member that
+# breaks today's role rules is marked while it is read, and the mark travels
+# with the object, so embedding it in another model keeps it readable.
+_STORED_CONTRACT: Mapping[str, bool] = {"stored_agent_team_contract": True}
+# Member fields the role rules above govern.
+AGENT_TEAM_ROLE_RULE_FIELDS = frozenset(
+    {"scope_preset", "assignment_modes", "skill_package"}
+)
 SECRET_QUERY_KEYS = frozenset(
     {
         "access_token",
@@ -191,6 +208,7 @@ class AgentTeamMemberSpec(AgentTeamSetupModel):
     )
     runtime_ref: str = Field(min_length=1, max_length=1_024)
     credential_ref: str = Field(min_length=1, max_length=1_024)
+    _stored_under_earlier_rules: bool = PrivateAttr(default=False)
 
     @field_validator("assignment_modes")
     @classmethod
@@ -224,18 +242,28 @@ class AgentTeamMemberSpec(AgentTeamSetupModel):
     def validate_external_references(cls, value: str, info: Any) -> str:
         return _validate_reference(value, label=info.field_name)
 
-    @model_validator(mode="after")
-    def validate_role_compatibility(self) -> "AgentTeamMemberSpec":
-        expected_preset = ROLE_SCOPE_PRESET_BY_ROLE[self.role]
-        if self.scope_preset != expected_preset:
-            raise ValueError("Role and scope preset are incompatible")
+    def role_rule_violation(self) -> str | None:
+        """Return the current role rule this contract breaks, if any."""
+
+        if self.scope_preset != ROLE_SCOPE_PRESET_BY_ROLE[self.role]:
+            return "Role and scope preset are incompatible"
         expected_mode = ROLE_ASSIGNMENT_MODE[self.role]
         if expected_mode not in self.assignment_modes:
-            raise ValueError(
-                f"{self.role} members require assignment mode {expected_mode}"
-            )
+            return f"{self.role} members require assignment mode {expected_mode}"
         if self.skill_package.name not in ROLE_PACKAGE_COMPATIBILITY[self.role]:
-            raise ValueError("Role and immutable skill package are incompatible")
+            return "Role and immutable skill package are incompatible"
+        return None
+
+    @model_validator(mode="after")
+    def validate_role_compatibility(
+        self,
+        info: ValidationInfo,
+    ) -> "AgentTeamMemberSpec":
+        violation = self.role_rule_violation()
+        if violation is not None and not self._stored_under_earlier_rules:
+            if info.context is not _STORED_CONTRACT:
+                raise ValueError(violation)
+            self._stored_under_earlier_rules = True
         if self.default_model_binding_key not in self.model_binding_keys:
             raise ValueError(
                 "default_model_binding_key must name one declared model binding"
@@ -413,6 +441,28 @@ def parse_agent_team_master(value: Any) -> AgentTeamMaster:
             "Unsupported agent-team master schema version"
         )
     return AgentTeamMaster.model_validate(value)
+
+
+def load_stored_agent_team_member(payload: str) -> AgentTeamMemberSpec:
+    """Read a member contract an earlier apply stored.
+
+    A contract written under earlier role rules still loads, so it can be
+    shown and replaced; ``role_rule_violation`` says whether it is out of date.
+    """
+
+    return AgentTeamMemberSpec.model_validate_json(
+        payload,
+        context=_STORED_CONTRACT,
+    )
+
+
+def load_stored_agent_team_master(payload: str) -> AgentTeamMaster:
+    """Read a stored manifest the way ``load_stored_agent_team_member`` does."""
+
+    return AgentTeamMaster.model_validate_json(
+        payload,
+        context=_STORED_CONTRACT,
+    )
 
 
 class AgentTeamCurrentMember(AgentTeamSetupModel):

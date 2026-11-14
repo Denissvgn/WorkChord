@@ -58,12 +58,15 @@ flowchart LR
     n0["AgentTeamTopologyMember (backend/app/models/agent.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["AgentTeamSetupService._apply_create_or_update (backend/app/services/agent_team_setup_service.py)"]
-    n4["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
-    n5["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
-    n6["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
-    n7["AgentTeamSetupService._set_member_contract (backend/app/services/agent_team_setup_service.py)"]
-    n8["backend/tests/test_agent_team_setup.py"]
+    n3["_member_contract_outdated (backend/app/services/agent_team_setup_service.py)"]
+    n4["AgentTeamSetupService._apply_create_or_update (backend/app/services/agent_team_setup_service.py)"]
+    n5["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
+    n6["AgentTeamSetupService._increment_ack_attempt (backend/app/services/agent_team_setup_service.py)"]
+    n7["AgentTeamSetupService._member_record (backend/app/services/agent_team_setup_service.py)"]
+    n8["AgentTeamSetupService._set_member_contract (backend/app/services/agent_team_setup_service.py)"]
+    n9["backend/tests/test_agent_team_setup.py"]
+    n10["identity_evidence (backend/tests/test_agent_team_setup_stored_contract.py)"]
+    n11["member_records (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -72,6 +75,9 @@ flowchart LR
     n6 --> n0
     n7 --> n0
     n8 --> n0
+    n9 --> n0
+    n10 --> n0
+    n11 --> n0
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -80,7 +86,10 @@ flowchart LR
     click n5 "../modules/agent_team_setup_service.md"
     click n6 "../modules/agent_team_setup_service.md"
     click n7 "../modules/agent_team_setup_service.md"
-    click n8 "../modules/test_agent_team_setup.md"
+    click n8 "../modules/agent_team_setup_service.md"
+    click n9 "../modules/test_agent_team_setup.md"
+    click n10 "../modules/test_agent_team_setup_stored_contract.md"
+    click n11 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -100,9 +109,12 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `_member_contract_outdated` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._apply_create_or_update` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 |
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._increment_ack_attempt` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._member_record` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._set_member_contract` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
+| `identity_evidence` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
+| `member_records` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |

@@ -1,6 +1,6 @@
 # AgentTeamMaster
 
-**Location:** `backend/app/schemas/agent_team_setup.py:262`
+**Location:** `backend/app/schemas/agent_team_setup.py:290`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -53,16 +53,16 @@ flowchart LR
     n1["AgentTeamSetupModel (backend/app/schemas/agent_team_setup.py)"]
     n2["_build_action (backend/app/schemas/agent_team_setup.py)"]
     n3["AgentTeamMaster.validate_complete_topology (backend/app/schemas/agent_team_setup.py)"]
-    n4["parse_agent_team_master (backend/app/schemas/agent_team_setup.py)"]
-    n5["reconcile_agent_team_master (backend/app/schemas/agent_team_setup.py)"]
-    n6["AgentTeamSetupService._compatibility_blockers (backend/app/services/agent_team_setup_service.py)"]
-    n7["AgentTeamSetupService._current_snapshot (backend/app/services/agent_team_setup_service.py)"]
-    n8["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
-    n9["AgentTeamSetupService._execute_action (backend/app/services/agent_team_setup_service.py)"]
-    n10["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
-    n11["AgentTeamSetupService._refresh_handoffs (backend/app/services/agent_team_setup_service.py)"]
-    n12["backend/tests/test_agent_team_catalog.py"]
-    n13["backend/tests/test_agent_team_setup.py"]
+    n4["load_stored_agent_team_master (backend/app/schemas/agent_team_setup.py)"]
+    n5["parse_agent_team_master (backend/app/schemas/agent_team_setup.py)"]
+    n6["reconcile_agent_team_master (backend/app/schemas/agent_team_setup.py)"]
+    n7["AgentTeamSetupService._compatibility_blockers (backend/app/services/agent_team_setup_service.py)"]
+    n8["AgentTeamSetupService._current_snapshot (backend/app/services/agent_team_setup_service.py)"]
+    n9["AgentTeamSetupService._ensure_topology_for_apply (backend/app/services/agent_team_setup_service.py)"]
+    n10["AgentTeamSetupService._execute_action (backend/app/services/agent_team_setup_service.py)"]
+    n11["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
+    n12["AgentTeamSetupService._refresh_handoffs (backend/app/services/agent_team_setup_service.py)"]
+    n13["backend/tests/test_agent_team_catalog.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -82,14 +82,14 @@ flowchart LR
     click n3 "../modules/agent_team_setup.md"
     click n4 "../modules/agent_team_setup.md"
     click n5 "../modules/agent_team_setup.md"
-    click n6 "../modules/agent_team_setup_service.md"
+    click n6 "../modules/agent_team_setup.md"
     click n7 "../modules/agent_team_setup_service.md"
     click n8 "../modules/agent_team_setup_service.md"
     click n9 "../modules/agent_team_setup_service.md"
     click n10 "../modules/agent_team_setup_service.md"
     click n11 "../modules/agent_team_setup_service.md"
-    click n12 "../modules/test_agent_team_catalog.md"
-    click n13 "../modules/test_agent_team_setup.md"
+    click n12 "../modules/agent_team_setup_service.md"
+    click n13 "../modules/test_agent_team_catalog.md"
 ```
 
 ### Summary
@@ -110,6 +110,7 @@ flowchart LR
 |---|---|---|---:|
 | `_build_action` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `AgentTeamMaster.validate_complete_topology` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
+| `load_stored_agent_team_master` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `parse_agent_team_master` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `reconcile_agent_team_master` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `AgentTeamSetupService._compatibility_blockers` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
@@ -119,6 +120,5 @@ flowchart LR
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `AgentTeamSetupService._refresh_handoffs` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_agent_team_catalog` | import | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) | — |
-| `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
 
-> References: showing 12 of 19 logical references; 7 omitted by the 12-row generated summary limit.
+> References: showing 12 of 21 logical references; 9 omitted by the 12-row generated summary limit.

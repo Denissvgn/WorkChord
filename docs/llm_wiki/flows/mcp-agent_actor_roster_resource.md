@@ -61,10 +61,10 @@ sequenceDiagram
     participant p22 as DeliveryDependencyService.reconcile
     participant p23 as IdentityService.context
     participant p24 as DiscussionService.enqueue
-    participant p25 as AgentTeamSetupService._handoff
-    participant p26 as _canonical_json
-    participant p27 as AgentWorkService
-    participant p28 as _structured_tool_error
+    participant p25 as _member_contract_outdated
+    participant p26 as AgentTeamSetupService._handoff
+    participant p27 as _canonical_json
+    participant p28 as AgentWorkService
     participant p29 as json.dumps (backend/app/mcp_server.py:_json_resource)
     participant p30 as value.model_dump
     p0->>p1: _json_resource
@@ -91,17 +91,17 @@ sequenceDiagram
     p14->>p22: DeliveryDependencyService.reconcile
     p17->>p23: IdentityService.context
     p14->>p24: DiscussionService.enqueue
-    p18->>p25: AgentTeamSetupService._handoff
-    p18->>p26: _canonical_json
-    p2->>p27: AgentWorkService
-    p3->>p28: _structured_tool_error
+    p18->>p25: _member_contract_outdated
+    p18->>p26: AgentTeamSetupService._handoff
+    p18->>p27: _canonical_json
+    p2->>p28: AgentWorkService
     p1-->>p29: json.dumps (backend/app/mcp_server.py:_json_resource)(value, ensure_ascii=False, default=str)
     p4-->>p30: value.model_dump(mode='json')
 ```
 
-> Call sequence diagram shows 30 of 449 interactions; 419 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 457 interactions; 427 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 143 (142 omitted); unresolved 1 of 194 (193 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 144 (143 omitted); unresolved 1 of 198 (197 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -115,7 +115,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | unresolved | 1 |
 | `backend/app/mcp_server.py:_current_agent_key` | 17 | - | external | 1 |
 | `backend/app/mcp_server.py:_open_db_session` | 21 | - | unresolved | 1 |
-> Omission summary shows 8 of 97 groups; 89 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 101 groups; 93 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 > Trace truncated at the depth limit; deeper calls are omitted.
@@ -128,9 +128,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 113; effect analysis evaluated: 66, partial: 3, unavailable: 44. Counts include steps omitted from the displayed trace.
+Source steps: 116; effect analysis evaluated: 69, partial: 3, unavailable: 44. Counts include steps omitted from the displayed trace.
 
-Collector observations for 69 source steps with known totals: observed: 313, emitted: 292, omitted: 21. Unavailable totals are excluded.
+Collector observations for 72 source steps with known totals: observed: 326, emitted: 303, omitted: 23. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.

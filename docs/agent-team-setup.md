@@ -173,6 +173,20 @@ a verifier that still declares `workchord-pm`. To upgrade an existing team:
 4. Install the reviewer package in each verifier runtime and acknowledge the
    new handoff. Verifiers stay out of dispatch until they acknowledge it.
 
+Until step 3 is applied, a team stored before the upgrade stays readable.
+Status reports `stored_contract_outdated` on the topology, on the master step,
+and on each member whose stored contract no longer meets the role rules. Those
+members get no handoff, cannot acknowledge
+(`agent_team_ack_contract_outdated`), and stay out of dispatch; the other
+members are unaffected. The plan replaces each outdated contract with an
+ordinary update action that keeps the actor, its credential, and its bindings.
+After a partial apply, a member whose update was not yet approved keeps its
+outdated contract and is still reported this way. A member whose credential
+delivery is pending or uncertain is brought up to date by its credential
+recovery: on an outdated contract, recovery accepts the new `credential_ref`
+together with the role-governed fields (`scope_preset`, `assignment_modes`,
+`skill_package`) of the current master, and nothing else.
+
 Export the bounded aggregate setup report through
 `GET /api/agent/team-setup/report` or the operator CLI. It contains the topology
 revision and digest, lifecycle and current-work counts, reconciliation receipt

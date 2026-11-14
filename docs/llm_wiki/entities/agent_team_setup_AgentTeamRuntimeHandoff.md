@@ -1,6 +1,6 @@
 # AgentTeamRuntimeHandoff
 
-**Location:** `backend/app/schemas/agent_team_setup.py:862`
+**Location:** `backend/app/schemas/agent_team_setup.py:912`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -51,13 +51,16 @@ flowchart LR
     n1["AgentTeamSetupModel (backend/app/schemas/agent_team_setup.py)"]
     n2["AgentTeamRuntimeHandoff.validate_handoff (backend/app/schemas/agent_team_setup.py)"]
     n3["AgentTeamSetupService._handoff (backend/app/services/agent_team_setup_service.py)"]
+    n4["acknowledgement_for (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/agent_team_setup.md"
     click n3 "../modules/agent_team_setup_service.md"
+    click n4 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -79,3 +82,4 @@ flowchart LR
 | `AgentTeamRuntimeHandoff.validate_handoff` | type_reference | [agent_team_setup](../modules/agent_team_setup.md) | — |
 | `AgentTeamSetupService._handoff` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
 | `AgentTeamSetupService._handoff` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
+| `acknowledgement_for` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |

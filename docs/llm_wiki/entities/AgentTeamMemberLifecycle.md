@@ -1,6 +1,6 @@
 # AgentTeamMemberLifecycle
 
-**Location:** `backend/app/schemas/agent_team_setup.py:112`
+**Location:** `backend/app/schemas/agent_team_setup.py:129`
 **Kind:** Enum
 **Bases:** `StrEnum`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)

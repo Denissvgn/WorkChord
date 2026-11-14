@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1561 | [Open section](#entities) |
-| Modules | 830 | [Open section](#modules) |
+| Entities | 1563 | [Open section](#entities) |
+| Modules | 831 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 557 | [Open section](#entry-point-flows) |
@@ -324,6 +324,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [DuplicateActionDefaults](entities/DuplicateActionDefaults.md)
 - [DuplicateSuggestionGroupProps](entities/DuplicateSuggestionGroupProps.md)
 - [DuplicateSuggestionsPanelProps](entities/DuplicateSuggestionsPanelProps.md)
+- [EarlierTeam](entities/EarlierTeam.md)
 - [EditableEffortModifier](entities/EditableEffortModifier.md)
 - [EditableSchedulingPass](entities/EditableSchedulingPass.md)
 - [EditableSchedulingRules](entities/EditableSchedulingRules.md)
@@ -358,6 +359,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ExternalLinkResponse](entities/ExternalLinkResponse.md)
 - [ExternalLinkService](entities/ExternalLinkService.md)
 - [ExternalLinkValidationError](entities/ExternalLinkValidationError.md)
+- [FailingForOneMemberSink](entities/FailingForOneMemberSink.md)
 - [FailingOnceCredentialSink](entities/FailingOnceCredentialSink.md)
 - [FailingSession](entities/FailingSession.md)
 - [FailingSessionContext](entities/FailingSessionContext.md)
@@ -2269,6 +2271,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_agent_team_setup](modules/test_agent_team_setup.md) - Contract and service coverage for portable agent-team setup.
 - [test_agent_team_setup_cli](modules/test_agent_team_setup_cli.md) - No-network contract coverage for the agent-team setup CLI.
 - [test_agent_team_setup_qualification](modules/test_agent_team_setup_qualification.md) - Live topology, recovery, redaction, and compatibility qualification.
+- [test_agent_team_setup_stored_contract](modules/test_agent_team_setup_stored_contract.md) - A team stored under earlier role rules stays readable and replaceable.
 - [test_agent_work_routing_lineage](modules/test_agent_work_routing_lineage.md) - Focused assignment/run evidence tests that do not require a database.
 - [test_allocation_identity](modules/test_allocation_identity.md) - Forward allocation identity migration preserves history and sequence high water.
 - [test_allocation_recovery](modules/test_allocation_recovery.md) - Allocation membership recovery preserves durable references and rolls back failures.

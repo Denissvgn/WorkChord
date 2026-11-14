@@ -1,6 +1,6 @@
 # AgentTeamCurrentSnapshot
 
-**Location:** `backend/app/schemas/agent_team_setup.py:430`
+**Location:** `backend/app/schemas/agent_team_setup.py:480`
 **Kind:** Pydantic model
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
@@ -32,15 +32,18 @@ flowchart LR
     n2["reconcile_agent_team_master (backend/app/schemas/agent_team_setup.py)"]
     n3["AgentTeamSetupService._current_snapshot (backend/app/services/agent_team_setup_service.py)"]
     n4["test_reconciliation_is_stable_and_never_hard_deletes (backend/tests/test_agent_team_setup.py)"]
+    n5["test_stored_contract_keeps_shape_checks_and_names_the_broken_role_rule (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/agent_team_setup.md"
     click n1 "../modules/agent_team_setup.md"
     click n2 "../modules/agent_team_setup.md"
     click n3 "../modules/agent_team_setup_service.md"
     click n4 "../modules/test_agent_team_setup.md"
+    click n5 "../modules/test_agent_team_setup_stored_contract.md"
 ```
 
 ### Summary
@@ -63,3 +66,4 @@ flowchart LR
 | `AgentTeamSetupService._current_snapshot` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 2 |
 | `AgentTeamSetupService._current_snapshot` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 | `test_reconciliation_is_stable_and_never_hard_deletes` | call | [test_agent_team_setup](../modules/test_agent_team_setup.md) | 2 |
+| `test_stored_contract_keeps_shape_checks_and_names_the_broken_role_rule` | call | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | 1 |
