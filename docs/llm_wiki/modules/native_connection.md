@@ -13,7 +13,7 @@ Short-lived browser consent for a proof-bound native session.
 | `app.database` | `Base` |
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `datetime` |
-| `sqlalchemy` | `ForeignKey`, `String` |
+| `sqlalchemy` | `CheckConstraint`, `ForeignKey`, `String` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column` |
 
 ## Local dependency map

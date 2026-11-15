@@ -3,7 +3,7 @@ import secrets
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, ForeignKey, Integer, String
 from app.database import Base
 from app.utils.time import UTCDateTime, utc_now
 
@@ -16,6 +16,9 @@ if TYPE_CHECKING:
 class UserSession(Base):
     """Opaque browser identity with non-authoritative request audit metadata."""
     __tablename__ = "user_sessions"
+    __table_args__ = (
+        CheckConstraint("access IN ('full', 'observe')", name="ck_user_sessions_access"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     public_id: Mapped[str] = mapped_column(
@@ -26,7 +29,13 @@ class UserSession(Base):
     )
     principal_id: Mapped[int | None] = mapped_column(ForeignKey("principals.id", ondelete="RESTRICT"), index=True)
     csrf_token: Mapped[str | None] = mapped_column(String(128))
+    # When the person signed in, or the observer was paired. Renewal keeps this
+    # time, so the absolute renewal cap is measured from it.
     authenticated_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    # "observe" sessions only read; they are issued to paired background readers.
+    access: Mapped[str] = mapped_column(String(16), nullable=False, default="full", server_default="full")
+    # The name a paired reader gave itself, shown when approving and revoking it.
+    client_label: Mapped[str | None] = mapped_column(String(80), nullable=True)
     principal: Mapped["Principal | None"] = relationship("Principal", lazy="selectin")
     # A trusted-local session's self-chosen person profile: a label for its own
     # queue, never a verified identity. Validated when chosen and when read.
@@ -70,3 +79,8 @@ class UserSession(Base):
     @property
     def authenticated(self) -> bool:
         return self.principal_id is not None
+
+    @property
+    def read_only(self) -> bool:
+        """Anything but a full session is read-only, so an unknown level fails closed."""
+        return self.access != "full"

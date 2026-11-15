@@ -6,7 +6,7 @@
 
 Human sign-in, owner bootstrap, membership and session management.
 
-Exposes sign-in, one-time owner bootstrap, scoped membership administration, explicit profile linking, session management and guest ownership recovery. Account enablement and membership are separate from profile/capacity allocation. The anonymous identity response distinguishes missing configuration, missing membership and expired credentials without exposing private work.
+Exposes sign-in, one-time owner bootstrap, scoped membership administration, explicit profile linking, session management and guest ownership recovery. Native pairing can issue a read-only observer session, and native-token renewal keeps access level and the absolute renewal cap. Account enablement and membership are separate from profile/capacity allocation. The anonymous identity response distinguishes missing configuration, missing membership and expired credentials without exposing private work.
 
 ## Imports
 
@@ -22,14 +22,14 @@ Exposes sign-in, one-time owner bootstrap, scoped membership administration, exp
 | `app.models.team_member` | `TeamMemberProfile`, `TeamMemberProfile` |
 | `app.models.user_session` | `UserSession` |
 | `app.security` | `require_admin_api_key` |
-| `app.services.identity_service` | `IdentityService`, `local_work_profile`, `require_identity_writes` |
+| `app.services.identity_service` | `IdentityService`, `local_work_profile`, `renewable_until`, `require_identity_writes`, `session_grant` |
 | `app.services.native_session_service` | `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService` |
-| `app.services.session_service` | `_cookie_options`, `get_client_ip`, `get_current_session`, `_get_session_by_token` |
+| `app.services.session_service` | `_cookie_options`, `_get_session_by_token`, `get_client_ip`, `get_current_session`, `_get_session_by_token` |
 | `app.utils.time` | `utc_now` |
 | `datetime` | `datetime`, `timedelta` |
 | `fastapi` | `APIRouter`, `Depends`, `Request`, `Response`, `Query` |
 | `fastapi.responses` | `RedirectResponse` |
-| `pydantic` | `BaseModel`, `ConfigDict`, `Field` |
+| `pydantic` | `BaseModel`, `ConfigDict`, `Field`, `field_validator` |
 | `secrets` | `secrets` |
 | `sqlalchemy` | `select`, `update` |
 | `typing` | `Annotated`, `Literal` |
@@ -70,19 +70,19 @@ flowchart LR
 | [Database](../entities/routers_identity_Database.md) | Type alias | 25 | `Annotated[object, Depends(get_db, scope='function')]` | — |
 | [BootstrapOwner](../entities/BootstrapOwner.md) | Pydantic model | 28 | `BaseModel` | — |
 | [NativeConnectionStart](../entities/NativeConnectionStart.md) | Pydantic model | 32 | `BaseModel` | — |
-| [NativeConnectionExchange](../entities/NativeConnectionExchange.md) | Pydantic model | 37 | `BaseModel` | — |
-| [NativeConnectionApproval](../entities/NativeConnectionApproval.md) | Pydantic model | 43 | `BaseModel` | — |
-| [NativeConnectionResponse](../entities/NativeConnectionResponse.md) | Pydantic model | 48 | `BaseModel` | — |
-| [NativeConnectionDetails](../entities/NativeConnectionDetails.md) | Pydantic model | 55 | `BaseModel` | — |
-| [NativeApprovalResponse](../entities/NativeApprovalResponse.md) | Pydantic model | 61 | `BaseModel` | — |
-| [NativeDenialResponse](../entities/NativeDenialResponse.md) | Pydantic model | 65 | `BaseModel` | — |
-| [NativePendingResponse](../entities/NativePendingResponse.md) | Pydantic model | 69 | `BaseModel` | — |
-| [NativeTokenResponse](../entities/NativeTokenResponse.md) | Pydantic model | 73 | `BaseModel` | — |
-| [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 115 | `BaseModel` | — |
-| [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 121 | `BaseModel` | — |
-| [LocalProfileChoice](../entities/LocalProfileChoice.md) | Pydantic model | 126 | `BaseModel` | — |
-| [GuestTransferRequest](../entities/GuestTransferRequest.md) | Pydantic model | 131 | `BaseModel` | — |
-| [PrincipalRecoveryRequest](../entities/PrincipalRecoveryRequest.md) | Pydantic model | 377 | `BaseModel` | — |
+| [NativeConnectionExchange](../entities/NativeConnectionExchange.md) | Pydantic model | 50 | `BaseModel` | — |
+| [NativeConnectionApproval](../entities/NativeConnectionApproval.md) | Pydantic model | 56 | `BaseModel` | — |
+| [NativeConnectionResponse](../entities/NativeConnectionResponse.md) | Pydantic model | 61 | `BaseModel` | — |
+| [NativeConnectionDetails](../entities/NativeConnectionDetails.md) | Pydantic model | 69 | `BaseModel` | — |
+| [NativeApprovalResponse](../entities/NativeApprovalResponse.md) | Pydantic model | 77 | `BaseModel` | — |
+| [NativeDenialResponse](../entities/NativeDenialResponse.md) | Pydantic model | 81 | `BaseModel` | — |
+| [NativePendingResponse](../entities/NativePendingResponse.md) | Pydantic model | 85 | `BaseModel` | — |
+| [NativeTokenResponse](../entities/NativeTokenResponse.md) | Pydantic model | 89 | `BaseModel` | — |
+| [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 135 | `BaseModel` | — |
+| [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 141 | `BaseModel` | — |
+| [LocalProfileChoice](../entities/LocalProfileChoice.md) | Pydantic model | 146 | `BaseModel` | — |
+| [GuestTransferRequest](../entities/GuestTransferRequest.md) | Pydantic model | 151 | `BaseModel` | — |
+| [PrincipalRecoveryRequest](../entities/PrincipalRecoveryRequest.md) | Pydantic model | 446 | `BaseModel` | — |
 
 ## Functions
 
@@ -103,7 +103,9 @@ flowchart LR
 | `project_member` | *(async)* `(project_id: int, principal_id: int, data: MembershipChange, db: Database)` | `@router.put('/project-members/{project_id}/{principal_id}')` | — |
 | `link_profile` | *(async)* `(principal_id: int, data: ProfileLinkRequest, db: Database)` | `@router.put('/principals/{principal_id}/profile')` | — |
 | `transfer_guest` | *(async)* `(data: GuestTransferRequest, request: Request, response: Response, db: Database)` | `@router.post('/transfer-guest')` | — |
-| `native_token` | *(async)* `(request: Request, response: Response, db: Database)` | `@router.post('/native-token', response_model=NativeTokenResponse)` | — |
+| `native_token` | *(async)* `(request: Request, response: Response, db: Database)` | `@router.post('/native-token', response_model=NativeTokenResponse)` | Exchange a browser session for a native one, or renew a native or observer session. |
+| `_session_row` | `(row, authority)` | — | — |
+| `_local_observers` | `(authority)` | — | A trusted-local browser manages the observers paired without a signed-in person. |
 | `sessions` | *(async)* `(db: Database)` | `@router.get('/sessions')` | — |
 | `revoke_owned_session` | *(async)* `(public_id: str, db: Database)` | `@router.delete('/sessions/{public_id}')` | — |
 | `logout` | *(async)* `(response: Response, db: Database)` | `@router.post('/logout')` | — |

@@ -33,6 +33,7 @@ import { AdminAccessPanel } from '../components/settings/AdminAccessPanel';
 import { AdminAccessGate } from '../components/settings/AdminAccessGate';
 import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
 import { AccessKeysSummary } from '../components/settings/AccessKeysSummary';
+import { ConnectedReadersPanel } from '../components/settings/ConnectedReadersPanel';
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { Checkbox } from '../components/common/Checkbox';
@@ -513,6 +514,7 @@ const SettingsPage = () => {
                         {activeTab === 'admin_access' && (
                             <div className="space-y-5">
                                 <AccessKeysSummary />
+                                <ConnectedReadersPanel />
                                 <AdminAccessPanel/>
                                 <AgentAccessPanel />
                             </div>

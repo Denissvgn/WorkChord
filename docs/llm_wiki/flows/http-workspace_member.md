@@ -160,30 +160,30 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_member | require_operator | 242 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 79 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| workspace_member | require_identity_writes | 243 | `require_identity_writes(data not statically known)` |
+| workspace_member | require_operator | 270 | `require_operator(db)` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| workspace_member | require_identity_writes | 271 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| workspace_member | AuthorityError | 246 | `AuthorityError('invalid_workspace_role', 'Choose a workspace role.', 422)` |
-| workspace_member | AuthorityError | 248 | `AuthorityError(data not statically known)` |
-| workspace_member | internal_authority | 249 | `internal_authority(db)` |
+| workspace_member | AuthorityError | 274 | `AuthorityError('invalid_workspace_role', 'Choose a workspace role.', 422)` |
+| workspace_member | AuthorityError | 276 | `AuthorityError(data not statically known)` |
+| workspace_member | internal_authority | 277 | `internal_authority(db)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `workspace_member` | 259 |
-| mutation | `db.add` | `workspace_member` | 260 |
+| mutation | `db.add` | `workspace_member` | 287 |
+| mutation | `db.add` | `workspace_member` | 288 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 79 |
+| unresolved_call | `require_operator` | `db.info.get` | 84 |
 | step_limit | `workspace_member` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -8,7 +8,8 @@
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `http_authority.resolve_http_identity`
 2. `config.get_settings`
-3. `identity_service.local_work_profile`
+3. `identity_service.renewable_until`
+4. `identity_service.local_work_profile`
 
 ## Touches
 

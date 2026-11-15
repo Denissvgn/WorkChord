@@ -18,7 +18,7 @@ _Auto-generated from `backend/app/models/user_session.py`._
 | `app.utils.time` | `UTCDateTime`, `utc_now` |
 | `datetime` | `datetime` |
 | `secrets` | `secrets` |
-| `sqlalchemy` | `ForeignKey`, `Integer`, `String` |
+| `sqlalchemy` | `CheckConstraint`, `ForeignKey`, `Integer`, `String` |
 | `sqlalchemy.orm` | `Mapped`, `mapped_column`, `relationship` |
 | `typing` | `TYPE_CHECKING` |
 
@@ -42,7 +42,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (23) |
+| Inbound | `backend` (24) |
 | Inbound | `scripts` (1) |
 | Outbound | `backend` (6) |
 
@@ -52,7 +52,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 28 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

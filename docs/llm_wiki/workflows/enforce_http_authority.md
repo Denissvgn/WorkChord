@@ -16,11 +16,12 @@
 8. `authority.AuthorityError`
 9. `authority.AuthorityError`
 10. `authority.AuthorityError`
-11. `authority.require_project`
-12. `authority.AuthorityError`
-13. `settings_read.settings_reader`
-14. `authority.AuthorityError`
+11. `authority.AuthorityError`
+12. `authority.require_project`
+13. `authority.AuthorityError`
+14. `settings_read.settings_reader`
 15. `authority.AuthorityError`
+16. `authority.AuthorityError`
 
 ## Touches
 

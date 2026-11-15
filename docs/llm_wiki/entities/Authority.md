@@ -11,7 +11,7 @@
 
 _Auto-generated from `Authority` in `backend/app/authority.py`._
 
-Managed authority combines a durable principal, workspace/project roles, and actor scopes. ORM reads constrain related records and writes require the relevant action; review is distinct from execution. Trusted-local collaboration is an explicit deployment mode. Narrow internal identity resolution and verified system integrations are server-owned boundaries, not caller-provided identity claims.
+Managed authority combines a durable principal, workspace/project roles, and actor scopes. ORM reads constrain related records and writes require the relevant action; review is distinct from execution. Trusted-local collaboration is an explicit deployment mode. A read-only authority (a paired observer) is allowed reads only: `allows` refuses every other action and ORM writes under it are refused with no personal-record exemption. Narrow internal identity resolution and verified system integrations are server-owned boundaries, not caller-provided identity claims.
 
 ## Attributes
 
@@ -31,6 +31,7 @@ Managed authority combines a durable principal, workspace/project roles, and act
 | `review_override` | `bool` | `False` | — |
 | `local` | `bool` | `False` | — |
 | `scopes` | `frozenset[str]` | `frozenset()` | — |
+| `read_only` | `bool` | `False` | — |
 
 ## Methods
 
@@ -88,13 +89,13 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [authority](../modules/authority.md) | 2 | `actor_id`, `actor_role`, `correlation_id`, `kind`, `local`, `principal_id`, `profile_id`, `projects`, `reason`, `review_override`, `scopes`, `session_id` |
+| [authority](../modules/authority.md) | 2 | `actor_id`, `actor_role`, `correlation_id`, `kind`, `local`, `principal_id`, `profile_id`, `projects`, `read_only`, `reason`, `review_override`, `scopes` |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
-| `resolve_http_identity` | call | [http_authority](../modules/http_authority.md) | 3 |
+| `resolve_http_identity` | call | [http_authority](../modules/http_authority.md) | 4 |
 | `identity` | import | [routers_identity](../modules/routers_identity.md) | — |
 | `bind_verified_system` | call | [identity_service](../modules/identity_service.md) | 1 |
 | `IdentityService.context` | call | [identity_service](../modules/identity_service.md) | 1 |

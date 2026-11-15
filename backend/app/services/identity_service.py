@@ -32,6 +32,25 @@ def require_identity_writes():
         raise MaintenanceModeError(operation="identity lifecycle", mode=get_settings().maintenance_mode)
 
 
+def session_lifetimes(access):
+    """(lifetime of one session, absolute renewal cap from sign-in) for an access level."""
+    settings = get_settings()
+    if access == "full":
+        return settings.auth_session_max_age_seconds, settings.auth_session_absolute_max_age_seconds
+    return settings.auth_observer_session_max_age_seconds, settings.auth_observer_absolute_max_age_seconds
+
+
+def renewable_until(session):
+    """The last moment renewal can carry this session to; then sign in or pair again."""
+    signed_in = session.authenticated_at or session.created_at
+    return as_utc(signed_in) + timedelta(seconds=session_lifetimes(session.access)[1])
+
+
+def session_grant(session, raw):
+    return {"access_token": raw, "token_type": "Bearer", "expires_at": session.expires_at,
+            "access": session.access, "renewable_until": renewable_until(session)}
+
+
 async def local_work_profile(db, profile_id):
     """Return a person profile a local session may work as, or None."""
     if profile_id is None:
@@ -222,16 +241,48 @@ class IdentityService:
             attempt.verifier = attempt.nonce = "consumed"
             return session, raw, attempt.return_path
 
-    async def issue_session(self, principal_id, ip_address, user_agent):
+    async def issue_session(self, principal_id, ip_address, user_agent, *, access="full", client_label=None,
+                            authenticated_at=None):
+        """Issue a session; a renewal passes the original sign-in time so its cap still applies."""
         require_identity_writes()
         raw = secrets.token_urlsafe(32)
+        now = utc_now()
+        signed_in = as_utc(authenticated_at) if authenticated_at is not None else now
+        lifetime, cap = session_lifetimes(access)
+        expires = min(now + timedelta(seconds=lifetime), signed_in + timedelta(seconds=cap))
+        if expires <= now:
+            if access == "full":
+                raise AuthorityError("session_renewal_limit", "Sign in again to continue.", 401)
+            raise AuthorityError("session_renewal_limit", "Pair this reader again to keep reading.", 401)
         with internal_authority(self.db):
             session = UserSession(principal_id=principal_id, session_token_hash=digest(raw),
-                csrf_token=secrets.token_urlsafe(32), authenticated_at=utc_now(),
-                ip_address=ip_address[:128], user_agent=(user_agent or "")[:512],
-                expires_at=utc_now() + timedelta(seconds=get_settings().auth_session_max_age_seconds))
+                csrf_token=secrets.token_urlsafe(32) if access == "full" else None, authenticated_at=signed_in,
+                access=access, client_label=client_label,
+                ip_address=ip_address[:128], user_agent=(user_agent or "")[:512], expires_at=expires)
             self.db.add(session)
             await self.db.flush()
+        return session, raw
+
+    @atomic_command
+    async def renew_session(self, source_id, ip_address, user_agent, *, rotate):
+        """Issue a successor at the same access level and sign-in time; optionally end the source.
+
+        Renewal never upgrades an observer and never outlives the absolute cap
+        measured from the original sign-in or pairing.
+        """
+        require_identity_writes()
+        with internal_authority(self.db):
+            source = await self.db.scalar(select(UserSession).where(UserSession.id == source_id)
+                .with_for_update().execution_options(populate_existing=True))
+            if (source is None or source.revoked_at is not None or source.expires_at is None
+                    or as_utc(source.expires_at) <= utc_now()):
+                raise AuthorityError("session_expired", "Sign in again to continue.", 401)
+            session, raw = await self.issue_session(source.principal_id, ip_address, user_agent,
+                access=source.access, client_label=source.client_label,
+                authenticated_at=source.authenticated_at or source.created_at)
+            if rotate:
+                source.revoked_at, source.csrf_token = utc_now(), None
+                await self.db.flush()
         return session, raw
 
     @atomic_command

@@ -162,32 +162,32 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| link_profile | require_operator | 294 | `require_operator(db)` |
-| require_operator | db.info.get (backend/app/authority.py:require_operator) | 79 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| link_profile | require_identity_writes | 295 | `require_identity_writes(data not statically known)` |
+| link_profile | require_operator | 322 | `require_operator(db)` |
+| require_operator | db.info.get (backend/app/authority.py:require_operator) | 84 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| link_profile | require_identity_writes | 323 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| link_profile | internal_authority | 297 | `internal_authority(db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 87 | `db.info.get('authority_internal', False)` |
-| link_profile | db.get | 298 | `db.get(Principal, principal_id)` |
+| link_profile | internal_authority | 325 | `internal_authority(db)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 92 | `db.info.get('authority_internal', False)` |
+| link_profile | db.get | 326 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `link_profile` | 309 |
-| mutation | `db.add` | `link_profile` | 311 |
+| mutation | `db.add` | `link_profile` | 337 |
+| mutation | `db.add` | `link_profile` | 339 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 79 |
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `link_profile` | `db.get` | 298 |
+| unresolved_call | `require_operator` | `db.info.get` | 84 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `link_profile` | `db.get` | 326 |
 | step_limit | `link_profile` | `first 12 steps` | 0 |
 
 ## Behavior

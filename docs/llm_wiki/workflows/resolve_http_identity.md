@@ -27,10 +27,13 @@
 19. `session_service._get_session_by_token`
 20. `authority.AuthorityError`
 21. `authority.AuthorityError`
-22. `identity_service.IdentityService.context`
-23. `authority.AuthorityError`
-24. `authority.AuthorityError`
-25. `authority.Authority`
+22. `authority.AuthorityError`
+23. `identity_service.IdentityService.context`
+24. `authority.Authority`
+25. `authority.AuthorityError`
+26. `authority.AuthorityError`
+27. `authority.AuthorityError`
+28. `authority.Authority`
 
 ## Touches
 

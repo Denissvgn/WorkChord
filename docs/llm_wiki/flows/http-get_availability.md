@@ -178,7 +178,7 @@ flowchart LR
 | CapacityService.detail | CapacityService.require_owner | 101 | `self.require_owner(profile_id)` |
 | CapacityService.require_owner | self.db.info.get (backend/app/services/capa…acityService.require_owner) | 32 | `self.db.info.get('authority')` |
 | CapacityService.require_owner | get_settings | 34 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | CapacityService.require_owner | AuthorityError | 35 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
 | CapacityService.require_owner | AuthorityError | 38 | `AuthorityError('profile_owner_required', 'Only this person or an operator can manage their availability.')` |
 | CapacityService.detail | CapacityService.require_visible | 102 | `self.require_visible(profile_id)` |

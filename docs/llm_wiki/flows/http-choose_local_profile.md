@@ -135,15 +135,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| choose_local_profile | get_settings | 174 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
-| choose_local_profile | AuthorityError | 175 | `AuthorityError('local_profile_unavailable', 'Signed-in accounts are linked to a work profile by an operator.', 409)` |
-| choose_local_profile | local_work_profile | 176 | `local_work_profile(db, data.profile_id)` |
-| local_work_profile | internal_authority | 40 | `internal_authority(db)` |
-| internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| local_work_profile | db.get | 41 | `db.get(TeamMemberProfile, profile_id)` |
-| choose_local_profile | AuthorityError | 178 | `AuthorityError('profile_not_found', 'Choose an existing person profile.', 404)` |
-| choose_local_profile | commit_or_flush | 180 | `commit_or_flush(db)` |
+| choose_local_profile | get_settings | 202 | `get_settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| choose_local_profile | AuthorityError | 203 | `AuthorityError('local_profile_unavailable', 'Signed-in accounts are linked to a work profile by an operator.', 409)` |
+| choose_local_profile | local_work_profile | 204 | `local_work_profile(db, data.profile_id)` |
+| local_work_profile | internal_authority | 59 | `internal_authority(db)` |
+| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
+| local_work_profile | db.get | 60 | `db.get(TeamMemberProfile, profile_id)` |
+| choose_local_profile | AuthorityError | 206 | `AuthorityError('profile_not_found', 'Choose an existing person profile.', 404)` |
+| choose_local_profile | commit_or_flush | 208 | `commit_or_flush(db)` |
 | commit_or_flush | current_command | 79 | `current_command(db)` |
 | current_command | getattr | 73 | `getattr(db, 'info', None)` |
 
@@ -155,8 +155,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `local_work_profile` | `db.get` | 41 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `local_work_profile` | `db.get` | 60 |
 | external_call | `current_command` | `getattr` | 73 |
 | step_limit | `choose_local_profile` | `first 12 steps` | 0 |
 

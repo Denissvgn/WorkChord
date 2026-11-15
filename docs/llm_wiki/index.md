@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1569 | [Open section](#entities) |
-| Modules | 836 | [Open section](#modules) |
+| Entities | 1571 | [Open section](#entities) |
+| Modules | 840 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 558 | [Open section](#entry-point-flows) |
@@ -22,6 +22,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AbsenceInput](entities/AbsenceInput.md)
 - [AbsenceUpdate](entities/AbsenceUpdate.md)
 - [AccessibleNameViolation](entities/AccessibleNameViolation.md)
+- [AccountSession](entities/AccountSession.md)
 - [ActionLease](entities/ActionLease.md)
 - [ActionLeasePolicy](entities/ActionLeasePolicy.md)
 - [ActionLeaseRequest](entities/ActionLeaseRequest.md)
@@ -265,6 +266,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ConfirmDialogTone](entities/ConfirmDialogTone.md)
 - [ConfirmationRequest](entities/ConfirmationRequest.md)
 - [ConflictResolution](entities/ConflictResolution.md)
+- [ConnectionDetails](entities/ConnectionDetails.md)
 - [ConstraintsPanel_Props](entities/ConstraintsPanel_Props.md)
 - [ConstraintsSchema](entities/ConstraintsSchema.md)
 - [ContextTier](entities/ContextTier.md)
@@ -1609,6 +1611,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261009_0011_profile_identity](modules/20261009_0011_profile_identity.md) - Preserve profile lifetimes across recovery and deletion.
 - [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
 - [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
+- [20261115_0014_observer_sessions](modules/20261115_0014_observer_sessions.md) - Record a session's access level, and what a pairing request asks for.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
@@ -1644,6 +1647,8 @@ Retained history; these declarations are absent from the selected source invento
 - [CommandMenu](modules/CommandMenu.md) - `frontend/src/components/layout/CommandMenu.tsx`
 - [CommandMenu.test](modules/CommandMenu.test.md) - `frontend/src/components/layout/CommandMenu.test.tsx`
 - [ConfirmDialog](modules/ConfirmDialog.md) - `frontend/src/components/common/ConfirmDialog.tsx`
+- [ConnectedReadersPanel](modules/ConnectedReadersPanel.md) - `frontend/src/components/settings/ConnectedReadersPanel.tsx`
+- [ConnectedReadersPanel.test](modules/ConnectedReadersPanel.test.md) - `frontend/src/components/settings/ConnectedReadersPanel.test.tsx`
 - [ConstraintsPanel](modules/ConstraintsPanel.md) - `frontend/src/components/settings/ConstraintsPanel.tsx`
 - [ContextHelp](modules/ContextHelp.md) - `frontend/src/components/layout/ContextHelp.tsx`
 - [ContextHelp.test](modules/ContextHelp.test.md) - `frontend/src/components/layout/ContextHelp.test.tsx`
@@ -2321,6 +2326,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_native_connections](modules/test_native_connections.md) - Browser-approved native sessions preserve proof, identity and revocation.
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
+- [test_observer_sessions](modules/test_observer_sessions.md) - Paired observer sessions read like their principal, change nothing, and renew within a cap.
 - [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.

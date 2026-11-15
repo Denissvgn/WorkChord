@@ -26,31 +26,33 @@ sequenceDiagram
     participant p2 as internal_authority
     participant p3 as db.get
     participant p4 as utc_now
-    participant p5 as _cookie_options
-    participant p6 as response.delete_cookie
-    participant p7 as get_settings
-    participant p8 as db.info.get
-    participant p9 as datetime.now
-    participant p10 as MaintenanceModeError
-    participant p11 as Settings
+    participant p5 as db.flush
+    participant p6 as _cookie_options
+    participant p7 as response.delete_cookie
+    participant p8 as get_settings
+    participant p9 as db.info.get
+    participant p10 as datetime.now
+    participant p11 as MaintenanceModeError
+    participant p12 as Settings
     p0->>p1: require_identity_writes
     p0->>p2: internal_authority
     p0-->>p3: db.get(UserSession, authority.session_id)
     p0->>p4: utc_now
-    p0->>p5: _cookie_options
-    p0-->>p6: response.delete_cookie(options[...], path=options[...], secure=options[...], httponly=True, samesite='lax')
-    p1->>p7: get_settings
-    p2-->>p8: db.info.get('authority_internal', False)
-    p4-->>p9: datetime.now(UTC)
-    p5->>p7: get_settings
-    p1->>p10: MaintenanceModeError
-    p1->>p7: get_settings
-    p7->>p11: Settings
+    p0-->>p5: db.flush
+    p0->>p6: _cookie_options
+    p0-->>p7: response.delete_cookie(options[...], path=options[...], secure=options[...], httponly=True, samesite='lax')
+    p1->>p8: get_settings
+    p2-->>p9: db.info.get('authority_internal', False)
+    p4-->>p10: datetime.now(UTC)
+    p6->>p8: get_settings
+    p1->>p11: MaintenanceModeError
+    p1->>p8: get_settings
+    p8->>p12: Settings
 ```
 
-> Call sequence diagram shows 13 of 13 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 14 of 14 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 1 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 1 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -81,7 +83,7 @@ Collector observations for 8 source steps with known totals: observed: 16, emitt
 | `db.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 | `utc_now` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
 | `datetime.now` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `_cookie_options` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `db.flush` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
 
 ```mermaid
 flowchart LR
@@ -96,7 +98,7 @@ flowchart LR
     s9["9. db.get"]
     s10["10. utc_now"]
     s11["11. datetime.now"]
-    s12["12. _cookie_options"]
+    s12["12. db.flush"]
     s1 -->|"require_identity_writes(data not statically known)"| s2
     s2 -->|"get_settings(data not statically known)"| s3
     s3 -->|"Settings(data not statically known)"| s4
@@ -107,7 +109,7 @@ flowchart LR
     s1 -. "db.get(UserSession, authority.session_id)" .-> s9
     s1 -->|"utc_now(data not statically known)"| s10
     s10 -. "datetime.now(UTC)" .-> s11
-    s1 -->|"_cookie_options(data not statically known)"| s12
+    s1 -. "db.flush(data not statically known)" .-> s12
     click s1 "../modules/routers_identity.md"
     click s2 "../modules/identity_service.md"
     click s3 "../modules/config.md"
@@ -116,7 +118,6 @@ flowchart LR
     click s6 "../modules/config.md"
     click s7 "../modules/authority.md"
     click s10 "../modules/time.md"
-    click s12 "../modules/session_service.md"
 ```
 
 ### Step data
@@ -134,23 +135,23 @@ flowchart LR
 | `db.get` | - | - | - | - |
 | `utc_now` | - | `UTC` | - | `datetime.now(...)` |
 | `datetime.now` | - | - | - | - |
-| `_cookie_options` | - | - | - | `{...}` |
+| `db.flush` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| logout | require_identity_writes | 360 | `require_identity_writes(data not statically known)` |
+| logout | require_identity_writes | 427 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| logout | internal_authority | 363 | `internal_authority(db)` |
-| internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| logout | db.get | 364 | `db.get(UserSession, authority.session_id)` |
-| logout | utc_now | 365 | `utc_now(data not statically known)` |
+| logout | internal_authority | 430 | `internal_authority(db)` |
+| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
+| logout | db.get | 431 | `db.get(UserSession, authority.session_id)` |
+| logout | utc_now | 432 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
-| logout | _cookie_options | 366 | `_cookie_options(data not statically known)` |
+| logout | db.flush | 434 | `db.flush(data not statically known)` |
 
 ### Boundary effects
 
@@ -160,11 +161,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `logout` | `db.get` | 364 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `logout` | `db.get` | 431 |
 | external_call | `utc_now` | `datetime.now` | 13 |
+| unresolved_call | `logout` | `db.flush` | 434 |
 | step_limit | `logout` | `first 12 steps` | 0 |
 
 ## Behavior
 
-This flow starts at `logout` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Revokes the caller's current session and removes the browser cookie. The revocation is flushed inside the internal authority boundary, so an observer can end its own session even though every other write it sends is refused.

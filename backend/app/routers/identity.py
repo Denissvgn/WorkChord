@@ -6,7 +6,7 @@ import secrets
 
 from fastapi import APIRouter, Depends, Request, Response, Query
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import select, update
 
 from app.authority import Authority, AuthorityError, internal_authority, require_operator
@@ -17,8 +17,8 @@ from app.http_authority import resolve_http_identity
 from app.models.identity import Principal, WorkspaceMembership, WorkspaceAuthorityState, ProjectMembership, PrincipalProfileLink, CommandAudit
 from app.models.user_session import UserSession
 from app.security import require_admin_api_key
-from app.services.identity_service import IdentityService, local_work_profile, require_identity_writes
-from app.services.session_service import _cookie_options, get_client_ip, get_current_session
+from app.services.identity_service import IdentityService, local_work_profile, renewable_until, require_identity_writes, session_grant
+from app.services.session_service import _cookie_options, _get_session_by_token, get_client_ip, get_current_session
 from app.utils.time import utc_now
 
 router = APIRouter(prefix="/auth")
@@ -32,6 +32,19 @@ class BootstrapOwner(BaseModel):
 class NativeConnectionStart(BaseModel):
     model_config = ConfigDict(extra="forbid")
     code_challenge: str = Field(pattern=r"^[A-Za-z0-9_-]{43}$")
+    # "observe" asks for a session that only reads, for a background reader.
+    access: Literal["full", "observe"] = "full"
+    client_label: str | None = Field(default=None, min_length=1, max_length=80)
+
+    @field_validator("client_label")
+    @classmethod
+    def plain_label(cls, value):
+        if value is None:
+            return value
+        value = " ".join(value.split())
+        if not value or not value.isprintable():
+            raise ValueError("Use a short plain name for this reader")
+        return value
 
 
 class NativeConnectionExchange(BaseModel):
@@ -50,12 +63,15 @@ class NativeConnectionResponse(BaseModel):
     verification_code: str
     verification_path: str
     expires_at: datetime
+    access: Literal["full", "observe"]
 
 
 class NativeConnectionDetails(BaseModel):
     verification_code: str
     expires_at: datetime
     approved: bool
+    access: Literal["full", "observe"]
+    client_label: str | None
 
 
 class NativeApprovalResponse(BaseModel):
@@ -74,13 +90,17 @@ class NativeTokenResponse(BaseModel):
     access_token: str
     token_type: Literal["Bearer"]
     expires_at: datetime
+    access: Literal["full", "observe"]
+    # Renewal stops here; after it the person signs in, or the reader pairs, again.
+    renewable_until: datetime
 
 
 @router.post("/native-connections/start", status_code=201, response_model=NativeConnectionResponse)
 async def start_native_connection(data: NativeConnectionStart, request: Request, response: Response, db: Database):
     from app.services.native_session_service import NativeSessionService
     response.headers["Cache-Control"] = "no-store"
-    return await NativeSessionService(db).start(data.code_challenge, await get_client_ip(request))
+    return await NativeSessionService(db).start(data.code_challenge, await get_client_ip(request),
+                                                access=data.access, client_label=data.client_label)
 
 
 @router.post("/native-connections/exchange", response_model=NativePendingResponse | NativeTokenResponse)
@@ -148,7 +168,15 @@ async def me(request: Request, response: Response, db: Database):
     settings = get_settings()
     result = {"mode": settings.workchord_auth_mode, "authenticated": authority is not None and authority.principal_id is not None,
               "configured": bool(settings.oidc_issuer_url and settings.oidc_client_id and settings.oidc_redirect_uri),
-              "principal": None, "profile": None, "csrf_token": None, "workspace_role": None, "projects": {}, "authentication_error": authentication_error}
+              "principal": None, "profile": None, "csrf_token": None, "workspace_role": None, "projects": {}, "authentication_error": authentication_error,
+              "access": None, "observer": None}
+    if authority is not None and authority.session_id is not None:
+        current = await db.get(UserSession, authority.session_id)
+        if current is not None:
+            result["access"] = current.access
+            if current.read_only:
+                result["observer"] = {"client_label": current.client_label, "expires_at": current.expires_at,
+                                      "renewable_until": renewable_until(current)}
     if authority is not None and authority.principal_id is not None:
         principal = await db.get(Principal, authority.principal_id)
         result.update(principal={"id": principal.id, "kind": principal.kind, "display_name": principal.display_name},
@@ -325,31 +353,70 @@ async def transfer_guest(data: GuestTransferRequest, request: Request, response:
 
 @router.post("/native-token", response_model=NativeTokenResponse)
 async def native_token(request: Request, response: Response, db: Database):
+    """Exchange a browser session for a native one, or renew a native or observer session.
+
+    A bearer caller is rotated: its old token ends when the new one is issued.
+    Every successor keeps the caller's access level and original sign-in time,
+    so renewal stops at the absolute cap.
+    """
     authority = db.info["authority"]
-    if authority.kind != "human":
+    if authority.session_id is None or not (authority.kind == "human" or authority.read_only):
         raise AuthorityError()
-    session, raw = await IdentityService(db).issue_session(authority.principal_id, await get_client_ip(request), request.headers.get("User-Agent"))
+    source_id, rotate = authority.session_id, authority.read_only
+    authorization = request.headers.get("Authorization")
+    if authorization:
+        with internal_authority(db):
+            bearer = await _get_session_by_token(db, authorization.partition(" ")[2])
+        if bearer is None:
+            raise AuthorityError("authentication_required", "The session credential is invalid or expired.", 401)
+        source_id, rotate = bearer.id, True
+    session, raw = await IdentityService(db).renew_session(source_id, await get_client_ip(request),
+                                                           request.headers.get("User-Agent"), rotate=rotate)
     response.headers["Cache-Control"] = "no-store"
-    return {"access_token": raw, "token_type": "Bearer", "expires_at": session.expires_at}
+    return session_grant(session, raw)
+
+
+def _session_row(row, authority):
+    return {"public_id": row.public_id, "created_at": row.created_at, "expires_at": row.expires_at,
+            "revoked_at": row.revoked_at, "user_agent": row.user_agent, "current": row.id == authority.session_id,
+            "access": row.access, "client_label": row.client_label}
+
+
+def _local_observers(authority):
+    """A trusted-local browser manages the observers paired without a signed-in person."""
+    return (authority.principal_id is None and authority.local and not authority.read_only
+            and get_settings().workchord_auth_mode == "trusted_local")
 
 
 @router.get("/sessions")
 async def sessions(db: Database):
     authority = db.info["authority"]
-    if authority.principal_id is None:
+    if authority.read_only:
+        # An observer sees only itself, not the sessions of the person it reads for.
+        query = select(UserSession).where(UserSession.id == authority.session_id)
+    elif authority.principal_id is not None:
+        query = select(UserSession).where(UserSession.principal_id == authority.principal_id)
+    elif _local_observers(authority):
+        query = select(UserSession).where(UserSession.principal_id.is_(None), UserSession.access == "observe")
+    else:
         raise AuthorityError("authentication_required", "Sign in to manage sessions.", 401)
-    rows = (await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all()
-    return [{"public_id": row.public_id, "created_at": row.created_at, "expires_at": row.expires_at,
-             "revoked_at": row.revoked_at, "user_agent": row.user_agent, "current": row.id == authority.session_id} for row in rows]
+    rows = (await db.scalars(query.order_by(UserSession.created_at.desc()).limit(100))).all()
+    return [_session_row(row, authority) for row in rows]
 
 
 @router.delete("/sessions/{public_id}")
 async def revoke_owned_session(public_id: str, db: Database):
     require_identity_writes()
     authority = db.info["authority"]
+    if authority.principal_id is not None:
+        owned = UserSession.principal_id == authority.principal_id
+    elif _local_observers(authority):
+        owned = (UserSession.principal_id.is_(None)) & (UserSession.access == "observe")
+    else:
+        raise AuthorityError("session_not_found", "Session not found.", 404)
     with internal_authority(db):
-        session = await db.scalar(select(UserSession).where(UserSession.public_id == public_id, UserSession.principal_id == authority.principal_id))
-        if session is None or authority.principal_id is None:
+        session = await db.scalar(select(UserSession).where(UserSession.public_id == public_id, owned))
+        if session is None:
             raise AuthorityError("session_not_found", "Session not found.", 404)
         session.revoked_at, session.csrf_token = utc_now(), None
     return {"revoked": True}
@@ -363,6 +430,8 @@ async def logout(response: Response, db: Database):
         with internal_authority(db):
             session = await db.get(UserSession, authority.session_id)
             session.revoked_at, session.csrf_token = utc_now(), None
+            # Flushed here, so an observer's own sign-out is not refused as a write.
+            await db.flush()
     options = _cookie_options()
     response.delete_cookie(options["key"], path=options["path"], secure=options["secure"], httponly=True, samesite="lax")
     response.headers["Cache-Control"] = "no-store"

@@ -165,6 +165,14 @@ async def get_current_session(
     """FastAPI dependency resolving the current browser and refreshing its cookie."""
     settings = get_settings()
     authority = db.info.get("authority")
+    if authority is not None and authority.read_only:
+        # An observer has its own session and never gets a browser session made for it.
+        from app.authority import AuthorityError, internal_authority
+        with internal_authority(db):
+            session = await db.get(UserSession, authority.session_id) if authority.session_id else None
+        if session is None:
+            raise AuthorityError("authentication_required", "A valid session is required.", 401)
+        return session
     if authority is not None and authority.session_id is not None:
         session = await _get_session_by_token(db, request.cookies.get(settings.session_cookie_name))
         if session is not None:
@@ -193,12 +201,19 @@ async def rotate_session(
     require_identity_writes()
     if session.revoked_at is not None or session.expires_at is None or as_utc(session.expires_at) <= utc_now():
         raise AuthorityError("session_expired", "Expired or revoked sessions cannot be rotated.", 401)
+    now = utc_now()
+    if session.principal_id is not None:
+        from app.services.identity_service import renewable_until, session_lifetimes
+        # A signed-in session rotates within the same absolute cap as native renewal.
+        expires = min(now + timedelta(seconds=session_lifetimes(session.access)[0]), renewable_until(session))
+        if expires <= now:
+            raise AuthorityError("session_renewal_limit", "Sign in again to continue.", 401)
+    else:
+        expires = now + timedelta(seconds=get_settings().session_max_age_seconds)
     raw_token = _new_token()
     session.csrf_token = secrets.token_urlsafe(32) if session.principal_id is not None else None
     session.session_token_hash = _token_digest(raw_token)
-    session.expires_at = utc_now() + timedelta(
-        seconds=(get_settings().auth_session_max_age_seconds if session.principal_id is not None else get_settings().session_max_age_seconds)
-    )
+    session.expires_at = expires
     await commit_or_flush(db)
     await db.refresh(session)
     options = _cookie_options()

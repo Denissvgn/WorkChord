@@ -25,76 +25,82 @@ sequenceDiagram
     participant p0 as rotate_session (backend/app/routers/session.py)
     participant p1 as rotate_session (backend/app/services/session_service.py)
     participant p2 as require_identity_writes
-    participant p3 as commit_or_flush
-    participant p4 as _cookie_options
-    participant p5 as get_settings
-    participant p6 as as_utc
-    participant p7 as utc_now
-    participant p8 as AuthorityError
-    participant p9 as _new_token
-    participant p10 as _token_digest
-    participant p11 as current_command
-    participant p12 as MaintenanceModeError
-    participant p13 as Settings
-    participant p14 as secrets.token_urlsafe (backend/app/services/sess…_service.py:rotate_session)
-    participant p15 as db.refresh
-    participant p16 as timedelta
-    participant p17 as response.set_cookie
-    participant p18 as value.replace
-    participant p19 as datetime.now
-    participant p20 as secrets.token_urlsafe (backend/app/services/session_service.py:_new_token)
-    participant p21 as hashlib.sha256(…).hexdigest
-    participant p22 as value.astimezone
-    participant p23 as hashlib.sha256
-    participant p24 as db.flush
-    participant p25 as token.encode
-    participant p26 as db.commit
-    participant p27 as getattr
-    participant p28 as isinstance
-    participant p29 as info.get
+    participant p3 as session_lifetimes
+    participant p4 as renewable_until
+    participant p5 as commit_or_flush
+    participant p6 as _cookie_options
+    participant p7 as get_settings
+    participant p8 as as_utc
+    participant p9 as utc_now
+    participant p10 as AuthorityError
+    participant p11 as _new_token
+    participant p12 as _token_digest
+    participant p13 as current_command
+    participant p14 as MaintenanceModeError
+    participant p15 as Settings
+    participant p16 as min
+    participant p17 as db.refresh
+    participant p18 as timedelta (backend/app/services/sess…_service.py:rotate_session)
+    participant p19 as secrets.token_urlsafe (backend/app/services/sess…_service.py:rotate_session)
+    participant p20 as response.set_cookie
+    participant p21 as value.replace
+    participant p22 as datetime.now
+    participant p23 as secrets.token_urlsafe (backend/app/services/session_service.py:_new_token)
+    participant p24 as hashlib.sha256(…).hexdigest
+    participant p25 as value.astimezone
+    participant p26 as timedelta (backend/app/services/iden…service.py:renewable_until)
+    participant p27 as hashlib.sha256
+    participant p28 as db.flush
+    participant p29 as token.encode
     p0->>p1: rotate_session (backend/app/services/session_service.py)
     p1->>p2: require_identity_writes
-    p1->>p3: commit_or_flush
-    p1->>p4: _cookie_options
-    p2->>p5: get_settings
-    p1->>p6: as_utc
-    p1->>p7: utc_now
-    p1->>p8: AuthorityError
-    p1->>p9: _new_token
-    p1->>p10: _token_digest
-    p3->>p11: current_command
-    p2->>p12: MaintenanceModeError
-    p5->>p13: Settings
-    p1-->>p14: secrets.token_urlsafe (backend/app/services/sess…_service.py:rotate_session)(32)
-    p1-->>p15: db.refresh(session)
-    p1-->>p16: timedelta(seconds=...)
-    p1-->>p17: response.set_cookie(value=raw_token, **=options)
-    p6-->>p18: value.replace(tzinfo=UTC)
-    p7-->>p19: datetime.now(UTC)
-    p9-->>p20: secrets.token_urlsafe (backend/app/services/session_service.py:_new_token)(32)
-    p10-->>p21: hashlib.sha256(…).hexdigest
-    p6-->>p22: value.astimezone(UTC)
-    p10-->>p23: hashlib.sha256(token.encode(...))
-    p3-->>p24: db.flush
-    p10-->>p25: token.encode('utf-8')
-    p3-->>p26: db.commit
-    p11-->>p27: getattr(db, 'info', None)
-    p11-->>p28: isinstance(info, dict)
-    p11-->>p29: info.get('command')
-    p1->>p7: utc_now
+    p1->>p3: session_lifetimes
+    p1->>p4: renewable_until
+    p1->>p5: commit_or_flush
+    p1->>p6: _cookie_options
+    p2->>p7: get_settings
+    p1->>p8: as_utc
+    p1->>p9: utc_now
+    p1->>p10: AuthorityError
+    p1->>p11: _new_token
+    p1->>p12: _token_digest
+    p5->>p13: current_command
+    p2->>p14: MaintenanceModeError
+    p7->>p15: Settings
+    p1-->>p16: min(..., renewable_until(...))
+    p1-->>p17: db.refresh(session)
+    p1-->>p18: timedelta (backend/app/services/sess…_service.py:rotate_session)(seconds=...)
+    p1-->>p18: timedelta (backend/app/services/sess…_service.py:rotate_session)(seconds=...)
+    p1-->>p19: secrets.token_urlsafe (backend/app/services/sess…_service.py:rotate_session)(32)
+    p1-->>p20: response.set_cookie(value=raw_token, **=options)
+    p8-->>p21: value.replace(tzinfo=UTC)
+    p9-->>p22: datetime.now(UTC)
+    p11-->>p23: secrets.token_urlsafe (backend/app/services/session_service.py:_new_token)(32)
+    p12-->>p24: hashlib.sha256(…).hexdigest
+    p8-->>p25: value.astimezone(UTC)
+    p4-->>p26: timedelta (backend/app/services/iden…service.py:renewable_until)(seconds=...)
+    p12-->>p27: hashlib.sha256(token.encode(...))
+    p5-->>p28: db.flush
+    p12-->>p29: token.encode('utf-8')
 ```
 
-> Call sequence diagram shows 30 of 35 interactions; 5 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 43 interactions; 13 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 7 of 7 (0 omitted); unresolved 9 of 9 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 8 of 10 (2 omitted); unresolved 7 of 9 (2 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/services/identity_service.py:require_identity_writes` | 3 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/services/session_service.py:rotate_session` | 2 | [backend/app/config.py](../modules/config.md) | internal | 3 |
-| `backend/app/services/session_service.py:_cookie_options` | 33 | [backend/app/config.py](../modules/config.md) | internal | 1 |
+| `backend/app/services/session_service.py:rotate_session` | 2 | [backend/app/utils/time.py](../modules/time.md) | internal | 1 |
+| `backend/app/services/identity_service.py:session_lifetimes` | 17 | [backend/app/config.py](../modules/config.md) | internal | 1 |
+| `backend/app/services/identity_service.py:renewable_until` | 19 | [backend/app/utils/time.py](../modules/time.md) | internal | 1 |
+| `backend/app/services/identity_service.py:renewable_until` | 19 | [backend/app/services/identity_service.py](../modules/identity_service.md) | internal | 1 |
+| `backend/app/services/session_service.py:rotate_session` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 1 |
+| `backend/app/services/session_service.py:rotate_session` | 2 | [backend/app/config.py](../modules/config.md) | internal | 2 |
+| `backend/app/commands.py:current_command` | 34 | - | external | 2 |
+> Omission summary shows 8 of 11 groups; 3 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -105,9 +111,9 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 20; effect analysis evaluated: 17, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+Source steps: 25; effect analysis evaluated: 21, partial: 0, unavailable: 4. Counts include steps omitted from the displayed trace.
 
-Collector observations for 17 source steps with known totals: observed: 34, emitted: 34, omitted: 0. Unavailable totals are excluded.
+Collector observations for 21 source steps with known totals: observed: 47, emitted: 47, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
@@ -185,15 +191,15 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | rotate_session (backend/app/routers/session.py) | rotate_session (backend/app/services/session_service.py) | 33 | `session_service.rotate_session(db, current_session, response)` |
-| rotate_session (backend/app/services/session_service.py) | require_identity_writes | 193 | `require_identity_writes(data not statically known)` |
+| rotate_session (backend/app/services/session_service.py) | require_identity_writes | 201 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| rotate_session (backend/app/services/session_service.py) | as_utc | 194 | `as_utc(session.expires_at)` |
+| rotate_session (backend/app/services/session_service.py) | as_utc | 202 | `as_utc(session.expires_at)` |
 | as_utc | value.replace | 24 | `value.replace(tzinfo=UTC)` |
 | as_utc | value.astimezone | 25 | `value.astimezone(UTC)` |
-| rotate_session (backend/app/services/session_service.py) | utc_now | 194 | `utc_now(data not statically known)` |
+| rotate_session (backend/app/services/session_service.py) | utc_now | 202 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
 
 ### Boundary effects

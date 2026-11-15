@@ -1,7 +1,7 @@
 # NativeSessionService_exchange
 
 **Entry point:** `native_session_service.NativeSessionService.exchange`
-**Modules involved:** [authority](../modules/authority.md), [identity_service](../modules/identity_service.md), [native_session_service](../modules/native_session_service.md), [time](../modules/time.md)
+**Modules involved:** [authority](../modules/authority.md), [config](../modules/config.md), [identity_service](../modules/identity_service.md), [native_session_service](../modules/native_session_service.md), [time](../modules/time.md)
 
 ## Sequence
 
@@ -12,16 +12,19 @@
 4. `authority.AuthorityError`
 5. `time.as_utc`
 6. `time.utc_now`
-7. `authority.AuthorityError`
-8. `time.utc_now`
+7. `config.get_settings`
+8. `authority.AuthorityError`
 9. `time.utc_now`
-10. `authority.AuthorityError`
-11. `identity_service.IdentityService.issue_session`
-12. `identity_service.IdentityService`
+10. `time.utc_now`
+11. `authority.AuthorityError`
+12. `identity_service.IdentityService.issue_session`
+13. `identity_service.IdentityService`
+14. `identity_service.session_grant`
 
 ## Touches
 
 - [authority](../modules/authority.md)
+- [config](../modules/config.md)
 - [identity_service](../modules/identity_service.md)
 - [native_session_service](../modules/native_session_service.md)
 - [time](../modules/time.md)

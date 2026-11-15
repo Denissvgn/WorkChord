@@ -22,6 +22,8 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 | `projects` | `Record<string, string>` | Yes | — | — |
 | `csrf_token` | `string \| null` | Yes | — | — |
 | `authentication_error` | `string \| null` | No | — | — |
+| `access` | `'full' \| 'observe' \| null` | No | — | — |
+| `observer` | `{ client_label: string \| null; expires_at: string; renewable_until: string } \| null` | No | — | — |
 
 ## Methods
 
@@ -34,27 +36,31 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 flowchart LR
     n0["WorkspaceIdentity (frontend/src/features/identity/identityService.ts)"]
     n1["frontend/src/components/settings/AdminAccessGate.test.tsx"]
-    n2["frontend/src/features/identity/identityContext.ts"]
-    n3["frontend/src/features/identity/IdentityProvider.tsx"]
+    n2["frontend/src/components/settings/ConnectedReadersPanel.test.tsx"]
+    n3["frontend/src/features/identity/identityContext.ts"]
+    n4["frontend/src/features/identity/IdentityProvider.tsx"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
+    n4 --> n0
     click n0 "../modules/identityService.md"
     click n1 "../modules/AdminAccessGate.test.md"
-    click n2 "../modules/identityContext.md"
-    click n3 "../modules/IdentityProvider.md"
+    click n2 "../modules/ConnectedReadersPanel.test.md"
+    click n3 "../modules/identityContext.md"
+    click n4 "../modules/IdentityProvider.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [identityService](../modules/identityService.md) | 0 | `authenticated`, `authentication_error`, `configured`, `csrf_token`, `mode`, `principal`, `profile`, `projects`, `workspace_role` |
+| [identityService](../modules/identityService.md) | 0 | `access`, `authenticated`, `authentication_error`, `configured`, `csrf_token`, `mode`, `observer`, `principal`, `profile`, `projects`, `workspace_role` |
 
 ### References
 
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `AdminAccessGate.test` | import | [AdminAccessGate.test](../modules/AdminAccessGate.test.md) | — |
+| `ConnectedReadersPanel.test` | import | [ConnectedReadersPanel.test](../modules/ConnectedReadersPanel.test.md) | — |
 | `identityContext` | import | [identityContext](../modules/identityContext.md) | — |
 | `IdentityProvider` | import | [IdentityProvider](../modules/IdentityProvider.md) | — |

@@ -156,32 +156,32 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| project_member | authority.allows | 269 | `authority.allows(project_id, 'manage')` |
-| project_member | AuthorityError | 270 | `AuthorityError(data not statically known)` |
-| project_member | require_identity_writes | 271 | `require_identity_writes(data not statically known)` |
+| project_member | authority.allows | 297 | `authority.allows(project_id, 'manage')` |
+| project_member | AuthorityError | 298 | `AuthorityError(data not statically known)` |
+| project_member | require_identity_writes | 299 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| project_member | AuthorityError | 273 | `AuthorityError('invalid_project_role', 'Choose a project role.', 422)` |
-| project_member | internal_authority | 275 | `internal_authority(db)` |
-| internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| project_member | db.get | 276 | `db.get(Principal, principal_id)` |
+| project_member | AuthorityError | 301 | `AuthorityError('invalid_project_role', 'Choose a project role.', 422)` |
+| project_member | internal_authority | 303 | `internal_authority(db)` |
+| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
+| project_member | db.get | 304 | `db.get(Principal, principal_id)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `db.add` | `project_member` | 285 |
-| mutation | `db.add` | `project_member` | 286 |
+| mutation | `db.add` | `project_member` | 313 |
+| mutation | `db.add` | `project_member` | 314 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `project_member` | `authority.allows` | 269 |
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `project_member` | `db.get` | 276 |
+| unresolved_call | `project_member` | `authority.allows` | 297 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `project_member` | `db.get` | 304 |
 | step_limit | `project_member` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -7,9 +7,10 @@
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->
 1. `identity_service.require_identity_writes`
-2. `authority.internal_authority`
-3. `authority.AuthorityError`
-4. `time.utc_now`
+2. `authority.AuthorityError`
+3. `authority.internal_authority`
+4. `authority.AuthorityError`
+5. `time.utc_now`
 
 ## Touches
 

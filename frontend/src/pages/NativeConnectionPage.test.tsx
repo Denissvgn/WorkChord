@@ -14,6 +14,13 @@ const content = (principal = 1) => <IdentityContext.Provider value={{ identity: 
 }, refresh: vi.fn(), signOut: async () => undefined }}><NativeConnectionPage /></IdentityContext.Provider>;
 const renderPage = () => renderWithProviders(content(),
 { initialEntries: [`/mobile/connect?request=${request}`] });
+const localContent = () => <IdentityContext.Provider value={{ identity: {
+    mode: 'trusted_local', authenticated: false, configured: false, principal: null,
+    profile: null, workspace_role: null, projects: {}, csrf_token: null,
+}, refresh: vi.fn(), signOut: async () => undefined }}><NativeConnectionPage /></IdentityContext.Provider>;
+const observerRequest = (access: 'observe' | 'full' = 'observe') => ({ data: {
+    verification_code: 'WXYZ-2345', expires_at: new Date(Date.now() + 5 * 60_000).toISOString(), approved: false,
+    access, client_label: 'Desk reader' } });
 
 describe('native connection consent', () => {
     beforeEach(() => {
@@ -61,6 +68,37 @@ describe('native connection consent', () => {
         await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
         expect(screen.getByRole('button', { name: 'Approve connection' })).toBeEnabled();
         expect(screen.queryByText('Connection approved. Return to your device and check the connection.')).not.toBeInTheDocument();
+    });
+
+    it('explains a read-only reader before a signed-in person approves it', async () => {
+        service.get.mockResolvedValue(observerRequest());
+        const { user } = renderPage();
+        await screen.findByText('WXYZ-2345');
+        expect(screen.getByRole('heading', { name: 'Connect a read-only reader' })).toBeInTheDocument();
+        expect(screen.getByText('Desk reader will read this workspace as Sam.')).toBeInTheDocument();
+        expect(screen.getByText(/cannot change anything/)).toBeInTheDocument();
+        await user.click(screen.getByRole('checkbox', { name: 'I started this reader and the code matches what it shows.' }));
+        await user.click(screen.getByRole('button', { name: 'Approve connection' }));
+        await screen.findByText('Reader approved. It can start reading now.');
+    });
+
+    it('lets a trusted-local browser approve a reader with its own session', async () => {
+        service.get.mockImplementation(async (url: string) => url === '/session/whoami' ? { data: {} } : observerRequest());
+        const { user } = renderWithProviders(localContent(), { initialEntries: [`/mobile/connect?request=${request}`] });
+        await screen.findByText('Desk reader will read this trusted-local workspace.');
+        expect(service.get).toHaveBeenNthCalledWith(1, '/session/whoami', expect.anything());
+        expect(screen.getByText(/can read everything in this workspace/)).toBeInTheDocument();
+        await user.click(screen.getByRole('checkbox'));
+        await user.click(screen.getByRole('button', { name: 'Approve connection' }));
+        await screen.findByText('Reader approved. It can start reading now.');
+        expect(service.post).toHaveBeenCalledWith(`/auth/native-connections/${request}/approve`, { verification_code: 'WXYZ-2345' });
+    });
+
+    it('does not let a trusted-local browser approve full device access', async () => {
+        service.get.mockImplementation(async (url: string) => url === '/session/whoami' ? { data: {} } : observerRequest('full'));
+        renderWithProviders(localContent(), { initialEntries: [`/mobile/connect?request=${request}`] });
+        await screen.findByText('Sign in with a human account to connect your device.');
+        expect(screen.queryByRole('button', { name: 'Approve connection' })).not.toBeInTheDocument();
     });
 
     it('requires confirmation again after the signed-in account changes', async () => {

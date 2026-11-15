@@ -8,7 +8,7 @@ After authentication and request-integrity checks, REST accepts a bounded X-Expe
 
 Fail-closed HTTP identity resolution and explicit public capability boundaries.
 
-Cookie, native bearer, actor, and operator credentials resolve to one principal; conflicting principals are rejected. Cookie writes require request integrity. Private task commands check permission before invoking services. Explicit public capabilities and the safe readiness response retain their separate policy. The backend defaults to managed mode and does not fall back to open collaboration when sign-in fails.
+Cookie, native bearer, actor, and operator credentials resolve to one principal; conflicting principals are rejected. An observer session resolves to a read-only authority that must travel alone and may send only reads, sign-out and renewal; a trusted-local observer without a person resolves to a read-only local authority. Cookie writes require request integrity. Private task commands check permission before invoking services. Explicit public capabilities and the safe readiness response retain their separate policy. The backend defaults to managed mode and does not fall back to open collaboration when sign-in fails.
 
 The restricted onboarding acknowledgement has a dedicated token-only boundary. Its existing exact handoff verifier validates the credential before binding integration authority; ambient cookies, bearer sessions, and operator headers cannot be mixed into that request.
 
@@ -67,6 +67,7 @@ flowchart LR
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `observer_may_send` | `(method, relative)` | — | — |
 | `public_capability` | `(path, method)` | — | — |
 | `resolve_http_identity` | *(async)* `(request, db)` | — | — |
 | `enforce_http_authority` | *(async)* `(request: Request, db: Annotated[object, Depends(get_db, scope='function')])` | — | — |

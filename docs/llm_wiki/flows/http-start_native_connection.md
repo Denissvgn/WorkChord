@@ -24,7 +24,7 @@ sequenceDiagram
     participant p10 as forwarded_for.split
     participant p11 as real_ip.strip
     participant p12 as Settings
-    p0-->>p1: NativeSessionService(…).start(data.code_challenge, ...)
+    p0-->>p1: NativeSessionService(…).start(data.code_challenge, ..., access=data.access, client_label=data.client_label)
     p0->>p2: NativeSessionService
     p0->>p3: get_client_ip
     p3-->>p4: ip_address(direct_ip)
@@ -88,7 +88,7 @@ flowchart LR
     s10["10. request.headers.get"]
     s11["11. forwarded_for.split(…)[…].strip"]
     s12["12. forwarded_for.split"]
-    s1 -. "NativeSessionService(…).start(data.code_challenge, ...)" .-> s2
+    s1 -. "NativeSessionService(…).start(data.code_challenge, ..., access=data.access, client_label=data.client_label)" .-> s2
     s1 -->|"NativeSessionService(db)"| s3
     s1 -->|"get_client_ip(request)"| s4
     s4 -. "ip_address(direct_ip)" .-> s5
@@ -127,14 +127,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| start_native_connection | NativeSessionService(…).start | 83 | `NativeSessionService(db).start(data.code_challenge, ...)` |
-| start_native_connection | NativeSessionService | 83 | `NativeSessionService(db)` |
-| start_native_connection | get_client_ip | 83 | `get_client_ip(request)` |
+| start_native_connection | NativeSessionService(…).start | 102 | `NativeSessionService(db).start(data.code_challenge, ..., access=data.access, client_label=data.client_label)` |
+| start_native_connection | NativeSessionService | 102 | `NativeSessionService(db)` |
+| start_native_connection | get_client_ip | 102 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
 | get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | get_client_ip | request.headers.get | 60 | `request.headers.get('X-Forwarded-For')` |
 | get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
 | get_client_ip | forwarded_for.split | 62 | `forwarded_for.split(',')` |
@@ -147,7 +147,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `start_native_connection` | `NativeSessionService(db).start` | 83 |
+| unresolved_call | `start_native_connection` | `NativeSessionService(db).start` | 102 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |
@@ -158,4 +158,4 @@ flowchart LR
 
 ## Behavior
 
-Creates a ten-minute request with a hashed random identity, an S256 challenge, and a displayed verification code. It uses managed authentication, bounded attempt counts and bounded expired-request cleanup. The response points to a local browser consent path and carries no access token or device verifier.
+Creates a ten-minute request with a hashed random identity, an S256 challenge, and a displayed verification code. It records the requested access (full or observe) and an optional plain client label. A managed workspace accepts both; a trusted-local workspace accepts observe requests only. It keeps bounded attempt counts and bounded expired-request cleanup. The response points to a local browser consent path and carries no access token or device verifier.

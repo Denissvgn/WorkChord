@@ -1,6 +1,6 @@
 # NativeApprovalResponse
 
-**Location:** `backend/app/routers/identity.py:61`
+**Location:** `backend/app/routers/identity.py:77`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)

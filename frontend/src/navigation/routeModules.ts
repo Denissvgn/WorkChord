@@ -43,7 +43,7 @@ export const routeMetadata: RouteMetadata[] = [
     { key: 'iterations', path: '/iterations', titleKey: 'documentTitles.iterations' },
     { key: 'team', path: '/team', titleKey: 'documentTitles.team' },
     { key: 'myWork', path: '/my-work', titleKey: 'teamwork.myWork' },
-    { key: 'nativeConnection', path: '/mobile/connect', titleKey: 'teamwork.connectDevice' },
+    { key: 'nativeConnection', path: '/mobile/connect', titleKey: 'teamwork.connectRoute' },
     { key: 'tasks', path: '/tasks', titleKey: 'documentTitles.tasks' },
     { key: 'triage', path: '/triage', titleKey: 'documentTitles.triage' },
     { key: 'projectReleaseDetail', path: '/projects/:projectId/releases/:releaseId', titleKey: 'documentTitles.projectReleaseDetail' },

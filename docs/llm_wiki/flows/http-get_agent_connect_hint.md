@@ -115,7 +115,7 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | get_agent_connect_hint | get_settings | 71 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | get_agent_connect_hint | settings.api_prefix.rstrip | 72 | `settings.api_prefix.rstrip('/')` |
 | get_agent_connect_hint | AgentConnectResponse | 73 | `AgentConnectResponse(auth_mode=settings.workchord_auth_mode, api_prefix=..., capabilities_path=..., mcp_http_path=..., skill_discovery_path='/.well-known/workchord-agent-skills.json', credential=AgentConnectCredential(...), roles=_roles(...), provisioning=PROVISIONING)` |
 | get_agent_connect_hint | AgentConnectCredential | 79 | `AgentConnectCredential(key_sources=KEY_SOURCES, mcp_stdio_key_sources=MCP_STDIO_KEY_SOURCES, default_key_file=DEFAULT_KEY_FILE)` |

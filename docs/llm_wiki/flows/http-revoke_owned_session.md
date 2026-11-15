@@ -22,35 +22,41 @@
 sequenceDiagram
     participant p0 as revoke_owned_session
     participant p1 as require_identity_writes
-    participant p2 as internal_authority
-    participant p3 as db.scalar
-    participant p4 as select(…).where
-    participant p5 as select
-    participant p6 as AuthorityError
-    participant p7 as utc_now
-    participant p8 as get_settings
-    participant p9 as db.info.get
-    participant p10 as datetime.now
-    participant p11 as MaintenanceModeError
-    participant p12 as Settings
+    participant p2 as _local_observers
+    participant p3 as UserSession.principal_id.is_
+    participant p4 as AuthorityError
+    participant p5 as internal_authority
+    participant p6 as db.scalar
+    participant p7 as select(…).where
+    participant p8 as select
+    participant p9 as utc_now
+    participant p10 as get_settings
+    participant p11 as db.info.get
+    participant p12 as datetime.now
+    participant p13 as MaintenanceModeError
+    participant p14 as Settings
     p0->>p1: require_identity_writes
-    p0->>p2: internal_authority
-    p0-->>p3: db.scalar(...)
-    p0-->>p4: select(…).where(..., ...)
-    p0-->>p5: select(UserSession)
-    p0->>p6: AuthorityError
-    p0->>p7: utc_now
-    p1->>p8: get_settings
-    p2-->>p9: db.info.get('authority_internal', False)
-    p7-->>p10: datetime.now(UTC)
-    p1->>p11: MaintenanceModeError
-    p1->>p8: get_settings
-    p8->>p12: Settings
+    p0->>p2: _local_observers
+    p0-->>p3: UserSession.principal_id.is_(None)
+    p0->>p4: AuthorityError
+    p0->>p5: internal_authority
+    p0-->>p6: db.scalar(...)
+    p0-->>p7: select(…).where(..., owned)
+    p0-->>p8: select(UserSession)
+    p0->>p4: AuthorityError
+    p0->>p9: utc_now
+    p1->>p10: get_settings
+    p2->>p10: get_settings
+    p5-->>p11: db.info.get('authority_internal', False)
+    p9-->>p12: datetime.now(UTC)
+    p1->>p13: MaintenanceModeError
+    p1->>p10: get_settings
+    p10->>p14: Settings
 ```
 
-> Call sequence diagram shows 13 of 13 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 17 of 17 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 2 of 2 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 2 (0 omitted); unresolved 4 of 4 (0 omitted). These counts cover the captured static trace.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -61,27 +67,27 @@ sequenceDiagram
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 9; effect analysis evaluated: 6, partial: 0, unavailable: 3. Counts include steps omitted from the displayed trace.
+Source steps: 12; effect analysis evaluated: 8, partial: 0, unavailable: 4. Counts include steps omitted from the displayed trace.
 
-Collector observations for 6 source steps with known totals: observed: 13, emitted: 13, omitted: 0. Unavailable totals are excluded.
+Collector observations for 8 source steps with known totals: observed: 18, emitted: 18, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `revoke_owned_session` | `available` | `evaluated` | `available` | `6` | `6` | `0` |
+| `revoke_owned_session` | `available` | `evaluated` | `available` | `8` | `8` | `0` |
 | `require_identity_writes` | `available` | `evaluated` | `available` | `0` | `0` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `MaintenanceModeError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `_local_observers` | `available` | `evaluated` | `available` | `2` | `2` | `0` |
+| `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
+| `UserSession.principal_id.is_` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
+| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `internal_authority` | `available` | `evaluated` | `available` | `3` | `3` | `0` |
 | `db.info.get` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `db.scalar` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `select(…).where` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `select` | `not_applicable` | `not_applicable` | `not_applicable` | — | — | — |
-| `AuthorityError` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 
 ```mermaid
 flowchart LR
@@ -91,65 +97,67 @@ flowchart LR
     s4["4. Settings"]
     s5["5. MaintenanceModeError"]
     s6["6. get_settings"]
-    s7["7. internal_authority"]
-    s8["8. db.info.get"]
-    s9["9. db.scalar"]
-    s10["10. select(…).where"]
-    s11["11. select"]
-    s12["12. AuthorityError"]
+    s7["7. _local_observers"]
+    s8["8. get_settings"]
+    s9["9. UserSession.principal_id.is_"]
+    s10["10. AuthorityError"]
+    s11["11. internal_authority"]
+    s12["12. db.info.get"]
     s1 -->|"require_identity_writes(data not statically known)"| s2
     s2 -->|"get_settings(data not statically known)"| s3
     s3 -->|"Settings(data not statically known)"| s4
     s2 -->|"MaintenanceModeError(operation='identity lifecycle', mode=...)"| s5
     s2 -->|"get_settings(data not statically known)"| s6
-    s1 -->|"internal_authority(db)"| s7
-    s7 -. "db.info.get('authority_internal', False)" .-> s8
-    s1 -. "db.scalar(...)" .-> s9
-    s1 -. "select(…).where(..., ...)" .-> s10
-    s1 -. "select(UserSession)" .-> s11
-    s1 -->|"AuthorityError('session_not_found', 'Session not found.', 404)"| s12
+    s1 -->|"_local_observers(authority)"| s7
+    s7 -->|"get_settings(data not statically known)"| s8
+    s1 -. "UserSession.principal_id.is_(None)" .-> s9
+    s1 -->|"AuthorityError('session_not_found', 'Session not found.', 404)"| s10
+    s1 -->|"internal_authority(db)"| s11
+    s11 -. "db.info.get('authority_internal', False)" .-> s12
     click s1 "../modules/routers_identity.md"
     click s2 "../modules/identity_service.md"
     click s3 "../modules/config.md"
     click s4 "../modules/config.md"
     click s5 "../modules/maintenance.md"
     click s6 "../modules/config.md"
-    click s7 "../modules/authority.md"
-    click s12 "../modules/authority.md"
+    click s7 "../modules/routers_identity.md"
+    click s8 "../modules/config.md"
+    click s10 "../modules/authority.md"
+    click s11 "../modules/authority.md"
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `revoke_owned_session` | `public_id: str`, `db: Database` | `UserSession` | `session.revoked_at`, `session.csrf_token` | `{...}` |
+| `revoke_owned_session` | `public_id: str`, `db: Database` | `UserSession`, `UserSession`, `UserSession` | `session.revoked_at`, `session.csrf_token` | `{...}` |
 | `require_identity_writes` | - | - | - | - |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
 | `MaintenanceModeError` | - | - | - | - |
 | `get_settings` | - | - | - | `Settings(...)` |
+| `_local_observers` | `authority` | - | - | `...` |
+| `get_settings` | - | - | - | `Settings(...)` |
+| `UserSession.principal_id.is_` | - | - | - | - |
+| `AuthorityError` | - | - | - | - |
 | `internal_authority` | `db` | - | `db.info[...]`, `db.info[...]` | - |
 | `db.info.get` | - | - | - | - |
-| `db.scalar` | - | - | - | - |
-| `select(…).where` | - | - | - | - |
-| `select` | - | - | - | - |
-| `AuthorityError` | - | - | - | - |
 
 ### Call data
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| revoke_owned_session | require_identity_writes | 348 | `require_identity_writes(data not statically known)` |
+| revoke_owned_session | require_identity_writes | 409 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| revoke_owned_session | internal_authority | 350 | `internal_authority(db)` |
-| internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| revoke_owned_session | db.scalar | 351 | `db.scalar(...)` |
-| revoke_owned_session | select(…).where | 351 | `select(UserSession).where(..., ...)` |
-| revoke_owned_session | select | 351 | `select(UserSession)` |
-| revoke_owned_session | AuthorityError | 353 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
+| revoke_owned_session | _local_observers | 413 | `_local_observers(authority)` |
+| _local_observers | get_settings | 388 | `get_settings(data not statically known)` |
+| revoke_owned_session | UserSession.principal_id.is_ | 414 | `UserSession.principal_id.is_(None)` |
+| revoke_owned_session | AuthorityError | 416 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
+| revoke_owned_session | internal_authority | 417 | `internal_authority(db)` |
+| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
 
@@ -159,12 +167,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `revoke_owned_session` | `db.scalar` | 351 |
-| unresolved_call | `revoke_owned_session` | `select(UserSession).where` | 351 |
-| external_call | `revoke_owned_session` | `select` | 351 |
+| unresolved_call | `revoke_owned_session` | `UserSession.principal_id.is_` | 414 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
 | step_limit | `revoke_owned_session` | `first 12 steps` | 0 |
 
 ## Behavior
 
-This flow starts at `revoke_owned_session` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Revokes one session the caller owns: an account's own sessions, including observers paired by that person, or on a trusted-local workspace, an observer paired without a person. An observer's request is refused earlier as a write.

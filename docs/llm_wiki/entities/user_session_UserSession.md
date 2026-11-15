@@ -18,6 +18,8 @@ Opaque browser identity with non-authoritative request audit metadata.
 | `principal_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('principals.id', ondelete='RESTRICT'), index=True)` | — |
 | `csrf_token` | `Mapped[str \| None]` | `mapped_column(String(128))` | — |
 | `authenticated_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime())` | — |
+| `access` | `Mapped[str]` | `mapped_column(String(16), nullable=False, default='full', server_default='full')` | — |
+| `client_label` | `Mapped[str \| None]` | `mapped_column(String(80), nullable=True)` | — |
 | `principal` | `Mapped['Principal \| None']` | `relationship('Principal', lazy='selectin')` | — |
 | `local_profile_id` | `Mapped[int \| None]` | `mapped_column(Integer, nullable=True)` | — |
 | `session_token_hash` | `Mapped[str \| None]` | `mapped_column(String(64), unique=True, index=True, nullable=True)` | — |
@@ -38,6 +40,7 @@ Opaque browser identity with non-authoritative request audit metadata.
 | `__repr__` | `() -> str` | — | — |
 | `display_name` | `() -> str` | `@property` | Return a privacy-safe stable label without exposing IP or token data. |
 | `authenticated` | `() -> bool` | `@property` | — |
+| `read_only` | `() -> bool` | `@property` | Anything but a full session is read-only, so an unknown level fails closed. |
 
 ## Relationships
 
@@ -91,7 +94,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [user_session](../modules/user_session.md) | 3 | `authenticated_at`, `created_at`, `csrf_token`, `expires_at`, `id`, `ip_address`, `last_seen_at`, `local_profile_id`, `plan_shares`, `principal`, `principal_id`, `project_updates` |
+| [user_session](../modules/user_session.md) | 4 | `access`, `authenticated_at`, `client_label`, `created_at`, `csrf_token`, `expires_at`, `id`, `ip_address`, `last_seen_at`, `local_profile_id`, `plan_shares`, `principal` |
 
 ### Structure
 
@@ -116,4 +119,4 @@ flowchart LR
 | `create_saved_view` | type_reference | [saved_views](../modules/saved_views.md) | — |
 | `delete_saved_view` | type_reference | [saved_views](../modules/saved_views.md) | — |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 46 logical references; 34 omitted by the 12-row generated summary limit.

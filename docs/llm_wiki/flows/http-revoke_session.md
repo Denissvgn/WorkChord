@@ -143,16 +143,16 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | revoke_session (backend/app/routers/session.py) | revoke_session (backend/app/services/session_service.py) | 43 | `session_service.revoke_session(db, current_session, response)` |
-| revoke_session (backend/app/services/session_service.py) | utc_now | 217 | `utc_now(data not statically known)` |
+| revoke_session (backend/app/services/session_service.py) | utc_now | 232 | `utc_now(data not statically known)` |
 | utc_now | datetime.now | 13 | `datetime.now(UTC)` |
-| revoke_session (backend/app/services/session_service.py) | commit_or_flush | 218 | `commit_or_flush(db)` |
+| revoke_session (backend/app/services/session_service.py) | commit_or_flush | 233 | `commit_or_flush(db)` |
 | commit_or_flush | current_command | 79 | `current_command(db)` |
 | current_command | getattr | 73 | `getattr(db, 'info', None)` |
 | current_command | isinstance | 74 | `isinstance(info, dict)` |
 | current_command | info.get | 74 | `info.get('command')` |
 | commit_or_flush | db.flush | 80 | `db.flush(data not statically known)` |
 | commit_or_flush | db.commit | 82 | `db.commit(data not statically known)` |
-| revoke_session (backend/app/services/session_service.py) | _cookie_options | 219 | `_cookie_options(data not statically known)` |
+| revoke_session (backend/app/services/session_service.py) | _cookie_options | 234 | `_cookie_options(data not statically known)` |
 
 ### Boundary effects
 

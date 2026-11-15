@@ -6,7 +6,7 @@
 
 Trusted OIDC sign-in and durable principal/session lifecycle.
 
-OIDC authorization-code sign-in verifies PKCE, browser-bound state, nonce, RS256 signature, issuer, audience, expiry and token bindings before mapping the stable issuer/subject. Sessions are opaque and revocable. Guest ownership transfer requires token proof or reasoned operator recovery, preserves original attribution, and rotates share links. Bounded retention anonymizes expired metadata while retaining referenced identity rows.
+OIDC authorization-code sign-in verifies PKCE, browser-bound state, nonce, RS256 signature, issuer, audience, expiry and token bindings before mapping the stable issuer/subject. Sessions are opaque and revocable. Renewal issues a successor at the same access level and original sign-in time, capped by the absolute renewal limit for that level, and can rotate the source. Guest ownership transfer requires token proof or reasoned operator recovery, preserves original attribution, and rotates share links. Bounded retention anonymizes expired metadata while retaining referenced identity rows.
 
 An agent principal retains the actor’s explicit profile binding. Principal account disablement is independent of actor runtime activation; a restricted acknowledgement cannot revive an explicitly disabled principal.
 
@@ -54,7 +54,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (19) |
+| Inbound | `backend` (20) |
 | Outbound | `backend` (10) |
 
 ### External packages
@@ -63,13 +63,13 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 29 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 30 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [IdentityService](../entities/IdentityService.md) | 140 | — | — |
+| [IdentityService](../entities/IdentityService.md) | 159 | — | — |
 
 ## Functions
 
@@ -77,6 +77,9 @@ flowchart LR
 |----------|-----------|------------|-------------|
 | `digest` | `(value: str) -> str` | — | — |
 | `require_identity_writes` | `()` | — | — |
+| `session_lifetimes` | `(access)` | — | (lifetime of one session, absolute renewal cap from sign-in) for an access level. |
+| `renewable_until` | `(session)` | — | The last moment renewal can carry this session to; then sign in or pair again. |
+| `session_grant` | `(session, raw)` | — | — |
 | `local_work_profile` | *(async)* `(db, profile_id)` | — | Return a person profile a local session may work as, or None. |
 | `safe_return_path` | `(value: str) -> str` | — | — |
 | `oidc_url` | `(value: str) -> str` | — | — |

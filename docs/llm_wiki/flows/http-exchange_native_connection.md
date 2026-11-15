@@ -129,14 +129,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| exchange_native_connection | NativeSessionService(…).exchange | 90 | `NativeSessionService(db).exchange(data.request_id, data.code_verifier, ..., request.headers.get(...))` |
-| exchange_native_connection | NativeSessionService | 90 | `NativeSessionService(db)` |
-| exchange_native_connection | get_client_ip | 91 | `get_client_ip(request)` |
+| exchange_native_connection | NativeSessionService(…).exchange | 110 | `NativeSessionService(db).exchange(data.request_id, data.code_verifier, ..., request.headers.get(...))` |
+| exchange_native_connection | NativeSessionService | 110 | `NativeSessionService(db)` |
+| exchange_native_connection | get_client_ip | 111 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
 | get_client_ip | get_settings | 55 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 | get_client_ip | request.headers.get (backend/app/services/sess…n_service.py:get_client_ip) | 60 | `request.headers.get('X-Forwarded-For')` |
 | get_client_ip | forwarded_for.split(…)[…].strip | 62 | `forwarded_for.split(',')[0].strip(data not statically known)` |
 | get_client_ip | forwarded_for.split | 62 | `forwarded_for.split(',')` |
@@ -149,7 +149,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `exchange_native_connection` | `NativeSessionService(db).exchange` | 90 |
+| unresolved_call | `exchange_native_connection` | `NativeSessionService(db).exchange` | 110 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |
@@ -160,4 +160,4 @@ flowchart LR
 
 ## Behavior
 
-Checks the device verifier against the S256 challenge before revealing connection state. Pending consent produces a pending response. Approved exchange locks principal then session, rechecks enabled human identity and valid browser approval, and conditionally consumes the request in the same transaction as native session issuance. Replay or expiry fails explicitly.
+Checks the device verifier against the S256 challenge before revealing connection state. Pending consent produces a pending response. Approved exchange locks principal then session, rechecks enabled human identity (or, for a trusted-local observer, a live local browser approval) and conditionally consumes the request in the same transaction as session issuance at the requested access level. Replay or expiry fails explicitly.
