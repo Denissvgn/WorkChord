@@ -18,8 +18,14 @@ page.on('pageerror', error => errors.push(error.message));
 page.on('dialog', dialog => dialog.accept());
 const check = label => { steps.push(label); console.log(label); };
 const signedIn = async name => {
-  const inEditor = page.getByRole('dialog').getByRole('link', { name: 'Sign in', exact: true });
-  await (await inEditor.count() ? inEditor : page.getByRole('link', { name: 'Sign in', exact: true })).click();
+  // An open task editor is a modal dialog, so its own link is the one a person can
+  // reach. That link can render a moment after the page-level session notice, so
+  // choose the scope by whether the dialog is open (settled before the session
+  // expires) and let the click wait for the link inside it. Counting the link
+  // itself raced its render and fell back to a page-wide match of two links.
+  const editor = page.getByRole('dialog');
+  const scope = await editor.count() ? editor : page;
+  await scope.getByRole('link', { name: 'Sign in', exact: true }).click();
   await page.getByRole('link', { name: `Continue as ${name}` }).click();
   await page.getByText(name, { exact: true }).first().waitFor();
 };
