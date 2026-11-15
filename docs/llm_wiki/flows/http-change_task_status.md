@@ -220,4 +220,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `change_task_status` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Applies one validated transition with the caller's expected version. Starting planned work moves its forecast to the actual start and keeps its length. When a non-automatic change moves the task's end date later, `TaskStatusService.cascade_update_dependents` moves every planned task reachable through planned dependents later by the same number of days, under internal authority. It walks the dependency graph breadth-first and visits each task once, so a task reached by several paths moves once and appears once in the status log's `affected_task_ids`. Each moved task gets one `dates_cascaded` event naming the predecessor it was first reached through, and its queued assignments are rebound to the new version. Work that is not planned stops the walk. An earlier end date moves no dependents.

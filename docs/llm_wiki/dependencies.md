@@ -380,7 +380,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 
 | Module | Fan-in | Fan-out |
 |--------|--------|---------|
-| [models_task](modules/models_task.md) | 96 | 9 |
+| [models_task](modules/models_task.md) | 97 | 9 |
 | [app_database](modules/app_database.md) | 89 | 5 |
 | [Button](modules/Button.md) | 85 | 0 |
 | [commands](modules/commands.md) | 82 | 12 |
@@ -388,23 +388,23 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [time](modules/time.md) | 78 | 0 |
 | [types_task](modules/types_task.md) | 76 | 2 |
 | [config](modules/config.md) | 74 | 1 |
-| [models_agent](modules/models_agent.md) | 69 | 5 |
+| [models_agent](modules/models_agent.md) | 70 | 5 |
 | [QueryState](modules/QueryState.md) | 68 | 2 |
-| [task_service](modules/task_service.md) | 62 | 28 |
+| [task_service](modules/task_service.md) | 63 | 28 |
 | [models_iteration](modules/models_iteration.md) | 60 | 6 |
 | [authority](modules/authority.md) | 57 | 6 |
 | [team_member](modules/team_member.md) | 55 | 6 |
 | [apiError](modules/apiError.md) | 54 | 0 |
 | [models_project](modules/models_project.md) | 45 | 9 |
-| [schemas_task](modules/schemas_task.md) | 37 | 5 |
+| [schemas_task](modules/schemas_task.md) | 38 | 5 |
 | [api](modules/api.md) | 37 | 2 |
 | [formatDate](modules/formatDate.md) | 37 | 1 |
 | [i18n](modules/i18n.md) | 36 | 1 |
 | [models_identity](modules/models_identity.md) | 35 | 2 |
-| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 31 | 9 |
+| [test_delivery_scenarios](modules/test_delivery_scenarios.md) | 32 | 9 |
+| [app_main](modules/app_main.md) | 31 | 48 |
 | [Input](modules/Input.md) | 31 | 0 |
 | [taskService](modules/taskService.md) | 31 | 3 |
-| [app_main](modules/app_main.md) | 30 | 48 |
 | [agent_service](modules/agent_service.md) | 30 | 16 |
 | [models_calendar](modules/models_calendar.md) | 29 | 2 |
 | [query_limits](modules/query_limits.md) | 26 | 0 |
@@ -994,6 +994,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_database_harness](modules/test_database_harness.md) | 0 | 5 |
 | [test_delivery_dependencies](modules/test_delivery_dependencies.md) | 0 | 13 |
 | [test_delivery_metrics](modules/test_delivery_metrics.md) | 0 | 15 |
+| [test_dependency_date_cascade](modules/test_dependency_date_cascade.md) | 0 | 6 |
 | [test_deployment_configuration](modules/test_deployment_configuration.md) | 0 | 0 |
 | [test_effective_deferral](modules/test_effective_deferral.md) | 0 | 15 |
 | [test_execution_usage](modules/test_execution_usage.md) | 0 | 11 |

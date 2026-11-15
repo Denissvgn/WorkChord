@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1569 | [Open section](#entities) |
-| Modules | 835 | [Open section](#modules) |
+| Modules | 836 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 558 | [Open section](#entry-point-flows) |
@@ -2300,6 +2300,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_delivery_dependencies](modules/test_delivery_dependencies.md) - Cross-project readiness, cycle prevention and retained acceptance history.
 - [test_delivery_metrics](modules/test_delivery_metrics.md) - Recorded workflow instants, durable scope and missing history stay distinct.
 - [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
+- [test_dependency_date_cascade](modules/test_dependency_date_cascade.md) - A late start moves each planned dependent once, however many paths reach it.
 - [test_deployment_configuration](modules/test_deployment_configuration.md) - Deployment policy propagation and bounded acceptance artifact retention.
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
 - [test_documentation_boundary](modules/test_documentation_boundary.md) - A concise entrypoint still binds release evidence to authoritative operator policy.
