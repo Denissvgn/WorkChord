@@ -26,16 +26,16 @@ flowchart LR
     n1["RuntimeError"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["backend/app/routers/agent.py"]
-    n4["backend/app/routers/agent_skill_bundles.py"]
-    n5["AgentSkillBundleService._index_unique_records (backend/app/services/agent_skill_bundle_service.py)"]
-    n6["AgentSkillBundleService._load_release (backend/app/services/agent_skill_bundle_service.py)"]
-    n7["AgentSkillBundleService._read_artifact (backend/app/services/agent_skill_bundle_service.py)"]
-    n8["AgentSkillBundleService._release_identity (backend/app/services/agent_skill_bundle_service.py)"]
-    n9["AgentSkillBundleService._validate_artifact_name (backend/app/services/agent_skill_bundle_service.py)"]
-    n10["AgentSkillBundleService._validate_release (backend/app/services/agent_skill_bundle_service.py)"]
-    n11["AgentSkillBundleService._validate_skill_entry (backend/app/services/agent_skill_bundle_service.py)"]
-    n12["AgentSkillBundleService.file_payload (backend/app/services/agent_skill_bundle_service.py)"]
-    n13["backend/app/services/agent_team_setup_service.py"]
+    n4["backend/app/routers/agent_connect.py"]
+    n5["backend/app/routers/agent_skill_bundles.py"]
+    n6["AgentSkillBundleService._index_unique_records (backend/app/services/agent_skill_bundle_service.py)"]
+    n7["AgentSkillBundleService._load_release (backend/app/services/agent_skill_bundle_service.py)"]
+    n8["AgentSkillBundleService._read_artifact (backend/app/services/agent_skill_bundle_service.py)"]
+    n9["AgentSkillBundleService._release_identity (backend/app/services/agent_skill_bundle_service.py)"]
+    n10["AgentSkillBundleService._validate_artifact_name (backend/app/services/agent_skill_bundle_service.py)"]
+    n11["AgentSkillBundleService._validate_release (backend/app/services/agent_skill_bundle_service.py)"]
+    n12["AgentSkillBundleService._validate_skill_entry (backend/app/services/agent_skill_bundle_service.py)"]
+    n13["AgentSkillBundleService.file_payload (backend/app/services/agent_skill_bundle_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -52,8 +52,8 @@ flowchart LR
     click n0 "../modules/agent_skill_bundle_service.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
-    click n4 "../modules/agent_skill_bundles.md"
-    click n5 "../modules/agent_skill_bundle_service.md"
+    click n4 "../modules/routers_agent_connect.md"
+    click n5 "../modules/agent_skill_bundles.md"
     click n6 "../modules/agent_skill_bundle_service.md"
     click n7 "../modules/agent_skill_bundle_service.md"
     click n8 "../modules/agent_skill_bundle_service.md"
@@ -61,7 +61,7 @@ flowchart LR
     click n10 "../modules/agent_skill_bundle_service.md"
     click n11 "../modules/agent_skill_bundle_service.md"
     click n12 "../modules/agent_skill_bundle_service.md"
-    click n13 "../modules/agent_team_setup_service.md"
+    click n13 "../modules/agent_skill_bundle_service.md"
 ```
 
 ### Summary
@@ -82,6 +82,7 @@ flowchart LR
 |---|---|---|---:|
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
+| `agent_connect` | import | [routers_agent_connect](../modules/routers_agent_connect.md) | — |
 | `agent_skill_bundles` | import | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `AgentSkillBundleService._index_unique_records` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 1 |
 | `AgentSkillBundleService._load_release` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 1 |
@@ -91,6 +92,5 @@ flowchart LR
 | `AgentSkillBundleService._validate_release` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 16 |
 | `AgentSkillBundleService._validate_skill_entry` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 11 |
 | `AgentSkillBundleService.file_payload` | call | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | 5 |
-| `agent_team_setup_service` | import | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 
-> References: showing 12 of 13 logical references; 1 omitted by the 12-row generated summary limit.
+> References: showing 12 of 14 logical references; 2 omitted by the 12-row generated summary limit.

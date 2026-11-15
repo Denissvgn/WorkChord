@@ -1,6 +1,6 @@
 # MCPAgentKeyMiddleware
 
-**Location:** `backend/app/mcp_server.py:106`
+**Location:** `backend/app/mcp_server.py:110`
 **Kind:** Class
 **Bases:** —
 **Module:** [mcp_server](../modules/mcp_server.md)

@@ -14,6 +14,7 @@ Provision a WorkChord AgentActor through the REST Agent API.
 | `argparse` | `argparse` |
 | `json` | `json` |
 | `os` | `os` |
+| `pathlib` | `Path` |
 | `shlex` | `shlex` |
 | `sys` | `sys` |
 | `typing` | `Any` |
@@ -28,6 +29,10 @@ Provision a WorkChord AgentActor through the REST Agent API.
 
 | Function | Signature | Decorators | Description |
 |----------|-----------|------------|-------------|
+| `default_key_file` | `(role: str) -> Path` | — | Return the per-role key file the role skills look for when no variable is set. |
+| `check_key_file_target` | `(path: Path) -> Path` | — | Fail before the actor exists when the key cannot be stored safely at ``path``. |
+| `write_key_file` | `(path: Path, api_key: str) -> None` | — | Create ``path`` readable only by its owner and write the key on one line. |
+| `without_key` | `(data: dict[str, Any], key_file: Path) -> dict[str, Any]` | — | Replace the one-time key with the file that now holds it. |
 | `normalize_base_url` | `(value: str) -> str` | — | Return a base URL without trailing slash. |
 | `normalize_api_prefix` | `(value: str) -> str` | — | Return an API prefix beginning with one slash and without trailing slash. |
 | `actor_url` | `(base_url: str, api_prefix: str) -> str` | — | Build the agent actor creation endpoint URL. |

@@ -3330,3 +3330,23 @@ Stored agent-team contracts are read with shape-only loaders; members that break
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-15
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a13ee8a97289d5f24d9bbdc7b3408c535cc07d4c4668285e9bb7d02a7188926d`
+- Pages created: 11
+- Pages updated: 171
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2977
+- Pages deprecated: 0
+- Semantic fields preserved: 2
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no

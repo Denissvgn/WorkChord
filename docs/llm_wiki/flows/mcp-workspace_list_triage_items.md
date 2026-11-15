@@ -126,7 +126,7 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 92; effect analysis evaluated: 63, partial: 3, unavailable: 26. Counts include steps omitted from the displayed trace.
 
-Collector observations for 66 source steps with known totals: observed: 287, emitted: 275, omitted: 12. Unavailable totals are excluded.
+Collector observations for 66 source steps with known totals: observed: 288, emitted: 276, omitted: 12. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector omitted observations before flow assembly; displayed effects are partial.
@@ -201,8 +201,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_list_triage_items | _tool_call | 1758 | `_tool_call('tasks:read', ...)` |
-| _tool_call | enforce_mcp_access | 314 | `enforce_mcp_access(required_scope)` |
+| workspace_list_triage_items | _tool_call | 1778 | `_tool_call('tasks:read', ...)` |
+| _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 481 | `Settings(data not statically known)` |
 | enforce_mcp_access | scope_requirement_is_mutating | 113 | `scope_requirement_is_mutating(required_scope)` |
