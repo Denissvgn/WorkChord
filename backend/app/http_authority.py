@@ -27,6 +27,15 @@ KNOWN_PREFIXES = ("/tasks", "/time-entries", "/notifications", "/iterations", "/
                   "/external-links", "/llm", "/agent", "/session", "/auth", "/github", "/export", *OPERATOR_PREFIXES)
 
 
+# The only requests besides reads that an observer credential may send: ending
+# its own session and renewing it within the observer renewal cap.
+OBSERVER_COMMANDS = {("POST", "/auth/logout"), ("POST", "/auth/native-token")}
+
+
+def observer_may_send(method, relative):
+    return method in {"GET", "HEAD"} or (method, relative) in OBSERVER_COMMANDS
+
+
 def public_capability(path, method):
     if path in {"/auth/native-connections/start", "/auth/native-connections/exchange"} and method == "POST":
         return True
@@ -82,6 +91,7 @@ async def resolve_http_identity(request, db):
             code = "session_revoked" if stored is not None and stored.revoked_at is not None else "session_expired" if stored is not None else "authentication_required"
             raise AuthorityError(code, "Sign in again to continue.", 401)
         tokens = []
+        local_observer = None
         if cookie_session is not None and cookie_session.principal_id is not None:
             tokens.append(cookie_session)
         if authorization:
@@ -89,14 +99,26 @@ async def resolve_http_identity(request, db):
             if scheme.lower() != "bearer" or not token:
                 raise AuthorityError("authentication_required", "Use a supported credential.", 401)
             bearer_session = await _get_session_by_token(db, token)
-            if bearer_session is None or bearer_session.principal_id is None:
+            if bearer_session is None:
                 raise AuthorityError("authentication_required", "The session credential is invalid or expired.", 401)
-            tokens.append(bearer_session)
+            if bearer_session.principal_id is not None:
+                tokens.append(bearer_session)
+            elif bearer_session.read_only and settings.workchord_auth_mode == "trusted_local":
+                # Paired from a trusted-local browser with no signed-in person:
+                # attributed by its own session and label, never a principal.
+                local_observer = bearer_session
+            else:
+                raise AuthorityError("authentication_required", "The session credential is invalid or expired.", 401)
         for session in tokens:
             principal = await db.get(Principal, session.principal_id)
             if principal is None or not principal.enabled or principal.kind != "human":
                 raise AuthorityError("account_disabled", "This account is disabled.", 401)
-            contexts.append(await identity.context(principal, session=session))
+            context = await identity.context(principal, session=session)
+            contexts.append(replace(context, read_only=True) if session.read_only else context)
+        if local_observer is not None:
+            contexts.append(Authority(None, "local", session_id=local_observer.id, local=True, read_only=True))
+    if len(contexts) > 1 and any(ctx.read_only for ctx in contexts):
+        raise AuthorityError("conflicting_credentials", "Send an observer credential on its own.", 401)
     identities = {ctx.principal_id for ctx in contexts}
     if len(identities) > 1:
         raise AuthorityError("conflicting_credentials", "Use one account or agent credential per request.", 401)
@@ -108,7 +130,8 @@ async def resolve_http_identity(request, db):
             raise AuthorityError("request_integrity_required", "Reload your session before submitting this change.")
     if authority is None and settings.workchord_auth_mode == "trusted_local":
         authority = Authority(None, "local", session_id=cookie_session.id if cookie_session else None, local=True,
-                              profile_id=cookie_session.local_profile_id if cookie_session else None)
+                              profile_id=cookie_session.local_profile_id if cookie_session else None,
+                              read_only=cookie_session is not None and cookie_session.read_only)
     if authority is not None:
         reason = request.headers.get("X-Command-Reason")
         authority = replace(authority, reason=reason[:2000] if reason else None,
@@ -136,6 +159,8 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
     authority = await resolve_http_identity(request, db)
     if authority is None:
         raise AuthorityError("authentication_required", "Sign in to continue.", 401)
+    if authority.read_only and not observer_may_send(request.method, relative):
+        raise AuthorityError("read_only_credential", "This credential can only read.")
     if relative.startswith("/agent/"):
         authority = replace(authority, source="agent_rest")
     elif authority.kind == "agent":

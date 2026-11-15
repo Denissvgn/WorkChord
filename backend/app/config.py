@@ -124,6 +124,11 @@ class Settings(BaseSettings):
     oidc_redirect_uri: str = ""
     oidc_allow_http_loopback: bool = False
     auth_session_max_age_seconds: int = 8 * 60 * 60
+    # Renewal never carries a sign-in past this age; then the person signs in again.
+    auth_session_absolute_max_age_seconds: int = 7 * 24 * 60 * 60
+    # A read-only observer session, and how long renewal can keep it before pairing again.
+    auth_observer_session_max_age_seconds: int = 24 * 60 * 60
+    auth_observer_absolute_max_age_seconds: int = 30 * 24 * 60 * 60
     session_metadata_retention_days: int = 30
     snapshot_retention_count: int = 10
     snapshot_max_bytes: int = 8 * 1024 * 1024
@@ -380,6 +385,26 @@ class Settings(BaseSettings):
         if not 1 <= value <= 365 * 24 * 60 * 60:
             raise ValueError("SESSION_MAX_AGE_SECONDS must be between 1 second and 1 year")
         return value
+
+    @field_validator(
+        "auth_session_max_age_seconds",
+        "auth_session_absolute_max_age_seconds",
+        "auth_observer_session_max_age_seconds",
+        "auth_observer_absolute_max_age_seconds",
+    )
+    @classmethod
+    def validate_signed_in_lifetime(cls, value: int) -> int:
+        if not 1 <= value <= 365 * 24 * 60 * 60:
+            raise ValueError("Signed-in session lifetimes must be between 1 second and 1 year")
+        return value
+
+    @model_validator(mode="after")
+    def validate_signed_in_renewal_caps(self) -> "Settings":
+        if self.auth_session_absolute_max_age_seconds < self.auth_session_max_age_seconds:
+            raise ValueError("AUTH_SESSION_ABSOLUTE_MAX_AGE_SECONDS must be at least AUTH_SESSION_MAX_AGE_SECONDS")
+        if self.auth_observer_absolute_max_age_seconds < self.auth_observer_session_max_age_seconds:
+            raise ValueError("AUTH_OBSERVER_ABSOLUTE_MAX_AGE_SECONDS must be at least AUTH_OBSERVER_SESSION_MAX_AGE_SECONDS")
+        return self
 
     @field_validator("session_touch_interval_seconds")
     @classmethod

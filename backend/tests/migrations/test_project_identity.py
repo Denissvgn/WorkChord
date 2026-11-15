@@ -83,6 +83,12 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
             assert comments.pop("author_profile_id") == {"type": {"family": "integer"}, "nullable": True}
             assert comments["principal_id"]["nullable"] is True
             comments["principal_id"]["nullable"] = False
+        # The access level and label of a session, and of the pairing request that issued it.
+        for table, column in (("user_sessions", "access"), ("native_connections", "requested_access")):
+            rebuilt = after_catalog[table]
+            assert rebuilt["columns"].pop(column) == {"type": {"family": "text"}, "nullable": False}
+            assert rebuilt["columns"].pop("client_label") == {"type": {"family": "text"}, "nullable": True}
+            rebuilt["checks"].remove(f"ck_{table}_{column}")
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))

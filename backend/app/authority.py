@@ -36,6 +36,9 @@ class Authority:
     review_override: bool = False
     local: bool = False
     scopes: frozenset[str] = frozenset()
+    # A paired observer: it reads what its principal (or the local workspace) can
+    # read and is denied every other action, operator or not.
+    read_only: bool = False
 
     @property
     def operator(self):
@@ -43,6 +46,8 @@ class Authority:
                 or self.local and self.kind == "agent" and "admin" in self.scopes)
 
     def allows(self, project_id, action="read"):
+        if self.read_only and action != "read":
+            return False
         if self.kind == "agent":
             if action == "review" and self.actor_role != "verifier":
                 return False
@@ -180,6 +185,8 @@ def scope_orm_operation(state):
     authority = state.session.info.get("authority")
     if authority is None or state.session.info.get("authority_internal"):
         return
+    if authority.read_only and (state.is_insert or state.is_update or state.is_delete):
+        raise AuthorityError("read_only_credential", "This credential can only read.")
     if isinstance(state.statement, TextClause) and not authority.operator and not authority.local:
         raise AuthorityError("unscoped_query_denied", "This operation requires an explicit resource scope.")
     if authority.operator or authority.local:
@@ -303,6 +310,10 @@ def authorize_domain_writes(session, _flush_context, _instances):
     authority = session.info.get("authority")
     if authority is None or session.info.get("authority_internal"):
         return
+    if authority.read_only and (session.new or session.deleted
+                                or any(session.is_modified(obj, include_collections=True) for obj in session.dirty)):
+        # No personal-row or protocol exemption applies to an observer.
+        raise AuthorityError("read_only_credential", "This credential can only read.")
     from app.models.identity import CommandAudit
     from app.models.task import Task
     from app.models.agent import AgentTaskAssignment

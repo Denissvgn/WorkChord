@@ -13,6 +13,21 @@ export interface WorkspaceIdentity {
     projects: Record<string, string>;
     csrf_token: string | null;
     authentication_error?: string | null;
+    /** "observe" for a paired read-only reader; null with no session. */
+    access?: 'full' | 'observe' | null;
+    observer?: { client_label: string | null; expires_at: string; renewable_until: string } | null;
+}
+
+/** One session of this account, or on a trusted-local server, one paired reader. */
+export interface AccountSession {
+    public_id: string;
+    created_at: string;
+    expires_at: string | null;
+    revoked_at: string | null;
+    user_agent: string | null;
+    current: boolean;
+    access: 'full' | 'observe';
+    client_label: string | null;
 }
 
 export const identityService = {
@@ -21,4 +36,6 @@ export const identityService = {
     transferGuest: async () => (await api.post('/auth/transfer-guest', {})).data,
     chooseLocalProfile: async (profileId: number | null) =>
         (await api.put<{ profile: WorkProfile | null }>('/auth/local-profile', { profile_id: profileId })).data,
+    sessions: async (signal?: AbortSignal) => (await api.get<AccountSession[]>('/auth/sessions', { signal })).data,
+    revokeSession: async (publicId: string) => { await api.delete(`/auth/sessions/${encodeURIComponent(publicId)}`); },
 };

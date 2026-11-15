@@ -903,9 +903,28 @@
       },
       "NativeConnectionDetails": {
         "properties": {
+          "access": {
+            "enum": [
+              "full",
+              "observe"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
           "approved": {
             "title": "Approved",
             "type": "boolean"
+          },
+          "client_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Label"
           },
           "expires_at": {
             "format": "date-time",
@@ -920,7 +939,9 @@
         "required": [
           "verification_code",
           "expires_at",
-          "approved"
+          "approved",
+          "access",
+          "client_label"
         ],
         "title": "NativeConnectionDetails",
         "type": "object"
@@ -948,6 +969,14 @@
       },
       "NativeConnectionResponse": {
         "properties": {
+          "access": {
+            "enum": [
+              "full",
+              "observe"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
           "expires_at": {
             "format": "date-time",
             "title": "Expires At",
@@ -970,7 +999,8 @@
           "request_id",
           "verification_code",
           "verification_path",
-          "expires_at"
+          "expires_at",
+          "access"
         ],
         "title": "NativeConnectionResponse",
         "type": "object"
@@ -978,6 +1008,28 @@
       "NativeConnectionStart": {
         "additionalProperties": false,
         "properties": {
+          "access": {
+            "default": "full",
+            "enum": [
+              "full",
+              "observe"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
+          "client_label": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Label"
+          },
           "code_challenge": {
             "pattern": "^[A-Za-z0-9_-]{43}$",
             "title": "Code Challenge",
@@ -1006,6 +1058,14 @@
       },
       "NativeTokenResponse": {
         "properties": {
+          "access": {
+            "enum": [
+              "full",
+              "observe"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
           "access_token": {
             "title": "Access Token",
             "type": "string"
@@ -1013,6 +1073,11 @@
           "expires_at": {
             "format": "date-time",
             "title": "Expires At",
+            "type": "string"
+          },
+          "renewable_until": {
+            "format": "date-time",
+            "title": "Renewable Until",
             "type": "string"
           },
           "token_type": {
@@ -1024,7 +1089,9 @@
         "required": [
           "access_token",
           "token_type",
-          "expires_at"
+          "expires_at",
+          "access",
+          "renewable_until"
         ],
         "title": "NativeTokenResponse",
         "type": "object"
@@ -5607,6 +5674,7 @@
     },
     "/api/auth/native-token": {
       "post": {
+        "description": "Exchange a browser session for a native one, or renew a native or observer session.\n\nA bearer caller is rotated: its old token ends when the new one is issued.\nEvery successor keeps the caller's access level and original sign-in time,\nso renewal stops at the absolute cap.",
         "operationId": "native_token_api_auth_native_token_post",
         "responses": {
           "200": {
