@@ -58,7 +58,12 @@ Obtain configuration from the runtime secret/configuration store:
 
 - `WORKCHORD_BASE_URL` and an optional API-prefix setting;
 - `AGENT_API_KEY` for REST;
-- `MCP_AGENT_API_KEY` for MCP.
+- `MCP_AGENT_API_KEY` for MCP;
+- or a key file, in the order given in
+  [Find Your Agent Key](api-and-mcp.md#find-your-agent-key).
+
+With no key, stop and send the operator the message in
+[When No Key Is Present](api-and-mcp.md#when-no-key-is-present).
 
 Never ask a user to paste a key into task context and never echo it. Confirm that
 all calls use the same real, enabled `AgentActor`; never use the bootstrap key

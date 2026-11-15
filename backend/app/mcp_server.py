@@ -21,6 +21,7 @@ from starlette.routing import Route
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app import mcp_agent_tools
+from app.agent_key_file import AgentKeyFileError, read_agent_key_file
 from app.config import get_settings
 from app.database import async_session_maker, close_database, init_db
 from app.maintenance import MaintenanceModeError, enforce_mcp_access
@@ -41,6 +42,9 @@ from app.services.triage_service import TriageConflictError
 
 
 MCP_AGENT_API_KEY_ENV = "MCP_AGENT_API_KEY"
+MCP_AGENT_API_KEY_FILE_ENV = "MCP_AGENT_API_KEY_FILE"
+# Set once by stdio startup from MCP_AGENT_API_KEY_FILE; never used by HTTP MCP startup.
+_stdio_file_agent_key: Optional[str] = None
 _http_agent_key: ContextVar[Optional[str]] = ContextVar("mcp_http_agent_key", default=None)
 _session_factory: Callable[[], Any] = async_session_maker
 
@@ -198,7 +202,23 @@ def _agent_key_from_scope(scope: Scope) -> Optional[str]:
 
 def _current_agent_key() -> Optional[str]:
     """Return the HTTP or stdio MCP agent key."""
-    return _http_agent_key.get() or os.getenv(MCP_AGENT_API_KEY_ENV)
+    return _http_agent_key.get() or os.getenv(MCP_AGENT_API_KEY_ENV) or _stdio_file_agent_key
+
+
+def _load_stdio_agent_key() -> bool:
+    """Prepare the stdio key from the environment or the configured key file.
+
+    The variable wins when both are set. The file is read once at startup, so a
+    rotated key takes effect on the next start.
+    """
+    global _stdio_file_agent_key
+    if os.getenv(MCP_AGENT_API_KEY_ENV):
+        return True
+    key_file = os.getenv(MCP_AGENT_API_KEY_FILE_ENV)
+    if not key_file:
+        return False
+    _stdio_file_agent_key = read_agent_key_file(key_file)
+    return True
 
 
 async def _authenticate_agent_key(db: Any, api_key: str) -> AgentActor:
@@ -2460,9 +2480,19 @@ def main(argv: Optional[list[str]] = None) -> None:
     )
     args = parser.parse_args(argv)
 
-    if args.transport == "stdio" and not os.getenv(MCP_AGENT_API_KEY_ENV):
-        print(f"{MCP_AGENT_API_KEY_ENV} is required for stdio MCP", file=sys.stderr)
-        raise SystemExit(2)
+    if args.transport == "stdio":
+        try:
+            has_key = _load_stdio_agent_key()
+        except AgentKeyFileError as exc:
+            print(str(exc), file=sys.stderr)
+            raise SystemExit(2) from exc
+        if not has_key:
+            print(
+                f"{MCP_AGENT_API_KEY_ENV} or {MCP_AGENT_API_KEY_FILE_ENV} "
+                "is required for stdio MCP",
+                file=sys.stderr,
+            )
+            raise SystemExit(2)
 
     if args.transport == "stdio":
         # Stdio MCP reserves stdout for protocol frames; startup output must go to stderr.

@@ -27,11 +27,16 @@ in everything people read.
 1. If the operator supplied an `agent-team-runtime-handoff-v1` packet, confirm
    the acknowledged actor and package before normal authentication. Never print
    or copy the separately delivered credential.
-2. Read the live capability response: actor identity, role, scopes,
+2. Find your own agent key in the order given in
+   [Find Your Agent Key](references/api-and-mcp.md#find-your-agent-key). With
+   no key, stop and send the operator the message in
+   [When No Key Is Present](references/api-and-mcp.md#when-no-key-is-present);
+   never ask for a key in chat.
+3. Read the live capability response: actor identity, role, scopes,
    server/API contract, and feature keys.
-3. Confirm the actor role is `verifier` and the scopes include
+4. Confirm the actor role is `verifier` and the scopes include
    `verification:read` and `verification:write`.
-4. Use assigned mode only when the server advertises every feature below.
+5. Use assigned mode only when the server advertises every feature below.
 
 <!-- BEGIN GENERATED: WORKCHORD-ROLE-FEATURES -->
 Assigned mode (`assigned-work v1`) requires every one of these live features; this list is generated from the role package metadata:

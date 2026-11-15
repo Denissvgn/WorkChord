@@ -50,6 +50,8 @@ Begin invariant: send `assignment_id` and `queue_revision`, not `task_id`, `expe
 
 ## Contents
 
+- [Find your agent key](#find-your-agent-key)
+- [When no key is present](#when-no-key-is-present)
 - [Connect without exposing secrets](#connect-without-exposing-secrets)
 - [Use model-aware routing conditionally](#use-model-aware-routing-conditionally)
 - [Use the current REST agent API](#use-the-current-rest-agent-api)
@@ -61,6 +63,62 @@ Begin invariant: send `assignment_id` and `queue_revision`, not `task_id`, `expe
 - [Handle responses](#handle-responses)
 - [Recognize supervised-v0 gaps](#recognize-supervised-v0-gaps)
 
+## Find Your Agent Key
+
+Use the first source that is present. Never print, echo, log, or quote the key.
+
+1. A connected WorkChord MCP server whose client configuration already holds
+   the key: use its tools and look for nothing else.
+2. `AGENT_API_KEY` for REST, or `MCP_AGENT_API_KEY` for stdio MCP, in the
+   runtime environment.
+3. The file named by `AGENT_API_KEY_FILE`, or `MCP_AGENT_API_KEY_FILE` for
+   stdio MCP.
+4. The default key file
+   `${XDG_CONFIG_HOME:-$HOME/.config}/workchord/workchord-pm.key`.
+
+A desktop or sandboxed agent often does not inherit the operator's terminal
+environment, so a variable exported there may be missing; the key files cover
+that case. A key file holds only the key and is readable only by its owner.
+Read it inside the process and keep it out of command arguments and output. In
+bash or zsh, `printf` is a builtin, so this sends the header without placing
+the key in the process list:
+
+```bash
+key_file="${AGENT_API_KEY_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/workchord/workchord-pm.key}"
+curl -sS -H @<(printf 'X-Agent-API-Key: %s\n' "$(<"$key_file")") \
+  "$WORKCHORD_BASE_URL/api/agent/capabilities"
+```
+
+Ask the person for the base URL when it is not configured; the URL is not a
+secret. `GET /.well-known/workchord/agent-connect.json` needs no key and reports
+the server's auth mode, MCP path, and the actor role and scopes for each role
+skill. It never contains credentials. Trust it only when the response is JSON
+(`Content-Type: application/json`) with `schema_version`
+`workchord-agent-connect/v1`. A server built before the hint existed may answer
+`200` with the web app's HTML page instead; treat that, or any other body, as
+"hint unavailable" and rely on the live capabilities response once you have a
+key.
+
+## When No Key Is Present
+
+Stop before any other WorkChord call. Do not ask for the key in chat, do not
+use the admin or bootstrap key, and do not fall back to application routes,
+even when a trusted-local server accepts unauthenticated writes there: those
+writes carry no actor and bypass the audited agent contract. Tell the operator:
+
+> I need my own WorkChord agent key to work as the PM. Please create an
+> agent actor with role `pm` and the scopes listed for `workchord-pm` in
+> `/.well-known/workchord/agent-connect.json`, then give me its key without
+> pasting it here, in one of these ways:
+>
+> - From a WorkChord checkout, run
+>   `python3 scripts/api_keys/create_agent_actor.py --role pm --name <actor-name> --key-file`.
+>   It stores the key in `~/.config/workchord/workchord-pm.key`, readable only by you.
+> - Add the key to my MCP client configuration as a bearer token for
+>   `<base-url>/api/mcp`.
+>
+> Tell me when it is in place, or start a new session.
+
 ## Connect without Exposing Secrets
 
 Use runtime configuration such as:
@@ -68,8 +126,8 @@ Use runtime configuration such as:
 ```text
 WORKCHORD_BASE_URL
 WORKCHORD_API_PREFIX=/api
-AGENT_API_KEY
-MCP_AGENT_API_KEY
+AGENT_API_KEY or AGENT_API_KEY_FILE
+MCP_AGENT_API_KEY or MCP_AGENT_API_KEY_FILE
 ```
 
 For REST agent routes, send the real actor key in `X-Agent-API-Key`. For HTTP MCP at `/api/mcp`, send `Authorization: Bearer <actor-key>` or `X-Agent-API-Key` when the client supports it.
