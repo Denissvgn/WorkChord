@@ -4,6 +4,7 @@ from app.authority import AuthorityError
 from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations
 
 import json
+from collections import deque
 from datetime import date, timedelta
 from typing import Any, Optional, Sequence, TYPE_CHECKING
 
@@ -383,57 +384,77 @@ class TaskStatusService:
         if delta <= 0:
             return []
 
-        result = await self.db.execute(
-            select(TaskDependency).where(TaskDependency.depends_on_id == source_task.id)
-        )
+        # Every planned task reached moves by the same delta, so each one is
+        # visited and moved exactly once, however many dependency paths lead to
+        # it. Walking every path instead moved a task once per path.
         cascade_updates: list[dict] = []
-        for dependency in result.scalars().all():
-            dependent = await self.task_service.get_by_id(dependency.task_id)
-            if dependent is None or dependent.status != TaskStatus.PLANNED.value:
-                continue
-            old_start = dependent.start_date
-            old_end = dependent.end_date
-            if dependent.start_date:
-                dependent.start_date += timedelta(days=delta)
-            if dependent.end_date:
-                dependent.end_date += timedelta(days=delta)
-            previous_version = dependent.version
-            await self.task_service.reserve_task_version(dependent, dependent.version)
-            from app.services.scheduler_service import rebind_queued_assignments
-            await rebind_queued_assignments(self.db, dependent.id, previous_version, dependent.version)
-            cascade_updates.append(
-                {
-                    "task_id": dependent.id,
-                    "task_title": dependent.title,
-                    "old_start_date": old_start,
-                    "old_end_date": old_end,
-                    "new_start_date": dependent.start_date,
-                    "new_end_date": dependent.end_date,
-                }
+        seen: set[int] = {source_task.id}
+        pending: deque[tuple[Task, str]] = deque([(source_task, reason)])
+        while pending:
+            predecessor, step_reason = pending.popleft()
+            result = await self.db.execute(
+                select(TaskDependency)
+                .where(TaskDependency.depends_on_id == predecessor.id)
+                .order_by(TaskDependency.task_id)
             )
-            await self.task_service.record_task_event(
-                dependent.id,
-                "dates_cascaded",
-                {
-                    "reason": reason,
-                    "source_task_id": source_task.id,
-                    "old_start_date": old_start,
-                    "old_end_date": old_end,
-                    "new_start_date": dependent.start_date,
-                    "new_end_date": dependent.end_date,
-                    "version": dependent.version,
-                },
-                actor_type="auto",
-            )
-            if old_end and dependent.end_date:
-                cascade_updates.extend(
-                    await self.cascade_update_dependents(
-                        dependent,
-                        old_end,
-                        reason=f"Cascade from '{source_task.title}'",
-                    )
+            for dependency in result.scalars().all():
+                if dependency.task_id in seen:
+                    continue
+                seen.add(dependency.task_id)
+                shifted = await self._shift_dependent(
+                    dependency.task_id, predecessor, delta, step_reason
                 )
+                if shifted is None:
+                    continue
+                dependent, update = shifted
+                cascade_updates.append(update)
+                if update["old_end_date"] and update["new_end_date"]:
+                    pending.append((dependent, f"Cascade from '{predecessor.title}'"))
         return cascade_updates
+
+    async def _shift_dependent(
+        self,
+        dependent_id: int,
+        predecessor: Task,
+        delta: int,
+        reason: str,
+    ) -> tuple[Task, dict] | None:
+        """Move one planned dependent by ``delta`` days and record why."""
+        dependent = await self.task_service.get_by_id(dependent_id)
+        if dependent is None or dependent.status != TaskStatus.PLANNED.value:
+            return None
+        old_start = dependent.start_date
+        old_end = dependent.end_date
+        if dependent.start_date:
+            dependent.start_date += timedelta(days=delta)
+        if dependent.end_date:
+            dependent.end_date += timedelta(days=delta)
+        previous_version = dependent.version
+        await self.task_service.reserve_task_version(dependent, dependent.version)
+        from app.services.scheduler_service import rebind_queued_assignments
+        await rebind_queued_assignments(self.db, dependent.id, previous_version, dependent.version)
+        await self.task_service.record_task_event(
+            dependent.id,
+            "dates_cascaded",
+            {
+                "reason": reason,
+                "source_task_id": predecessor.id,
+                "old_start_date": old_start,
+                "old_end_date": old_end,
+                "new_start_date": dependent.start_date,
+                "new_end_date": dependent.end_date,
+                "version": dependent.version,
+            },
+            actor_type="auto",
+        )
+        return dependent, {
+            "task_id": dependent.id,
+            "task_title": dependent.title,
+            "old_start_date": old_start,
+            "old_end_date": old_end,
+            "new_start_date": dependent.start_date,
+            "new_end_date": dependent.end_date,
+        }
 
     async def get_status_history(self, task_id: int) -> list[Any]:
         """Get status change history for a task."""
