@@ -28,82 +28,83 @@
 sequenceDiagram
     participant p0 as me
     participant p1 as resolve_http_identity
-    participant p2 as local_work_profile
-    participant p3 as get_settings
-    participant p4 as AgentService.authenticate
-    participant p5 as IdentityService.actor_context
-    participant p6 as admin_api_key_is_valid
-    participant p7 as _get_session_by_token
-    participant p8 as require_identity_writes
-    participant p9 as IdentityService.context
-    participant p10 as commit_or_flush
-    participant p11 as internal_authority
-    participant p12 as IdentityService
-    participant p13 as AgentService
-    participant p14 as AuthorityError
-    participant p15 as Authority
-    participant p16 as digest
-    participant p17 as Settings
-    participant p18 as hash_api_key
-    participant p19 as _token_digest
-    participant p20 as Principal
-    participant p21 as as_utc
-    participant p22 as utc_now
-    participant p23 as current_command
-    participant p24 as MaintenanceModeError
-    participant p25 as bool
-    participant p26 as db.get (backend/app/routers/identity.py:me)
-    participant p27 as result.update
-    participant p28 as db.get (backend/app/services/iden…ice.py:local_work_profile)
+    participant p2 as renewable_until
+    participant p3 as local_work_profile
+    participant p4 as get_settings
+    participant p5 as session_lifetimes
+    participant p6 as AgentService.authenticate
+    participant p7 as IdentityService.actor_context
+    participant p8 as admin_api_key_is_valid
+    participant p9 as _get_session_by_token
+    participant p10 as require_identity_writes
+    participant p11 as IdentityService.context
+    participant p12 as commit_or_flush
+    participant p13 as as_utc
+    participant p14 as internal_authority
+    participant p15 as IdentityService
+    participant p16 as AgentService
+    participant p17 as AuthorityError
+    participant p18 as Authority
+    participant p19 as digest
+    participant p20 as Settings
+    participant p21 as hash_api_key
+    participant p22 as _token_digest
+    participant p23 as Principal
+    participant p24 as utc_now
+    participant p25 as current_command
+    participant p26 as MaintenanceModeError
+    participant p27 as bool
+    participant p28 as db.get (backend/app/routers/identity.py:me)
+    participant p29 as result.update
     p0->>p1: resolve_http_identity
-    p0->>p2: local_work_profile
-    p0->>p3: get_settings
-    p1->>p4: AgentService.authenticate
-    p1->>p5: IdentityService.actor_context
-    p1->>p6: admin_api_key_is_valid
-    p1->>p7: _get_session_by_token
-    p5->>p8: require_identity_writes
-    p5->>p9: IdentityService.context
-    p4->>p10: commit_or_flush
-    p2->>p11: internal_authority
-    p1->>p12: IdentityService
-    p1->>p13: AgentService
-    p1->>p14: AuthorityError
-    p1->>p15: Authority
-    p1->>p16: digest
-    p3->>p17: Settings
-    p4->>p18: hash_api_key
-    p7->>p19: _token_digest
-    p5->>p20: Principal
-    p7->>p21: as_utc
-    p4->>p22: utc_now
-    p10->>p23: current_command
-    p8->>p24: MaintenanceModeError
-    p0-->>p25: bool(...)
-    p0-->>p26: db.get (backend/app/routers/identity.py:me)(Principal, authority.principal_id)
-    p0-->>p27: result.update(principal={...}, workspace_role=authority.workspace_role, projects=authority.projects)
-    p0-->>p26: db.get (backend/app/routers/identity.py:me)(TeamMemberProfile, authority.profile_id)
-    p0-->>p26: db.get (backend/app/routers/identity.py:me)(UserSession, authority.session_id)
-    p2-->>p28: db.get (backend/app/services/iden…ice.py:local_work_profile)(TeamMemberProfile, profile_id)
+    p0->>p2: renewable_until
+    p0->>p3: local_work_profile
+    p0->>p4: get_settings
+    p2->>p5: session_lifetimes
+    p1->>p6: AgentService.authenticate
+    p1->>p7: IdentityService.actor_context
+    p1->>p8: admin_api_key_is_valid
+    p1->>p9: _get_session_by_token
+    p7->>p10: require_identity_writes
+    p7->>p11: IdentityService.context
+    p6->>p12: commit_or_flush
+    p2->>p13: as_utc
+    p3->>p14: internal_authority
+    p1->>p15: IdentityService
+    p1->>p16: AgentService
+    p1->>p17: AuthorityError
+    p1->>p18: Authority
+    p1->>p19: digest
+    p4->>p20: Settings
+    p6->>p21: hash_api_key
+    p9->>p22: _token_digest
+    p7->>p23: Principal
+    p6->>p24: utc_now
+    p12->>p25: current_command
+    p10->>p26: MaintenanceModeError
+    p0-->>p27: bool(...)
+    p0-->>p28: db.get (backend/app/routers/identity.py:me)(UserSession, authority.session_id)
+    p0-->>p28: db.get (backend/app/routers/identity.py:me)(Principal, authority.principal_id)
+    p0-->>p29: result.update(principal={...}, workspace_role=authority.workspace_role, projects=authority.projects)
 ```
 
-> Call sequence diagram shows 30 of 133 interactions; 103 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 146 interactions; 116 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 22 (21 omitted); unresolved 5 of 61 (56 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 1 of 26 (25 omitted); unresolved 3 of 63 (60 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
 | Caller | Parent step | Target module | Kind | Omitted interactions |
 | --- | --- | --- | --- | --- |
 | `backend/app/http_authority.py:resolve_http_identity` | 2 | [backend/app/config.py](../modules/config.md) | internal | 1 |
-| `backend/app/http_authority.py:resolve_http_identity` | 2 | - | unresolved | 26 |
-| `backend/app/http_authority.py:resolve_http_identity` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 13 |
+| `backend/app/http_authority.py:resolve_http_identity` | 2 | - | unresolved | 27 |
+| `backend/app/http_authority.py:resolve_http_identity` | 2 | [backend/app/authority.py](../modules/authority.md) | internal | 16 |
 | `backend/app/authority.py:internal_authority` | 9 | - | unresolved | 1 |
 | `backend/app/services/agent_service.py:hash_api_key` | 12 | - | unresolved | 2 |
 | `backend/app/services/agent_service.py:hash_api_key` | 12 | - | external | 1 |
 | `backend/app/services/agent_service.py:AgentService.authenticate` | 11 | - | unresolved | 5 |
 | `backend/app/services/agent_service.py:AgentService.authenticate` | 11 | - | external | 2 |
-> Omission summary shows 8 of 35 groups; 27 further groups are not expanded here. Counts above include all omitted interactions.
+> Omission summary shows 8 of 39 groups; 31 further groups are not expanded here. Counts above include all omitted interactions.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -114,17 +115,17 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 **Effect analysis partially available.** Flow assembly and source effect analysis are separate; empty observations do not prove an empty handler body.
 
-Source steps: 51; effect analysis evaluated: 30, partial: 0, unavailable: 21. Counts include steps omitted from the displayed trace.
+Source steps: 58; effect analysis evaluated: 34, partial: 0, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 30 source steps with known totals: observed: 113, emitted: 113, omitted: 0. Unavailable totals are excluded.
+Collector observations for 34 source steps with known totals: observed: 128, emitted: 128, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `me` | `available` | `evaluated` | `available` | `12` | `12` | `0` |
-| `resolve_http_identity` | `available` | `evaluated` | `available` | `14` | `14` | `0` |
+| `me` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
+| `resolve_http_identity` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
 | `IdentityService` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -175,6 +176,8 @@ flowchart LR
     s2 -. "mutation tokens.append" .-> b5
     b6["mutation contexts.append"]
     s2 -. "mutation contexts.append" .-> b6
+    b7["mutation contexts.append"]
+    s2 -. "mutation contexts.append" .-> b7
     click s1 "../modules/routers_identity.md"
     click s2 "../modules/http_authority.md"
     click s3 "../modules/config.md"
@@ -191,13 +194,14 @@ flowchart LR
     class b4 boundary
     class b5 boundary
     class b6 boundary
+    class b7 boundary
 ```
 
 ### Step data
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `me` | `request: Request`, `response: Response`, `db: Database` | `AuthorityError`, `Principal`, `UserSession` | `response.headers[...]`, `result[...]`, `result[...]`, `result[...]` | `result` |
+| `me` | `request: Request`, `response: Response`, `db: Database` | `AuthorityError`, `UserSession`, `Principal`, `UserSession` | `response.headers[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `result` |
 | `resolve_http_identity` | `request`, `db` | `WorkspaceAuthorityState`, `Principal`, `WorkspaceAuthorityState`, `Principal`, `Principal` | - | `authority` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -214,40 +218,41 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| me | resolve_http_identity | 143 | `resolve_http_identity(request, db)` |
-| resolve_http_identity | get_settings | 43 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
-| resolve_http_identity | IdentityService | 45 | `IdentityService(db)` |
-| resolve_http_identity | request.headers.get | 46 | `request.headers.get('X-Agent-API-Key')` |
-| resolve_http_identity | request.headers.get | 47 | `request.headers.get('X-Admin-API-Key')` |
-| resolve_http_identity | request.headers.get | 48 | `request.headers.get('Authorization')` |
-| resolve_http_identity | internal_authority | 49 | `internal_authority(db)` |
-| internal_authority | db.info.get | 87 | `db.info.get('authority_internal', False)` |
-| resolve_http_identity | AgentService.authenticate | 52 | `AgentService(db).authenticate(agent_key, touch=False)` |
+| me | resolve_http_identity | 163 | `resolve_http_identity(request, db)` |
+| resolve_http_identity | get_settings | 52 | `get_settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| resolve_http_identity | IdentityService | 54 | `IdentityService(db)` |
+| resolve_http_identity | request.headers.get | 55 | `request.headers.get('X-Agent-API-Key')` |
+| resolve_http_identity | request.headers.get | 56 | `request.headers.get('X-Admin-API-Key')` |
+| resolve_http_identity | request.headers.get | 57 | `request.headers.get('Authorization')` |
+| resolve_http_identity | internal_authority | 58 | `internal_authority(db)` |
+| internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
+| resolve_http_identity | AgentService.authenticate | 61 | `AgentService(db).authenticate(agent_key, touch=False)` |
 | AgentService.authenticate | hash_api_key | 133 | `hash_api_key(api_key)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `result.update` | `me` | 154 |
-| mutation | `contexts.append` | `resolve_http_identity` | 63 |
-| mutation | `contexts.append` | `resolve_http_identity` | 65 |
-| mutation | `contexts.append` | `resolve_http_identity` | 75 |
-| mutation | `tokens.append` | `resolve_http_identity` | 86 |
-| mutation | `tokens.append` | `resolve_http_identity` | 94 |
-| mutation | `contexts.append` | `resolve_http_identity` | 99 |
+| mutation | `result.update` | `me` | 182 |
+| mutation | `contexts.append` | `resolve_http_identity` | 72 |
+| mutation | `contexts.append` | `resolve_http_identity` | 74 |
+| mutation | `contexts.append` | `resolve_http_identity` | 84 |
+| mutation | `tokens.append` | `resolve_http_identity` | 96 |
+| mutation | `tokens.append` | `resolve_http_identity` | 105 |
+| mutation | `contexts.append` | `resolve_http_identity` | 117 |
+| mutation | `contexts.append` | `resolve_http_identity` | 119 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `resolve_http_identity` | `request.headers.get` | 46 |
-| unresolved_call | `resolve_http_identity` | `request.headers.get` | 47 |
-| unresolved_call | `resolve_http_identity` | `request.headers.get` | 48 |
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
+| unresolved_call | `resolve_http_identity` | `request.headers.get` | 55 |
+| unresolved_call | `resolve_http_identity` | `request.headers.get` | 56 |
+| unresolved_call | `resolve_http_identity` | `request.headers.get` | 57 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
 | step_limit | `me` | `first 12 steps` | 0 |
 
 ## Behavior
 
-This flow starts at `me` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Reports the access mode, the resolved principal and memberships, and for any session its access level. An observer also receives its client label, expiry and `renewable_until`. Authentication errors other than conflicting credentials are reported without failing the request.

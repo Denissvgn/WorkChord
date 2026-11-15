@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1569,
+      "entities": 1571,
       "flows": 558,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 836,
+      "modules": 840,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3176
+    "total": 3182
   },
   "dependency_pages": {
     "count": 2,
@@ -846,7 +846,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 105,
+              "line": 125,
               "step": "approve_native_connection",
               "target": "NativeSessionService(db).approve"
             }
@@ -923,7 +923,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -1079,13 +1079,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 69,
+              "line": 74,
               "step": "require_project",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 74,
+              "line": 79,
               "step": "require_project",
               "target": "authority.allows"
             },
@@ -1364,7 +1364,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 226,
+              "line": 254,
               "step": "bootstrap",
               "step_index": 1,
               "target": "db.add"
@@ -1372,7 +1372,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 227,
+              "line": 255,
               "step": "bootstrap",
               "step_index": 1,
               "target": "db.add"
@@ -1381,19 +1381,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 214,
+              "line": 242,
               "step": "bootstrap",
               "target": "db.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 217,
+              "line": 245,
               "step": "bootstrap",
               "target": "db.get"
             },
@@ -1626,13 +1626,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 200,
+              "line": 228,
               "step": "callback",
               "target": "IdentityService(db).finish_login"
             },
             {
               "kind": "unresolved_call",
-              "line": 200,
+              "line": 228,
               "step": "callback",
               "target": "request.cookies.get"
             },
@@ -1825,13 +1825,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 60,
               "step": "local_work_profile",
               "target": "db.get"
             },
@@ -2113,7 +2113,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 374,
+              "line": 443,
               "step": "cleanup",
               "target": "IdentityService(db).cleanup_sessions"
             }
@@ -6974,7 +6974,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 112,
+              "line": 132,
               "step": "deny_native_connection",
               "target": "NativeSessionService(db).deny"
             }
@@ -7010,33 +7010,15 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 26,
-              "step": "NativeSessionService.human",
+              "line": 33,
+              "step": "NativeSessionService.approver",
               "target": "self.db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 32,
-              "step": "NativeSessionService.connection",
-              "target": "self.db.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 27,
-              "step": "digest",
-              "target": "hashlib.sha256(value.encode()).hexdigest"
-            },
-            {
-              "kind": "external_call",
-              "line": 27,
-              "step": "digest",
-              "target": "hashlib.sha256"
             },
             {
               "kind": "step_limit",
@@ -7054,11 +7036,12 @@
           "modules_touched": [
             "backend/app/routers/identity.py",
             "backend/app/services/native_session_service.py",
+            "backend/app/config.py",
             "backend/app/authority.py",
             "backend/app/services/identity_service.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 21,
+          "step_count": 26,
           "truncated": false
         }
       },
@@ -7536,7 +7519,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 90,
+              "line": 110,
               "step": "exchange_native_connection",
               "target": "NativeSessionService(db).exchange"
             },
@@ -12981,13 +12964,13 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 41,
+              "line": 60,
               "step": "local_work_profile",
               "target": "db.get"
             },
@@ -13809,7 +13792,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 309,
+              "line": 337,
               "step": "link_profile",
               "step_index": 1,
               "target": "db.add"
@@ -13817,7 +13800,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 311,
+              "line": 339,
               "step": "link_profile",
               "step_index": 1,
               "target": "db.add"
@@ -13826,19 +13809,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 298,
+              "line": 326,
               "step": "link_profile",
               "target": "db.get"
             },
@@ -15025,37 +15008,37 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 236,
+              "line": 264,
               "step": "list_principals",
               "target": "(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all"
             },
             {
               "kind": "unresolved_call",
-              "line": 236,
+              "line": 264,
               "step": "list_principals",
               "target": "db.scalars"
             },
             {
               "kind": "unresolved_call",
-              "line": 236,
+              "line": 264,
               "step": "list_principals",
               "target": "select(Principal).order_by(Principal.id).limit"
             },
             {
               "kind": "unresolved_call",
-              "line": 236,
+              "line": 264,
               "step": "list_principals",
               "target": "select(Principal).order_by"
             },
             {
               "kind": "external_call",
-              "line": 236,
+              "line": 264,
               "step": "list_principals",
               "target": "select"
             }
@@ -16322,25 +16305,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 186,
+              "line": 214,
               "step": "login",
               "target": "IdentityService(db).begin_login"
             },
             {
               "kind": "external_call",
-              "line": 187,
+              "line": 215,
               "step": "login",
               "target": "RedirectResponse"
             },
             {
               "kind": "unresolved_call",
-              "line": 189,
+              "line": 217,
               "step": "login",
               "target": "response.set_cookie"
             },
             {
               "kind": "unresolved_call",
-              "line": 190,
+              "line": 218,
               "step": "login",
               "target": "request.cookies.get"
             },
@@ -16391,13 +16374,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 364,
+              "line": 431,
               "step": "logout",
               "target": "db.get"
             },
@@ -16406,6 +16389,12 @@
               "line": 13,
               "step": "utc_now",
               "target": "datetime.now"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 434,
+              "step": "logout",
+              "target": "db.flush"
             },
             {
               "kind": "step_limit",
@@ -16429,7 +16418,7 @@
             "backend/app/utils/time.py",
             "backend/app/services/session_service.py"
           ],
-          "step_count": 14,
+          "step_count": 15,
           "truncated": false
         }
       },
@@ -16728,7 +16717,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 154,
+              "line": 182,
               "step": "me",
               "step_index": 1,
               "target": "result.update"
@@ -16736,7 +16725,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 63,
+              "line": 72,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "contexts.append"
@@ -16744,7 +16733,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 65,
+              "line": 74,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "contexts.append"
@@ -16752,7 +16741,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 75,
+              "line": 84,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "contexts.append"
@@ -16760,7 +16749,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 86,
+              "line": 96,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "tokens.append"
@@ -16768,7 +16757,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 94,
+              "line": 105,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "tokens.append"
@@ -16776,7 +16765,15 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 99,
+              "line": 117,
+              "step": "resolve_http_identity",
+              "step_index": 2,
+              "target": "contexts.append"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "mutation",
+              "line": 119,
               "step": "resolve_http_identity",
               "step_index": 2,
               "target": "contexts.append"
@@ -16785,25 +16782,25 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 46,
+              "line": 55,
               "step": "resolve_http_identity",
               "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 47,
+              "line": 56,
               "step": "resolve_http_identity",
               "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 48,
+              "line": 57,
               "step": "resolve_http_identity",
               "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -16834,7 +16831,7 @@
             "backend/app/security.py",
             "backend/app/services/session_service.py"
           ],
-          "step_count": 134,
+          "step_count": 147,
           "truncated": false
         }
       },
@@ -17261,28 +17258,49 @@
       },
       "evidence": {
         "data_flow": {
-          "boundary_effects": [
-            {
-              "confidence": "unknown",
-              "kind": "mutation",
-              "line": 233,
-              "step": "IdentityService.issue_session",
-              "step_index": 3,
-              "target": "self.db.add"
-            }
-          ],
+          "boundary_effects": [],
           "gaps": [
             {
-              "kind": "external_call",
-              "line": 227,
-              "step": "IdentityService.issue_session",
-              "target": "secrets.token_urlsafe"
+              "kind": "unresolved_call",
+              "line": 366,
+              "step": "native_token",
+              "target": "request.headers.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 73,
+              "step": "_get_session_by_token",
+              "target": "_SESSION_TOKEN_PATTERN.fullmatch"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 75,
+              "step": "_get_session_by_token",
+              "target": "db.execute"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 76,
+              "step": "_get_session_by_token",
+              "target": "select(UserSession).where"
+            },
+            {
+              "kind": "external_call",
+              "line": 76,
+              "step": "_get_session_by_token",
+              "target": "select"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 29,
+              "step": "_token_digest",
+              "target": "hashlib.sha256(token.encode('utf-8')).hexdigest"
             },
             {
               "kind": "step_limit",
@@ -17300,14 +17318,12 @@
           "modules_touched": [
             "backend/app/routers/identity.py",
             "backend/app/authority.py",
-            "backend/app/services/identity_service.py",
-            "backend/app/config.py",
-            "backend/app/maintenance.py",
-            "backend/app/models/user_session.py",
+            "backend/app/services/session_service.py",
             "backend/app/utils/time.py",
-            "backend/app/services/session_service.py"
+            "backend/app/services/identity_service.py",
+            "backend/app/config.py"
           ],
-          "step_count": 36,
+          "step_count": 42,
           "truncated": false
         }
       },
@@ -18206,7 +18222,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 285,
+              "line": 313,
               "step": "project_member",
               "step_index": 1,
               "target": "db.add"
@@ -18214,7 +18230,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 286,
+              "line": 314,
               "step": "project_member",
               "step_index": 1,
               "target": "db.add"
@@ -18223,19 +18239,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 269,
+              "line": 297,
               "step": "project_member",
               "target": "authority.allows"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 276,
+              "line": 304,
               "step": "project_member",
               "target": "db.get"
             },
@@ -18808,7 +18824,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 395,
+              "line": 464,
               "step": "recover_principal",
               "step_index": 1,
               "target": "db.add"
@@ -18817,19 +18833,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 388,
+              "line": 457,
               "step": "recover_principal",
               "target": "db.get"
             },
@@ -19402,7 +19418,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -20159,27 +20175,15 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 414,
+              "step": "revoke_owned_session",
+              "target": "UserSession.principal_id.is_"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 351,
-              "step": "revoke_owned_session",
-              "target": "db.scalar"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 351,
-              "step": "revoke_owned_session",
-              "target": "select(UserSession).where"
-            },
-            {
-              "kind": "external_call",
-              "line": 351,
-              "step": "revoke_owned_session",
-              "target": "select"
             },
             {
               "kind": "step_limit",
@@ -20202,7 +20206,7 @@
             "backend/app/authority.py",
             "backend/app/utils/time.py"
           ],
-          "step_count": 14,
+          "step_count": 18,
           "truncated": false
         }
       },
@@ -20425,7 +20429,7 @@
             "backend/app/authority.py",
             "backend/app/commands.py"
           ],
-          "step_count": 36,
+          "step_count": 44,
           "truncated": false
         }
       },
@@ -20606,58 +20610,65 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 341,
-              "step": "sessions",
-              "target": "(await db.scalars(select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit(100))).all"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 341,
-              "step": "sessions",
-              "target": "db.scalars"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 341,
-              "step": "sessions",
-              "target": "select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by(UserSession.created_at.desc()).limit"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 341,
-              "step": "sessions",
-              "target": "select(UserSession).where(UserSession.principal_id == authority.principal_id).order_by"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 341,
+              "line": 396,
               "step": "sessions",
               "target": "select(UserSession).where"
             },
             {
               "kind": "external_call",
-              "line": 341,
+              "line": 396,
               "step": "sessions",
               "target": "select"
             },
             {
               "kind": "unresolved_call",
-              "line": 341,
+              "line": 398,
               "step": "sessions",
-              "target": "UserSession.created_at.desc"
+              "target": "select(UserSession).where"
+            },
+            {
+              "kind": "external_call",
+              "line": 398,
+              "step": "sessions",
+              "target": "select"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 400,
+              "step": "sessions",
+              "target": "select(UserSession).where"
+            },
+            {
+              "kind": "external_call",
+              "line": 400,
+              "step": "sessions",
+              "target": "select"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 400,
+              "step": "sessions",
+              "target": "UserSession.principal_id.is_"
+            },
+            {
+              "kind": "step_limit",
+              "line": 0,
+              "step": "sessions",
+              "target": "first 12 steps"
             }
           ],
           "generated": true,
-          "step_count": 9,
-          "transfer_count": 8,
+          "step_count": 12,
+          "transfer_count": 11,
           "truncated": false
         },
         "flow": {
           "modules_touched": [
             "backend/app/routers/identity.py",
+            "backend/app/config.py",
             "backend/app/authority.py"
           ],
-          "step_count": 9,
+          "step_count": 18,
           "truncated": false
         }
       },
@@ -21000,7 +21011,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 83,
+              "line": 102,
               "step": "start_native_connection",
               "target": "NativeSessionService(db).start"
             },
@@ -21688,7 +21699,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 87,
+              "line": 92,
               "step": "internal_authority",
               "target": "db.info.get"
             },
@@ -22098,7 +22109,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -22182,13 +22193,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 69,
+              "line": 74,
               "step": "require_project",
               "target": "db.info.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 74,
+              "line": 79,
               "step": "require_project",
               "target": "authority.allows"
             },
@@ -22380,7 +22391,7 @@
             },
             {
               "kind": "unresolved_call",
-              "line": 69,
+              "line": 74,
               "step": "require_project",
               "target": "db.info.get"
             },
@@ -22830,19 +22841,19 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 320,
+              "line": 348,
               "step": "transfer_guest",
               "target": "IdentityService(db).transfer_guest"
             },
             {
               "kind": "unresolved_call",
-              "line": 320,
+              "line": 348,
               "step": "transfer_guest",
               "target": "request.cookies.get"
             },
             {
               "kind": "unresolved_call",
-              "line": 322,
+              "line": 350,
               "step": "transfer_guest",
               "target": "response.delete_cookie"
             }
@@ -25627,7 +25638,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 259,
+              "line": 287,
               "step": "workspace_member",
               "step_index": 1,
               "target": "db.add"
@@ -25635,7 +25646,7 @@
             {
               "confidence": "unknown",
               "kind": "mutation",
-              "line": 260,
+              "line": 288,
               "step": "workspace_member",
               "step_index": 1,
               "target": "db.add"
@@ -25644,7 +25655,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 79,
+              "line": 84,
               "step": "require_operator",
               "target": "db.info.get"
             },
@@ -43660,6 +43671,7 @@
         "entities/AbsenceInput.md",
         "entities/AbsenceUpdate.md",
         "entities/AccessibleNameViolation.md",
+        "entities/AccountSession.md",
         "entities/ActionLease.md",
         "entities/ActionLeasePolicy.md",
         "entities/ActionLeaseRequest.md",
@@ -43932,6 +43944,7 @@
         "entities/ConfirmDialogProps.md",
         "entities/ConfirmDialogTone.md",
         "entities/ConflictResolution.md",
+        "entities/ConnectionDetails.md",
         "entities/ConstraintsPanel_Props.md",
         "entities/ConstraintsSchema.md",
         "entities/ContextTier.md",
@@ -45811,6 +45824,7 @@
         "modules/20261009_0011_profile_identity.md",
         "modules/20261111_0012_session_work_profile.md",
         "modules/20261111_0013_local_comment_authors.md",
+        "modules/20261115_0014_observer_sessions.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -45928,6 +45942,8 @@
         "modules/config.md",
         "modules/ConfirmDialog.md",
         "modules/conftest.md",
+        "modules/ConnectedReadersPanel.md",
+        "modules/ConnectedReadersPanel.test.md",
         "modules/ConstraintsPanel.md",
         "modules/ContextHelp.md",
         "modules/ContextHelp.test.md",
@@ -46503,6 +46519,7 @@
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
+        "modules/test_observer_sessions.md",
         "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
@@ -46892,6 +46909,19 @@
       "role": "semantic",
       "source_path": "frontend/src/test/accessibilityInvariants.ts",
       "title": "AccessibleNameViolation"
+    },
+    {
+      "canonical_path": "entities/AccountSession.md",
+      "id": "AccountSession",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AccountSession",
+      "outgoing_internal_links": [
+        "modules/ConnectedReadersPanel.md",
+        "modules/identityService.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/features/identity/identityService.ts",
+      "title": "AccountSession"
     },
     {
       "canonical_path": "entities/ActionLease.md",
@@ -50728,6 +50758,18 @@
       "role": "semantic",
       "source_path": "frontend/src/components/settings/AgentModelAdministration.tsx",
       "title": "ConflictResolution"
+    },
+    {
+      "canonical_path": "entities/ConnectionDetails.md",
+      "id": "ConnectionDetails",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ConnectionDetails",
+      "outgoing_internal_links": [
+        "modules/NativeConnectionPage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/pages/NativeConnectionPage.tsx",
+      "title": "ConnectionDetails"
     },
     {
       "canonical_path": "entities/ConstraintsPanel_Props.md",
@@ -61517,7 +61559,8 @@
         "modules/config.md",
         "modules/test_agent_routing_rollout.md",
         "modules/test_client_contract.md",
-        "modules/test_database_configuration.md"
+        "modules/test_database_configuration.md",
+        "modules/test_observer_sessions.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/config.py",
@@ -68500,6 +68543,7 @@
       "mcp_uri": "llm-wiki://entities/WorkspaceIdentity",
       "outgoing_internal_links": [
         "modules/AdminAccessGate.test.md",
+        "modules/ConnectedReadersPanel.test.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
         "modules/identityService.md"
@@ -68731,6 +68775,16 @@
       "role": "semantic",
       "source_path": "backend/app/migrations/versions/20261111_0013_local_comment_authors.py",
       "title": "20261111_0013_local_comment_authors Module"
+    },
+    {
+      "canonical_path": "modules/20261115_0014_observer_sessions.md",
+      "id": "20261115_0014_observer_sessions",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/20261115_0014_observer_sessions",
+      "outgoing_internal_links": [],
+      "role": "semantic",
+      "source_path": "backend/app/migrations/versions/20261115_0014_observer_sessions.py",
+      "title": "20261115_0014_observer_sessions Module"
     },
     {
       "canonical_path": "modules/acceptance_artifacts.md",
@@ -70721,6 +70775,41 @@
       "title": "conftest Module"
     },
     {
+      "canonical_path": "modules/ConnectedReadersPanel.md",
+      "id": "ConnectedReadersPanel",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/ConnectedReadersPanel",
+      "outgoing_internal_links": [
+        "modules/apiError.md",
+        "modules/Button.md",
+        "modules/ConnectedReadersPanel.md",
+        "modules/ConnectedReadersPanel.test.md",
+        "modules/formatDate.md",
+        "modules/identityContext.md",
+        "modules/identityService.md",
+        "modules/SettingsPage.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/ConnectedReadersPanel.tsx",
+      "title": "ConnectedReadersPanel Module"
+    },
+    {
+      "canonical_path": "modules/ConnectedReadersPanel.test.md",
+      "id": "ConnectedReadersPanel.test",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/ConnectedReadersPanel.test",
+      "outgoing_internal_links": [
+        "modules/ConnectedReadersPanel.md",
+        "modules/ConnectedReadersPanel.test.md",
+        "modules/identityContext.md",
+        "modules/identityService.md",
+        "modules/renderWithProviders.md"
+      ],
+      "role": "semantic",
+      "source_path": "frontend/src/components/settings/ConnectedReadersPanel.test.tsx",
+      "title": "ConnectedReadersPanel.test Module"
+    },
+    {
       "canonical_path": "modules/ConstraintsPanel.md",
       "id": "ConstraintsPanel",
       "kind": "modules",
@@ -72249,10 +72338,13 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/identityService",
       "outgoing_internal_links": [
+        "entities/AccountSession.md",
         "entities/WorkProfile.md",
         "entities/WorkspaceIdentity.md",
         "modules/AdminAccessGate.test.md",
         "modules/api.md",
+        "modules/ConnectedReadersPanel.md",
+        "modules/ConnectedReadersPanel.test.md",
         "modules/identityContext.md",
         "modules/IdentityProvider.md",
         "modules/identityService.md",
@@ -74000,6 +74092,7 @@
       "kind": "modules",
       "mcp_uri": "llm-wiki://modules/NativeConnectionPage",
       "outgoing_internal_links": [
+        "entities/ConnectionDetails.md",
         "modules/api.md",
         "modules/apiError.md",
         "modules/Button.md",
@@ -80552,6 +80645,24 @@
       "title": "test_observability Module"
     },
     {
+      "canonical_path": "modules/test_observer_sessions.md",
+      "id": "test_observer_sessions",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_observer_sessions",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/identity_service.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_managed_authority.md",
+        "modules/test_observer_sessions.md",
+        "modules/time.md",
+        "modules/user_session.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_observer_sessions.py",
+      "title": "test_observer_sessions Module"
+    },
+    {
       "canonical_path": "modules/test_plan_checkpoints.md",
       "id": "test_plan_checkpoints",
       "kind": "modules",
@@ -84354,7 +84465,6 @@
       "mcp_uri": "llm-wiki://workflows/IdentityService_issue_session",
       "outgoing_internal_links": [
         "modules/authority.md",
-        "modules/config.md",
         "modules/identity_service.md",
         "modules/time.md",
         "modules/user_session.md"
@@ -84678,6 +84788,7 @@
       "mcp_uri": "llm-wiki://workflows/NativeSessionService_exchange",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/config.md",
         "modules/identity_service.md",
         "modules/native_session_service.md",
         "modules/time.md"
@@ -87498,6 +87609,7 @@
       "mcp_uri": "llm-wiki://flows/http-describe_native_connection",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/config.md",
         "modules/identity_service.md",
         "modules/native_session_service.md",
         "modules/routers_identity.md",
@@ -89700,11 +89812,9 @@
         "modules/authority.md",
         "modules/config.md",
         "modules/identity_service.md",
-        "modules/maintenance.md",
         "modules/routers_identity.md",
         "modules/session_service.md",
-        "modules/time.md",
-        "modules/user_session.md"
+        "modules/time.md"
       ],
       "role": "mixed",
       "source_path": "backend/app/routers/identity.py",
@@ -90367,6 +90477,7 @@
       "mcp_uri": "llm-wiki://flows/http-sessions",
       "outgoing_internal_links": [
         "modules/authority.md",
+        "modules/config.md",
         "modules/routers_identity.md"
       ],
       "role": "mixed",
@@ -96636,6 +96747,7 @@
         "modules/20261009_0011_profile_identity.md",
         "modules/20261111_0012_session_work_profile.md",
         "modules/20261111_0013_local_comment_authors.md",
+        "modules/20261115_0014_observer_sessions.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -96753,6 +96865,8 @@
         "modules/config.md",
         "modules/ConfirmDialog.md",
         "modules/conftest.md",
+        "modules/ConnectedReadersPanel.md",
+        "modules/ConnectedReadersPanel.test.md",
         "modules/ConstraintsPanel.md",
         "modules/ContextHelp.md",
         "modules/ContextHelp.test.md",
@@ -97328,6 +97442,7 @@
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
+        "modules/test_observer_sessions.md",
         "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
@@ -97483,6 +97598,7 @@
         "modules/20261009_0011_profile_identity.md",
         "modules/20261111_0012_session_work_profile.md",
         "modules/20261111_0013_local_comment_authors.md",
+        "modules/20261115_0014_observer_sessions.md",
         "modules/acceptance_artifacts.md",
         "modules/accessibilityInvariants.md",
         "modules/accessibilityInvariants.test.md",
@@ -97600,6 +97716,8 @@
         "modules/config.md",
         "modules/ConfirmDialog.md",
         "modules/conftest.md",
+        "modules/ConnectedReadersPanel.md",
+        "modules/ConnectedReadersPanel.test.md",
         "modules/ConstraintsPanel.md",
         "modules/ContextHelp.md",
         "modules/ContextHelp.test.md",
@@ -98175,6 +98293,7 @@
         "modules/test_native_connections.md",
         "modules/test_native_runtimes.md",
         "modules/test_observability.md",
+        "modules/test_observer_sessions.md",
         "modules/test_plan_checkpoints.md",
         "modules/test_plan_shares.md",
         "modules/test_planning_input_context.md",
@@ -98312,5 +98431,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:2ed64a7bc7604e608c7e4ddd2c9d3d57983564e28a20b9cea729caac5703313d"
+  "source_hash": "sha256:60ce800fad0513dc73991e048bd618fe8880fc2955eef8641f6154fb9318392c"
 }

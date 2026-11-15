@@ -7,7 +7,7 @@
 
 ## Description
 
-Stores a hashed request identity, S256 challenge, verification code, bounded expiry, and approving browser session. It retains neither the device verifier nor the issued native token. Consumption is conditional and transactional with session issuance.
+Stores a hashed request identity, S256 challenge, verification code, bounded expiry, requested access and client label, and approving browser session. It retains neither the device verifier nor the issued native token. Consumption is conditional and transactional with session issuance.
 
 ## Attributes
 
@@ -21,6 +21,8 @@ Stores a hashed request identity, S256 challenge, verification code, bounded exp
 | `expires_at` | `Mapped[datetime]` | `mapped_column(UTCDateTime(), nullable=False, index=True)` | — |
 | `approved_session_id` | `Mapped[int \| None]` | `mapped_column(ForeignKey('user_sessions.id', ondelete='CASCADE'))` | — |
 | `consumed_at` | `Mapped[datetime \| None]` | `mapped_column(UTCDateTime())` | — |
+| `requested_access` | `Mapped[str]` | `mapped_column(String(16), nullable=False, default='full', server_default='full')` | — |
+| `client_label` | `Mapped[str \| None]` | `mapped_column(String(80), nullable=True)` | — |
 
 ## Methods
 
@@ -51,7 +53,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [native_connection](../modules/native_connection.md) | 0 | `approved_session_id`, `code_challenge`, `consumed_at`, `created_at`, `expires_at`, `request_hash`, `request_ip_hash`, `verification_code` |
+| [native_connection](../modules/native_connection.md) | 0 | `approved_session_id`, `client_label`, `code_challenge`, `consumed_at`, `created_at`, `expires_at`, `request_hash`, `request_ip_hash`, `requested_access`, `verification_code` |
 
 ### Structure
 

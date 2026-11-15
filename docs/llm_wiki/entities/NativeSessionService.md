@@ -1,13 +1,13 @@
 # NativeSessionService
 
-**Location:** `backend/app/services/native_session_service.py:21`
+**Location:** `backend/app/services/native_session_service.py:27`
 **Kind:** Class
 **Bases:** —
 **Module:** [native_session_service](../modules/native_session_service.md)
 
 ## Description
 
-Coordinates short-lived native connection requests, explicit human browser consent, and a one-use S256 proof exchange. Approval does not grant project access; the resulting session inherits the existing principal and membership policy. Revoked or expired approving sessions and disabled principals cannot issue a native session.
+Coordinates short-lived native connection requests, explicit browser consent, and a one-use S256 proof exchange. A request asks for full access or a read-only observer session; a trusted-local workspace pairs observers only, approved from its local browser. Approval does not grant project access; the resulting session inherits the existing principal and membership policy. Revoked or expired approving sessions and disabled principals cannot issue a native session.
 
 ## Attributes
 
@@ -18,9 +18,9 @@ Coordinates short-lived native connection requests, explicit human browser conse
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
 | `__init__` | `(db)` | — | — |
-| `human` | `()` | — | — |
+| `approver` | `(row = None)` | — | A signed-in person, or a trusted-local browser approving an observer. |
 | `connection` | *(async)* `(request_id)` | — | — |
-| `start` | *(async)* `(code_challenge, ip_address)` | `@atomic_command` | — |
+| `start` | *(async)* `(code_challenge, ip_address, access = 'full', client_label = None)` | `@atomic_command` | — |
 | `describe` | *(async)* `(request_id)` | — | — |
 | `approve` | *(async)* `(request_id, verification_code)` | `@atomic_command` | — |
 | `deny` | *(async)* `(request_id)` | `@atomic_command` | End a pending connection from the browser; the device's next exchange sees it as ended. |

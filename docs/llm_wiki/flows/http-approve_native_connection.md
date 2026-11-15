@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| approve_native_connection | NativeSessionService(…).approve | 105 | `NativeSessionService(db).approve(request_id, data.verification_code)` |
-| approve_native_connection | NativeSessionService | 105 | `NativeSessionService(db)` |
+| approve_native_connection | NativeSessionService(…).approve | 125 | `NativeSessionService(db).approve(request_id, data.verification_code)` |
+| approve_native_connection | NativeSessionService | 125 | `NativeSessionService(db)` |
 
 ### Boundary effects
 
@@ -78,8 +78,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `approve_native_connection` | `NativeSessionService(db).approve` | 105 |
+| unresolved_call | `approve_native_connection` | `NativeSessionService(db).approve` | 125 |
 
 ## Behavior
 
-Requires a human session and the matching displayed code. Normal HTTP cookie mutations retain CSRF and Origin checks. A conditional update binds the request to the approving session; another session cannot replace that approval.
+Requires a human session, or for an observer request on a trusted-local workspace the local browser's own session, and the matching displayed code. An observer credential cannot approve. Normal HTTP cookie mutations retain CSRF and Origin checks. A conditional update binds the request to the approving session; another session cannot replace that approval.

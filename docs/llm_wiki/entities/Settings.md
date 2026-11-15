@@ -32,6 +32,8 @@ Application settings.
 | `validate_database_pool_capacity` | model | — | after | — |
 | `validate_session_cookie_name` | field | session_cookie_name | after | — |
 | `validate_session_lifetime` | field | session_max_age_seconds | after | — |
+| `validate_signed_in_lifetime` | field | auth_session_max_age_seconds, auth_session_absolute_max_age_seconds, auth_observer_session_max_age_seconds, auth_observer_absolute_max_age_seconds | after | — |
+| `validate_signed_in_renewal_caps` | model | — | after | — |
 | `validate_session_touch_interval` | field | session_touch_interval_seconds | after | — |
 | `validate_agent_last_seen_interval` | field | agent_last_seen_interval_seconds | after | — |
 | `validate_database_readiness_timeout` | field | database_readiness_timeout_seconds | after | — |
@@ -121,6 +123,9 @@ Application settings.
 | `oidc_redirect_uri` | `str` | `oidc_redirect_uri` | No | No | `''` | — | — | — |
 | `oidc_allow_http_loopback` | `bool` | `oidc_allow_http_loopback` | No | No | `False` | — | — | — |
 | `auth_session_max_age_seconds` | `int` | `auth_session_max_age_seconds` | No | No | `8 * 60 * 60` | — | — | — |
+| `auth_session_absolute_max_age_seconds` | `int` | `auth_session_absolute_max_age_seconds` | No | No | `7 * 24 * 60 * 60` | — | — | — |
+| `auth_observer_session_max_age_seconds` | `int` | `auth_observer_session_max_age_seconds` | No | No | `24 * 60 * 60` | — | — | — |
+| `auth_observer_absolute_max_age_seconds` | `int` | `auth_observer_absolute_max_age_seconds` | No | No | `30 * 24 * 60 * 60` | — | — | — |
 | `session_metadata_retention_days` | `int` | `session_metadata_retention_days` | No | No | `30` | — | — | — |
 | `snapshot_retention_count` | `int` | `snapshot_retention_count` | No | No | `10` | — | — | — |
 | `snapshot_max_bytes` | `int` | `snapshot_max_bytes` | No | No | `8 * 1024 * 1024` | — | — | — |
@@ -160,6 +165,8 @@ Application settings.
 | `validate_database_pool_capacity` | `() -> 'Settings'` | `@model_validator(mode='after')` | — |
 | `validate_session_cookie_name` | `(value: str) -> str` | `@field_validator('session_cookie_name')`, `@classmethod` | Reject cookie names that could create malformed response headers. |
 | `validate_session_lifetime` | `(value: int) -> int` | `@field_validator('session_max_age_seconds')`, `@classmethod` | Session lifetime must be positive and no longer than one year. |
+| `validate_signed_in_lifetime` | `(value: int) -> int` | `@field_validator('auth_session_max_age_seconds', 'auth_session_absolute_max_age_seconds', 'auth_observer_session_max_age_seconds', 'auth_observer_absolute_max_age_seconds')`, `@classmethod` | — |
+| `validate_signed_in_renewal_caps` | `() -> 'Settings'` | `@model_validator(mode='after')` | — |
 | `validate_session_touch_interval` | `(value: int) -> int` | `@field_validator('session_touch_interval_seconds')`, `@classmethod` | — |
 | `validate_agent_last_seen_interval` | `(value: int) -> int` | `@field_validator('agent_last_seen_interval_seconds')`, `@classmethod` | — |
 | `validate_database_readiness_timeout` | `(value: float) -> float` | `@field_validator('database_readiness_timeout_seconds')`, `@classmethod` | — |
@@ -180,9 +187,11 @@ flowchart LR
     n2["get_settings (backend/app/config.py)"]
     n3["Settings.validate_database_pool_capacity (backend/app/config.py)"]
     n4["Settings.validate_release_security_boundaries (backend/app/config.py)"]
-    n5["settings (backend/tests/database/test_database_configuration.py)"]
-    n6["_settings (backend/tests/test_agent_routing_rollout.py)"]
-    n7["test_public_skill_bundles_require_the_trusted_checksum (backend/tests/test_client_contract.py)"]
+    n5["Settings.validate_signed_in_renewal_caps (backend/app/config.py)"]
+    n6["settings (backend/tests/database/test_database_configuration.py)"]
+    n7["_settings (backend/tests/test_agent_routing_rollout.py)"]
+    n8["test_public_skill_bundles_require_the_trusted_checksum (backend/tests/test_client_contract.py)"]
+    n9["test_renewal_caps_cannot_be_shorter_than_one_session (backend/tests/test_observer_sessions.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -190,20 +199,24 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
+    n9 --> n0
     click n0 "../modules/config.md"
     click n2 "../modules/config.md"
     click n3 "../modules/config.md"
     click n4 "../modules/config.md"
-    click n5 "../modules/test_database_configuration.md"
-    click n6 "../modules/test_agent_routing_rollout.md"
-    click n7 "../modules/test_client_contract.md"
+    click n5 "../modules/config.md"
+    click n6 "../modules/test_database_configuration.md"
+    click n7 "../modules/test_agent_routing_rollout.md"
+    click n8 "../modules/test_client_contract.md"
+    click n9 "../modules/test_observer_sessions.md"
 ```
 
 ### Summary
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [config](../modules/config.md) | 28 | `agent_bootstrap_api_key`, `agent_last_seen_interval_seconds`, `agent_skill_bundle_max_artifact_bytes`, `agent_skill_bundle_max_artifacts`, `agent_skill_bundle_max_file_bytes`, `agent_skill_bundle_max_metadata_bytes`, `agent_skill_bundle_max_total_bytes`, `agent_skill_bundle_trusted_checksums_sha256`, `agent_skill_bundles_public`, `agent_team_credential_sink_dir`, `agent_team_credential_sink_ref`, `ai_language_mode` |
+| [config](../modules/config.md) | 30 | `agent_bootstrap_api_key`, `agent_last_seen_interval_seconds`, `agent_skill_bundle_max_artifact_bytes`, `agent_skill_bundle_max_artifacts`, `agent_skill_bundle_max_file_bytes`, `agent_skill_bundle_max_metadata_bytes`, `agent_skill_bundle_max_total_bytes`, `agent_skill_bundle_trusted_checksums_sha256`, `agent_skill_bundles_public`, `agent_team_credential_sink_dir`, `agent_team_credential_sink_ref`, `ai_language_mode` |
 
 ### Structure
 
@@ -219,8 +232,10 @@ flowchart LR
 | `get_settings` | type_reference | [config](../modules/config.md) | — |
 | `Settings.validate_database_pool_capacity` | type_reference | [config](../modules/config.md) | — |
 | `Settings.validate_release_security_boundaries` | type_reference | [config](../modules/config.md) | — |
+| `Settings.validate_signed_in_renewal_caps` | type_reference | [config](../modules/config.md) | — |
 | `settings` | call | [test_database_configuration](../modules/test_database_configuration.md) | 1 |
 | `settings` | type_reference | [test_database_configuration](../modules/test_database_configuration.md) | — |
 | `_settings` | call | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | 1 |
 | `_settings` | type_reference | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) | — |
 | `test_public_skill_bundles_require_the_trusted_checksum` | call | [test_client_contract](../modules/test_client_contract.md) | 2 |
+| `test_renewal_caps_cannot_be_shorter_than_one_session` | call | [test_observer_sessions](../modules/test_observer_sessions.md) | 3 |

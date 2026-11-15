@@ -1,6 +1,6 @@
 # SettingsTab
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:43`
+**Location:** `frontend/src/pages/SettingsPage.tsx:44`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)

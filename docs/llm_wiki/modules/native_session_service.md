@@ -4,7 +4,7 @@
 
 ## Description
 
-Owns proof-bound native session creation and browser approval. Public start/exchange paths require bounded inputs; approval requires a human session and normal browser request integrity. The exchange checks current account/session validity, locks the principal before the approving session, and atomically consumes the connection while issuing an opaque bearer session.
+Owns proof-bound native session creation and browser approval. Public start/exchange paths require bounded inputs; approval requires a human session and normal browser request integrity, or on a trusted-local workspace, the local browser's session for an observer request. Requests ask for full access or an observer session that only reads; a trusted-local workspace pairs observers only, which grants less than its local browser already has. The exchange checks current account/session validity, locks the principal before the approving session, and atomically consumes the connection while issuing an opaque bearer session.
 
 ## Imports
 
@@ -16,7 +16,7 @@ Owns proof-bound native session creation and browser approval. Public start/exch
 | `app.models.identity` | `Principal` |
 | `app.models.native_connection` | `NativeConnection` |
 | `app.models.user_session` | `UserSession` |
-| `app.services.identity_service` | `IdentityService`, `digest`, `require_identity_writes` |
+| `app.services.identity_service` | `IdentityService`, `digest`, `require_identity_writes`, `session_grant` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `base64` | `base64` |
 | `datetime` | `timedelta` |
@@ -105,4 +105,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [NativeSessionService](../entities/NativeSessionService.md) | 21 | — | — |
+| [NativeSessionService](../entities/NativeSessionService.md) | 27 | — | — |

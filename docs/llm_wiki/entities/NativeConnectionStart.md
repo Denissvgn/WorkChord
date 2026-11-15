@@ -15,15 +15,25 @@ _Auto-generated from `NativeConnectionStart` in `backend/app/routers/identity.py
 |---------|-------|--------|
 | `extra` | `'forbid'` | model_config |
 
+## Validators
+
+| Method | Scope | Fields | Mode | Options |
+|--------|-------|--------|------|---------|
+| `plain_label` | field | client_label | after | — |
+
 ## Attributes
 
 | Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
 |------|------|-----------|----------|----------|---------|-------------|-------------|----------|
 | `code_challenge` | `str` | `code_challenge` | Yes | No | — | pattern='^[A-Za-z0-9_-]{43}$' | — | — |
+| `access` | `Literal['full', 'observe']` | `access` | No | No | `'full'` | — | — | — |
+| `client_label` | `str \| None` | `client_label` | No | Yes | `None` | max_length=80; min_length=1 | — | — |
 
 ## Methods
 
-*No declared methods.*
+| Method | Signature | Decorators | Description |
+|--------|-----------|------------|-------------|
+| `plain_label` | `(value)` | `@field_validator('client_label')`, `@classmethod` | — |
 
 ## Relationships
 
@@ -43,7 +53,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [routers_identity](../modules/routers_identity.md) | 0 | `code_challenge` |
+| [routers_identity](../modules/routers_identity.md) | 1 | `access`, `client_label`, `code_challenge` |
 
 ### Structure
 

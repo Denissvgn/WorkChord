@@ -16,6 +16,7 @@ _Auto-generated from `frontend/src/pages/SettingsPage.tsx`._
 | `../components/settings/AdminAccessPanel` | `AdminAccessPanel` | — | compiler-dependent |
 | `../components/settings/AgentAccessPanel` | `AgentAccessPanel` | — | compiler-dependent |
 | `../components/settings/AgentModelAdministration` | `AgentModelAdministration` | — | compiler-dependent |
+| `../components/settings/ConnectedReadersPanel` | `ConnectedReadersPanel` | — | compiler-dependent |
 | `../components/settings/EmailSettingsPanel` | `EmailSettingsPanel` | — | compiler-dependent |
 | `../components/settings/GitHubSettingsPanel` | `GitHubSettingsPanel` | — | compiler-dependent |
 | `../components/settings/InterfaceLanguageSettings` | `InterfaceLanguageSettings` | — | compiler-dependent |
@@ -62,7 +63,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (1) |
-| Outbound | `frontend` (18) |
+| Outbound | `frontend` (19) |
 
 ### External packages
 
@@ -70,15 +71,15 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
-> All 19 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 20 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [SettingsDestination](../entities/SettingsDestination.md) | Interface | 47 | — | — |
-| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 61 | — | — |
-| [SettingsTab](../entities/SettingsTab.md) | Type alias | 43 | `'appearance' \| 'scheduling' \| 'templates_labels' \| 'models_agents' \| 'github' \| 'webhooks' \| 'notifications' \| 'admin_access' \| 'runtime' \| 'about'` | — |
-| [SettingsPageTab](../entities/SettingsPageTab.md) | Type alias | 44 | `'overview' \| SettingsTab` | — |
-| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 45 | `'personal' \| 'planning' \| 'agents' \| 'integrations' \| 'system'` | — |
-| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 56 | <pre><code>Pick&#60;&#10;    SettingsDestination&#44;&#10;    &#39;labelKey&#39; &#124; &#39;descriptionKey&#39; &#124; &#39;icon&#39;&#10;&#62;</code></pre> | — |
+| [SettingsDestination](../entities/SettingsDestination.md) | Interface | 48 | — | — |
+| [SettingsGroup](../entities/SettingsGroup.md) | Interface | 62 | — | — |
+| [SettingsTab](../entities/SettingsTab.md) | Type alias | 44 | `'appearance' \| 'scheduling' \| 'templates_labels' \| 'models_agents' \| 'github' \| 'webhooks' \| 'notifications' \| 'admin_access' \| 'runtime' \| 'about'` | — |
+| [SettingsPageTab](../entities/SettingsPageTab.md) | Type alias | 45 | `'overview' \| SettingsTab` | — |
+| [SettingsGroupId](../entities/SettingsGroupId.md) | Type alias | 46 | `'personal' \| 'planning' \| 'agents' \| 'integrations' \| 'system'` | — |
+| [SettingsDestinationHeader](../entities/SettingsDestinationHeader.md) | Type alias | 57 | <pre><code>Pick&#60;&#10;    SettingsDestination&#44;&#10;    &#39;labelKey&#39; &#124; &#39;descriptionKey&#39; &#124; &#39;icon&#39;&#10;&#62;</code></pre> | — |

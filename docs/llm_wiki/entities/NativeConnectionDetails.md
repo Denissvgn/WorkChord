@@ -1,6 +1,6 @@
 # NativeConnectionDetails
 
-**Location:** `backend/app/routers/identity.py:55`
+**Location:** `backend/app/routers/identity.py:69`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)
@@ -16,6 +16,8 @@ _Auto-generated from `NativeConnectionDetails` in `backend/app/routers/identity.
 | `verification_code` | `str` | `verification_code` | Yes | No | — | — | — | — |
 | `expires_at` | `datetime` | `expires_at` | Yes | No | — | — | — | — |
 | `approved` | `bool` | `approved` | Yes | No | — | — | — | — |
+| `access` | `Literal['full', 'observe']` | `access` | Yes | No | — | — | — | — |
+| `client_label` | `str \| None` | `client_label` | Yes | Yes | — | — | — | — |
 
 ## Methods
 
@@ -39,7 +41,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [routers_identity](../modules/routers_identity.md) | 0 | `approved`, `expires_at`, `verification_code` |
+| [routers_identity](../modules/routers_identity.md) | 0 | `access`, `approved`, `client_label`, `expires_at`, `verification_code` |
 
 ### Structure
 

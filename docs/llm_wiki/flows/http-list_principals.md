@@ -104,14 +104,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_principals | require_operator | 235 | `require_operator(db)` |
-| require_operator | db.info.get | 79 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
-| list_principals | (…).all | 236 | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all(data not statically known)` |
-| list_principals | db.scalars | 236 | `db.scalars(...)` |
-| list_principals | select(…).order_by(…).limit | 236 | `select(Principal).order_by(Principal.id).limit(limit)` |
-| list_principals | select(…).order_by | 236 | `select(Principal).order_by(Principal.id)` |
-| list_principals | select | 236 | `select(Principal)` |
+| list_principals | require_operator | 263 | `require_operator(db)` |
+| require_operator | db.info.get | 84 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| list_principals | (…).all | 264 | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all(data not statically known)` |
+| list_principals | db.scalars | 264 | `db.scalars(...)` |
+| list_principals | select(…).order_by(…).limit | 264 | `select(Principal).order_by(Principal.id).limit(limit)` |
+| list_principals | select(…).order_by | 264 | `select(Principal).order_by(Principal.id)` |
+| list_principals | select | 264 | `select(Principal)` |
 
 ### Boundary effects
 
@@ -121,12 +121,12 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 79 |
-| unresolved_call | `list_principals` | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all` | 236 |
-| unresolved_call | `list_principals` | `db.scalars` | 236 |
-| unresolved_call | `list_principals` | `select(Principal).order_by(Principal.id).limit` | 236 |
-| unresolved_call | `list_principals` | `select(Principal).order_by` | 236 |
-| external_call | `list_principals` | `select` | 236 |
+| unresolved_call | `require_operator` | `db.info.get` | 84 |
+| unresolved_call | `list_principals` | `(await db.scalars(select(Principal).order_by(Principal.id).limit(limit))).all` | 264 |
+| unresolved_call | `list_principals` | `db.scalars` | 264 |
+| unresolved_call | `list_principals` | `select(Principal).order_by(Principal.id).limit` | 264 |
+| unresolved_call | `list_principals` | `select(Principal).order_by` | 264 |
+| external_call | `list_principals` | `select` | 264 |
 
 ## Behavior
 

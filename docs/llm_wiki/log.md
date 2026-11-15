@@ -3382,3 +3382,48 @@ Stored agent-team contracts are read with shape-only loaders; members that break
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-15
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f18290eae79ef11b0ff0d427a45e7c3e0eab657b9da91ea789fad1a901477091`
+- Pages created: 6
+- Pages updated: 254
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2912
+- Pages deprecated: 0
+- Semantic fields preserved: 12
+- Moved entities: none
+- Flow pages initialized: 0 (none)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+### Read-only observer sessions
+
+Native pairing can issue an observer session that only reads: in a managed workspace it reads as the approving person, and a trusted-local workspace pairs observers only, approved from its local browser. Observer requests are limited to reads, sign-out and renewal, and must travel alone. Session renewal keeps the access level and original sign-in time, so it stops at an absolute cap; a bearer source is rotated.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f18290eae79ef11b0ff0d427a45e7c3e0eab657b9da91ea789fad1a901477091`
+- Pages created: 0
+- Pages updated: 4
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3162
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

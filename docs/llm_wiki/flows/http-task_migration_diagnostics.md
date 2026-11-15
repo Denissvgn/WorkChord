@@ -126,8 +126,8 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | task_migration_diagnostics | require_operator | 162 | `require_operator(db)` |
-| require_operator | db.info.get | 79 | `db.info.get('authority')` |
-| require_operator | AuthorityError | 81 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
+| require_operator | db.info.get | 84 | `db.info.get('authority')` |
+| require_operator | AuthorityError | 86 | `AuthorityError('operator_required', 'Workspace operator permission is required.')` |
 | task_migration_diagnostics | (…).mappings().all | 163 | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all(data not statically known)` |
 | task_migration_diagnostics | (…).mappings | 163 | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings(data not statically known)` |
 | task_migration_diagnostics | db.execute | 163 | `db.execute(...)` |
@@ -145,7 +145,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `require_operator` | `db.info.get` | 79 |
+| unresolved_call | `require_operator` | `db.info.get` | 84 |
 | unresolved_call | `task_migration_diagnostics` | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings().all` | 163 |
 | unresolved_call | `task_migration_diagnostics` | `(await db.execute(select(Task.id, Task.ownership_provenance, Task.estimate_provenance, Task.legacy_estimate, Task.domain_backfill_version, Task.domain_migration_notes).where(Task.id > after_id).order_by(Task.id).limit(limit + 1))).mappings` | 163 |
 | unresolved_call | `task_migration_diagnostics` | `db.execute` | 163 |

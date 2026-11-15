@@ -1,6 +1,6 @@
 # IdentityService
 
-**Location:** `backend/app/services/identity_service.py:140`
+**Location:** `backend/app/services/identity_service.py:159`
 **Kind:** Class
 **Bases:** —
 **Module:** [identity_service](../modules/identity_service.md)
@@ -9,7 +9,7 @@
 
 _Auto-generated from `IdentityService` in `backend/app/services/identity_service.py`._
 
-OIDC authorization-code sign-in verifies PKCE, browser-bound state, nonce, RS256 signature, issuer, audience, expiry and token bindings before mapping the stable issuer/subject. Sessions are opaque and revocable. Guest ownership transfer requires token proof or reasoned operator recovery, preserves original attribution, and rotates share links. Bounded retention anonymizes expired metadata while retaining referenced identity rows.
+OIDC authorization-code sign-in verifies PKCE, browser-bound state, nonce, RS256 signature, issuer, audience, expiry and token bindings before mapping the stable issuer/subject. Sessions are opaque and revocable. Renewal issues a successor at the same access level and original sign-in time, capped by the absolute renewal limit for that level, and can rotate the source. Guest ownership transfer requires token proof or reasoned operator recovery, preserves original attribution, and rotates share links. Bounded retention anonymizes expired metadata while retaining referenced identity rows.
 
 ## Attributes
 
@@ -24,7 +24,8 @@ OIDC authorization-code sign-in verifies PKCE, browser-bound state, nonce, RS256
 | `actor_context` | *(async)* `(actor, *, source = 'rest')` | — | — |
 | `begin_login` | *(async)* `(return_path = '/')` | `@atomic_command` | — |
 | `finish_login` | *(async)* `(code, state, browser, *, ip_address, user_agent)` | `@atomic_command` | — |
-| `issue_session` | *(async)* `(principal_id, ip_address, user_agent)` | — | — |
+| `issue_session` | *(async)* `(principal_id, ip_address, user_agent, *, access = 'full', client_label = None, authenticated_at = None)` | — | Issue a session; a renewal passes the original sign-in time so its cap still applies. |
+| `renew_session` | *(async)* `(source_id, ip_address, user_agent, *, rotate)` | `@atomic_command` | Issue a successor at the same access level and sign-in time; optionally end the source. |
 | `transfer_guest` | *(async)* `(raw_token, principal_id, *, operator_reason = None, guest_id = None)` | `@atomic_command` | — |
 | `cleanup_sessions` | *(async)* `(*, limit = 100)` | `@atomic_command` | — |
 
@@ -77,7 +78,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [identity_service](../modules/identity_service.md) | 8 | — |
+| [identity_service](../modules/identity_service.md) | 9 | — |
 
 ### References
 

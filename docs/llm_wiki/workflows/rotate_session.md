@@ -13,10 +13,12 @@
 3. `time.utc_now`
 4. `authority.AuthorityError`
 5. `time.utc_now`
-6. `config.get_settings`
-7. `config.get_settings`
-8. `commands.commit_or_flush`
+6. `identity_service.session_lifetimes`
+7. `identity_service.renewable_until`
+8. `authority.AuthorityError`
 9. `config.get_settings`
+10. `commands.commit_or_flush`
+11. `config.get_settings`
 
 ## Touches
 

@@ -6,20 +6,20 @@
 
 Opaque browser-session resolution and trusted request audit metadata.
 
-Opaque sessions remain distinct from authenticated principals. Rotation preserves authorized ownership while replacing the token and CSRF value; authenticated sessions use the human lifetime. Expired or revoked tokens cannot be rotated, and maintenance modes suppress implicit session writes.
+Opaque sessions remain distinct from authenticated principals. Rotation preserves authorized ownership while replacing the token and CSRF value; authenticated sessions use the human lifetime, capped at the absolute renewal limit from sign-in. An observer is never given a browser session. Expired or revoked tokens cannot be rotated, and maintenance modes suppress implicit session writes.
 
 ## Imports
 
 | Source | Symbols |
 |--------|---------|
-| `app.authority` | `AuthorityError`, `AuthorityError` |
+| `app.authority` | `AuthorityError`, `internal_authority`, `AuthorityError`, `AuthorityError` |
 | `app.commands` | `commit_or_flush` |
 | `app.config` | `get_settings` |
 | `app.database` | `get_db` |
 | `app.maintenance` | `MaintenanceModeError` |
 | `app.models.user_session` | `UserSession` |
 | `app.runtime_telemetry` | `metrics` |
-| `app.services.identity_service` | `require_identity_writes` |
+| `app.services.identity_service` | `require_identity_writes`, `renewable_until`, `session_lifetimes` |
 | `app.utils.time` | `as_utc`, `utc_now` |
 | `datetime` | `timedelta` |
 | `fastapi` | `Depends`, `Request`, `Response` |

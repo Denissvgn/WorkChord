@@ -182,9 +182,9 @@ flowchart LR
 | task_review_queue | Task.is_summary.is_ | 175 | `Task.is_summary.is_(False)` |
 | task_review_queue | HTTPException | 177 | `HTTPException(422, detail='Select backlog or an iteration, not both')` |
 | task_review_queue | require_project | 180 | `require_project(db, project_id)` |
-| require_project | db.info.get (backend/app/authority.py:require_project) | 69 | `db.info.get('authority')` |
-| require_project | get_settings | 71 | `get_settings(data not statically known)` |
-| get_settings | Settings | 481 | `Settings(data not statically known)` |
+| require_project | db.info.get (backend/app/authority.py:require_project) | 74 | `db.info.get('authority')` |
+| require_project | get_settings | 76 | `get_settings(data not statically known)` |
+| get_settings | Settings | 506 | `Settings(data not statically known)` |
 
 ### Boundary effects
 
@@ -200,7 +200,7 @@ flowchart LR
 | unresolved_call | `task_review_queue` | `Task.canceled_at.is_` | 175 |
 | unresolved_call | `task_review_queue` | `Task.is_summary.is_` | 175 |
 | external_call | `task_review_queue` | `HTTPException` | 177 |
-| unresolved_call | `require_project` | `db.info.get` | 69 |
+| unresolved_call | `require_project` | `db.info.get` | 74 |
 | step_limit | `task_review_queue` | `first 12 steps` | 0 |
 
 ## Behavior

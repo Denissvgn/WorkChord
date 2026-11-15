@@ -205,9 +205,9 @@ flowchart LR
 | human_my_work | TaskDetailService.my_work | 134 | `TaskDetailService(db).my_work(limit=limit, after_id=after_id, project_id=project_id, iteration_id=iteration_id, backlog_only=backlog_only)` |
 | TaskDetailService.my_work | self.db.info.get (backend/app/services/task…TaskDetailService.my_work) | 108 | `self.db.info.get('authority')` |
 | TaskDetailService.my_work | local_work_profile | 115 | `local_work_profile(self.db, authority.profile_id)` |
-| local_work_profile | internal_authority | 40 | `internal_authority(db)` |
-| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 87 | `db.info.get('authority_internal', False)` |
-| local_work_profile | db.get | 41 | `db.get(TeamMemberProfile, profile_id)` |
+| local_work_profile | internal_authority | 59 | `internal_authority(db)` |
+| internal_authority | db.info.get (backend/app/authority.py:internal_authority) | 92 | `db.info.get('authority_internal', False)` |
+| local_work_profile | db.get | 60 | `db.get(TeamMemberProfile, profile_id)` |
 | TaskDetailService.my_work | select(…).where (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id).where(...)` |
 | TaskDetailService.my_work | select (backend/app/services/task…TaskDetailService.my_work) | 121 | `select(TeamMember.id)` |
 | TaskDetailService.my_work | self.references().where | 122 | `self.references().where(or_(...), or_(...), Task.canceled_at.is_(...), Task.is_summary.is_(...))` |
@@ -223,8 +223,8 @@ flowchart LR
 | Kind | Step | Target | Line |
 |---|---|---|---:|
 | unresolved_call | `TaskDetailService.my_work` | `self.db.info.get` | 108 |
-| unresolved_call | `internal_authority` | `db.info.get` | 87 |
-| unresolved_call | `local_work_profile` | `db.get` | 41 |
+| unresolved_call | `internal_authority` | `db.info.get` | 92 |
+| unresolved_call | `local_work_profile` | `db.get` | 60 |
 | unresolved_call | `TaskDetailService.my_work` | `select(TeamMember.id).where` | 121 |
 | external_call | `TaskDetailService.my_work` | `select` | 121 |
 | unresolved_call | `TaskDetailService.my_work` | `self.references().where` | 122 |

@@ -1,6 +1,6 @@
 # NativeTokenResponse
 
-**Location:** `backend/app/routers/identity.py:73`
+**Location:** `backend/app/routers/identity.py:89`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)
@@ -16,6 +16,8 @@ _Auto-generated from `NativeTokenResponse` in `backend/app/routers/identity.py`.
 | `access_token` | `str` | `access_token` | Yes | No | — | — | — | — |
 | `token_type` | `Literal['Bearer']` | `token_type` | Yes | No | — | — | — | — |
 | `expires_at` | `datetime` | `expires_at` | Yes | No | — | — | — | — |
+| `access` | `Literal['full', 'observe']` | `access` | Yes | No | — | — | — | — |
+| `renewable_until` | `datetime` | `renewable_until` | Yes | No | — | — | — | — |
 
 ## Methods
 
@@ -42,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [routers_identity](../modules/routers_identity.md) | 0 | `access_token`, `expires_at`, `token_type` |
+| [routers_identity](../modules/routers_identity.md) | 0 | `access`, `access_token`, `expires_at`, `renewable_until`, `token_type` |
 
 ### Structure
 

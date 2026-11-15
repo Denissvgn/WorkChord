@@ -71,6 +71,12 @@ flowchart LR
 |---|---:|---:|
 | typescript | 4 | 0 |
 
+## Classes
+
+| Class | Kind | Line | Bases / Target | Description |
+|-------|------|------|----------------|-------------|
+| [ConnectionDetails](../entities/ConnectionDetails.md) | Interface | 25 | — | — |
+
 ## Functions
 
 | Function | Signature | Decorators | Description |

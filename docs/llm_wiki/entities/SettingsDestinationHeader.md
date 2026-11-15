@@ -1,6 +1,6 @@
 # SettingsDestinationHeader
 
-**Location:** `frontend/src/pages/SettingsPage.tsx:56`
+**Location:** `frontend/src/pages/SettingsPage.tsx:57`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [SettingsPage](../modules/SettingsPage.md)
