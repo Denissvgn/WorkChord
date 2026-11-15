@@ -32,10 +32,11 @@ flowchart LR
     n1["StrictBundleModel (backend/app/schemas/agent_skill_bundle.py)"]
     n2["backend/app/mcp_agent_tools.py"]
     n3["backend/app/routers/agent.py"]
-    n4["list_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
-    n5["AgentSkillBundleService.catalog (backend/app/services/agent_skill_bundle_service.py)"]
-    n6["AgentTeamSetupService._skill_catalog (backend/app/services/agent_team_setup_service.py)"]
-    n7["backend/tests/test_agent_team_catalog.py"]
+    n4["backend/app/routers/agent_connect.py"]
+    n5["list_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
+    n6["AgentSkillBundleService.catalog (backend/app/services/agent_skill_bundle_service.py)"]
+    n7["AgentTeamSetupService._skill_catalog (backend/app/services/agent_team_setup_service.py)"]
+    n8["backend/tests/test_agent_team_catalog.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -43,14 +44,16 @@ flowchart LR
     n5 --> n0
     n6 --> n0
     n7 --> n0
+    n8 --> n0
     click n0 "../modules/agent_skill_bundle.md"
     click n1 "../modules/agent_skill_bundle.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
-    click n4 "../modules/agent_skill_bundles.md"
-    click n5 "../modules/agent_skill_bundle_service.md"
-    click n6 "../modules/agent_team_setup_service.md"
-    click n7 "../modules/test_agent_team_catalog.md"
+    click n4 "../modules/routers_agent_connect.md"
+    click n5 "../modules/agent_skill_bundles.md"
+    click n6 "../modules/agent_skill_bundle_service.md"
+    click n7 "../modules/agent_team_setup_service.md"
+    click n8 "../modules/test_agent_team_catalog.md"
 ```
 
 ### Summary
@@ -71,6 +74,7 @@ flowchart LR
 |---|---|---|---:|
 | `mcp_agent_tools` | import | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `agent` | import | [routers_agent](../modules/routers_agent.md) | — |
+| `agent_connect` | import | [routers_agent_connect](../modules/routers_agent_connect.md) | — |
 | `list_agent_skill_bundles` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `AgentSkillBundleService.catalog` | type_reference | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) | — |
 | `AgentTeamSetupService._skill_catalog` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |

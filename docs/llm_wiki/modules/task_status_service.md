@@ -36,6 +36,7 @@ For scheduled work, the forecast follows what happened: a start moves the task t
 | `app.services.task_service` | `TaskService` |
 | `app.services.work_metrics` | `effective_work_flags`, `working_today`, `task_signals` |
 | `app.utils.time` | `utc_now` |
+| `collections` | `deque` |
 | `datetime` | `date`, `timedelta` |
 | `json` | `json` |
 | `sqlalchemy` | `desc`, `func`, `select` |
@@ -76,4 +77,4 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [TaskStatusService](../entities/TaskStatusService.md) | 30 | — | Own status transitions, dependent cascades, and parent reconciliation. |
+| [TaskStatusService](../entities/TaskStatusService.md) | 31 | — | Own status transitions, dependent cascades, and parent reconciliation. |

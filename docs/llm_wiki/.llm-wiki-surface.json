@@ -18,18 +18,18 @@
     "by_kind": {
       "api-contracts": 0,
       "dependencies": 1,
-      "entities": 1563,
-      "flows": 557,
+      "entities": 1569,
+      "flows": 558,
       "guides": 0,
       "index": 1,
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 831,
+      "modules": 836,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3164
+    "total": 3176
   },
   "dependency_pages": {
     "count": 2,
@@ -1456,7 +1456,7 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 276,
+              "line": 277,
               "step": "build_identity",
               "target": "load_backend_build_identity().model_dump"
             },
@@ -8458,6 +8458,62 @@
       },
       "id": "http-get_agent_capabilities",
       "language": "python"
+    },
+    {
+      "category": "http",
+      "detector": "builtin",
+      "entry_point": {
+        "label": "get_agent_connect_hint",
+        "source_path": "backend/app/routers/agent_connect.py",
+        "symbol": "get_agent_connect_hint"
+      },
+      "evidence": {
+        "data_flow": {
+          "boundary_effects": [],
+          "gaps": [
+            {
+              "kind": "unresolved_call",
+              "line": 72,
+              "step": "get_agent_connect_hint",
+              "target": "settings.api_prefix.rstrip"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 49,
+              "step": "_roles",
+              "target": "service.catalog_payload"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 50,
+              "step": "_roles",
+              "target": "SkillBundleCatalogResponse.model_validate_json"
+            }
+          ],
+          "generated": true,
+          "step_count": 10,
+          "transfer_count": 9,
+          "truncated": false
+        },
+        "flow": {
+          "modules_touched": [
+            "backend/app/routers/agent_connect.py",
+            "backend/app/config.py",
+            "backend/app/schemas/agent_connect.py"
+          ],
+          "step_count": 10,
+          "truncated": false
+        }
+      },
+      "id": "http-get_agent_connect_hint",
+      "language": "python",
+      "routes": [
+        {
+          "method": "GET",
+          "operation_id": null,
+          "path": "/.well-known/workchord/agent-connect.json"
+        }
+      ]
     },
     {
       "category": "http",
@@ -34418,7 +34474,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 201,
+              "line": 205,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -34459,13 +34515,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 182,
+              "line": 186,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 183,
+              "line": 187,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -34525,7 +34581,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 201,
+              "line": 205,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -34566,13 +34622,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 182,
+              "line": 186,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 183,
+              "line": 187,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -34632,7 +34688,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 201,
+              "line": 205,
               "step": "_current_agent_key",
               "step_index": 4,
               "target": "os.getenv"
@@ -34673,13 +34729,13 @@
           "gaps": [
             {
               "kind": "unresolved_call",
-              "line": 182,
+              "line": 186,
               "step": "_open_db_session",
               "target": "_session_factory"
             },
             {
               "kind": "external_call",
-              "line": 183,
+              "line": 187,
               "step": "_open_db_session",
               "target": "hasattr"
             },
@@ -39799,7 +39855,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 351,
+              "line": 433,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -39807,7 +39863,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 353,
+              "line": 435,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -39815,7 +39871,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 355,
+              "line": 437,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -39823,7 +39879,7 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 357,
+              "line": 440,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -39831,7 +39887,15 @@
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 362,
+              "line": 445,
+              "step": "main",
+              "step_index": 1,
+              "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "output",
+              "line": 450,
               "step": "main",
               "step_index": 1,
               "target": "print"
@@ -39839,7 +39903,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 230,
+              "line": 290,
               "step": "parse_args",
               "step_index": 2,
               "target": "os.getenv"
@@ -39847,15 +39911,7 @@
             {
               "confidence": "unknown",
               "kind": "environment_read",
-              "line": 235,
-              "step": "parse_args",
-              "step_index": 2,
-              "target": "os.getenv"
-            },
-            {
-              "confidence": "unknown",
-              "kind": "environment_read",
-              "line": 240,
+              "line": 295,
               "step": "parse_args",
               "step_index": 2,
               "target": "os.getenv"
@@ -39864,43 +39920,49 @@
           "gaps": [
             {
               "kind": "external_call",
-              "line": 225,
+              "line": 285,
               "step": "parse_args",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 228,
+              "line": 288,
               "step": "parse_args",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 233,
+              "line": 293,
               "step": "parse_args",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 238,
+              "line": 298,
+              "step": "parse_args",
+              "target": "parser.add_argument"
+            },
+            {
+              "kind": "external_call",
+              "line": 300,
+              "step": "parse_args",
+              "target": "os.getenv"
+            },
+            {
+              "kind": "unresolved_call",
+              "line": 303,
               "step": "parse_args",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 243,
+              "line": 304,
               "step": "parse_args",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 244,
-              "step": "parse_args",
-              "target": "parser.add_argument"
-            },
-            {
-              "kind": "unresolved_call",
-              "line": 245,
+              "line": 305,
               "step": "parse_args",
               "target": "parser.add_argument"
             },
@@ -39920,7 +39982,7 @@
           "modules_touched": [
             "scripts/api_keys/create_agent_actor.py"
           ],
-          "step_count": 101,
+          "step_count": 134,
           "truncated": false
         }
       },
@@ -41415,57 +41477,75 @@
           "boundary_effects": [
             {
               "confidence": "unknown",
-              "kind": "environment_read",
-              "line": 2463,
+              "kind": "output",
+              "line": 2487,
               "step": "main",
               "step_index": 1,
-              "target": "os.getenv"
+              "target": "print"
             },
             {
               "confidence": "unknown",
               "kind": "output",
-              "line": 2464,
+              "line": 2490,
               "step": "main",
               "step_index": 1,
               "target": "print"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 215,
+              "step": "_load_stdio_agent_key",
+              "step_index": 5,
+              "target": "os.getenv"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "environment_read",
+              "line": 217,
+              "step": "_load_stdio_agent_key",
+              "step_index": 5,
+              "target": "os.getenv"
+            },
+            {
+              "confidence": "unknown",
+              "kind": "filesystem_read",
+              "line": 43,
+              "step": "read_agent_key_file",
+              "step_index": 8,
+              "target": "location.read_text"
             }
           ],
           "gaps": [
             {
               "kind": "external_call",
-              "line": 2454,
+              "line": 2474,
               "step": "main",
               "target": "argparse.ArgumentParser"
             },
             {
               "kind": "unresolved_call",
-              "line": 2455,
+              "line": 2475,
               "step": "main",
               "target": "parser.add_argument"
             },
             {
               "kind": "unresolved_call",
-              "line": 2461,
+              "line": 2481,
               "step": "main",
               "target": "parser.parse_args"
             },
             {
-              "kind": "external_call",
-              "line": 2465,
-              "step": "main",
-              "target": "SystemExit"
+              "kind": "unresolved_call",
+              "line": 28,
+              "step": "read_agent_key_file",
+              "target": "Path(path).expanduser"
             },
             {
-              "kind": "external_call",
-              "line": 2469,
-              "step": "main",
-              "target": "redirect_stdout"
-            },
-            {
-              "kind": "external_call",
-              "line": 2470,
-              "step": "main",
-              "target": "asyncio.run"
+              "kind": "unresolved_call",
+              "line": 30,
+              "step": "read_agent_key_file",
+              "target": "location.stat"
             },
             {
               "kind": "step_limit",
@@ -41488,12 +41568,13 @@
         "flow": {
           "modules_touched": [
             "backend/app/mcp_server.py",
+            "backend/app/agent_key_file.py",
             "backend/app/database.py",
             "backend/app/services/upgrade_service.py",
             "backend/app/database_config.py",
             "backend/app/config.py"
           ],
-          "step_count": 53,
+          "step_count": 74,
           "truncated": true
         }
       },
@@ -43584,6 +43665,7 @@
         "entities/ActionLeaseRequest.md",
         "entities/ActionMutationInput.md",
         "entities/ActivitySnapshot.md",
+        "entities/ActorResponse.md",
         "entities/AdminAccessErrorMessages.md",
         "entities/AdminAccessGateProps.md",
         "entities/agent_routing_AgentModelBindingCreate.md",
@@ -43629,10 +43711,15 @@
         "entities/AgentCollectionPageMetadata.md",
         "entities/AgentCommandMetadata.md",
         "entities/AgentConflictError.md",
+        "entities/AgentConnectCredential.md",
+        "entities/AgentConnectModel.md",
+        "entities/AgentConnectResponse.md",
+        "entities/AgentConnectRole.md",
         "entities/AgentDependencyContext.md",
         "entities/AgentDiscoveryTriageCreate.md",
         "entities/AgentDiscoveryTriageResponse.md",
         "entities/AgentIdempotencyRecord.md",
+        "entities/AgentKeyFileError.md",
         "entities/AgentModelBindingFields.md",
         "entities/AgentModelBindingListParams.md",
         "entities/AgentModelBindingResponse.md",
@@ -45256,6 +45343,7 @@
         "flows/http-formalize_task.md",
         "flows/http-formalize_task_draft.md",
         "flows/http-get_agent_capabilities.md",
+        "flows/http-get_agent_connect_hint.md",
         "flows/http-get_agent_model_binding.md",
         "flows/http-get_agent_model_catalog_entry.md",
         "flows/http-get_agent_pipeline.md",
@@ -45734,6 +45822,7 @@
         "modules/AdminAccessPanel.test.md",
         "modules/agent_catalog.md",
         "modules/agent_contract.md",
+        "modules/agent_key_file.md",
         "modules/agent_model_catalog_service.md",
         "modules/agent_planning_service.md",
         "modules/agent_preflight.md",
@@ -46142,6 +46231,7 @@
         "modules/routeModules.md",
         "modules/routers___init__.md",
         "modules/routers_agent.md",
+        "modules/routers_agent_connect.md",
         "modules/routers_agent_planning.md",
         "modules/routers_capacity.md",
         "modules/routers_discussion.md",
@@ -46187,6 +46277,7 @@
         "modules/schema.md",
         "modules/schemas___init__.md",
         "modules/schemas_agent.md",
+        "modules/schemas_agent_connect.md",
         "modules/schemas_agent_planning.md",
         "modules/schemas_autonomy.md",
         "modules/schemas_calendar.md",
@@ -46353,6 +46444,7 @@
         "modules/templateService.md",
         "modules/test_acceptance_artifacts.md",
         "modules/test_agent_blocker_reason.md",
+        "modules/test_agent_key_delivery.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -46390,6 +46482,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
+        "modules/test_dependency_date_cascade.md",
         "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
@@ -46863,6 +46956,18 @@
       "role": "semantic",
       "source_path": "backend/app/runtime_telemetry.py",
       "title": "ActivitySnapshot"
+    },
+    {
+      "canonical_path": "entities/ActorResponse.md",
+      "id": "ActorResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/ActorResponse",
+      "outgoing_internal_links": [
+        "modules/test_agent_key_delivery.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_key_delivery.py",
+      "title": "_ActorResponse"
     },
     {
       "canonical_path": "entities/AdminAccessErrorMessages.md",
@@ -47519,6 +47624,57 @@
       "title": "AgentConflictError"
     },
     {
+      "canonical_path": "entities/AgentConnectCredential.md",
+      "id": "AgentConnectCredential",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AgentConnectCredential",
+      "outgoing_internal_links": [
+        "modules/routers_agent_connect.md",
+        "modules/schemas_agent_connect.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent_connect.py",
+      "title": "AgentConnectCredential"
+    },
+    {
+      "canonical_path": "entities/AgentConnectModel.md",
+      "id": "AgentConnectModel",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AgentConnectModel",
+      "outgoing_internal_links": [
+        "modules/schemas_agent_connect.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent_connect.py",
+      "title": "AgentConnectModel"
+    },
+    {
+      "canonical_path": "entities/AgentConnectResponse.md",
+      "id": "AgentConnectResponse",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AgentConnectResponse",
+      "outgoing_internal_links": [
+        "modules/routers_agent_connect.md",
+        "modules/schemas_agent_connect.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent_connect.py",
+      "title": "AgentConnectResponse"
+    },
+    {
+      "canonical_path": "entities/AgentConnectRole.md",
+      "id": "AgentConnectRole",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AgentConnectRole",
+      "outgoing_internal_links": [
+        "modules/routers_agent_connect.md",
+        "modules/schemas_agent_connect.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent_connect.py",
+      "title": "AgentConnectRole"
+    },
+    {
       "canonical_path": "entities/AgentDependencyContext.md",
       "id": "AgentDependencyContext",
       "kind": "entities",
@@ -47582,6 +47738,20 @@
       "role": "semantic",
       "source_path": "backend/app/models/agent.py",
       "title": "AgentIdempotencyRecord"
+    },
+    {
+      "canonical_path": "entities/AgentKeyFileError.md",
+      "id": "AgentKeyFileError",
+      "kind": "entities",
+      "mcp_uri": "llm-wiki://entities/AgentKeyFileError",
+      "outgoing_internal_links": [
+        "modules/agent_key_file.md",
+        "modules/mcp_server.md",
+        "modules/test_agent_key_delivery.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/agent_key_file.py",
+      "title": "AgentKeyFileError"
     },
     {
       "canonical_path": "entities/AgentModelBindingFields.md",
@@ -48322,9 +48492,9 @@
       "outgoing_internal_links": [
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
-        "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md"
+        "modules/routers_agent.md",
+        "modules/routers_agent_connect.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
@@ -61683,9 +61853,9 @@
       "outgoing_internal_links": [
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
-        "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
-        "modules/routers_agent.md"
+        "modules/routers_agent.md",
+        "modules/routers_agent_connect.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
@@ -61716,6 +61886,7 @@
         "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/routers_agent_connect.md",
         "modules/test_agent_team_catalog.md"
       ],
       "role": "semantic",
@@ -61771,7 +61942,8 @@
       "outgoing_internal_links": [
         "modules/agent_skill_bundle_service.md",
         "modules/agent_skill_bundles.md",
-        "modules/mcp_agent_tools.md"
+        "modules/mcp_agent_tools.md",
+        "modules/routers_agent_connect.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/services/agent_skill_bundle_service.py",
@@ -68737,6 +68909,21 @@
       "title": "agent_contract Module"
     },
     {
+      "canonical_path": "modules/agent_key_file.md",
+      "id": "agent_key_file",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/agent_key_file",
+      "outgoing_internal_links": [
+        "entities/AgentKeyFileError.md",
+        "modules/agent_key_file.md",
+        "modules/mcp_server.md",
+        "modules/test_agent_key_delivery.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/agent_key_file.py",
+      "title": "agent_key_file Module"
+    },
+    {
       "canonical_path": "modules/agent_model_catalog_service.md",
       "id": "agent_model_catalog_service",
       "kind": "modules",
@@ -69008,6 +69195,7 @@
         "modules/agent_team_setup_service.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/routers_agent_connect.md",
         "modules/test_agent_team_catalog.md"
       ],
       "role": "semantic",
@@ -69035,6 +69223,8 @@
         "modules/conftest.md",
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
+        "modules/routers_agent_connect.md",
+        "modules/test_agent_key_delivery.md",
         "modules/test_agent_routing_rollout.md",
         "modules/test_agent_team_catalog.md"
       ],
@@ -75625,6 +75815,24 @@
       "title": "agent Module"
     },
     {
+      "canonical_path": "modules/routers_agent_connect.md",
+      "id": "routers_agent_connect",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/routers_agent_connect",
+      "outgoing_internal_links": [
+        "modules/agent_skill_bundle.md",
+        "modules/agent_skill_bundle_service.md",
+        "modules/app_main.md",
+        "modules/config.md",
+        "modules/routers_agent_connect.md",
+        "modules/schemas_agent_connect.md",
+        "modules/test_agent_key_delivery.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/routers/agent_connect.py",
+      "title": "agent_connect Module"
+    },
+    {
       "canonical_path": "modules/routers_agent_planning.md",
       "id": "routers_agent_planning",
       "kind": "modules",
@@ -76464,6 +76672,23 @@
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
       "title": "agent Module"
+    },
+    {
+      "canonical_path": "modules/schemas_agent_connect.md",
+      "id": "schemas_agent_connect",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/schemas_agent_connect",
+      "outgoing_internal_links": [
+        "entities/AgentConnectCredential.md",
+        "entities/AgentConnectModel.md",
+        "entities/AgentConnectResponse.md",
+        "entities/AgentConnectRole.md",
+        "modules/routers_agent_connect.md",
+        "modules/schemas_agent_connect.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/app/schemas/agent_connect.py",
+      "title": "agent_connect Module"
     },
     {
       "canonical_path": "modules/schemas_agent_planning.md",
@@ -79438,6 +79663,24 @@
       "title": "test_agent_blocker_reason Module"
     },
     {
+      "canonical_path": "modules/test_agent_key_delivery.md",
+      "id": "test_agent_key_delivery",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_agent_key_delivery",
+      "outgoing_internal_links": [
+        "entities/ActorResponse.md",
+        "modules/agent_key_file.md",
+        "modules/agent_skill_bundle_service.md",
+        "modules/app_main.md",
+        "modules/mcp_server.md",
+        "modules/routers_agent_connect.md",
+        "modules/test_agent_key_delivery.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_agent_key_delivery.py",
+      "title": "test_agent_key_delivery Module"
+    },
+    {
       "canonical_path": "modules/test_agent_model_catalog_api.md",
       "id": "test_agent_model_catalog_api",
       "kind": "modules",
@@ -80012,6 +80255,24 @@
       "role": "semantic",
       "source_path": "backend/tests/test_delivery_scenarios.py",
       "title": "test_delivery_scenarios Module"
+    },
+    {
+      "canonical_path": "modules/test_dependency_date_cascade.md",
+      "id": "test_dependency_date_cascade",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_dependency_date_cascade",
+      "outgoing_internal_links": [
+        "modules/app_main.md",
+        "modules/models_agent.md",
+        "modules/models_task.md",
+        "modules/schemas_task.md",
+        "modules/task_service.md",
+        "modules/test_delivery_scenarios.md",
+        "modules/test_dependency_date_cascade.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_dependency_date_cascade.py",
+      "title": "test_dependency_date_cascade Module"
     },
     {
       "canonical_path": "modules/test_deployment_configuration.md",
@@ -87502,6 +87763,20 @@
       "role": "mixed",
       "source_path": "backend/app/routers/agent.py",
       "title": "get_agent_capabilities"
+    },
+    {
+      "canonical_path": "flows/http-get_agent_connect_hint.md",
+      "id": "http-get_agent_connect_hint",
+      "kind": "flows",
+      "mcp_uri": "llm-wiki://flows/http-get_agent_connect_hint",
+      "outgoing_internal_links": [
+        "modules/config.md",
+        "modules/routers_agent_connect.md",
+        "modules/schemas_agent_connect.md"
+      ],
+      "role": "mixed",
+      "source_path": "backend/app/routers/agent_connect.py",
+      "title": "get_agent_connect_hint"
     },
     {
       "canonical_path": "flows/http-get_agent_model_binding.md",
@@ -95852,6 +96127,7 @@
       "kind": "flows",
       "mcp_uri": "llm-wiki://flows/process-mcp_server",
       "outgoing_internal_links": [
+        "modules/agent_key_file.md",
         "modules/agent_model_catalog_service.md",
         "modules/agent_routing_service.md",
         "modules/agent_service.md",
@@ -96371,6 +96647,7 @@
         "modules/AdminAccessPanel.test.md",
         "modules/agent_catalog.md",
         "modules/agent_contract.md",
+        "modules/agent_key_file.md",
         "modules/agent_model_catalog_service.md",
         "modules/agent_planning_service.md",
         "modules/agent_preflight.md",
@@ -96779,6 +97056,7 @@
         "modules/routeModules.md",
         "modules/routers___init__.md",
         "modules/routers_agent.md",
+        "modules/routers_agent_connect.md",
         "modules/routers_agent_planning.md",
         "modules/routers_capacity.md",
         "modules/routers_discussion.md",
@@ -96824,6 +97102,7 @@
         "modules/schema.md",
         "modules/schemas___init__.md",
         "modules/schemas_agent.md",
+        "modules/schemas_agent_connect.md",
         "modules/schemas_agent_planning.md",
         "modules/schemas_autonomy.md",
         "modules/schemas_calendar.md",
@@ -96990,6 +97269,7 @@
         "modules/templateService.md",
         "modules/test_acceptance_artifacts.md",
         "modules/test_agent_blocker_reason.md",
+        "modules/test_agent_key_delivery.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -97027,6 +97307,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
+        "modules/test_dependency_date_cascade.md",
         "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
@@ -97213,6 +97494,7 @@
         "modules/AdminAccessPanel.test.md",
         "modules/agent_catalog.md",
         "modules/agent_contract.md",
+        "modules/agent_key_file.md",
         "modules/agent_model_catalog_service.md",
         "modules/agent_planning_service.md",
         "modules/agent_preflight.md",
@@ -97621,6 +97903,7 @@
         "modules/routeModules.md",
         "modules/routers___init__.md",
         "modules/routers_agent.md",
+        "modules/routers_agent_connect.md",
         "modules/routers_agent_planning.md",
         "modules/routers_capacity.md",
         "modules/routers_discussion.md",
@@ -97666,6 +97949,7 @@
         "modules/schema.md",
         "modules/schemas___init__.md",
         "modules/schemas_agent.md",
+        "modules/schemas_agent_connect.md",
         "modules/schemas_agent_planning.md",
         "modules/schemas_autonomy.md",
         "modules/schemas_calendar.md",
@@ -97832,6 +98116,7 @@
         "modules/templateService.md",
         "modules/test_acceptance_artifacts.md",
         "modules/test_agent_blocker_reason.md",
+        "modules/test_agent_key_delivery.md",
         "modules/test_agent_model_catalog_api.md",
         "modules/test_agent_routing_contract.md",
         "modules/test_agent_routing_data.md",
@@ -97869,6 +98154,7 @@
         "modules/test_delivery_dependencies.md",
         "modules/test_delivery_metrics.md",
         "modules/test_delivery_scenarios.md",
+        "modules/test_dependency_date_cascade.md",
         "modules/test_deployment_configuration.md",
         "modules/test_deployment_topology.md",
         "modules/test_documentation_boundary.md",
@@ -98026,5 +98312,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:0e0b92fba5fefc5bfe030eaa63d50fe76269812e9eac478e78db9a5062bc9a9c"
+  "source_hash": "sha256:2ed64a7bc7604e608c7e4ddd2c9d3d57983564e28a20b9cea729caac5703313d"
 }

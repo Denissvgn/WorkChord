@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1563 | [Open section](#entities) |
-| Modules | 831 | [Open section](#modules) |
+| Entities | 1569 | [Open section](#entities) |
+| Modules | 836 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 557 | [Open section](#entry-point-flows) |
+| Entry-point flows | 558 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -27,6 +27,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [ActionLeaseRequest](entities/ActionLeaseRequest.md)
 - [ActionMutationInput](entities/ActionMutationInput.md)
 - [ActivitySnapshot](entities/ActivitySnapshot.md)
+- [ActorResponse](entities/ActorResponse.md)
 - [AdminAccessErrorMessages](entities/AdminAccessErrorMessages.md)
 - [AdminAccessGateProps](entities/AdminAccessGateProps.md)
 - [AgentActorCreate](entities/AgentActorCreate.md)
@@ -43,10 +44,15 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentCollectionPageMetadata](entities/AgentCollectionPageMetadata.md)
 - [AgentCommandMetadata](entities/AgentCommandMetadata.md)
 - [AgentConflictError](entities/AgentConflictError.md)
+- [AgentConnectCredential](entities/AgentConnectCredential.md)
+- [AgentConnectModel](entities/AgentConnectModel.md)
+- [AgentConnectResponse](entities/AgentConnectResponse.md)
+- [AgentConnectRole](entities/AgentConnectRole.md)
 - [AgentDependencyContext](entities/AgentDependencyContext.md)
 - [AgentDiscoveryTriageCreate](entities/AgentDiscoveryTriageCreate.md)
 - [AgentDiscoveryTriageResponse](entities/AgentDiscoveryTriageResponse.md)
 - [AgentIdempotencyRecord](entities/AgentIdempotencyRecord.md)
+- [AgentKeyFileError](entities/AgentKeyFileError.md)
 - [AgentModelBindingFields](entities/AgentModelBindingFields.md)
 - [AgentModelBindingListParams](entities/AgentModelBindingListParams.md)
 - [AgentModelBindingResponse](entities/AgentModelBindingResponse.md)
@@ -1860,6 +1866,7 @@ Retained history; these declarations are absent from the selected source invento
 - [agentTeamSetup_masters.test](modules/agentTeamSetup_masters.test.md) - `frontend/src/features/agentTeamSetup/masters.test.ts`
 - [agent_catalog](modules/agent_catalog.md) - Agent capability, profile, and operator-owned model catalog API.
 - [agent_contract](modules/agent_contract.md) - Shared capability handshake contract for REST and MCP projections.
+- [agent_key_file](modules/agent_key_file.md) - Read one agent API key from an owner-only file.
 - [agent_model_catalog_service](modules/agent_model_catalog_service.md) - Operator-owned model catalog, binding administration, and audit receipts.
 - [agent_planning_service](modules/agent_planning_service.md) - Safe PM setup commands for authenticated agent actors.
 - [agent_preflight](modules/agent_preflight.md) - Fail-closed local diagnostic for the autonomous PostgreSQL start gate.
@@ -2115,6 +2122,7 @@ Retained history; these declarations are absent from the selected source invento
 - [routeModules](modules/routeModules.md) - `frontend/src/navigation/routeModules.ts`
 - [routers___init__](modules/routers___init__.md) - Routers package.
 - [routers_agent](modules/routers_agent.md) - Agent integration API router.
+- [routers_agent_connect](modules/routers_agent_connect.md) - Public, secret-free hint telling an agent how to connect and obtain a key.
 - [routers_agent_planning](modules/routers_agent_planning.md) - Agent-authenticated PM setup and schedule-control commands.
 - [routers_capacity](modules/routers_capacity.md) - Authenticated person availability and bounded capacity views.
 - [routers_discussion](modules/routers_discussion.md) - Task discussion and a personal inbox, separate from execution evidence.
@@ -2150,6 +2158,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schema](modules/schema.md) - Stable schema snapshots for the SQLite/PostgreSQL migration matrix.
 - [schemas___init__](modules/schemas___init__.md) - Schemas package.
 - [schemas_agent](modules/schemas_agent.md) - Agent integration API schemas.
+- [schemas_agent_connect](modules/schemas_agent_connect.md) - Secret-free connection hint for agents that do not yet hold a key.
 - [schemas_agent_planning](modules/schemas_agent_planning.md) - Schemas for idempotent, agent-authenticated PM setup commands.
 - [schemas_autonomy](modules/schemas_autonomy.md) - Bounded schemas for autonomous work-package and verifier lifecycles.
 - [schemas_calendar](modules/schemas_calendar.md) - Calendar schemas.
@@ -2253,6 +2262,7 @@ Retained history; these declarations are absent from the selected source invento
 - [templates](modules/templates.md) - Template API router.
 - [test_acceptance_artifacts](modules/test_acceptance_artifacts.md) - Public exports retain exact signed bytes and reject secret or failed evidence.
 - [test_agent_blocker_reason](modules/test_agent_blocker_reason.md) - An agent-reported blocker becomes the task's human-readable Blocked reason.
+- [test_agent_key_delivery](modules/test_agent_key_delivery.md) - An operator can hand an agent its key without chat or an inherited shell.
 - [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) - Focused Wave 2 model administration and actor-roster qualification.
 - [test_agent_routing_contract](modules/test_agent_routing_contract.md) - Focused contract tests for model-aware routing vocabulary and compatibility.
 - [test_agent_routing_data](modules/test_agent_routing_data.md) - Focused model and schema coverage for MAR-DATA-001 and MAR-DATA-002.
@@ -2290,6 +2300,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_delivery_dependencies](modules/test_delivery_dependencies.md) - Cross-project readiness, cycle prevention and retained acceptance history.
 - [test_delivery_metrics](modules/test_delivery_metrics.md) - Recorded workflow instants, durable scope and missing history stay distinct.
 - [test_delivery_scenarios](modules/test_delivery_scenarios.md) - Delivery contracts and strict reproductions of unresolved behavior.
+- [test_dependency_date_cascade](modules/test_dependency_date_cascade.md) - A late start moves each planned dependent once, however many paths reach it.
 - [test_deployment_configuration](modules/test_deployment_configuration.md) - Deployment policy propagation and bounded acceptance artifact retention.
 - [test_deployment_topology](modules/test_deployment_topology.md) - Wave 3 deployment, security, backup, and reset contracts.
 - [test_documentation_boundary](modules/test_documentation_boundary.md) - A concise entrypoint still binds release evidence to authoritative operator policy.
@@ -2745,6 +2756,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-formalize_task](flows/http-formalize_task.md) - entry: `formalize_task`
 - [http-formalize_task_draft](flows/http-formalize_task_draft.md) - entry: `formalize_task_draft`
 - [http-get_agent_capabilities](flows/http-get_agent_capabilities.md) - entry: `get_agent_capabilities`
+- [http-get_agent_connect_hint](flows/http-get_agent_connect_hint.md) - entry: `get_agent_connect_hint`
 - [http-get_agent_model_binding](flows/http-get_agent_model_binding.md) - entry: `get_agent_model_binding`
 - [http-get_agent_model_catalog_entry](flows/http-get_agent_model_catalog_entry.md) - entry: `get_agent_model_catalog_entry`
 - [http-get_agent_pipeline](flows/http-get_agent_pipeline.md) - entry: `get_agent_pipeline`

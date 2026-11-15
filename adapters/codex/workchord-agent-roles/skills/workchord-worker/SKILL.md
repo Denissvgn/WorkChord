@@ -28,7 +28,12 @@ sections below give the detailed contract.
    the restricted acknowledgement in
    [identity-and-my-work.md](references/identity-and-my-work.md) before normal
    authentication. Never print or copy the separately delivered credential.
-2. Read [identity-and-my-work.md](references/identity-and-my-work.md).
+2. Read [identity-and-my-work.md](references/identity-and-my-work.md), and
+   find your own agent key in the order given in
+   [Find Your Agent Key](references/api-and-mcp.md#find-your-agent-key). With
+   no key, stop and send the operator the message in
+   [When No Key Is Present](references/api-and-mcp.md#when-no-key-is-present);
+   never ask for a key in chat.
 3. Read actor identity, scopes, server/API contract, work policy, concurrency
    limit, and feature keys from the live capability response when available.
 4. Use assigned mode only when the server advertises every feature below.

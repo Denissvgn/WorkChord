@@ -8,6 +8,7 @@ import json
 import os
 import shlex
 import sys
+from pathlib import Path
 from typing import Any
 from urllib import error, request
 
@@ -42,6 +43,12 @@ ROLE_SCOPES = {
     ],
 }
 DEFAULT_SCOPES = ROLE_SCOPES["worker"]
+# The role skill each actor role runs; it names the default key file.
+ROLE_SKILLS = {
+    "pm": "workchord-pm",
+    "verifier": "workchord-reviewer",
+    "worker": "workchord-worker",
+}
 ALLOWED_SCOPES = [
     "admin",
     "tasks:read",
@@ -63,6 +70,41 @@ ALLOWED_SCOPES = [
     "recovery:read",
     "recovery:write",
 ]
+
+
+def default_key_file(role: str) -> Path:
+    """Return the per-role key file the role skills look for when no variable is set."""
+    config_home = os.getenv("XDG_CONFIG_HOME") or str(Path.home() / ".config")
+    return Path(config_home) / "workchord" / f"{ROLE_SKILLS[role]}.key"
+
+
+def check_key_file_target(path: Path) -> Path:
+    """Fail before the actor exists when the key cannot be stored safely at ``path``."""
+    target = path.expanduser().absolute()
+    if target.exists() or target.is_symlink():
+        raise SystemExit(f"Key file {target} already exists; choose another path or remove it first")
+    for parent in target.parents:
+        if (parent / ".git").exists():
+            raise SystemExit(
+                f"Key file {target} is inside the Git work tree at {parent}; "
+                "keep agent keys outside every repository"
+            )
+    return target
+
+
+def write_key_file(path: Path, api_key: str) -> None:
+    """Create ``path`` readable only by its owner and write the key on one line."""
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        handle.write(api_key + "\n")
+
+
+def without_key(data: dict[str, Any], key_file: Path) -> dict[str, Any]:
+    """Replace the one-time key with the file that now holds it."""
+    result = {name: value for name, value in data.items() if name != "api_key"}
+    result["api_key_file"] = str(key_file)
+    return result
 
 
 def normalize_base_url(value: str) -> str:
@@ -173,7 +215,9 @@ def create_actor(
 def render_env(data: dict[str, Any], *, comments: bool) -> str:
     """Render dotenv-style output for the one-time actor key."""
     lines: list[str] = []
-    if comments:
+    if comments and "api_key_file" in data:
+        lines.append("# The key file holds the one-time agent key; these lines hold no secret.")
+    elif comments:
         lines.extend([
             "# Store this one-time agent key securely.",
             "# MCP stdio clients should use MCP_AGENT_API_KEY.",
@@ -181,9 +225,17 @@ def render_env(data: dict[str, Any], *, comments: bool) -> str:
     lines.extend([
         f"AGENT_ACTOR_ID={data['id']}",
         f"AGENT_ACTOR_NAME={data['name']}",
-        f"AGENT_API_KEY={data['api_key']}",
-        f"MCP_AGENT_API_KEY={data['api_key']}",
     ])
+    if "api_key_file" in data:
+        lines.extend([
+            f"AGENT_API_KEY_FILE={data['api_key_file']}",
+            f"MCP_AGENT_API_KEY_FILE={data['api_key_file']}",
+        ])
+    else:
+        lines.extend([
+            f"AGENT_API_KEY={data['api_key']}",
+            f"MCP_AGENT_API_KEY={data['api_key']}",
+        ])
     if data.get("model_binding_id") is not None:
         lines.extend(
             [
@@ -204,9 +256,17 @@ def render_shell(data: dict[str, Any], *, comments: bool) -> str:
     lines.extend([
         f"export AGENT_ACTOR_ID={shlex.quote(str(data['id']))}",
         f"export AGENT_ACTOR_NAME={shlex.quote(str(data['name']))}",
-        f"export AGENT_API_KEY={shlex.quote(str(data['api_key']))}",
-        f"export MCP_AGENT_API_KEY={shlex.quote(str(data['api_key']))}",
     ])
+    if "api_key_file" in data:
+        lines.extend([
+            f"export AGENT_API_KEY_FILE={shlex.quote(str(data['api_key_file']))}",
+            f"export MCP_AGENT_API_KEY_FILE={shlex.quote(str(data['api_key_file']))}",
+        ])
+    else:
+        lines.extend([
+            f"export AGENT_API_KEY={shlex.quote(str(data['api_key']))}",
+            f"export MCP_AGENT_API_KEY={shlex.quote(str(data['api_key']))}",
+        ])
     if data.get("model_binding_id") is not None:
         lines.extend(
             [
@@ -302,6 +362,18 @@ def parse_args() -> argparse.Namespace:
         help="Output format. Defaults to dotenv env lines.",
     )
     parser.add_argument("--no-comments", action="store_true", help="Suppress explanatory comments.")
+    parser.add_argument(
+        "--key-file",
+        nargs="?",
+        const="",
+        metavar="PATH",
+        help=(
+            "Write the one-time key to PATH (mode 0600, outside any repository) and print "
+            "the file path instead of the key. Without PATH, use the role's default, "
+            "e.g. ~/.config/workchord/workchord-pm.key, which the role skills read "
+            "when no key variable is set."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -313,6 +385,12 @@ def main() -> None:
     name = args.name.strip()
     if not name:
         raise SystemExit("Actor name cannot be blank")
+
+    key_file: Path | None = None
+    if args.key_file is not None:
+        key_file = check_key_file_target(
+            Path(args.key_file) if args.key_file else default_key_file(args.role)
+        )
 
     scopes = normalize_scopes(args.scope or ROLE_SCOPES[args.role], args.admin)
     model_catalog_key = (
@@ -347,6 +425,10 @@ def main() -> None:
         timeout=args.timeout,
     )
 
+    if key_file is not None:
+        write_key_file(key_file, data["api_key"])
+        data = without_key(data, key_file)
+
     if args.format == "json":
         print(json.dumps(data, indent=2, sort_keys=True))
     elif args.format == "shell":
@@ -354,10 +436,16 @@ def main() -> None:
     else:
         print(render_env(data, comments=not args.no_comments))
 
-    print(
-        "The api_key is returned once; store it securely before closing this terminal.",
-        file=sys.stderr,
-    )
+    if key_file is not None:
+        print(
+            f"The one-time key is stored in {key_file} (owner read/write only).",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            "The api_key is returned once; store it securely before closing this terminal.",
+            file=sys.stderr,
+        )
     if data.get("model_binding_id") is None:
         print(
             "No model binding was configured. Choose a secret-free key from "

@@ -21,33 +21,37 @@ Schemas for immutable, distributable agent role-skill bundles.
 flowchart LR
     n0["backend/app/mcp_agent_tools.py"]
     n1["backend/app/routers/agent.py"]
-    n2["backend/app/routers/agent_skill_bundles.py"]
-    n3["backend/app/schemas/agent_skill_bundle.py"]
-    n4["backend/app/services/agent_skill_bundle_service.py"]
-    n5["backend/app/services/agent_team_setup_service.py"]
-    n6["backend/tests/test_agent_team_catalog.py"]
-    n0 --> n3
+    n2["backend/app/routers/agent_connect.py"]
+    n3["backend/app/routers/agent_skill_bundles.py"]
+    n4["backend/app/schemas/agent_skill_bundle.py"]
+    n5["backend/app/services/agent_skill_bundle_service.py"]
+    n6["backend/app/services/agent_team_setup_service.py"]
+    n7["backend/tests/test_agent_team_catalog.py"]
     n0 --> n4
     n0 --> n5
-    n1 --> n2
+    n0 --> n6
     n1 --> n3
     n1 --> n4
     n1 --> n5
-    n2 --> n3
+    n1 --> n6
     n2 --> n4
-    n4 --> n3
-    n5 --> n3
+    n2 --> n5
+    n3 --> n4
+    n3 --> n5
     n5 --> n4
-    n6 --> n3
     n6 --> n4
     n6 --> n5
+    n7 --> n4
+    n7 --> n5
+    n7 --> n6
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/routers_agent.md"
-    click n2 "../modules/agent_skill_bundles.md"
-    click n3 "../modules/agent_skill_bundle.md"
-    click n4 "../modules/agent_skill_bundle_service.md"
-    click n5 "../modules/agent_team_setup_service.md"
-    click n6 "../modules/test_agent_team_catalog.md"
+    click n2 "../modules/routers_agent_connect.md"
+    click n3 "../modules/agent_skill_bundles.md"
+    click n4 "../modules/agent_skill_bundle.md"
+    click n5 "../modules/agent_skill_bundle_service.md"
+    click n6 "../modules/agent_team_setup_service.md"
+    click n7 "../modules/test_agent_team_catalog.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +60,7 @@ flowchart LR
 |---|---|
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [routers_agent](../modules/routers_agent.md) |
+| Inbound | [routers_agent_connect](../modules/routers_agent_connect.md) |
 | Inbound | [agent_skill_bundles](../modules/agent_skill_bundles.md) |
 | Inbound | [agent_skill_bundle_service](../modules/agent_skill_bundle_service.md) |
 | Inbound | [agent_team_setup_service](../modules/agent_team_setup_service.md) |

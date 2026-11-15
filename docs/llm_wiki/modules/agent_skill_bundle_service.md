@@ -39,50 +39,59 @@ flowchart LR
     n0["backend/app/config.py"]
     n1["backend/app/mcp_agent_tools.py"]
     n2["backend/app/routers/agent.py"]
-    n3["backend/app/routers/agent_skill_bundles.py"]
-    n4["backend/app/schemas/agent_skill_bundle.py"]
-    n5["backend/app/services/agent_skill_bundle_service.py"]
-    n6["backend/app/services/agent_team_setup_service.py"]
-    n7["backend/tests/conftest.py"]
-    n8["backend/tests/test_agent_routing_rollout.py"]
-    n9["backend/tests/test_agent_team_catalog.py"]
+    n3["backend/app/routers/agent_connect.py"]
+    n4["backend/app/routers/agent_skill_bundles.py"]
+    n5["backend/app/schemas/agent_skill_bundle.py"]
+    n6["backend/app/services/agent_skill_bundle_service.py"]
+    n7["backend/app/services/agent_team_setup_service.py"]
+    n8["backend/tests/conftest.py"]
+    n9["backend/tests/test_agent_key_delivery.py"]
+    n10["backend/tests/test_agent_routing_rollout.py"]
+    n11["backend/tests/test_agent_team_catalog.py"]
     n1 --> n0
-    n1 --> n4
     n1 --> n5
     n1 --> n6
+    n1 --> n7
     n2 --> n0
-    n2 --> n3
     n2 --> n4
     n2 --> n5
     n2 --> n6
+    n2 --> n7
     n3 --> n0
-    n3 --> n4
     n3 --> n5
-    n5 --> n0
-    n5 --> n4
+    n3 --> n6
+    n4 --> n0
+    n4 --> n5
+    n4 --> n6
     n6 --> n0
-    n6 --> n4
     n6 --> n5
     n7 --> n0
     n7 --> n5
+    n7 --> n6
     n8 --> n0
-    n8 --> n1
-    n8 --> n2
-    n8 --> n5
-    n9 --> n0
-    n9 --> n4
-    n9 --> n5
+    n8 --> n6
+    n9 --> n3
     n9 --> n6
+    n10 --> n0
+    n10 --> n1
+    n10 --> n2
+    n10 --> n6
+    n11 --> n0
+    n11 --> n5
+    n11 --> n6
+    n11 --> n7
     click n0 "../modules/config.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_agent.md"
-    click n3 "../modules/agent_skill_bundles.md"
-    click n4 "../modules/agent_skill_bundle.md"
-    click n5 "../modules/agent_skill_bundle_service.md"
-    click n6 "../modules/agent_team_setup_service.md"
-    click n7 "../modules/conftest.md"
-    click n8 "../modules/test_agent_routing_rollout.md"
-    click n9 "../modules/test_agent_team_catalog.md"
+    click n3 "../modules/routers_agent_connect.md"
+    click n4 "../modules/agent_skill_bundles.md"
+    click n5 "../modules/agent_skill_bundle.md"
+    click n6 "../modules/agent_skill_bundle_service.md"
+    click n7 "../modules/agent_team_setup_service.md"
+    click n8 "../modules/conftest.md"
+    click n9 "../modules/test_agent_key_delivery.md"
+    click n10 "../modules/test_agent_routing_rollout.md"
+    click n11 "../modules/test_agent_team_catalog.md"
 ```
 
 ### Internal neighbors
@@ -91,9 +100,11 @@ flowchart LR
 |---|---|
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [routers_agent](../modules/routers_agent.md) |
+| Inbound | [routers_agent_connect](../modules/routers_agent_connect.md) |
 | Inbound | [agent_skill_bundles](../modules/agent_skill_bundles.md) |
 | Inbound | [agent_team_setup_service](../modules/agent_team_setup_service.md) |
 | Inbound | [conftest](../modules/conftest.md) |
+| Inbound | [test_agent_key_delivery](../modules/test_agent_key_delivery.md) |
 | Inbound | [test_agent_routing_rollout](../modules/test_agent_routing_rollout.md) |
 | Inbound | [test_agent_team_catalog](../modules/test_agent_team_catalog.md) |
 | Outbound | [config](../modules/config.md) |

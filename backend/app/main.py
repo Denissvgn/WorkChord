@@ -22,7 +22,7 @@ from app.http_authority import enforce_http_authority
 from app.routers import identity, task_domain, capacity, delivery_dependencies, discussion, time_entries
 from app.runtime_telemetry import metrics
 from app.mutation_versions import MissingMutationRevision
-from app.routers import agent, agent_catalog, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
+from app.routers import agent, agent_catalog, agent_connect, agent_planning, agent_skill_bundles, calendars, iterations, team, tasks, projects, gantt, github, intake, llm, export, snapshots, plan_shares, session, scheduling_rules, email_settings, triage, templates, labels, saved_views, request_sources, outbound_webhooks, system_settings
 from app.mcp_server import mcp, mount_mcp_http
 
 settings = get_settings()
@@ -235,6 +235,7 @@ app.include_router(
     agent_skill_bundles.well_known_router,
     tags=["Agent Skill Bundles"],
 )
+app.include_router(agent_connect.router, tags=["Agent Connect"])
 app.include_router(triage.router, prefix=settings.api_prefix, tags=["Triage"])
 app.include_router(templates.router, prefix=settings.api_prefix, tags=["Templates"])
 app.include_router(labels.router, prefix=settings.api_prefix, tags=["Labels"])

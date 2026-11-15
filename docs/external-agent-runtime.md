@@ -59,6 +59,39 @@ runtimes normally connect to the web instance's MCP endpoint or REST API.
 Keep credentials and transient claim/fence receipts out of task text, prompts,
 shared logs and artifacts.
 
+## Give an agent its key
+
+A desktop or sandboxed agent usually does not inherit the environment of the
+terminal you exported a key in. Give it the key through a source it reads on
+its own, never by pasting the key into chat. The role skills look in this order
+and use the first one present:
+
+1. The MCP client's own configuration, as a bearer token for `/api/mcp`.
+2. `AGENT_API_KEY` (REST) or `MCP_AGENT_API_KEY` (stdio MCP).
+3. The file named by `AGENT_API_KEY_FILE` or `MCP_AGENT_API_KEY_FILE`.
+4. The default key file `~/.config/workchord/<role-skill>.key` (under
+   `$XDG_CONFIG_HOME` when it is set), for example
+   `~/.config/workchord/workchord-pm.key`.
+
+The provisioning script can write the one-time key straight to that file:
+
+```bash
+python3 scripts/api_keys/create_agent_actor.py --role pm --name desk-pm --key-file
+```
+
+It creates the file readable only by you, refuses to overwrite an existing file
+or to write inside a Git work tree, and prints the file path instead of the key.
+Pass `--key-file PATH` to choose another location. Stdio MCP accepts the same
+file through `MCP_AGENT_API_KEY_FILE`; a group- or world-readable key file is
+refused.
+
+An agent without a key can read `GET /.well-known/workchord/agent-connect.json`.
+It needs no credentials and returns the auth mode, the capabilities and MCP
+paths, where keys are read from, and the actor role and scopes for each role
+skill. It never contains a key.
+A server built before this route may answer `200` with the web app's HTML page;
+only a JSON body with `schema_version` `workchord-agent-connect/v1` is the hint.
+
 ## Run MCP without a person to approve calls
 
 Every WorkChord MCP tool declares how it behaves, and a client can decide from

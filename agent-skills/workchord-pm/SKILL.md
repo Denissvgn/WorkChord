@@ -22,7 +22,7 @@ The phases below give the detailed contract for each step. Use the names in
 
 ## Start Safely
 
-1. Identify the WorkChord base URL or connected MCP server without exposing credentials.
+1. Identify the WorkChord base URL or connected MCP server, and find your own agent key in the order given in [Find Your Agent Key](references/api-and-mcp.md#find-your-agent-key), without exposing it. With no key, stop and send the operator the message in [When No Key Is Present](references/api-and-mcp.md#when-no-key-is-present); never ask for a key in chat.
 2. Read the live capabilities contract when the server provides it. Otherwise inspect the available tools and treat the session as supervised mode (`supervised v0`).
 3. When `agent-team-master-v1` is advertised, read the bound team status and
    confirm the controller identity, topology revision, required runtime

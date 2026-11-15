@@ -53,13 +53,13 @@ flowchart LR
     n0["AgentSkillBundleService (backend/app/services/agent_skill_bundle_service.py)"]
     n1["_agent_skill_bundle_service (backend/app/mcp_agent_tools.py)"]
     n2["get_agent_capabilities (backend/app/routers/agent.py)"]
-    n3["discover_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
-    n4["download_agent_skill_bundle (backend/app/routers/agent_skill_bundles.py)"]
-    n5["get_agent_skill_bundle_manifest (backend/app/routers/agent_skill_bundles.py)"]
-    n6["get_agent_skill_bundle_service (backend/app/routers/agent_skill_bundles.py)"]
-    n7["inspect_agent_skill_bundle_file (backend/app/routers/agent_skill_bundles.py)"]
-    n8["list_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
-    n9["AgentTeamSetupService.__init__ (backend/app/services/agent_team_setup_service.py)"]
+    n3["_roles (backend/app/routers/agent_connect.py)"]
+    n4["get_agent_connect_bundle_service (backend/app/routers/agent_connect.py)"]
+    n5["get_agent_connect_hint (backend/app/routers/agent_connect.py)"]
+    n6["discover_agent_skill_bundles (backend/app/routers/agent_skill_bundles.py)"]
+    n7["download_agent_skill_bundle (backend/app/routers/agent_skill_bundles.py)"]
+    n8["get_agent_skill_bundle_manifest (backend/app/routers/agent_skill_bundles.py)"]
+    n9["get_agent_skill_bundle_service (backend/app/routers/agent_skill_bundles.py)"]
     n1 --> n0
     n2 --> n0
     n3 --> n0
@@ -72,13 +72,13 @@ flowchart LR
     click n0 "../modules/agent_skill_bundle_service.md"
     click n1 "../modules/mcp_agent_tools.md"
     click n2 "../modules/routers_agent.md"
-    click n3 "../modules/agent_skill_bundles.md"
-    click n4 "../modules/agent_skill_bundles.md"
-    click n5 "../modules/agent_skill_bundles.md"
+    click n3 "../modules/routers_agent_connect.md"
+    click n4 "../modules/routers_agent_connect.md"
+    click n5 "../modules/routers_agent_connect.md"
     click n6 "../modules/agent_skill_bundles.md"
     click n7 "../modules/agent_skill_bundles.md"
     click n8 "../modules/agent_skill_bundles.md"
-    click n9 "../modules/agent_team_setup_service.md"
+    click n9 "../modules/agent_skill_bundles.md"
 ```
 
 ### Summary
@@ -94,14 +94,14 @@ flowchart LR
 | `_agent_skill_bundle_service` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `_agent_skill_bundle_service` | type_reference | [mcp_agent_tools](../modules/mcp_agent_tools.md) | — |
 | `get_agent_capabilities` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `_roles` | type_reference | [routers_agent_connect](../modules/routers_agent_connect.md) | — |
+| `get_agent_connect_bundle_service` | call | [routers_agent_connect](../modules/routers_agent_connect.md) | 1 |
+| `get_agent_connect_bundle_service` | type_reference | [routers_agent_connect](../modules/routers_agent_connect.md) | — |
+| `get_agent_connect_hint` | type_reference | [routers_agent_connect](../modules/routers_agent_connect.md) | — |
 | `discover_agent_skill_bundles` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `download_agent_skill_bundle` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `get_agent_skill_bundle_manifest` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
 | `get_agent_skill_bundle_service` | call | [agent_skill_bundles](../modules/agent_skill_bundles.md) | 1 |
 | `get_agent_skill_bundle_service` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
-| `inspect_agent_skill_bundle_file` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
-| `list_agent_skill_bundles` | type_reference | [agent_skill_bundles](../modules/agent_skill_bundles.md) | — |
-| `AgentTeamSetupService.__init__` | call | [agent_team_setup_service](../modules/agent_team_setup_service.md) | 1 |
-| `AgentTeamSetupService.__init__` | type_reference | [agent_team_setup_service](../modules/agent_team_setup_service.md) | — |
 
-> References: showing 12 of 18 logical references; 6 omitted by the 12-row generated summary limit.
+> References: showing 12 of 23 logical references; 11 omitted by the 12-row generated summary limit.

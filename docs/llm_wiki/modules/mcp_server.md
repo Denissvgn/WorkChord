@@ -13,6 +13,7 @@ MCP uses the shared principal/project authority and command owner. Its establish
 | Source | Symbols |
 |--------|---------|
 | `app` | `mcp_agent_tools` |
+| `app.agent_key_file` | `AgentKeyFileError`, `read_agent_key_file` |
 | `app.authority` | `AuthorityError` |
 | `app.commands` | `command_transaction`, `AggregateVersionConflict`, `HierarchyScopeError`, `AggregateVersionConflict`, `HierarchyScopeError` |
 | `app.config` | `get_settings` |
@@ -64,8 +65,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (9) |
-| Outbound | `backend` (16) |
+| Inbound | `backend` (10) |
+| Outbound | `backend` (17) |
 
 ### External packages
 
@@ -73,17 +74,17 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 25 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 27 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [MCPAuthError](../entities/MCPAuthError.md) | Class | 48 | `PermissionError` | Raised when MCP agent authentication fails. |
-| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 71 | — | Reject untrusted MCP Host/Origin values before database authentication. |
-| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 106 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
-| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 152 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
-| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 218 | `Optional[str \| tuple[str, ...]]` | — |
+| [MCPAuthError](../entities/MCPAuthError.md) | Class | 52 | `PermissionError` | Raised when MCP agent authentication fails. |
+| [MCPHostValidationMiddleware](../entities/MCPHostValidationMiddleware.md) | Class | 75 | — | Reject untrusted MCP Host/Origin values before database authentication. |
+| [MCPAgentKeyMiddleware](../entities/MCPAgentKeyMiddleware.md) | Class | 110 | — | Extract and validate MCP HTTP agent credentials before protocol handling. |
+| [MCPExactPathAlias](../entities/MCPExactPathAlias.md) | Class | 156 | — | Route exact MCP mount path requests into the Streamable HTTP root app. |
+| [ScopeRequirement](../entities/ScopeRequirement.md) | Type alias | 238 | `Optional[str \| tuple[str, ...]]` | — |
 
 ## Functions
 
@@ -96,6 +97,7 @@ flowchart LR
 | `_open_db_session` | *(async)* `() -> AsyncIterator[Any]` | `@asynccontextmanager` | Open a DB session from either production async factory or test override. |
 | `_agent_key_from_scope` | `(scope: Scope) -> Optional[str]` | — | Extract agent API key from HTTP MCP headers. |
 | `_current_agent_key` | `() -> Optional[str]` | — | Return the HTTP or stdio MCP agent key. |
+| `_load_stdio_agent_key` | `() -> bool` | — | Prepare the stdio key from the environment or the configured key file. |
 | `_authenticate_agent_key` | *(async)* `(db: Any, api_key: str) -> AgentActor` | — | Authenticate a real agent actor and reject bootstrap execution. |
 | `_skill_bundle_scope_requirement` | `() -> ScopeRequirement` | — | Match MCP skill delivery to the configured REST public/private mode. |
 | `_require_scope_requirement` | `(actor: AgentActor, required: ScopeRequirement) -> None` | — | Require one scope or any scope from an explicit alternative set. |
