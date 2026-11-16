@@ -25,7 +25,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                         {required && <RequiredIndicator />}
                     </label>
                 )}
-                <select ref={ref} id={selectId} aria-describedby={describedBy} aria-invalid={Boolean(error) || undefined}
+                <select data-page-chrome-control="select" ref={ref} id={selectId} aria-describedby={describedBy} aria-invalid={Boolean(error) || undefined}
                     required={required} className={clsx('input', error && 'error', className)} {...props}>
                     {children}
                 </select>
