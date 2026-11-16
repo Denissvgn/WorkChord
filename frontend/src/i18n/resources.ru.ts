@@ -927,6 +927,7 @@ export const russianResources = {
                 queued: 'В очереди',
                 working: 'Работает',
                 waitingForReview: 'Ждёт проверки',
+                unknown: 'Статус агента неизвестен',
             },
             disabledReasons: {
                 summaryRequired: 'Напишите итог, чтобы опубликовать обновление.',

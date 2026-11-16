@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import type { Task } from '../../types/task';
-import { renderWithProviders } from '../../test/renderWithProviders';
+import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
+import { REVIEWER_PAGE_SIZE } from './useAgentRowFacts';
 import { TaskList } from './TaskList';
+import { taskDetailResponse } from '../../test/fixtures/taskDetail';
 
 const taskServiceMock = vi.hoisted(() => ({
     getByIteration: vi.fn(),
@@ -13,7 +15,7 @@ const taskServiceMock = vi.hoisted(() => ({
     update: vi.fn(),
     changeStatus: vi.fn(),
     runBulkOperation: vi.fn(),
-    lookup: vi.fn(),
+    getDetail: vi.fn(),
 }));
 
 const labelServiceMock = vi.hoisted(() => ({
@@ -89,7 +91,7 @@ const task = (id: number): Task => ({
 
 beforeEach(() => {
     teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
-    taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
+    taskServiceMock.getDetail.mockImplementation(async (id: number) => taskDetailResponse({ ...task(id), status: 'resolved' }, null));
 });
 
 const rowOf = (title: string) => screen.getByRole('button', { name: title }).closest<HTMLElement>('[data-task-row]')!;
@@ -102,7 +104,7 @@ describe('TaskList accessibility', () => {
     beforeEach(() => {
         Object.values(taskServiceMock).forEach(mock => mock.mockReset());
         teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
-        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
+        taskServiceMock.getDetail.mockImplementation(async (id: number) => taskDetailResponse({ ...task(id), status: 'resolved' }, null));
         labelServiceMock.getGroups.mockReset();
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
@@ -202,7 +204,7 @@ describe('TaskList rows and groups', () => {
     beforeEach(() => {
         Object.values(taskServiceMock).forEach(mock => mock.mockReset());
         teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
-        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
+        taskServiceMock.getDetail.mockImplementation(async (id: number) => taskDetailResponse({ ...task(id), status: 'resolved' }, null));
         labelServiceMock.getGroups.mockReset();
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
@@ -253,7 +255,7 @@ describe('TaskList rows', () => {
     beforeEach(() => {
         Object.values(taskServiceMock).forEach(mock => mock.mockReset());
         teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
-        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
+        taskServiceMock.getDetail.mockImplementation(async (id: number) => taskDetailResponse({ ...task(id), status: 'resolved' }, null));
         labelServiceMock.getGroups.mockReset();
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
@@ -389,8 +391,7 @@ describe('TaskList rows', () => {
             { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },
             { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } },
         ]);
-        taskServiceMock.lookup.mockResolvedValue({ items: [{ id: 3, title: 'Task 3', status: 'resolved', version: 1, iteration_id: 1,
-            project_id: null, parent_id: null, owner_profile_id: null, reviewer_name: 'Review bot' }], has_more: false, next_after_id: null, limit: 100 });
+        taskServiceMock.getDetail.mockImplementation(async (id: number) => taskDetailResponse({ ...task(id), status: 'resolved' }, id === 3 ? 'Review bot' : null));
         taskServiceMock.getByIteration.mockResolvedValue([
             { ...task(1), assignee: agent, agent_working: true },
             { ...task(2), assignee: agent, agent_working: true, claimed_by: { id: 3, name: 'builder', display_name: 'Builder' }, status: 'active' },
@@ -405,9 +406,30 @@ describe('TaskList rows', () => {
         expect(lineOf('Task 3')).toBe('Agent status: Waiting for review');
         expect(lineOf('Task 4')).toBeUndefined();
         await waitFor(() => expect(rowOf('Task 3')).toHaveTextContent('Reviewer: Review bot'));
-        expect(taskServiceMock.lookup).toHaveBeenCalledWith(expect.objectContaining({ iteration_id: 1, task_status: 'resolved' }), expect.anything());
+        // The Reviewer is read from the task detail, for the submitted task only.
+        expect(taskServiceMock.getDetail.mock.calls.map(([id, params]) => [id, params])).toEqual([[3, { limit: 1 }]]);
         // Neither line is something to reach: the row keeps status, title and assignee at rest.
         expect(rowOf('Task 3').querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);
+    });
+
+    it('names the Reviewer of every submitted task shown, reading them in bounded pages', async () => {
+        const submitted = Array.from({ length: 45 }, (_, index) => ({ ...task(index + 1), status: 'resolved' as const }));
+        taskServiceMock.getByIteration.mockResolvedValue([...submitted, task(46)]);
+        taskServiceMock.getDetail.mockImplementation(async (id: number) => taskDetailResponse(submitted[id - 1], `Reviewer bot ${id}`));
+        const queryClient = createTestQueryClient();
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" groupByStatus={false} />, { queryClient });
+        await screen.findByRole('button', { name: 'Task 45' });
+        // Tasks past the first page keep their Reviewer too.
+        await waitFor(() => expect(rowOf('Task 45')).toHaveTextContent('Reviewer: Reviewer bot 45'));
+        submitted.forEach(item => expect(rowOf(item.title)).toHaveTextContent(`Reviewer: Reviewer bot ${item.id}`));
+        // One read per submitted task shown, never for the open one, each asking for the smallest context page.
+        const readIds = taskServiceMock.getDetail.mock.calls.map(([id]) => id as number).sort((a, b) => a - b);
+        expect(readIds).toEqual(submitted.map(item => item.id));
+        taskServiceMock.getDetail.mock.calls.forEach(([, params]) => expect(params).toEqual({ limit: 1 }));
+        expect(rowOf('Task 46').querySelector('[data-reviewer-cell]')).toBeEmptyDOMElement();
+        // The reads come in pages of at most REVIEWER_PAGE_SIZE tasks.
+        const pages = queryClient.getQueryCache().findAll({ queryKey: ['tasks', 'reviewers'] }).map(query => String(query.queryKey[2]).split(',').length);
+        expect(pages).toEqual([REVIEWER_PAGE_SIZE, REVIEWER_PAGE_SIZE, 45 - 2 * REVIEWER_PAGE_SIZE]);
     });
 
     it('names one state chip, chosen by priority', async () => {

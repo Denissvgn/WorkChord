@@ -42,7 +42,8 @@ export const ProjectTaskTree = ({ sections }: ProjectTaskTreeProps) => {
     const taskMap = useMemo(() => new Map(flat.map(({ task }) => [task.id, task])), [flat]);
     // Only tasks of an iteration can be picked for, or changed together; backlog tasks have no team.
     const { optionsByIteration, error: optionsError, refetch: refetchOptions } = useIterationRowData(flat.map(({ task }) => task.iteration_id), { loadTasks: false });
-    const agentFacts = useAgentRowFacts(flat.map(({ task }) => task.iteration_id));
+    const flatTasks = useMemo(() => flat.map(({ task }) => task), [flat]);
+    const agentFacts = useAgentRowFacts(flatTasks);
 
     const leaves = useMemo(() => flat.filter(({ task }) => isLeaf(task) && task.iteration_id !== null).map(({ task }) => task), [flat]);
     const selectableIds = useMemo(() => new Set(leaves.map(task => task.id)), [leaves]);

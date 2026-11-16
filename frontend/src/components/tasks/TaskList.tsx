@@ -344,7 +344,17 @@ export const TaskList = ({
     const scrollElement = rowsNode?.closest<HTMLElement>('#workspace-main') ?? null;
     const virtualizeRows = !isDraggingEnabled && scrollElement !== null && rowItems.length > VIRTUALIZE_AFTER_ROWS;
     const { options: assigneeOptions, error: assigneeOptionsError, refetch: refetchAssigneeOptions } = useAssigneeOptions(iterationId);
-    const agentFacts = useAgentRowFacts([iterationId]);
+    // Every row the list shows, parents and the children of expanded parents, for the Reviewer reads.
+    const displayedTasks = useMemo(() => {
+        const shown: Task[] = [];
+        const walk = (task: Task) => {
+            shown.push(task);
+            if (!collapsedParents.has(task.id)) task.children?.forEach(walk);
+        };
+        rowItems.forEach(item => { if (item.kind === 'task') walk(item.task); });
+        return shown;
+    }, [rowItems, collapsedParents]);
+    const agentFacts = useAgentRowFacts(displayedTasks);
     const rowEdits = useTaskRowEdits();
     // The order a person sees, used to select a range between two ticked rows.
     const selectionOrder = useMemo(() => {

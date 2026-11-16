@@ -6,6 +6,7 @@ import { IdentityContext } from '../features/identity/identityContext';
 import { buildTaskEditorDefaults } from '../components/tasks/taskEditorContract';
 import { writeTaskDraft } from '../components/tasks/taskDraftStorage';
 import type { Task } from '../types/task';
+import { taskDetailResponse } from '../test/fixtures/taskDetail';
 
 const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn(), post: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
@@ -114,12 +115,14 @@ describe('My Work rows', () => {
     const reference = (id: number, iterationId: number, status: Task['status'] = 'planned') => ({ id, title: `Task ${id}`, status, version: 1, iteration_id: iterationId, project_id: null, parent_id: null, owner_profile_id: null });
     const rowOf = (title: string) => screen.getByRole('button', { name: `#${title.replace('Task ', '')} · ${title}` }).closest<HTMLElement>('[data-task-row]')!;
 
-    const arrange = (tasks: Task[], { shown = tasks, more }: { shown?: Task[]; more?: (path: string, config?: { params?: Record<string, unknown> }) => unknown } = {}) => {
+    const arrange = (tasks: Task[], { shown = tasks, more, reviewers = {} }: { shown?: Task[]; more?: (path: string, config?: { params?: Record<string, unknown> }) => unknown; reviewers?: Record<number, string> } = {}) => {
         api.get.mockImplementation(async (path: string, config?: { params?: Record<string, unknown> }) => {
             const extra = more?.(path, config);
             if (extra !== undefined) return extra;
+            // My Work names the reviewer agent of each submitted task it returns, null when anyone reviews.
             if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null,
-                queues: { active: shown.map(item => reference(item.id, item.iteration_id as number, item.status)), queued: [], blocked: [], awaiting_review: [] } } };
+                queues: { active: shown.map(item => ({ ...reference(item.id, item.iteration_id as number, item.status), reviewer_name: item.status === 'resolved' ? reviewers[item.id] ?? null : null })),
+                    queued: [], blocked: [], awaiting_review: [] } } };
             const iteration = /^\/iterations\/(\d+)\/(tasks|team)$/.exec(path);
             if (iteration?.[2] === 'tasks') return { data: tasks.filter(item => item.iteration_id === Number(iteration[1])) };
             if (iteration?.[2] === 'team') return { data: [{ id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } }, { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } }] };
@@ -174,10 +177,7 @@ describe('My Work rows', () => {
             fullTask(4, 1, { assignee: agent, agent_working: false, status: 'resolved' }),
             fullTask(5, 1, { assignee: { id: 5, name: 'Ada' }, agent_working: false }),
             fullTask(7, 1, { assignee: { id: 5, name: 'Ada' }, agent_working: false, status: 'resolved' }),
-        ], { more: (path, config) => {
-            if (path === '/tasks/lookup' && config?.params?.task_status === 'resolved') return { data: { items: [
-                { ...reference(4, 1, 'resolved'), reviewer_name: 'Review bot' }, { ...reference(7, 1, 'resolved'), reviewer_name: null },
-            ], has_more: false, next_after_id: null, limit: 100 } };
+        ], { reviewers: { 4: 'Review bot' }, more: path => {
             // The roster binds an agent to another profile, so none is connected to the Build agent's.
             if (path === '/agent/actors') return { data: [{ id: 3, name: 'other', enabled: true, lifecycle_state: 'active', profile_id: 70 }] };
             return undefined;
@@ -196,6 +196,64 @@ describe('My Work rows', () => {
         expect(rowOf('Task 7')).toHaveTextContent('Reviewer: anyone');
         expect(rowOf('Task 1')).not.toHaveTextContent('Reviewer');
         expect(api.get).toHaveBeenCalledWith('/agent/actors', expect.objectContaining({ skipIdentityExpiry: true }));
+        // My Work already named both reviewers, so no task is read again for them.
+        expect(api.get.mock.calls.filter(([path]) => /^\/tasks\/\d+\/detail$/.test(path))).toEqual([]);
+    });
+
+    it('says the agent status is unknown to a local reader who cannot read the agent roster', async () => {
+        const agent = { id: 6, name: 'Build agent' };
+        arrange([
+            fullTask(1, 1, { assignee: agent, agent_working: false }),
+            fullTask(2, 1, { assignee: agent, agent_working: true }),
+            fullTask(3, 1, { assignee: agent, agent_working: true, claimed_by: { id: 3, name: 'builder', display_name: 'Builder' }, status: 'active' }),
+        ]);
+        renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', principal: null, profile: { id: 4, display_name: 'Sam Ortiz', verified: false } } as never, refresh: vi.fn(), signOut: vi.fn() }}>
+            <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work'] });
+        await screen.findByRole('button', { name: '#1 · Task 1' });
+        const lineOf = (title: string) => rowOf(title).querySelector('[data-agent-dispatch]')?.textContent;
+        // The line stays, from what the task itself says; it never claims that no agent is connected.
+        await waitFor(() => expect(lineOf('Task 1')).toBe('Agent status unknown'));
+        expect(lineOf('Task 2')).toBe('Agent status: Queued');
+        expect(lineOf('Task 3')).toBe('Agent status: Working');
+        expect(api.get.mock.calls.some(([path]) => path === '/agent/actors')).toBe(false);
+    });
+
+    it('names the Reviewer on every page of My Work, following the continuation cursor', async () => {
+        const first = [1, 2].map(id => fullTask(id, 1, { status: 'resolved' }));
+        const second = [3, 4].map(id => fullTask(id, 1, { status: 'resolved' }));
+        const names: Record<number, string | null> = { 1: 'Review bot', 2: null, 3: 'Second bot', 4: null };
+        const page = (items: Task[], hasMore: boolean) => ({ data: { state: 'ready', has_more: hasMore, next_after_id: hasMore ? items[items.length - 1].id : null,
+            queues: { active: [], queued: [], blocked: [], awaiting_review: items.map(item => ({ ...reference(item.id, 1, 'resolved'), reviewer_name: names[item.id] })) } } });
+        arrange([...first, ...second], { more: (path, config) => path === '/tasks/my-work'
+            ? config?.params?.after_id === 2 ? page(second, false) : page(first, true) : undefined });
+        const { user } = renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work?queue=awaiting_review'] });
+        await screen.findByRole('button', { name: '#1 · Task 1' });
+        await waitFor(() => expect(rowOf('Task 1')).toHaveTextContent('Reviewer: Review bot'));
+        expect(rowOf('Task 2')).toHaveTextContent('Reviewer: anyone');
+        await user.click(screen.getByRole('button', { name: 'Load more' }));
+        await screen.findByRole('button', { name: '#3 · Task 3' });
+        expect(api.get).toHaveBeenCalledWith('/tasks/my-work', { params: { after_id: 2 } });
+        await waitFor(() => expect(rowOf('Task 3')).toHaveTextContent('Reviewer: Second bot'));
+        expect(rowOf('Task 4')).toHaveTextContent('Reviewer: anyone');
+        expect(screen.queryByRole('button', { name: 'Load more' })).toBeNull();
+        expect(api.get.mock.calls.filter(([path]) => /^\/tasks\/\d+\/detail$/.test(path))).toEqual([]);
+    });
+
+    it('reads the Reviewer of each task in the review queue from the task detail read', async () => {
+        const tasks = [fullTask(4, 1, { status: 'resolved' }), fullTask(5, 1, { status: 'resolved' })];
+        arrange(tasks, { more: path => {
+            // The review queue lists tasks without naming their reviewer.
+            if (path === '/tasks/review-queue') return { data: { items: tasks.map(item => reference(item.id, 1, 'resolved')), has_more: false, next_after_id: null, limit: 50 } };
+            const detail = /^\/tasks\/(\d+)\/detail$/.exec(path);
+            if (detail) return { data: taskDetailResponse(tasks.find(item => item.id === Number(detail[1]))!, detail[1] === '4' ? 'Review bot' : null) };
+            return undefined;
+        } });
+        renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work?queue=review'] });
+        await screen.findByRole('button', { name: '#4 · Task 4' });
+        await waitFor(() => expect(rowOf('Task 4')).toHaveTextContent('Reviewer: Review bot'));
+        expect(rowOf('Task 5')).toHaveTextContent('Reviewer: anyone');
+        expect(api.get).toHaveBeenCalledWith('/tasks/4/detail', expect.objectContaining({ params: { limit: 1 } }));
+        expect(api.get).toHaveBeenCalledWith('/tasks/5/detail', expect.objectContaining({ params: { limit: 1 } }));
     });
 
     it('selects a range and assigns it from the bulk bar without a mode to enter', async () => {

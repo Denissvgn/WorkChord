@@ -76,7 +76,11 @@ const MyWorkPage = () => {
     const rowEdits = useTaskRowEdits();
     // A task reference carries no priority, assignee or effort; those come from the iteration's tasks, as in the Tasks list.
     const rowData = useIterationRowData(items.map(task => task.iteration_id));
-    const agentFacts = useAgentRowFacts(items.map(task => task.iteration_id));
+    // My Work already names the reviewer of each submitted task it returns; the review queue does not, so those are read per task.
+    const knownReviewers = useMemo(() => workQueue
+        ? new Map(items.filter(item => item.status === 'resolved').map(item => [item.id, item.reviewer_name ?? null] as const))
+        : undefined, [workQueue, items]);
+    const agentFacts = useAgentRowFacts(items, knownReviewers);
     const leaves = useMemo(() => items.flatMap(item => {
         const full = rowData.tasksById.get(item.id);
         return full && item.iteration_id !== null && !full.is_composite && (full.children?.length ?? 0) === 0 ? [full] : [];
@@ -109,7 +113,7 @@ const MyWorkPage = () => {
             const full = rowData.tasksById.get(task.id);
             const canPick = selectableIds.has(task.id);
             const assigneeOptions = rowData.optionsByIteration.get(task.iteration_id ?? -1);
-            const agentRow = full ? agentRowValues(full, assigneeOptions, agentFacts) : null;
+            const agentRow = agentRowValues(full ?? task, assigneeOptions, agentFacts);
             // The same chip as the Tasks list once the iteration's tasks load; until then only what the reference says.
             const chip: TaskStateChip | null = full ? taskStateChip(full, rowData.tasksById)
                 : task.blocked_reason ? { kind: 'blocked' } : task.status === 'resolved' ? { kind: 'inReview' } : null;
@@ -122,8 +126,8 @@ const MyWorkPage = () => {
                         task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : null, task.blocked_reason].filter(Boolean).join(' · ')}
                     assignee={full ? full.assignee ?? null : undefined}
                     assigneeOptions={assigneeOptions}
-                    dispatch={agentRow?.dispatch}
-                    reviewer={agentRow ? agentRow.reviewer : agentFacts.reviewerById.size > 0 ? null : undefined}
+                    dispatch={agentRow.dispatch}
+                    reviewer={agentRow.reviewer}
                     onAssign={full && task.iteration_id !== null ? assigneeId => rowEdits.assign(task, assigneeId) : undefined}
                     effort={full ? getEffectiveEffort(full) : undefined}
                     overdue={full?.is_overdue}

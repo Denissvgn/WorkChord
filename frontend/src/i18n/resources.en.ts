@@ -895,6 +895,7 @@ export const englishResources = {
                 queued: 'Queued',
                 working: 'Working',
                 waitingForReview: 'Waiting for review',
+                unknown: 'Agent status unknown',
             },
             disabledReasons: {
                 summaryRequired: 'Write a summary to post the update.',

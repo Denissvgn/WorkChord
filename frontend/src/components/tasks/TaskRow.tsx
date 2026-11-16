@@ -197,7 +197,8 @@ export const TaskRow = ({
                     </span>
                     {dispatch && (
                         <span data-agent-dispatch={dispatch} className="truncate pl-5 leading-4 text-content-tertiary">
-                            <span className="sr-only">{t('taskList.agentStatus')}: </span>{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
+                            {/* "Agent status unknown" already names what it is about. */}
+                            {dispatch !== 'unknown' && <span className="sr-only">{t('taskList.agentStatus')}: </span>}{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
                         </span>
                     )}
                 </span>

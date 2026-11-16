@@ -3,14 +3,15 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { ProjectTaskTree } from './ProjectTaskTree';
 import type { Task } from '../../types/task';
+import { taskDetailResponse } from '../../test/fixtures/taskDetail';
 
 const services = vi.hoisted(() => ({
     runBulkOperation: vi.fn(),
     team: vi.fn(),
-    lookup: vi.fn(),
+    getDetail: vi.fn(),
 }));
 
-vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: vi.fn().mockResolvedValue([]), lookup: services.lookup } }));
+vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: vi.fn().mockResolvedValue([]), getDetail: services.getDetail } }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: services.team } }));
 vi.mock('../../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]), getMilestones: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getById: vi.fn().mockResolvedValue({ id: 1, name: 'Iteration', project_id: null }) } }));
@@ -23,7 +24,8 @@ const task = (id: number, overrides: Partial<Task> = {}): Task => ({
 });
 
 beforeEach(() => {
-    services.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
+    services.getDetail.mockReset();
+    services.getDetail.mockImplementation(async (id: number) => taskDetailResponse(task(id, { status: 'resolved' }), null));
 });
 
 const sections = (...tasks: Task[]) => [{ key: 'all', tasks }];
@@ -59,8 +61,6 @@ describe('ProjectTaskTree', () => {
             { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },
             { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } },
         ]);
-        services.lookup.mockResolvedValue({ items: [{ id: 3, title: 'Task 3', status: 'resolved', version: 1, iteration_id: 1,
-            project_id: 1, parent_id: null, owner_profile_id: null, reviewer_name: null }], has_more: false, next_after_id: null, limit: 100 });
         renderWithProviders(<ProjectTaskTree sections={sections(
             task(1, { assignee: agent, agent_working: true }),
             task(2, { assignee: agent, agent_working: true, claimed_by: { id: 3, name: 'builder', display_name: 'Builder' }, status: 'active' }),
@@ -76,13 +76,28 @@ describe('ProjectTaskTree', () => {
         expect(rowOf('Task 1')).not.toHaveTextContent('Reviewer');
         // Rows not yet submitted keep an empty reviewer cell, so the columns line up.
         expect(rowOf('Task 1').querySelector('[data-reviewer-cell]')).toBeEmptyDOMElement();
+        // The Reviewer is read for the submitted task only.
+        expect(services.getDetail.mock.calls.map(([id]) => id)).toEqual([3]);
+    });
+
+    it('says the agent status is unknown when this reader cannot read the agent roster', async () => {
+        services.team.mockResolvedValue([{ id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } }]);
+        renderWithProviders(<ProjectTaskTree sections={sections(
+            task(1, { assignee: { id: 6, name: 'Build agent' }, agent_working: false }),
+            task(2, { assignee: { id: 6, name: 'Build agent' }, agent_working: true }),
+        )} />);
+        // Without the roster no row claims that no agent is connected, and the line stays.
+        await waitFor(() => expect(rowOf('Task 1').querySelector('[data-agent-dispatch]')?.textContent).toBe('Agent status unknown'));
+        expect(rowOf('Task 2').querySelector('[data-agent-dispatch]')?.textContent).toBe('Agent status: Queued');
+        expect(screen.queryByText(/No agent connected/)).toBeNull();
     });
 
     it('leaves the reviewer cell out when no task is submitted, so the title keeps the room', async () => {
         services.team.mockResolvedValue([]);
         renderWithProviders(<ProjectTaskTree sections={sections(task(1), task(2))} />);
-        await waitFor(() => expect(services.lookup).toHaveBeenCalled());
+        await screen.findByRole('button', { name: 'Task 1' });
         expect(rowOf('Task 1').querySelector('[data-reviewer-cell]')).toBeNull();
+        expect(services.getDetail).not.toHaveBeenCalled();
     });
 
     it('offers the assignee picker with the people and agents of the iteration', async () => {
