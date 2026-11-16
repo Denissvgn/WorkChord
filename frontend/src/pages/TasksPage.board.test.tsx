@@ -7,7 +7,7 @@ import TasksPage from './TasksPage';
 
 const workScopeMock = vi.hoisted(() => ({ iteration: 1 as number | 'backlog', setIteration: vi.fn() }));
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getById: vi.fn() }));
-const taskServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn(), getById: vi.fn() }));
+const taskServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn(), getById: vi.fn(), getDetail: vi.fn() }));
 
 vi.mock('../features/scope/useWorkScope', () => ({
     useWorkScope: () => workScopeMock,
@@ -129,5 +129,41 @@ describe('Tasks board under the shared toolbar', () => {
         expect(within(row).getByText(expected.chip)).toBeInTheDocument();
         expect(within(row).getByRole('combobox', { name: `Assignee: ${expected.title}` })).toHaveDisplayValue(expected.assignee);
         expect(within(row).getByText(expected.effort)).toBeInTheDocument();
+    });
+
+    it.each([
+        [4, { title: 'Draft onboarding guide', chip: 'Ready to start', effort: '0.625d', reviewer: null }],
+        [5, { title: 'Review pricing copy', chip: 'In review', effort: '1d', reviewer: 'Reviewer: Morgan' }],
+    ] as const)('shows the same title, state chip, assignee, effort and reviewer on card and row for task %i', async (id, expected) => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            task(4, 'Draft onboarding guide', { assignee: ana, effort_days: 0.625 }),
+            task(5, 'Review pricing copy', { assignee: ana, status: 'resolved', effort_days: 1 }),
+        ]);
+        taskServiceMock.getDetail.mockResolvedValue({ reviewer_name: 'Morgan' });
+
+        const board = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?layout=board'] });
+        const card = await waitFor(() => {
+            const found = board.container.querySelector<HTMLElement>(`[data-task-card="${id}"]`);
+            expect(found).not.toBeNull();
+            return found as HTMLElement;
+        });
+        expect(within(card).getByText(expected.title)).toBeInTheDocument();
+        expect(within(card).getByText(expected.chip)).toBeInTheDocument();
+        expect(within(card).getByText('Ana')).toBeInTheDocument();
+        expect(within(card).getByText(expected.effort)).toBeInTheDocument();
+        if (expected.reviewer) await waitFor(() => expect(within(card).getByText(expected.reviewer)).toBeInTheDocument());
+        board.unmount();
+
+        const list = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks'] });
+        const row = await waitFor(() => {
+            const found = list.container.querySelector<HTMLElement>(`[data-task-row="${id}"]`);
+            expect(found).not.toBeNull();
+            return found as HTMLElement;
+        });
+        expect(within(row).getByRole('button', { name: expected.title })).toBeInTheDocument();
+        expect(within(row).getByText(expected.chip)).toBeInTheDocument();
+        expect(within(row).getByRole('combobox', { name: `Assignee: ${expected.title}` })).toHaveDisplayValue('Ana');
+        expect(within(row).getByText(expected.effort)).toBeInTheDocument();
+        if (expected.reviewer) await waitFor(() => expect(within(row).getByText(expected.reviewer)).toBeInTheDocument());
     });
 });
