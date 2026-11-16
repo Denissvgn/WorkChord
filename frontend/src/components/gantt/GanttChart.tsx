@@ -25,6 +25,7 @@ import { GanttBarInputs } from './GanttBarInputs';
 
 interface GanttChartProps {
     iterationId: number;
+    hoursPerDay?: number;
     iterationRevision?: number;
     startDate: string;
     endDate: string;
@@ -117,6 +118,7 @@ const hasCompleteTimelineDates = (
 
 export const GanttChart = ({
     iterationId,
+    hoursPerDay = 8,
     iterationRevision,    startDate,
     endDate,
     tasks,
@@ -1728,6 +1730,7 @@ export const GanttChart = ({
                 <GanttBarInputs
                     task={barInputs.task}
                     iterationId={iterationId}
+                    hoursPerDay={hoursPerDay}
                     anchor={barInputs.anchor}
                     taskOptions={displayTasks.filter(item => !item.children?.length).map(item => ({ id: item.id, title: item.title }))}
                     onApply={changes => {

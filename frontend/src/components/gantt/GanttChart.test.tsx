@@ -36,6 +36,7 @@ const taskFixture: GanttTask = {
     start_date: '2026-01-05',
     end_date: '2026-01-06',
     effort_days: 2,
+    effort_hours: 16,
     calculated_effort_days: 2,
     progress: 0,
     priority: 5,
@@ -402,7 +403,7 @@ describe('Gantt dependency links', () => {
         const { user, container } = renderChart(false, [predecessor, successor]);
         expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(1);
         expect(screen.getAllByText('1 link')).toHaveLength(2);
-        expect(screen.getByRole('button', { name: /Build the importer.*Depends on 1; 0 depend on it\./ })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Build the importer.*Waits for 1; 0 wait for it\./ })).toBeInTheDocument();
         const toggle = screen.getByRole('button', { name: 'Dependency links' });
         expect(toggle).toHaveAttribute('aria-pressed', 'true');
         await user.click(toggle);
@@ -421,16 +422,18 @@ describe('Gantt bar inputs in Try changes', () => {
         );
         await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
         const dialog = await screen.findByRole('dialog', { name: 'Current task' });
-        expect(screen.getByRole('combobox', { name: 'Who does it' })).toHaveFocus();
+        expect(screen.getByRole('combobox', { name: 'Assignee' })).toHaveFocus();
         expect(dialog).toHaveTextContent('Dates are calculated.');
         await screen.findByRole('option', { name: 'Sam' });
-        await user.selectOptions(screen.getByRole('combobox', { name: 'Who does it' }), '7');
-        const effort = screen.getByRole('spinbutton', { name: 'Effort (days)' });
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), '7');
+        const effort = screen.getByRole('spinbutton', { name: 'Effort (hours)' });
+        expect(dialog).toHaveTextContent('= 2 days at 8 hours per day');
         await user.clear(effort);
-        await user.type(effort, '3');
+        await user.type(effort, '24');
+        expect(dialog).toHaveTextContent('= 3 days at 8 hours per day');
         await user.click(screen.getByRole('button', { name: 'Recalculate with these' }));
         expect(onSaveSandbox).toHaveBeenCalledWith(101, expect.objectContaining({
-            assignee: { id: 7, name: 'Sam' }, effort_days: 3, sandbox_update: undefined,
+            assignee: { id: 7, name: 'Sam' }, effort_hours: 24, sandbox_update: undefined,
         }));
         expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
     });

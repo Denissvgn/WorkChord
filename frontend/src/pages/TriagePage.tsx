@@ -682,7 +682,6 @@ const ConvertTriageSplitView = ({
     const [assigneeId, setAssigneeId] = useState('');
     const [priority, setPriority] = useState(String(item.priority_hint || 5));
     const [tags, setTags] = useState<string[]>(item.labels);
-    const [effortDays, setEffortDays] = useState('');
     const [effortHours, setEffortHours] = useState('');
     const [dependsOn, setDependsOn] = useState<number[]>([]);
     const [title, setTitle] = useState(item.title);
@@ -724,22 +723,6 @@ const ConvertTriageSplitView = ({
     const scopedProject = selectedIteration?.project ?? null;
     const effectiveProjectId = scopedProjectId ?? parseOptionalNumber(projectId);
 
-    const handleDaysChange = (value: string) => {
-        setEffortDays(value);
-        const parsedDays = Number(value);
-        if (!Number.isNaN(parsedDays)) {
-            setEffortHours(value === "" ? "" : String(parsedDays * dayHours));
-        }
-    };
-
-    const handleHoursChange = (value: string) => {
-        setEffortHours(value);
-        const parsedHours = Number(value);
-        if (!Number.isNaN(parsedHours)) {
-            setEffortDays(value === "" ? "" : String(parsedHours / dayHours));
-        }
-    };
-
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (destination === "iteration" ? !hasSelectedIteration : !effectiveProjectId) return;
@@ -753,7 +736,7 @@ const ConvertTriageSplitView = ({
             assignee_id: hasSelectedIteration ? parseOptionalNumber(assigneeId) : null,
             priority: Number(priority),
             tags,
-            effort_days: effortDays === "" ? null : Number(effortDays),
+            effort_days: null,
             effort_hours: effortHours === "" ? null : Number(effortHours),
             depends_on: dependsOn,
         });
@@ -1116,23 +1099,16 @@ const ConvertTriageSplitView = ({
                                             </option>
                                         ))}</Select>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div>
                                     <Input
-                                        label={t('surfaces.triagePage.effortDays')}
-                                        type="number"
-                                        min="0.1"
-                                        step="0.1"
-                                        value={effortDays}
-                                        onChange={event => handleDaysChange(event.target.value)}
-                                    />
-                                    <Input
-                                        label={t('surfaces.triagePage.effortHours')}
+                                        label={t('surfaces.taskForm.effortHours')}
                                         type="number"
                                         min="0.5"
                                         step="0.5"
                                         value={effortHours}
-                                        onChange={event => handleHoursChange(event.target.value)}
+                                        onChange={event => setEffortHours(event.target.value)}
                                     />
+                                    <p className="mt-1 text-xs text-content-secondary">{t('surfaces.taskForm.effortDaysHint', { days: effortHours === '' ? 'n' : (Number(effortHours) / dayHours).toLocaleString(undefined, { maximumFractionDigits: 1 }), hours: dayHours })}</p>
                                 </div>
 
                                 {hasSelectedIteration && (

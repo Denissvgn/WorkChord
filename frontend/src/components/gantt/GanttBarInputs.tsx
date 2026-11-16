@@ -8,7 +8,7 @@ import type { GanttTask } from '../../types/gantt';
 
 export interface GanttBarInputChanges {
     assignee: { id: number; name: string } | null;
-    effort_days: number | null;
+    effort_hours: number | null;
     min_start_date: string | null;
     max_end_date: string | null;
     dependencies: number[];
@@ -17,6 +17,7 @@ export interface GanttBarInputChanges {
 interface GanttBarInputsProps {
     task: GanttTask;
     iterationId: number;
+    hoursPerDay: number;
     /** Other tasks this one may wait for. */
     taskOptions: Array<{ id: number; title: string }>;
     anchor: { top: number; left: number };
@@ -29,14 +30,16 @@ interface GanttBarInputsProps {
  * The five inputs that move a task's dates. Dates themselves are scheduler
  * output, so this edits inputs only; the sandbox then recalculates.
  */
-export const GanttBarInputs = ({ task, iterationId, taskOptions, anchor, onApply, onMoreFields, onClose }: GanttBarInputsProps) => {
+export const GanttBarInputs = ({ task, iterationId, hoursPerDay, taskOptions, anchor, onApply, onMoreFields, onClose }: GanttBarInputsProps) => {
     const { t } = useTranslation();
     const id = useId();
     const firstFieldRef = useRef<HTMLSelectElement>(null);
     // feedback-policy: query loading,error,retry,empty
     const team = useQuery({ queryKey: ['team', iterationId], queryFn: () => teamService.getByIteration(iterationId) });
     const [assigneeId, setAssigneeId] = useState(task.assignee ? String(task.assignee.id) : '');
-    const [effort, setEffort] = useState(task.effort_days === null ? '' : String(task.effort_days));
+    const [effort, setEffort] = useState(task.effort_hours != null
+        ? String(task.effort_hours)
+        : task.effort_days == null ? '' : String(task.effort_days * hoursPerDay));
     const [earliestStart, setEarliestStart] = useState(task.min_start_date ?? '');
     const [dueBy, setDueBy] = useState(task.max_end_date ?? '');
     const [waitsFor, setWaitsFor] = useState<number[]>(task.dependencies ?? []);
@@ -55,7 +58,7 @@ export const GanttBarInputs = ({ task, iterationId, taskOptions, anchor, onApply
         const parsedEffort = effort.trim() === '' ? null : Number(effort);
         onApply({
             assignee: member ? { id: member.id, name: member.name } : null,
-            effort_days: parsedEffort !== null && Number.isFinite(parsedEffort) && parsedEffort > 0 ? parsedEffort : null,
+            effort_hours: parsedEffort !== null && Number.isFinite(parsedEffort) && parsedEffort > 0 ? parsedEffort : null,
             min_start_date: earliestStart || null,
             max_end_date: dueBy || null,
             dependencies: waitsFor,
@@ -83,8 +86,9 @@ export const GanttBarInputs = ({ task, iterationId, taskOptions, anchor, onApply
                 </select>
             </label>
             <label className="block">
-                <span className="field-lbl">{t('gantt.inputEffort')}</span>
-                <input className="input w-full" type="number" min="0" step="0.5" value={effort} onChange={event => setEffort(event.target.value)} />
+                <span className="field-lbl">{t('surfaces.taskForm.effortHours')}</span>
+                <input aria-label={t('surfaces.taskForm.effortHours')} className="input w-full" type="number" min="0" step="0.5" value={effort} onChange={event => setEffort(event.target.value)} />
+                <span className="mt-1 block text-xs text-content-secondary">{t('surfaces.taskForm.effortDaysHint', { days: effort === '' ? 'n' : (Number(effort) / hoursPerDay).toLocaleString(undefined, { maximumFractionDigits: 1 }), hours: hoursPerDay })}</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
                 <label className="block">

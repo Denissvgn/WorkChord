@@ -758,25 +758,7 @@ export const TaskForm = ({
                 )}
             </div>
 
-                {/* Effort Days + Hours */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Input
-                        type="number"
-                        label={t('surfaces.taskForm.effortDays')}
-                        value={formData.effort_days ?? ''}
-                        step="0.1"
-                        disabled={Boolean(currentTask?.is_composite || currentTask?.children?.length)}
-                        title={currentTask?.children?.length ? t('surfaces.taskForm.calculatedFromSubtasks') : t('surfaces.taskForm.enterEffortDays')}
-                        onChange={e => {
-                            const days = e.target.value === "" ? null : parseFloat(e.target.value);
-                            setFormData({
-                                ...formData,
-                                effort_days: days,
-                                effort_hours: days === null ? null : days * dayHours,
-                                estimate_provenance: days === null ? "unknown" : "estimated"
-                            });
-                        }}
-                    />
+                <div>
                     <Input
                         type="number"
                         label={t('surfaces.taskForm.effortHours')}
@@ -794,9 +776,11 @@ export const TaskForm = ({
                             });
                         }}
                     />
+                    <p className="mt-1 text-sm text-content-secondary">{t('surfaces.taskForm.effortDaysHint', {
+                        days: formData.effort_hours == null ? 'n' : (formData.effort_hours / dayHours).toLocaleString(i18n.language, { maximumFractionDigits: 1 }),
+                        hours: dayHours,
+                    })}</p>
                 </div>
-
-                <p className="text-sm text-content-secondary">{t("domain.estimateHelp", { hours: dayHours })}</p>
             <p className="text-sm text-content-secondary">{t(iterationId === null ? 'teamwork.inBacklog' : 'teamwork.inIteration')}{currentTask?.baseline_start_date ? ` · ${currentTask.baseline_start_date} – ${currentTask.baseline_end_date}` : ''}</p>
             {currentTask && <details><summary className="cursor-pointer text-sm font-medium">{t('teamwork.executionDates')}</summary><dl className="grid grid-cols-1 gap-2 rounded-md border border-border p-3 text-sm sm:grid-cols-2">
                 <div><dt className="text-content-secondary">{t('workMetrics.baseline')}</dt><dd>{currentTask.baseline_start_date ?? '—'} → {currentTask.baseline_end_date ?? '—'}</dd></div>
