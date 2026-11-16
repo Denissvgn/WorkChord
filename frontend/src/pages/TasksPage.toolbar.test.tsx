@@ -10,7 +10,7 @@ import TasksPage from './TasksPage';
 const workScopeMock = vi.hoisted(() => ({ iteration: 1 as number | 'backlog', setIteration: vi.fn() }));
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getById: vi.fn() }));
 const taskServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn(), getById: vi.fn() }));
-const savedViewServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), update: vi.fn() }));
+const savedViewServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), update: vi.fn(), delete: vi.fn() }));
 
 vi.mock('../features/scope/useWorkScope', () => ({
     useWorkScope: () => workScopeMock,
@@ -101,6 +101,7 @@ describe('Tasks header and toolbar', () => {
         taskServiceMock.getByIteration.mockResolvedValue(TASKS);
         savedViewServiceMock.getAll.mockResolvedValue([anaPlannedView]);
         savedViewServiceMock.update.mockReset();
+        savedViewServiceMock.delete.mockReset();
     });
 
     it('passes the page chrome check with one header, one toolbar and quick add as the first list row', async () => {
@@ -183,6 +184,71 @@ describe('Tasks header and toolbar', () => {
         await user.selectOptions(screen.getByRole('combobox', { name: 'Status' }), 'Active');
         await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent('status=active'));
         expect(screen.getByTestId('location-search')).not.toHaveTextContent('filters=none');
+    });
+
+    it('shows a failed Save changes next to the Modified view notice', async () => {
+        savedViewServiceMock.update.mockRejectedValue({ response: { status: 409, data: { detail: 'The view changed elsewhere' } } });
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?view=12'] });
+        const chips = await screen.findByRole('list', { name: 'Active filters' });
+        await waitFor(() => expect(within(chips).getByText('Status: Planned')).toBeInTheDocument());
+        await user.click(within(chips).getByRole('button', { name: 'Remove filter Status: Planned' }));
+
+        await user.click(await screen.findByRole('button', { name: 'Save changes' }));
+
+        // The failed save leaves the view modified; both the notice and the failure are shown.
+        expect(await screen.findByRole('alert')).toHaveTextContent('The view changed elsewhere');
+        expect(screen.getByText('Modified view')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Save changes' })).toBeEnabled();
+
+        savedViewServiceMock.update.mockResolvedValue({ ...anaPlannedView, filters_json: { assigneeId: 7 } });
+        await user.click(screen.getByRole('button', { name: 'Save changes' }));
+        await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
+    });
+
+    it('keeps a failed delete inside the open confirmation, also while the view is modified', async () => {
+        savedViewServiceMock.delete.mockRejectedValue({ response: { status: 409, data: { detail: 'The view is in use' } } });
+        const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: ['/tasks?view=12'] });
+        const chips = await screen.findByRole('list', { name: 'Active filters' });
+        await waitFor(() => expect(within(chips).getByText('Status: Planned')).toBeInTheDocument());
+        await user.click(within(chips).getByRole('button', { name: 'Remove filter Status: Planned' }));
+        expect(await screen.findByText('Modified view')).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Ana planned' }));
+        await user.click(await screen.findByRole('menuitem', { name: 'Delete' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Delete' });
+        await user.click(within(dialog).getByRole('button', { name: 'Delete' }));
+
+        expect(await within(dialog).findByRole('alert')).toHaveTextContent('The view is in use');
+        expect(savedViewServiceMock.delete.mock.calls[0]?.[0]).toBe(12);
+        expect(screen.getByTestId('location-search')).toHaveTextContent('view=12');
+
+        await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Delete' })).not.toBeInTheDocument());
+        expect(screen.getByText('Modified view')).toBeInTheDocument();
+    });
+
+    it('clears the search as well as the filters when the empty list offers Clear filters', async () => {
+        const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: ['/tasks?view=12&q=login'] });
+        expect(await screen.findByRole('heading', { level: 1, name: 'Ana planned' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { level: 2, name: 'No tasks match this view' })).toBeInTheDocument();
+        expect(taskTitles()).toEqual([]);
+
+        await user.click(screen.getByRole('button', { name: 'Clear filters' }));
+
+        await waitFor(() => expect(taskTitles()).toHaveLength(TASKS.length));
+        expect(screen.getByRole('heading', { level: 1, name: 'All tasks' })).toBeInTheDocument();
+        expect(screen.getByRole('searchbox', { name: 'Search this list' })).toHaveValue('');
+        expect(screen.queryByRole('list', { name: 'Active filters' })).not.toBeInTheDocument();
+        expect(screen.getByTestId('location-search')).toHaveTextContent(/^$/);
+    });
+
+    it('clears an unmatched search alone from the empty list', async () => {
+        const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: ['/tasks?q=nothing-matches'] });
+        await user.click(await screen.findByRole('button', { name: 'Clear filters' }));
+
+        await waitFor(() => expect(taskTitles()).toHaveLength(TASKS.length));
+        expect(screen.getByRole('searchbox', { name: 'Search this list' })).toHaveValue('');
+        expect(screen.getByTestId('location-search')).not.toHaveTextContent('q=');
     });
 
     it('lists the saved views in the title menu with Save as, Save changes, Duplicate and Delete', async () => {

@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Modal } from '../common/Modal';
-import { useConfirmDialog } from '../common/useConfirmDialog';
+import { ConfirmDialog } from '../common/ConfirmDialog';
 import { savedViewService } from '../../services/savedViewService';
 import { sessionService } from '../../services/sessionService';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -49,9 +49,10 @@ export const useSavedViewManager = ({
     const [formDescription, setFormDescription] = useState('');
     const [formScope, setFormScope] = useState<EditableScope>('personal');
     const [formError, setFormError] = useState<string | null>(null);
-    const [statusMessage, setStatusMessage] = useState<string | null>(null);
+    // A failure stays visible next to the Modified view notice; a success note gives way to it.
+    const [status, setStatus] = useState<{ message: string; isError: boolean } | null>(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const formNameRef = useRef<HTMLInputElement>(null);
-    const { requestConfirmation, confirmationDialog } = useConfirmDialog();
 
     // feedback-policy: query loading,error,retry,empty - the view menu shows the failure and its retry; actions stay unavailable until it loads.
     const { data: session, error: sessionError, refetch: refetchSession } = useQuery({
@@ -141,14 +142,14 @@ export const useSavedViewManager = ({
     const chooseView = (viewId: number | null) => {
         if (viewId === null) {
             onSelectedViewIdChange(null);
-            setStatusMessage(null);
+            setStatus(null);
             return;
         }
         const view = savedViews.find(candidate => candidate.id === viewId);
         if (!view || !view.is_valid) return;
         onSelectedViewIdChange(view.id);
         onApplyView(view);
-        setStatusMessage(null);
+        setStatus(null);
     };
 
     const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
@@ -182,7 +183,10 @@ export const useSavedViewManager = ({
             if (savedView) {
                 await invalidateSavedViews();
                 onSelectedViewIdChange(savedView.id);
-                setStatusMessage(formMode === 'create' ? t('surfaces.savedViews.savedViewCreated') : t('surfaces.savedViews.savedViewDuplicated'));
+                setStatus({
+                message: formMode === 'create' ? t('surfaces.savedViews.savedViewCreated') : t('surfaces.savedViews.savedViewDuplicated'),
+                isError: false,
+            });
             }
             resetForm();
         } catch (error) {
@@ -199,32 +203,36 @@ export const useSavedViewManager = ({
             });
             await invalidateSavedViews();
             onSelectedViewIdChange(updated.id);
-            setStatusMessage(t('surfaces.savedViews.savedViewUpdated'));
+            setStatus({ message: t('surfaces.savedViews.savedViewUpdated'), isError: false });
         } catch (error) {
-            setStatusMessage(getApiErrorMessage(error, t('surfaces.savedViews.failedToUpdateView')));
+            setStatus({ message: getApiErrorMessage(error, t('surfaces.savedViews.failedToUpdateView')), isError: true });
         }
     };
 
     const requestDelete = () => {
         if (!selectedView || !canMutateSelected) return;
-        requestConfirmation({
-            title: t('surfaces.savedViews.delete'),
-            description: t('surfaces.savedViews.deleteSelectedSavedView'),
-            confirmLabel: t('surfaces.savedViews.delete'),
-            cancelLabel: t('surfaces.savedViews.cancel'),
-            closeLabel: t('actions.close'),
-            onConfirm: async () => {
-                try {
-                    await deleteMutation.mutateAsync(selectedView.id);
-                    await invalidateSavedViews();
-                    onSelectedViewIdChange(null);
-                    setStatusMessage(t('surfaces.savedViews.savedViewDeleted'));
-                } catch (error) {
-                    setStatusMessage(getApiErrorMessage(error, t('surfaces.savedViews.failedToDeleteView')));
-                    throw error;
-                }
-            },
-        });
+        deleteMutation.reset();
+        setIsDeleteOpen(true);
+    };
+
+    const closeDelete = () => {
+        if (deleteMutation.isPending) return;
+        deleteMutation.reset();
+        setIsDeleteOpen(false);
+    };
+
+    // A failed delete keeps the confirmation open and says why inside it, where the person is looking.
+    const confirmDelete = async () => {
+        if (!selectedView || deleteMutation.isPending) return;
+        try {
+            await deleteMutation.mutateAsync(selectedView.id);
+        } catch {
+            return;
+        }
+        setIsDeleteOpen(false);
+        await invalidateSavedViews();
+        onSelectedViewIdChange(null);
+        setStatus({ message: t('surfaces.savedViews.savedViewDeleted'), isError: false });
     };
 
     const resetView = () => {
@@ -272,7 +280,26 @@ export const useSavedViewManager = ({
                     </form>
                 )}
             </Modal>
-            {confirmationDialog}
+            <ConfirmDialog
+                open={isDeleteOpen}
+                title={t('surfaces.savedViews.delete')}
+                description={(
+                    <>
+                        {t('surfaces.savedViews.deleteSelectedSavedView')}
+                        {deleteMutation.isError && (
+                            <span role="alert" className="mt-2 block text-feedback-danger-foreground">
+                                {getApiErrorMessage(deleteMutation.error, t('surfaces.savedViews.failedToDeleteView'))}
+                            </span>
+                        )}
+                    </>
+                )}
+                confirmLabel={t('surfaces.savedViews.delete')}
+                cancelLabel={t('surfaces.savedViews.cancel')}
+                closeLabel={t('actions.close')}
+                pending={deleteMutation.isPending}
+                onConfirm={() => void confirmDelete()}
+                onCancel={closeDelete}
+            />
         </>
     );
 
@@ -286,7 +313,8 @@ export const useSavedViewManager = ({
         canMutateSelected,
         isSaving: updateMutation.isPending,
         isDeleting: deleteMutation.isPending,
-        statusMessage,
+        statusMessage: status?.message ?? null,
+        statusIsError: status?.isError ?? false,
         chooseView,
         openSaveAs,
         saveChanges,

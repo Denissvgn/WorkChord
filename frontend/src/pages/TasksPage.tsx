@@ -256,6 +256,15 @@ const TasksPage = () => {
         showSavedView(null);
     }, [showSavedView]);
 
+    // The empty list's Clear filters removes every condition that hides tasks: the view's filters and the search.
+    const clearListConditions = useCallback(() => {
+        appliedRequestedViewIdRef.current = null;
+        updateSearchParams(next => {
+            writeViewToSearchParams(next, null);
+            next.delete(SEARCH_PARAM);
+        });
+    }, [updateSearchParams]);
+
     const savedViewManager = useSavedViewManager({
         filters,
         sortKey,
@@ -431,7 +440,7 @@ const TasksPage = () => {
     }, [requestedSavedView, requestedSavedViewId, searchParams, updateSearchParams]);
 
     const header = (title: ReactNode, ready: boolean) => {
-        const { modified, canMutateSelected, selectedView } = savedViewManager;
+        const { modified, canMutateSelected, selectedView, statusMessage, statusIsError } = savedViewManager;
         const secondaryAction = ready && modified
             ? (canMutateSelected
                 ? (
@@ -445,17 +454,20 @@ const TasksPage = () => {
                     </Button>
                 ))
             : undefined;
-        const meta = ready && modified
-            ? (
-                <p role="status" className="tasks-view-state">
-                    <span className="font-medium text-feedback-warning-foreground">{t('teamwork.modifiedView')}</span>
-                    {' · '}
-                    {t(selectedView ? 'tasks.modifiedViewHelp' : 'tasks.draftViewHelp')}
-                </p>
-            )
-            : savedViewManager.statusMessage
-                ? <p role="status" className="tasks-view-state">{savedViewManager.statusMessage}</p>
-                : undefined;
+        // A failed save is shown on its own line, so the Modified view notice never hides it.
+        const modifiedNotice = ready && modified && (
+            <p role="status" className="tasks-view-state">
+                <span className="font-medium text-feedback-warning-foreground">{t('teamwork.modifiedView')}</span>
+                {' · '}
+                {t(selectedView ? 'tasks.modifiedViewHelp' : 'tasks.draftViewHelp')}
+            </p>
+        );
+        const statusNote = statusMessage && (statusIsError
+            ? <p role="alert" className="tasks-view-state is-error">{statusMessage}</p>
+            : !modifiedNotice && <p role="status" className="tasks-view-state">{statusMessage}</p>);
+        const meta = modifiedNotice || statusNote
+            ? <>{modifiedNotice}{statusNote}</>
+            : undefined;
         return (
             <PageHeader
                 title={title}
@@ -672,7 +684,7 @@ const TasksPage = () => {
                                         )}
                                         hasActiveFilters={activeFilterCount > 0 || searchText !== ''}
                                         activeViewName={savedViewManager.selectedView ? viewName : undefined}
-                                        onClearFilters={clearViewContext}
+                                        onClearFilters={clearListConditions}
                                         onCreateTask={() => setIsCreating(true)}
                                         requestedMode={taskMode}
                                         onModeChange={mode => setTaskContextParam('mode', mode)}
