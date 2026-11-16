@@ -18,7 +18,7 @@ import { overviewTaskDrawerHref } from '../overview/overviewTaskThread';
 
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getSummary: vi.fn() }));
 const ganttServiceMock = vi.hoisted(() => ({ getChart: vi.fn(), previewSchedule: vi.fn(), explainSchedule: vi.fn() }));
-const taskServiceMock = vi.hoisted(() => ({ batchUpdate: vi.fn(), getDetail: vi.fn(), getById: vi.fn(), getIterationHistory: vi.fn() }));
+const taskServiceMock = vi.hoisted(() => ({ batchUpdate: vi.fn(), getDetail: vi.fn(), getById: vi.fn() }));
 const savedViewServiceMock = vi.hoisted(() => ({ getAll: vi.fn() }));
 const projectServiceMock = vi.hoisted(() => ({ getAll: vi.fn() }));
 
@@ -31,7 +31,6 @@ vi.mock('../../components/analytics/DeliveryAnalytics', () => ({ DeliveryAnalyti
 vi.mock('../../components/analytics/OnTrackSummary', () => ({ OnTrackSummary: () => null }));
 vi.mock('../../components/analytics/StatusDistribution', () => ({ StatusDistribution: () => null }));
 vi.mock('../../components/tasks/WorkMetricsLine', () => ({ WorkMetricsLine: () => null }));
-vi.mock('../../components/dashboard/SavedViewDashboardCards', () => ({ SavedViewDashboardCards: () => null }));
 vi.mock('../../components/gantt/GanttChart', () => ({ GanttChart: () => <p>Gantt chart</p> }));
 vi.mock('../../components/tasks/TaskList', () => ({ TaskList: () => <p>Iteration task list</p> }));
 vi.mock('../../components/tasks/KanbanBoard/KanbanBoard', () => ({ KanbanBoard: () => <p>Board</p> }));
@@ -153,7 +152,6 @@ describe('a scope in the URL survives opening a scoped page', () => {
         ganttServiceMock.getChart.mockImplementation(async (id: number) => ganttChart(id));
         savedViewServiceMock.getAll.mockResolvedValue([]);
         projectServiceMock.getAll.mockResolvedValue(PROJECTS);
-        taskServiceMock.getIterationHistory.mockResolvedValue([]);
         iterationServiceMock.getSummary.mockImplementation(async (id: number) => ({ id, name: `Iteration ${id}`, start_date: '2026-10-01', end_date: '2026-10-31' }));
         useScopeStore.setState({ project: null, iteration: null });
     });
@@ -460,7 +458,7 @@ describe('a scope in the URL survives opening a scoped page', () => {
         await settle();
         expect(locationText()).toBe('/analytics?project=1&iteration=11');
         expect(iterationPicker()).toHaveValue('Iteration 11');
-        await waitFor(() => expect(taskServiceMock.getIterationHistory).toHaveBeenLastCalledWith(11));
+        await waitFor(() => expect(iterationServiceMock.getSummary).toHaveBeenLastCalledWith(11));
 
         await act(() => router.navigate('/tasks'));
         await settle();

@@ -4,9 +4,7 @@ import { taskService } from '../../services/taskService';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { OnTrackSummary } from './OnTrackSummary';
 import { StatusDistribution } from './StatusDistribution';
-import { TaskStatusFlow } from './TaskStatusFlow';
 import type { IterationSummary } from '../../types/iteration';
-import type { TaskStatusLog } from '../../types/task';
 
 vi.mock('../../services/taskService', () => ({ taskService: { metricMatches: vi.fn() } }));
 
@@ -55,6 +53,15 @@ describe('iteration outlook on Analytics', () => {
         expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'iteration_overflow' }, expect.anything());
     });
 
+    it('discloses the total when a schedule exception list is truncated', async () => {
+        vi.mocked(taskService.metricMatches).mockResolvedValue({ metric: 'late_start', has_more: true, items: Array.from({ length: 200 }, (_, index) => ({ id: index + 1, title: `Task ${index + 1}`, status: 'planned', project_name: 'Orchard', iteration_name: 'Iteration 7' })) });
+        const { user } = renderWithProviders(<OnTrackSummary summary={summary({ late_start_tasks: 201 })} />);
+        await user.click(screen.getByRole('button', { name: '201 tasks' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Late start' });
+        expect(await within(dialog).findByText('Showing the first 200 of 201 tasks.')).toBeVisible();
+        expect(within(dialog).getAllByRole('link')).toHaveLength(200);
+    });
+
     it('splits tasks by status with counts and a table view, accepted shown separately', () => {
         renderWithProviders(<StatusDistribution summary={summary()} />);
         expect(screen.getByRole('img', { name: 'Planned 4, Active 2, Resolved 1, Closed 3' })).toBeInTheDocument();
@@ -62,16 +69,4 @@ describe('iteration outlook on Analytics', () => {
         expect(screen.getByRole('rowheader', { name: 'Accepted (of closed)' })).toBeInTheDocument();
     });
 
-    it('lists a task lifecycle in order with time in each state and the current state named', () => {
-        const logs = [
-            { id: 1, task_id: 5, from_status: 'planned', to_status: 'active', changed_at: '2026-11-03T09:00:00Z', triggered_by: 'user', affected_task_ids: [] },
-            { id: 2, task_id: 5, from_status: 'active', to_status: 'resolved', changed_at: '2026-11-05T09:00:00Z', triggered_by: 'agent', affected_task_ids: [] },
-        ] as TaskStatusLog[];
-        renderWithProviders(<TaskStatusFlow taskId={5} title="Import holidays" logs={logs} nowMs={Date.parse('2026-11-06T09:00:00Z')} />);
-        expect(screen.getByRole('link', { name: '#5 · Import holidays' })).toHaveAttribute('href', '/tasks?task=5');
-        const items = screen.getAllByRole('listitem');
-        expect(items).toHaveLength(3);
-        expect(items[1]).toHaveTextContent(/Active.*for 2 days.*by a person/);
-        expect(items[2]).toHaveTextContent(/Resolved.*Current.*for 1 day so far.*by an agent/);
-    });
 });

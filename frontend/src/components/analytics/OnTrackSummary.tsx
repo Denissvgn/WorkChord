@@ -69,7 +69,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                 ] as const).map(([label, metric, count]) => <div key={metric}>
                     <dt className="font-medium">{t("workStatus." + label)}</dt>
                     <dd className="text-content-secondary">{t("analytics.onTrack." + label + "Definition")}{' '}
-                        {count == null ? t('common.unknown') : <MetricCount metric={metric} scope={scope} title={t("workStatus." + label)}>{t('analytics.onTrack.taskCount', { count })}</MetricCount>}
+                        {count == null ? t('common.unknown') : <MetricCount metric={metric} scope={scope} title={t("workStatus." + label)} total={count}>{t('analytics.onTrack.taskCount', { count })}</MetricCount>}
                     </dd>
                 </div>)}
             </dl>}
