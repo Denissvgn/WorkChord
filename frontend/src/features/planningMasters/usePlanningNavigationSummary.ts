@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { iterationService } from '../../services/iterationService';
 import { useIterationStore } from '../../store/iterationStore';
-import type { Iteration } from '../../types/iteration';
+import type { Iteration, IterationPlanningReadinessSummary } from '../../types/iteration';
 import { deriveStatus, nextStep, readiness } from './masters';
 import type { PlanReadiness } from './masters';
 
@@ -11,6 +11,40 @@ export const planningNavigationSummaryKey = (iterationId?: number) => (
         ? ['planning-navigation-summary'] as const
         : ['planning-navigation-summary', iterationId] as const
 );
+
+/**
+ * How far one iteration's plan is, from its planning readiness response: the checkpoints
+ * done of the total, and the first checkpoint that is not complete.
+ */
+export const planProgress = (
+    iteration: Iteration | null,
+    iterationCount: number,
+    summary: IterationPlanningReadinessSummary | undefined,
+) => {
+    const readinessData: PlanReadiness = {
+        iterationCount,
+        hasCurrentIteration: iteration !== null,
+        currentIterationName: iteration?.name ?? '',
+        currentIterationStart: iteration?.start_date ?? '',
+        currentIterationEnd: iteration?.end_date ?? '',
+        currentIterationDays: iteration?.working_days ?? 0,
+        teamMemberCount: summary?.team_member_count ?? 0,
+        teamCapacity: summary?.team_capacity_hours ?? 0,
+        teamMembersNoCap: summary?.team_members_no_capacity ?? 0,
+        taskCount: summary?.task_count ?? 0,
+        tasksWithoutAssignee: summary?.tasks_without_assignee ?? 0,
+        tasksWithoutEffort: summary?.tasks_without_effort ?? 0,
+        tasksAgentWithoutCapacity: summary?.tasks_agent_without_capacity ?? 0,
+        teamAgentCount: summary?.team_agent_count ?? 0,
+        hasGanttSchedule: summary?.has_schedule ?? false,
+        ganttLastBuilt: '',
+        riskCount: summary?.risk_count ?? 0,
+        inboxCount: 0,
+        checkpointStates: Object.fromEntries((summary?.checkpoints ?? []).map(item => [item.id, item.state])),
+    };
+    const status = deriveStatus(readinessData);
+    return { ready: readiness(status), nextId: nextStep(status) };
+};
 
 export const usePlanningNavigationSummary = () => {
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
@@ -36,30 +70,10 @@ export const usePlanningNavigationSummary = () => {
         staleTime: 60000,
     });
 
-    const readinessData = useMemo<PlanReadiness>(() => ({
-        iterationCount: iterations.length,
-        hasCurrentIteration,
-        currentIterationName: currentIteration?.name ?? '',
-        currentIterationStart: currentIteration?.start_date ?? '',
-        currentIterationEnd: currentIteration?.end_date ?? '',
-        currentIterationDays: currentIteration?.working_days ?? 0,
-        teamMemberCount: summaryQuery.data?.team_member_count ?? 0,
-        teamCapacity: summaryQuery.data?.team_capacity_hours ?? 0,
-        teamMembersNoCap: summaryQuery.data?.team_members_no_capacity ?? 0,
-        taskCount: summaryQuery.data?.task_count ?? 0,
-        tasksWithoutAssignee: summaryQuery.data?.tasks_without_assignee ?? 0,
-        tasksWithoutEffort: summaryQuery.data?.tasks_without_effort ?? 0,
-        tasksAgentWithoutCapacity: summaryQuery.data?.tasks_agent_without_capacity ?? 0,
-        teamAgentCount: summaryQuery.data?.team_agent_count ?? 0,
-        hasGanttSchedule: summaryQuery.data?.has_schedule ?? false,
-        ganttLastBuilt: '',
-        riskCount: summaryQuery.data?.risk_count ?? 0,
-        inboxCount: 0,
-        checkpointStates: Object.fromEntries((summaryQuery.data?.checkpoints ?? []).map(item => [item.id, item.state])),
-    }), [currentIteration, hasCurrentIteration, iterations.length, summaryQuery.data]);
-    const status = useMemo(() => deriveStatus(readinessData), [readinessData]);
-    const ready = useMemo(() => readiness(status), [status]);
-    const nextId = useMemo(() => nextStep(status), [status]);
+    const { ready, nextId } = useMemo(
+        () => planProgress(currentIteration, iterations.length, summaryQuery.data),
+        [currentIteration, iterations.length, summaryQuery.data],
+    );
 
     const refetch = async () => Promise.allSettled([
         iterationsQuery.refetch(),

@@ -1,7 +1,7 @@
 import type { TaskFilters } from '../../components/tasks/TaskFiltersBar';
 import type { AgentPipeline } from '../../types/agent';
 import type { Iteration } from '../../types/iteration';
-import type { Task } from '../../types/task';
+import type { Task, TaskReference } from '../../types/task';
 import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { selectVisibleWork } from '../../utils/visibleWork';
 import { writeFiltersToSearchParams } from '../savedViews/taskViewParams';
@@ -15,6 +15,7 @@ export const OVERVIEW_TASK_LISTS = {
     total: {},
     done: { status: 'closed' },
     atRisk: { planningIssue: 'at-risk' },
+    // The blocked filter leaves finished work out, so only open blocked tasks count.
     blocked: { isBlocked: true },
     toAssign: { planningIssue: 'unassigned' },
 } as const satisfies Record<string, Partial<TaskFilters>>;
@@ -69,6 +70,74 @@ export const pipelineTasksInScope = (
 
 const DONE_STATUSES = new Set(['resolved', 'closed']);
 
+/**
+ * A list Overview can show itself, for counts that no single Tasks list holds: a sum over
+ * several iterations, or Backlog work, which the Tasks backlog does not filter.
+ */
+export type OverviewCountList = OverviewTaskList | `stage-${PipelineStage}`;
+
+export const OVERVIEW_COUNT_LIST_PARAM = 'list';
+
+export const parseOverviewCountList = (value: string | null): OverviewCountList | null => {
+    if (!value) return null;
+    if (Object.hasOwn(OVERVIEW_TASK_LISTS, value)) return value as OverviewTaskList;
+    const stage = value.startsWith('stage-') ? value.slice('stage-'.length) : null;
+    return stage && (PIPELINE_STAGES as readonly string[]).includes(stage) ? value as OverviewCountList : null;
+};
+
+export const countListStage = (list: OverviewCountList): PipelineStage | null => (
+    list.startsWith('stage-') ? list.slice('stage-'.length) as PipelineStage : null
+);
+
+/** The Overview link that opens one of its own lists; the scope is added by the caller. */
+export const overviewCountListHref = (list: OverviewCountList) => (
+    `/?${new URLSearchParams({ [OVERVIEW_COUNT_LIST_PARAM]: list }).toString()}`
+);
+
+/**
+ * Backlog work as Overview reads it. The backlog lookup returns task references, which carry
+ * the title, status, project, parent and blocker but no assignee, effort or schedule signals,
+ * so those fields are left empty here and Overview does not count anything that needs them.
+ */
+export const backlogRoots = (references: TaskReference[]): Task[] => {
+    const byId = new Map<number, Task>();
+    for (const reference of references) {
+        byId.set(reference.id, {
+            id: reference.id,
+            title: reference.title,
+            status: reference.status,
+            version: reference.version,
+            project_id: reference.project_id,
+            project: reference.project_id === null
+                ? undefined
+                : { id: reference.project_id, name: reference.project_name ?? '' },
+            iteration_id: null,
+            parent_id: reference.parent_id,
+            blocked_reason: reference.blocked_reason ?? null,
+            assignee: null,
+            effort_days: null,
+            priority: 0,
+            end_date: null,
+            is_overdue: false,
+            is_delayed: false,
+            is_outside_constraints: false,
+            is_composite: false,
+            is_deferred: false,
+            is_optional: false,
+            tags: [],
+            dependencies: [],
+            children: [],
+        } as unknown as Task);
+    }
+    const roots: Task[] = [];
+    for (const task of byId.values()) {
+        const parent = typeof task.parent_id === 'number' ? byId.get(task.parent_id) : undefined;
+        if (parent) parent.children = [...(parent.children ?? []), task];
+        else roots.push(task);
+    }
+    return roots;
+};
+
 /** True when today falls within the iteration's dates. */
 export const isOpenIteration = (iteration: Pick<Iteration, 'start_date' | 'end_date'>, today: string) => (
     iteration.start_date.slice(0, 10) <= today && today <= iteration.end_date.slice(0, 10)
@@ -113,6 +182,17 @@ export const workingDaysLeft = (iteration: Iteration, today: string) => {
     const elapsed = Math.round((now - start) / MS_PER_DAY) + 1;
     const dayNo = Math.min(workingDays, Math.max(1, Math.ceil((elapsed / calendarDays) * workingDays)));
     return Math.max(0, workingDays - dayNo);
+};
+
+/**
+ * Working days left until the latest end among the iterations: with All projects the work in
+ * view is done when the last open iteration ends. Null when there is no iteration.
+ */
+export const daysLeftToLatestEnd = (iterations: Iteration[], today: string): number | null => {
+    const latest = [...iterations].sort((left, right) => (
+        right.end_date.slice(0, 10).localeCompare(left.end_date.slice(0, 10)) || right.id - left.id
+    ))[0];
+    return latest ? workingDaysLeft(latest, today) : null;
 };
 
 export type DeliveryRisk = 'overdue' | 'late-start' | 'outside-limits' | 'blocked' | null;
@@ -162,6 +242,8 @@ export interface AttentionCandidate {
     count: number;
     /** The iteration the item is about; with several open iterations each has its own item. */
     iteration: Iteration | null;
+    /** For the plan item: the checkpoints done of the total, and the next one to complete. */
+    plan?: { done: number; total: number; nextId: string };
 }
 
 /** The most severe candidate: kinds in severity order, then the larger count, then the earlier iteration. */

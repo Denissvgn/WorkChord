@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { Iteration } from '../../types/iteration';
-import type { Task } from '../../types/task';
+import type { Task, TaskReference } from '../../types/task';
 import {
+    backlogRoots,
+    daysLeftToLatestEnd,
     iterationsInView,
     listTasks,
+    overviewCountListHref,
+    parseOverviewCountList,
     pickAttention,
     pipelineTasksInScope,
     selectWorkNow,
@@ -121,5 +125,55 @@ describe('Overview signals', () => {
         expect(pipelineTasksInScope(tasks, 1, 12).map(item => item.id)).toEqual([1]);
         expect(pipelineTasksInScope(tasks, 'all', 21).map(item => item.id)).toEqual([2]);
         expect(pipelineTasksInScope(tasks, 1, 'backlog').map(item => item.id)).toEqual([3]);
+    });
+});
+
+describe('Overview count lists', () => {
+    it('reads only the lists Overview can show', () => {
+        expect(parseOverviewCountList('done')).toBe('done');
+        expect(parseOverviewCountList('stage-executing')).toBe('stage-executing');
+        expect(parseOverviewCountList('stage-unknown')).toBeNull();
+        expect(parseOverviewCountList('toString')).toBeNull();
+        expect(parseOverviewCountList(null)).toBeNull();
+        expect(overviewCountListHref('atRisk')).toBe('/?list=atRisk');
+    });
+
+    it('counts open blocked work only', () => {
+        const roots = [
+            task(1, { blocked_reason: 'Waiting' }),
+            task(2, { status: 'closed', blocked_reason: 'Left over' }),
+            task(3, { status: 'resolved', blocked_reason: 'Left over' }),
+        ];
+        expect(listTasks(roots, 'blocked').map(item => item.id)).toEqual([1]);
+    });
+});
+
+describe('Backlog references', () => {
+    const reference = (id: number, overrides: Partial<TaskReference> = {}) => ({
+        id, title: `Task ${id}`, version: 1, status: 'planned', project_id: 1, project_name: 'Alpha',
+        iteration_id: null, parent_id: null, owner_profile_id: null, ...overrides,
+    } as TaskReference);
+
+    it('nests subtasks under their parent, so only leaves are counted', () => {
+        const roots = backlogRoots([
+            reference(1),
+            reference(2, { parent_id: 1, status: 'closed' }),
+            reference(3, { parent_id: 1 }),
+            reference(4, { parent_id: 99 }),
+        ]);
+        expect(roots.map(item => item.id)).toEqual([1, 4]);
+        expect(listTasks(roots, 'total').map(item => item.id)).toEqual([2, 3, 4]);
+        expect(listTasks(roots, 'done').map(item => item.id)).toEqual([2]);
+        expect(roots[0].project).toEqual({ id: 1, name: 'Alpha' });
+    });
+});
+
+describe('Days left to the latest end', () => {
+    it('counts the working days left in the iteration that ends last', () => {
+        const early = iteration(1, 1, '2026-11-02', '2026-11-27', 20);
+        const late = iteration(2, 2, '2026-11-09', '2026-12-04', 20);
+        expect(daysLeftToLatestEnd([early, late], '2026-11-16')).toBe(workingDaysLeft(late, '2026-11-16'));
+        expect(daysLeftToLatestEnd([early, late], '2026-11-16')).toBe(13);
+        expect(daysLeftToLatestEnd([], '2026-11-16')).toBeNull();
     });
 });

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useQueries } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     AlertTriangle,
@@ -10,8 +10,10 @@ import {
     CheckCircle2,
     Clock,
     ClipboardCheck,
+    HelpCircle,
     ListTodo,
     Plus,
+    RefreshCw,
     Target,
     User,
     UserPlus,
@@ -19,9 +21,11 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { formatDate } from '../utils/formatDate';
 import { formatDecimal } from '../utils/workNumbers';
+import { getApiErrorStatus } from '../utils/apiError';
 import { taskService } from '../services/taskService';
+import { iterationService } from '../services/iterationService';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
-import { InlineEmptyState, PageHeader, PageLayout, SectionCard } from '../components/ui';
+import { InlineEmptyState, PageHeader, PageLayout, SectionCard, SlideOverDrawer } from '../components/ui';
 import type { PillTone } from '../components/ui/tone';
 import { STATUS_TONE, toneSoftVar, toneVar } from '../components/ui/tone';
 import { usePipeline } from '../components/tasks/usePipeline';
@@ -29,26 +33,37 @@ import type { Iteration } from '../types/iteration';
 import type { Task } from '../types/task';
 import { useWorkScope } from '../features/scope/useWorkScope';
 import { useScopeLink } from '../features/scope/useScopeLink';
-import type { ScopeProject } from '../features/scope/workScope';
-import { usePlanningNavigationSummary } from '../features/planningMasters/usePlanningNavigationSummary';
+import type { ScopeIteration, ScopeProject } from '../features/scope/workScope';
+import {
+    planProgress,
+    planningNavigationSummaryKey,
+    usePlanningNavigationSummary,
+} from '../features/planningMasters/usePlanningNavigationSummary';
 import { isPlanningStepId } from '../features/planningMasters/planningReturn';
 import {
     overviewTaskDrawerHref,
     overviewTaskReturnFocusId,
 } from '../features/overview/overviewTaskThread';
+import { loadProjectBacklog } from '../features/overview/overviewBacklog';
 import {
+    OVERVIEW_COUNT_LIST_PARAM,
     PIPELINE_STAGES,
+    backlogRoots,
+    countListStage,
+    daysLeftToLatestEnd,
     deliveryRisk,
     iterationsInView,
     listTasks,
+    overviewCountListHref,
+    parseOverviewCountList,
     pickAttention,
     pipelineStageHref,
     pipelineTasksInScope,
     selectWorkNow,
     taskListHref,
-    workingDaysLeft,
     type AttentionCandidate,
     type AttentionKind,
+    type OverviewCountList,
     type OverviewTaskList,
     type PipelineStage,
 } from '../features/overview/overviewSignals';
@@ -57,13 +72,14 @@ type OverviewLocationState = {
     returnFocusId?: string;
 };
 
-/** One iteration's share of a count, with the link to the list that holds it. */
-type CountPart = {
-    key: number;
-    label: string;
-    count: number;
-    to: string;
-};
+/** Whether a source Overview needs has arrived; 'unavailable' means this person cannot read it. */
+type SourceState = 'loading' | 'failed' | 'ready' | 'unavailable';
+
+/** The tasks Overview counts: one group per iteration in view, or the project's backlog. */
+type TaskGroup = { iteration: Iteration | null; roots: Task[] };
+
+/** A task in one of Overview's own lists, with the iteration it belongs to. */
+type ListedTask = { task: Task; iteration: Iteration | null };
 
 const ATTENTION_ID = 'overview-attention-title';
 const WORK_NOW_TITLE_ID = 'overview-work-now-title';
@@ -93,6 +109,13 @@ const ATTENTION_LOOK: Record<AttentionKind, { tone: PillTone; icon: LucideIcon }
     plan: { tone: 'indigo', icon: Target },
 };
 
+/** The combined state of several sources: any failure first, then anything still loading. */
+const combine = (states: SourceState[]): SourceState => {
+    if (states.includes('failed')) return 'failed';
+    if (states.includes('loading')) return 'loading';
+    return 'ready';
+};
+
 const OverviewPage = () => {
     const { t } = useTranslation();
     const scopeLink = useScopeLink();
@@ -104,11 +127,15 @@ const OverviewPage = () => {
     const [today] = useState(localToday);
 
     const iterations = navigation.iterations;
+    const isAllProjects = project === 'all';
+    const backlogProject = !isAllProjects && scopeIteration === 'backlog' && typeof project === 'number' ? project : null;
+    const isBacklog = backlogProject !== null;
     const viewIterations = useMemo(
         () => iterationsInView(iterations, project, scopeIteration, today),
         [iterations, project, scopeIteration, today],
     );
-    const isAllProjects = project === 'all';
+    /** The project links carry: one project, or All projects. */
+    const linkProject: ScopeProject | undefined = isAllProjects ? 'all' : project;
 
     // feedback-policy: query loading,error,retry,empty - each section shows loading, retry and empty states.
     const taskQueries = useQueries({
@@ -118,19 +145,43 @@ const OverviewPage = () => {
             staleTime: 60000,
         })),
     });
-    const tasksLoading = taskQueries.some(query => query.data === undefined && query.isLoading);
-    const failedTaskQueries = taskQueries.filter(query => query.data === undefined && query.isError);
-    const tasksAvailable = taskQueries.every(query => query.data !== undefined);
-    const tasksByIteration = viewIterations.map((item, index) => ({
-        iteration: item,
-        roots: (taskQueries[index]?.data ?? []) as Task[],
-    }));
-    const allRoots = tasksByIteration.flatMap(entry => entry.roots);
-
+    // feedback-policy: query loading,error,retry,empty - the backlog sections share the task states.
+    const backlogQuery = useQuery({
+        queryKey: ['overview-backlog', backlogProject],
+        queryFn: () => loadProjectBacklog(backlogProject as number),
+        enabled: isBacklog,
+        staleTime: 60000,
+    });
+    // feedback-policy: query loading,error,retry,empty - the attention item waits for every iteration's plan.
+    const readinessQueries = useQueries({
+        queries: viewIterations.map(item => ({
+            queryKey: planningNavigationSummaryKey(item.id),
+            queryFn: () => iterationService.getPlanningReadiness(item.id),
+            staleTime: 60000,
+        })),
+    });
     const pipelineQuery = usePipeline(true);
-    const pipelineAvailable = pipelineQuery.usableData !== undefined;
 
-    /** The parts of a count: one per iteration in view, each with its own list link. */
+    const tasksState: SourceState = isBacklog
+        ? (backlogQuery.data !== undefined ? 'ready' : backlogQuery.isError ? 'failed' : 'loading')
+        : combine(taskQueries.map(query => (
+            query.data !== undefined ? 'ready' : query.isError ? 'failed' : 'loading'
+        )));
+    const readinessState: SourceState = isBacklog
+        ? 'unavailable'
+        : combine(readinessQueries.map(query => (
+            query.data !== undefined ? 'ready' : query.isError ? 'failed' : 'loading'
+        )));
+    const pipelineStatus = getApiErrorStatus(pipelineQuery.error);
+    const pipelineState: SourceState = !pipelineQuery.canRead || (pipelineQuery.isError && (pipelineStatus === 401 || pipelineStatus === 403))
+        ? 'unavailable'
+        : pipelineQuery.usableData !== undefined ? 'ready' : pipelineQuery.isError ? 'failed' : 'loading';
+
+    const groups: TaskGroup[] = isBacklog
+        ? [{ iteration: null, roots: backlogRoots(backlogQuery.data ?? []) }]
+        : viewIterations.map((item, index) => ({ iteration: item, roots: (taskQueries[index]?.data ?? []) as Task[] }));
+    const allRoots = groups.flatMap(group => group.roots);
+
     const iterationLabel = (item: Iteration) => (
         isAllProjects && item.project?.name ? `${item.name} · ${item.project.name}` : item.name
     );
@@ -138,63 +189,109 @@ const OverviewPage = () => {
         project: isAllProjects ? 'all' : (item.project_id ?? 'all') as ScopeProject,
         iteration: item.id,
     });
-    const listParts = (list: OverviewTaskList): CountPart[] => tasksByIteration.map(({ iteration: item, roots }) => ({
-        key: item.id,
-        label: iterationLabel(item),
-        count: listTasks(roots, list).length,
-        to: linkIn(item, taskListHref(list)),
-    }));
-    const stageParts = (stage: PipelineStage): CountPart[] => viewIterations.map(item => ({
-        key: item.id,
-        label: iterationLabel(item),
-        count: pipelineTasksInScope(pipelineQuery.pipeline[stage], isAllProjects ? 'all' : project, item.id).length,
-        to: linkIn(item, pipelineStageHref(stage)),
-    }));
+    /** The scopes the pipeline counts cover: each iteration in view, or the backlog. */
+    const pipelineScopes: { iteration: Iteration | null; value: ScopeIteration }[] = isBacklog
+        ? [{ iteration: null, value: 'backlog' }]
+        : viewIterations.map(item => ({ iteration: item, value: item.id }));
 
-    const planKnown = navigation.isPlanProgressKnown && typeof scopeIteration === 'number';
-    const planIteration = typeof scopeIteration === 'number'
-        ? iterations.find(item => item.id === scopeIteration) ?? null
-        : null;
+    // A count opens a Tasks list when one list holds exactly that count: a single iteration's
+    // filtered list, or a pipeline stage. Otherwise Overview shows the list itself.
+    const singleIteration = !isBacklog && viewIterations.length === 1 ? viewIterations[0] : null;
+    const ownList = (list: OverviewCountList) => scopeLink(overviewCountListHref(list));
 
-    const candidates: AttentionCandidate[] = [];
-    // Each kind is counted per iteration, so the item and its link always name one list.
-    if (tasksAvailable) {
-        for (const { iteration: item, roots } of tasksByIteration) {
-            candidates.push({ kind: 'blocked', count: listTasks(roots, 'blocked').length, iteration: item });
-            candidates.push({ kind: 'to-assign', count: listTasks(roots, 'toAssign').length, iteration: item });
+    const listedTasks = (list: OverviewCountList): ListedTask[] => {
+        const stage = countListStage(list);
+        if (stage) {
+            return pipelineScopes.flatMap(scope => (
+                pipelineTasksInScope(pipelineQuery.pipeline[stage], linkProject, scope.value)
+                    .map(task => ({ task, iteration: scope.iteration }))
+            ));
         }
-    }
-    if (pipelineAvailable) {
-        for (const item of viewIterations) {
-            candidates.push({
-                kind: 'reviews',
-                count: pipelineTasksInScope(pipelineQuery.pipeline.verification_required, isAllProjects ? 'all' : project, item.id).length,
-                iteration: item,
+        return groups.flatMap(group => (
+            listTasks(group.roots, list as OverviewTaskList).map(task => ({ task, iteration: group.iteration }))
+        ));
+    };
+    const taskCount = (list: OverviewTaskList) => ({
+        value: listedTasks(list).length,
+        to: singleIteration ? linkIn(singleIteration, taskListHref(list)) : ownList(list),
+    });
+    const stageCount = (stage: PipelineStage) => ({
+        value: listedTasks(`stage-${stage}`).length,
+        to: singleIteration
+            ? linkIn(singleIteration, pipelineStageHref(stage))
+            : isBacklog ? scopeLink(pipelineStageHref(stage)) : ownList(`stage-${stage}`),
+    });
+
+    // Each kind is counted per iteration, so the item and its link always name one list.
+    const attentionState = combine([tasksState, pipelineState, readinessState].filter(state => state !== 'unavailable'));
+    const candidates: AttentionCandidate[] = [];
+    if (attentionState === 'ready') {
+        for (const group of groups) {
+            candidates.push({ kind: 'blocked', count: listTasks(group.roots, 'blocked').length, iteration: group.iteration });
+            // Backlog references carry no assignee, so tasks to assign are counted in iterations only.
+            if (group.iteration) {
+                candidates.push({ kind: 'to-assign', count: listTasks(group.roots, 'toAssign').length, iteration: group.iteration });
+            }
+        }
+        if (pipelineState === 'ready') {
+            for (const scope of pipelineScopes) {
+                candidates.push({
+                    kind: 'reviews',
+                    count: pipelineTasksInScope(pipelineQuery.pipeline.verification_required, linkProject, scope.value).length,
+                    iteration: scope.iteration,
+                });
+            }
+        }
+        if (readinessState === 'ready') {
+            viewIterations.forEach((item, index) => {
+                const { ready, nextId } = planProgress(item, iterations.length, readinessQueries[index]?.data);
+                if (ready.done < ready.total) {
+                    candidates.push({ kind: 'plan', count: ready.total - ready.done, iteration: item, plan: { ...ready, nextId } });
+                }
             });
         }
     }
-    if (planKnown && navigation.ready.done < navigation.ready.total) {
-        candidates.push({ kind: 'plan', count: navigation.ready.total - navigation.ready.done, iteration: planIteration });
-    }
     const attention = pickAttention(candidates);
+    const unknownSources = [
+        tasksState === 'failed' ? 'tasks' : null,
+        pipelineState === 'failed' ? 'pipeline' : null,
+        readinessState === 'failed' ? 'plan' : null,
+    ].filter((value): value is 'tasks' | 'pipeline' | 'plan' => value !== null);
+
+    const retryTasks = () => {
+        if (isBacklog) void backlogQuery.refetch();
+        taskQueries.forEach(query => { if (query.isError) void query.refetch(); });
+    };
+    const retryAttention = () => {
+        if (tasksState === 'failed') retryTasks();
+        if (pipelineState === 'failed') void pipelineQuery.refetch();
+        readinessQueries.forEach(query => { if (query.isError) void query.refetch(); });
+    };
 
     const returnFocusId = (location.state as OverviewLocationState | null)?.returnFocusId;
     useEffect(() => {
-        if (!returnFocusId || !tasksAvailable) return;
+        if (!returnFocusId || tasksState !== 'ready') return;
         const focusTarget = document.getElementById(returnFocusId) ?? pageTitleRef.current;
         focusTarget?.focus();
         navigate(
             { pathname: location.pathname, search: location.search, hash: location.hash },
             { replace: true, state: null },
         );
-    }, [location.hash, location.pathname, location.search, navigate, returnFocusId, tasksAvailable]);
+    }, [location.hash, location.pathname, location.search, navigate, returnFocusId, tasksState]);
 
     const iterationsLoading = navigation.isIterationsLoading && iterations.length === 0;
     const iterationsFailed = navigation.isIterationsError;
     const hasNoIterations = !iterationsLoading && !iterationsFailed && iterations.length === 0;
-    const isBacklog = !isAllProjects && scopeIteration === 'backlog';
     const scopeKnown = project !== undefined && scopeIteration !== undefined;
-    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && !hasNoIterations && !isBacklog;
+    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && (isBacklog || !hasNoIterations);
+
+    const openList = parseOverviewCountList(new URLSearchParams(location.search).get(OVERVIEW_COUNT_LIST_PARAM));
+    const closeList = () => {
+        const params = new URLSearchParams(location.search);
+        params.delete(OVERVIEW_COUNT_LIST_PARAM);
+        const search = params.toString();
+        navigate({ pathname: location.pathname, search: search ? `?${search}` : '' }, { replace: true });
+    };
 
     const purpose = (() => {
         if (iterationsLoading || !scopeKnown) return t('overview.purpose.loading');
@@ -218,9 +315,12 @@ const OverviewPage = () => {
             : t('overview.purpose.independentIteration', dates);
     })();
 
-    const retryTasks = () => {
-        failedTaskQueries.forEach(query => { void query.refetch(); });
+    const listLabel = (list: OverviewCountList) => {
+        const stage = countListStage(list);
+        if (stage) return t(`agentPipeline.columns.${stage}.title`);
+        return t(`overview.list.labels.${list}`);
     };
+    const listReady = openList !== null && (countListStage(openList) ? pipelineState === 'ready' : tasksState === 'ready');
 
     return (
         <PageLayout>
@@ -253,7 +353,7 @@ const OverviewPage = () => {
                     onRetry={() => { void navigation.refetch(); }}
                 />
             )}
-            {hasNoIterations && (
+            {hasNoIterations && !isBacklog && (
                 <SectionCard>
                     <InlineEmptyState
                         title={t('overview.noIterationTitle')}
@@ -267,30 +367,20 @@ const OverviewPage = () => {
                     />
                 </SectionCard>
             )}
-            {isBacklog && !iterationsLoading && !iterationsFailed && !hasNoIterations && (
-                <SectionCard>
-                    <InlineEmptyState
-                        title={t('overview.backlogTitle')}
-                        description={t('overview.backlogBody')}
-                        actions={(
-                            <Link className="btn secondary" to={scopeLink('/tasks')}>
-                                {t('overview.openBacklog')}
-                                <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                            </Link>
-                        )}
-                    />
-                </SectionCard>
-            )}
 
             {showContent && (
                 <>
                     <AttentionItem
+                        state={attentionState}
                         candidate={attention}
+                        unknownSources={unknownSources}
+                        onRetry={retryAttention}
+                        backlog={isBacklog}
+                        reviewsHidden={pipelineState === 'unavailable'}
                         multiIteration={isAllProjects}
-                        loading={tasksLoading}
-                        plan={{ ...navigation.ready, nextId: navigation.nextId }}
                         iterationLabel={iterationLabel}
                         linkIn={linkIn}
+                        ownList={ownList}
                     />
 
                     {isAllProjects && viewIterations.length === 0 && (
@@ -300,9 +390,9 @@ const OverviewPage = () => {
                     <div className="overview-grid">
                         <WorkNow
                             roots={allRoots}
-                            loading={tasksLoading}
-                            failed={failedTaskQueries.length > 0}
+                            state={tasksState}
                             onRetry={retryTasks}
+                            backlog={isBacklog}
                             showProject={isAllProjects}
                             showIteration={isAllProjects && viewIterations.length > 1}
                             iterations={viewIterations}
@@ -310,59 +400,109 @@ const OverviewPage = () => {
                         <div className="overview-side">
                             <AgentsNow
                                 query={pipelineQuery}
-                                stageParts={stageParts}
+                                stageCount={stageCount}
                             />
                             <OnTrack
-                                available={tasksAvailable}
-                                loading={tasksLoading}
-                                failed={failedTaskQueries.length > 0}
+                                state={tasksState}
                                 onRetry={retryTasks}
-                                doneParts={tasksAvailable ? listParts('done') : []}
-                                totalParts={tasksAvailable ? listParts('total') : []}
-                                atRiskParts={tasksAvailable ? listParts('atRisk') : []}
-                                dayParts={viewIterations.map(item => ({
-                                    key: item.id,
-                                    label: iterationLabel(item),
-                                    count: workingDaysLeft(item, today),
-                                    to: linkIn(item, '/gantt'),
-                                }))}
+                                done={tasksState === 'ready' ? taskCount('done') : null}
+                                total={tasksState === 'ready' ? taskCount('total') : null}
+                                // Backlog references carry no schedule signals, and Backlog has no end date.
+                                atRisk={tasksState === 'ready' && !isBacklog ? taskCount('atRisk') : null}
+                                daysLeft={isBacklog ? null : daysLeftToLatestEnd(viewIterations, today)}
+                                backlog={isBacklog}
                             />
                         </div>
                     </div>
                 </>
             )}
+
+            <SlideOverDrawer
+                open={showContent && openList !== null}
+                title={openList ? listLabel(openList) : ''}
+                subtitle={purpose}
+                onClose={closeList}
+            >
+                <div className="grid gap-3 p-5">
+                    {openList && (listReady ? (
+                        <CountList
+                            items={listedTasks(openList)}
+                            label={listLabel(openList)}
+                            showIteration={!isBacklog && viewIterations.length > 1}
+                            linkProject={linkProject}
+                        />
+                    ) : (
+                        <QueryLoadingState message={t('overview.dataStatus.sectionLoading')} />
+                    ))}
+                </div>
+            </SlideOverDrawer>
         </PageLayout>
     );
 };
 
 const AttentionItem = ({
+    state,
     candidate,
+    unknownSources,
+    onRetry,
+    backlog,
+    reviewsHidden,
     multiIteration,
-    loading,
-    plan,
     iterationLabel,
     linkIn,
+    ownList,
 }: {
+    state: SourceState;
     candidate: AttentionCandidate | null;
+    unknownSources: ('tasks' | 'pipeline' | 'plan')[];
+    onRetry: () => void;
+    backlog: boolean;
+    reviewsHidden: boolean;
     multiIteration: boolean;
-    loading: boolean;
-    plan: { done: number; total: number; nextId: string };
     iterationLabel: (item: Iteration) => string;
     linkIn: (item: Iteration, to: string) => string;
+    ownList: (list: OverviewCountList) => string;
 }) => {
     const { t } = useTranslation();
     const scopeLink = useScopeLink();
 
-    if (!candidate || loading) {
+    if (state === 'failed') {
+        // Without every source Overview cannot say what is most severe, or that nothing is.
         return (
-            <section className="overview-attention is-clear" aria-labelledby={ATTENTION_ID}>
+            <section className="overview-attention is-clear" aria-labelledby={ATTENTION_ID} data-attention="unknown">
+                <span className="overview-attention-icon" style={pillBoxStyle('gray')}>
+                    <HelpCircle aria-hidden="true" className="h-5 w-5" />
+                </span>
+                <div className="overview-attention-copy">
+                    <p className="overview-attention-label">{t('overview.needsYou')}</p>
+                    <h2 id={ATTENTION_ID}>{t('overview.attentionItem.unknownTitle')}</h2>
+                    <p>{t('overview.attentionItem.unknownMeta', {
+                        sources: unknownSources.map(source => t(`overview.attentionItem.sources.${source}`)).join(', '),
+                    })}</p>
+                </div>
+                <button type="button" className="btn secondary overview-attention-action" onClick={onRetry}>
+                    <RefreshCw aria-hidden="true" className="h-4 w-4" />
+                    {t('overview.attentionItem.retry')}
+                </button>
+            </section>
+        );
+    }
+
+    if (state === 'loading' || !candidate) {
+        const loading = state === 'loading';
+        const clearMeta = [
+            t(backlog ? 'overview.attentionItem.clearMetaBacklog' : 'overview.attentionItem.clearMeta'),
+            reviewsHidden ? t('overview.attentionItem.reviewsHidden') : null,
+        ].filter(Boolean).join(' ');
+        return (
+            <section className="overview-attention is-clear" aria-labelledby={ATTENTION_ID} data-attention={loading ? 'loading' : 'clear'}>
                 <span className="overview-attention-icon" style={pillBoxStyle('gray')}>
                     <CheckCircle2 aria-hidden="true" className="h-5 w-5" />
                 </span>
                 <div className="overview-attention-copy">
                     <p className="overview-attention-label">{t('overview.needsYou')}</p>
                     <h2 id={ATTENTION_ID}>{loading ? t('overview.dataStatus.loadingSignals') : t('overview.attentionItem.clearTitle')}</h2>
-                    {!loading && <p>{t('overview.attentionItem.clearMeta')}</p>}
+                    {!loading && <p>{clearMeta}</p>}
                 </div>
             </section>
         );
@@ -371,12 +511,14 @@ const AttentionItem = ({
     const { kind, count, iteration } = candidate;
     const { tone, icon: Icon } = ATTENTION_LOOK[kind];
     const where = (to: string) => (iteration ? linkIn(iteration, to) : scopeLink(to));
+    const plan = candidate.plan ?? { done: 0, total: 0, nextId: '' };
     const content: Record<AttentionKind, { title: string; meta: string; action: string; to: string }> = {
         blocked: {
             title: t('overview.attentionItem.blocked', { count }),
             meta: t('overview.attentionItem.blockedMeta'),
             action: t('overview.attentionItem.blockedAction'),
-            to: where(taskListHref('blocked')),
+            // The Tasks backlog does not filter, so Overview lists the blocked backlog work itself.
+            to: iteration ? where(taskListHref('blocked')) : ownList('blocked'),
         },
         reviews: {
             title: t('overview.attentionItem.reviews', { count }),
@@ -396,7 +538,7 @@ const AttentionItem = ({
                 ? t('overview.attentionItem.planMeta', { step: t(`plan.steps.${plan.nextId}.title`) })
                 : t('overview.attentionItem.planMetaGeneric'),
             action: t('overview.attentionItem.planAction'),
-            to: scopeLink('/plan'),
+            to: where('/plan'),
         },
     };
     const item = content[kind];
@@ -422,53 +564,22 @@ const AttentionItem = ({
     );
 };
 
-/**
- * A count that opens what it counts. With several iterations in view each has its own
- * list, so the count opens a short breakdown with one link per iteration.
- */
-const CountLink = ({ parts, value, label, testId }: {
-    parts: CountPart[];
-    /** The figure shown; a sum of the parts unless given. */
-    value?: number;
+/** A count that opens the list holding exactly that many tasks. */
+const CountLink = ({ count, label, testId }: {
+    count: { value: number; to: string };
     label: string;
     testId: string;
-}) => {
-    const { t } = useTranslation();
-    const shown = value ?? parts.reduce((sum, part) => sum + part.count, 0);
-    const nonEmpty = parts.filter(part => part.count > 0);
-    const single = parts.length === 1 ? parts[0] : nonEmpty.length === 1 ? nonEmpty[0] : null;
-    if (single) {
-        return (
-            <Link to={single.to} className="overview-count-link" data-testid={testId} aria-label={`${label}: ${shown}`}>
-                {shown}
-            </Link>
-        );
-    }
-    if (nonEmpty.length === 0) {
-        return <span className="overview-count-value" data-testid={testId}>{shown}</span>;
-    }
-    return (
-        <details className="overview-count-breakdown" data-testid={testId}>
-            <summary aria-label={t('overview.figures.openBreakdown', { label, count: shown })}>{shown}</summary>
-            <ul>
-                {nonEmpty.map(part => (
-                    <li key={part.key}>
-                        <Link to={part.to} className="overview-count-link" aria-label={`${label}, ${part.label}: ${part.count}`}>
-                            <span>{part.label}</span>
-                            <strong className="tnum">{part.count}</strong>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </details>
-    );
-};
+}) => (
+    <Link to={count.to} className="overview-count-link" data-testid={testId} aria-label={`${label}: ${count.value}`}>
+        {count.value}
+    </Link>
+);
 
-const WorkNow = ({ roots, loading, failed, onRetry, showProject, showIteration, iterations }: {
+const WorkNow = ({ roots, state, onRetry, backlog, showProject, showIteration, iterations }: {
     roots: Task[];
-    loading: boolean;
-    failed: boolean;
+    state: SourceState;
     onRetry: () => void;
+    backlog: boolean;
     showProject: boolean;
     showIteration: boolean;
     iterations: Iteration[];
@@ -478,6 +589,9 @@ const WorkNow = ({ roots, loading, failed, onRetry, showProject, showIteration, 
     const { tasks, openCount } = selectWorkNow(roots);
     const remaining = Math.max(0, openCount - tasks.length);
     const iterationNames = new Map(iterations.map(item => [item.id, item.name]));
+    const emptyText = backlog
+        ? t('overview.noWorkNowBacklog')
+        : roots.length === 0 ? t('overview.noWorkNowFirstUse') : t('overview.noWorkNow');
 
     return (
         <SectionCard
@@ -485,7 +599,7 @@ const WorkNow = ({ roots, loading, failed, onRetry, showProject, showIteration, 
             headingId={WORK_NOW_TITLE_ID}
             icon={<ListTodo aria-hidden="true" className="h-5 w-5 text-action" />}
             title={t('overview.workNow')}
-            description={t('overview.workNowDescription')}
+            description={t(backlog ? 'overview.workNowBacklogDescription' : 'overview.workNowDescription')}
             actions={(
                 <Link to={scopeLink('/tasks')} className="btn ghost sm">
                     {t('overview.openTasks')}
@@ -493,12 +607,12 @@ const WorkNow = ({ roots, loading, failed, onRetry, showProject, showIteration, 
                 </Link>
             )}
         >
-            {failed ? (
+            {state === 'failed' ? (
                 <QueryErrorState message={t('overview.dataStatus.sectionUnavailable')} onRetry={onRetry} />
-            ) : loading ? (
+            ) : state !== 'ready' ? (
                 <QueryLoadingState message={t('overview.dataStatus.sectionLoading')} />
             ) : tasks.length === 0 ? (
-                <InlineEmptyState>{roots.length === 0 ? t('overview.noWorkNowFirstUse') : t('overview.noWorkNow')}</InlineEmptyState>
+                <InlineEmptyState>{emptyText}</InlineEmptyState>
             ) : (
                 <>
                     <ul className="overview-task-list">
@@ -506,6 +620,8 @@ const WorkNow = ({ roots, loading, failed, onRetry, showProject, showIteration, 
                             <TaskRow
                                 key={task.id}
                                 task={task}
+                                // Backlog references carry no effort or assignee to show.
+                                detailed={!backlog}
                                 context={[
                                     showProject ? task.project?.name : null,
                                     showIteration && task.iteration_id ? iterationNames.get(task.iteration_id) : null,
@@ -529,7 +645,7 @@ const RISK_TONE: Record<Exclude<ReturnType<typeof deliveryRisk>, null>, PillTone
     blocked: 'red',
 };
 
-const TaskRow = ({ task, context }: { task: Task; context: string[] }) => {
+const TaskRow = ({ task, context, detailed }: { task: Task; context: string[]; detailed: boolean }) => {
     const { t, i18n } = useTranslation();
     const scopeLink = useScopeLink();
     const risk = deliveryRisk(task);
@@ -561,8 +677,8 @@ const TaskRow = ({ task, context }: { task: Task; context: string[] }) => {
                         {t(`overview.deliveryRisk.${risk}`)}
                     </span>
                 )}
-                <span className="overview-task-effort tnum">{effort}</span>
-                {task.assignee ? (
+                {detailed && <span className="overview-task-effort tnum">{effort}</span>}
+                {detailed && (task.assignee ? (
                     <span title={task.assignee.name} role="img" aria-label={task.assignee.name} className="overview-task-avatar">
                         <span aria-hidden="true">{initialsFor(task.assignee.name)}</span>
                     </span>
@@ -570,16 +686,16 @@ const TaskRow = ({ task, context }: { task: Task; context: string[] }) => {
                     <span title={t('common.unassigned')} role="img" aria-label={t('common.unassigned')} className="overview-task-avatar is-empty">
                         <User aria-hidden="true" className="h-3.5 w-3.5" />
                     </span>
-                )}
+                ))}
                 <ArrowRight aria-hidden="true" className="overview-task-open-icon h-4 w-4" />
             </Link>
         </li>
     );
 };
 
-const AgentsNow = ({ query, stageParts }: {
+const AgentsNow = ({ query, stageCount }: {
     query: ReturnType<typeof usePipeline>;
-    stageParts: (stage: PipelineStage) => CountPart[];
+    stageCount: (stage: PipelineStage) => { value: number; to: string };
 }) => {
     const { t } = useTranslation();
     const scopeLink = useScopeLink();
@@ -613,7 +729,7 @@ const AgentsNow = ({ query, stageParts }: {
                             <div key={stage}>
                                 <dt>{label}</dt>
                                 <dd className="tnum">
-                                    <CountLink parts={stageParts(stage)} label={label} testId={`overview-stage-${stage}`} />
+                                    <CountLink count={stageCount(stage)} label={label} testId={`overview-stage-${stage}`} />
                                 </dd>
                             </div>
                         );
@@ -624,21 +740,24 @@ const AgentsNow = ({ query, stageParts }: {
     );
 };
 
-const OnTrack = ({ available, loading, failed, onRetry, doneParts, totalParts, atRiskParts, dayParts }: {
-    available: boolean;
-    loading: boolean;
-    failed: boolean;
+const OnTrack = ({ state, onRetry, done, total, atRisk, daysLeft, backlog }: {
+    state: SourceState;
     onRetry: () => void;
-    doneParts: CountPart[];
-    totalParts: CountPart[];
-    atRiskParts: CountPart[];
-    dayParts: CountPart[];
+    done: { value: number; to: string } | null;
+    total: { value: number; to: string } | null;
+    /** Null where Overview cannot count it: Backlog work carries no schedule signals. */
+    atRisk: { value: number; to: string } | null;
+    /** Working days to the latest end in view; null without an iteration. */
+    daysLeft: number | null;
+    backlog: boolean;
 }) => {
     const { t } = useTranslation();
     const doneLabel = t('overview.figures.done');
     const daysLabel = t('overview.figures.daysLeft');
     const atRiskLabel = t('overview.figures.atRisk');
-    const longestDays = dayParts.reduce((max, part) => Math.max(max, part.count), 0);
+    const notCounted = (testId: string) => (
+        <span className="overview-count-value" data-testid={testId} aria-label={t('overview.figures.notCounted')}>—</span>
+    );
 
     return (
         <SectionCard
@@ -647,35 +766,87 @@ const OnTrack = ({ available, loading, failed, onRetry, doneParts, totalParts, a
             icon={<Target aria-hidden="true" className="h-5 w-5 text-action" />}
             title={t('overview.onTrack')}
         >
-            {failed ? (
+            {state === 'failed' ? (
                 <QueryErrorState message={t('overview.dataStatus.sectionUnavailable')} onRetry={onRetry} />
-            ) : loading || !available ? (
+            ) : state !== 'ready' || !done || !total ? (
                 <QueryLoadingState message={t('overview.dataStatus.sectionLoading')} />
             ) : (
-                <dl className="overview-figures">
-                    <div>
-                        <dt>{doneLabel}</dt>
-                        <dd className="tnum">
-                            <CountLink parts={doneParts} label={doneLabel} testId="overview-figure-done" />
-                            <span className="overview-figure-of">{t('overview.figures.of')}</span>
-                            <CountLink parts={totalParts} label={t('overview.figures.allTasks')} testId="overview-figure-total" />
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>{daysLabel}</dt>
-                        <dd className="tnum">
-                            <CountLink parts={dayParts} value={longestDays} label={daysLabel} testId="overview-figure-days-left" />
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>{atRiskLabel}</dt>
-                        <dd className="tnum">
-                            <CountLink parts={atRiskParts} label={atRiskLabel} testId="overview-figure-at-risk" />
-                        </dd>
-                    </div>
-                </dl>
+                <div className="grid gap-3">
+                    <dl className="overview-figures">
+                        <div>
+                            <dt>{doneLabel}</dt>
+                            <dd className="tnum">
+                                <CountLink count={done} label={doneLabel} testId="overview-figure-done" />
+                                <span className="overview-figure-of">{t('overview.figures.of')}</span>
+                                <CountLink count={total} label={t('overview.figures.allTasks')} testId="overview-figure-total" />
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>{daysLabel}</dt>
+                            <dd className="tnum">
+                                {/* A number of days, not of tasks: there is no list to open. */}
+                                {daysLeft === null
+                                    ? notCounted('overview-figure-days-left')
+                                    : <span className="overview-count-value" data-testid="overview-figure-days-left">{daysLeft}</span>}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>{atRiskLabel}</dt>
+                            <dd className="tnum">
+                                {atRisk
+                                    ? <CountLink count={atRisk} label={atRiskLabel} testId="overview-figure-at-risk" />
+                                    : notCounted('overview-figure-at-risk')}
+                            </dd>
+                        </div>
+                    </dl>
+                    {backlog && <p className="overview-note">{t('overview.figures.backlogNote')}</p>}
+                </div>
             )}
         </SectionCard>
+    );
+};
+
+/** One of Overview's own lists: exactly the tasks a count counts. */
+const CountList = ({ items, label, showIteration, linkProject }: {
+    items: ListedTask[];
+    label: string;
+    showIteration: boolean;
+    linkProject: ScopeProject | undefined;
+}) => {
+    const { t } = useTranslation();
+    const scopeLink = useScopeLink();
+
+    if (items.length === 0) {
+        return <InlineEmptyState>{t('overview.list.empty')}</InlineEmptyState>;
+    }
+    return (
+        <>
+            <p className="overview-note">{t('overview.list.count', { label, count: items.length })}</p>
+            <ul className="overview-task-list" data-testid="overview-count-list">
+                {items.map(({ task, iteration }) => (
+                    <li key={task.id}>
+                        <Link
+                            className="overview-task-row"
+                            to={scopeLink(`/tasks?task=${task.id}`, { project: linkProject, iteration: task.iteration_id ?? 'backlog' })}
+                            aria-label={t('overview.list.openTask', { title: task.title })}
+                        >
+                            <span className="overview-task-copy">
+                                <span className="overview-task-title">{task.title}</span>
+                                <span className="overview-task-meta">
+                                    <span className="overview-task-status">
+                                        <span aria-hidden="true" className="overview-task-dot" style={dotStyle(STATUS_TONE[task.status])} />
+                                        {t(`statuses.${task.status}`)}
+                                    </span>
+                                    {showIteration && iteration && <span className="truncate">{iteration.name}</span>}
+                                    {task.project?.name && <span className="truncate">{task.project.name}</span>}
+                                </span>
+                            </span>
+                            <ArrowRight aria-hidden="true" className="overview-task-open-icon h-4 w-4" />
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </>
     );
 };
 
