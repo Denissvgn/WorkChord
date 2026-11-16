@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { ProjectTaskTree } from './ProjectTaskTree';
+import { ProjectTasksTab } from './ProjectTasksTab';
 import type { Task } from '../../types/task';
 import { taskDetailResponse } from '../../test/fixtures/taskDetail';
 
@@ -9,9 +10,10 @@ const services = vi.hoisted(() => ({
     runBulkOperation: vi.fn(),
     team: vi.fn(),
     getDetail: vi.fn(),
+    getByIteration: vi.fn(),
 }));
 
-vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: vi.fn().mockResolvedValue([]), getDetail: services.getDetail } }));
+vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: services.getByIteration, getDetail: services.getDetail } }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: services.team } }));
 vi.mock('../../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]), getMilestones: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getById: vi.fn().mockResolvedValue({ id: 1, name: 'Iteration', project_id: null }) } }));
@@ -25,6 +27,8 @@ const task = (id: number, overrides: Partial<Task> = {}): Task => ({
 
 beforeEach(() => {
     services.getDetail.mockReset();
+    services.getByIteration.mockReset();
+    services.getByIteration.mockResolvedValue([]);
     services.getDetail.mockImplementation(async (id: number) => taskDetailResponse(task(id, { status: 'resolved' }), null));
 });
 
@@ -55,7 +59,7 @@ describe('ProjectTaskTree', () => {
         expect(screen.queryByText(/Olga Owner/)).toBeNull();
     });
 
-    it('shows the agent status after the name of an agent assignee and the Reviewer beside it', async () => {
+    it('shows the agent status under the name of an agent assignee and the Reviewer beside it', async () => {
         const agent = { id: 6, name: 'Build agent' };
         services.team.mockResolvedValue([
             { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },
@@ -151,5 +155,35 @@ describe('ProjectTaskTree', () => {
         await user.click(screen.getByRole('checkbox', { name: 'Select: Task 2' }));
         const other = within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' });
         expect(other).toBeDisabled();
+    });
+
+    it('reads dependency status from every project task, not the ten shown, so a finished dependency does not wait', async () => {
+        services.team.mockResolvedValue([]);
+        // Ten active tasks fill the preview; the closed dependency of Task 1 and the open one of Task 2 are not shown.
+        const tasks = [
+            task(1, { status: 'active', dependencies: [20] }),
+            task(2, { status: 'active', dependencies: [21] }),
+            ...Array.from({ length: 8 }, (_, index) => task(index + 3, { status: 'active' })),
+            task(20, { status: 'closed', iteration_id: 2 }),
+            task(21, { status: 'planned', iteration_id: 2 }),
+        ];
+        renderWithProviders(<ProjectTasksTab projectId={1} tasks={tasks} isLoading={false} />);
+        await screen.findByRole('button', { name: 'Task 1' });
+        expect(screen.queryByRole('button', { name: 'Task 20' })).toBeNull();
+        const chipText = (title: string) => rowOf(title).querySelector('span.rounded-full')?.textContent;
+        expect(chipText('Task 1')).toBeUndefined();
+        expect(chipText('Task 2')).toBe('Waits for 1');
+    });
+
+    it('reads dependency status from the iteration tasks the Tasks list loads, for a dependency outside the project', async () => {
+        services.team.mockResolvedValue([]);
+        services.getByIteration.mockImplementation(async (iterationId: number) => (iterationId === 1
+            ? [task(1, { status: 'active', dependencies: [30] }), task(30, { status: 'resolved', project_id: 2 })]
+            : []));
+        renderWithProviders(<ProjectTaskTree sections={sections(task(1, { status: 'active', dependencies: [30] }))} dependencyTasks={[]} />);
+        const chipText = () => rowOf('Task 1').querySelector('span.rounded-full')?.textContent;
+        // Until the iteration loads the unknown dependency counts as open, as in the Tasks list.
+        await waitFor(() => expect(chipText()).toBeUndefined());
+        expect(services.getByIteration).toHaveBeenCalledWith(1);
     });
 });

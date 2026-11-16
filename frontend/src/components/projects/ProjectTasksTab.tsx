@@ -78,7 +78,7 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
                 />
             ) : (
                 <>
-                    <ProjectTaskTree sections={groupedPreview.map(group => ({
+                    <ProjectTaskTree dependencyTasks={tasks} sections={groupedPreview.map(group => ({
                         key: group.status, heading: `${t(`statuses.${group.status}`)} · ${group.total}`, tasks: group.tasks,
                     }))} />
                     {tasks.length > PROJECT_TASK_PREVIEW && (

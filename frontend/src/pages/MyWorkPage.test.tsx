@@ -167,7 +167,7 @@ describe('My Work rows', () => {
         tasks.forEach(item => expect(rowOf(item.title).querySelectorAll('span.rounded-full')).toHaveLength(1));
     });
 
-    it('shows the agent status after the name of an agent assignee, with the Reviewer beside it', async () => {
+    it('shows the agent status under the name of an agent assignee, with the Reviewer beside it', async () => {
         const agent = { id: 6, name: 'Build agent' };
         const claim = { id: 3, name: 'builder', display_name: 'Builder' };
         arrange([

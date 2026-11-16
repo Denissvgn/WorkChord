@@ -24,6 +24,12 @@ export interface ProjectTaskSection {
 interface ProjectTaskTreeProps {
     /** Lists of tasks shown one after another. They share one selection and one bulk bar. */
     sections: ProjectTaskSection[];
+    /**
+     * Every task of the project, with children, when the sections show only some of them. The
+     * Waits chip reads dependency status from these and from each shown iteration's tasks, never
+     * from the shown rows alone, where a finished dependency would be missing and count as open.
+     */
+    dependencyTasks?: Task[];
 }
 
 /** The tree as one flat, indented list, so each task is a divided row, not a card inside a card. */
@@ -34,14 +40,22 @@ const flattenTree = (tasks: Task[], level = 0): { task: Task; level: number }[] 
 
 const isLeaf = (task: Task) => !task.is_composite && (task.children?.length ?? 0) === 0;
 
-export const ProjectTaskTree = ({ sections }: ProjectTaskTreeProps) => {
+export const ProjectTaskTree = ({ sections, dependencyTasks }: ProjectTaskTreeProps) => {
     const [selectedTask, setSelectedTask] = useState<number | null>(null);
     const rowEdits = useTaskRowEdits();
     const flatSections = useMemo(() => sections.map(section => ({ ...section, rows: flattenTree(section.tasks) })), [sections]);
     const flat = useMemo(() => flatSections.flatMap(section => section.rows), [flatSections]);
     const taskMap = useMemo(() => new Map(flat.map(({ task }) => [task.id, task])), [flat]);
     // Only tasks of an iteration can be picked for, or changed together; backlog tasks have no team.
-    const { optionsByIteration, error: optionsError, refetch: refetchOptions } = useIterationRowData(flat.map(({ task }) => task.iteration_id), { loadTasks: false });
+    // Each iteration's tasks load as the Tasks list loads them, for the dependency status of the chips.
+    const { optionsByIteration, tasksById: iterationTasks, error: optionsError, refetch: refetchOptions } = useIterationRowData(flat.map(({ task }) => task.iteration_id));
+    const dependencyMap = useMemo(() => {
+        const map = new Map<number, Task>();
+        flattenTree(dependencyTasks ?? []).forEach(({ task }) => map.set(task.id, task));
+        taskMap.forEach((task, id) => map.set(id, task));
+        iterationTasks.forEach((task, id) => map.set(id, task));
+        return map;
+    }, [dependencyTasks, taskMap, iterationTasks]);
     const flatTasks = useMemo(() => flat.map(({ task }) => task), [flat]);
     const agentFacts = useAgentRowFacts(flatTasks);
 
@@ -90,7 +104,7 @@ export const ProjectTaskTree = ({ sections }: ProjectTaskTreeProps) => {
                                         status={task.status}
                                         statusLocked={task.is_composite || (task.children?.length ?? 0) > 0}
                                         priority={task.priority}
-                                        chip={taskStateChip(task, taskMap)}
+                                        chip={taskStateChip(task, dependencyMap)}
                                         assignee={task.assignee ?? null}
                                         assigneeOptions={assigneeOptions}
                                         dispatch={agentRow.dispatch}

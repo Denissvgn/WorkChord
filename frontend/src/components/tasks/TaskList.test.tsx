@@ -285,6 +285,21 @@ describe('TaskList rows', () => {
         within(row).getByRole('button', { name: 'Task 1' }).focus();
         expect(await within(row).findByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
         expect(within(row).getByRole('button', { name: 'Actions for Task 1' })).toBeInTheDocument();
+
+        // With a selection active, every row shows its checkbox, but an untouched row keeps its menu hidden.
+        hover(row);
+        fireEvent.click(within(row).getByRole('checkbox', { name: 'Select: Task 1' }));
+        expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeChecked();
+        (document.activeElement as HTMLElement | null)?.blur();
+        unhover(row);
+        for (const title of ['Task 1', 'Task 2']) {
+            const untouched = rowOf(title);
+            expect(within(untouched).getByRole('checkbox', { name: `Select: ${title}` })).toBeInTheDocument();
+            expect(within(untouched).queryByRole('button', { name: `Actions for ${title}` })).toBeNull();
+            expect(untouched.querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);
+        }
+        hover(rowOf('Task 2'));
+        expect(within(rowOf('Task 2')).getByRole('button', { name: 'Actions for Task 2' })).toBeInTheDocument();
     });
 
     it('assigns ten tasks in five interactions: tick one, shift-click the tenth, Assign, choose, apply', async () => {
@@ -385,7 +400,7 @@ describe('TaskList rows', () => {
         await waitFor(() => expect(taskServiceMock.changeStatus).toHaveBeenCalledWith(1, 'active', undefined, 1));
     });
 
-    it('shows the agent status after the name of an agent assignee and the Reviewer beside it', async () => {
+    it('shows the agent status under the name of an agent assignee and the Reviewer beside it', async () => {
         const agent = { id: 6, name: 'Build agent' };
         teamMock.getByIteration.mockResolvedValue([
             { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },

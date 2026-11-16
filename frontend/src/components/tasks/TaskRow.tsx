@@ -54,7 +54,7 @@ export interface TaskRowProps {
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
     /** Why this row cannot join the current selection; the checkbox stays visible but off. */
     selectDisabledReason?: string;
-    /** For an agent assignee, the status after the name that says where its work stands. */
+    /** For an agent assignee, the status line under the name that says where its work stands. */
     dispatch?: AgentDispatchState | null;
     /**
      * The Reviewer beside the assignee: a name, or `{ name: null }` when any authorized person
@@ -68,7 +68,8 @@ export interface TaskRowProps {
 
 /**
  * One 44 px task row for the list, My Work and the project task tree. At rest it holds the
- * status, the title and the assignee; the checkbox and the menu appear on hover and focus.
+ * status, the title and the assignee; the checkbox and the menu appear on hover and focus, and
+ * every checkbox stays while some rows are selected.
  */
 export const TaskRow = ({
     id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
@@ -78,7 +79,9 @@ export const TaskRow = ({
     const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const [focused, setFocused] = useState(false);
-    const revealed = hovered || focused || selected || selectionActive;
+    // While some rows are selected every checkbox shows; the menu stays on hover and focus only.
+    const menuShown = hovered || focused;
+    const checkboxShown = menuShown || selected || selectionActive;
     const statusName = t(`statuses.${status}`, { defaultValue: status });
     const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
     const statusIcon = isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
@@ -107,7 +110,7 @@ export const TaskRow = ({
         >
             {/* The slot keeps its width, so the row does not shift when the checkbox appears. */}
             <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-                {revealed && onToggleSelect && (
+                {checkboxShown && onToggleSelect && (
                     <input
                         type="checkbox"
                         checked={selected}
@@ -173,28 +176,32 @@ export const TaskRow = ({
             )}
 
             {assignee !== undefined && (
-                // One line, so the row stays 44 px: the agent status follows the name and truncates, its full text in the title.
-                <span data-assignee-cell="" className="hidden w-40 shrink-0 items-center gap-1 text-xs text-content-secondary md:flex">
-                    <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                    {onAssign ? (
-                        <select data-page-chrome-control="select"
-                            aria-label={`${t('taskList.assignee')}: ${title}`}
-                            title={assigneeName}
-                            value={assignee?.id ?? ''}
-                            onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
-                            className="h-8 min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                        >
-                            <option value="">{t('common.unassigned')}</option>
-                            {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
-                        </select>
-                    ) : (
-                        <span className="min-w-0 flex-1 truncate" title={assigneeName}>
-                            <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
-                        </span>
-                    )}
-                    {dispatch && <span aria-hidden="true" className="shrink-0 text-content-tertiary">·</span>}
+                // Two tight lines, 16 px and 14 px, so the row stays 44 px: the name, then the agent status under it.
+                <span data-assignee-cell="" className="hidden w-40 shrink-0 flex-col justify-center text-xs text-content-secondary md:flex">
+                    <span className={clsx('flex min-w-0 items-center gap-1', dispatch && 'h-4')}>
+                        <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                        {onAssign ? (
+                            <select data-page-chrome-control="select"
+                                aria-label={`${t('taskList.assignee')}: ${title}`}
+                                title={assigneeName}
+                                value={assignee?.id ?? ''}
+                                onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
+                                className={clsx(
+                                    'min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 py-0 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+                                    dispatch ? 'h-4 leading-4' : 'h-8',
+                                )}
+                            >
+                                <option value="">{t('common.unassigned')}</option>
+                                {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
+                            </select>
+                        ) : (
+                            <span className="min-w-0 flex-1 truncate leading-4" title={assigneeName}>
+                                <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
+                            </span>
+                        )}
+                    </span>
                     {dispatch && (
-                        <span data-agent-dispatch={dispatch} title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])} className="min-w-0 max-w-[50%] shrink-0 truncate leading-4 text-content-tertiary">
+                        <span data-agent-dispatch={dispatch} title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])} className="block h-3.5 truncate pl-[1.125rem] text-wc-micro text-content-tertiary">
                             {/* "Agent status unknown" already names what it is about. */}
                             {dispatch !== 'unknown' && <span className="sr-only">{t('taskList.agentStatus')}: </span>}{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
                         </span>
@@ -223,7 +230,7 @@ export const TaskRow = ({
 
             {/* The slot keeps its width, so the row does not shift when the menu appears. */}
             <span className="flex h-8 w-8 shrink-0 items-center justify-center">
-                {revealed && <OverflowMenu label={t('taskList.taskActions', { title })} items={menuItems} alwaysMenu triggerClassName="btn ghost icon sm" />}
+                {menuShown && <OverflowMenu label={t('taskList.taskActions', { title })} items={menuItems} alwaysMenu triggerClassName="btn ghost icon sm" />}
             </span>
         </div>
     );
