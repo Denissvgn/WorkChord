@@ -95,6 +95,36 @@ describe('Team page', () => {
         expect(idle.getByText('No model')).toBeVisible();
     });
 
+    it('keeps every agent of a shared profile on its row and shows each one in the drawer', async () => {
+        setAdminApiKey('operator-key');
+        const opusBinding: AgentModelBinding = {
+            ...binding, id: 6, actor_id: 12, model_catalog_key: 'opus',
+            model_catalog: { ...binding.model_catalog!, id: 4, key: 'opus', configured_model_alias: 'claude-opus-5-5' },
+        };
+        services.agent.getActorRoster.mockResolvedValue([
+            actor({}),
+            actor({ id: 12, name: 'builder-review', display_name: 'Builder Review', role: 'verifier', profile_id: 2, last_seen_at: null, eligible_model_bindings: [opusBinding] }),
+        ]);
+        const { user } = renderTeam();
+
+        await screen.findByRole('button', { name: 'Open Builder' });
+        await waitFor(() => expect(within(rowFor('Builder')).getAllByTestId('actor-connection')).toHaveLength(2));
+        expect(screen.getAllByTestId('team-row')).toHaveLength(3);
+        const row = within(rowFor('Builder'));
+        expect(row.getByText('Worker, Reviewer')).toBeVisible();
+        expect(row.getAllByTestId('actor-model').map(item => item.textContent)).toEqual(['Worker · claude-sonnet-5-5', 'Reviewer · claude-opus-5-5']);
+        expect(row.getAllByTestId('actor-connection').map(item => item.textContent)).toEqual(['WorkerConnected', 'ReviewerNot connected']);
+
+        await user.click(screen.getByRole('button', { name: 'Open Builder' }));
+        const drawer = within(await screen.findByRole('dialog', { name: 'Builder' }));
+        const worker = within(drawer.getByRole('group', { name: 'Worker · Builder' }));
+        expect(worker.getByText('Connected')).toBeVisible();
+        expect(worker.getByRole('list', { name: 'Model binding' })).toHaveTextContent('claude-sonnet-5-5');
+        const reviewer = within(drawer.getByRole('group', { name: 'Reviewer · Builder Review' }));
+        expect(reviewer.getByText('Not connected')).toBeVisible();
+        expect(reviewer.getByRole('list', { name: 'Model binding' })).toHaveTextContent('claude-opus-5-5');
+    });
+
     it('shows at most three capability chips and counts the rest', async () => {
         renderTeam();
         await screen.findByRole('button', { name: 'Open Ada Lovelace' });

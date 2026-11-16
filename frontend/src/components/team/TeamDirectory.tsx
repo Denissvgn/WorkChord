@@ -11,7 +11,7 @@ import { Button } from '../common/Button';
 import { InlineEmptyState, Pill, TableFrame } from '../ui';
 import type { PillTone } from '../ui';
 import { TeamProfileManager } from './TeamProfileManager';
-import { buildDirectory, modelName, type ConnectionState, type DirectoryRow } from './directoryModel';
+import { actorName, buildDirectory, distinctRole, modelName, type ConnectionState, type DirectoryActor, type DirectoryRow } from './directoryModel';
 
 const MAX_CHIPS = 3;
 const CONNECTION_TONE: Record<ConnectionState, PillTone> = { connected: 'green', not_connected: 'gray', unknown: 'yellow' };
@@ -55,6 +55,12 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
 
     if (profilesQuery.isLoading) return <QueryLoadingState />;
     if (profilesQuery.isError) return <QueryErrorState error={profilesQuery.error} onRetry={() => void profilesQuery.refetch()} />;
+
+    // A row with several actors names each one by its role, or by its own name when the role is missing or shared.
+    const actorLabel = (row: DirectoryRow, entry: DirectoryActor) => {
+        const role = distinctRole(row, entry);
+        return role ? t(`teamPage.roles.${role}`) : actorName(entry.actor);
+    };
 
     const cell = (row: DirectoryRow, value: string | null | undefined, empty: string) => (
         row.kind !== 'agent' ? <span className="text-content-tertiary">—</span>
@@ -119,12 +125,39 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-3 py-3">{cell(row, row.model === undefined ? undefined : row.model ? modelName(row.model) : null, t('teamPage.noModel'))}</td>
-                                        <td className="px-3 py-3">
-                                            {row.kind !== 'agent' || !row.connection ? <span className="text-content-tertiary">—</span>
-                                                : rosterLoading ? <span className="text-content-secondary">{t('common.loading')}</span>
-                                                    : <Pill tone={CONNECTION_TONE[row.connection]}>{t(`teamPage.connection.${row.connection}`)}</Pill>}
-                                        </td>
+                                        {row.actors.length > 1 ? (
+                                            <>
+                                                <td className="px-3 py-3">
+                                                    <ul className="space-y-1">
+                                                        {row.actors.map(entry => (
+                                                            <li key={entry.actor.id} data-testid="actor-model">
+                                                                <span className="text-content-secondary">{actorLabel(row, entry)} · </span>
+                                                                {entry.model ? modelName(entry.model) : <span className="text-content-secondary">{t('teamPage.noModel')}</span>}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </td>
+                                                <td className="px-3 py-3">
+                                                    <ul className="space-y-1">
+                                                        {row.actors.map(entry => (
+                                                            <li key={entry.actor.id} data-testid="actor-connection" className="flex flex-wrap items-center gap-1">
+                                                                <span className="text-content-secondary">{actorLabel(row, entry)}</span>
+                                                                <Pill tone={CONNECTION_TONE[entry.connection]}>{t(`teamPage.connection.${entry.connection}`)}</Pill>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </td>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <td className="px-3 py-3">{cell(row, row.model === undefined ? undefined : row.model ? modelName(row.model) : null, t('teamPage.noModel'))}</td>
+                                                <td className="px-3 py-3">
+                                                    {row.kind !== 'agent' || !row.connection ? <span className="text-content-tertiary">—</span>
+                                                        : rosterLoading ? <span className="text-content-secondary">{t('common.loading')}</span>
+                                                            : <Pill tone={CONNECTION_TONE[row.connection]}>{t(`teamPage.connection.${row.connection}`)}</Pill>}
+                                                </td>
+                                            </>
+                                        )}
                                     </tr>
                                 );
                             })}

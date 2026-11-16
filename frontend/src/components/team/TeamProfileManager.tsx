@@ -26,7 +26,7 @@ import type {
 } from '../../types/team';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
-import { modelName, type DirectoryRow } from './directoryModel';
+import { actorName, modelName, type DirectoryActor, type DirectoryRow } from './directoryModel';
 import type { AgentActorRosterItem } from '../../types/agent';
 
 const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
@@ -119,25 +119,55 @@ const useInvalidateTeam = () => {
 
 /** The read-only model and connection of an agent, with the one sentence on when it receives work. */
 const AgentSection = ({ row, rosterUnavailable }: { row: DirectoryRow; rosterUnavailable: boolean }) => {
-    const { t, i18n } = useTranslation();
-    const bindings = row.actor?.eligible_model_bindings ?? [];
+    const { t } = useTranslation();
+    const readable = !rosterUnavailable && row.actors.length > 0;
     return (
         <section aria-labelledby="team-drawer-agent" className="space-y-2">
             <h3 id="team-drawer-agent" className="text-sm font-semibold text-content-primary">{t('teamProfiles.modelBinding')}</h3>
             <p className="text-sm text-content-secondary">{t('teamProfiles.agentDispatchNote')}</p>
+            {!readable && (
+                <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+                    <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
+                    <dd>{row.connection && !rosterUnavailable ? t(`teamPage.connection.${row.connection}`) : t('teamPage.unknown')}</dd>
+                    <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
+                    <dd>{row.model === undefined || rosterUnavailable ? t('teamPage.unknown') : t('teamPage.noModel')}</dd>
+                </dl>
+            )}
+            {readable && row.actors.length === 1 && <ActorBinding entry={row.actors[0]} />}
+            {readable && row.actors.length > 1 && row.actors.map(entry => {
+                const role = entry.role ? t(`teamPage.roles.${entry.role}`) : null;
+                const label = role ? `${role} · ${actorName(entry.actor)}` : actorName(entry.actor);
+                return (
+                    <div key={entry.actor.id} role="group" aria-label={label} className="space-y-1 border-t border-border pt-2">
+                        <p className="text-sm font-medium text-content-primary">{label}</p>
+                        <ActorBinding entry={entry} />
+                    </div>
+                );
+            })}
+            {rosterUnavailable && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
+        </section>
+    );
+};
+
+/** One actor's connection, when it was last seen, its default model and every model it may use. */
+const ActorBinding = ({ entry }: { entry: DirectoryActor }) => {
+    const { t, i18n } = useTranslation();
+    const bindings = entry.actor.eligible_model_bindings;
+    return (
+        <>
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
                 <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
-                <dd>{row.connection ? t(`teamPage.connection.${row.connection}`) : t('teamPage.unknown')}</dd>
-                {row.actor?.last_seen_at && (
+                <dd>{t(`teamPage.connection.${entry.connection}`)}</dd>
+                {entry.actor.last_seen_at && (
                     <>
                         <dt className="text-content-secondary">{t('teamProfiles.lastSeen')}</dt>
-                        <dd>{formatDateTime(row.actor.last_seen_at, i18n.language)}</dd>
+                        <dd>{formatDateTime(entry.actor.last_seen_at, i18n.language)}</dd>
                     </>
                 )}
                 <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
-                <dd>{row.model === undefined || rosterUnavailable ? t('teamPage.unknown') : row.model ? modelName(row.model) : t('teamPage.noModel')}</dd>
+                <dd>{entry.model ? modelName(entry.model) : t('teamPage.noModel')}</dd>
             </dl>
-            {!rosterUnavailable && bindings.length > 0 && (
+            {bindings.length > 0 && (
                 <ul className="space-y-1 text-sm" aria-label={t('teamProfiles.modelBinding')}>
                     {bindings.map(binding => (
                         <li key={binding.id} className="flex flex-wrap items-center gap-2">
@@ -148,8 +178,7 @@ const AgentSection = ({ row, rosterUnavailable }: { row: DirectoryRow; rosterUna
                     ))}
                 </ul>
             )}
-            {rosterUnavailable && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
-        </section>
+        </>
     );
 };
 
@@ -203,7 +232,7 @@ const AgentWithoutProfileDrawer = ({ row, rosterUnavailable, onClose, onCreated 
     const [error, setError] = useState<string | null>(null);
     // If linking fails after the profile exists, a retry links it instead of creating a second one.
     const [createdProfileId, setCreatedProfileId] = useState<number | null>(null);
-    const actor: AgentActorRosterItem | null = row.actor;
+    const actor: AgentActorRosterItem | null = row.actors[0]?.actor ?? null;
 
     const linkMutation = useMutation({
         mutationFn: async () => {
