@@ -29,92 +29,29 @@ Paired observer sessions read like their principal, change nothing, and renew wi
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/config.py"]
-    n1["backend/app/models/user_session.py"]
-    n2["backend/app/services/identity_service.py"]
-    n3["backend/app/utils/time.py"]
-    n4["backend/tests/test_agdash_link_provider.py"]
-    n5["backend/tests/test_delivery_scenarios.py"]
-    n6["backend/tests/test_managed_authority.py"]
-    n7["backend/tests/test_observer_sessions.py"]
-    n8["backend/tests/test_person_assignment_reads.py"]
-    n9["backend/tests/test_person_run_reads.py"]
-    n10["backend/tests/test_runtime_observations.py"]
-    n11["backend/tests/test_team_topology_read.py"]
-    n1 --> n3
-    n2 --> n0
-    n2 --> n1
-    n2 --> n3
-    n4 --> n5
-    n4 --> n6
-    n4 --> n7
-    n6 --> n0
-    n6 --> n1
-    n6 --> n2
-    n6 --> n3
-    n6 --> n5
-    n7 --> n0
-    n7 --> n1
-    n7 --> n2
-    n7 --> n3
-    n7 --> n5
-    n7 --> n6
-    n8 --> n1
-    n8 --> n2
-    n8 --> n3
-    n8 --> n5
-    n8 --> n6
-    n8 --> n7
-    n9 --> n3
-    n9 --> n5
-    n9 --> n6
-    n9 --> n7
-    n10 --> n0
-    n10 --> n3
-    n10 --> n5
-    n10 --> n6
-    n10 --> n7
-    n11 --> n1
-    n11 --> n2
-    n11 --> n3
-    n11 --> n5
-    n11 --> n6
-    n11 --> n7
-    click n0 "../modules/config.md"
-    click n1 "../modules/user_session.md"
-    click n2 "../modules/identity_service.md"
-    click n3 "../modules/time.md"
-    click n4 "../modules/test_agdash_link_provider.md"
-    click n5 "../modules/test_delivery_scenarios.md"
-    click n6 "../modules/test_managed_authority.md"
-    click n7 "../modules/test_observer_sessions.md"
-    click n8 "../modules/test_person_assignment_reads.md"
-    click n9 "../modules/test_person_run_reads.md"
-    click n10 "../modules/test_runtime_observations.md"
-    click n11 "../modules/test_team_topology_read.md"
+    n0["backend"]
+    n1["backend/tests/test_observer_sessions.py"]
+    n0 --> n1
+    n1 --> n0
+    click n1 "../modules/test_observer_sessions.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Inbound | [test_agdash_link_provider](../modules/test_agdash_link_provider.md) |
-| Inbound | [test_person_assignment_reads](../modules/test_person_assignment_reads.md) |
-| Inbound | [test_person_run_reads](../modules/test_person_run_reads.md) |
-| Inbound | [test_runtime_observations](../modules/test_runtime_observations.md) |
-| Inbound | [test_team_topology_read](../modules/test_team_topology_read.md) |
-| Outbound | [config](../modules/config.md) |
-| Outbound | [user_session](../modules/user_session.md) |
-| Outbound | [identity_service](../modules/identity_service.md) |
-| Outbound | [time](../modules/time.md) |
-| Outbound | [test_delivery_scenarios](../modules/test_delivery_scenarios.md) |
-| Outbound | [test_managed_authority](../modules/test_managed_authority.md) |
+| Inbound | `backend` (6) |
+| Outbound | `backend` (6) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 4 | 2 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

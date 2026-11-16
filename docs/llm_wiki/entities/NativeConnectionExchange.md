@@ -1,6 +1,6 @@
 # NativeConnectionExchange
 
-**Location:** `backend/app/routers/identity.py:50`
+**Location:** `backend/app/routers/identity.py:51`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)

@@ -1,6 +1,6 @@
 # ProfileLinkRequest
 
-**Location:** `backend/app/routers/identity.py:141`
+**Location:** `backend/app/routers/identity.py:142`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)

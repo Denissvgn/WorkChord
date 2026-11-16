@@ -24,6 +24,7 @@ _Auto-generated from `WorkspaceIdentity` in `frontend/src/features/identity/iden
 | `authentication_error` | `string \| null` | No | — | — |
 | `access` | `'full' \| 'observe' \| null` | No | — | — |
 | `observer` | `{ client_label: string \| null; expires_at: string; renewable_until: string } \| null` | No | — | — |
+| `features` | `string[]` | No | — | — |
 
 ## Methods
 
@@ -54,7 +55,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [identityService](../modules/identityService.md) | 0 | `access`, `authenticated`, `authentication_error`, `configured`, `csrf_token`, `mode`, `observer`, `principal`, `profile`, `projects`, `workspace_role` |
+| [identityService](../modules/identityService.md) | 0 | `access`, `authenticated`, `authentication_error`, `configured`, `csrf_token`, `features`, `mode`, `observer`, `principal`, `profile`, `projects`, `workspace_role` |
 
 ### References
 

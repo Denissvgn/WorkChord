@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1586 | [Open section](#entities) |
-| Modules | 856 | [Open section](#modules) |
+| Modules | 858 | [Open section](#modules) |
 | Workflows | 200 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 564 | [Open section](#entry-point-flows) |
@@ -2226,6 +2226,7 @@ Retained history; these declarations are absent from the selected source invento
 - [selectWorkNowTasks](modules/selectWorkNowTasks.md) - `frontend/src/utils/selectWorkNowTasks.ts`
 - [serve_disposable_api](modules/serve_disposable_api.md) - Start the real HTTP application only against a safety-fenced temporary database.
 - [serve_disposable_oidc](modules/serve_disposable_oidc.md) - Synthetic OIDC issuer confined to the disposable browser network and database.
+- [server_features](modules/server_features.md) - Server features a client can detect before it holds a credential.
 - [service_worksets](modules/service_worksets.md) - Owned cross-dialect service measurements, separate from HTTP and certification.
 - [services_work_metrics](modules/services_work_metrics.md) - Canonical leaf work, acceptance and distinct calendar-based schedule signals.
 - [sessionService](modules/sessionService.md) - `frontend/src/services/sessionService.ts`
@@ -2385,6 +2386,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_schedule_follows_actual_dates](modules/test_schedule_follows_actual_dates.md) - Agents start work whose dependencies are done, and the plan's dates follow what happened.
 - [test_schema_behavior](modules/test_schema_behavior.md) - Dual-dialect Boolean/JSON/time/constraint/RETURNING behavior matrix.
 - [test_server_acceptance](modules/test_server_acceptance.md) - Self-hosted server acceptance contract and adapter tests.
+- [test_server_features](modules/test_server_features.md) - The public feature list names only features this server has.
 - [test_settings_read_access](modules/test_settings_read_access.md) - People without the admin key read settings and the pipeline; changes keep the key.
 - [test_shared_member_revisions](modules/test_shared_member_revisions.md) - Shared-input scopes and destructive writes retain initial aggregate guards.
 - [test_shared_profile_revisions](modules/test_shared_profile_revisions.md) - Profile skill writes retain initial complete planning observations.

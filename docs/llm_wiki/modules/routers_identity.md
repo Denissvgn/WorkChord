@@ -22,6 +22,7 @@ Exposes sign-in, one-time owner bootstrap, scoped membership administration, exp
 | `app.models.team_member` | `TeamMemberProfile`, `TeamMemberProfile` |
 | `app.models.user_session` | `UserSession` |
 | `app.security` | `require_admin_api_key` |
+| `app.server_features` | `SERVER_FEATURES` |
 | `app.services.identity_service` | `IdentityService`, `local_work_profile`, `renewable_until`, `require_identity_writes`, `session_grant` |
 | `app.services.native_session_service` | `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService`, `NativeSessionService` |
 | `app.services.session_service` | `_cookie_options`, `_get_session_by_token`, `get_client_ip`, `get_current_session`, `_get_session_by_token` |
@@ -52,8 +53,8 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (1) |
-| Outbound | `backend` (14) |
+| Inbound | `backend` (2) |
+| Outbound | `backend` (15) |
 
 ### External packages
 
@@ -61,28 +62,28 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 0 |
 
-> All 15 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [Database](../entities/routers_identity_Database.md) | Type alias | 25 | `Annotated[object, Depends(get_db, scope='function')]` | — |
-| [BootstrapOwner](../entities/BootstrapOwner.md) | Pydantic model | 28 | `BaseModel` | — |
-| [NativeConnectionStart](../entities/NativeConnectionStart.md) | Pydantic model | 32 | `BaseModel` | — |
-| [NativeConnectionExchange](../entities/NativeConnectionExchange.md) | Pydantic model | 50 | `BaseModel` | — |
-| [NativeConnectionApproval](../entities/NativeConnectionApproval.md) | Pydantic model | 56 | `BaseModel` | — |
-| [NativeConnectionResponse](../entities/NativeConnectionResponse.md) | Pydantic model | 61 | `BaseModel` | — |
-| [NativeConnectionDetails](../entities/NativeConnectionDetails.md) | Pydantic model | 69 | `BaseModel` | — |
-| [NativeApprovalResponse](../entities/NativeApprovalResponse.md) | Pydantic model | 77 | `BaseModel` | — |
-| [NativeDenialResponse](../entities/NativeDenialResponse.md) | Pydantic model | 81 | `BaseModel` | — |
-| [NativePendingResponse](../entities/NativePendingResponse.md) | Pydantic model | 85 | `BaseModel` | — |
-| [NativeTokenResponse](../entities/NativeTokenResponse.md) | Pydantic model | 89 | `BaseModel` | — |
-| [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 135 | `BaseModel` | — |
-| [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 141 | `BaseModel` | — |
-| [LocalProfileChoice](../entities/LocalProfileChoice.md) | Pydantic model | 146 | `BaseModel` | — |
-| [GuestTransferRequest](../entities/GuestTransferRequest.md) | Pydantic model | 151 | `BaseModel` | — |
-| [PrincipalRecoveryRequest](../entities/PrincipalRecoveryRequest.md) | Pydantic model | 446 | `BaseModel` | — |
+| [Database](../entities/routers_identity_Database.md) | Type alias | 26 | `Annotated[object, Depends(get_db, scope='function')]` | — |
+| [BootstrapOwner](../entities/BootstrapOwner.md) | Pydantic model | 29 | `BaseModel` | — |
+| [NativeConnectionStart](../entities/NativeConnectionStart.md) | Pydantic model | 33 | `BaseModel` | — |
+| [NativeConnectionExchange](../entities/NativeConnectionExchange.md) | Pydantic model | 51 | `BaseModel` | — |
+| [NativeConnectionApproval](../entities/NativeConnectionApproval.md) | Pydantic model | 57 | `BaseModel` | — |
+| [NativeConnectionResponse](../entities/NativeConnectionResponse.md) | Pydantic model | 62 | `BaseModel` | — |
+| [NativeConnectionDetails](../entities/NativeConnectionDetails.md) | Pydantic model | 70 | `BaseModel` | — |
+| [NativeApprovalResponse](../entities/NativeApprovalResponse.md) | Pydantic model | 78 | `BaseModel` | — |
+| [NativeDenialResponse](../entities/NativeDenialResponse.md) | Pydantic model | 82 | `BaseModel` | — |
+| [NativePendingResponse](../entities/NativePendingResponse.md) | Pydantic model | 86 | `BaseModel` | — |
+| [NativeTokenResponse](../entities/NativeTokenResponse.md) | Pydantic model | 90 | `BaseModel` | — |
+| [MembershipChange](../entities/MembershipChange.md) | Pydantic model | 136 | `BaseModel` | — |
+| [ProfileLinkRequest](../entities/ProfileLinkRequest.md) | Pydantic model | 142 | `BaseModel` | — |
+| [LocalProfileChoice](../entities/LocalProfileChoice.md) | Pydantic model | 147 | `BaseModel` | — |
+| [GuestTransferRequest](../entities/GuestTransferRequest.md) | Pydantic model | 152 | `BaseModel` | — |
+| [PrincipalRecoveryRequest](../entities/PrincipalRecoveryRequest.md) | Pydantic model | 447 | `BaseModel` | — |
 
 ## Functions
 

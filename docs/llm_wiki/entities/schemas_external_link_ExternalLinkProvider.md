@@ -34,13 +34,16 @@ flowchart LR
     n2["str"]
     n3["backend/app/schemas/__init__.py"]
     n4["backend/app/services/external_link_service.py"]
+    n5["backend/tests/test_server_features.py"]
     n0 --> n1
     n0 --> n2
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_external_link.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/external_link_service.md"
+    click n5 "../modules/test_server_features.md"
 ```
 
 ### Summary
@@ -62,3 +65,4 @@ flowchart LR
 |---|---|---|---:|
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `external_link_service` | import | [external_link_service](../modules/external_link_service.md) | — |
+| `test_server_features` | import | [test_server_features](../modules/test_server_features.md) | — |

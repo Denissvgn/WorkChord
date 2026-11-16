@@ -1,6 +1,6 @@
 # NativeConnectionStart
 
-**Location:** `backend/app/routers/identity.py:32`
+**Location:** `backend/app/routers/identity.py:33`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)
@@ -43,10 +43,13 @@ flowchart LR
     n0["NativeConnectionStart (backend/app/routers/identity.py)"]
     n1["BaseModel"]
     n2["start_native_connection (backend/app/routers/identity.py)"]
+    n3["backend/tests/test_server_features.py"]
     n0 --> n1
     n2 --> n0
+    n3 --> n0
     click n0 "../modules/routers_identity.md"
     click n2 "../modules/routers_identity.md"
+    click n3 "../modules/test_server_features.md"
 ```
 
 ### Summary
@@ -66,3 +69,4 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `start_native_connection` | type_reference | [routers_identity](../modules/routers_identity.md) | — |
+| `test_server_features` | import | [test_server_features](../modules/test_server_features.md) | — |

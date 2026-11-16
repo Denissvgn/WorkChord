@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| cleanup | IdentityService(…).cleanup_sessions | 443 | `IdentityService(db).cleanup_sessions(limit=limit)` |
-| cleanup | IdentityService | 443 | `IdentityService(db)` |
+| cleanup | IdentityService(…).cleanup_sessions | 444 | `IdentityService(db).cleanup_sessions(limit=limit)` |
+| cleanup | IdentityService | 444 | `IdentityService(db)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `cleanup` | `IdentityService(db).cleanup_sessions` | 443 |
+| unresolved_call | `cleanup` | `IdentityService(db).cleanup_sessions` | 444 |
 
 ## Behavior
 

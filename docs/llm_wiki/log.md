@@ -3660,3 +3660,39 @@ Runs keep the harness session the actor declared at begin in searchable columns,
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:abe7ead6471e459482472a3af14073d6a42c37948ebae5ad2dd8a5ed8e9513ff`
+- Pages created: 2
+- Pages updated: 50
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3156
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+### Public server features
+
+The anonymous identity response lists stable server feature names (observer sessions, person assignment and run reads, the topology read, agdash links, harness metadata and runtime observations), so clients choose capabilities without comparing versions; a test ties each name to the code that provides it.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:abe7ead6471e459482472a3af14073d6a42c37948ebae5ad2dd8a5ed8e9513ff`
+- Pages created: 0
+- Pages updated: 4
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3204
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

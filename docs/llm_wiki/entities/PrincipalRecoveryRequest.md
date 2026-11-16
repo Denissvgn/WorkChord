@@ -1,6 +1,6 @@
 # PrincipalRecoveryRequest
 
-**Location:** `backend/app/routers/identity.py:446`
+**Location:** `backend/app/routers/identity.py:447`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)

@@ -1,6 +1,6 @@
 # AccountSession
 
-**Location:** `frontend/src/features/identity/identityService.ts:22`
+**Location:** `frontend/src/features/identity/identityService.ts:24`
 **Kind:** Interface
 **Bases:** —
 **Module:** [identityService](../modules/identityService.md)

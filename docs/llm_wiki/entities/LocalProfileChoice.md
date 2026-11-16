@@ -1,6 +1,6 @@
 # LocalProfileChoice
 
-**Location:** `backend/app/routers/identity.py:146`
+**Location:** `backend/app/routers/identity.py:147`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)

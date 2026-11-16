@@ -147,16 +147,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| revoke_owned_session | require_identity_writes | 409 | `require_identity_writes(data not statically known)` |
+| revoke_owned_session | require_identity_writes | 410 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
-| revoke_owned_session | _local_observers | 413 | `_local_observers(authority)` |
-| _local_observers | get_settings | 388 | `get_settings(data not statically known)` |
-| revoke_owned_session | UserSession.principal_id.is_ | 414 | `UserSession.principal_id.is_(None)` |
-| revoke_owned_session | AuthorityError | 416 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
-| revoke_owned_session | internal_authority | 417 | `internal_authority(db)` |
+| revoke_owned_session | _local_observers | 414 | `_local_observers(authority)` |
+| _local_observers | get_settings | 389 | `get_settings(data not statically known)` |
+| revoke_owned_session | UserSession.principal_id.is_ | 415 | `UserSession.principal_id.is_(None)` |
+| revoke_owned_session | AuthorityError | 417 | `AuthorityError('session_not_found', 'Session not found.', 404)` |
+| revoke_owned_session | internal_authority | 418 | `internal_authority(db)` |
 | internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
 
 ### Boundary effects
@@ -167,7 +167,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `revoke_owned_session` | `UserSession.principal_id.is_` | 414 |
+| unresolved_call | `revoke_owned_session` | `UserSession.principal_id.is_` | 415 |
 | unresolved_call | `internal_authority` | `db.info.get` | 92 |
 | step_limit | `revoke_owned_session` | `first 12 steps` | 0 |
 

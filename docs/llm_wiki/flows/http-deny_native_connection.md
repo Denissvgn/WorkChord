@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| deny_native_connection | NativeSessionService(…).deny | 132 | `NativeSessionService(db).deny(request_id)` |
-| deny_native_connection | NativeSessionService | 132 | `NativeSessionService(db)` |
+| deny_native_connection | NativeSessionService(…).deny | 133 | `NativeSessionService(db).deny(request_id)` |
+| deny_native_connection | NativeSessionService | 133 | `NativeSessionService(db)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `deny_native_connection` | `NativeSessionService(db).deny` | 132 |
+| unresolved_call | `deny_native_connection` | `NativeSessionService(db).deny` | 133 |
 
 ## Behavior
 

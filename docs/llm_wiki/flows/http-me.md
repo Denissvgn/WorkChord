@@ -55,7 +55,7 @@ sequenceDiagram
     participant p26 as MaintenanceModeError
     participant p27 as bool
     participant p28 as db.get (backend/app/routers/identity.py:me)
-    participant p29 as result.update
+    participant p29 as list
     p0->>p1: resolve_http_identity
     p0->>p2: renewable_until
     p0->>p3: local_work_profile
@@ -84,13 +84,13 @@ sequenceDiagram
     p10->>p26: MaintenanceModeError
     p0-->>p27: bool(...)
     p0-->>p28: db.get (backend/app/routers/identity.py:me)(UserSession, authority.session_id)
+    p0-->>p29: list(SERVER_FEATURES)
     p0-->>p28: db.get (backend/app/routers/identity.py:me)(Principal, authority.principal_id)
-    p0-->>p29: result.update(principal={...}, workspace_role=authority.workspace_role, projects=authority.projects)
 ```
 
-> Call sequence diagram shows 30 of 146 interactions; 116 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 30 of 147 interactions; 117 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 1 of 26 (25 omitted); unresolved 3 of 63 (60 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 2 of 27 (25 omitted); unresolved 2 of 63 (61 omitted). These counts cover the captured static trace.
 
 Omitted captured detail, grouped by actual caller occurrence and target module:
 
@@ -117,14 +117,14 @@ Omitted captured detail, grouped by actual caller occurrence and target module:
 
 Source steps: 58; effect analysis evaluated: 34, partial: 0, unavailable: 24. Counts include steps omitted from the displayed trace.
 
-Collector observations for 34 source steps with known totals: observed: 128, emitted: 128, omitted: 0. Unavailable totals are excluded.
+Collector observations for 34 source steps with known totals: observed: 129, emitted: 129, omitted: 0. Unavailable totals are excluded.
 
 - Callable record unavailable for one or more source steps; those steps have no represented callable body.
 - Effect collector totals unavailable; observed counts cover captured records only.
 
 | Step | Callable record | Effect analysis | Collector totals | Observed | Emitted | Omitted |
 |---|---|---|---|---:|---:|---:|
-| `me` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
+| `me` | `available` | `evaluated` | `available` | `16` | `16` | `0` |
 | `resolve_http_identity` | `available` | `evaluated` | `available` | `15` | `15` | `0` |
 | `get_settings` | `available` | `evaluated` | `available` | `1` | `1` | `0` |
 | `Settings` | `unavailable` | `unavailable` | `unavailable` | — | — | — |
@@ -201,7 +201,7 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `me` | `request: Request`, `response: Response`, `db: Database` | `AuthorityError`, `UserSession`, `Principal`, `UserSession` | `response.headers[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `result` |
+| `me` | `request: Request`, `response: Response`, `db: Database` | `AuthorityError`, `SERVER_FEATURES`, `UserSession`, `Principal`, `UserSession` | `response.headers[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]`, `result[...]` | `result` |
 | `resolve_http_identity` | `request`, `db` | `WorkspaceAuthorityState`, `Principal`, `WorkspaceAuthorityState`, `Principal`, `Principal` | - | `authority` |
 | `get_settings` | - | - | - | `Settings(...)` |
 | `Settings` | - | - | - | - |
@@ -218,7 +218,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| me | resolve_http_identity | 163 | `resolve_http_identity(request, db)` |
+| me | resolve_http_identity | 164 | `resolve_http_identity(request, db)` |
 | resolve_http_identity | get_settings | 53 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |
 | resolve_http_identity | IdentityService | 55 | `IdentityService(db)` |
@@ -234,7 +234,7 @@ flowchart LR
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `result.update` | `me` | 182 |
+| mutation | `result.update` | `me` | 183 |
 | mutation | `contexts.append` | `resolve_http_identity` | 73 |
 | mutation | `contexts.append` | `resolve_http_identity` | 75 |
 | mutation | `contexts.append` | `resolve_http_identity` | 85 |
@@ -255,4 +255,4 @@ flowchart LR
 
 ## Behavior
 
-Reports the access mode, the resolved principal and memberships, and for any session its access level. An observer also receives its client label, expiry and `renewable_until`. Authentication errors other than conflicting credentials are reported without failing the request.
+Reports the access mode, the resolved principal and memberships, and for any session its access level. An observer also receives its client label, expiry and `renewable_until`. Authentication errors other than conflicting credentials are reported without failing the request. It always lists the server's `features`, so a client without a credential can choose which reads and pairing to use.

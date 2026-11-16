@@ -132,17 +132,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| sessions | select(…).where | 396 | `select(UserSession).where(...)` |
-| sessions | select | 396 | `select(UserSession)` |
-| sessions | select(…).where | 398 | `select(UserSession).where(...)` |
-| sessions | select | 398 | `select(UserSession)` |
-| sessions | _local_observers | 399 | `_local_observers(authority)` |
-| _local_observers | get_settings | 388 | `get_settings(data not statically known)` |
+| sessions | select(…).where | 397 | `select(UserSession).where(...)` |
+| sessions | select | 397 | `select(UserSession)` |
+| sessions | select(…).where | 399 | `select(UserSession).where(...)` |
+| sessions | select | 399 | `select(UserSession)` |
+| sessions | _local_observers | 400 | `_local_observers(authority)` |
+| _local_observers | get_settings | 389 | `get_settings(data not statically known)` |
 | get_settings | Settings | 524 | `Settings(data not statically known)` |
-| sessions | select(…).where | 400 | `select(UserSession).where(UserSession.principal_id.is_(...), ...)` |
-| sessions | select | 400 | `select(UserSession)` |
-| sessions | UserSession.principal_id.is_ | 400 | `UserSession.principal_id.is_(None)` |
-| sessions | AuthorityError | 402 | `AuthorityError('authentication_required', 'Sign in to manage sessions.', 401)` |
+| sessions | select(…).where | 401 | `select(UserSession).where(UserSession.principal_id.is_(...), ...)` |
+| sessions | select | 401 | `select(UserSession)` |
+| sessions | UserSession.principal_id.is_ | 401 | `UserSession.principal_id.is_(None)` |
+| sessions | AuthorityError | 403 | `AuthorityError('authentication_required', 'Sign in to manage sessions.', 401)` |
 
 ### Boundary effects
 
@@ -152,13 +152,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `sessions` | `select(UserSession).where` | 396 |
-| external_call | `sessions` | `select` | 396 |
-| unresolved_call | `sessions` | `select(UserSession).where` | 398 |
-| external_call | `sessions` | `select` | 398 |
-| unresolved_call | `sessions` | `select(UserSession).where` | 400 |
-| external_call | `sessions` | `select` | 400 |
-| unresolved_call | `sessions` | `UserSession.principal_id.is_` | 400 |
+| unresolved_call | `sessions` | `select(UserSession).where` | 397 |
+| external_call | `sessions` | `select` | 397 |
+| unresolved_call | `sessions` | `select(UserSession).where` | 399 |
+| external_call | `sessions` | `select` | 399 |
+| unresolved_call | `sessions` | `select(UserSession).where` | 401 |
+| external_call | `sessions` | `select` | 401 |
+| unresolved_call | `sessions` | `UserSession.principal_id.is_` | 401 |
 | step_limit | `sessions` | `first 12 steps` | 0 |
 
 ## Behavior
