@@ -142,6 +142,19 @@ rework, and recovery command enforce the caller's current topology revision
 and runtime-ready membership. A topology change invalidates stale routing
 evidence.
 
+## Read the team and its runtime references
+
+`GET /api/agent/team-setup/topology` and the MCP `agent_get_team_topology` tool
+return who is on the team: each member's actor key and ID, name, role, profile,
+lifecycle, whether it is runtime-ready, its model binding keys, and its
+`runtime_ref`, so a reader can tell which runtime runs which actor. They never
+return a `credential_ref`, a handoff or an acknowledgement payload. Agent keys
+read on the status rule: an operator any topology, a PM only its bound one.
+Without an agent key, people with a workspace role, a trusted-local browser, a
+paired observer of such a person, and operators may read it; a project role
+alone does not admit a person, because the team is workspace-wide. Pass
+`topology_key` to choose a topology; otherwise the first one is returned.
+
 ## Drift, adoption, rotation, and rollback
 
 - Safe mutable drift produces an update action.
@@ -192,7 +205,7 @@ Export the bounded aggregate setup report through
 revision and digest, lifecycle and current-work counts, reconciliation receipt
 counts, blocker codes, and an explicit `availability_unknown` dispatch context.
 It contains no member handoffs, runtime endpoints, external references, or
-credential values:
+credential values; runtime references are read through the topology read above:
 
 ```bash
 .venv/bin/python scripts/api_keys/setup_agent_team.py \

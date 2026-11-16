@@ -73,6 +73,8 @@ from app.schemas.agent_team_setup import (
     AgentTeamSetupStep,
     AgentTeamSkillPackage,
     AgentTeamStatusResponse,
+    AgentTeamTopologyMemberRead,
+    AgentTeamTopologyResponse,
     AgentTeamValidateResponse,
     ensure_agent_team_secret_free,
     load_stored_agent_team_master,
@@ -2703,6 +2705,62 @@ class AgentTeamSetupService:
             topology,
             can_mutate=can_mutate,
             persist_state=False,
+        )
+
+    async def topology(
+        self,
+        actor: AgentActor | None,
+        *,
+        topology_key: str | None = None,
+    ) -> AgentTeamTopologyResponse:
+        """Who is on the team, and which runtime reference runs each member.
+
+        An agent reads it on the status rule: an operator any topology, a PM only
+        its bound one. ``None`` is a person the route already admitted, who reads
+        any topology. Credential references never leave this method.
+        """
+        from app.authority import internal_authority
+
+        with internal_authority(self.db):
+            if actor is not None:
+                topology, _ = await self._select_status_topology(actor, topology_key)
+            elif topology_key is not None:
+                topology = await self._topology(topology_key, load_members=True)
+            else:
+                first = (await self.db.execute(
+                    select(AgentTeamTopology.topology_key).order_by(AgentTeamTopology.id)
+                )).scalars().first()
+                topology = await self._topology(first, load_members=True) if first is not None else None
+            if topology is None:
+                return AgentTeamTopologyResponse(topology_state="absent", runtime_ready=False)
+            status = await self._status_for_topology(topology, can_mutate=False, persist_state=False)
+            rows = {row.actor_key: row for row in topology.members}
+        members = []
+        for member in status.members:
+            row = rows.get(member.actor_key)
+            if row is None:
+                continue
+            members.append(AgentTeamTopologyMemberRead(
+                actor_key=member.actor_key,
+                actor_id=member.actor_id,
+                actor_name=member.actor_name,
+                display_name=member.display_name,
+                role=member.role,
+                desired=member.desired,
+                lifecycle_state=member.lifecycle_state,
+                profile_key=member.profile_key,
+                runtime_ready=member.runtime_ready,
+                model_binding_keys=tuple(json.loads(row.model_binding_keys or "[]")),
+                default_model_binding_key=row.default_model_binding_key,
+                runtime_ref=row.runtime_ref,
+            ))
+        return AgentTeamTopologyResponse(
+            topology_key=status.topology_key,
+            topology_revision=status.topology_revision,
+            manifest_digest=status.manifest_digest,
+            topology_state=status.topology_state,
+            runtime_ready=status.runtime_ready,
+            members=tuple(members),
         )
 
     async def report(

@@ -3463,3 +3463,43 @@ Without an agent key, people, trusted-local browsers and paired observers list t
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:fe2477c2230dc07bdcdf3b625b4cb04c576e8abc2200607dc192c8a81208faf7`
+- Pages created: 5
+- Pages updated: 256
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2921
+- Pages deprecated: 0
+- Semantic fields preserved: 7
+- Moved entities: none
+- Flow pages initialized: 2 (http=1, mcp=1)
+- Workflow pages created: 0
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Team topology read
+
+A topology read returns each team member's actor, role, profile, lifecycle, readiness, model binding keys and runtime reference, never credential references or handoffs. Agent keys read it on the status rule; people need a workspace role, a trusted-local browser or a paired observer of such a person. An MCP read-only tool mirrors it for agents.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:fe2477c2230dc07bdcdf3b625b4cb04c576e8abc2200607dc192c8a81208faf7`
+- Pages created: 0
+- Pages updated: 5
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3173
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

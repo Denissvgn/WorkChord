@@ -27,6 +27,7 @@ from app.autonomy.canonical import (
 AGENT_TEAM_MASTER_SCHEMA_VERSION = "agent-team-master-v1"
 AGENT_TEAM_PLAN_SCHEMA_VERSION = "agent-team-reconciliation-plan-v1"
 AGENT_TEAM_STATUS_SCHEMA_VERSION = "agent-team-status-v1"
+AGENT_TEAM_TOPOLOGY_SCHEMA_VERSION = "agent-team-topology-v1"
 AGENT_TEAM_REPORT_SCHEMA_VERSION = "agent-team-setup-report-v1"
 AGENT_TEAM_ACK_SCHEMA_VERSION = "agent-team-runtime-ack-v1"
 AGENT_TEAM_HANDOFF_SCHEMA_VERSION = "agent-team-runtime-handoff-v1"
@@ -1077,6 +1078,50 @@ class AgentTeamSetupReportEvidence(AgentTeamSetupModel):
         "blocked",
     ] | None = None
     pending_actions: int = Field(ge=0, le=MAX_AGENT_TEAM_ACTIONS)
+
+
+class AgentTeamTopologyMemberRead(AgentTeamSetupModel):
+    """Which actor a team member is and which runtime reference runs it.
+
+    Credential references, handoffs and acknowledgement payloads are never part
+    of this read.
+    """
+
+    actor_key: str = Field(pattern=STABLE_KEY_PATTERN)
+    actor_id: int | None = Field(default=None, ge=1)
+    actor_name: str = Field(pattern=STABLE_KEY_PATTERN)
+    display_name: str
+    role: Literal["pm", "worker", "verifier"]
+    desired: bool
+    lifecycle_state: AgentTeamMemberLifecycle
+    profile_key: str = Field(pattern=STABLE_KEY_PATTERN)
+    runtime_ready: bool
+    model_binding_keys: tuple[str, ...] = Field(default=(), max_length=16)
+    default_model_binding_key: str | None = None
+    runtime_ref: str = Field(min_length=1, max_length=1_024)
+
+
+class AgentTeamTopologyResponse(AgentTeamSetupModel):
+    """The team as a reader sees it: members, roles, model bindings and runtime references."""
+
+    schema_version: Literal["agent-team-topology-v1"] = AGENT_TEAM_TOPOLOGY_SCHEMA_VERSION
+    topology_key: str | None = Field(default=None, pattern=STABLE_KEY_PATTERN)
+    topology_revision: int | None = Field(default=None, ge=1)
+    manifest_digest: str | None = Field(default=None, pattern=SHA256_PATTERN)
+    topology_state: Literal[
+        "absent",
+        "configured",
+        "onboarding",
+        "runtime_ready",
+        "blocked",
+        "disabled",
+    ]
+    runtime_ready: bool
+    availability: Literal["availability_unknown"] = "availability_unknown"
+    members: tuple[AgentTeamTopologyMemberRead, ...] = Field(
+        default=(),
+        max_length=MAX_AGENT_TEAM_MEMBERS,
+    )
 
 
 class AgentTeamDispatchAvailability(AgentTeamSetupModel):

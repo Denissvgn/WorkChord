@@ -1,7 +1,7 @@
 # AgentTeamSetupReport
 
-**Location:** `backend/app/schemas/agent_team_setup.py:1112`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:1157`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

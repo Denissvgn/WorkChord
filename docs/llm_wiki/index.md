@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1575 | [Open section](#entities) |
-| Modules | 843 | [Open section](#modules) |
+| Entities | 1577 | [Open section](#entities) |
+| Modules | 844 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 558 | [Open section](#entry-point-flows) |
+| Entry-point flows | 560 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -149,6 +149,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentTeamStepState](entities/AgentTeamStepState.md)
 - [AgentTeamTopology](entities/AgentTeamTopology.md)
 - [AgentTeamTopologyMember](entities/AgentTeamTopologyMember.md)
+- [AgentTeamTopologyMemberRead](entities/AgentTeamTopologyMemberRead.md)
+- [AgentTeamTopologyResponse](entities/AgentTeamTopologyResponse.md)
 - [AgentTeamValidateResponse](entities/AgentTeamValidateResponse.md)
 - [AgentTeamValidation](entities/AgentTeamValidation.md)
 - [AgentVerificationEvent](entities/AgentVerificationEvent.md)
@@ -2373,6 +2375,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_task_domain_integrity](modules/test_task_domain_integrity.md) - Task context, recovery and project projections stay consistent across commands.
 - [test_task_domain_migrations](modules/test_task_domain_migrations.md) - Initial task-domain constraints, evidence retention and identity fences.
 - [test_task_pagination](modules/test_task_pagination.md) - Keyset coverage, mutation semantics and permission-bounded history reads.
+- [test_team_topology_read](modules/test_team_topology_read.md) - The team topology read names members, model bindings and runtime references, never credentials.
 - [test_time_entries](modules/test_time_entries.md) - Private explicit minutes, retained corrections and independent recovery behavior.
 - [test_time_reports](modules/test_time_reports.md) - Recorded coverage and manager totals preserve private entry boundaries.
 - [test_transfer_catalog](modules/test_transfer_catalog.md) - Versioned transfer catalog invariants.
@@ -2781,6 +2784,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-get_agent_team_setup_report](flows/http-get_agent_team_setup_report.md) - entry: `get_agent_team_setup_report`
 - [http-get_agent_team_setup_status](flows/http-get_agent_team_setup_status.md) - entry: `get_agent_team_setup_status`
 - [http-get_agent_team_starting_points](flows/http-get_agent_team_starting_points.md) - entry: `get_agent_team_starting_points`
+- [http-get_agent_team_topology](flows/http-get_agent_team_topology.md) - entry: `get_agent_team_topology`
 - [http-get_availability](flows/http-get_availability.md) - entry: `get_availability`
 - [http-get_calendar](flows/http-get_calendar.md) - entry: `get_calendar`
 - [http-get_calendars](flows/http-get_calendars.md) - entry: `get_calendars`
@@ -3064,6 +3068,7 @@ Retained history; these declarations are absent from the selected source invento
 - [mcp-agent_get_task_detail](flows/mcp-agent_get_task_detail.md) - entry: `agent_get_task_detail`
 - [mcp-agent_get_task_routing_assessment](flows/mcp-agent_get_task_routing_assessment.md) - entry: `agent_get_task_routing_assessment`
 - [mcp-agent_get_team_setup_status](flows/mcp-agent_get_team_setup_status.md) - entry: `agent_get_team_setup_status`
+- [mcp-agent_get_team_topology](flows/mcp-agent_get_team_topology.md) - entry: `agent_get_team_topology`
 - [mcp-agent_list_actor_roster](flows/mcp-agent_list_actor_roster.md) - entry: `agent_list_actor_roster`
 - [mcp-agent_list_assignments](flows/mcp-agent_list_assignments.md) - entry: `agent_list_assignments`
 - [mcp-agent_list_model_bindings](flows/mcp-agent_list_model_bindings.md) - entry: `agent_list_model_bindings`

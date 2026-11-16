@@ -42,6 +42,7 @@ Live topology, recovery, redaction, and compatibility qualification.
 flowchart LR
     n0["backend"]
     n1["backend/tests/test_agent_team_setup_qualification.py"]
+    n0 --> n1
     n1 --> n0
     click n1 "../modules/test_agent_team_setup_qualification.md"
 ```
@@ -52,6 +53,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
+| Inbound | `backend` (1) |
 | Outbound | `backend` (12) |
 
 ### External packages
@@ -60,7 +62,7 @@ flowchart LR
 |---|---:|---:|
 | python | 3 | 1 |
 
-> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 13 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 

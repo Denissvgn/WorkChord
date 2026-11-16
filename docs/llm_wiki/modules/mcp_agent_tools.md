@@ -170,6 +170,7 @@ flowchart LR
 | `get_task` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any] \| None` | — | MCP handler: get task details. |
 | `get_task_context` | *(async)* `(db: AsyncSession, actor: AgentActor, task_id: int) -> dict[str, Any] \| None` | — | MCP handler: return task plus timeline context. |
 | `get_agent_capabilities` | *(async)* `(db: AsyncSession, actor: AgentActor) -> dict[str, Any]` | — | MCP handler: return the authenticated v1 compatibility handshake. |
+| `get_agent_team_topology` | *(async)* `(db: AsyncSession, actor: AgentActor) -> dict[str, Any]` | — | MCP handler: return team members and runtime references for the caller's topology. |
 | `get_agent_team_setup_status` | *(async)* `(db: AsyncSession, actor: AgentActor) -> dict[str, Any]` | — | MCP handler: return the caller's backend-derived topology status. |
 | `list_agent_actor_roster` | *(async)* `(db: AsyncSession, actor: AgentActor, *, include_disabled: bool = False) -> list[dict[str, Any]]` | — | MCP handler: return secret-free enabled actor dispatch metadata. |
 | `list_agent_model_catalog` | *(async)* `(db: AsyncSession, actor: AgentActor, *, include_disabled: bool = False) -> list[dict[str, Any]]` | — | MCP handler: list provider-neutral secret-free model declarations. |

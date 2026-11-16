@@ -1,7 +1,7 @@
 # AgentTeamReconciliationPlan
 
-**Location:** `backend/app/schemas/agent_team_setup.py:529`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:530`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

@@ -1,7 +1,7 @@
 # AgentTeamRuntimeHandoff
 
-**Location:** `backend/app/schemas/agent_team_setup.py:912`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:913`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

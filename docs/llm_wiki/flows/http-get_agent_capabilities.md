@@ -205,32 +205,32 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_agent_capabilities | AgentRoutingRolloutService.status | 381 | `AgentRoutingRolloutService().status(data not statically known)` |
+| get_agent_capabilities | AgentRoutingRolloutService.status | 403 | `AgentRoutingRolloutService().status(data not statically known)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutMode | 253 | `AgentRoutingRolloutMode(self.settings.model_aware_routing_mode)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 258 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=AgentRoutingRolloutMode.OFF, feature_advertised=False, blocker_codes=(...), topology_readiness=readiness)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 266 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=AgentRoutingRolloutMode.OFF, feature_advertised=False, blocker_codes=(...), topology_readiness=readiness)` |
 | AgentRoutingRolloutService.status | AgentRoutingRolloutStatus | 273 | `AgentRoutingRolloutStatus(configured_mode=configured, effective_mode=configured, feature_advertised=True, blocker_codes=(...), topology_readiness=readiness)` |
-| get_agent_capabilities | AgentRoutingRolloutService | 381 | `AgentRoutingRolloutService(data not statically known)` |
-| get_agent_capabilities | AgentTeamSetupService.routing_readiness | 383 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
-| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3542 | `self.membership_boundary(actor.id)` |
-| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3474 | `self.db.execute(...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3475 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
-| AgentTeamSetupService.membership_boundary | select(…).join | 3475 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
+| get_agent_capabilities | AgentRoutingRolloutService | 403 | `AgentRoutingRolloutService(data not statically known)` |
+| get_agent_capabilities | AgentTeamSetupService.routing_readiness | 405 | `AgentTeamSetupService(service.db).routing_readiness(actor)` |
+| AgentTeamSetupService.routing_readiness | AgentTeamSetupService.membership_boundary | 3600 | `self.membership_boundary(actor.id)` |
+| AgentTeamSetupService.membership_boundary | self.db.execute (backend/app/services/agen…rvice.membership_boundary) | 3532 | `self.db.execute(...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join(…).where | 3533 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where(..., ...)` |
+| AgentTeamSetupService.membership_boundary | select(…).join | 3533 | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, ...)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `features.extend` | `get_agent_capabilities` | 399 |
-| mutation | `features.append` | `get_agent_capabilities` | 416 |
+| mutation | `features.extend` | `get_agent_capabilities` | 421 |
+| mutation | `features.append` | `get_agent_capabilities` | 438 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3474 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3475 |
-| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3475 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `self.db.execute` | 3532 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join(AgentTeamTopologyMember, AgentTeamTopologyMember.topology_id == AgentTeamTopology.id).where` | 3533 |
+| unresolved_call | `AgentTeamSetupService.membership_boundary` | `select(AgentTeamTopology.topology_key).join` | 3533 |
 | step_limit | `get_agent_capabilities` | `first 12 steps` | 0 |
 | truncated_flow | `get_agent_capabilities` | `depth limit` | 0 |
 

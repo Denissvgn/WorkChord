@@ -200,7 +200,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_get_run_detail | _tool_call | 958 | `_tool_call('planning:read', ...)` |
+| agent_get_run_detail | _tool_call | 969 | `_tool_call('planning:read', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 506 | `Settings(data not statically known)` |

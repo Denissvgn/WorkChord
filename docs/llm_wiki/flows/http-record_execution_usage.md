@@ -136,17 +136,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| record_execution_usage | ExecutionUsageService(…).write | 1415 | `ExecutionUsageService(db).write(actor, run_id, data)` |
-| record_execution_usage | ExecutionUsageService | 1415 | `ExecutionUsageService(db)` |
-| record_execution_usage | _handle_agent_error | 1417 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 296 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 298 | `str(exc)` |
-| _handle_agent_error | str | 300 | `str(exc)` |
-| _handle_agent_error | HTTPException | 302 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 303 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 304 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 304 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 305 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| record_execution_usage | ExecutionUsageService(…).write | 1456 | `ExecutionUsageService(db).write(actor, run_id, data)` |
+| record_execution_usage | ExecutionUsageService | 1456 | `ExecutionUsageService(db)` |
+| record_execution_usage | _handle_agent_error | 1458 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 318 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 320 | `str(exc)` |
+| _handle_agent_error | str | 322 | `str(exc)` |
+| _handle_agent_error | HTTPException | 324 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 325 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 326 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 326 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentTeamSetupConflictError)` |
 
 ### Boundary effects
 
@@ -156,13 +156,13 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `record_execution_usage` | `ExecutionUsageService(db).write` | 1415 |
-| external_call | `_handle_agent_error` | `isinstance` | 296 |
-| external_call | `_handle_agent_error` | `HTTPException` | 302 |
-| external_call | `_handle_agent_error` | `isinstance` | 303 |
-| external_call | `_handle_agent_error` | `HTTPException` | 304 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 304 |
-| external_call | `_handle_agent_error` | `isinstance` | 305 |
+| unresolved_call | `record_execution_usage` | `ExecutionUsageService(db).write` | 1456 |
+| external_call | `_handle_agent_error` | `isinstance` | 318 |
+| external_call | `_handle_agent_error` | `HTTPException` | 324 |
+| external_call | `_handle_agent_error` | `isinstance` | 325 |
+| external_call | `_handle_agent_error` | `HTTPException` | 326 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 326 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
 | step_limit | `record_execution_usage` | `first 12 steps` | 0 |
 
 ## Behavior

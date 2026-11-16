@@ -213,7 +213,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| workspace_convert_triage_to_task | _tool_call | 1966 | `_tool_call('planning:write', ...)` |
+| workspace_convert_triage_to_task | _tool_call | 1977 | `_tool_call('planning:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 506 | `Settings(data not statically known)` |

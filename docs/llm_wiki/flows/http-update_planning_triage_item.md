@@ -200,7 +200,7 @@ flowchart LR
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
 | update_planning_triage_item | update_triage_item | 673 | `mcp_agent_tools.update_triage_item(db, actor, triage_item_id, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| update_triage_item | _mutate_triage_item | 2417 | `_mutate_triage_item(db, actor, triage_item_id, operation='triage.update', idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id, data=TriageItemUpdate(...), service_method='update')` |
+| update_triage_item | _mutate_triage_item | 2426 | `_mutate_triage_item(db, actor, triage_item_id, operation='triage.update', idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id, data=TriageItemUpdate(...), service_method='update')` |
 | _mutate_triage_item | _triage_command_context | 417 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError | 110 | `ValueError('Idempotency-Key is required')` |

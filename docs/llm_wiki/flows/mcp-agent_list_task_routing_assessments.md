@@ -201,7 +201,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_list_task_routing_assessments | _tool_call | 501 | `_tool_call(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
+| agent_list_task_routing_assessments | _tool_call | 512 | `_tool_call(ROUTING_READ_SCOPE_REQUIREMENT, ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 506 | `Settings(data not statically known)` |
