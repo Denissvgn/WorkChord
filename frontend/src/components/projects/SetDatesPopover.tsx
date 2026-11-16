@@ -21,18 +21,23 @@ const DEFAULT_SPAN_DAYS = 28;
 
 const toInputDate = (date: Date) => format(date, 'yyyy-MM-dd');
 
-const DatesForm = ({ observed, controls, onDone }: {
+/** Dates to start from instead of today and four weeks on, as `yyyy-MM-dd`. */
+type ProposedDates = { start: string; target: string };
+
+const DatesForm = ({ observed, controls, proposed, onDone }: {
     observed: ObservedPlanningInput<Project>;
     controls: ReactNode;
+    proposed?: ProposedDates;
     onDone: () => void;
 }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const project = observed.resource;
     const firstFieldRef = useRef<HTMLInputElement>(null);
-    const [startDate, setStartDate] = useState(() => project.start_date?.slice(0, 10) || toInputDate(new Date()));
+    const [startDate, setStartDate] = useState(() => project.start_date?.slice(0, 10)
+        || proposed?.start || toInputDate(new Date()));
     const [targetDate, setTargetDate] = useState(() => project.target_date?.slice(0, 10)
-        || toInputDate(addDays(new Date(), DEFAULT_SPAN_DAYS)));
+        || proposed?.target || toInputDate(addDays(new Date(), DEFAULT_SPAN_DAYS)));
     const outOfOrder = Boolean(startDate && targetDate && targetDate < startDate);
 
     useEffect(() => { firstFieldRef.current?.focus(); }, []);
@@ -92,9 +97,9 @@ const DatesForm = ({ observed, controls, onDone }: {
 /**
  * "Set dates" for a project that has none, edited in place: a small popover
  * under the button with the start and target date, proposed as today and four
- * weeks on, so saving them is the second click.
+ * weeks on (or as `proposed`), so saving them is the second click.
  */
-export const SetDatesPopover = ({ project }: { project: Project }) => {
+export const SetDatesPopover = ({ project, proposed }: { project: Project; proposed?: ProposedDates }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
@@ -180,7 +185,7 @@ export const SetDatesPopover = ({ project }: { project: Project }) => {
                             {t('surfaces.projectsPage.setDatesFor', { name: project.name })}
                         </p>
                         <PlanningInputBoundary<Project> kind="project" resourceId={project.id} onCancel={() => close()}>
-                            {(observed, controls) => <DatesForm observed={observed} controls={controls} onDone={() => close()} />}
+                            {(observed, controls) => <DatesForm observed={observed} controls={controls} proposed={proposed} onDone={() => close()} />}
                         </PlanningInputBoundary>
                     </div>
                 </div>,

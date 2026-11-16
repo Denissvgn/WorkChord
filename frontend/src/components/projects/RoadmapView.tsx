@@ -46,7 +46,10 @@ type RoadmapRow = {
     startDate: Date | null;
     endDate: Date | null;
     spanSource: 'project' | 'single-project-date' | 'milestones' | 'none';
+    /** Nothing to draw: no project dates and no dated milestones. */
     isUnscheduled: boolean;
+    /** The project has neither a start nor a target date, even if its milestones give it a span. */
+    needsDates: boolean;
 };
 
 type DateRange = {
@@ -146,7 +149,7 @@ const buildRoadmapRows = (projects: Project[], milestonesByProject: Map<number, 
         const projectStart = parseDate(project.start_date);
         const projectTarget = parseDate(project.target_date);
         const projectDates = [projectStart, projectTarget].filter((date): date is Date => Boolean(date));
-        const base = { project, milestones, markers };
+        const base = { project, milestones, markers, needsDates: projectDates.length === 0 };
 
         if (projectStart && projectTarget) {
             return { ...base, startDate: minDate(projectDates), endDate: maxDate(projectDates), spanSource: 'project', isUnscheduled: false };
@@ -258,6 +261,24 @@ const MilestoneMarker = ({ marker, position }: { marker: RoadmapMarker; position
 };
 
 const GRID_COLUMNS = { gridTemplateColumns: 'var(--roadmap-project-rail-width) 1fr' };
+
+/** The two ways to date a project from the timeline: its own dates, or a milestone. */
+const DatingActions = ({ row, onAddMilestone }: { row: RoadmapRow; onAddMilestone: (project: Project) => void }) => {
+    const { t } = useTranslation();
+    // Dates drawn from milestones are proposed as the project's own.
+    const proposed = row.spanSource === 'milestones' && row.startDate && row.endDate
+        ? { start: formatInputDate(row.startDate), target: formatInputDate(row.endDate) }
+        : undefined;
+    return (
+        <>
+            <SetDatesPopover project={row.project} proposed={proposed} />
+            <Button variant="ghost" size="sm" onClick={() => onAddMilestone(row.project)}>
+                <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+                {t('surfaces.projectsPage.addMilestone')}
+            </Button>
+        </>
+    );
+};
 
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex -- The horizontal timeline must be keyboard-scrollable. */
 const RoadmapTimeline = ({
@@ -415,15 +436,16 @@ const RoadmapTimeline = ({
                                                             {row.spanSource === 'single-project-date' && t('surfaces.roadmapPage.singleProjectDate')}
                                                             {row.spanSource === 'milestones' && t('surfaces.roadmapPage.milestoneDerivedRange')}
                                                         </p>
+                                                        {row.needsDates && !row.isUnscheduled && (
+                                                            <div className="roadmap-rail-actions">
+                                                                <DatingActions row={row} onAddMilestone={onAddMilestone} />
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     {row.isUnscheduled ? (
                                                         <div className="roadmap-undated-track">
                                                             <span className="roadmap-undated-note">{t('surfaces.projectsPage.noDatesYet')}</span>
-                                                            <SetDatesPopover project={row.project} />
-                                                            <Button variant="ghost" size="sm" onClick={() => onAddMilestone(row.project)}>
-                                                                <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                                                                {t('surfaces.projectsPage.addMilestone')}
-                                                            </Button>
+                                                            <DatingActions row={row} onAddMilestone={onAddMilestone} />
                                                         </div>
                                                     ) : (
                                                         <div className="relative min-h-[88px] px-6">
@@ -464,7 +486,8 @@ const RoadmapTimeline = ({
 /**
  * The Roadmap view of Projects: the filtered projects on one date axis, under
  * the same initiative groups as the list. It reads project start and target
- * dates and milestone target dates; a project with neither can be dated here.
+ * dates and milestone target dates; a project without its own dates can be
+ * dated here, also when its milestones already place it on the timeline.
  */
 export const RoadmapView = ({
     projects,
@@ -548,7 +571,8 @@ export const RoadmapView = ({
         && !hasMilestoneDataError;
     const totalMilestones = portfolioMilestones.length;
     const undatedCount = rows.filter(row => row.isUnscheduled).length;
-    const nothingInWindow = rows.length > 0 && visibleRows.length === 0;
+    // Also true for a set window with no projects at all, so the timeline is never left blank.
+    const nothingInWindow = groups.length === 0;
 
     return (
         <section className="space-y-3" aria-labelledby="roadmap-timeline-title">

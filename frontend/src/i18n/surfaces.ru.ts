@@ -450,6 +450,7 @@ export const surfacesRussian = {
         healthSignal: 'Состояние: {{value}}',
         targetSignal: 'Срок: {{value}}',
         atRiskCount: "С риском: {{count}}",
+        atRiskOrOffTrack: "Есть риск или не по плану",
         unassignedCount: "Без инициативы: {{count}}",
         noRiskFlags: "Нет отметок о риске",
         initiativesUnavailable: "Недоступно",

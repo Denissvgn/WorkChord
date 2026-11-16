@@ -1587,6 +1587,14 @@
   gap: 8px;
   padding: 12px 24px;
 }
+/* The same actions in the rail when milestones already draw the project's span. */
+.wc .roadmap-rail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 8px;
+}
 .wc .roadmap-undated-note {
   color: var(--ink-3);
   font-size: var(--wc-type-meta);

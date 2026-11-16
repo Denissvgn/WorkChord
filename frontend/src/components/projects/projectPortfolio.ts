@@ -16,7 +16,10 @@ export type PortfolioFilters = {
     owner: string;
     /** An initiative id or `none`. */
     initiative: string;
-    /** Set by the at-risk count: at risk or off track. */
+    /**
+     * Set by the at-risk count: at risk or off track. The Health filter shows it
+     * as its "At risk or off track" option, so it is never set together with `health`.
+     */
     attention: 'at_risk' | '';
 };
 
@@ -34,6 +37,9 @@ export const PORTFOLIO_PARAMS = {
 
 /** Value of the owner and initiative filters for projects that have none. */
 export const NONE_VALUE = 'none';
+
+/** Value of the Health filter that keeps projects at risk or off track (the `attention` parameter). */
+export const HEALTH_NEEDS_ATTENTION = 'at_risk_or_off_track';
 
 export const PROJECT_STATUSES: readonly ProjectStatus[] = ['proposed', 'planned', 'active', 'paused', 'completed', 'canceled'];
 export const PROJECT_HEALTHS: readonly ProjectHealth[] = ['unknown', 'on_track', 'at_risk', 'off_track'];
@@ -53,14 +59,16 @@ export const readSavedViewId = (params: URLSearchParams): number | null => {
 
 export const readPortfolioFilters = (params: URLSearchParams): PortfolioFilters => {
     const status = params.get(PORTFOLIO_PARAMS.status) ?? '';
-    const health = params.get(PORTFOLIO_PARAMS.health) ?? '';
+    const rawHealth = params.get(PORTFOLIO_PARAMS.health) ?? '';
+    const health = (PROJECT_HEALTHS as readonly string[]).includes(rawHealth) ? rawHealth as ProjectHealth : '';
     return {
         search: params.get(PORTFOLIO_PARAMS.search) ?? '',
         status: (PROJECT_STATUSES as readonly string[]).includes(status) ? status as ProjectStatus : '',
-        health: (PROJECT_HEALTHS as readonly string[]).includes(health) ? health as ProjectHealth : '',
+        health,
         owner: params.get(PORTFOLIO_PARAMS.owner) ?? '',
         initiative: params.get(PORTFOLIO_PARAMS.initiative) ?? '',
-        attention: params.get(PORTFOLIO_PARAMS.attention) === 'at_risk' ? 'at_risk' : '',
+        // A specific health wins, so the active filters are always the ones the Health chip shows.
+        attention: !health && params.get(PORTFOLIO_PARAMS.attention) === 'at_risk' ? 'at_risk' : '',
     };
 };
 

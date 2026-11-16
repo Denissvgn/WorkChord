@@ -4190,6 +4190,7 @@ export const englishResources = {
                     healthSignal: 'Health: {{value}}',
                     targetSignal: 'Target: {{value}}',
                     atRiskCount: "{{count}} at risk",
+                    atRiskOrOffTrack: "At risk or off track",
                     unassignedCount: "{{count}} unassigned",
                     noRiskFlags: "No risk flags",
                     initiativesUnavailable: "Unavailable",

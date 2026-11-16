@@ -199,6 +199,32 @@ describe('ProjectsPage', () => {
         expect(await screen.findByRole('link', { name: 'Atlas' })).toBeInTheDocument();
     });
 
+    it('shows the at-risk count as a removable Health chip in the shared filter bar', async () => {
+        projectServiceMock.getAll.mockResolvedValue([project, { ...project, id: 2, name: 'Beacon', health: 'at_risk' }, { ...project, id: 3, name: 'Comet', health: 'off_track' }]);
+        const { user } = renderPage('/projects');
+        await user.click(await screen.findByRole('button', { name: /2 at risk/i }));
+
+        expect(screen.getByRole('combobox', { name: 'Health' })).toHaveValue('at_risk_or_off_track');
+        const chips = within(screen.getByRole('list', { name: 'Active filters' }));
+        expect(chips.getByText('Health: At risk or off track')).toBeVisible();
+        expect(currentLocation()).toContain('attention=at_risk');
+
+        // The chip removes just that condition.
+        await user.click(chips.getByRole('button', { name: 'Remove filter Health: At risk or off track' }));
+        expect(await screen.findByRole('link', { name: 'Atlas' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /2 at risk/i })).toHaveAttribute('aria-pressed', 'false');
+        expect(screen.queryByRole('list', { name: 'Active filters' })).not.toBeInTheDocument();
+        expect(currentLocation()).not.toContain('attention=');
+
+        // Choosing one health replaces it, so the shown chip is always the applied filter.
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Health' }), 'at_risk_or_off_track');
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Health' }), 'off_track');
+        expect(currentLocation()).not.toContain('attention=');
+        expect(within(screen.getByRole('list', { name: 'Active filters' })).getByText('Health: Off track')).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Comet' })).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Beacon' })).not.toBeInTheDocument();
+    });
+
     it('names project signals and formats effort with the active locale', async () => {
         projectServiceMock.getPortfolioSummaries.mockResolvedValue([{
             project_id: project.id,
@@ -295,6 +321,36 @@ describe('ProjectsPage', () => {
         expect(await screen.findByRole('dialog', { name: 'Edit initiative' })).toBeVisible();
     });
 
+    it('shows initiatives with Edit in both views while there are no projects yet', async () => {
+        projectServiceMock.getAll.mockResolvedValue([]);
+        projectServiceMock.getPortfolioSummaries.mockResolvedValue([]);
+        projectServiceMock.getRoadmapMilestones.mockResolvedValue({ items: [], next_cursor: null });
+        projectServiceMock.getInitiatives.mockResolvedValue([launchInitiative]);
+        const { user } = renderPage('/projects');
+
+        const table = await screen.findByRole('region', { name: 'Projects table' });
+        const [launchHeader] = within(table).getAllByRole('rowheader');
+        expect(within(launchHeader).getByText('Launch program')).toBeVisible();
+        expect(within(launchHeader).getByText('Owner: Rina Ito')).toBeVisible();
+        expect(within(launchHeader).getByText('Health: At risk')).toBeVisible();
+        expect(within(table).getByText('No projects in this initiative yet.')).toBeVisible();
+        expect(screen.queryByRole('heading', { name: 'No projects found' })).not.toBeInTheDocument();
+        // Without the empty state, New project stays in the header.
+        expect(within(screen.getByTestId('page-header')).getByRole('button', { name: 'New project' })).toHaveClass('btn-primary');
+
+        await user.click(within(launchHeader).getByRole('button', { name: 'Edit initiative Launch program' }));
+        const drawer = await screen.findByRole('dialog', { name: 'Edit initiative' });
+        await user.click(within(drawer).getByRole('button', { name: 'Close' }));
+
+        await user.click(screen.getByRole('button', { name: 'Roadmap' }));
+        const timeline = await screen.findByRole('region', { name: 'Portfolio timeline, horizontal scroll' });
+        const launchSection = within(timeline).getByRole('heading', { name: 'Launch program' }).closest('section')!;
+        expect(within(launchSection).getByText('Owner: Rina Ito')).toBeVisible();
+        expect(within(launchSection).getByText('No projects in this initiative yet.')).toBeVisible();
+        await user.click(within(launchSection).getByRole('button', { name: 'Edit initiative Launch program' }));
+        expect(await screen.findByRole('dialog', { name: 'Edit initiative' })).toBeVisible();
+    });
+
     it('keeps the search text and the active filters when switching between List and Roadmap', async () => {
         projectServiceMock.getAll.mockResolvedValue([
             project,
@@ -364,6 +420,39 @@ describe('ProjectsPage', () => {
         expect(await within(timeline).findByText(content => content.startsWith('Scheduled from'))).toHaveClass('sr-only');
         expect(within(timeline).queryByRole('button', { name: 'Set dates' })).not.toBeInTheDocument();
         expect(currentLocation()).toBe('/projects?view=roadmap');
+    });
+
+    it('keeps Set dates and Add milestone on a project without dates whose milestones place it on the timeline', async () => {
+        const undated = { ...project, start_date: null, target_date: null };
+        const later = { ...milestone, id: 2, name: 'Review', target_date: '2026-09-10' };
+        projectServiceMock.getAll.mockResolvedValue([undated]);
+        projectServiceMock.getRoadmapMilestones.mockResolvedValue({ items: [milestone, later], next_cursor: null });
+        planningInputServiceMock.readInitial.mockResolvedValue({
+            kind: 'project', resource_id: 1, complete: true, resource: undated, expected_revisions: { 1: 4 },
+        });
+        projectServiceMock.update.mockResolvedValue({ ...undated, start_date: '2026-08-20', target_date: '2026-09-10' });
+        const { user } = renderPage('/projects?view=roadmap');
+        const timeline = await screen.findByRole('region', { name: 'Portfolio timeline, horizontal scroll' });
+
+        // The milestones draw the row, and the project can still be dated.
+        expect(await within(timeline).findByRole('button', { name: /^Launch,/ })).toBeInTheDocument();
+        expect(within(timeline).getByText('Milestone-derived range')).toBeVisible();
+        expect(within(timeline).queryByText('No dates yet')).not.toBeInTheDocument();
+        expect(within(timeline).getByRole('button', { name: 'Add milestone' })).toBeVisible();
+
+        // Two clicks: the popover proposes the span the milestones draw, and saving keeps it.
+        await user.click(within(timeline).getByRole('button', { name: 'Set dates' }));
+        const popover = screen.getByRole('dialog', { name: 'Set dates for Atlas' });
+        expect(await within(popover).findByLabelText('Start date')).toHaveValue('2026-08-20');
+        expect(within(popover).getByLabelText('Target date')).toHaveValue('2026-09-10');
+        await user.click(within(popover).getByRole('button', { name: 'Save dates' }));
+        await waitFor(() => expect(projectServiceMock.update).toHaveBeenCalledWith(
+            1, { start_date: '2026-08-20', target_date: '2026-09-10' }, { 1: 4 },
+        ));
+        expect(currentLocation()).toBe('/projects?view=roadmap');
+
+        await user.click(within(timeline).getByRole('button', { name: 'Add milestone' }));
+        expect(screen.getByRole('dialog', { name: 'Add milestone' })).toBeVisible();
     });
 
     it('adds a milestone to a project without dates in a short modal on the same page', async () => {

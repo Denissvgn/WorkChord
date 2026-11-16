@@ -32,6 +32,7 @@ import { InitiativeGroupHeader } from '../components/projects/InitiativeGroupHea
 import { ProjectForm } from '../components/projects/ProjectForm';
 import { RoadmapView } from '../components/projects/RoadmapView';
 import {
+    HEALTH_NEEDS_ATTENTION,
     NONE_VALUE,
     PORTFOLIO_PARAMS,
     PROJECT_HEALTHS,
@@ -382,6 +383,10 @@ const ProjectsPage = () => {
     );
     const filtersActive = hasActiveFilters(filters);
     const hasActiveProjectFilters = filtersActive || Boolean(activeSavedView);
+    // Initiatives are part of the portfolio too: with no projects yet, their
+    // headers still show (empty) so they can be seen and edited.
+    const hasPortfolio = projects.length > 0 || initiatives.length > 0;
+    const showViews = filteredProjects.length > 0 || (hasPortfolio && !filtersActive);
 
     const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({ key: 'name', descending: false });
     const toggleSort = (key: SortKey) => setSort(current => ({ key, descending: current.key === key ? !current.descending : false }));
@@ -451,8 +456,11 @@ const ProjectsPage = () => {
         {
             id: 'health',
             label: t('surfaces.projectsPage.health'),
-            value: filters.health,
-            options: PROJECT_HEALTHS.map(health => ({ value: health, label: t(projectHealthLabelKeys[health]) })),
+            value: filters.health || (filters.attention === 'at_risk' ? HEALTH_NEEDS_ATTENTION : ''),
+            options: [
+                ...PROJECT_HEALTHS.map(health => ({ value: health, label: t(projectHealthLabelKeys[health]) })),
+                { value: HEALTH_NEEDS_ATTENTION, label: t('surfaces.projectsPage.atRiskOrOffTrack') },
+            ],
         },
         {
             id: 'owner',
@@ -470,6 +478,19 @@ const ProjectsPage = () => {
             ],
         },
     ];
+
+    const changeFilter = (id: string, value: string) => {
+        if (id === 'health') {
+            // "At risk or off track" is the at-risk count's condition; a single health replaces it.
+            const needsAttention = value === HEALTH_NEEDS_ATTENTION;
+            updateFilters({
+                [PORTFOLIO_PARAMS.health]: needsAttention ? null : value || null,
+                [PORTFOLIO_PARAMS.attention]: needsAttention ? 'at_risk' : null,
+            });
+            return;
+        }
+        updateFilters({ [FILTER_PARAM[id]]: value || null });
+    };
 
     const deleteInitiativeMutation = useMutation({
         mutationFn: (initiativeId: number) => projectService.deleteInitiative(initiativeId),
@@ -553,14 +574,14 @@ const ProjectsPage = () => {
                 {atRiskProjectCount > 0
                     ? exceptionButton(
                         filters.attention === 'at_risk',
-                        () => updateFilters({ [PORTFOLIO_PARAMS.attention]: filters.attention === 'at_risk' ? null : 'at_risk' }),
+                        () => changeFilter('health', filters.attention === 'at_risk' ? '' : HEALTH_NEEDS_ATTENTION),
                         t('surfaces.projectsPage.atRiskCount', { count: atRiskProjectCount }),
                         true,
                     )
                     : unassessedProjectCount > 0
                         ? exceptionButton(
                             filters.health === 'unknown',
-                            () => updateFilters({ [PORTFOLIO_PARAMS.health]: filters.health === 'unknown' ? null : 'unknown' }),
+                            () => changeFilter('health', filters.health === 'unknown' ? '' : 'unknown'),
                             t('surfaces.projectsPage.healthNotAssessed', { count: unassessedProjectCount }),
                         )
                         : <span className="projects-exception is-clear">{t('surfaces.projectsPage.noRiskFlags')}</span>}
@@ -584,7 +605,7 @@ const ProjectsPage = () => {
                 title={t('surfaces.projectsPage.projects')}
                 purpose={t('surfaces.projectsPage.purpose')}
                 meta={headerMeta}
-                primaryAction={projectsData && projects.length === 0 ? undefined : (
+                primaryAction={projectsData && !hasPortfolio ? undefined : (
                     <Button onClick={() => setIsCreating(true)}>
                         <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                         {t('surfaces.projectsPage.newProject')}
@@ -620,7 +641,7 @@ const ProjectsPage = () => {
                 <section className="projects-workspace" aria-labelledby="projects-workspace-title">
                     <h2 id="projects-workspace-title" className="sr-only">{t('surfaces.projectsPage.projectPortfolio')}</h2>
 
-                    {projects.length > 0 && (
+                    {hasPortfolio && (
                         <PageToolbar
                             label={t('surfaces.projectsPage.projectFilters')}
                             search={(
@@ -639,7 +660,7 @@ const ProjectsPage = () => {
                             filters={(
                                 <FilterBar
                                     filters={filterBarFilters}
-                                    onChange={(id, value) => updateFilters({ [FILTER_PARAM[id]]: value || null })}
+                                    onChange={changeFilter}
                                     onClear={clearProjectFilters}
                                 />
                             )}
@@ -668,7 +689,7 @@ const ProjectsPage = () => {
                         />
                     )}
 
-                    {projects.length === 0 && (
+                    {!hasPortfolio && (
                         <TableFrame className="py-16 text-center">
                             <InlineEmptyState
                                 className="mx-auto max-w-xl"
@@ -685,7 +706,7 @@ const ProjectsPage = () => {
                         </TableFrame>
                     )}
 
-                    {projects.length > 0 && filteredProjects.length === 0 && (
+                    {hasPortfolio && !showViews && (
                         <TableFrame className="py-16 text-center">
                             <InlineEmptyState
                                 className="mx-auto max-w-xl"
@@ -701,7 +722,7 @@ const ProjectsPage = () => {
                         </TableFrame>
                     )}
 
-                    {filteredProjects.length > 0 && view === 'roadmap' && (
+                    {showViews && view === 'roadmap' && (
                         <RoadmapView
                             projects={filteredProjects}
                             initiatives={initiatives}
@@ -713,7 +734,7 @@ const ProjectsPage = () => {
                         />
                     )}
 
-                    {filteredProjects.length > 0 && view === 'list' && (
+                    {showViews && view === 'list' && (
                         <>
                             {portfolioSummariesLoading && (
                                 <div
