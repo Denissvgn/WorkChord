@@ -4205,6 +4205,7 @@ export const englishResources = {
                     unassigned: "Unassigned",
                     claimedBy: "Claimed by {{name}}",
                     claimHeldUntil: "Claimed by {{name}}, held until {{time}}",
+                    claimHeldUntilTime: "Held until {{time}}",
                     noEstimate: "No estimate",
                 },
                 kanbanBoard: {
@@ -4214,6 +4215,10 @@ export const englishResources = {
                         active: "Active",
                         resolved: "Resolved",
                         closed: "Closed",
+                    },
+                    captions: {
+                        noAssignee: "No assignee",
+                        assigned: "Assigned",
                     },
                     invalidTransition: "Invalid status transition from {{from}} to {{to}}",
                     movedOnBoard: "Moved on board",

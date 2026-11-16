@@ -112,7 +112,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/settings/SystemHealthPanel.tsx': 'e843e84c8c183f6d',
     'src/components/settings/TemplateLabelSettings.tsx': '9e2ebb450efd2f78',
     'src/components/tasks/ImportTasksModal.tsx': 'eaa4e0db79bcf81a',
-    'src/components/tasks/KanbanBoard/KanbanBoard.tsx': 'e102562e2d18af96',
+    'src/components/tasks/KanbanBoard/KanbanBoard.tsx': 'aaf1756ea0e0c4d0',
     'src/components/tasks/useSavedViewManager.tsx': '1bbeb39ebaf10ee3',
     'src/components/tasks/StatusChangeControl.tsx': '9999ffd7f79d6c9e',
     'src/components/tasks/TaskBulkOperationsPanel.tsx': 'a926dc250ccf33d9',

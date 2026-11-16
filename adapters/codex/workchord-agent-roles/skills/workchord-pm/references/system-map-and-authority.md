@@ -61,7 +61,7 @@ Treat this as PM phase 1.
 3. When the server advertises `agent-team-master-v1`, read
    `agent_get_team_setup_status` or `GET /api/agent/team-setup/status` and
    confirm this PM is the current controller of a runtime-ready topology.
-4. Read projects, iterations, governed labels, reusable templates, and the agent pipeline.
+4. Read projects, iterations, governed labels, reusable templates, and Tasks, Pipeline view.
 5. Read the selected project summary, iteration summary, relevant task tree, Triage queue, and current updates.
 6. Check server/API compatibility against the installed skill manifest when one is present.
 

@@ -94,7 +94,7 @@ Before conversion:
 4. Add dependencies only for real predecessor constraints. Confirm the dependency graph has no self-edge, duplicate edge, cycle, or cross-iteration edge before mutation.
 5. Set priority from `1` to `10`, where `1` is highest. Do not use priority as a hidden queue rank.
 6. Set positive effort and distinguish effort from elapsed schedule time.
-7. Set project and milestone consistently; never attach a milestone from another project. Record an intermediate outcome as a milestone record and set `milestone_id` on its tasks. A `milestone:*` label or an ID prefix in the title is not a milestone: people cannot group the Gantt by it, and it carries no target date.
+7. Set project and milestone consistently; never attach a milestone from another project. Record an intermediate outcome as a milestone record and set `milestone_id` on its tasks. A `milestone:*` label or an ID prefix in the title is not a milestone: people cannot group Gantt by it, and it carries no target date.
 
 8. Add the governed `agent` source label plus at least one active capability label, such as `cap:code`, `cap:test`, `cap:docs`, or `cap:research`, for agent-dispatched work.
 9. Mark optional or deferred work explicitly and record the reconsideration trigger for deferral.
@@ -207,7 +207,7 @@ actor-model bindings. Record:
 - only reason codes and precise skill keys recognized by the live routing
   policy, plus minimum skill levels from `1..5`;
 - minimum reasoning and context tiers plus required modality, tool, and
-  data-policy tags;
+  data-policy labels;
 - review mode `none`, `standard`, `independent`, or
   `specialist-independent`; risk `3` always requires an independent mode;
 - concise rationale tied to task evidence, not a provider/model reputation.
