@@ -28,6 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <button
                 {...props}
+                data-page-chrome-control="button"
                 title={tooltip}
                 ref={ref}
                 type={type}

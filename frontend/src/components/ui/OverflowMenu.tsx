@@ -16,10 +16,13 @@ export const OverflowMenu = ({
     items,
     label,
     className,
+    alwaysMenu = false,
 }: {
     items: OverflowMenuItem[];
     label?: string;
     className?: string;
+    /** Keep the menu button even for one item, so a page header never gains a visible extra action. */
+    alwaysMenu?: boolean;
 }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
@@ -77,12 +80,12 @@ export const OverflowMenu = ({
     };
 
     // One action needs no menu: show it as a labelled button.
-    if (items.length === 1) {
+    if (items.length === 1 && !alwaysMenu) {
         const [only] = items;
         return (
             <div className={clsx('relative', className)}>
                 {/* An unavailable action stays focusable so its label, which says why, can be read. */}
-                <button type="button" className={clsx('btn', only.tone === 'danger' && 'text-feedback-danger-foreground', only.disabled && 'cursor-not-allowed opacity-70')}
+                <button data-page-chrome-control="button" type="button" className={clsx('btn', only.tone === 'danger' && 'text-feedback-danger-foreground', only.disabled && 'cursor-not-allowed opacity-70')}
                     aria-disabled={only.disabled || undefined} onClick={() => { if (!only.disabled) only.onSelect(); }}>
                     {only.icon}{only.label}
                 </button>
@@ -93,6 +96,7 @@ export const OverflowMenu = ({
     return (
         <div className={clsx('relative', className)}>
             <button
+                data-page-chrome-control="button"
                 ref={triggerRef}
                 type="button"
                 onClick={() => open ? closeMenu() : setOpen(true)}
@@ -118,6 +122,7 @@ export const OverflowMenu = ({
                     >
                         {items.map((item, index) => (
                             <button
+                                data-page-chrome-control="button"
                                 key={index}
                                 ref={node => { menuItemRefs.current[index] = node; }}
                                 role="menuitem"

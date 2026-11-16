@@ -83,6 +83,9 @@ export const usePlanningNavigationSummary = () => {
             && summaryQuery.data === undefined
         ),
         isReadinessFetching: hasCurrentIteration && summaryQuery.isFetching,
+        // True only once an iteration is resolved and its readiness response has arrived;
+        // `ready` is not a real count before that.
+        isPlanProgressKnown: hasCurrentIteration && summaryQuery.data !== undefined,
         refetch,
     };
 };

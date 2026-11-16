@@ -674,6 +674,7 @@ const GanttPage = () => {
             ) : selectedIterationId > 0 && currentIteration && ganttTasks ? (
                 <div className="flex-1 min-h-0 overflow-hidden rounded-lg shadow ring-1 ring-overlay/5">
                     <GanttChart
+                        hoursPerDay={currentIteration.nominal_day_hours ?? 8}
                         iterationRevision={ganttTasks?.iteration.revision}
                         iterationId={selectedIterationId}
                         startDate={currentIteration.start_date}

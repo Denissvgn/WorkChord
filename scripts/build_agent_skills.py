@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.15.0"
+CATALOG_VERSION = "1.16.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -768,7 +768,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.14.0",
+        "version": "1.15.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -808,7 +808,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.14.0",
+        "version": "1.15.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -835,7 +835,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.2.0",
+        "version": "1.3.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -1260,6 +1260,8 @@ def _require_localized(value: Any, *, field: str) -> dict[str, str]:
 
 # Section -> (required text fields, required localized fields, optional text fields)
 _WORKFLOW_VOCABULARY_SECTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]] = {
+    "destinations": (("means",), ("name",), ()),
+    "checkpoints": (("means",), ("name",), ()),
     "roles": (("code_role", "does"), ("name", "group"), ()),
     "workflow": (("name", "person", "pm", "worker", "reviewer"), (), ()),
     "task_states": (("means",), ("name",), ("product_term",)),
@@ -1318,7 +1320,10 @@ def load_workflow_vocabulary(
                 raise SkillPackError(f"Duplicate workflow vocabulary id {section}.{identifier}")
             seen.add(identifier)
             for field in texts:
-                _require_text(entry.get(field), field=f"{where}.{field}")
+                if section == "terms" and field == "name" and isinstance(entry.get(field), dict):
+                    _require_localized(entry[field], field=f"{where}.{field}")
+                else:
+                    _require_text(entry.get(field), field=f"{where}.{field}")
             for field in localized:
                 _require_localized(entry.get(field), field=f"{where}.{field}")
             for field in optional:
@@ -1355,6 +1360,24 @@ def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
         "",
         vocabulary["rule"],
         "",
+        "Destinations, in navigation order:",
+        "",
+        *table(
+            ("Destination", "Means", "Older labels"),
+            (
+                (item["name"]["en"], item["means"], ", ".join(item.get("also_seen_as", [])) or "—")
+                for item in vocabulary["destinations"]
+            ),
+        ),
+        "Plan checkpoints, in order:",
+        "",
+        *table(
+            ("Checkpoint", "Means", "Older labels"),
+            (
+                (item["name"]["en"], item["means"], ", ".join(item.get("also_seen_as", [])) or "—")
+                for item in vocabulary["checkpoints"]
+            ),
+        ),
         "Roles:",
         "",
         *table(
@@ -1428,7 +1451,7 @@ def render_workflow_vocabulary_markdown(vocabulary: dict[str, Any]) -> str:
             ("Term", "Means", "Not", "Older labels"),
             (
                 (
-                    term["name"],
+                    term["name"]["en"] if isinstance(term["name"], dict) else term["name"],
                     term["means"],
                     term["not"],
                     ", ".join(f'"{alias}"' for alias in term.get("also_seen_as", [])) or "—",

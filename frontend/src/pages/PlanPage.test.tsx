@@ -90,27 +90,26 @@ describe('PlanPage mixed planning launcher', () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(state);
         const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        const progress = screen.getByRole('progressbar', {
-            name: 'Plan readiness progress',
-        });
-        expect(progress).toHaveAttribute('aria-valuemin', '0');
-        expect(progress).toHaveAttribute('aria-valuemax', String(state.ready.total));
-        expect(progress).toHaveAttribute('aria-valuenow', String(state.ready.done));
-        expect(screen.getAllByRole('progressbar')).toHaveLength(1);
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
         expect(screen.getByText('Plan readiness')).toBeVisible();
 
         // The primary action names and opens the next incomplete step.
-        const primaryAction = screen.getByRole('link', { name: 'Build schedule' });
+        const primaryAction = screen.getByRole('link', { name: 'Schedule' });
         expect(primaryAction).toHaveAttribute('href', '/plan/master?step=schedule');
 
-        await user.click(screen.getByText(
+        expect(screen.getAllByText(/\d+ of \d+/)).toHaveLength(1);
+        expect(screen.getByText(
             `${state.ready.done} of ${state.ready.total} checkpoints complete`,
+        )).toBeVisible();
+
+        await user.click(screen.getByText(
+            'Planning checkpoints',
             { selector: '.plan-hub-checkpoints > summary span' },
         ));
 
         const checkpointList = screen.getByRole('list', { name: 'Planning checkpoints' });
         expect(within(checkpointList).getAllByRole('listitem')).toHaveLength(6);
-        expect(within(checkpointList).getByText('Build schedule').closest('li'))
+        expect(within(checkpointList).getByText('Schedule').closest('li'))
             .toHaveAttribute('aria-current', 'step');
     });
 
@@ -123,9 +122,7 @@ describe('PlanPage mixed planning launcher', () => {
         }));
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        expect(screen.getByText(
-            'Planning checkpoints complete — review before sharing',
-        )).toBeVisible();
+        expect(screen.getByText('6 of 6 checkpoints complete')).toBeVisible();
         expect(screen.getByRole('link', { name: 'Review & share' }))
             .toHaveAttribute('href', '/plan/master');
     });
@@ -180,7 +177,7 @@ describe('PlanPage mixed planning launcher', () => {
         }));
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        expect(screen.getByRole('heading', { name: 'Plan an iteration' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
         expect(screen.getByText('Intake status unavailable')).toBeVisible();
         expect(screen.getByRole('link', { name: 'Process intake' })).toBeVisible();
     });
@@ -201,7 +198,7 @@ describe('PlanPage mixed planning launcher', () => {
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
         expect(screen.getByText('Planning data is unavailable')).toBeVisible();
-        expect(screen.queryByRole('heading', { name: 'Plan an iteration' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Plan', level: 1 })).not.toBeInTheDocument();
     });
 
     it('preserves content and exposes a busy refresh contract during background fetching', () => {
@@ -210,7 +207,7 @@ describe('PlanPage mixed planning launcher', () => {
         }));
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        expect(screen.getByRole('heading', { name: 'Plan an iteration' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
         const refresh = screen.getByRole('button', { name: 'Refreshing…' });
         expect(refresh).toBeDisabled();
         expect(refresh).toHaveAttribute('aria-busy', 'true');
@@ -238,7 +235,7 @@ describe('PlanPage mixed planning launcher', () => {
 
         await user.click(screen.getByRole('button', { name: 'Refresh' }));
 
-        expect(screen.getByRole('heading', { name: 'Plan an iteration' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
         expect(await screen.findByRole('alert'))
             .toHaveTextContent('Some planning data could not be refreshed. Try again.');
     });

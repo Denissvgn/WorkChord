@@ -10,7 +10,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useSingleKeyShortcutPreference } from '../../hooks/useSingleKeyShortcutPreference';
-import { getHelpContext, type HelpContentProvider } from '../../navigation/helpContexts';
+import {
+    getHelpContext,
+    type WorkflowGuideKey,
+} from '../../navigation/helpContexts';
 import { Checkbox } from '../common/Checkbox';
 import {
     PlanningWorkflowHelpContent,
@@ -19,28 +22,7 @@ import { SettingsGoalHelpContent } from '../settings/SettingsGoalHelpContent';
 import { TaskWorkflowHelpContent } from '../tasks/TaskWorkflowGuide';
 import { SlideOverDrawer } from '../ui';
 import { openCommandMenu } from './commandMenuEvents';
-
-const PROVIDER_COPY_KEYS: Record<
-    Exclude<HelpContentProvider, 'workspace'>,
-    { title: string; summary: string }
-> = {
-    plan: {
-        title: 'plan.help.title',
-        summary: 'plan.help.summary',
-    },
-    gantt: {
-        title: 'gantt.help.title',
-        summary: 'gantt.help.summary',
-    },
-    tasks: {
-        title: 'tasks.guide.title',
-        summary: 'tasks.guide.summary',
-    },
-    settings: {
-        title: 'settingsPage.goalGuide.title',
-        summary: 'settingsPage.goalGuide.description',
-    },
-};
+import { openSetupGuide } from './setupGuideEvents';
 
 const TASK_SHORTCUTS = [
     { key: 'N', labelKey: 'commandMenu.commands.newTask.label' },
@@ -60,21 +42,11 @@ export const ContextHelp = () => {
         setEnabled: setSingleKeyShortcutsEnabled,
     } = useSingleKeyShortcutPreference();
     const helpContext = getHelpContext(location.pathname);
-    const showTaskShortcuts = helpContext.provider === 'tasks';
+    // Single-key task actions are wired on the Tasks list only, not on the agent pipeline view.
+    const showTaskShortcuts = helpContext.routeKey === 'tasks';
     const pageTitle = t(helpContext.pageTitleKey);
-    const workspaceTitle = t(
-        helpContext.workspace.labelKey,
-        helpContext.workspace.defaultLabel,
-    );
-    const providerCopy = helpContext.provider === 'workspace'
-        ? {
-            title: t(`contextHelp.workspaceGuides.${helpContext.workspace.key}.title`),
-            summary: t(`contextHelp.workspaceGuides.${helpContext.workspace.key}.summary`),
-        }
-        : {
-            title: t(PROVIDER_COPY_KEYS[helpContext.provider].title),
-            summary: t(PROVIDER_COPY_KEYS[helpContext.provider].summary),
-        };
+    const destinationTitle = t(helpContext.destination.labelKey, helpContext.destination.defaultLabel);
+    const setupGuide = helpContext.setupGuide;
 
     const closeForNavigation = () => {
         setOpen(false);
@@ -90,34 +62,26 @@ export const ContextHelp = () => {
         window.setTimeout(openCommandMenu, 0);
     };
 
-    const workflowContent = (() => {
-        if (helpContext.provider === 'plan') {
+    const openSetup = () => {
+        setOpen(false);
+        openSetupGuide();
+    };
+
+    const workflowContent = (workflow: WorkflowGuideKey | undefined) => {
+        if (workflow === 'plan') {
             return <PlanningWorkflowHelpContent surface="plan" showAction={false} />;
         }
-        if (helpContext.provider === 'gantt') {
+        if (workflow === 'gantt') {
             return <PlanningWorkflowHelpContent surface="gantt" showAction={false} />;
         }
-        if (helpContext.provider === 'tasks') {
+        if (workflow === 'tasks') {
             return <TaskWorkflowHelpContent showAction={false} />;
         }
-        if (helpContext.provider === 'settings') {
+        if (workflow === 'settings') {
             return <SettingsGoalHelpContent onNavigate={closeForNavigation} />;
         }
-
-        const WorkspaceIcon = helpContext.workspace.icon;
-        return (
-            <div className="context-help-workspace-note">
-                <span aria-hidden="true">
-                    <WorkspaceIcon className="h-4 w-4" />
-                </span>
-                <p>
-                    {t(`contextHelp.workspaceGuides.${helpContext.workspace.key}.hint`, {
-                        workspace: workspaceTitle,
-                    })}
-                </p>
-            </div>
-        );
-    })();
+        return null;
+    };
 
     return (
         <>
@@ -143,33 +107,54 @@ export const ContextHelp = () => {
                 <div className="context-help-content">
                     <section
                         className="context-help-section context-help-current"
-                        aria-labelledby="context-help-workflow-heading"
+                        aria-labelledby="context-help-current-heading"
                     >
                         <header>
                             <span>{t('contextHelp.currentWorkflow', { page: pageTitle })}</span>
-                            <h4 id="context-help-workflow-heading">{providerCopy.title}</h4>
-                            <p>{providerCopy.summary}</p>
+                            <h4 id="context-help-current-heading">{destinationTitle}</h4>
+                            <p>{t(helpContext.summaryKey)}</p>
                         </header>
-                        <div className="context-help-provider">
-                            {workflowContent}
-                        </div>
+                        {helpContext.workflow && (
+                            <div className="context-help-provider">
+                                {workflowContent(helpContext.workflow)}
+                            </div>
+                        )}
                     </section>
 
-                    {helpContext.glossary.length > 0 && (
-                        <section className="context-help-section" aria-labelledby="context-help-glossary-heading">
-                            <header>
-                                <h4 id="context-help-glossary-heading">{t('contextHelp.glossaryTitle')}</h4>
-                            </header>
-                            <dl className="space-y-2 text-sm">
-                                {helpContext.glossary.map(term => (
-                                    <div key={term}>
-                                        <dt className="font-semibold text-content-primary">{t(`contextHelp.glossary.${term}.term`)}</dt>
-                                        <dd className="text-content-secondary">{t(`contextHelp.glossary.${term}.definition`)}</dd>
-                                    </div>
-                                ))}
-                            </dl>
-                        </section>
-                    )}
+                    <section className="context-help-section" aria-labelledby="context-help-glossary-heading">
+                        <header>
+                            <h4 id="context-help-glossary-heading">{t('contextHelp.glossaryTitle')}</h4>
+                        </header>
+                        <dl className="space-y-2 text-sm">
+                            {helpContext.glossary.map(term => (
+                                <div key={term}>
+                                    <dt className="font-semibold text-content-primary">{t(`contextHelp.glossary.${term}.term`)}</dt>
+                                    <dd className="text-content-secondary">{t(`contextHelp.glossary.${term}.definition`)}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </section>
+
+                    <section
+                        className="context-help-section"
+                        aria-labelledby="context-help-setup-heading"
+                    >
+                        <header>
+                            <h4 id="context-help-setup-heading">{t(setupGuide.labelKey, setupGuide.defaultLabel)}</h4>
+                            <p>{t(setupGuide.descriptionKey)}</p>
+                        </header>
+                        <div className="context-help-global-shortcuts">
+                            <button type="button" onClick={openSetup}>
+                                <span className="context-help-shortcut-icon" aria-hidden="true">
+                                    <CircleHelp className="h-4 w-4" />
+                                </span>
+                                <span>
+                                    <strong>{t(setupGuide.actionKey)}</strong>
+                                </span>
+                                <ChevronRight aria-hidden="true" className="h-4 w-4" />
+                            </button>
+                        </div>
+                    </section>
 
                     <section
                         className="context-help-section"
@@ -251,7 +236,6 @@ export const ContextHelp = () => {
                         aria-labelledby="context-help-related-heading"
                     >
                         <header>
-                            <span>{workspaceTitle}</span>
                             <h4 id="context-help-related-heading">{t('contextHelp.related.title')}</h4>
                             <p>{t('contextHelp.related.description')}</p>
                         </header>
@@ -271,9 +255,6 @@ export const ContextHelp = () => {
                                                 destination: t(link.labelKey, link.defaultLabel),
                                             })}
                                         </strong>
-                                        {link.descriptionKey && (
-                                            <span>{t(link.descriptionKey)}</span>
-                                        )}
                                     </span>
                                     <ChevronRight aria-hidden="true" className="h-4 w-4" />
                                 </Link>

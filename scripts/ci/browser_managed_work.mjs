@@ -143,8 +143,8 @@ try {
   check('Nested Board keyboard detail path and same-account draft recovery after real session expiry');
 
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(`/projects/${projects[0].id}`);
-  await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
+  await page.goto(`/projects/${projects[0].id}?tab=tasks`);
+  await page.getByRole('button', { name: 'New task', exact: true }).click();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Canonical browser work');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Capture and deliver urgent human work');
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('The task starts without a forecast or an invented estimate.');
@@ -208,7 +208,7 @@ try {
   const reviewerContext = await browser.newContext({ baseURL, locale: 'en-US', hasTouch: true, viewport: { width: 1440, height: 1000 } });
   const reviewerPage = await reviewerContext.newPage();
   reviewerPage.on('pageerror', error => errors.push(error.message));
-  await reviewerPage.goto(`/projects/${projects[0].id}`);
+  await reviewerPage.goto(`/projects/${projects[0].id}?tab=tasks`);
   await reviewerPage.getByRole('link', { name: 'Sign in', exact: true }).click();
   await reviewerPage.getByRole('link', { name: 'Continue as Charlie' }).click();
   await reviewerPage.getByRole('button', { name: 'Canonical browser work', exact: true }).click();
@@ -476,11 +476,11 @@ try {
   assert.equal(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
   await page.evaluate(async () => { const locale = await import('/src/i18n/i18n.ts'); await locale.changeAppLanguage('en'); });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(`/projects/${projects[0].id}`);
+  await page.goto(`/projects/${projects[0].id}?tab=tasks`);
   check('Task ID search, independent discussion version, mentions, inbox read state, recipient revocation, and responsive My Work');
   await reviewerContext.close();
   check('Unestimated backlog capture, durable owner, structured criteria, manual execution, persisted evidence, and independent human acceptance');
-  await page.getByRole('button', { name: 'Add backlog task', exact: true }).click();
+  await page.getByRole('button', { name: 'New task', exact: true }).click();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Preserve the structured intake');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Keep the draft through triage');
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('Context must survive the handoff.');

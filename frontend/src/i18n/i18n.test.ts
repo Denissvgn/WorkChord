@@ -74,8 +74,6 @@ const dynamicMasterKeys = [
     'agentTeamSetup.summaryProgress',
     'plan.master.checkpointOption',
     'plan.master.checkpointsComplete',
-    'plan.master.railProgress',
-    'plan.master.summaryProgress',
 ];
 
 describe('lazy language resources', () => {
@@ -103,7 +101,6 @@ describe('lazy language resources', () => {
 
         for (const [summaryKey, railKey] of [
             ['agentTeamSetup.summaryProgress', 'agentTeamSetup.railProgress'],
-            ['plan.master.summaryProgress', 'plan.master.railProgress'],
         ]) {
             expect(getCatalogValue(english, summaryKey))
                 .not.toBe(getCatalogValue(english, railKey));
@@ -139,9 +136,9 @@ describe('lazy language resources', () => {
         expect(i18n.t('overview.attention.unassignedTitle', { count: 2 }))
             .toBe('2 unassigned tasks');
         expect(i18n.t('overview.attention.intakeTitle', { count: 1 }))
-            .toBe('1 intake item needs triage');
+            .toBe('1 request needs triage');
         expect(i18n.t('overview.attention.intakeTitle', { count: 2 }))
-            .toBe('2 intake items need triage');
+            .toBe('2 requests need triage');
         expect(i18n.t('overview.focus.reviewRemainingExceptions', { count: 1 }))
             .toBe('Review 1 remaining exception');
         expect(i18n.t('overview.focus.reviewRemainingExceptions', { count: 2 }))
@@ -157,14 +154,10 @@ describe('lazy language resources', () => {
             total: 2,
             count: 2,
         })).toBe('50% implemented — 1 of 2 tasks implemented');
-        expect(i18n.t('nav.deliveryAttentionIntake', { count: 1 }))
-            .toBe('Delivery Hub needs attention: 1 intake item awaits triage. Open Triage.');
-        expect(i18n.t('nav.deliveryAttentionIntake', { count: 2 }))
-            .toBe('Delivery Hub needs attention: 2 intake items await triage. Open Triage.');
-        expect(i18n.t('nav.planningAttention', { count: 1 }))
-            .toBe('Timeline & Planning needs attention: 1 Plan Work checkpoint remains.');
-        expect(i18n.t('nav.planningAttention', { count: 5 }))
-            .toBe('Timeline & Planning needs attention: 5 Plan Work checkpoints remain.');
+        expect(i18n.t('nav.counters.requestsWaiting', { count: 1 })).toBe('1 request waiting');
+        expect(i18n.t('nav.counters.requestsWaiting', { count: 2 })).toBe('2 requests waiting');
+        expect(i18n.t('nav.counters.planProgress', { done: 4, total: 6 }))
+            .toBe('4 of 6 plan steps complete');
         expect(i18n.t('plan.master.daysCount', { count: 1 })).toBe('1 day');
         expect(i18n.t('plan.master.daysCount', { count: 2 })).toBe('2 days');
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 1 }))
@@ -221,18 +214,12 @@ describe('lazy language resources', () => {
             total: 21,
             count: 21,
         })).toBe('Реализовано 13 из 21 задачи');
-        expect(i18n.t('nav.deliveryAttentionIntake', { count: 1 }))
-            .toBe('Центр поставки требует внимания: 1 входящий элемент ожидает разбора. Откройте триаж.');
-        expect(i18n.t('nav.deliveryAttentionIntake', { count: 2 }))
-            .toBe('Центр поставки требует внимания: 2 входящих элемента ожидают разбора. Откройте триаж.');
-        expect(i18n.t('nav.deliveryAttentionIntake', { count: 5 }))
-            .toBe('Центр поставки требует внимания: 5 входящих элементов ожидают разбора. Откройте триаж.');
-        expect(i18n.t('nav.planningAttention', { count: 1 }))
-            .toBe('Таймлайн и планирование требуют внимания: осталась 1 контрольная точка планирования работы.');
-        expect(i18n.t('nav.planningAttention', { count: 2 }))
-            .toBe('Таймлайн и планирование требуют внимания: остались 2 контрольные точки планирования работы.');
-        expect(i18n.t('nav.planningAttention', { count: 5 }))
-            .toBe('Таймлайн и планирование требуют внимания: осталось 5 контрольных точек планирования работы.');
+        expect(i18n.t('nav.counters.requestsWaiting', { count: 1 })).toBe('1 запрос ждёт');
+        expect(i18n.t('nav.counters.requestsWaiting', { count: 2 })).toBe('2 запроса ждут');
+        expect(i18n.t('nav.counters.requestsWaiting', { count: 5 })).toBe('5 запросов ждут');
+        expect(i18n.t('nav.counters.requestsWaiting', { count: 21 })).toBe('21 запрос ждёт');
+        expect(i18n.t('nav.counters.planProgress', { done: 4, total: 6 }))
+            .toBe('Шагов плана выполнено: 4 из 6');
         expect(i18n.t('overview.workNowRemaining', { count: 1 }))
             .toBe('На доске задач доступна ещё 1 открытая задача.');
         expect(i18n.t('overview.workNowRemaining', { count: 2 }))

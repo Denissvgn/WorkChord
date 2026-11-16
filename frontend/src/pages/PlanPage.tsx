@@ -79,14 +79,11 @@ function PlanningReadinessLauncher({
         : ready.done === ready.total
             ? t('plan.hub.recommendedWrap')
             : t('plan.hub.recommendedResume');
-    const readinessSummary = ready.pct === 0
-        ? t('plan.hub.nothingSetUp')
-        : ready.pct === 100
-            ? t('plan.hub.planReadyShare')
-            : t('plan.hub.checkpointProgress', {
-                done: ready.done,
-                total: ready.total,
-            });
+    // The one place on this page that states plan progress as "n of 6".
+    const readinessSummary = t('plan.hub.checkpointProgress', {
+        done: ready.done,
+        total: ready.total,
+    });
 
     const localizedState = (stepId: string) => {
         const stepStatus = status[stepId];
@@ -137,27 +134,11 @@ function PlanningReadinessLauncher({
                         ) : t('plan.hub.noActiveRisks')}
                     </span>
                 </div>
-                <div
-                    className="plan-hub-progress"
-                    role="progressbar"
-                    aria-label={t('plan.hub.readinessProgress')}
-                    aria-valuemin={0}
-                    aria-valuemax={ready.total}
-                    aria-valuenow={ready.done}
-                    aria-valuetext={readinessSummary}
-                >
-                    <span style={{ transform: `scaleX(${ready.pct / 100})` }} />
-                </div>
             </div>
 
             <details className="plan-hub-checkpoints" open>
                 <summary>
-                    <span>
-                        {t('plan.hub.checkpointProgress', {
-                            done: ready.done,
-                            total: ready.total,
-                        })}
-                    </span>
+                    <span>{t('plan.hub.checkpointList')}</span>
                     <ChevronDown aria-hidden="true" size={15} />
                 </summary>
                 <ol

@@ -344,10 +344,10 @@ def test_role_versions_are_new_frozen_identities() -> None:
     }
     catalogs = {catalog["version"] for catalog in baseline["catalogs"]}
 
-    assert build_agent_skills.CATALOG_VERSION == "1.15.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.14.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.14.0"
-    assert build_agent_skills.ROLE_METADATA["workchord-reviewer"]["version"] == "1.2.0"
+    assert build_agent_skills.CATALOG_VERSION == "1.16.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-pm"]["version"] == "1.15.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-worker"]["version"] == "1.15.0"
+    assert build_agent_skills.ROLE_METADATA["workchord-reviewer"]["version"] == "1.3.0"
     assert ("workchord-pm", "1.3.0") in releases
     assert ("workchord-worker", "1.2.0") in releases
     assert "1.3.0" in catalogs
@@ -393,6 +393,10 @@ def test_role_versions_are_new_frozen_identities() -> None:
     assert "1.14.0" in catalogs
     assert ("workchord-worker", "1.14.0") in releases
     assert "1.15.0" in catalogs
+    assert ("workchord-pm", "1.15.0") in releases
+    assert ("workchord-worker", "1.15.0") in releases
+    assert ("workchord-reviewer", "1.3.0") in releases
+    assert "1.16.0" in catalogs
 
 
 @pytest.mark.contract
