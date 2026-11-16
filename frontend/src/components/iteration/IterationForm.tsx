@@ -9,6 +9,8 @@ import { CalendarRange, ListChecks, Repeat, Save } from 'lucide-react';
 import { Button } from '../common/Button';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { Input } from '../common/Input';
+import { Select } from '../common/Select';
+import { calendarService } from '../../services/calendarService';
 import { CollapsibleSection } from '../common/CollapsibleSection';
 import { iterationService } from '../../services/iterationService';
 import { projectService } from '../../services/projectService';
@@ -45,6 +47,8 @@ type SingleDraft = {
     start_date: string;
     end_date: string;
     manager_email: string;
+    /** Calendar id as text; empty keeps the default calendar. */
+    calendar_id: string;
 };
 
 type SeriesDraft = {
@@ -56,6 +60,7 @@ type SeriesDraft = {
     count: number;
     until_date: string;
     manager_email: string;
+    calendar_id: string;
 };
 
 type EditorBaseline = {
@@ -107,6 +112,7 @@ const initialSingleDraft = (
     start_date: initialData?.start_date ?? '',
     end_date: initialData?.end_date ?? '',
     manager_email: initialData?.manager_email ?? '',
+    calendar_id: initialData?.calendar_id ? String(initialData.calendar_id) : '',
 });
 
 const initialSeriesDraft = (
@@ -123,6 +129,7 @@ const initialSeriesDraft = (
         count: 3,
         until_date: addDays(start, 41),
         manager_email: '',
+        calendar_id: '',
     };
 };
 
@@ -132,6 +139,7 @@ const singleDraftsMatch = (left: SingleDraft, right: SingleDraft) => (
     && left.start_date === right.start_date
     && left.end_date === right.end_date
     && left.manager_email === right.manager_email
+    && left.calendar_id === right.calendar_id
 );
 
 const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
@@ -143,7 +151,28 @@ const seriesDraftsMatch = (left: SeriesDraft, right: SeriesDraft) => (
     && left.count === right.count
     && left.until_date === right.until_date
     && left.manager_email === right.manager_email
+    && left.calendar_id === right.calendar_id
 );
+
+/** The calendar the iteration counts its working days in; it loads only once More is opened. */
+const CalendarField = ({ value, onChange }: { value: string; onChange: (value: string) => void }) => {
+    const { t } = useTranslation();
+    // feedback-policy: query loading,error,retry,empty - without the list the iteration keeps its calendar; the field says so.
+    const calendars = useQuery({ queryKey: ['calendars'], queryFn: calendarService.getAll, staleTime: 60_000 });
+    return (
+        <Select
+            label={t('iterations.calendar')}
+            value={value}
+            onChange={event => onChange(event.target.value)}
+            help={calendars.isError ? t('iterationForm.calendarsUnavailable') : undefined}
+        >
+            <option value="">{t('iterationForm.defaultCalendar')}</option>
+            {(calendars.data ?? []).map(calendar => (
+                <option key={calendar.id} value={calendar.id}>{calendar.name}</option>
+            ))}
+        </Select>
+    );
+};
 
 const IterationFormEditor = ({
     initialData,
@@ -302,6 +331,10 @@ const IterationFormEditor = ({
             end_date: singleDraft.end_date,
             manager_email: managerEmail || (initialData?.manager_email ? null : undefined),
         };
+        // The calendar is sent only when it was chosen or changed; otherwise the server's default stays.
+        if (singleDraft.calendar_id && singleDraft.calendar_id !== baseline.singleDraft.calendar_id) {
+            payload.calendar_id = Number(singleDraft.calendar_id);
+        }
         if (!initialData || !hideProjectScope) {
             payload.project_id = selectedProjectId(singleDraft.project_id);
         }
@@ -325,6 +358,7 @@ const IterationFormEditor = ({
                 ? { mode: 'count', count: Number(seriesDraft.count) }
                 : { mode: 'until_date', until_date: seriesDraft.until_date },
             manager_email: managerEmail || undefined,
+            ...(seriesDraft.calendar_id ? { calendar_id: Number(seriesDraft.calendar_id) } : {}),
         };
         seriesMutation.mutate(payload);
     };
@@ -566,6 +600,17 @@ const IterationFormEditor = ({
                         </div>
                     </>
                 )}
+
+                <CalendarField
+                    value={mode === 'series' ? seriesDraft.calendar_id : singleDraft.calendar_id}
+                    onChange={value => {
+                        if (mode === 'series') {
+                            setSeriesDraft(current => ({ ...current, calendar_id: value }));
+                            return;
+                        }
+                        setSingleDraft(current => ({ ...current, calendar_id: value }));
+                    }}
+                />
 
                 <Input
                     type="email"

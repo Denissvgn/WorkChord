@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
+import { PlanIterationCheckpoint } from '../components/planning/PlanIterationCheckpoint';
+import { PlanIterationDrawers } from '../components/planning/PlanIterationDrawers';
 import { PlanQuickAddCapacity } from '../components/planning/PlanQuickAddCapacity';
 import { PlanShareSection } from '../components/planning/PlanShareSection';
 import { PageHeader, PageLayout } from '../components/ui';
@@ -27,7 +29,6 @@ import type { PlanningQueryFeedback } from '../features/planningMasters/usePlann
 import { useScopeLink } from '../features/scope/useScopeLink';
 import type { IterationPlanningReadinessSummary } from '../types/iteration';
 import { formatDate } from '../utils/formatDate';
-import IterationsPage from './IterationsPage';
 
 type Translate = ReturnType<typeof useTranslation>['t'];
 type Readiness = ReturnType<typeof usePlanningReadiness>;
@@ -145,6 +146,10 @@ const CheckpointBody = ({
                 })}
             </p>
         );
+    }
+
+    if (section.id === 'iteration') {
+        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'} />;
     }
 
     const queries = bodyQueries(section.id, readiness.queryStates).filter(query => query.enabled);
@@ -400,10 +405,12 @@ const PlanCheckpoints = () => {
     );
 };
 
-/** Plan shows the iterations of the scope's project when its link asks for them, else the six checkpoints. */
-const PlanPage = () => {
-    const [searchParams] = useSearchParams();
-    return searchParams.get('panel') === 'iterations' ? <IterationsPage /> : <PlanCheckpoints />;
-};
+/** Plan is the six checkpoints; iterations are managed in drawers that open over them. */
+const PlanPage = () => (
+    <>
+        <PlanCheckpoints />
+        <PlanIterationDrawers />
+    </>
+);
 
 export default PlanPage;

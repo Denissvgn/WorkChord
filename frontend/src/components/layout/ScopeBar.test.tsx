@@ -140,7 +140,7 @@ describe('ScopeBar', () => {
 
             await user.keyboard('{ArrowDown}{End}{ArrowUp}{Enter}');
             await settle();
-            expect(locationText()).toBe('/plan?panel=iterations&create=1&project=1&iteration=12');
+            expect(locationText()).toBe('/plan?create=1&project=1&iteration=12');
         });
     });
 
