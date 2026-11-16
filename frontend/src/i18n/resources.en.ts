@@ -1,3 +1,4 @@
+import { planWorkEnglish } from './planWork';
 import { planningInputEnglish } from './planningInputMessages';
 import { paginationEN } from './pagination';
 import { timeEntriesEN } from './timeEntries';
@@ -5,6 +6,7 @@ import { teamworkEnglish } from './teamwork.en';
 import { landingEnglish } from './landing.en';
 export const englishResources = {
         translation: {
+            planWork: planWorkEnglish,
             capacity: {
                 hourValue: '{{hours}} h',
                 people_one: '{{count}} person',
@@ -198,6 +200,23 @@ export const englishResources = {
                 "logoutFailed": "Could not sign out. Your session is still active; try again.",
                 "expired": "Your session expired. Sign in again to continue.",
                 "accountMenu": "Account and access",
+                "accountLinks": "Account links",
+                "workingAsHeading": "Working as",
+                "signInHeading": "Sign-in",
+                "localNotVerifiedSignIn": "Local workspace, not a verified sign-in",
+                "signedInVerified": "Signed in with your team account.",
+                "notSignedIn": "Not signed in.",
+                "editing": "Editing: {{state}}",
+                "editingLocked": "locked",
+                "editingUnlocked": "unlocked",
+                "editingNote": "Changes need the admin key in this browser tab. One key unlocks every protected settings section.",
+                "editingByRole": "Your workspace role lets you edit without the admin key.",
+                "editingFollowsRole": "Editing follows the workspace role of this account.",
+                "manageInTeam": "Manage roles in {{team}}",
+                "keyNotChecked": "The server could not be reached to check this key. Nothing was saved; try again.",
+                "unlock": "Unlock",
+                "lock": "Lock",
+                "unlockHelp": "Enter the admin key the operator gave you. It stays in this browser tab.",
                 "accountId": "Account #{{id}}",
                 "localMode": "Trusted-local workspace",
                 "managedMode": "Managed workspace",
@@ -1161,6 +1180,16 @@ export const englishResources = {
                 workingDays: 'Working days',
                 importJson: 'Import JSON',
                 exportJson: 'Export JSON',
+                allIterations: 'All iterations',
+                allIterationsOfProject: 'Iterations of {{project}}',
+                allIterationsOfAllProjects: 'Iterations of all projects',
+                open: 'Open',
+                export: 'Export',
+                openNamed: 'Open {{name}}',
+                editNamed: 'Edit {{name}}',
+                exportNamed: 'Export {{name}}',
+                deleteNamed: 'Delete {{name}}',
+                inScope: 'In scope',
                 noIterations: 'No iterations found. Create one to start planning.',
                 deleteTitle: 'Delete iteration?',
                 deleteBody: 'This action cannot be undone. All tasks and iteration data will be deleted.',
@@ -2600,6 +2629,9 @@ export const englishResources = {
                         waiting: 'Waiting on checkpoint {{number}}',
                     },
                     noIterationResult: 'Choose an iteration in the scope bar, or create one.',
+                    noIterationBody: 'There is no iteration in scope. Create one to start planning, or open an existing one.',
+                    project: 'Project',
+                    calendarFallback: 'Calendar {{id}}',
                     waitingResult: 'Starts when {{checkpoint}} is done.',
                     waitingBody: 'This checkpoint waits for checkpoint {{number}}, {{checkpoint}}. There is nothing to do here until it is done.',
                     evidence: 'Evidence',
@@ -5564,6 +5596,8 @@ export const englishResources = {
             iterationForm: {
                 kind: 'Kind of iteration',
                 needName: 'Enter a name to save.',
+                defaultCalendar: 'Default calendar',
+                calendarsUnavailable: 'Calendars could not be loaded. The iteration keeps its current calendar.',
                 needDates: 'Choose a start and an end date to save.',
                 needOrderedDates: 'The end date must be on or after the start date.',
                 needSeriesName: 'Enter a base name for the series.',

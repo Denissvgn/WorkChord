@@ -7,7 +7,11 @@ import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { CapacitySection } from '../components/capacity/CapacitySection';
+import { PlanIterationCheckpoint } from '../components/planning/PlanIterationCheckpoint';
+import { PlanIterationDrawers } from '../components/planning/PlanIterationDrawers';
 import { PlanShareSection } from '../components/planning/PlanShareSection';
+import { PlanWorkSection } from '../components/planning/PlanWorkSection';
+import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
 import {
     checkpointsDone,
@@ -28,7 +32,6 @@ import { useScopeLink } from '../features/scope/useScopeLink';
 import type { IterationPlanningReadinessSummary } from '../types/iteration';
 import { formatDecimal } from '../utils/workNumbers';
 import { formatDate } from '../utils/formatDate';
-import IterationsPage from './IterationsPage';
 
 type Translate = ReturnType<typeof useTranslation>['t'];
 type Readiness = ReturnType<typeof usePlanningReadiness>;
@@ -123,7 +126,9 @@ const checkpointResult = (
 
 /** Evidence comes from the readiness response; the in-place capacity form also needs the iteration's team. */
 const bodyQueries = (stepId: PlanningStepId, queryStates: Readiness['queryStates']): PlanningQueryFeedback[] => (
-    stepId === 'team' ? [queryStates.team] : []
+    stepId === 'team' ? [queryStates.team]
+        : stepId === 'work' ? [queryStates.tasks]
+            : stepId === 'blockers' ? [queryStates.tasks, queryStates.team] : []
 );
 
 /** Today's body of a checkpoint: its evidence rows and the link to the page that owns the change. */
@@ -148,6 +153,10 @@ const CheckpointBody = ({
                 })}
             </p>
         );
+    }
+
+    if (section.id === 'iteration') {
+        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'} />;
     }
 
     const queries = bodyQueries(section.id, readiness.queryStates).filter(query => query.enabled);
@@ -175,6 +184,15 @@ const CheckpointBody = ({
     if (section.id === 'team' && readiness.currentIteration) {
         return <CapacitySection key={readiness.currentIteration.id} iteration={readiness.currentIteration}
             iterations={readiness.iterations} members={readiness.teamMembers} primary={section.state !== 'done'} />;
+    }
+    if (section.id === 'work' && readiness.currentIteration) {
+        return <PlanWorkSection key={iterationId} iteration={readiness.currentIteration} tasks={readiness.planningLeafTasks}
+            count={section.counts.tasks ?? readiness.planningSummary?.task_count ?? 0} />;
+    }
+    if (section.id === 'blockers' && readiness.currentIteration) {
+        return <PlanBlockersSection key={iterationId} iterationId={iterationId} tasks={readiness.allTasks} members={readiness.teamMembers}
+            unassignedCount={section.counts.unassigned_tasks ?? readiness.planningSummary?.tasks_without_assignee ?? 0}
+            effortCount={section.counts.tasks_without_effort ?? readiness.planningSummary?.tasks_without_effort ?? 0} />;
     }
     // One primary action per page: the open, incomplete checkpoint's own action, done in place when it can be.
     const ownerIsPrimary = section.state !== 'done';
@@ -403,10 +421,12 @@ const PlanCheckpoints = () => {
     );
 };
 
-/** Plan shows the iterations of the scope's project when its link asks for them, else the six checkpoints. */
-const PlanPage = () => {
-    const [searchParams] = useSearchParams();
-    return searchParams.get('panel') === 'iterations' ? <IterationsPage /> : <PlanCheckpoints />;
-};
+/** Plan is the six checkpoints; iterations are managed in drawers that open over them. */
+const PlanPage = () => (
+    <>
+        <PlanCheckpoints />
+        <PlanIterationDrawers />
+    </>
+);
 
 export default PlanPage;

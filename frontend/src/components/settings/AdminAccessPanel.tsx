@@ -8,26 +8,7 @@ import { clearAdminApiKey, setAdminApiKey } from '../../utils/adminAccess';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { schedulingRulesService } from '../../services/schedulingRulesService';
 import { getApiErrorStatus } from '../../utils/apiError';
-
-const protectedQueryKeys = [
-    ['system-settings'],
-    ['scheduling-rules'],
-    ['email-settings'],
-    ['outbound-webhook-targets'],
-    ['outbound-webhook-deliveries'],
-    ['agent-capabilities'],
-    ['agent-actor-roster'],
-    ['agent-model-catalog'],
-    ['agent-model-bindings'],
-    ['agent-profile-skill-catalog'],
-    ['routing-assessment'],
-    ['routing-preview'],
-    ['agent-assignments'],
-    ['agent-pipeline'],
-    ['agent-team-setup'],
-    ['task-timeline'],
-    ['agent-run-detail'],
-] as const;
+import { protectedQueryKeys } from './protectedQueryKeys';
 
 export const AdminAccessPanel = ({
     headingLevel = 2,

@@ -1,3 +1,4 @@
+import { planWorkRussian } from './planWork';
 import { planningInputRussian } from './planningInputMessages';
 import { paginationRU } from './pagination';
 import { timeEntriesRU } from './timeEntries';
@@ -9,6 +10,7 @@ import { surfacesRussian } from './surfaces.ru';
 import { literalsRussian } from './literals.ru';
 export const russianResources = {
         translation: {
+            planWork: planWorkRussian,
             capacity: {
                 hourValue: '{{hours}} ч',
                 people_one: '{{count}} человек',
@@ -206,6 +208,23 @@ export const russianResources = {
                 "logoutFailed": "Не удалось выйти. Сессия ещё активна; повторите попытку.",
                 "expired": "Сессия истекла. Войдите снова, чтобы продолжить.",
                 "accountMenu": "Учётная запись и доступ",
+                "accountLinks": "Ссылки учётной записи",
+                "workingAsHeading": "Работаю как",
+                "signInHeading": "Вход",
+                "localNotVerifiedSignIn": "Локальное рабочее пространство, не подтверждённый вход",
+                "signedInVerified": "Вход выполнен через учётную запись команды.",
+                "notSignedIn": "Вход не выполнен.",
+                "editing": "Редактирование: {{state}}",
+                "editingLocked": "заблокировано",
+                "editingUnlocked": "разблокировано",
+                "editingNote": "Изменения требуют ключа администратора в этой вкладке браузера. Один ключ открывает все защищённые разделы настроек.",
+                "editingByRole": "Роль в рабочем пространстве позволяет редактировать без ключа администратора.",
+                "editingFollowsRole": "Редактирование зависит от роли этой учётной записи в рабочем пространстве.",
+                "manageInTeam": "Управление ролями: {{team}}",
+                "keyNotChecked": "Не удалось связаться с сервером, чтобы проверить ключ. Ничего не сохранено; попробуйте снова.",
+                "unlock": "Разблокировать",
+                "lock": "Заблокировать",
+                "unlockHelp": "Введите ключ администратора, который передал оператор. Он хранится только в этой вкладке браузера.",
                 "accountId": "Учётная запись №{{id}}",
                 "localMode": "Доверенное локальное пространство",
                 "managedMode": "Управляемое пространство",
@@ -1195,6 +1214,16 @@ export const russianResources = {
                 workingDays: 'Рабочие дни',
                 importJson: 'Импорт JSON',
                 exportJson: 'Экспорт JSON',
+                allIterations: 'Все итерации',
+                allIterationsOfProject: 'Итерации проекта {{project}}',
+                allIterationsOfAllProjects: 'Итерации всех проектов',
+                open: 'Открыть',
+                export: 'Экспорт',
+                openNamed: 'Открыть {{name}}',
+                editNamed: 'Редактировать {{name}}',
+                exportNamed: 'Экспортировать {{name}}',
+                deleteNamed: 'Удалить {{name}}',
+                inScope: 'В области',
                 noIterations: 'Итераций нет. Создайте итерацию, чтобы начать планирование.',
                 deleteTitle: 'Удалить итерацию?',
                 deleteBody: 'Это действие нельзя отменить. Все задачи и данные итерации будут удалены.',
@@ -3277,6 +3306,8 @@ export const russianResources = {
             iterationForm: {
                 kind: 'Вид итерации',
                 needName: 'Введите название, чтобы сохранить.',
+                defaultCalendar: 'Календарь по умолчанию',
+                calendarsUnavailable: 'Не удалось загрузить календари. У итерации остаётся её текущий календарь.',
                 needDates: 'Выберите даты начала и окончания, чтобы сохранить.',
                 needOrderedDates: 'Дата окончания должна быть не раньше даты начала.',
                 needSeriesName: 'Введите базовое название серии.',

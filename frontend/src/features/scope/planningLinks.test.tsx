@@ -1,12 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryRouter, Outlet, Route, RouterProvider, Routes, useLocation } from 'react-router-dom';
 import i18n from '../../i18n/i18n';
 import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
 import { OnTrackSummary } from '../../components/analytics/OnTrackSummary';
-import { IterationList } from '../../components/iteration/IterationList';
 import { PlanReturnBar } from '../../components/planning/PlanReturnBar';
 import { PlanningWorkflowHelpContent } from '../../components/planning/PlanningWorkflowGuide';
 import { TaskWorkflowHelpContent } from '../../components/tasks/TaskWorkflowGuide';
@@ -148,24 +146,5 @@ describe('links the app builds to the planning page carry the scope', () => {
         );
         expect(await screen.findByRole('link', { name: i18n.t('plan.master.openPlanMaster') }))
             .toHaveAttribute('href', '/plan?project=2&iteration=22');
-    });
-
-    it('opens the plan of an iteration in the list with that iteration and its project in scope', async () => {
-        useScopeStore.setState({ project: 1, iteration: 12 });
-        renderWithProviders(<><IterationList /><LocationProbe /></>, { initialEntries: ['/plan?panel=iterations&project=1&iteration=12'] });
-
-        expect(await screen.findByRole('link', { name: i18n.t('iterations.openPlan') }))
-            .toHaveAttribute('href', '/plan?project=1&iteration=12');
-
-        await userEvent.click(screen.getByRole('button', { name: i18n.t('iterations.planThisIteration') }));
-        expect(locationText()).toBe('/plan?project=2&iteration=22');
-    });
-
-    it('keeps All projects when the plan of an iteration is opened from the list', async () => {
-        useScopeStore.setState({ project: 'all', iteration: 12 });
-        renderWithProviders(<><IterationList /><LocationProbe /></>, { initialEntries: ['/plan?panel=iterations&project=all&iteration=12'] });
-
-        await userEvent.click(await screen.findByRole('button', { name: i18n.t('iterations.planThisIteration') }));
-        expect(locationText()).toBe('/plan?project=all&iteration=22');
     });
 });
