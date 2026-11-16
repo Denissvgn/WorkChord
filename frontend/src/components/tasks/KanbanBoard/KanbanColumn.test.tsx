@@ -35,6 +35,15 @@ describe('Board column', () => {
         renderWithProviders(<KanbanColumn id="closed" title="Closed" tasks={[]} count={0} tone="gray" />);
         expect(screen.getByRole('region', { name: 'Closed: no tasks. Drop a task here to move it.' })).toBeInTheDocument();
     });
+
+    it('keeps the caption on folded columns so two with the same status stay apart', () => {
+        renderWithProviders(<>
+            <KanbanColumn id="planned-unassigned" title="Planned" caption="No assignee" tasks={[]} count={0} tone="gray" />
+            <KanbanColumn id="planned-assigned" title="Planned" caption="Assigned" tasks={[]} count={0} tone="gray" />
+        </>);
+        expect(screen.getByRole('region', { name: 'Planned (No assignee): no tasks. Drop a task here to move it.' })).toHaveTextContent('Planned · No assignee');
+        expect(screen.getByRole('region', { name: 'Planned (Assigned): no tasks. Drop a task here to move it.' })).toHaveTextContent('Planned · Assigned');
+    });
 });
 
 describe('Board card', () => {

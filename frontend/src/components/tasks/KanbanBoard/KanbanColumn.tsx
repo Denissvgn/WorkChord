@@ -53,7 +53,10 @@ export const KanbanColumn = ({ id, title, caption, tasks, count, tone, onOpen, c
             >
                 <span className={clsx('h-2 w-2 rounded-full', toneDotClassName[tone])} aria-hidden="true" />
                 <span className="text-xs tabular-nums text-content-secondary" aria-hidden="true">0</span>
-                <h3 className="text-sm font-semibold text-content-secondary [writing-mode:vertical-rl]" aria-hidden="true">{title}</h3>
+                <h3 className="text-sm font-semibold text-content-secondary [writing-mode:vertical-rl]" aria-hidden="true">
+                    {title}
+                    {caption && <span className="font-normal"> · {caption}</span>}
+                </h3>
             </section>
         );
     }
