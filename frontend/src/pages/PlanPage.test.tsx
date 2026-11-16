@@ -10,6 +10,7 @@ import type { TeamMember, TeamMemberCreate, TeamMemberProfile } from '../types/t
 import type { IterationPlanningReadinessSummary, PlanCheckpoint } from '../types/iteration';
 import PlanPage from './PlanPage';
 import type { Task, TaskBulkOperationRequest } from '../types/task';
+import type { GanttTask, SchedulePreviewResponse } from '../types/gantt';
 import planPageSource from './PlanPage.tsx?raw';
 
 const services = vi.hoisted(() => ({
@@ -17,7 +18,7 @@ const services = vi.hoisted(() => ({
     team: { getByIteration: vi.fn(), getProfiles: vi.fn(), create: vi.fn(), getWorkload: vi.fn(), addVacation: vi.fn() },
     tasks: { getByIteration: vi.fn(), getAssigneeRecommendations: vi.fn(), runBulkOperation: vi.fn(), update: vi.fn(), lookup: vi.fn(), move: vi.fn(), importFromText: vi.fn() },
     labels: { getLabels: vi.fn() },
-    gantt: { getChart: vi.fn() },
+    gantt: { getChart: vi.fn(), previewSchedule: vi.fn(), schedule: vi.fn() },
     triage: { getAll: vi.fn() },
     share: { getCurrent: vi.fn(), create: vi.fn(), revoke: vi.fn() },
 }));
@@ -108,7 +109,7 @@ beforeEach(() => {
     services.team.getByIteration.mockResolvedValue([]);
     services.team.getProfiles.mockResolvedValue([]);
     services.tasks.getByIteration.mockResolvedValue([]);
-    services.gantt.getChart.mockResolvedValue({ tasks: [], holidays: [], weekends: [] });
+    services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [], holidays: [], weekends: [] });
     services.triage.getAll.mockResolvedValue([]);
     services.share.getCurrent.mockResolvedValue(null);
 });
@@ -208,7 +209,8 @@ describe('Plan is one page of six checkpoints', () => {
         expect(TITLES.filter(title => toggle(title).getAttribute('aria-expanded') === 'true')).toEqual([openTitle]);
     });
 
-    it('keeps the at-risk signals in the Review section with a link to Gantt', async () => {
+    it('keeps the at-risk signals in the Review section with a link to the filtered tasks', async () => {
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask({ is_delayed: true })], holidays: [], weekends: [] });
         services.iterations.getPlanningReadiness.mockResolvedValue(summary(
             FIXTURES.sixOfSix.checkpoints!.map(item => (item.id === 'review'
                 ? checkpoint('review', 'warn', ['risks_to_acknowledge'], { risks: 1 })
@@ -220,10 +222,10 @@ describe('Plan is one page of six checkpoints', () => {
 
         const review = section('review');
         expect(within(review).getByText('Needs attention')).toBeVisible();
-        expect(within(review).getByText('1 planning exception to review')).toBeVisible();
+        expect(within(review).getAllByText('1 planning exception to review')[0]).toBeVisible();
         expect(within(review).getByText('At-risk signals')).toBeVisible();
-        expect(await within(review).findByRole('link', { name: 'Open 1 at-risk signal in Gantt' }))
-            .toHaveAttribute('href', '/gantt?fromPlanStep=review&project=1&iteration=1');
+        expect(await within(review).findByRole('link', { name: 'At-risk signals: 1' }))
+            .toHaveAttribute('href', '/tasks?planningIssue=at-risk&fromPlanStep=review&project=1&iteration=1');
     });
 
     it('re-reads readiness on return and opens the next checkpoint once the returned one is done', async () => {
@@ -585,5 +587,156 @@ describe('work and blockers inside Plan', () => {
         await user.type(editor, '- New work');
         await user.click(within(dialog).getByRole('button', { name: 'Import tasks' }));
         await waitFor(() => expect(services.tasks.importFromText).toHaveBeenCalledWith(1, '- New work', { destination: 'tasks', expectedRevision: 7 }));
+    });
+});
+
+const scheduledTask = (overrides: Partial<GanttTask> = {}): GanttTask => ({
+    id: 11, title: 'Prepare release', start_date: '2026-08-03', end_date: '2026-08-10',
+    effort_hours: 40, effort_days: 5, calculated_effort_days: 5, progress: 0, priority: 2, status: 'planned',
+    is_composite: false, is_overdue: false, is_delayed: false, is_optional: false,
+    is_outside_constraints: false, tags: [], assignee: { id: 1, name: 'Person 1' },
+    assignees: [{ id: 1, name: 'Person 1' }], children: [], dependencies: [], ...overrides,
+});
+const scheduleReady = summary([
+    ...FIXTURES.sixOfSix.checkpoints!.slice(0, 4), checkpoint('schedule', 'todo', ['schedule_not_built']),
+    checkpoint('review', 'blocked', ['build_schedule_first']),
+], { team_member_count: 1, team_capacity_hours: 64, task_count: 1 });
+const scheduleWorkspace = (end = '2026-08-10') => {
+    let applied = false;
+    const task = scheduledTask({ end_date: end });
+    const result = { success: true, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+    const preview: SchedulePreviewResponse = { input_revision: 7, input_planning_revision: 19, tasks: [task], overdue_task_ids: [], schedule_result: result };
+    services.team.getByIteration.mockResolvedValue([capacityRow(1, 'human')]);
+    services.team.getWorkload.mockResolvedValue({ team_member_id: 1, name: 'Person 1', allocated_hours: 40, capacity_hours: 64 });
+    services.iterations.getAll.mockResolvedValue([{ ...ITERATION, revision: 7 }]);
+    services.gantt.getChart.mockImplementation(async () => ({ iteration: { ...ITERATION, revision: 7 }, tasks: applied ? [task] : [], schedule_result: applied ? result : null }));
+    services.gantt.previewSchedule.mockResolvedValue(preview);
+    services.gantt.schedule.mockImplementation(async () => { applied = true; return result; });
+    services.iterations.getPlanningReadiness.mockImplementation(async () => !applied ? scheduleReady : summary([
+        ...scheduleReady.checkpoints!.slice(0, 4), checkpoint('schedule', 'done'),
+        end > ITERATION.end_date ? checkpoint('review', 'warn', ['risks_to_acknowledge'], { risks: 1 }) : checkpoint('review', 'done'),
+    ], { team_member_count: 1, team_capacity_hours: 64, task_count: 1,
+        has_schedule: true, risk_count: end > ITERATION.end_date ? 1 : 0,
+    }));
+    return { preview, result };
+};
+
+describe('schedule and review inside Plan', () => {
+    it('calculates and applies assigned work without leaving Plan and reads Schedule Done from the server', async () => {
+        scheduleWorkspace();
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        expect(services.gantt.previewSchedule).toHaveBeenCalledWith(1, [], 7);
+        expect(stateText('schedule')).toBe('Next');
+        expect(screen.getByText('Calculated schedule · not saved')).toBeVisible();
+        const table = await screen.findByRole('table', { name: 'Hours against capacity per assignee' });
+        expect(within(table).getByText('40 h')).toBeVisible();
+        expect(within(table).getByText('64 h')).toBeVisible();
+        expect(screen.getByText('Calculated end')).toBeVisible();
+        expect(screen.getByText('Iteration end')).toBeVisible();
+        expect(screen.getAllByText('Dates are calculated. To move a task, change who does it, its effort, what it waits for, or its earliest start.')).toHaveLength(1);
+        expect(screen.getByRole('link', { name: 'Open in Gantt' })).toHaveAttribute('href', '/gantt?fromPlanStep=schedule&project=1&iteration=1');
+        await user.click(screen.getByRole('button', { name: 'Apply schedule' }));
+        expect(services.gantt.schedule).toHaveBeenCalledWith(1, 7, 19);
+        await waitFor(() => expect(stateText('schedule')).toBe('Done'));
+        expect(screen.getByText('6 of 6')).toBeVisible();
+        expect(screen.getByTestId('location')).toHaveTextContent(PLAN_ENTRY);
+    });
+
+    it('lists a task without dates with the exact reason text returned by the server', async () => {
+        const { preview } = scheduleWorkspace();
+        const message = 'Waiting for prerequisite “Review access” to finish before this task can be placed.';
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, tasks: [scheduledTask({ start_date: null, end_date: null })], schedule_result: {
+            ...preview.schedule_result, unscheduled: [{ task_id: 11, task_title: 'Prepare release', reason: 'prerequisites_pending', message }],
+        } });
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        expect(await screen.findByText(message)).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
+        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
+    it('does not mark Schedule Done from a successful apply when readiness still says it is incomplete', async () => {
+        scheduleWorkspace();
+        services.iterations.getPlanningReadiness.mockResolvedValue(scheduleReady);
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
+        expect(await screen.findByText('Schedule applied.')).toBeVisible();
+        await waitFor(() => expect(services.iterations.getPlanningReadiness).toHaveBeenCalledTimes(2));
+        expect(stateText('schedule')).toBe('Next');
+        expect(stateText('review')).toBe('Waiting on checkpoint 5');
+        expect(screen.getByText('4 of 6')).toBeVisible();
+    });
+
+    it('lists an end after the iteration as a Review risk and shows the server’s 5 of 6 after applying', async () => {
+        scheduleWorkspace('2026-08-20');
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
+        await waitFor(() => expect(stateText('schedule')).toBe('Done'));
+        expect(screen.getByText('5 of 6')).toBeVisible();
+        expect(stateText('review')).toBe('Needs attention');
+        expect(toggle('Review')).toHaveAttribute('aria-expanded', 'true');
+        expect(within(section('review')).getByRole('link', { name: /End after the iteration.*: 1/ }))
+            .toHaveAttribute('href', '/tasks?overflow=true&fromPlanStep=review&project=1&iteration=1');
+        expect(await screen.findByRole('button', { name: 'Create share link' })).toBeVisible();
+    });
+
+    it('keeps Apply unavailable after a failed preview and allows calculation to be retried', async () => {
+        scheduleWorkspace();
+        services.gantt.previewSchedule.mockRejectedValueOnce(new Error('Scheduler unavailable'));
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('The schedule could not be calculated. Try calculating again.');
+        expect(screen.queryByRole('button', { name: 'Apply schedule' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Calculate schedule' }));
+        expect(await screen.findByRole('button', { name: 'Apply schedule' })).toBeEnabled();
+    });
+
+    it('discards a conflicting preview and requires calculation again instead of replaying Apply', async () => {
+        const { preview } = scheduleWorkspace();
+        services.gantt.schedule.mockRejectedValueOnce({ response: { status: 409, data: { detail: { code: 'stale_planning_revision', message: 'Planning inputs changed' } } } });
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('Planning inputs changed');
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Calculate schedule' })).toBeEnabled());
+        expect(screen.queryByRole('button', { name: 'Apply schedule' })).not.toBeInTheDocument();
+        expect(stateText('schedule')).toBe('Next');
+        expect(services.gantt.schedule).toHaveBeenCalledTimes(1);
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, input_planning_revision: 20 });
+        await user.click(screen.getByRole('button', { name: 'Calculate schedule' }));
+        await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
+        expect(services.gantt.schedule).toHaveBeenLastCalledWith(1, 7, 20);
+        await waitFor(() => expect(stateText('schedule')).toBe('Done'));
+    });
+
+    it('refreshes an outdated revision after a preview conflict so Calculate can be retried', async () => {
+        scheduleWorkspace();
+        const { user } = renderPlan();
+        const calculate = await screen.findByRole('button', { name: 'Calculate schedule' });
+        services.gantt.getChart.mockResolvedValue({ iteration: { ...ITERATION, revision: 8 }, tasks: [] });
+        services.gantt.previewSchedule.mockRejectedValueOnce({ response: { status: 409, data: { detail: 'Iteration changed. Calculate again.' } } });
+        await user.click(calculate);
+        expect(await screen.findByRole('alert')).toHaveTextContent('Iteration changed. Calculate again.');
+        await waitFor(() => expect(calculate).toBeEnabled());
+        await user.click(calculate);
+        expect(services.gantt.previewSchedule).toHaveBeenNthCalledWith(1, 1, [], 7);
+        expect(services.gantt.previewSchedule).toHaveBeenNthCalledWith(2, 1, [], 8);
+        expect(await screen.findByRole('button', { name: 'Apply schedule' })).toBeEnabled();
+    });
+
+    it('links over-capacity rows and undated work to their filtered task lists even while Review waits for dates', async () => {
+        const { result } = scheduleWorkspace();
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask({ start_date: null, end_date: null })], schedule_result: result });
+        services.team.getWorkload.mockResolvedValue({ team_member_id: 1, name: 'Person 1', allocated_hours: 80, capacity_hours: 64 });
+        const { user } = renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
+        await user.click(toggle('Review'));
+        expect(await screen.findByRole('link', { name: 'Person 1' })).toHaveAttribute('href', '/tasks?assignee=1&fromPlanStep=review&project=1&iteration=1');
+        expect(screen.getByRole('link', { name: 'Tasks without dates: 1' })).toHaveAttribute('href', '/tasks?planningIssue=unscheduled&fromPlanStep=review&project=1&iteration=1');
+        expect(stateText('review')).toBe('Waiting on checkpoint 5');
+        expect(screen.getByText('4 of 6')).toBeVisible();
     });
 });
