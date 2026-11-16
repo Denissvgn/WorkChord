@@ -1,3 +1,4 @@
+import { planWorkEnglish } from './planWork';
 import { planningInputEnglish } from './planningInputMessages';
 import { paginationEN } from './pagination';
 import { timeEntriesEN } from './timeEntries';
@@ -5,6 +6,7 @@ import { teamworkEnglish } from './teamwork.en';
 import { landingEnglish } from './landing.en';
 export const englishResources = {
         translation: {
+            planWork: planWorkEnglish,
             capacity: {
                 hourValue: '{{hours}} h',
                 people_one: '{{count}} person',
@@ -198,6 +200,23 @@ export const englishResources = {
                 "logoutFailed": "Could not sign out. Your session is still active; try again.",
                 "expired": "Your session expired. Sign in again to continue.",
                 "accountMenu": "Account and access",
+                "accountLinks": "Account links",
+                "workingAsHeading": "Working as",
+                "signInHeading": "Sign-in",
+                "localNotVerifiedSignIn": "Local workspace, not a verified sign-in",
+                "signedInVerified": "Signed in with your team account.",
+                "notSignedIn": "Not signed in.",
+                "editing": "Editing: {{state}}",
+                "editingLocked": "locked",
+                "editingUnlocked": "unlocked",
+                "editingNote": "Changes need the admin key in this browser tab. One key unlocks every protected settings section.",
+                "editingByRole": "Your workspace role lets you edit without the admin key.",
+                "editingFollowsRole": "Editing follows the workspace role of this account.",
+                "manageInTeam": "Manage roles in {{team}}",
+                "keyNotChecked": "The server could not be reached to check this key. Nothing was saved; try again.",
+                "unlock": "Unlock",
+                "lock": "Lock",
+                "unlockHelp": "Enter the admin key the operator gave you. It stays in this browser tab.",
                 "accountId": "Account #{{id}}",
                 "localMode": "Trusted-local workspace",
                 "managedMode": "Managed workspace",
