@@ -1,14 +1,13 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../i18n/i18n';
 import type {
-    AgentPipeline,
     AgentRun,
     TaskTimelineResponse,
 } from '../types/agent';
 import type { Task } from '../types/task';
 import { renderWithProviders } from '../test/renderWithProviders';
-import AgentPipelinePage from './AgentPipelinePage';
+import { PipelineTaskEvidence } from '../components/tasks/PipelineTaskEvidence';
 
 const agentServiceMock = vi.hoisted(() => ({
     getPipeline: vi.fn(),
@@ -90,16 +89,6 @@ const taskFixture: Task = {
     dependencies: [],
 };
 
-const pipelineFixture: AgentPipeline = {
-    needs_definition: [],
-    ready_to_assign: [],
-    assigned_waiting: [],
-    start_ready: [],
-    executing: [taskFixture],
-    verification_required: [],
-    recovery_required: [],
-};
-
 const timelineFixture: TaskTimelineResponse = {
     task_id: taskFixture.id,
     items: [
@@ -169,9 +158,9 @@ const runFixture = (status: AgentRun['status']): AgentRun => ({
 });
 
 const openRunConsole = async () => {
-    const { user } = renderWithProviders(<AgentPipelinePage />);
-    await user.click(await screen.findByTestId(`task-card-${taskFixture.id}`));
-    await screen.findByText(i18n.t('agentPipeline.consoleTitle'));
+    const { user } = renderWithProviders(<PipelineTaskEvidence task={taskFixture} />);
+    await user.click(screen.getByText(i18n.t('agentPipeline.consoleTitle'), { selector: 'summary' }));
+    await screen.findByText(i18n.t('agentPipeline.consoleTitle'), { selector: 'summary' });
     await waitFor(() => {
         expect(agentServiceMock.getRunDetail).toHaveBeenCalledWith(501);
     });
@@ -184,7 +173,7 @@ const expectSensitiveValuesWithheld = () => {
     }
 };
 
-describe('AgentPipelinePage bounded run evidence', () => {
+describe('Pipeline task bounded run evidence', () => {
     beforeEach(() => {
         useAdminAccessMock.mockReset();
         useAgentAccessMock.mockReset();
@@ -194,7 +183,6 @@ describe('AgentPipelinePage bounded run evidence', () => {
         agentServiceMock.getPipeline.mockReset();
         agentServiceMock.getTaskTimeline.mockReset();
         agentServiceMock.getRunDetail.mockReset();
-        agentServiceMock.getPipeline.mockResolvedValue(pipelineFixture);
         agentServiceMock.getTaskTimeline.mockResolvedValue(timelineFixture);
     });
 
@@ -262,62 +250,27 @@ describe('AgentPipelinePage bounded run evidence', () => {
         expect(document.documentElement.innerHTML).not.toContain(sensitive.timelineSummary);
     });
 
-    it('removes cached pipeline data after an authorization failure', async () => {
-        const errorSentinel = 'secret-pipeline-authorization-error';
-        agentServiceMock.getPipeline
-            .mockResolvedValueOnce(pipelineFixture)
-            .mockRejectedValueOnce({
-                response: {
-                    status: 403,
-                    data: {
-                        detail: errorSentinel,
-                    },
-                },
-            });
-
-        const { user } = renderWithProviders(<AgentPipelinePage />);
-        expect(await screen.findByTestId(`task-card-${taskFixture.id}`)).toBeVisible();
-
-        await user.click(screen.getByRole('button', {
-            name: i18n.t('actions.refresh'),
-        }));
-
-        expect(await screen.findByText(
-            i18n.t('agentPipeline.pipelineUnavailable'),
-        )).toBeVisible();
-        await waitFor(() => {
-            expect(screen.queryByTestId(`task-card-${taskFixture.id}`)).not.toBeInTheDocument();
-        });
-        expect(document.documentElement.innerHTML).not.toContain(errorSentinel);
-    });
-
-    it('shows the board to a keyless reader and keeps run logs behind the key', async () => {
-        useAdminAccessMock.mockReturnValue({ hasAdminKey: false, hasAdminAccess: false });
+    it('keeps run evidence behind the key for a keyless reader', () => {
+        useAdminAccessMock.mockReturnValue({ hasAdminKey: false });
         useAgentAccessMock.mockReturnValue({ hasAgentKey: false });
-        useKeylessReaderMock.mockReturnValue({ settings: true, workViews: true });
-        agentServiceMock.getPipeline.mockResolvedValue(pipelineFixture);
-        renderWithProviders(<AgentPipelinePage />);
-        expect(await screen.findByTestId(`task-card-${taskFixture.id}`)).toBeVisible();
-        expect(screen.getByText(i18n.t('agentPipeline.runLogsNeedKey'))).toBeVisible();
+        renderWithProviders(<PipelineTaskEvidence task={taskFixture} />);
+        expect(screen.queryByText(i18n.t('agentPipeline.consoleTitle'))).not.toBeInTheDocument();
+        expect(agentServiceMock.getTaskTimeline).not.toHaveBeenCalled();
         expect(agentServiceMock.getRunDetail).not.toHaveBeenCalled();
     });
 
-    it('reads as one stage strip with counts, marks decision stages, and lists the selected stage with its reasons', async () => {
-        const longReason = 'The brief has no acceptance criteria, so the scheduler cannot place it and no agent may take it yet.';
-        const waiting = { ...taskFixture, id: 77, title: 'Unestimated import', effort_days: null,
-            agent_readiness: { ...taskFixture.agent_readiness, blockers: [longReason] } } as unknown as Task;
-        agentServiceMock.getPipeline.mockResolvedValue({ ...pipelineFixture, needs_definition: [waiting] });
-        const { user } = renderWithProviders(<AgentPipelinePage />);
-        const strip = await screen.findByRole('navigation', { name: i18n.t('agentPipeline.stagesLabel') });
-        expect(within(strip).getAllByRole('button')).toHaveLength(7);
-        expect(within(strip).getAllByText(i18n.t('agentPipeline.needsDecision'))).toHaveLength(3);
-        // The first stage holding work is selected, and its row explains why, in full.
-        expect(within(strip).getByRole('button', { pressed: true })).toHaveTextContent(i18n.t('agentPipeline.columns.needs_definition.title'));
-        expect(screen.getByText(`Why it is here: ${longReason}`)).toBeInTheDocument();
-        expect(screen.getByText(/Estimate unknown/)).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: i18n.t('agentPipeline.openTask') })).toHaveAttribute('href', '/tasks?task=77');
-        await user.click(within(strip).getByRole('button', { name: new RegExp(i18n.t('agentPipeline.columns.executing.title')) }));
-        expect(await screen.findByTestId(`task-card-${taskFixture.id}`)).toBeVisible();
-        expect(screen.queryByTestId('task-card-77')).toBeNull();
+    it.each(['task-timeline', 'agent-run-detail'])('hides cached evidence when %s authorization expires', async queryKey => {
+        agentServiceMock.getRunDetail.mockResolvedValue(runFixture('succeeded'));
+        const { user, queryClient } = renderWithProviders(<PipelineTaskEvidence task={taskFixture} />);
+        await user.click(screen.getByText(i18n.t('agentPipeline.consoleTitle'), { selector: 'summary' }));
+        const binding = i18n.t('agentPipeline.modelBindingEvidenceValue', { id: 31, revision: 4 });
+        expect(await screen.findByText(binding)).toBeVisible();
+        const service = queryKey === 'task-timeline' ? agentServiceMock.getTaskTimeline : agentServiceMock.getRunDetail;
+        service.mockRejectedValue({ response: { status: 403, data: { detail: 'private authorization detail' } } });
+        await queryClient.invalidateQueries({ queryKey: [queryKey] });
+        await waitFor(() => expect(screen.queryByText(binding)).not.toBeInTheDocument());
+        expect(screen.queryByText(i18n.t('agentPipeline.outcomeSuccess'))).not.toBeInTheDocument();
+        expect(document.documentElement.innerHTML).not.toContain('private authorization detail');
+        expectSensitiveValuesWithheld();
     });
 });

@@ -13,6 +13,10 @@ import {
     writeFiltersToSearchParams,
     writeSortKeyToSearchParams,
 } from '../features/savedViews/taskViewParams';
+import { PipelineView } from '../components/tasks/PipelineView';
+import { PipelineTaskEvidence } from '../components/tasks/PipelineTaskEvidence';
+import { usePipeline } from '../components/tasks/usePipeline';
+import { labelService } from '../services/labelService';
 import { BacklogPanel } from '../components/tasks/BacklogPanel';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
@@ -111,7 +115,7 @@ const writeViewToSearchParams = (params: URLSearchParams, view: SavedView | null
 const TasksPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { search: locationSearch } = useLocation();
-    const { iteration, setIteration } = useWorkScope();
+    const { project, iteration, setIteration } = useWorkScope();
     const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
     const isBacklog = iteration === 'backlog';
     const scopeLink = useScopeLink();
@@ -157,6 +161,10 @@ const TasksPage = () => {
     const filtersRequested = searchParams.get('panel') === 'filters';
     const isFullScreen = searchParams.get('fullscreen') === '1';
     const viewMode = viewModeFromParam(searchParams.get('layout'));
+    const pipelineQuery = usePipeline(viewMode === 'pipeline');
+    const agentFilter = searchParams.get('agent') ?? '';
+    // feedback-policy: query loading,error,retry,empty - TaskFiltersBar reports option errors and retry.
+    const { data: pipelineLabelGroups = [] } = useQuery({ queryKey: ['label-groups'], queryFn: () => labelService.getGroups(), enabled: viewMode === 'pipeline' });
     const requestedTaskMode = searchParams.get('mode');
     const rawPlanningIssue = searchParams.get(PLANNING_TASK_ISSUE_PARAM);
     const requestedPlanningIssue = parsePlanningTaskIssue(rawPlanningIssue);
@@ -519,11 +527,23 @@ const TasksPage = () => {
         );
     }
 
-    if (!iterations || iterations.length === 0 || isBacklogView) {
+    const viewSwitch = <ViewSwitch<ViewMode>
+        label={t('tasks.layout')}
+        value={viewMode}
+        onChange={changeViewMode}
+        options={[
+            { value: 'list', label: t('tasks.list'), icon: <List aria-hidden="true" className="h-4 w-4" /> },
+            { value: 'board', label: t('tasks.board'), icon: <LayoutGrid aria-hidden="true" className="h-4 w-4" /> },
+            { value: 'pipeline', label: t('tasks.pipeline'), icon: <Bot aria-hidden="true" className="h-4 w-4" /> },
+        ]}
+    />;
+
+    if (viewMode !== 'pipeline' && (!iterations || iterations.length === 0 || isBacklogView)) {
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
             <PageHeader title={t('tasks.title')} purpose={t('teamwork.backlogHelp')}
                 secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+            <PageToolbar compact label={t('tasks.toolbar')} viewSwitch={viewSwitch} />
             <BacklogPanel />
             <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
                 title={task => task?.title ?? t('taskEditor.editTask')} />
@@ -576,20 +596,15 @@ const TasksPage = () => {
                                 iterationId={selectedIterationId}
                                 filters={filters}
                                 onFiltersChange={changeFilters}
+                                agentFilter={viewMode === 'pipeline' ? { value: agentFilter, options: pipelineQuery.agents, onChange: value => setTaskContextParam('agent', value || null) } : undefined}
+                                hideProject={viewMode === 'pipeline'}
+                                onClear={viewMode === 'pipeline' ? () => updateSearchParams(next => {
+                                    writeClearedViewMarker(writeFiltersToSearchParams(next, defaultFilters), next.has(VIEW_PARAM));
+                                    next.delete('agent');
+                                }) : undefined}
                             />
                         )}
-                        viewSwitch={(
-                            <ViewSwitch<ViewMode>
-                                label={t('tasks.layout')}
-                                value={viewMode}
-                                onChange={changeViewMode}
-                                options={[
-                                    { value: 'list', label: t('tasks.list'), icon: <List aria-hidden="true" className="h-4 w-4" /> },
-                                    { value: 'board', label: t('tasks.board'), icon: <LayoutGrid aria-hidden="true" className="h-4 w-4" /> },
-                                    { value: 'pipeline', label: t('tasks.pipeline'), icon: <Bot aria-hidden="true" className="h-4 w-4" /> },
-                                ]}
-                            />
-                        )}
+                        viewSwitch={viewSwitch}
                         viewOptions={viewMode === 'list' ? (
                             <TaskViewOptions
                                 sortKey={sortKey}
@@ -599,6 +614,7 @@ const TasksPage = () => {
                             />
                         ) : undefined}
                     />
+                    {viewMode === 'pipeline' && <p className="px-4 py-2 text-xs text-content-secondary">{t('agentPipeline.runLogsNeedKey')}</p>}
                     {requestedSavedViewId && savedViewsLoading && (
                         <p role="status" className="tasks-view-notice">{t('tasks.loadingSavedView')}</p>
                     )}
@@ -619,6 +635,7 @@ const TasksPage = () => {
                 </div>
 
                 <TaskEditorDrawer
+                    beforeForm={viewMode === 'pipeline' ? task => task ? <PipelineTaskEvidence key={`${task.id}:${task.version}`} task={task} /> : null : undefined}
                     taskId={requestedTaskId}
                     open={requestedTaskId !== null}
                     onClose={closeFocusedTask}
@@ -646,7 +663,7 @@ const TasksPage = () => {
                         : undefined}
                 />
 
-                {selectedIterationId > 0 && (
+                {(selectedIterationId > 0 || viewMode === 'pipeline') && (
                     <FullscreenWorkspace
                         open={isFullScreen}
                         onClose={exitFullscreen}
@@ -657,7 +674,7 @@ const TasksPage = () => {
                             <div className="flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
                                 <div>
                                     <h2 className="text-2xl font-bold text-content-primary">
-                                        {viewMode === 'board' ? t('tasks.boardView') : t('tasks.taskList')}
+                                        {viewMode === 'pipeline' ? t('tasks.pipeline') : viewMode === 'board' ? t('tasks.boardView') : t('tasks.taskList')}
                                     </h2>
                                     <p className="text-content-secondary text-sm">{t('tasks.focusMode')}</p>
                                 </div>
@@ -700,12 +717,11 @@ const TasksPage = () => {
                             </div>
                         )}
                         {viewMode === 'pipeline' && (
-                            <section className="tasks-pipeline-placeholder" aria-labelledby="tasks-pipeline-title">
-                                <Bot aria-hidden="true" className="h-5 w-5 text-content-tertiary" />
-                                <h2 id="tasks-pipeline-title" className="text-base font-semibold text-content-primary">{t('tasks.pipelineTitle')}</h2>
-                                <p className="max-w-lg text-sm text-content-secondary">{t('tasks.pipelineBody')}</p>
-                                <Link className="btn secondary" to={scopeLink('/agent-pipeline')}>{t('tasks.openAgentPipeline')}</Link>
-                            </section>
+                            <div className="h-full overflow-y-auto px-4 pb-6">
+                                <PipelineView query={pipelineQuery} project={project} iteration={iteration}
+                                    search={searchText} agent={agentFilter} filters={filters} labelGroups={pipelineLabelGroups}
+                                    onOpenTask={openTask} />
+                            </div>
                         )}
                     </FullscreenWorkspace>
                 )}

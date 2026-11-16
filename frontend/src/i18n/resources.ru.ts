@@ -3195,6 +3195,7 @@ export const russianResources = {
             surfaces: surfacesRussian,
             literals: literalsRussian,
             taskFilters: {
+                agent: 'Агент',
                 filters: 'Фильтры',
                 reset: 'Сбросить',
                 textMode: 'Текстовый режим',
