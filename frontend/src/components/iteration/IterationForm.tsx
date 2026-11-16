@@ -29,6 +29,8 @@ interface IterationFormProps {
         name: string;
     };
     hideProjectScope?: boolean;
+    /** Project the new-iteration form starts on; the project field stays editable. */
+    defaultProjectId?: number;
     onSuccess: (iteration?: Iteration, iterations?: Iteration[]) => void;
     onCancel: () => void;
     onStateChange?: (state: { dirty: boolean; pending: boolean }) => void;
@@ -98,19 +100,23 @@ const sequenceName = (baseName: string, index: number) => {
 const initialSingleDraft = (
     initialData: Iteration | undefined,
     lockedProject: IterationFormProps['lockedProject'],
+    defaultProjectId?: number,
 ): SingleDraft => ({
     name: initialData?.name ?? '',
-    project_id: String(lockedProject?.id ?? initialData?.project_id ?? ''),
+    project_id: String(lockedProject?.id ?? initialData?.project_id ?? defaultProjectId ?? ''),
     start_date: initialData?.start_date ?? '',
     end_date: initialData?.end_date ?? '',
     manager_email: initialData?.manager_email ?? '',
 });
 
-const initialSeriesDraft = (lockedProject: IterationFormProps['lockedProject']): SeriesDraft => {
+const initialSeriesDraft = (
+    lockedProject: IterationFormProps['lockedProject'],
+    defaultProjectId?: number,
+): SeriesDraft => {
     const start = todayIso();
     return {
         base_name: '',
-        project_id: String(lockedProject?.id ?? ''),
+        project_id: String(lockedProject?.id ?? defaultProjectId ?? ''),
         start_date: start,
         duration_days: 14,
         stop_mode: 'count',
@@ -143,6 +149,7 @@ const IterationFormEditor = ({
     initialData,
     lockedProject,
     hideProjectScope = false,
+    defaultProjectId,
     onSuccess,
     onCancel,
     onStateChange, revisions, contextControls,
@@ -154,8 +161,8 @@ const IterationFormEditor = ({
     const [baseline, setBaseline] = useState<EditorBaseline>(() => (
         {
             mode: 'single',
-            singleDraft: initialSingleDraft(initialData, lockedProject),
-            seriesDraft: initialSeriesDraft(lockedProject),
+            singleDraft: initialSingleDraft(initialData, lockedProject, defaultProjectId),
+            seriesDraft: initialSeriesDraft(lockedProject, defaultProjectId),
         }
     ));
     const [mode, setMode] = useState<EditorMode>(baseline.mode);
