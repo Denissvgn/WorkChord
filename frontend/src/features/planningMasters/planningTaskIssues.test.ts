@@ -41,6 +41,19 @@ const taskFixture = (overrides: Partial<Task> = {}): Task => ({
 });
 
 describe('planning task issue contract', () => {
+    it('filters Review links to undated work and at-risk signals while excluding deferred and parent tasks', () => {
+        expect(parsePlanningTaskIssue('unscheduled')).toBe('unscheduled');
+        expect(parsePlanningTaskIssue('at-risk')).toBe('at-risk');
+        expect(taskMatchesPlanningIssue(taskFixture(), 'unscheduled')).toBe(true);
+        expect(taskMatchesPlanningIssue(taskFixture({ start_date: '2026-08-03', end_date: '2026-08-10' }), 'unscheduled')).toBe(false);
+        expect(taskMatchesPlanningIssue(taskFixture({ status: 'active' }), 'unscheduled')).toBe(false);
+        for (const signal of ['is_overdue', 'is_delayed', 'is_outside_constraints'] as const) {
+            expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true }), 'at-risk')).toBe(true);
+            expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true, is_deferred: true }), 'at-risk')).toBe(false);
+            expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true, is_composite: true }), 'at-risk')).toBe(false);
+        }
+        expect(taskMatchesPlanningIssue(taskFixture(), 'at-risk')).toBe(false);
+    });
     it('accepts only exact public issue and positive iteration values', () => {
         expect(parsePlanningTaskIssue('unassigned')).toBe('unassigned');
         expect(parsePlanningTaskIssue('missing-effort')).toBe('missing-effort');

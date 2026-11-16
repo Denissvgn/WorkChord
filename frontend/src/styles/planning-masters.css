@@ -752,6 +752,46 @@
   overflow: hidden;
   border-block: 1px solid var(--border);
 }
+.wc .plan-schedule-loads {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--wc-type-base);
+  font-variant-numeric: tabular-nums;
+}
+.wc .plan-schedule-loads caption {
+  padding-block-end: 10px;
+  text-align: start;
+  font-weight: 600;
+}
+.wc .plan-schedule-loads th,
+.wc .plan-schedule-loads td {
+  padding: 10px 12px;
+  border-block-end: 1px solid var(--border);
+  text-align: end;
+}
+.wc .plan-schedule-loads th:first-child {
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.wc .plan-schedule-loads thead {
+  color: var(--ink-2);
+  background: var(--panel-2);
+}
+.wc .plan-schedule-reasons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--wc-type-base);
+}
+.wc .plan-schedule-reasons li {
+  padding-block: 10px;
+  border-block-end: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.wc .plan-schedule-reasons p {
+  margin-block-start: 4px;
+  color: var(--ink-2);
+}
 .wc .plan-checkpoint-evidence > h3 {
   padding-block: 12px;
 }

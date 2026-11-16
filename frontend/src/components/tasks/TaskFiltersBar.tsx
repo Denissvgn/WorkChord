@@ -133,6 +133,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
                 { value: 'any', label: t('taskFilters.planningIssueAny') },
                 { value: 'unassigned', label: t('taskFilters.planningIssueUnassigned') },
                 { value: 'missing-effort', label: t('taskFilters.planningIssueMissingEffort') },
+                { value: 'unscheduled', label: t('planSchedule.withoutDates') },
+                { value: 'at-risk', label: t('plan.page.atRisk') },
             ],
         },
         {
