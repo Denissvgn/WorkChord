@@ -126,12 +126,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| create_subtask | service.create_subtask | 573 | `service.create_subtask(task_id, data)` |
-| create_subtask | HTTPException | 575 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| create_subtask | str | 577 | `str(e)` |
-| create_subtask | HTTPException | 580 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| create_subtask | IterationService | 585 | `IterationService(db)` |
-| create_subtask | IterationService.get_by_id | 586 | `iteration_service.get_by_id(task.iteration_id)` |
+| create_subtask | service.create_subtask | 576 | `service.create_subtask(task_id, data)` |
+| create_subtask | HTTPException | 578 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| create_subtask | str | 580 | `str(e)` |
+| create_subtask | HTTPException | 583 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| create_subtask | IterationService | 588 | `IterationService(db)` |
+| create_subtask | IterationService.get_by_id | 589 | `iteration_service.get_by_id(task.iteration_id)` |
 | IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -146,9 +146,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `create_subtask` | `service.create_subtask` | 573 |
-| external_call | `create_subtask` | `HTTPException` | 575 |
-| external_call | `create_subtask` | `HTTPException` | 580 |
+| unresolved_call | `create_subtask` | `service.create_subtask` | 576 |
+| external_call | `create_subtask` | `HTTPException` | 578 |
+| external_call | `create_subtask` | `HTTPException` | 583 |
 | unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |

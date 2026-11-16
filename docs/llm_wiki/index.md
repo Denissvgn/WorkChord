@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1577 | [Open section](#entities) |
-| Modules | 844 | [Open section](#modules) |
+| Modules | 846 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 560 | [Open section](#entry-point-flows) |
@@ -1618,6 +1618,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261111_0012_session_work_profile](modules/20261111_0012_session_work_profile.md) - Let a trusted-local browser session choose the person profile it works as.
 - [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
 - [20261115_0014_observer_sessions](modules/20261115_0014_observer_sessions.md) - Record a session's access level, and what a pairing request asks for.
+- [20261116_0015_agdash_link_provider](modules/20261116_0015_agdash_link_provider.md) - Accept agdash session links as an external link provider.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
@@ -2274,6 +2275,7 @@ Retained history; these declarations are absent from the selected source invento
 - [template_service](modules/template_service.md) - Service for reusable work templates and built-in defaults.
 - [templates](modules/templates.md) - Template API router.
 - [test_acceptance_artifacts](modules/test_acceptance_artifacts.md) - Public exports retain exact signed bytes and reject secret or failed evidence.
+- [test_agdash_link_provider](modules/test_agdash_link_provider.md) - agdash session links: a named provider, loopback display URLs for it alone, and no duplicates.
 - [test_agent_blocker_reason](modules/test_agent_blocker_reason.md) - An agent-reported blocker becomes the task's human-readable Blocked reason.
 - [test_agent_key_delivery](modules/test_agent_key_delivery.md) - An operator can hand an agent its key without chat or an inherited shell.
 - [test_agent_model_catalog_api](modules/test_agent_model_catalog_api.md) - Focused Wave 2 model administration and actor-roster qualification.

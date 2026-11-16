@@ -86,4 +86,4 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [ExternalLinkEntityType](../entities/models_external_link_ExternalLinkEntityType.md) | Enum | 13 | `str`, `Enum` | Supported internal entity types for external links. |
 | [ExternalLinkProvider](../entities/models_external_link_ExternalLinkProvider.md) | Enum | 20 | `str`, `Enum` | Supported external link providers. |
-| [ExternalLink](../entities/models_external_link_ExternalLink.md) | Class | 29 | `Base` | Generic link from an internal entity to an external delivery artifact. |
+| [ExternalLink](../entities/models_external_link_ExternalLink.md) | Class | 30 | `Base` | Generic link from an internal entity to an external delivery artifact. |

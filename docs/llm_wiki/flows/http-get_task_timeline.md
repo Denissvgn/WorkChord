@@ -191,12 +191,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_timeline | AgentService | 1005 | `AgentService(db)` |
-| get_task_timeline | db.scalar | 1006 | `db.scalar(...)` |
-| get_task_timeline | select(…).where (backend/app/routers/tasks.py:get_task_timeline) | 1006 | `select(Task.id).where(...)` |
-| get_task_timeline | select (backend/app/routers/tasks.py:get_task_timeline) | 1006 | `select(Task.id)` |
-| get_task_timeline | HTTPException | 1008 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_task_timeline | AgentService.get_task_timeline | 1013 | `agent_service.get_task_timeline(task_id)` |
+| get_task_timeline | AgentService | 1008 | `AgentService(db)` |
+| get_task_timeline | db.scalar | 1009 | `db.scalar(...)` |
+| get_task_timeline | select(…).where (backend/app/routers/tasks.py:get_task_timeline) | 1009 | `select(Task.id).where(...)` |
+| get_task_timeline | select (backend/app/routers/tasks.py:get_task_timeline) | 1009 | `select(Task.id)` |
+| get_task_timeline | HTTPException | 1011 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_task_timeline | AgentService.get_task_timeline | 1016 | `agent_service.get_task_timeline(task_id)` |
 | AgentService.get_task_timeline | self.db.scalar (backend/app/services/agen…Service.get_task_timeline) | 1450 | `self.db.scalar(...)` |
 | AgentService.get_task_timeline | select(…).where (backend/app/services/agen…Service.get_task_timeline) | 1450 | `select(Task.id).where(...)` |
 | AgentService.get_task_timeline | select (backend/app/services/agen…Service.get_task_timeline) | 1450 | `select(Task.id)` |
@@ -214,10 +214,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_task_timeline` | `db.scalar` | 1006 |
-| unresolved_call | `get_task_timeline` | `select(Task.id).where` | 1006 |
-| external_call | `get_task_timeline` | `select` | 1006 |
-| external_call | `get_task_timeline` | `HTTPException` | 1008 |
+| unresolved_call | `get_task_timeline` | `db.scalar` | 1009 |
+| unresolved_call | `get_task_timeline` | `select(Task.id).where` | 1009 |
+| external_call | `get_task_timeline` | `select` | 1009 |
+| external_call | `get_task_timeline` | `HTTPException` | 1011 |
 | unresolved_call | `AgentService.get_task_timeline` | `self.db.scalar` | 1450 |
 | unresolved_call | `AgentService.get_task_timeline` | `select(Task.id).where` | 1450 |
 | external_call | `AgentService.get_task_timeline` | `select` | 1450 |

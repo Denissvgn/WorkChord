@@ -1,6 +1,6 @@
 # ExternalLinkFields
 
-**Location:** `backend/app/schemas/external_link.py:36`
+**Location:** `backend/app/schemas/external_link.py:49`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)
@@ -31,7 +31,7 @@ Shared external link fields.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
-| `validate_url` | `(value: Optional[str]) -> Optional[str]` | `@field_validator('url')`, `@classmethod` | — |
+| `validate_url` | `(value: Optional[str], info: ValidationInfo) -> Optional[str]` | `@field_validator('url')`, `@classmethod` | — |
 | `validate_metadata_json` | `(value)` | `@field_validator('metadata_json', mode='before')`, `@classmethod` | Require metadata_json to be a JSON object. |
 
 ## Relationships

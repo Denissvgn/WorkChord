@@ -1,13 +1,13 @@
 # ExternalLinkService
 
-**Location:** `backend/app/services/external_link_service.py:63`
+**Location:** `backend/app/services/external_link_service.py:64`
 **Kind:** Class
 **Bases:** —
 **Module:** [external_link_service](../modules/external_link_service.md)
 
 ## Description
 
-Service for generic external links and task-scoped link operations.
+Service for generic external links and task-scoped link operations. An `agdash` session link is created once per entity and external key, and updates re-check the resulting provider and URL pair.
 
 ## Attributes
 

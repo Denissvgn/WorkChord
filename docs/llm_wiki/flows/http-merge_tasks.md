@@ -127,8 +127,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| merge_tasks | IterationService | 700 | `IterationService(db)` |
-| merge_tasks | IterationService.get_by_id | 701 | `iteration_service.get_by_id(iteration_id)` |
+| merge_tasks | IterationService | 703 | `IterationService(db)` |
+| merge_tasks | IterationService.get_by_id | 704 | `iteration_service.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -136,8 +136,8 @@ flowchart LR
 | IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
 | IterationService.get_by_id | selectinload | 327 | `selectinload(Iteration.project)` |
 | IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
-| merge_tasks | HTTPException | 704 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| merge_tasks | service.merge_tasks | 710 | `service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description, expected_revision=data.expected_revision)` |
+| merge_tasks | HTTPException | 707 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| merge_tasks | service.merge_tasks | 713 | `service.merge_tasks(iteration_id=iteration_id, task_ids=data.task_ids, parent_title=data.parent_title, parent_description=data.parent_description, expected_revision=data.expected_revision)` |
 
 ### Boundary effects
 
@@ -154,8 +154,8 @@ flowchart LR
 | external_call | `IterationService.get_by_id` | `selectinload` | 326 |
 | external_call | `IterationService.get_by_id` | `selectinload` | 327 |
 | unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
-| external_call | `merge_tasks` | `HTTPException` | 704 |
-| unresolved_call | `merge_tasks` | `service.merge_tasks` | 710 |
+| external_call | `merge_tasks` | `HTTPException` | 707 |
+| unresolved_call | `merge_tasks` | `service.merge_tasks` | 713 |
 | step_limit | `merge_tasks` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -33,53 +33,59 @@ flowchart LR
     n1["backend/app/models/user_session.py"]
     n2["backend/app/services/identity_service.py"]
     n3["backend/app/utils/time.py"]
-    n4["backend/tests/test_delivery_scenarios.py"]
-    n5["backend/tests/test_managed_authority.py"]
-    n6["backend/tests/test_observer_sessions.py"]
-    n7["backend/tests/test_person_assignment_reads.py"]
-    n8["backend/tests/test_team_topology_read.py"]
+    n4["backend/tests/test_agdash_link_provider.py"]
+    n5["backend/tests/test_delivery_scenarios.py"]
+    n6["backend/tests/test_managed_authority.py"]
+    n7["backend/tests/test_observer_sessions.py"]
+    n8["backend/tests/test_person_assignment_reads.py"]
+    n9["backend/tests/test_team_topology_read.py"]
     n1 --> n3
     n2 --> n0
     n2 --> n1
     n2 --> n3
-    n5 --> n0
-    n5 --> n1
-    n5 --> n2
-    n5 --> n3
-    n5 --> n4
+    n4 --> n5
+    n4 --> n6
+    n4 --> n7
     n6 --> n0
     n6 --> n1
     n6 --> n2
     n6 --> n3
-    n6 --> n4
     n6 --> n5
+    n7 --> n0
     n7 --> n1
     n7 --> n2
     n7 --> n3
-    n7 --> n4
     n7 --> n5
     n7 --> n6
     n8 --> n1
     n8 --> n2
     n8 --> n3
-    n8 --> n4
     n8 --> n5
     n8 --> n6
+    n8 --> n7
+    n9 --> n1
+    n9 --> n2
+    n9 --> n3
+    n9 --> n5
+    n9 --> n6
+    n9 --> n7
     click n0 "../modules/config.md"
     click n1 "../modules/user_session.md"
     click n2 "../modules/identity_service.md"
     click n3 "../modules/time.md"
-    click n4 "../modules/test_delivery_scenarios.md"
-    click n5 "../modules/test_managed_authority.md"
-    click n6 "../modules/test_observer_sessions.md"
-    click n7 "../modules/test_person_assignment_reads.md"
-    click n8 "../modules/test_team_topology_read.md"
+    click n4 "../modules/test_agdash_link_provider.md"
+    click n5 "../modules/test_delivery_scenarios.md"
+    click n6 "../modules/test_managed_authority.md"
+    click n7 "../modules/test_observer_sessions.md"
+    click n8 "../modules/test_person_assignment_reads.md"
+    click n9 "../modules/test_team_topology_read.md"
 ```
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
+| Inbound | [test_agdash_link_provider](../modules/test_agdash_link_provider.md) |
 | Inbound | [test_person_assignment_reads](../modules/test_person_assignment_reads.md) |
 | Inbound | [test_team_topology_read](../modules/test_team_topology_read.md) |
 | Outbound | [config](../modules/config.md) |

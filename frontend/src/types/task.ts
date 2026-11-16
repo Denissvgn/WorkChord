@@ -47,7 +47,7 @@ export interface TaskAgentReadiness {
 }
 
 export type TaskStatus = 'planned' | 'active' | 'resolved' | 'closed';
-export type ExternalLinkProvider = 'github' | 'gitlab' | 'figma' | 'sentry' | 'custom' | string;
+export type ExternalLinkProvider = 'github' | 'gitlab' | 'figma' | 'sentry' | 'custom' | 'agdash' | string;
 
 export interface ExternalLink {
     id?: number | null;

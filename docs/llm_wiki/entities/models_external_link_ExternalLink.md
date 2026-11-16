@@ -1,6 +1,6 @@
 # ExternalLink
 
-**Location:** `backend/app/models/external_link.py:29`
+**Location:** `backend/app/models/external_link.py:30`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_external_link](../modules/models_external_link.md)

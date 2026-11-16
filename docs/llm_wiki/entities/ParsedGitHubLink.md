@@ -1,6 +1,6 @@
 # ParsedGitHubLink
 
-**Location:** `backend/app/services/external_link_service.py:34`
+**Location:** `backend/app/services/external_link_service.py:35`
 **Kind:** Class
 **Bases:** —
 **Module:** [external_link_service](../modules/external_link_service.md)

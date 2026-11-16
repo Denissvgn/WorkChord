@@ -5,6 +5,10 @@
 
 > Create a generic external link.
 
+An agdash session link with an external key is created once per entity:
+repeating it returns the existing link, so a retried publish never adds
+duplicates.
+
 ## Sequence
 
 <!-- Auto-generated static call-chain projection. Reviewed runtime ordering, branching, and side effects belong in Behavior. -->

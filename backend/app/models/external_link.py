@@ -24,6 +24,7 @@ class ExternalLinkProvider(str, Enum):
     FIGMA = "figma"
     SENTRY = "sentry"
     CUSTOM = "custom"
+    AGDASH = "agdash"
 
 
 class ExternalLink(Base):
@@ -35,7 +36,7 @@ class ExternalLink(Base):
             name="ck_external_links_entity_type",
         ),
         CheckConstraint(
-            "provider IN ('github', 'gitlab', 'figma', 'sentry', 'custom')",
+            "provider IN ('github', 'gitlab', 'figma', 'sentry', 'custom', 'agdash')",
             name="ck_external_links_provider",
         ),
         Index("ix_external_links_entity", "entity_type", "entity_id"),

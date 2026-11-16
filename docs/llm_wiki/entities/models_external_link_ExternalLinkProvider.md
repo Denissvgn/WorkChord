@@ -18,6 +18,7 @@ Supported external link providers.
 | `FIGMA` | `'figma'` | — |
 | `SENTRY` | `'sentry'` | — |
 | `CUSTOM` | `'custom'` | — |
+| `AGDASH` | `'agdash'` | — |
 
 ## Methods
 
@@ -43,7 +44,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_external_link](../modules/models_external_link.md) | 0 | `CUSTOM`, `FIGMA`, `GITHUB`, `GITLAB`, `SENTRY` |
+| [models_external_link](../modules/models_external_link.md) | 0 | `AGDASH`, `CUSTOM`, `FIGMA`, `GITHUB`, `GITLAB`, `SENTRY` |
 
 ### Structure
 

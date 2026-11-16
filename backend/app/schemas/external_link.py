@@ -3,18 +3,29 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
 
-from app.utils.url_policy import URLPolicyError, normalize_stored_display_url
+from app.utils.url_policy import URLPolicyError, normalize_loopback_display_url, normalize_stored_display_url
 
 
-def _normalize_optional_url(value: Optional[str]) -> Optional[str]:
+def _provider_value(provider) -> Optional[str]:
+    return getattr(provider, "value", provider)
+
+
+def normalize_link_url(value: Optional[str], provider=None) -> Optional[str]:
+    """Normalize a display link; an agdash session link may use a loopback host."""
     if value is None or not str(value).strip():
         return None
     try:
+        if _provider_value(provider) == "agdash":
+            return normalize_loopback_display_url(value)
         return normalize_stored_display_url(value)
     except URLPolicyError as exc:
         raise ValueError(str(exc)) from exc
+
+
+def _normalize_optional_url(value: Optional[str]) -> Optional[str]:
+    return normalize_link_url(value)
 
 
 class ExternalLinkEntityType(str, Enum):
@@ -31,6 +42,8 @@ class ExternalLinkProvider(str, Enum):
     FIGMA = "figma"
     SENTRY = "sentry"
     CUSTOM = "custom"
+    # A link to an agent session observed by agdash, often on the viewer's own machine.
+    AGDASH = "agdash"
 
 
 class ExternalLinkFields(BaseModel):
@@ -44,8 +57,8 @@ class ExternalLinkFields(BaseModel):
 
     @field_validator("url")
     @classmethod
-    def validate_url(cls, value: Optional[str]) -> Optional[str]:
-        return _normalize_optional_url(value)
+    def validate_url(cls, value: Optional[str], info: ValidationInfo) -> Optional[str]:
+        return normalize_link_url(value, info.data.get("provider"))
 
     @field_validator("metadata_json", mode="before")
     @classmethod
@@ -99,8 +112,9 @@ class ExternalLinkUpdate(BaseModel):
 
     @field_validator("url")
     @classmethod
-    def validate_url(cls, value: Optional[str]) -> Optional[str]:
-        return _normalize_optional_url(value)
+    def validate_url(cls, value: Optional[str], info: ValidationInfo) -> Optional[str]:
+        # Without a provider the stored one decides; the service re-checks the pair.
+        return normalize_link_url(value, info.data.get("provider") or ExternalLinkProvider.AGDASH)
 
     @field_validator("metadata_json", mode="before")
     @classmethod

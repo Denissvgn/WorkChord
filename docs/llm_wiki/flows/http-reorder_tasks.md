@@ -109,15 +109,15 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| reorder_tasks | service.reorder_tasks | 673 | `service.reorder_tasks(data.task_ids, iteration_id=data.iteration_id, parent_id=data.parent_id, expected_revision=data.expected_revision)` |
-| reorder_tasks | HTTPException | 680 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| reorder_tasks | str | 680 | `str(e)` |
-| reorder_tasks | current_command | 682 | `current_command(service.db)` |
+| reorder_tasks | service.reorder_tasks | 676 | `service.reorder_tasks(data.task_ids, iteration_id=data.iteration_id, parent_id=data.parent_id, expected_revision=data.expected_revision)` |
+| reorder_tasks | HTTPException | 683 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| reorder_tasks | str | 683 | `str(e)` |
+| reorder_tasks | current_command | 685 | `current_command(service.db)` |
 | current_command | getattr | 73 | `getattr(db, 'info', None)` |
 | current_command | isinstance | 74 | `isinstance(info, dict)` |
 | current_command | info.get | 74 | `info.get('command')` |
-| reorder_tasks | str | 684 | `str(...)` |
-| reorder_tasks | MessageResponse | 685 | `MessageResponse(message='Tasks reordered', success=True)` |
+| reorder_tasks | str | 687 | `str(...)` |
+| reorder_tasks | MessageResponse | 688 | `MessageResponse(message='Tasks reordered', success=True)` |
 
 ### Boundary effects
 
@@ -127,8 +127,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `reorder_tasks` | `service.reorder_tasks` | 673 |
-| external_call | `reorder_tasks` | `HTTPException` | 680 |
+| unresolved_call | `reorder_tasks` | `service.reorder_tasks` | 676 |
+| external_call | `reorder_tasks` | `HTTPException` | 683 |
 | external_call | `current_command` | `getattr` | 73 |
 | external_call | `current_command` | `isinstance` | 74 |
 | unresolved_call | `current_command` | `info.get` | 74 |

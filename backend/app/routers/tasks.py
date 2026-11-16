@@ -533,7 +533,10 @@ async def update_external_link(
             detail=str(e),
         )
 
-    link = await link_service.update(link_id, data)
+    try:
+        link = await link_service.update(link_id, data)
+    except ExternalLinkValidationError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     if not link:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

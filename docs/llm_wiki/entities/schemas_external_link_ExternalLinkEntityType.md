@@ -1,6 +1,6 @@
 # ExternalLinkEntityType
 
-**Location:** `backend/app/schemas/external_link.py:20`
+**Location:** `backend/app/schemas/external_link.py:31`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)

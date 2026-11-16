@@ -125,8 +125,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_iteration_status_history | IterationService | 1040 | `IterationService(db)` |
-| get_iteration_status_history | IterationService.get_by_id | 1041 | `iteration_service.get_by_id(iteration_id)` |
+| get_iteration_status_history | IterationService | 1043 | `IterationService(db)` |
+| get_iteration_status_history | IterationService.get_by_id | 1044 | `iteration_service.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -134,8 +134,8 @@ flowchart LR
 | IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
 | IterationService.get_by_id | selectinload | 327 | `selectinload(Iteration.project)` |
 | IterationService.get_by_id | result.scalar_one_or_none | 331 | `result.scalar_one_or_none(data not statically known)` |
-| get_iteration_status_history | HTTPException | 1043 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_iteration_status_history | service.get_iteration_status_history | 1048 | `service.get_iteration_status_history(iteration_id)` |
+| get_iteration_status_history | HTTPException | 1046 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_iteration_status_history | service.get_iteration_status_history | 1051 | `service.get_iteration_status_history(iteration_id)` |
 
 ### Boundary effects
 
@@ -152,8 +152,8 @@ flowchart LR
 | external_call | `IterationService.get_by_id` | `selectinload` | 326 |
 | external_call | `IterationService.get_by_id` | `selectinload` | 327 |
 | unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
-| external_call | `get_iteration_status_history` | `HTTPException` | 1043 |
-| unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1048 |
+| external_call | `get_iteration_status_history` | `HTTPException` | 1046 |
+| unresolved_call | `get_iteration_status_history` | `service.get_iteration_status_history` | 1051 |
 | step_limit | `get_iteration_status_history` | `first 12 steps` | 0 |
 
 ## Behavior

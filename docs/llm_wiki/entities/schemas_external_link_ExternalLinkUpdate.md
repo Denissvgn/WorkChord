@@ -1,6 +1,6 @@
 # ExternalLinkUpdate
 
-**Location:** `backend/app/schemas/external_link.py:89`
+**Location:** `backend/app/schemas/external_link.py:102`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)
@@ -37,7 +37,7 @@ Schema for updating an external link.
 
 | Method | Signature | Decorators | Description |
 |--------|-----------|------------|-------------|
-| `validate_url` | `(value: Optional[str]) -> Optional[str]` | `@field_validator('url')`, `@classmethod` | — |
+| `validate_url` | `(value: Optional[str], info: ValidationInfo) -> Optional[str]` | `@field_validator('url')`, `@classmethod` | — |
 | `validate_metadata_json` | `(value)` | `@field_validator('metadata_json', mode='before')`, `@classmethod` | Require metadata_json updates to be JSON objects. |
 
 ## Relationships
@@ -50,14 +50,17 @@ flowchart LR
     n2["backend/app/routers/tasks.py"]
     n3["backend/app/schemas/__init__.py"]
     n4["ExternalLinkService.update (backend/app/services/external_link_service.py)"]
+    n5["test_other_providers_keep_refusing_loopback_links (backend/tests/test_agdash_link_provider.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_external_link.md"
     click n2 "../modules/tasks.md"
     click n3 "../modules/schemas___init__.md"
     click n4 "../modules/external_link_service.md"
+    click n5 "../modules/test_agdash_link_provider.md"
 ```
 
 ### Summary
@@ -79,3 +82,4 @@ flowchart LR
 | `tasks` | import | [tasks](../modules/tasks.md) | — |
 | `__init__` | import | [schemas___init__](../modules/schemas___init__.md) | — |
 | `ExternalLinkService.update` | type_reference | [external_link_service](../modules/external_link_service.md) | — |
+| `test_other_providers_keep_refusing_loopback_links` | call | [test_agdash_link_provider](../modules/test_agdash_link_provider.md) | 1 |

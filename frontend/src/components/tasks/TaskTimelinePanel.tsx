@@ -2,7 +2,7 @@ import i18n from '../../i18n/i18n';
 import { useState, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Bot, CircleDot, GitBranch, History, Link as LinkIcon, Plus, RefreshCw, Trash2, X } from 'lucide-react';
+import { Activity, Bot, CircleDot, GitBranch, History, Link as LinkIcon, Plus, RefreshCw, Trash2, X } from 'lucide-react';
 import { taskService } from '../../services/taskService';
 import type { ExternalLink, Task } from '../../types/task';
 import { getApiErrorMessage } from '../../utils/apiError';
@@ -51,7 +51,20 @@ const eventText = (payload: Record<string, unknown>): string | null => {
     return null;
 };
 
-const providerLabel = (provider: string) => (
+/** agdash links name a session observed on one computer; a loopback address opens only there. */
+const AGDASH = 'agdash';
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '::1']);
+const opensLocally = (link: ExternalLink) => {
+    if (link.provider !== AGDASH || !link.url) return false;
+    try {
+        const host = new URL(link.url).hostname;
+        return LOOPBACK_HOSTS.has(host) || host.startsWith('127.');
+    } catch {
+        return false;
+    }
+};
+
+const providerLabel = (provider: string) => provider === AGDASH ? t('surfaces.taskTimeline.agdashSession') : (
     provider
         .split(/[_\s-]+/)
         .filter(Boolean)
@@ -108,6 +121,7 @@ const linkTooltip = (link: ExternalLink) => {
     const refreshError = metadataString(link, 'status_refresh_error');
     if (refreshedAt) parts.push(t('surfaces.taskTimeline.refreshedAt', { date: formatDateTime(refreshedAt) }));
     if (refreshError) parts.push(t('surfaces.taskTimeline.refreshError', { error: refreshError }));
+    if (opensLocally(link)) parts.push(t('surfaces.taskTimeline.agdashLocal'));
     return parts.filter(Boolean).join('\n');
 };
 
@@ -323,7 +337,9 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                 const refreshError = metadataString(link, 'status_refresh_error');
                                 const content = (
                                     <>
-                                        <GitBranch className="h-3 w-3 shrink-0 text-content-secondary" />
+                                        {link.provider === AGDASH
+                                            ? <Activity aria-hidden="true" className="h-3 w-3 shrink-0 text-content-secondary" />
+                                            : <GitBranch className="h-3 w-3 shrink-0 text-content-secondary" />}
                                         <span className="truncate">{label}</span>
                                         <span className="shrink-0 text-content-tertiary">
                                             {details || providerLabel(link.provider)}

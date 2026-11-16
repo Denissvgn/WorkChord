@@ -11,9 +11,9 @@ _Auto-generated from `AgentTeamManifestRequest` in `backend/app/schemas/agent_te
 
 ## Attributes
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `manifest` | `AgentTeamMaster` | *required* | — |
+| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
+|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
+| `manifest` | `AgentTeamMaster` | `manifest` | Yes | No | — | — | — | — |
 
 ## Methods
 

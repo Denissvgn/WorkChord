@@ -22,7 +22,7 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 | `../requestSources/RequestSourceLinksPanel` | `RequestSourceLinksPanel` | — | compiler-dependent |
 | `@tanstack/react-query` | `useInfiniteQuery`, `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `clsx` | `clsx` | — | compiler-dependent |
-| `lucide-react` | `Bot`, `CircleDot`, `GitBranch`, `History`, `Link`, `Plus`, `RefreshCw`, `Trash2`, `X` | — | compiler-dependent |
+| `lucide-react` | `Activity`, `Bot`, `CircleDot`, `GitBranch`, `History`, `Link`, `Plus`, `RefreshCw`, `Trash2`, `X` | — | compiler-dependent |
 | `react` | `KeyboardEvent` | Specifier | compiler-dependent |
 | `react` | `useState` | — | compiler-dependent |
 | `react-i18next` | `useTranslation` | — | compiler-dependent |
@@ -32,8 +32,8 @@ _Auto-generated from `frontend/src/components/tasks/TaskTimelinePanel.tsx`._
 | Signal | Values |
 |--------|--------|
 | Exports | `TaskTimelinePanel` |
-| Constants | `t`, `itemLabels`, `githubUrlPattern` |
-| Module calls | `t = bind` |
+| Constants | `t`, `itemLabels`, `AGDASH`, `LOOPBACK_HOSTS`, `githubUrlPattern` |
+| Module calls | `t = bind`, `LOOPBACK_HOSTS = Set` |
 
 ## Local dependency map
 

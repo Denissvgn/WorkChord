@@ -186,8 +186,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_tasks_text | IterationService | 819 | `IterationService(db)` |
-| get_tasks_text | IterationService.get_by_id | 820 | `iteration_service.get_by_id(iteration_id)` |
+| get_tasks_text | IterationService | 822 | `IterationService(db)` |
+| get_tasks_text | IterationService.get_by_id | 823 | `iteration_service.get_by_id(iteration_id)` |
 | IterationService.get_by_id | self.db.execute (backend/app/services/iter…terationService.get_by_id) | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -195,8 +195,8 @@ flowchart LR
 | IterationService.get_by_id | selectinload | 326 | `selectinload(Iteration.calendar)` |
 | IterationService.get_by_id | selectinload | 327 | `selectinload(Iteration.project)` |
 | IterationService.get_by_id | result.scalar_one_or_none (backend/app/services/iter…terationService.get_by_id) | 331 | `result.scalar_one_or_none(data not statically known)` |
-| get_tasks_text | HTTPException | 823 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_tasks_text | _not_found_detail | 825 | `_not_found_detail(db, 'iteration', iteration_id)` |
+| get_tasks_text | HTTPException | 826 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_tasks_text | _not_found_detail | 828 | `_not_found_detail(db, 'iteration', iteration_id)` |
 
 ### Boundary effects
 
@@ -213,7 +213,7 @@ flowchart LR
 | external_call | `IterationService.get_by_id` | `selectinload` | 326 |
 | external_call | `IterationService.get_by_id` | `selectinload` | 327 |
 | unresolved_call | `IterationService.get_by_id` | `result.scalar_one_or_none` | 331 |
-| external_call | `get_tasks_text` | `HTTPException` | 823 |
+| external_call | `get_tasks_text` | `HTTPException` | 826 |
 | step_limit | `get_tasks_text` | `first 12 steps` | 0 |
 | truncated_flow | `get_tasks_text` | `depth limit` | 0 |
 

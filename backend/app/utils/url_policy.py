@@ -119,3 +119,22 @@ def normalize_provider_api_url(value: str) -> str:
 def normalize_stored_display_url(value: str) -> str:
     """Validate externally displayed user-supplied links before persistence."""
     return normalize_external_http_url(value, require_https=False, resolve=False)
+
+
+def normalize_loopback_display_url(value: str) -> str:
+    """A displayed link that may also point at this viewer's own machine (a loopback host).
+
+    The server never fetches display links, so a loopback address only means the
+    link opens on the computer that published it. Private network addresses stay
+    refused, as for every other display link.
+    """
+    try:
+        return normalize_stored_display_url(value)
+    except URLPolicyError:
+        parsed = urlparse(str(value).strip())
+        host = (parsed.hostname or "").lower().rstrip(".")
+        literal = _literal_ip(host) if host else None
+        if (parsed.scheme not in {"http", "https"} or parsed.username or parsed.password
+                or not (host == "localhost" or literal is not None and literal.is_loopback)):
+            raise
+        return parsed.geturl()

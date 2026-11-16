@@ -97,7 +97,7 @@ flowchart LR
 | [TaskActions](../entities/TaskActions.md) | Interface | 478 | — | — |
 | [TaskCommand](../entities/TaskCommand.md) | Interface | 482 | — | — |
 | [TaskStatus](../entities/types_task_TaskStatus.md) | Type alias | 49 | `'planned' \| 'active' \| 'resolved' \| 'closed'` | — |
-| [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 50 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| string` | — |
+| [ExternalLinkProvider](../entities/types_task_ExternalLinkProvider.md) | Type alias | 50 | `'github' \| 'gitlab' \| 'figma' \| 'sentry' \| 'custom' \| 'agdash' \| string` | — |
 | [TaskImportDestination](../entities/types_task_TaskImportDestination.md) | Type alias | 283 | `'tasks' \| 'triage' \| 'auto'` | — |
 | [TaskBulkAction](../entities/types_task_TaskBulkAction.md) | Type alias | 312 | <pre><code>&#124; &#39;set&#95;assignee&#39;&#10;    &#124; &#39;clear&#95;assignee&#39;&#10;    &#124; &#39;auto&#95;assign&#39;&#10;    &#124; &#39;set&#95;project&#39;&#10;    &#124; &#39;clear&#95;project&#39;&#10;    &#124; &#39;set&#95;milestone&#39;&#10;    &#124; &#39;clear&#95;milestone&#39;&#10;    &#124; &#39;set&#95;priority&#39;&#10;    &#124; &#39;add&#95;labels&#39;&#10;    &#124; &#39;remove&#95;labels&#39;&#10;    &#124; &#39;set&#95;flags&#39;&#10;    &#124; &#39;change&#95;status&#39;&#10;    &#124; &#39;delete&#39;</code></pre> | — |
 | [TaskBulkOutcome](../entities/types_task_TaskBulkOutcome.md) | Type alias | 327 | `'updated' \| 'deleted' \| 'skipped' \| 'failed' \| 'would_update' \| 'would_delete'` | — |
