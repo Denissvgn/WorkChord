@@ -40,7 +40,7 @@ it('keeps the title and says so when the capture fails', async () => {
 it('ignores an empty title and hands the typed title to the full form', async () => {
     const onExpand = vi.fn();
     const { user } = renderWithProviders(<QuickCapture target={{ kind: 'triage' }} onExpand={onExpand} />);
-    const input = screen.getByRole('textbox', { name: 'Quick add an intake item' });
+    const input = screen.getByRole('textbox', { name: 'Quick add an request' });
     await user.type(input, '   {Enter}');
     expect(services.triage.create).not.toHaveBeenCalled();
     await user.clear(input);
@@ -50,9 +50,9 @@ it('ignores an empty title and hands the typed title to the full form', async ()
     expect(input).toHaveValue('');
 });
 
-it('captures an intake item into triage', async () => {
+it('captures an request into triage', async () => {
     const { user } = renderWithProviders(<QuickCapture target={{ kind: 'triage' }} onExpand={vi.fn()} />);
-    await user.type(screen.getByRole('textbox', { name: 'Quick add an intake item' }), 'Customer email{Enter}');
+    await user.type(screen.getByRole('textbox', { name: 'Quick add an request' }), 'Customer email{Enter}');
     await waitFor(() => expect(services.triage.create).toHaveBeenCalledWith({ title: 'Customer email' }));
     expect(services.task.create).not.toHaveBeenCalled();
 });

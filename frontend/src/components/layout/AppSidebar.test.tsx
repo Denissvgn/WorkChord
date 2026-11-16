@@ -56,7 +56,7 @@ describe('AppSidebar', () => {
             name: 'Timeline & Planning destinations',
         })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Gantt' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Plan Work' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Plan' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Roadmap' })).toHaveAttribute('aria-current', 'page');
         expect(screen.getByText('Planning summary')).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Tasks' })).not.toBeInTheDocument();
@@ -101,13 +101,13 @@ describe('AppSidebar', () => {
             <SidebarContent
                 attentionAction={{
                     to: '/plan/master',
-                    label: 'Continue Plan Work (2 remaining)',
+                    label: 'Continue Plan (2 remaining)',
                 }}
             />,
             { initialEntries: ['/plan'] },
         );
 
-        expect(screen.getByRole('link', { name: 'Continue Plan Work (2 remaining)' }))
+        expect(screen.getByRole('link', { name: 'Continue Plan (2 remaining)' }))
             .toHaveAttribute('href', '/plan/master');
     });
 

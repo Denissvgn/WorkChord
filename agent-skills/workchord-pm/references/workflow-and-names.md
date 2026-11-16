@@ -14,6 +14,32 @@ Canonical schema: `workchord-workflow-vocabulary/v1`. This exact block is genera
 
 Use these names in everything people read: task events, Triage items, project updates, review notes, and handoffs. API field, scope, feature, and operation names stay exactly as the live contract defines them.
 
+Destinations, in navigation order:
+
+| Destination | Means | Older labels |
+| --- | --- | --- |
+| Overview | Delivery status and the next useful action. | — |
+| My Work | Assigned work, reviews, and notifications. | — |
+| Triage | Review incoming requests. | Triage intake |
+| Projects | Projects and initiatives; Roadmap is a view here. | — |
+| Plan | Manage iterations and iteration capacity through six checkpoints. | Plan Work, Plan an iteration, Planning workspace |
+| Gantt | View the saved schedule. | Gantt schedule |
+| Tasks | Task delivery; the agent pipeline is a view here. | — |
+| Analytics | Delivery and capacity analysis. | — |
+| Team | People, agents, agent connection, and the model catalog. | — |
+| Settings | Workspace settings, including the work calendar. | — |
+
+Plan checkpoints, in order:
+
+| Checkpoint | Means | Older labels |
+| --- | --- | --- |
+| Iteration | Select or create the iteration. | Create planning period |
+| Capacity | Set availability for the people and agents doing the work. | Add capacity |
+| Work | Add tasks to the iteration. | Add work |
+| Blockers | Resolve missing assignees, effort estimates, and unfinished prerequisites. | Resolve scheduling blockers |
+| Schedule | Build and inspect task dates. | Build schedule |
+| Review | Review the saved plan before sharing. | Review plan |
+
 Roles:
 
 | Role | Code role | Does |
@@ -26,8 +52,8 @@ One workflow, seen from each side:
 
 | Step | Person in the UI | PM | Worker | Reviewer |
 | --- | --- | --- | --- | --- |
-| Capture | Triage → New intake, or Tasks → New task. | Runs Triage and records one disposition; files WorkChord defects as Triage items. | Reports out-of-scope findings as linked Triage items. | Reports out-of-scope findings to the PM in its review result. |
-| Plan and assign | Plan an iteration: planning period, people and capacity, work, scheduling blockers, schedule, review. | Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments. | — | — |
+| Capture | Triage → New request, or Tasks → New task. | Runs Triage and records one disposition; files WorkChord defects as Triage items. | Reports out-of-scope findings as linked Triage items. | Reports out-of-scope findings to the PM in its review result. |
+| Plan and assign | Plan: Iteration, Capacity, Work, Blockers, Schedule, Review. | Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments. | — | — |
 | Do | Start work, Report blocker, Submit for review. | Supervises delivery and recovers stuck work through typed recovery. | Reads My Work, starts the assigned task, reports progress or a blocker, then submits for review. | — |
 | Review | My Work → To review; Accept or Request changes. | Routes each review to an independent reviewer; never accepts work itself. | Takes rework only when it is assigned back. | Records a result per acceptance criterion, then accepts or requests changes. |
 | Report | Post update on the project. | Publishes a project update with health, summary, progress, risks, decisions, and next steps. | — | — |
@@ -62,7 +88,7 @@ My Work queues people see, and the matching agent work state:
 | Blocked | Assigned to you but blocked. | Blocked assigned items; start nothing early. |
 | In review | You submitted it; a reviewer has not decided yet. | Resolved work waiting for its review assignment. |
 | To review | Work waiting for your review. | Review-purpose assignments; never in the worker loop. |
-| Inbox | Notifications and delivery status. | Hints to refetch, never a reason to act. |
+| Notifications | Notifications and delivery status. | Hints to refetch, never a reason to act. |
 
 Triage dispositions, with the same names for people and the PM:
 
@@ -91,8 +117,8 @@ Terms:
 
 | Term | Means | Not | Older labels |
 | --- | --- | --- | --- |
-| Owner | The person or profile accountable for the task across iterations. | The assignee who carries the effort in one iteration. | — |
-| Assignee | The iteration capacity row that carries the task's planned effort (`Task.assignee_id`). | An agent assignment; an assignee does not dispatch an agent. | "capacity owner" |
+| Owner | The person or profile accountable for a project or initiative. | The assignee who carries the effort in one iteration. | — |
+| Assignee | The person or agent that does a task; its iteration capacity row carries the planned effort (`Task.assignee_id`). | An agent assignment; an assignee does not dispatch an agent. | "capacity owner" |
 | Agent assignment | Durable dispatch of one task to one exact agent, with queue order and not-before time. | A claim or the assignee. | — |
 | Claim | A temporary, exclusive lease to work on a task; shown to people as "Working: agent until time". | Task status or an assignment. | — |
 | Run | One recorded attempt at the work, with its evidence. | Acceptance. | — |
@@ -105,5 +131,13 @@ Terms:
 | Operator | The person who holds the admin key and manages agents, keys, and access. | The PM role. | — |
 | Admin key | The workspace administration credential an operator uses. | Something an agent asks for or stores. | "session authority", "PM admin credential", "WORKCHORD_ADMIN_API_KEY" |
 | Agent key | The credential one agent uses to act as itself; kept in the runtime secret store. | Something to paste into task text, events, or logs. | "actor credential", "AGENT_API_KEY", "MCP_AGENT_API_KEY" |
+| Iteration | A date-bounded unit of work, capacity, and scheduling managed in Plan. | A saved schedule. | "planning period", "sprint", "cycle" |
+| Reviewer | The person or agent that checks the work and its evidence. | The assignee that did the work. | — |
+| Labels | Names used to organize tasks and requests. | Task states. | "tags" |
+| Waits for | The prerequisite tasks that must finish before this task can start. | A reported blocker. | "Depends on", "Dependencies" |
+| Earliest start | The earliest date a task may start. | The calculated start date. | "Min start", "Min start date" |
+| Due by | The latest date a task should finish. | The calculated end date. | "Deadline", "Due date" |
+| Request | One incoming item on the Triage page. | A task until it is converted. | "intake item", "New intake" |
+| Notifications | The My Work queue for notifications and delivery status. | Permission for an agent to act. | "Inbox" |
 
 <!-- END GENERATED: WORKCHORD-SHARED-WORKFLOW-V1 -->

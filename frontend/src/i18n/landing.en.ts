@@ -3,7 +3,7 @@ export const landingEnglish = {
     navigation: 'Landing page navigation',
     openWorkspace: 'Open workspace',
     heroContext: 'SELF-HOSTED PLANNING + DELIVERY',
-    heroTitle: 'Plan work that holds.',
+    heroTitle: 'Plan delivery that holds.',
     heroLede: 'WorkChord gives product managers one place to shape work, see capacity, connect dependencies, and follow delivery—across people and agents. It can also give an agent PM a controlled queue for routine planning and coordination.',
     followWorkflow: 'Follow the workflow',
     workflowTitle: 'The system follows the work.',

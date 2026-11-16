@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.15.0",
+  "catalog_version": "1.16.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -8,15 +8,15 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-pm-1.14.0.tar.gz",
-          "sha256": "5cc46c1ae494023c1437fcc07795e545a21d03fcf6deb14e37552ba12c798948",
-          "size": 184353
+          "path": "workchord-pm-1.15.0.tar.gz",
+          "sha256": "f2db8f790990dc6d4b9a053e8f31cd371fcb2c1c550628707faa0ddb84d84e5d",
+          "size": 194593
         },
         {
           "format": "zip",
-          "path": "workchord-pm-1.14.0.zip",
-          "sha256": "5f7c05994398d607d67bf73549bbc4030250ae20e9b3e8405238ab4bd9d24d4d",
-          "size": 176944
+          "path": "workchord-pm-1.15.0.zip",
+          "sha256": "3d2e470c9e45603ed8bd88b751b2f88a56df8801e21653a77817e01b7a327035",
+          "size": 179213
         }
       ],
       "entrypoint": "SKILL.md",
@@ -68,8 +68,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "e78de43b0feef1cd5896052f7cd8c4882e5461b8a85ca5e65b9eb50d46c388b4",
-          "size": 9206
+          "sha256": "1488484c4f465ff2e0d75406acb3de35f5ce66f15c58938bbf00cef4fa04ddde",
+          "size": 11475
         }
       ],
       "license": "MIT",
@@ -113,22 +113,22 @@
       ],
       "role": "pm",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.14.0"
+      "version": "1.15.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-reviewer-1.2.0.tar.gz",
-          "sha256": "675e5352d256f1cfdfa4b93bece0676f229806939003a80f6c910fabdd818c5e",
+          "path": "workchord-reviewer-1.3.0.tar.gz",
+          "sha256": "b7de1a29ac49c928aab391c679eff9a890c1b974b8b2e1b5094da65ee087175a",
           "size": 51223
         },
         {
           "format": "zip",
-          "path": "workchord-reviewer-1.2.0.zip",
-          "sha256": "29c557750e0b8001ecf7ef77e01da15d0a7559a63892f515ce5ee434a8859315",
-          "size": 40531
+          "path": "workchord-reviewer-1.3.0.zip",
+          "sha256": "5c5c276f94214d22239bda48c3db66573282a39f32aa4e26d53ab0a9c7f8405a",
+          "size": 42800
         }
       ],
       "entrypoint": "SKILL.md",
@@ -155,8 +155,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "633334b16eb43488c6ccba14e56c6354bb2523cccdc4cd215a12cf5b524e50a8",
-          "size": 9291
+          "sha256": "4758fd71c51638696379c3b22668f5d0291562bb88c089258f4d7ea2513bc9ed",
+          "size": 11560
         }
       ],
       "license": "MIT",
@@ -182,22 +182,22 @@
       ],
       "role": "verifier",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.2.0"
+      "version": "1.3.0"
     },
     {
       "api_contract": "workchord-agent/v1",
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.14.0.tar.gz",
-          "sha256": "1595e63ca7e439c532303a6ff1fc2f1818771ea99b87ffe2c239df417eecea79",
+          "path": "workchord-worker-1.15.0.tar.gz",
+          "sha256": "03d55f554b73cfa927c1c5014131dc8a1565405292479aa608374e4c2fa68818",
           "size": 92188
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.14.0.zip",
-          "sha256": "39c207dd9dbd50907ece959cc7e8327c86241d4de2c336c1c6cf44eb60b9c97e",
-          "size": 83841
+          "path": "workchord-worker-1.15.0.zip",
+          "sha256": "d9a71a20ac3a6b0223263a5137afb19037685ad10a8d8d8c31a73a4e3d038309",
+          "size": 86110
         }
       ],
       "entrypoint": "SKILL.md",
@@ -239,8 +239,8 @@
         },
         {
           "path": "references/workflow-and-names.md",
-          "sha256": "4a47a93bac24e7d97535cec4745b1bbc705f229f1345ef8292d265ba2aa67558",
-          "size": 9222
+          "sha256": "fb77bfdf9ad1964658214f0ca421de968041c650d117c877800d0ebf0b670467",
+          "size": 11491
         }
       ],
       "license": "MIT",
@@ -274,8 +274,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.14.0"
+      "version": "1.15.0"
     }
   ],
-  "source_revision": "sha256:7de230b947211de8f7656c6b7dedbb487fd0515e297105d0a28b28ebb6a9ca94"
+  "source_revision": "sha256:2f7cd37b6f3f6fb4b5d3c95a1236083c935664783cbf57fffa4debf19d29a13b"
 }

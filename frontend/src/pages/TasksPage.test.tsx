@@ -216,7 +216,7 @@ describe('TasksPage', () => {
             'Planning blockers · Needs assignees',
         )).toBeVisible();
         expect(screen.getByText(
-            'Showing Plan Work tasks without an assignee.',
+            'Showing Plan tasks without an assignee.',
         )).toBeVisible();
         expect(screen.getByTestId('task-planning-issue')).toHaveTextContent(
             'unassigned',

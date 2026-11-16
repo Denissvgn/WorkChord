@@ -60,7 +60,7 @@ export const teamworkEnglish = {
     "queue_blocked": "Blocked",
     "queue_awaiting_review": "In review",
     "queue_review": "To review",
-    "queue_inbox": "Inbox",
+    "queue_inbox": "Notifications",
     "state_profile_unlinked": "Ask a workspace operator to link your account to your human work profile.",
     "state_membership_required": "Ask a project manager to grant access to the work you need.",
     "emptyQueue": "No work in this part of the queue.",

@@ -25,7 +25,7 @@ describe('formats and wording', () => {
 
     it('writes labels in sentence case', () => {
         // Names keep their capitals: page and workspace names, products, acronyms, and the shared vocabulary.
-        const names = /Delivery Hub|Timeline & Planning|Resource & Settings|My Work|Plan Work|Plan Master|Agent Pipeline|Agent Team Setup|United States/g;
+        const names = /Delivery Hub|Timeline & Planning|Resource & Settings|My Work|Plan Master|Plan|Agent Pipeline|Agent Team Setup|United States/g;
         const skipped = /^(nav|documentTitles|breadcrumbs|statuses|languages|agentTeamSetup\.roles|agentTeamSetup\.steps)\./;
         const titleCase = english.filter(([key, text]) => {
             if (skipped.test(key) || /[<•{"]|--/.test(text)) return false;

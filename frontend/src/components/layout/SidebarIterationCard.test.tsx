@@ -37,11 +37,11 @@ describe('SidebarIterationCard', () => {
 
         renderWithProviders(<SidebarIterationCard />);
 
-        expect(screen.getByRole('status')).toHaveTextContent('Loading planning periods…');
-        expect(screen.queryByRole('link', { name: 'Start Plan Work' })).not.toBeInTheDocument();
+        expect(screen.getByRole('status')).toHaveTextContent('Loading iterations…');
+        expect(screen.queryByRole('link', { name: 'Start Plan' })).not.toBeInTheDocument();
     });
 
-    it('names the planning-period recovery and retries it', async () => {
+    it('names the iteration recovery and retries it', async () => {
         const refetch = vi.fn().mockResolvedValue(undefined);
         planningReadinessMock.usePlanningNavigationSummary.mockReturnValue(planningReadiness({
             isIterationsError: true,
@@ -49,7 +49,7 @@ describe('SidebarIterationCard', () => {
         }));
         const { user } = renderWithProviders(<SidebarIterationCard />);
 
-        expect(screen.getByRole('status')).toHaveTextContent('Planning periods are unavailable.');
+        expect(screen.getByRole('status')).toHaveTextContent('Iterations are unavailable.');
         await user.click(screen.getByRole('button', { name: 'Retry planning' }));
 
         expect(refetch).toHaveBeenCalledTimes(1);
@@ -69,13 +69,13 @@ describe('SidebarIterationCard', () => {
 
         expect(screen.getByRole('status')).toHaveTextContent('Planning progress is unavailable.');
         expect(screen.queryByText('6/6')).not.toBeInTheDocument();
-        expect(screen.getByRole('link', { name: /Open Plan Work/ })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Open Plan/ })).toBeInTheDocument();
 
         await user.click(screen.getByRole('button', { name: 'Retry planning' }));
         expect(refetch).toHaveBeenCalledTimes(1);
     });
 
-    it('restores picker focus after Escape and after selecting a planning period', async () => {
+    it('restores picker focus after Escape and after selecting a iteration', async () => {
         const selectIteration = vi.fn();
         planningReadinessMock.usePlanningNavigationSummary.mockReturnValue(planningReadiness({
             iterations: [
@@ -92,7 +92,7 @@ describe('SidebarIterationCard', () => {
         const pickerTrigger = screen.getByRole('button', { name: 'Current Sprint' });
         await user.click(pickerTrigger);
         expect(pickerTrigger).toHaveAttribute('aria-expanded', 'true');
-        expect(within(screen.getByRole('group', { name: 'Choose planning period' }))
+        expect(within(screen.getByRole('group', { name: 'Choose iteration' }))
             .getByRole('button', { name: 'Current Sprint' }))
             .toHaveAttribute('aria-pressed', 'true');
 
@@ -101,7 +101,7 @@ describe('SidebarIterationCard', () => {
         await waitFor(() => expect(pickerTrigger).toHaveFocus());
 
         await user.click(pickerTrigger);
-        await user.click(within(screen.getByRole('group', { name: 'Choose planning period' }))
+        await user.click(within(screen.getByRole('group', { name: 'Choose iteration' }))
             .getByRole('button', { name: 'Next Sprint' }));
 
         expect(selectIteration).toHaveBeenCalledWith(2);

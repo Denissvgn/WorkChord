@@ -195,7 +195,7 @@ describe('AppTopNav', () => {
         });
         expect(planningHome).toHaveAttribute('href', '/plan');
         expect(planningHome).toHaveAccessibleDescription(
-            'Timeline & Planning needs attention: 2 Plan Work checkpoints remain.',
+            'Timeline & Planning needs attention: 2 Plan checkpoints remain.',
         );
         expect(planningHome).toHaveTextContent('2');
         expect(within(switcher).getAllByRole('link')).toHaveLength(3);
@@ -216,7 +216,7 @@ describe('AppTopNav', () => {
         });
         expect(planningLink).toHaveAttribute('href', '/plan');
         expect(planningLink).toHaveAccessibleDescription(
-            'Plan Work readiness could not be loaded. Open Plan Work to retry.',
+            'Plan readiness could not be loaded. Open Plan to retry.',
         );
     });
 
@@ -263,7 +263,7 @@ describe('AppTopNav', () => {
         })).toHaveAttribute('aria-current', 'location');
 
         const attentionAction = await within(drawer).findByRole('button', {
-            name: 'Continue Plan Work (2 remaining)',
+            name: 'Continue Plan (2 remaining)',
         });
         expect(attentionAction).toHaveFocus();
 

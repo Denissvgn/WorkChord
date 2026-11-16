@@ -339,7 +339,7 @@ describe('Overview partial-data resilience', () => {
             .toHaveAttribute('href', '/tasks?layout=board');
         expect(screen.queryByRole('link', { name: 'Add first task' }))
             .not.toBeInTheDocument();
-        expect(screen.queryByText('No open tasks need attention in this planning period.'))
+        expect(screen.queryByText('No open tasks need attention in this iteration.'))
             .not.toBeInTheDocument();
         expect(screen.queryByText('No tasks scoped to this iteration yet.'))
             .not.toBeInTheDocument();
@@ -522,7 +522,7 @@ describe('Overview partial-data resilience', () => {
         renderWithProviders(<OverviewPage />);
 
         expect(await screen.findByRole('heading', {
-            name: '2 intake items need triage',
+            name: '2 requests need triage',
         })).toBeVisible();
         expect(screen.getByRole('link', { name: 'Open Triage' }))
             .toHaveAttribute('href', '/triage');
@@ -682,7 +682,7 @@ describe('Overview partial-data resilience', () => {
         expect(state.queryStates.team.refetch).not.toHaveBeenCalled();
     });
 
-    it('uses full-page recovery only when planning-period scope has no usable value', async () => {
+    it('uses full-page recovery only when iteration scope has no usable value', async () => {
         const iterationsRefetch = vi.fn().mockResolvedValue({ isError: false });
         planningReadinessMock.usePlanningReadiness.mockReturnValue(
             overviewPlanningState({
@@ -706,7 +706,7 @@ describe('Overview partial-data resilience', () => {
         const systemStatusLink = screen.getByRole('link', { name: 'Check system status' });
         expect(systemStatusLink)
             .toHaveAttribute('href', '/settings?tab=about');
-        expect(screen.queryByText('Set up planning period')).not.toBeInTheDocument();
+        expect(screen.queryByText('Set up iteration')).not.toBeInTheDocument();
         expect(screen.queryByText('Work now')).not.toBeInTheDocument();
 
         await expectTabOrder(user, [
@@ -742,15 +742,15 @@ describe('Overview partial-data resilience', () => {
         await expectTabOrder(user, [systemStatusLink]);
     });
 
-    it('shows one keyboard-reachable setup path after a confirmed empty planning-period result', async () => {
+    it('shows one keyboard-reachable setup path after a confirmed empty iteration result', async () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(
             overviewPlanningState({ currentIteration: null }),
         );
 
         const { user } = renderWithProviders(<OverviewPage />);
 
-        expect(screen.getByText('No planning periods yet')).toBeVisible();
-        const setupLink = screen.getByRole('link', { name: 'Create planning period' });
+        expect(screen.getByText('No iterations yet')).toBeVisible();
+        const setupLink = screen.getByRole('link', { name: 'Create iteration' });
         expect(setupLink)
             .toHaveAttribute('href', '/plan');
         expect(screen.queryByText('Iterations could not be loaded')).not.toBeInTheDocument();
@@ -758,7 +758,7 @@ describe('Overview partial-data resilience', () => {
         await expectTabOrder(user, [setupLink]);
     });
 
-    it('distinguishes first-use work from a planning period whose tasks are complete', async () => {
+    it('distinguishes first-use work from a iteration whose tasks are complete', async () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(
             overviewPlanningState(),
         );
@@ -766,7 +766,7 @@ describe('Overview partial-data resilience', () => {
         const { rerender } = renderWithProviders(<OverviewPage />);
 
         expect(await screen.findByText(
-            'No tasks have been added to this planning period.',
+            'No tasks have been added to this iteration.',
         )).toBeVisible();
         expect(screen.getByRole('link', { name: 'Add first task' }))
             .toHaveAttribute('href', '/tasks?create=1');
@@ -779,7 +779,7 @@ describe('Overview partial-data resilience', () => {
         rerender(<OverviewPage />);
 
         expect(await screen.findByText(
-            'No open tasks remain in this planning period.',
+            'No open tasks remain in this iteration.',
         )).toBeVisible();
         expect(screen.getByRole('link', { name: 'Add task' }))
             .toHaveAttribute('href', '/tasks?create=1');

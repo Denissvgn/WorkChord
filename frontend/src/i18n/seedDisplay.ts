@@ -99,7 +99,7 @@ const labelBaselines: Record<string, string> = {
 };
 
 const savedViewBaselines: Record<string, { name: string; description: string }> = {
-    triage_needs_triage: { name: 'Needs triage', description: 'New intake items that need review.' },
+    triage_needs_triage: { name: 'Needs triage', description: 'New request items that need review.' },
     tasks_unassigned: { name: 'Unassigned', description: 'Tasks without an assigned owner.' },
     tasks_blocked: { name: 'Blocked', description: 'Tasks with a reported blocker.' },
     tasks_overdue: { name: 'Iteration overflow', description: 'Work forecast beyond its iteration boundary; this retains the legacy view predicate.' },

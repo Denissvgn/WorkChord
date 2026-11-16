@@ -14,7 +14,7 @@ describe('PlanningWorkflowGuide', () => {
         );
 
         await user.click(screen.getByRole('button', { name: 'Planning help' }));
-        await user.click(screen.getByRole('link', { name: 'Continue Plan Work' }));
+        await user.click(screen.getByRole('link', { name: 'Continue Plan' }));
 
         await waitFor(() => {
             expect(screen.getByText('Workspace')).toHaveFocus();
