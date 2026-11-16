@@ -133,6 +133,11 @@ export const agentService = {
         return response.data;
     },
 
+    /** Links an existing team profile to an agent actor (admin key required). */
+    async linkActorProfile(actorId: number, profileId: number): Promise<void> {
+        await api.patch(`/agent/actors/${actorId}`, { profile_id: profileId });
+    },
+
     async getProfileSkillCatalog(): Promise<AgentProfileSkillCatalogItem[]> {
         const response = await api.get<AgentProfileSkillCatalogItem[]>(
             '/agent/profile-skill-catalog',

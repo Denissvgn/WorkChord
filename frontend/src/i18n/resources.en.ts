@@ -1134,6 +1134,10 @@ export const englishResources = {
                 addPerson: 'Add person',
                 addPersonHint: 'A new person on the team',
                 agentDispatchNote: 'An agent receives work only while it is connected, has a matching role and a current model, and has capacity in the iteration.',
+                noProfileYet: 'This agent has no profile yet. A profile holds its capabilities and default availability.',
+                createLinkProfile: 'Create and link profile',
+                linkProfileNeedsAdminKey: 'Creating a profile for an agent needs the admin key.',
+                failedLinkProfile: 'The profile was created but could not be linked to the agent. Try again to link it.',
             },
             teamVacations: {
                 title: 'Manage vacations',

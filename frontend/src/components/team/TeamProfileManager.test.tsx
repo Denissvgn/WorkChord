@@ -1,5 +1,5 @@
 import { screen, waitFor, within } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AgentActorRosterItem, AgentModelBinding } from '../../types/agent';
 import type {
     TeamMemberProfile,
@@ -9,6 +9,7 @@ import type {
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { TeamProfileManager } from './TeamProfileManager';
 import { buildDirectory, type DirectoryRow } from './directoryModel';
+import { clearAdminApiKey, setAdminApiKey } from '../../utils/adminAccess';
 
 const teamServiceMock = vi.hoisted(() => ({
     createProfile: vi.fn(),
@@ -19,6 +20,8 @@ const teamServiceMock = vi.hoisted(() => ({
     deleteProfileSkill: vi.fn(),
 }));
 const planningMock = vi.hoisted(() => ({ readInitial: vi.fn() }));
+const agentServiceMock = vi.hoisted(() => ({ linkActorProfile: vi.fn() }));
+vi.mock('../../services/agentService', () => ({ agentService: agentServiceMock }));
 vi.mock('../../services/planningInputService', () => ({ planningInputService: planningMock }));
 vi.mock('../../services/teamService', () => ({ teamService: teamServiceMock }));
 
@@ -105,9 +108,10 @@ describe('team profile drawer', () => {
 
     it('omits immutable seed key from updates while preserving kind and modes', async () => {
         const profile = profileFixture({ seed_key: 'immutable-hybrid', profile_kind: 'hybrid', assignment_modes: ['execution', 'verification'] });
+        planningMock.readInitial.mockResolvedValue({ resource: profile, expected_revisions: { 1: 7, 2: 3 }, complete: true });
         const { user } = renderDrawer(rowFor(profile));
 
-        expect(screen.getByRole('textbox', { name: 'Seed key' })).toHaveAttribute('readonly');
+        expect(await screen.findByRole('textbox', { name: 'Seed key' })).toHaveAttribute('readonly');
         expect(screen.getByRole('combobox', { name: 'Profile kind' })).toHaveValue('hybrid');
         expect(screen.getByRole('checkbox', { name: 'Execution' })).toBeChecked();
         expect(screen.getByRole('checkbox', { name: 'Verification' })).toBeChecked();
@@ -145,15 +149,17 @@ describe('team profile drawer', () => {
         expect(screen.getByText('Default availability')).toBeVisible();
     });
 
-    it('says Unknown for the model and connection when the roster cannot be read', () => {
+    it('says Unknown for the model and connection when the roster cannot be read', async () => {
         renderDrawer(rowFor(profileFixture(), [], 'unavailable'), { rosterUnavailable: true });
+        await screen.findByRole('textbox', { name: 'Display name' });
 
         expect(screen.getAllByText('Unknown')).toHaveLength(2);
         expect(screen.getByText(/need the admin key/)).toBeVisible();
     });
 
-    it('does not describe a person with a model or routing sentence', () => {
+    it('does not describe a person with a model or routing sentence', async () => {
         renderDrawer(rowFor(profileFixture({ profile_kind: 'human' })));
+        await screen.findByRole('textbox', { name: 'Display name' });
 
         expect(screen.queryByRole('heading', { name: 'Model binding' })).not.toBeInTheDocument();
         expect(screen.queryByText(/An agent receives work/)).not.toBeInTheDocument();
@@ -208,5 +214,138 @@ describe('profile conflict observation', () => {
         await user.click(screen.getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(teamServiceMock.updateProfile.mock.lastCall?.[2]).toEqual({ 1: 8, 2: 4, 3: 1 }));
         expect(input).toHaveValue('Retained draft');
+    });
+});
+
+
+describe('profile drawer keeps its values and revisions together', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        teamServiceMock.updateProfile.mockImplementation(async (_id: number, data: TeamMemberProfileUpdate) => profileFixture(data));
+    });
+
+    it('fills the form from the profile as observed, not from the cached row, and saves it at the same revisions', async () => {
+        const cached = profileFixture({ display_name: 'Cached Name', headline: 'Cached headline' });
+        planningMock.readInitial.mockResolvedValue({
+            resource: profileFixture({ display_name: 'Peer Name', headline: 'Peer headline' }), expected_revisions: { 1: 9 }, complete: true,
+        });
+        const { user } = renderDrawer(rowFor(cached));
+
+        expect(await screen.findByRole('textbox', { name: 'Display name' })).toHaveValue('Peer Name');
+        expect(screen.getByRole('textbox', { name: 'Headline' })).toHaveValue('Peer headline');
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => expect(teamServiceMock.updateProfile).toHaveBeenCalledTimes(1));
+        const [, payload, revisions] = teamServiceMock.updateProfile.mock.calls[0] as [number, TeamMemberProfileUpdate, Record<number, number>];
+        expect(payload).toMatchObject({ display_name: 'Peer Name', headline: 'Peer headline' });
+        expect(revisions).toEqual({ 1: 9 });
+    });
+
+    it('does not show the cached values while the profile is still being read', async () => {
+        let release: (value: unknown) => void = () => {};
+        planningMock.readInitial.mockReturnValue(new Promise(resolve => { release = resolve; }));
+        renderDrawer(rowFor(profileFixture({ display_name: 'Cached Name' })));
+
+        expect(await screen.findByRole('status')).toHaveTextContent('Loading');
+        expect(screen.queryByRole('textbox', { name: 'Display name' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+        release({ resource: profileFixture({ display_name: 'Observed Name' }), expected_revisions: { 1: 2 }, complete: true });
+        expect(await screen.findByRole('textbox', { name: 'Display name' })).toHaveValue('Observed Name');
+    });
+
+    it('moves the saved revisions on after a capability change only when nobody else changed the profile', async () => {
+        const profile = profileFixture({ profile_kind: 'human' });
+        planningMock.readInitial.mockResolvedValue({ resource: profile, expected_revisions: { 1: 7 }, complete: true });
+        teamServiceMock.createProfileSkill.mockResolvedValue({});
+        const { user } = renderDrawer(rowFor(profile));
+        await user.click(await screen.findByRole('button', { name: 'Add capability' }));
+        await user.type(screen.getByRole('textbox', { name: /^Capability/ }), 'Cryptography');
+        planningMock.readInitial.mockResolvedValue({ resource: profile, expected_revisions: { 1: 8 }, complete: true });
+        await user.click(within(screen.getByRole('form', { name: 'Capabilities' })).getByRole('button', { name: 'Add capability' }));
+        await waitFor(() => expect(teamServiceMock.createProfileSkill).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Capabilities' })).not.toBeInTheDocument());
+
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(teamServiceMock.updateProfile).toHaveBeenCalledTimes(1));
+        expect(teamServiceMock.updateProfile.mock.lastCall?.[2]).toEqual({ 1: 8 });
+    });
+
+    it('keeps the older revisions after a capability change when someone else edited the profile fields', async () => {
+        const profile = profileFixture({ profile_kind: 'human' });
+        planningMock.readInitial.mockResolvedValue({ resource: profile, expected_revisions: { 1: 7 }, complete: true });
+        teamServiceMock.createProfileSkill.mockResolvedValue({});
+        const { user } = renderDrawer(rowFor(profile));
+        await user.click(await screen.findByRole('button', { name: 'Add capability' }));
+        await user.type(screen.getByRole('textbox', { name: /^Capability/ }), 'Cryptography');
+        planningMock.readInitial.mockResolvedValue({
+            resource: { ...profile, display_name: 'Peer edit' }, expected_revisions: { 1: 8 }, complete: true,
+        });
+        await user.click(within(screen.getByRole('form', { name: 'Capabilities' })).getByRole('button', { name: 'Add capability' }));
+        await waitFor(() => expect(screen.queryByRole('form', { name: 'Capabilities' })).not.toBeInTheDocument());
+
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(teamServiceMock.updateProfile).toHaveBeenCalledTimes(1));
+        expect(teamServiceMock.updateProfile.mock.lastCall?.[2]).toEqual({ 1: 7 });
+    });
+});
+
+describe('agent without a profile', () => {
+    const profilelessActor = (): AgentActorRosterItem => ({ ...actorFixture(), id: 11, name: 'review-bot', display_name: 'Review Bot', role: 'verifier', profile_id: null });
+    const profilelessRow = () => buildDirectory([], [profilelessActor()], 'loaded', Date.parse('2026-07-28T10:05:00Z'))[0];
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+        setAdminApiKey('operator-key');
+        teamServiceMock.createProfile.mockImplementation(async (data: TeamMemberProfileCreate) => profileFixture({ id: 101, ...data }));
+        agentServiceMock.linkActorProfile.mockResolvedValue(undefined);
+    });
+    afterEach(() => { clearAdminApiKey(); });
+
+    it('says there is no profile and offers no way to create a person', () => {
+        renderDrawer(profilelessRow());
+
+        expect(screen.getByText(/has no profile yet/)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Create and link profile' })).toBeEnabled();
+        expect(screen.getByRole('list', { name: 'Model binding' })).toHaveTextContent('claude-sonnet-5-5');
+        expect(screen.queryByRole('textbox', { name: 'Display name' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Create' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Capabilities' })).not.toBeInTheDocument();
+        expect(planningMock.readInitial).not.toHaveBeenCalled();
+    });
+
+    it('creates an agent profile for the agent and links it', async () => {
+        const onCreated = vi.fn();
+        const { user } = renderDrawer(profilelessRow(), { onCreated });
+
+        await user.click(screen.getByRole('button', { name: 'Create and link profile' }));
+
+        await waitFor(() => expect(onCreated).toHaveBeenCalledWith(101));
+        expect(teamServiceMock.createProfile).toHaveBeenCalledWith(expect.objectContaining({
+            display_name: 'Review Bot', profile_kind: 'agent', assignment_modes: ['verification'], seed_key: null,
+        }));
+        expect(agentServiceMock.linkActorProfile).toHaveBeenCalledWith(11, 101);
+    });
+
+    it('retries only the link when linking failed after the profile was created', async () => {
+        agentServiceMock.linkActorProfile.mockRejectedValueOnce({ response: { status: 403, data: { detail: 'Admin key required.' } } });
+        const onCreated = vi.fn();
+        const { user } = renderDrawer(profilelessRow(), { onCreated });
+
+        await user.click(screen.getByRole('button', { name: 'Create and link profile' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('could not be linked');
+        expect(onCreated).not.toHaveBeenCalled();
+
+        await user.click(screen.getByRole('button', { name: 'Create and link profile' }));
+        await waitFor(() => expect(onCreated).toHaveBeenCalledWith(101));
+        expect(teamServiceMock.createProfile).toHaveBeenCalledTimes(1);
+        expect(agentServiceMock.linkActorProfile).toHaveBeenCalledTimes(2);
+    });
+
+    it('cannot create the profile without the admin key and says why', () => {
+        clearAdminApiKey();
+        renderDrawer(profilelessRow());
+
+        expect(screen.getByRole('button', { name: 'Create and link profile' })).toBeDisabled();
+        expect(screen.getByText(/needs the admin key/)).toBeVisible();
     });
 });

@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2 } from 'lucide-react';
 import { teamService } from '../../services/teamService';
+import { agentService } from '../../services/agentService';
+import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDateTime } from '../../utils/formatDate';
 import { Button } from '../common/Button';
@@ -12,7 +14,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { SlideOverDrawer } from '../ui';
 import { PersonCapacity } from '../tasks/PersonCapacity';
 import { usePlanningObservation } from '../../features/usePlanningObservation';
-import { planningInputService } from '../../services/planningInputService';
+import { planningInputService, type ObservedPlanningInput } from '../../services/planningInputService';
 import type {
     TeamMemberAssignmentMode,
     TeamMemberProfile,
@@ -25,6 +27,7 @@ import type {
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { modelName, type DirectoryRow } from './directoryModel';
+import type { AgentActorRosterItem } from '../../types/agent';
 
 const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
 
@@ -87,39 +90,232 @@ interface TeamProfileManagerProps {
     /** The roster could not be read, so the agent's model and connection are Unknown. */
     rosterUnavailable: boolean;
     onClose: () => void;
-    /** Called with the new profile's id once a person has been added. */
+    /** Called with the profile's id once a person has been added or an agent's profile has been created. */
     onCreated: (profileId: number) => void;
 }
 
-/** The drawer for one person or agent: profile, capabilities, default availability and, for an agent, its model. */
-export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps) => {
-    const { t, i18n } = useTranslation();
+type ObservedProfile = ObservedPlanningInput<TeamMemberProfile>;
+type ProfileContext = ReturnType<typeof usePlanningObservation<TeamMemberProfile>>;
+
+/** The profile as it was observed: the editable values and the revisions they were read at stay together. */
+interface FormBase {
+    fields: TeamMemberProfileCreate;
+    revisions: Record<number, number>;
+}
+
+const sameFields = (a: TeamMemberProfileCreate, b: TeamMemberProfileCreate) => JSON.stringify(a) === JSON.stringify(b);
+
+const MODE_FOR_ROLE: Record<string, TeamMemberAssignmentMode> = { pm: 'ownership', worker: 'execution', verifier: 'verification' };
+
+const useInvalidateTeam = () => {
     const queryClient = useQueryClient();
-    const profileId = row?.profile?.id ?? null;
+    return () => Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] }),
+        queryClient.invalidateQueries({ queryKey: ['team'] }),
+        queryClient.invalidateQueries({ queryKey: ['assigneeRecommendations'] }),
+        queryClient.invalidateQueries({ queryKey: ['agent-actor-roster'] }),
+    ]);
+};
+
+/** The read-only model and connection of an agent, with the one sentence on when it receives work. */
+const AgentSection = ({ row, rosterUnavailable }: { row: DirectoryRow; rosterUnavailable: boolean }) => {
+    const { t, i18n } = useTranslation();
+    const bindings = row.actor?.eligible_model_bindings ?? [];
+    return (
+        <section aria-labelledby="team-drawer-agent" className="space-y-2">
+            <h3 id="team-drawer-agent" className="text-sm font-semibold text-content-primary">{t('teamProfiles.modelBinding')}</h3>
+            <p className="text-sm text-content-secondary">{t('teamProfiles.agentDispatchNote')}</p>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+                <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
+                <dd>{row.connection ? t(`teamPage.connection.${row.connection}`) : t('teamPage.unknown')}</dd>
+                {row.actor?.last_seen_at && (
+                    <>
+                        <dt className="text-content-secondary">{t('teamProfiles.lastSeen')}</dt>
+                        <dd>{formatDateTime(row.actor.last_seen_at, i18n.language)}</dd>
+                    </>
+                )}
+                <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
+                <dd>{row.model === undefined || rosterUnavailable ? t('teamPage.unknown') : row.model ? modelName(row.model) : t('teamPage.noModel')}</dd>
+            </dl>
+            {!rosterUnavailable && bindings.length > 0 && (
+                <ul className="space-y-1 text-sm" aria-label={t('teamProfiles.modelBinding')}>
+                    {bindings.map(binding => (
+                        <li key={binding.id} className="flex flex-wrap items-center gap-2">
+                            <span className="font-medium text-content-primary">{binding.model_catalog ? modelName(binding) : binding.model_catalog_key}</span>
+                            {binding.model_catalog && <span className="text-content-secondary">{binding.model_catalog.provider}</span>}
+                            {binding.is_default && <span className="text-content-secondary">· {t('teamProfiles.defaultModel')}</span>}
+                        </li>
+                    ))}
+                </ul>
+            )}
+            {rosterUnavailable && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
+        </section>
+    );
+};
+
+/**
+ * The drawer for one person or agent: profile, capabilities, default availability and, for an agent, its model.
+ * A row without a profile (an agent that has not been given one) is handled apart, so this drawer never
+ * offers to create an unrelated person for it.
+ */
+export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps) => {
+    if (row === null) return <ProfileDrawer row={null} initial={null} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
+    if (row.profile === null) return <AgentWithoutProfileDrawer row={row} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
+    return <ObservedProfileDrawer row={row} profileId={row.profile.id} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
+};
+
+/** Reads the profile first, so the form and the revisions it will be saved at come from the same observation. */
+const ObservedProfileDrawer = ({ row, profileId, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow; profileId: number }) => {
+    const { t } = useTranslation();
+    const [initial, setInitial] = useState<ObservedProfile | null>(null);
+    const [failure, setFailure] = useState<unknown>(null);
+
+    const load = useCallback(() => {
+        setFailure(null);
+        planningInputService.readInitial<TeamMemberProfile>('profile', profileId).then(
+            observed => setInitial(observed),
+            cause => setFailure(cause),
+        );
+    }, [profileId]);
+
+    useEffect(() => { queueMicrotask(load); }, [load]);
+
+    if (initial) {
+        return <ProfileDrawer row={row} initial={initial} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
+    }
+    return (
+        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}>
+            <div className="space-y-6 p-5">
+                {failure === null
+                    ? <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>
+                    : <QueryErrorState error={failure} onRetry={load} />}
+                {row.kind === 'agent' && <AgentSection row={row} rosterUnavailable={rosterUnavailable} />}
+            </div>
+        </SlideOverDrawer>
+    );
+};
+
+/** An agent that has no profile yet: say so, and offer to create its profile and link it to the agent. */
+const AgentWithoutProfileDrawer = ({ row, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow }) => {
+    const { t } = useTranslation();
+    const { hasAdminAccess } = useAdminAccess();
+    const invalidate = useInvalidateTeam();
+    const [error, setError] = useState<string | null>(null);
+    // If linking fails after the profile exists, a retry links it instead of creating a second one.
+    const [createdProfileId, setCreatedProfileId] = useState<number | null>(null);
+    const actor: AgentActorRosterItem | null = row.actor;
+
+    const linkMutation = useMutation({
+        mutationFn: async () => {
+            if (!actor) throw new Error('Agent not found');
+            let profileId = createdProfileId;
+            if (profileId === null) {
+                const mode = MODE_FOR_ROLE[actor.role];
+                const profile = await teamService.createProfile({
+                    ...emptyProfileForm,
+                    seed_key: null,
+                    display_name: (actor.display_name || actor.name).trim(),
+                    email: null,
+                    headline: null,
+                    summary: null,
+                    notes: null,
+                    profile_kind: 'agent',
+                    assignment_modes: mode ? [mode] : [],
+                });
+                profileId = profile.id;
+                setCreatedProfileId(profileId);
+            }
+            try {
+                await agentService.linkActorProfile(actor.id, profileId);
+            } catch (cause) {
+                throw new LinkProfileError(cause);
+            }
+            return profileId;
+        },
+        onSuccess: async profileId => {
+            await invalidate();
+            onCreated(profileId);
+        },
+        onError: err => setError(err instanceof LinkProfileError
+            ? `${t('teamProfiles.failedLinkProfile')} ${getApiErrorMessage(err.cause, '')}`.trim()
+            : getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
+    });
+
+    return (
+        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}
+            footer={<div className="flex justify-end"><Button type="button" variant="ghost" onClick={onClose}>{t('actions.close')}</Button></div>}>
+            <div className="space-y-6 p-5">
+                {error && <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{error}</div>}
+                <AgentSection row={row} rosterUnavailable={rosterUnavailable} />
+                <section aria-labelledby="team-drawer-no-profile" className="space-y-2">
+                    <h3 id="team-drawer-no-profile" className="text-sm font-semibold text-content-primary">{t('teamProfiles.profile')}</h3>
+                    <p className="text-sm text-content-secondary">{t('teamProfiles.noProfileYet')}</p>
+                    {!hasAdminAccess && <p className="text-sm text-content-secondary">{t('teamProfiles.linkProfileNeedsAdminKey')}</p>}
+                    <Button type="button" variant="secondary" disabled={!hasAdminAccess || !actor} isLoading={linkMutation.isPending}
+                        onClick={() => { setError(null); linkMutation.mutate(); }}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t('teamProfiles.createLinkProfile')}
+                    </Button>
+                </section>
+            </div>
+        </SlideOverDrawer>
+    );
+};
+
+class LinkProfileError extends Error {
+    constructor(cause: unknown) { super('Linking the profile failed', { cause }); }
+}
+
+interface ProfileDrawerProps {
+    row: DirectoryRow | null;
+    /** The observation the form is filled from; absent when a person is being added. */
+    initial: ObservedProfile | null;
+    rosterUnavailable: boolean;
+    onClose: () => void;
+    onCreated: (profileId: number) => void;
+}
+
+const ProfileDrawer = ({ row, initial, rosterUnavailable, onClose, onCreated }: ProfileDrawerProps) => {
+    const { t } = useTranslation();
+    const profileId = initial?.resource.id ?? null;
     const [profileForm, setProfileForm] = useState<TeamMemberProfileCreate>(
-        () => (row?.profile ? formFromProfile(row.profile) : emptyProfileForm),
+        () => (initial ? formFromProfile(initial.resource) : emptyProfileForm),
+    );
+    const [base, setBase] = useState<FormBase | null>(
+        () => (initial ? { fields: formFromProfile(initial.resource), revisions: initial.expected_revisions } : null),
     );
     const [skillForm, setSkillForm] = useState<TeamMemberProfileSkillCreate>(emptySkillForm);
     const [editingSkillId, setEditingSkillId] = useState<number | null>(null);
     const [skillFormOpen, setSkillFormOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
-    const context = usePlanningObservation<TeamMemberProfile>();
-    const readContext = context.read;
+    const context: ProfileContext = usePlanningObservation<TeamMemberProfile>();
+    const current = context.observation ?? initial;
 
-    useEffect(() => {
-        if (profileId !== null) queueMicrotask(() => { void readContext('profile', profileId); });
-    }, [profileId, readContext]);
-
-    const skills: TeamMemberProfileSkill[] = context.observation?.resource.skills ?? row?.profile?.skills ?? [];
+    const skills: TeamMemberProfileSkill[] = current?.resource.skills ?? [];
     const agent = row?.kind === 'agent';
-    const saving = profileId !== null && (!context.observation || context.loading);
+    const saving = context.loading;
 
-    const invalidate = () => Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] }),
-        queryClient.invalidateQueries({ queryKey: ['team'] }),
-        queryClient.invalidateQueries({ queryKey: ['assigneeRecommendations'] }),
-    ]);
+    /**
+     * Reads the profile again. After a save the form shows what was stored. After a capability change
+     * the saved revisions move on only if nobody else changed the profile fields in the meantime, so a
+     * later save of an out-of-date form is still refused. Keeping a draft is the explicit way to move on.
+     */
+    const refresh = async (id: number, mode: 'saved' | 'capability' | 'keepDraft') => {
+        const fresh = await context.read('profile', id, true);
+        if (!fresh) return;
+        const fields = formFromProfile(fresh.resource);
+        if (mode === 'saved') {
+            setProfileForm(fields);
+            setBase({ fields, revisions: fresh.expected_revisions });
+        } else if (mode === 'keepDraft') {
+            setBase({ fields, revisions: fresh.expected_revisions });
+        } else {
+            setBase(previous => (previous && sameFields(previous.fields, fields) ? { fields, revisions: fresh.expected_revisions } : previous));
+        }
+    };
+
+    const invalidate = useInvalidateTeam();
 
     const createProfileMutation = useMutation({
         mutationFn: (data: TeamMemberProfileCreate) => teamService.createProfile(data),
@@ -132,11 +328,11 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
     });
 
     const updateProfileMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data, context.observation!.expected_revisions),
+        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data, base!.revisions),
         meta: { success: data => feedbackMessage(t, 'saved', 'profile', (data as { display_name?: string }).display_name) } satisfies MutationFeedbackMeta,
         onSuccess: async (_data, variables) => {
             await invalidate();
-            void context.read('profile', variables.id, true);
+            void refresh(variables.id, 'saved');
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
     });
@@ -158,20 +354,20 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
     };
 
     const createSkillMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileSkillCreate }) => teamService.createProfileSkill(id, data, context.observation!.expected_revisions),
+        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileSkillCreate }) => teamService.createProfileSkill(id, data, current!.expected_revisions),
         onSuccess: async (_data, variables) => {
             await invalidate();
-            void context.read('profile', variables.id, true);
+            void refresh(variables.id, 'capability');
             closeSkillForm();
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveSkill'))),
     });
 
     const updateSkillMutation = useMutation({
-        mutationFn: ({ id, skillId, data }: { id: number; skillId: number; data: TeamMemberProfileSkillCreate }) => teamService.updateProfileSkill(id, skillId, data, context.observation!.expected_revisions),
+        mutationFn: ({ id, skillId, data }: { id: number; skillId: number; data: TeamMemberProfileSkillCreate }) => teamService.updateProfileSkill(id, skillId, data, current!.expected_revisions),
         onSuccess: async (_data, variables) => {
             await invalidate();
-            void context.read('profile', variables.id, true);
+            void refresh(variables.id, 'capability');
             closeSkillForm();
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveSkill'))),
@@ -181,7 +377,7 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
         mutationFn: ({ id, skillId, revisions }: { id: number; skillId: number; revisions: Record<number, number> }) => teamService.deleteProfileSkill(id, skillId, revisions),
         onSuccess: async (_data, variables) => {
             await invalidate();
-            void context.read('profile', variables.id, true);
+            void refresh(variables.id, 'capability');
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedDeleteSkill'))),
     });
@@ -199,7 +395,7 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
             notes: optionalText(profileForm.notes),
         };
         if (profileId !== null) {
-            if (!context.observation || context.loading) return;
+            if (!base || context.loading) return;
             const updateData: TeamMemberProfileUpdate = {
                 display_name: data.display_name,
                 email: data.email,
@@ -227,7 +423,7 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
 
     const submitSkill = (event: React.FormEvent) => {
         event.preventDefault();
-        if (profileId === null || !context.observation || context.loading) return;
+        if (profileId === null || !current || context.loading) return;
         setError(null);
         const skillName = skillForm.skill_name.trim();
         const data = {
@@ -284,7 +480,6 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
         return skill.is_weakness ? t('teamProfiles.skillSummaryWeakness', { summary }) : summary;
     };
 
-    const bindings = useMemo(() => row?.actor?.eligible_model_bindings ?? [], [row?.actor]);
     const formId = 'team-profile-form';
     const title = row ? row.name : t('teamProfiles.addPerson');
 
@@ -315,49 +510,20 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
             <div className="space-y-6 p-5">
                 {context.loading && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
                 {Boolean(context.error) && (
-                    <QueryErrorState error={context.error} onRetry={() => { if (profileId !== null) void context.read('profile', profileId); }} />
+                    <QueryErrorState error={context.error} onRetry={() => { if (profileId !== null) void context.read('profile', profileId, true); }} />
                 )}
                 {error && (
                     <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">
                         {error}
                         {profileId !== null && (
-                            <Button type="button" size="sm" variant="secondary" onClick={() => { void context.read('profile', profileId, true); }}>
+                            <Button type="button" size="sm" variant="secondary" onClick={() => { void refresh(profileId, 'keepDraft'); }}>
                                 {t('taskEditor.keepDraftWithCurrentVersion')}
                             </Button>
                         )}
                     </div>
                 )}
 
-                {agent && (
-                    <section aria-labelledby="team-drawer-agent" className="space-y-2">
-                        <h3 id="team-drawer-agent" className="text-sm font-semibold text-content-primary">{t('teamProfiles.modelBinding')}</h3>
-                        <p className="text-sm text-content-secondary">{t('teamProfiles.agentDispatchNote')}</p>
-                        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                            <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
-                            <dd>{row?.connection ? t(`teamPage.connection.${row.connection}`) : t('teamPage.unknown')}</dd>
-                            {row?.actor?.last_seen_at && (
-                                <>
-                                    <dt className="text-content-secondary">{t('teamProfiles.lastSeen')}</dt>
-                                    <dd>{formatDateTime(row.actor.last_seen_at, i18n.language)}</dd>
-                                </>
-                            )}
-                            <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
-                            <dd>{row?.model === undefined || rosterUnavailable ? t('teamPage.unknown') : row.model ? modelName(row.model) : t('teamPage.noModel')}</dd>
-                        </dl>
-                        {!rosterUnavailable && bindings.length > 0 && (
-                            <ul className="space-y-1 text-sm" aria-label={t('teamProfiles.modelBinding')}>
-                                {bindings.map(binding => (
-                                    <li key={binding.id} className="flex flex-wrap items-center gap-2">
-                                        <span className="font-medium text-content-primary">{binding.model_catalog ? modelName(binding) : binding.model_catalog_key}</span>
-                                        {binding.model_catalog && <span className="text-content-secondary">{binding.model_catalog.provider}</span>}
-                                        {binding.is_default && <span className="text-content-secondary">· {t('teamProfiles.defaultModel')}</span>}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                        {rosterUnavailable && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
-                    </section>
-                )}
+                {agent && row && <AgentSection row={row} rosterUnavailable={rosterUnavailable} />}
 
                 <form id={formId} onSubmit={submitProfile} className="space-y-3" aria-label={t('teamProfiles.profile')}>
                     <h3 className="text-sm font-semibold text-content-primary">{t('teamProfiles.profile')}</h3>
@@ -464,7 +630,7 @@ export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated 
                                 </label>
                                 <div className="flex gap-2">
                                     <Button type="button" size="sm" variant="ghost" onClick={closeSkillForm}>{t('actions.cancel')}</Button>
-                                    <Button type="submit" size="sm" disabled={!context.observation || context.loading}
+                                    <Button type="submit" size="sm" disabled={context.loading}
                                         isLoading={createSkillMutation.isPending || updateSkillMutation.isPending}>
                                         {editingSkillId ? t('teamProfiles.saveSkill') : t('teamProfiles.addSkill')}
                                     </Button>
