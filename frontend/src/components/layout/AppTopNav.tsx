@@ -14,6 +14,7 @@ import { SidebarContent } from './AppSidebar';
 import type { SidebarAttentionAction } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
 import { ContextHelp } from './ContextHelp';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 interface WorkspaceAttention {
     badge: string;
@@ -37,6 +38,7 @@ const WorkspaceSwitchLink = ({
     attention?: WorkspaceAttention;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const Icon = workspace.icon;
     const label = t(workspace.labelKey, workspace.defaultLabel);
     const description = t(workspace.descriptionKey, workspace.defaultDescription);
@@ -48,7 +50,7 @@ const WorkspaceSwitchLink = ({
     return (
         <span className={variant === 'desktop' ? 'workspace-switch-item' : 'mobile-workspace-item'}>
             <Link
-                to={workspace.defaultPath}
+                to={scopeLink(workspace.defaultPath)}
                 className={variant === 'desktop' ? 'nav-tab nav-workspace-tab' : 'mobile-workspace-link'}
                 aria-current={active ? 'location' : undefined}
                 aria-label={homeLabel}
@@ -104,6 +106,7 @@ export const AppTopNav = () => {
     } = usePlanningNavigationSummary();
     const { t } = useTranslation();
     const location = useLocation();
+    const scopeLink = useScopeLink();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const pendingWorkspaceFocusRef = useRef<WorkspaceMetadata['key'] | null>(null);
     const mobileNavRestoreFocusRef = useRef<HTMLElement | null>(null);
@@ -219,7 +222,7 @@ export const AppTopNav = () => {
     return (
         <header className="topnav" data-testid="app-navbar">
             <Link
-                to="/"
+                to={scopeLink('/')}
                 className="brand"
                 aria-label={t('nav.home', { appName: t('common.appName') })}
                 onFocus={() => { void warmRouteModule('/'); }}
@@ -352,7 +355,7 @@ export const AppTopNav = () => {
                                                     const ItemIcon = item.icon;
                                                     return (
                                                         <li key={item.to}>
-                                                            <Link to={item.to} className="sb-item" onClick={closeForNavigation}>
+                                                            <Link to={scopeLink(item.to)} className="sb-item" onClick={closeForNavigation}>
                                                                 <ItemIcon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
                                                                 <span className="sb-label">{t(item.labelKey, item.defaultLabel)}</span>
                                                             </Link>

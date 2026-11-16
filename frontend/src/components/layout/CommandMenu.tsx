@@ -31,6 +31,7 @@ import { projectService } from '../../services/projectService';
 import { savedViewService } from '../../services/savedViewService';
 import { savedViewDisplay } from '../../i18n/seedDisplay';
 import type { SavedView } from '../../types/savedView';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type CommandGroup = 'results' | 'tasks' | 'current' | 'navigate' | 'suggested';
 
@@ -131,6 +132,7 @@ const withTaskCommand = (
 export const CommandMenu = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const scopeLink = useScopeLink();
     const location = useLocation();
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [open, setOpen] = useState(false);
@@ -427,7 +429,7 @@ export const CommandMenu = () => {
     const runCommand = (command: CommandAction) => {
         rememberCommand(command.id);
         closeMenu();
-        navigate(command.to);
+        navigate(scopeLink(command.to));
     };
 
     useEffect(() => {
@@ -466,7 +468,7 @@ export const CommandMenu = () => {
             if (!command) return;
             event.preventDefault();
             rememberCommand(command.id);
-            navigate(command.to);
+            navigate(scopeLink(command.to));
         };
 
         window.addEventListener(OPEN_COMMAND_MENU_EVENT, handleOpenRequest);
@@ -481,6 +483,7 @@ export const CommandMenu = () => {
         navigate,
         open,
         rememberCommand,
+        scopeLink,
         singleKeyShortcutsEnabled,
     ]);
 

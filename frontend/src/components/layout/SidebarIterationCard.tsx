@@ -2,6 +2,7 @@ import { type KeyboardEvent, useEffect, useId, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { usePlanningNavigationSummary } from '../../features/planningMasters/usePlanningNavigationSummary';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 const ChevD = () => (
     <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -15,6 +16,7 @@ export const SidebarIterationCard = ({ onNavigate }: { onNavigate?: () => void }
     const pickerTriggerRef = useRef<HTMLButtonElement>(null);
     const restorePickerFocusRef = useRef(false);
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const {
         iterations,
         currentIteration: current,
@@ -88,7 +90,7 @@ export const SidebarIterationCard = ({ onNavigate }: { onNavigate?: () => void }
     if (iterations.length === 0) {
         return (
             <div className="sb-bottom">
-                <Link to="/plan" className="sb-plan-title" onClick={onNavigate}>{t('plan.sidebar.start')}</Link>
+                <Link to={scopeLink('/plan')} className="sb-plan-title" onClick={onNavigate}>{t('plan.sidebar.start')}</Link>
                 <div className="sb-plan-sub">{t('plan.sidebar.setupFirst')}</div>
             </div>
         );

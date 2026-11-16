@@ -9,6 +9,7 @@ import type { SavedView } from '../../types/savedView';
 import { getWorkspaceForPath } from '../../navigation/workspaces';
 import type { NavItem } from '../../navigation/workspaces';
 import { SidebarIterationCard } from './SidebarIterationCard';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 const SYSTEM_VIEW_ORDER = [
     'tasks_unassigned', 'tasks_blocked', 'tasks_overdue', 'tasks_high_priority',
@@ -74,11 +75,12 @@ const SidebarNavItem = ({
 }) => {
     const { t } = useTranslation();
     const attentionDescriptionId = useId();
+    const scopeLink = useScopeLink();
     const label = t(item.labelKey, item.defaultLabel);
     const Icon = item.icon;
     return (
         <Link
-            to={item.to}
+            to={scopeLink(item.to)}
             className="sb-item"
             aria-current={isCurrent ? 'page' : undefined}
             aria-describedby={attention ? attentionDescriptionId : undefined}
@@ -175,6 +177,7 @@ const SavedViewsDisclosure = ({
         if (showAll) searchInputRef.current?.focus();
     }, [showAll]);
 
+    const scopeLink = useScopeLink();
     const renderViewLink = (view: SavedView) => {
         const label = savedViewDisplay(view).name;
         const WarningIcon = view.seed_key === 'tasks_overdue' || view.seed_key === 'projects_at_risk'
@@ -183,7 +186,7 @@ const SavedViewsDisclosure = ({
         return (
             <Link
                 key={view.id}
-                to={viewPath(view)}
+                to={scopeLink(viewPath(view))}
                 className="sb-item"
                 aria-current={
                     pathname === viewRoutePath(view)
