@@ -158,6 +158,7 @@ describe('AppTopNav', () => {
         planningSummaryMock.usePlanningNavigationSummary.mockReturnValue({
             iterations: [{ id: 1 }],
             ready: { done: 2, total: 6, pct: 33 },
+            isPlanProgressKnown: true,
         });
         const { user } = renderWithProviders(
             <>

@@ -119,6 +119,7 @@ const useState = (state: ReturnType<typeof planningState>) => {
         isIterationsError: false,
         isReadinessLoading: false,
         isReadinessError: false,
+        isPlanProgressKnown: true,
     });
 };
 

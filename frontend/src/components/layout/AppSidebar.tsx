@@ -19,6 +19,7 @@ import type { Destination, DestinationCounterValues } from '../../navigation/des
 const useDestinationCounterValues = (): DestinationCounterValues => {
     const {
         ready,
+        isPlanProgressKnown,
         isIterationsLoading,
         isIterationsError,
         isReadinessLoading,
@@ -32,7 +33,9 @@ const useDestinationCounterValues = (): DestinationCounterValues => {
         staleTime: 60000,
     });
 
-    const planProgressKnown = !isIterationsLoading
+    // Progress is a real count only once an iteration is resolved and its readiness has loaded.
+    const planProgressKnown = isPlanProgressKnown
+        && !isIterationsLoading
         && !isIterationsError
         && !isReadinessLoading
         && !isReadinessError;

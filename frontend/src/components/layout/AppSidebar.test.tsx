@@ -21,6 +21,7 @@ const planSummary = (overrides: Record<string, unknown> = {}) => ({
     isIterationsError: false,
     isReadinessLoading: false,
     isReadinessError: false,
+    isPlanProgressKnown: true,
     ...overrides,
 });
 
