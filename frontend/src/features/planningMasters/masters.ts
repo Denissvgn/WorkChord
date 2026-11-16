@@ -1,8 +1,9 @@
 import { formatDate } from '../../utils/formatDate';
+import { PLANNING_STEP_IDS } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 import type { PlanningTaskIssue } from './planningTaskIssues';
 
-// Step definitions and status derivation — mirrors the design's data.jsx model
+// Readiness inputs and the wording of each checkpoint's status.
 
 export type StepState = 'done' | 'warn' | 'blocked' | 'todo';
 
@@ -11,83 +12,6 @@ export interface StepStatus {
     summary?: string;
     missing?: string[];
 }
-
-export interface MasterStepDef {
-    id: string;
-    title: string;
-    desc: string;
-    why: string;
-    primary: string;
-    secondary: string;
-    expert: string;
-    route: string;
-    secondaryRoute?: string;
-}
-
-export const STEP_DEFS: MasterStepDef[] = [
-    {
-        id: 'iteration',
-        title: 'Create planning period',
-        desc: 'Pick the dates you\'re planning for. We\'ll use these as the boundary for capacity and scheduling.',
-        why: 'Without dates, we can\'t compute people-days, surface deadlines, or build a schedule.',
-        primary: 'New planning period',
-        secondary: 'Use existing iteration',
-        expert: 'Open Iterations',
-        route: '/iterations',
-    },
-    {
-        id: 'team',
-        title: 'Add people and capacity',
-        desc: 'Bring in the people who\'ll do this work, and set their allocation for the period.',
-        why: 'Capacity is what makes a plan realistic. Skip this and you\'ll over-commit.',
-        primary: 'Add people',
-        secondary: 'Import from last iteration',
-        expert: 'Open Team',
-        route: '/team',
-    },
-    {
-        id: 'work',
-        title: 'Add work',
-        desc: 'Bring in tasks for this iteration — from intake, the backlog, or by drafting new ones.',
-        why: 'Every task needs an owner, an effort estimate, and a project so it can be scheduled.',
-        primary: 'Add tasks',
-        secondary: 'Pull from intake',
-        expert: 'Open Tasks',
-        route: '/tasks',
-        secondaryRoute: '/triage',
-    },
-    {
-        id: 'blockers',
-        title: 'Resolve scheduling blockers',
-        desc: 'Clean up tasks that can\'t be scheduled yet — missing owner, missing effort, or unresolved dependencies.',
-        why: 'The scheduler skips work it can\'t place. Fix these before building, or they\'ll spill to next period.',
-        primary: 'Review blockers',
-        secondary: 'Move to next period',
-        expert: 'Open Tasks → blocked',
-        route: '/tasks',
-    },
-    {
-        id: 'schedule',
-        title: 'Build schedule',
-        desc: 'Place every ready task on the calendar. Try changes before committing — nothing moves until you apply.',
-        why: 'This is where the plan becomes real. You can re-build any time as new info arrives.',
-        primary: 'Build schedule',
-        secondary: 'Try changes (sandbox)',
-        expert: 'Open Schedule',
-        route: '/gantt',
-    },
-    {
-        id: 'review',
-        title: 'Review plan',
-        desc: 'Walk the plan with your team — load by person, risks, deadlines, and a one-page summary to share.',
-        why: 'Catch issues before the iteration starts. Sharing the plan creates buy-in and surfaces gaps.',
-        primary: 'Open review',
-        secondary: 'Export summary',
-        expert: 'Open Schedule → Review',
-        route: '/gantt',
-        secondaryRoute: '/gantt',
-    },
-];
 
 // ── Readiness data (from real API) ──────────────────────────────────────────
 
@@ -344,16 +268,15 @@ export const derivePlanningRecovery = (
 };
 
 export function nextStep(status: Record<string, StepStatus>): string {
-    const order = STEP_DEFS.map(s => s.id);
-    for (const id of order) {
+    for (const id of PLANNING_STEP_IDS) {
         if (status[id].state !== 'done') return id;
     }
     return 'review';
 }
 
 export function readiness(status: Record<string, StepStatus>): { done: number; total: number; pct: number } {
-    const total = STEP_DEFS.length;
-    const done = STEP_DEFS.filter(s => status[s.id].state === 'done').length;
+    const total = PLANNING_STEP_IDS.length;
+    const done = PLANNING_STEP_IDS.filter(id => status[id].state === 'done').length;
     return { done, total, pct: Math.round((done / total) * 100) };
 }
 
@@ -366,12 +289,12 @@ export function localizeStatus(
     translate: Translate,
 ): Record<string, StepStatus> {
     const result: Record<string, StepStatus> = {};
-    for (const definition of STEP_DEFS) {
-        const current = status[definition.id];
+    for (const id of PLANNING_STEP_IDS) {
+        const current = status[id];
         let summary: string | undefined;
         let missing: string[] | undefined;
 
-        if (definition.id === 'iteration') {
+        if (id === 'iteration') {
             summary = current.state === 'done'
                 ? translate('plan.status.periodReady', {
                     name: r.currentIterationName,
@@ -380,7 +303,7 @@ export function localizeStatus(
                 })
                 : undefined;
             missing = current.state === 'done' ? undefined : [translate('plan.status.noPeriod')];
-        } else if (definition.id === 'team') {
+        } else if (id === 'team') {
             // Agents count as capacity: show the mix, for example "2 people · 3 agents · 412 h".
             const agents = r.teamAgentCount ?? 0;
             summary = current.state === 'done'
@@ -393,14 +316,14 @@ export function localizeStatus(
                 : [r.teamMembersNoCap > 0
                     ? translate('plan.status.peopleWithoutAllocation', { count: r.teamMembersNoCap })
                     : translate('plan.status.noPeople')];
-        } else if (definition.id === 'work') {
+        } else if (id === 'work') {
             summary = current.state === 'done'
                 ? translate('plan.status.workReady', { count: r.taskCount })
                 : undefined;
             missing = current.state === 'done'
                 ? undefined
                 : [translate('plan.status.noTasks')];
-        } else if (definition.id === 'blockers') {
+        } else if (id === 'blockers') {
             summary = current.state === 'done' ? translate('plan.status.noBlockers') : undefined;
             missing = current.state === 'done'
                 ? undefined
@@ -423,7 +346,7 @@ export function localizeStatus(
                             })]
                             : []),
                     ];
-        } else if (definition.id === 'schedule') {
+        } else if (id === 'schedule') {
             summary = current.state === 'done' ? translate('plan.status.scheduleBuilt') : undefined;
             missing = current.state === 'done'
                 ? undefined
@@ -439,7 +362,7 @@ export function localizeStatus(
                     : translate('plan.status.risksToAcknowledge', { count: r.riskCount })];
         }
 
-        result[definition.id] = { state: current.state, summary, missing };
+        result[id] = { state: current.state, summary, missing };
     }
     return result;
 }

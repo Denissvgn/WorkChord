@@ -64,7 +64,7 @@ export const TaskWorkflowHelpContent = ({
             </section>
             {showAction && (
                 <Link
-                    to={scopeLink('/plan/master')}
+                    to={scopeLink('/plan')}
                     className="btn secondary sm"
                     onClick={onNavigate}
                 >

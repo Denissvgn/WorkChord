@@ -5,7 +5,8 @@ export const routeModuleLoaders = {
     landing: () => import('../pages/LandingPage'),
     overview: () => import('../pages/OverviewPage'),
     plan: () => import('../pages/PlanPage'),
-    planMaster: () => import('../pages/PlanMasterPage'),
+    // The old checkpoint page is part of Plan; its path redirects there.
+    planMaster: () => import('../pages/PlanPage'),
     planShare: () => import('../pages/PlanSharePage'),
     calendar: () => import('../pages/CalendarPage'),
     iterations: () => import('../pages/IterationsPage'),

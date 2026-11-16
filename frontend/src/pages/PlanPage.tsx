@@ -1,431 +1,409 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import {
-    ArrowRight,
-    CalendarRange,
-    Check,
-    ChevronDown,
-    GanttChartSquare,
-    Inbox,
-    Layers,
-    ListTodo,
-    LockKeyhole,
-    RefreshCw,
-    Sparkles,
-    TriangleAlert,
-    Users,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { localizeStatus, STEP_DEFS } from '../features/planningMasters/masters';
-import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
-import { PageHeader, PageLayout } from '../components/ui';
+import clsx from 'clsx';
+import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
-import { formatDate } from '../utils/formatDate';
+import { PlanQuickAddCapacity } from '../components/planning/PlanQuickAddCapacity';
+import { PlanShareSection } from '../components/planning/PlanShareSection';
+import { PageHeader, PageLayout } from '../components/ui';
+import {
+    checkpointsDone,
+    firstIncompleteCheckpoint,
+    planCheckpointSections,
+} from '../features/planningMasters/planCheckpoints';
+import type { PlanCheckpointSection, PlanCheckpointState } from '../features/planningMasters/planCheckpoints';
+import { checkpointEvidence, checkpointOwnerLink, readinessWithServerCounts } from '../features/planningMasters/planEvidence';
+import {
+    isPlanningStepId,
+    PLAN_RETURNED_PARAM,
+    PLANNING_STEP_IDS,
+} from '../features/planningMasters/planningReturn';
+import type { PlanningStepId } from '../features/planningMasters/planningReturn';
+import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
+import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import { useScopeLink } from '../features/scope/useScopeLink';
+import type { IterationPlanningReadinessSummary } from '../types/iteration';
+import { formatDate } from '../utils/formatDate';
 import IterationsPage from './IterationsPage';
 
-type LocalizedStepStatus = {
-    state: string;
-    summary?: string;
-    missing?: string[];
+type Translate = ReturnType<typeof useTranslation>['t'];
+type Readiness = ReturnType<typeof usePlanningReadiness>;
+
+const STEP_PARAM = 'step';
+
+// Status hues for status; cobalt only for the next step; amber only where something needs doing.
+// A waiting checkpoint stays neutral.
+const STATE_PILL: Record<PlanCheckpointState, string> = {
+    done: 'resolved',
+    todo: 'accent',
+    warn: 'warn',
+    blocked: 'opt',
 };
 
-type PlanningJob = {
-    id: string;
-    title: string;
-    description: string;
-    icon: LucideIcon;
-    meta: string;
-    to: string;
+const SECTION_CLASS: Record<PlanCheckpointState, string> = {
+    done: 'is-done',
+    todo: 'is-next',
+    warn: 'is-attention',
+    blocked: 'is-waiting',
 };
 
-type RefreshStatus = 'idle' | 'success' | 'error';
-
-const stepClassName = (state: string, isNext: boolean) => {
-    if (state === 'done') return 'done';
-    if (state === 'warn') return 'warn';
-    if (state === 'blocked') return 'blocked';
-    return isNext ? 'current' : '';
+const stateLabel = (section: PlanCheckpointSection, t: Translate) => {
+    if (section.state === 'done') return t('plan.page.state.done');
+    if (section.state === 'warn') return t('plan.page.state.attention');
+    if (section.state === 'blocked') {
+        return t('plan.page.state.waiting', { number: PLANNING_STEP_IDS.indexOf(section.waitsFor ?? 'iteration') + 1 });
+    }
+    return t('plan.page.state.next');
 };
 
-const refetchResultFailed = (value: unknown) => (
-    typeof value === 'object'
-    && value !== null
-    && 'isError' in value
-    && Boolean((value as { isError?: boolean }).isError)
+/** The one-line result of a checkpoint, worded from the server's reason codes and counts. */
+const checkpointResult = (
+    section: PlanCheckpointSection,
+    summary: IterationPlanningReadinessSummary | undefined,
+    readiness: Readiness,
+    t: Translate,
+    language: string,
+): string => {
+    const { counts, state } = section;
+    if (state === 'blocked') {
+        return t('plan.page.waitingResult', { checkpoint: t(`plan.steps.${section.waitsFor ?? 'iteration'}.title`) });
+    }
+    switch (section.id) {
+        case 'iteration': {
+            const iteration = readiness.currentIteration;
+            return iteration
+                ? t('plan.status.periodReady', {
+                    name: iteration.name,
+                    start: formatDate(iteration.start_date, language),
+                    end: formatDate(iteration.end_date, language),
+                })
+                : t('plan.page.noIterationResult');
+        }
+        case 'team': {
+            if (state === 'warn') {
+                return t('plan.status.peopleWithoutAllocation', { count: counts.people_without_capacity ?? 0 });
+            }
+            if (state !== 'done') return t('plan.status.noPeople');
+            const agents = summary?.team_agent_count ?? 0;
+            const members = summary?.team_member_count ?? counts.people ?? 0;
+            const capacity = summary?.team_capacity_hours ?? 0;
+            return agents > 0
+                ? t('plan.status.capacityMixReady', { people: members - agents, agents, capacity })
+                : t('plan.status.teamReady', { count: members, capacity });
+        }
+        case 'work':
+            return state === 'done'
+                ? t('plan.status.workReady', { count: counts.tasks ?? summary?.task_count ?? 0 })
+                : t('plan.status.noTasks');
+        case 'blockers': {
+            if (state === 'done') return t('plan.status.noBlockers');
+            const parts = [
+                counts.unassigned_tasks ? t('plan.status.unassignedTasks', { count: counts.unassigned_tasks }) : null,
+                counts.tasks_without_effort ? t('plan.status.tasksWithoutEffort', { count: counts.tasks_without_effort }) : null,
+                counts.agent_working_no_capacity
+                    ? t('plan.status.agentWorkingNoCapacity', { count: counts.agent_working_no_capacity })
+                    : null,
+            ].filter(Boolean);
+            return parts.length > 0 ? parts.join(' · ') : t('plan.page.state.attention');
+        }
+        case 'schedule':
+            return state === 'done' ? t('plan.status.scheduleBuilt') : t('plan.status.scheduleNotBuilt');
+        default:
+            return state === 'done'
+                ? t('plan.status.planReady')
+                : t('plan.status.risksToAcknowledge', { count: counts.risks ?? 0 });
+    }
+};
+
+/** Evidence comes from the readiness response; the in-place capacity form also needs the iteration's team. */
+const bodyQueries = (stepId: PlanningStepId, queryStates: Readiness['queryStates']): PlanningQueryFeedback[] => (
+    stepId === 'team' ? [queryStates.team] : []
 );
 
-function PlanningReadinessLauncher({
-    ready,
-    status,
-    nextId,
+/** Today's body of a checkpoint: its evidence rows and the link to the page that owns the change. */
+const CheckpointBody = ({
+    section,
+    readiness,
 }: {
-    ready: { done: number; total: number; pct: number };
-    status: Record<string, LocalizedStepStatus>;
-    nextId: string;
-}) {
-    const { t } = useTranslation();
+    section: PlanCheckpointSection;
+    readiness: Readiness;
+}) => {
+    const { t, i18n } = useTranslation();
     const scopeLink = useScopeLink();
-    const nextStep = STEP_DEFS.find(step => step.id === nextId);
-    // Name the next step on the button so the first click is the next real move.
-    const action = ready.done === ready.total
-        ? t('plan.hub.review')
-        : nextStep
-            ? t(`plan.steps.${nextStep.id}.title`)
-            : ready.done === 0 ? t('plan.hub.start') : t('plan.hub.resume');
-    const actionHref = ready.done < ready.total && nextStep
-        ? `/plan/master?step=${nextStep.id}`
-        : '/plan/master';
-    const recommendation = ready.done === 0
-        ? t('plan.hub.recommendedStart')
-        : ready.done === ready.total
-            ? t('plan.hub.recommendedWrap')
-            : t('plan.hub.recommendedResume');
-    // The one place on this page that states plan progress as "n of 6".
-    const readinessSummary = t('plan.hub.checkpointProgress', {
-        done: ready.done,
-        total: ready.total,
-    });
+    const iterationId = readiness.currentIteration?.id ?? 0;
 
-    const localizedState = (stepId: string) => {
-        const stepStatus = status[stepId];
-        if (stepStatus.state === 'done') return stepStatus.summary || t('plan.hub.done');
-        if (stepStatus.state === 'warn') {
-            return stepStatus.missing?.[0] || t('plan.hub.needsAttention');
-        }
-        if (stepStatus.state === 'blocked') return t('plan.hub.locked');
-        if (stepId === nextId) return t('plan.hub.nextStep');
-        return t('plan.hub.notStarted');
-    };
+    if (section.state === 'blocked') {
+        const waitsFor = section.waitsFor ?? 'iteration';
+        return (
+            <p className="plan-section-waiting">
+                {t('plan.page.waitingBody', {
+                    number: PLANNING_STEP_IDS.indexOf(waitsFor) + 1,
+                    checkpoint: t(`plan.steps.${waitsFor}.title`),
+                })}
+            </p>
+        );
+    }
+
+    const queries = bodyQueries(section.id, readiness.queryStates).filter(query => query.enabled);
+    const failed = queries.find(query => query.isBlockingError);
+    if (failed) {
+        const label = t(`plan.steps.${section.id}.title`);
+        return (
+            <QueryErrorState
+                error={failed.error}
+                title={t('plan.master.sectionUnavailableTitle', { section: label })}
+                fallback={t('plan.master.sectionUnavailableBody', { section: label })}
+                headingLevel={3}
+                isRetrying={queries.some(query => query.isFetching)}
+                onRetry={() => { void Promise.allSettled(queries.map(query => query.refetch())); }}
+            />
+        );
+    }
+    if (queries.some(query => query.isLoading && !query.hasData)) {
+        return <QueryLoadingState message={t('plan.master.sectionLoading', { section: t(`plan.steps.${section.id}.title`) })} />;
+    }
+
+    const facts = readinessWithServerCounts(readiness.readinessData, readiness.planningSummary);
+    const evidence = checkpointEvidence(section.id, facts, t, i18n.language, iterationId);
+    const owner = checkpointOwnerLink(section.id, facts, t, iterationId);
+    const quickCapacity = section.id === 'team' && readiness.currentIteration
+        ? <PlanQuickAddCapacity iteration={readiness.currentIteration} members={readiness.teamMembers} />
+        : null;
+    // One primary action per page: the open, incomplete checkpoint's own action, done in place when it can be.
+    const ownerIsPrimary = section.state !== 'done' && !quickCapacity;
 
     return (
-        <section className="mcard primary plan-hub-primary" aria-labelledby="plan-hub-primary-title">
-            <div className="plan-hub-primary-header">
-                <div className="plan-hub-primary-copy">
-                    <div className="mc-icon">
-                        <CalendarRange aria-hidden="true" size={17} />
-                    </div>
-                    <div>
-                        <div className="plan-hub-primary-title-row">
-                            <h2 id="plan-hub-primary-title" className="mc-title">
-                                {t('plan.hub.planIterationTitle')}
-                            </h2>
-                            <span className="pill current sm">{recommendation}</span>
+        <>
+            <section className="plan-checkpoint-evidence" aria-labelledby={`plan-section-${section.id}-evidence`}>
+                <h3 id={`plan-section-${section.id}-evidence`}>{t('plan.page.evidence')}</h3>
+                <dl>
+                    {evidence.map(item => (
+                        <div key={item.label} className={item.exception ? 'exception' : undefined}>
+                            <dt>{item.label}</dt>
+                            <dd>
+                                {item.href ? (
+                                    <Link className="plan-evidence-link" to={scopeLink(item.href)} aria-label={item.actionLabel}>
+                                        <span>{item.value}</span>
+                                        <ArrowRight aria-hidden="true" size={13} />
+                                    </Link>
+                                ) : item.value}
+                            </dd>
                         </div>
-                        <p className="mc-desc">{t('plan.hub.planIterationDescription')}</p>
-                    </div>
-                </div>
-                <Link className="btn primary lg plan-hub-primary-action" to={scopeLink(actionHref)}>
-                    {action}
+                    ))}
+                </dl>
+            </section>
+            {quickCapacity}
+            {section.id === 'review' && iterationId > 0 && <PlanShareSection iterationId={iterationId} />}
+            <div className="plan-section-owner">
+                <Link className={clsx('btn', ownerIsPrimary ? 'primary' : 'secondary')} to={scopeLink(owner.href)}>
+                    {owner.label}
                     <ArrowRight aria-hidden="true" size={14} />
                 </Link>
             </div>
-
-            <div className="plan-hub-readiness">
-                <div className="plan-hub-readiness-copy">
-                    <span className="plan-status-scope">
-                        {t('plan.hub.planningReadiness')}
-                    </span>
-                    <strong>{readinessSummary}</strong>
-                    <span>
-                        {ready.pct < 100 && nextStep ? (
-                            <>
-                                {t('plan.hub.next')}: {t(`plan.steps.${nextStep.id}.title`)}
-                                {status[nextId]?.missing?.[0] && <> · {status[nextId].missing?.[0]}</>}
-                            </>
-                        ) : t('plan.hub.noActiveRisks')}
-                    </span>
-                </div>
-            </div>
-
-            <details className="plan-hub-checkpoints" open>
-                <summary>
-                    <span>{t('plan.hub.checkpointList')}</span>
-                    <ChevronDown aria-hidden="true" size={15} />
-                </summary>
-                <ol
-                    className="plan-hub-checkpoint-grid"
-                    aria-label={t('plan.hub.checkpointList')}
-                >
-                    {STEP_DEFS.map((step, index) => {
-                        const stepStatus = status[step.id];
-                        const isNext = step.id === nextId;
-                        return (
-                            <li
-                                key={step.id}
-                                className={`mini-step ${stepClassName(stepStatus.state, isNext)}`}
-                                aria-current={isNext ? 'step' : undefined}
-                            >
-                                <span className="ms-dot" aria-hidden="true">
-                                    {stepStatus.state === 'done' ? (
-                                        <Check size={11} strokeWidth={3} />
-                                    ) : stepStatus.state === 'blocked' ? (
-                                        <LockKeyhole size={10} />
-                                    ) : index + 1}
-                                </span>
-                                <span className="plan-hub-checkpoint-copy">
-                                    <strong>{t(`plan.steps.${step.id}.title`)}</strong>
-                                    <span>{localizedState(step.id)}</span>
-                                </span>
-                            </li>
-                        );
-                    })}
-                </ol>
-            </details>
-        </section>
+        </>
     );
-}
+};
 
-function PlanningJobLink({ job }: { job: PlanningJob }) {
+const CheckpointSection = ({
+    section,
+    open,
+    onToggle,
+    result,
+    children,
+}: {
+    section: PlanCheckpointSection;
+    open: boolean;
+    onToggle: () => void;
+    result: string;
+    children: ReactNode;
+}) => {
     const { t } = useTranslation();
-    const scopeLink = useScopeLink();
-    const Icon = job.icon;
-
+    const headingId = `plan-section-${section.id}-title`;
+    const bodyId = `plan-section-${section.id}-body`;
+    const statusId = `plan-section-${section.id}-status`;
     return (
-        <Link
-            className="plan-hub-job"
-            to={scopeLink(job.to)}
-            aria-labelledby={`plan-hub-job-${job.id}-title`}
-            aria-describedby={`plan-hub-job-${job.id}-description plan-hub-job-${job.id}-meta`}
-        >
-            <span className="mc-icon" aria-hidden="true">
-                <Icon size={16} />
-            </span>
-            <span className="plan-hub-job-copy">
-                <strong id={`plan-hub-job-${job.id}-title`}>{job.title}</strong>
-                <span id={`plan-hub-job-${job.id}-description`}>{job.description}</span>
-                <small id={`plan-hub-job-${job.id}-meta`}>{job.meta}</small>
-            </span>
-            <span className="plan-hub-job-action" aria-hidden="true">
-                {t('plan.hub.open')}
-                <ArrowRight size={12} />
-            </span>
-        </Link>
+        <li className={clsx('plan-section', SECTION_CLASS[section.state], open && 'is-open')} data-state={section.state}
+            data-testid={`plan-section-${section.id}`}>
+            <div className="plan-section-head">
+                <span className="plan-section-number" aria-hidden="true">
+                    {section.state === 'done' ? <Check size={13} strokeWidth={3} /> : section.number}
+                </span>
+                <h2 id={headingId} className="plan-section-title">
+                    <Button variant="ghost" className="plan-section-toggle" aria-expanded={open} aria-controls={bodyId}
+                        aria-describedby={statusId} onClick={onToggle}>
+                        <span className="sr-only">{t('plan.page.checkpointNumber', { number: section.number })}: </span>
+                        {t(`plan.steps.${section.id}.title`)}
+                        <ChevronDown aria-hidden="true" size={15} className="plan-section-chevron" />
+                    </Button>
+                </h2>
+                <p id={statusId} className="plan-section-status">
+                    <span className={`pill ${STATE_PILL[section.state]}`}>
+                        <span className="pdot" />
+                        {stateLabel(section, t)}
+                    </span>
+                    <span className="plan-section-result">{result}</span>
+                </p>
+            </div>
+            {open && (
+                <div id={bodyId} className="plan-section-body" role="region" aria-labelledby={headingId}>
+                    {children}
+                </div>
+            )}
+        </li>
     );
-}
+};
 
-const PlanHub = () => {
-    const { t } = useTranslation();
-    const scopeLink = useScopeLink();
-    const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>('idle');
-    const {
-        currentIteration,
-        readinessData,
-        status: rawStatus,
-        ready,
-        nextId,
-        isFetching,
-        queryStates,
-        refetch,
-    } = usePlanningReadiness({ includeInbox: true });
-    const status = localizeStatus(rawStatus, readinessData, t);
+const PlanCheckpoints = () => {
+    const { t, i18n } = useTranslation();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const readiness = usePlanningReadiness();
+    const { currentIteration, hasCurrentIteration, planningSummary, queryStates, refetch, isFetching } = readiness;
+    const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    // Opening or closing a section by hand wins over the default for the rest of the visit.
+    const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null } | null>(null);
 
-    const enabledCoreQueries = [
-        queryStates.team,
-        queryStates.tasks,
-        queryStates.gantt,
-    ].filter(query => query.enabled);
-    const isCoreLoading = queryStates.iterations.isLoading
-        || enabledCoreQueries.some(query => query.isLoading);
-    const coreError = queryStates.iterations.isBlockingError
-        ? queryStates.iterations.error
-        : enabledCoreQueries.find(query => query.isBlockingError)?.error;
+    const sections = planCheckpointSections(planningSummary, { hasIteration: hasCurrentIteration });
+    const requestedStep = searchParams.get(STEP_PARAM);
+    const defaultOpen = isPlanningStepId(requestedStep)
+        ? requestedStep
+        : sections ? firstIncompleteCheckpoint(sections) : null;
+    const openId = openOverride ? openOverride.id : defaultOpen;
 
-    const refreshPlanning = async () => {
-        if (isFetching) return;
-        setRefreshStatus('idle');
-        try {
-            const results = await refetch();
-            const failed = results.some(result => (
-                result.status === 'rejected'
-                || (result.status === 'fulfilled' && refetchResultFailed(result.value))
-            ));
-            setRefreshStatus(failed ? 'error' : 'success');
-        } catch {
-            setRefreshStatus('error');
+    // Coming back from Tasks, Team or Gantt re-reads readiness; a section that is now done gives
+    // way to the first incomplete one.
+    const returned = searchParams.get(PLAN_RETURNED_PARAM) === '1';
+    const returnStarted = useRef(false);
+    const [returnSettled, setReturnSettled] = useState(false);
+    const sectionsKnown = queryStates.iterations.hasData
+        && (!hasCurrentIteration || planningSummary !== undefined);
+    useEffect(() => {
+        // Wait for the first read, so the re-read is of the iteration's own readiness.
+        if (!returned || !sectionsKnown || returnStarted.current) return;
+        returnStarted.current = true;
+        void refetch().finally(() => setReturnSettled(true));
+    }, [refetch, returned, sectionsKnown]);
+    useEffect(() => {
+        if (!returnSettled || isFetching || !sections) return;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- runs once after the return re-read settles.
+        setReturnSettled(false);
+        const stepDone = sections.find(section => section.id === requestedStep)?.state === 'done';
+        if (stepDone) setOpenOverride(null);
+        setSearchParams(previous => {
+            const next = new URLSearchParams(previous);
+            next.delete(PLAN_RETURNED_PARAM);
+            if (stepDone) next.delete(STEP_PARAM);
+            return next;
+        }, { replace: true });
+    }, [isFetching, requestedStep, returnSettled, sections, setSearchParams]);
+
+    const toggle = (id: PlanningStepId) => {
+        const next = openId === id ? null : id;
+        setOpenOverride({ id: next });
+        if (next) {
+            setSearchParams(previous => {
+                const params = new URLSearchParams(previous);
+                params.set(STEP_PARAM, next);
+                return params;
+            }, { replace: true });
         }
     };
 
-    const intakeMeta = queryStates.inbox.isLoading
-        ? t('plan.hub.intakeStatusLoading')
-        : queryStates.inbox.isError
-            ? t('plan.hub.intakeStatusUnavailable')
-            : t('plan.hub.inQueue', { count: readinessData.inboxCount || 0 });
+    const refresh = async () => {
+        if (isFetching) return;
+        setRefreshStatus('idle');
+        const results = await refetch();
+        const failed = results.some(result => result.status === 'rejected'
+            || Boolean((result.value as { isError?: boolean } | undefined)?.isError));
+        setRefreshStatus(failed ? 'error' : 'success');
+    };
 
-    const planningJobs: PlanningJob[] = [
-        ...(readinessData.inboxCount > 0 || queryStates.inbox.isError ? [{
-            id: 'intake',
-            title: t('plan.masters.processIntake.title'),
-            description: t('plan.masters.processIntake.description'),
-            icon: Inbox,
-            meta: intakeMeta,
-            to: '/triage',
-        }] : []),
-        ...(readinessData.riskCount > 0 ? [{
-            id: 'replan',
-            title: t('plan.masters.replanAtRisk.title'),
-            description: t('plan.masters.replanAtRisk.description'),
-            icon: TriangleAlert,
-            meta: t('plan.hub.activeSignals', { count: readinessData.riskCount }),
-            to: '/gantt',
-        }] : []),
-    ];
+    const done = sections ? checkpointsDone(sections) : null;
+    const header = (
+        <PageHeader
+            title={t('plan.title')}
+            purpose={t('plan.page.purpose')}
+            meta={(
+                <span className="plan-page-meta">
+                    <span>{currentIteration?.name ?? t('plan.page.noIteration')}</span>
+                    {done !== null && (
+                        <span className="tnum">{t('plan.page.progress', { done, total: PLANNING_STEP_IDS.length })}</span>
+                    )}
+                    {refreshStatus !== 'idle' && (
+                        <span role={refreshStatus === 'error' ? 'alert' : 'status'}>
+                            {refreshStatus === 'error' ? t('plan.hub.refreshFailed') : t('plan.hub.refreshSucceeded')}
+                        </span>
+                    )}
+                </span>
+            )}
+            secondaryActions={(
+                <Button variant="secondary" onClick={() => { void refresh(); }} disabled={isFetching} aria-busy={isFetching}>
+                    <RefreshCw aria-hidden="true" size={12} className={isFetching ? 'animate-spin' : undefined} />
+                    {isFetching ? t('actions.refreshing') : t('plan.hub.refresh')}
+                </Button>
+            )}
+        />
+    );
 
-    if (isCoreLoading) {
-        return (
-            <PageLayout variant="wide">
-                <QueryLoadingState message={t('plan.master.planningDataLoading')} />
-            </PageLayout>
+    let content: ReactNode;
+    if (queryStates.iterations.isLoading && !queryStates.iterations.hasData) {
+        content = <QueryLoadingState message={t('plan.master.planningDataLoading')} />;
+    } else if (queryStates.iterations.isBlockingError) {
+        content = (
+            <QueryErrorState
+                error={queryStates.iterations.error}
+                title={t('plan.master.planningDataUnavailable')}
+                fallback={t('plan.master.planningDataUnavailableBody')}
+                headingLevel={2}
+                isRetrying={queryStates.iterations.isFetching}
+                onRetry={() => { void refetch(); }}
+            />
         );
-    }
-
-    if (coreError) {
-        return (
-            <PageLayout variant="wide">
-                <QueryErrorState
-                    title={t('plan.master.planningDataUnavailable')}
-                    message={t('plan.master.planningDataUnavailableBody')}
-                    onRetry={refreshPlanning}
-                />
-            </PageLayout>
+    } else if (!sections && queryStates.checkpoints.isLoading) {
+        content = <QueryLoadingState message={t('plan.master.planningDataLoading')} />;
+    } else if (!sections) {
+        content = (
+            <QueryErrorState
+                error={queryStates.checkpoints.error}
+                title={t('plan.page.checkpointsUnavailable')}
+                fallback={t('plan.page.checkpointsUnavailableBody')}
+                headingLevel={2}
+                isRetrying={queryStates.checkpoints.isFetching}
+                onRetry={() => { void queryStates.checkpoints.refetch(); }}
+            />
+        );
+    } else {
+        content = (
+            <ol className="plan-sections" aria-label={t('plan.page.checkpoints')}>
+                {sections.map(section => (
+                    <CheckpointSection
+                        key={section.id}
+                        section={section}
+                        open={openId === section.id}
+                        onToggle={() => toggle(section.id)}
+                        result={checkpointResult(section, planningSummary, readiness, t, i18n.language)}
+                    >
+                        <CheckpointBody section={section} readiness={readiness} />
+                    </CheckpointSection>
+                ))}
+            </ol>
         );
     }
 
     return (
-        <PageLayout variant="wide">
-            <PageHeader
-                title={t('plan.title')}
-                subtitle={t('plan.hub.subtitle')}
-                actions={(
-                    <>
-                        <Link
-                            className="iter-pick"
-                            to={scopeLink('/plan/master')}
-                            aria-label={t('plan.hub.openPeriodSetup', {
-                                period: currentIteration?.name || t('plan.hub.pickPeriod'),
-                            })}
-                        >
-                            <CalendarRange aria-hidden="true" size={13} />
-                            <span className="plan-hub-period-name">
-                                {currentIteration?.name || t('plan.hub.pickPeriod')}
-                            </span>
-                            {currentIteration && (
-                                <span className="iter-dates">
-                                    · {formatDate(readinessData.currentIterationStart)}
-                                    –{formatDate(readinessData.currentIterationEnd)}
-                                </span>
-                            )}
-                            <ArrowRight aria-hidden="true" size={11} />
-                        </Link>
-                        <button
-                            className="btn"
-                            type="button"
-                            onClick={() => { void refreshPlanning(); }}
-                            disabled={isFetching}
-                            aria-busy={isFetching}
-                        >
-                            <RefreshCw
-                                aria-hidden="true"
-                                className={isFetching ? 'animate-spin' : undefined}
-                                size={12}
-                            />
-                            {isFetching ? t('actions.refreshing') : t('plan.hub.refresh')}
-                        </button>
-                        {refreshStatus !== 'idle' && (
-                            <span
-                                className={`plan-hub-refresh-status ${refreshStatus}`}
-                                role={refreshStatus === 'error' ? 'alert' : 'status'}
-                            >
-                                {refreshStatus === 'error'
-                                    ? t('plan.hub.refreshFailed')
-                                    : t('plan.hub.refreshSucceeded')}
-                            </span>
-                        )}
-                    </>
-                )}
-            />
-
-            <PlanningReadinessLauncher
-                ready={ready}
-                status={status}
-                nextId={nextId}
-            />
-
-            {planningJobs.length > 0 && (
-                <section className="plan-hub-jobs" aria-labelledby="plan-hub-jobs-title">
-                    <div className="plan-hub-section-heading">
-                        <h2 id="plan-hub-jobs-title">{t('plan.hub.attentionJobs')}</h2>
-                        <p>{t('plan.hub.attentionJobsDescription')}</p>
-                    </div>
-                    <div className="plan-hub-job-list">
-                        {planningJobs.map(job => <PlanningJobLink key={job.id} job={job} />)}
-                    </div>
-                </section>
-            )}
-
-            <details className="plan-hub-direct-tools">
-                <summary>
-                    <span>
-                        <strong>{t('plan.hub.directTools')}</strong>
-                        <small>{t('plan.hub.directToolsDescription')}</small>
-                    </span>
-                    <ChevronDown aria-hidden="true" size={15} />
-                </summary>
-                <nav className="plan-hub-direct-tool-groups" aria-label={t('plan.hub.directTools')}>
-                    <section className="plan-hub-direct-tool-group">
-                        <h3>{t('plan.hub.directToolGroups.shape')}</h3>
-                        <div className="plan-hub-direct-tool-list">
-                            <Link to="/projects" className="btn sm ghost">
-                                <Layers aria-hidden="true" size={12} />
-                                {t('plan.masters.planProject.title')}
-                            </Link>
-                            <Link to="/triage" className="btn sm ghost">
-                                <Inbox aria-hidden="true" size={12} />
-                                {t('nav.triage')}
-                            </Link>
-                            <Link to={scopeLink('/tasks')} className="btn sm ghost">
-                                <ListTodo aria-hidden="true" size={12} />
-                                {t('nav.tasks')}
-                            </Link>
-                        </div>
-                    </section>
-                    <section className="plan-hub-direct-tool-group">
-                        <h3>{t('plan.hub.directToolGroups.schedule')}</h3>
-                        <div className="plan-hub-direct-tool-list">
-                            <Link to="/iterations" className="btn sm ghost">
-                                <CalendarRange aria-hidden="true" size={12} />
-                                {t('nav.iterations')}
-                            </Link>
-                            <Link to="/team" className="btn sm ghost">
-                                <Users aria-hidden="true" size={12} />
-                                {t('nav.team')}
-                            </Link>
-                            <Link to={scopeLink('/gantt')} className="btn sm ghost">
-                                <GanttChartSquare aria-hidden="true" size={12} />
-                                {t('nav.gantt')}
-                            </Link>
-                        </div>
-                    </section>
-                    <section className="plan-hub-direct-tool-group">
-                        <h3>{t('plan.hub.directToolGroups.automation')}</h3>
-                        <div className="plan-hub-direct-tool-list">
-                            <Link to="/agent-pipeline" className="btn sm ghost">
-                                <Sparkles aria-hidden="true" size={12} />
-                                {t('plan.masters.agentReady.title')}
-                            </Link>
-                        </div>
-                    </section>
-                </nav>
-            </details>
+        <PageLayout variant="wide" className="plan-page">
+            {header}
+            <div aria-busy={isFetching || undefined}>{content}</div>
         </PageLayout>
     );
 };
 
-/** Plan shows the iterations of the scope's project when its link asks for them, else the planning hub. */
+/** Plan shows the iterations of the scope's project when its link asks for them, else the six checkpoints. */
 const PlanPage = () => {
     const [searchParams] = useSearchParams();
-    return searchParams.get('panel') === 'iterations' ? <IterationsPage /> : <PlanHub />;
+    return searchParams.get('panel') === 'iterations' ? <IterationsPage /> : <PlanCheckpoints />;
 };
 
 export default PlanPage;

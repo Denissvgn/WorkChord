@@ -1,6 +1,6 @@
 import type { Task } from '../../types/task';
 import {
-    withPlanMasterReturn,
+    withPlanReturn,
 } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 
@@ -69,7 +69,7 @@ export const planningIssueTasksHref = ({
     issue: PlanningTaskIssue;
     iterationId: number;
     returnStepId: PlanningStepId;
-}) => withPlanMasterReturn('/tasks', returnStepId, {
+}) => withPlanReturn('/tasks', returnStepId, {
     // Unassigned work opens ready to assign in bulk; the filter drawer stays closed.
     ...(issue === 'unassigned' ? { mode: 'bulk' } : {}),
     [PLANNING_TASK_ISSUE_PARAM]: issue,

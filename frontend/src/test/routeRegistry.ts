@@ -6,7 +6,7 @@ export const routeRegistry: RouteStatus[] = [
     { key: 'overview', path: '/', status: 'pending' },
     { key: 'planMaster', path: '/plan/master', status: 'pending' },
     { key: 'planShare', path: '/plan/share/:publicId', status: 'pending' },
-    { key: 'plan', path: '/plan', status: 'pending' },
+    { key: 'plan', path: '/plan', status: 'migrated' },
     { key: 'calendar', path: '/calendar', status: 'pending' },
     { key: 'iterations', path: '/iterations', status: 'pending' },
     { key: 'team', path: '/team', status: 'pending' },

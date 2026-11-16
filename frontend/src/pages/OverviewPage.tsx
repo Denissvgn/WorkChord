@@ -24,7 +24,7 @@ import {
     User,
     Zap,
 } from 'lucide-react';
-import { STEP_DEFS } from '../features/planningMasters/masters';
+import { isPlanningStepId } from '../features/planningMasters/planningReturn';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
 import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import type { LucideIcon } from 'lucide-react';
@@ -1041,7 +1041,7 @@ const OverviewFocusPanel = ({
     const scopeLink = useScopeLink();
     const topAttention = attentionItems[0];
     const needsPlanning = planReady.pct < 100;
-    const nextDef = STEP_DEFS.find(step => step.id === planNextId);
+    const nextStepId = isPlanningStepId(planNextId) ? planNextId : null;
     const tone: PillTone = topAttention?.tone
         ?? (needsPlanning ? 'indigo' : 'green');
     const FocusIcon = topAttention?.icon
@@ -1054,7 +1054,7 @@ const OverviewFocusPanel = ({
     const meta = topAttention?.meta ?? (
         needsPlanning
             ? t('overview.focus.planIncompleteMeta', {
-                step: nextDef ? t(`plan.steps.${nextDef.id}.title`) : t('nav.planning'),
+                step: nextStepId ? t(`plan.steps.${nextStepId}.title`) : t('nav.planning'),
             })
             : t('overview.focus.planReadyMeta')
     );
@@ -1064,7 +1064,7 @@ const OverviewFocusPanel = ({
             : t('overview.focus.reviewPlan')
     );
     const actionTo = topAttention?.to
-        ?? '/plan/master';
+        ?? '/plan';
 
     return (
         <section className="overview-focus" aria-labelledby="overview-focus-title">

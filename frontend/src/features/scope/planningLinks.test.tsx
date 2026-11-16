@@ -104,7 +104,7 @@ describe('links the app builds to the planning page carry the scope', () => {
     it('carries it from the return bar back to the checkpoint', () => {
         renderWithProviders(<PlanReturnBar />, { initialEntries: ['/tasks?fromPlanStep=schedule&project=2&iteration=22'] });
         expect(screen.getByRole('link', { name: i18n.t('plan.master.returnToCheckpoint') }))
-            .toHaveAttribute('href', '/plan/master?step=schedule&returned=1&project=2&iteration=22');
+            .toHaveAttribute('href', '/plan?step=schedule&returned=1&project=2&iteration=22');
     });
 
     it('carries it from the outlook on Analytics to the schedule step', () => {
@@ -117,7 +117,7 @@ describe('links the app builds to the planning page carry the scope', () => {
         } as IterationSummary;
         renderWithProviders(<OnTrackSummary summary={summary} />, { initialEntries: [SCOPE_ENTRY] });
         expect(screen.getByRole('link', { name: i18n.t('analytics.onTrack.planIt') }))
-            .toHaveAttribute('href', '/plan/master?step=schedule&project=2&iteration=22');
+            .toHaveAttribute('href', '/plan?step=schedule&project=2&iteration=22');
     });
 
     it('carries it from the Tasks and Plan guides', () => {
@@ -126,9 +126,9 @@ describe('links the app builds to the planning page carry the scope', () => {
             <PlanningWorkflowHelpContent surface="plan" />
         </>, { initialEntries: [SCOPE_ENTRY] });
         expect(screen.getByRole('link', { name: i18n.t('tasks.guide.openPlanWork') }))
-            .toHaveAttribute('href', '/plan/master?project=2&iteration=22');
+            .toHaveAttribute('href', '/plan?project=2&iteration=22');
         expect(screen.getByRole('link', { name: i18n.t('plan.help.action') }))
-            .toHaveAttribute('href', '/plan/master?project=2&iteration=22');
+            .toHaveAttribute('href', '/plan?project=2&iteration=22');
     });
 
     it('carries the remembered scope from a shared plan', async () => {
@@ -147,7 +147,7 @@ describe('links the app builds to the planning page carry the scope', () => {
             { initialEntries: ['/plan/share/shared-token'] },
         );
         expect(await screen.findByRole('link', { name: i18n.t('plan.master.openPlanMaster') }))
-            .toHaveAttribute('href', '/plan/master?project=2&iteration=22');
+            .toHaveAttribute('href', '/plan?project=2&iteration=22');
     });
 
     it('opens the plan of an iteration in the list with that iteration and its project in scope', async () => {
@@ -155,10 +155,10 @@ describe('links the app builds to the planning page carry the scope', () => {
         renderWithProviders(<><IterationList /><LocationProbe /></>, { initialEntries: ['/plan?panel=iterations&project=1&iteration=12'] });
 
         expect(await screen.findByRole('link', { name: i18n.t('iterations.openPlan') }))
-            .toHaveAttribute('href', '/plan/master?project=1&iteration=12');
+            .toHaveAttribute('href', '/plan?project=1&iteration=12');
 
         await userEvent.click(screen.getByRole('button', { name: i18n.t('iterations.planThisIteration') }));
-        expect(locationText()).toBe('/plan/master?project=2&iteration=22');
+        expect(locationText()).toBe('/plan?project=2&iteration=22');
     });
 
     it('keeps All projects when the plan of an iteration is opened from the list', async () => {
@@ -166,6 +166,6 @@ describe('links the app builds to the planning page carry the scope', () => {
         renderWithProviders(<><IterationList /><LocationProbe /></>, { initialEntries: ['/plan?panel=iterations&project=all&iteration=12'] });
 
         await userEvent.click(await screen.findByRole('button', { name: i18n.t('iterations.planThisIteration') }));
-        expect(locationText()).toBe('/plan/master?project=all&iteration=22');
+        expect(locationText()).toBe('/plan?project=all&iteration=22');
     });
 });

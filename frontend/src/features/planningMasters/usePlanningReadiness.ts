@@ -391,6 +391,7 @@ export const usePlanningReadiness = ({
         tasks: queryFeedback(tasksQuery, hasCurrentIteration),
         gantt: queryFeedback(ganttQuery, hasCurrentIteration),
         inbox: queryFeedback(inboxQuery, includeInbox),
+        checkpoints: queryFeedback(checkpointsQuery, hasCurrentIteration),
     };
     const readinessError = [
         queryStates.team,
@@ -413,7 +414,9 @@ export const usePlanningReadiness = ({
     const refetch = async () => {
         return Promise.allSettled([
             iterationsQuery.refetch(),
-            ...(hasCurrentIteration ? [teamQuery.refetch(), tasksQuery.refetch(), ganttQuery.refetch()] : []),
+            ...(hasCurrentIteration
+                ? [teamQuery.refetch(), tasksQuery.refetch(), ganttQuery.refetch(), checkpointsQuery.refetch()]
+                : []),
             ...(includeInbox ? [inboxQuery.refetch()] : []),
         ]);
     };
@@ -430,6 +433,8 @@ export const usePlanningReadiness = ({
         gantt: ganttQuery.data,
         inboxItems: inboxQuery.data ?? [],
         readinessData,
+        /** The server's planning-readiness response, which owns the checkpoint states. */
+        planningSummary: checkpointsQuery.data,
         status,
         ready,
         nextId,

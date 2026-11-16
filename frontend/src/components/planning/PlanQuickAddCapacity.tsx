@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
+import { Select } from '../common/Select';
 import { QueryErrorState } from '../feedback/QueryState';
 import { teamService } from '../../services/teamService';
 import { planningInputService } from '../../services/planningInputService';
@@ -48,17 +49,16 @@ export const PlanQuickAddCapacity = ({ iteration, members }: { iteration: Iterat
     const selected = available.find(profile => String(profile.id) === profileId);
     return (
         <form className="flex flex-wrap items-end gap-2" onSubmit={event => { event.preventDefault(); if (selected) add.mutate(selected); }}>
-            <label className="min-w-48 flex-1">
-                <span className="field-lbl">{t('plan.quickCapacity.profile')}</span>
-                <select className="input w-full" value={profileId} onChange={event => setProfileId(event.target.value)}>
+            <div className="min-w-48 flex-1">
+                <Select label={t('plan.quickCapacity.profile')} className="w-full" value={profileId} onChange={event => setProfileId(event.target.value)}>
                     <option value="">{t('plan.quickCapacity.chooseProfile')}</option>
                     {available.map(profile => (
                         <option key={profile.id} value={profile.id}>
                             {profile.display_name}{profile.profile_kind === 'agent' ? ` · ${t('plan.quickCapacity.agent')}` : ''}
                         </option>
                     ))}
-                </select>
-            </label>
+                </Select>
+            </div>
             <Button type="submit" disabled={!selected} isLoading={add.isPending}>{t('plan.quickCapacity.add')}</Button>
             {add.isError && <p role="alert" className="w-full text-sm text-feedback-danger-foreground">{getApiErrorMessage(add.error, t('plan.quickCapacity.addFailed'))}</p>}
             <p className="w-full text-xs text-content-secondary">{t('plan.quickCapacity.help')}</p>

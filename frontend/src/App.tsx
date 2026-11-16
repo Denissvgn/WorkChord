@@ -11,7 +11,6 @@ import { routeModuleLoaders } from './navigation/routeModules';
 const OverviewPage = lazy(routeModuleLoaders.overview);
 const LandingPage = lazy(routeModuleLoaders.landing);
 const PlanPage = lazy(routeModuleLoaders.plan);
-const PlanMasterPage = lazy(routeModuleLoaders.planMaster);
 const PlanSharePage = lazy(routeModuleLoaders.planShare);
 const CalendarPage = lazy(routeModuleLoaders.calendar);
 const IterationsPage = lazy(routeModuleLoaders.iterations);
@@ -49,7 +48,7 @@ const WorkspaceRoutes = () => (
   <Routes>
     <Route path="/" element={<OverviewPage />} />
     <Route path="/plan" element={<PlanPage />} />
-    <Route path="/plan/master" element={<LegacyRedirect><PlanMasterPage /></LegacyRedirect>} />
+    <Route path="/plan/master" element={<LegacyRedirect><PlanPage /></LegacyRedirect>} />
     <Route path="/calendar" element={<LegacyRedirect><CalendarPage /></LegacyRedirect>} />
     <Route path="/iterations" element={<LegacyRedirect><IterationsPage /></LegacyRedirect>} />
     <Route path="/team" element={<TeamPage />} />
