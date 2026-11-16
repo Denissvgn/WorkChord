@@ -5,6 +5,12 @@ import { teamworkEnglish } from './teamwork.en';
 import { landingEnglish } from './landing.en';
 export const englishResources = {
         translation: {
+            projectTabs: {
+                summary: 'Summary', tasks: 'Tasks', iterations: 'Iterations', releases: 'Releases', requests: 'Requests', updates: 'Updates',
+                navigation: 'Project sections', purpose: 'Coordinate delivery, track milestones and share project updates.',
+                statusLabel: 'Status', healthLabel: 'Health', datesLabel: 'Dates', ownerLabel: 'Owner',
+                editField: 'Edit {{field}}: {{value}}', newTask: 'New task', openTasks: 'Open in Tasks',
+            },
             planningInput: planningInputEnglish,
 
             teamwork: teamworkEnglish,
