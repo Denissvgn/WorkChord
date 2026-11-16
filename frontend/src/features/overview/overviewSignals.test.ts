@@ -3,6 +3,7 @@ import type { Iteration } from '../../types/iteration';
 import type { Task, TaskReference } from '../../types/task';
 import {
     backlogRoots,
+    calendarDaysLeft,
     daysLeftToLatestEnd,
     iterationsInView,
     listTasks,
@@ -12,7 +13,6 @@ import {
     pipelineTasksInScope,
     selectWorkNow,
     taskListHref,
-    workingDaysLeft,
 } from './overviewSignals';
 import { filtersFromSearchParams } from '../savedViews/taskViewParams';
 
@@ -112,12 +112,15 @@ describe('Overview signals', () => {
         expect(iterationsInView(iterations, 1, 'backlog', today)).toEqual([]);
     });
 
-    it('counts working days left after today', () => {
+    it('counts calendar days from today to the end date, never from the working-day budget', () => {
         const item = iteration(1, 1, '2026-11-01', '2026-11-10', 10);
-        expect(workingDaysLeft(item, '2026-10-20')).toBe(10);
-        expect(workingDaysLeft(item, '2026-11-01')).toBe(9);
-        expect(workingDaysLeft(item, '2026-11-10')).toBe(0);
-        expect(workingDaysLeft(item, '2026-12-01')).toBe(0);
+        expect(calendarDaysLeft(item, '2026-10-20')).toBe(21);
+        expect(calendarDaysLeft(item, '2026-11-01')).toBe(9);
+        expect(calendarDaysLeft(item, '2026-11-09')).toBe(1);
+        expect(calendarDaysLeft(item, '2026-11-10')).toBe(0);
+        expect(calendarDaysLeft(item, '2026-12-01')).toBe(0);
+        expect(calendarDaysLeft({ ...item, working_days: 2 } as Iteration, '2026-11-01')).toBe(9);
+        expect(calendarDaysLeft({ ...item, end_date: '2026-11-10T00:00:00Z' }, '2026-11-01')).toBe(9);
     });
 
     it('keeps pipeline tasks of the scope by the pipeline view rule', () => {
@@ -131,8 +134,8 @@ describe('Overview signals', () => {
 describe('Overview count lists', () => {
     it('reads only the lists Overview can show', () => {
         expect(parseOverviewCountList('done')).toBe('done');
-        expect(parseOverviewCountList('stage-executing')).toBe('stage-executing');
-        expect(parseOverviewCountList('stage-unknown')).toBeNull();
+        // Stage counts link to the pipeline view, so Overview has no stage lists of its own.
+        expect(parseOverviewCountList('stage-executing')).toBeNull();
         expect(parseOverviewCountList('toString')).toBeNull();
         expect(parseOverviewCountList(null)).toBeNull();
         expect(overviewCountListHref('atRisk')).toBe('/?list=atRisk');
@@ -169,11 +172,12 @@ describe('Backlog references', () => {
 });
 
 describe('Days left to the latest end', () => {
-    it('counts the working days left in the iteration that ends last', () => {
+    it('counts the calendar days to the end of the iteration that ends last', () => {
         const early = iteration(1, 1, '2026-11-02', '2026-11-27', 20);
         const late = iteration(2, 2, '2026-11-09', '2026-12-04', 20);
-        expect(daysLeftToLatestEnd([early, late], '2026-11-16')).toBe(workingDaysLeft(late, '2026-11-16'));
-        expect(daysLeftToLatestEnd([early, late], '2026-11-16')).toBe(13);
+        expect(daysLeftToLatestEnd([early, late], '2026-11-16')).toBe(18);
+        // The same dates with a smaller working-day budget leave the countdown unchanged.
+        expect(daysLeftToLatestEnd([early, { ...late, working_days: 3 }], '2026-11-16')).toBe(18);
         expect(daysLeftToLatestEnd([], '2026-11-16')).toBeNull();
     });
 });

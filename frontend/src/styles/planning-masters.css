@@ -2520,11 +2520,21 @@
   font-weight: 600;
   letter-spacing: -0.01em;
 }
-.wc .overview-attention-copy > p:last-child {
+.wc .overview-attention-copy > p:not(.overview-attention-label) {
   margin: 2px 0 0;
   color: var(--ink-2);
   font-size: var(--wc-type-base);
   line-height: var(--wc-leading-body);
+}
+/* A refresh failed: the item is the last loaded result, said in amber, with a retry. */
+.wc .overview-attention-copy > p.overview-attention-stale {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 6px;
+  color: rgb(var(--color-feedback-warning-foreground));
+  font-size: var(--wc-type-meta);
 }
 .wc .overview-attention-action { white-space: nowrap; }
 

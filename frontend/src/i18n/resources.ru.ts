@@ -1515,6 +1515,8 @@ export const russianResources = {
                     clearMeta: 'Нет заблокированных задач, ожидающих проверок и задач без исполнителя, а план завершён.',
                     clearMetaBacklog: 'В бэклоге нет заблокированных задач и ожидающих проверок.',
                     reviewsHidden: 'Проверки агентов недоступны с вашим уровнем доступа.',
+                    staleClearTitle: 'При последнем обновлении от вас ничего не требовалось',
+                    staleMeta: 'Не удалось обновить: {{sources}}. Показан последний загруженный результат.',
                     unknownTitle: 'Обзор пока не может сказать, что от вас требуется',
                     unknownMeta: 'Чтобы выбрать самое срочное, нужны все источники, а часть не загрузилась: {{sources}}.',
                     sources: {
@@ -1560,6 +1562,8 @@ export const russianResources = {
                 },
                 agentsNow: 'Агенты сейчас',
                 agentsNowDescription: 'Задачи на каждом этапе конвейера агентов.',
+                agentsNowScopeDescription: 'Задачи на каждом этапе конвейера агентов для «{{scope}}», как выбрано в панели области.',
+                agentsNowBacklog: 'Бэклог',
                 agentsNowLocked: 'Чтобы видеть конвейер агентов, нужен ключ администратора или ключ агента.',
                 openPipeline: 'Открыть конвейер',
                 onTrack: 'Идём по плану?',
@@ -1733,6 +1737,7 @@ export const russianResources = {
                     loadingSignals: 'Загружаем следующие действия…',
                     sectionLoading: 'Загружаем этот раздел…',
                     sectionUnavailable: 'Этот раздел недоступен.',
+                    sectionStale: 'Не удалось обновить раздел; показан последний загруженный результат.',
                     valueUnavailable: 'Недоступно',
                     deliveryProgressUnavailable: 'Данные о завершении задач недоступны',
                     sources: {

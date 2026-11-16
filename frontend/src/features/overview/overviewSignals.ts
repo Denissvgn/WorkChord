@@ -71,22 +71,15 @@ export const pipelineTasksInScope = (
 const DONE_STATUSES = new Set(['resolved', 'closed']);
 
 /**
- * A list Overview can show itself, for counts that no single Tasks list holds: a sum over
- * several iterations, or Backlog work, which the Tasks backlog does not filter.
+ * A list Overview can show itself, for task counts that no single Tasks list holds: a sum
+ * over several iterations, or Backlog work, which the Tasks backlog does not filter.
  */
-export type OverviewCountList = OverviewTaskList | `stage-${PipelineStage}`;
+export type OverviewCountList = OverviewTaskList;
 
 export const OVERVIEW_COUNT_LIST_PARAM = 'list';
 
-export const parseOverviewCountList = (value: string | null): OverviewCountList | null => {
-    if (!value) return null;
-    if (Object.hasOwn(OVERVIEW_TASK_LISTS, value)) return value as OverviewTaskList;
-    const stage = value.startsWith('stage-') ? value.slice('stage-'.length) : null;
-    return stage && (PIPELINE_STAGES as readonly string[]).includes(stage) ? value as OverviewCountList : null;
-};
-
-export const countListStage = (list: OverviewCountList): PipelineStage | null => (
-    list.startsWith('stage-') ? list.slice('stage-'.length) as PipelineStage : null
+export const parseOverviewCountList = (value: string | null): OverviewCountList | null => (
+    value && Object.hasOwn(OVERVIEW_TASK_LISTS, value) ? value as OverviewCountList : null
 );
 
 /** The Overview link that opens one of its own lists; the scope is added by the caller. */
@@ -169,30 +162,23 @@ const parseDay = (value: string) => {
     return Number.isNaN(timestamp) ? null : timestamp;
 };
 
-/** Working days left in the iteration after today, spread evenly over its calendar days. */
-export const workingDaysLeft = (iteration: Iteration, today: string) => {
-    const workingDays = Math.max(0, iteration.working_days || 0);
-    const start = parseDay(iteration.start_date);
+/** Calendar days from today to the iteration's end date; 0 once it has ended. */
+export const calendarDaysLeft = (iteration: Pick<Iteration, 'end_date'>, today: string): number | null => {
     const end = parseDay(iteration.end_date);
     const now = parseDay(today);
-    if (start === null || end === null || now === null || end < start) return workingDays;
-    if (now < start) return workingDays;
-    if (now > end) return 0;
-    const calendarDays = Math.round((end - start) / MS_PER_DAY) + 1;
-    const elapsed = Math.round((now - start) / MS_PER_DAY) + 1;
-    const dayNo = Math.min(workingDays, Math.max(1, Math.ceil((elapsed / calendarDays) * workingDays)));
-    return Math.max(0, workingDays - dayNo);
+    if (end === null || now === null) return null;
+    return Math.max(0, Math.round((end - now) / MS_PER_DAY));
 };
 
 /**
- * Working days left until the latest end among the iterations: with All projects the work in
- * view is done when the last open iteration ends. Null when there is no iteration.
+ * Calendar days from today to the latest end among the iterations: with All projects the
+ * work in view is done when the last open iteration ends. Null when there is no iteration.
  */
-export const daysLeftToLatestEnd = (iterations: Iteration[], today: string): number | null => {
+export const daysLeftToLatestEnd = (iterations: Pick<Iteration, 'id' | 'end_date'>[], today: string): number | null => {
     const latest = [...iterations].sort((left, right) => (
         right.end_date.slice(0, 10).localeCompare(left.end_date.slice(0, 10)) || right.id - left.id
     ))[0];
-    return latest ? workingDaysLeft(latest, today) : null;
+    return latest ? calendarDaysLeft(latest, today) : null;
 };
 
 export type DeliveryRisk = 'overdue' | 'late-start' | 'outside-limits' | 'blocked' | null;

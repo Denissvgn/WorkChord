@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { expectPageChrome } from '../test/pageChrome';
@@ -275,7 +275,8 @@ describe('Overview', () => {
         expect(await figure('overview-figure-done')).toHaveTextContent('2');
         expect(await figure('overview-figure-total')).toHaveTextContent('9');
         expect(await figure('overview-figure-at-risk')).toHaveTextContent('2');
-        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('8');
+        // Calendar days from Nov 16 to the end of iteration 12 on Nov 27.
+        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('11');
 
         // The header names the scope's project and dates and leads with New task.
         const header = screen.getByTestId('page-header');
@@ -394,7 +395,7 @@ describe('Overview', () => {
     it('shows Days left as plain text, because a number of days has no task list', async () => {
         renderOverview();
         const daysLeft = await figure('overview-figure-days-left');
-        expect(daysLeft).toHaveTextContent('8');
+        expect(daysLeft).toHaveTextContent('11');
         expect(daysLeft.tagName).toBe('SPAN');
         expect(daysLeft.closest('a')).toBeNull();
     });
@@ -429,8 +430,10 @@ describe('Overview', () => {
         expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('13');
         expect(screen.getByTestId('overview-figure-at-risk')).toHaveTextContent('3');
         expect(api.tasks).not.toHaveBeenCalledWith(11);
-        // Iteration 12 has 8 working days left and iteration 21, which ends last on Dec 4, has 13.
-        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('13');
+        // Calendar days from Nov 16 to Dec 4, the end of iteration 21, which ends last. It is not
+        // prorated from a working-day budget: iteration 21 has 20 working days, and a budget of 3
+        // with the same dates gives the same count.
+        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('18');
 
         // Work now draws from both open iterations, and the attention item names its iteration.
         const workNow = screen.getByRole('region', { name: i18n.t('overview.workNow') });
@@ -438,20 +441,24 @@ describe('Overview', () => {
         expect(await screen.findByRole('region', { name: i18n.t('overview.attentionItem.blocked', { count: 1 }) }))
             .toHaveTextContent('Iteration 12 · Alpha:');
 
-        await waitFor(() => expect(screen.getByTestId('overview-stage-executing')).toHaveTextContent('3'));
+        // Stage counts are taken in the scope bar's iteration, which the pipeline view applies.
+        await waitFor(() => expect(screen.getByTestId('overview-stage-executing')).toHaveTextContent('2'));
+        expect(screen.getByTestId('overview-stage-executing')).toHaveAttribute('href', '/tasks?layout=pipeline&stage=executing&project=all&iteration=12');
+        expect(screen.getByRole('region', { name: i18n.t('overview.agentsNow') }))
+            .toHaveTextContent(i18n.t('overview.agentsNowScopeDescription', { scope: 'Iteration 12 · Alpha' }));
         expectPageChrome(container);
+    });
+
+    it('counts Days left in calendar days to the latest end, whatever the working-day budget', async () => {
+        api.iterations.mockResolvedValue(ITERATIONS.map(item => (item.id === 21 ? { ...item, working_days: 3 } : item)));
+        renderOverview('/?project=all&iteration=12');
+        expect(await figure('overview-figure-days-left')).toHaveTextContent('18');
     });
 
     it.each([
         { testId: 'overview-figure-done', expected: ['Task 101', 'Task 102', 'Task 201'] },
         { testId: 'overview-figure-total', expected: [101, 102, 103, 104, 105, 106, 107, 108, 109, 201, 202, 203, 204].map(id => `Task ${id}`) },
         { testId: 'overview-figure-at-risk', expected: ['Task 104', 'Task 105', 'Task 202'] },
-        { testId: 'overview-stage-executing', expected: ['Task 104', 'Task 106', 'Task 203'] },
-        { testId: 'overview-stage-verification_required', expected: ['Task 103', 'Task 204'] },
-        { testId: 'overview-stage-needs_definition', expected: ['Task 107', 'Task 108'] },
-        // Zero counts link too: the list they open is empty. Task 401 is in the ended iteration 11.
-        { testId: 'overview-stage-start_ready', expected: [] },
-        { testId: 'overview-stage-recovery_required', expected: [] },
     ])('with All projects links $testId to a list that holds exactly its count', async ({ testId, expected }) => {
         const { user } = renderOverview('/?project=all&iteration=12');
         const count = await figure(testId);
@@ -464,6 +471,34 @@ describe('Overview', () => {
         const rows = await ownListRows();
         expect(rows).toHaveLength(expected.length);
         expect(rows).toEqual(expected.map(title => i18n.t('overview.list.openTask', { title })));
+    });
+
+    it.each([
+        ...STAGES.map(stage => ({
+            iteration: 21,
+            stage,
+            expected: { executing: 1, verification_required: 1 }[stage as string] ?? 0,
+        })),
+        { iteration: 12, stage: 'executing' as const, expected: 2 },
+        { iteration: 12, stage: 'needs_definition' as const, expected: 2 },
+        // Task 401 is in iteration 11, which has ended; the scope bar can still name it.
+        { iteration: 11, stage: 'recovery_required' as const, expected: 1 },
+    ])('with All projects links the $stage count in iteration $iteration to the pipeline view, which holds that many tasks', async ({ iteration: scopeIteration, stage, expected }) => {
+        const { user } = renderOverview(`/?project=all&iteration=${scopeIteration}`);
+        const count = await screen.findByTestId(`overview-stage-${stage}`);
+        await waitFor(() => expect(count).toHaveTextContent(String(expected)));
+        expect(count.tagName).toBe('A');
+
+        await user.click(count);
+        await waitFor(() => expect(screen.getByTestId('location').textContent).toMatch(/^\/tasks/));
+        const search = searchOf();
+        expect(search.get('layout')).toBe('pipeline');
+        expect(search.get('stage')).toBe(stage);
+        expect(search.get('project')).toBe('all');
+        expect(search.get('iteration')).toBe(String(scopeIteration));
+
+        const heading = await screen.findByRole('heading', { name: i18n.t('agentPipeline.stageHeading', { stage: i18n.t(`agentPipeline.columns.${stage}.title`), count: expected }) });
+        expect((heading.closest('section') as HTMLElement).querySelectorAll('[data-testid^="task-card-"]')).toHaveLength(expected);
     });
 
     it('closes its own list and keeps the scope', async () => {
@@ -615,6 +650,61 @@ describe('Overview', () => {
         } finally {
             TASKS_BY_ITERATION[12] = ALPHA_TASKS;
         }
+    });
+
+    it.each([
+        { name: 'the tasks', fail: () => { api.tasks.mockRejectedValue(unavailable()); }, source: 'tasks', section: 'overview.workNow' },
+        { name: 'the pipeline', fail: () => { api.pipeline.mockRejectedValue(unavailable()); }, source: 'pipeline', section: 'overview.agentsNow' },
+        { name: 'the plan progress', fail: () => { api.readiness.mockRejectedValue(unavailable()); }, source: 'plan', section: null },
+    ])('marks the last result as stale, with a retry, when a refresh of $name fails', async ({ fail, source, section }) => {
+        TASKS_BY_ITERATION[12] = [task(101, { status: 'closed' }), task(109)];
+        api.pipeline.mockResolvedValue({ ...pipelineResponse(), verification_required: [] });
+        try {
+            const { queryClient, user } = renderOverview();
+            expect(await screen.findByRole('region', { name: i18n.t('overview.attentionItem.clearTitle') })).toBeInTheDocument();
+            await waitFor(() => expect(screen.getByTestId('overview-stage-executing')).toHaveTextContent('2'));
+
+            fail();
+            await act(() => queryClient.refetchQueries());
+
+            // The cached result stays, but never as an unqualified all-clear.
+            const attention = await screen.findByRole('region', { name: i18n.t('overview.attentionItem.staleClearTitle') });
+            expect(screen.queryByText(i18n.t('overview.attentionItem.clearTitle'))).not.toBeInTheDocument();
+            expect(within(attention).getByTestId('overview-attention-stale'))
+                .toHaveTextContent(i18n.t('overview.attentionItem.staleMeta', { sources: i18n.t(`overview.attentionItem.sources.${source}`) }));
+            expect(screen.getByTestId('overview-figure-done')).toHaveTextContent('1');
+            expect(screen.getByTestId('overview-stage-executing')).toHaveTextContent('2');
+            if (section) {
+                expect(within(screen.getByRole('region', { name: i18n.t(section) })).getByText(i18n.t('overview.dataStatus.sectionStale')))
+                    .toBeInTheDocument();
+            }
+
+            // Once the source loads again, the retry settles the item.
+            api.tasks.mockImplementation(async (id: number) => TASKS_BY_ITERATION[id] ?? []);
+            api.pipeline.mockResolvedValue({ ...pipelineResponse(), verification_required: [] });
+            api.readiness.mockResolvedValue(readinessResponse());
+            await user.click(within(attention).getByRole('button', { name: i18n.t('overview.attentionItem.retry') }));
+            expect(await screen.findByRole('region', { name: i18n.t('overview.attentionItem.clearTitle') })).toBeInTheDocument();
+            expect(screen.queryByTestId('overview-attention-stale')).not.toBeInTheDocument();
+            expect(screen.queryByText(i18n.t('overview.dataStatus.sectionStale'))).not.toBeInTheDocument();
+        } finally {
+            TASKS_BY_ITERATION[12] = ALPHA_TASKS;
+        }
+    });
+
+    it('keeps the last attention item, marked as stale, when a refresh fails', async () => {
+        const { queryClient } = renderOverview();
+        const blocked = i18n.t('overview.attentionItem.blocked', { count: 1 });
+        expect(await screen.findByRole('region', { name: blocked })).toBeInTheDocument();
+
+        api.tasks.mockRejectedValue(unavailable());
+        await act(() => queryClient.refetchQueries());
+
+        const attention = await screen.findByRole('region', { name: blocked });
+        await waitFor(() => expect(within(attention).getByTestId('overview-attention-stale'))
+            .toHaveTextContent(i18n.t('overview.attentionItem.sources.tasks')));
+        expect(within(attention).getAllByRole('link')).toHaveLength(1);
+        expect(within(attention).getByRole('button', { name: i18n.t('overview.attentionItem.retry') })).toBeInTheDocument();
     });
 
     it('offers a retry when the tasks cannot be loaded', async () => {

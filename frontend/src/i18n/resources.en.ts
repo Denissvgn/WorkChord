@@ -1464,6 +1464,8 @@ export const englishResources = {
                     clearMeta: 'No blocked tasks, no reviews waiting and no tasks to assign, and the plan is complete.',
                     clearMetaBacklog: 'No blocked tasks and no reviews waiting in the backlog.',
                     reviewsHidden: 'Agent reviews are not visible with your access.',
+                    staleClearTitle: 'Nothing needed you at the last update',
+                    staleMeta: 'Could not refresh {{sources}}, so this is the last loaded result.',
                     unknownTitle: 'Overview cannot tell what needs you yet',
                     unknownMeta: 'It needs every source to say what is most urgent, and some did not load: {{sources}}.',
                     sources: {
@@ -1501,6 +1503,8 @@ export const englishResources = {
                 },
                 agentsNow: 'Agents now',
                 agentsNowDescription: 'Tasks at each stage of the agent pipeline.',
+                agentsNowScopeDescription: 'Tasks at each stage of the agent pipeline for {{scope}}, as set in the scope bar.',
+                agentsNowBacklog: 'Backlog',
                 agentsNowLocked: 'Reading the agent pipeline needs the admin key or an agent key.',
                 openPipeline: 'Open pipeline',
                 onTrack: 'On track',
@@ -1656,6 +1660,7 @@ export const englishResources = {
                     loadingSignals: 'Loading next actions…',
                     sectionLoading: 'Loading this section…',
                     sectionUnavailable: 'This section is unavailable.',
+                    sectionStale: 'Could not refresh this section; it shows the last loaded result.',
                     valueUnavailable: 'Unavailable',
                     deliveryProgressUnavailable: 'Task completion is unavailable',
                     sources: {
