@@ -24,7 +24,7 @@ export const routeModuleLoaders = {
     gantt: () => import('../pages/GanttPage'),
     analytics: () => import('../pages/AnalyticsPage'),
     settings: () => import('../pages/SettingsPage'),
-    agentPipeline: () => import('../pages/AgentPipelinePage'),
+    agentPipeline: () => import('../pages/TasksPage'),
     agentTeamSetup: () => import('../pages/AgentTeamSetupMasterPage'),
     notFound: () => import('../pages/NotFoundPage'),
 } as const;
