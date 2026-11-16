@@ -1,6 +1,6 @@
 # AgentProjectUpdateCreate
 
-**Location:** `backend/app/schemas/agent.py:1170`
+**Location:** `backend/app/schemas/agent.py:1178`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

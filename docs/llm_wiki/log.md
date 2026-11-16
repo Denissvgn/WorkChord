@@ -3620,3 +3620,43 @@ Paired observers and operators record advisory observations of runtime sessions:
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f2f4741d4d98ec46237a40fb92ec48ccf54cbf1ed3723ba426141f5ece33f984`
+- Pages created: 9
+- Pages updated: 158
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3041
+- Pages deprecated: 0
+- Semantic fields preserved: 5
+- Moved entities: none
+- Flow pages initialized: 1 (http=1)
+- Workflow pages created: 1
+- Dependency pages initialized: 0
+- Surface policy updated: no
+
+### Person-readable runs
+
+Runs keep the harness session the actor declared at begin in searchable columns, backfilled from valid existing metadata. A run listing serves people, observers, operators and planning agents within the task read scope, with status, model, harness session and the latest declared usage report; run logs stay behind keys.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:f2f4741d4d98ec46237a40fb92ec48ccf54cbf1ed3723ba426141f5ece33f984`
+- Pages created: 0
+- Pages updated: 16
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3190
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

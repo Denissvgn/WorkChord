@@ -20,7 +20,7 @@ The supervision pipeline places every open task in exactly one stage, in the ord
 | `app.models.task` | `Task`, `TaskDependency`, `TaskStatus`, `Task`, `TaskDependency` |
 | `app.models.team_member` | `TeamMemberProfile` |
 | `app.query_limits` | `CollectionLimitExceededError`, `MAX_BOUNDED_LIST_ITEMS` |
-| `app.schemas.agent` | `AgentActorCreate`, `AgentRunCreate`, `AgentRunEventCreate`, `AgentRunFinish`, `AgentTaskCreate`, `AgentTaskPatch`, `SUPPORTED_AGENT_SCOPES`, `TaskClaimRequest`, `TaskEventCreate` |
+| `app.schemas.agent` | `declared_harness`, `AgentActorCreate`, `AgentRunCreate`, `AgentRunEventCreate`, `AgentRunFinish`, `AgentTaskCreate`, `AgentTaskPatch`, `SUPPORTED_AGENT_SCOPES`, `TaskClaimRequest`, `TaskEventCreate` |
 | `app.schemas.task` | `TaskCreate`, `TaskUpdate`, `TaskResponse` |
 | `app.services.agent_readiness` | `evaluate_agent_readiness` |
 | `app.services.agent_work_service` | `AgentWorkService` |
@@ -56,7 +56,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (31) |
+| Inbound | `backend` (32) |
 | Outbound | `backend` (16) |
 
 ### External packages
@@ -65,15 +65,15 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 45 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 46 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [AgentConflictError](../entities/AgentConflictError.md) | 70 | `Exception` | Raised when an agent operation conflicts with current task state. |
-| [AgentPermissionError](../entities/AgentPermissionError.md) | 74 | `Exception` | Raised when an agent lacks a required scope. |
-| [AgentService](../entities/AgentService.md) | 124 | — | Service for agent authentication, task control, and run tracing. |
+| [AgentConflictError](../entities/AgentConflictError.md) | 71 | `Exception` | Raised when an agent operation conflicts with current task state. |
+| [AgentPermissionError](../entities/AgentPermissionError.md) | 75 | `Exception` | Raised when an agent lacks a required scope. |
+| [AgentService](../entities/AgentService.md) | 125 | — | Service for agent authentication, task control, and run tracing. |
 
 ## Functions
 

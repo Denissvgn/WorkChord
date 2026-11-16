@@ -1,6 +1,6 @@
 # TaskClaimRequest
 
-**Location:** `backend/app/schemas/agent.py:280`
+**Location:** `backend/app/schemas/agent.py:288`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

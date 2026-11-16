@@ -33,87 +33,29 @@ Usage provenance, corrections, immutable pricing and permission isolation.
 <!-- Auto-generated local dependency summary. Do not edit by hand. -->
 ```mermaid
 flowchart LR
-    n0["backend/app/commands.py"]
-    n1["backend/app/main.py"]
-    n2["backend/app/mcp_agent_tools.py"]
-    n3["backend/app/models/agent.py"]
-    n4["backend/app/models/execution_usage.py"]
-    n5["backend/app/schemas/execution_usage.py"]
-    n6["backend/app/services/agent_service.py"]
-    n7["backend/app/services/execution_usage_service.py"]
-    n8["backend/app/services/identity_service.py"]
-    n9["backend/app/utils/time.py"]
-    n10["backend/tests/test_delivery_scenarios.py"]
-    n11["backend/tests/test_execution_usage.py"]
+    n0["backend"]
+    n1["backend/tests/test_execution_usage.py"]
+    n0 --> n1
     n1 --> n0
-    n2 --> n0
-    n2 --> n3
-    n2 --> n5
-    n2 --> n6
-    n2 --> n7
-    n3 --> n9
-    n4 --> n9
-    n6 --> n0
-    n6 --> n3
-    n6 --> n9
-    n7 --> n0
-    n7 --> n3
-    n7 --> n4
-    n7 --> n5
-    n7 --> n6
-    n7 --> n8
-    n7 --> n9
-    n8 --> n0
-    n8 --> n9
-    n10 --> n0
-    n10 --> n1
-    n10 --> n6
-    n11 --> n0
-    n11 --> n1
-    n11 --> n2
-    n11 --> n3
-    n11 --> n4
-    n11 --> n5
-    n11 --> n6
-    n11 --> n7
-    n11 --> n8
-    n11 --> n9
-    n11 --> n10
-    click n0 "../modules/commands.md"
-    click n1 "../modules/app_main.md"
-    click n2 "../modules/mcp_agent_tools.md"
-    click n3 "../modules/models_agent.md"
-    click n4 "../modules/models_execution_usage.md"
-    click n5 "../modules/schemas_execution_usage.md"
-    click n6 "../modules/agent_service.md"
-    click n7 "../modules/execution_usage_service.md"
-    click n8 "../modules/identity_service.md"
-    click n9 "../modules/time.md"
-    click n10 "../modules/test_delivery_scenarios.md"
-    click n11 "../modules/test_execution_usage.md"
+    click n1 "../modules/test_execution_usage.md"
 ```
+
+> Module-level dependencies exceed the generated-diagram limits, so the diagram and table below group them by top-level package. Counts report the number of module neighbors in each package.
 
 ### Internal neighbors
 
 | Direction | Module |
 |---|---|
-| Outbound | [commands](../modules/commands.md) |
-| Outbound | [app_main](../modules/app_main.md) |
-| Outbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
-| Outbound | [models_agent](../modules/models_agent.md) |
-| Outbound | [models_execution_usage](../modules/models_execution_usage.md) |
-| Outbound | [schemas_execution_usage](../modules/schemas_execution_usage.md) |
-| Outbound | [agent_service](../modules/agent_service.md) |
-| Outbound | [execution_usage_service](../modules/execution_usage_service.md) |
-| Outbound | [identity_service](../modules/identity_service.md) |
-| Outbound | [time](../modules/time.md) |
-| Outbound | [test_delivery_scenarios](../modules/test_delivery_scenarios.md) |
+| Inbound | `backend` (1) |
+| Outbound | `backend` (11) |
 
 ### External packages
 
 | Language | Used packages | Undeclared packages |
 |---|---:|---:|
 | python | 3 | 1 |
+
+> All 12 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 

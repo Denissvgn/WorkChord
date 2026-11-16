@@ -1,6 +1,6 @@
 # TaskTimelineResponse
 
-**Location:** `backend/app/schemas/agent.py:490`
+**Location:** `backend/app/schemas/agent.py:498`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

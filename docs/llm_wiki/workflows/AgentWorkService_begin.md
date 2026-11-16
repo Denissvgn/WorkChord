@@ -31,8 +31,10 @@
 21. `time.utc_now`
 22. `agent_service.AgentConflictError`
 23. `models_agent.AgentRun`
-24. `schemas_agent.AgentWorkBeginResponse`
-25. `commands.commit_or_flush`
+24. `schemas_agent.declared_harness`
+25. `schemas_agent.declared_harness`
+26. `schemas_agent.AgentWorkBeginResponse`
+27. `commands.commit_or_flush`
 
 ## Touches
 

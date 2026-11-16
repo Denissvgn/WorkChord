@@ -200,16 +200,16 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | classify_planning_triage_item | require_scope | 645 | `require_scope(actor, 'planning:write')` |
-| require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
-| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 86 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
+| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
+| actor_scopes | json.loads (backend/app/services/agent_service.py:actor_scopes) | 87 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
 | classify_planning_triage_item | classify_triage_item | 646 | `mcp_agent_tools.classify_triage_item(db, actor, triage_item_id, idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
 | classify_triage_item | _triage_command_context | 2335 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
-| validate_idempotency_key | ValueError | 110 | `ValueError('Idempotency-Key is required')` |
-| validate_idempotency_key | value.strip | 114 | `value.strip(data not statically known)` |
+| validate_idempotency_key | ValueError | 111 | `ValueError('Idempotency-Key is required')` |
+| validate_idempotency_key | value.strip | 115 | `value.strip(data not statically known)` |
 
 ### Boundary effects
 
@@ -219,10 +219,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 86 |
-| external_call | `actor_scopes` | `isinstance` | 89 |
-| external_call | `validate_idempotency_key` | `ValueError` | 110 |
-| unresolved_call | `validate_idempotency_key` | `value.strip` | 114 |
+| external_call | `actor_scopes` | `json.loads` | 87 |
+| external_call | `actor_scopes` | `isinstance` | 90 |
+| external_call | `validate_idempotency_key` | `ValueError` | 111 |
+| unresolved_call | `validate_idempotency_key` | `value.strip` | 115 |
 | step_limit | `classify_planning_triage_item` | `first 12 steps` | 0 |
 | truncated_flow | `classify_planning_triage_item` | `depth limit` | 0 |
 

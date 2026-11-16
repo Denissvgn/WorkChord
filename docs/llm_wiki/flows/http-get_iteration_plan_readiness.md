@@ -199,11 +199,11 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | require_scope | 134 | `require_scope(actor, 'planning:read')` |
-| require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
-| actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
-| actor_scopes | json.loads | 86 | `json.loads(actor.scopes)` |
-| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
-| require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
+| require_scope | actor_has_scope | 101 | `actor_has_scope(actor, scope)` |
+| actor_has_scope | actor_scopes | 95 | `actor_scopes(actor)` |
+| actor_scopes | json.loads | 87 | `json.loads(actor.scopes)` |
+| actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 90 | `isinstance(scopes, list)` |
+| require_scope | AgentPermissionError | 102 | `AgentPermissionError(...)` |
 | get_iteration_plan_readiness (backend/app/routers/agent_planning.py) | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | 135 | `mcp_agent_tools.get_iteration_plan_readiness(db, iteration_id)` |
 | get_iteration_plan_readiness (backend/app/mcp_agent_tools.py) | IterationService.get_planning_readiness_summary | 648 | `IterationService(db).get_planning_readiness_summary(iteration_id)` |
 | IterationService.get_planning_readiness_summary | IterationService.get_by_id | 511 | `self.get_by_id(iteration_id)` |
@@ -218,8 +218,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| external_call | `actor_scopes` | `json.loads` | 86 |
-| external_call | `actor_scopes` | `isinstance` | 89 |
+| external_call | `actor_scopes` | `json.loads` | 87 |
+| external_call | `actor_scopes` | `isinstance` | 90 |
 | unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
 | step_limit | `get_iteration_plan_readiness` | `first 12 steps` | 0 |

@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1583 | [Open section](#entities) |
-| Modules | 852 | [Open section](#modules) |
-| Workflows | 199 | [Open section](#workflows) |
+| Entities | 1586 | [Open section](#entities) |
+| Modules | 856 | [Open section](#modules) |
+| Workflows | 200 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 563 | [Open section](#entry-point-flows) |
+| Entry-point flows | 564 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -102,6 +102,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentRunEventCreate](entities/AgentRunEventCreate.md)
 - [AgentRunEventResponse](entities/AgentRunEventResponse.md)
 - [AgentRunFinish](entities/AgentRunFinish.md)
+- [AgentRunHarness](entities/AgentRunHarness.md)
+- [AgentRunReadItem](entities/AgentRunReadItem.md)
+- [AgentRunReadService](entities/AgentRunReadService.md)
 - [AgentRunResponse](entities/AgentRunResponse.md)
 - [AgentRuntimeObservation](entities/AgentRuntimeObservation.md)
 - [AgentRuntimeObservationCleanupResponse](entities/AgentRuntimeObservationCleanupResponse.md)
@@ -1626,6 +1629,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261115_0014_observer_sessions](modules/20261115_0014_observer_sessions.md) - Record a session's access level, and what a pairing request asks for.
 - [20261116_0015_agdash_link_provider](modules/20261116_0015_agdash_link_provider.md) - Accept agdash session links as an external link provider.
 - [20261116_0016_runtime_observations](modules/20261116_0016_runtime_observations.md) - Retain advisory observations of agent runtime sessions.
+- [20261116_0017_run_harness_session](modules/20261116_0017_run_harness_session.md) - Keep a run's declared harness session in columns a reader can search.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
@@ -1898,6 +1902,8 @@ Retained history; these declarations are absent from the selected source invento
 - [agent_routing_policy](modules/agent_routing_policy.md) - Pure, provider-neutral policy for model-aware agent routing.
 - [agent_routing_rollout](modules/agent_routing_rollout.md) - Fail-closed rollout controls for model-aware agent routing.
 - [agent_routing_service](modules/agent_routing_service.md) - Authoritative assessment, preview, and selection validation for agent routing.
+- [agent_run_read](modules/agent_run_read.md) - A run as a reader sees it: status, model, harness session and declared usage, without logs.
+- [agent_run_read_service](modules/agent_run_read_service.md) - List runs for readers within the task read scope.
 - [agent_service](modules/agent_service.md) - Agent integration services.
 - [agent_skill_bundle](modules/agent_skill_bundle.md) - Schemas for immutable, distributable agent role-skill bundles.
 - [agent_skill_bundle_service](modules/agent_skill_bundle_service.md) - Read-only delivery of deterministic agent role-skill build artifacts.
@@ -2349,6 +2355,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_observer_sessions](modules/test_observer_sessions.md) - Paired observer sessions read like their principal, change nothing, and renew within a cap.
 - [test_person_assignment_reads](modules/test_person_assignment_reads.md) - People read the assignments of tasks they can see; agent keys keep the full projection.
+- [test_person_run_reads](modules/test_person_run_reads.md) - People read the runs of tasks they can see; run logs stay behind keys.
 - [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
@@ -2471,6 +2478,7 @@ Retained history; these declarations are absent from the selected source invento
 - [AgentRoutingService_create_assessment](workflows/AgentRoutingService_create_assessment.md) - entry: `agent_routing_service.AgentRoutingService.create_assessment`
 - [AgentRoutingService_preview_task_routing](workflows/AgentRoutingService_preview_task_routing.md) - entry: `agent_routing_service.AgentRoutingService.preview_task_routing`
 - [AgentRoutingService_validate_assignment_selection](workflows/AgentRoutingService_validate_assignment_selection.md) - entry: `agent_routing_service.AgentRoutingService.validate_assignment_selection`
+- [AgentRunReadService_list](workflows/AgentRunReadService_list.md) - entry: `agent_run_read_service.AgentRunReadService.list`
 - [AgentService_append_run_event](workflows/AgentService_append_run_event.md) - entry: `agent_service.AgentService.append_run_event`
 - [AgentService_authenticate](workflows/AgentService_authenticate.md) - entry: `agent_service.AgentService.authenticate`
 - [AgentService_authenticate_bootstrap_key](workflows/AgentService_authenticate_bootstrap_key.md) - entry: `agent_service.AgentService.authenticate_bootstrap_key`
@@ -2876,6 +2884,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-list_agent_model_bindings](flows/http-list_agent_model_bindings.md) - entry: `list_agent_model_bindings`
 - [http-list_agent_model_catalog](flows/http-list_agent_model_catalog.md) - entry: `list_agent_model_catalog`
 - [http-list_agent_recovery_tasks](flows/http-list_agent_recovery_tasks.md) - entry: `list_agent_recovery_tasks`
+- [http-list_agent_runs](flows/http-list_agent_runs.md) - entry: `list_agent_runs`
 - [http-list_agent_skill_bundles](flows/http-list_agent_skill_bundles.md) - entry: `list_agent_skill_bundles`
 - [http-list_delivery_dependencies](flows/http-list_delivery_dependencies.md) - entry: `list_delivery_dependencies`
 - [http-list_entries](flows/http-list_entries.md) - entry: `list_entries`

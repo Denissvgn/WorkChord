@@ -42,17 +42,20 @@ flowchart LR
     n0["ExecutionUsageRecord (backend/app/models/execution_usage.py)"]
     n1["Base (backend/app/database.py)"]
     n2["backend/app/models/__init__.py"]
-    n3["ExecutionUsageService.write (backend/app/services/execution_usage_service.py)"]
-    n4["backend/tests/test_execution_usage.py"]
+    n3["backend/app/services/agent_run_read_service.py"]
+    n4["ExecutionUsageService.write (backend/app/services/execution_usage_service.py)"]
+    n5["backend/tests/test_execution_usage.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/models_execution_usage.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
-    click n3 "../modules/execution_usage_service.md"
-    click n4 "../modules/test_execution_usage.md"
+    click n3 "../modules/agent_run_read_service.md"
+    click n4 "../modules/execution_usage_service.md"
+    click n5 "../modules/test_execution_usage.md"
 ```
 
 ### Summary
@@ -72,5 +75,6 @@ flowchart LR
 | Reference | Kind | Source | Call sites |
 |---|---|---|---:|
 | `__init__` | import | [models___init__](../modules/models___init__.md) | — |
+| `agent_run_read_service` | import | [agent_run_read_service](../modules/agent_run_read_service.md) | — |
 | `ExecutionUsageService.write` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |
 | `test_execution_usage` | import | [test_execution_usage](../modules/test_execution_usage.md) | — |

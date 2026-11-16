@@ -1,6 +1,6 @@
 # AgentService
 
-**Location:** `backend/app/services/agent_service.py:124`
+**Location:** `backend/app/services/agent_service.py:125`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_service](../modules/agent_service.md)
@@ -119,4 +119,4 @@ flowchart LR
 | `list_ready_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `release_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.
+> References: showing 12 of 58 logical references; 46 omitted by the 12-row generated summary limit.

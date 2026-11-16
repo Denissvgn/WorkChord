@@ -1,6 +1,6 @@
 # AgentActorModelBindingCreate
 
-**Location:** `backend/app/schemas/agent.py:140`
+**Location:** `backend/app/schemas/agent.py:148`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

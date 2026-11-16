@@ -29,6 +29,8 @@ Trace record for one automated agent execution.
 | `model` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True)` | — |
 | `tool_name` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True)` | — |
 | `run_metadata` | `Mapped[str]` | `mapped_column(Text, default='{}', nullable=False)` | — |
+| `harness_kind` | `Mapped[Optional[str]]` | `mapped_column(String(40), nullable=True)` | — |
+| `harness_session_id` | `Mapped[Optional[str]]` | `mapped_column(String(255), nullable=True, index=True)` | — |
 | `artifact_links` | `Mapped[str]` | `mapped_column(Text, default='[]', nullable=False)` | — |
 | `commit_url` | `Mapped[Optional[str]]` | `mapped_column(String(1000), nullable=True)` | — |
 | `pr_url` | `Mapped[Optional[str]]` | `mapped_column(String(1000), nullable=True)` | — |
@@ -61,12 +63,12 @@ flowchart LR
     n5["AgentRoutingService._preview_context (backend/app/services/agent_routing_service.py)"]
     n6["AgentRoutingService._routing_input_evidence (backend/app/services/agent_routing_service.py)"]
     n7["AgentRoutingService._task_global_blockers (backend/app/services/agent_routing_service.py)"]
-    n8["AgentService._run_event_matches (backend/app/services/agent_service.py)"]
-    n9["AgentService._run_payload (backend/app/services/agent_service.py)"]
-    n10["AgentService._validate_run_fence (backend/app/services/agent_service.py)"]
-    n11["AgentService.append_run_event (backend/app/services/agent_service.py)"]
-    n12["AgentService.finish_run (backend/app/services/agent_service.py)"]
-    n13["AgentService.get_run (backend/app/services/agent_service.py)"]
+    n8["AgentRunReadService.list (backend/app/services/agent_run_read_service.py)"]
+    n9["AgentService._run_event_matches (backend/app/services/agent_service.py)"]
+    n10["AgentService._run_payload (backend/app/services/agent_service.py)"]
+    n11["AgentService._validate_run_fence (backend/app/services/agent_service.py)"]
+    n12["AgentService.append_run_event (backend/app/services/agent_service.py)"]
+    n13["AgentService.finish_run (backend/app/services/agent_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -88,7 +90,7 @@ flowchart LR
     click n5 "../modules/agent_routing_service.md"
     click n6 "../modules/agent_routing_service.md"
     click n7 "../modules/agent_routing_service.md"
-    click n8 "../modules/agent_service.md"
+    click n8 "../modules/agent_run_read_service.md"
     click n9 "../modules/agent_service.md"
     click n10 "../modules/agent_service.md"
     click n11 "../modules/agent_service.md"
@@ -100,7 +102,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [models_agent](../modules/models_agent.md) | 0 | `actor`, `actor_id`, `artifact_links`, `assignment`, `assignment_id`, `claim_generation`, `commit_url`, `configured_model_alias`, `ended_at`, `error`, `events`, `heartbeat_at` |
+| [models_agent](../modules/models_agent.md) | 0 | `actor`, `actor_id`, `artifact_links`, `assignment`, `assignment_id`, `claim_generation`, `commit_url`, `configured_model_alias`, `ended_at`, `error`, `events`, `harness_kind` |
 
 ### Structure
 
@@ -118,11 +120,11 @@ flowchart LR
 | `AgentRoutingService._preview_context` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService._routing_input_evidence` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
 | `AgentRoutingService._task_global_blockers` | type_reference | [agent_routing_service](../modules/agent_routing_service.md) | — |
+| `AgentRunReadService.list` | type_reference | [agent_run_read_service](../modules/agent_run_read_service.md) | — |
 | `AgentService._run_event_matches` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService._run_payload` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService._validate_run_fence` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.append_run_event` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `AgentService.finish_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
-| `AgentService.get_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 
-> References: showing 12 of 45 logical references; 33 omitted by the 12-row generated summary limit.
+> References: showing 12 of 47 logical references; 35 omitted by the 12-row generated summary limit.
