@@ -9,7 +9,7 @@ export const routeRegistry: RouteStatus[] = [
     { key: 'plan', path: '/plan', status: 'migrated' },
     { key: 'calendar', path: '/calendar', status: 'pending' },
     { key: 'iterations', path: '/iterations', status: 'pending' },
-    { key: 'team', path: '/team', status: 'pending' },
+    { key: 'team', path: '/team', status: 'migrated' },
     { key: 'myWork', path: '/my-work', status: 'pending' },
     { key: 'nativeConnection', path: '/mobile/connect', status: 'pending' },
     { key: 'tasks', path: '/tasks', status: 'migrated' },

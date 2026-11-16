@@ -64,7 +64,7 @@ export const useAgentRowFacts = (tasks: DisplayedTask[], known?: ReadonlyMap<num
     // feedback-policy: query loading,error,retry,empty - optional row detail: without the roster the line says the agent status is unknown.
     const roster = useQuery({
         queryKey: ['agent-actor-roster', false],
-        queryFn: () => agentService.getActorRoster(false, { quiet: true }),
+        queryFn: () => agentService.getActorRoster(false, { optional: true }),
         enabled: mayReadRoster,
         retry: protectedQueryRetry,
         staleTime: 60_000,

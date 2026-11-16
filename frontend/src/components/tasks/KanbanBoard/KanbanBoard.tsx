@@ -392,7 +392,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                             </Button>
                         ) : (
                             <Link
-                                to={`/team?action=assign&iterationId=${iterationId}`}
+                                to={`/plan?step=team&iteration=${iterationId}`}
                                 className="btn primary"
                                 onClick={closeOwnershipSelection}
                             >

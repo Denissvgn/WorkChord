@@ -51,7 +51,8 @@ export const REVIEWED_HOOK_COUNTS = {
     'src/components/team/ImportTeamModal.tsx': [0, 1],
     'src/components/capacity/TeamForm.tsx': [1, 2],
     'src/components/capacity/TeamList.tsx': [4, 1],
-    'src/components/team/TeamProfileManager.tsx': [1, 6],
+    'src/components/team/TeamDirectory.tsx': [2, 0],
+    'src/components/team/TeamProfileManager.tsx': [0, 7],
     'src/components/capacity/VacationManager.tsx': [0, 2],
     'src/i18n/SystemLanguageProvider.tsx': [1, 0],
     'src/components/layout/AppSidebar.tsx': [1, 0],
@@ -68,7 +69,6 @@ export const REVIEWED_HOOK_COUNTS = {
     'src/pages/ProjectReleaseDetailPage.tsx': [2, 1],
     'src/pages/ProjectsPage.tsx': [4, 1],
     'src/pages/TasksPage.tsx': [4, 0],
-    'src/pages/TeamPage.tsx': [2, 0],
     'src/pages/TriagePage.tsx': [11, 5],
 };
 
@@ -128,7 +128,8 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/team/ImportTeamModal.tsx': 'b0663a95bdbc701e',
     'src/components/capacity/TeamForm.tsx': '52d7886942492305',
     'src/components/capacity/TeamList.tsx': '3729e8c0dcce00b3',
-    'src/components/team/TeamProfileManager.tsx': 'b8424ef258d97089',
+    'src/components/team/TeamDirectory.tsx': '696ad23c7c94f162',
+    'src/components/team/TeamProfileManager.tsx': 'a7d02d546837d9ac',
     'src/components/capacity/VacationManager.tsx': 'f8414b0f137392f9',
     'src/i18n/SystemLanguageProvider.tsx': '52087c287c3e9315',
     'src/components/layout/AppSidebar.tsx': '78ebdb449b4d7743',
@@ -145,7 +146,6 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/ProjectReleaseDetailPage.tsx': '07032a5fd753dcc5',
     'src/pages/ProjectsPage.tsx': '3dc607312f108bd3',
     'src/pages/TasksPage.tsx': '826f718625e7f291',
-    'src/pages/TeamPage.tsx': '1b061fa3a8dd4c25',
     'src/pages/TriagePage.tsx': 'd8eba3b6b2015734',
 };
 
