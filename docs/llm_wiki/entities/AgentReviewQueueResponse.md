@@ -1,6 +1,6 @@
 # AgentReviewQueueResponse
 
-**Location:** `backend/app/schemas/agent.py:857`
+**Location:** `backend/app/schemas/agent.py:906`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

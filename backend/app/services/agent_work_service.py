@@ -50,6 +50,9 @@ from app.schemas.agent import (
     AgentRecoveryItem,
     AgentRecoveryRequeue,
     AgentRecoveryRequeueResponse,
+    AgentAssignmentActorSummary,
+    AgentAssignmentModelSummary,
+    AgentAssignmentReadItem,
     AgentRunResponse,
     AgentTaskAssignmentCreate,
     AgentTaskAssignmentResponse,
@@ -1120,6 +1123,68 @@ class AgentWorkService:
             )
             for item in assignments
         ]
+
+    async def list_assignments_for_people(
+        self,
+        *,
+        task_id: Optional[int] = None,
+        actor_id: Optional[int] = None,
+        purpose: Optional[str] = None,
+        state: Optional[str] = None,
+        limit: int = 200,
+    ) -> list[AgentAssignmentReadItem]:
+        """List the assignments of the tasks this request's reader can see.
+
+        Rows follow the request's ORM read scope, the same rule as tasks. The
+        actors and bindings those rows name are then read internally, so a reader
+        without workspace access does not see a binding as missing; nothing is
+        exposed beyond what the visible assignments refer to.
+        """
+        from app.authority import internal_authority
+
+        query = select(AgentTaskAssignment)
+        if task_id is not None:
+            query = query.where(AgentTaskAssignment.task_id == task_id)
+        if actor_id is not None:
+            query = query.where(AgentTaskAssignment.actor_id == actor_id)
+        if purpose is not None:
+            query = query.where(AgentTaskAssignment.purpose == purpose)
+        if state is not None:
+            query = query.where(AgentTaskAssignment.state == state)
+        assignments = list((await self.db.execute(
+            query.order_by(
+                AgentTaskAssignment.task_id,
+                AgentTaskAssignment.queue_rank,
+                AgentTaskAssignment.id,
+            ).limit(limit)
+        )).scalars().all())
+        actor_ids = {item.actor_id for item in assignments}
+        binding_ids = {item.model_binding_id for item in assignments if item.model_binding_id is not None}
+        actors: dict[int, AgentActor] = {}
+        bindings: dict[int, AgentModelBinding] = {}
+        with internal_authority(self.db):
+            if actor_ids:
+                actors = {actor.id: actor for actor in (await self.db.execute(
+                    select(AgentActor).where(AgentActor.id.in_(actor_ids)))).scalars().all()}
+            if binding_ids:
+                bindings = {binding.id: binding for binding in (await self.db.execute(
+                    select(AgentModelBinding).options(selectinload(AgentModelBinding.model_catalog))
+                    .where(AgentModelBinding.id.in_(binding_ids)))).scalars().all()}
+        items = []
+        for item in assignments:
+            binding = bindings.get(item.model_binding_id) if item.model_binding_id is not None else None
+            full = self.assignment_response(item, model_binding=binding, binding_loaded=item.model_binding_id is not None)
+            actor = actors.get(item.actor_id)
+            catalog = binding.model_catalog if binding is not None else None
+            items.append(AgentAssignmentReadItem(
+                **full.model_dump(exclude={"routing_snapshot", "reason", "reviewer_profile_id", "assigned_by_actor_id"}),
+                actor=AgentAssignmentActorSummary(id=actor.id, name=actor.name, display_name=actor.display_name,
+                                                  role=actor.role) if actor is not None else None,
+                model=AgentAssignmentModelSummary(model_catalog_key=catalog.key, provider=catalog.provider,
+                                                  configured_model_alias=catalog.configured_model_alias)
+                if catalog is not None else None,
+            ))
+        return items
 
     @atomic_command
     async def create_assignment(

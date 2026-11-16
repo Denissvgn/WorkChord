@@ -33,6 +33,7 @@ from app.schemas.agent import (
     AgentRunFinish,
     AgentRunResponse,
     AgentTaskAssignmentCreate,
+    AgentAssignmentReadItem,
     AgentTaskAssignmentResponse,
     AgentTaskAssignmentUpdate,
     AgentTaskContextResponse,
@@ -249,6 +250,12 @@ async def require_agent_read_access(
         _handle_agent_error(exc)
 
 
+def _reads_work_as_person(authority) -> bool:
+    """A person, a trusted-local browser or a paired observer that can read some work."""
+    return authority is not None and authority.kind in {"human", "local"} and (
+        authority.local or authority.workspace_role is not None or bool(authority.projects))
+
+
 async def require_pipeline_read_access(
     service: Annotated[AgentService, Depends(get_agent_service)],
     agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
@@ -259,11 +266,29 @@ async def require_pipeline_read_access(
     Its task records are scoped to what the reader can see; run traces stay behind
     the admin or agent key.
     """
-    authority = service.db.info.get("authority")
-    if authority is not None and authority.kind in {"human", "local"} and (
-            authority.local or authority.workspace_role is not None or authority.projects):
+    if _reads_work_as_person(service.db.info.get("authority")):
         return
     await require_agent_read_access(service, agent_api_key, admin_api_key)
+
+
+async def get_assignment_reader(
+    service: Annotated[AgentService, Depends(get_agent_service)],
+    api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+) -> AgentActor | None:
+    """An agent key reads assignments as its actor; None means a person reads them.
+
+    Without an agent key, people read assignments on the pipeline's rule: the
+    assignments of tasks they can see. Operators read all of them.
+    """
+    if api_key:
+        return await get_agent_actor(service, api_key)
+    authority = service.db.info.get("authority")
+    if _reads_work_as_person(authority) or authority is not None and authority.operator:
+        return None
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Missing X-Agent-API-Key header",
+    )
 
 
 def _handle_agent_error(exc: Exception, *, structured: bool = False) -> NoReturn:
@@ -719,10 +744,10 @@ async def create_agent_assignment(
 
 @router.get(
     "/agent/assignments",
-    response_model=list[AgentTaskAssignmentResponse],
+    response_model=list[AgentTaskAssignmentResponse] | list[AgentAssignmentReadItem],
 )
 async def list_agent_assignments(
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor | None, Depends(get_assignment_reader)],
     service: Annotated[AgentWorkService, Depends(get_agent_work_service)],
     task_id: Optional[int] = Query(default=None, ge=1),
     actor_id: Optional[int] = Query(default=None, ge=1),
@@ -730,8 +755,20 @@ async def list_agent_assignments(
     state: Optional[str] = Query(default=None),
     limit: int = Query(default=200, ge=1, le=500),
 ):
-    """List durable assignments within the caller's authorized queue boundary."""
+    """List durable assignments within the caller's authorized queue boundary.
+
+    An agent key gets the full projection for its queue boundary. A person gets
+    the assignments of the tasks they can see, without routing evidence.
+    """
     try:
+        if actor is None:
+            return await service.list_assignments_for_people(
+                task_id=task_id,
+                actor_id=actor_id,
+                purpose=purpose,
+                state=state,
+                limit=limit,
+            )
         return await service.list_assignments(
             actor,
             task_id=task_id,

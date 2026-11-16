@@ -1,6 +1,6 @@
 # AgentAssignmentListParams
 
-**Location:** `frontend/src/types/agent.ts:556`
+**Location:** `frontend/src/types/agent.ts:578`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

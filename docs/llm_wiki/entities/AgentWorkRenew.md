@@ -1,6 +1,6 @@
 # AgentWorkRenew
 
-**Location:** `backend/app/schemas/agent.py:928`
+**Location:** `backend/app/schemas/agent.py:977`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

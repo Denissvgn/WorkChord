@@ -49,6 +49,7 @@ import {
     QueryLoadingState,
 } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
+import { AssignedAgentsSummary } from './AssignedAgentsSummary';
 import { RoutingCandidateComparison } from './RoutingCandidateComparison';
 
 interface TaskRoutingPanelProps {
@@ -567,6 +568,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     <Route aria-hidden="true" className="h-4 w-4 text-action" />
                     {t('taskRouting.title')}
                 </h3>
+                <AssignedAgentsSummary taskId={task.id} />
                 <QueryEmptyState
                     title={t('taskRouting.accessRequired')}
                     description={t('taskRouting.description')}

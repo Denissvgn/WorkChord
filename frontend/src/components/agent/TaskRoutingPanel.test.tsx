@@ -29,6 +29,7 @@ const agentServiceMock = vi.hoisted(() => ({
     createAssignment: vi.fn(),
     updateAssignment: vi.fn(),
     listAssignments: vi.fn(),
+    listTaskAssignmentsAsPerson: vi.fn(),
 }));
 
 const useAgentAccessMock = vi.hoisted(() => vi.fn());
@@ -252,6 +253,27 @@ const generatePreview = async (
         expect(agentServiceMock.previewTaskRouting).toHaveBeenCalledTimes(expectedCallCount);
     });
 };
+
+describe('TaskRoutingPanel without an agent key', () => {
+    it('shows who holds the task from the person\'s own access and asks for a key to dispatch', async () => {
+        useAgentAccessMock.mockReturnValue({ hasAgentKey: false });
+        agentServiceMock.getCapabilities.mockReset();
+        agentServiceMock.listTaskAssignmentsAsPerson.mockResolvedValue([{
+            id: 7, task_id: 42, actor_id: 3, actor: { id: 3, name: 'worker-1', display_name: 'Worker One', role: 'worker' },
+            team_member_id: null, purpose: 'execution', queue_class: 'normal', state: 'accepted', queue_rank: 1000,
+            not_before: null, task_version: 1, model_binding_id: 5, model_binding_revision: 1, model_binding_status: 'current',
+            model_binding_stale_reasons: [], model: { model_catalog_key: 'balanced', provider: 'configured', configured_model_alias: 'balanced-code' },
+            created_at: '2026-11-15T10:00:00Z', updated_at: '2026-11-15T10:00:00Z',
+        }]);
+        renderWithProviders(<TaskRoutingPanel task={taskFixture} />);
+        expect(await screen.findByText('Worker One')).toBeInTheDocument();
+        expect(screen.getByText(/Doing the work · Accepted/)).toBeInTheDocument();
+        expect(screen.getByText('Model: balanced-code')).toBeInTheDocument();
+        expect(screen.getByText('A stored agent credential is required for routing assessment and dispatch.')).toBeInTheDocument();
+        expect(agentServiceMock.listTaskAssignmentsAsPerson).toHaveBeenCalledWith(42, expect.anything());
+        expect(agentServiceMock.getCapabilities).not.toHaveBeenCalled();
+    });
+});
 
 describe('TaskRoutingPanel routing gates', () => {
     beforeEach(() => {

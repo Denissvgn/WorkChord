@@ -2,6 +2,7 @@ import api from './api';
 import type {
     AgentActorRosterItem,
     AgentAssignmentListParams,
+    AgentAssignmentReadItem,
     AgentCapabilities,
     AgentCommandMetadata,
     AgentModelBinding,
@@ -326,6 +327,15 @@ export const agentService = {
                 state: filters.state,
                 limit: filters.limit ?? 200,
             },
+        });
+        return response.data;
+    },
+
+    /** Without an agent key: the assignments of a task this person can see. */
+    async listTaskAssignmentsAsPerson(taskId: number, signal?: AbortSignal): Promise<AgentAssignmentReadItem[]> {
+        const response = await api.get<AgentAssignmentReadItem[]>('/agent/assignments', {
+            params: { task_id: taskId, limit: 50 },
+            signal,
         });
         return response.data;
     },

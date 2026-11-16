@@ -6,8 +6,8 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1571 | [Open section](#entities) |
-| Modules | 840 | [Open section](#modules) |
+| Entities | 1575 | [Open section](#entities) |
+| Modules | 843 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 558 | [Open section](#entry-point-flows) |
@@ -37,7 +37,9 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentActorResponse](entities/AgentActorResponse.md)
 - [AgentActorRole](entities/AgentActorRole.md)
 - [AgentActorUpdate](entities/AgentActorUpdate.md)
+- [AgentAssignmentActorSummary](entities/AgentAssignmentActorSummary.md)
 - [AgentAssignmentListParams](entities/AgentAssignmentListParams.md)
+- [AgentAssignmentModelSummary](entities/AgentAssignmentModelSummary.md)
 - [AgentAutonomyTopology](entities/AgentAutonomyTopology.md)
 - [AgentAutonomyTopologyMember](entities/AgentAutonomyTopologyMember.md)
 - [AgentCapabilities](entities/AgentCapabilities.md)
@@ -1214,6 +1216,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [schemas_agent_AgentActorRosterProfileSkill](entities/schemas_agent_AgentActorRosterProfileSkill.md)
 - [schemas_agent_AgentAssignmentPurpose](entities/schemas_agent_AgentAssignmentPurpose.md)
 - [schemas_agent_AgentAssignmentQueueClass](entities/schemas_agent_AgentAssignmentQueueClass.md)
+- [schemas_agent_AgentAssignmentReadItem](entities/schemas_agent_AgentAssignmentReadItem.md)
 - [schemas_agent_AgentAssignmentState](entities/schemas_agent_AgentAssignmentState.md)
 - [schemas_agent_ModelAwareAgentTaskAssignmentCreate](entities/schemas_agent_ModelAwareAgentTaskAssignmentCreate.md)
 - [schemas_agent_ModelAwareAgentTaskAssignmentUpdate](entities/schemas_agent_ModelAwareAgentTaskAssignmentUpdate.md)
@@ -1400,6 +1403,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [types_agent_AgentActorRosterProfileSkill](entities/types_agent_AgentActorRosterProfileSkill.md)
 - [types_agent_AgentAssignmentPurpose](entities/types_agent_AgentAssignmentPurpose.md)
 - [types_agent_AgentAssignmentQueueClass](entities/types_agent_AgentAssignmentQueueClass.md)
+- [types_agent_AgentAssignmentReadItem](entities/types_agent_AgentAssignmentReadItem.md)
 - [types_agent_AgentAssignmentState](entities/types_agent_AgentAssignmentState.md)
 - [types_agent_AgentModelBinding](entities/types_agent_AgentModelBinding.md)
 - [types_agent_AgentModelBindingCreate](entities/types_agent_AgentModelBindingCreate.md)
@@ -1635,6 +1639,8 @@ Retained history; these declarations are absent from the selected source invento
 - [AppSidebar.test](modules/AppSidebar.test.md) - `frontend/src/components/layout/AppSidebar.test.tsx`
 - [AppTopNav](modules/AppTopNav.md) - `frontend/src/components/layout/AppTopNav.tsx`
 - [AppTopNav.test](modules/AppTopNav.test.md) - `frontend/src/components/layout/AppTopNav.test.tsx`
+- [AssignedAgentsSummary](modules/AssignedAgentsSummary.md) - `frontend/src/components/agent/AssignedAgentsSummary.tsx`
+- [AssignedAgentsSummary.test](modules/AssignedAgentsSummary.test.md) - `frontend/src/components/agent/AssignedAgentsSummary.test.tsx`
 - [AssigneeRecommendationsPanel](modules/AssigneeRecommendationsPanel.md) - `frontend/src/components/team/AssigneeRecommendationsPanel.tsx`
 - [BacklogPanel](modules/BacklogPanel.md) - `frontend/src/components/tasks/BacklogPanel.tsx`
 - [Breadcrumbs](modules/Breadcrumbs.md) - `frontend/src/components/layout/Breadcrumbs.tsx`
@@ -2327,6 +2333,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_native_runtimes](modules/test_native_runtimes.md) - Native orchestration preserves isolation, real result requirements and cleanup.
 - [test_observability](modules/test_observability.md) - DBM-OBS-001 readiness, drain, and safe-metrics tests.
 - [test_observer_sessions](modules/test_observer_sessions.md) - Paired observer sessions read like their principal, change nothing, and renew within a cap.
+- [test_person_assignment_reads](modules/test_person_assignment_reads.md) - People read the assignments of tasks they can see; agent keys keep the full projection.
 - [test_plan_checkpoints](modules/test_plan_checkpoints.md) - People and the PM read the same six plan checkpoints from the server.
 - [test_plan_shares](modules/test_plan_shares.md) - Plan-share ownership and immutable snapshot behavior.
 - [test_planning_input_context](modules/test_planning_input_context.md) - Initial shared-input observations are complete, bounded and side-effect free.
