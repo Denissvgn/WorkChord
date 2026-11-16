@@ -42,18 +42,14 @@ import { ConnectedReadersPanel } from '../components/settings/ConnectedReadersPa
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { SharedUnlockContext } from '../components/settings/sharedUnlock';
+import { SETTINGS_FIELD_LABEL_KEYS } from '../components/settings/settingsFieldLabels';
+import type { SettingsSectionId } from '../components/settings/settingsFieldLabels';
 import { Button } from '../components/common/Button';
 import { Checkbox } from '../components/common/Checkbox';
 import { PageHeader, PageLayout } from '../components/ui';
 import { useAdminAccess, useKeylessReader } from '../hooks/useAdminAccess';
 import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
-type SettingsSectionId =
-    | 'theme' | 'shortcuts'
-    | 'language' | 'work_calendar' | 'scheduling' | 'templates_labels' | 'notifications'
-    | 'github' | 'webhooks' | 'web_intake' | 'ai_provider'
-    | 'access' | 'runtime' | 'about'
-    | 'models_agents';
 type SettingsGroupId = 'myPreferences' | 'workspace' | 'connections' | 'accessSystem';
 /** Where a section's values are kept: in this browser only, or on the server for everyone. */
 type SavedIn = 'browser' | 'workspace';
@@ -68,7 +64,7 @@ interface SettingsSection {
     id: SettingsSectionId;
     labelKey: string;
     descriptionKey: string;
-    /** Field labels and words people search for in this section. */
+    /** Other words people search for in this section; its field labels come from `SETTINGS_FIELD_LABEL_KEYS`. */
     keywordsKey: string;
     icon: LucideIcon;
     savedIn: SavedIn | readonly SavedInPart[];
@@ -236,11 +232,12 @@ const SettingsPage = () => {
     const filteredGroups = useMemo(() => {
         const searchable = (group: SettingsGroup, item: SettingsSection) => [
             t(item.labelKey), t(item.descriptionKey), t(item.keywordsKey), t(group.labelKey),
+            ...SETTINGS_FIELD_LABEL_KEYS[item.id].map(key => t(key)),
         ].join(' ').toLocaleLowerCase();
         const words = normalizedSearch.split(/\s+/).filter(Boolean);
-        // Whole words first, so "key" finds Access rather than "keyboard"; any substring otherwise.
+        // Whole words first, so "key" finds Access rather than "keyboard" or "single-key"; any substring otherwise.
         const wholeWords = (text: string) => {
-            const present = new Set(text.split(/[^\p{L}\p{N}:]+/u));
+            const present = new Set(text.split(/[^\p{L}\p{N}:-]+/u));
             return words.every(word => present.has(word));
         };
         const filterBy = (matches: (text: string) => boolean) => SETTINGS_GROUPS

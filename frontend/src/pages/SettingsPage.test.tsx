@@ -219,6 +219,26 @@ describe('SettingsPage', () => {
         expect(within(navigation).getByRole('link', { name: 'Web intake' })).toBeVisible();
     });
 
+    it.each([
+        { field: 'Max output tokens', section: 'AI provider', group: 'Connections' },
+        { field: 'Replace intake token', section: 'Web intake', group: 'Connections' },
+        { field: 'Reason template', section: 'GitHub', group: 'Connections' },
+        { field: 'Port', section: 'Email notifications', group: 'Workspace' },
+        { field: 'Test recipient', section: 'Email notifications', group: 'Workspace' },
+        { field: 'Default payload JSON', section: 'Templates and labels', group: 'Workspace' },
+        { field: 'Max allowable overload', section: 'Scheduling', group: 'Workspace' },
+        { field: 'Single-key task shortcuts', section: 'Keyboard shortcuts', group: 'My preferences' },
+        { field: 'Agent key', section: 'Access', group: 'Access and system' },
+    ])('finds the field "$field" under $group › $section', async ({ field, section, group }) => {
+        const { user } = renderSettings('/settings?tab=theme');
+
+        const navigation = screen.getByRole('navigation', { name: 'Settings navigation' });
+        await user.type(within(navigation).getByRole('searchbox', { name: 'Search settings' }), field);
+        const groupRegion = within(navigation).getByRole('region', { name: group });
+        expect(within(groupRegion).getByRole('link', { name: section })).toBeVisible();
+        expect(within(navigation).queryByText('No settings match this search.')).not.toBeInTheDocument();
+    });
+
     it('gives the theme radiogroup complete keyboard behavior', async () => {
         const { user } = renderSettings('/settings?tab=theme');
 
