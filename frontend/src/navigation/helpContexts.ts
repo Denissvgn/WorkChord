@@ -1,24 +1,47 @@
 import {
-    DESTINATIONS,
+    getDestination,
     getDestinationForPath,
-    getDestinationGroup,
+    type DestinationId,
 } from './destinations';
-import { getWorkspaceForPath } from './workspaces';
 import {
     metadataForPath,
     type RouteModuleKey,
 } from './routeModules';
 
-export type HelpContentProvider = 'plan' | 'gantt' | 'tasks' | 'settings' | 'workspace';
+// Glossary terms are names from config/workflow-vocabulary.json. Each one has its
+// `contextHelp.glossary.<term>` entry in both catalogs, and a test keeps the names equal.
+export type GlossaryTerm = 'iteration' | 'capacity' | 'blockers' | 'assignee' | 'reviewer' | 'labels'
+    | 'waits_for' | 'earliest_start' | 'due_by' | 'request' | 'notifications';
+
+export type WorkflowGuideKey = 'plan' | 'gantt' | 'tasks' | 'settings';
 
 export type HelpRelatedLink = {
     to: string;
     labelKey: string;
     defaultLabel: string;
-    descriptionKey?: string;
 };
 
-const CONTENT_PROVIDER_BY_ROUTE: Partial<Record<RouteModuleKey, HelpContentProvider>> = {
+type DestinationHelp = {
+    /** The text is `contextHelp.destinations.<id>.summary` in both catalogs. */
+    glossary: readonly GlossaryTerm[];
+    related: readonly DestinationId[];
+};
+
+const DESTINATION_HELP: Record<DestinationId, DestinationHelp> = {
+    overview: { glossary: ['assignee', 'reviewer'], related: ['my_work', 'triage', 'tasks'] },
+    my_work: { glossary: ['assignee', 'reviewer', 'notifications'], related: ['tasks', 'triage'] },
+    triage: { glossary: ['request', 'labels'], related: ['tasks', 'projects'] },
+    projects: { glossary: ['labels', 'due_by'], related: ['plan', 'tasks'] },
+    plan: { glossary: ['iteration', 'capacity', 'blockers'], related: ['gantt', 'team'] },
+    gantt: { glossary: ['waits_for', 'earliest_start', 'due_by'], related: ['plan', 'tasks'] },
+    tasks: { glossary: ['assignee', 'reviewer', 'waits_for'], related: ['my_work', 'triage'] },
+    analytics: { glossary: ['capacity', 'iteration'], related: ['tasks', 'team'] },
+    team: { glossary: ['assignee', 'capacity'], related: ['analytics', 'settings'] },
+    settings: { glossary: ['iteration', 'capacity'], related: ['team', 'plan'] },
+};
+
+// Only these pages open a guide below their summary, and their guide is the page's own.
+const WORKFLOW_BY_ROUTE: Partial<Record<RouteModuleKey, WorkflowGuideKey>> = {
     plan: 'plan',
     planMaster: 'plan',
     planShare: 'plan',
@@ -27,124 +50,37 @@ const CONTENT_PROVIDER_BY_ROUTE: Partial<Record<RouteModuleKey, HelpContentProvi
     settings: 'settings',
 };
 
-const RELATED_PATHS_BY_ROUTE: Partial<Record<RouteModuleKey, readonly string[]>> = {
-    overview: ['/tasks', '/triage'],
-    tasks: ['/plan', '/triage'],
-    triage: ['/tasks', '/projects'],
-    projects: ['/tasks', '/roadmap'],
-    projectDetail: ['/tasks', '/roadmap'],
-    projectReleaseDetail: ['/tasks', '/roadmap'],
-    agentPipeline: ['/agent-team/setup', '/tasks'],
-    plan: ['/plan/master', '/gantt'],
-    planMaster: ['/tasks', '/gantt'],
-    planShare: ['/plan', '/gantt'],
-    gantt: ['/plan', '/iterations', '/settings?tab=scheduling'],
-    roadmap: ['/projects', '/plan'],
-    iterations: ['/calendar', '/team', '/plan'],
-    calendar: ['/iterations', '/team'],
-    team: ['/calendar', '/settings'],
-    analytics: ['/team', '/tasks'],
-    settings: ['/team', '/agent-team/setup'],
-    agentTeamSetup: ['/agent-pipeline', '/settings?tab=models_agents'],
-    notFound: ['/'],
-};
+// The first-run setup panel does not exist yet; the event it will listen for is the entry's action.
+export const SETUP_GUIDE_ENTRY = {
+    labelKey: 'contextHelp.setupGuide.title',
+    defaultLabel: 'Setup guide',
+    descriptionKey: 'contextHelp.setupGuide.description',
+    actionKey: 'contextHelp.setupGuide.open',
+} as const;
 
-export type GlossaryTerm = 'implemented' | 'accepted' | 'blocked' | 'overdue' | 'lateStart' | 'iterationOverflow'
-    | 'unknownEstimate' | 'scheduled' | 'capacity' | 'triage' | 'agentReady';
-
-// The terms each page shows, defined once in `contextHelp.glossary` from the server's own rules.
-const DELIVERY_TERMS: readonly GlossaryTerm[] = ['implemented', 'accepted', 'blocked', 'overdue', 'lateStart', 'iterationOverflow'];
-const SCHEDULE_TERMS: readonly GlossaryTerm[] = ['scheduled', 'capacity', 'lateStart', 'iterationOverflow', 'unknownEstimate'];
-const GLOSSARY_BY_ROUTE: Partial<Record<RouteModuleKey, readonly GlossaryTerm[]>> = {
-    overview: DELIVERY_TERMS,
-    tasks: DELIVERY_TERMS,
-    myWork: ['implemented', 'accepted', 'blocked'],
-    projects: DELIVERY_TERMS,
-    projectDetail: DELIVERY_TERMS,
-    projectReleaseDetail: ['implemented', 'accepted'],
-    analytics: DELIVERY_TERMS,
-    triage: ['triage'],
-    plan: SCHEDULE_TERMS,
-    planMaster: SCHEDULE_TERMS,
-    gantt: SCHEDULE_TERMS,
-    roadmap: ['overdue', 'iterationOverflow'],
-    iterations: ['capacity', 'scheduled'],
-    calendar: ['capacity'],
-    team: ['capacity', 'scheduled'],
-    agentPipeline: ['agentReady', 'scheduled', 'blocked'],
-    agentTeamSetup: ['agentReady'],
-};
-
-const SPECIAL_RELATED_LINKS: Record<string, Omit<HelpRelatedLink, 'to'>> = {
-    '/plan/master': {
-        labelKey: 'documentTitles.planMaster',
-        defaultLabel: 'Planning workspace',
-    },
-    '/settings?tab=scheduling': {
-        labelKey: 'settingsPage.scheduling',
-        defaultLabel: 'Scheduling',
-        descriptionKey: 'settingsPage.descriptions.scheduling',
-    },
-    '/settings?tab=github': {
-        labelKey: 'settingsPage.github',
-        defaultLabel: 'GitHub',
-        descriptionKey: 'settingsPage.descriptions.github',
-    },
-    '/settings?tab=models_agents': {
-        labelKey: 'settingsPage.modelsAgents',
-        defaultLabel: 'Models & agents',
-        descriptionKey: 'settingsPage.descriptions.modelsAgents',
-    },
-};
-
-const relatedLinkForPath = (to: string): HelpRelatedLink => {
-    const special = SPECIAL_RELATED_LINKS[to];
-    if (special) return { to, ...special };
-
-    const pathname = to.split('?')[0] ?? to;
-    const destination = DESTINATIONS.find(candidate => candidate.path === pathname);
-    if (destination) {
-        return {
-            to,
-            labelKey: destination.labelKey,
-            defaultLabel: destination.defaultLabel,
-        };
-    }
-
-    // A view or section of a destination is named by its page title; like i18next itself,
-    // fall back to the key when a catalog lacks it.
-    const route = metadataForPath(pathname);
-    if (route.key !== 'notFound') {
-        return { to, labelKey: route.titleKey, defaultLabel: route.titleKey };
-    }
-
+const relatedLinkFor = (id: DestinationId): HelpRelatedLink => {
+    const destination = getDestination(id);
     return {
-        to,
-        labelKey: 'nav.overview',
-        defaultLabel: 'Overview',
+        to: destination.path,
+        labelKey: destination.labelKey,
+        defaultLabel: destination.defaultLabel,
     };
 };
 
 export const getHelpContext = (pathname: string) => {
     const route = metadataForPath(pathname);
-    const destination = getDestinationForPath(pathname);
-    const configuredPaths = RELATED_PATHS_BY_ROUTE[route.key];
-    // Without configured links, offer the other destinations of the same sidebar group.
-    const fallbackPaths = destination
-        ? getDestinationGroup(destination.id).destinations
-            .filter(candidate => candidate.id !== destination.id)
-            .slice(0, 3)
-            .map(candidate => candidate.path)
-        : DESTINATIONS.slice(0, 3).map(candidate => candidate.path);
+    // Unknown paths get Overview's help, so no page falls back to a generic hint.
+    const destination = getDestinationForPath(pathname) ?? getDestination('overview');
+    const help = DESTINATION_HELP[destination.id];
 
     return {
         routeKey: route.key,
         pageTitleKey: route.titleKey,
         destination,
-        // The current shell still frames help by its work area.
-        workspace: getWorkspaceForPath(pathname),
-        provider: CONTENT_PROVIDER_BY_ROUTE[route.key] ?? 'workspace',
-        relatedLinks: (configuredPaths ?? fallbackPaths).map(relatedLinkForPath),
-        glossary: GLOSSARY_BY_ROUTE[route.key] ?? [],
+        summaryKey: `contextHelp.destinations.${destination.id}.summary`,
+        workflow: WORKFLOW_BY_ROUTE[route.key],
+        glossary: help.glossary,
+        relatedLinks: help.related.map(relatedLinkFor),
+        setupGuide: SETUP_GUIDE_ENTRY,
     };
 };

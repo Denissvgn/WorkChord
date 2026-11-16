@@ -1,10 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
 import i18n from '../../i18n/i18n';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../../utils/singleKeyShortcutPreference';
 import { ContextHelp } from './ContextHelp';
+import { OPEN_SETUP_GUIDE_EVENT } from './setupGuideEvents';
 
 const LocationProbe = () => {
     const location = useLocation();
@@ -35,14 +36,16 @@ describe('ContextHelp', () => {
         const drawer = screen.getByRole('dialog', { name: i18n.t('contextHelp.title') });
         const sectionHeadings = within(drawer).getAllByRole('heading', { level: 4 });
         expect(sectionHeadings.map(heading => heading.textContent)).toEqual([
-            i18n.t('gantt.help.title'),
+            i18n.t('nav.gantt'),
             i18n.t('contextHelp.glossaryTitle'),
+            i18n.t('contextHelp.setupGuide.title'),
             i18n.t('contextHelp.shortcuts.title'),
             i18n.t('contextHelp.related.title'),
         ]);
+        expect(within(drawer).getByText(i18n.t('contextHelp.destinations.gantt.summary'))).toBeVisible();
         expect(within(drawer).getByText(i18n.t('gantt.help.sandboxBody'))).toBeVisible();
-        // The page's own terms, defined from the server's rules.
-        expect(within(drawer).getByText(i18n.t('contextHelp.glossary.iterationOverflow.definition'))).toBeVisible();
+        // The page's own terms, defined from the vocabulary.
+        expect(within(drawer).getByText(i18n.t('contextHelp.glossary.waits_for.definition'))).toBeVisible();
         expect(within(drawer).getByText(i18n.t('contextHelp.shortcuts.globalDescription')))
             .toBeVisible();
         expect(within(drawer).queryByText(i18n.t('contextHelp.shortcuts.taskKeys')))
@@ -91,7 +94,7 @@ describe('ContextHelp', () => {
         expect(window.localStorage.getItem(SINGLE_KEY_SHORTCUTS_STORAGE_KEY)).toBe('false');
     });
 
-    it('reuses setup goals on Settings and falls back to workspace guidance elsewhere', async () => {
+    it('reuses setup goals on Settings and gives Plan-area views their destination help', async () => {
         const settingsRender = renderWithProviders(<ContextHelp />, {
             initialEntries: ['/settings?tab=about'],
         });
@@ -121,14 +124,41 @@ describe('ContextHelp', () => {
 
         drawer = screen.getByRole('dialog', { name: i18n.t('contextHelp.title') });
         expect(within(drawer).getByRole('heading', {
-            name: i18n.t('contextHelp.workspaceGuides.planning.title'),
+            name: i18n.t('nav.projects'),
         })).toBeVisible();
+        expect(within(drawer).getByText(i18n.t('contextHelp.destinations.projects.summary')))
+            .toBeVisible();
         expect(within(drawer).queryByText(i18n.t('contextHelp.shortcuts.taskKeys')))
             .not.toBeInTheDocument();
         expect(within(drawer).getByRole('link', {
             name: i18n.t('contextHelp.related.openDestination', {
-                destination: i18n.t('nav.projects'),
+                destination: i18n.t('nav.planWork'),
             }),
-        })).toHaveAttribute('href', '/projects');
+        })).toHaveAttribute('href', '/plan');
+    });
+
+    it('opens the setup guide through the event the first-run panel will listen for', async () => {
+        const listener = vi.fn();
+        window.addEventListener(OPEN_SETUP_GUIDE_EVENT, listener);
+        try {
+            const { user } = renderWithProviders(<ContextHelp />, {
+                initialEntries: ['/team'],
+            });
+
+            await user.click(screen.getByRole('button', {
+                name: i18n.t('contextHelp.openForPage', {
+                    page: i18n.t('documentTitles.team'),
+                }),
+            }));
+
+            const drawer = screen.getByRole('dialog', { name: i18n.t('contextHelp.title') });
+            await user.click(within(drawer).getByRole('button', {
+                name: i18n.t('contextHelp.setupGuide.open'),
+            }));
+
+            expect(listener).toHaveBeenCalledTimes(1);
+        } finally {
+            window.removeEventListener(OPEN_SETUP_GUIDE_EVENT, listener);
+        }
     });
 });
