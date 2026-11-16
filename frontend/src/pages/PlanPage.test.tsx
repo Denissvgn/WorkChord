@@ -6,13 +6,14 @@ import { LegacyRedirect } from '../navigation/LegacyRedirect';
 import { expectPageChrome } from '../test/pageChrome';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { useScopeStore } from '../features/scope/scopeStore';
+import type { TeamMember, TeamMemberCreate, TeamMemberProfile } from '../types/team';
 import type { IterationPlanningReadinessSummary, PlanCheckpoint } from '../types/iteration';
 import PlanPage from './PlanPage';
 import planPageSource from './PlanPage.tsx?raw';
 
 const services = vi.hoisted(() => ({
     iterations: { getAll: vi.fn(), getPlanningReadiness: vi.fn() },
-    team: { getByIteration: vi.fn(), getProfiles: vi.fn(), create: vi.fn() },
+    team: { getByIteration: vi.fn(), getProfiles: vi.fn(), create: vi.fn(), getWorkload: vi.fn(), addVacation: vi.fn() },
     tasks: { getByIteration: vi.fn() },
     gantt: { getChart: vi.fn() },
     triage: { getAll: vi.fn() },
@@ -25,6 +26,8 @@ vi.mock('../services/taskService', () => ({ taskService: services.tasks }));
 vi.mock('../services/ganttService', () => ({ ganttService: services.gantt }));
 vi.mock('../services/triageService', () => ({ triageService: services.triage }));
 vi.mock('../services/planShareService', () => ({ planShareService: services.share }));
+const planning = vi.hoisted(() => ({ readInitial: vi.fn() }));
+vi.mock('../services/planningInputService', () => ({ planningInputService: planning }));
 vi.mock('./IterationsPage', () => ({ default: () => <p>Iterations of the project</p> }));
 
 const ITERATION = {
@@ -95,7 +98,7 @@ const stateText = (id: typeof IDS[number]) => within(section(id)).getByText((_, 
 const renderPlan = (entry = PLAN_ENTRY) => renderWithProviders(<><PlanPage /><LocationProbe /></>, { initialEntries: [entry] });
 
 beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
     useScopeStore.setState({ project: 1, iteration: 1 });
     services.iterations.getAll.mockResolvedValue([ITERATION]);
     services.iterations.getPlanningReadiness.mockResolvedValue(FIXTURES.empty);
@@ -268,5 +271,123 @@ describe('Plan is one page of six checkpoints', () => {
         } finally {
             await changeAppLanguage('en');
         }
+    });
+});
+
+const profile = (id: number, kind: 'human' | 'agent'): TeamMemberProfile => ({
+    id, display_name: kind === 'human' ? `Person ${id}` : `Agent ${id}`, profile_kind: kind,
+    automation_enabled: false, assignment_modes: [], skills: [], created_at: '', updated_at: '',
+});
+const capacityRow = (id: number, kind: 'human' | 'agent'): TeamMember => ({
+    id, iteration_id: 1, profile_id: id, name: profile(id, kind).display_name, position: 'Developer',
+    availability_percent: 100, professionalism_coefficient: 1, operational_utilization: kind === 'agent' ? 0 : 20,
+    profile: profile(id, kind), vacations: [],
+});
+const capacityReady = (rows: TeamMember[], hours: number) => summary([
+    checkpoint('iteration', 'done'), checkpoint('team', 'done', [], { people: rows.length }),
+    ...FIXTURES.empty.checkpoints!.slice(2),
+], { team_member_count: rows.length, team_agent_count: rows.filter(row => row.profile?.profile_kind === 'agent').length, team_capacity_hours: hours });
+
+// Stateful service doubles return new server responses after writes; checkpoint states are never derived by the page.
+const capacityWorkspace = (initial: TeamMember[] = []) => {
+    const rows = [...initial];
+    const profiles = [profile(1, 'human'), profile(2, 'agent'), profile(3, 'human')];
+    let revision = 1;
+    services.team.getProfiles.mockResolvedValue(profiles);
+    services.team.getByIteration.mockImplementation(async () => [...rows]);
+    services.team.getWorkload.mockImplementation(async (id: number) => ({
+        team_member_id: id, capacity_hours: rows.find(row => row.id === id)?.vacations.length ? 57.6 : 64,
+    }));
+    services.iterations.getPlanningReadiness.mockImplementation(async () => rows.length
+        ? capacityReady(rows, rows.reduce((hours, row) => hours + (row.vacations.length ? 57.6 : 64), 0))
+        : FIXTURES.empty);
+    planning.readInitial.mockImplementation(async (_kind: string, id: number, creating: boolean) => ({
+        resource: creating ? { id } : rows.find(row => row.id === id), expected_revisions: { 1: revision++ },
+    }));
+    services.team.create.mockImplementation(async (_id: number, data: TeamMemberCreate) => {
+        const row: TeamMember = { ...data, id: rows.length + 1, iteration_id: 1, vacations: [], profile: profiles.find(profile => profile.id === data.profile_id) };
+        rows.push(row);
+        return row;
+    });
+    services.team.addVacation.mockImplementation(async (id: number, dates: { start_date: string; end_date: string }) => {
+        const vacation = { id: 8, ...dates };
+        const index = rows.findIndex(row => row.id === id);
+        rows[index] = { ...rows[index], vacations: [...rows[index].vacations, vacation] };
+        return vacation;
+    });
+    return rows;
+};
+
+describe('capacity inside Plan', () => {
+    it('adds three people and agents to an empty iteration in one action and shows the server Done checkpoint', async () => {
+        capacityWorkspace();
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Add capacity' }));
+        await user.click(await screen.findByRole('checkbox', { name: /Person 1/ }));
+        await user.click(screen.getByRole('checkbox', { name: /Agent 2/ }));
+        await user.click(screen.getByRole('checkbox', { name: /Person 3/ }));
+        await user.click(screen.getByRole('button', { name: 'Add selected' }));
+        await waitFor(() => expect(stateText('team')).toBe('Done'));
+        expect(services.team.create).toHaveBeenCalledTimes(3);
+        expect(services.team.create.mock.calls.map(call => call[1].operational_utilization)).toEqual([20, 0, 20]);
+        expect(services.team.create.mock.calls.map(call => call[2])).toEqual([{ 1: 1 }, { 1: 2 }, { 1: 3 }]);
+        expect(toggle('Work')).toHaveAttribute('aria-expanded', 'true');
+        await user.click(toggle('Capacity'));
+        expect(within(await screen.findByRole('table')).getAllByRole('row')).toHaveLength(4);
+        expect(screen.getByTestId('location')).toHaveTextContent('/plan?project=1&iteration=1');
+        expect(within(section('team')).queryByRole('link')).not.toBeInTheDocument();
+    });
+
+    it('copies every previous iteration row with its availability and skips existing members on repeat', async () => {
+        const rows = capacityWorkspace();
+        const previous = { ...ITERATION, id: 2, start_date: '2026-07-20', end_date: '2026-07-31' };
+        services.iterations.getAll.mockResolvedValue([ITERATION, previous,
+            { ...previous, id: 99, project_id: 8, end_date: '2026-08-01' },
+            { ...previous, id: 98, end_date: '2026-09-01' }]);
+        const source = [capacityRow(1, 'human'), capacityRow(2, 'agent'), { ...capacityRow(3, 'human'), profile_id: null, profile: null }]
+            .map((row, index) => ({ ...row, availability_percent: [75, 50, 90][index], operational_utilization: index === 1 ? 5 : 20, professionalism_coefficient: 1.2 }));
+        services.team.getByIteration.mockImplementation(async (id: number) => id === 2 ? source : [...rows]);
+        const { user } = renderPlan('/plan?step=team&project=1&iteration=1');
+        await user.click(await screen.findByRole('button', { name: 'Copy from previous iteration' }));
+        await waitFor(() => expect(services.team.create).toHaveBeenCalledTimes(3));
+        await screen.findByText('Previous capacity copied. Existing members were kept.');
+        for (const [index, row] of source.entries()) {
+            expect(services.team.create.mock.calls[index][1]).toEqual(expect.objectContaining({
+                availability_percent: row.availability_percent, operational_utilization: row.operational_utilization,
+                professionalism_coefficient: row.professionalism_coefficient, profile_id: row.profile_id,
+            }));
+        }
+        await user.click(screen.getByRole('button', { name: 'Copy from previous iteration' }));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Copy from previous iteration' })).toBeEnabled());
+        expect(services.team.create).toHaveBeenCalledTimes(3);
+        expect(services.team.getByIteration).not.toHaveBeenCalledWith(99);
+        expect(services.team.getByIteration).not.toHaveBeenCalledWith(98);
+        expect(stateText('team')).toBe('Done');
+    });
+
+    it('adds time off in Plan and refreshes the member row and its hours', async () => {
+        capacityWorkspace([capacityRow(1, 'human')]);
+        const { user } = renderPlan('/plan?step=team&project=1&iteration=1');
+        const table = await screen.findByRole('table');
+        expect(await within(table).findByText('64 h')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Actions for Person 1' }));
+        await user.click(screen.getByRole('menuitem', { name: 'Time off' }));
+        const dialog = await screen.findByRole('dialog');
+        await user.type(await within(dialog).findByLabelText('Start date'), '2026-08-05');
+        await user.type(within(dialog).getByLabelText('End date'), '2026-08-05');
+        await user.click(within(dialog).getByRole('button', { name: 'Add vacation' }));
+        expect(await within(table).findByText('57.6 h')).toBeInTheDocument();
+        expect(within(table).getByText('Aug 5, 2026 – Aug 5, 2026')).toBeInTheDocument();
+        expect(services.team.addVacation).toHaveBeenCalledWith(1, { start_date: '2026-08-05', end_date: '2026-08-05' }, { 1: 1 });
+        expect(await screen.findByText('1 person, 0 agents, 57.6 h')).toBeInTheDocument();
+    });
+
+    it('reports people and agents separately with the total hours from the server', async () => {
+        capacityWorkspace([capacityRow(1, 'human'), capacityRow(2, 'human'), capacityRow(3, 'agent'), capacityRow(4, 'agent'), capacityRow(5, 'agent')]);
+        services.iterations.getPlanningReadiness.mockResolvedValue(capacityReady([
+            capacityRow(1, 'human'), capacityRow(2, 'human'), capacityRow(3, 'agent'), capacityRow(4, 'agent'), capacityRow(5, 'agent'),
+        ], 412));
+        renderPlan();
+        expect(await screen.findByText('2 people, 3 agents, 412 h')).toBeVisible();
     });
 });
