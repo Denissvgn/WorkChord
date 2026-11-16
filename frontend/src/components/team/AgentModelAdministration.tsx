@@ -1,18 +1,14 @@
-import { useMemo, useState } from 'react';
-import type { FormEvent } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     AlertTriangle,
-    Bot,
     Database,
     Link2,
-    Pencil,
     Plus,
-    RefreshCw,
-    ShieldCheck,
     X,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useAgentAccess } from '../../hooks/useAgentAccess';
 import { agentService } from '../../services/agentService';
 import type {
@@ -24,17 +20,18 @@ import type {
 import { normalizeApiError } from '../../utils/apiError';
 import {
     createAgentCommandMetadata,
-    formatRoutingCode,
     parseRoutingTags,
 } from '../../utils/modelRouting';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
-import { formatDateTime } from '../../utils/formatDate';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { Input, RequiredIndicator } from '../common/Input';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { useConfirmDialog } from '../common/useConfirmDialog';
+import { ModelCatalog } from './ModelCatalog';
+import { ModelBindings } from './ModelBindings';
+import { Modal } from '../common/Modal';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 
 interface CatalogForm {
@@ -134,6 +131,10 @@ export const AgentModelAdministration = () => {
     const [catalogDrawerOpen, setCatalogDrawerOpen] = useState(false);
     const [bindingDrawerOpen, setBindingDrawerOpen] = useState(false);
     const [auditRationale, setAuditRationale] = useState('');
+    const reasonRef = useRef('');
+    const reconcileRef = useRef(false);
+    const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+    const askReason = (action: () => void) => { setAuditRationale(''); setReconcileLiveAssignments(false); reconcileRef.current = false; setPendingAction(() => action); };
     const [reconcileLiveAssignments, setReconcileLiveAssignments] = useState(false);
     const [conflictMessage, setConflictMessage] = useState<string | null>(null);
     const [conflictResolution, setConflictResolution] = useState<ConflictResolution | null>(null);
@@ -152,11 +153,6 @@ export const AgentModelAdministration = () => {
         : [];
     const canRead = scopes.includes('admin') || scopes.includes('planning:read');
     const canAdminister = scopes.includes('admin');
-    const routingStatus = capabilitiesQuery.data?.model_aware_routing;
-    const routingBlockerCodes = Array.from(new Set([
-        ...(routingStatus?.blocker_codes ?? []),
-        ...(routingStatus?.topology_readiness.blocker_codes ?? []),
-    ]));
 
     // feedback-policy: query loading,error,retry,empty
     const rosterQuery = useQuery({
@@ -236,7 +232,7 @@ export const AgentModelAdministration = () => {
         mutationFn: (data: AgentModelCatalogCreate) => (
             agentService.createModelCatalogEntry(
                 data,
-                createAgentCommandMetadata(auditRationale),
+                createAgentCommandMetadata(reasonRef.current),
             )
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.catalogCreateSuccess'), 'catalog'),
@@ -251,7 +247,7 @@ export const AgentModelAdministration = () => {
         }) => agentService.updateModelCatalogEntry(
             id,
             data,
-            createAgentCommandMetadata(auditRationale),
+            createAgentCommandMetadata(reasonRef.current),
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.catalogUpdateSuccess'), 'catalog'),
         onError: error => mutationError(
@@ -268,9 +264,9 @@ export const AgentModelAdministration = () => {
                 entry.id,
                 {
                     expected_revision: entry.revision,
-                    reconcile_live_assignments: reconcileLiveAssignments,
+                    reconcile_live_assignments: reconcileRef.current,
                 },
-                createAgentCommandMetadata(auditRationale),
+                createAgentCommandMetadata(reasonRef.current),
             )
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.catalogDisableSuccess')),
@@ -285,9 +281,9 @@ export const AgentModelAdministration = () => {
                 {
                     expected_revision: entry.revision,
                     enabled: true,
-                    reconcile_live_assignments: reconcileLiveAssignments,
+                    reconcile_live_assignments: reconcileRef.current,
                 },
-                createAgentCommandMetadata(auditRationale),
+                createAgentCommandMetadata(reasonRef.current),
             )
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.catalogEnableSuccess')),
@@ -299,7 +295,7 @@ export const AgentModelAdministration = () => {
         mutationFn: (data: AgentModelBindingCreate) => (
             agentService.createModelBinding(
                 data,
-                createAgentCommandMetadata(auditRationale),
+                createAgentCommandMetadata(reasonRef.current),
             )
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.bindingCreateSuccess'), 'binding'),
@@ -314,7 +310,7 @@ export const AgentModelAdministration = () => {
         }) => agentService.updateModelBinding(
             id,
             data,
-            createAgentCommandMetadata(auditRationale),
+            createAgentCommandMetadata(reasonRef.current),
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.bindingUpdateSuccess'), 'binding'),
         onError: error => mutationError(
@@ -331,9 +327,9 @@ export const AgentModelAdministration = () => {
                 binding.id,
                 {
                     expected_revision: binding.revision,
-                    reconcile_live_assignments: reconcileLiveAssignments,
+                    reconcile_live_assignments: reconcileRef.current,
                 },
-                createAgentCommandMetadata(auditRationale),
+                createAgentCommandMetadata(reasonRef.current),
             )
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.bindingDisableSuccess')),
@@ -348,9 +344,9 @@ export const AgentModelAdministration = () => {
                 {
                     expected_revision: binding.revision,
                     enabled: true,
-                    reconcile_live_assignments: reconcileLiveAssignments,
+                    reconcile_live_assignments: reconcileRef.current,
                 },
-                createAgentCommandMetadata(auditRationale),
+                createAgentCommandMetadata(reasonRef.current),
             )
         ),
         onSuccess: () => mutationSuccess(t('modelAdministration.bindingEnableSuccess')),
@@ -360,10 +356,6 @@ export const AgentModelAdministration = () => {
     const actors = useMemo(() => rosterQuery.data ?? [], [rosterQuery.data]);
     const catalog = useMemo(() => catalogQuery.data ?? [], [catalogQuery.data]);
     const bindings = useMemo(() => bindingsQuery.data ?? [], [bindingsQuery.data]);
-    const actorById = useMemo(
-        () => new Map(actors.map(actor => [actor.id, actor])),
-        [actors],
-    );
     const catalogById = useMemo(
         () => new Map(catalog.map(entry => [entry.id, entry])),
         [catalog],
@@ -380,9 +372,8 @@ export const AgentModelAdministration = () => {
     ].some(mutation => mutation.isPending);
     const rationaleReady = auditRationale.trim().length > 0;
 
-    const submitCatalog = (event: FormEvent) => {
-        event.preventDefault();
-        if (!canAdminister || !rationaleReady) return;
+    const submitCatalog = () => {
+        if (!canAdminister) return;
         const createData: AgentModelCatalogCreate = {
             key: catalogForm.key.trim().toLowerCase(),
             provider: catalogForm.provider.trim(),
@@ -409,7 +400,7 @@ export const AgentModelAdministration = () => {
                     cost_tier: createData.cost_tier,
                     latency_tier: createData.latency_tier,
                     last_verified_at: createData.last_verified_at,
-                    reconcile_live_assignments: reconcileLiveAssignments,
+                    reconcile_live_assignments: reconcileRef.current,
                 },
             });
             return;
@@ -417,11 +408,9 @@ export const AgentModelAdministration = () => {
         createCatalogMutation.mutate(createData);
     };
 
-    const submitBinding = (event: FormEvent) => {
-        event.preventDefault();
+    const submitBinding = () => {
         if (
             !canAdminister
-            || !rationaleReady
             || !bindingForm.actorId
             || !bindingForm.modelCatalogId
         ) return;
@@ -442,7 +431,7 @@ export const AgentModelAdministration = () => {
                     is_default: bindingForm.isDefault,
                     tool_tags: createData.tool_tags,
                     data_policy_tags: createData.data_policy_tags,
-                    reconcile_live_assignments: reconcileLiveAssignments,
+                    reconcile_live_assignments: reconcileRef.current,
                 },
             });
             return;
@@ -506,45 +495,6 @@ export const AgentModelAdministration = () => {
         setBindingDrawerOpen(false);
     };
 
-    const enableCatalog = (entry: AgentModelCatalogEntry) => {
-        if (!reconcileLiveAssignments) {
-            enableCatalogMutation.mutate(entry);
-            return;
-        }
-        requestConfirmation({
-            title: t('modelAdministration.enableCatalogTitle'),
-            description: t('modelAdministration.enableCatalogDescription', {
-                alias: entry.configured_model_alias,
-            }),
-            confirmLabel: t('common.enable'),
-            cancelLabel: t('actions.cancel'),
-            closeLabel: t('actions.close'),
-            tone: 'warning',
-            onConfirm: () => enableCatalogMutation.mutateAsync(entry),
-        });
-    };
-
-    const enableBinding = (
-        binding: AgentModelBinding,
-        actorName: string | number,
-    ) => {
-        if (!reconcileLiveAssignments) {
-            enableBindingMutation.mutate(binding);
-            return;
-        }
-        requestConfirmation({
-            title: t('modelAdministration.enableBindingTitle'),
-            description: t('modelAdministration.enableBindingDescription', {
-                actor: actorName,
-            }),
-            confirmLabel: t('common.enable'),
-            cancelLabel: t('actions.cancel'),
-            closeLabel: t('actions.close'),
-            tone: 'warning',
-            onConfirm: () => enableBindingMutation.mutateAsync(binding),
-        });
-    };
-
     const prepareConflictOverwrite = () => {
         if (!conflictResolution) return;
         requestConfirmation({
@@ -576,10 +526,10 @@ export const AgentModelAdministration = () => {
 
     if (!hasAgentKey) {
         return (
-            <QueryEmptyState
+            <div><QueryEmptyState
                 title={t('modelAdministration.accessRequiredTitle')}
                 description={t('modelAdministration.accessRequiredDescription')}
-            />
+            /><Link to="/settings?tab=access" className="text-action underline">{t('settingsPage.openAdminAccess')}</Link></div>
         );
     }
 
@@ -635,7 +585,7 @@ export const AgentModelAdministration = () => {
             />
             <Checkbox
                 checked={reconcileLiveAssignments}
-                onChange={setReconcileLiveAssignments}
+                onChange={value => { reconcileRef.current = value; setReconcileLiveAssignments(value); }}
                 label={t('modelAdministration.reconcileLiveAssignments')}
                 disabled={isMutating}
             />
@@ -687,135 +637,7 @@ export const AgentModelAdministration = () => {
 
     return (
         <div className="space-y-5">
-            <section className="card space-y-3" aria-labelledby="model-admin-overview-heading">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div className="min-w-0">
-                        <h2 id="model-admin-overview-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
-                            <ShieldCheck aria-hidden="true" className="h-5 w-5 text-action" />
-                            {t('modelAdministration.title')}
-                        </h2>
-                        <p className="mt-1 break-words text-sm text-content-secondary">{t('modelAdministration.description')}</p>
-                    </div>
-                    <div className={`rounded-full border px-3 py-1 text-xs font-medium ${
-                        canAdminister
-                            ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
-                            : 'border-feedback-info-border bg-feedback-info-muted text-feedback-info-foreground'
-                    }`}>
-                        {canAdminister
-                            ? t('modelAdministration.adminMode')
-                            : t('modelAdministration.readOnlyMode')}
-                    </div>
-                </div>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div className="kpi"><div className="kpi-lbl">{t('modelAdministration.actors')}</div><div className="kpi-val tnum">{actors.length}</div></div>
-                    <div className="kpi"><div className="kpi-lbl">{t('modelAdministration.catalogEntries')}</div><div className="kpi-val tnum">{catalog.length}</div></div>
-                    <div className="kpi"><div className="kpi-lbl">{t('modelAdministration.bindings')}</div><div className="kpi-val tnum">{bindings.length}</div></div>
-                </div>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div className="kpi">
-                        <div className="kpi-lbl">{t('modelAdministration.configuredRoutingMode')}</div>
-                        <div className="kpi-val text-base">
-                            {t(`taskRouting.rolloutModes.${routingStatus?.configured_mode ?? 'off'}`)}
-                        </div>
-                    </div>
-                    <div className="kpi">
-                        <div className="kpi-lbl">{t('modelAdministration.effectiveRoutingMode')}</div>
-                        <div className="kpi-val text-base">
-                            {t(`taskRouting.rolloutModes.${routingStatus?.effective_mode ?? 'off'}`)}
-                        </div>
-                    </div>
-                    <div className="kpi">
-                        <div className="kpi-lbl">{t('modelAdministration.topologyReadiness')}</div>
-                        <div className="kpi-val text-base">
-                            {t(`taskRouting.topologyStatuses.${routingStatus?.topology_readiness.status ?? 'unavailable'}`)}
-                        </div>
-                    </div>
-                </div>
-                {routingBlockerCodes.length > 0 && (
-                    <div className="rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-feedback-warning-foreground">
-                            {t('modelAdministration.routingBlockers')}
-                        </p>
-                        <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-feedback-warning-foreground">
-                            {routingBlockerCodes.map(code => (
-                                <li key={code}>{formatRoutingCode(code)}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-                <Button type="button" size="sm" variant="secondary" onClick={() => refreshEvidence()}>
-                    <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
-                    {t('actions.refresh')}
-                </Button>
-            </section>
-
             {!catalogDrawerOpen && !bindingDrawerOpen && conflictNotice}
-
-            {canAdminister && (
-                <section className="card space-y-3" aria-labelledby="model-admin-audit-heading">
-                    <h3 id="model-admin-audit-heading" className="font-semibold text-content-primary">{t('modelAdministration.auditControls')}</h3>
-                    {auditFields}
-                </section>
-            )}
-
-            <section className="card space-y-4" aria-labelledby="actor-roster-heading">
-                <div>
-                    <h3 id="actor-roster-heading" className="flex items-center gap-2 font-semibold text-content-primary">
-                        <Bot aria-hidden="true" className="h-4 w-4 text-action" />
-                        {t('modelAdministration.actorRoster')}
-                    </h3>
-                    <p className="text-sm text-content-secondary">{t('modelAdministration.actorRosterDescription')}</p>
-                </div>
-                {actors.length === 0 ? (
-                    <QueryEmptyState title={t('modelAdministration.noActors')} />
-                ) : (
-                    <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
-                        {actors.map(actor => {
-                            const hasSelectableBindingEvidence = actor.enabled
-                                && Boolean(actor.profile)
-                                && actor.eligible_model_bindings.length > 0;
-                            return (
-                                <article key={actor.id} className="rounded-lg border border-border bg-surface-muted p-4">
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <h4 className="break-words font-medium text-content-primary">{actor.display_name}</h4>
-                                            <p className="break-all text-xs text-content-secondary">{actor.name} · {actor.role}</p>
-                                        </div>
-                                        <span className={`max-w-full break-words rounded-full border px-2 py-0.5 text-center text-xs ${
-                                            hasSelectableBindingEvidence
-                                                ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
-                                                : 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground'
-                                        }`}>
-                                            {hasSelectableBindingEvidence
-                                                ? t('modelAdministration.selectableBindingEvidence')
-                                                : t('modelAdministration.noSelectableBindingEvidence')}
-                                        </span>
-                                    </div>
-                                    <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.profile')}</dt><dd className="text-content-primary">{actor.profile?.display_name ?? t('common.none')}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.profileKind')}</dt><dd className="text-content-primary">{actor.profile?.profile_kind ?? t('common.none')}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.assignmentModes')}</dt><dd className="text-content-primary">{actor.profile?.assignment_modes.join(', ') || t('common.none')}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.queueRevision')}</dt><dd className="text-content-primary tnum">{actor.queue_revision}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.queue')}</dt><dd className="text-content-primary tnum">{actor.queued_assignments} / {actor.accepted_assignments}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.runningRuns')}</dt><dd className="text-content-primary tnum">{actor.running_runs}</dd></div>
-                                    </dl>
-                                    <div className="mt-3 flex flex-wrap gap-1">
-                                        {actor.eligible_model_bindings.map(binding => (
-                                            <span key={binding.id} className="max-w-full break-words rounded-full border border-feedback-success-border bg-feedback-success-muted px-2 py-0.5 text-xs text-feedback-success-foreground">
-                                                {binding.model_catalog?.configured_model_alias ?? binding.model_catalog_key}
-                                                {' · '}r{binding.revision}
-                                            </span>
-                                        ))}
-                                        {actor.eligible_model_bindings.length === 0 && (
-                                            <span className="text-xs text-feedback-warning-foreground">{t('modelAdministration.noSelectableBindings')}</span>
-                                        )}
-                                    </div>
-                                </article>
-                            );
-                        })}
-                    </div>
-                )}
-            </section>
 
             <section aria-labelledby="catalog-heading">
                 <div className="card space-y-4">
@@ -837,82 +659,7 @@ export const AgentModelAdministration = () => {
                     {catalog.length === 0 ? (
                         <QueryEmptyState title={t('modelAdministration.noCatalogEntries')} />
                     ) : (
-                        <div className="space-y-3">
-                            {catalog.map(entry => (
-                                <article key={entry.id} className="rounded-lg border border-border bg-surface-muted p-4">
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <h4 className="break-words font-medium text-content-primary">{entry.configured_model_alias}</h4>
-                                            <p className="break-all text-xs text-content-secondary">{entry.key} · {entry.provider}</p>
-                                        </div>
-                                        <span className={`max-w-[55%] break-words rounded-full border px-2 py-0.5 text-center text-xs ${
-                                            entry.enabled
-                                                ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
-                                                : 'border-border bg-surface-subtle text-content-secondary'
-                                        }`}>
-                                            {entry.enabled ? t('common.enabled') : t('common.disabled')}
-                                        </span>
-                                    </div>
-                                    <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.reasoningTier')}</dt><dd className="text-content-primary tnum">{entry.reasoning_tier}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.contextTier')}</dt><dd className="text-content-primary">{entry.context_tier}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.costTier')}</dt><dd className="text-content-primary">{entry.cost_tier}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.latencyTier')}</dt><dd className="text-content-primary">{entry.latency_tier}</dd></div>
-                                        <div><dt className="text-content-tertiary">{t('modelAdministration.revision')}</dt><dd className="text-content-primary tnum">{entry.revision}</dd></div>
-                                        <div className="sm:col-span-3"><dt className="text-content-tertiary">{t('modelAdministration.lastVerified')}</dt><dd className="text-content-primary">{entry.last_verified_at ? formatDateTime(entry.last_verified_at) : t('modelAdministration.neverVerified')}</dd></div>
-                                    </dl>
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                        <span className="text-xs text-content-secondary">{t('modelAdministration.modalities')}: {entry.modality_tags.join(', ')}</span>
-                                    </div>
-                                    {canAdminister && (
-                                        <div className="mt-3 flex flex-wrap gap-2">
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                variant="secondary"
-                                                onClick={() => editCatalog(entry)}
-                                                disabled={isMutating}
-                                                aria-label={t('modelAdministration.editCatalogAction', { alias: entry.configured_model_alias })}
-                                            >
-                                                <Pencil aria-hidden="true" className="mr-2 h-3.5 w-3.5" />
-                                                {t('actions.edit')}
-                                            </Button>
-                                            {entry.enabled && (
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant="outline"
-                                                    disabled={!rationaleReady || isMutating}
-                                                    aria-label={t('modelAdministration.disableCatalogAction', { alias: entry.configured_model_alias })}
-                                                    onClick={() => requestConfirmation({
-                                                        title: t('modelAdministration.disableCatalogTitle'),
-                                                        description: t('modelAdministration.disableCatalogDescription', { alias: entry.configured_model_alias }),
-                                                        confirmLabel: t('common.disable'),
-                                                        cancelLabel: t('actions.cancel'),
-                                                        closeLabel: t('actions.close'),
-                                                        onConfirm: () => disableCatalogMutation.mutateAsync(entry),
-                                                    })}
-                                                >
-                                                    {t('common.disable')}
-                                                </Button>
-                                            )}
-                                            {!entry.enabled && (
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant="outline"
-                                                    disabled={!rationaleReady || isMutating}
-                                                    aria-label={t('modelAdministration.enableCatalogAction', { alias: entry.configured_model_alias })}
-                                                    onClick={() => enableCatalog(entry)}
-                                                >
-                                                    {t('common.enable')}
-                                                </Button>
-                                            )}
-                                        </div>
-                                    )}
-                                </article>
-                            ))}
-                        </div>
+                        <ModelCatalog entries={catalog} canAdminister={canAdminister} busy={isMutating} onEdit={editCatalog} onToggle={entry => askReason(() => entry.enabled ? disableCatalogMutation.mutate(entry) : enableCatalogMutation.mutate(entry))} />
                     )}
                 </div>
 
@@ -924,9 +671,8 @@ export const AgentModelAdministration = () => {
                         onClose={closeCatalogDrawer}
                         closeDisabled={isMutating}
                     >
-                        <form className="space-y-3 p-5" onSubmit={submitCatalog} aria-busy={isMutating}>
+                        <form className="space-y-3 p-5" onSubmit={event => { event.preventDefault(); askReason(submitCatalog); }} aria-busy={isMutating}>
                             {conflictNotice}
-                            <div className="space-y-3 rounded-md border border-border p-3">{auditFields}</div>
                             <fieldset className="min-w-0 space-y-3" disabled={isMutating}>
                                 <Input label={t('modelAdministration.catalogKey')} value={catalogForm.key} onChange={event => setCatalogForm({ ...catalogForm, key: event.target.value })} disabled={Boolean(catalogForm.id)} required />
                                 <Input label={t('modelAdministration.provider')} value={catalogForm.provider} onChange={event => setCatalogForm({ ...catalogForm, provider: event.target.value })} required />
@@ -969,7 +715,7 @@ export const AgentModelAdministration = () => {
                                     <Button type="button" variant="ghost" onClick={closeCatalogDrawer}>
                                         {t('actions.cancel')}
                                     </Button>
-                                    <Button type="submit" isLoading={createCatalogMutation.isPending || updateCatalogMutation.isPending} disabled={!rationaleReady || isMutating}>
+                                    <Button type="submit" isLoading={createCatalogMutation.isPending || updateCatalogMutation.isPending} disabled={isMutating}>
                                         <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                         {catalogForm.id ? t('actions.save') : t('actions.create')}
                                     </Button>
@@ -1000,108 +746,7 @@ export const AgentModelAdministration = () => {
                     {bindings.length === 0 ? (
                         <QueryEmptyState title={t('modelAdministration.noBindings')} />
                     ) : (
-                        <div className="space-y-3">
-                            {bindings.map(binding => {
-                                const actor = actorById.get(binding.actor_id);
-                                const entry = binding.model_catalog ?? catalogById.get(binding.model_catalog_id);
-                                const isSelectable = Boolean(actor?.enabled)
-                                    && binding.enabled
-                                    && Boolean(entry?.enabled)
-                                    && binding.selectable;
-                                return (
-                                    <article key={binding.id} className="rounded-lg border border-border bg-surface-muted p-4">
-                                        <div className="flex items-start justify-between gap-3">
-                                            <div className="min-w-0">
-                                                <h4 className="break-words font-medium text-content-primary">
-                                                    {actor?.display_name ?? t('modelAdministration.actorNumber', { id: binding.actor_id })}
-                                                </h4>
-                                                <p className="break-all text-xs text-content-secondary">
-                                                    {entry?.configured_model_alias ?? binding.model_catalog_key ?? t('common.unknown')}
-                                                    {' · '}r{binding.revision}
-                                                </p>
-                                            </div>
-                                            <span className={`max-w-[55%] break-words rounded-full border px-2 py-0.5 text-center text-xs ${
-                                                isSelectable
-                                                    ? 'border-feedback-success-border bg-feedback-success-muted text-feedback-success-foreground'
-                                                    : 'border-feedback-warning-border bg-feedback-warning-muted text-feedback-warning-foreground'
-                                            }`}>
-                                                {isSelectable
-                                                    ? t('modelAdministration.selectable')
-                                                    : binding.enabled
-                                                        ? t('modelAdministration.staleOrUnselectable')
-                                                        : t('common.disabled')}
-                                            </span>
-                                        </div>
-                                        <dl className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
-                                            <div><dt className="text-content-tertiary">{t('modelAdministration.profile')}</dt><dd className="text-content-primary">{actor?.profile?.display_name ?? t('common.none')}</dd></div>
-                                            <div><dt className="text-content-tertiary">{t('modelAdministration.default')}</dt><dd className="text-content-primary">{binding.is_default ? t('common.yes') : t('common.no')}</dd></div>
-                                            <div><dt className="text-content-tertiary">{t('modelAdministration.liveAssignments')}</dt><dd className="text-content-primary tnum">{binding.live_assignment_count}</dd></div>
-                                            <div><dt className="text-content-tertiary">{t('modelAdministration.runReferences')}</dt><dd className="text-content-primary tnum">{binding.run_reference_count}</dd></div>
-                                        </dl>
-                                        <p className="mt-2 break-words text-xs text-content-secondary">{t('modelAdministration.tools')}: {binding.tool_tags.join(', ') || t('common.none')}</p>
-                                        <p className="mt-1 break-words text-xs text-content-secondary">{t('modelAdministration.dataPolicy')}: {binding.data_policy_tags.join(', ') || t('common.none')}</p>
-                                        {canAdminister && (
-                                            <div className="mt-3 flex flex-wrap gap-2">
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant="secondary"
-                                                    onClick={() => editBinding(binding)}
-                                                    disabled={isMutating}
-                                                    aria-label={t('modelAdministration.editBindingAction', {
-                                                        actor: actor?.display_name ?? binding.actor_id,
-                                                        model: entry?.configured_model_alias ?? binding.model_catalog_key ?? binding.model_catalog_id,
-                                                    })}
-                                                >
-                                                    <Pencil aria-hidden="true" className="mr-2 h-3.5 w-3.5" />
-                                                    {t('actions.edit')}
-                                                </Button>
-                                                {binding.enabled && (
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="outline"
-                                                        disabled={!rationaleReady || isMutating}
-                                                        aria-label={t('modelAdministration.disableBindingAction', {
-                                                            actor: actor?.display_name ?? binding.actor_id,
-                                                            model: entry?.configured_model_alias ?? binding.model_catalog_key ?? binding.model_catalog_id,
-                                                        })}
-                                                        onClick={() => requestConfirmation({
-                                                            title: t('modelAdministration.disableBindingTitle'),
-                                                            description: t('modelAdministration.disableBindingDescription', { actor: actor?.display_name ?? binding.actor_id }),
-                                                            confirmLabel: t('common.disable'),
-                                                            cancelLabel: t('actions.cancel'),
-                                                            closeLabel: t('actions.close'),
-                                                            onConfirm: () => disableBindingMutation.mutateAsync(binding),
-                                                        })}
-                                                    >
-                                                        {t('common.disable')}
-                                                    </Button>
-                                                )}
-                                                {!binding.enabled && (
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="outline"
-                                                        disabled={!rationaleReady || isMutating}
-                                                        aria-label={t('modelAdministration.enableBindingAction', {
-                                                            actor: actor?.display_name ?? binding.actor_id,
-                                                            model: entry?.configured_model_alias ?? binding.model_catalog_key ?? binding.model_catalog_id,
-                                                        })}
-                                                        onClick={() => enableBinding(
-                                                            binding,
-                                                            actor?.display_name ?? binding.actor_id,
-                                                        )}
-                                                    >
-                                                        {t('common.enable')}
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        )}
-                                    </article>
-                                );
-                            })}
-                        </div>
+                        <ModelBindings bindings={bindings} actorNames={new Map(actors.map(actor => [actor.id, actor.display_name]))} catalog={catalogById} canAdminister={canAdminister} busy={isMutating} onEdit={editBinding} onToggle={binding => askReason(() => binding.enabled ? disableBindingMutation.mutate(binding) : enableBindingMutation.mutate(binding))} />
                     )}
                 </div>
 
@@ -1113,9 +758,8 @@ export const AgentModelAdministration = () => {
                         onClose={closeBindingDrawer}
                         closeDisabled={isMutating}
                     >
-                        <form className="space-y-3 p-5" onSubmit={submitBinding} aria-busy={isMutating}>
+                        <form className="space-y-3 p-5" onSubmit={event => { event.preventDefault(); askReason(submitBinding); }} aria-busy={isMutating}>
                             {conflictNotice}
-                            <div className="space-y-3 rounded-md border border-border p-3">{auditFields}</div>
                             <fieldset className="min-w-0 space-y-3" disabled={isMutating}>
                                 <label className="field">
                                     <span className="field-lbl">
@@ -1144,7 +788,7 @@ export const AgentModelAdministration = () => {
                                     <Button type="button" variant="ghost" onClick={closeBindingDrawer}>
                                         {t('actions.cancel')}
                                     </Button>
-                                    <Button type="submit" isLoading={createBindingMutation.isPending || updateBindingMutation.isPending} disabled={!rationaleReady || isMutating}>
+                                    <Button type="submit" isLoading={createBindingMutation.isPending || updateBindingMutation.isPending} disabled={isMutating}>
                                         <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                         {bindingForm.id ? t('actions.save') : t('actions.create')}
                                     </Button>
@@ -1155,6 +799,15 @@ export const AgentModelAdministration = () => {
                 )}
             </section>
             {confirmationDialog}
+            <Modal open={pendingAction !== null} title={t('modelAdministration.auditControls')} onClose={() => setPendingAction(null)} closeLabel={t('actions.close')}>
+                <form className="space-y-3" onSubmit={event => { event.preventDefault(); if (!rationaleReady || !pendingAction) return; reasonRef.current = auditRationale.trim(); const action = pendingAction; setPendingAction(null); action(); }}>
+                    {auditFields}
+                    <div className="flex justify-end gap-2">
+                        <Button type="button" variant="ghost" onClick={() => setPendingAction(null)}>{t('actions.cancel')}</Button>
+                        <Button type="submit" disabled={!rationaleReady || isMutating}>{t('actions.save')}</Button>
+                    </div>
+                </form>
+            </Modal>
         </div>
     );
 };

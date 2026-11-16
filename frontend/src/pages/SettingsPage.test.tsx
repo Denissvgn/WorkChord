@@ -35,7 +35,6 @@ vi.mock('../components/settings/RuntimeConfigSettings', () => ({
 vi.mock('../components/settings/AdminAccessPanel', () => ({ AdminAccessPanel: () => <p>Admin key panel</p> }));
 vi.mock('../components/settings/AgentAccessPanel', () => ({ AgentAccessPanel: () => <p>Agent key panel</p> }));
 vi.mock('../components/settings/ConnectedReadersPanel', () => ({ ConnectedReadersPanel: () => <p>Connected readers panel</p> }));
-vi.mock('../components/settings/AgentModelAdministration', () => ({ AgentModelAdministration: () => <p>Model administration panel</p> }));
 vi.mock('../components/settings/SystemHealthPanel', () => ({ SystemHealthPanel: () => <p>System health panel</p> }));
 
 const LocationProbe = () => {
@@ -137,7 +136,6 @@ describe('SettingsPage', () => {
         ['appearance', 'Theme', 'theme', null],
         ['scheduling', 'Scheduling', 'scheduling', 'Scheduling rules panel'],
         ['templates_labels', 'Templates and labels', 'templates_labels', 'Templates and labels panel'],
-        ['models_agents', 'Models and agents', 'models_agents', 'Model administration panel'],
         ['github', 'GitHub', 'github', 'GitHub automation panel'],
         ['webhooks', 'Webhooks', 'webhooks', 'Webhooks panel'],
         ['notifications', 'Email notifications', 'notifications', 'Email panel'],
@@ -179,11 +177,14 @@ describe('SettingsPage', () => {
         expect(screen.getByText('GitHub automation panel')).toBeVisible();
     });
 
-    it('links model administration from the AI provider section', async () => {
-        const { user } = renderSettings('/settings?tab=ai_provider');
-        await user.click(within(sectionHeader()).getByRole('link', { name: 'Models and agents' }));
-        expect(sectionTitle()).toBe('Models and agents');
-        expect(screen.getByText('Model administration panel')).toBeVisible();
+    it('links model administration from AI provider to Team', () => {
+        renderSettings('/settings?tab=ai_provider');
+        expect(within(sectionHeader()).getByRole('link', { name: 'Models' })).toHaveAttribute('href', '/team?tab=models');
+    });
+
+    it.each(['models', 'models_agents'])('redirects the old %s address to Team and preserves scope', async tab => {
+        renderSettings(`/settings?tab=${tab}&project=7`);
+        expect(await screen.findByTestId('location')).toHaveTextContent('/team?tab=models&project=7');
     });
 
     it('drops an unknown tab and opens the default section', () => {
@@ -238,22 +239,6 @@ describe('SettingsPage', () => {
         expect(within(groupRegion).getByRole('link', { name: section })).toBeVisible();
         expect(within(navigation).queryByText('No settings match this search.')).not.toBeInTheDocument();
     });
-
-    it.each(['catalog', 'Configured model alias'])(
-        'finds Models and agents, which sits outside the four groups, by "%s"',
-        async query => {
-            const { user } = renderSettings('/settings?tab=theme');
-
-            const navigation = screen.getByRole('navigation', { name: 'Settings navigation' });
-            // Without a search the section is not one of the four groups.
-            expect(within(navigation).queryByRole('link', { name: 'Models and agents' })).not.toBeInTheDocument();
-            await user.type(within(navigation).getByRole('searchbox', { name: 'Search settings' }), query);
-            const groupRegion = within(navigation).getByRole('region', { name: 'Linked from AI provider' });
-            const link = within(groupRegion).getByRole('link', { name: 'Models and agents' });
-            expect(link).toHaveAttribute('href', expect.stringContaining('tab=models_agents'));
-            expect(within(navigation).queryByText('No settings match this search.')).not.toBeInTheDocument();
-        },
-    );
 
     it('gives the theme radiogroup complete keyboard behavior', async () => {
         const { user } = renderSettings('/settings?tab=theme');
