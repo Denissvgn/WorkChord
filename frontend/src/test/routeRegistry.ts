@@ -12,7 +12,7 @@ export const routeRegistry: RouteStatus[] = [
     { key: 'team', path: '/team', status: 'pending' },
     { key: 'myWork', path: '/my-work', status: 'pending' },
     { key: 'nativeConnection', path: '/mobile/connect', status: 'pending' },
-    { key: 'tasks', path: '/tasks', status: 'pending' },
+    { key: 'tasks', path: '/tasks', status: 'migrated' },
     { key: 'triage', path: '/triage', status: 'pending' },
     { key: 'projectReleaseDetail', path: '/projects/:projectId/releases/:releaseId', status: 'pending' },
     { key: 'projectDetail', path: '/projects/:projectId', status: 'pending' },

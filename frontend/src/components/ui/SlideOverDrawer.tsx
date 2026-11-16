@@ -10,6 +10,7 @@ export const SlideOverDrawer = ({
     open,
     title,
     subtitle,
+    actions,
     icon,
     children,
     footer,
@@ -25,6 +26,8 @@ export const SlideOverDrawer = ({
     open: boolean;
     title: ReactNode;
     subtitle?: ReactNode;
+    /** Header actions, shown before the close button. */
+    actions?: ReactNode;
     icon?: ReactNode;
     children: ReactNode;
     footer?: ReactNode;
@@ -107,6 +110,7 @@ export const SlideOverDrawer = ({
                             </h2>
                             {subtitle && <p id={subtitleId} className="truncate text-xs" style={{ color: 'var(--ink-3)' }}>{subtitle}</p>}
                         </div>
+                        {actions}
                         <button
                             type="button"
                             onClick={requestClose}

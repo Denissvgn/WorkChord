@@ -31,7 +31,6 @@ vi.mock('../services/triageService', () => ({ triageService: services.triage }))
 vi.mock('../services/planShareService', () => ({ planShareService: services.share }));
 const planning = vi.hoisted(() => ({ readInitial: vi.fn() }));
 vi.mock('../services/planningInputService', () => ({ planningInputService: planning }));
-vi.mock('./IterationsPage', () => ({ default: () => <p>Iterations of the project</p> }));
 
 const ITERATION = {
     id: 1, name: 'August plan', calendar_id: 1, project: null, project_id: 1,
@@ -246,13 +245,17 @@ describe('Plan is one page of six checkpoints', () => {
         expect(toggle('Iteration')).toHaveAttribute('aria-expanded', 'true');
         expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'false');
         expect(screen.getByTestId('location')).toHaveTextContent('step=iteration');
-        expect(within(section('iteration')).getByRole('link', { name: /Open iterations/ }))
-            .toHaveAttribute('href', '/iterations?fromPlanStep=iteration');
+        // Iterations are managed in place: no link leaves the page for them.
+        expect(within(section('iteration')).queryByRole('link', { name: /Open iterations/ })).not.toBeInTheDocument();
+        expect(within(section('iteration')).getByRole('button', { name: 'Edit' })).toBeVisible();
+        expect(within(section('iteration')).getByRole('button', { name: 'New iteration' })).toBeVisible();
+        expect(within(section('iteration')).getByRole('button', { name: 'All iterations' })).toBeVisible();
     });
 
-    it('shows the iterations when the scope bar opens Plan on them', () => {
+    it('opens the All iterations drawer over the checkpoints when the link asks for it', async () => {
         renderPlan('/plan?panel=iterations&project=1&iteration=1');
-        expect(screen.getByText('Iterations of the project')).toBeVisible();
+        expect(await screen.findByRole('dialog', { name: 'All iterations' })).toBeVisible();
+        expect(await screen.findByRole('list', { name: 'Checkpoints' })).toBeInTheDocument();
     });
 
     it('says the checkpoints are unavailable when the readiness response fails, and retries', async () => {
