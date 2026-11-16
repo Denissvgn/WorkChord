@@ -3427,3 +3427,39 @@ Native pairing can issue an observer session that only reads: in a managed works
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:0899b0769a9123a747aed14c373c70c9cd0b588ab0bef3c308b2df0cb5dd9575`
+- Pages created: 7
+- Pages updated: 142
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3026
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+
+### Person-readable assignments
+
+Without an agent key, people, trusted-local browsers and paired observers list the assignments of the tasks they can see, on the pipeline's read rule. The projection names the agent and its declared model and leaves routing evidence and the assigner's reason with agent-key reads. The routing panel shows those assigned agents when the browser has no agent key.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:0899b0769a9123a747aed14c373c70c9cd0b588ab0bef3c308b2df0cb5dd9575`
+- Pages created: 0
+- Pages updated: 16
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3157
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

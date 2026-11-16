@@ -1,6 +1,6 @@
 # AgentTeamPlan
 
-**Location:** `frontend/src/types/agent.ts:718`
+**Location:** `frontend/src/types/agent.ts:740`
 **Kind:** Interface
 **Bases:** —
 **Module:** [types_agent](../modules/types_agent.md)

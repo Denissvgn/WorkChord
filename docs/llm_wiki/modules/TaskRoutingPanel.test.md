@@ -24,7 +24,7 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.test.tsx`._
 | Signal | Values |
 |--------|--------|
 | Constants | `agentServiceMock`, `useAgentAccessMock`, `taskFixture`, `currentAssessment`, `currentAssessmentState`, `modelCatalog`, `modelBinding`, `dispatchableRoster`, `pendingRecoveryAssignment`, `capabilities` |
-| Module calls | `agentServiceMock = hoisted`, `useAgentAccessMock = hoisted`, `mock`, `mock`, `dispatchableRoster = map`, `describe` |
+| Module calls | `agentServiceMock = hoisted`, `useAgentAccessMock = hoisted`, `mock`, `mock`, `dispatchableRoster = map`, `describe`, `describe` |
 
 ## Local dependency map
 

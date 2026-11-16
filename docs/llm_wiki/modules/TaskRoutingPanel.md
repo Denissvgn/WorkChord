@@ -23,6 +23,7 @@ _Auto-generated from `frontend/src/components/agent/TaskRoutingPanel.tsx`._
 | `../common/Input` | `Input`, `RequiredIndicator` | — | compiler-dependent |
 | `../feedback/QueryState` | `QueryEmptyState`, `QueryErrorState`, `QueryLoadingState` | — | compiler-dependent |
 | `../feedback/toast` | `useToast` | — | compiler-dependent |
+| `./AssignedAgentsSummary` | `AssignedAgentsSummary` | — | compiler-dependent |
 | `./RoutingCandidateComparison` | `RoutingCandidateComparison` | — | compiler-dependent |
 | `@tanstack/react-query` | `useMutation`, `useQuery`, `useQueryClient` | — | compiler-dependent |
 | `lucide-react` | `CheckCircle2`, `Plus`, `RefreshCw`, `Route`, `Trash2` | — | compiler-dependent |
@@ -60,7 +61,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `frontend` (2) |
-| Outbound | `frontend` (14) |
+| Outbound | `frontend` (15) |
 
 ### External packages
 
@@ -68,14 +69,14 @@ flowchart LR
 |---|---:|---:|
 | typescript | 5 | 0 |
 
-> All 16 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 17 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 54 | — | — |
-| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 59 | — | — |
+| [TaskRoutingPanelProps](../entities/TaskRoutingPanelProps.md) | Interface | 55 | — | — |
+| [AssessmentDraft](../entities/AssessmentDraft.md) | Interface | 60 | — | — |
 
 ## Functions
 

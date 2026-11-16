@@ -1,6 +1,6 @@
 # AgentWorkService
 
-**Location:** `backend/app/services/agent_work_service.py:172`
+**Location:** `backend/app/services/agent_work_service.py:175`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_work_service](../modules/agent_work_service.md)
@@ -51,6 +51,7 @@ Coordinate PM dispatch and low-freedom worker lifecycle commands.
 | `_validate_assignment_actor` | `(actor: AgentActor, purpose: str) -> None` | `@staticmethod` | Require authority before separate profile/model compatibility evidence. |
 | `_validate_assignment_context` | *(async)* `(task: Task, *, team_member_id: Optional[int], reviewer_profile_id: Optional[int]) -> None` | — | Validate optional capacity and reviewer references against live records. |
 | `list_assignments` | *(async)* `(principal: AgentActor, *, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentTaskAssignmentResponse]` | — | Return a secret-free durable assignment projection for restart-safe reads. |
+| `list_assignments_for_people` | *(async)* `(*, task_id: Optional[int] = None, actor_id: Optional[int] = None, purpose: Optional[str] = None, state: Optional[str] = None, limit: int = 200) -> list[AgentAssignmentReadItem]` | — | List the assignments of the tasks this request's reader can see. |
 | `create_assignment` | *(async)* `(principal: AgentActor, data: AgentTaskAssignmentCreate \| ModelAwareAgentTaskAssignmentCreate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Dispatch one task to one provisioned actor. |
 | `update_assignment` | *(async)* `(assignment_id: int, principal: AgentActor, data: AgentTaskAssignmentUpdate \| ModelAwareAgentTaskAssignmentUpdate, *, idempotency_key: Optional[str] = None, rationale: str, correlation_id: str) -> AgentTaskAssignmentResponse` | `@atomic_command` | Reassign, reorder, or cancel queued work. |
 | `get_work` | *(async)* `(actor: AgentActor, *, limit: int = 20, cursor: Optional[str] = None) -> AgentWorkDecisionResponse` | — | Return the authoritative resume/begin/wait/recovery decision. |
@@ -144,7 +145,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [agent_work_service](../modules/agent_work_service.md) | 77 | — |
+| [agent_work_service](../modules/agent_work_service.md) | 78 | — |
 
 ### References
 

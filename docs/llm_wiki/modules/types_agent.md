@@ -16,7 +16,7 @@ _Auto-generated from `frontend/src/types/agent.ts`._
 
 | Signal | Values |
 |--------|--------|
-| Exports | `AgentActor`, `AgentActorRole`, `AgentActorRosterItem`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentAssignmentListParams`, `AgentAssignmentPurpose`, `AgentAssignmentQueueClass`, `AgentAssignmentState`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingStatus`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMatchBasis`, `AgentModelMutationReceipt`, `AgentModelTrustState`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamActionReceipt`, `AgentTeamApplyResponse`, `AgentTeamLifecycle`, `AgentTeamMaster`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamReconciliationClass`, `AgentTeamRole`, `AgentTeamRuntimeHandoff`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatus`, `AgentTeamStepState`, `AgentTeamValidation`, `AssessmentReasonCode`, `JsonObject`, `JsonPrimitive`, `JsonValue`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareRoutingMode`, `ModelAwareRoutingStatus`, `ModelAwareRoutingTopologyReadiness`, `ModelAwareRoutingTopologySource`, `ModelAwareRoutingTopologyStatus`, `ModelContextTier`, `ModelCostTier`, `ModelLatencyTier`, `ModelReasoningTier`, `RequiredModelEnvelope`, `RoutingBlockerCode`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskSkillLevel`, `TaskTimelineItem`, `TaskTimelineResponse` |
+| Exports | `AgentActor`, `AgentActorRole`, `AgentActorRosterItem`, `AgentActorRosterProfile`, `AgentActorRosterProfileSkill`, `AgentAssignmentListParams`, `AgentAssignmentPurpose`, `AgentAssignmentQueueClass`, `AgentAssignmentReadItem`, `AgentAssignmentState`, `AgentCapabilities`, `AgentCommandMetadata`, `AgentModelBinding`, `AgentModelBindingCreate`, `AgentModelBindingDisable`, `AgentModelBindingListParams`, `AgentModelBindingStatus`, `AgentModelBindingUpdate`, `AgentModelCatalogCreate`, `AgentModelCatalogDisable`, `AgentModelCatalogEntry`, `AgentModelCatalogUpdate`, `AgentModelMatchBasis`, `AgentModelMutationReceipt`, `AgentModelTrustState`, `AgentPipeline`, `AgentProfileSkillCatalogItem`, `AgentRoutingCandidate`, `AgentRoutingExclusion`, `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse`, `AgentRun`, `AgentRunEvent`, `AgentTaskAssignment`, `AgentTeamActionReceipt`, `AgentTeamApplyResponse`, `AgentTeamLifecycle`, `AgentTeamMaster`, `AgentTeamMemberSpec`, `AgentTeamMemberStatus`, `AgentTeamPlan`, `AgentTeamPlanAction`, `AgentTeamReconciliationClass`, `AgentTeamRole`, `AgentTeamRuntimeHandoff`, `AgentTeamSetupStep`, `AgentTeamSkillPackage`, `AgentTeamStatus`, `AgentTeamStepState`, `AgentTeamValidation`, `AssessmentReasonCode`, `JsonObject`, `JsonPrimitive`, `JsonValue`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareRoutingMode`, `ModelAwareRoutingStatus`, `ModelAwareRoutingTopologyReadiness`, `ModelAwareRoutingTopologySource`, `ModelAwareRoutingTopologyStatus`, `ModelContextTier`, `ModelCostTier`, `ModelLatencyTier`, `ModelReasoningTier`, `RequiredModelEnvelope`, `RoutingBlockerCode`, `TaskDifficultyAxes`, `TaskDifficultyBand`, `TaskDifficultyScore`, `TaskReviewMode`, `TaskRoutingAssessment`, `TaskRoutingAssessmentCommand`, `TaskRoutingAssessmentHistory`, `TaskRoutingAssessmentMutationReceipt`, `TaskRoutingAssessmentState`, `TaskSkillLevel`, `TaskTimelineItem`, `TaskTimelineResponse` |
 
 ## Local dependency map
 
@@ -38,10 +38,10 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `frontend` (20) |
+| Inbound | `frontend` (22) |
 | Outbound | `frontend` (1) |
 
-> All 21 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 23 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -79,25 +79,26 @@ flowchart LR
 | [ModelAwareAgentTaskAssignmentCreate](../entities/types_agent_ModelAwareAgentTaskAssignmentCreate.md) | Interface | 500 | — | — |
 | [ModelAwareAgentTaskAssignmentUpdate](../entities/types_agent_ModelAwareAgentTaskAssignmentUpdate.md) | Interface | 518 | — | — |
 | [AgentTaskAssignment](../entities/types_agent_AgentTaskAssignment.md) | Interface | 533 | — | — |
-| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Interface | 556 | — | — |
-| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Interface | 564 | — | — |
-| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 569 | — | — |
-| [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 582 | — | — |
-| [AgentPipeline](../entities/AgentPipeline.md) | Interface | 610 | — | — |
-| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 620 | — | — |
-| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 631 | — | — |
-| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 647 | — | — |
-| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 653 | — | — |
-| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 668 | — | — |
-| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 684 | — | — |
-| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 701 | — | — |
-| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 718 | — | — |
-| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 728 | — | — |
-| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 742 | — | — |
-| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 757 | — | — |
-| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 776 | — | — |
-| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 805 | — | — |
-| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 812 | — | — |
+| [AgentAssignmentReadItem](../entities/types_agent_AgentAssignmentReadItem.md) | Interface | 557 | — | An assignment as a person reads it, without routing evidence or the assigner's reason. |
+| [AgentAssignmentListParams](../entities/AgentAssignmentListParams.md) | Interface | 578 | — | — |
+| [AgentModelBindingListParams](../entities/AgentModelBindingListParams.md) | Interface | 586 | — | — |
+| [AgentRunEvent](../entities/types_agent_AgentRunEvent.md) | Interface | 591 | — | — |
+| [AgentRun](../entities/types_agent_AgentRun.md) | Interface | 604 | — | — |
+| [AgentPipeline](../entities/AgentPipeline.md) | Interface | 632 | — | — |
+| [TaskTimelineItem](../entities/types_agent_TaskTimelineItem.md) | Interface | 642 | — | — |
+| [TaskTimelineResponse](../entities/types_agent_TaskTimelineResponse.md) | Interface | 653 | — | — |
+| [AgentTeamSkillPackage](../entities/types_agent_AgentTeamSkillPackage.md) | Interface | 669 | — | — |
+| [AgentTeamMemberSpec](../entities/types_agent_AgentTeamMemberSpec.md) | Interface | 675 | — | — |
+| [AgentTeamMaster](../entities/types_agent_AgentTeamMaster.md) | Interface | 690 | — | — |
+| [AgentTeamValidation](../entities/AgentTeamValidation.md) | Interface | 706 | — | — |
+| [AgentTeamPlanAction](../entities/types_agent_AgentTeamPlanAction.md) | Interface | 723 | — | — |
+| [AgentTeamPlan](../entities/AgentTeamPlan.md) | Interface | 740 | — | — |
+| [AgentTeamActionReceipt](../entities/types_agent_AgentTeamActionReceipt.md) | Interface | 750 | — | — |
+| [AgentTeamApplyResponse](../entities/types_agent_AgentTeamApplyResponse.md) | Interface | 764 | — | — |
+| [AgentTeamRuntimeHandoff](../entities/types_agent_AgentTeamRuntimeHandoff.md) | Interface | 779 | — | — |
+| [AgentTeamMemberStatus](../entities/types_agent_AgentTeamMemberStatus.md) | Interface | 798 | — | — |
+| [AgentTeamSetupStep](../entities/types_agent_AgentTeamSetupStep.md) | Interface | 827 | — | — |
+| [AgentTeamStatus](../entities/AgentTeamStatus.md) | Interface | 834 | — | — |
 | [JsonPrimitive](../entities/JsonPrimitive.md) | Type alias | 3 | `string \| number \| boolean \| null` | — |
 | [JsonValue](../entities/JsonValue.md) | Type alias | 4 | `JsonPrimitive \| JsonValue[] \| { [key: string]: JsonValue }` | — |
 | [JsonObject](../entities/JsonObject.md) | Type alias | 5 | `{ [key: string]: JsonValue }` | — |
@@ -121,7 +122,7 @@ flowchart LR
 | [ModelAwareRoutingMode](../entities/ModelAwareRoutingMode.md) | Type alias | 116 | `'off' \| 'shadow' \| 'enforced'` | — |
 | [ModelAwareRoutingTopologyStatus](../entities/ModelAwareRoutingTopologyStatus.md) | Type alias | 118 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;not&#95;ready&#39;&#10;    &#124; &#39;ready&#39;</code></pre> | — |
 | [ModelAwareRoutingTopologySource](../entities/ModelAwareRoutingTopologySource.md) | Type alias | 123 | <pre><code>&#124; &#39;unavailable&#39;&#10;    &#124; &#39;agent&#45;team&#45;master&#45;v1&#39;</code></pre> | — |
-| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 636 | `'pm' \| 'worker' \| 'verifier'` | — |
-| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 637 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
-| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 638 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
-| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 692 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |
+| [AgentTeamRole](../entities/AgentTeamRole.md) | Type alias | 658 | `'pm' \| 'worker' \| 'verifier'` | — |
+| [AgentTeamStepState](../entities/AgentTeamStepState.md) | Type alias | 659 | `'done' \| 'warn' \| 'blocked' \| 'todo'` | — |
+| [AgentTeamLifecycle](../entities/AgentTeamLifecycle.md) | Type alias | 660 | <pre><code>&#124; &#39;desired&#39;&#10;    &#124; &#39;configured&#39;&#10;    &#124; &#39;credential&#95;delivered&#39;&#10;    &#124; &#39;onboarding&#39;&#10;    &#124; &#39;connected&#39;&#10;    &#124; &#39;runtime&#95;ready&#39;&#10;    &#124; &#39;disabled&#39;</code></pre> | — |
+| [AgentTeamReconciliationClass](../entities/types_agent_AgentTeamReconciliationClass.md) | Type alias | 714 | <pre><code>&#124; &#39;create&#39;&#10;    &#124; &#39;safe&#95;update&#39;&#10;    &#124; &#39;no&#95;change&#39;&#10;    &#124; &#39;blocked&#95;conflict&#39;&#10;    &#124; &#39;requires&#95;replacement&#39;&#10;    &#124; &#39;propose&#95;disable&#39;&#10;    &#124; &#39;unmanaged&#39;</code></pre> | — |

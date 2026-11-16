@@ -1,6 +1,6 @@
 # AssessmentDraft
 
-**Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:59`
+**Location:** `frontend/src/components/agent/TaskRoutingPanel.tsx:60`
 **Kind:** Interface
 **Bases:** —
 **Module:** [TaskRoutingPanel](../modules/TaskRoutingPanel.md)
