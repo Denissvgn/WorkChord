@@ -13,7 +13,6 @@ const LandingPage = lazy(routeModuleLoaders.landing);
 const PlanPage = lazy(routeModuleLoaders.plan);
 const PlanSharePage = lazy(routeModuleLoaders.planShare);
 const CalendarPage = lazy(routeModuleLoaders.calendar);
-const IterationsPage = lazy(routeModuleLoaders.iterations);
 const TeamPage = lazy(routeModuleLoaders.team);
 const TasksPage = lazy(routeModuleLoaders.tasks);
 const MyWorkPage = lazy(routeModuleLoaders.myWork);
@@ -50,7 +49,7 @@ const WorkspaceRoutes = () => (
     <Route path="/plan" element={<PlanPage />} />
     <Route path="/plan/master" element={<LegacyRedirect><PlanPage /></LegacyRedirect>} />
     <Route path="/calendar" element={<LegacyRedirect><CalendarPage /></LegacyRedirect>} />
-    <Route path="/iterations" element={<LegacyRedirect><IterationsPage /></LegacyRedirect>} />
+    <Route path="/iterations" element={<LegacyRedirect><PlanPage /></LegacyRedirect>} />
     <Route path="/team" element={<TeamPage />} />
     <Route path="/tasks" element={<TasksPage />} />
     <Route path="/my-work" element={<MyWorkPage />} />

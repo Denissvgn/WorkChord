@@ -17,7 +17,7 @@ const NEW_ITERATION_KEY = 'action:new-iteration';
 const MANAGE_ITERATIONS_KEY = 'action:manage-iterations';
 
 const PLAN_ITERATIONS_PATH = '/plan?panel=iterations';
-const PLAN_NEW_ITERATION_PATH = '/plan?panel=iterations&create=1';
+const PLAN_NEW_ITERATION_PATH = '/plan?create=1';
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
