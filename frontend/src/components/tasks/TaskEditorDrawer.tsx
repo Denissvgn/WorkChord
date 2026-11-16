@@ -47,7 +47,7 @@ export const TaskEditorDrawer = ({
     title?: DrawerCopy;
     subtitle?: DrawerCopy;
     icon?: ReactNode;
-    beforeForm?: ReactNode;
+    beforeForm?: DrawerCopy;
     className?: string;
     restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
@@ -95,7 +95,7 @@ const TaskEditorDrawerContent = ({
     title?: DrawerCopy;
     subtitle?: DrawerCopy;
     icon?: ReactNode;
-    beforeForm?: ReactNode;
+    beforeForm?: DrawerCopy;
     className?: string;
     restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
@@ -172,7 +172,7 @@ const TaskEditorDrawerContent = ({
                         </Button>
                     </div>
                 )}
-                {beforeForm}
+                {resolveDrawerCopy(beforeForm, editorTask)}
                 {editorTask?.detail_context && <TaskContextSummary key={`context:${editorTask.version}`} detail={editorTask.detail_context} onReload={() => guard.request(() => {
                     guard.setPending(true);
                     void refetch().then(result => { if (result.data && !result.isError) setOpeningSnapshot(result.data); })
