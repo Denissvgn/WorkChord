@@ -83,7 +83,7 @@ When the work decision is `wait`, read its blocker codes before you report:
 | `schedule_missing` | The task has no calculated dates, usually because it has no assignee or no effort. | Start nothing. Report the code and the task to the PM. |
 | `not_before_future` | The assignment's not-before time has not arrived. | Wait until that time. |
 | `min_start_future` | The task has an earliest-start date that has not arrived. | Wait until that date. |
-| `iteration_not_started` | The planning period has not begun. | Wait; report it when you have no other work. |
+| `iteration_not_started` | The iteration has not begun. | Wait; report it when you have no other work. |
 | `dependency_<id>_unresolved` | A predecessor is not Implemented yet. | Wait; never start the predecessor yourself. |
 | `assignment_task_version_stale` | The task changed after it was assigned to you. | Start nothing. Report the code to the PM, who assigns it again. |
 | `scheduled_start_future` | An older server holds the task until its calculated start date. | Start nothing. Wait; report it when you have no other work. |

@@ -108,7 +108,7 @@ worker is unknown, disabled, or not on the team. Request changes atomically
 returns the task to `active`, fulfills your review assignment, and queues one
 `rework` assignment for that worker.
 
-Rework returns to the same task and the same assignee, so the Gantt chart keeps
+Rework returns to the same task and the same assignee, so Gantt keeps
 showing who carries it. Never change the assignee, the dates, or the milestone
 to fit the rework; say in your `reason` when you think another capacity row
 should take it, and let the PM decide.
