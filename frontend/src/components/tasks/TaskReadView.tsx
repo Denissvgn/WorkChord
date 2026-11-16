@@ -1,3 +1,5 @@
+import { TaskAssigneeDisplay } from './TaskAssigneeDisplay';
+import { useTaskAssigneeDisplay } from './useTaskAssigneeDisplay';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
@@ -54,6 +56,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     onReload: () => void;
 }) => {
     const { t, i18n } = useTranslation();
+    const assigneeDisplay = useTaskAssigneeDisplay(task, task.iteration_id);
     const toast = useToast();
     const queryClient = useQueryClient();
     const [params, setParams] = useSearchParams();
@@ -112,8 +115,8 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                     <span className={clsx('rounded-full px-2.5 py-0.5 text-xs font-semibold', pillToneClassName[STATUS_TONE[task.status]])}>
                         {t(`statuses.${task.status}`)}
                     </span>
-                    <span className="text-content-secondary">{t('taskView.assignee')} <b className="font-semibold text-content-primary">{task.assignee?.name ?? t('common.unassigned')}</b></span>
-                    <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner?.name ?? t('domain.unassignedOwner')}</b></span>
+                    <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
+                    {task.owner && (!task.assignee || assigneeDisplay.profileId !== undefined) && task.owner.id !== assigneeDisplay.profileId && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
                     {task.end_date && <span className="text-content-secondary">{t('taskView.due')} <b className="font-semibold text-content-primary">{formatDate(task.end_date, i18n.language)}</b></span>}
                     <span className="flex-1" />
                     <Button type="button" variant="ghost" size="sm" aria-label={t('taskView.copyLink')} title={t('taskView.copyLink')} onClick={() => { void copyLink(); }}>
