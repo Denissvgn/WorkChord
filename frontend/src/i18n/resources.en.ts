@@ -1,3 +1,4 @@
+import { planWorkEnglish } from './planWork';
 import { planningInputEnglish } from './planningInputMessages';
 import { paginationEN } from './pagination';
 import { timeEntriesEN } from './timeEntries';
@@ -5,6 +6,7 @@ import { teamworkEnglish } from './teamwork.en';
 import { landingEnglish } from './landing.en';
 export const englishResources = {
         translation: {
+            planWork: planWorkEnglish,
             capacity: {
                 hourValue: '{{hours}} h',
                 people_one: '{{count}} person',
