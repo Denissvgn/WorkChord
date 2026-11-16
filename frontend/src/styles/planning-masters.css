@@ -2478,6 +2478,53 @@
   min-block-size: 168px;
 }
 .wc .overview-first-run:empty { display: none; }
+
+/* Get started: six setup steps, laid out like Plan's checkpoints. */
+.wc .get-started {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+.wc .get-started-head {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.wc .get-started-copy { min-width: 0; }
+.wc .get-started-copy h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--wc-type-section);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.wc .get-started-copy p {
+  margin: 2px 0 0;
+  color: var(--ink-2);
+  font-size: var(--wc-type-base);
+  line-height: var(--wc-leading-body);
+}
+.wc .get-started-steps { max-width: none; }
+.wc .get-started-picker { max-width: 520px; }
+/* On Plan, the way back to Get started lines up with the checkpoints. */
+.wc .plan-page .plan-return-bar { max-width: 960px; }
+.wc .get-started-foot {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+.wc .get-started-foot p {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--wc-type-meta);
+}
+.wc .get-started-secondary:empty { display: none; }
 .wc .overview-note {
   margin: 0;
   color: var(--ink-3);

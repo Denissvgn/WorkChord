@@ -45,6 +45,8 @@ import {
     overviewTaskReturnFocusId,
 } from '../features/overview/overviewTaskThread';
 import { loadProjectBacklog } from '../features/overview/overviewBacklog';
+import { GetStartedPanel } from '../features/firstRun/GetStartedPanel';
+import { useGetStarted } from '../features/firstRun/useGetStarted';
 import {
     OVERVIEW_COUNT_LIST_PARAM,
     PIPELINE_STAGES,
@@ -136,6 +138,7 @@ const OverviewPage = () => {
     const pageTitleRef = useRef<HTMLSpanElement>(null);
     const { project, iteration: scopeIteration } = useWorkScope();
     const navigation = usePlanningNavigationSummary();
+    const getStarted = useGetStarted();
     const [today] = useState(localToday);
 
     const iterations = navigation.iterations;
@@ -329,15 +332,18 @@ const OverviewPage = () => {
                 )}
                 purpose={purpose}
                 primaryAction={(
-                    <Link to={scopeLink('/tasks?create=1')} className="btn primary">
+                    // While Get started shows, its next step is the page's one primary action.
+                    <Link to={scopeLink('/tasks?create=1')} className={getStarted.visible ? 'btn secondary' : 'btn primary'}>
                         <Plus aria-hidden="true" className="h-4 w-4" />
                         {t('tasks.newTask')}
                     </Link>
                 )}
             />
 
-            {/* The Get started panel takes this place, above everything else on the page. */}
-            <div className="overview-first-run" data-testid="overview-first-run-slot" />
+            {/* The Get started panel comes first, above everything else on the page. */}
+            <div className="overview-first-run" data-testid="overview-first-run-slot">
+                {getStarted.visible && <GetStartedPanel progress={getStarted.progress} />}
+            </div>
 
             {iterationsLoading && (
                 <QueryLoadingState className="overview-state-loading" message={t('overview.dataStatus.loadingOverview')} />
@@ -350,7 +356,8 @@ const OverviewPage = () => {
                     onRetry={() => { void navigation.refetch(); }}
                 />
             )}
-            {hasNoIterations && !isBacklog && (
+            {/* Get started already names the next step, so the empty state would repeat it. */}
+            {hasNoIterations && !isBacklog && !getStarted.visible && (
                 <SectionCard>
                     <InlineEmptyState
                         title={t('overview.noIterationTitle')}
