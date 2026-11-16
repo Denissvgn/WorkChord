@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
 import { DeliveryAnalytics } from './DeliveryAnalytics';
 import { ScopeBar } from '../layout/ScopeBar';
+import { changeAppLanguage } from '../../i18n/i18n';
 import { useScopeStore } from '../../features/scope/scopeStore';
 import type { DeliveryMetrics } from '../../types/deliveryMetrics';
 
@@ -27,6 +28,7 @@ const report: DeliveryMetrics = { contract_version: 1, window_start: '2026-09-01
     review_queue: [{ task_id: 7, title: 'Ready artifact', reason: 'awaiting_review', age_seconds: null }],
     recovery_queue: [], queues_truncated: false };
 
+const unavailable = 'Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.';
 const renderReport = (entry: string) => renderWithProviders(<><ScopeBar /><DeliveryAnalytics /></>, { initialEntries: [entry] });
 const settle = () => act(() => new Promise(resolve => setTimeout(resolve, 30)));
 
@@ -71,27 +73,39 @@ describe('Delivery evidence', () => {
 
         await user.click(screen.getByRole('combobox', { name: 'Iteration' }));
         await user.click(await screen.findByRole('option', { name: /^Backlog/ }));
-        await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ project_id: 1, lookback_days: 30 }));
-        expect(await screen.findByText(/Backlog: this report covers all of the project's work/)).toBeVisible();
-        expect(screen.queryByText(/Choose a project or an iteration/)).not.toBeInTheDocument();
+        expect(await screen.findByText(unavailable)).toBeVisible();
+        expect(screen.queryByRole('link', { name: 'Ready artifact' })).not.toBeInTheDocument();
+        expect(metrics.get).toHaveBeenCalledTimes(2);
+        expect(metrics.get).not.toHaveBeenCalledWith(expect.objectContaining({ project_id: expect.anything() }));
 
         await user.click(screen.getByRole('combobox', { name: 'Project' }));
         await user.click(await screen.findByRole('option', { name: /Grove/ }));
         await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ iteration_id: 30, lookback_days: 30 }));
     });
 
-    it('reports a project in Backlog from the address alone, without asking for a project', async () => {
+    it('requests nothing and says so when the scope is the Backlog of a project', async () => {
         renderReport('/analytics?project=2&iteration=backlog');
-        await screen.findByRole('link', { name: 'Ready artifact' });
-        expect(metrics.get).toHaveBeenCalledWith({ project_id: 2, lookback_days: 30 });
-        expect(screen.queryByText(/Choose a project or an iteration/)).not.toBeInTheDocument();
-    });
-
-    it('asks for no other control when All projects has no report, and requests nothing', async () => {
-        renderReport('/analytics?project=all&iteration=backlog');
-        expect(await screen.findByText(/Choose a project or an iteration in the scope bar/)).toBeVisible();
+        expect(await screen.findByText(unavailable)).toBeVisible();
         await settle();
         expect(metrics.get).not.toHaveBeenCalled();
+        expect(screen.queryByRole('link', { name: 'Ready artifact' })).not.toBeInTheDocument();
+    });
+
+    it('requests nothing and says so when the scope is All projects', async () => {
+        renderReport('/analytics?project=all&iteration=backlog');
+        expect(await screen.findByText(unavailable)).toBeVisible();
+        await settle();
+        expect(metrics.get).not.toHaveBeenCalled();
+    });
+
+    it('says so in Russian', async () => {
+        await changeAppLanguage('ru');
+        try {
+            renderReport('/analytics?project=2&iteration=backlog');
+            expect(await screen.findByText('Показатели доставки доступны для одной итерации или одного проекта. Выберите итерацию в панели области.')).toBeVisible();
+            await settle();
+            expect(metrics.get).not.toHaveBeenCalled();
+        } finally { await changeAppLanguage('en'); }
     });
 
     it('uses the window with the scope from the bar', async () => {

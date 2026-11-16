@@ -11,18 +11,15 @@ import { useScopeLink } from '../../features/scope/useScopeLink';
 import { useWorkScope } from '../../features/scope/useWorkScope';
 
 /**
- * Delivery history for the scope chosen in the scope bar. An iteration reports that iteration;
- * Backlog on a project reports the project, because the report cannot be narrowed to work with
- * no iteration; All projects has no report to show.
+ * Delivery history for the iteration chosen in the scope bar. Backlog (work with no iteration)
+ * and All projects have no matching report, so they request nothing and say so.
  */
 export const DeliveryAnalytics = () => {
     const { t, i18n } = useTranslation();
     const scopeLink = useScopeLink();
-    const { project, iteration } = useWorkScope();
+    const { iteration } = useWorkScope();
     const [days, setDays] = useState(30);
-    const params = typeof iteration === 'number' ? { iteration_id: iteration, lookback_days: days }
-        : iteration === 'backlog' && typeof project === 'number' ? { project_id: project, lookback_days: days }
-            : undefined;
+    const params = typeof iteration === 'number' ? { iteration_id: iteration, lookback_days: days } : undefined;
     const enabled = params !== undefined;
     // feedback-policy: query loading,error,retry,empty
     const report = useQuery({ queryKey: ['deliveryMetrics', params], queryFn: () => deliveryMetricsService.get(params!), enabled });
@@ -49,8 +46,7 @@ export const DeliveryAnalytics = () => {
                 </select></label>
             </div>
         </div>
-        {!enabled && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.chooseScope')}</p>}
-        {enabled && iteration === 'backlog' && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.backlogBasis')}</p>}
+        {!enabled && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.unavailableScope')}</p>}
         {enabled && report.isLoading && <p role="status">{t('common.loading')}</p>}
         {enabled && report.isError && <QueryErrorState error={report.error} onRetry={() => { void report.refetch(); }} />}
         {data && <>
@@ -76,7 +72,7 @@ export const DeliveryAnalytics = () => {
                 missing: data.coverage.current_leaves_without_capture, legacy: data.coverage.legacy_closed_acceptance_unknown })}</p>
             <div className="grid gap-6 lg:grid-cols-2">{queue(t('deliveryAnalytics.reviewQueue'), data.review_queue)}{queue(t('deliveryAnalytics.recoveryQueue'), data.recovery_queue)}</div>
             {data.queues_truncated && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueLimit')}</p>}
-            {params && <ExecutionUsagePanel key={`${params.project_id ?? ''}-${params.iteration_id ?? ''}-${days}`} scope={params} />}
+            {params && <ExecutionUsagePanel key={`${params.iteration_id}-${days}`} scope={params} />}
         </>}
     </section>;
 };

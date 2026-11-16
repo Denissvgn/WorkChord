@@ -60,13 +60,14 @@ describe('Analytics page reads the scope bar', () => {
         expect(within(section).getByRole('combobox')).toHaveAccessibleName('Window');
     });
 
-    it('reports the selected project when the scope bar is on Backlog, with no other project to choose', async () => {
+    it('requests no delivery or execution-usage data when the scope bar is on Backlog', async () => {
         const { user } = await renderPage('/analytics?project=1&iteration=9');
         await waitFor(() => expect(metrics.get).toHaveBeenCalledWith({ iteration_id: 9, lookback_days: 30 }));
+        metrics.get.mockClear();
         await user.click(screen.getByRole('combobox', { name: 'Iteration' }));
         await user.click(await screen.findByRole('option', { name: /^Backlog/ }));
-        await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ project_id: 1, lookback_days: 30 }));
-        expect(screen.queryByText(/Choose a project or an iteration/)).not.toBeInTheDocument();
+        expect(await screen.findByText('Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.')).toBeVisible();
+        expect(metrics.get).not.toHaveBeenCalled();
         expect(screen.queryByText('Choose project')).not.toBeInTheDocument();
     });
 });
