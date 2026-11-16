@@ -157,17 +157,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| update_agent_actor | require_scope | 667 | `require_scope(actor, 'admin')` |
+| update_agent_actor | require_scope | 708 | `require_scope(actor, 'admin')` |
 | require_scope | actor_has_scope | 100 | `actor_has_scope(actor, scope)` |
 | actor_has_scope | actor_scopes | 94 | `actor_scopes(actor)` |
 | actor_scopes | json.loads | 86 | `json.loads(actor.scopes)` |
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
-| update_agent_actor | service.db.get | 668 | `service.db.get(AgentActor, actor_id)` |
-| update_agent_actor | ValueError | 670 | `ValueError('Agent actor not found')` |
-| update_agent_actor | service.db.get | 672 | `service.db.get(TeamMemberProfile, data.profile_id)` |
-| update_agent_actor | ValueError | 674 | `ValueError('Team member profile not found')` |
-| update_agent_actor | getattr | 686 | `getattr(data, field_name)` |
+| update_agent_actor | service.db.get | 709 | `service.db.get(AgentActor, actor_id)` |
+| update_agent_actor | ValueError | 711 | `ValueError('Agent actor not found')` |
+| update_agent_actor | service.db.get | 713 | `service.db.get(TeamMemberProfile, data.profile_id)` |
+| update_agent_actor | ValueError | 715 | `ValueError('Team member profile not found')` |
+| update_agent_actor | getattr | 727 | `getattr(data, field_name)` |
 
 ### Boundary effects
 
@@ -179,11 +179,11 @@ flowchart LR
 |---|---|---|---:|
 | external_call | `actor_scopes` | `json.loads` | 86 |
 | external_call | `actor_scopes` | `isinstance` | 89 |
-| unresolved_call | `update_agent_actor` | `service.db.get` | 668 |
-| external_call | `update_agent_actor` | `ValueError` | 670 |
-| unresolved_call | `update_agent_actor` | `service.db.get` | 672 |
-| external_call | `update_agent_actor` | `ValueError` | 674 |
-| external_call | `update_agent_actor` | `getattr` | 686 |
+| unresolved_call | `update_agent_actor` | `service.db.get` | 709 |
+| external_call | `update_agent_actor` | `ValueError` | 711 |
+| unresolved_call | `update_agent_actor` | `service.db.get` | 713 |
+| external_call | `update_agent_actor` | `ValueError` | 715 |
+| external_call | `update_agent_actor` | `getattr` | 727 |
 | step_limit | `update_agent_actor` | `first 12 steps` | 0 |
 
 ## Behavior

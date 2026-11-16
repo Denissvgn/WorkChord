@@ -200,7 +200,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| agent_create_project_update | _tool_call | 1750 | `_tool_call('reports:write', ...)` |
+| agent_create_project_update | _tool_call | 1761 | `_tool_call('reports:write', ...)` |
 | _tool_call | enforce_mcp_access | 334 | `enforce_mcp_access(required_scope)` |
 | enforce_mcp_access | get_settings | 112 | `get_settings(data not statically known)` |
 | get_settings | Settings | 506 | `Settings(data not statically known)` |

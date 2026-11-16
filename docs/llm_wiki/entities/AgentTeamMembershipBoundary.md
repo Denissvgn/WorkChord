@@ -1,6 +1,6 @@
 # AgentTeamMembershipBoundary
 
-**Location:** `backend/app/services/agent_team_setup_service.py:119`
+**Location:** `backend/app/services/agent_team_setup_service.py:121`
 **Kind:** Class
 **Bases:** —
 **Module:** [agent_team_setup_service](../modules/agent_team_setup_service.md)

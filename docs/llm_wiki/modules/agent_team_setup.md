@@ -99,35 +99,37 @@ flowchart LR
 
 | Class | Kind | Line | Bases / Target | Description |
 |-------|------|------|----------------|-------------|
-| [UnsupportedAgentTeamMasterVersion](../entities/UnsupportedAgentTeamMasterVersion.md) | Class | 115 | `ValueError` | Raised when a caller submits an unknown manifest schema version. |
-| [AgentTeamReconciliationClass](../entities/agent_team_setup_AgentTeamReconciliationClass.md) | Enum | 119 | `StrEnum` | — |
-| [AgentTeamMemberLifecycle](../entities/AgentTeamMemberLifecycle.md) | Enum | 129 | `StrEnum` | — |
-| [AgentTeamActionStatus](../entities/AgentTeamActionStatus.md) | Enum | 139 | `StrEnum` | — |
-| [AgentTeamSetupModel](../entities/AgentTeamSetupModel.md) | Pydantic model | 170 | `StrictContractModel` | Strict base with JSON-schema metadata shared by setup contracts. |
-| [AgentTeamSkillPackage](../entities/agent_team_setup_AgentTeamSkillPackage.md) | Pydantic model | 183 | `AgentTeamSetupModel` | Exact immutable role-package identity expected by one runtime. |
-| [AgentTeamMemberSpec](../entities/agent_team_setup_AgentTeamMemberSpec.md) | Pydantic model | 191 | `AgentTeamSetupModel` | Portable desired state for one logical actor/runtime membership. |
-| [AgentTeamReadinessPolicy](../entities/AgentTeamReadinessPolicy.md) | Pydantic model | 278 | `AgentTeamSetupModel` | Backend-owned minimum topology needed before runtime readiness. |
-| [AgentTeamMaster](../entities/agent_team_setup_AgentTeamMaster.md) | Pydantic model | 290 | `AgentTeamSetupModel` | Canonical portable desired-state document for one agent team. |
-| [AgentTeamCurrentMember](../entities/AgentTeamCurrentMember.md) | Pydantic model | 468 | `AgentTeamSetupModel` | Redacted authoritative member projection used by reconciliation. |
-| [AgentTeamCurrentSnapshot](../entities/AgentTeamCurrentSnapshot.md) | Pydantic model | 480 | `AgentTeamSetupModel` | Current topology state with installation-local IDs kept separate. |
-| [AgentTeamPlanAction](../entities/agent_team_setup_AgentTeamPlanAction.md) | Pydantic model | 492 | `AgentTeamSetupModel` | One stable, redacted reconciliation decision. |
-| [AgentTeamReconciliationPlan](../entities/agent_team_setup_AgentTeamReconciliationPlan.md) | Pydantic model | 529 | `AgentTeamSetupModel` | Digest-bound dry-run output applied only by exact action ID. |
-| [AgentTeamManifestRequest](../entities/AgentTeamManifestRequest.md) | Pydantic model | 761 | `AgentTeamSetupModel` | — |
-| [AgentTeamValidateResponse](../entities/AgentTeamValidateResponse.md) | Pydantic model | 765 | `AgentTeamSetupModel` | — |
-| [AgentTeamPlanRequest](../entities/AgentTeamPlanRequest.md) | Pydantic model | 776 | `AgentTeamSetupModel` | — |
-| [AgentTeamApplyRequest](../entities/AgentTeamApplyRequest.md) | Pydantic model | 781 | `AgentTeamSetupModel` | — |
-| [AgentTeamActionReceipt](../entities/agent_team_setup_AgentTeamActionReceipt.md) | Pydantic model | 810 | `AgentTeamSetupModel` | — |
-| [AgentTeamApplyResponse](../entities/agent_team_setup_AgentTeamApplyResponse.md) | Pydantic model | 824 | `AgentTeamSetupModel` | — |
-| [AgentTeamRuntimeAcknowledgement](../entities/AgentTeamRuntimeAcknowledgement.md) | Pydantic model | 849 | `AgentTeamSetupModel` | — |
-| [AgentTeamRuntimeAcknowledgementResponse](../entities/AgentTeamRuntimeAcknowledgementResponse.md) | Pydantic model | 895 | `AgentTeamSetupModel` | — |
-| [AgentTeamRuntimeHandoff](../entities/agent_team_setup_AgentTeamRuntimeHandoff.md) | Pydantic model | 912 | `AgentTeamSetupModel` | — |
-| [AgentTeamMemberStatus](../entities/agent_team_setup_AgentTeamMemberStatus.md) | Pydantic model | 940 | `AgentTeamSetupModel` | — |
-| [AgentTeamSetupStep](../entities/agent_team_setup_AgentTeamSetupStep.md) | Pydantic model | 978 | `AgentTeamSetupModel` | — |
-| [AgentTeamStatusResponse](../entities/AgentTeamStatusResponse.md) | Pydantic model | 993 | `AgentTeamSetupModel` | — |
-| [AgentTeamSetupReportCounts](../entities/AgentTeamSetupReportCounts.md) | Pydantic model | 1027 | `AgentTeamSetupModel` | Bounded lifecycle and current-work counts without member internals. |
-| [AgentTeamSetupReportEvidence](../entities/AgentTeamSetupReportEvidence.md) | Pydantic model | 1064 | `AgentTeamSetupModel` | Durable reconciliation evidence summarized without action payloads. |
-| [AgentTeamDispatchAvailability](../entities/AgentTeamDispatchAvailability.md) | Pydantic model | 1082 | `AgentTeamSetupModel` | Explicitly withhold availability claims without task-bound evidence. |
-| [AgentTeamSetupReport](../entities/AgentTeamSetupReport.md) | Pydantic model | 1112 | `AgentTeamSetupModel` | Portable redacted topology report derived only from current server state. |
+| [UnsupportedAgentTeamMasterVersion](../entities/UnsupportedAgentTeamMasterVersion.md) | Class | 116 | `ValueError` | Raised when a caller submits an unknown manifest schema version. |
+| [AgentTeamReconciliationClass](../entities/agent_team_setup_AgentTeamReconciliationClass.md) | Enum | 120 | `StrEnum` | — |
+| [AgentTeamMemberLifecycle](../entities/AgentTeamMemberLifecycle.md) | Enum | 130 | `StrEnum` | — |
+| [AgentTeamActionStatus](../entities/AgentTeamActionStatus.md) | Enum | 140 | `StrEnum` | — |
+| [AgentTeamSetupModel](../entities/AgentTeamSetupModel.md) | Class | 171 | `StrictContractModel` | Strict base with JSON-schema metadata shared by setup contracts. |
+| [AgentTeamSkillPackage](../entities/agent_team_setup_AgentTeamSkillPackage.md) | Class | 184 | `AgentTeamSetupModel` | Exact immutable role-package identity expected by one runtime. |
+| [AgentTeamMemberSpec](../entities/agent_team_setup_AgentTeamMemberSpec.md) | Class | 192 | `AgentTeamSetupModel` | Portable desired state for one logical actor/runtime membership. |
+| [AgentTeamReadinessPolicy](../entities/AgentTeamReadinessPolicy.md) | Class | 279 | `AgentTeamSetupModel` | Backend-owned minimum topology needed before runtime readiness. |
+| [AgentTeamMaster](../entities/agent_team_setup_AgentTeamMaster.md) | Class | 291 | `AgentTeamSetupModel` | Canonical portable desired-state document for one agent team. |
+| [AgentTeamCurrentMember](../entities/AgentTeamCurrentMember.md) | Class | 469 | `AgentTeamSetupModel` | Redacted authoritative member projection used by reconciliation. |
+| [AgentTeamCurrentSnapshot](../entities/AgentTeamCurrentSnapshot.md) | Class | 481 | `AgentTeamSetupModel` | Current topology state with installation-local IDs kept separate. |
+| [AgentTeamPlanAction](../entities/agent_team_setup_AgentTeamPlanAction.md) | Class | 493 | `AgentTeamSetupModel` | One stable, redacted reconciliation decision. |
+| [AgentTeamReconciliationPlan](../entities/agent_team_setup_AgentTeamReconciliationPlan.md) | Class | 530 | `AgentTeamSetupModel` | Digest-bound dry-run output applied only by exact action ID. |
+| [AgentTeamManifestRequest](../entities/AgentTeamManifestRequest.md) | Class | 762 | `AgentTeamSetupModel` | — |
+| [AgentTeamValidateResponse](../entities/AgentTeamValidateResponse.md) | Class | 766 | `AgentTeamSetupModel` | — |
+| [AgentTeamPlanRequest](../entities/AgentTeamPlanRequest.md) | Class | 777 | `AgentTeamSetupModel` | — |
+| [AgentTeamApplyRequest](../entities/AgentTeamApplyRequest.md) | Class | 782 | `AgentTeamSetupModel` | — |
+| [AgentTeamActionReceipt](../entities/agent_team_setup_AgentTeamActionReceipt.md) | Class | 811 | `AgentTeamSetupModel` | — |
+| [AgentTeamApplyResponse](../entities/agent_team_setup_AgentTeamApplyResponse.md) | Class | 825 | `AgentTeamSetupModel` | — |
+| [AgentTeamRuntimeAcknowledgement](../entities/AgentTeamRuntimeAcknowledgement.md) | Class | 850 | `AgentTeamSetupModel` | — |
+| [AgentTeamRuntimeAcknowledgementResponse](../entities/AgentTeamRuntimeAcknowledgementResponse.md) | Class | 896 | `AgentTeamSetupModel` | — |
+| [AgentTeamRuntimeHandoff](../entities/agent_team_setup_AgentTeamRuntimeHandoff.md) | Class | 913 | `AgentTeamSetupModel` | — |
+| [AgentTeamMemberStatus](../entities/agent_team_setup_AgentTeamMemberStatus.md) | Class | 941 | `AgentTeamSetupModel` | — |
+| [AgentTeamSetupStep](../entities/agent_team_setup_AgentTeamSetupStep.md) | Class | 979 | `AgentTeamSetupModel` | — |
+| [AgentTeamStatusResponse](../entities/AgentTeamStatusResponse.md) | Class | 994 | `AgentTeamSetupModel` | — |
+| [AgentTeamSetupReportCounts](../entities/AgentTeamSetupReportCounts.md) | Class | 1028 | `AgentTeamSetupModel` | Bounded lifecycle and current-work counts without member internals. |
+| [AgentTeamSetupReportEvidence](../entities/AgentTeamSetupReportEvidence.md) | Class | 1065 | `AgentTeamSetupModel` | Durable reconciliation evidence summarized without action payloads. |
+| [AgentTeamTopologyMemberRead](../entities/AgentTeamTopologyMemberRead.md) | Class | 1083 | `AgentTeamSetupModel` | Which actor a team member is and which runtime reference runs it. |
+| [AgentTeamTopologyResponse](../entities/AgentTeamTopologyResponse.md) | Class | 1104 | `AgentTeamSetupModel` | The team as a reader sees it: members, roles, model bindings and runtime references. |
+| [AgentTeamDispatchAvailability](../entities/AgentTeamDispatchAvailability.md) | Class | 1127 | `AgentTeamSetupModel` | Explicitly withhold availability claims without task-bound evidence. |
+| [AgentTeamSetupReport](../entities/AgentTeamSetupReport.md) | Class | 1157 | `AgentTeamSetupModel` | Portable redacted topology report derived only from current server state. |
 
 ## Functions
 

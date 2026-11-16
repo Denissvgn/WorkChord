@@ -93,4 +93,4 @@ flowchart LR
 | `AgentService._validate_run_fence` | call | [agent_service](../modules/agent_service.md) | 1 |
 | `AgentService.claim_task` | call | [agent_service](../modules/agent_service.md) | 1 |
 
-> References: showing 12 of 41 logical references; 29 omitted by the 12-row generated summary limit.
+> References: showing 12 of 42 logical references; 30 omitted by the 12-row generated summary limit.

@@ -64,8 +64,8 @@ flowchart LR
 | [AgentActorUpdate](../entities/AgentActorUpdate.md) | Pydantic model | 168 | `BaseModel` | Administrative update for a provisioned actor. |
 | [AgentActorResponse](../entities/AgentActorResponse.md) | Pydantic model | 209 | `BaseModel` | Agent actor response. |
 | [AgentActorCreatedResponse](../entities/AgentActorCreatedResponse.md) | Pydantic model | 226 | `AgentActorResponse` | Agent actor creation response including the one-time API key. |
-| [AgentTaskCreate](../entities/AgentTaskCreate.md) | Class | 235 | `TaskCreate` | Agent task creation request. |
-| [AgentTaskPatch](../entities/AgentTaskPatch.md) | Class | 240 | `TaskUpdate` | Agent task patch request with optimistic concurrency. |
+| [AgentTaskCreate](../entities/AgentTaskCreate.md) | Pydantic model | 235 | `TaskCreate` | Agent task creation request. |
+| [AgentTaskPatch](../entities/AgentTaskPatch.md) | Pydantic model | 240 | `TaskUpdate` | Agent task patch request with optimistic concurrency. |
 | [TaskClaimRequest](../entities/TaskClaimRequest.md) | Pydantic model | 247 | `BaseModel` | Request to claim or renew a task lease. |
 | [TaskClaimResponse](../entities/TaskClaimResponse.md) | Pydantic model | 257 | `BaseModel` | Response for task lease operations. |
 | [TaskEventCreate](../entities/TaskEventCreate.md) | Pydantic model | 265 | `BaseModel` | Request to append a task event. |
@@ -120,9 +120,9 @@ flowchart LR
 | [AgentRecoveryListResponse](../entities/AgentRecoveryListResponse.md) | Pydantic model | 1121 | `BaseModel` | Paginated PM recovery projection. |
 | [AgentRecoveryRequeueResponse](../entities/AgentRecoveryRequeueResponse.md) | Pydantic model | 1128 | `BaseModel` | Authoritative result of stale-work reconciliation and requeue. |
 | [AgentProjectUpdateCreate](../entities/AgentProjectUpdateCreate.md) | Pydantic model | 1137 | `BaseModel` | Agent-authored append-only project status report. |
-| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Class | 1161 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
+| [AgentProjectUpdateResponse](../entities/AgentProjectUpdateResponse.md) | Pydantic model | 1161 | `ProjectUpdateEntryResponse` | Agent project-update response with attribution and evidence. |
 | [AgentDiscoveryTriageCreate](../entities/AgentDiscoveryTriageCreate.md) | Pydantic model | 1165 | `BaseModel` | Claim-bound report of work discovered outside the assigned scope. |
-| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Class | 1190 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
+| [AgentDiscoveryTriageResponse](../entities/AgentDiscoveryTriageResponse.md) | Pydantic model | 1190 | `TriageItemResponse` | Created discovery Triage item with source linkage metadata. |
 
 ## Functions
 

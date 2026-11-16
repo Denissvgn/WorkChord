@@ -1,7 +1,7 @@
 # AgentTeamRuntimeAcknowledgement
 
-**Location:** `backend/app/schemas/agent_team_setup.py:849`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:850`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 

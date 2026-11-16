@@ -1,7 +1,7 @@
 # AgentTeamManifestRequest
 
-**Location:** `backend/app/schemas/agent_team_setup.py:761`
-**Kind:** Pydantic model
+**Location:** `backend/app/schemas/agent_team_setup.py:762`
+**Kind:** Class
 **Bases:** `AgentTeamSetupModel`
 **Module:** [agent_team_setup](../modules/agent_team_setup.md)
 
@@ -11,9 +11,9 @@ _Auto-generated from `AgentTeamManifestRequest` in `backend/app/schemas/agent_te
 
 ## Attributes
 
-| Name | Type | Wire name | Required | Nullable | Default | Constraints | Examples | Description |
-|------|------|-----------|----------|----------|---------|-------------|-------------|----------|
-| `manifest` | `AgentTeamMaster` | `manifest` | Yes | No | — | — | — | — |
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `manifest` | `AgentTeamMaster` | *required* | — |
 
 ## Methods
 

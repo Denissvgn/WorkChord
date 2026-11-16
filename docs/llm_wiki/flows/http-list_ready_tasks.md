@@ -133,17 +133,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_ready_tasks | service.list_ready_tasks | 825 | `service.list_ready_tasks(actor, iteration_id=iteration_id, tags=tags, priority_min=priority_min, priority_max=priority_max, assignee_id=assignee_id, capabilities=capabilities, limit=limit)` |
-| list_ready_tasks | _handle_agent_error | 836 | `_handle_agent_error(exc)` |
-| _handle_agent_error | isinstance | 296 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 298 | `str(exc)` |
-| _handle_agent_error | str | 300 | `str(exc)` |
-| _handle_agent_error | HTTPException | 302 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 303 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 304 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 304 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 305 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 306 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| list_ready_tasks | service.list_ready_tasks | 866 | `service.list_ready_tasks(actor, iteration_id=iteration_id, tags=tags, priority_min=priority_min, priority_max=priority_max, assignee_id=assignee_id, capabilities=capabilities, limit=limit)` |
+| list_ready_tasks | _handle_agent_error | 877 | `_handle_agent_error(exc)` |
+| _handle_agent_error | isinstance | 318 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 320 | `str(exc)` |
+| _handle_agent_error | str | 322 | `str(exc)` |
+| _handle_agent_error | HTTPException | 324 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 325 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 326 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 326 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 328 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -153,14 +153,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_ready_tasks` | `service.list_ready_tasks` | 825 |
-| external_call | `_handle_agent_error` | `isinstance` | 296 |
-| external_call | `_handle_agent_error` | `HTTPException` | 302 |
-| external_call | `_handle_agent_error` | `isinstance` | 303 |
-| external_call | `_handle_agent_error` | `HTTPException` | 304 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 304 |
-| external_call | `_handle_agent_error` | `isinstance` | 305 |
-| external_call | `_handle_agent_error` | `HTTPException` | 306 |
+| unresolved_call | `list_ready_tasks` | `service.list_ready_tasks` | 866 |
+| external_call | `_handle_agent_error` | `isinstance` | 318 |
+| external_call | `_handle_agent_error` | `HTTPException` | 324 |
+| external_call | `_handle_agent_error` | `isinstance` | 325 |
+| external_call | `_handle_agent_error` | `HTTPException` | 326 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 326 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
+| external_call | `_handle_agent_error` | `HTTPException` | 328 |
 | step_limit | `list_ready_tasks` | `first 12 steps` | 0 |
 
 ## Behavior

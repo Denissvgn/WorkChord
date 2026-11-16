@@ -37,6 +37,7 @@ flowchart LR
     n5["backend/tests/test_managed_authority.py"]
     n6["backend/tests/test_observer_sessions.py"]
     n7["backend/tests/test_person_assignment_reads.py"]
+    n8["backend/tests/test_team_topology_read.py"]
     n1 --> n3
     n2 --> n0
     n2 --> n1
@@ -58,6 +59,12 @@ flowchart LR
     n7 --> n4
     n7 --> n5
     n7 --> n6
+    n8 --> n1
+    n8 --> n2
+    n8 --> n3
+    n8 --> n4
+    n8 --> n5
+    n8 --> n6
     click n0 "../modules/config.md"
     click n1 "../modules/user_session.md"
     click n2 "../modules/identity_service.md"
@@ -66,6 +73,7 @@ flowchart LR
     click n5 "../modules/test_managed_authority.md"
     click n6 "../modules/test_observer_sessions.md"
     click n7 "../modules/test_person_assignment_reads.md"
+    click n8 "../modules/test_team_topology_read.md"
 ```
 
 ### Internal neighbors
@@ -73,6 +81,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [test_person_assignment_reads](../modules/test_person_assignment_reads.md) |
+| Inbound | [test_team_topology_read](../modules/test_team_topology_read.md) |
 | Outbound | [config](../modules/config.md) |
 | Outbound | [user_session](../modules/user_session.md) |
 | Outbound | [identity_service](../modules/identity_service.md) |

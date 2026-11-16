@@ -133,17 +133,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| list_agent_assignments | service.list_assignments_for_people | 765 | `service.list_assignments_for_people(task_id=task_id, actor_id=actor_id, purpose=purpose, state=state, limit=limit)` |
-| list_agent_assignments | service.list_assignments | 772 | `service.list_assignments(actor, task_id=task_id, actor_id=actor_id, purpose=purpose, state=state, limit=limit)` |
-| list_agent_assignments | _handle_agent_error | 781 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 296 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 298 | `str(exc)` |
-| _handle_agent_error | str | 300 | `str(exc)` |
-| _handle_agent_error | HTTPException | 302 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 303 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 304 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 304 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 305 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| list_agent_assignments | service.list_assignments_for_people | 806 | `service.list_assignments_for_people(task_id=task_id, actor_id=actor_id, purpose=purpose, state=state, limit=limit)` |
+| list_agent_assignments | service.list_assignments | 813 | `service.list_assignments(actor, task_id=task_id, actor_id=actor_id, purpose=purpose, state=state, limit=limit)` |
+| list_agent_assignments | _handle_agent_error | 822 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 318 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str | 320 | `str(exc)` |
+| _handle_agent_error | str | 322 | `str(exc)` |
+| _handle_agent_error | HTTPException | 324 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 325 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 326 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 326 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentTeamSetupConflictError)` |
 
 ### Boundary effects
 
@@ -153,14 +153,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `list_agent_assignments` | `service.list_assignments_for_people` | 765 |
-| unresolved_call | `list_agent_assignments` | `service.list_assignments` | 772 |
-| external_call | `_handle_agent_error` | `isinstance` | 296 |
-| external_call | `_handle_agent_error` | `HTTPException` | 302 |
-| external_call | `_handle_agent_error` | `isinstance` | 303 |
-| external_call | `_handle_agent_error` | `HTTPException` | 304 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 304 |
-| external_call | `_handle_agent_error` | `isinstance` | 305 |
+| unresolved_call | `list_agent_assignments` | `service.list_assignments_for_people` | 806 |
+| unresolved_call | `list_agent_assignments` | `service.list_assignments` | 813 |
+| external_call | `_handle_agent_error` | `isinstance` | 318 |
+| external_call | `_handle_agent_error` | `HTTPException` | 324 |
+| external_call | `_handle_agent_error` | `isinstance` | 325 |
+| external_call | `_handle_agent_error` | `HTTPException` | 326 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 326 |
+| external_call | `_handle_agent_error` | `isinstance` | 327 |
 | step_limit | `list_agent_assignments` | `first 12 steps` | 0 |
 
 ## Behavior

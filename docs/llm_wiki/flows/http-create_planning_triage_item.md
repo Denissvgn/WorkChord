@@ -204,7 +204,7 @@ flowchart LR
 | actor_scopes | isinstance (backend/app/services/agent_service.py:actor_scopes) | 89 | `isinstance(scopes, list)` |
 | require_scope | AgentPermissionError | 101 | `AgentPermissionError(...)` |
 | create_planning_triage_item | create_triage_item | 620 | `mcp_agent_tools.create_triage_item(db, actor, data.model_dump(...), idempotency_key=command.idempotency_key, rationale=command.rationale, correlation_id=command.correlation_id)` |
-| create_triage_item | _triage_command_context | 2253 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
+| create_triage_item | _triage_command_context | 2262 | `_triage_command_context(idempotency_key=idempotency_key, rationale=rationale, correlation_id=correlation_id)` |
 | _triage_command_context | validate_idempotency_key | 221 | `validate_idempotency_key(idempotency_key, required=True)` |
 | validate_idempotency_key | ValueError (backend/app/services/agen…:validate_idempotency_key) | 110 | `ValueError('Idempotency-Key is required')` |
 | validate_idempotency_key | value.strip | 114 | `value.strip(data not statically known)` |

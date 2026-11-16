@@ -119,4 +119,4 @@ flowchart LR
 | `list_ready_tasks` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 | `release_task` | call | [mcp_agent_tools](../modules/mcp_agent_tools.md) | 1 |
 
-> References: showing 12 of 55 logical references; 43 omitted by the 12-row generated summary limit.
+> References: showing 12 of 56 logical references; 44 omitted by the 12-row generated summary limit.
