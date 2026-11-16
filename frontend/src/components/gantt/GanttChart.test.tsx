@@ -36,6 +36,7 @@ const taskFixture: GanttTask = {
     start_date: '2026-01-05',
     end_date: '2026-01-06',
     effort_days: 2,
+    effort_hours: 16,
     calculated_effort_days: 2,
     progress: 0,
     priority: 5,
@@ -425,12 +426,14 @@ describe('Gantt bar inputs in Try changes', () => {
         expect(dialog).toHaveTextContent('Dates are calculated.');
         await screen.findByRole('option', { name: 'Sam' });
         await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), '7');
-        const effort = screen.getByRole('spinbutton', { name: 'Effort (days)' });
+        const effort = screen.getByRole('spinbutton', { name: 'Effort (hours)' });
+        expect(dialog).toHaveTextContent('= 2 days at 8 hours per day');
         await user.clear(effort);
-        await user.type(effort, '3');
+        await user.type(effort, '24');
+        expect(dialog).toHaveTextContent('= 3 days at 8 hours per day');
         await user.click(screen.getByRole('button', { name: 'Recalculate with these' }));
         expect(onSaveSandbox).toHaveBeenCalledWith(101, expect.objectContaining({
-            assignee: { id: 7, name: 'Sam' }, effort_days: 3, sandbox_update: undefined,
+            assignee: { id: 7, name: 'Sam' }, effort_hours: 24, sandbox_update: undefined,
         }));
         expect(screen.queryByRole('dialog', { name: 'Current task' })).not.toBeInTheDocument();
     });
