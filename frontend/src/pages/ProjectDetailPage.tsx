@@ -84,6 +84,7 @@ import {
     projectStatusBadgeClassName,
     projectStatusPillClassName,
 } from '../components/projects/projectStatusStyles';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 const t = i18n.t.bind(i18n);
 
@@ -862,6 +863,7 @@ const ProjectDetailPage = () => {
     const { projectId } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const queryClient = useQueryClient();
     const numericProjectId = Number(projectId);
     // The roadmap links here with ?action=edit or ?action=add-milestone.
@@ -1521,7 +1523,7 @@ const ProjectDetailPage = () => {
                         actions={(
                             <div className="flex flex-wrap gap-2">
                                 <Button variant="secondary" size="sm" onClick={() => setNewBacklogTask(true)}>{t('domain.newBacklogTask')}</Button>
-                                <Button variant="secondary" size="sm" onClick={() => navigate(`/tasks?layout=board&projectId=${numericProjectId}`)}>{t('surfaces.projectDetail.openTaskBoard')}</Button>
+                                <Button variant="secondary" size="sm" onClick={() => navigate(scopeLink(`/tasks?layout=board&projectId=${numericProjectId}`))}>{t('surfaces.projectDetail.openTaskBoard')}</Button>
                             </div>
                         )}
                     >
@@ -1565,7 +1567,7 @@ const ProjectDetailPage = () => {
                                     </div>
                                 ))}
                                 {tasks.length > PROJECT_TASK_PREVIEW && (
-                                    <Link className="btn sm secondary" to={`/tasks?projectId=${numericProjectId}`}>
+                                    <Link className="btn sm secondary" to={scopeLink(`/tasks?projectId=${numericProjectId}`)}>
                                         {t('surfaces.projectDetail.viewAllTasks', { count: tasks.length })}
                                     </Link>
                                 )}

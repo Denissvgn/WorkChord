@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import type { TaskStatusLog } from '../../types/task';
 import { formatDateTime } from '../../utils/formatDate';
 import { STATUS_TONE, toneVar } from '../ui/tone';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 const HOUR = 3_600_000;
 
@@ -20,6 +21,7 @@ const spent = (t: TFunction, ms: number) => {
  */
 export const TaskStatusFlow = ({ taskId, title, logs, nowMs }: { taskId: number; title: string; logs: TaskStatusLog[]; nowMs?: number }) => {
     const { t, i18n } = useTranslation();
+    const scopeLink = useScopeLink();
     // "So far" is measured from when the list was first shown.
     const [shownAt] = useState(() => Date.now());
     const now = nowMs ?? shownAt;
@@ -33,7 +35,7 @@ export const TaskStatusFlow = ({ taskId, title, logs, nowMs }: { taskId: number;
     return (
         <section className="space-y-2" aria-labelledby={`lifecycle-${taskId}`}>
             <h4 id={`lifecycle-${taskId}`} className="font-medium">
-                <Link to={`/tasks?task=${taskId}`} className="break-words text-action hover:underline">#{taskId} · {title}</Link>
+                <Link to={scopeLink(`/tasks?task=${taskId}`)} className="break-words text-action hover:underline">#{taskId} · {title}</Link>
             </h4>
             <ol className="space-y-1.5 border-l-2 border-border pl-4">
                 {states.map((state, index) => {

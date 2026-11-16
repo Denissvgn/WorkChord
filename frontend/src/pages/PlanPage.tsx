@@ -22,6 +22,7 @@ import { usePlanningReadiness } from '../features/planningMasters/usePlanningRea
 import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { formatDate } from '../utils/formatDate';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 type LocalizedStepStatus = {
     state: string;
@@ -64,6 +65,7 @@ function PlanningReadinessLauncher({
     nextId: string;
 }) {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const nextStep = STEP_DEFS.find(step => step.id === nextId);
     // Name the next step on the button so the first click is the next real move.
     const action = ready.done === ready.total
@@ -116,7 +118,7 @@ function PlanningReadinessLauncher({
                         <p className="mc-desc">{t('plan.hub.planIterationDescription')}</p>
                     </div>
                 </div>
-                <Link className="btn primary lg plan-hub-primary-action" to={actionHref}>
+                <Link className="btn primary lg plan-hub-primary-action" to={scopeLink(actionHref)}>
                     {action}
                     <ArrowRight aria-hidden="true" size={14} />
                 </Link>
@@ -195,12 +197,13 @@ function PlanningReadinessLauncher({
 
 function PlanningJobLink({ job }: { job: PlanningJob }) {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const Icon = job.icon;
 
     return (
         <Link
             className="plan-hub-job"
-            to={job.to}
+            to={scopeLink(job.to)}
             aria-labelledby={`plan-hub-job-${job.id}-title`}
             aria-describedby={`plan-hub-job-${job.id}-description plan-hub-job-${job.id}-meta`}
         >
@@ -222,6 +225,7 @@ function PlanningJobLink({ job }: { job: PlanningJob }) {
 
 const PlanPage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>('idle');
     const {
         currentIteration,
@@ -398,7 +402,7 @@ const PlanPage = () => {
                                 <Inbox aria-hidden="true" size={12} />
                                 {t('nav.triage')}
                             </Link>
-                            <Link to="/tasks" className="btn sm ghost">
+                            <Link to={scopeLink('/tasks')} className="btn sm ghost">
                                 <ListTodo aria-hidden="true" size={12} />
                                 {t('nav.tasks')}
                             </Link>
@@ -415,7 +419,7 @@ const PlanPage = () => {
                                 <Users aria-hidden="true" size={12} />
                                 {t('nav.team')}
                             </Link>
-                            <Link to="/gantt" className="btn sm ghost">
+                            <Link to={scopeLink('/gantt')} className="btn sm ghost">
                                 <GanttChartSquare aria-hidden="true" size={12} />
                                 {t('nav.gantt')}
                             </Link>

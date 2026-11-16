@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../styles/landing.css';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 // Copy lives in the landing catalog (EN and RU); the numbering stays in code.
 const STAGES = [
@@ -57,6 +58,7 @@ const WorkflowMap = () => {
 
 const LandingPage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     return (
         <div className="landing-page">
             <a
@@ -71,7 +73,7 @@ const LandingPage = () => {
 
             <header className="landing-nav" aria-label={t('landing.navigation')}>
                 <Link className="landing-wordmark landing-action" to="/welcome">WorkChord</Link>
-                <Link className="landing-nav__action landing-action" to="/">{t('landing.openWorkspace')} <span aria-hidden="true">↗</span></Link>
+                <Link className="landing-nav__action landing-action" to={scopeLink('/')}>{t('landing.openWorkspace')} <span aria-hidden="true">↗</span></Link>
             </header>
 
             <main id="landing-main" tabIndex={-1}>
@@ -82,7 +84,7 @@ const LandingPage = () => {
                         <p className="landing-hero__lede">{t('landing.heroLede')}</p>
                         {/* The hero's one button; the workflow link stays a quiet text link. */}
                         <div className="landing-hero__actions">
-                            <Link className="landing-button" to="/">{t('landing.openTheWorkspace')}</Link>
+                            <Link className="landing-button" to={scopeLink('/')}>{t('landing.openTheWorkspace')}</Link>
                             <a className="landing-text-link landing-action" href="#workflow">
                                 {t('landing.followWorkflow')} <span aria-hidden="true">↓</span>
                             </a>
@@ -140,7 +142,7 @@ const LandingPage = () => {
                         <h2 id="landing-close-title">{t('landing.closeTitle')}</h2>
                         <p>{t('landing.closeBody')}</p>
                     </div>
-                    <Link className="landing-text-link landing-action" to="/">
+                    <Link className="landing-text-link landing-action" to={scopeLink('/')}>
                         {t('landing.openTheWorkspace')} <span aria-hidden="true">→</span>
                     </Link>
                 </section>

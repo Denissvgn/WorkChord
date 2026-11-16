@@ -19,6 +19,7 @@ import { SettingsGoalHelpContent } from '../settings/SettingsGoalHelpContent';
 import { TaskWorkflowHelpContent } from '../tasks/TaskWorkflowGuide';
 import { SlideOverDrawer } from '../ui';
 import { openCommandMenu } from './commandMenuEvents';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 const PROVIDER_COPY_KEYS: Record<
     Exclude<HelpContentProvider, 'workspace'>,
@@ -52,6 +53,7 @@ const TASK_SHORTCUTS = [
 
 export const ContextHelp = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const location = useLocation();
     const shortcutDescriptionId = useId();
     const [open, setOpen] = useState(false);
@@ -262,7 +264,7 @@ export const ContextHelp = () => {
                             {helpContext.relatedLinks.map(link => (
                                 <Link
                                     key={link.to}
-                                    to={link.to}
+                                    to={scopeLink(link.to)}
                                     onClick={closeForNavigation}
                                 >
                                     <span>

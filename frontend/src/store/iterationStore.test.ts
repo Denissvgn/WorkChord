@@ -1,4 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createElement, type ReactNode } from 'react';
+import { renderHook } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { pickDefaultIteration, useIterationStore } from './iterationStore';
 import {
     LEGACY_ITERATION_STORAGE_KEY,
@@ -58,6 +61,74 @@ describe('useIterationStore', () => {
         useIterationStore.setState({ selectedIterationId: 9 });
 
         expect(useScopeStore.getState()).toMatchObject({ project: 'all', iteration: 9 });
+    });
+
+    it('keeps Backlog apart from no iteration chosen', () => {
+        useScopeStore.getState().remember({ project: 3, iteration: 'backlog' });
+        expect(useIterationStore.getState()).toMatchObject({ selectedIterationId: 0, isBacklog: true });
+
+        useScopeStore.getState().remember({ project: 3, iteration: null });
+        expect(useIterationStore.getState()).toMatchObject({ selectedIterationId: 0, isBacklog: false });
+    });
+
+    describe('chooseDefaultIteration', () => {
+        const scoped = (id: number, project_id: number, start_date: string, end_date: string) => ({
+            id, project_id, start_date, end_date,
+        });
+        const ITERATIONS = [
+            scoped(12, 1, '2026-11-01', '2026-11-30'),
+            scoped(21, 2, '2026-09-01', '2026-09-30'),
+            scoped(22, 2, '2027-01-01', '2027-01-31'),
+        ];
+
+        beforeEach(() => {
+            vi.useFakeTimers({ toFake: ['Date'] });
+            vi.setSystemTime(new Date('2026-11-16T12:00:00Z'));
+        });
+
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        it('keeps Backlog', () => {
+            useScopeStore.getState().remember({ project: 2, iteration: 'backlog' });
+            useIterationStore.getState().chooseDefaultIteration(ITERATIONS);
+            expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 'backlog' });
+        });
+
+        it('keeps an iteration that exists', () => {
+            useScopeStore.getState().remember({ project: 2, iteration: 21 });
+            useIterationStore.getState().chooseDefaultIteration(ITERATIONS);
+            expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 21 });
+        });
+
+        it('chooses the default of the chosen project, not of another one', () => {
+            useScopeStore.getState().remember({ project: 2, iteration: null });
+            useIterationStore.getState().chooseDefaultIteration(ITERATIONS);
+            expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 22 });
+        });
+
+        it('replaces an iteration that no longer exists', () => {
+            useScopeStore.getState().remember({ project: 1, iteration: 99 });
+            useIterationStore.getState().chooseDefaultIteration(ITERATIONS);
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
+        });
+
+        it('uses the default rule when nothing is chosen', () => {
+            useIterationStore.getState().chooseDefaultIteration(ITERATIONS);
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
+        });
+    });
+
+    it('reads the iteration in the URL before the remembered one', () => {
+        useScopeStore.getState().remember({ project: 1, iteration: 12 });
+        const at = (entry: string) => renderHook(() => useIterationStore(), {
+            wrapper: ({ children }: { children: ReactNode }) => createElement(MemoryRouter, { initialEntries: [entry] }, children),
+        }).result.current;
+
+        expect(at('/gantt?project=2&iteration=backlog')).toMatchObject({ selectedIterationId: 0, isBacklog: true });
+        expect(at('/gantt?project=2&iteration=21')).toMatchObject({ selectedIterationId: 21, isBacklog: false });
+        expect(at('/team')).toMatchObject({ selectedIterationId: 12, isBacklog: false });
     });
 
     it('remembers the scope under the scope key', () => {

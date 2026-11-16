@@ -52,6 +52,7 @@ import {
     type AttentionSeverity,
 } from '../features/overview/attentionRanking';
 import { formatDecimal, formatPercent } from '../utils/workNumbers';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 type CapacityException = {
     id: number;
@@ -242,6 +243,7 @@ const paceUrgency = (elapsedPercent: number) => {
 
 const OverviewPage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const location = useLocation();
     const navigate = useNavigate();
     const [retryPending, setRetryPending] = useState(false);
@@ -801,7 +803,7 @@ const OverviewPage = () => {
                     <h2 id="overview-empty-title">{t('overview.noIterationTitle')}</h2>
                     <p>{t('overview.noIterationBody')}</p>
                     <div className="empty-actions">
-                        <Link className="btn primary" to="/plan">
+                        <Link className="btn primary" to={scopeLink('/plan')}>
                             <Calendar aria-hidden="true" className="h-4 w-4" />
                             {t('overview.setUpPlanningPeriod')}
                         </Link>
@@ -1038,6 +1040,7 @@ const OverviewFocusPanel = ({
     onRevealIterationDetails,
 }: OverviewFocusPanelProps) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const topAttention = attentionItems[0];
     const needsPlanning = planReady.pct < 100;
     const nextDef = STEP_DEFS.find(step => step.id === planNextId);
@@ -1081,7 +1084,7 @@ const OverviewFocusPanel = ({
                 </div>
 
                 <div className="overview-focus-action">
-                    <Link to={actionTo} className="btn primary">
+                    <Link to={scopeLink(actionTo)} className="btn primary">
                         {actionLabel}
                         <ArrowRight aria-hidden="true" className="h-4 w-4" />
                     </Link>
@@ -1209,13 +1212,14 @@ const OverviewDeliverySnapshot = ({
     );
 };
 
-const AttentionItemList = ({ items }: { items: AttentionItem[] }) => (
-    <ul className="overview-exception-list">
+const AttentionItemList = ({ items }: { items: AttentionItem[] }) => {
+    const scopeLink = useScopeLink();
+    return <ul className="overview-exception-list">
         {items.map(item => {
             const Icon = item.icon;
             return (
                 <li key={item.id}>
-                    <Link to={item.to} className="overview-exception-link">
+                    <Link to={scopeLink(item.to)} className="overview-exception-link">
                         <span
                             className="overview-exception-icon"
                             style={pillBoxStyle(item.tone)}
@@ -1234,8 +1238,8 @@ const AttentionItemList = ({ items }: { items: AttentionItem[] }) => (
                 </li>
             );
         })}
-    </ul>
-);
+    </ul>;
+};
 
 const OverviewDetailCluster = ({
     id,
@@ -1346,6 +1350,7 @@ const WorkNowPreview = ({
     dataLoading: boolean;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const openTaskCount = tasks.filter(task => !doneStatuses.has(task.status)).length;
     const visibleTasks = selectWorkNowTasks(tasks);
     const remainingTaskCount = Math.max(0, openTaskCount - visibleTasks.length);
@@ -1372,7 +1377,7 @@ const WorkNowPreview = ({
             title={t('overview.workNow')}
             description={t('overview.workNowDescription')}
             actions={(
-                <Link to={taskBoardPath} className="btn ghost sm">
+                <Link to={scopeLink(taskBoardPath)} className="btn ghost sm">
                     {taskBoardLabel}
                     <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
                 </Link>
@@ -1406,6 +1411,7 @@ const WorkNowPreview = ({
 
 const TaskRow = ({ task, showProject }: { task: Task; showProject: boolean }) => {
     const { t, i18n } = useTranslation();
+    const scopeLink = useScopeLink();
     const numberLocale = i18n.resolvedLanguage ?? i18n.language;
     const status = t(`statuses.${task.status}`);
     const tone = STATUS_TONE[task.status];
@@ -1415,7 +1421,7 @@ const TaskRow = ({ task, showProject }: { task: Task; showProject: boolean }) =>
             <Link
                 id={overviewTaskReturnFocusId(task.id)}
                 className="overview-task-row flex min-w-0 items-center gap-3 px-3 py-2.5"
-                to={overviewTaskDrawerHref(task.id, 'work-now')}
+                to={scopeLink(overviewTaskDrawerHref(task.id, 'work-now'))}
                 aria-label={t('overview.thread.openTask', { title: task.title })}
             >
                 <div className="overview-task-copy min-w-0 flex-1">

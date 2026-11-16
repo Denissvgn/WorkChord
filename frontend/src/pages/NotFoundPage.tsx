@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../components/common/Button';
 import { PageHeader, SectionCard } from '../components/ui';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 const NotFoundPage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -20,7 +22,7 @@ const NotFoundPage = () => {
                 <code className="mt-2 block break-all rounded-md border border-border bg-surface-muted px-3 py-2 text-sm text-content-primary">
                     {location.pathname}
                 </code>
-                <Button className="mt-5" onClick={() => navigate('/')}>
+                <Button className="mt-5" onClick={() => navigate(scopeLink('/'))}>
                     <Home aria-hidden="true" className="mr-2 h-4 w-4" />
                     {t('notFound.returnHome')}
                 </Button>

@@ -78,6 +78,7 @@ import { feedbackMessage } from '../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 import { Select } from '../components/common/Select';
 import { Textarea } from '../components/common/Textarea';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 const t = i18n.t.bind(i18n);
 
@@ -1688,6 +1689,7 @@ interface ConvertMutationInput {
 
 const TriagePage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const queryClient = useQueryClient();
     const [searchParams, setSearchParams] = useSearchParams();
     const { selectedIterationId } = useIterationStore();
@@ -2004,7 +2006,7 @@ const TriagePage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <Link
-                            to={`/tasks?highlight=${conversionResult.taskId}`}
+                            to={scopeLink(`/tasks?highlight=${conversionResult.taskId}`)}
                             className="inline-flex items-center gap-1 font-medium text-feedback-success-foreground hover:underline"
                         >
                             {t('quickActions.viewTask')} #{conversionResult.taskId}

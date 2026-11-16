@@ -37,7 +37,9 @@ import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
-import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
+import { useIterationStore } from '../store/iterationStore';
+import { useLinkScope, useScopeLink } from '../features/scope/useScopeLink';
+import { resolveWorkScope } from '../features/scope/workScope';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import type { SavedView } from '../types/savedView';
@@ -87,7 +89,12 @@ const PLANNING_ISSUE_COPY_KEYS: Record<
 
 const TasksPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
+    const scopeLink = useScopeLink();
+    const linkedScope = useLinkScope();
+    // Older links open the backlog with ?scope=backlog; the scope now says so with iteration=backlog.
+    const legacyBacklogRequested = searchParams.get('scope') === 'backlog';
+    const isBacklogView = isBacklog || legacyBacklogRequested;
     const [isCreating, setIsCreating] = useState(false);
     const [createTitle, setCreateTitle] = useState('');
     const [isImporting, setIsImporting] = useState(false);
@@ -241,11 +248,10 @@ const TasksPage = () => {
             setSearchParams(nextSearchParams, { replace: true });
         }
 
-        const iterationExists = iterations.some(i => i.id === selectedIterationId);
-        if (selectedIterationId === 0 || !iterationExists) {
-            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-        }
+        chooseDefaultIteration(iterations);
     }, [
+        chooseDefaultIteration,
+        isBacklog,
         iterations,
         rawPlanningIterationId,
         requestedPlanningIterationId,
@@ -254,6 +260,21 @@ const TasksPage = () => {
         setSearchParams,
         setSelectedIterationId,
     ]);
+
+    useEffect(() => {
+        if (!legacyBacklogRequested) return;
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete('scope');
+        nextSearchParams.set('iteration', 'backlog');
+        setSearchParams(nextSearchParams, { replace: true });
+    }, [legacyBacklogRequested, searchParams, setSearchParams]);
+
+    // Leaving the backlog opens the project's default iteration, else the default across projects.
+    const iterationTasksScope = useMemo(() => {
+        if (!iterations || iterations.length === 0) return undefined;
+        const inProject = resolveWorkScope({ project: linkedScope.project }, {}, iterations);
+        return inProject.iteration === 'backlog' ? resolveWorkScope({}, {}, iterations) : inProject;
+    }, [iterations, linkedScope.project]);
 
     // A project page links here with ?projectId=<id>; apply it as the project filter once.
     const requestedProjectId = Number(searchParams.get('projectId')) || null;
@@ -437,10 +458,10 @@ const TasksPage = () => {
         return <QueryErrorState error={iterationsError} onRetry={() => void refetchIterations()} />;
     }
 
-    if (!iterations || iterations.length === 0 || searchParams.get('scope') === 'backlog') {
+    if (!iterations || iterations.length === 0 || isBacklogView) {
         return <PageLayout>
             <PageHeader title={t('tasks.title')} subtitle={t('teamwork.backlogHelp')}
-                actions={<Link className="btn secondary" to={iterations?.length ? '/tasks' : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+                actions={<Link className="btn secondary" to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
             <div className="space-y-6"><TaskSearch /><BacklogPanel /></div>
             <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
                 title={task => task?.title ?? t('taskEditor.editTask')} />
@@ -452,7 +473,7 @@ const TasksPage = () => {
             {/* Main Content Area */}
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
                 <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
-                    <Link className="text-sm font-medium text-action hover:underline" to="/tasks?scope=backlog">{t('teamwork.projectBacklog')}</Link>
+                    <Link className="text-sm font-medium text-action hover:underline" to={scopeLink('/tasks', { iteration: 'backlog' })}>{t('teamwork.projectBacklog')}</Link>
                     <TaskSearch narrowsList />
                     {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
                 </div>

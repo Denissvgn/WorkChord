@@ -6,9 +6,11 @@ import type { TaskDetail } from '../../types/task';
 import { taskService } from '../../services/taskService';
 import { Button } from '../common/Button';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 export const TaskContextSummary = ({ detail, onNavigate, onReload }: { detail: TaskDetail; onNavigate?: (id: number) => void; onReload?: () => void }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const [childrenCursor, setChildrenCursor] = useState(0);
     const [dependenciesCursor, setDependenciesCursor] = useState(0);
     // feedback-policy: query loading,error,retry,empty
@@ -28,12 +30,12 @@ export const TaskContextSummary = ({ detail, onNavigate, onReload }: { detail: T
         {query.isError && <QueryErrorState error={query.error} fallback={t('taskEditor.loadFailed')} onRetry={() => onReload ? onReload() : void query.refetch()} />}
         {!query.isError && query.data && <div className="mt-3 space-y-3">
             {query.data.ancestors.length > 0 && <nav aria-label={t('domain.ancestors')} className="flex flex-wrap gap-2">
-                {query.data.ancestors.map(item => <Link className="text-action underline" key={item.id} to={`/tasks?task=${item.id}`} onClick={event => { if (onNavigate) { event.preventDefault(); onNavigate(item.id); } }}>{item.title}</Link>)}
+                {query.data.ancestors.map(item => <Link className="text-action underline" key={item.id} to={scopeLink(`/tasks?task=${item.id}`)} onClick={event => { if (onNavigate) { event.preventDefault(); onNavigate(item.id); } }}>{item.title}</Link>)}
             </nav>}
             {(['children', 'dependencies'] as const).map(kind => <div key={kind}>
                 <h4 className="mb-1 font-medium text-content-primary">{t(kind === 'children' ? 'domain.children' : 'surfaces.taskForm.dependencies')}</h4>
                 <ul className="space-y-1">{query.data![kind].items.map(item => <li key={item.id}>
-                    <Link className="break-words text-action underline" to={`/tasks?task=${item.id}`} onClick={event => { if (onNavigate) { event.preventDefault(); onNavigate(item.id); } }}>{item.title}</Link>
+                    <Link className="break-words text-action underline" to={scopeLink(`/tasks?task=${item.id}`)} onClick={event => { if (onNavigate) { event.preventDefault(); onNavigate(item.id); } }}>{item.title}</Link>
                 </li>)}</ul>
                 {query.data![kind].items.length === 0 && <p className="text-content-secondary">{t('common.none')}</p>}
                 {query.data![kind].has_more && <Button type="button" size="sm" variant="ghost" onClick={() => (kind === 'children' ? setChildrenCursor : setDependenciesCursor)(query.data![kind].next_after_id!)}>{t('domain.moreResults')}</Button>}

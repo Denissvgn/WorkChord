@@ -31,7 +31,7 @@ import { calendarService } from '../services/calendarService';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
 import { dateFnsLocale } from '../i18n/dateLocale';
-import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
+import { useIterationStore } from '../store/iterationStore';
 import type { Calendar as WorkCalendar, CalendarCreate, CalendarUpdate } from '../types/calendar';
 import type { TeamMember, Vacation } from '../types/team';
 import { usePlanningObservation } from '../features/usePlanningObservation';
@@ -96,7 +96,7 @@ const CalendarPage = () => {
     const { t, i18n } = useTranslation();
     const locale = dateFnsLocale(i18n.language);
     const queryClient = useQueryClient();
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const calendarContext = usePlanningObservation<WorkCalendar>();
     const vacationContext = usePlanningObservation<TeamMember>();
@@ -179,11 +179,8 @@ const CalendarPage = () => {
             if (selectedIterationId !== 0) setSelectedIterationId(0);
             return;
         }
-        const exists = iterations.some(iteration => iteration.id === selectedIterationId);
-        if (selectedIterationId === 0 || !exists) {
-            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-        }
-    }, [iterations, selectedIterationId, setSelectedIterationId]);
+        chooseDefaultIteration(iterations);
+    }, [iterations, selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration]);
 
     const selectedIteration = iterations.find(iteration => iteration.id === selectedIterationId) ?? null;
     const hasSelectedIteration = selectedIteration !== null;
@@ -1051,6 +1048,7 @@ const CalendarPage = () => {
                             style={{ width: 'auto' }}
                             aria-label={t('calendar.iteration')}
                         >
+                            {isBacklog && <option value={0}>{t('teamwork.backlog')}</option>}
                             {iterations.map(iteration => (
                                 <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
                             ))}

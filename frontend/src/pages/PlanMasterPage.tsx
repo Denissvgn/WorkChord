@@ -54,6 +54,7 @@ import type {
     PlanningTaskIssue,
 } from '../features/planningMasters/planningTaskIssues';
 import { captureFocusOrigin, focusOwnedTarget } from '../utils/focusLifecycle';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 type StepDataState = {
     loading: boolean;
@@ -512,6 +513,7 @@ const StepCheckpoint = ({
     onRevokeShare: () => void;
 }) => {
     const { t, i18n } = useTranslation();
+    const scopeLink = useScopeLink();
     const definition = STEP_DEFS.find(step => step.id === stepId) ?? STEP_DEFS[0]!;
     const stepStatus = status[definition.id];
     const recovery = derivePlanningRecovery(
@@ -644,7 +646,7 @@ const StepCheckpoint = ({
                                         {item.href ? (
                                             <Link
                                                 className="plan-evidence-link"
-                                                to={item.href}
+                                                to={scopeLink(item.href)}
                                                 aria-label={item.actionLabel}
                                             >
                                                 <span>{item.value}</span>
@@ -676,7 +678,7 @@ const StepCheckpoint = ({
                                     : t('plan.master.authoritativeWorkspaceBody')}
                             </p>
                         </div>
-                        <Link className="btn primary" to={actionHref}>
+                        <Link className="btn primary" to={scopeLink(actionHref)}>
                             {actionLabel}
                             <ArrowRight aria-hidden="true" size={14} />
                         </Link>

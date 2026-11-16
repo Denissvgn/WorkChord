@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { RefObject } from 'react';
 import { overviewTaskReturnFocusId } from '../../features/overview/overviewTaskThread';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 export const OverviewTaskReturnBar = ({
     active,
@@ -16,6 +17,7 @@ export const OverviewTaskReturnBar = ({
     returnActionRef?: RefObject<HTMLAnchorElement | null>;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
 
     if (!active) return null;
 
@@ -41,7 +43,7 @@ export const OverviewTaskReturnBar = ({
             <Link
                 ref={returnActionRef}
                 className="btn secondary sm"
-                to="/"
+                to={scopeLink('/')}
                 state={taskId
                     ? { returnFocusId: overviewTaskReturnFocusId(taskId) }
                     : undefined}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { parseScope } from '../../navigation/scopeParams';
@@ -86,8 +86,10 @@ export const useWorkScope = (): WorkScopeValue => {
 
     // Keeps the URL and the remembered scope in step. A new URL wins; a remembered scope that
     // changed while the URL stayed the same (an older control set it) is written to the URL.
+    // It runs as a layout effect, before the effects of the page below the shell, so a page
+    // that changes the iteration on opening changes it after the URL is remembered, not before.
     const lastSeen = useRef<{ search: string; remembered: RememberedScope } | null>(null);
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (!iterations) return;
         const previous = lastSeen.current;
         lastSeen.current = { search, remembered };

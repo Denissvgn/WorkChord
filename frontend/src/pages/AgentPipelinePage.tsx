@@ -28,6 +28,7 @@ import { formatDateTime } from '../utils/formatDate';
 import { TaskRoutingPanel } from '../components/agent/TaskRoutingPanel';
 import clsx from 'clsx';
 import { priorityChipClassName } from '../components/ui/tone';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 const EMPTY_PIPELINE = {
     needs_definition: [],
@@ -87,6 +88,7 @@ const safeTimelineItemLabel = (value: string) => (
 
 export default function AgentPipelinePage() {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const { hasAdminKey } = useAdminAccess();
     const { hasAgentKey } = useAgentAccess();
     const hasProtectedAccess = hasAdminKey || hasAgentKey;
@@ -426,7 +428,7 @@ export default function AgentPipelinePage() {
                                         </p>
                                     </div>
                                     <div className="flex shrink-0 flex-wrap gap-2">
-                                        <Link to={`/tasks?task=${task.id}`} className="btn sm">{t('agentPipeline.openTask')}</Link>
+                                        <Link to={scopeLink(`/tasks?task=${task.id}`)} className="btn sm">{t('agentPipeline.openTask')}</Link>
                                         <button type="button" className="btn sm primary" onClick={() => setSelectedTaskId(task.id)}>
                                             {t(STAGE_ACTION_KEYS[activeStage.id] ?? 'agentPipeline.inspect')}
                                         </button>

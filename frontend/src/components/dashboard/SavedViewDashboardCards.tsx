@@ -7,6 +7,7 @@ import { savedViewService } from '../../services/savedViewService';
 import type { SavedViewDashboardCard, SavedViewType } from '../../types/savedView';
 import { savedViewDisplay } from '../../i18n/seedDisplay';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 interface SavedViewDashboardCardsProps {
     iterationId: number;
@@ -32,6 +33,7 @@ const viewTypeChip = 'border-border bg-surface-subtle text-content-secondary';
 /** One saved view as a compact row: what it is, how many items it holds, and where it opens. */
 const DashboardRow = ({ card }: { card: SavedViewDashboardCard }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const Icon = viewTypeIcons[card.view_type];
     const display = savedViewDisplay(card);
     const body = <>
@@ -50,7 +52,7 @@ const DashboardRow = ({ card }: { card: SavedViewDashboardCard }) => {
     </>;
     const className = 'flex min-h-11 items-center gap-3 px-3 py-2';
     return card.is_valid
-        ? <Link to={card.target_path} className={clsx(className, 'hover:bg-surface-hover')} title={display.description ?? undefined}>{body}</Link>
+        ? <Link to={scopeLink(card.target_path)} className={clsx(className, 'hover:bg-surface-hover')} title={display.description ?? undefined}>{body}</Link>
         : <div className={clsx(className, 'bg-feedback-danger-muted/40')}>{body}</div>;
 };
 
