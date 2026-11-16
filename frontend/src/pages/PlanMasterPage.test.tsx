@@ -269,21 +269,11 @@ describe('PlanMasterPage orchestration checkpoint', () => {
             name: i18n.t('plan.master.planReadiness'),
         });
         expect(mobileContext).toHaveTextContent(iteration.name);
-        expect(mobileContext).toHaveTextContent(i18n.t('plan.master.checkpointsComplete', {
+        expect(screen.getAllByText(i18n.t('plan.master.checkpointsComplete', {
             done: 1,
             total: 6,
-        }));
-        expect(within(mobileContext as HTMLElement).getByRole('progressbar', {
-            name: i18n.t('plan.master.summaryProgress'),
-        }))
-            .toHaveAttribute(
-                'aria-valuetext',
-                i18n.t('plan.master.checkpointsComplete', { done: 1, total: 6 }),
-            );
-        expect(within(mobileContext).getByRole('progressbar'))
-            .toHaveAttribute('aria-valuenow', '1');
-        expect(within(mobileContext).getByRole('progressbar'))
-            .toHaveAttribute('aria-valuemax', '6');
+        }))).toHaveLength(1);
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
         expect(within(checkpoint as HTMLElement).getByRole('heading', {
             level: 3,
             name: i18n.t('plan.master.nextAction'),
@@ -655,7 +645,7 @@ describe('PlanMasterPage orchestration checkpoint', () => {
         });
     });
 
-    it('keeps progress and six-step navigation in one rail without repeating exception prose', () => {
+    it('keeps six-step navigation in one rail without repeating exception prose', () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
         renderWithProviders(<PlanMasterPage />);
 
@@ -670,15 +660,7 @@ describe('PlanMasterPage orchestration checkpoint', () => {
             name: i18n.t('plan.master.checkpoints'),
         })).toBeVisible();
         expect(within(rail).getAllByRole('button')).toHaveLength(6);
-        const progress = within(rail).getByRole('progressbar', {
-            name: i18n.t('plan.master.railProgress'),
-        });
-        expect(progress).toHaveAttribute('aria-valuenow', '1');
-        expect(progress).toHaveAttribute('aria-valuemax', '6');
-        expect(progress).toHaveAttribute(
-            'aria-valuetext',
-            i18n.t('plan.master.checkpointsComplete', { done: 1, total: 6 }),
-        );
+        expect(within(rail).queryByRole('progressbar')).not.toBeInTheDocument();
         expect(within(rail).queryByText(
             i18n.t('plan.status.noPeople'),
         )).not.toBeInTheDocument();

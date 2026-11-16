@@ -861,11 +861,9 @@ const OverviewPage = () => {
                             </div>
                             {showDeliverySnapshot && (
                                 <OverviewDeliverySnapshot
-                                    planReady={planReady}
                                     completionPercent={completionPercent}
                                     shippedTasks={shippedTasks}
                                     totalTasks={totalTasks}
-                                    planningDataAvailable={planningDataAvailable}
                                     deliveryDataAvailable={deliveryDataAvailable}
                                     progress={progress}
                                     workingDays={selectedIteration.working_days}
@@ -1053,8 +1051,6 @@ const OverviewFocusPanel = ({
     const meta = topAttention?.meta ?? (
         needsPlanning
             ? t('overview.focus.planIncompleteMeta', {
-                done: planReady.done,
-                total: planReady.total,
                 step: nextDef ? t(`plan.steps.${nextDef.id}.title`) : t('nav.planning'),
             })
             : t('overview.focus.planReadyMeta')
@@ -1108,22 +1104,18 @@ const OverviewFocusPanel = ({
 };
 
 interface OverviewDeliverySnapshotProps {
-    planReady: { done: number; total: number; pct: number };
     completionPercent: number | null;
     shippedTasks: number | null;
     totalTasks: number | null;
-    planningDataAvailable: boolean;
     deliveryDataAvailable: boolean;
     progress: { dayNo: number; daysLeft: number; percent: number };
     workingDays: number;
 }
 
 const OverviewDeliverySnapshot = ({
-    planReady,
     completionPercent,
     shippedTasks,
     totalTasks,
-    planningDataAvailable,
     deliveryDataAvailable,
     progress,
     workingDays,
@@ -1175,17 +1167,6 @@ const OverviewDeliverySnapshot = ({
                 />
             )}
             <dl className="overview-focus-facts">
-                <div>
-                    <dt>{t('overview.focus.planReadiness')}</dt>
-                    <dd>
-                        {planningDataAvailable
-                            ? t('plan.hub.stepsComplete', {
-                                done: planReady.done,
-                                total: planReady.total,
-                            })
-                            : t('overview.dataStatus.valueUnavailable')}
-                    </dd>
-                </div>
                 <div>
                     <dt>{t('overview.focus.tasksShipped')}</dt>
                     <dd>

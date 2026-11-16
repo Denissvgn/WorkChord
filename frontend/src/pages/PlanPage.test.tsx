@@ -90,21 +90,20 @@ describe('PlanPage mixed planning launcher', () => {
         planningReadinessMock.usePlanningReadiness.mockReturnValue(state);
         const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        const progress = screen.getByRole('progressbar', {
-            name: 'Plan readiness progress',
-        });
-        expect(progress).toHaveAttribute('aria-valuemin', '0');
-        expect(progress).toHaveAttribute('aria-valuemax', String(state.ready.total));
-        expect(progress).toHaveAttribute('aria-valuenow', String(state.ready.done));
-        expect(screen.getAllByRole('progressbar')).toHaveLength(1);
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
         expect(screen.getByText('Plan readiness')).toBeVisible();
 
         // The primary action names and opens the next incomplete step.
         const primaryAction = screen.getByRole('link', { name: 'Schedule' });
         expect(primaryAction).toHaveAttribute('href', '/plan/master?step=schedule');
 
-        await user.click(screen.getByText(
+        expect(screen.getAllByText(/\d+ of \d+/)).toHaveLength(1);
+        expect(screen.getByText(
             `${state.ready.done} of ${state.ready.total} checkpoints complete`,
+        )).toBeVisible();
+
+        await user.click(screen.getByText(
+            'Planning checkpoints',
             { selector: '.plan-hub-checkpoints > summary span' },
         ));
 
@@ -123,9 +122,7 @@ describe('PlanPage mixed planning launcher', () => {
         }));
         renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
 
-        expect(screen.getByText(
-            'Planning checkpoints complete — review before sharing',
-        )).toBeVisible();
+        expect(screen.getByText('6 of 6 checkpoints complete')).toBeVisible();
         expect(screen.getByRole('link', { name: 'Review & share' }))
             .toHaveAttribute('href', '/plan/master');
     });

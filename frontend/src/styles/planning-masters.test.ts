@@ -52,9 +52,7 @@ describe('responsive shell contracts', () => {
         expect(responsiveStart).toBeGreaterThan(-1);
         expect(responsiveEnd).toBeGreaterThan(responsiveStart);
         expect(responsiveRules).toContain('.wc .brand');
-        expect(responsiveRules).toContain('.wc .mobile-nav-panel .sb-views > summary');
-        expect(responsiveRules).toContain('.wc .mobile-nav-panel .sb-plan-select');
-        expect(responsiveRules).toContain('.wc .mobile-nav-panel .sb-plan-link');
+        expect(responsiveRules).toContain('.wc .mobile-nav-panel .sb-item');
         expect(responsiveRules).toContain('min-height: 44px;');
 
         expect(coarseStart).toBeGreaterThan(-1);
@@ -64,10 +62,7 @@ describe('responsive shell contracts', () => {
             '.wc .mobile-nav-trigger',
             '.wc .plan-master-step-rail .step-item',
             '.wc .plan-share-link-field input',
-            '.wc .sb-plan-select',
-            '.wc .sb-plan-option',
-            '.wc .sb-plan-title',
-            '.wc .sb-plan-link',
+            '.wc .sb-item',
         ]) {
             expect(coarseRules).toContain(selector);
         }
