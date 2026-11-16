@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GanttResponse, GanttTask } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
@@ -185,7 +186,7 @@ const taskTree = () => {
 
 const makeWrapper = (client: QueryClient) => (
     ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+        <QueryClientProvider client={client}><MemoryRouter>{children}</MemoryRouter></QueryClientProvider>
     )
 );
 

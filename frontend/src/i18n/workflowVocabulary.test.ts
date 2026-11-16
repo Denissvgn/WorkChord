@@ -15,6 +15,9 @@ const vocabulary = JSON.parse(
     readFileSync(resolve(process.cwd(), '../config/workflow-vocabulary.json'), 'utf8'),
 ) as Vocabulary;
 
+type WorkflowStep = { id: string; name: string; name_ru?: string };
+const workflowSteps = (vocabulary as unknown as { workflow: WorkflowStep[] }).workflow;
+
 // Interface labels that must use the shared names. When a screen adopts
 // another vocabulary term, add its keys here in the same change.
 const LABEL_KEYS: Array<{ section: keyof Vocabulary; id: string; field: 'name' | 'group' | 'description'; keys: string[] }> = [
@@ -117,6 +120,19 @@ describe('shared workflow vocabulary', () => {
         expect(term, `${section}.${id} is missing from the vocabulary`).toBeDefined();
         const names = term?.[field] as Localized | undefined;
         expect(lookup(catalogs[language], key)).toBe(names?.[language]);
+    });
+
+    it.each(['capture', 'plan', 'do', 'review'])('uses the vocabulary English name for the landing workflow step %s', stepId => {
+        const step = workflowSteps.find(item => item.id === stepId);
+        expect(step, `workflow.${stepId} is missing from the vocabulary`).toBeDefined();
+        expect(lookup(catalogs.en, `landing.stages.${stepId}.term`)).toBe(step?.name);
+    });
+
+    it.each(['capture', 'plan', 'do', 'review'])('uses the vocabulary Russian name for the landing workflow step %s', stepId => {
+        const step = workflowSteps.find(item => item.id === stepId);
+        expect(step, `workflow.${stepId} is missing from the vocabulary`).toBeDefined();
+        expect(step?.name_ru).toEqual(expect.any(String));
+        expect(lookup(catalogs.ru, `landing.stages.${stepId}.term`)).toBe(step?.name_ru);
     });
 
     it('maps every shared destination, checkpoint, localized term and workflow entry to an interface label', () => {

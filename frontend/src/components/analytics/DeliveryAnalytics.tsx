@@ -8,9 +8,11 @@ import { QueryErrorState } from '../feedback/QueryState';
 import type { DeliveryQueueItem } from '../../types/deliveryMetrics';
 import { ExecutionUsagePanel } from './ExecutionUsagePanel';
 import { formatDateTime } from '../../utils/formatDate';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => {
     const { t, i18n } = useTranslation();
+    const scopeLink = useScopeLink();
     const [scope, setScope] = useState(iterationId ? 'iteration' : 'project');
     const [projectId, setProjectId] = useState<number>();
     const [days, setDays] = useState(30);
@@ -31,7 +33,7 @@ export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => 
         <h4 className="mb-3 font-semibold">{title}</h4>
         {items.length === 0 ? <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueEmpty')}</p> : <ul className="divide-y divide-border-subtle">
             {items.map(item => <li key={item.task_id} className="flex items-baseline justify-between gap-4 py-3">
-                <Link className="min-w-0 break-words text-action underline-offset-4 hover:underline" to={`/tasks?task=${item.task_id}`}>{item.title}</Link>
+                <Link className="min-w-0 break-words text-action underline-offset-4 hover:underline" to={scopeLink(`/tasks?task=${item.task_id}`)}>{item.title}</Link>
                 <span className="shrink-0 text-sm tabular-nums text-content-secondary">{duration(item.age_seconds)} {t('deliveryAnalytics.elapsedDays')}</span>
             </li>)}
         </ul>}

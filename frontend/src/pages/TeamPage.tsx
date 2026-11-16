@@ -10,7 +10,7 @@ import { TeamProfileManager } from '../components/team/TeamProfileManager';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
-import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
+import { useIterationStore } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import { PageHeader, PageLayout } from '../components/ui';
 import type { TeamMember, TeamMemberProfile } from '../types/team';
@@ -30,7 +30,7 @@ const parseIterationIntent = (value: string | null) => {
 };
 
 const TeamPage = () => {
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
     const [searchParams, setSearchParams] = useSearchParams();
     const [isCreating, setIsCreating] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
@@ -79,9 +79,8 @@ const TeamPage = () => {
     useEffect(() => {
         if (!iterations) return;
         if (iterations.length === 0) { if (selectedIterationId !== 0) setSelectedIterationId(0); return; }
-        const exists = iterations.some(i => i.id === selectedIterationId);
-        if (selectedIterationId === 0 || !exists) setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-    }, [iterations, selectedIterationId, setSelectedIterationId]);
+        chooseDefaultIteration(iterations);
+    }, [iterations, selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration]);
 
     useEffect(() => {
         if (!iterations || !hasTeamIntent) return;

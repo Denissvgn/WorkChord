@@ -5,6 +5,7 @@ import { formatDate } from '../../utils/formatDate';
 import { formatEffortDays } from '../../utils/workNumbers';
 import { MetricCount } from '../tasks/MetricCount';
 import { planMasterStepHref } from '../../features/planningMasters/planningReturn';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type Verdict = 'done' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack';
 
@@ -27,6 +28,7 @@ const onTrackVerdict = (summary: IterationSummary): Verdict => {
 /** Answers "are we on track for the end date?" in one line, then shows why. */
 export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
     const { t, i18n } = useTranslation();
+    const scopeLink = useScopeLink();
     const locale = i18n.resolvedLanguage ?? i18n.language;
     const verdict = onTrackVerdict(summary);
     const left = capacityLeft(summary);
@@ -43,7 +45,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                 {summary.scheduled_finish
                     ? t('analytics.onTrack.finishAgainstEnd', { finish: formatDate(summary.scheduled_finish, locale), end: formatDate(summary.end_date, locale) })
                     : t('analytics.onTrack.endsOn', { end: formatDate(summary.end_date, locale) })}
-                {verdict === 'noSchedule' && <> <Link to={planMasterStepHref('schedule')} className="font-medium text-action underline">{t('analytics.onTrack.planIt')}</Link></>}
+                {verdict === 'noSchedule' && <> <Link to={scopeLink(planMasterStepHref('schedule'))} className="font-medium text-action underline">{t('analytics.onTrack.planIt')}</Link></>}
             </p>
             <p className="text-sm text-content-secondary">
                 {t('analytics.onTrack.effortLine', { remaining: effort(remaining), capacity: left === null ? t('analytics.onTrack.capacityUnknown') : effort(left), days: summary.remaining_working_days ?? 0 })}

@@ -9,12 +9,14 @@ import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
 import { ContextHelp } from './ContextHelp';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
 
 export const AppTopNav = () => {
     const { t } = useTranslation();
     const location = useLocation();
+    const scopeLink = useScopeLink();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const mobileNavRestoreFocusRef = useRef<HTMLElement | null>(null);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
@@ -62,7 +64,7 @@ export const AppTopNav = () => {
     return (
         <header className="topnav" data-testid="app-navbar">
             <Link
-                to="/"
+                to={scopeLink('/')}
                 className="brand"
                 aria-label={t('nav.home', { appName: t('common.appName') })}
                 onFocus={() => { void warmRouteModule('/'); }}

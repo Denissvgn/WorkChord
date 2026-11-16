@@ -2244,6 +2244,12 @@ export const russianResources = {
                 },
             },
             commandMenu: {
+                switchProject: 'Сменить проект',
+                switchIteration: 'Сменить итерацию',
+                chooseScope: 'Выберите область работы',
+                workCalendar: 'Рабочий календарь',
+                connectAgent: 'Подключить агента',
+
                 title: 'Меню команд',
                 description: 'Ищите действия и разделы. Перемещайтесь по результатам стрелками и запускайте выбранную команду клавишей Enter.',
                 trigger: 'Открыть меню команд',

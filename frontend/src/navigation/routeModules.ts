@@ -17,7 +17,8 @@ export const routeModuleLoaders = {
     projects: () => import('../pages/ProjectsPage'),
     projectDetail: () => import('../pages/ProjectDetailPage'),
     projectReleaseDetail: () => import('../pages/ProjectReleaseDetailPage'),
-    roadmap: () => import('../pages/RoadmapPage'),
+    // Roadmap is a view of Projects; the old path redirects there.
+    roadmap: () => import('../pages/ProjectsPage'),
     gantt: () => import('../pages/GanttPage'),
     analytics: () => import('../pages/AnalyticsPage'),
     settings: () => import('../pages/SettingsPage'),

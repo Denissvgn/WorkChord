@@ -16,7 +16,7 @@ export const routeRegistry: RouteStatus[] = [
     { key: 'triage', path: '/triage', status: 'pending' },
     { key: 'projectReleaseDetail', path: '/projects/:projectId/releases/:releaseId', status: 'pending' },
     { key: 'projectDetail', path: '/projects/:projectId', status: 'pending' },
-    { key: 'projects', path: '/projects', status: 'pending' },
+    { key: 'projects', path: '/projects', status: 'migrated' },
     { key: 'roadmap', path: '/roadmap', status: 'pending' },
     { key: 'gantt', path: '/gantt', status: 'pending' },
     { key: 'analytics', path: '/analytics', status: 'pending' },

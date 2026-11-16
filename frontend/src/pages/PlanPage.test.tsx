@@ -6,7 +6,9 @@ import {
     nextStep,
     readiness,
 } from '../features/planningMasters/masters';
+import i18n from '../i18n/i18n';
 import { renderWithProviders } from '../test/renderWithProviders';
+import { useScopeStore } from '../features/scope/scopeStore';
 import PlanPage from './PlanPage';
 import planPageSource from './PlanPage.tsx?raw';
 
@@ -238,6 +240,30 @@ describe('PlanPage mixed planning launcher', () => {
         expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
         expect(await screen.findByRole('alert'))
             .toHaveTextContent('Some planning data could not be refreshed. Try again.');
+    });
+
+    it('carries the scope in its links to Tasks, Gantt and the planning page', async () => {
+        useScopeStore.setState({ project: 1, iteration: 12 });
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
+            readinessOverrides: { inboxCount: 0, riskCount: 3 },
+        }));
+        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan?project=2&iteration=21'] });
+
+        expect(screen.getByRole('link', { name: 'Replan at-risk work' }))
+            .toHaveAttribute('href', '/gantt?project=2&iteration=21');
+        expect(screen.getByRole('link', { name: i18n.t('plan.hub.openPeriodSetup', { period: 'August plan' }) }))
+            .toHaveAttribute('href', '/plan/master?project=2&iteration=21');
+        expect(screen.getByRole('link', { name: i18n.t('plan.steps.schedule.title') }))
+            .toHaveAttribute('href', '/plan/master?step=schedule&project=2&iteration=21');
+        await user.click(screen.getByText('Direct planning tools'));
+        const directTools = screen.getByRole('navigation', { name: 'Direct planning tools' });
+        expect(within(directTools).getByRole('link', { name: 'Tasks' }))
+            .toHaveAttribute('href', '/tasks?project=2&iteration=21');
+        expect(within(directTools).getByRole('link', { name: 'Gantt' }))
+            .toHaveAttribute('href', '/gantt?project=2&iteration=21');
+        expect(within(directTools).getByRole('link', { name: 'Triage' }))
+            .toHaveAttribute('href', '/triage');
+        useScopeStore.setState({ project: null, iteration: null });
     });
 
     it('keeps responsive checkpoint layout in CSS instead of an inline six-column grid', () => {

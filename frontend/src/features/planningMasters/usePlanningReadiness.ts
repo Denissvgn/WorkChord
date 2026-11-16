@@ -5,7 +5,7 @@ import { iterationService } from '../../services/iterationService';
 import { taskService } from '../../services/taskService';
 import { teamService } from '../../services/teamService';
 import { triageService } from '../../services/triageService';
-import { useIterationStore, pickDefaultIteration } from '../../store/iterationStore';
+import { useIterationStore } from '../../store/iterationStore';
 import type { GanttResponse } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
@@ -251,7 +251,7 @@ export const usePlanningReadiness = ({
     // never depends on which page was opened first.
     autoSelectFirst = true,
 }: PlanningReadinessOptions = {}) => {
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const { selectedIterationId, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
 
     // feedback-policy: query loading,error,retry,empty - aggregate state is returned to the owning workspace.
     const iterationsQuery = useQuery({
@@ -267,19 +267,21 @@ export const usePlanningReadiness = ({
 
         const selectedExists = iterations.some(iteration => iteration.id === selectedIterationId);
         if (selectedIterationId > 0 && !selectedExists) {
-            setSelectedIterationId(0);
+            // The chosen iteration no longer exists: keep the chosen project and open on its
+            // default iteration.
+            chooseDefaultIteration(iterations);
             return;
         }
 
         if (autoSelectFirst && selectedIterationId === 0 && iterations.length > 0) {
-            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
+            chooseDefaultIteration(iterations);
         }
     }, [
         autoSelectFirst,
+        chooseDefaultIteration,
         iterations,
         iterationsQuery.isSuccess,
         selectedIterationId,
-        setSelectedIterationId,
     ]);
 
     const currentIteration = useMemo<Iteration | null>(

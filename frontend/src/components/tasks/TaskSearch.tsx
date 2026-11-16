@@ -2,13 +2,16 @@ import { useEffect, useId, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { taskSearchResultCopy } from './taskSearchResults';
 import { taskService } from '../../services/taskService';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 /** `narrowsList`: the page's own list filters in place, so results from everywhere else are collapsed. */
 export const TaskSearch = ({ narrowsList = false }: { narrowsList?: boolean } = {}) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const id = useId();
     const [params, setParams] = useSearchParams();
     const text = params.get('q')?.slice(0, 200) ?? '';
@@ -29,9 +32,10 @@ export const TaskSearch = ({ narrowsList = false }: { narrowsList?: boolean } = 
             {results.isError && <QueryErrorState error={results.error} fallback={t('teamwork.loadFailed')} onRetry={() => void results.refetch()} />}
             {results.isSuccess && results.data.pages.every(page => page.items.length === 0) && <p role="status" className="text-sm text-content-secondary">{t('teamwork.noResults')}</p>}
             <ul className="divide-y divide-border">{results.data?.pages.flatMap(page => page.items).map(task => {
+                const copy = taskSearchResultCopy(task, t);
                 const next = new URLSearchParams(params); next.set('task', String(task.id));
-                return <li key={task.id} className="py-2"><Link className="inline-block min-h-9 break-words font-medium text-action hover:underline" to={`/tasks?${next}`}>#{task.id} · {task.title}</Link>
-                    <p className="text-sm text-content-secondary">{task.project_name ?? t('teamwork.workspace')} · {task.iteration_name ?? t('teamwork.backlog')} · {t(`statuses.${task.status}`)}</p></li>;
+                return <li key={task.id} className="py-2"><Link className="inline-block min-h-9 break-words font-medium text-action hover:underline" to={scopeLink(`/tasks?${next}`)}>{copy.label}</Link>
+                    <p className="text-sm text-content-secondary">{copy.description}</p></li>;
             })}</ul>
             {results.hasNextPage && <Button size="sm" variant="secondary" disabled={results.isFetchingNextPage} onClick={() => void results.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
         </details>}

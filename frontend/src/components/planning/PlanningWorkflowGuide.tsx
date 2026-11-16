@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type PlanningSurface = 'plan' | 'gantt';
 
@@ -33,6 +34,7 @@ export const PlanningWorkflowHelpContent = ({
     onNavigate?: () => void;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const translationPrefix = `${surface}.help`;
     const items: GuideItem[] = surface === 'plan'
         ? [
@@ -88,7 +90,7 @@ export const PlanningWorkflowHelpContent = ({
             </ul>
             {showAction && (
                 <Link
-                    to={destination}
+                    to={scopeLink(destination)}
                     className="btn secondary sm"
                     onClick={onNavigate}
                 >

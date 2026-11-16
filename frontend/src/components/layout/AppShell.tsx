@@ -10,6 +10,7 @@ import { AppSidebar } from './AppSidebar';
 import { DocumentMetadata } from './DocumentMetadata';
 import { CommandMenu } from './CommandMenu';
 import { WorkRefreshStatus } from '../feedback/WorkRefreshStatus';
+import { useWorkScope } from '../../features/scope/useWorkScope';
 
 // Full-height routes where the main area must not scroll itself
 // (the inner component controls overflow).
@@ -19,6 +20,8 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
     const { theme } = useThemeStore();
     const location = useLocation();
     const { t } = useTranslation();
+    // Keeps the scope in the URL and in this browser in step for every page.
+    useWorkScope();
     const workspaceMainRef = useRef<HTMLElement>(null);
     const previousPathnameRef = useRef(location.pathname);
 

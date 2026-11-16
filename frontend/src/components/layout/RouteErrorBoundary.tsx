@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
 import { Button } from '../common/Button';
+import { scopeLinkNow } from '../../features/scope/useScopeLink';
 
 interface RouteErrorBoundaryProps {
     children: ReactNode;
@@ -51,7 +52,7 @@ export class RouteErrorBoundary extends Component<RouteErrorBoundaryProps, Route
                                 <RefreshCw aria-hidden="true" className="mr-2 h-4 w-4" />
                                 {this.props.refreshLabel}
                             </Button>
-                            <Button variant="outline" onClick={() => window.location.assign('/')}>
+                            <Button variant="outline" onClick={() => window.location.assign(scopeLinkNow('/'))}>
                                 <Home aria-hidden="true" className="mr-2 h-4 w-4" />
                                 {this.props.homeLabel}
                             </Button>

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { useThemeStore } from '../../store/themeStore';
 import { DocumentMetadata } from './DocumentMetadata';
 import { RouteErrorBoundary } from './RouteErrorBoundary';
@@ -9,12 +10,13 @@ export function BareLayout({ children }: { children: ReactNode }) {
     const { t } = useTranslation();
     const { theme } = useThemeStore();
     const location = useLocation();
+    const scopeLink = useScopeLink();
     useEffect(() => { document.documentElement.setAttribute('data-theme', theme); }, [theme]);
     return (
         <div className="wc app">
             <DocumentMetadata />
             <header className="topnav">
-                <Link to="/" className="brand" aria-label={t('nav.home', { appName: t('common.appName') })}>
+                <Link to={scopeLink('/')} className="brand" aria-label={t('nav.home', { appName: t('common.appName') })}>
                     <div className="brand-mark" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="1" y="1" width="22" height="22" rx="6" fill="var(--accent)" />

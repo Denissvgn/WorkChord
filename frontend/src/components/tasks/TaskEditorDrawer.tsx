@@ -14,6 +14,7 @@ import { TaskContextSummary } from './TaskContextSummary';
 import { TaskForm } from './TaskForm';
 import { TaskReadView } from './TaskReadView';
 import { useIdentity } from '../../features/identity/identityContext';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type DrawerCopy = ReactNode | ((task: Task | null) => ReactNode);
 
@@ -99,6 +100,7 @@ const TaskEditorDrawerContent = ({
     restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const guard = useDraftDismissal(onClose);
     const navigate = useNavigate();
     const [params] = useSearchParams();
@@ -177,7 +179,7 @@ const TaskEditorDrawerContent = ({
                         .finally(() => guard.setPending(false));
                 })} onNavigate={id => guard.request(() => {
                     const next = new URLSearchParams(params); next.set('task', String(id));
-                    onClose(); navigate(`/tasks?${next}`);
+                    onClose(); navigate(scopeLink(`/tasks?${next}`));
                 })} />}
                 {editorTask && !editAll && (
                     <TaskReadView
