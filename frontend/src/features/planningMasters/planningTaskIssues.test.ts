@@ -51,6 +51,8 @@ describe('planning task issue contract', () => {
             expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true }), 'at-risk')).toBe(true);
             expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true, is_deferred: true }), 'at-risk')).toBe(false);
             expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true, is_composite: true }), 'at-risk')).toBe(false);
+            expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true, status: 'resolved' }), 'at-risk')).toBe(false);
+            expect(taskMatchesPlanningIssue(taskFixture({ [signal]: true, status: 'closed' }), 'at-risk')).toBe(false);
         }
         expect(taskMatchesPlanningIssue(taskFixture(), 'at-risk')).toBe(false);
     });

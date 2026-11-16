@@ -20,20 +20,11 @@ const cssRule = (selector: string) => {
 };
 
 describe('responsive shell contracts', () => {
-    it('restores the joined Overview panel on desktop and linearizes it on mobile', () => {
-        expect(planningMastersCss).toContain(
-            'grid-template-areas:\n    "focus snapshot"\n    "work work";',
-        );
-
-        const mobileStart = planningMastersCss.indexOf('@media (max-width: 768px)');
-        const mobileEnd = planningMastersCss.indexOf('@media (max-width: 640px)', mobileStart);
-        const mobileRules = planningMastersCss.slice(mobileStart, mobileEnd);
-
-        expect(mobileStart).toBeGreaterThan(-1);
-        expect(mobileEnd).toBeGreaterThan(mobileStart);
-        expect(mobileRules).toContain('.wc .overview-thread-flow.has-focus-panel');
-        expect(mobileRules).toContain('display: flex;');
-        expect(mobileRules).toContain('> .overview-focus-progress');
+    it('places Work now beside Agents now and the figures on desktop and stacks them when narrow', () => {
+        expect(cssRule('.wc .overview-grid')).toContain('grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);');
+        const narrowStart = planningMastersCss.indexOf('@media (max-width: 900px) {\n  .wc .overview-grid');
+        expect(narrowStart).toBeGreaterThan(-1);
+        expect(cssRule('.wc .overview-first-run:empty')).toContain('display: none;');
     });
 
     it('keeps every shell control at least 44px on mobile and hybrid touch devices', () => {
