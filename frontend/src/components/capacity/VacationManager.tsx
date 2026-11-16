@@ -1,5 +1,6 @@
 import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
-import { VacationCsvImport } from './VacationCsvImport';
+import { refreshCapacity } from './capacityMutations';
+import { VacationCsvImport } from '../team/VacationCsvImport';
 import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -36,7 +37,7 @@ const VacationManagerEditor = ({ member, onClose, revisions, controls, onSaved }
         onSuccess: () => {
             // Invalidate all team queries to refresh member data with new vacations
             queryClient.invalidateQueries({ queryKey: ['team'] });
-            queryClient.invalidateQueries({ queryKey: ['workload', member.id] });
+            void refreshCapacity(queryClient);
             onSaved();
             setStartDate('');
             setEndDate('');
@@ -50,7 +51,7 @@ const VacationManagerEditor = ({ member, onClose, revisions, controls, onSaved }
             onSaved();
             // Invalidate all team queries to refresh member data
             queryClient.invalidateQueries({ queryKey: ['team'] });
-            queryClient.invalidateQueries({ queryKey: ['workload', member.id] });
+            void refreshCapacity(queryClient);
         },
     });
 
