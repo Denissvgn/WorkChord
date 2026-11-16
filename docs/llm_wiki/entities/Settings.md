@@ -34,6 +34,8 @@ Application settings.
 | `validate_session_lifetime` | field | session_max_age_seconds | after | — |
 | `validate_signed_in_lifetime` | field | auth_session_max_age_seconds, auth_session_absolute_max_age_seconds, auth_observer_session_max_age_seconds, auth_observer_absolute_max_age_seconds | after | — |
 | `validate_signed_in_renewal_caps` | model | — | after | — |
+| `validate_observation_retention` | field | agent_observation_retention_days | after | — |
+| `validate_observation_hourly_limit` | field | agent_observation_hourly_limit | after | — |
 | `validate_session_touch_interval` | field | session_touch_interval_seconds | after | — |
 | `validate_agent_last_seen_interval` | field | agent_last_seen_interval_seconds | after | — |
 | `validate_database_readiness_timeout` | field | database_readiness_timeout_seconds | after | — |
@@ -136,6 +138,8 @@ Application settings.
 | `session_max_age_seconds` | `int` | `session_max_age_seconds` | No | No | `30 * 24 * 60 * 60` | — | — | — |
 | `session_touch_interval_seconds` | `int` | `session_touch_interval_seconds` | No | No | `300` | — | — | — |
 | `agent_last_seen_interval_seconds` | `int` | `agent_last_seen_interval_seconds` | No | No | `300` | — | — | — |
+| `agent_observation_retention_days` | `int` | `agent_observation_retention_days` | No | No | `30` | — | — | — |
+| `agent_observation_hourly_limit` | `int` | `agent_observation_hourly_limit` | No | No | `600` | — | — | — |
 | `maintenance_mode` | `Literal['off', 'read-only-maintenance', 'validation-only']` | `maintenance_mode` | No | No | `'off'` | — | — | — |
 | `maintenance_revision` | `str` | `maintenance_revision` | No | No | `'development'` | — | — | — |
 | `maintenance_replica_id` | `str` | `maintenance_replica_id` | No | No | `'local'` | — | — | — |
@@ -167,6 +171,8 @@ Application settings.
 | `validate_session_lifetime` | `(value: int) -> int` | `@field_validator('session_max_age_seconds')`, `@classmethod` | Session lifetime must be positive and no longer than one year. |
 | `validate_signed_in_lifetime` | `(value: int) -> int` | `@field_validator('auth_session_max_age_seconds', 'auth_session_absolute_max_age_seconds', 'auth_observer_session_max_age_seconds', 'auth_observer_absolute_max_age_seconds')`, `@classmethod` | — |
 | `validate_signed_in_renewal_caps` | `() -> 'Settings'` | `@model_validator(mode='after')` | — |
+| `validate_observation_retention` | `(value: int) -> int` | `@field_validator('agent_observation_retention_days')`, `@classmethod` | — |
+| `validate_observation_hourly_limit` | `(value: int) -> int` | `@field_validator('agent_observation_hourly_limit')`, `@classmethod` | — |
 | `validate_session_touch_interval` | `(value: int) -> int` | `@field_validator('session_touch_interval_seconds')`, `@classmethod` | — |
 | `validate_agent_last_seen_interval` | `(value: int) -> int` | `@field_validator('agent_last_seen_interval_seconds')`, `@classmethod` | — |
 | `validate_database_readiness_timeout` | `(value: float) -> float` | `@field_validator('database_readiness_timeout_seconds')`, `@classmethod` | — |
@@ -216,7 +222,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [config](../modules/config.md) | 30 | `agent_bootstrap_api_key`, `agent_last_seen_interval_seconds`, `agent_skill_bundle_max_artifact_bytes`, `agent_skill_bundle_max_artifacts`, `agent_skill_bundle_max_file_bytes`, `agent_skill_bundle_max_metadata_bytes`, `agent_skill_bundle_max_total_bytes`, `agent_skill_bundle_trusted_checksums_sha256`, `agent_skill_bundles_public`, `agent_team_credential_sink_dir`, `agent_team_credential_sink_ref`, `ai_language_mode` |
+| [config](../modules/config.md) | 32 | `agent_bootstrap_api_key`, `agent_last_seen_interval_seconds`, `agent_observation_hourly_limit`, `agent_observation_retention_days`, `agent_skill_bundle_max_artifact_bytes`, `agent_skill_bundle_max_artifacts`, `agent_skill_bundle_max_file_bytes`, `agent_skill_bundle_max_metadata_bytes`, `agent_skill_bundle_max_total_bytes`, `agent_skill_bundle_trusted_checksums_sha256`, `agent_skill_bundles_public`, `agent_team_credential_sink_dir` |
 
 ### Structure
 

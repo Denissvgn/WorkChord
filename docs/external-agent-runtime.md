@@ -193,7 +193,9 @@ an external blocker, not evidence that a higher model tier is needed.
 exact runtime declaration. `runtime_ready` means configuration and current
 handoff checks pass. Task eligibility and fenced ownership are additional
 checks. `availability_unknown` remains explicit without an independent
-availability observation. Model `matched` is consistency with a worker report;
+availability observation; advisory runtime observations from paired observers
+are recorded separately and never change it or any dispatch decision (see
+[advisory runtime observations](agent-team-setup.md#record-advisory-runtime-observations)). Model `matched` is consistency with a worker report;
 it does not establish independent model attestation.
 
 Routing `off` uses supervised compatibility commands. `shadow` exposes advisory

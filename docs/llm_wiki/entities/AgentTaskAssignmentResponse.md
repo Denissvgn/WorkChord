@@ -1,6 +1,6 @@
 # AgentTaskAssignmentResponse
 
-**Location:** `backend/app/schemas/agent.py:672`
+**Location:** `backend/app/schemas/agent.py:676`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

@@ -136,7 +136,7 @@ flowchart LR
 | From | To | Line | Call |
 |---|---|---:|---|
 | choose_local_profile | get_settings | 202 | `get_settings(data not statically known)` |
-| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| get_settings | Settings | 524 | `Settings(data not statically known)` |
 | choose_local_profile | AuthorityError | 203 | `AuthorityError('local_profile_unavailable', 'Signed-in accounts are linked to a work profile by an operator.', 409)` |
 | choose_local_profile | local_work_profile | 204 | `local_work_profile(db, data.profile_id)` |
 | local_work_profile | internal_authority | 59 | `internal_authority(db)` |

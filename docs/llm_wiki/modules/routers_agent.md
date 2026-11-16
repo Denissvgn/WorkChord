@@ -23,6 +23,7 @@ Agent integration API router.
 | `app.schemas.agent_team_setup` | `AgentTeamApplyRequest`, `AgentTeamApplyResponse`, `AgentTeamManifestRequest`, `AgentTeamPlanRequest`, `AgentTeamReconciliationPlan`, `AgentTeamRuntimeAcknowledgement`, `AgentTeamRuntimeAcknowledgementResponse`, `AgentTeamSetupReport`, `AgentTeamStatusResponse`, `AgentTeamTopologyResponse`, `AgentTeamValidateResponse` |
 | `app.schemas.common` | `MessageResponse` |
 | `app.schemas.execution_usage` | `ExecutionUsageResponse`, `ExecutionUsageWrite` |
+| `app.schemas.runtime_observation` | `AgentRuntimeObservationCleanupResponse`, `AgentRuntimeObservationCreate`, `AgentRuntimeObservationResponse` |
 | `app.schemas.task` | `TaskResponse` |
 | `app.security` | `ADMIN_API_KEY_HEADER`, `admin_api_key_is_valid` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
@@ -32,6 +33,7 @@ Agent integration API router.
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
 | `app.services.agent_work_service` | `AgentWorkService` |
 | `app.services.execution_usage_service` | `ExecutionUsageService` |
+| `app.services.runtime_observation_service` | `RuntimeObservationService` |
 | `app.services.task_domain_service` | `domain_capabilities` |
 | `app.services.task_service` | `TaskVersionConflictError` |
 | `app.utils.time` | `utc_now` |
@@ -60,7 +62,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (9) |
-| Outbound | `backend` (25) |
+| Outbound | `backend` (27) |
 
 ### External packages
 
@@ -68,7 +70,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 34 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -136,3 +138,7 @@ flowchart LR
 | `get_agent_run_detail` | *(async)* `(run_id: int, service: Annotated[AgentService, Depends(get_agent_service)], _: Annotated[None, Depends(require_agent_read_access)])` | `@router.get('/agent/runs/{run_id}', response_model=AgentRunDetailResponse)` | Get the full details of an agent run including chronological trace events. |
 | `get_execution_usage` | *(async)* `(run_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/agent/runs/{run_id}/usage', response_model=ExecutionUsageResponse \| None)` | — |
 | `record_execution_usage` | *(async)* `(run_id: int, data: ExecutionUsageWrite, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/agent/runs/{run_id}/usage', response_model=ExecutionUsageResponse)` | — |
+| `_refuse_agents` | `(service_db, agent_api_key) -> None` | — | — |
+| `record_runtime_observation` | *(async)* `(data: AgentRuntimeObservationCreate, response: Response, db: Annotated[AsyncSession, Depends(get_db, scope='function')], agent_api_key: Annotated[Optional[str], Header(alias='X-Agent-API-Key')] = None)` | `@router.post('/agent/observations', response_model=AgentRuntimeObservationResponse, status_code=status.HTTP_201_CREATED)` | Record what an independent observer saw of a runtime session; advisory, never used for dispatch. |
+| `list_runtime_observations` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')], agent_api_key: Annotated[Optional[str], Header(alias='X-Agent-API-Key')] = None, task_id: Optional[int] = Query(default=None, ge=1), run_id: Optional[int] = Query(default=None, ge=1), harness_kind: Optional[str] = Query(default=None, max_length=40), harness_session_id: Optional[str] = Query(default=None, max_length=255), limit: int = Query(default=100, ge=1, le=500))` | `@router.get('/agent/observations', response_model=list[AgentRuntimeObservationResponse])` | People, observers and operators read observations of tasks they can see; agents cannot. |
+| `cleanup_runtime_observations` | *(async)* `(db: Annotated[AsyncSession, Depends(get_db, scope='function')], limit: int = Query(default=500, ge=1, le=5000))` | `@router.post('/agent/observations/cleanup', response_model=AgentRuntimeObservationCleanupResponse)` | Remove a bounded batch of observations older than AGENT_OBSERVATION_RETENTION_DAYS (operators). |

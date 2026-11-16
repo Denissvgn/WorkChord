@@ -109,6 +109,12 @@ from app.routers.agent_skill_bundles import get_agent_skill_bundle_service
 from app.services.task_service import TaskVersionConflictError
 from app.schemas.execution_usage import ExecutionUsageResponse, ExecutionUsageWrite
 from app.services.execution_usage_service import ExecutionUsageService
+from app.schemas.runtime_observation import (
+    AgentRuntimeObservationCleanupResponse,
+    AgentRuntimeObservationCreate,
+    AgentRuntimeObservationResponse,
+)
+from app.services.runtime_observation_service import RuntimeObservationService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -1456,3 +1462,66 @@ async def record_execution_usage(run_id: int, data: ExecutionUsageWrite, actor: 
         return await ExecutionUsageService(db).write(actor, run_id, data)
     except Exception as exc:
         _handle_agent_error(exc, structured=True)
+
+
+def _refuse_agents(service_db, agent_api_key) -> None:
+    authority = service_db.info.get("authority")
+    if agent_api_key or authority is not None and authority.kind == "agent":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Runtime observations are advisory and are not available to agents.",
+        )
+
+
+@router.post(
+    "/agent/observations",
+    response_model=AgentRuntimeObservationResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def record_runtime_observation(
+    data: AgentRuntimeObservationCreate,
+    response: Response,
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+):
+    """Record what an independent observer saw of a runtime session; advisory, never used for dispatch."""
+    _refuse_agents(db, agent_api_key)
+    row, created = await RuntimeObservationService(db).record(data)
+    if not created:
+        response.status_code = status.HTTP_200_OK
+    response.headers["Cache-Control"] = "no-store"
+    return row
+
+
+@router.get(
+    "/agent/observations",
+    response_model=list[AgentRuntimeObservationResponse],
+)
+async def list_runtime_observations(
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+    task_id: Optional[int] = Query(default=None, ge=1),
+    run_id: Optional[int] = Query(default=None, ge=1),
+    harness_kind: Optional[str] = Query(default=None, max_length=40),
+    harness_session_id: Optional[str] = Query(default=None, max_length=255),
+    limit: int = Query(default=100, ge=1, le=500),
+):
+    """People, observers and operators read observations of tasks they can see; agents cannot."""
+    _refuse_agents(db, agent_api_key)
+    authority = db.info.get("authority")
+    if not (_reads_work_as_person(authority) or authority is not None and authority.operator):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in to read observations.")
+    return await RuntimeObservationService(db).list(task_id=task_id, run_id=run_id, harness_kind=harness_kind,
+                                                    harness_session_id=harness_session_id, limit=limit)
+
+
+@router.post(
+    "/agent/observations/cleanup",
+    response_model=AgentRuntimeObservationCleanupResponse,
+)
+async def cleanup_runtime_observations(
+    db: Annotated[AsyncSession, Depends(get_db, scope="function")],
+    limit: int = Query(default=500, ge=1, le=5000),
+):
+    """Remove a bounded batch of observations older than AGENT_OBSERVATION_RETENTION_DAYS (operators)."""
+    return await RuntimeObservationService(db).cleanup(limit=limit)

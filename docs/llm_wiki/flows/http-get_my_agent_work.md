@@ -160,36 +160,36 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_my_agent_work | service.get_work | 892 | `service.get_work(actor, limit=limit, cursor=cursor)` |
-| get_my_agent_work | _handle_agent_error | 894 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 318 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 320 | `str(exc)` |
-| _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 322 | `str(exc)` |
-| _handle_agent_error | HTTPException | 324 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 325 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 326 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 326 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 327 | `isinstance(exc, AgentTeamSetupConflictError)` |
-| _handle_agent_error | HTTPException | 328 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| get_my_agent_work | service.get_work | 898 | `service.get_work(actor, limit=limit, cursor=cursor)` |
+| get_my_agent_work | _handle_agent_error | 900 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 324 | `isinstance(exc, AgentPermissionError)` |
+| _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 326 | `str(exc)` |
+| _handle_agent_error | str (backend/app/routers/agent.py:_handle_agent_error) | 328 | `str(exc)` |
+| _handle_agent_error | HTTPException | 330 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 331 | `isinstance(exc, AgentRoutingConflictError)` |
+| _handle_agent_error | HTTPException | 332 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 332 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `response.headers.update` | `get_my_agent_work` | 909 |
+| mutation | `response.headers.update` | `get_my_agent_work` | 915 |
 
 ### Static analysis gaps
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_my_agent_work` | `service.get_work` | 892 |
-| external_call | `_handle_agent_error` | `isinstance` | 318 |
-| external_call | `_handle_agent_error` | `HTTPException` | 324 |
-| external_call | `_handle_agent_error` | `isinstance` | 325 |
-| external_call | `_handle_agent_error` | `HTTPException` | 326 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 326 |
-| external_call | `_handle_agent_error` | `isinstance` | 327 |
-| external_call | `_handle_agent_error` | `HTTPException` | 328 |
+| unresolved_call | `get_my_agent_work` | `service.get_work` | 898 |
+| external_call | `_handle_agent_error` | `isinstance` | 324 |
+| external_call | `_handle_agent_error` | `HTTPException` | 330 |
+| external_call | `_handle_agent_error` | `isinstance` | 331 |
+| external_call | `_handle_agent_error` | `HTTPException` | 332 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 332 |
+| external_call | `_handle_agent_error` | `isinstance` | 333 |
+| external_call | `_handle_agent_error` | `HTTPException` | 334 |
 | step_limit | `get_my_agent_work` | `first 12 steps` | 0 |
 
 ## Behavior

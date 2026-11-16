@@ -157,7 +157,7 @@ flowchart LR
 | login | RedirectResponse | 215 | `RedirectResponse(url, status_code=303, headers={...})` |
 | login | _cookie_options | 216 | `_cookie_options(data not statically known)` |
 | _cookie_options | get_settings | 37 | `get_settings(data not statically known)` |
-| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| get_settings | Settings | 524 | `Settings(data not statically known)` |
 | login | response.set_cookie | 217 | `response.set_cookie('workchord_login', browser, max_age=600, httponly=True, secure=options[...], samesite='lax', path=options[...])` |
 | login | request.cookies.get | 218 | `request.cookies.get(...)` |
 | login | get_settings | 218 | `get_settings(data not statically known)` |

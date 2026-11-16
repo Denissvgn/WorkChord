@@ -28,8 +28,9 @@ KNOWN_PREFIXES = ("/tasks", "/time-entries", "/notifications", "/iterations", "/
 
 
 # The only requests besides reads that an observer credential may send: ending
-# its own session and renewing it within the observer renewal cap.
-OBSERVER_COMMANDS = {("POST", "/auth/logout"), ("POST", "/auth/native-token")}
+# its own session, renewing it within the observer renewal cap, and recording an
+# advisory runtime observation, which writes nothing but its own row.
+OBSERVER_COMMANDS = {("POST", "/auth/logout"), ("POST", "/auth/native-token"), ("POST", "/agent/observations")}
 
 
 def observer_may_send(method, relative):
@@ -224,5 +225,5 @@ async def enforce_http_authority(request: Request, db: Annotated[object, Depends
     if relative.startswith(OPERATOR_PREFIXES) and not authority.operator and not settings_read:
         raise AuthorityError("operator_required", "Workspace operator permission is required.")
     if relative.startswith("/agent") and authority.kind not in {"agent", "system"} and not authority.operator and not authority.local:
-        if request.method not in {"GET", "HEAD"}:
+        if request.method not in {"GET", "HEAD"} and not (authority.read_only and observer_may_send(request.method, relative)):
             raise AuthorityError()

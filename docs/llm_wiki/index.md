@@ -6,11 +6,11 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 
 | Surface | Count | Start here |
 |---|---:|---|
-| Entities | 1577 | [Open section](#entities) |
-| Modules | 847 | [Open section](#modules) |
-| Workflows | 197 | [Open section](#workflows) |
+| Entities | 1583 | [Open section](#entities) |
+| Modules | 852 | [Open section](#modules) |
+| Workflows | 199 | [Open section](#workflows) |
 | Guides | 0 | No pages |
-| Entry-point flows | 560 | [Open section](#entry-point-flows) |
+| Entry-point flows | 563 | [Open section](#entry-point-flows) |
 | Infrastructure | 12 | [Open section](#infrastructure) |
 | HTTP API contracts | 0 | No pages |
 | Dependency architecture | 2 | [Open section](#dependency-architecture) |
@@ -103,6 +103,10 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [AgentRunEventResponse](entities/AgentRunEventResponse.md)
 - [AgentRunFinish](entities/AgentRunFinish.md)
 - [AgentRunResponse](entities/AgentRunResponse.md)
+- [AgentRuntimeObservation](entities/AgentRuntimeObservation.md)
+- [AgentRuntimeObservationCleanupResponse](entities/AgentRuntimeObservationCleanupResponse.md)
+- [AgentRuntimeObservationCreate](entities/AgentRuntimeObservationCreate.md)
+- [AgentRuntimeObservationResponse](entities/AgentRuntimeObservationResponse.md)
 - [AgentScheduleCommand](entities/AgentScheduleCommand.md)
 - [AgentScheduleResult](entities/AgentScheduleResult.md)
 - [AgentScheduleTaskState](entities/AgentScheduleTaskState.md)
@@ -564,6 +568,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [NotificationsPanelProps](entities/NotificationsPanelProps.md)
 - [OIDCLoginAttempt](entities/OIDCLoginAttempt.md)
 - [ObjectStoreAcceptance](entities/ObjectStoreAcceptance.md)
+- [ObservationKind](entities/ObservationKind.md)
 - [ObservedPlanningInput](entities/ObservedPlanningInput.md)
 - [ObservedRevisions](entities/ObservedRevisions.md)
 - [OpenBaoTransitClient](entities/OpenBaoTransitClient.md)
@@ -753,6 +758,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 - [RuntimeBoundaryMiddleware](entities/RuntimeBoundaryMiddleware.md)
 - [RuntimeContract](entities/RuntimeContract.md)
 - [RuntimeErrors](entities/RuntimeErrors.md)
+- [RuntimeObservationService](entities/RuntimeObservationService.md)
 - [RuntimeReadinessState](entities/RuntimeReadinessState.md)
 - [RuntimeSecretField](entities/RuntimeSecretField.md)
 - [RuntimeSection](entities/RuntimeSection.md)
@@ -1619,6 +1625,7 @@ Retained history; these declarations are absent from the selected source invento
 - [20261111_0013_local_comment_authors](modules/20261111_0013_local_comment_authors.md) - Let a trusted-local session comment as the person profile it works as.
 - [20261115_0014_observer_sessions](modules/20261115_0014_observer_sessions.md) - Record a session's access level, and what a pairing request asks for.
 - [20261116_0015_agdash_link_provider](modules/20261116_0015_agdash_link_provider.md) - Accept agdash session links as an external link provider.
+- [20261116_0016_runtime_observations](modules/20261116_0016_runtime_observations.md) - Retain advisory observations of agent runtime sessions.
 - [AccessKeysSummary](modules/AccessKeysSummary.md) - `frontend/src/components/settings/AccessKeysSummary.tsx`
 - [AdminAccessGate](modules/AdminAccessGate.md) - `frontend/src/components/settings/AdminAccessGate.tsx`
 - [AdminAccessGate.test](modules/AdminAccessGate.test.md) - `frontend/src/components/settings/AdminAccessGate.test.tsx`
@@ -2065,6 +2072,7 @@ Retained history; these declarations are absent from the selected source invento
 - [models_project](modules/models_project.md) - Project model.
 - [models_release](modules/models_release.md) - Release model for shipped-work tracking.
 - [models_request_source](modules/models_request_source.md) - Request source models for customer and intake traceability.
+- [models_runtime_observation](modules/models_runtime_observation.md) - Advisory observations of agent runtime sessions, reported by independent observers.
 - [models_saved_view](modules/models_saved_view.md) - Saved view model for reusable list and dashboard filters.
 - [models_system_settings](modules/models_system_settings.md) - Runtime system settings model.
 - [models_task](modules/models_task.md) - Task model.
@@ -2155,6 +2163,7 @@ Retained history; these declarations are absent from the selected source invento
 - [run](modules/run.md) - Run deterministic, production-shaped REST and MCP load through public APIs.
 - [run_android_checks](modules/run_android_checks.md) - Build Android with native JDK 17, the licensed SDK and the checksum-pinned Gradle wrapper.
 - [run_disposable_checks](modules/run_disposable_checks.md) - Run database, frontend and browser checks using isolated native processes.
+- [runtime_observation_service](modules/runtime_observation_service.md) - Record and read advisory runtime observations.
 - [runtime_peer](modules/runtime_peer.md) - Disposable protocol peer: each invocation uses a new process and connection.
 - [runtime_telemetry](modules/runtime_telemetry.md) - Small dependency-free runtime telemetry used by probes and qualification.
 - [safeUrl](modules/safeUrl.md) - `frontend/src/utils/safeUrl.ts`
@@ -2191,6 +2200,7 @@ Retained history; these declarations are absent from the selected source invento
 - [schemas_project](modules/schemas_project.md) - Project schemas.
 - [schemas_release](modules/schemas_release.md) - Release schemas.
 - [schemas_request_source](modules/schemas_request_source.md) - Request source schemas.
+- [schemas_runtime_observation](modules/schemas_runtime_observation.md) - Advisory runtime observation contracts.
 - [schemas_saved_view](modules/schemas_saved_view.md) - Saved view schemas and filter payload validation primitives.
 - [schemas_scheduling_rules](modules/schemas_scheduling_rules.md) - Scheduling rules schemas for API.
 - [schemas_session](modules/schemas_session.md) - `backend/app/schemas/session.py`
@@ -2362,6 +2372,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_routing_evidence](modules/test_routing_evidence.md) - Keep CI evidence inventories aligned with the checked-in implementation.
 - [test_runtime_boundaries](modules/test_runtime_boundaries.md) - DBM-PERF-002 and DBM-MAINT-001 runtime-boundary tests.
 - [test_runtime_mutation_policy](modules/test_runtime_mutation_policy.md) - Runtime configuration preserves supplied conflicts in either rollout mode.
+- [test_runtime_observations](modules/test_runtime_observations.md) - Advisory runtime observations: who may record and read them, and that dispatch never sees them.
 - [test_runtime_policy](modules/test_runtime_policy.md) - DBM-RUN-002/003 retry, ordering, and comparison contract tests.
 - [test_saved_view_service](modules/test_saved_view_service.md) - Saved-view task filter normalization and matching behavior.
 - [test_schedule_follows_actual_dates](modules/test_schedule_follows_actual_dates.md) - Agents start work whose dependencies are done, and the plan's dates follow what happened.
@@ -2551,6 +2562,8 @@ Retained history; these declarations are absent from the selected source invento
 - [ReleaseService_create_for_project](workflows/ReleaseService_create_for_project.md) - entry: `release_service.ReleaseService.create_for_project`
 - [RequestSourceService_create_link](workflows/RequestSourceService_create_link.md) - entry: `request_source_service.RequestSourceService.create_link`
 - [RequestSourceService_unlink](workflows/RequestSourceService_unlink.md) - entry: `request_source_service.RequestSourceService.unlink`
+- [RuntimeObservationService_cleanup](workflows/RuntimeObservationService_cleanup.md) - entry: `runtime_observation_service.RuntimeObservationService.cleanup`
+- [RuntimeObservationService_record](workflows/RuntimeObservationService_record.md) - entry: `runtime_observation_service.RuntimeObservationService.record`
 - [SchedulerService___init__](workflows/SchedulerService___init__.md) - entry: `scheduler_service.SchedulerService.__init__`
 - [SchedulerService_schedule_iteration](workflows/SchedulerService_schedule_iteration.md) - entry: `scheduler_service.SchedulerService.schedule_iteration`
 - [SnapshotService_build_snapshot_data](workflows/SnapshotService_build_snapshot_data.md) - entry: `snapshot_service.SnapshotService.build_snapshot_data`
@@ -2685,6 +2698,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-classify_planning_triage_item](flows/http-classify_planning_triage_item.md) - entry: `classify_planning_triage_item`
 - [http-classify_triage_item](flows/http-classify_triage_item.md) - entry: `classify_triage_item`
 - [http-cleanup](flows/http-cleanup.md) - entry: `cleanup`
+- [http-cleanup_runtime_observations](flows/http-cleanup_runtime_observations.md) - entry: `cleanup_runtime_observations`
 - [http-configuration](flows/http-configuration.md) - entry: `configuration`
 - [http-convert_planning_triage_item_to_task](flows/http-convert_planning_triage_item_to_task.md) - entry: `convert_planning_triage_item_to_task`
 - [http-convert_task_brief](flows/http-convert_task_brief.md) - entry: `convert_task_brief`
@@ -2883,6 +2897,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-list_ready_tasks](flows/http-list_ready_tasks.md) - entry: `list_ready_tasks`
 - [http-list_request_source_links](flows/http-list_request_source_links.md) - entry: `list_request_source_links`
 - [http-list_roadmap_milestones](flows/http-list_roadmap_milestones.md) - entry: `list_roadmap_milestones`
+- [http-list_runtime_observations](flows/http-list_runtime_observations.md) - entry: `list_runtime_observations`
 - [http-list_saved_view_dashboard_cards](flows/http-list_saved_view_dashboard_cards.md) - entry: `list_saved_view_dashboard_cards`
 - [http-list_saved_views](flows/http-list_saved_views.md) - entry: `list_saved_views`
 - [http-list_snapshots](flows/http-list_snapshots.md) - entry: `list_snapshots`
@@ -2927,6 +2942,7 @@ Retained history; these declarations are absent from the selected source invento
 - [http-readiness_check](flows/http-readiness_check.md) - entry: `readiness_check`
 - [http-receive_github_webhook](flows/http-receive_github_webhook.md) - entry: `receive_github_webhook`
 - [http-record_execution_usage](flows/http-record_execution_usage.md) - entry: `record_execution_usage`
+- [http-record_runtime_observation](flows/http-record_runtime_observation.md) - entry: `record_runtime_observation`
 - [http-record_task_progress](flows/http-record_task_progress.md) - entry: `record_task_progress`
 - [http-recover_principal](flows/http-recover_principal.md) - entry: `recover_principal`
 - [http-refresh_github_external_link](flows/http-refresh_github_external_link.md) - entry: `refresh_github_external_link`
