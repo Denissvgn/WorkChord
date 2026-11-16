@@ -428,6 +428,8 @@ class SchedulerService:
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
 
         finished_statuses = {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}
+        satisfied_predecessor_ids = {task.id for task in all_tasks
+                                     if task.status in finished_statuses or task.canceled_at}
         anchored_ids: set[int] = set()
         if follow_date is not None and anchor_task_id is not None:
             anchor = next((task for task in locked_tasks if task.id == anchor_task_id), None)
@@ -491,13 +493,13 @@ class SchedulerService:
 
             # Check dependencies
             for dep in task.dependencies:
+                # Completed or canceled work is satisfied regardless of saved forecast dates.
+                if dep.depends_on_id in satisfied_predecessor_ids:
+                    continue
                 dep_task = task_map.get(dep.depends_on_id)
                 if dep_task and dep_task.end_date:
                     dep_last = dep_task.end_date
                     if follow_date is not None:
-                        if dep_task.status in finished_statuses:
-                            # A finished predecessor no longer holds its dependents back.
-                            continue
                         if dep_task.status == TaskStatus.ACTIVE.value:
                             dep_last = max(dep_last, follow_date)
                     dep_end = dep_last + timedelta(days=1)
@@ -629,7 +631,9 @@ class SchedulerService:
         composite_tasks = [task for task in all_tasks if task.children]
         nodes = leaf_tasks + composite_tasks
         pending = {task.id: task for task in nodes}
-        predecessors = {task.id: {dep.depends_on_id for dep in task.dependencies} for task in leaf_tasks}
+        predecessors = {task.id: {dep.depends_on_id for dep in task.dependencies
+                                 if dep.depends_on_id not in satisfied_predecessor_ids}
+                        for task in leaf_tasks}
         for index, task in enumerate(composite_tasks):
             predecessors[task.id] = {child.id for child in task.children
                                     if not self._effective_flags(child)["effective_is_deferred"]}

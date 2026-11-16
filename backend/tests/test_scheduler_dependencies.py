@@ -1,6 +1,6 @@
 """Dependency-ready scheduling across capacity rows and configured passes."""
 
-from datetime import date
+from datetime import date, datetime, timezone
 import random
 from time import perf_counter
 from types import SimpleNamespace
@@ -127,6 +127,34 @@ async def test_undated_predecessor_leaves_dependents_undated_and_named(db_sessio
         assert tasks[index - 1].title in item.message
         assert any(decision.task_id == tasks[index].id and tasks[index - 1].title in decision.reason
                    for decision in result.decisions)
+
+
+@pytest.mark.parametrize("status", ["resolved", "closed", "canceled"])
+@pytest.mark.parametrize("saved_dates", [
+    (None, None),
+    (date(2026, 2, 2), None),
+    (None, date(2026, 2, 3)),
+    (date(2026, 2, 2), date(2026, 2, 3)),
+], ids=["undated", "start_only", "end_only", "dated"])
+@pytest.mark.parametrize("follow_date", [None, date(2026, 1, 12)], ids=["schedule", "follow"])
+async def test_finished_predecessor_does_not_delay_dependents(db_session, status, saved_dates, follow_date):
+    iteration, _, tasks = await make_plan(db_session, 3, [0, 1, 2], [(0, 1), (1, 2)])
+    predecessor, dependent, _ = tasks
+    if status == "canceled":
+        predecessor.canceled_at = datetime(2026, 1, 4, tzinfo=timezone.utc)
+    else:
+        predecessor.status = status
+    predecessor.start_date, predecessor.end_date = saved_dates
+    dependent.min_start_date = date(2026, 1, 6)
+    await db_session.commit()
+
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id, follow_date=follow_date)
+
+    assert result.success and not result.unscheduled
+    assert (predecessor.start_date, predecessor.end_date) == saved_dates
+    assert dependent.start_date == max(dependent.min_start_date, follow_date or iteration.start_date)
+    assert_dependency_dates(tasks, [(1, 2)])
+    assert_serial_rows(tasks[1:])
 
 
 async def test_ready_tasks_keep_pass_priority_and_cross_pass_dependencies(db_session):
