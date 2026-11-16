@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { Route, Routes } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { BareLayout } from './components/layout/BareLayout';
+import { LegacyRedirect } from './navigation/LegacyRedirect';
 import { AppShell } from './components/layout/AppShell';
 import { DocumentMetadata } from './components/layout/DocumentMetadata';
 import { routeModuleLoaders } from './navigation/routeModules';
@@ -48,24 +50,22 @@ const WorkspaceRoutes = () => (
   <Routes>
     <Route path="/" element={<OverviewPage />} />
     <Route path="/plan" element={<PlanPage />} />
-    <Route path="/plan/master" element={<PlanMasterPage />} />
-    <Route path="/plan/share/:publicId" element={<PlanSharePage />} />
-    <Route path="/calendar" element={<CalendarPage />} />
-    <Route path="/iterations" element={<IterationsPage />} />
+    <Route path="/plan/master" element={<LegacyRedirect><PlanMasterPage /></LegacyRedirect>} />
+    <Route path="/calendar" element={<LegacyRedirect><CalendarPage /></LegacyRedirect>} />
+    <Route path="/iterations" element={<LegacyRedirect><IterationsPage /></LegacyRedirect>} />
     <Route path="/team" element={<TeamPage />} />
     <Route path="/tasks" element={<TasksPage />} />
     <Route path="/my-work" element={<MyWorkPage />} />
-    <Route path="/mobile/connect" element={<NativeConnectionPage />} />
     <Route path="/triage" element={<TriagePage />} />
     <Route path="/projects" element={<ProjectsPage />} />
     <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
     <Route path="/projects/:projectId/releases/:releaseId" element={<ProjectReleaseDetailPage />} />
-    <Route path="/roadmap" element={<RoadmapPage />} />
+    <Route path="/roadmap" element={<LegacyRedirect><RoadmapPage /></LegacyRedirect>} />
     <Route path="/gantt" element={<GanttPage />} />
     <Route path="/analytics" element={<AnalyticsPage />} />
     <Route path="/settings" element={<SettingsPage />} />
-    <Route path="/agent-pipeline" element={<AgentPipelinePage />} />
-    <Route path="/agent-team/setup" element={<AgentTeamSetupMasterPage />} />
+    <Route path="/agent-pipeline" element={<LegacyRedirect><AgentPipelinePage /></LegacyRedirect>} />
+    <Route path="/agent-team/setup" element={<LegacyRedirect><AgentTeamSetupMasterPage /></LegacyRedirect>} />
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
@@ -90,6 +90,8 @@ const LandingRoute = () => (
 function App() {
   return (
     <Routes>
+      <Route path="/plan/share/:publicId" element={<BareLayout><Suspense fallback={<RouteLoadingState />}><PlanSharePage /></Suspense></BareLayout>} />
+      <Route path="/mobile/connect" element={<BareLayout><Suspense fallback={<RouteLoadingState />}><NativeConnectionPage /></Suspense></BareLayout>} />
       <Route path="/welcome" element={<LandingRoute />} />
       <Route path="*" element={<WorkspaceApp />} />
     </Routes>
