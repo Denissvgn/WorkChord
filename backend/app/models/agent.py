@@ -1102,6 +1102,10 @@ class AgentRun(Base):
     model: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     tool_name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     run_metadata: Mapped[str] = mapped_column(Text, default="{}", nullable=False)
+    # The harness session the actor declared at begin (metadata.harness), kept
+    # in columns so a reader can find a run by session. A declaration, never verified.
+    harness_kind: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    harness_session_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True, index=True)
     artifact_links: Mapped[str] = mapped_column(Text, default="[]", nullable=False)
     commit_url: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)
     pr_url: Mapped[Optional[str]] = mapped_column(String(1000), nullable=True)

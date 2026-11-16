@@ -83,6 +83,14 @@ def _validate_harness_metadata(value: dict[str, Any]) -> dict[str, Any]:
     return value
 
 
+def declared_harness(metadata: dict[str, Any]) -> tuple[str | None, str | None]:
+    """(kind, session_id) from already validated run metadata, or (None, None)."""
+    harness = metadata.get("harness") if isinstance(metadata, dict) else None
+    if not isinstance(harness, dict):
+        return None, None
+    return harness.get("kind"), harness.get("session_id")
+
+
 def check_harness_identity(kind: Any, session_id: Any, *, label: str) -> None:
     """A short lowercase runtime name and the runtime's own session identifier, never a path or secret."""
     if not isinstance(kind, str) or not HARNESS_KIND_PATTERN.fullmatch(kind):

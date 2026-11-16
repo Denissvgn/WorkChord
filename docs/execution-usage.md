@@ -5,6 +5,9 @@ An authorized runtime records usage against an exact run using
 Read the current report with the corresponding GET or
 `agent_get_execution_usage` before appending a correction.
 
+People who can read a task also see each of its runs' latest report in GET
+`/api/agent/runs`; it is the same declaration, with `independently_reconciled: false`.
+
 Declare `reporting_mode: attempt_total`, a deterministic `report_id`, source,
 provenance, UTC interval and coverage. Named quantities retain observed zero
 and explicit unknown values. Complete coverage requires a reported quantity,

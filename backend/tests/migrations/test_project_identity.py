@@ -91,6 +91,11 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
             assert rebuilt["columns"].pop(column) == {"type": {"family": "text"}, "nullable": False}
             assert rebuilt["columns"].pop("client_label") == {"type": {"family": "text"}, "nullable": True}
             rebuilt["checks"].remove(f"ck_{table}_{column}")
+        # A later revision keeps a run's declared harness session in searchable columns.
+        runs = after_catalog["agent_runs"]
+        for column in ("harness_kind", "harness_session_id"):
+            assert runs["columns"].pop(column) == {"type": {"family": "text"}, "nullable": True}
+        runs["indexes"].remove(("ix_agent_runs_harness_session_id", ("harness_session_id",), False))
         # A later revision adds the advisory runtime observation table.
         assert after_catalog.pop("agent_runtime_observations")["checks"] == ["ck_agent_runtime_observations_kind"]
         assert after_catalog == before_catalog
