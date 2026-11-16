@@ -150,7 +150,7 @@ describe('useWorkScope', () => {
         await waitForReady();
 
         expect(latest?.isReadOnly).toBe(false);
-        expect(locationText()).toBe('/tasks/?project=1&iteration=12');
+        await waitFor(() => expect(locationText()).toBe('/tasks/?project=1&iteration=12'));
 
         act(() => latest!.setProject(2));
         await waitFor(() => expect(locationText()).toBe('/tasks/?project=2&iteration=22'));
