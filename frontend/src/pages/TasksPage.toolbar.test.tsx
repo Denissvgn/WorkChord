@@ -6,6 +6,7 @@ import { expectPageChrome } from '../test/pageChrome';
 import type { SavedView } from '../types/savedView';
 import type { Task } from '../types/task';
 import TasksPage from './TasksPage';
+import i18n from '../i18n/i18n';
 
 const workScopeMock = vi.hoisted(() => ({ iteration: 1 as number | 'backlog', setIteration: vi.fn() }));
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getById: vi.fn() }));
@@ -309,8 +310,7 @@ describe('Tasks header and toolbar', () => {
 
         await user.click(screen.getByRole('button', { name: 'Pipeline' }));
         expect(screen.getByTestId('location-search')).toHaveTextContent('layout=pipeline');
-        expect(screen.getByRole('heading', { level: 2, name: 'The agent pipeline is coming to this view' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Open agent pipeline' })).toHaveAttribute('href', expect.stringContaining('/agent-pipeline'));
+        expect(screen.getByText(i18n.t('agentPipeline.runLogsNeedKey'))).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'View options' })).not.toBeInTheDocument();
     });
 });

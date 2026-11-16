@@ -5474,6 +5474,7 @@ export const englishResources = {
                 workload_warnings: 'Workload warnings',
             },
             taskFilters: {
+                agent: 'Agent',
                 filters: 'Filters',
                 reset: 'Reset',
                 textMode: 'Text mode',

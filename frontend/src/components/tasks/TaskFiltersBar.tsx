@@ -34,6 +34,9 @@ interface TaskFiltersBarProps {
     iterationId: number;
     filters: TaskFilters;
     onFiltersChange: (filters: TaskFilters) => void;
+    agentFilter?: { value: string; options: string[]; onChange: (value: string) => void };
+    hideProject?: boolean;
+    onClear?: () => void;
 }
 
 const YES = 'yes';
@@ -52,12 +55,13 @@ const numberFilter = (value: string) => (value === '' ? null : Number(value));
  * The task filters in the shared FilterBar: the two most used conditions in the row, the rest under
  * More filters, and one removable chip for every active condition, including each label.
  */
-export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFiltersBarProps) => {
+export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFilter, hideProject, onClear }: TaskFiltersBarProps) => {
     const { t } = useTranslation();
 
     const teamQuery = useQuery({
         queryKey: ['team', iterationId],
         queryFn: () => teamService.getByIteration(iterationId),
+        enabled: iterationId > 0,
     });
 
     const projectsQuery = useQuery({
@@ -214,7 +218,11 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
         })),
     ];
 
+    const visibleFilters = hideProject ? barFilters.map(filter => filter.id === 'projectId' ? { ...filter, chipOnly: true } : filter) : barFilters;
+    if (agentFilter) visibleFilters.unshift({ id: 'agent', label: t('taskFilters.agent'), value: agentFilter.value, options: [...new Set([...agentFilter.options, ...(agentFilter.value ? [agentFilter.value] : [])])].map(name => ({ value: name, label: name })) });
+
     const changeFilter = (id: string, value: string) => {
+        if (id === 'agent') { agentFilter?.onChange(value); return; }
         if (id.startsWith(LABEL_CHIP)) {
             const slug = id.slice(LABEL_CHIP.length);
             onFiltersChange({ ...filters, labelSlugs: filters.labelSlugs.filter(candidate => candidate !== slug) });
@@ -257,7 +265,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
 
     return (
         <>
-            <FilterBar filters={barFilters} quickLimit={QUICK_FILTERS} onChange={changeFilter} onClear={() => onFiltersChange(defaultFilters)} />
+            <FilterBar filters={visibleFilters} quickLimit={QUICK_FILTERS} onChange={changeFilter} onClear={onClear ?? (() => onFiltersChange(defaultFilters))} />
             {optionError && (
                 <QueryErrorState
                     className="mt-2"
