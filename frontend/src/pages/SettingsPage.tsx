@@ -42,6 +42,7 @@ import { ConnectedReadersPanel } from '../components/settings/ConnectedReadersPa
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { SharedUnlockContext } from '../components/settings/sharedUnlock';
+import { ReadOnlyFieldset } from '../components/settings/ReadOnlyFieldset';
 import { SETTINGS_FIELD_LABEL_KEYS } from '../components/settings/settingsFieldLabels';
 import type { SettingsSectionId } from '../components/settings/settingsFieldLabels';
 import { Button } from '../components/common/Button';
@@ -427,11 +428,15 @@ const SettingsPage = () => {
             case 'notifications':
                 return gated(<EmailSettingsPanel />);
             case 'github':
+                // The automation rules lock only their changes, so each rule still opens through View.
                 return gated(
                     <div className="space-y-5">
-                        <RuntimeConfigSettings parts={['github']} />
+                        <ReadOnlyFieldset>
+                            <RuntimeConfigSettings parts={['github']} />
+                        </ReadOnlyFieldset>
                         <GitHubSettingsPanel />
                     </div>,
+                    { managesReadOnly: true },
                 );
             case 'webhooks':
                 return gated(<OutboundWebhooksPanel />, { managesReadOnly: true });

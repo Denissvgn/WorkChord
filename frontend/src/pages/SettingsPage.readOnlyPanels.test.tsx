@@ -7,6 +7,8 @@ import type { WorkTemplate } from '../types/template';
 import type { LabelGroup } from '../types/label';
 import type { SchedulingRulesResponse } from '../types/schedulingRules';
 import type { OutboundWebhookTarget } from '../types/outboundWebhook';
+import type { GitHubStatusAutomationRule } from '../types/github';
+import type { SystemSettings } from '../types/systemSettings';
 import SettingsPage from './SettingsPage';
 
 // The real panels run here; only the services they call are replaced.
@@ -23,6 +25,14 @@ vi.mock('../services/templateService', () => ({ templateService: templateService
 vi.mock('../services/labelService', () => ({ labelService: labelServiceMock }));
 vi.mock('../services/schedulingRulesService', () => ({ schedulingRulesService: rulesServiceMock }));
 vi.mock('../services/outboundWebhookService', () => ({ outboundWebhookService: webhookServiceMock }));
+const githubServiceMock = vi.hoisted(() => ({
+    getStatusAutomationRules: vi.fn(), createStatusAutomationRule: vi.fn(), updateStatusAutomationRule: vi.fn(), deleteStatusAutomationRule: vi.fn(),
+}));
+const systemSettingsServiceMock = vi.hoisted(() => ({
+    getSettings: vi.fn(), updateApp: vi.fn(), updateLLM: vi.fn(), updateGitHub: vi.fn(), updateWebIntake: vi.fn(),
+}));
+vi.mock('../services/githubService', () => ({ githubService: githubServiceMock }));
+vi.mock('../services/systemSettingsService', () => ({ systemSettingsService: systemSettingsServiceMock }));
 
 const template = (id: number, name: string, type: WorkTemplate['template_type']): WorkTemplate => ({
     id, name, description: null, seed_key: null, template_type: type, default_title: null, default_description: null,
@@ -56,6 +66,27 @@ const webhookTarget: OutboundWebhookTarget = {
     id: 1, name: 'Ops hook', description: null, url: 'https://hooks.example.com/1', enabled: true,
     subscribed_events_json: ['task.*'], has_secret: true, headers_json: {},
     created_at: '2026-07-01T12:00:00Z', updated_at: '2026-07-02T12:00:00Z',
+};
+
+const githubRule: GitHubStatusAutomationRule = {
+    id: 7, name: 'Merged PR resolves', description: 'Resolve the task when its PR merges', enabled: true,
+    github_event_type: 'github_pr_merged', from_status: 'active', target_status: 'resolved',
+    reason_template: 'Resolved by {repo} PR #{pr_number} after merge', sort_order: 20,
+    created_at: '2026-07-01T12:00:00Z', updated_at: '2026-07-02T12:00:00Z',
+};
+
+const systemSettings: SystemSettings = {
+    app: { ui_language: 'en', ai_language_mode: 'auto', field_sources: {} },
+    llm: {
+        provider: 'openai', api_url: 'https://api.openai.com/v1', model: 'gpt-5', temperature: 0.2,
+        max_output_tokens: 3000, has_api_key: true, field_sources: {},
+    },
+    github: {
+        api_url: 'https://github.example.com/api/v3', request_timeout_seconds: 15,
+        webhook_create_triage_for_unmatched: true, has_token: true, has_webhook_secret: true, field_sources: {},
+    },
+    web_intake: { rate_limit_per_minute: 30, has_token: true, field_sources: {} },
+    restart_required: [],
 };
 
 /** A trusted-local browser: may read settings without the admin key, but not change them. */
@@ -92,6 +123,8 @@ describe('SettingsPage read-only panels', () => {
         rulesServiceMock.getRules.mockResolvedValue(rules);
         webhookServiceMock.getTargets.mockResolvedValue([webhookTarget]);
         webhookServiceMock.getDeliveries.mockResolvedValue([]);
+        githubServiceMock.getStatusAutomationRules.mockResolvedValue([githubRule]);
+        systemSettingsServiceMock.getSettings.mockResolvedValue(systemSettings);
     });
 
     it('lets readers move through templates and labels and open each item, with every change disabled until Unlock editing', async () => {
@@ -187,7 +220,7 @@ describe('SettingsPage read-only panels', () => {
 
         const testDelivery = await screen.findByRole('button', { name: 'Send test delivery: Ops hook' });
         expect(testDelivery).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'Edit: Ops hook' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'View: Ops hook' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'Delete: Ops hook' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'New target' })).toBeDisabled();
 
@@ -199,5 +232,78 @@ describe('SettingsPage read-only panels', () => {
         await unlock(user);
         expect(screen.getByRole('button', { name: 'Edit: Ops hook' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'New target' })).toBeEnabled();
+    });
+
+    it('opens a GitHub rule read-only through View, so its reason template can be read before Unlock editing', async () => {
+        const { user } = renderSettings('github');
+
+        // The connection fields show their saved values, disabled.
+        expect(await screen.findByDisplayValue('https://github.example.com/api/v3')).toBeDisabled();
+        expect(screen.getByRole('checkbox', { name: /Create Triage items for unmatched/i })).toBeChecked();
+
+        // Until a rule is chosen there is no blank new-rule form to mistake for saved values.
+        expect(await screen.findByText('Merged PR resolves')).toBeVisible();
+        expect(screen.getByText('Choose View on a rule to see all of its details.')).toBeVisible();
+        expect(screen.queryByRole('textbox', { name: 'Reason template' })).toBeNull();
+        expect(screen.getByRole('button', { name: 'New rule' })).toBeDisabled();
+        expect(screen.getByRole('checkbox', { name: 'Disable Merged PR resolves' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Delete Merged PR resolves' })).toBeDisabled();
+        expect(screen.queryByRole('button', { name: 'Edit Merged PR resolves' })).toBeNull();
+
+        await user.click(screen.getByRole('button', { name: 'View Merged PR resolves' }));
+        const reason = screen.getByRole('textbox', { name: 'Reason template' });
+        expect(reason).toHaveValue('Resolved by {repo} PR #{pr_number} after merge');
+        expect(reason).toBeDisabled();
+        expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('Merged PR resolves');
+        expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('Resolve the task when its PR merges');
+        expect(screen.getByRole('combobox', { name: 'Event' })).toHaveValue('github_pr_merged');
+        expect(screen.getByRole('combobox', { name: 'From status' })).toHaveValue('active');
+        expect(screen.getByRole('combobox', { name: 'Target status' })).toHaveValue('resolved');
+        expect(screen.getByRole('spinbutton', { name: 'Order' })).toHaveValue(20);
+        expect(screen.getByRole('combobox', { name: 'Event' })).toBeDisabled();
+        expect(screen.queryByRole('button', { name: 'Save rule' })).toBeNull();
+
+        await user.click(screen.getByRole('button', { name: 'Close' }));
+        expect(screen.queryByRole('textbox', { name: 'Reason template' })).toBeNull();
+        expect(githubServiceMock.createStatusAutomationRule).not.toHaveBeenCalled();
+        expect(githubServiceMock.updateStatusAutomationRule).not.toHaveBeenCalled();
+        expect(githubServiceMock.deleteStatusAutomationRule).not.toHaveBeenCalled();
+        expect(systemSettingsServiceMock.updateGitHub).not.toHaveBeenCalled();
+
+        await unlock(user);
+        expect(screen.getByRole('button', { name: 'Edit Merged PR resolves' })).toBeEnabled();
+        expect(screen.getByRole('button', { name: 'New rule' })).toBeEnabled();
+        expect(screen.getByRole('textbox', { name: 'Reason template' })).toBeEnabled();
+        expect(screen.getByDisplayValue('https://github.example.com/api/v3')).toBeEnabled();
+    });
+
+    it('opens a webhook target read-only through View, with its headers and subscriptions, before Unlock editing', async () => {
+        webhookServiceMock.getTargets.mockResolvedValue([{
+            ...webhookTarget, description: 'Routes ops events', headers_json: { 'X-Route': 'ops-desk' },
+            subscribed_events_json: ['task.*', 'github.pr_merged'],
+        }]);
+        const { user } = renderSettings('webhooks');
+
+        await user.click(await screen.findByRole('button', { name: 'View: Ops hook' }));
+        expect(screen.queryByText('Choose View on a target to see all of its details.')).toBeNull();
+        expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('Ops hook');
+        expect(screen.getByRole('textbox', { name: /^Name/ })).toBeDisabled();
+        expect(screen.getByRole('textbox', { name: /^URL/ })).toHaveValue('https://hooks.example.com/1');
+        expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('Routes ops events');
+        const headers = screen.getByRole('textbox', { name: 'Headers JSON' });
+        expect(headers).toHaveValue(JSON.stringify({ 'X-Route': 'ops-desk' }, null, 2));
+        expect(headers).toBeDisabled();
+        expect(screen.getByRole('checkbox', { name: 'GitHub PR merged' })).toBeChecked();
+        expect(screen.getByRole('checkbox', { name: 'GitHub PR merged' })).toBeDisabled();
+        // The secret itself stays hidden; only whether one is stored is shown.
+        expect(screen.getByLabelText('Secret')).toHaveValue('');
+        expect(screen.getByLabelText('Secret')).toHaveAttribute('placeholder', 'Signed');
+        expect(screen.queryByRole('checkbox', { name: 'Clear stored secret on save' })).toBeNull();
+        expect(screen.queryByRole('button', { name: 'Save target' })).toBeNull();
+
+        await user.click(screen.getByRole('button', { name: 'Close' }));
+        expect(screen.getByText('Choose View on a target to see all of its details.')).toBeVisible();
+        expect(webhookServiceMock.updateTarget).not.toHaveBeenCalled();
+        expect(webhookServiceMock.createTarget).not.toHaveBeenCalled();
     });
 });

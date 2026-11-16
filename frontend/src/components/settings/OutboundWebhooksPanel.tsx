@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     Edit2,
+    Eye,
     Loader2,
     Plus,
     RefreshCw,
@@ -506,6 +507,10 @@ export const OutboundWebhooksPanel = () => {
     const readOnlyNote = useSettingsReadOnly();
     const readOnly = readOnlyNote !== null;
     const formLocked = isSaving || targetActionPending || readOnly;
+    // A reader opens a target through View; its saved values then show in the disabled form.
+    const viewedTarget = readOnly && editingTargetId !== null
+        ? targets.find(target => target.id === editingTargetId) ?? null
+        : null;
 
     if (targetsLoading) {
         return (
@@ -558,6 +563,10 @@ export const OutboundWebhooksPanel = () => {
                     </Button>
                 </div>
 
+                {readOnly && !viewedTarget && (
+                    <p className="text-sm text-content-secondary">{t('settingsWebhooks.readOnlyHint')}</p>
+                )}
+                {(!readOnly || viewedTarget) && (<>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
                     <div className="lg:col-span-3">
                         <Input
@@ -590,7 +599,9 @@ export const OutboundWebhooksPanel = () => {
                             type="password"
                             value={form.secret}
                             onChange={event => updateSecret(event.target.value)}
-                            placeholder={editingTargetId !== null ? t('settingsWebhooks.leaveUnchanged') : t('settingsWebhooks.optional')}
+                            placeholder={viewedTarget
+                                ? t(viewedTarget.has_secret ? 'settingsWebhooks.signed' : 'settingsWebhooks.unsigned')
+                                : editingTargetId !== null ? t('settingsWebhooks.leaveUnchanged') : t('settingsWebhooks.optional')}
                             disabled={form.clearSecret}
                             autoComplete="new-password"
                         />
@@ -630,7 +641,7 @@ export const OutboundWebhooksPanel = () => {
                             </p>
                         )}
                     </div>
-                    {editingTargetId !== null && (
+                    {editingTargetId !== null && !readOnly && (
                         <div className="lg:col-span-12">
                             <Checkbox
                                 label={t('settingsWebhooks.clearStoredSecret')}
@@ -671,6 +682,7 @@ export const OutboundWebhooksPanel = () => {
                     )}
                 </fieldset>
 
+                {!readOnly && (
                 <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                     {editingTargetId !== null && (
                         <Button
@@ -688,7 +700,17 @@ export const OutboundWebhooksPanel = () => {
                         {editingTargetId !== null ? t('settingsWebhooks.saveTarget') : t('settingsWebhooks.createTarget')}
                     </Button>
                 </div>
+                )}
+                </>)}
                 </fieldset>
+                {viewedTarget && (
+                    <div className="flex justify-end">
+                        <Button type="button" variant="ghost" size="sm" onClick={resetFormNow}>
+                            <X className="mr-1 h-4 w-4" aria-hidden="true" />
+                            {t('actions.close')}
+                        </Button>
+                    </div>
+                )}
             </form>
 
             <div className="overflow-hidden rounded-lg border border-border bg-surface-card">
@@ -768,10 +790,12 @@ export const OutboundWebhooksPanel = () => {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => handleEdit(target)}
-                                                disabled={readOnly || targetActionPending || isSaving}
-                                                aria-label={`${t('actions.edit')}: ${target.name}`}
+                                                disabled={!readOnly && (targetActionPending || isSaving)}
+                                                aria-label={`${t(readOnly ? 'settingsWebhooks.view' : 'actions.edit')}: ${target.name}`}
                                             >
-                                                <Edit2 className="h-3.5 w-3.5" aria-hidden="true" />
+                                                {readOnly
+                                                    ? <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+                                                    : <Edit2 className="h-3.5 w-3.5" aria-hidden="true" />}
                                             </Button>
                                             <Button
                                                 type="button"

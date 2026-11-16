@@ -25,7 +25,7 @@ vi.mock('../components/settings/InterfaceLanguageSettings', () => ({ InterfaceLa
 vi.mock('../components/settings/SchedulingRulesSettings', async () => ({ SchedulingRulesSettings: await selfLockingField('Working hours') }));
 vi.mock('../components/settings/TemplateLabelSettings', async () => ({ TemplateLabelSettings: await selfLockingField('Template name') }));
 vi.mock('../components/settings/EmailSettingsPanel', () => ({ EmailSettingsPanel: field('Mail server') }));
-vi.mock('../components/settings/GitHubSettingsPanel', () => ({ GitHubSettingsPanel: field('Automation rule') }));
+vi.mock('../components/settings/GitHubSettingsPanel', async () => ({ GitHubSettingsPanel: await selfLockingField('Automation rule') }));
 vi.mock('../components/settings/OutboundWebhooksPanel', async () => ({ OutboundWebhooksPanel: await selfLockingField('Webhook target') }));
 vi.mock('../components/settings/RuntimeConfigSettings', () => ({
     RuntimeConfigSettings: ({ parts }: { parts: string[] }) => <label>{`Server ${parts.join(' ')}`} <input defaultValue="value" /></label>,

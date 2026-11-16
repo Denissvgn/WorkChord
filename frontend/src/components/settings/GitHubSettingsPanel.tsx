@@ -2,7 +2,7 @@ import { SettingsUnsavedBar } from './SettingsUnsavedBar';
 import { useId, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Edit2, Github, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
+import { Edit2, Eye, Github, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
@@ -12,6 +12,7 @@ import { useToast } from '../feedback/toast';
 import { githubService } from '../../services/githubService';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { AdminAccessGate } from './AdminAccessGate';
+import { useSettingsReadOnly } from './sharedUnlock';
 import type {
     GitHubAutomationEventType,
     GitHubAutomationTargetStatus,
@@ -68,6 +69,9 @@ export const GitHubSettingsPanel = () => {
     const fromStatusSelectId = useId();
     const targetStatusSelectId = useId();
     const saveStatusId = useId();
+    // Without the admin key each rule opens read-only through View; everything that changes a rule is disabled.
+    const readOnlyNote = useSettingsReadOnly();
+    const readOnly = readOnlyNote !== null;
 
     const eventLabel = (eventType: GitHubAutomationEventType) => {
         const option = eventOptions.find(candidate => candidate.value === eventType);
@@ -280,6 +284,7 @@ export const GitHubSettingsPanel = () => {
     const isSaving = createMutation.isPending || updateMutation.isPending;
     const rowMutationPending = toggleMutation.isPending || deleteMutation.isPending;
     const formLocked = isSaving || rowMutationPending;
+    const viewingRule = readOnly && editingRuleId !== null;
 
     return (
         <div className="max-w-6xl space-y-5">
@@ -302,8 +307,8 @@ export const GitHubSettingsPanel = () => {
                         size="sm"
                         className="w-full shrink-0 sm:w-auto"
                         onClick={() => requestDraftTransition(resetFormNow)}
-                        disabled={formLocked}
-                        aria-describedby={formLocked ? saveStatusId : undefined}
+                        disabled={formLocked || readOnly}
+                        aria-describedby={readOnly ? readOnlyNote?.noteId : formLocked ? saveStatusId : undefined}
                         title={formLocked ? t('settingsGithubAutomation.rowUpdateInProgress') : undefined}
                     >
                         <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
@@ -311,11 +316,15 @@ export const GitHubSettingsPanel = () => {
                     </Button>
                 </div>
 
+                {readOnly && !viewingRule && (
+                    <p className="text-sm text-content-secondary">{t('settingsGithubAutomation.readOnlyHint')}</p>
+                )}
+                {(!readOnly || viewingRule) && (
                 <fieldset
                     className="contents"
-                    disabled={formLocked}
+                    disabled={formLocked || readOnly}
                     aria-busy={formLocked}
-                    aria-describedby={formLocked ? saveStatusId : undefined}
+                    aria-describedby={readOnly ? readOnlyNote?.noteId : formLocked ? saveStatusId : undefined}
                 >
                     <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
                         <div className="lg:col-span-3">
@@ -405,6 +414,7 @@ export const GitHubSettingsPanel = () => {
                         </div>
                     </div>
 
+                    {!readOnly && (
                     <div className="flex flex-col-reverse items-stretch justify-end gap-2 sm:flex-row sm:items-center">
                         {editingRuleId !== null && (
                             <Button
@@ -422,7 +432,17 @@ export const GitHubSettingsPanel = () => {
                             {editingRuleId !== null ? t('settingsGithubAutomation.saveRule') : t('settingsGithubAutomation.createRule')}
                         </Button>
                     </div>
+                    )}
                 </fieldset>
+                )}
+                {viewingRule && (
+                    <div className="flex justify-end">
+                        <Button variant="ghost" size="sm" className="w-full sm:w-auto" onClick={resetFormNow}>
+                            <X aria-hidden="true" className="mr-1 h-4 w-4" />
+                            {t('actions.close')}
+                        </Button>
+                    </div>
+                )}
 
                 <p id={saveStatusId} className="min-h-4 text-right text-xs text-content-secondary" aria-live="polite">
                     {isSaving
@@ -467,7 +487,7 @@ export const GitHubSettingsPanel = () => {
                                                 <Checkbox
                                                     checked={rule.enabled}
                                                     onChange={checked => toggleMutation.mutate({ ruleId: rule.id, enabled: checked })}
-                                                    disabled={isSaving || rowMutationPending}
+                                                    disabled={readOnly || isSaving || rowMutationPending}
                                                     aria-label={t(
                                                         rule.enabled
                                                             ? 'settingsGithubAutomation.disableRule'
@@ -503,18 +523,20 @@ export const GitHubSettingsPanel = () => {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => handleEdit(rule)}
-                                                    disabled={isSaving || rowMutationPending}
-                                                    aria-label={t('settingsGithubAutomation.editRule', { name: display.name })}
-                                                    title={rowDisabledReason}
+                                                    disabled={!readOnly && (isSaving || rowMutationPending)}
+                                                    aria-label={t(readOnly ? 'settingsGithubAutomation.viewRule' : 'settingsGithubAutomation.editRule', { name: display.name })}
+                                                    title={readOnly ? undefined : rowDisabledReason}
                                                 >
-                                                    <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />
+                                                    {readOnly
+                                                        ? <Eye aria-hidden="true" className="h-3.5 w-3.5" />
+                                                        : <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />}
                                                 </Button>
                                                 <Button
                                                     variant="danger"
                                                     size="sm"
                                                     onClick={() => handleDelete(rule)}
                                                     isLoading={isDeleting}
-                                                    disabled={isSaving || rowMutationPending}
+                                                    disabled={readOnly || isSaving || rowMutationPending}
                                                     aria-busy={isDeleting}
                                                     aria-label={t('settingsGithubAutomation.deleteRule', { name: display.name })}
                                                     title={rowDisabledReason}
