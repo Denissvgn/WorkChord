@@ -3710,7 +3710,7 @@
 /* ── App shell ────────────────────────────────────────────────────────────── */
 .wc.app {
   display: grid;
-  grid-template-rows: 52px 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
@@ -3722,7 +3722,7 @@
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) auto;
   align-items: center;
-  height: 52px;
+  grid-template-rows: 51px auto; /* with the 1px bottom border, the bar's own row is still 52px */
   border-bottom: 1px solid var(--wc-shell-line);
   background: var(--wc-shell);
   color: var(--wc-shell-ink);
@@ -3796,6 +3796,12 @@
 .wc .nav-right {
   display: flex; align-items: center; gap: 8px; padding: 0 14px;
 }
+/* The account menu panel opens in this row under the bar's controls, so it pushes the workspace down. */
+.wc .topnav-account-row {
+  grid-column: 1 / -1; grid-row: 2;
+  display: flex; justify-content: flex-end; min-width: 0; padding-inline: 14px;
+}
+.wc .topnav-account-row:empty { display: none; }
 .wc .command-menu-trigger {
   display: inline-flex;
   min-height: 34px;
@@ -4296,6 +4302,9 @@
   display: grid;
   grid-template-columns: 220px 1fr;
   height: 100%; overflow: hidden;
+  /* Absolutely positioned content (for example screen-reader-only labels) is contained here, so the top bar's
+     account panel can push this area down without that content spilling past the window. */
+  position: relative;
 }
 .wc .sidebar {
   border-right: 1px solid var(--border);

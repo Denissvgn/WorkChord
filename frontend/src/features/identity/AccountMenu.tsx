@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useId, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,17 +16,20 @@ import api from '../../services/api';
 import { useIdentity } from './identityContext';
 import { identityService } from './identityService';
 import { LocalProfilePicker } from './LocalProfilePicker';
+import { AccountMenuRowContext } from './accountMenuRow';
 
 /**
  * The top-bar account menu: who the work is done as, how the sign-in is established,
- * whether editing is unlocked, and links to My preferences and Access. It is a popover
- * under its button that closes on Escape and on an outside click.
+ * whether editing is unlocked, and links to My preferences and Access. The panel opens in the top bar's own row,
+ * so it sits in the page flow and pushes the workspace down rather than covering it. It closes on Escape and on
+ * an outside click, and focus returns to its button.
  */
 export const IdentityBadge = () => {
     const context = useIdentity();
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const { hasAdminKey } = useAdminAccess();
+    const accountMenuRow = useContext(AccountMenuRowContext);
     const panelId = useId();
     const [open, setOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -36,6 +40,7 @@ export const IdentityBadge = () => {
     const [keyMessage, setKeyMessage] = useState<string | null>(null);
     const [verifying, setVerifying] = useState(false);
     const wrapper = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
     const trigger = useRef<HTMLButtonElement>(null);
     const operator = context?.identity?.workspace_role === 'owner' || context?.identity?.workspace_role === 'operator';
     // feedback-policy: query loading,error,retry,empty
@@ -49,7 +54,9 @@ export const IdentityBadge = () => {
     useEffect(() => {
         if (!open) return;
         const onPointerDown = (event: PointerEvent) => {
-            if (wrapper.current?.contains(event.target as Node)) return;
+            const target = event.target as Node;
+            // The panel renders in the top bar's row, outside the trigger's wrapper, so both count as inside.
+            if (wrapper.current?.contains(target) || panelRef.current?.contains(target)) return;
             close(false);
             // The pointer's default action moves focus to the clicked control after this handler, so the return
             // waits for it. A dialog that the click opened keeps its own focus.
@@ -138,26 +145,14 @@ export const IdentityBadge = () => {
 
     const performSignOut = () => { void context.signOut(); };
 
-    return <div ref={wrapper} className="relative flex items-center gap-2">
-        <button
-            ref={trigger}
-            type="button"
-            className="session-badge cursor-pointer"
-            aria-label={t('identity.accountMenu')}
-            aria-expanded={open}
-            aria-haspopup="dialog"
-            aria-controls={open ? panelId : undefined}
-            onClick={() => (open ? close(true) : setOpen(true))}
-        >
-            <User className="h-4 w-4" aria-hidden="true" />
-            <strong>{name}</strong>
-        </button>
-        {open && <div
-            id={panelId}
-            role="dialog"
-            aria-label={t('identity.accountMenu')}
-            className="absolute right-0 top-full z-50 mt-2 max-h-[80vh] w-80 max-w-[90vw] space-y-4 overflow-y-auto rounded-xl border border-border bg-surface-card p-4 text-sm text-content-primary shadow-lg"
-        >
+    const panel = open && <div
+        ref={panelRef}
+        id={panelId}
+        role="dialog"
+        aria-label={t('identity.accountMenu')}
+        className="my-2 max-h-[60vh] w-full space-y-4 overflow-y-auto rounded-xl border border-border bg-surface-card p-4 text-sm text-content-primary shadow-lg"
+    >
+        <div className="grid gap-4 md:grid-cols-3">
             <section className="space-y-2" aria-labelledby={`${panelId}-working`}>
                 <h3 id={`${panelId}-working`} className="font-semibold">{t('identity.workingAsHeading')}</h3>
                 {local ? <>
@@ -228,13 +223,31 @@ export const IdentityBadge = () => {
                 </form>}
                 {keyMessage && <p role="alert" className="text-feedback-danger-foreground">{keyMessage}</p>}
             </section>
+        </div>
 
-            <nav aria-label={t('identity.accountLinks')} className="flex flex-col gap-1 border-t border-border pt-3">
-                <Link className="underline" to="/settings?tab=theme" onClick={() => close(false)}>{t('settingsPage.groups.myPreferences')}</Link>
-                <Link className="underline" to="/settings?tab=access" onClick={() => close(false)}>{t('settingsPage.sections.access')}</Link>
-            </nav>
+        <nav aria-label={t('identity.accountLinks')} className="flex flex-wrap gap-x-4 gap-y-1 border-t border-border pt-3">
+            <Link className="underline" to="/settings?tab=theme" onClick={() => close(false)}>{t('settingsPage.groups.myPreferences')}</Link>
+            <Link className="underline" to="/settings?tab=access" onClick={() => close(false)}>{t('settingsPage.sections.access')}</Link>
+        </nav>
 
-            {error && <p role="alert" className="text-feedback-danger">{error}</p>}
-        </div>}
+        {error && <p role="alert" className="text-feedback-danger">{error}</p>}
+    </div>;
+
+    return <div ref={wrapper} className="relative flex items-center gap-2">
+        <button
+            ref={trigger}
+            type="button"
+            className="session-badge cursor-pointer"
+            aria-label={t('identity.accountMenu')}
+            aria-expanded={open}
+            aria-haspopup="dialog"
+            aria-controls={open ? panelId : undefined}
+            onClick={() => (open ? close(true) : setOpen(true))}
+        >
+            <User className="h-4 w-4" aria-hidden="true" />
+            <strong>{name}</strong>
+        </button>
+        {/* In the top bar this is the bar's own row; elsewhere (tests, standalone use) the panel stays beside the trigger. */}
+        {panel && (accountMenuRow ? createPortal(panel, accountMenuRow) : panel)}
     </div>;
 };

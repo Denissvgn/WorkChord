@@ -5,6 +5,7 @@ import type { AxiosAdapter, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { IdentityProvider } from './IdentityProvider';
 import { IdentityBadge } from './AccountMenu';
+import { AppTopNav } from '../../components/layout/AppTopNav';
 import api, { IDENTITY_EXPIRED_EVENT } from '../../services/api';
 import { clearAdminApiKey, hasAdminApiKey } from '../../utils/adminAccess';
 
@@ -30,6 +31,24 @@ vi.mock('./identityService', () => ({ identityService: service }));
 
 const team = vi.hoisted(() => ({ getProfiles: vi.fn() }));
 vi.mock('../../services/teamService', () => ({ teamService: team }));
+
+// The top bar that holds the menu renders its scope and navigation summary; these keep it offline in the layout test.
+const topBarMocks = vi.hoisted(() => ({
+    summary: vi.fn(),
+    iterations: vi.fn(),
+    projects: vi.fn(),
+    triage: vi.fn(),
+}));
+vi.mock('../planningMasters/usePlanningNavigationSummary', () => ({
+    usePlanningNavigationSummary: topBarMocks.summary,
+}));
+vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: topBarMocks.iterations } }));
+vi.mock('../../services/projectService', () => ({ projectService: { getAll: topBarMocks.projects } }));
+vi.mock('../../services/triageService', () => ({ triageService: { getAll: topBarMocks.triage } }));
+vi.mock('../../navigation/routeModules', async importOriginal => ({
+    ...await importOriginal<typeof import('../../navigation/routeModules')>(),
+    warmRouteModule: vi.fn(),
+}));
 
 const localWorkspace = {
     mode: 'trusted_local',
@@ -203,5 +222,36 @@ describe('account menu', () => {
 
         expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument();
         expect(trigger).toHaveFocus();
+    });
+
+    it('keeps a right-aligned page header action visible and clickable while the menu is open', async () => {
+        topBarMocks.summary.mockReturnValue({ iterations: [], ready: { done: 0, total: 0, pct: 0 } });
+        topBarMocks.iterations.mockResolvedValue([]);
+        topBarMocks.projects.mockResolvedValue([]);
+        topBarMocks.triage.mockResolvedValue([]);
+        const onExport = vi.fn();
+        const { user } = renderWithProviders(<IdentityProvider>
+            <AppTopNav />
+            <main>
+                <header className="flex items-center justify-between">
+                    <h1>Projects</h1>
+                    <button type="button" onClick={onExport}>Export projects</button>
+                </header>
+            </main>
+        </IdentityProvider>, { initialEntries: ['/projects'] });
+
+        await user.click(await screen.findByRole('button', { name: 'Account and access' }));
+        const menu = screen.getByRole('dialog', { name: 'Account and access' });
+        const action = screen.getByRole('button', { name: 'Export projects' });
+
+        // The panel opens in the top bar's own row, which is in the page flow: it is not an overlay on the workspace.
+        expect(menu.closest('[data-testid="app-navbar"] .topnav-account-row')).not.toBeNull();
+        expect(menu.closest('main')).toBeNull();
+        expect(action).toBeVisible();
+        expect(action).toBeEnabled();
+
+        await user.click(action);
+        expect(onExport).toHaveBeenCalledTimes(1);
+        expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument();
     });
 });
