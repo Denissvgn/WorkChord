@@ -1,11 +1,11 @@
+import { TaskAssigneeDisplay } from '../TaskAssigneeDisplay';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
 import type { Task } from '../../../types/task';
-import { Bot, Clock, User as UserIcon, AlertCircle, GripVertical } from 'lucide-react';
+import { Clock, AlertCircle, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
 import { formatEffortDays } from '../../../utils/workNumbers';
-import { formatClaimUntil } from './claimTime';
 import { priorityChipClassName } from '../../ui/tone';
 
 
@@ -17,7 +17,6 @@ interface KanbanCardProps {
 export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
     const { t, i18n } = useTranslation();
     const effort = formatEffortDays(task.effort_days, i18n.language);
-    const claimUntil = task.claim_expires_at ? formatClaimUntil(task.claim_expires_at, i18n.language) : null;
     const {
         attributes,
         listeners,
@@ -65,7 +64,7 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
                     </button>
                 </div>
-                {(task.is_overdue || task.claimed_by) && (
+                {task.is_overdue && (
                     <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                         {task.is_overdue && (
                             <span className="flex items-center gap-1 text-feedback-danger-foreground">
@@ -73,14 +72,7 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                                 {t('surfaces.kanbanCard.overdue')}
                             </span>
                         )}
-                        {task.claimed_by && (
-                            <span className="flex items-center gap-1 text-content-secondary">
-                                <Bot className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                {claimUntil
-                                    ? t('surfaces.kanbanCard.claimHeldUntil', { name: task.claimed_by.display_name, time: claimUntil })
-                                    : t('surfaces.kanbanCard.claimedBy', { name: task.claimed_by.display_name })}
-                            </span>
-                        )}
+
                     </div>
                 )}
 
@@ -94,22 +86,8 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                 </h4>
 
                 {/* Footer: Meta Info */}
-                <div className="flex items-center justify-between text-xs text-content-secondary">
-                    <div className="flex items-center gap-2">
-                        {task.assignee ? (
-                            <div className="flex items-center gap-1.5 bg-surface-muted px-2 py-1 rounded-md">
-                                <span className="w-4 h-4 rounded-full bg-feedback-indigo-muted text-feedback-indigo-foreground flex items-center justify-center text-wc-micro font-bold">
-                                    {task.assignee.name.charAt(0)}
-                                </span>
-                                <span className="max-w-[80px] truncate">{task.assignee.name}</span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md text-content-tertiary border border-border-subtle border-dashed">
-                                <UserIcon className="w-3 h-3" />
-                                <span>{t('surfaces.kanbanCard.unassigned')}</span>
-                            </div>
-                        )}
-                    </div>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-content-secondary">
+                    <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
 
                     <div className="flex items-center gap-1 bg-surface-muted px-2 py-1 rounded-md">
                         <Clock className="w-3 h-3 text-content-tertiary" aria-hidden="true" />

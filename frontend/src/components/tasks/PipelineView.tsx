@@ -1,6 +1,7 @@
+import { TaskAssigneeDisplay } from './TaskAssigneeDisplay';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Calendar, Folder, User } from 'lucide-react';
+import { Calendar, Folder } from 'lucide-react';
 import clsx from 'clsx';
 import type { Task } from '../../types/task';
 import { priorityChipClassName } from '../ui/tone';
@@ -8,6 +9,7 @@ import { AdminAccessGate } from '../settings/AdminAccessGate';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../feedback/QueryState';
 import { usePipeline } from './usePipeline';
 import { taskMatchesFilters } from '../../utils/taskFilters';
+import { pipelineTasksInScope } from '../../features/overview/overviewSignals';
 import type { TaskFilters } from './TaskFiltersBar';
 import type { LabelGroup } from '../../types/label';
 import type { ScopeIteration, ScopeProject } from '../../features/scope/workScope';
@@ -35,10 +37,8 @@ export function PipelineView({ query, project, iteration, search, agent, filters
     const { t } = useTranslation();
     const [params, setParams] = useSearchParams();
     const { pipeline, canRead, usableData, isPending, isError, error, refetch } = query;
-    const filterAndSegment = (tasks: Task[]) => tasks.filter(task => (
-        (project === undefined || project === 'all' || task.project_id === project)
-        && (iteration === undefined || (iteration === 'backlog' ? task.iteration_id === null : task.iteration_id === iteration))
-        && (!agent || task.claimed_by?.display_name === agent || task.assignee?.name === agent)
+    const filterAndSegment = (tasks: Task[]) => pipelineTasksInScope(tasks, project, iteration).filter(task => (
+        (!agent || task.claimed_by?.display_name === agent || task.assignee?.name === agent)
         && (!search || `${task.title} ${task.description ?? ''}`.toLowerCase().includes(search.toLowerCase()))
         && taskMatchesFilters(task, filters, labelGroups)
     ));
@@ -163,9 +163,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                         <p className="flex flex-wrap gap-x-3 text-xs text-content-secondary">
                                             {task.project && <span className="inline-flex items-center gap-1"><Folder aria-hidden="true" className="h-3.5 w-3.5" />{task.project.name}</span>}
                                             <span className="inline-flex items-center gap-1"><Calendar aria-hidden="true" className="h-3.5 w-3.5" />{effort}</span>
-                                            {task.claimed_by
-                                                ? <span className="inline-flex items-center gap-1"><User aria-hidden="true" className="h-3.5 w-3.5" />{t('agentPipeline.claimed', { name: task.claimed_by.display_name })}</span>
-                                                : task.assignee ? <span className="inline-flex items-center gap-1"><User aria-hidden="true" className="h-3.5 w-3.5" />{task.assignee.name}</span> : null}
+                                            <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
                                             {task.priority === 1 && <span className={`rounded px-1 ${priorityChipClassName(task.priority)}`}>{t('agentPipeline.urgent')}</span>}
                                         </p>
                                     </div>

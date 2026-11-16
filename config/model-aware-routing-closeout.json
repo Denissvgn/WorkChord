@@ -99,7 +99,7 @@
     },
     {
       "evidence": [
-        "frontend/src/components/settings/AgentModelAdministration.test.tsx",
+        "frontend/src/components/team/AgentModelAdministration.test.tsx",
         "frontend/src/components/agent/TaskRoutingPanel.test.tsx",
         "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx"
       ],
@@ -265,8 +265,8 @@
     },
     {
       "evidence": [
-        "frontend/src/components/settings/AgentModelAdministration.tsx",
-        "frontend/src/components/settings/AgentModelAdministration.test.tsx",
+        "frontend/src/components/team/AgentModelAdministration.tsx",
+        "frontend/src/components/team/AgentModelAdministration.test.tsx",
         "frontend/src/services/agentService.test.ts"
       ],
       "id": "MAR-UI-001",

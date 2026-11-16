@@ -20,7 +20,7 @@ import { labelService } from '../services/labelService';
 import { BacklogPanel } from '../components/tasks/BacklogPanel';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -175,8 +175,12 @@ const TasksPage = () => {
     const taskMode: TaskMode | null = requestedTaskMode === 'bulk' || requestedTaskMode === 'merge'
         ? requestedTaskMode
         : null;
+    // On the Backlog a new task goes to the scope's project with no iteration; All projects names no project.
+    const backlogProjectId = isBacklogView && typeof project === 'number' ? project : null;
+    const canCreateTask = isBacklogView ? backlogProjectId !== null : selectedIterationId > 0;
     const isCreateModalOpen = requestedTaskId === null
-        && (isCreating || (createTaskRequested && selectedIterationId > 0));
+        && (isCreating || (createTaskRequested && canCreateTask));
+    const queryClient = useQueryClient();
     const { t } = useTranslation();
     const activeFilterCount = countActiveFilters(filters);
 
@@ -391,9 +395,10 @@ const TasksPage = () => {
     const closeTaskCreator = useCallback(() => {
         setIsCreating(false);
         setCreateTitle('');
+        if (isBacklogView) void queryClient.invalidateQueries({ queryKey: ['backlog'] });
         if (!createTaskRequested) return;
         setTaskContextParam('create', null);
-    }, [createTaskRequested, setTaskContextParam]);
+    }, [createTaskRequested, isBacklogView, queryClient, setTaskContextParam]);
 
     const closeFocusedTask = useCallback(() => {
         updateSearchParams(next => {
@@ -485,7 +490,7 @@ const TasksPage = () => {
                     <Button
                         className="tasks-primary-action"
                         onClick={() => setIsCreating(true)}
-                        disabled={!ready || isCreating || selectedIterationId === 0}
+                        disabled={!ready || isCreating || !canCreateTask}
                     >
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('tasks.newTask')}
@@ -538,6 +543,12 @@ const TasksPage = () => {
         ]}
     />;
 
+    const taskCreator = isCreateModalOpen && <GuardedTaskModal
+        title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={closeTaskCreator}
+        iterationId={isBacklogView ? null : selectedIterationId} parentProjectId={backlogProjectId}
+        initialTitle={createTitle}
+    />;
+
     if (viewMode !== 'pipeline' && (!iterations || iterations.length === 0 || isBacklogView)) {
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
@@ -545,6 +556,7 @@ const TasksPage = () => {
                 secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
             <PageToolbar compact label={t('tasks.toolbar')} viewSwitch={viewSwitch} />
             <BacklogPanel />
+            {taskCreator}
             <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
                 title={task => task?.title ?? t('taskEditor.editTask')} />
         </PageLayout>;
@@ -729,10 +741,7 @@ const TasksPage = () => {
 
             {savedViewManager.dialogs}
 
-            {isCreateModalOpen && <GuardedTaskModal
-                title={t('tasks.createNewTask')} closeLabel={t('actions.close')}
-                onClose={closeTaskCreator} iterationId={selectedIterationId} initialTitle={createTitle}
-            />}
+            {taskCreator}
 
             {isImporting && (
                 <ImportTasksModal

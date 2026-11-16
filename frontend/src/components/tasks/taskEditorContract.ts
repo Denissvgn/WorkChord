@@ -70,7 +70,7 @@ export const emptyTaskBrief = (): TaskBrief => ({ schema_version: 1, goal: '', c
 export const TASK_EDITOR_FIELD_SCHEMA: {
     [K in keyof TaskEditorValues]: TaskEditorFieldDefinition<K>;
 } = {
-    owner_profile_id: { section: 'essential', availability: 'all-editors', defaultValue: ({ task }) => task?.owner_profile_id ?? null },
+    owner_profile_id: { section: 'advanced', availability: 'all-editors', defaultValue: ({ task }) => task?.owner_profile_id ?? null },
     brief: { section: 'essential', availability: 'all-editors', defaultValue: ({ task }) => task ? task.brief ?? null : emptyTaskBrief() },
     estimate_provenance: { section: 'planning', availability: 'all-editors', defaultValue: ({ task }) => task?.effort_hours == null ? 'unknown' : task.estimate_provenance === 'assumed' ? 'assumed' : 'estimated' },
     title: {

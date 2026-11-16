@@ -1,7 +1,7 @@
 import type { Task } from '../types/task';
 import type { LabelGroup } from '../types/label';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
-import { taskMatchesPlanningIssue } from '../features/planningMasters/planningTaskIssues';
+import { isFinished, taskMatchesPlanningIssue } from '../features/planningMasters/planningTaskIssues';
 
 const taskHasAnyTag = (task: Task, selectedTags: Set<string>) => {
     if (selectedTags.size === 0) return true;
@@ -104,8 +104,9 @@ export const taskMatchesFilters = (
 
     if (filters.isIterationOverflow !== undefined && filters.isIterationOverflow !== null
         && Boolean(task.is_iteration_overflow) !== filters.isIterationOverflow) return false;
+    // Finished work is never blocked, even when its blocker was left in place.
     if (filters.isBlocked !== undefined && filters.isBlocked !== null
-        && Boolean(task.blocked_reason?.trim()) !== filters.isBlocked) return false;
+        && (Boolean(task.blocked_reason?.trim()) && !isFinished(task)) !== filters.isBlocked) return false;
 
     if (filters.agentReady !== null && task.agent_readiness.is_ready !== filters.agentReady) {
         return false;
