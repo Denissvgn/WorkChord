@@ -1919,6 +1919,14 @@ export const russianResources = {
                     browser: 'Сохраняется в этом браузере',
                     workspace: 'Сохраняется для всего пространства',
                 },
+                savedInPart: {
+                    browser: '{{part}}: сохраняются в этом браузере',
+                    workspace: '{{part}}: сохраняются для всего пространства',
+                },
+                savedInParts: {
+                    accessKeys: 'Ключи администратора и агентов',
+                    connectedReaders: 'Подключённые читатели',
+                },
                 descriptions: {
                     theme: 'Выберите цвета WorkChord в этом браузере.',
                     shortcuts: 'Разрешите или запретите запуск быстрых действий с задачами одной клавишей.',

@@ -5,6 +5,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
+import { ReadOnlyFieldset } from './ReadOnlyFieldset';
 import type { SchedulingPass, SortCriterion } from '../../types/schedulingRules';
 import { TASK_FIELDS, FILTER_FIELDS, OPERATORS, FILTER_VALUES } from '../../types/schedulingRules';
 import { schedulingPassDisplay } from '../../i18n/schedulingDisplay';
@@ -116,6 +117,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
         >
             {/* Header */}
             <div className="flex flex-wrap items-start gap-3 p-4 sm:flex-nowrap sm:items-center sm:gap-4">
+                <ReadOnlyFieldset>
                 <button
                     type="button"
                     {...attributes}
@@ -131,6 +133,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     onChange={handleToggleEnabled}
                     aria-label={t('settingsScheduling.aria.enablePass', { id: pass.id })}
                 />
+                </ReadOnlyFieldset>
 
                 <button
                     type="button"
@@ -159,6 +162,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     )}
                 </button>
 
+                <ReadOnlyFieldset>
                 <button
                     type="button"
                     onClick={onRemove}
@@ -168,10 +172,12 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                 >
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </button>
+                </ReadOnlyFieldset>
             </div>
 
             {/* Expanded Details */}
             {expanded && (
+                <ReadOnlyFieldset>
                 <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-6 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
                     {/* Basic Info */}
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -357,6 +363,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                         </div>
                     </div>
                 </div>
+                </ReadOnlyFieldset>
             )}
         </div>
     );

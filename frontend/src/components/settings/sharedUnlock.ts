@@ -13,3 +13,18 @@ export interface SharedUnlock {
 export const SharedUnlockContext = createContext<SharedUnlock | null>(null);
 
 export const useSharedUnlock = () => useContext(SharedUnlockContext);
+
+/**
+ * Set by a gate around content that disables its own editing controls while
+ * the admin key is missing. Such content keeps its view controls (tabs, type
+ * lists, filters, expanders) usable, so readers can still look through it.
+ */
+export interface SettingsReadOnly {
+    /** Id of the element that says why the editing controls are disabled. */
+    noteId: string;
+}
+
+export const SettingsReadOnlyContext = createContext<SettingsReadOnly | null>(null);
+
+/** Null when the content may be edited. */
+export const useSettingsReadOnly = () => useContext(SettingsReadOnlyContext);

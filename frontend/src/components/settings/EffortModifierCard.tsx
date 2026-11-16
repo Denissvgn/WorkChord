@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
+import { ReadOnlyFieldset } from './ReadOnlyFieldset';
 import type { EffortModifier } from '../../types/schedulingRules';
 import { MATH_OPERATIONS, FORMULA_TEMPLATES, FORMULA_ASSIGNEE_FIELDS } from '../../types/schedulingRules';
 import { effortModifierDisplay } from '../../i18n/schedulingDisplay';
@@ -144,11 +145,13 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
         >
             {/* Header */}
             <div className="flex flex-wrap items-center gap-3 p-4 sm:flex-nowrap sm:gap-4">
+                <ReadOnlyFieldset>
                 <Checkbox
                     checked={modifier.enabled}
                     onChange={handleToggleEnabled}
                     aria-label={t('settingsScheduling.aria.enableModifier', { id: modifier.id })}
                 />
+                </ReadOnlyFieldset>
 
                 <button
                     type="button"
@@ -179,6 +182,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                     </div>
                 )}
 
+                <ReadOnlyFieldset>
                 <button
                     type="button"
                     onClick={onRemove}
@@ -188,10 +192,12 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                 >
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </button>
+                </ReadOnlyFieldset>
             </div>
 
             {/* Expanded Details */}
             {expanded && (
+                <ReadOnlyFieldset>
                 <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-4 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
@@ -356,6 +362,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                         </div>
                     </div>
                 </div>
+                </ReadOnlyFieldset>
             )}
         </div>
     );

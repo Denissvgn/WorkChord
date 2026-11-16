@@ -2117,6 +2117,17 @@
   font-size: var(--wc-type-meta);
   font-weight: 500;
 }
+.wc .settings-destination-header .settings-saved-in-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wc .settings-destination-header .settings-saved-in-parts .settings-saved-in {
+  margin: 0;
+}
 .wc .settings-edit-lock {
   display: flex;
   flex-wrap: wrap;

@@ -10,15 +10,23 @@ const rulesService = vi.hoisted(() => ({ getRules: vi.fn() }));
 vi.mock('../services/schedulingRulesService', () => ({ schedulingRulesService: rulesService }));
 
 // Each protected panel is replaced by one field, so the test can tell whether it can be edited.
-const { field } = vi.hoisted(() => ({
-    field: (label: string) => () => <label>{label} <input defaultValue="value" /></label>,
-}));
+// Panels that lock only their own editing controls wrap that field the way the real panels do;
+// SettingsPage.readOnlyPanels.test.tsx runs those real panels.
+const { field, selfLockingField } = vi.hoisted(() => {
+    const field = (label: string) => () => <label>{label} <input defaultValue="value" /></label>;
+    const selfLockingField = async (label: string) => {
+        const { ReadOnlyFieldset } = await import('../components/settings/ReadOnlyFieldset');
+        const Field = field(label);
+        return () => <ReadOnlyFieldset><Field /></ReadOnlyFieldset>;
+    };
+    return { field, selfLockingField };
+});
 vi.mock('../components/settings/InterfaceLanguageSettings', () => ({ InterfaceLanguageSettings: field('Interface language') }));
-vi.mock('../components/settings/SchedulingRulesSettings', () => ({ SchedulingRulesSettings: field('Working hours') }));
-vi.mock('../components/settings/TemplateLabelSettings', () => ({ TemplateLabelSettings: field('Template name') }));
+vi.mock('../components/settings/SchedulingRulesSettings', async () => ({ SchedulingRulesSettings: await selfLockingField('Working hours') }));
+vi.mock('../components/settings/TemplateLabelSettings', async () => ({ TemplateLabelSettings: await selfLockingField('Template name') }));
 vi.mock('../components/settings/EmailSettingsPanel', () => ({ EmailSettingsPanel: field('Mail server') }));
 vi.mock('../components/settings/GitHubSettingsPanel', () => ({ GitHubSettingsPanel: field('Automation rule') }));
-vi.mock('../components/settings/OutboundWebhooksPanel', () => ({ OutboundWebhooksPanel: field('Webhook target') }));
+vi.mock('../components/settings/OutboundWebhooksPanel', async () => ({ OutboundWebhooksPanel: await selfLockingField('Webhook target') }));
 vi.mock('../components/settings/RuntimeConfigSettings', () => ({
     RuntimeConfigSettings: ({ parts }: { parts: string[] }) => <label>{`Server ${parts.join(' ')}`} <input defaultValue="value" /></label>,
 }));

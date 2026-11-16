@@ -57,6 +57,12 @@ type SettingsSectionId =
 type SettingsGroupId = 'myPreferences' | 'workspace' | 'connections' | 'accessSystem';
 /** Where a section's values are kept: in this browser only, or on the server for everyone. */
 type SavedIn = 'browser' | 'workspace';
+/** One part of a section whose parts are kept in different places. */
+interface SavedInPart {
+    /** Key under `settingsPage.savedInParts` naming the part. */
+    part: string;
+    savedIn: SavedIn;
+}
 
 interface SettingsSection {
     id: SettingsSectionId;
@@ -65,7 +71,7 @@ interface SettingsSection {
     /** Field labels and words people search for in this section. */
     keywordsKey: string;
     icon: LucideIcon;
-    savedIn: SavedIn;
+    savedIn: SavedIn | readonly SavedInPart[];
     /** Changes need the admin key; without it the section is read-only. */
     protected: boolean;
 }
@@ -80,7 +86,7 @@ const section = (
     id: SettingsSectionId,
     key: string,
     icon: LucideIcon,
-    savedIn: SavedIn,
+    savedIn: SettingsSection['savedIn'],
     isProtected: boolean,
 ): SettingsSection => ({
     id,
@@ -126,7 +132,11 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
         id: 'accessSystem',
         labelKey: 'settingsPage.groups.accessSystem',
         items: [
-            section('access', 'access', KeyRound, 'browser', false),
+            // The keys stay in this browser tab; revoking a connected reader ends its session on the server.
+            section('access', 'access', KeyRound, [
+                { part: 'accessKeys', savedIn: 'browser' },
+                { part: 'connectedReaders', savedIn: 'workspace' },
+            ], false),
             section('runtime', 'runtime', ServerCog, 'workspace', true),
             section('about', 'about', Activity, 'workspace', false),
         ],
@@ -178,14 +188,29 @@ const rememberSection = (id: SettingsSectionId) => {
     }
 };
 
-const SavedInNote = ({ savedIn }: { savedIn: SavedIn }) => {
+const SavedInNote = ({ savedIn }: { savedIn: SettingsSection['savedIn'] }) => {
     const { t } = useTranslation();
-    const Icon = savedIn === 'browser' ? Monitor : Building2;
+    const icon = (where: SavedIn) => {
+        const Icon = where === 'browser' ? Monitor : Building2;
+        return <Icon aria-hidden="true" className="h-3.5 w-3.5" />;
+    };
+    if (typeof savedIn === 'string') {
+        return (
+            <p className="settings-saved-in" data-saved-in={savedIn}>
+                {icon(savedIn)}
+                {t(`settingsPage.savedIn.${savedIn}`)}
+            </p>
+        );
+    }
     return (
-        <p className="settings-saved-in" data-saved-in={savedIn}>
-            <Icon aria-hidden="true" className="h-3.5 w-3.5" />
-            {t(`settingsPage.savedIn.${savedIn}`)}
-        </p>
+        <ul className="settings-saved-in-parts">
+            {savedIn.map(({ part, savedIn: where }) => (
+                <li key={part} className="settings-saved-in" data-saved-in={where}>
+                    {icon(where)}
+                    {t(`settingsPage.savedInPart.${where}`, { part: t(`settingsPage.savedInParts.${part}`) })}
+                </li>
+            ))}
+        </ul>
     );
 };
 
@@ -320,8 +345,9 @@ const SettingsPage = () => {
         </div>
     ) : null;
 
-    const gated = (content: ReactNode) => (
-        <AdminAccessGate showPanel={false} readable>{content}</AdminAccessGate>
+    /** `managesReadOnly`: the panel locks only its editing controls, so its tabs and filters still work. */
+    const gated = (content: ReactNode, { managesReadOnly = false } = {}) => (
+        <AdminAccessGate showPanel={false} readable managesReadOnly={managesReadOnly}>{content}</AdminAccessGate>
     );
 
     const sectionLink = (id: SettingsSectionId) => {
@@ -398,9 +424,9 @@ const SettingsPage = () => {
                     </section>
                 );
             case 'scheduling':
-                return gated(<SchedulingRulesSettings />);
+                return gated(<SchedulingRulesSettings />, { managesReadOnly: true });
             case 'templates_labels':
-                return gated(<TemplateLabelSettings />);
+                return gated(<TemplateLabelSettings />, { managesReadOnly: true });
             case 'notifications':
                 return gated(<EmailSettingsPanel />);
             case 'github':
@@ -411,7 +437,7 @@ const SettingsPage = () => {
                     </div>,
                 );
             case 'webhooks':
-                return gated(<OutboundWebhooksPanel />);
+                return gated(<OutboundWebhooksPanel />, { managesReadOnly: true });
             case 'web_intake':
                 return gated(<RuntimeConfigSettings parts={['webIntake']} />);
             case 'ai_provider':

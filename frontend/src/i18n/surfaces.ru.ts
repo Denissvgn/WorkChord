@@ -1009,6 +1009,10 @@ export const surfacesRussian = {
         templateDetails: "Детали шаблона",
         groupDetails: "Детали группы",
         labelDetails: "Детали метки",
+        view: "Открыть",
+        viewTemplate: "Открыть шаблон",
+        viewGroup: "Открыть группу",
+        viewLabel: "Открыть метку",
     },
     triagePage: {
         snoozedUntil: "Отложено до",

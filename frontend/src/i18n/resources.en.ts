@@ -1858,6 +1858,14 @@ export const englishResources = {
                     browser: 'Saved in this browser',
                     workspace: 'Saved for the whole workspace',
                 },
+                savedInPart: {
+                    browser: '{{part}}: saved in this browser',
+                    workspace: '{{part}}: saved for the whole workspace',
+                },
+                savedInParts: {
+                    accessKeys: 'Admin and agent keys',
+                    connectedReaders: 'Connected readers',
+                },
                 descriptions: {
                     theme: 'Choose the colors WorkChord uses in this browser.',
                     shortcuts: 'Choose whether expert task actions can run from one keystroke.',
@@ -4747,6 +4755,10 @@ export const englishResources = {
                     templateDetails: "Template details",
                     groupDetails: "Group details",
                     labelDetails: "Label details",
+                    view: "View",
+                    viewTemplate: "View template",
+                    viewGroup: "View group",
+                    viewLabel: "View label",
                 },
                 triagePage: {
                     snoozedUntil: "Snoozed until",

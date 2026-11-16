@@ -5,6 +5,7 @@ import {
     ChevronDown,
     ChevronUp,
     Edit3,
+    Eye,
     FileText,
     Plus,
     Save,
@@ -25,6 +26,7 @@ import { labelDisplay, labelGroupDisplay, templateDisplay } from '../../i18n/see
 import { useToast } from '../feedback/toast';
 import { OverflowMenu } from '../ui';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+import { useSettingsReadOnly } from './sharedUnlock';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 const arrayMove = <T,>(items: T[], from: number, to: number) => {
@@ -220,6 +222,8 @@ const waitForAllUpdates = async (updates: Promise<unknown>[]) => {
 
 interface TemplateRowProps {
     isBusy: boolean;
+    /** The template can be opened and read, but not changed. */
+    readOnly: boolean;
     template: WorkTemplate;
     isFirst: boolean;
     isLast: boolean;
@@ -228,8 +232,8 @@ interface TemplateRowProps {
     onMove: (template: WorkTemplate, direction: -1 | 1) => void;
 }
 
-/** One template: an "Active" switch with its label, Edit, and a menu that moves it up or down. */
-const TemplateRow = ({ isBusy, template, isFirst, isLast, onEdit, onToggleActive, onMove }: TemplateRowProps) => {
+/** One template: an "Active" switch with its label, Edit (View when read-only), and a menu that moves it up or down. */
+const TemplateRow = ({ isBusy, readOnly, template, isFirst, isLast, onEdit, onToggleActive, onMove }: TemplateRowProps) => {
     const { t } = useTranslation();
     const display = templateDisplay(template);
     const headingId = `work-template-${template.id}-heading`;
@@ -266,7 +270,7 @@ const TemplateRow = ({ isBusy, template, isFirst, isLast, onEdit, onToggleActive
                             type="checkbox"
                             role="switch"
                             checked={template.is_active}
-                            disabled={isBusy}
+                            disabled={isBusy || readOnly}
                             onChange={() => onToggleActive(template)}
                             aria-describedby={headingId}
                             className="h-4 w-4"
@@ -279,16 +283,16 @@ const TemplateRow = ({ isBusy, template, isFirst, isLast, onEdit, onToggleActive
                         size="sm"
                         onClick={() => onEdit(template)}
                         disabled={isBusy}
-                        aria-label={`${t('surfaces.templateLabels.editTemplate')}: ${display.name}`}
+                        aria-label={`${t(readOnly ? 'surfaces.templateLabels.viewTemplate' : 'surfaces.templateLabels.editTemplate')}: ${display.name}`}
                     >
-                        <Edit3 className="mr-1 h-4 w-4" aria-hidden="true" />
-                        {t('actions.edit')}
+                        {readOnly ? <Eye className="mr-1 h-4 w-4" aria-hidden="true" /> : <Edit3 className="mr-1 h-4 w-4" aria-hidden="true" />}
+                        {readOnly ? t('surfaces.templateLabels.view') : t('actions.edit')}
                     </Button>
                     <OverflowMenu
                         label={t('surfaces.templateLabels.rowActions', { name: display.name })}
                         items={[
-                            { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, -1), disabled: isBusy || isFirst },
-                            { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, 1), disabled: isBusy || isLast },
+                            { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, -1), disabled: isBusy || readOnly || isFirst },
+                            { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, 1), disabled: isBusy || readOnly || isLast },
                         ]}
                     />
                 </div>
@@ -301,6 +305,10 @@ export const TemplateLabelSettings = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const toast = useToast();
+    // Without the admin key, tabs, template types and "Include archived" still work and each
+    // item can be opened to read it; only the controls that change something are disabled.
+    const readOnlyNote = useSettingsReadOnly();
+    const readOnly = readOnlyNote !== null;
     const [activeSection, setActiveSection] = useState<ManagementSection>('templates');
     const [activeTemplateType, setActiveTemplateType] = useState<TemplateType>('task');
     const [templateForm, setTemplateForm] = useState<{ id: number | null; state: TemplateFormState } | null>(null);
@@ -632,7 +640,7 @@ export const TemplateLabelSettings = () => {
                                 <h3 id="template-list-heading" className="text-lg font-semibold text-content-primary">{t('surfaces.templateLabels.templates')}</h3>
                                 <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.manageDefaultsUsedByCreateForms')}</p>
                             </div>
-                            <Button type="button" onClick={startCreateTemplate} disabled={templatesLoading || isTemplatesError || isTemplateListBusy}>
+                            <Button type="button" onClick={startCreateTemplate} disabled={readOnly || templatesLoading || isTemplatesError || isTemplateListBusy}>
                                 <Plus className="mr-2 h-4 w-4" />
                                 {t('surfaces.templateLabels.newTemplate')}
                             </Button>
@@ -672,6 +680,7 @@ export const TemplateLabelSettings = () => {
                                 {visibleTemplates.map((template, index) => (
                                     <TemplateRow
                                         isBusy={isTemplateListBusy}
+                                        readOnly={readOnly}
                                         key={template.id}
                                         template={template}
                                         isFirst={index === 0}
@@ -691,8 +700,8 @@ export const TemplateLabelSettings = () => {
                     {/* The editor opens in the shared drawer, beside the list at every width. */}
                     <SlideOverDrawer
                         open={templateForm !== null}
-                        title={templateForm?.id ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
-                        ariaLabel={templateForm?.id ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
+                        title={templateForm?.id && !readOnly ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
+                        ariaLabel={templateForm?.id && !readOnly ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
                         onClose={() => { if (!isTemplateListBusy) setTemplateForm(null); }}
                         closeDisabled={isTemplateListBusy}
                         closeLabel={t('surfaces.templateLabels.closeTemplateForm')}
@@ -700,7 +709,7 @@ export const TemplateLabelSettings = () => {
                     >
                         {templateForm && <div className="p-6">
                             <form onSubmit={saveTemplate}>
-                                <fieldset disabled={isTemplateListBusy} className="min-w-0 space-y-4">
+                                <fieldset disabled={isTemplateListBusy || readOnly} aria-describedby={readOnlyNote?.noteId} className="min-w-0 space-y-4">
                                 {templateFormError && (
                                     <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{templateFormError}</div>
                                 )}
@@ -841,7 +850,7 @@ export const TemplateLabelSettings = () => {
                                     />
                                     {t('surfaces.templateLabels.includeArchived')}
                                 </label>
-                                <Button type="button" onClick={() => setGroupForm({ id: null, state: emptyGroupForm(nextSortOrder(labelGroups)) })} disabled={labelsLoading || isLabelsError || isLabelsBusy}>
+                                <Button type="button" onClick={() => setGroupForm({ id: null, state: emptyGroupForm(nextSortOrder(labelGroups)) })} disabled={readOnly || labelsLoading || isLabelsError || isLabelsBusy}>
                                     <Plus className="mr-2 h-4 w-4" />
                                     {t('surfaces.templateLabels.newGroup')}
                                 </Button>
@@ -887,11 +896,13 @@ export const TemplateLabelSettings = () => {
                                             <OverflowMenu
                                                 label={t('surfaces.templateLabels.rowActions', { name: labelGroupDisplay(group).name })}
                                                 items={[
-                                                    { label: t('surfaces.templateLabels.editGroup'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setGroupForm({ id: group.id, state: groupToForm(group) }), disabled: isGroupListBusy },
-                                                    { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, -1), disabled: groupIndex === 0 || isGroupListBusy },
-                                                    { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, 1), disabled: groupIndex === labelGroups.length - 1 || isGroupListBusy },
+                                                    readOnly
+                                                        ? { label: t('surfaces.templateLabels.viewGroup'), icon: <Eye className="h-4 w-4" aria-hidden="true" />, onSelect: () => setGroupForm({ id: group.id, state: groupToForm(group) }), disabled: isGroupListBusy }
+                                                        : { label: t('surfaces.templateLabels.editGroup'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setGroupForm({ id: group.id, state: groupToForm(group) }), disabled: isGroupListBusy },
+                                                    { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, -1), disabled: readOnly || groupIndex === 0 || isGroupListBusy },
+                                                    { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, 1), disabled: readOnly || groupIndex === labelGroups.length - 1 || isGroupListBusy },
                                                     { label: group.is_active ? t('surfaces.templateLabels.archiveGroup') : t('surfaces.templateLabels.restoreGroup'), icon: <Archive className="h-4 w-4" aria-hidden="true" />,
-                                                        onSelect: () => toggleGroupMutation.mutate({ id: group.id, isActive: !group.is_active, name: labelGroupDisplay(group).name }), disabled: isGroupListBusy },
+                                                        onSelect: () => toggleGroupMutation.mutate({ id: group.id, isActive: !group.is_active, name: labelGroupDisplay(group).name }), disabled: readOnly || isGroupListBusy },
                                                 ]}
                                             />
                                         </div>
@@ -919,17 +930,19 @@ export const TemplateLabelSettings = () => {
                                                         <OverflowMenu
                                                             label={t('surfaces.templateLabels.rowActions', { name: labelDisplay(label).name })}
                                                             items={[
-                                                                { label: t('surfaces.templateLabels.editLabel'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setLabelForm({ id: label.id, state: labelToForm(label) }), disabled: isLabelListBusy },
-                                                                { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, -1), disabled: labelIndex === 0 || isLabelListBusy },
-                                                                { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, 1), disabled: labelIndex === group.labels.length - 1 || isLabelListBusy },
+                                                                readOnly
+                                                                    ? { label: t('surfaces.templateLabels.viewLabel'), icon: <Eye className="h-4 w-4" aria-hidden="true" />, onSelect: () => setLabelForm({ id: label.id, state: labelToForm(label) }), disabled: isLabelListBusy }
+                                                                    : { label: t('surfaces.templateLabels.editLabel'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setLabelForm({ id: label.id, state: labelToForm(label) }), disabled: isLabelListBusy },
+                                                                { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, -1), disabled: readOnly || labelIndex === 0 || isLabelListBusy },
+                                                                { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, 1), disabled: readOnly || labelIndex === group.labels.length - 1 || isLabelListBusy },
                                                                 { label: label.is_active ? t('surfaces.templateLabels.archiveLabel') : t('surfaces.templateLabels.restoreLabel'), icon: <Archive className="h-4 w-4" aria-hidden="true" />,
-                                                                    onSelect: () => toggleLabelMutation.mutate({ id: label.id, isActive: !label.is_active, name: labelDisplay(label).name }), disabled: isLabelListBusy },
+                                                                    onSelect: () => toggleLabelMutation.mutate({ id: label.id, isActive: !label.is_active, name: labelDisplay(label).name }), disabled: readOnly || isLabelListBusy },
                                                             ]}
                                                         />
                                                     </article>
                                                 ))
                                             )}
-                                            <Button type="button" variant="outline" size="sm" onClick={() => setLabelForm({ id: null, state: emptyLabelForm(group) })} disabled={isLabelListBusy}>
+                                            <Button type="button" variant="outline" size="sm" onClick={() => setLabelForm({ id: null, state: emptyLabelForm(group) })} disabled={readOnly || isLabelListBusy}>
                                                 <Plus className="mr-2 h-4 w-4" />
                                                 {t('surfaces.templateLabels.addLabel')}
                                             </Button>
@@ -947,7 +960,7 @@ export const TemplateLabelSettings = () => {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <h3 id="group-editor-heading" className="text-lg font-semibold text-content-primary">
-                                    {groupForm?.id ? t('surfaces.templateLabels.editGroup') : t('surfaces.templateLabels.groupDetails')}
+                                    {groupForm?.id && !readOnly ? t('surfaces.templateLabels.editGroup') : t('surfaces.templateLabels.groupDetails')}
                                 </h3>
                                 {groupForm && (
                                     <button
@@ -974,7 +987,7 @@ export const TemplateLabelSettings = () => {
                                         });
                                     }}
                                 >
-                                    <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
+                                    <fieldset disabled={isLabelsBusy || readOnly} aria-describedby={readOnlyNote?.noteId} className="min-w-0 space-y-4">
                                     <Input label={t('surfaces.templateLabels.key')} value={groupForm.state.key} onChange={event => updateGroupForm('key', event.target.value)} required />
                                     <Input label={t('surfaces.templateLabels.name')} value={groupForm.state.name} onChange={event => updateGroupForm('name', event.target.value)} required />
                                     <div>
@@ -1025,7 +1038,7 @@ export const TemplateLabelSettings = () => {
                         <div className="border-t border-border pt-6">
                             <div className="mb-4 flex items-center justify-between">
                                 <h3 id="label-editor-heading" className="text-lg font-semibold text-content-primary">
-                                    {labelForm?.id ? t('surfaces.templateLabels.editLabel') : t('surfaces.templateLabels.labelDetails')}
+                                    {labelForm?.id && !readOnly ? t('surfaces.templateLabels.editLabel') : t('surfaces.templateLabels.labelDetails')}
                                 </h3>
                                 {labelForm && (
                                     <button
@@ -1052,7 +1065,7 @@ export const TemplateLabelSettings = () => {
                                         });
                                     }}
                                 >
-                                    <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
+                                    <fieldset disabled={isLabelsBusy || readOnly} aria-describedby={readOnlyNote?.noteId} className="min-w-0 space-y-4">
                                     <div>
                                         <label htmlFor={labelGroupId} className="block text-sm font-medium text-content-primary mb-1">
                                             {t('surfaces.templateLabels.group')}

@@ -26,6 +26,7 @@ import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { formatDateTime } from '../../utils/formatDate';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
+import { useSettingsReadOnly } from './sharedUnlock';
 import type {
     OutboundWebhookDelivery,
     OutboundWebhookDeliveryStatus,
@@ -500,7 +501,11 @@ export const OutboundWebhooksPanel = () => {
     const targetActionPending = toggleMutation.isPending
         || deleteMutation.isPending
         || testMutation.isPending;
-    const formLocked = isSaving || targetActionPending;
+    // Without the admin key the targets and deliveries stay readable and the delivery
+    // filters keep working; everything that changes a target or sends a delivery is disabled.
+    const readOnlyNote = useSettingsReadOnly();
+    const readOnly = readOnlyNote !== null;
+    const formLocked = isSaving || targetActionPending || readOnly;
 
     if (targetsLoading) {
         return (
@@ -527,8 +532,8 @@ export const OutboundWebhooksPanel = () => {
                 last_error: t('settings.withheld.deliveryErrors'), last_response_body: t('settings.withheld.deliveryErrors'), 'event.payload_json': t('settings.withheld.eventPayloads'),
             }} />
             <SettingsUnsavedBar dirty={hasUnsavedChanges} hint={t('settings.unsaved.saveForm')} />
-            <form onSubmit={handleSubmit} className="card space-y-5" aria-busy={formLocked} noValidate>
-                <fieldset disabled={formLocked} className="contents">
+            <form onSubmit={handleSubmit} className="card space-y-5" aria-busy={isSaving || targetActionPending} noValidate>
+                <fieldset disabled={formLocked} aria-describedby={readOnlyNote?.noteId} className="contents">
                 <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-start">
                     <div className="flex min-w-0 items-center gap-3">
                         <div className="rounded-full bg-action p-2 text-content-emphasis">
@@ -711,7 +716,7 @@ export const OutboundWebhooksPanel = () => {
                                             <Checkbox
                                                 checked={target.enabled}
                                                 onChange={checked => toggleMutation.mutate({ targetId: target.id, enabled: checked })}
-                                                disabled={targetActionPending || isSaving}
+                                                disabled={readOnly || targetActionPending || isSaving}
                                                 aria-label={`${target.name}: ${t('settingsWebhooks.enabled')}`}
                                             />
                                             {toggleMutation.isPending && toggleMutation.variables?.targetId === target.id && (
@@ -753,7 +758,7 @@ export const OutboundWebhooksPanel = () => {
                                                 size="sm"
                                                 onClick={() => testMutation.mutate(target.id)}
                                                 isLoading={testMutation.isPending && testMutation.variables === target.id}
-                                                disabled={targetActionPending || isSaving}
+                                                disabled={readOnly || targetActionPending || isSaving}
                                                 aria-label={`${t('settingsWebhooks.test')}: ${target.name}`}
                                             >
                                                 <Send className="h-3.5 w-3.5" aria-hidden="true" />
@@ -763,7 +768,7 @@ export const OutboundWebhooksPanel = () => {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => handleEdit(target)}
-                                                disabled={targetActionPending || isSaving}
+                                                disabled={readOnly || targetActionPending || isSaving}
                                                 aria-label={`${t('actions.edit')}: ${target.name}`}
                                             >
                                                 <Edit2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -774,7 +779,7 @@ export const OutboundWebhooksPanel = () => {
                                                 size="sm"
                                                 onClick={() => handleDelete(target)}
                                                 isLoading={deleteMutation.isPending && deleteMutation.variables === target.id}
-                                                disabled={targetActionPending || isSaving}
+                                                disabled={readOnly || targetActionPending || isSaving}
                                                 aria-label={`${t('actions.delete')}: ${target.name}`}
                                             >
                                                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
@@ -895,7 +900,7 @@ export const OutboundWebhooksPanel = () => {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => retryMutation.mutate(delivery.id)}
-                                                    disabled={retryMutation.isPending}
+                                                    disabled={readOnly || retryMutation.isPending}
                                                     isLoading={retryMutation.isPending && retryMutation.variables === delivery.id}
                                                     aria-label={`${t('settingsWebhooks.retry')}: ${delivery.event.event_type}`}
                                                 >

@@ -106,6 +106,15 @@ describe('SettingsPage', () => {
                 await user.click(within(navigation).getByRole('link', { name }));
                 expect(sectionTitle()).toBe(name);
                 const header = sectionHeader().querySelector('header')!;
+                if (name === 'Access') {
+                    // The keys stay in this browser tab; revoking a connected reader changes the server.
+                    expect(within(header).getAllByRole('listitem').map(item => item.textContent)).toEqual([
+                        'Admin and agent keys: saved in this browser',
+                        'Connected readers: saved for the whole workspace',
+                    ]);
+                    expect(within(header).queryByText(/^Saved /)).toBeNull();
+                    continue;
+                }
                 const saved = within(header).getByText(/^Saved (in this browser|for the whole workspace)$/);
                 if (group.name === 'My preferences') {
                     expect(saved).toHaveTextContent('Saved in this browser');
