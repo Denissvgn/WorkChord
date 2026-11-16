@@ -99,6 +99,41 @@ describe('assignee consistency across task views', () => {
         expect(screen.getByText('Priya')).toBeInTheDocument();
     });
 
+    it('shows Owner when the loaded team has no row for the assignee', async () => {
+        services.team.mockResolvedValue([{ id: 8, name: 'Priya', profile_id: 11, profile: { profile_kind: 'human' } }]);
+        const { queryClient } = renderWithProviders(readView(base));
+        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.status).toBe('success'));
+        expect(await screen.findByText('Owner')).toBeInTheDocument();
+        expect(screen.getByText('Owner')).toHaveTextContent('Owner Builder');
+    });
+
+    it('requests task detail on the Gantt only for rows whose assignee is an agent', async () => {
+        services.team.mockResolvedValue([
+            { id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent' } },
+            { id: 8, name: 'Priya', profile_id: 11, profile: { profile_kind: 'human' } },
+        ]);
+        services.task.mockClear();
+        services.task.mockImplementation(async (id: number) => ({ ...base, id }));
+        const gantt = (fields: Partial<Task>) => {
+            const row = { ...base, ...fields } as Partial<Task>;
+            delete row.agent_readiness;
+            delete row.agent_working;
+            delete row.claimed_by;
+            return row as unknown as GanttTask;
+        };
+        const tasks = [
+            gantt({ id: 101 }),
+            gantt({ id: 102, title: 'Person task', assignee: { id: 8, name: 'Priya' } as Task['assignee'] }),
+            gantt({ id: 103, title: 'Unassigned task', assignee: null }),
+            gantt({ id: 104, title: 'Unscheduled person task', assignee: { id: 8, name: 'Priya' } as Task['assignee'], start_date: null, end_date: null }),
+        ];
+        const { queryClient } = renderWithProviders(<GanttChart iterationId={2} startDate="2026-11-16" endDate="2026-11-30" tasks={tasks} weekends={[]} holidays={[]} memberVacations={{}} />);
+        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.status).toBe('success'));
+        await waitFor(() => expect(services.task).toHaveBeenCalledWith(101));
+        expect(screen.getAllByText('Priya').length).toBeGreaterThan(0);
+        expect(services.task.mock.calls.map(([id]) => id)).toEqual([101]);
+    });
+
     it('keeps the full assignee name accessible and in the tooltip on a short Gantt bar', async () => {
         const name = 'Builder responsible for importing regional holidays and coordinating calendar updates';
         const task = { ...base, assignee: { id: 7, name }, end_date: base.start_date };

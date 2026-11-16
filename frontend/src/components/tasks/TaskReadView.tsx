@@ -116,7 +116,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                         {t(`statuses.${task.status}`)}
                     </span>
                     <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
-                    {task.owner && (!task.assignee || assigneeDisplay.profileId !== undefined || assigneeDisplay.teamReadFailed) && task.owner.id !== assigneeDisplay.profileId && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
+                    {task.owner && !assigneeDisplay.profileResolving && task.owner.id !== assigneeDisplay.profileId && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
                     {task.end_date && <span className="text-content-secondary">{t('taskView.due')} <b className="font-semibold text-content-primary">{formatDate(task.end_date, i18n.language)}</b></span>}
                     <span className="flex-1" />
                     <Button type="button" variant="ghost" size="sm" aria-label={t('taskView.copyLink')} title={t('taskView.copyLink')} onClick={() => { void copyLink(); }}>
