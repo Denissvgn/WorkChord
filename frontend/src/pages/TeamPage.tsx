@@ -4,10 +4,11 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
 import { Button } from '../components/common/Button';
-import { InlineEmptyState, PageHeader, PageLayout } from '../components/ui';
+import { PageHeader, PageLayout } from '../components/ui';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 import { AgentModelAdministration } from '../components/team/AgentModelAdministration';
 import { TeamDirectory, type DrawerTarget } from '../components/team/TeamDirectory';
+import { ConnectAgentSteps } from '../components/team/ConnectAgentSteps';
 
 const TEAM_TABS = ['members', 'models', 'connect'] as const;
 type TeamTab = (typeof TEAM_TABS)[number];
@@ -35,13 +36,13 @@ const TeamPage = () => {
             <PageHeader
                 title={t('teamPage.title')}
                 purpose={t('teamPage.purpose')}
-                primaryAction={(
+                primaryAction={activeTab !== 'connect' && (
                     <Button type="button" onClick={() => { openTab('members'); setDrawer({ mode: 'add' }); }}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('teamPage.addPerson')}
                     </Button>
                 )}
-                secondaryActions={(
+                secondaryActions={activeTab !== 'connect' && (
                     <Button type="button" variant="secondary" onClick={() => { setDrawer(null); openTab('connect'); }}>
                         {t('teamPage.connectAgent')}
                     </Button>
@@ -93,7 +94,7 @@ const TeamPage = () => {
                     <AgentModelAdministration />
                 )}
                 {activeTab === 'connect' && (
-                    <InlineEmptyState title={t('teamPage.connectPlaceholderTitle')} description={t('teamPage.connectPlaceholderBody')} />
+                    <ConnectAgentSteps />
                 )}
             </div>
         </PageLayout>
