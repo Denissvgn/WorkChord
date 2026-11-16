@@ -1,114 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, Command, Menu, X } from 'lucide-react';
+import { Command, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { triageService } from '../../services/triageService';
-import { usePlanningNavigationSummary } from '../../features/planningMasters/usePlanningNavigationSummary';
-import { getWorkspaceForPath, WORKSPACES } from '../../navigation/workspaces';
-import type { WorkspaceMetadata } from '../../navigation/workspaces';
+import { getDestinationForPath } from '../../navigation/destinations';
 import { metadataForPath, warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
 import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
-import type { SidebarAttentionAction } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
 import { ContextHelp } from './ContextHelp';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
-interface WorkspaceAttention {
-    badge: string;
-    label: string;
-    isError?: boolean;
-}
-
 const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
 
-const WorkspaceSwitchLink = ({
-    workspace,
-    active,
-    variant,
-    onNavigate,
-    attention,
-}: {
-    workspace: WorkspaceMetadata;
-    active: boolean;
-    variant: 'desktop' | 'mobile';
-    onNavigate?: () => void;
-    attention?: WorkspaceAttention;
-}) => {
-    const { t } = useTranslation();
-    const scopeLink = useScopeLink();
-    const Icon = workspace.icon;
-    const label = t(workspace.labelKey, workspace.defaultLabel);
-    const description = t(workspace.descriptionKey, workspace.defaultDescription);
-    const homeLabel = t('nav.openWorkAreaHome', { area: label });
-    const attentionDescriptionId = attention
-        ? `workspace-${variant}-${workspace.key}-attention`
-        : undefined;
-
-    return (
-        <span className={variant === 'desktop' ? 'workspace-switch-item' : 'mobile-workspace-item'}>
-            <Link
-                to={scopeLink(workspace.defaultPath)}
-                className={variant === 'desktop' ? 'nav-tab nav-workspace-tab' : 'mobile-workspace-link'}
-                aria-current={active ? 'location' : undefined}
-                aria-label={homeLabel}
-                aria-describedby={attentionDescriptionId}
-                title={t('nav.workAreaHomeHint', { area: label, description })}
-                onClick={onNavigate}
-                onFocus={() => { void warmRouteModule(workspace.defaultPath); }}
-                onMouseEnter={() => { void warmRouteModule(workspace.defaultPath); }}
-            >
-                <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                <span className="workspace-switch-copy">
-                    <span>{label}</span>
-                    {variant === 'mobile' && (
-                        <>
-                            <small>{description}</small>
-                            {attention && (
-                                <small
-                                    id={attentionDescriptionId}
-                                    className={`mobile-workspace-attention-copy${attention.isError ? ' error' : ''}`}
-                                >
-                                    {attention.label}
-                                </small>
-                            )}
-                        </>
-                    )}
-                </span>
-                {attention && (
-                    <span
-                        className={`workspace-attention-status${attention.isError ? ' error' : ''}`}
-                        aria-hidden="true"
-                        title={attention.label}
-                    >
-                        {attention.isError ? <AlertTriangle className="h-3 w-3" /> : attention.badge}
-                    </span>
-                )}
-                {attention && variant === 'desktop' && (
-                    <span id={attentionDescriptionId} className="sr-only">
-                        {attention.label}
-                    </span>
-                )}
-            </Link>
-        </span>
-    );
-};
-
 export const AppTopNav = () => {
-    const {
-        iterations,
-        ready,
-        isIterationsError,
-        isReadinessLoading,
-        isReadinessError,
-    } = usePlanningNavigationSummary();
     const { t } = useTranslation();
     const location = useLocation();
     const scopeLink = useScopeLink();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const pendingWorkspaceFocusRef = useRef<WorkspaceMetadata['key'] | null>(null);
     const mobileNavRestoreFocusRef = useRef<HTMLElement | null>(null);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
         open: mobileMenuOpen,
@@ -116,63 +25,10 @@ export const AppTopNav = () => {
         restoreFocusRef: mobileNavRestoreFocusRef,
     });
 
-    const { data: triageItems = [], error: triageError } = useQuery({
-        queryKey: ['triage', { active: true, limit: 100 }],
-        queryFn: () => triageService.getAll({ active: true, limit: 100 }),
-        staleTime: 60000,
-    });
-
-    const pendingSteps = Math.max(0, ready.total - ready.done);
-    const isEmpty = iterations.length === 0;
-    const inboxCount = triageItems.length;
-    const currentWorkspace = getWorkspaceForPath(location.pathname);
-    const actionablePendingSteps = isEmpty ? 0 : pendingSteps;
-    const planningAttentionUnavailable = isIterationsError || isReadinessError;
-    const deliveryAttention: WorkspaceAttention | undefined = triageError
-        ? {
-            badge: '!',
-            label: t('nav.deliveryAttentionUnavailable'),
-            isError: true,
-        }
-        : inboxCount > 0
-            ? {
-                badge: String(inboxCount),
-                label: t('nav.deliveryAttentionIntake', { count: inboxCount }),
-            }
-            : undefined;
-    const planningAttention: WorkspaceAttention | undefined = isReadinessLoading
-        ? undefined
-        : planningAttentionUnavailable
-            ? {
-                badge: '!',
-                label: t('nav.planningAttentionUnavailable'),
-                isError: true,
-            }
-            : actionablePendingSteps > 0
-                ? {
-                    // Same "n of 6" notation as the plan page and the sidebar card.
-                    badge: `${ready.done}/${ready.total}`,
-                    label: t('nav.planningAttention', { count: actionablePendingSteps }),
-                }
-                : undefined;
-    const compactAttentionAction: SidebarAttentionAction | undefined = currentWorkspace.key === 'delivery'
-        && deliveryAttention
-        ? {
-            to: '/triage',
-            label: deliveryAttention.isError
-                ? t('nav.deliveryAttentionRetryAction')
-                : t('nav.deliveryAttentionAction', { count: inboxCount }),
-            isError: deliveryAttention.isError,
-        }
-        : currentWorkspace.key === 'planning' && planningAttention
-            ? {
-                to: '/plan/master',
-                label: planningAttention.isError
-                    ? t('nav.planningAttentionRetryAction')
-                    : t('nav.planningAttentionAction', { count: actionablePendingSteps }),
-                isError: planningAttention.isError,
-            }
-            : undefined;
+    const currentDestination = getDestinationForPath(location.pathname);
+    const currentPageName = currentDestination
+        ? t(currentDestination.labelKey, currentDestination.defaultLabel)
+        : t(metadataForPath(location.pathname).titleKey);
 
     useEffect(() => {
         if (typeof window === 'undefined' || !window.matchMedia) return undefined;
@@ -182,8 +38,9 @@ export const AppTopNav = () => {
             if (event.matches) return;
             setMobileMenuOpen(wasOpen => {
                 if (wasOpen) {
+                    // The drawer is gone at this width; hand focus to the same place in the sidebar.
                     mobileNavRestoreFocusRef.current = document.querySelector<HTMLElement>(
-                        '.nav-workspace-tab[aria-current]',
+                        '.sidebar [aria-current="page"]',
                     ) ?? document.querySelector<HTMLElement>('.brand');
                 }
                 return false;
@@ -193,21 +50,6 @@ export const AppTopNav = () => {
         drawerBreakpoint.addEventListener('change', closeDrawerOnDesktop);
         return () => drawerBreakpoint.removeEventListener('change', closeDrawerOnDesktop);
     }, []);
-
-    useEffect(() => {
-        if (
-            !mobileMenuOpen
-            || pendingWorkspaceFocusRef.current !== currentWorkspace.key
-        ) return;
-
-        pendingWorkspaceFocusRef.current = null;
-        const focusTarget = dialogRef.current?.querySelector<HTMLElement>(
-            '[data-sidebar-attention-action]',
-        ) ?? dialogRef.current?.querySelector<HTMLElement>(
-            '[data-sidebar-context-heading]',
-        );
-        focusTarget?.focus();
-    }, [currentWorkspace.key, dialogRef, mobileMenuOpen]);
 
     const closeForNavigation = () => {
         mobileNavRestoreFocusRef.current = document.getElementById('workspace-main');
@@ -240,29 +82,12 @@ export const AppTopNav = () => {
                 <span className="brand-label">{t('common.appName')}</span>
             </Link>
 
-            {/* Below 1180px the workspace tabs fold into the menu; the bar still names where you are. */}
-            <p className="topnav-location" data-testid="topnav-location">
-                <span className="topnav-location-area">{t(currentWorkspace.labelKey, currentWorkspace.defaultLabel)}</span>
-                <span className="topnav-location-page">{t(metadataForPath(location.pathname).titleKey)}</span>
-            </p>
-
-            <nav className="nav-tabs workspace-switcher" aria-label={t('nav.workAreaHomes')}>
-                {WORKSPACES.map(workspace => (
-                    <WorkspaceSwitchLink
-                        key={workspace.key}
-                        workspace={workspace}
-                        active={workspace.key === currentWorkspace.key}
-                        variant="desktop"
-                        attention={
-                            workspace.key === 'delivery'
-                                ? deliveryAttention
-                                : workspace.key === 'planning'
-                                    ? planningAttention
-                                    : undefined
-                        }
-                    />
-                ))}
-            </nav>
+            <div className="topnav-center">
+                {/* Below 1180px the sidebar folds into the drawer; the bar still names where you are. */}
+                <p className="topnav-location" data-testid="topnav-location">{currentPageName}</p>
+                {/* Reserved for the scope bar. */}
+                <div className="topnav-scope" data-slot="scope-bar" data-testid="topnav-scope-slot" />
+            </div>
 
             <div className="nav-right">
                 <button
@@ -316,64 +141,8 @@ export const AppTopNav = () => {
                             </button>
                         </div>
                         <div className="mobile-nav-content">
-                            <section className="mobile-nav-section" aria-labelledby="mobile-work-area-homes-heading">
-                                <div className="mobile-nav-section-copy">
-                                    <h3 id="mobile-work-area-homes-heading">{t('nav.workAreaHomes')}</h3>
-                                    <p>{t('nav.workAreaHomesHelp')}</p>
-                                </div>
-                                <nav className="mobile-workspace-switcher" aria-label={t('nav.workAreaHomes')}>
-                                    {WORKSPACES.map(workspace => (
-                                        <WorkspaceSwitchLink
-                                            key={workspace.key}
-                                            workspace={workspace}
-                                            active={workspace.key === currentWorkspace.key}
-                                            variant="mobile"
-                                            onNavigate={() => {
-                                                if (workspace.key === currentWorkspace.key) {
-                                                    closeForNavigation();
-                                                    return;
-                                                }
-                                                pendingWorkspaceFocusRef.current = workspace.key;
-                                            }}
-                                            attention={
-                                                workspace.key === 'delivery'
-                                                    ? deliveryAttention
-                                                    : workspace.key === 'planning'
-                                                        ? planningAttention
-                                                        : undefined
-                                            }
-                                        />
-                                    ))}
-                                </nav>
-                                {/* Every other workspace's pages, one expandable group each, so any page is two steps away. */}
-                                <div className="mobile-workspace-pages">
-                                    {WORKSPACES.filter(workspace => workspace.key !== currentWorkspace.key).map(workspace => (
-                                        <details key={workspace.key}>
-                                            <summary>{t('nav.workspacePages', { area: t(workspace.labelKey, workspace.defaultLabel) })}</summary>
-                                            <ul>
-                                                {workspace.items.map(item => {
-                                                    const ItemIcon = item.icon;
-                                                    return (
-                                                        <li key={item.to}>
-                                                            <Link to={scopeLink(item.to)} className="sb-item" onClick={closeForNavigation}>
-                                                                <ItemIcon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
-                                                                <span className="sb-label">{t(item.labelKey, item.defaultLabel)}</span>
-                                                            </Link>
-                                                        </li>
-                                                    );
-                                                })}
-                                            </ul>
-                                        </details>
-                                    ))}
-                                </div>
-                            </section>
-                            <nav aria-label={t('nav.areaDestinations', {
-                                area: t(currentWorkspace.labelKey, currentWorkspace.defaultLabel),
-                            })}>
-                                <SidebarContent
-                                    attentionAction={compactAttentionAction}
-                                    onNavigate={closeForNavigation}
-                                />
+                            <nav aria-label={t('nav.primaryNavigation')}>
+                                <SidebarContent onNavigate={closeForNavigation} />
                             </nav>
                         </div>
                     </aside>

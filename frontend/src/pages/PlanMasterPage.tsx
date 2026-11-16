@@ -38,7 +38,6 @@ import { Breadcrumbs } from '../components/layout/Breadcrumbs';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { useToast } from '../components/feedback/toast';
-import { MasterProgress } from '../components/ui/MasterProgress';
 import {
     isPlanningStepId,
     PLAN_RETURNED_PARAM,
@@ -1184,6 +1183,12 @@ const PlanMasterPage = () => {
                             ? currentIteration.name
                             : t('plan.master.noPeriodYet')}
                     </p>
+                    <p className="plan-master-progress-text tnum">
+                        {t('plan.master.checkpointsComplete', {
+                            done: ready.done,
+                            total: ready.total,
+                        })}
+                    </p>
                 </div>
                 <section
                     className="plan-master-mobile-context"
@@ -1201,23 +1206,7 @@ const PlanMasterPage = () => {
                                 ? currentIteration.name
                                 : t('plan.master.noPeriodYet')}
                         </span>
-                        <span className="tnum" aria-hidden="true">
-                            {t('plan.master.checkpointsComplete', {
-                                done: ready.done,
-                                total: ready.total,
-                            })}
-                        </span>
                     </div>
-                    <MasterProgress
-                        className="plan-master-mobile-progress"
-                        completed={ready.done}
-                        label={t('plan.master.summaryProgress')}
-                        total={ready.total}
-                        valueText={t('plan.master.checkpointsComplete', {
-                            done: ready.done,
-                            total: ready.total,
-                        })}
-                    />
                     <label className="plan-master-mobile-step-select">
                         <span>{t('plan.master.selectCheckpoint')}</span>
                         <select
@@ -1284,21 +1273,6 @@ const PlanMasterPage = () => {
                         >
                             {t('plan.master.planReadiness')}
                         </h2>
-                        <p className="wc-master-rail-progress-text" aria-hidden="true">
-                            {t('plan.master.checkpointsComplete', {
-                                done: ready.done,
-                                total: ready.total,
-                            })}
-                        </p>
-                        <MasterProgress
-                            completed={ready.done}
-                            label={t('plan.master.railProgress')}
-                            total={ready.total}
-                            valueText={t('plan.master.checkpointsComplete', {
-                                done: ready.done,
-                                total: ready.total,
-                            })}
-                        />
                     </header>
                     <nav aria-label={t('plan.master.checkpoints')}>
                         <ol className="step-rail plan-master-step-rail">

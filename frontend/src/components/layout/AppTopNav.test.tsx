@@ -1,9 +1,10 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppTopNav } from './AppTopNav';
+import { AppSidebar } from './AppSidebar';
 
-const planningReadinessMock = vi.hoisted(() => ({
+const planningSummaryMock = vi.hoisted(() => ({
     usePlanningNavigationSummary: vi.fn(),
 }));
 
@@ -11,118 +12,130 @@ const triageServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
-vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningReadinessMock);
+vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningSummaryMock);
 vi.mock('../../services/triageService', () => ({ triageService: triageServiceMock }));
 vi.mock('../../navigation/routeModules', async importOriginal => ({
     ...await importOriginal<typeof import('../../navigation/routeModules')>(),
     warmRouteModule: vi.fn(),
 }));
-vi.mock('../UserSessionBadge', () => ({ UserSessionBadge: () => null }));
-vi.mock('./AppSidebar', () => ({
-    SidebarContent: ({
-        attentionAction,
-        onNavigate,
-    }: {
-        attentionAction?: { label: string };
-        onNavigate?: () => void;
-    }) => (
-        <div>
-            <div data-sidebar-context-heading tabIndex={-1}>Contextual destinations</div>
-            {attentionAction && (
-                <button
-                    type="button"
-                    data-sidebar-attention-action
-                    onClick={onNavigate}
-                >
-                    {attentionAction.label}
-                </button>
-            )}
-            <details>
-                <summary>Views</summary>
-                <a href="/tasks?view=1">Hidden saved view</a>
-            </details>
-        </div>
-    ),
+vi.mock('../UserSessionBadge', () => ({
+    UserSessionBadge: () => <button type="button">Account menu</button>,
 }));
 
+const DESTINATION_NAMES = [
+    'Overview', 'My Work', 'Triage',
+    'Projects', 'Plan', 'Gantt',
+    'Tasks', 'Analytics',
+    'Team', 'Settings',
+];
+
 describe('AppTopNav', () => {
-    it('uses three workspace links and marks the active workspace for deep routes', () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [],
-            ready: { total: 0, done: 0 },
+    beforeEach(() => {
+        planningSummaryMock.usePlanningNavigationSummary.mockReset();
+        planningSummaryMock.usePlanningNavigationSummary.mockReturnValue({
+            iterations: [{ id: 1 }],
+            ready: { done: 6, total: 6, pct: 100 },
         });
+        triageServiceMock.getAll.mockReset();
         triageServiceMock.getAll.mockResolvedValue([]);
-
-        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
-
-        expect(screen.getByRole('link', { name: 'Go to WorkChord overview' }))
-            .toHaveAttribute('href', '/');
-
-        const switcher = screen.getByRole('navigation', { name: 'Work area homes' });
-        expect(within(switcher).getAllByRole('link')).toHaveLength(3);
-        expect(within(switcher).getByRole('link', { name: 'Open Timeline & Planning home' }))
-            .toHaveAttribute('aria-current', 'location');
-        expect(screen.getByRole('button', { name: 'Open help for Roadmap' })).toBeVisible();
     });
 
-    it('opens a labeled navigation drawer', async () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [],
-            ready: { total: 0, done: 0 },
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
+    it('holds the brand, a scope slot, Commands, Help and the account menu, left to right, with no tabs', () => {
+        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
 
+        const bar = screen.getByTestId('app-navbar');
+        const brand = screen.getByRole('link', { name: 'Go to WorkChord overview' });
+        const slot = screen.getByTestId('topnav-scope-slot');
+        const commands = screen.getByRole('button', { name: 'Open command menu' });
+        const help = screen.getByRole('button', { name: 'Open help for Roadmap' });
+        const account = screen.getByRole('button', { name: 'Account menu' });
+
+        expect(brand).toHaveAttribute('href', '/');
+        expect(slot).toBeEmptyDOMElement();
+        expect(slot).toHaveAttribute('data-slot', 'scope-bar');
+        const inOrder = [brand, slot, commands, help, account];
+        for (let index = 1; index < inOrder.length; index += 1) {
+            expect(
+                inOrder[index - 1]!.compareDocumentPosition(inOrder[index]!) & Node.DOCUMENT_POSITION_FOLLOWING,
+                `${index}`,
+            ).toBeTruthy();
+        }
+
+        expect(within(bar).queryByRole('navigation')).not.toBeInTheDocument();
+        expect(screen.queryByText('Delivery Hub')).not.toBeInTheDocument();
+        expect(screen.queryByText('Timeline & Planning')).not.toBeInTheDocument();
+        expect(screen.queryByText('Resource & Settings')).not.toBeInTheDocument();
+    });
+
+    it.each([
+        ['/tasks', 'Tasks'],
+        ['/roadmap', 'Projects'],
+        ['/projects/9', 'Projects'],
+        ['/plan/master', 'Plan'],
+        ['/calendar', 'Settings'],
+    ])('names the current destination on %s', (pathname, name) => {
+        renderWithProviders(<AppTopNav />, { initialEntries: [pathname] });
+
+        expect(screen.getByTestId('topnav-location')).toHaveTextContent(new RegExp(`^${name}$`));
+    });
+
+    it('names the page for a path no destination owns', () => {
+        renderWithProviders(<AppTopNav />, { initialEntries: ['/missing'] });
+
+        expect(screen.getByTestId('topnav-location').textContent).not.toBe('');
+    });
+
+    it('opens a drawer that lists the same ten destinations in one scroll', async () => {
+        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
+        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+
+        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+        expect(within(drawer).getByRole('heading', { level: 2, name: 'Primary navigation' })).toBeVisible();
+        expect(drawer.querySelectorAll('nav')).toHaveLength(1);
+        expect(within(drawer).getAllByRole('link').map(link => link.textContent)).toEqual(DESTINATION_NAMES);
+        expect(within(drawer).getAllByRole('group').map(group => group.getAttribute('aria-labelledby')
+            && document.getElementById(group.getAttribute('aria-labelledby')!)?.textContent))
+            .toEqual(['Plan', 'Deliver', 'Setup']);
+        expect(within(drawer).getByRole('link', { name: 'Tasks' })).toHaveAttribute('aria-current', 'page');
+        expect(within(drawer).queryByText('Work area homes')).not.toBeInTheDocument();
+        expect(within(drawer).queryByText('Views')).not.toBeInTheDocument();
+    });
+
+    it('moves focus into the drawer, tabs through the destinations in order and wraps back to Close', async () => {
+        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
+        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+
+        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+        const close = within(drawer).getByRole('button', { name: 'Close' });
+        expect(close).toHaveFocus();
+
+        const visited: string[] = [];
+        for (let index = 0; index < DESTINATION_NAMES.length; index += 1) {
+            await user.tab();
+            visited.push(document.activeElement?.textContent ?? '');
+        }
+        expect(visited).toEqual(DESTINATION_NAMES);
+
+        await user.tab();
+        expect(close).toHaveFocus();
+        await user.tab({ shift: true });
+        expect(within(drawer).getByRole('link', { name: 'Settings' })).toHaveFocus();
+    });
+
+    it('closes on Escape and returns focus to the button that opened it', async () => {
         const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
         const trigger = screen.getByRole('button', { name: 'Open navigation menu' });
         await user.click(trigger);
-
-        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        expect(within(drawer).getByRole('heading', {
-            level: 2,
-            name: 'Primary navigation',
-        })).toBeVisible();
-        expect(within(drawer).getByRole('heading', {
-            level: 3,
-            name: 'Work area homes',
-        })).toBeVisible();
-        expect(within(drawer).getByRole('link', { name: 'Open Delivery Hub home' }))
-            .toHaveAttribute('aria-current', 'location');
-        expect(within(drawer).getByText('Choose an area here; its link always opens that area’s home.'))
-            .toBeInTheDocument();
-        expect(within(drawer).getByText('Contextual destinations')).toBeInTheDocument();
-        expect(within(drawer).getByRole('button', { name: 'Close' }))
-            .toHaveClass('icon');
+        expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
         await user.keyboard('{Escape}');
+
         expect(screen.queryByRole('dialog', { name: 'Primary navigation' })).not.toBeInTheDocument();
         expect(trigger).toHaveAttribute('aria-expanded', 'false');
         expect(trigger).toHaveFocus();
     });
 
-    it('names the current page in the bar and reaches other workspaces in two steps', async () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [],
-            ready: { total: 0, done: 0 },
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/projects'] });
-        expect(screen.getByTestId('topnav-location')).toHaveTextContent('Delivery Hub');
-        expect(screen.getByTestId('topnav-location')).toHaveTextContent('Projects');
-
-        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
-        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        await user.click(within(drawer).getByText('Timeline & Planning pages'));
-        expect(within(drawer).getByRole('link', { name: 'Gantt' })).toHaveAttribute('href', '/gantt');
-    });
-
-    it('moves focus into the committed workspace after drawer navigation', async () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [],
-            ready: { total: 0, done: 0 },
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
+    it('closes on navigating and moves focus to the page content', async () => {
         const { user } = renderWithProviders(
             <>
                 <AppTopNav />
@@ -133,161 +146,33 @@ describe('AppTopNav', () => {
         const trigger = screen.getByRole('button', { name: 'Open navigation menu' });
         await user.click(trigger);
 
-        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        await user.click(within(drawer).getByRole('link', {
-            name: 'Open Delivery Hub home',
-        }));
+        await user.click(within(screen.getByRole('dialog', { name: 'Primary navigation' }))
+            .getByRole('link', { name: 'Analytics' }));
 
-        expect(screen.queryByRole('dialog', { name: 'Primary navigation' }))
-            .not.toBeInTheDocument();
+        expect(screen.queryByRole('dialog', { name: 'Primary navigation' })).not.toBeInTheDocument();
         await waitFor(() => expect(screen.getByRole('main')).toHaveFocus());
         expect(trigger).not.toHaveFocus();
     });
 
-    it('cycles through native disclosures without tabbing into collapsed content', async () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [],
-            ready: { total: 0, done: 0 },
+    it('shows the plan counter on the Plan item in the drawer and nowhere else', async () => {
+        planningSummaryMock.usePlanningNavigationSummary.mockReturnValue({
+            iterations: [{ id: 1 }],
+            ready: { done: 2, total: 6, pct: 33 },
+            isPlanProgressKnown: true,
         });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
+        const { user } = renderWithProviders(
+            <>
+                <AppTopNav />
+                <AppSidebar />
+            </>,
+            { initialEntries: ['/gantt'] },
+        );
+        expect(screen.getAllByText('2/6')).toHaveLength(1);
+        expect(screen.getByTestId('app-navbar').textContent).not.toMatch(/\d\/6/);
         await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
 
         const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        const closeButton = within(drawer).getByRole('button', { name: 'Close' });
-        const viewsLabel = within(drawer).getByText('Views');
-        const viewsSummary = viewsLabel.closest('summary');
-        const savedView = within(drawer).getByRole('link', {
-            name: 'Hidden saved view',
-            hidden: true,
-        });
-
-        expect(closeButton).toHaveFocus();
-        expect(viewsSummary).not.toBeNull();
-
-        await user.tab({ shift: true });
-        expect(viewsSummary).toHaveFocus();
-        expect(savedView).not.toHaveFocus();
-
-        await user.tab();
-        expect(closeButton).toHaveFocus();
-
-        await user.click(viewsSummary as HTMLElement);
-        expect(viewsSummary?.closest('details')).toHaveAttribute('open');
-        closeButton.focus();
-        await user.tab({ shift: true });
-        expect(savedView).toHaveFocus();
-    });
-
-    it('keeps the planning workspace stable and describes attention without another tab stop', () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [{ id: 1 }],
-            ready: { total: 6, done: 4 },
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
-
-        const switcher = screen.getByRole('navigation', { name: 'Work area homes' });
-        const planningHome = within(switcher).getByRole('link', {
-            name: 'Open Timeline & Planning home',
-        });
-        expect(planningHome).toHaveAttribute('href', '/plan');
-        expect(planningHome).toHaveAccessibleDescription(
-            'Timeline & Planning needs attention: 2 Plan checkpoints remain.',
-        );
-        expect(planningHome).toHaveTextContent('2');
-        expect(within(switcher).getAllByRole('link')).toHaveLength(3);
-    });
-
-    it('labels unavailable planning attention on the stable workspace home', () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [{ id: 1 }],
-            ready: { total: 6, done: 0 },
-            isReadinessError: true,
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
-
-        const planningLink = screen.getByRole('link', {
-            name: 'Open Timeline & Planning home',
-        });
-        expect(planningLink).toHaveAttribute('href', '/plan');
-        expect(planningLink).toHaveAccessibleDescription(
-            'Plan readiness could not be loaded. Open Plan to retry.',
-        );
-    });
-
-    it('does not announce placeholder planning attention while readiness is loading', () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [{ id: 1 }],
-            ready: { total: 6, done: 1 },
-            isReadinessLoading: true,
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        renderWithProviders(<AppTopNav />, { initialEntries: ['/roadmap'] });
-
-        const planningLink = screen.getByRole('link', {
-            name: 'Open Timeline & Planning home',
-        });
-        expect(planningLink).toHaveAccessibleDescription(
-            'Open Timeline & Planning home — Readiness, schedules, roadmaps, periods, and calendars.',
-        );
-        expect(planningLink).not.toHaveAccessibleDescription(
-            expect.stringContaining('checkpoint'),
-        );
-        expect(planningLink).not.toHaveTextContent('5');
-    });
-
-    it('keeps the drawer open and focuses contextual attention after switching workspaces', async () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [{ id: 1 }],
-            ready: { total: 6, done: 4 },
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
-        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
-
-        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        await user.click(within(drawer).getByRole('link', {
-            name: 'Open Timeline & Planning home',
-        }));
-
-        expect(drawer).toBeInTheDocument();
-        expect(within(drawer).getByRole('link', {
-            name: 'Open Timeline & Planning home',
-        })).toHaveAttribute('aria-current', 'location');
-
-        const attentionAction = await within(drawer).findByRole('button', {
-            name: 'Continue Plan (2 remaining)',
-        });
-        expect(attentionAction).toHaveFocus();
-
-        await user.click(attentionAction);
-        expect(screen.queryByRole('dialog', { name: 'Primary navigation' }))
-            .not.toBeInTheDocument();
-    });
-
-    it('focuses the contextual heading when the switched workspace has no attention action', async () => {
-        planningReadinessMock.usePlanningNavigationSummary.mockReturnValue({
-            iterations: [{ id: 1 }],
-            ready: { total: 6, done: 6 },
-        });
-        triageServiceMock.getAll.mockResolvedValue([]);
-
-        const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/tasks'] });
-        await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
-
-        const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
-        await user.click(within(drawer).getByRole('link', {
-            name: 'Open Resource & Settings home',
-        }));
-
-        expect(drawer).toBeInTheDocument();
-        expect(within(drawer).getByText('Contextual destinations')).toHaveFocus();
+        expect(within(drawer).getByRole('link', { name: 'Plan' })).toHaveTextContent('2/6');
+        expect(screen.getAllByText('2/6')).toHaveLength(2);
     });
 });
