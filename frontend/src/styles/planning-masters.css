@@ -1290,6 +1290,25 @@
   .wc .wc-page-toolbar-end { order: 2; }
   .wc .wc-page-toolbar-filters { order: 3; flex-basis: 100%; }
 }
+/* A compact toolbar has at most two quick filters before More filters. Its quick filters size to their text, the
+   filter controls stay together as one block next to search, and the chips of active conditions take a full line under
+   the row, so search, filters and the view controls keep one row down to about 900px of content (a 1024px viewport).
+   Narrower, the filter controls move under search and the view controls, as in the default toolbar. */
+.wc .wc-page-toolbar.is-compact .wc-page-toolbar-search { flex: 1 1 200px; max-width: 320px; }
+.wc .wc-page-toolbar.is-compact .wc-page-toolbar-filters,
+.wc .wc-page-toolbar.is-compact .wc-filter-bar { display: contents; }
+.wc .wc-page-toolbar.is-compact .wc-filter-controls { flex: 0 0 auto; flex-wrap: nowrap; }
+.wc .wc-page-toolbar.is-compact .wc-filter-controls > .wc-filter-select { field-sizing: content; max-width: 8rem; }
+.wc .wc-page-toolbar.is-compact .wc-filter-chips,
+.wc .wc-page-toolbar.is-compact .wc-page-toolbar-filters > :not(.wc-filter-bar) { order: 4; flex-basis: 100%; }
+@container (max-width: 1180px) {
+  .wc .wc-page-toolbar.is-compact .wc-page-toolbar-end { order: 0; }
+}
+@container (max-width: 900px) {
+  .wc .wc-page-toolbar.is-compact .wc-page-toolbar-search { max-width: none; }
+  .wc .wc-page-toolbar.is-compact .wc-page-toolbar-end { order: 2; }
+  .wc .wc-page-toolbar.is-compact .wc-filter-controls { order: 3; flex: 1 1 100%; flex-wrap: wrap; }
+}
 
 /* ── Inputs ──────────────────────────────────────────────────────────────── */
 :where(.wc .input):is(input, select, textarea) {

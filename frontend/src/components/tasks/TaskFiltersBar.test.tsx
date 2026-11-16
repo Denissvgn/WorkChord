@@ -35,16 +35,20 @@ describe('visible task filters', () => {
         const onFiltersChange = vi.fn();
         const { user } = renderWithProviders(<TaskFiltersBar iterationId={1} onFiltersChange={onFiltersChange}
             filters={{ ...defaultFilters, labelSlugs: ['backend'] }} />);
-        for (const name of ['Assignee', 'Status', 'Blocked']) {
+        // Two quick filters keep the Tasks toolbar on one line down to a 1024px viewport.
+        for (const name of ['Assignee', 'Status']) {
             expect(screen.getByRole('combobox', { name })).toBeInTheDocument();
         }
-        expect(screen.queryByRole('combobox', { name: 'Planning readiness' })).not.toBeInTheDocument();
+        for (const name of ['Blocked', 'Planning readiness']) {
+            expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
+        }
         expect(await screen.findByRole('option', { name: 'Ana' })).toBeInTheDocument();
         await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), 'Ana');
         expect(onFiltersChange).toHaveBeenLastCalledWith(expect.objectContaining({ assigneeId: 7 }));
 
         await user.click(screen.getByRole('button', { name: /More filters/ }));
         const panel = screen.getByRole('dialog', { name: 'More filters' });
+        expect(within(panel).getByRole('combobox', { name: 'Blocked' })).toBeInTheDocument();
         expect(within(panel).getByRole('combobox', { name: 'Planning readiness' })).toBeInTheDocument();
         const labels = within(panel).getByRole('combobox', { name: 'Labels' });
         expect(within(labels).queryByRole('option', { name: 'Backend · Area' })).not.toBeInTheDocument();

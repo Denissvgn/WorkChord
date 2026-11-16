@@ -41,15 +41,15 @@ const NO = 'no';
 const LABEL_CHIP = 'label:';
 const LABEL_GROUP_CHIP = 'labelGroup:';
 const DATE_FILTERS = ['startDateFrom', 'startDateTo', 'endDateFrom', 'endDateTo'] as const;
-/** Assignee, status and blocked stay in the row, so the toolbar keeps one line at desktop widths. */
-const QUICK_FILTERS = 3;
+/** Assignee and status stay in the row, so the compact toolbar keeps one line down to a 1024px viewport. */
+const QUICK_FILTERS = 2;
 
 const yesNoValue = (value: boolean | null | undefined) => (value === true ? YES : value === false ? NO : '');
 const yesNoFilter = (value: string) => (value === '' ? null : value === YES);
 const numberFilter = (value: string) => (value === '' ? null : Number(value));
 
 /**
- * The task filters in the shared FilterBar: the three most used conditions in the row, the rest under
+ * The task filters in the shared FilterBar: the two most used conditions in the row, the rest under
  * More filters, and one removable chip for every active condition, including each label.
  */
 export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFiltersBarProps) => {
