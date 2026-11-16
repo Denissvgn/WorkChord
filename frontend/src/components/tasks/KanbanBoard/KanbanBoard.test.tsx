@@ -210,7 +210,7 @@ describe('KanbanBoard explicit ownership guard', () => {
         expect(await screen.findByRole('dialog', { name: 'No assignee available' })).toBeVisible();
         expect(screen.getByRole('link', { name: 'Add team member' })).toHaveAttribute(
             'href',
-            '/team?action=assign&iterationId=1',
+            '/plan?step=team&iteration=1',
         );
         expect(taskServiceMock.update).not.toHaveBeenCalled();
         expect(taskServiceMock.changeStatus).not.toHaveBeenCalled();

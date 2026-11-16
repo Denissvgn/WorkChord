@@ -126,11 +126,21 @@ export const agentService = {
         return response.data;
     },
 
-    async getActorRoster(includeDisabled = false): Promise<AgentActorRosterItem[]> {
+    /**
+     * Reads the agent roster. With `optional`, a rejected credential is reported only to the caller,
+     * which shows what it cannot read as unknown; it does not mean the signed-in session ended.
+     */
+    async getActorRoster(includeDisabled = false, { optional = false }: { optional?: boolean } = {}): Promise<AgentActorRosterItem[]> {
         const response = await api.get<AgentActorRosterItem[]>('/agent/actors', {
             params: { include_disabled: includeDisabled },
+            ...(optional ? { skipIdentityExpiry: true } : {}),
         });
         return response.data;
+    },
+
+    /** Links an existing team profile to an agent actor (admin key required). */
+    async linkActorProfile(actorId: number, profileId: number): Promise<void> {
+        await api.patch(`/agent/actors/${actorId}`, { profile_id: profileId });
     },
 
     async getProfileSkillCatalog(): Promise<AgentProfileSkillCatalogItem[]> {
