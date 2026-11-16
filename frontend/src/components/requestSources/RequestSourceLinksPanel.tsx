@@ -1,3 +1,4 @@
+import { SlideOverDrawer } from '../ui';
 import i18n from '../../i18n/i18n';
 import { useId, useMemo, useState, type KeyboardEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -197,63 +198,9 @@ export const RequestSourceLinksPanel = ({
         handleCreate();
     };
 
-    return (
-        <section className={clsx(
-            'rounded-lg border border-border bg-surface-card',
-            compact ? 'p-3' : 'p-5',
-        )}>
-            <div className="mb-3 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                    <Link2 className="h-4 w-4 text-action" />
-                    <h3 className={clsx('font-semibold text-content-primary', compact ? 'text-sm' : 'text-lg')}>
-                        {resolvedTitle}
-                    </h3>
-                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs font-medium text-action">
-                        {count}
-                    </span>
-                </div>
-                <div className="flex items-center gap-2">
-                    {linksAreFetching && !linksAreLoading && (
-                        <Loader2 className="h-4 w-4 animate-spin text-content-tertiary" />
-                    )}
-                    <Button type="button" size="sm" variant="secondary" aria-expanded={formOpen} aria-controls={`${fieldId}-form`}
-                        onClick={() => setFormOpen(open => !open)}>
-                        {formOpen ? t('surfaces.requestSourceLinks.closeForm') : <><Plus aria-hidden="true" className="mr-1 h-4 w-4" />{t('surfaces.requestSourceLinks.linkRequest')}</>}
-                    </Button>
-                </div>
-            </div>
-
-            {linksQuery.isLoading && <QueryLoadingState className="mb-3 min-h-16 py-3" />}
-            {linksQuery.isError && (
-                <QueryErrorState className="mb-3" error={linksQuery.error} onRetry={() => void linksQuery.refetch()} />
-            )}
-            {searchQuery.isError && (
-                <QueryErrorState
-                    className="mb-3"
-                    error={searchQuery.error}
-                    fallback={t('queryFeedback.optionLoadFailed')}
-                    onRetry={() => void searchQuery.refetch()}
-                />
-            )}
-
-            {error && (
-                <div className="mb-3 flex items-start justify-between gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-xs text-feedback-danger-foreground">
-                    <span>{error}</span>
-                    <button
-                        type="button"
-                        onClick={() => setError(null)}
-                        className="rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
-                        aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')} title={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
-                    >
-                        <X className="h-3.5 w-3.5" />
-                    </button>
-                </div>
-            )}
-
-            {/* The form opens on request instead of standing open on every project. */}
-            {formOpen && <div id={`${fieldId}-form`} className="space-y-4 rounded-md border border-border p-3">
+    const formContent = (<div id={`${fieldId}-form`} className={clsx('space-y-4', targetType !== 'project' && 'rounded-md border border-border p-3')}>
             <div className="space-y-2">
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr_auto]">
+                <div className={clsx('grid gap-2', targetType !== 'project' && 'md:grid-cols-[1fr_1fr_auto]')}>
                     <label className="block text-sm">
                         <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.requestTitle')}</span>
                         <input
@@ -283,7 +230,7 @@ export const RequestSourceLinksPanel = ({
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-[150px_1fr_110px]">
+                <div className={clsx('grid gap-2', targetType !== 'project' && 'md:grid-cols-[150px_1fr_110px]')}>
                     <label className="block text-sm"><span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.sourceType')}</span>
                     <select
                         value={sourceType}
@@ -397,7 +344,68 @@ export const RequestSourceLinksPanel = ({
                     </div>
                 )}
             </div>
-            </div>}
+            </div>);
+
+    return (
+        <section className={clsx(
+            'rounded-lg border border-border bg-surface-card',
+            compact ? 'p-3' : 'p-5',
+        )}>
+            <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-action" />
+                    <h3 className={clsx('font-semibold text-content-primary', compact ? 'text-sm' : 'text-lg')}>
+                        {resolvedTitle}
+                    </h3>
+                    <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs font-medium text-action">
+                        {count}
+                    </span>
+                </div>
+                <div className="flex items-center gap-2">
+                    {linksAreFetching && !linksAreLoading && (
+                        <Loader2 className="h-4 w-4 animate-spin text-content-tertiary" />
+                    )}
+                    <Button type="button" size="sm" variant="secondary" aria-expanded={formOpen} aria-controls={`${fieldId}-form`}
+                        onClick={() => setFormOpen(open => !open)}>
+                        {formOpen ? t('surfaces.requestSourceLinks.closeForm') : <><Plus aria-hidden="true" className="mr-1 h-4 w-4" />{t('surfaces.requestSourceLinks.linkRequest')}</>}
+                    </Button>
+                </div>
+            </div>
+
+            {linksQuery.isLoading && <QueryLoadingState className="mb-3 min-h-16 py-3" />}
+            {linksQuery.isError && (
+                <QueryErrorState className="mb-3" error={linksQuery.error} onRetry={() => void linksQuery.refetch()} />
+            )}
+            {searchQuery.isError && (
+                <QueryErrorState
+                    className="mb-3"
+                    error={searchQuery.error}
+                    fallback={t('queryFeedback.optionLoadFailed')}
+                    onRetry={() => void searchQuery.refetch()}
+                />
+            )}
+
+            {error && (
+                <div className="mb-3 flex items-start justify-between gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-xs text-feedback-danger-foreground">
+                    <span>{error}</span>
+                    <button
+                        type="button"
+                        onClick={() => setError(null)}
+                        className="rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
+                        aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')} title={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
+                    >
+                        <X className="h-3.5 w-3.5" />
+                    </button>
+                </div>
+            )}
+
+            {targetType === 'project' ? <SlideOverDrawer open={formOpen} title={t('surfaces.requestSourceLinks.linkRequest')} onClose={() => setFormOpen(false)}>
+                <div className="p-5">
+                    {error && <p role="alert" className="mb-3 text-sm text-feedback-danger-foreground">{error}</p>}
+                    {searchQuery.isError && <QueryErrorState error={searchQuery.error} onRetry={() => void searchQuery.refetch()} />}
+                    {formContent}
+                </div>
+            </SlideOverDrawer> : formOpen && formContent}
 
             <div className="mt-4 space-y-2">
                 {linksAreLoading ? (

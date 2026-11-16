@@ -9,7 +9,7 @@ import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { Modal } from '../common/Modal';
 import { IterationForm } from '../iteration/IterationForm';
-import { InlineEmptyState, SectionCard } from '../ui';
+import { InlineEmptyState, SectionCard, SlideOverDrawer } from '../ui';
 import { iterationService } from '../../services/iterationService';
 import type { Iteration } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
@@ -186,21 +186,21 @@ export const ProjectIterationsSection = ({
                 )}
             </SectionCard>
 
-            <Modal
+            <SlideOverDrawer
                 open={editor !== null}
                 title={editor?.mode === 'create' ? t('projectIterations.createTitle') : t('projectIterations.editTitle')}
                 closeLabel={t('actions.close')}
                 onClose={() => setEditor(null)}
             >
-                {editor && (
+                <div className="p-5">{editor && (
                     <IterationForm
                         initialData={editor.iteration ?? undefined}
                         lockedProject={{ id: projectId, name: projectName }}
                         onSuccess={handleFormSuccess}
                         onCancel={() => setEditor(null)}
                     />
-                )}
-            </Modal>
+                )}</div>
+            </SlideOverDrawer>
 
             <Modal open={attachOpen} title={t('projectIterations.attachTitle')} closeLabel={t('actions.close')} onClose={() => setAttachOpen(false)}>
                 {attachOpen && (

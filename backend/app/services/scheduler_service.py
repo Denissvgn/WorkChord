@@ -2,6 +2,7 @@
 
 from app.commands import atomic_command, command_transaction, commit_or_flush, lock_iterations, lock_planning, PlanningConflict
 import math
+import heapq
 import logging
 from dataclasses import dataclass, field
 from datetime import date, timedelta
@@ -260,18 +261,24 @@ class MemberSchedule:
         accounting_days: Optional[float] = None, required_hours: float | None = None,
     ) -> tuple[date, date]:
         """Reserve whole working dates, including overflow, until the requested effort fits."""
-        remaining = required_hours if required_hours is not None else float(effort_days)
+        required = required_hours if required_hours is not None else float(effort_days)
+        remaining = required
         allocated = []
         current = start_date
         for _ in range(3660):
-            if self._is_projectable_working_day(current) and current not in self.allocated_dates:
+            if current in self.allocated_dates:
+                # A task's date range must not straddle another task's working
+                # hours. Retry after that reservation without consuming the gap.
+                allocated = []
+                remaining = required
+            elif self._is_projectable_working_day(current):
                 capacity = ((self.nominal_day_hours - (current in self.short_dates)) * self.productivity_factor
                             if required_hours is not None else 1.0)
                 if capacity > 0:
-                    self.allocated_dates[current] = task_id
                     allocated.append(current)
                     remaining -= capacity
                     if remaining <= .000001:
+                        self.allocated_dates.update({day: task_id for day in allocated})
                         self.allocated_days += accounting_days if accounting_days is not None else effort_days
                         self._invalidate_cache()
                         return allocated[0], current
@@ -416,22 +423,13 @@ class SchedulerService:
                 task.start_date = task.end_date = task.calculated_effort_days = None
                 decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable",
                     reason="Accept the delivery prerequisites before scheduling this work."))
-        # A downstream task cannot be forecast from a missing predecessor estimate.
-        changed = True
-        while changed:
-            changed = False
-            for task in leaf_tasks:
-                if task.id not in unavailable_ids and any(dep.depends_on_id in unavailable_ids for dep in task.dependencies):
-                    unavailable_ids.add(task.id)
-                    unscheduled_reasons[task.id] = "predecessor_unscheduled"
-                    task.start_date = task.end_date = task.calculated_effort_days = None
-                    decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title, decision_type="unavailable", reason="Estimate and schedule the prerequisite first."))
-                    changed = True
         leaf_tasks = [task for task in leaf_tasks if task.id not in unavailable_ids]
 
         logger.warning(f"[SCHEDULER] Task status filter: {len(leaf_tasks)} PLANNED (to schedule), {len(locked_tasks)} non-PLANNED (dates locked)")
 
         finished_statuses = {TaskStatus.RESOLVED.value, TaskStatus.CLOSED.value}
+        satisfied_predecessor_ids = {task.id for task in all_tasks
+                                     if task.status in finished_statuses or task.canceled_at}
         anchored_ids: set[int] = set()
         if follow_date is not None and anchor_task_id is not None:
             anchor = next((task for task in locked_tasks if task.id == anchor_task_id), None)
@@ -495,13 +493,13 @@ class SchedulerService:
 
             # Check dependencies
             for dep in task.dependencies:
+                # Completed or canceled work is satisfied regardless of saved forecast dates.
+                if dep.depends_on_id in satisfied_predecessor_ids:
+                    continue
                 dep_task = task_map.get(dep.depends_on_id)
                 if dep_task and dep_task.end_date:
                     dep_last = dep_task.end_date
                     if follow_date is not None:
-                        if dep_task.status in finished_statuses:
-                            # A finished predecessor no longer holds its dependents back.
-                            continue
                         if dep_task.status == TaskStatus.ACTIVE.value:
                             dep_last = max(dep_last, follow_date)
                     dep_end = dep_last + timedelta(days=1)
@@ -547,21 +545,25 @@ class SchedulerService:
         # For each assignee, determine which tasks can fit before vacation
         # Higher priority (lower number) tasks get first chance at pre-vacation slots
         task_can_fit_before_vacation: dict[int, bool] = {}
+        task_contexts = {task.id: self._build_task_context(task, task_can_fit_before_vacation)
+                         for task in leaf_tasks}
 
         for assignee_id, assignee_tasks in tasks_by_assignee.items():
             available_days = assignee_days_before_vacation.get(assignee_id, 0)
 
             # Sort by priority (lower = higher priority), then by effort (smaller first)
-            sorted_tasks = sorted(assignee_tasks, key=lambda t: (self._effective_flags(t)["effective_is_optional"], t.priority, self._calculate_adjusted_effort(t)))
+            sorted_tasks = sorted(assignee_tasks, key=lambda t: (task_contexts[t.id]["is_optional"],
+                                                               t.priority, task_contexts[t.id]["adjusted_effort"]))
 
             remaining_days = available_days
             for task in sorted_tasks:
-                effort = self._calculate_adjusted_effort(task)
+                effort = task_contexts[task.id]["adjusted_effort"]
                 if remaining_days >= effort:
                     task_can_fit_before_vacation[task.id] = True
                     remaining_days -= effort
                 else:
                     task_can_fit_before_vacation[task.id] = False
+                task_contexts[task.id]["fits_before_vacation"] = task_can_fit_before_vacation[task.id]
 
         logger.warning(f"[SCHEDULER] Pre-vacation capacity analysis:")
         for assignee_id, days in assignee_days_before_vacation.items():
@@ -587,7 +589,7 @@ class SchedulerService:
             Returns tuple for sorting.
             """
             task, earliest_start = task_with_start
-            effort = self._calculate_adjusted_effort(task)
+            effort = task_contexts[task.id]["adjusted_effort"]
 
             # Check if this task can fit before vacation (considering other tasks)
             can_fit = task_can_fit_before_vacation.get(task.id, True)
@@ -606,227 +608,99 @@ class SchedulerService:
             # Sort by: vacation_priority, is_optional, priority, size_order
             return (vacation_priority, self._effective_flags(task)["effective_is_optional"], task.priority, size_order)
 
-        def topological_sort_with_dependencies(
-            tasks_with_start: list[tuple[Task, date]],
-            sort_key_fn
-        ) -> list[tuple[Task, date]]:
-            """Reorder tasks to ensure dependencies are scheduled before dependents."""
-            if not tasks_with_start:
-                return []
-
-            task_ids = {t.id for t, _ in tasks_with_start}
-            task_map_local = {t.id: (t, es) for t, es in tasks_with_start}
-
-            # Build dependency graph (only for dependencies within this task set)
-            in_degree: dict[int, int] = {t.id: 0 for t, _ in tasks_with_start}
-            dependents: dict[int, list[int]] = {t.id: [] for t, _ in tasks_with_start}
-
-            for task, _ in tasks_with_start:
-                for dep in task.dependencies:
-                    if dep.depends_on_id in task_ids:
-                        in_degree[task.id] += 1
-                        dependents[dep.depends_on_id].append(task.id)
-
-            # Kahn's algorithm for topological sort
-            # Start with tasks that have no dependencies (in_degree == 0)
-            result = []
-            no_deps = [tid for tid in in_degree if in_degree[tid] == 0]
-
-            # Sort no_deps by provided sort key function
-            no_deps.sort(key=lambda tid: sort_key_fn(task_map_local[tid]))
-
-            while no_deps:
-                # Take the first task (respecting original sort order)
-                tid = no_deps.pop(0)
-                result.append(task_map_local[tid])
-
-                # Process dependents
-                for dep_tid in dependents[tid]:
-                    in_degree[dep_tid] -= 1
-                    if in_degree[dep_tid] == 0:
-                        no_deps.append(dep_tid)
-                        # Re-sort to maintain order
-                        no_deps.sort(key=lambda x: sort_key_fn(task_map_local[x]))
-
-            # If we didn't process all tasks, there's a cycle - fall back to original order
-            if len(result) != len(tasks_with_start):
-                logger.warning("[SCHEDULER] Warning: Dependency cycle detected, using original order")
-                return tasks_with_start
-
-            return result
-
-        # Track latest end_date per assignee for sequential scheduling
-        assignee_last_end: dict[int, date] = {}
-        scheduled_task_ids: set[int] = set()
-
-        # Thread-safe lock for scheduled_task_ids (used in parallel mode)
-        import asyncio
-        scheduling_lock = asyncio.Lock()
-
-        async def schedule_single_task(task: Task) -> None:
-            """Schedule a single task with proper locking for parallel execution."""
-            nonlocal assignee_last_end
-
-            async with scheduling_lock:
-                if task.id in scheduled_task_ids:
-                    return
-
-                # Re-calculate earliest_start (dependencies may have been scheduled)
-                earliest_start = get_task_earliest_start(task)
-
-                # Ensure sequential scheduling: new task starts after previous task for same assignee
-                if task.assignee_id and task.assignee_id in assignee_last_end:
-                    prev_end = assignee_last_end[task.assignee_id]
-                    schedule = member_schedules.get(task.assignee_id)
-                    if schedule:
-                        next_available = schedule.find_next_available_date(prev_end + timedelta(days=1))
-                        if next_available and next_available > earliest_start:
-                            earliest_start = next_available
-                            logger.warning(f"  [SEQUENTIAL] Task '{task.title}' starts {earliest_start} (after previous task end: {prev_end})")
-
-            # Schedule outside lock (I/O operations)
-            await self._schedule_leaf_task(
-                task, iteration, member_schedules, decisions, task_map, earliest_start
-            )
-
-            async with scheduling_lock:
-                scheduled_task_ids.add(task.id)
-
-                # Update assignee's last end date
-                if task.assignee_id and task.end_date and task.start_date:
-                    if task.start_date <= iteration.end_date:
-                        current_last = assignee_last_end.get(task.assignee_id)
-                        if current_last is None or task.end_date > current_last:
-                            assignee_last_end[task.assignee_id] = task.end_date
-
-        async def schedule_task_list(tasks_with_start: list[tuple[Task, date]]) -> None:
-            """Schedule a list of tasks in order (sequential per-assignee)."""
-            for task, _ in tasks_with_start:
-                await schedule_single_task(task)
-
-        async def schedule_assignee_tasks(
-            assignee_id: int,
-            tasks: list[Task],
-            sort_key_fn,
-        ) -> None:
-            """Schedule all tasks for a single assignee in priority order."""
-            tasks_with_start = [(t, get_task_earliest_start(t)) for t in tasks]
-            tasks_with_start.sort(key=sort_key_fn)
-
-            # Apply topological sort for intra-assignee dependencies
-            tasks_with_start = topological_sort_with_dependencies(tasks_with_start, sort_key_fn)
-
-            for task, _ in tasks_with_start:
-                await schedule_single_task(task)
-
-        async def schedule_parallel_by_assignee(
-            tasks: list[Task],
-            sort_key_fn,
-        ) -> None:
-            """Schedule tasks using parallel processing where safe.
-
-            Strategy:
-            1. Build cross-assignee dependency graph
-            2. Schedule independent assignees in parallel
-            3. Schedule dependent assignees level-by-level (parallel within level)
-            """
-            # Build assignee dependency graph
-            assignee_deps, independent_assignees = self._build_assignee_dependency_graph(tasks)
-
-            # Group tasks by assignee
-            from collections import defaultdict
-            tasks_by_assignee_local: dict[int, list[Task]] = defaultdict(list)
-            unassigned_tasks: list[Task] = []
-
-            for task in tasks:
-                if task.assignee_id:
-                    tasks_by_assignee_local[task.assignee_id].append(task)
-                else:
-                    unassigned_tasks.append(task)
-
-            # Step 1: Schedule independent assignees in parallel
-            if independent_assignees:
-                logger.warning(f"[PARALLEL] Scheduling {len(independent_assignees)} independent assignees in parallel")
-                await asyncio.gather(*[
-                    schedule_assignee_tasks(aid, tasks_by_assignee_local[aid], sort_key_fn)
-                    for aid in independent_assignees
-                    if aid in tasks_by_assignee_local
-                ])
-
-            # Step 2: Schedule dependent assignees level by level
-            levels = self._topological_sort_assignees(assignee_deps)
-            for level_idx, level in enumerate(levels):
-                logger.warning(f"[PARALLEL] Scheduling level {level_idx}: {len(level)} assignees in parallel")
-                await asyncio.gather(*[
-                    schedule_assignee_tasks(aid, tasks_by_assignee_local[aid], sort_key_fn)
-                    for aid in level
-                    if aid in tasks_by_assignee_local
-                ])
-
-            # Step 3: Schedule unassigned tasks sequentially
-            if unassigned_tasks:
-                logger.warning(f"[PARALLEL] Scheduling {len(unassigned_tasks)} unassigned tasks sequentially")
-                await schedule_task_list([(t, get_task_earliest_start(t)) for t in unassigned_tasks])
-
-        # Get scheduling passes from YAML configuration
+        # Passes rank tasks that are ready; a prerequisite in a later pass must
+        # still be placed before its dependent in an earlier pass.
         scheduling_passes = self.rules_service.get_scheduling_passes()
+        pass_sort_keys = [self.rules_service.get_sort_key_function(
+            pass_config.id,
+            lambda task: task_contexts[task.id],
+        ) for pass_config in scheduling_passes]
+        ranks = {}
+        for index, task in enumerate(leaf_tasks):
+            context = task_contexts[task.id]
+            for pass_index, pass_config in enumerate(scheduling_passes):
+                if self.rules_service.matches_pass_filter(pass_config.id, context):
+                    ranks[task.id] = (pass_index, pass_sort_keys[pass_index](task), index)
+                    break
+            else:
+                ranks[task.id] = (len(scheduling_passes),
+                    get_fallback_sort_key((task, get_task_earliest_start(task))), index)
 
-        if scheduling_passes:
-            # ═══ USE YAML-BASED MULTI-PASS SCHEDULING (with parallel optimization) ═══
-            logger.warning(f"[SCHEDULER] Using {len(scheduling_passes)} passes from YAML configuration:")
-            for sp in scheduling_passes:
-                logger.warning(f"  - {sp.id}: {sp.description}")
+        # A summary predecessor waits for current child dates or satisfied work;
+        # dates saved by an earlier forecast are not evidence of readiness.
+        composite_tasks = [task for task in all_tasks if task.children]
+        nodes = leaf_tasks + composite_tasks
+        pending = {task.id: task for task in nodes}
+        predecessors = {task.id: {dep.depends_on_id for dep in task.dependencies
+                                 if dep.depends_on_id not in satisfied_predecessor_ids}
+                        for task in leaf_tasks}
+        for index, task in enumerate(composite_tasks):
+            predecessors[task.id] = {child.id for child in task.children
+                                    if not self._effective_flags(child)["effective_is_deferred"]}
+            ranks[task.id] = (-1, (), index)
+        dependents: dict[int, list[int]] = defaultdict(list)
+        outstanding: dict[int, set[int]] = {}
+        ready = []
+        for task in nodes:
+            waiting = {predecessor_id for predecessor_id in predecessors[task.id]
+                       if predecessor_id not in satisfied_predecessor_ids
+                       and (predecessor_id in pending or predecessor_id not in task_map
+                            or task_map[predecessor_id].start_date is None
+                            or task_map[predecessor_id].end_date is None)}
+            outstanding[task.id] = waiting
+            for predecessor_id in waiting:
+                dependents[predecessor_id].append(task.id)
+            if not waiting:
+                heapq.heappush(ready, (ranks[task.id], task.id))
 
-            for pass_config in scheduling_passes:
-                # Filter tasks that match this pass and haven't been scheduled yet
-                matching_tasks = []
-                for task in leaf_tasks:
-                    if task.id in scheduled_task_ids:
-                        continue
-                    ctx = self._build_task_context(task, task_can_fit_before_vacation)
-                    if self.rules_service.matches_pass_filter(pass_config.id, ctx):
-                        matching_tasks.append(task)
-
-                if not matching_tasks:
-                    logger.warning(f"[SCHEDULER] Pass '{pass_config.id}': no matching tasks")
+        assignee_last_end: dict[int, date] = {}
+        while ready:
+            _, task_id = heapq.heappop(ready)
+            task = pending.pop(task_id)
+            if task.children:
+                children = [task_map[child_id] for child_id in predecessors[task_id]
+                            if task_map[child_id].start_date is not None
+                            and task_map[child_id].end_date is not None]
+                if children:
+                    task.start_date = min(child.start_date for child in children)
+                    task.end_date = max(child.end_date for child in children)
+                elif predecessors[task_id]:
+                    # All children are satisfied without dates; release dependents
+                    # without inventing dates for completed or canceled work.
+                    satisfied_predecessor_ids.add(task_id)
+                else:
                     continue
+            else:
+                earliest_start = get_task_earliest_start(task)
+                if task.assignee_id in assignee_last_end:
+                    # Keep the cursor even beyond the iteration. Looking for a date
+                    # only inside the iteration can otherwise backfill an earlier gap.
+                    earliest_start = max(earliest_start, assignee_last_end[task.assignee_id] + timedelta(days=1))
+                await self._schedule_leaf_task(
+                    task, iteration, member_schedules, decisions, task_map, earliest_start
+                )
+                if task.start_date is not None and task.end_date is not None:
+                    assignee_last_end[task.assignee_id] = task.end_date
+            if task_id not in satisfied_predecessor_ids and (task.start_date is None or task.end_date is None):
+                continue
+            for dependent_id in dependents[task_id]:
+                outstanding[dependent_id].remove(task_id)
+                if not outstanding[dependent_id]:
+                    heapq.heappush(ready, (ranks[dependent_id], dependent_id))
 
-                # Sort by criteria from YAML
-                def make_sort_key(pass_id: str):
-                    def sort_key(task_with_start: tuple[Task, date]) -> tuple:
-                        task, _ = task_with_start
-                        key_fn = self.rules_service.get_sort_key_function(
-                            pass_id,
-                            lambda t: self._build_task_context(t, task_can_fit_before_vacation)
-                        )
-                        return key_fn(task)
-                    return sort_key
-
-                sort_key_fn = make_sort_key(pass_config.id)
-
-                logger.warning(f"[SCHEDULER] Pass '{pass_config.id}': scheduling {len(matching_tasks)} tasks (parallel mode)")
-
-                # Use parallel scheduling for this pass
-                await schedule_parallel_by_assignee(matching_tasks, sort_key_fn)
-
-            # Schedule any remaining unscheduled tasks with fallback logic (parallel mode)
-            remaining_tasks = [t for t in leaf_tasks if t.id not in scheduled_task_ids]
-            if remaining_tasks:
-                logger.warning(f"[SCHEDULER] Fallback pass: scheduling {len(remaining_tasks)} remaining tasks (parallel mode)")
-                await schedule_parallel_by_assignee(remaining_tasks, get_fallback_sort_key)
-        else:
-            # ═══ FALLBACK: USE PARALLEL VACATION-AWARE SCHEDULING ═══
-            logger.warning("[SCHEDULER] No YAML passes found, using parallel vacation-aware scheduling")
-
-            logger.warning(f"[SCHEDULER] Scheduling {len(leaf_tasks)} leaf tasks (parallel mode):")
-            for t in leaf_tasks[:10]:  # Log first 10 only
-                effort = self._calculate_adjusted_effort(t)
-                can_fit = task_can_fit_before_vacation.get(t.id, True)
-                logger.warning(f"  - {t.title} (id={t.id}): effort={effort}, priority={t.priority}, can_fit={can_fit}")
-            if len(leaf_tasks) > 10:
-                logger.warning(f"  ... and {len(leaf_tasks) - 10} more tasks")
-
-            await schedule_parallel_by_assignee(leaf_tasks, get_fallback_sort_key)
+        predecessor_messages: dict[int, str] = {}
+        for task in pending.values():
+            if task.children:
+                continue
+            missing = min(outstanding[task.id])
+            predecessor = task_map.get(missing)
+            name = f"'{predecessor.title}' (ID {missing})" if predecessor else f"ID {missing}"
+            message = f"Predecessor {name} has no complete schedule. Schedule it before this task."
+            unscheduled_reasons[task.id] = "predecessor_unscheduled"
+            predecessor_messages[task.id] = message
+            task.calculated_effort_days = None
+            decisions.append(SchedulingDecision(task_id=task.id, task_title=task.title,
+                decision_type="unavailable", reason=message))
 
         if follow_date is not None:
             # Following actual dates never removes a date; only a deliberate Schedule does.
@@ -836,7 +710,6 @@ class SchedulerService:
                     task.calculated_effort_days = before_effort[task.id]
 
         # Update composite (parent) task dates based on their children
-        composite_tasks = [t for t in all_tasks if t.children]
         for parent in composite_tasks:
             self._update_composite_task_dates(parent, iteration, decisions)
 
@@ -885,7 +758,7 @@ class SchedulerService:
 
         # Check workload balance
         workload_issues = self._check_workload_balance(member_schedules)
-        unscheduled = self._unscheduled_tasks(all_tasks, member_schedules, unscheduled_reasons)
+        unscheduled = self._unscheduled_tasks(all_tasks, member_schedules, unscheduled_reasons, predecessor_messages)
         # Causes found only now (no assignee, assignee outside the iteration) also explain themselves as decisions.
         for item in unscheduled:
             if item.reason in {"no_assignee", "assignee_not_in_iteration", "not_placed"}:
@@ -966,6 +839,7 @@ class SchedulerService:
         all_tasks: Sequence[Task],
         member_schedules: dict[int, "MemberSchedule"],
         known_reasons: dict[int, str],
+        messages: dict[int, str] | None = None,
     ) -> list[UnscheduledTask]:
         """Planned leaf tasks still without dates, each with the first cause that applies."""
         from app.models.task import TaskStatus
@@ -989,7 +863,7 @@ class SchedulerService:
             else:
                 reason = "not_placed"
             unscheduled.append(UnscheduledTask(task_id=task.id, task_title=task.title, reason=reason,
-                message=self.UNSCHEDULED_MESSAGES[reason]))
+                message=(messages or {}).get(task.id, self.UNSCHEDULED_MESSAGES[reason])))
         return unscheduled
 
     async def _build_member_schedules(
@@ -1150,114 +1024,6 @@ class SchedulerService:
             "max_finish_date": task.max_end_date,
             "min_start_date": task.min_start_date,
         }
-
-    def _build_assignee_dependency_graph(
-        self,
-        tasks: list[Task],
-    ) -> tuple[dict[int, set[int]], set[int]]:
-        """Build cross-assignee dependency graph.
-
-        Analyzes dependencies between tasks to identify which assignees
-        have cross-dependencies (task of assignee A depends on task of assignee B).
-
-        Args:
-            tasks: List of tasks to analyze
-
-        Returns:
-            Tuple of:
-            - assignee_deps: dict mapping assignee_id -> set of assignee_ids it depends on
-            - independent_assignees: set of assignee_ids with no cross-dependencies
-        """
-        from collections import defaultdict
-
-        assignee_deps: dict[int, set[int]] = defaultdict(set)
-        task_to_assignee = {t.id: t.assignee_id for t in tasks if t.assignee_id}
-
-        for task in tasks:
-            if not task.assignee_id:
-                continue
-            for dep in task.dependencies:
-                dep_assignee = task_to_assignee.get(dep.depends_on_id)
-                if dep_assignee and dep_assignee != task.assignee_id:
-                    # Cross-assignee dependency found
-                    assignee_deps[task.assignee_id].add(dep_assignee)
-
-        all_assignees = set(task_to_assignee.values())
-        dependent_assignees = set(assignee_deps.keys()) | {
-            a for deps in assignee_deps.values() for a in deps
-        }
-        independent_assignees = all_assignees - dependent_assignees
-
-        logger.warning(f"[PARALLEL] Assignee dependency analysis: {len(independent_assignees)} independent, {len(dependent_assignees)} in dependency chain")
-        if assignee_deps:
-            for aid, deps in assignee_deps.items():
-                logger.warning(f"  - Assignee {aid} depends on: {deps}")
-
-        return dict(assignee_deps), independent_assignees
-
-    def _topological_sort_assignees(
-        self,
-        assignee_deps: dict[int, set[int]],
-    ) -> list[set[int]]:
-        """Group dependent assignees into levels for sequential processing.
-
-        Uses Kahn's algorithm to sort assignees topologically.
-        Each level contains assignees that can be processed in parallel
-        (no mutual dependencies), but levels must be processed sequentially.
-
-        Args:
-            assignee_deps: dict mapping assignee_id -> set of assignee_ids it depends on
-
-        Returns:
-            List of sets where each set can be processed in parallel,
-            but sets must be processed sequentially.
-        """
-        if not assignee_deps:
-            return []
-
-        # Collect all assignees involved in dependencies
-        all_assignees = set(assignee_deps.keys()) | {
-            a for deps in assignee_deps.values() for a in deps
-        }
-
-        # Calculate in-degree for each assignee
-        in_degree = {a: 0 for a in all_assignees}
-        for assignee, deps in assignee_deps.items():
-            in_degree[assignee] = len(deps)
-
-        # Build reverse graph (who depends on whom)
-        dependents: dict[int, set[int]] = {a: set() for a in all_assignees}
-        for assignee, deps in assignee_deps.items():
-            for dep in deps:
-                dependents[dep].add(assignee)
-
-        levels: list[set[int]] = []
-        remaining = set(all_assignees)
-
-        while remaining:
-            # Find all assignees with no remaining dependencies (in_degree == 0)
-            level = {a for a in remaining if in_degree.get(a, 0) == 0}
-
-            if not level:
-                # Cycle detected - put all remaining in one level (fallback)
-                logger.warning(f"[PARALLEL] Cycle detected in assignee dependencies, falling back to sequential")
-                levels.append(remaining)
-                break
-
-            levels.append(level)
-            remaining -= level
-
-            # Update in-degrees for dependents
-            for assignee in level:
-                for dependent in dependents.get(assignee, set()):
-                    if dependent in remaining:
-                        in_degree[dependent] -= 1
-
-        logger.warning(f"[PARALLEL] Assignee levels: {len(levels)} levels")
-        for i, level in enumerate(levels):
-            logger.warning(f"  - Level {i}: {level}")
-
-        return levels
 
     def _effective_flags(self, task):
         from app.services.work_metrics import effective_work_flags
