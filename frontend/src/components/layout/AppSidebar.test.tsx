@@ -1,243 +1,154 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
-import { AppSidebar, SidebarContent } from './AppSidebar';
-import type { SavedView } from '../../types/savedView';
+import { AppSidebar } from './AppSidebar';
 
-const savedViewServiceMock = vi.hoisted(() => ({
+const planningSummaryMock = vi.hoisted(() => ({
+    usePlanningNavigationSummary: vi.fn(),
+}));
+
+const triageServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
-const systemTaskView: SavedView = {
-    id: 42,
-    name: 'My queued tasks',
-    seed_key: 'tasks_blocked',
-    view_type: 'tasks',
-    scope: 'system',
-    filters_json: {},
-    sort_json: {},
-    columns_json: {},
-    schema_version: 1,
-    is_valid: true,
-    created_at: '2026-01-01T00:00:00Z',
-    updated_at: '2026-01-01T00:00:00Z',
-};
+vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningSummaryMock);
+vi.mock('../../services/triageService', () => ({ triageService: triageServiceMock }));
 
-const crowdedSystemViews = (count = 7) => Array.from({ length: count }, (_, index): SavedView => ({
-    ...systemTaskView,
-    id: 100 + index,
-    name: `Queue view ${index + 1}`,
-    seed_key: `queue_view_${index + 1}`,
-}));
+const planSummary = (overrides: Record<string, unknown> = {}) => ({
+    iterations: [{ id: 1 }],
+    ready: { done: 3, total: 6, pct: 50 },
+    isIterationsLoading: false,
+    isIterationsError: false,
+    isReadinessLoading: false,
+    isReadinessError: false,
+    ...overrides,
+});
 
-vi.mock('../../services/savedViewService', () => ({
-    savedViewService: savedViewServiceMock,
-}));
+const DESTINATION_NAMES = [
+    'Overview', 'My Work', 'Triage',
+    'Projects', 'Plan', 'Gantt',
+    'Tasks', 'Analytics',
+    'Team', 'Settings',
+];
 
-vi.mock('./SidebarIterationCard', () => ({
-    SidebarIterationCard: () => <div>Planning summary</div>,
-}));
+const destinationLinks = () => within(screen.getByRole('navigation', { name: 'Primary navigation' }))
+    .getAllByRole('link');
 
 describe('AppSidebar', () => {
     beforeEach(() => {
-        savedViewServiceMock.getAll.mockReset();
-        savedViewServiceMock.getAll.mockResolvedValue([]);
+        planningSummaryMock.usePlanningNavigationSummary.mockReset();
+        planningSummaryMock.usePlanningNavigationSummary.mockReturnValue(planSummary({
+            ready: { done: 6, total: 6, pct: 100 },
+        }));
+        triageServiceMock.getAll.mockReset();
+        triageServiceMock.getAll.mockResolvedValue([]);
     });
 
-    it('shows only Planning destinations for a Planning route', () => {
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
+    it.each([
+        '/', '/my-work', '/triage', '/projects', '/projects/7', '/roadmap', '/plan', '/plan/master',
+        '/iterations', '/gantt', '/tasks', '/agent-pipeline', '/analytics', '/team',
+        '/agent-team/setup', '/settings', '/calendar',
+    ])('lists the same ten destinations on %s', pathname => {
+        renderWithProviders(<AppSidebar />, { initialEntries: [pathname] });
 
-        const sidebar = screen.getByRole('complementary', {
-            name: 'Timeline & Planning',
-        });
+        expect(destinationLinks().map(link => link.textContent?.replace(/\d+\/\d+|\d+$/, '').trim()))
+            .toEqual(DESTINATION_NAMES);
+    });
+
+    it('puts the three first destinations outside any group and names the other three groups', () => {
+        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
+
+        const groups = screen.getAllByRole('group');
+        expect(groups.map(group => group.getAttribute('aria-labelledby')
+            && document.getElementById(group.getAttribute('aria-labelledby')!)?.textContent))
+            .toEqual(['Plan', 'Deliver', 'Setup']);
+        expect(groups.map(group => within(group).getAllByRole('link').map(link => link.textContent)))
+            .toEqual([['Projects', 'Plan', 'Gantt'], ['Tasks', 'Analytics'], ['Team', 'Settings']]);
+        const start = within(screen.getByRole('navigation', { name: 'Primary navigation' }))
+            .getAllByRole('link').slice(0, 3);
+        expect(start.map(link => link.textContent)).toEqual(['Overview', 'My Work', 'Triage']);
+        for (const link of start) expect(link.closest('[role="group"]')).toBeNull();
+    });
+
+    it.each([
+        ['/roadmap', 'Projects'],
+        ['/projects/7', 'Projects'],
+        ['/plan/master', 'Plan'],
+        ['/iterations', 'Plan'],
+        ['/agent-pipeline', 'Tasks'],
+        ['/agent-team/setup', 'Team'],
+        ['/calendar', 'Settings'],
+    ])('marks only %s as the current page under %s', (pathname, current) => {
+        renderWithProviders(<AppSidebar />, { initialEntries: [pathname] });
+
+        const currentLinks = destinationLinks().filter(link => link.getAttribute('aria-current') === 'page');
+        expect(currentLinks.map(link => link.textContent)).toEqual([current]);
+    });
+
+    it('has no work-area switcher, saved-views disclosure or iteration card', () => {
+        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
+
         expect(screen.getAllByRole('complementary')).toHaveLength(1);
-        expect(screen.getByLabelText('Timeline & Planning destinations')).toBeInTheDocument();
-        expect(within(sidebar).getByRole('navigation', {
-            name: 'Timeline & Planning destinations',
-        })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Gantt' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Plan' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Roadmap' })).toHaveAttribute('aria-current', 'page');
-        expect(screen.getByText('Planning summary')).toBeInTheDocument();
-        expect(screen.queryByRole('link', { name: 'Tasks' })).not.toBeInTheDocument();
-        expect(screen.queryByRole('link', { name: 'Team' })).not.toBeInTheDocument();
-        expect(savedViewServiceMock.getAll).not.toHaveBeenCalled();
+        expect(screen.queryByText('Views')).not.toBeInTheDocument();
+        expect(screen.queryByText('Delivery Hub')).not.toBeInTheDocument();
+        expect(screen.queryByText('Timeline & Planning')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
+        expect(document.querySelector('details')).toBeNull();
     });
 
-    it('shows a lone secondary destination directly and preserves its current state', () => {
-        const roadmapRender = renderWithProviders(<AppSidebar />, { initialEntries: ['/roadmap'] });
+    describe('counters', () => {
+        const planLink = () => screen.getByRole('link', { name: 'Plan' });
 
-        expect(screen.getByRole('link', { name: 'Calendar' })).toBeVisible();
-        expect(screen.queryByText('More')).not.toBeInTheDocument();
-        roadmapRender.unmount();
+        it('shows plan progress only as the counter on the Plan item, and only while the plan is below 6 of 6', () => {
+            planningSummaryMock.usePlanningNavigationSummary.mockReturnValue(planSummary({
+                ready: { done: 4, total: 6, pct: 67 },
+            }));
+            const { unmount } = renderWithProviders(<AppSidebar />, { initialEntries: ['/plan'] });
 
-        const calendarRender = renderWithProviders(<AppSidebar />, { initialEntries: ['/calendar'] });
-        expect(screen.getByRole('link', { name: 'Calendar' }))
-            .toHaveAttribute('aria-current', 'page');
-        calendarRender.unmount();
+            expect(planLink()).toHaveTextContent('4/6');
+            expect(planLink()).toHaveAccessibleDescription('4 of 6 plan steps complete');
+            expect(screen.getAllByText('4/6')).toHaveLength(1);
+            expect(destinationLinks().filter(link => link !== planLink() && /\d/.test(link.textContent ?? '')))
+                .toEqual([]);
+            unmount();
 
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
-        expect(screen.getByRole('link', { name: 'Agent Pipeline' })).toBeVisible();
-        expect(screen.queryByText('More')).not.toBeInTheDocument();
-    });
+            planningSummaryMock.usePlanningNavigationSummary.mockReturnValue(planSummary({
+                ready: { done: 6, total: 6, pct: 100 },
+            }));
+            renderWithProviders(<AppSidebar />, { initialEntries: ['/plan'] });
 
-    it('shows only Resource & Settings destinations for a resource route', () => {
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
-
-        const sidebar = screen.getByRole('complementary', {
-            name: 'Resource & Settings',
+            expect(planLink()).toHaveTextContent(/^Plan$/);
+            expect(screen.queryByText(/\d\/6/)).not.toBeInTheDocument();
         });
-        expect(within(sidebar).getByRole('navigation', {
-            name: 'Resource & Settings destinations',
-        })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Team' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('aria-current', 'page');
-        expect(screen.queryByRole('link', { name: 'Gantt' })).not.toBeInTheDocument();
-        expect(screen.queryByText('Planning summary')).not.toBeInTheDocument();
-    });
 
-    it('promotes a compact attention action inside the contextual destinations', () => {
-        renderWithProviders(
-            <SidebarContent
-                attentionAction={{
-                    to: '/plan/master',
-                    label: 'Continue Plan (2 remaining)',
-                }}
-            />,
-            { initialEntries: ['/plan'] },
-        );
-
-        expect(screen.getByRole('link', { name: 'Continue Plan (2 remaining)' }))
-            .toHaveAttribute('href', '/plan/master');
-    });
-
-    it('folds matching Delivery attention into the canonical Triage destination', () => {
-        renderWithProviders(
-            <SidebarContent
-                attentionAction={{
-                    to: '/triage',
-                    label: 'Intake status unavailable',
-                    isError: true,
-                }}
-            />,
-            { initialEntries: ['/'] },
-        );
-
-        const triageLinks = screen.getAllByRole('link')
-            .filter(link => link.getAttribute('href') === '/triage');
-
-        expect(triageLinks).toHaveLength(1);
-        expect(triageLinks[0]).toHaveAccessibleDescription('Intake status unavailable');
-    });
-
-    it('keeps Delivery views inside Delivery without planning context', () => {
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
-
-        expect(screen.getByRole('link', { name: 'Tasks' })).toHaveAttribute('aria-current', 'page');
-        expect(screen.queryByText('Planning summary')).not.toBeInTheDocument();
-        expect(screen.queryByRole('link', { name: 'Gantt' })).not.toBeInTheDocument();
-    });
-
-    it('keeps Views open when an in-flight request resolves', async () => {
-        let resolveViews!: (views: SavedView[]) => void;
-        const pendingViews = new Promise<SavedView[]>(resolve => {
-            resolveViews = resolve;
+        it('shows no plan counter while progress is loading or unavailable', () => {
+            for (const state of [{ isReadinessLoading: true }, { isReadinessError: true }, { isIterationsLoading: true }, { isIterationsError: true }]) {
+                planningSummaryMock.usePlanningNavigationSummary.mockReturnValue(planSummary({
+                    ready: { done: 1, total: 6, pct: 17 },
+                    ...state,
+                }));
+                const { unmount } = renderWithProviders(<AppSidebar />, { initialEntries: ['/plan'] });
+                expect(planLink()).toHaveTextContent(/^Plan$/);
+                unmount();
+            }
         });
-        savedViewServiceMock.getAll.mockReturnValue(pendingViews);
 
-        const { user } = renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
-        const viewsLabel = screen.getByText('Views');
-        const disclosure = viewsLabel.closest('details');
+        it('counts the requests waiting on Triage and nothing on Tasks', async () => {
+            triageServiceMock.getAll.mockResolvedValue([{ id: 1 }, { id: 2 }, { id: 3 }]);
+            renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
 
-        await user.click(viewsLabel);
-        expect(disclosure).toHaveAttribute('open');
-
-        resolveViews([]);
-        expect(await screen.findByText('No system views')).toBeVisible();
-        expect(disclosure).toHaveAttribute('open');
-    });
-
-    it('marks only the matching saved view as current when a view query is present', async () => {
-        savedViewServiceMock.getAll.mockImplementation(({ view_type }: { view_type: string }) => (
-            Promise.resolve(view_type === 'tasks' ? [systemTaskView] : [])
-        ));
-
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks?view=42'] });
-
-        const savedViewLink = await screen.findByRole('link', { name: 'My queued tasks' });
-        expect(savedViewLink).toHaveAttribute('aria-current', 'page');
-        expect(screen.getByRole('link', { name: 'Tasks' })).not.toHaveAttribute('aria-current');
-        expect(screen.getAllByRole('link').filter(link => link.getAttribute('aria-current') === 'page')).toHaveLength(1);
-        expect(screen.getByLabelText('1 saved view')).toBeVisible();
-    });
-
-    it('pins a selected saved view beyond the visible limit and announces overflow', async () => {
-        const crowdedViews = crowdedSystemViews();
-        savedViewServiceMock.getAll.mockImplementation(({ view_type }: { view_type: string }) => (
-            Promise.resolve(view_type === 'tasks' ? crowdedViews : [])
-        ));
-
-        renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks?view=106'] });
-
-        const selected = await screen.findByRole('link', { name: 'Queue view 7' });
-        expect(selected).toHaveAttribute('aria-current', 'page');
-        expect(screen.getByLabelText('7 saved views')).toHaveTextContent('7');
-    });
-
-    it('opens a complete, searchable saved-view browser with the real count', async () => {
-        const crowdedViews = crowdedSystemViews(10);
-        savedViewServiceMock.getAll.mockImplementation(({ view_type }: { view_type: string }) => (
-            Promise.resolve(view_type === 'tasks' ? crowdedViews : [])
-        ));
-        const { user } = renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
-
-        await user.click(screen.getByText('Views'));
-        const viewAll = await screen.findByRole('button', { name: 'Browse 10 saved views' });
-        expect(screen.queryByRole('link', { name: 'Queue view 6' })).not.toBeInTheDocument();
-        expect(screen.getByLabelText('10 saved views')).toHaveTextContent('10');
-
-        await user.click(viewAll);
-        expect(screen.getByRole('searchbox', { name: 'Search saved views' })).toHaveFocus();
-        expect(screen.getByRole('heading', { name: 'Tasks' })).toBeVisible();
-        // Every view is listed; the list scrolls instead of asking for a search.
-        expect(screen.getByRole('link', { name: 'Queue view 9' })).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Queue view 10' })).toBeVisible();
-
-        await user.type(screen.getByRole('searchbox', { name: 'Search saved views' }), '10');
-        expect(screen.getByRole('link', { name: 'Queue view 10' })).toBeVisible();
-        expect(screen.queryByRole('link', { name: 'Queue view 8' })).not.toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Close saved view browser' }))
-            .toHaveAttribute('aria-expanded', 'true');
-        expect(screen.getByLabelText('10 saved views')).toHaveTextContent('10');
-    });
-
-    it('keeps successful saved-view groups browsable when another group fails', async () => {
-        savedViewServiceMock.getAll.mockImplementation(({ view_type }: { view_type: string }) => {
-            if (view_type === 'tasks') return Promise.resolve(crowdedSystemViews());
-            if (view_type === 'triage') return Promise.reject(new Error('offline'));
-            return Promise.resolve([]);
+            const triage = screen.getByRole('link', { name: 'Triage' });
+            await within(triage).findByText('3');
+            expect(triage).toHaveAccessibleDescription('3 requests waiting');
+            expect(screen.getByRole('link', { name: 'Tasks' })).toHaveTextContent(/^Tasks$/);
         });
-        const { user } = renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
 
-        await user.click(screen.getByText('Views'));
-        expect(await screen.findByRole('status')).toHaveTextContent(
-            'Some saved views may be unavailable.',
-        );
-        const browse = screen.getByRole('button', { name: 'Browse 7 saved views' });
-        expect(browse).toBeEnabled();
-        await user.click(browse);
-        expect(screen.getByRole('searchbox', { name: 'Search saved views' })).toHaveFocus();
-    });
+        it('shows no Triage counter when nothing waits or the count cannot be loaded', async () => {
+            triageServiceMock.getAll.mockRejectedValue(new Error('offline'));
+            renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
 
-    it('names the saved-view recovery action and refetches on retry', async () => {
-        savedViewServiceMock.getAll.mockRejectedValue(new Error('offline'));
-        const { user } = renderWithProviders(<AppSidebar />, { initialEntries: ['/tasks'] });
-
-        await user.click(screen.getByText('Views'));
-        const retry = await screen.findByRole('button', { name: 'Retry saved views' });
-        expect(screen.getByRole('status')).toHaveTextContent('Saved views are unavailable.');
-        await user.click(retry);
-
-        await waitFor(() => expect(savedViewServiceMock.getAll).toHaveBeenCalledTimes(6));
+            await vi.waitFor(() => expect(triageServiceMock.getAll).toHaveBeenCalled());
+            expect(screen.getByRole('link', { name: 'Triage' })).toHaveTextContent(/^Triage$/);
+        });
     });
 });
