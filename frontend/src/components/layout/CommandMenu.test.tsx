@@ -4,7 +4,9 @@ import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { CommandMenu, RECENT_COMMANDS_STORAGE_KEY } from './CommandMenu';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../../utils/singleKeyShortcutPreference';
-import { DESTINATIONS } from '../../navigation/destinations';
+import { useWorkScope } from '../../features/scope/useWorkScope';
+import { useScopeStore } from '../../features/scope/scopeStore';
+import { DESTINATIONS, DESTINATION_VIEWS } from '../../navigation/destinations';
 import i18n from '../../i18n/i18n';
 
 const lookup = vi.hoisted(() => vi.fn());
@@ -14,6 +16,14 @@ vi.mock('../../services/projectService', () => ({ projectService: { getAll: proj
 const savedViews = vi.hoisted(() => vi.fn());
 vi.mock('../../services/savedViewService', () => ({ savedViewService: { getAll: savedViews } }));
 
+const iterations = vi.hoisted(() => vi.fn());
+vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: iterations } }));
+
+const ScopeProbe = () => {
+    const scope = useWorkScope();
+    return <output data-testid="shared-scope">{scope.project}/{scope.iteration}</output>;
+};
+
 const LocationProbe = () => {
     const location = useLocation();
     return <output data-testid="command-location">{`${location.pathname}${location.search}`}</output>;
@@ -22,6 +32,9 @@ const LocationProbe = () => {
 describe('CommandMenu', () => {
     beforeEach(() => {
         window.localStorage.clear();
+        useScopeStore.setState({ project: null, iteration: null });
+        iterations.mockReset();
+        iterations.mockResolvedValue([]);
         lookup.mockReset();
         lookup.mockResolvedValue({ items: [], has_more: false });
         projects.mockReset();
@@ -31,15 +44,62 @@ describe('CommandMenu', () => {
         Element.prototype.scrollIntoView = vi.fn();
     });
 
-    it('reaches every navigation destination by search', async () => {
-        const { user } = renderWithProviders(<CommandMenu />, { initialEntries: ['/settings'] });
+    it.each([...DESTINATIONS, ...DESTINATION_VIEWS])('opens $defaultLabel by typing its name', async destination => {
+        const { user } = renderWithProviders(<><CommandMenu /><LocationProbe /></>, { initialEntries: ['/settings'] });
         await user.keyboard('{Control>}k{/Control}');
-        const search = screen.getByRole('combobox', { name: 'Search commands' });
-        for (const destination of DESTINATIONS) {
-            await user.clear(search);
-            await user.type(search, i18n.t(destination.labelKey, destination.defaultLabel));
-            expect(screen.getAllByRole('option').length, destination.path).toBeGreaterThan(0);
-        }
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), i18n.t(destination.labelKey, destination.defaultLabel));
+        const options = screen.getAllByRole('option');
+        const target = options.find(option => option.textContent?.includes(i18n.t(destination.labelKey, destination.defaultLabel)));
+        expect(target).toBeDefined();
+        await user.click(target!);
+        expect(screen.getByTestId('command-location').textContent).toBe(destination.path);
+    });
+
+    it.each(['#42', 'Repair'])('finds tasks outside the current project by %s with their project names', async query => {
+        lookup.mockResolvedValue({ items: [
+            { id: 42, title: 'Repair endpoint', status: 'active', project_id: 2, project_name: 'Orchard', iteration_name: null },
+            { id: 43, title: 'Repair dashboard', status: 'planned', project_id: 3, project_name: 'Harbour', iteration_name: null },
+        ], has_more: false });
+        const { user } = renderWithProviders(<CommandMenu />, { initialEntries: ['/tasks?project=1&iteration=backlog'] });
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), query);
+        expect(await screen.findByRole('option', { name: /#42 · Repair endpoint.*Orchard/ })).toBeVisible();
+        expect(screen.getByRole('option', { name: /#43 · Repair dashboard.*Harbour/ })).toBeVisible();
+        expect(lookup).toHaveBeenLastCalledWith({ q: query, limit: 8 });
+    });
+
+    it('switches iteration in the shared scope without leaving the page', async () => {
+        iterations.mockResolvedValue([
+            { id: 11, name: 'November', project_id: 1, start_date: '2026-11-01', end_date: '2026-11-30' },
+            { id: 12, name: 'December', project_id: 1, start_date: '2026-12-01', end_date: '2026-12-31' },
+            { id: 21, name: 'Other project iteration', project_id: 2, start_date: '2026-11-01', end_date: '2026-11-30' },
+        ]);
+        const { user } = renderWithProviders(<><CommandMenu /><ScopeProbe /><LocationProbe /></>, { initialEntries: ['/tasks?project=1&iteration=11&layout=board'] });
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), 'Switch iteration');
+        await user.click(screen.getByRole('option', { name: /Switch iteration/ }));
+        expect(screen.queryByRole('option', { name: /Other project iteration/ })).not.toBeInTheDocument();
+        await user.click(await screen.findByRole('option', { name: /December/ }));
+        expect(screen.getByTestId('shared-scope')).toHaveTextContent('1/12');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?project=1&iteration=12&layout=board');
+        expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), 'Switch iteration');
+        await user.click(screen.getByRole('option', { name: /Switch iteration/ }));
+        await user.click(screen.getByRole('option', { name: /Backlog/ }));
+        expect(screen.getByTestId('shared-scope')).toHaveTextContent('1/backlog');
+    });
+
+    it('switches project and offers All projects without leaving the page', async () => {
+        projects.mockResolvedValue([{ id: 2, name: 'Orchard' }]);
+        const { user } = renderWithProviders(<><CommandMenu /><ScopeProbe /><LocationProbe /></>, { initialEntries: ['/tasks?project=1&iteration=backlog&layout=board'] });
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), 'Switch project');
+        await user.click(screen.getByRole('option', { name: /Switch project/ }));
+        expect(screen.getByRole('option', { name: 'All projects' })).toBeVisible();
+        await user.click(await screen.findByRole('option', { name: 'Orchard' }));
+        expect(screen.getByTestId('shared-scope')).toHaveTextContent('2/backlog');
+        expect(screen.getByTestId('command-location')).toHaveTextContent('/tasks?project=2&iteration=backlog&layout=board');
     });
 
     it('finds projects and saved views and opens them', async () => {
@@ -219,8 +279,8 @@ describe('CommandMenu', () => {
 
         await user.click(within(dialog).getByRole('button', { name: 'All commands' }));
 
-        // Every registry destination except the workspace home already offered above, plus seven task actions.
-        expect(within(dialog).getAllByRole('option')).toHaveLength(22);
+        // Every registry destination except the workspace home already offered above, plus seven task actions and two scope commands.
+        expect(within(dialog).getAllByRole('option')).toHaveLength(24);
         expect(within(dialog).getAllByRole('heading', { level: 3 }).map(heading => heading.textContent))
             .toEqual(['Current workspace', 'Go to', 'Task actions']);
         expect(within(dialog).getByRole('button', { name: 'Suggested commands' }))
@@ -235,9 +295,7 @@ describe('CommandMenu', () => {
         const search = within(dialog).getByRole('combobox', { name: 'Search commands' });
         await user.type(search, 'Plan');
 
-        expect(within(dialog).getByRole('option', { name: /Continue Plan/ })).toBeVisible();
-        expect(within(dialog).queryByRole('option', { name: /Open Plan/ }))
-            .not.toBeInTheDocument();
+        expect(within(dialog).getByRole('option', { name: /Open Plan/ })).toBeVisible();
     });
 
     it('turns the planning-home context into a productive default action', async () => {
