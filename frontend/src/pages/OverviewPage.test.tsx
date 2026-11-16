@@ -10,6 +10,7 @@ import type { Task, TaskReference } from '../types/task';
 import i18n from '../i18n/i18n';
 import OverviewPage from './OverviewPage';
 import TasksPage from './TasksPage';
+import { CommandMenu } from '../components/layout/CommandMenu';
 
 const api = vi.hoisted(() => ({
     iterations: vi.fn(),
@@ -18,6 +19,9 @@ const api = vi.hoisted(() => ({
     pipeline: vi.fn(),
     task: vi.fn(),
     lookup: vi.fn(),
+    iteration: vi.fn(),
+    create: vi.fn(),
+    projects: vi.fn(),
 }));
 const access = vi.hoisted(() => ({ hasAdminKey: true }));
 
@@ -28,7 +32,7 @@ vi.mock('../services/iterationService', () => ({
     iterationService: {
         getAll: api.iterations,
         getPlanningReadiness: api.readiness,
-        getById: vi.fn().mockResolvedValue({ id: 12, name: 'Iteration 12', project_id: 1 }),
+        getById: api.iteration,
     },
 }));
 vi.mock('../services/taskService', () => ({
@@ -36,12 +40,14 @@ vi.mock('../services/taskService', () => ({
         getByIteration: api.tasks,
         getById: api.task,
         lookup: api.lookup,
+        create: api.create,
+        ownerOptions: vi.fn().mockResolvedValue({ items: [], has_more: false }),
     },
 }));
 vi.mock('../services/savedViewService', () => ({ savedViewService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../services/labelService', () => ({ labelService: { getGroups: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../services/sessionService', () => ({ sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 3 }) } }));
-vi.mock('../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]) } }));
+vi.mock('../services/projectService', () => ({ projectService: { getAll: api.projects, getMilestones: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../services/teamService', () => ({ teamService: { getByIteration: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../services/triageService', () => ({ triageService: { getAll: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../components/tasks/TaskAgentReadinessBadge', () => ({ TaskAgentReadinessBadge: () => null }));
@@ -244,6 +250,9 @@ describe('Overview', () => {
         api.tasks.mockImplementation(async (id: number) => TASKS_BY_ITERATION[id] ?? []);
         api.pipeline.mockResolvedValue(pipelineResponse());
         api.task.mockImplementation(async (id: number) => task(id));
+        api.iteration.mockImplementation(async (id: number) => ITERATIONS.find(item => item.id === id));
+        api.projects.mockResolvedValue([]);
+        api.create.mockImplementation(async (iterationId: number | null, data: Partial<Task>) => task(900, { ...data, iteration_id: iterationId }));
         api.lookup.mockImplementation(async (params: { backlog_only?: boolean; project_id?: number }) => ({
             items: params.backlog_only && params.project_id === 1 ? BACKLOG : [],
             has_more: false,
@@ -584,6 +593,84 @@ describe('Overview', () => {
         await user.click(count);
         const heading = await screen.findByRole('heading', { name: i18n.t('agentPipeline.stageHeading', { stage: i18n.t('agentPipeline.columns.executing.title'), count: 1 }) });
         expect((heading.closest('section') as HTMLElement).querySelectorAll('[data-testid^="task-card-"]')).toHaveLength(1);
+    });
+
+    it('opens New task on the Backlog as a backlog task of the scope project, with no iteration', async () => {
+        api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
+        const { user } = renderOverview('/?project=1&iteration=backlog');
+        const newTask = within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
+        expect(newTask).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=backlog');
+
+        await user.click(newTask);
+        const drawer = await screen.findByRole('dialog', { name: i18n.t('tasks.createNewTask') });
+        expect(within(drawer).getByText(i18n.t('teamwork.inBacklog'))).toBeInTheDocument();
+        await waitFor(() => expect(within(drawer).getByLabelText(i18n.t('surfaces.taskForm.project'))).toHaveValue('1'));
+        await user.type(within(drawer).getByLabelText(i18n.t('surfaces.taskForm.taskTitle')), 'Write the release notes');
+        await user.click(within(drawer).getByRole('button', { name: i18n.t('taskEditor.createTask') }));
+
+        await waitFor(() => expect(api.create).toHaveBeenCalledTimes(1));
+        expect(api.create).toHaveBeenCalledWith(null, expect.objectContaining({ title: 'Write the release notes', project_id: 1 }));
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: i18n.t('tasks.createNewTask') })).not.toBeInTheDocument());
+        expect(searchOf().get('create')).toBeNull();
+        expect(searchOf().get('iteration')).toBe('backlog');
+    });
+
+    it('opens New task with All projects in the iteration in scope', async () => {
+        const { user } = renderOverview('/?project=all&iteration=21');
+        const newTask = within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
+        expect(newTask).toHaveAttribute('href', '/tasks?create=1&project=all&iteration=21');
+
+        await user.click(newTask);
+        const drawer = await screen.findByRole('dialog', { name: i18n.t('tasks.createNewTask') });
+        expect(within(drawer).getByText(i18n.t('teamwork.inIteration'))).toBeInTheDocument();
+        await waitFor(() => expect(within(drawer).getByLabelText(i18n.t('surfaces.taskForm.project'))).toHaveValue('Beta'));
+    });
+
+    it('asks for a project before New task can create a backlog task with All projects', async () => {
+        api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
+        const { user } = renderOverview('/?project=all&iteration=backlog');
+        await user.click(within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') }));
+
+        // A backlog task needs a project, and All projects names none.
+        expect(await screen.findByText(i18n.t('teamwork.chooseProject'))).toBeInTheDocument();
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(searchOf().get('create')).toBe('1');
+    });
+
+    it('opens New task from the Tasks header on the Backlog in the pipeline view', async () => {
+        const { user } = renderOverview('/tasks?layout=pipeline&project=1&iteration=backlog');
+        await screen.findByRole('heading', { level: 1, name: i18n.t('tasks.allTasks') });
+        const newTask = screen.getByRole('button', { name: i18n.t('tasks.newTask') });
+        expect(newTask).toBeEnabled();
+
+        await user.click(newTask);
+        const drawer = await screen.findByRole('dialog', { name: i18n.t('tasks.createNewTask') });
+        expect(within(drawer).getByText(i18n.t('teamwork.inBacklog'))).toBeInTheDocument();
+    });
+
+    it.each([
+        ['Overview', '/?project=1&iteration=backlog'],
+        ['the pipeline view', '/tasks?layout=pipeline&project=1&iteration=backlog'],
+    ])('opens New task from the command menu on the Backlog from %s', async (_page, url) => {
+        const { user } = renderWithProviders(
+            <>
+                <CommandMenu />
+                <Routes>
+                    <Route path="/" element={<OverviewPage />} />
+                    <Route path="/tasks" element={<TasksPage />} />
+                </Routes>
+                <LocationProbe />
+            </>,
+            { initialEntries: [url] },
+        );
+        await user.keyboard('{Control>}k{/Control}');
+        await user.type(screen.getByRole('combobox', { name: 'Search commands' }), i18n.t('commandMenu.commands.newTask.label'));
+        await user.click(screen.getByRole('option', { name: new RegExp(i18n.t('commandMenu.commands.newTask.label')) }));
+
+        expect(searchOf().get('create')).toBe('1');
+        expect(searchOf().get('iteration')).toBe('backlog');
+        const drawer = await screen.findByRole('dialog', { name: i18n.t('tasks.createNewTask') });
+        expect(within(drawer).getByText(i18n.t('teamwork.inBacklog'))).toBeInTheDocument();
     });
 
     it('offers to create an iteration when there is none', async () => {
