@@ -9,7 +9,8 @@ import { QueryErrorState, QueryLoadingState } from '../components/feedback/Query
 import { CapacitySection } from '../components/capacity/CapacitySection';
 import { PlanIterationCheckpoint } from '../components/planning/PlanIterationCheckpoint';
 import { PlanIterationDrawers } from '../components/planning/PlanIterationDrawers';
-import { PlanShareSection } from '../components/planning/PlanShareSection';
+import { PlanScheduleSection } from '../components/planning/PlanScheduleSection';
+import { PlanReviewSection } from '../components/planning/PlanReviewSection';
 import { PlanWorkSection } from '../components/planning/PlanWorkSection';
 import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
@@ -128,7 +129,8 @@ const checkpointResult = (
 const bodyQueries = (stepId: PlanningStepId, queryStates: Readiness['queryStates']): PlanningQueryFeedback[] => (
     stepId === 'team' ? [queryStates.team]
         : stepId === 'work' ? [queryStates.tasks]
-            : stepId === 'blockers' ? [queryStates.tasks, queryStates.team] : []
+            : stepId === 'blockers' ? [queryStates.tasks, queryStates.team]
+                : stepId === 'schedule' || stepId === 'review' ? [queryStates.gantt, queryStates.team] : []
 );
 
 /** Today's body of a checkpoint: its evidence rows and the link to the page that owns the change. */
@@ -143,7 +145,7 @@ const CheckpointBody = ({
     const scopeLink = useScopeLink();
     const iterationId = readiness.currentIteration?.id ?? 0;
 
-    if (section.state === 'blocked') {
+    if (section.state === 'blocked' && !(section.id === 'review' && readiness.gantt?.schedule_result)) {
         const waitsFor = section.waitsFor ?? 'iteration';
         return (
             <p className="plan-section-waiting">
@@ -194,6 +196,14 @@ const CheckpointBody = ({
             unassignedCount={section.counts.unassigned_tasks ?? readiness.planningSummary?.tasks_without_assignee ?? 0}
             effortCount={section.counts.tasks_without_effort ?? readiness.planningSummary?.tasks_without_effort ?? 0} />;
     }
+    if (section.id === 'schedule' && readiness.currentIteration) {
+        return <PlanScheduleSection key={iterationId} iteration={readiness.currentIteration} members={readiness.teamMembers}
+            gantt={readiness.gantt} done={section.state === 'done'} />;
+    }
+    if (section.id === 'review' && readiness.currentIteration) {
+        return <PlanReviewSection key={iterationId} iteration={readiness.currentIteration} members={readiness.teamMembers}
+            gantt={readiness.gantt} riskCount={section.counts.risks ?? readiness.planningSummary?.risk_count ?? 0} />;
+    }
     // One primary action per page: the open, incomplete checkpoint's own action, done in place when it can be.
     const ownerIsPrimary = section.state !== 'done';
 
@@ -217,7 +227,6 @@ const CheckpointBody = ({
                     ))}
                 </dl>
             </section>
-            {section.id === 'review' && iterationId > 0 && <PlanShareSection iterationId={iterationId} />}
             <div className="plan-section-owner">
                 <Link className={clsx('btn', ownerIsPrimary ? 'primary' : 'secondary')} to={scopeLink(owner.href)}>
                     {owner.label}

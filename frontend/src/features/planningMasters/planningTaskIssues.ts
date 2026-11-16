@@ -11,6 +11,8 @@ export const PLANNING_TASK_ISSUES = [
     'unassigned',
     'missing-effort',
     'any',
+    'unscheduled',
+    'at-risk',
 ] as const;
 
 export type PlanningTaskIssue = typeof PLANNING_TASK_ISSUES[number];
@@ -52,7 +54,9 @@ export const taskMatchesPlanningIssue = (
     task: Task,
     issue: PlanningTaskIssue,
 ) => {
+    if (issue === 'at-risk') return isPlanningLeafTask(task) && Boolean(task.is_overdue || task.is_delayed || task.is_outside_constraints);
     if (!isPlanningGapCandidate(task)) return false;
+    if (issue === 'unscheduled') return !task.start_date || !task.end_date;
     const isUnassigned = !task.assignee && !task.agent_working;
     const isMissingEffort = !hasPositivePlanningEffort(task.effort_days);
 
