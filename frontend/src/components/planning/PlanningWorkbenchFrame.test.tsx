@@ -1,10 +1,14 @@
 import { screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n/i18n';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { PlanningWorkbenchFrame } from './PlanningWorkbenchFrame';
 
 describe('PlanningWorkbenchFrame', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it('keeps context, supporting actions, the primary action, and overflow in a stable order', () => {
         renderWithProviders(
             <PlanningWorkbenchFrame
@@ -38,7 +42,8 @@ describe('PlanningWorkbenchFrame', () => {
         expect(within(header).getByText('Iteration 1').tagName).toBe('DD');
     });
 
-    it('renders every action the planning pages hand it, including several inside one fragment', () => {
+    it('keeps every supporting action but renders one primary action and logs when given two', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         renderWithProviders(
             <PlanningWorkbenchFrame
                 title="Calendar"
@@ -66,7 +71,8 @@ describe('PlanningWorkbenchFrame', () => {
             'New calendar',
             'Fullscreen',
             'Save',
-            'Apply',
         ]);
+        expect(error).toHaveBeenCalledTimes(1);
+        expect(error.mock.calls[0][0]).toContain('one primary action');
     });
 });

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { PageHeader } from './PageLayout';
 
@@ -113,12 +114,12 @@ describe('PageHeader', () => {
         expect(error).toHaveBeenCalledTimes(1);
     });
 
-    it('renders slots as given and stays quiet on the compatibility path', () => {
+    it('renders a long secondary slot as given on the compatibility path but still enforces one primary', () => {
         const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         renderWithProviders(
             <PageHeader
                 title="Planning"
-                unlimitedActions
+                unlimitedSecondaryActions
                 secondaryActions={(
                     <>
                         <button type="button">One</button>
@@ -135,9 +136,31 @@ describe('PageHeader', () => {
             />,
         );
 
-        for (const name of ['One', 'Two', 'Three', 'Save', 'Publish']) {
+        for (const name of ['One', 'Two', 'Three', 'Save']) {
             expect(screen.getByRole('button', { name })).toBeInTheDocument();
         }
-        expect(error).not.toHaveBeenCalled();
+        expect(screen.queryByRole('button', { name: 'Publish' })).not.toBeInTheDocument();
+        expect(error).toHaveBeenCalledTimes(1);
+        expect(error.mock.calls[0][0]).toContain('one primary action');
+    });
+
+    it('keeps a single overflow item inside the menu so it is not a third visible action', async () => {
+        const user = userEvent.setup();
+        const onSelect = vi.fn();
+        renderWithProviders(
+            <PageHeader
+                title="Projects"
+                secondaryActions={[
+                    <button key="a" type="button">Export</button>,
+                    <button key="b" type="button">Share</button>,
+                ]}
+                overflowItems={[{ label: 'Archive', onSelect }]}
+            />,
+        );
+
+        expect(screen.queryByRole('button', { name: 'Archive' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'More actions' }));
+        await user.click(screen.getByRole('menuitem', { name: 'Archive' }));
+        expect(onSelect).toHaveBeenCalledTimes(1);
     });
 });

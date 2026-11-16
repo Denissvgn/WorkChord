@@ -44,11 +44,11 @@ type PageHeaderProps = {
     /** @deprecated Use `primaryAction`, `secondaryActions` and `overflowItems`. */
     actions?: ReactNode;
     /**
-     * Compatibility path for pages that have not moved to the action limits yet:
-     * the primary and secondary slots are rendered exactly as given, with no
-     * count and no truncation. New pages must not set it.
+     * Compatibility path for pages that still hand over more than two supporting
+     * actions: the secondary slot is rendered exactly as given. The one-primary
+     * limit is not affected. New pages must not set it.
      */
-    unlimitedActions?: boolean;
+    unlimitedSecondaryActions?: boolean;
 };
 
 const MAX_SECONDARY_ACTIONS = 2;
@@ -85,22 +85,22 @@ export const PageHeader = ({
     context,
     meta,
     actions,
-    unlimitedActions = false,
+    unlimitedSecondaryActions = false,
     className,
 }: PageHeaderProps) => {
     const primaryItems = slotItems(primaryAction);
     const secondaryItems = slotItems(secondaryActions);
-    if (import.meta.env.DEV && !unlimitedActions) {
+    if (import.meta.env.DEV) {
         if (primaryItems.length > 1) {
             console.error(`PageHeader accepts one primary action but received ${primaryItems.length}.`);
         }
-        if (secondaryItems.length > MAX_SECONDARY_ACTIONS) {
+        if (!unlimitedSecondaryActions && secondaryItems.length > MAX_SECONDARY_ACTIONS) {
             console.error(`PageHeader accepts at most ${MAX_SECONDARY_ACTIONS} secondary actions but received ${secondaryItems.length}.`);
         }
     }
-    const primary = unlimitedActions ? primaryItems : primaryItems.slice(0, 1);
-    const secondary = unlimitedActions ? secondaryItems : secondaryItems.slice(0, MAX_SECONDARY_ACTIONS);
-    const menu = overflowItems && overflowItems.length > 0 ? <OverflowMenu items={overflowItems} /> : overflow;
+    const primary = primaryItems.slice(0, 1);
+    const secondary = unlimitedSecondaryActions ? secondaryItems : secondaryItems.slice(0, MAX_SECONDARY_ACTIONS);
+    const menu = overflowItems && overflowItems.length > 0 ? <OverflowMenu items={overflowItems} alwaysMenu /> : overflow;
     const sentence = purpose ?? subtitle;
     const hasActions = Boolean(context || primary.length || secondary.length || menu || actions);
 
