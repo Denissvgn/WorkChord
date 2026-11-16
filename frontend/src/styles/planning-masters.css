@@ -4469,17 +4469,6 @@
 .wc .context-help-provider > .settings-goal-help {
   padding: 0;
 }
-.wc .context-help-workspace-note {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr);
-  align-items: start;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--thread-line);
-  border-radius: var(--wc-r-md);
-  background: var(--thread-soft);
-}
-.wc .context-help-workspace-note > span,
 .wc .context-help-shortcut-icon {
   display: grid;
   width: 32px;
@@ -4488,12 +4477,6 @@
   border-radius: var(--wc-r);
   background: var(--thread-soft);
   color: var(--thread-ink);
-}
-.wc .context-help-workspace-note p {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: var(--wc-type-base);
-  line-height: var(--wc-leading-body);
 }
 .wc .context-help-global-shortcuts {
   display: flex;
