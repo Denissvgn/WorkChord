@@ -2,6 +2,13 @@ import axios, { AxiosHeaders } from 'axios';
 import { getAdminApiKey } from '../utils/adminAccess';
 import { getAgentApiKey } from '../utils/agentAccess';
 
+declare module 'axios' {
+    interface AxiosRequestConfig {
+        /** Set on a request whose 401 must not be read as an expired session (for example a typed admin key check). */
+        skipIdentityExpiry?: boolean;
+    }
+}
+
 export const IDENTITY_EXPIRED_EVENT = 'workchord-identity-expired';
 let csrfToken: string | null = null;
 let humanSession = false;
@@ -42,7 +49,8 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(response => response, error => {
-    if (error.response?.status === 401 && error.config?.url !== '/auth/me' && typeof window !== 'undefined') {
+    // A request that only checks a typed key reports its own rejection; it does not mean the session ended.
+    if (error.response?.status === 401 && error.config?.url !== '/auth/me' && !error.config?.skipIdentityExpiry && typeof window !== 'undefined') {
         window.dispatchEvent(new Event(IDENTITY_EXPIRED_EVENT));
     }
     return Promise.reject(error);
