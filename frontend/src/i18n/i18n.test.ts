@@ -74,8 +74,6 @@ const dynamicMasterKeys = [
     'agentTeamSetup.summaryProgress',
     'plan.master.checkpointOption',
     'plan.master.checkpointsComplete',
-    'plan.master.railProgress',
-    'plan.master.summaryProgress',
 ];
 
 describe('lazy language resources', () => {
@@ -103,7 +101,6 @@ describe('lazy language resources', () => {
 
         for (const [summaryKey, railKey] of [
             ['agentTeamSetup.summaryProgress', 'agentTeamSetup.railProgress'],
-            ['plan.master.summaryProgress', 'plan.master.railProgress'],
         ]) {
             expect(getCatalogValue(english, summaryKey))
                 .not.toBe(getCatalogValue(english, railKey));

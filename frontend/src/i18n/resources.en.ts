@@ -2921,8 +2921,6 @@ export const englishResources = {
                     allStepsGood: 'Every required checkpoint is in a good state.',
                     openStep: 'Open checkpoint',
                     jumpToExpert: 'Jump to expert',
-                    railProgress: 'Plan readiness progress',
-                    summaryProgress: 'Plan readiness progress summary',
                     moreActions: 'More actions',
                     checkpoints: 'Planning checkpoints',
                     selectCheckpoint: 'Current checkpoint',

@@ -427,8 +427,6 @@ export const planRussian = {
         allStepsGood: 'Все обязательные контрольные точки в хорошем состоянии.',
         openStep: 'Открыть контрольную точку',
         jumpToExpert: 'Перейти к экспертному разделу',
-        railProgress: 'Прогресс готовности плана',
-        summaryProgress: 'Сводка прогресса готовности плана',
         moreActions: 'Дополнительные действия',
         checkpoints: 'Контрольные точки планирования',
         selectCheckpoint: 'Текущая контрольная точка',

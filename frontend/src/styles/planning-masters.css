@@ -620,6 +620,13 @@
   font-size: var(--wc-type-label);
   font-weight: 600;
 }
+.wc .plan-master-progress-text {
+  flex-shrink: 0;
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--wc-type-label);
+  font-weight: 600;
+}
 .wc .plan-master-page > .wc-master {
   flex: 1;
 }
@@ -901,9 +908,6 @@
   background: var(--thread);
   transform-origin: left center;
   transition: transform var(--wc-motion-medium) var(--wc-ease-standard);
-}
-.wc .plan-master-mobile-progress {
-  margin-block-start: 0;
 }
 .wc .plan-master-mobile-step-select {
   display: none;

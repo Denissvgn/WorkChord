@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import OverviewPage from '../../pages/OverviewPage';
 import PlanPage from '../../pages/PlanPage';
+import PlanMasterPage from '../../pages/PlanMasterPage';
 import { deriveStatus, EMPTY_READINESS, nextStep, readiness } from '../../features/planningMasters/masters';
 import type { Iteration, IterationSummary } from '../../types/iteration';
 import { AppSidebar } from './AppSidebar';
@@ -182,5 +183,32 @@ describe('plan progress placement', () => {
         expect(within(nav).getByRole('link', { name: 'Plan' })).toHaveTextContent(/^Plan$/);
         expect(progressTexts()).toHaveLength(1);
         expect(progressTexts()[0]).toHaveTextContent('6 of 6');
+    });
+
+    it('shows plan progress on the checkpoint view as the counter and once as "n of 6", with no bar', () => {
+        const state = planningState();
+        useState(state);
+        renderWithProviders(<Shell><PlanMasterPage /></Shell>, { initialEntries: ['/plan/master'] });
+
+        const nav = screen.getByRole('navigation', { name: 'Primary navigation' });
+        expect(within(nav).getByRole('link', { name: 'Plan' }))
+            .toHaveTextContent(`${state.ready.done}/6`);
+        const outsideNav = progressTexts().filter(el => !el.closest('nav'));
+        expect(outsideNav).toHaveLength(1);
+        expect(outsideNav[0]).toHaveTextContent(`${state.ready.done} of 6`);
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    });
+
+    it('shows no counter at 6 of 6 on the checkpoint view, leaving the single "6 of 6"', () => {
+        const state = planningState({ hasGanttSchedule: true, riskCount: 0 });
+        expect(state.ready.done).toBe(6);
+        useState(state);
+        renderWithProviders(<Shell><PlanMasterPage /></Shell>, { initialEntries: ['/plan/master'] });
+
+        const nav = screen.getByRole('navigation', { name: 'Primary navigation' });
+        expect(within(nav).getByRole('link', { name: 'Plan' })).toHaveTextContent(/^Plan$/);
+        expect(progressTexts()).toHaveLength(1);
+        expect(progressTexts()[0]).toHaveTextContent('6 of 6');
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     });
 });
