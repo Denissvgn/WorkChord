@@ -1496,7 +1496,7 @@ export const russianResources = {
                 },
                 focus: {
                     planIncompleteTitle: 'Завершите план итерации',
-                    planIncompleteMeta: 'Готово шагов планирования: {{done}} из {{total}}. Далее: {{step}}.',
+                    planIncompleteMeta: 'Далее: {{step}}.',
                     planReadyTitle: 'План готов к проверке',
                     planReadyMeta: 'Открытых исключений нет. Проверьте план с командой перед следующим обязательством.',
                     continuePlanning: 'Продолжить планирование',
@@ -1520,7 +1520,6 @@ export const russianResources = {
                     deliveryProgressValue_few: 'Выполнено {{percent}}% — реализовано {{completed}} из {{total}} задач',
                     deliveryProgressValue_many: 'Выполнено {{percent}}% — реализовано {{completed}} из {{total}} задач',
                     deliveryProgressValue_other: 'Выполнено {{percent}}% — реализовано {{completed}} из {{total}} задач',
-                    planReadiness: 'Готовность плана',
                     tasksShipped: 'Реализованные задачи',
                     iterationDay: 'День итерации',
                     detailsSummary: 'Подробности итерации',
