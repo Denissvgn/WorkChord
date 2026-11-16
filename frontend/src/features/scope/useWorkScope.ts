@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { parseScope } from '../../navigation/scopeParams';
 import { iterationService } from '../../services/iterationService';
 import { useScopeStore, type RememberedScope } from './scopeStore';
+import { forgetCompletedSearchUnless, recordCompletedSearch } from './namedIteration';
 import {
     defaultIterationForProject,
     hasScopeParams,
@@ -61,21 +62,23 @@ const useCommitScope = () => {
     const { pathname, search, hash } = location;
     const writesUrl = isScopedPath(pathname) || hasScopeParams(search);
 
-    return useCallback((target: WorkScope) => {
+    /** Returns the search it wrote to the URL, or null when the URL stayed as it was. */
+    return useCallback((target: WorkScope): string | null => {
         const { project, iteration } = useScopeStore.getState();
         if (!sameScope({ project, iteration }, target)) remember(target);
-        if (writesUrl && !sameScope(parseScope(search), target)) {
-            navigate(
-                { pathname, search: withScopeSearch(search, target), hash },
-                { replace: true, state: location.state },
-            );
-        }
+        if (!writesUrl || sameScope(parseScope(search), target)) return null;
+        const nextSearch = withScopeSearch(search, target);
+        navigate(
+            { pathname, search: nextSearch, hash },
+            { replace: true, state: location.state },
+        );
+        return nextSearch;
     }, [hash, location.state, navigate, pathname, remember, search, writesUrl]);
 };
 
 const useScopeCommands = (
     iterations: readonly ScopeIterationRecord[] | undefined,
-    commit: (target: WorkScope) => void,
+    commit: (target: WorkScope) => string | null,
     currentProject: ScopeProject | undefined,
 ): WorkScopeCommands => {
     const remember = useScopeStore(state => state.remember);
@@ -159,14 +162,16 @@ export const useWorkScope = (): WorkScopeValue => {
     const lastSeen = useRef<{ search: string; remembered: RememberedScope } | null>(null);
     useLayoutEffect(() => {
         if (!iterations) return;
+        forgetCompletedSearchUnless(search);
         const previous = lastSeen.current;
         lastSeen.current = { search, remembered };
         const rememberedChangedAlone = previous !== null
             && previous.search === search
             && !sameScope(previous.remembered, remembered);
-        commit(rememberedChangedAlone
+        const written = commit(rememberedChangedAlone
             ? resolveWorkScope(remembered, {}, iterations)
             : resolveWorkScope(urlScope, remembered, iterations));
+        if (written !== null && urlScope.iteration === undefined) recordCompletedSearch(written);
     }, [commit, iterations, remembered, search, urlScope]);
 
     const { setScope, setProject, setIteration } = useScopeCommands(iterations, commit, scope?.project);

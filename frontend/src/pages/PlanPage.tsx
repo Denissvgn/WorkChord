@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
     ArrowRight,
     CalendarRange,
@@ -23,6 +23,7 @@ import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { formatDate } from '../utils/formatDate';
 import { useScopeLink } from '../features/scope/useScopeLink';
+import IterationsPage from './IterationsPage';
 
 type LocalizedStepStatus = {
     state: string;
@@ -204,7 +205,7 @@ function PlanningJobLink({ job }: { job: PlanningJob }) {
     );
 }
 
-const PlanPage = () => {
+const PlanHub = () => {
     const { t } = useTranslation();
     const scopeLink = useScopeLink();
     const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>('idle');
@@ -419,6 +420,12 @@ const PlanPage = () => {
             </details>
         </PageLayout>
     );
+};
+
+/** Plan shows the iterations of the scope's project when its link asks for them, else the planning hub. */
+const PlanPage = () => {
+    const [searchParams] = useSearchParams();
+    return searchParams.get('panel') === 'iterations' ? <IterationsPage /> : <PlanHub />;
 };
 
 export default PlanPage;

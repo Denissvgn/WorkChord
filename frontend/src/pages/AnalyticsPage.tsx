@@ -10,14 +10,15 @@ import { StatusDistribution } from '../components/analytics/StatusDistribution';
 import { SavedViewDashboardCards } from '../components/dashboard/SavedViewDashboardCards';
 import { PageHeader, PageLayout } from '../components/ui';
 import { QueryErrorState } from '../components/feedback/QueryState';
-import { useIterationStore } from '../store/iterationStore';
+import { useWorkScope } from '../features/scope/useWorkScope';
 import { formatDate } from '../utils/formatDate';
 import type { TaskStatusLog } from '../types/task';
 
 interface HistoryGroup { taskTitle: string; logs: TaskStatusLog[]; }
 
 const AnalyticsPage = () => {
-    const { selectedIterationId } = useIterationStore();
+    const { iteration } = useWorkScope();
+    const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
     const { t, i18n } = useTranslation();
     const locale = i18n.resolvedLanguage ?? i18n.language;
 
@@ -71,7 +72,7 @@ const AnalyticsPage = () => {
                 <WorkMetricsLine metrics={summary} scope={{ iteration_id: selectedIterationId }} />
             </div>}
 
-            <DeliveryAnalytics iterationId={selectedIterationId} />
+            <DeliveryAnalytics />
             <SavedViewDashboardCards iterationId={selectedIterationId} title={t('analytics.savedViewDashboard')}/>
 
             {isHistoryError && (
