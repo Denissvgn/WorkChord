@@ -444,6 +444,11 @@ export const englishResources = {
                 exitFullScreen: 'Exit full screen',
                 moreActions: 'More actions',
             },
+            filterBar: {
+                more: 'More filters',
+                active: 'Active filters',
+                remove: 'Remove filter {{filter}}',
+            },
             statuses: {
                 planned: 'Planned',
                 active: 'Active',

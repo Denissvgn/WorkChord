@@ -998,8 +998,7 @@
   flex-wrap: wrap;
   gap: 8px;
 }
-.wc .planning-workbench-action-row,
-.wc .planning-workbench-secondary-actions {
+.wc .wc-page-secondary {
   display: flex;
   min-width: 0;
   align-items: flex-end;
@@ -1007,17 +1006,17 @@
   flex-wrap: wrap;
   gap: 8px;
 }
-.wc .planning-workbench-context-control {
+.wc .wc-page-context {
   min-width: min(240px, 100%);
 }
-.wc .planning-workbench-context-control > * {
+.wc .wc-page-context > * {
   width: 100%;
 }
 .wc .planning-workbench-select {
   min-width: 0;
 }
-.wc .planning-workbench-primary-action,
-.wc .planning-workbench-overflow-action {
+.wc .wc-page-primary,
+.wc .wc-page-overflow {
   flex-shrink: 0;
 }
 .wc .planning-workbench-facts {
@@ -1218,6 +1217,58 @@
   font-weight: 600;
 }
 
+/* ── Page toolbar and filter bar ─────────────────────────────────────────── */
+.wc .wc-page-toolbar-frame { container-type: inline-size; min-width: 0; }
+.wc .wc-page-toolbar {
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 12px;
+  min-width: 0;
+}
+.wc .wc-page-toolbar-search { flex: 0 1 280px; min-width: 160px; }
+.wc .wc-page-toolbar-search > * { width: 100%; }
+.wc .wc-page-toolbar-filters { flex: 1 1 24rem; min-width: 0; }
+.wc .wc-page-toolbar-end {
+  display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+  margin-inline-start: auto; min-height: var(--wc-control-h);
+}
+.wc .wc-filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.wc .wc-filter-controls { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; min-width: 0; max-width: 100%; }
+.wc .wc-filter-select { flex: 0 1 auto; width: auto; min-width: 5rem; max-width: 11rem; text-overflow: ellipsis; }
+.wc .wc-filter-select[data-active] { border-color: var(--accent); }
+.wc .wc-filter-more { position: relative; flex: 0 0 auto; }
+.wc .wc-filter-more .btn { gap: 6px; }
+.wc .wc-filter-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  background: var(--panel-3); color: var(--ink); font-size: var(--wc-type-meta); font-weight: 600;
+}
+.wc .wc-filter-more-backdrop { position: fixed; inset: 0; z-index: 10; }
+.wc .wc-filter-more-panel {
+  position: absolute; inset-inline-start: 0; top: 100%; z-index: 20; margin-top: 4px;
+  display: flex; flex-direction: column; gap: 10px; width: 240px; padding: 12px;
+  border: 1px solid var(--border-2); border-radius: var(--wc-r-md);
+  background: var(--panel); box-shadow: var(--sh-pop);
+}
+.wc .wc-filter-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.wc .wc-filter-chip {
+  display: inline-flex; align-items: center; gap: 4px; max-width: 100%;
+  padding: 1px 4px 1px 8px; border: 1px solid var(--border); border-radius: 4px;
+  background: var(--panel-3); color: var(--ink-2); font-size: var(--wc-type-meta);
+}
+.wc .wc-filter-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wc .wc-filter-chip button {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border: 0; border-radius: 3px; background: transparent;
+  color: var(--ink-3); cursor: pointer;
+}
+.wc .wc-filter-chip button:hover { background: var(--panel); color: var(--ink); }
+/* One row while the content area is wide; below that the filters move under search and the view controls. */
+@container (max-width: 900px) {
+  .wc .wc-page-toolbar-search { flex-grow: 1; }
+  .wc .wc-page-toolbar-end { order: 2; }
+  .wc .wc-page-toolbar-filters { order: 3; flex-basis: 100%; }
+  .wc .wc-filter-controls { flex-wrap: wrap; }
+}
+
 /* ── Inputs ──────────────────────────────────────────────────────────────── */
 :where(.wc .input):is(input, select, textarea) {
   appearance: none; border: 1px solid var(--border-2);
@@ -1316,13 +1367,6 @@
   border: 1px solid var(--border);
   border-radius: var(--wc-r-md);
   background: var(--panel-2);
-}
-.wc .wc-action-group {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 .wc .wc-form-grid {
   display: grid;
@@ -3642,21 +3686,16 @@
     width: 100%;
     justify-content: flex-start;
   }
-  .wc .planning-workbench-action-row {
-    width: 100%;
-    justify-content: flex-start;
-  }
-  .wc .planning-workbench-context-control {
+  .wc .wc-page-context {
     flex: 1 1 240px;
   }
-  .wc .planning-workbench-secondary-actions {
+  .wc .wc-page-secondary {
     justify-content: flex-start;
   }
-  .wc .planning-workbench-primary-action {
+  .wc .wc-page-primary {
     margin-inline-start: auto;
   }
-  .wc .wc-page-actions > *,
-  .wc .wc-action-group > * {
+  .wc .wc-page-actions > * {
     max-width: 100%;
   }
   .wc .plan-master-header {
@@ -3950,27 +3989,27 @@
   .wc .overview-focus-facts dd { text-align: start; }
 }
 @media (max-width: 640px) {
-  .wc .planning-workbench-context-control {
+  .wc .wc-page-context {
     order: 1;
     width: 100%;
   }
-  .wc .planning-workbench-primary-action {
+  .wc .wc-page-primary {
     order: 2;
     width: 100%;
     margin-inline-start: 0;
   }
-  .wc .planning-workbench-primary-action > * {
+  .wc .wc-page-primary > * {
     width: 100%;
     min-height: 44px;
   }
-  .wc .planning-workbench-secondary-actions {
+  .wc .wc-page-secondary {
     order: 3;
     width: auto;
   }
-  .wc .planning-workbench-secondary-actions > * {
+  .wc .wc-page-secondary > * {
     flex: 0 1 auto;
   }
-  .wc .planning-workbench-overflow-action {
+  .wc .wc-page-overflow {
     order: 4;
     margin-inline-start: auto;
   }
