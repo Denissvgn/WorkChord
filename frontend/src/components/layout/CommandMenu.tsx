@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { taskSearchResultCopy } from '../tasks/taskSearchResults';
 import { taskService } from '../../services/taskService';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
@@ -26,12 +27,16 @@ import { Checkbox } from '../common/Checkbox';
 import { Modal } from '../common/Modal';
 import { OPEN_COMMAND_MENU_EVENT } from './commandMenuEvents';
 import { useSingleKeyShortcutPreference } from '../../hooks/useSingleKeyShortcutPreference';
-import { getWorkspaceForPath, WORKSPACES } from '../../navigation/workspaces';
+import { getWorkspaceForPath } from '../../navigation/workspaces';
 import { projectService } from '../../services/projectService';
 import { savedViewService } from '../../services/savedViewService';
 import { savedViewDisplay } from '../../i18n/seedDisplay';
 import type { SavedView } from '../../types/savedView';
-import { useScopeLink } from '../../features/scope/useScopeLink';
+import { DESTINATIONS, DESTINATION_VIEWS } from '../../navigation/destinations';
+import { iterationService } from '../../services/iterationService';
+import { useSetWorkScope } from '../../features/scope/useWorkScope';
+import type { ScopeProject, ScopeIteration } from '../../features/scope/workScope';
+import { useLinkScope, useScopeLink } from '../../features/scope/useScopeLink';
 
 type CommandGroup = 'results' | 'tasks' | 'current' | 'navigate' | 'suggested';
 
@@ -45,6 +50,9 @@ interface CommandAction {
     shortcut?: string;
     ariaShortcut?: string;
     to: string;
+    picker?: 'project' | 'iteration';
+    project?: ScopeProject;
+    iteration?: ScopeIteration;
 }
 
 // Destinations that keep their established command ids (recent commands and suggestions refer to them) and wording.
@@ -134,21 +142,26 @@ export const CommandMenu = () => {
     const navigate = useNavigate();
     const scopeLink = useScopeLink();
     const location = useLocation();
+    const scope = useLinkScope();
+    const { setProject, setIteration } = useSetWorkScope();
+    const [picker, setPicker] = useState<'project' | 'iteration' | null>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
     const [taskQuery, setTaskQuery] = useState('');
     useEffect(() => { const timer = setTimeout(() => setTaskQuery(query.trim().slice(0, 200)), 200); return () => clearTimeout(timer); }, [query]);
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const taskResults = useQuery({ queryKey: ['command-task-search', taskQuery], enabled: open && taskQuery.length > 0,
+    const taskResults = useQuery({ queryKey: ['command-task-search', taskQuery], enabled: open && !picker && taskQuery.length > 0,
         queryFn: () => taskService.lookup({ q: taskQuery, limit: 8 }) });
     // feedback-policy: query loading,error,retry,empty - project and view matches are optional extras; tasks and commands still answer.
-    const projectResults = useQuery({ queryKey: ['projects'], enabled: open && taskQuery.length > 0, staleTime: 60000,
+    const projectResults = useQuery({ queryKey: ['projects'], enabled: open, staleTime: 60000,
         queryFn: ({ signal }) => projectService.getAll({ signal }) });
     // feedback-policy: query loading,error,retry,empty - project and view matches are optional extras; tasks and commands still answer.
-    const viewResults = useQuery({ queryKey: ['saved-views', 'command-menu'], enabled: open && taskQuery.length > 0, staleTime: 60000,
+    const viewResults = useQuery({ queryKey: ['saved-views', 'command-menu'], enabled: open && !picker && taskQuery.length > 0, staleTime: 60000,
         queryFn: async () => (await Promise.allSettled(SAVED_VIEW_TYPES.map(type => savedViewService.getAll({ view_type: type }))))
             .flatMap(result => result.status === 'fulfilled' ? result.value : []) });
+    // feedback-policy: query loading,error,retry,empty - scope choices show loading and retry feedback below.
+    const iterationResults = useQuery({ queryKey: ['iterations'], queryFn: iterationService.getAll, enabled: open });
     const [activeIndex, setActiveIndex] = useState(0);
     const [showAllCommands, setShowAllCommands] = useState(false);
     const [recentCommandIds, setRecentCommandIds] = useState<string[]>(readRecentCommandIds);
@@ -239,19 +252,23 @@ export const CommandMenu = () => {
             icon: isTaskFullscreen ? Minimize2 : Maximize2,
             to: withTaskCommand(location, 'fullscreen', isTaskFullscreen ? null : '1'),
         },
-        // Every destination in the navigation registry, so the menu reaches all of the app.
-        ...WORKSPACES.flatMap(workspace => workspace.items.map((item): CommandAction => {
-            const key = NAV_COMMAND_KEYS[item.to];
+        ...[...DESTINATIONS, ...DESTINATION_VIEWS].map((item): CommandAction => {
+            const key = NAV_COMMAND_KEYS[item.path];
             const page = t(item.labelKey, item.defaultLabel);
             return {
-                id: NAV_COMMAND_IDS[item.to] ?? `go-${item.to === '/' ? 'overview' : item.to.slice(1).replace(/\//g, '-')}`,
+                id: NAV_COMMAND_IDS[item.path] ?? `go-${item.id}`,
                 group: 'navigate',
                 label: key ? t(`commandMenu.commands.${key}.label`) : t('commandMenu.openPage', { page }),
-                description: key ? t(`commandMenu.commands.${key}.description`) : t(workspace.descriptionKey, workspace.defaultDescription),
-                keywords: [page, t(workspace.labelKey, workspace.defaultLabel)],
+                description: page,
+                keywords: [page],
                 icon: item.icon,
-                to: item.to,
+                to: item.path,
             };
+        }),
+        ...(['project', 'iteration'] as const).map(kind => ({
+            id: `switch-${kind}`, group: 'navigate' as const,
+            label: t(kind === 'project' ? 'commandMenu.switchProject' : 'commandMenu.switchIteration'),
+            description: t('commandMenu.chooseScope'), icon: ArrowUpDown, to: '', picker: kind,
         })),
     ], [isBoardView, isTaskFullscreen, location, t]);
 
@@ -364,16 +381,27 @@ export const CommandMenu = () => {
     ]);
 
     const hasSearchQuery = query.trim().length > 0;
-    const isCompactView = !hasSearchQuery && !showAllCommands;
+    const isCompactView = !picker && !hasSearchQuery && !showAllCommands;
     const visibleGroupOrder: readonly CommandGroup[] = isCompactView
         ? COMPACT_GROUPS
         : ['results', ...groupOrder];
     const filteredCommands = useMemo(() => {
         const normalizedQuery = query.trim().toLocaleLowerCase();
+        if (picker) {
+            const choices: CommandAction[] = picker === 'project'
+                ? [{ id: 'scope-all', group: 'results', label: t('teamwork.allProjects'), description: '', icon: FolderOpen, to: '', project: 'all' },
+                    ...(projectResults.data ?? []).map(project => ({ id: `scope-project-${project.id}`, group: 'results' as const, label: project.name, description: '', icon: FolderOpen, to: '', project: project.id }))]
+                : [{ id: 'scope-backlog', group: 'results', label: t('teamwork.backlog'), description: '', icon: Layers, to: '', iteration: 'backlog' },
+                    ...(iterationResults.data ?? []).filter(iteration => scope.project === 'all' || iteration.project_id === scope.project).map(iteration => ({
+                        id: `scope-iteration-${iteration.id}`, group: 'results' as const, label: iteration.name,
+                        description: iteration.project?.name ?? projectResults.data?.find(project => project.id === iteration.project_id)?.name ?? '',
+                        icon: Layers, to: '', iteration: iteration.id,
+                    }))];
+            return choices.filter(command => `${command.label} ${command.description}`.toLocaleLowerCase().includes(normalizedQuery));
+        }
         if (!normalizedQuery) return showAllCommands ? orderedCommands : compactCommands;
         const taskCommands: CommandAction[] = (taskQuery === query.trim().slice(0, 200) ? taskResults.data?.items ?? [] : []).map(task => ({
-            id: `task-result-${task.id}`, group: 'results', label: `#${task.id} · ${task.title}`,
-            description: `${task.project_name ?? t('teamwork.workspace')} · ${task.iteration_name ?? t('teamwork.backlog')} · ${t(`statuses.${task.status}`)}`,
+            id: `task-result-${task.id}`, group: 'results', ...taskSearchResultCopy(task, t),
             icon: ListTodo, to: `${withTaskCommand(location, 'task', String(task.id))}`,
         }));
         const matches = (text: string) => text.toLocaleLowerCase().includes(normalizedQuery);
@@ -388,12 +416,12 @@ export const CommandMenu = () => {
                 description: t('commandMenu.savedViewResult', { type: t(`surfaces.savedViewDashboard.${view.view_type}`) }),
                 icon: Bookmark, to: savedViewPath(view),
             }));
-        return [...projectCommands, ...viewCommands, ...taskCommands, ...orderedCommands.filter(command => (
+        return [...projectCommands, ...viewCommands, ...taskCommands, ...groupOrder.flatMap(group => commands.filter(command => command.group === group)).filter(command => (
             `${command.label} ${command.description} ${command.keywords?.join(' ') ?? ''}`
                 .toLocaleLowerCase()
                 .includes(normalizedQuery)
         ))];
-    }, [compactCommands, orderedCommands, query, showAllCommands, taskResults.data, projectResults.data, viewResults.data, taskQuery, location, t]);
+    }, [commands, groupOrder, compactCommands, orderedCommands, query, showAllCommands, taskResults.data, projectResults.data, viewResults.data, taskQuery, location, t, picker, scope.project, iterationResults.data]);
 
     useEffect(() => {
         if (!open) return;
@@ -407,6 +435,7 @@ export const CommandMenu = () => {
 
     const closeMenu = () => {
         setOpen(false);
+        setPicker(null);
         setQuery('');
         setActiveIndex(0);
         setShowAllCommands(false);
@@ -427,6 +456,19 @@ export const CommandMenu = () => {
     }, []);
 
     const runCommand = (command: CommandAction) => {
+        if (command.picker) {
+            setPicker(command.picker);
+            setQuery('');
+            setActiveIndex(0);
+            searchInputRef.current?.focus();
+            return;
+        }
+        if (command.project !== undefined || command.iteration !== undefined) {
+            if (command.project !== undefined) setProject(command.project);
+            if (command.iteration !== undefined) setIteration(command.iteration);
+            closeMenu();
+            return;
+        }
         rememberCommand(command.id);
         closeMenu();
         navigate(scopeLink(command.to));
@@ -434,6 +476,7 @@ export const CommandMenu = () => {
 
     useEffect(() => {
         const handleOpenRequest = () => {
+            setPicker(null);
             setQuery('');
             setActiveIndex(0);
             setShowAllCommands(false);
@@ -442,6 +485,7 @@ export const CommandMenu = () => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === 'k') {
                 event.preventDefault();
+                setPicker(null);
                 setQuery('');
                 setActiveIndex(0);
                 setShowAllCommands(false);
@@ -565,7 +609,13 @@ export const CommandMenu = () => {
                 <kbd>{t('commandMenu.closeShortcut')}</kbd>
             </div>
 
-            {!hasSearchQuery && (
+            {picker && <div className="command-menu-view-mode">
+                <p>{t(picker === 'project' ? 'commandMenu.switchProject' : 'commandMenu.switchIteration')}</p>
+                <button type="button" onClick={() => { setPicker(null); setQuery(''); setActiveIndex(0); setShowAllCommands(true); }}>{t('commandMenu.showAllCommands')}</button>
+            </div>}
+            {picker && (picker === 'project' ? projectResults : iterationResults).isLoading && <p role="status">{t('common.loading')}</p>}
+            {picker && (picker === 'project' ? projectResults : iterationResults).isError && <p role="alert">{t('teamwork.loadFailed')} <button type="button" onClick={() => void (picker === 'project' ? projectResults : iterationResults).refetch()}>{t('teamwork.retry')}</button></p>}
+            {!picker && !hasSearchQuery && (
                 <div className="command-menu-view-mode">
                     <p>
                         {showAllCommands
@@ -587,8 +637,8 @@ export const CommandMenu = () => {
                 </div>
             )}
 
-            {hasSearchQuery && taskResults.isFetching && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
-            {hasSearchQuery && taskResults.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('teamwork.loadFailed')} <button type="button" onClick={() => void taskResults.refetch()}>{t('teamwork.retry')}</button></p>}
+            {!picker && hasSearchQuery && taskResults.isFetching && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
+            {!picker && hasSearchQuery && taskResults.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('teamwork.loadFailed')} <button type="button" onClick={() => void taskResults.refetch()}>{t('teamwork.retry')}</button></p>}
             <div
                 id="workchord-command-results"
                 className="command-menu-results"

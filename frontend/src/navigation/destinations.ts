@@ -1,6 +1,11 @@
 import type { LucideIcon } from 'lucide-react';
 import {
     BarChart,
+    Bot,
+    Calendar,
+    Map,
+    Network,
+    Repeat,
     FolderOpen,
     GanttChartSquare,
     Inbox,
@@ -238,3 +243,12 @@ export const formatDestinationCounter = (
     }
     return null;
 };
+
+/** Views and sections that remain directly reachable from the command menu. */
+export const DESTINATION_VIEWS = [
+    { id: 'roadmap', path: '/projects?view=roadmap', labelKey: 'nav.roadmap', defaultLabel: 'Roadmap', icon: Map },
+    { id: 'agent-pipeline', path: '/tasks?layout=pipeline', labelKey: 'nav.agentPipeline', defaultLabel: 'Agent pipeline', icon: Bot },
+    { id: 'iterations', path: '/plan?panel=iterations', labelKey: 'nav.iterations', defaultLabel: 'Iterations', icon: Repeat },
+    { id: 'work-calendar', path: '/settings?tab=calendar', labelKey: 'commandMenu.workCalendar', defaultLabel: 'Work calendar', icon: Calendar },
+    { id: 'connect-agent', path: '/team?tab=connect', labelKey: 'commandMenu.connectAgent', defaultLabel: 'Connect an agent', icon: Network },
+] as const;

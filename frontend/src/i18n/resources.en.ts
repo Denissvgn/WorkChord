@@ -2167,6 +2167,12 @@ export const englishResources = {
                 },
             },
             commandMenu: {
+                switchProject: 'Switch project',
+                switchIteration: 'Switch iteration',
+                chooseScope: 'Choose the scope for your work',
+                workCalendar: 'Work calendar',
+                connectAgent: 'Connect an agent',
+
                 title: 'Command menu',
                 description: 'Search navigation and task actions. Use arrow keys to review results and Enter to run one.',
                 trigger: 'Open command menu',
