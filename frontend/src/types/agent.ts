@@ -553,6 +553,28 @@ export interface AgentTaskAssignment {
     updated_at: string;
 }
 
+/** An assignment as a person reads it, without routing evidence or the assigner's reason. */
+export interface AgentAssignmentReadItem {
+    id: number;
+    task_id: number;
+    actor_id: number;
+    actor: { id: number; name: string; display_name: string | null; role: string } | null;
+    team_member_id: number | null;
+    purpose: AgentAssignmentPurpose | string;
+    queue_class: AgentAssignmentQueueClass | string;
+    state: AgentAssignmentState | string;
+    queue_rank: number;
+    not_before: string | null;
+    task_version: number;
+    model_binding_id: number | null;
+    model_binding_revision: number | null;
+    model_binding_status: AgentModelBindingStatus;
+    model_binding_stale_reasons: string[];
+    model: { model_catalog_key: string; provider: string; configured_model_alias: string } | null;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AgentAssignmentListParams {
     taskId?: number;
     actorId?: number;

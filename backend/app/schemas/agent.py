@@ -670,6 +670,55 @@ class AgentTaskAssignmentResponse(BaseModel):
     updated_at: datetime
 
 
+class AgentAssignmentActorSummary(BaseModel):
+    """The actor an assignment names, so a person can tell who holds the work."""
+
+    id: int
+    name: str
+    display_name: Optional[str] = None
+    role: str
+
+
+class AgentAssignmentModelSummary(BaseModel):
+    """The model an assignment's binding declares; a declaration, not an attestation."""
+
+    model_catalog_key: str
+    provider: str
+    configured_model_alias: str
+
+
+class AgentAssignmentReadItem(BaseModel):
+    """An assignment as a person reads it: who holds which task, for what, and on which model.
+
+    Routing evidence, the assigner's free-text reason and reviewer details stay
+    with agent-key reads.
+    """
+
+    id: int
+    task_id: int
+    actor_id: int
+    actor: Optional[AgentAssignmentActorSummary] = None
+    team_member_id: Optional[int] = None
+    purpose: str
+    queue_class: str
+    state: str
+    queue_rank: int
+    not_before: Optional[datetime] = None
+    task_version: int
+    model_binding_id: Optional[int] = None
+    model_binding_revision: Optional[int] = None
+    model_binding_status: Literal[
+        "not_selected",
+        "current",
+        "stale",
+        "unresolved",
+    ] = "not_selected"
+    model_binding_stale_reasons: list[str] = Field(default_factory=list)
+    model: Optional[AgentAssignmentModelSummary] = None
+    created_at: datetime
+    updated_at: datetime
+
+
 class AgentRoutingTopologyReadinessResponse(BaseModel):
     """Bounded server-owned topology readiness exposed to agent clients."""
 
