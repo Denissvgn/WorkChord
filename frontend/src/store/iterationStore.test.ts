@@ -55,6 +55,14 @@ describe('useIterationStore', () => {
         expect(useScopeStore.getState()).toMatchObject({ project: null, iteration: 9 });
     });
 
+    it('keeps the chosen project when the iteration is cleared', () => {
+        useScopeStore.getState().remember({ project: 2, iteration: 999 });
+
+        useIterationStore.getState().setSelectedIterationId(0);
+
+        expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: null });
+    });
+
     it('stays on All projects when an iteration is set there', () => {
         useScopeStore.getState().remember({ project: 'all', iteration: 8 });
 

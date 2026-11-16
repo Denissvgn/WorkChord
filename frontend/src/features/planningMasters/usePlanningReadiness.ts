@@ -267,7 +267,9 @@ export const usePlanningReadiness = ({
 
         const selectedExists = iterations.some(iteration => iteration.id === selectedIterationId);
         if (selectedIterationId > 0 && !selectedExists) {
-            setSelectedIterationId(0);
+            // The chosen iteration no longer exists: keep the chosen project and open on its
+            // default iteration.
+            chooseDefaultIteration(iterations);
             return;
         }
 
@@ -280,7 +282,6 @@ export const usePlanningReadiness = ({
         iterations,
         iterationsQuery.isSuccess,
         selectedIterationId,
-        setSelectedIterationId,
     ]);
 
     const currentIteration = useMemo<Iteration | null>(

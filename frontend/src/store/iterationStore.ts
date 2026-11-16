@@ -33,14 +33,16 @@ const toIterationId = (iteration: RememberedScope['iteration']): number => (
 /**
  * Selects an iteration. Within All projects the scope stays on All projects; otherwise the
  * project is left open so the scope takes the project of the chosen iteration. Any id that
- * is not an iteration clears the choice, and the scope then falls back to its default.
+ * is not an iteration clears only the iteration: the chosen project is kept, and the scope
+ * then falls back to that project's default iteration.
  */
 const setSelectedIterationId = (id: number) => {
     const { project, remember } = useScopeStore.getState();
-    remember({
-        project: project === 'all' ? 'all' : null,
-        iteration: Number.isSafeInteger(id) && id > 0 ? id : null,
-    });
+    if (!Number.isSafeInteger(id) || id <= 0) {
+        remember({ project, iteration: null });
+        return;
+    }
+    remember({ project: project === 'all' ? 'all' : null, iteration: id });
 };
 
 const chooseDefaultIteration = (iterations: readonly ScopeIterationRecord[]) => {
