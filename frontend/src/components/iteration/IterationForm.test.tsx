@@ -133,6 +133,7 @@ describe('IterationForm hardening', () => {
             expect(latestState()).toEqual({ dirty: false, pending: false });
         });
 
+        await user.click(screen.getByRole('button', { name: 'More' }));
         await user.click(screen.getByRole('button', { name: 'Repeating series' }));
         await user.type(screen.getByLabelText('Base name'), 'Sprint');
         await user.click(screen.getByRole('button', { name: 'Single period' }));
@@ -235,6 +236,7 @@ describe('IterationForm hardening', () => {
     it('shows which kind is chosen, says why Save is unavailable, and asks before discarding changes', async () => {
         const onCancel = vi.fn();
         const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={onCancel} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
         const single = await screen.findByRole('button', { name: 'Single period' });
         expect(single).toHaveAttribute('aria-pressed', 'true');
         expect(screen.getByRole('button', { name: 'Repeating series' })).toHaveAttribute('aria-pressed', 'false');
@@ -251,5 +253,35 @@ describe('IterationForm hardening', () => {
         await user.click(screen.getByRole('button', { name: 'Cancel' }));
         await user.click(await screen.findByRole('button', { name: 'Discard changes' }));
         expect(onCancel).toHaveBeenCalledOnce();
+    });
+
+    it('keeps name, project, start and end on the first screen and the rest under More', async () => {
+        projectServiceMock.getAll.mockResolvedValue([{ id: 42, name: 'Launch' }]);
+        const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByLabelText('Iteration name')).toBeVisible();
+        expect(screen.getByRole('combobox', { name: 'Project scope' })).toBeVisible();
+        expect(screen.getByLabelText('Start date')).toBeVisible();
+        expect(screen.getByLabelText('End date')).toBeVisible();
+        const more = screen.getByRole('button', { name: 'More' });
+        expect(more).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByRole('button', { name: 'Repeating series' })).not.toBeInTheDocument();
+        expect(screen.queryByLabelText('Manager email (for notifications)')).not.toBeInTheDocument();
+
+        await user.click(more);
+        expect(more).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('button', { name: 'Repeating series' })).toBeVisible();
+        expect(screen.getByLabelText('Manager email (for notifications)')).toBeVisible();
+    });
+
+    it('creates a repeating series from the series fields under More', async () => {
+        const { user } = renderWithProviders(<IterationForm hideProjectScope onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
+        await user.click(screen.getByRole('button', { name: 'Repeating series' }));
+        await user.type(screen.getByLabelText('Base name'), 'Sprint 1');
+        expect(screen.queryByLabelText('End date')).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Duration (calendar days)')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Create series' }));
+        await waitFor(() => expect(iterationServiceMock.createSeries).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.createSeries.mock.calls[0][0]).toEqual(expect.objectContaining({ base_name: 'Sprint 1', duration_days: 14 }));
     });
 });

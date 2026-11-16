@@ -72,7 +72,7 @@ const AnalyticsPage = () => {
                 <WorkMetricsLine metrics={summary} scope={{ iteration_id: selectedIterationId }} />
             </div>}
 
-            <DeliveryAnalytics iterationId={selectedIterationId} />
+            <DeliveryAnalytics />
             <SavedViewDashboardCards iterationId={selectedIterationId} title={t('analytics.savedViewDashboard')}/>
 
             {isHistoryError && (

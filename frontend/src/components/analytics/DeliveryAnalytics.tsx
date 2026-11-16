@@ -3,29 +3,29 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { deliveryMetricsService } from '../../services/deliveryMetricsService';
-import { projectService } from '../../services/projectService';
 import { QueryErrorState } from '../feedback/QueryState';
 import type { DeliveryQueueItem } from '../../types/deliveryMetrics';
 import { ExecutionUsagePanel } from './ExecutionUsagePanel';
 import { formatDateTime } from '../../utils/formatDate';
 import { useScopeLink } from '../../features/scope/useScopeLink';
+import { useWorkScope } from '../../features/scope/useWorkScope';
 
-export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => {
+/**
+ * Delivery history for the scope chosen in the scope bar. An iteration reports that iteration;
+ * Backlog on a project reports the project, because the report cannot be narrowed to work with
+ * no iteration; All projects has no report to show.
+ */
+export const DeliveryAnalytics = () => {
     const { t, i18n } = useTranslation();
     const scopeLink = useScopeLink();
-    const [scope, setScope] = useState(iterationId ? 'iteration' : 'project');
-    const [projectId, setProjectId] = useState<number>();
+    const { project, iteration } = useWorkScope();
     const [days, setDays] = useState(30);
-    const effectiveScope = scope === 'iteration' && iterationId ? 'iteration' : 'project';
+    const params = typeof iteration === 'number' ? { iteration_id: iteration, lookback_days: days }
+        : iteration === 'backlog' && typeof project === 'number' ? { project_id: project, lookback_days: days }
+            : undefined;
+    const enabled = params !== undefined;
     // feedback-policy: query loading,error,retry,empty
-    const projects = useQuery({ queryKey: ['projects', 'delivery-analytics'], queryFn: projectService.getAll,
-        enabled: effectiveScope === 'project' });
-    const availableProjects = projects.isError ? [] : projects.data ?? [];
-    const params = effectiveScope === 'iteration' ? { iteration_id: iterationId, lookback_days: days }
-        : { project_id: projectId, lookback_days: days };
-    const enabled = effectiveScope === 'iteration' ? Boolean(iterationId) : availableProjects.some(project => project.id === projectId);
-    // feedback-policy: query loading,error,retry,empty
-    const report = useQuery({ queryKey: ['deliveryMetrics', params], queryFn: () => deliveryMetricsService.get(params), enabled });
+    const report = useQuery({ queryKey: ['deliveryMetrics', params], queryFn: () => deliveryMetricsService.get(params!), enabled });
     const number = new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 });
     const duration = (seconds: number | null) => seconds === null ? t('deliveryAnalytics.unknown')
         : seconds > 0 && seconds < 864 ? `<${number.format(0.01)}` : number.format(seconds / 86400);
@@ -38,28 +38,19 @@ export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => 
             </li>)}
         </ul>}
     </section>;
-    const data = !enabled || report.isError || (effectiveScope === 'project' && projects.isError) ? undefined : report.data;
+    const data = !enabled || report.isError ? undefined : report.data;
     return <section className="space-y-5 border-y border-border-subtle py-6" aria-labelledby="delivery-analytics-title">
         <div className="flex flex-wrap items-start justify-between gap-4">
             <div><h3 id="delivery-analytics-title" className="text-lg font-semibold">{t('deliveryAnalytics.title')}</h3>
                 <p className="mt-1 max-w-prose text-sm text-content-secondary">{t('deliveryAnalytics.description')}</p></div>
             <div className="flex flex-wrap gap-3">
-                <label className="text-sm">{t('deliveryAnalytics.scope')}<select className="ml-2 rounded border px-2 py-1" value={effectiveScope} onChange={event => setScope(event.target.value)}>
-                    {Boolean(iterationId) && <option value="iteration">{t('deliveryAnalytics.iteration')}</option>}
-                    <option value="project">{t('deliveryAnalytics.project')}</option>
-                </select></label>
-                {effectiveScope === 'project' && <label className="text-sm">{t('deliveryAnalytics.project')}<select className="ml-2 max-w-52 rounded border px-2 py-1" value={projectId ?? ''} onChange={event => setProjectId(event.target.value ? Number(event.target.value) : undefined)}>
-                    <option value="">{t('deliveryAnalytics.chooseProject')}</option>
-                    {availableProjects.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}
-                </select></label>}
                 <label className="text-sm">{t('deliveryAnalytics.window')}<select className="ml-2 rounded border px-2 py-1" value={days} onChange={event => setDays(Number(event.target.value))}>
                     {[30, 90, 180, 366].map(value => <option key={value} value={value}>{t('deliveryAnalytics.days', { count: value })}</option>)}
                 </select></label>
             </div>
         </div>
-        {effectiveScope === 'project' && projects.isLoading && <p role="status">{t('common.loading')}</p>}
-        {effectiveScope === 'project' && projects.isError && <QueryErrorState error={projects.error} onRetry={() => { void projects.refetch(); }} />}
-        {!enabled && <p className="text-sm text-content-secondary">{t(availableProjects.length === 0 && !projects.isLoading ? 'deliveryAnalytics.noProjects' : 'deliveryAnalytics.chooseScope')}</p>}
+        {!enabled && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.chooseScope')}</p>}
+        {enabled && iteration === 'backlog' && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.backlogBasis')}</p>}
         {enabled && report.isLoading && <p role="status">{t('common.loading')}</p>}
         {enabled && report.isError && <QueryErrorState error={report.error} onRetry={() => { void report.refetch(); }} />}
         {data && <>
@@ -85,7 +76,7 @@ export const DeliveryAnalytics = ({ iterationId }: { iterationId?: number }) => 
                 missing: data.coverage.current_leaves_without_capture, legacy: data.coverage.legacy_closed_acceptance_unknown })}</p>
             <div className="grid gap-6 lg:grid-cols-2">{queue(t('deliveryAnalytics.reviewQueue'), data.review_queue)}{queue(t('deliveryAnalytics.recoveryQueue'), data.recovery_queue)}</div>
             {data.queues_truncated && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueLimit')}</p>}
-            <ExecutionUsagePanel key={`${params.project_id ?? ''}-${params.iteration_id ?? ''}-${days}`} scope={params} />
+            {params && <ExecutionUsagePanel key={`${params.project_id ?? ''}-${params.iteration_id ?? ''}-${days}`} scope={params} />}
         </>}
     </section>;
 };

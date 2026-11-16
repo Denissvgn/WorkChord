@@ -407,83 +407,84 @@ const IterationFormEditor = ({
                 disabled={isSaving}
                 className="m-0 min-w-0 space-y-6 border-0 p-0"
             >
-            {!initialData && (
-                <div role="group" aria-label={t('iterationForm.kind')} className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
-                    <button
-                        type="button"
-                        aria-pressed={mode === 'single'}
-                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
-                        onClick={() => setMode('single')}
-                    >
-                        <CalendarRange className="h-4 w-4" />
-                        {t('iterationForm.singleMode')}
-                    </button>
-                    <button
-                        type="button"
-                        aria-pressed={mode === 'series'}
-                        className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
-                        onClick={() => setMode('series')}
-                    >
-                        <Repeat className="h-4 w-4" />
-                        {t('iterationForm.seriesMode')}
-                    </button>
-                </div>
+            {mode === 'single' ? (
+                <Input
+                    label={t('iterations.iterationName')}
+                    value={singleDraft.name}
+                    onChange={event => setSingleDraft(current => ({ ...current, name: event.target.value }))}
+                    required
+                    placeholder={t('iterations.iterationNamePlaceholder')}
+                />
+            ) : (
+                <Input
+                    label={t('iterationForm.baseName')}
+                    value={seriesDraft.base_name}
+                    onChange={event => setSeriesDraft(current => ({ ...current, base_name: event.target.value }))}
+                    required
+                    placeholder={t('iterations.iterationNamePlaceholder')}
+                />
             )}
 
+            {!hideProjectScope && projectScope}
+
             {mode === 'single' ? (
-                <>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Input
-                        label={t('iterations.iterationName')}
-                        value={singleDraft.name}
-                        onChange={event => setSingleDraft(current => ({ ...current, name: event.target.value }))}
+                        type="date"
+                        label={t('iterations.startDate')}
+                        value={singleDraft.start_date}
+                        onChange={event => setSingleDraft(current => ({ ...current, start_date: event.target.value }))}
                         required
-                        placeholder={t('iterations.iterationNamePlaceholder')}
                     />
-
-                    {!hideProjectScope && projectScope}
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Input
-                            type="date"
-                            label={t('iterations.startDate')}
-                            value={singleDraft.start_date}
-                            onChange={event => setSingleDraft(current => ({ ...current, start_date: event.target.value }))}
-                            required
-                        />
-                        <Input
-                            type="date"
-                            label={t('iterations.endDate')}
-                            value={singleDraft.end_date}
-                            onChange={event => setSingleDraft(current => ({ ...current, end_date: event.target.value }))}
-                            required
-                            error={
-                                singleDraft.start_date && singleDraft.end_date && !isOrderedRange(singleDraft.start_date, singleDraft.end_date)
-                                    ? t('iterationForm.endBeforeStart')
-                                    : undefined
-                            }
-                        />
-                    </div>
-                </>
+                    <Input
+                        type="date"
+                        label={t('iterations.endDate')}
+                        value={singleDraft.end_date}
+                        onChange={event => setSingleDraft(current => ({ ...current, end_date: event.target.value }))}
+                        required
+                        error={
+                            singleDraft.start_date && singleDraft.end_date && !isOrderedRange(singleDraft.start_date, singleDraft.end_date)
+                                ? t('iterationForm.endBeforeStart')
+                                : undefined
+                        }
+                    />
+                </div>
             ) : (
-                <>
-                    <Input
-                        label={t('iterationForm.baseName')}
-                        value={seriesDraft.base_name}
-                        onChange={event => setSeriesDraft(current => ({ ...current, base_name: event.target.value }))}
-                        required
-                        placeholder={t('iterations.iterationNamePlaceholder')}
-                    />
+                <Input
+                    type="date"
+                    label={t('iterations.startDate')}
+                    value={seriesDraft.start_date}
+                    onChange={event => setSeriesDraft(current => ({ ...current, start_date: event.target.value }))}
+                    required
+                />
+            )}
 
-                    {!hideProjectScope && projectScope}
+            <CollapsibleSection title={t('iterationForm.more')} defaultOpen={Boolean(singleDraft.manager_email)}>
+                {!initialData && (
+                    <div role="group" aria-label={t('iterationForm.kind')} className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
+                        <button
+                            type="button"
+                            aria-pressed={mode === 'single'}
+                            className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
+                            onClick={() => setMode('single')}
+                        >
+                            <CalendarRange className="h-4 w-4" />
+                            {t('iterationForm.singleMode')}
+                        </button>
+                        <button
+                            type="button"
+                            aria-pressed={mode === 'series'}
+                            className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
+                            onClick={() => setMode('series')}
+                        >
+                            <Repeat className="h-4 w-4" />
+                            {t('iterationForm.seriesMode')}
+                        </button>
+                    </div>
+                )}
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Input
-                            type="date"
-                            label={t('iterations.startDate')}
-                            value={seriesDraft.start_date}
-                            onChange={event => setSeriesDraft(current => ({ ...current, start_date: event.target.value }))}
-                            required
-                        />
+                {mode === 'series' && (
+                    <>
                         <Input
                             type="number"
                             min={1}
@@ -493,83 +494,79 @@ const IterationFormEditor = ({
                             onChange={event => setSeriesDraft(current => ({ ...current, duration_days: Number(event.target.value) }))}
                             required
                         />
-                    </div>
 
-                    <div className="space-y-3 rounded-lg border border-border p-3">
-                        <div className="text-sm font-medium text-content-secondary">{t('iterationForm.seriesStops')}</div>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                            <label className="flex items-start gap-2 rounded-md border border-border p-3 text-sm">
-                                <input
-                                    type="radio"
-                                    checked={seriesDraft.stop_mode === 'count'}
-                                    onChange={() => setSeriesDraft(current => ({ ...current, stop_mode: 'count' }))}
-                                />
-                                <span>
-                                    <span className="block font-medium text-content-primary">{t('iterationForm.byCount')}</span>
-                                    <Input
-                                        type="number"
-                                        min={1}
-                                        max={MAX_SERIES_ITERATIONS}
-                                        value={seriesDraft.count}
-                                        onChange={event => setSeriesDraft(current => ({ ...current, count: Number(event.target.value) }))}
-                                        disabled={seriesDraft.stop_mode !== 'count'}
-                                        className="mt-2"
-                                        aria-label={t('iterationForm.count')}
+                        <div className="space-y-3 rounded-lg border border-border p-3">
+                            <div className="text-sm font-medium text-content-secondary">{t('iterationForm.seriesStops')}</div>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <label className="flex items-start gap-2 rounded-md border border-border p-3 text-sm">
+                                    <input
+                                        type="radio"
+                                        checked={seriesDraft.stop_mode === 'count'}
+                                        onChange={() => setSeriesDraft(current => ({ ...current, stop_mode: 'count' }))}
                                     />
-                                </span>
-                            </label>
-                            <label className="flex items-start gap-2 rounded-md border border-border p-3 text-sm">
-                                <input
-                                    type="radio"
-                                    checked={seriesDraft.stop_mode === 'until_date'}
-                                    onChange={() => setSeriesDraft(current => ({ ...current, stop_mode: 'until_date' }))}
-                                />
-                                <span>
-                                    <span className="block font-medium text-content-primary">{t('iterationForm.byUntilDate')}</span>
-                                    <Input
-                                        type="date"
-                                        value={seriesDraft.until_date}
-                                        onChange={event => setSeriesDraft(current => ({ ...current, until_date: event.target.value }))}
-                                        disabled={seriesDraft.stop_mode !== 'until_date'}
-                                        className="mt-2"
-                                        aria-label={t('iterationForm.untilDate')}
+                                    <span>
+                                        <span className="block font-medium text-content-primary">{t('iterationForm.byCount')}</span>
+                                        <Input
+                                            type="number"
+                                            min={1}
+                                            max={MAX_SERIES_ITERATIONS}
+                                            value={seriesDraft.count}
+                                            onChange={event => setSeriesDraft(current => ({ ...current, count: Number(event.target.value) }))}
+                                            disabled={seriesDraft.stop_mode !== 'count'}
+                                            className="mt-2"
+                                            aria-label={t('iterationForm.count')}
+                                        />
+                                    </span>
+                                </label>
+                                <label className="flex items-start gap-2 rounded-md border border-border p-3 text-sm">
+                                    <input
+                                        type="radio"
+                                        checked={seriesDraft.stop_mode === 'until_date'}
+                                        onChange={() => setSeriesDraft(current => ({ ...current, stop_mode: 'until_date' }))}
                                     />
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="rounded-lg border border-border bg-surface-muted p-3">
-                        <div className="mb-2 flex items-center gap-2 text-sm font-medium text-content-secondary">
-                            <ListChecks className="h-4 w-4" />
-                            {t('iterationForm.preview')}
-                        </div>
-                        {seriesPreview.length === 0 ? (
-                            <p className="text-sm text-content-tertiary">{t('iterationForm.previewEmpty')}</p>
-                        ) : seriesPreview.length > MAX_SERIES_ITERATIONS ? (
-                            <p className="text-sm text-feedback-danger-foreground">{t('iterationForm.previewTooLarge')}</p>
-                        ) : (
-                            <div className="space-y-1 text-sm">
-                                {seriesPreview.slice(0, 6).map(item => (
-                                    <div key={item.name} className="flex flex-wrap justify-between gap-2 rounded bg-surface-card px-2 py-1">
-                                        <span className="font-medium text-content-primary">{item.name}</span>
-                                        <span className="text-content-tertiary">{formatDate(item.start_date, i18n.language)} - {formatDate(item.end_date, i18n.language)}</span>
-                                    </div>
-                                ))}
-                                {seriesPreview.length > 6 && (
-                                    <p className="pt-1 text-xs text-content-tertiary">
-                                        {t('iterationForm.previewMore', '+{{count}} more', { count: seriesPreview.length - 6 })}
-                                    </p>
-                                )}
+                                    <span>
+                                        <span className="block font-medium text-content-primary">{t('iterationForm.byUntilDate')}</span>
+                                        <Input
+                                            type="date"
+                                            value={seriesDraft.until_date}
+                                            onChange={event => setSeriesDraft(current => ({ ...current, until_date: event.target.value }))}
+                                            disabled={seriesDraft.stop_mode !== 'until_date'}
+                                            className="mt-2"
+                                            aria-label={t('iterationForm.untilDate')}
+                                        />
+                                    </span>
+                                </label>
                             </div>
-                        )}
-                    </div>
-                </>
-            )}
+                        </div>
 
-            <CollapsibleSection title={t('iterationForm.notifications')} defaultOpen={Boolean(
-                mode === 'series' ? seriesDraft.manager_email : singleDraft.manager_email
-            )}>
+                        <div className="rounded-lg border border-border bg-surface-muted p-3">
+                            <div className="mb-2 flex items-center gap-2 text-sm font-medium text-content-secondary">
+                                <ListChecks className="h-4 w-4" />
+                                {t('iterationForm.preview')}
+                            </div>
+                            {seriesPreview.length === 0 ? (
+                                <p className="text-sm text-content-tertiary">{t('iterationForm.previewEmpty')}</p>
+                            ) : seriesPreview.length > MAX_SERIES_ITERATIONS ? (
+                                <p className="text-sm text-feedback-danger-foreground">{t('iterationForm.previewTooLarge')}</p>
+                            ) : (
+                                <div className="space-y-1 text-sm">
+                                    {seriesPreview.slice(0, 6).map(item => (
+                                        <div key={item.name} className="flex flex-wrap justify-between gap-2 rounded bg-surface-card px-2 py-1">
+                                            <span className="font-medium text-content-primary">{item.name}</span>
+                                            <span className="text-content-tertiary">{formatDate(item.start_date, i18n.language)} - {formatDate(item.end_date, i18n.language)}</span>
+                                        </div>
+                                    ))}
+                                    {seriesPreview.length > 6 && (
+                                        <p className="pt-1 text-xs text-content-tertiary">
+                                            {t('iterationForm.previewMore', '+{{count}} more', { count: seriesPreview.length - 6 })}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+
                 <Input
                     type="email"
                     label={t('iterations.managerEmail')}
