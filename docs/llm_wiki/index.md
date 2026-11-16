@@ -7,7 +7,7 @@ This page is an exhaustive reference inventory of the selected source. Task-orie
 | Surface | Count | Start here |
 |---|---:|---|
 | Entities | 1577 | [Open section](#entities) |
-| Modules | 846 | [Open section](#modules) |
+| Modules | 847 | [Open section](#modules) |
 | Workflows | 197 | [Open section](#workflows) |
 | Guides | 0 | No pages |
 | Entry-point flows | 560 | [Open section](#entry-point-flows) |
@@ -2322,6 +2322,7 @@ Retained history; these declarations are absent from the selected source invento
 - [test_effective_deferral](modules/test_effective_deferral.md) - Complete ancestry policy, working lifecycle parity and rejected-write atomicity.
 - [test_execution_usage](modules/test_execution_usage.md) - Usage provenance, corrections, immutable pricing and permission isolation.
 - [test_execution_working_dates](modules/test_execution_working_dates.md) - Agent start decisions use the same declared working day as human work.
+- [test_harness_session_metadata](modules/test_harness_session_metadata.md) - A worker may declare the harness session that ran it; the shape is checked, the value is not verified.
 - [test_human_work_queries](modules/test_human_work_queries.md) - Human ownership queries and exact-ID lookup respect project visibility.
 - [test_identity_lifecycle](modules/test_identity_lifecycle.md) - OIDC, native bearer, revocation, ownership and real MCP transport contracts.
 - [test_initial_schema](modules/test_initial_schema.md) - The packaged initial schema and fail-closed development reset boundary.

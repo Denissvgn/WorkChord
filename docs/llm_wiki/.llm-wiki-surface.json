@@ -25,11 +25,11 @@
       "infrastructure": 12,
       "load-order": 1,
       "log": 1,
-      "modules": 846,
+      "modules": 847,
       "workflows": 197
     },
     "dependency_architecture": 2,
-    "total": 3196
+    "total": 3197
   },
   "dependency_pages": {
     "count": 2,
@@ -46694,6 +46694,7 @@
         "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
         "modules/test_execution_working_dates.md",
+        "modules/test_harness_session_metadata.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
@@ -48595,7 +48596,8 @@
         "modules/mcp_agent_tools.md",
         "modules/routers_agent.md",
         "modules/schemas_agent.md",
-        "modules/test_agent_run_trust_compatibility.md"
+        "modules/test_agent_run_trust_compatibility.md",
+        "modules/test_harness_session_metadata.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -49437,7 +49439,8 @@
         "modules/routers_agent.md",
         "modules/runtime_peer.md",
         "modules/schemas_agent.md",
-        "modules/test_agent_model_catalog_api.md"
+        "modules/test_agent_model_catalog_api.md",
+        "modules/test_harness_session_metadata.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -54546,7 +54549,8 @@
         "modules/test_agent_routing_service.md",
         "modules/test_agent_routing_wave6_qualification.md",
         "modules/test_agent_skill_routing_guidance.md",
-        "modules/test_agent_work_routing_lineage.md"
+        "modules/test_agent_work_routing_lineage.md",
+        "modules/test_harness_session_metadata.md"
       ],
       "role": "semantic",
       "source_path": "backend/app/schemas/agent.py",
@@ -80790,6 +80794,19 @@
       "title": "test_execution_working_dates Module"
     },
     {
+      "canonical_path": "modules/test_harness_session_metadata.md",
+      "id": "test_harness_session_metadata",
+      "kind": "modules",
+      "mcp_uri": "llm-wiki://modules/test_harness_session_metadata",
+      "outgoing_internal_links": [
+        "modules/schemas_agent.md",
+        "modules/test_harness_session_metadata.md"
+      ],
+      "role": "semantic",
+      "source_path": "backend/tests/test_harness_session_metadata.py",
+      "title": "test_harness_session_metadata Module"
+    },
+    {
       "canonical_path": "modules/test_human_work_queries.md",
       "id": "test_human_work_queries",
       "kind": "modules",
@@ -97853,6 +97870,7 @@
         "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
         "modules/test_execution_working_dates.md",
+        "modules/test_harness_session_metadata.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
@@ -98710,6 +98728,7 @@
         "modules/test_effective_deferral.md",
         "modules/test_execution_usage.md",
         "modules/test_execution_working_dates.md",
+        "modules/test_harness_session_metadata.md",
         "modules/test_human_work_queries.md",
         "modules/test_identity_lifecycle.md",
         "modules/test_initial_schema.md",
@@ -98864,5 +98883,5 @@
     }
   ],
   "schema_version": "llm-wiki-surface-index/v1",
-  "source_hash": "sha256:3c300699058dece681c2dda1be56a1212e26e731177dfd226214c49bbf52408d"
+  "source_hash": "sha256:c41bee52de29325259acf18596ad90c8935bae6c31d2be61b9f3cba56b7a8f8d"
 }
