@@ -153,6 +153,61 @@ describe('IterationForm hardening', () => {
         );
     });
 
+    it('sends an explicit null when an existing calendar is changed to the default calendar', async () => {
+        const { user } = renderWithProviders(
+            <IterationForm
+                initialData={iterationFixture({ calendar_id: 2 })}
+                hideProjectScope
+                onSuccess={vi.fn()}
+                onCancel={vi.fn()}
+            />,
+        );
+
+        // More is already open because the fixture carries a manager email.
+        await screen.findByRole('option', { name: 'Berlin calendar' });
+        await user.selectOptions(screen.getByLabelText('Calendar'), 'Default calendar');
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.update.mock.calls[0][1]).toEqual(
+            expect.objectContaining({ calendar_id: null }),
+        );
+    });
+
+    it('sends another calendar when an existing calendar is changed and omits it when unchanged', async () => {
+        const first = renderWithProviders(
+            <IterationForm
+                initialData={iterationFixture({ calendar_id: 1 })}
+                hideProjectScope
+                onSuccess={vi.fn()}
+                onCancel={vi.fn()}
+            />,
+        );
+        await screen.findByRole('option', { name: 'Berlin calendar' });
+        await first.user.selectOptions(screen.getByLabelText('Calendar'), 'Berlin calendar');
+        await first.user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.update.mock.calls[0][1]).toEqual(
+            expect.objectContaining({ calendar_id: 2 }),
+        );
+        first.unmount();
+
+        iterationServiceMock.update.mockClear();
+        const second = renderWithProviders(
+            <IterationForm
+                initialData={iterationFixture({ calendar_id: 1 })}
+                hideProjectScope
+                onSuccess={vi.fn()}
+                onCancel={vi.fn()}
+            />,
+        );
+        const name = await screen.findByLabelText('Iteration name');
+        await second.user.type(name, ' v2');
+        await second.user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.update.mock.calls[0][1]).not.toHaveProperty('calendar_id');
+    });
+
     it('reports changes from either draft even after switching editor modes', async () => {
         const onStateChange = vi.fn();
         const { user } = renderWithProviders(

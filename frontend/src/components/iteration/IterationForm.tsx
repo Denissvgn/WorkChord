@@ -331,9 +331,10 @@ const IterationFormEditor = ({
             end_date: singleDraft.end_date,
             manager_email: managerEmail || (initialData?.manager_email ? null : undefined),
         };
-        // The calendar is sent only when it was chosen or changed; otherwise the server's default stays.
-        if (singleDraft.calendar_id && singleDraft.calendar_id !== baseline.singleDraft.calendar_id) {
-            payload.calendar_id = Number(singleDraft.calendar_id);
+        // The calendar is sent only when it was chosen or changed. Choosing the default calendar
+        // sends null, which the server resolves to its default calendar.
+        if (singleDraft.calendar_id !== baseline.singleDraft.calendar_id) {
+            payload.calendar_id = singleDraft.calendar_id ? Number(singleDraft.calendar_id) : null;
         }
         if (!initialData || !hideProjectScope) {
             payload.project_id = selectedProjectId(singleDraft.project_id);
