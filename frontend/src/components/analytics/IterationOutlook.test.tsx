@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
+import { taskService } from '../../services/taskService';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { OnTrackSummary } from './OnTrackSummary';
 import { StatusDistribution } from './StatusDistribution';
@@ -36,6 +37,22 @@ describe('iteration outlook on Analytics', () => {
         renderWithProviders(<OnTrackSummary summary={summary({ scheduled_finish: null })} />);
         expect(screen.getByText('Not scheduled yet:')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Schedule the iteration' })).toBeInTheDocument();
+    });
+
+    it('shows schedule exception definitions and lists the matching tasks', async () => {
+        vi.mocked(taskService.metricMatches).mockImplementation(async ({ metric }) => ({ metric, has_more: false, items: (metric === 'late_start' ? [1, 2] : [3]).map(id => ({ id, title: "Task " + id, status: 'planned', project_name: 'Orchard', iteration_name: 'Iteration 7' })) }));
+        const { user } = renderWithProviders(<OnTrackSummary summary={summary({ late_start_tasks: 2, iteration_overflow_tasks: 1 })} />);
+        expect(screen.getByText('Tasks that started after their planned start or have not started by that date.')).toBeVisible();
+        expect(screen.getByText('Tasks scheduled to finish after the iteration ends.')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: '2 tasks' }));
+        let dialog = await screen.findByRole('dialog', { name: 'Late start' });
+        expect(await within(dialog).findAllByRole('link')).toHaveLength(2);
+        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'late_start' }, expect.anything());
+        await user.click(within(dialog).getByRole('button', { name: 'Close' }));
+        await user.click(screen.getByRole('button', { name: '1 task' }));
+        dialog = await screen.findByRole('dialog', { name: 'Iteration overflow' });
+        expect(await within(dialog).findAllByRole('link')).toHaveLength(1);
+        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'iteration_overflow' }, expect.anything());
     });
 
     it('splits tasks by status with counts and a table view, accepted shown separately', () => {

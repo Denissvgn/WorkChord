@@ -14,9 +14,9 @@ vi.mock('../services/deliveryMetricsService', () => ({ deliveryMetricsService: m
 vi.mock('../services/iterationService', () => ({ iterationService: iterationServiceMock }));
 vi.mock('../services/projectService', () => ({ projectService: projectServiceMock }));
 vi.mock('../services/taskService', () => ({ taskService: taskServiceMock }));
-vi.mock('../components/analytics/ExecutionUsagePanel', () => ({ ExecutionUsagePanel: () => null }));
-vi.mock('../components/analytics/OnTrackSummary', () => ({ OnTrackSummary: () => null }));
-vi.mock('../components/analytics/StatusDistribution', () => ({ StatusDistribution: () => null }));
+vi.mock('../components/analytics/ExecutionUsagePanel', () => ({ ExecutionUsagePanel: ({ scope }: { scope: { iteration_id: number } }) => <div>Usage scope {scope.iteration_id}</div> }));
+vi.mock('../components/analytics/OnTrackSummary', () => ({ OnTrackSummary: ({ summary }: { summary: { id: number } }) => <div>On track scope {summary.id}</div> }));
+vi.mock('../components/analytics/StatusDistribution', () => ({ StatusDistribution: ({ summary }: { summary: { id: number } }) => <div>Status scope {summary.id}</div> }));
 vi.mock('../components/tasks/WorkMetricsLine', () => ({ WorkMetricsLine: () => null }));
 vi.mock('../components/dashboard/SavedViewDashboardCards', () => ({ SavedViewDashboardCards: () => null }));
 
@@ -55,9 +55,24 @@ describe('Analytics page reads the scope bar', () => {
     it('reports the iteration of the scope bar and offers only the window as its own control', async () => {
         await renderPage('/analytics?project=1&iteration=9');
         await waitFor(() => expect(metrics.get).toHaveBeenCalledWith({ iteration_id: 9, lookback_days: 30 }));
-        const section = screen.getByRole('region', { name: 'Delivery and review' });
-        expect(within(section).getAllByRole('combobox')).toHaveLength(1);
-        expect(within(section).getByRole('combobox')).toHaveAccessibleName('Window');
+        const toolbar = screen.getByTestId('page-toolbar');
+        expect(within(toolbar).getAllByRole('combobox')).toHaveLength(1);
+        expect(within(toolbar).getByRole('combobox')).toHaveAccessibleName('Window');
+    });
+
+    it('updates every section when the scope bar changes', async () => {
+        const { user } = await renderPage('/analytics?project=1&iteration=9');
+        expect(await screen.findByText('On track scope 9')).toBeVisible();
+        expect(screen.getByText('Status scope 9')).toBeVisible();
+        expect(screen.getByText('Usage scope 9')).toBeVisible();
+        await user.click(screen.getByRole('combobox', { name: 'Project' }));
+        await user.click(await screen.findByRole('option', { name: /Grove/ }));
+        expect(await screen.findByText('On track scope 30')).toBeVisible();
+        expect(screen.getByText('Status scope 30')).toBeVisible();
+        expect(screen.getByText('Usage scope 30')).toBeVisible();
+        await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ iteration_id: 30, lookback_days: 30 }));
+        expect(taskServiceMock.getIterationHistory).toHaveBeenLastCalledWith(30);
+        expect(within(screen.getByTestId('page-toolbar')).getAllByRole('combobox')).toHaveLength(1);
     });
 
     it('requests no delivery or execution-usage data when the scope bar is on Backlog', async () => {
@@ -66,7 +81,7 @@ describe('Analytics page reads the scope bar', () => {
         metrics.get.mockClear();
         await user.click(screen.getByRole('combobox', { name: 'Iteration' }));
         await user.click(await screen.findByRole('option', { name: /^Backlog/ }));
-        expect(await screen.findByText('Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.')).toBeVisible();
+        expect((await screen.findAllByText('Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.'))[0]).toBeVisible();
         expect(metrics.get).not.toHaveBeenCalled();
         expect(screen.queryByText('Choose project')).not.toBeInTheDocument();
     });

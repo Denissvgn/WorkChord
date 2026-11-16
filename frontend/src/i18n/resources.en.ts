@@ -570,6 +570,7 @@ export const englishResources = {
             analytics: {
                 selectIteration: 'Select an iteration to view analytics',
                 title: 'Analytics',
+                purpose: 'Understand delivery, schedule health and usage for the work in scope.',
                 savedViewDashboard: 'Saved view dashboard',
                 taskLifecycle: 'Task lifecycle',
                 loadingHistory: 'Loading history…',
@@ -578,7 +579,11 @@ export const englishResources = {
                 scopeLoading: 'Loading the iteration…',
                 showTable: 'Show as a table',
                 onTrack: {
-                    title: 'On track for the end date?',
+                    title: 'On track',
+                    lateStartDefinition: 'Tasks that started after their planned start or have not started by that date.',
+                    iterationOverflowDefinition: 'Tasks scheduled to finish after the iteration ends.',
+                    taskCount_one: '{{count}} task',
+                    taskCount_other: '{{count}} tasks',
                     verdict_done: 'Done:',
                     verdict_noSchedule: 'Not scheduled yet:',
                     verdict_late: 'Behind:',

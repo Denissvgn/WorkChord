@@ -584,6 +584,7 @@ export const russianResources = {
             analytics: {
                 selectIteration: 'Выберите итерацию, чтобы посмотреть аналитику',
                 title: 'Аналитика',
+                purpose: 'Оценивайте выполнение, состояние графика и использование ресурсов для выбранной области.',
                 savedViewDashboard: 'Дашборд представлений',
                 taskLifecycle: 'Жизненный цикл задач',
                 loadingHistory: 'Загрузка истории…',
@@ -592,7 +593,13 @@ export const russianResources = {
                 scopeLoading: 'Загружаем итерацию…',
                 showTable: 'Показать таблицей',
                 onTrack: {
-                    title: 'Успеваем к дате окончания?',
+                    title: 'По плану',
+                    lateStartDefinition: 'Задачи, начатые позже запланированной даты или не начатые к этой дате.',
+                    iterationOverflowDefinition: 'Задачи, окончание которых запланировано после завершения итерации.',
+                    taskCount_one: '{{count}} задача',
+                    taskCount_few: '{{count}} задачи',
+                    taskCount_many: '{{count}} задач',
+                    taskCount_other: '{{count}} задачи',
                     verdict_done: 'Готово:',
                     verdict_noSchedule: 'Ещё не запланировано:',
                     verdict_late: 'Отстаём:',

@@ -39,7 +39,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
     const tone = verdict === 'late' ? 'text-feedback-danger-foreground' : verdict === 'atRisk' || verdict === 'noSchedule' ? 'text-feedback-warning-foreground' : 'text-feedback-success-foreground';
     return (
         <section className="card card-pad space-y-4" aria-labelledby="on-track-title">
-            <h3 id="on-track-title" className="text-base font-semibold">{t('analytics.onTrack.title')}</h3>
+            <h2 id="on-track-title" className="text-base font-semibold">{t('analytics.onTrack.title')}</h2>
             <p className="text-lg">
                 <strong className={tone}>{t(`analytics.onTrack.verdict_${verdict}`)}</strong>{' '}
                 {summary.scheduled_finish
@@ -62,6 +62,17 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                         {t('analytics.onTrack.blocked', { count: summary.blocked_tasks })}
                     </MetricCount></>}
             </p>
+            {summary.metric_contract_version === 2 && <dl className="space-y-2 text-sm">
+                {([
+                    ['lateStart', 'late_start', summary.late_start_tasks],
+                    ['iterationOverflow', 'iteration_overflow', summary.iteration_overflow_tasks],
+                ] as const).map(([label, metric, count]) => <div key={metric}>
+                    <dt className="font-medium">{t("workStatus." + label)}</dt>
+                    <dd className="text-content-secondary">{t("analytics.onTrack." + label + "Definition")}{' '}
+                        {count == null ? t('common.unknown') : <MetricCount metric={metric} scope={scope} title={t("workStatus." + label)}>{t('analytics.onTrack.taskCount', { count })}</MetricCount>}
+                    </dd>
+                </div>)}
+            </dl>}
             <div className="space-y-2" aria-hidden="true">
                 {([['remaining', remaining, 'var(--wc-status-active)'], ['capacity', left, 'var(--wc-status-resolved)']] as const).map(([key, value, color]) => (
                     <div key={key} className="grid grid-cols-[9rem_1fr_5rem] items-center gap-3 text-sm">
