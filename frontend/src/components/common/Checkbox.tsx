@@ -29,6 +29,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
                     <div className={twMerge(
                         "w-5 h-5 border rounded transition-all duration-200 flex items-center justify-center",
                         "border-border-strong bg-surface-card group-hover:border-border-strong peer-focus:ring-2 peer-focus:ring-focus/20",
+                        // Also disabled by a surrounding disabled fieldset, which the prop does not see.
+                        "peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
                         checked && "bg-action border-action group-hover:border-action-hover",
                         disabled && "bg-surface-subtle border-border"
                     )}>

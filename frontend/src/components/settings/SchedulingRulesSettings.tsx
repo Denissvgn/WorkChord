@@ -30,6 +30,8 @@ import { ConstraintsPanel } from './ConstraintsPanel';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
 import { useCanReadSettings } from '../../hooks/useAdminAccess';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
+import { ReadOnlyFieldset } from './ReadOnlyFieldset';
+import { useSettingsReadOnly } from './sharedUnlock';
 
 type SectionId = 'modifiers' | 'passes' | 'constraints';
 
@@ -76,6 +78,8 @@ export const SchedulingRulesSettings = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const canReadSettings = useCanReadSettings();
+    // Without the admin key the sections and each rule still open; only changes are disabled.
+    const readOnly = useSettingsReadOnly() !== null;
     const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(
         new Set(['modifiers', 'passes', 'constraints'])
     );
@@ -443,7 +447,7 @@ export const SchedulingRulesSettings = () => {
                                     onRemove={() => removeModifier(index)}
                                 />
                             ))}
-                            <Button variant="outline" size="sm" onClick={addModifier}>
+                            <Button variant="outline" size="sm" onClick={addModifier} disabled={readOnly}>
                                 <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                 {t('settingsScheduling.sections.modifiers.add')}
                             </Button>
@@ -498,7 +502,7 @@ export const SchedulingRulesSettings = () => {
                                     ))}
                                 </SortableContext>
                             </DndContext>
-                            <Button variant="outline" size="sm" onClick={addPass}>
+                            <Button variant="outline" size="sm" onClick={addPass} disabled={readOnly}>
                                 <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                 {t('settingsScheduling.sections.passes.add')}
                             </Button>
@@ -526,6 +530,7 @@ export const SchedulingRulesSettings = () => {
                     </button>
 
                     {expandedSections.has('constraints') && (
+                        <ReadOnlyFieldset>
                         <div id="scheduling-constraints-panel" className="mt-4">
                             <p className="mb-4 text-sm text-content-secondary">
                                 {t('settingsScheduling.sections.constraints.description')}
@@ -535,10 +540,12 @@ export const SchedulingRulesSettings = () => {
                                 onChange={updateConstraints}
                             />
                         </div>
+                        </ReadOnlyFieldset>
                     )}
                 </div>
 
                 {/* Action Buttons */}
+                <ReadOnlyFieldset>
                 <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <Button
                         variant="outline"
@@ -573,6 +580,7 @@ export const SchedulingRulesSettings = () => {
                         </div>
                     </div>
                 </div>
+                </ReadOnlyFieldset>
             </fieldset>
             <SettingsUnsavedBar dirty={hasChanges} saving={isMutating} onSave={handleSave} onDiscard={handleDiscard} />
             {confirmationDialog}

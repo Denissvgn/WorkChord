@@ -1,20 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { KeyboardEvent } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 import {
     Activity,
-    AlertTriangle,
     ArrowRight,
-    Bell,
     Bot,
+    Building2,
     CalendarClock,
+    CalendarDays,
     Check,
     Github,
+    Globe2,
+    Inbox,
     KeyRound,
     Keyboard,
+    LockKeyhole,
+    Mail,
+    Monitor,
     Palette,
     Search,
     ServerCog,
-    Settings2,
+    Sparkles,
     Tags,
     Webhook,
 } from 'lucide-react';
@@ -36,162 +41,197 @@ import { AccessKeysSummary } from '../components/settings/AccessKeysSummary';
 import { ConnectedReadersPanel } from '../components/settings/ConnectedReadersPanel';
 import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
+import { SharedUnlockContext } from '../components/settings/sharedUnlock';
+import { ReadOnlyFieldset } from '../components/settings/ReadOnlyFieldset';
+import { SETTINGS_FIELD_LABEL_KEYS } from '../components/settings/settingsFieldLabels';
+import type { SettingsSectionId } from '../components/settings/settingsFieldLabels';
+import { Button } from '../components/common/Button';
 import { Checkbox } from '../components/common/Checkbox';
 import { PageHeader, PageLayout } from '../components/ui';
-import { useAdminAccess } from '../hooks/useAdminAccess';
+import { useAdminAccess, useKeylessReader } from '../hooks/useAdminAccess';
 import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
-type SettingsTab = 'appearance' | 'scheduling' | 'templates_labels' | 'models_agents' | 'github' | 'webhooks' | 'notifications' | 'admin_access' | 'runtime' | 'about';
-type SettingsPageTab = 'overview' | SettingsTab;
-type SettingsGroupId = 'personal' | 'planning' | 'agents' | 'integrations' | 'system';
+type SettingsGroupId = 'myPreferences' | 'workspace' | 'connections' | 'accessSystem';
+/** Search results also show sections that sit outside the four groups. */
+type SearchGroupId = SettingsGroupId | 'linkedFromAiProvider';
+/** Where a section's values are kept: in this browser only, or on the server for everyone. */
+type SavedIn = 'browser' | 'workspace';
+/** One part of a section whose parts are kept in different places. */
+interface SavedInPart {
+    /** Key under `settingsPage.savedInParts` naming the part. */
+    part: string;
+    savedIn: SavedIn;
+}
 
-interface SettingsDestination {
-    id: SettingsTab;
+interface SettingsSection {
+    id: SettingsSectionId;
     labelKey: string;
     descriptionKey: string;
-    /** Field labels and words people search for on this destination. */
+    /** Other words people search for in this section; its field labels come from `SETTINGS_FIELD_LABEL_KEYS`. */
     keywordsKey: string;
     icon: LucideIcon;
+    savedIn: SavedIn | readonly SavedInPart[];
+    /** Changes need the admin key; without it the section is read-only. */
+    protected: boolean;
 }
-
-type SettingsDestinationHeader = Pick<
-    SettingsDestination,
-    'labelKey' | 'descriptionKey' | 'icon'
->;
 
 interface SettingsGroup {
-    id: SettingsGroupId;
+    id: SearchGroupId;
     labelKey: string;
-    items: SettingsDestination[];
+    items: SettingsSection[];
 }
+
+const section = (
+    id: SettingsSectionId,
+    key: string,
+    icon: LucideIcon,
+    savedIn: SettingsSection['savedIn'],
+    isProtected: boolean,
+): SettingsSection => ({
+    id,
+    labelKey: `settingsPage.sections.${key}`,
+    descriptionKey: `settingsPage.descriptions.${key}`,
+    keywordsKey: `settingsPage.keywords.${key}`,
+    icon,
+    savedIn,
+    protected: isProtected,
+});
 
 const SETTINGS_GROUPS: SettingsGroup[] = [
     {
-        id: 'personal',
-        labelKey: 'settingsPage.groups.personal',
+        id: 'myPreferences',
+        labelKey: 'settingsPage.groups.myPreferences',
         items: [
-            {
-                id: 'appearance',
-                labelKey: 'settingsPage.appearance',
-                descriptionKey: 'settingsPage.descriptions.appearance',
-                keywordsKey: 'settingsPage.keywords.appearance',
-                icon: Palette,
-            },
+            section('theme', 'theme', Palette, 'browser', false),
+            section('shortcuts', 'shortcuts', Keyboard, 'browser', false),
         ],
     },
     {
-        id: 'planning',
-        labelKey: 'settingsPage.groups.planning',
+        id: 'workspace',
+        labelKey: 'settingsPage.groups.workspace',
         items: [
-            {
-                id: 'scheduling',
-                labelKey: 'settingsPage.scheduling',
-                descriptionKey: 'settingsPage.descriptions.scheduling',
-                keywordsKey: 'settingsPage.keywords.scheduling',
-                icon: CalendarClock,
-            },
-            {
-                id: 'templates_labels',
-                labelKey: 'settingsPage.templatesLabels',
-                descriptionKey: 'settingsPage.descriptions.templatesLabels',
-                keywordsKey: 'settingsPage.keywords.templatesLabels',
-                icon: Tags,
-            },
+            section('language', 'language', Globe2, 'workspace', true),
+            section('work_calendar', 'workCalendar', CalendarDays, 'workspace', false),
+            section('scheduling', 'scheduling', CalendarClock, 'workspace', true),
+            section('templates_labels', 'templatesLabels', Tags, 'workspace', true),
+            section('notifications', 'notifications', Mail, 'workspace', true),
         ],
     },
     {
-        id: 'agents',
-        labelKey: 'settingsPage.groups.agents',
+        id: 'connections',
+        labelKey: 'settingsPage.groups.connections',
         items: [
-            {
-                id: 'models_agents',
-                labelKey: 'settingsPage.modelsAgents',
-                descriptionKey: 'settingsPage.descriptions.modelsAgents',
-                keywordsKey: 'settingsPage.keywords.modelsAgents',
-                icon: Bot,
-            },
+            section('github', 'github', Github, 'workspace', true),
+            section('webhooks', 'webhooks', Webhook, 'workspace', true),
+            section('web_intake', 'webIntake', Inbox, 'workspace', true),
+            section('ai_provider', 'aiProvider', Sparkles, 'workspace', true),
         ],
     },
     {
-        id: 'integrations',
-        labelKey: 'settingsPage.groups.integrations',
+        id: 'accessSystem',
+        labelKey: 'settingsPage.groups.accessSystem',
         items: [
-            {
-                id: 'github',
-                labelKey: 'settingsPage.github',
-                descriptionKey: 'settingsPage.descriptions.github',
-                keywordsKey: 'settingsPage.keywords.github',
-                icon: Github,
-            },
-            {
-                id: 'webhooks',
-                labelKey: 'settingsPage.webhooks',
-                descriptionKey: 'settingsPage.descriptions.webhooks',
-                keywordsKey: 'settingsPage.keywords.webhooks',
-                icon: Webhook,
-            },
-            {
-                id: 'notifications',
-                labelKey: 'settingsPage.notifications',
-                descriptionKey: 'settingsPage.descriptions.notifications',
-                keywordsKey: 'settingsPage.keywords.notifications',
-                icon: Bell,
-            },
-        ],
-    },
-    {
-        id: 'system',
-        labelKey: 'settingsPage.groups.system',
-        items: [
-            {
-                id: 'admin_access',
-                labelKey: 'settingsPage.adminAccess',
-                descriptionKey: 'settingsPage.descriptions.adminAccess',
-                keywordsKey: 'settingsPage.keywords.adminAccess',
-                icon: KeyRound,
-            },
-            {
-                id: 'runtime',
-                labelKey: 'settingsPage.runtimeConfig',
-                descriptionKey: 'settingsPage.descriptions.runtime',
-                keywordsKey: 'settingsPage.keywords.runtime',
-                icon: ServerCog,
-            },
-            {
-                id: 'about',
-                labelKey: 'settingsPage.about',
-                descriptionKey: 'settingsPage.descriptions.about',
-                keywordsKey: 'settingsPage.keywords.about',
-                icon: Activity,
-            },
+            // The keys stay in this browser tab; revoking a connected reader ends its session on the server.
+            section('access', 'access', KeyRound, [
+                { part: 'accessKeys', savedIn: 'browser' },
+                { part: 'connectedReaders', savedIn: 'workspace' },
+            ], false),
+            section('runtime', 'runtime', ServerCog, 'workspace', true),
+            section('about', 'about', Activity, 'workspace', false),
         ],
     },
 ];
 
-const SETTINGS_DESTINATIONS = SETTINGS_GROUPS.flatMap(group => group.items);
-const isSettingsTab = (value: string | null): value is SettingsTab => (
-    SETTINGS_DESTINATIONS.some(destination => destination.id === value)
+/**
+ * Model and agent administration belongs with the team. Until it moves there it
+ * keeps its old address and is linked from the AI provider section, outside the
+ * four groups.
+ */
+const MODELS_AGENTS_SECTION = section('models_agents', 'modelsAgents', Bot, 'workspace', false);
+
+const SETTINGS_SECTIONS = [...SETTINGS_GROUPS.flatMap(group => group.items), MODELS_AGENTS_SECTION];
+
+/** Search covers every section, including the one reached from AI provider. */
+const SEARCH_GROUPS: SettingsGroup[] = [
+    ...SETTINGS_GROUPS,
+    { id: 'linkedFromAiProvider', labelKey: 'settingsPage.groups.linkedFromAiProvider', items: [MODELS_AGENTS_SECTION] },
+];
+const DEFAULT_SECTION: SettingsSectionId = 'theme';
+const LAST_SECTION_STORAGE_KEY = 'workchord.settings.lastSection';
+
+/** Earlier `?tab=` values whose settings now live in a section with another id. */
+const RENAMED_TABS: Readonly<Record<string, SettingsSectionId>> = {
+    appearance: 'theme',
+    admin_access: 'access',
+    calendar: 'work_calendar',
+};
+
+const isSectionId = (value: string | null): value is SettingsSectionId => (
+    SETTINGS_SECTIONS.some(item => item.id === value)
 );
 
-const parseSettingsTab = (value: string | null): SettingsPageTab => (
-    isSettingsTab(value) ? value : 'overview'
-);
+const resolveTab = (value: string | null): SettingsSectionId | null => {
+    if (value === null) return null;
+    if (isSectionId(value)) return value;
+    return RENAMED_TABS[value] ?? null;
+};
+
+const readLastSection = (): SettingsSectionId | null => {
+    try {
+        const stored = window.localStorage.getItem(LAST_SECTION_STORAGE_KEY);
+        return isSectionId(stored) ? stored : null;
+    } catch {
+        return null;
+    }
+};
+
+const rememberSection = (id: SettingsSectionId) => {
+    try {
+        window.localStorage.setItem(LAST_SECTION_STORAGE_KEY, id);
+    } catch {
+        // Without storage Settings opens on the default section next time.
+    }
+};
+
+const SavedInNote = ({ savedIn }: { savedIn: SettingsSection['savedIn'] }) => {
+    const { t } = useTranslation();
+    const icon = (where: SavedIn) => {
+        const Icon = where === 'browser' ? Monitor : Building2;
+        return <Icon aria-hidden="true" className="h-3.5 w-3.5" />;
+    };
+    if (typeof savedIn === 'string') {
+        return (
+            <p className="settings-saved-in" data-saved-in={savedIn}>
+                {icon(savedIn)}
+                {t(`settingsPage.savedIn.${savedIn}`)}
+            </p>
+        );
+    }
+    return (
+        <ul className="settings-saved-in-parts">
+            {savedIn.map(({ part, savedIn: where }) => (
+                <li key={part} className="settings-saved-in" data-saved-in={where}>
+                    {icon(where)}
+                    {t(`settingsPage.savedInPart.${where}`, { part: t(`settingsPage.savedInParts.${part}`) })}
+                </li>
+            ))}
+        </ul>
+    );
+};
 
 const SettingsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [destinationSearch, setDestinationSearch] = useState('');
+    const [unlockOpen, setUnlockOpen] = useState(false);
+    const [initialSection] = useState(() => readLastSection() ?? DEFAULT_SECTION);
+    const lockNoteId = useId();
     const rawTab = searchParams.get('tab');
-    const activeTab = parseSettingsTab(rawTab);
-    const activeDestination: SettingsDestinationHeader = activeTab === 'overview'
-        ? {
-            labelKey: 'settingsPage.overview',
-            descriptionKey: 'settingsPage.overviewDescription',
-            icon: Settings2,
-        }
-        : SETTINGS_DESTINATIONS.find(destination => destination.id === activeTab) ?? SETTINGS_DESTINATIONS[0];
-    const ActiveIcon = activeDestination.icon;
+    const activeId = resolveTab(rawTab) ?? initialSection;
+    const activeSection = SETTINGS_SECTIONS.find(item => item.id === activeId) ?? SETTINGS_SECTIONS[0];
+    const ActiveIcon = activeSection.icon;
     const { theme, setTheme } = useThemeStore();
     const { hasAdminKey } = useAdminAccess();
+    const reader = useKeylessReader();
     const {
         enabled: singleKeyShortcutsEnabled,
         setEnabled: setSingleKeyShortcutsEnabled,
@@ -199,63 +239,62 @@ const SettingsPage = () => {
     const { t } = useTranslation();
     const normalizedSearch = destinationSearch.trim().toLocaleLowerCase();
     const filteredGroups = useMemo(() => {
-        const searchable = (group: SettingsGroup, destination: SettingsDestination) => [
-            t(destination.labelKey), t(destination.descriptionKey), t(destination.keywordsKey), t(group.labelKey),
+        const searchable = (group: SettingsGroup, item: SettingsSection) => [
+            t(item.labelKey), t(item.descriptionKey), t(item.keywordsKey), t(group.labelKey),
+            ...SETTINGS_FIELD_LABEL_KEYS[item.id].map(key => t(key)),
         ].join(' ').toLocaleLowerCase();
         const words = normalizedSearch.split(/\s+/).filter(Boolean);
-        // Whole words first, so "key" finds Access rather than "keyboard"; any substring otherwise.
+        // Whole words first, so "key" finds Access rather than "keyboard" or "single-key"; any substring otherwise.
         const wholeWords = (text: string) => {
-            const present = new Set(text.split(/[^\p{L}\p{N}:]+/u));
+            const present = new Set(text.split(/[^\p{L}\p{N}:-]+/u));
             return words.every(word => present.has(word));
         };
-        const filterBy = (matches: (text: string) => boolean) => SETTINGS_GROUPS
-            .map(group => ({ ...group, items: group.items.filter(destination => matches(searchable(group, destination))) }))
+        const filterBy = (matches: (text: string) => boolean) => SEARCH_GROUPS
+            .map(group => ({ ...group, items: group.items.filter(item => matches(searchable(group, item))) }))
             .filter(group => group.items.length > 0);
         const exact = filterBy(wholeWords);
         return exact.length > 0 ? exact : filterBy(text => text.includes(normalizedSearch));
     }, [normalizedSearch, t]);
-    const filteredDestinationCount = filteredGroups.reduce(
+    const filteredSectionCount = filteredGroups.reduce(
         (count, group) => count + group.items.length,
         0,
     );
 
+    // An earlier tab value is rewritten to the section that now holds its settings; an unknown one is dropped.
     useEffect(() => {
-        if (rawTab === null || isSettingsTab(rawTab)) return;
+        if (rawTab === null || isSectionId(rawTab)) return;
         const nextParams = new URLSearchParams(searchParams);
-        nextParams.delete('tab');
+        const renamed = RENAMED_TABS[rawTab];
+        if (renamed) nextParams.set('tab', renamed);
+        else nextParams.delete('tab');
         setSearchParams(nextParams, { replace: true });
     }, [rawTab, searchParams, setSearchParams]);
 
-    const settingsHref = (tab: SettingsPageTab) => {
+    useEffect(() => {
+        rememberSection(activeSection.id);
+    }, [activeSection.id]);
+
+    const settingsHref = (id: SettingsSectionId) => {
         const nextParams = new URLSearchParams(searchParams);
-        if (tab === 'overview') nextParams.delete('tab');
-        else nextParams.set('tab', tab);
-        const query = nextParams.toString();
-        return query ? `/settings?${query}` : '/settings';
+        nextParams.set('tab', id);
+        return `/settings?${nextParams.toString()}`;
     };
 
-    const renderDestinationLink = (destination: SettingsDestination) => {
-        const Icon = destination.icon;
-        const active = destination.id === activeTab;
+    const renderSectionLink = (item: SettingsSection) => {
+        const Icon = item.icon;
+        const active = item.id === activeSection.id;
         return (
             <Link
-                key={destination.id}
-                to={settingsHref(destination.id)}
+                key={item.id}
+                to={settingsHref(item.id)}
                 className="settings-nav-item"
                 aria-current={active ? 'page' : undefined}
             >
                 <Icon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                <span>{t(destination.labelKey)}</span>
+                <span>{t(item.labelKey)}</span>
             </Link>
         );
     };
-
-    const adminRecovery = (
-        <Link to={settingsHref('admin_access')} className="btn secondary sm">
-            <KeyRound aria-hidden="true" className="h-3.5 w-3.5" />
-            {t('settingsPage.openAdminAccess')}
-        </Link>
-    );
 
     const themes = [
         { id: 'light', name: t('settingsPage.themes.light') },
@@ -280,25 +319,210 @@ const SettingsPage = () => {
         radios?.[nextIndex]?.focus();
     };
 
+    const locked = !hasAdminKey;
+    // One control in the page header unlocks every protected section at once.
+    const editLock = activeSection.protected && locked ? (
+        <div className="settings-edit-lock">
+            <span id={lockNoteId} className="settings-edit-lock-state">
+                <LockKeyhole aria-hidden="true" className="h-3.5 w-3.5" />
+                {reader.settings ? t('settings.readOnlyTitle') : t('settings.lockedTitle')}
+                <span className="sr-only">. {t('settings.readOnlyBody')}</span>
+            </span>
+            <span aria-hidden="true">·</span>
+            <Button
+                size="sm"
+                variant="secondary"
+                aria-expanded={unlockOpen}
+                aria-controls="settings-unlock-panel"
+                onClick={() => setUnlockOpen(open => !open)}
+            >
+                {t('settings.unlockEditing')}
+            </Button>
+        </div>
+    ) : !locked && unlockOpen ? (
+        <div className="settings-edit-lock">
+            <span className="settings-edit-lock-state" role="status">
+                <Check aria-hidden="true" className="h-3.5 w-3.5" />
+                {t('settings.editingUnlocked')}
+            </span>
+            <Button size="sm" variant="secondary" onClick={() => setUnlockOpen(false)}>
+                {t('actions.close')}
+            </Button>
+        </div>
+    ) : null;
+
+    /** `managesReadOnly`: the panel locks only its editing controls, so its tabs and filters still work. */
+    const gated = (content: ReactNode, { managesReadOnly = false } = {}) => (
+        <AdminAccessGate showPanel={false} readable managesReadOnly={managesReadOnly}>{content}</AdminAccessGate>
+    );
+
+    const sectionLink = (id: SettingsSectionId) => {
+        const target = SETTINGS_SECTIONS.find(item => item.id === id)!;
+        return <Link key={id} to={settingsHref(id)}>{t(target.labelKey)}</Link>;
+    };
+
+    const renderSection = (): ReactNode => {
+        switch (activeSection.id) {
+            case 'theme':
+                return (
+                    <section className="card settings-panel-narrow">
+                        <div className="card-pad">
+                            <p className="muted settings-theme-help">{t('settingsPage.chooseTheme')}</p>
+                            <div className="settings-theme-grid" role="radiogroup" aria-label={t('settingsPage.chooseTheme')}>
+                                {themes.map((themeOption, index) => {
+                                    const active = theme === themeOption.id;
+                                    return (
+                                        <button
+                                            key={themeOption.id}
+                                            type="button"
+                                            role="radio"
+                                            data-page-chrome-control="button"
+                                            aria-checked={active}
+                                            tabIndex={active ? 0 : -1}
+                                            onClick={() => setTheme(themeOption.id)}
+                                            onKeyDown={event => handleThemeKeyDown(event, index)}
+                                            className="settings-theme-option"
+                                        >
+                                            <span aria-hidden="true" data-theme={themeOption.id} className="settings-theme-preview">
+                                                <span />
+                                                <span />
+                                            </span>
+                                            <strong>{themeOption.name}</strong>
+                                            {active && <Check aria-hidden="true" className="h-4 w-4 text-action" />}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </section>
+                );
+            case 'shortcuts':
+                return (
+                    <section className="card settings-shortcut-card settings-panel-narrow">
+                        <div className="card-pad">
+                            <Checkbox
+                                checked={singleKeyShortcutsEnabled}
+                                onChange={setSingleKeyShortcutsEnabled}
+                                label={t('commandMenu.singleKeyShortcuts.label')}
+                                aria-describedby="settings-single-key-shortcuts-description"
+                            />
+                            <p id="settings-single-key-shortcuts-description" className="settings-shortcut-description">
+                                {t('commandMenu.singleKeyShortcuts.description')}
+                            </p>
+                        </div>
+                    </section>
+                );
+            case 'language':
+                return gated(
+                    <div className="wc-panel-stack max-w-3xl">
+                        <InterfaceLanguageSettings />
+                        <RuntimeConfigSettings parts={['aiLanguage']} />
+                    </div>,
+                );
+            case 'work_calendar':
+                return (
+                    <section className="card card-pad settings-panel-narrow space-y-3">
+                        <p className="text-sm text-content-secondary">{t('settingsPage.workCalendar.placeholder')}</p>
+                        <Link to="/calendar" className="btn secondary sm w-fit">
+                            <CalendarDays aria-hidden="true" className="h-3.5 w-3.5" />
+                            {t('settingsPage.workCalendar.open')}
+                        </Link>
+                    </section>
+                );
+            case 'scheduling':
+                return gated(<SchedulingRulesSettings />, { managesReadOnly: true });
+            case 'templates_labels':
+                return gated(<TemplateLabelSettings />, { managesReadOnly: true });
+            case 'notifications':
+                return gated(<EmailSettingsPanel />);
+            case 'github':
+                // The automation rules lock only their changes, so each rule still opens through View.
+                return gated(
+                    <div className="space-y-5">
+                        <ReadOnlyFieldset>
+                            <RuntimeConfigSettings parts={['github']} />
+                        </ReadOnlyFieldset>
+                        <GitHubSettingsPanel />
+                    </div>,
+                    { managesReadOnly: true },
+                );
+            case 'webhooks':
+                return gated(<OutboundWebhooksPanel />, { managesReadOnly: true });
+            case 'web_intake':
+                return gated(<RuntimeConfigSettings parts={['webIntake']} />);
+            case 'ai_provider':
+                return (
+                    <div className="space-y-5">
+                        {gated(<RuntimeConfigSettings parts={['llm']} />)}
+                        <p className="settings-related-note">
+                            {t('settingsPage.aiProviderModelsNote')}{' '}
+                            <Link to={settingsHref('models_agents')}>
+                                {t(MODELS_AGENTS_SECTION.labelKey)}
+                                <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                            </Link>
+                        </p>
+                    </div>
+                );
+            case 'access':
+                return (
+                    <div className="space-y-5">
+                        <AccessKeysSummary />
+                        <ConnectedReadersPanel />
+                        <AdminAccessPanel />
+                        <AgentAccessPanel />
+                    </div>
+                );
+            case 'runtime':
+                return (
+                    <div className="space-y-5">
+                        <p className="settings-related-note">
+                            {t('settingsPage.runtimeMovedNote')}{' '}
+                            {(['language', 'github', 'web_intake', 'ai_provider'] as const).map((id, index, all) => (
+                                <span key={id}>
+                                    {sectionLink(id)}
+                                    {index < all.length - 1 ? ', ' : '.'}
+                                </span>
+                            ))}
+                        </p>
+                        {gated(<RuntimeConfigSettings parts={['restart']} />)}
+                    </div>
+                );
+            case 'about':
+                return (
+                    <div className="settings-panel-narrow">
+                        <SystemHealthPanel />
+                    </div>
+                );
+            case 'models_agents':
+                return (
+                    <div className="space-y-5">
+                        <p className="text-sm text-content-secondary">
+                            {t('settingsPage.agentKeyOnAccess')}{' '}
+                            <Link to={settingsHref('access')} className="font-medium text-action underline">{t('settingsPage.openAdminAccess')}</Link>
+                        </p>
+                        <AgentModelAdministration />
+                    </div>
+                );
+        }
+    };
+
     return (
         <PageLayout>
             <PageHeader
                 title={t('settingsPage.title')}
-                subtitle={t('settingsPage.description')}
+                purpose={t('settingsPage.description')}
+                secondaryActions={editLock}
             />
+
+            {unlockOpen && (
+                <div id="settings-unlock-panel">
+                    <AdminAccessPanel headingLevel={2} />
+                </div>
+            )}
 
             <div className="settings-shell">
                 <aside className="settings-local-nav">
                     <nav aria-label={t('settingsPage.navigationLabel')}>
-                        <Link
-                            to={settingsHref('overview')}
-                            className="settings-nav-item settings-overview-link"
-                            aria-current={activeTab === 'overview' ? 'page' : undefined}
-                        >
-                            <Settings2 aria-hidden="true" className="h-4 w-4 shrink-0" />
-                            <span>{t('settingsPage.overview')}</span>
-                        </Link>
-
                         <label className="settings-nav-search">
                             <span className="sr-only">{t('settingsPage.catalog.searchLabel')}</span>
                             <Search aria-hidden="true" className="h-4 w-4" />
@@ -314,9 +538,9 @@ const SettingsPage = () => {
                         {normalizedSearch ? (
                             <div className="settings-search-results">
                                 <p className="settings-nav-status" role="status">
-                                    {t('settingsPage.catalog.results', { count: filteredDestinationCount })}
+                                    {t('settingsPage.catalog.results', { count: filteredSectionCount })}
                                 </p>
-                                {filteredDestinationCount === 0 ? (
+                                {filteredSectionCount === 0 ? (
                                     <p className="settings-nav-empty">{t('settingsPage.catalog.noResults')}</p>
                                 ) : filteredGroups.map(group => (
                                     <section
@@ -326,7 +550,7 @@ const SettingsPage = () => {
                                     >
                                         <h2 id={`settings-search-group-${group.id}`}>{t(group.labelKey)}</h2>
                                         <div className="settings-nav-list">
-                                            {group.items.map(renderDestinationLink)}
+                                            {group.items.map(renderSectionLink)}
                                         </div>
                                     </section>
                                 ))}
@@ -341,7 +565,7 @@ const SettingsPage = () => {
                                     >
                                         <h2 id={`settings-group-${group.id}`}>{t(group.labelKey)}</h2>
                                         <div className="settings-nav-list">
-                                            {group.items.map(renderDestinationLink)}
+                                            {group.items.map(renderSectionLink)}
                                         </div>
                                     </section>
                                 ))}
@@ -356,179 +580,16 @@ const SettingsPage = () => {
                             <ActiveIcon className="h-5 w-5" />
                         </span>
                         <div>
-                            <h2 id="settings-destination-title">{t(activeDestination.labelKey)}</h2>
-                            <p>{t(activeDestination.descriptionKey)}</p>
+                            <h2 id="settings-destination-title">{t(activeSection.labelKey)}</h2>
+                            <p>{t(activeSection.descriptionKey)}</p>
+                            <SavedInNote savedIn={activeSection.savedIn} />
                         </div>
                     </header>
 
                     <div className="settings-panel-body">
-                        {activeTab === 'overview' && (
-                            <div className="settings-overview">
-                                {!hasAdminKey && (
-                                    <section
-                                        className="settings-overview-section"
-                                        aria-labelledby="settings-current-warnings-title"
-                                    >
-                                        <header>
-                                            <h3 id="settings-current-warnings-title">
-                                                {t('settingsPage.overviewContent.currentWarnings')}
-                                            </h3>
-                                            <p>{t('settingsPage.overviewContent.currentWarningsDescription')}</p>
-                                        </header>
-                                        <div className="settings-overview-status warning" role="status">
-                                            <AlertTriangle aria-hidden="true" className="h-5 w-5" />
-                                            <div>
-                                                <strong>{t('settingsPage.overviewContent.adminLockedTitle')}</strong>
-                                                <span>{t('settingsPage.overviewContent.adminLockedBody')}</span>
-                                                <Link to={settingsHref('admin_access')}>
-                                                    {t('settingsPage.openAdminAccess')}
-                                                    <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </section>
-                                )}
-
-                                <section
-                                    className="settings-overview-section"
-                                    aria-labelledby="settings-common-jobs-title"
-                                >
-                                    <header>
-                                        <h3 id="settings-common-jobs-title">
-                                            {t('settingsPage.overviewContent.commonJobs')}
-                                        </h3>
-                                        <p>{t('settingsPage.overviewContent.commonJobsDescription')}</p>
-                                    </header>
-                                    <nav
-                                        className="settings-common-jobs"
-                                        aria-label={t('settingsPage.overviewContent.commonJobs')}
-                                    >
-                                        {(['appearance', 'scheduling', 'github'] as const).map(tab => {
-                                            const destination = SETTINGS_DESTINATIONS.find(item => item.id === tab)!;
-                                            const Icon = destination.icon;
-                                            return (
-                                                <Link key={tab} to={settingsHref(tab)}>
-                                                    <Icon aria-hidden="true" className="h-4 w-4" />
-                                                    <span>
-                                                        <strong>{t(`settingsPage.overviewContent.${tab}Title`)}</strong>
-                                                        <span>{t(`settingsPage.overviewContent.${tab}Body`)}</span>
-                                                    </span>
-                                                    <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                                                </Link>
-                                            );
-                                        })}
-                                    </nav>
-                                </section>
-                            </div>
-                        )}
-                        {activeTab === 'appearance' && (
-                            <div className="settings-panel-narrow wc-panel-stack">
-                                <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
-                                    <InterfaceLanguageSettings/>
-                                </AdminAccessGate>
-                                <section className="card">
-                                    <div className="card-pad">
-                                        <p className="muted settings-theme-help">{t('settingsPage.chooseTheme')}</p>
-                                        <div className="settings-theme-grid" role="radiogroup" aria-label={t('settingsPage.chooseTheme')}>
-                                            {themes.map((themeOption, index) => {
-                                                const active = theme === themeOption.id;
-                                                return (
-                                                    <button
-                                                        key={themeOption.id}
-                                                        type="button"
-                                                        role="radio"
-                                                        aria-checked={active}
-                                                        tabIndex={active ? 0 : -1}
-                                                        onClick={() => setTheme(themeOption.id)}
-                                                        onKeyDown={event => handleThemeKeyDown(event, index)}
-                                                        className="settings-theme-option"
-                                                    >
-                                                        <span aria-hidden="true" data-theme={themeOption.id} className="settings-theme-preview">
-                                                            <span />
-                                                            <span />
-                                                        </span>
-                                                        <strong>{themeOption.name}</strong>
-                                                        {active && <Check aria-hidden="true" className="h-4 w-4 text-action" />}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </section>
-                                <section className="card settings-shortcut-card" aria-labelledby="settings-keyboard-shortcuts-title">
-                                    <div className="card-pad">
-                                        <header>
-                                            <span className="settings-shortcut-icon" aria-hidden="true">
-                                                <Keyboard className="h-4 w-4" />
-                                            </span>
-                                            <div>
-                                                <h3 id="settings-keyboard-shortcuts-title">
-                                                    {t('settingsPage.keyboardShortcuts.title')}
-                                                </h3>
-                                                <p>{t('settingsPage.keyboardShortcuts.intro')}</p>
-                                            </div>
-                                        </header>
-                                        <Checkbox
-                                            checked={singleKeyShortcutsEnabled}
-                                            onChange={setSingleKeyShortcutsEnabled}
-                                            label={t('commandMenu.singleKeyShortcuts.label')}
-                                            aria-describedby="settings-single-key-shortcuts-description"
-                                        />
-                                        <p id="settings-single-key-shortcuts-description" className="settings-shortcut-description">
-                                            {t('commandMenu.singleKeyShortcuts.description')}
-                                        </p>
-                                    </div>
-                                </section>
-                            </div>
-                        )}
-                        {activeTab === 'scheduling' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
-                                <SchedulingRulesSettings/>
-                            </AdminAccessGate>
-                        )}
-                        {activeTab === 'templates_labels' && <TemplateLabelSettings/>}
-                        {activeTab === 'models_agents' && (
-                            <div className="space-y-5">
-                                <p className="text-sm text-content-secondary">
-                                    {t('settingsPage.agentKeyOnAccess')}{' '}
-                                    <Link to={settingsHref('admin_access')} className="font-medium text-action underline">{t('settingsPage.openAdminAccess')}</Link>
-                                </p>
-                                <AgentModelAdministration />
-                            </div>
-                        )}
-                        {activeTab === 'github' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
-                                <GitHubSettingsPanel/>
-                            </AdminAccessGate>
-                        )}
-                        {activeTab === 'webhooks' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
-                                <OutboundWebhooksPanel/>
-                            </AdminAccessGate>
-                        )}
-                        {activeTab === 'notifications' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
-                                <EmailSettingsPanel/>
-                            </AdminAccessGate>
-                        )}
-                        {activeTab === 'admin_access' && (
-                            <div className="space-y-5">
-                                <AccessKeysSummary />
-                                <ConnectedReadersPanel />
-                                <AdminAccessPanel/>
-                                <AgentAccessPanel />
-                            </div>
-                        )}
-                        {activeTab === 'runtime' && (
-                            <AdminAccessGate showPanel={false} recovery={adminRecovery} readable>
-                                <RuntimeConfigSettings/>
-                            </AdminAccessGate>
-                        )}
-                        {activeTab === 'about' && (
-                            <div className="settings-panel-narrow">
-                                <SystemHealthPanel />
-                            </div>
-                        )}
+                        <SharedUnlockContext.Provider value={{ noteId: lockNoteId }}>
+                            {renderSection()}
+                        </SharedUnlockContext.Provider>
                     </div>
                 </section>
             </div>
