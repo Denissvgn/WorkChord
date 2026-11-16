@@ -9,6 +9,12 @@ import { surfacesRussian } from './surfaces.ru';
 import { literalsRussian } from './literals.ru';
 export const russianResources = {
         translation: {
+            projectTabs: {
+                summary: 'Обзор', tasks: 'Задачи', iterations: 'Итерации', releases: 'Релизы', requests: 'Запросы', updates: 'Обновления',
+                navigation: 'Разделы проекта', purpose: 'Координируйте работу, отслеживайте вехи и делитесь обновлениями проекта.',
+                statusLabel: 'Статус', healthLabel: 'Состояние', datesLabel: 'Даты', ownerLabel: 'Владелец',
+                editField: 'Изменить {{field}}: {{value}}', newTask: 'Новая задача', openTasks: 'Открыть в задачах',
+            },
             planningInput: planningInputRussian,
 
             teamwork: teamworkRussian,
