@@ -87,6 +87,14 @@ export const IdentityBadge = () => {
     const name = identity.principal?.display_name
         ?? (local && identity.profile ? t('identity.workingAs', { name: identity.profile.display_name }) : t('identity.localMode'));
     const signedIn = identity.mode === 'managed' && identity.authenticated;
+    // The browser sends the admin key only outside a person's own session (see services/api.ts), so a signed-in person unlocks by role.
+    const signedInPerson = identity.principal?.kind === 'human';
+    const roleEditing = identity.workspace_role === 'owner' || identity.workspace_role === 'operator';
+    // Lock clears the key in this tab; it can end the editing only when no role grants it.
+    const lockable = keyStored && !roleEditing;
+    const editingNote = hasAdminKey
+        ? (lockable ? t('identity.editingNote') : t('identity.editingByRole'))
+        : (signedInPerson ? t('identity.editingFollowsRole') : t('identity.editingNote'));
 
     const refreshProtectedQueries = () => {
         protectedQueryKeys.forEach(queryKey => { void queryClient.invalidateQueries({ queryKey: [...queryKey] }); });
@@ -201,12 +209,12 @@ export const IdentityBadge = () => {
                         {t('identity.editing', { state: hasAdminKey ? t('identity.editingUnlocked') : t('identity.editingLocked') })}
                     </h3>
                     {hasAdminKey
-                        ? keyStored && <Button size="sm" variant="secondary" onClick={lock}>{t('identity.lock')}</Button>
-                        : !unlockOpen && <Button size="sm" variant="secondary" aria-expanded={unlockOpen} aria-controls={`${panelId}-unlock`}
+                        ? lockable && <Button size="sm" variant="secondary" onClick={lock}>{t('identity.lock')}</Button>
+                        : !signedInPerson && !unlockOpen && <Button size="sm" variant="secondary" aria-expanded={unlockOpen} aria-controls={`${panelId}-unlock`}
                             onClick={() => setUnlockOpen(true)}>{t('identity.unlock')}</Button>}
                 </div>
-                <p className="text-xs text-content-secondary">{hasAdminKey && !keyStored ? t('identity.editingByRole') : t('identity.editingNote')}</p>
-                {!hasAdminKey && unlockOpen && <form id={`${panelId}-unlock`} className="space-y-2" onSubmit={unlock}>
+                <p className="text-xs text-content-secondary">{editingNote}</p>
+                {!hasAdminKey && !signedInPerson && unlockOpen && <form id={`${panelId}-unlock`} className="space-y-2" onSubmit={unlock}>
                     <p className="text-xs text-content-secondary">{t('identity.unlockHelp')}</p>
                     <Input
                         label={t('settings.adminAccessField')}

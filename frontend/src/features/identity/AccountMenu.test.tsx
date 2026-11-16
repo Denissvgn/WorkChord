@@ -110,6 +110,37 @@ describe('account menu', () => {
         expect(within(menu).getByText('Editing: locked')).toBeInTheDocument();
     });
 
+    it('leaves editing to the workspace role for a signed-in person, with no key to unlock or lock', async () => {
+        service.get.mockResolvedValue({
+            mode: 'managed', authenticated: true, configured: true,
+            principal: { id: 7, kind: 'human', display_name: 'Ada' }, profile: null,
+            workspace_role: null, projects: { 1: 'viewer' }, csrf_token: 'csrf',
+        });
+        const { user } = renderLocalMenu();
+        const menu = await openMenu(user);
+
+        expect(within(menu).getByText('Sign-in')).toBeInTheDocument();
+        expect(within(menu).getByText('Signed in with your team account.')).toBeInTheDocument();
+        expect(within(menu).getByText('Editing: locked')).toBeInTheDocument();
+        expect(within(menu).getByText('Editing follows the workspace role of this account.')).toBeInTheDocument();
+        expect(within(menu).queryByRole('button', { name: 'Unlock' })).not.toBeInTheDocument();
+        expect(within(menu).getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
+    });
+
+    it('shows editing as unlocked by an owner role, with no Lock that could not end it', async () => {
+        service.get.mockResolvedValue({
+            mode: 'managed', authenticated: true, configured: true,
+            principal: { id: 7, kind: 'human', display_name: 'Ada' }, profile: null,
+            workspace_role: 'owner', projects: {}, csrf_token: 'csrf',
+        });
+        const { user } = renderLocalMenu();
+        const menu = await openMenu(user);
+
+        expect(within(menu).getByText('Editing: unlocked')).toBeInTheDocument();
+        expect(within(menu).getByText('Your workspace role lets you edit without the admin key.')).toBeInTheDocument();
+        expect(within(menu).queryByRole('button', { name: 'Lock' })).not.toBeInTheDocument();
+    });
+
     it('closes on Escape and on an outside click, and returns focus to its button', async () => {
         const { user } = renderLocalMenu();
         const trigger = await screen.findByRole('button', { name: 'Account and access' });
