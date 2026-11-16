@@ -10,7 +10,7 @@ import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { GuardedTaskModal } from './GuardedTaskModal';
 import { useLinkScope, useScopeLink } from '../../features/scope/useScopeLink';
-import { useScopeStore } from '../../features/scope/scopeStore';
+import { useSetWorkScope } from '../../features/scope/useWorkScope';
 
 export const BacklogPanel = () => {
     const { t } = useTranslation();
@@ -20,11 +20,10 @@ export const BacklogPanel = () => {
     // The project is the one of the work scope: the URL first, then the remembered scope.
     const { project } = useLinkScope();
     const projectId = typeof project === 'number' ? project : null;
-    // Choosing a project here changes the work scope and stays on Backlog; the app shell then
-    // writes the new scope to the URL in place, so the URL, the scope and the request agree.
-    const chooseProject = (value: string) => {
-        useScopeStore.getState().remember({ project: value ? Number(value) : 'all', iteration: 'backlog' });
-    };
+    // Choosing a project here changes the project of the work scope like every other project
+    // control: the iteration resets to the project's default and the URL is replaced in place.
+    const { setProject } = useSetWorkScope();
+    const chooseProject = (value: string) => setProject(value ? Number(value) : 'all');
     const [creating, setCreating] = useState(false);
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const projects = useQuery({ queryKey: ['projects'], queryFn: projectService.getAll });

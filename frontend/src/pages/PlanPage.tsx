@@ -300,7 +300,7 @@ const PlanPage = () => {
                     <>
                         <Link
                             className="iter-pick"
-                            to="/plan/master"
+                            to={scopeLink('/plan/master')}
                             aria-label={t('plan.hub.openPeriodSetup', {
                                 period: currentIteration?.name || t('plan.hub.pickPeriod'),
                             })}

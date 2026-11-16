@@ -27,11 +27,15 @@ export interface ScopeIterationRecord {
 /** Pages that show and set the scope; on every other page the scope is read-only. */
 export const SCOPED_DESTINATIONS: readonly DestinationId[] = ['overview', 'plan', 'gantt', 'tasks', 'analytics'];
 
-const SCOPED_PATHS = new Set(
-    DESTINATIONS.filter(destination => SCOPED_DESTINATIONS.includes(destination.id)).map(destination => destination.path),
-);
+/** Pages inside a scoped destination that show the same scope as the page it opens. */
+const SCOPED_SUBPATHS: readonly string[] = ['/plan/master'];
 
-/** True for the page a scoped destination opens. */
+const SCOPED_PATHS = new Set([
+    ...DESTINATIONS.filter(destination => SCOPED_DESTINATIONS.includes(destination.id)).map(destination => destination.path),
+    ...SCOPED_SUBPATHS,
+]);
+
+/** True for the page a scoped destination opens, and for the planning page inside Plan. */
 export const isScopedPath = (pathname: string): boolean => SCOPED_PATHS.has(pathname);
 
 export const sameScope = (a: PartialWorkScope | undefined, b: PartialWorkScope | undefined): boolean => (

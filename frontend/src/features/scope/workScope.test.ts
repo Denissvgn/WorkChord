@@ -105,6 +105,7 @@ describe('scopedLink', () => {
         expect(scopedLink('/plan', scope)).toBe('/plan?project=2&iteration=22');
         expect(scopedLink('/gantt', scope)).toBe('/gantt?project=2&iteration=22');
         expect(scopedLink('/analytics', scope)).toBe('/analytics?project=2&iteration=22');
+        expect(scopedLink('/plan/master?step=team', scope)).toBe('/plan/master?step=team&project=2&iteration=22');
     });
 
     it('keeps other parameters and the hash', () => {
@@ -118,8 +119,8 @@ describe('scopedLink', () => {
         expect(scopedLink('/tasks', undefined)).toBe('/tasks');
     });
 
-    it('treats only the scoped destinations as scoped pages', () => {
-        expect(['/', '/plan', '/gantt', '/tasks', '/analytics'].every(isScopedPath)).toBe(true);
-        expect(['/my-work', '/triage', '/projects', '/team', '/settings'].some(isScopedPath)).toBe(false);
+    it('treats only the scoped destinations and the planning page as scoped pages', () => {
+        expect(['/', '/plan', '/plan/master', '/gantt', '/tasks', '/analytics'].every(isScopedPath)).toBe(true);
+        expect(['/my-work', '/triage', '/projects', '/team', '/settings', '/plan/share/abc'].some(isScopedPath)).toBe(false);
     });
 });

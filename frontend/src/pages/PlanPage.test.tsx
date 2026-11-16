@@ -6,6 +6,7 @@ import {
     nextStep,
     readiness,
 } from '../features/planningMasters/masters';
+import i18n from '../i18n/i18n';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { useScopeStore } from '../features/scope/scopeStore';
 import PlanPage from './PlanPage';
@@ -241,7 +242,7 @@ describe('PlanPage mixed planning launcher', () => {
             .toHaveTextContent('Some planning data could not be refreshed. Try again.');
     });
 
-    it('carries the scope in its links to Tasks and Gantt', async () => {
+    it('carries the scope in its links to Tasks, Gantt and the planning page', async () => {
         useScopeStore.setState({ project: 1, iteration: 12 });
         planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
             readinessOverrides: { inboxCount: 0, riskCount: 3 },
@@ -250,6 +251,10 @@ describe('PlanPage mixed planning launcher', () => {
 
         expect(screen.getByRole('link', { name: 'Replan at-risk work' }))
             .toHaveAttribute('href', '/gantt?project=2&iteration=21');
+        expect(screen.getByRole('link', { name: i18n.t('plan.hub.openPeriodSetup', { period: 'August plan' }) }))
+            .toHaveAttribute('href', '/plan/master?project=2&iteration=21');
+        expect(screen.getByRole('link', { name: i18n.t('plan.steps.schedule.title') }))
+            .toHaveAttribute('href', '/plan/master?step=schedule&project=2&iteration=21');
         await user.click(screen.getByText('Direct planning tools'));
         const directTools = screen.getByRole('navigation', { name: 'Direct planning tools' });
         expect(within(directTools).getByRole('link', { name: 'Tasks' }))

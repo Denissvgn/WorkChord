@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { useToast } from '../components/feedback/toast';
+import { useScopeLink } from '../features/scope/useScopeLink';
 import { PageHeader, PageLayout } from '../components/ui';
 import { planShareService } from '../services/planShareService';
 import type { PlanShareTask } from '../services/planShareService';
@@ -27,6 +28,7 @@ const PlanSharePage = () => {
     const { publicId = '' } = useParams();
     const { t, i18n } = useTranslation();
     const toast = useToast();
+    const scopeLink = useScopeLink();
     // feedback-policy: query loading,error,retry,empty - the token page renders a full loading or revocation-safe recovery state.
     const shareQuery = useQuery({
         queryKey: ['plan-share', publicId],
@@ -212,7 +214,7 @@ const PlanSharePage = () => {
                             <p className="py-3 text-sm text-content-secondary">{t('plan.master.noSharedTeam')}</p>
                         )}
                     </div>
-                    <Link to="/plan/master" className="btn mt-4 w-full">
+                    <Link to={scopeLink('/plan/master')} className="btn mt-4 w-full">
                         {t('plan.master.openPlanMaster')}
                     </Link>
                 </aside>

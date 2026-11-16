@@ -20,13 +20,20 @@ vi.mock('../../services/projectService', () => ({ projectService: projectService
 vi.mock('../../services/taskService', () => ({ taskService: taskServiceMock }));
 vi.mock('../../services/savedViewService', () => ({ savedViewService: savedViewServiceMock }));
 vi.mock('../../components/tasks/TaskSearch', () => ({ TaskSearch: () => null }));
+vi.mock('../../components/tasks/TaskList', () => ({ TaskList: () => <p>Iteration task list</p> }));
+vi.mock('../../components/tasks/KanbanBoard/KanbanBoard', () => ({ KanbanBoard: () => <p>Iteration board</p> }));
+vi.mock('../../components/tasks/TaskFiltersBar', () => ({ TaskFiltersBar: () => null }));
+vi.mock('../../components/tasks/SavedViewsControl', () => ({ SavedViewsControl: () => null }));
 vi.mock('../../components/tasks/TaskEditorDrawer', () => ({ TaskEditorDrawer: () => null }));
 
 const iteration = (id: number, project_id: number, start_date: string, end_date: string) => ({
     id, name: `Iteration ${id}`, calendar_id: 1, project_id, start_date, end_date, working_days: 10,
 });
 
+// Today is 2026-11-16: iteration 12 of project 1 contains it, so it is the default of Alpha
+// and of All projects. Gamma has no iterations, so it opens on its Backlog.
 const ITERATIONS = [
+    iteration(11, 1, '2026-10-01', '2026-10-31'),
     iteration(12, 1, '2026-11-01', '2026-11-30'),
     iteration(21, 2, '2026-09-01', '2026-09-30'),
 ];
@@ -34,6 +41,7 @@ const ITERATIONS = [
 const PROJECTS = [
     { id: 1, name: 'Alpha' },
     { id: 2, name: 'Beta' },
+    { id: 3, name: 'Gamma' },
 ];
 
 const backlogTask = (id: number, projectId: number) => ({
@@ -77,7 +85,7 @@ const settle = () => act(() => new Promise(resolve => setTimeout(resolve, 50)));
 const projectSelect = () => screen.getByRole('combobox', { name: i18n.t('teamwork.project') });
 const lastLookup = () => taskServiceMock.lookup.mock.calls.at(-1)?.[0];
 
-describe('the Tasks backlog follows the work scope', () => {
+describe('the project selector of the Tasks backlog sets the work scope', () => {
     beforeEach(() => {
         vi.useFakeTimers({ toFake: ['Date'] });
         vi.setSystemTime(new Date('2026-11-16T12:00:00Z'));
@@ -99,7 +107,7 @@ describe('the Tasks backlog follows the work scope', () => {
         vi.useRealTimers();
     });
 
-    it('shows and requests the backlog of the project in the URL, and a project chosen there becomes the scope', async () => {
+    it('shows and requests the backlog of the project in the URL', async () => {
         renderTasks('/tasks?project=2&iteration=backlog');
         await waitFor(() => expect(screen.getByTestId('ready')).toHaveTextContent('true'));
 
@@ -112,31 +120,48 @@ describe('the Tasks backlog follows the work scope', () => {
         await settle();
         expect(locationText()).toBe('/tasks?project=2&iteration=backlog');
         expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 'backlog' });
+    });
+
+    it('resets the iteration by the default rule when a project is chosen in the backlog', async () => {
+        renderTasks('/tasks?project=2&iteration=backlog');
+        await waitFor(() => expect(projectSelect()).toHaveDisplayValue('Beta'));
 
         await userEvent.selectOptions(projectSelect(), 'Alpha');
         await settle();
 
-        expect(locationText()).toBe('/tasks?project=1&iteration=backlog');
-        expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 'backlog' });
-        expect(projectSelect()).toHaveDisplayValue('Alpha');
-        expect(lastLookup()).toMatchObject({ project_id: 1, backlog_only: true });
-        expect(await screen.findByRole('link', { name: /Backlog task 100/ })).toBeInTheDocument();
+        expect(locationText()).toBe('/tasks?project=1&iteration=12');
+        expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
+        expect(screen.getByText('Iteration task list')).toBeInTheDocument();
+        expect(screen.queryByRole('combobox', { name: i18n.t('teamwork.project') })).not.toBeInTheDocument();
+    });
+
+    it('stays on the backlog when the chosen project has no iterations', async () => {
+        renderTasks('/tasks?project=2&iteration=backlog');
+        await waitFor(() => expect(projectSelect()).toHaveDisplayValue('Beta'));
+
+        await userEvent.selectOptions(projectSelect(), 'Gamma');
+        await settle();
+
+        expect(locationText()).toBe('/tasks?project=3&iteration=backlog');
+        expect(useScopeStore.getState()).toMatchObject({ project: 3, iteration: 'backlog' });
+        expect(projectSelect()).toHaveDisplayValue('Gamma');
+        expect(lastLookup()).toMatchObject({ project_id: 3, backlog_only: true });
+        expect(await screen.findByRole('link', { name: /Backlog task 300/ })).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: /Backlog task 200/ })).not.toBeInTheDocument();
     });
 
-    it('keeps the backlog when All projects is chosen there and requests every project', async () => {
+    it('opens All projects on the iteration the default rule picks across every project', async () => {
         renderTasks('/tasks?project=2&iteration=backlog');
         await waitFor(() => expect(projectSelect()).toHaveDisplayValue('Beta'));
 
         await userEvent.selectOptions(projectSelect(), i18n.t('teamwork.allProjects'));
         await settle();
 
-        expect(locationText()).toBe('/tasks?project=all&iteration=backlog');
-        expect(useScopeStore.getState()).toMatchObject({ project: 'all', iteration: 'backlog' });
-        expect(lastLookup()).toMatchObject({ project_id: undefined, backlog_only: true });
+        expect(locationText()).toBe('/tasks?project=all&iteration=12');
+        expect(useScopeStore.getState()).toMatchObject({ project: 'all', iteration: 12 });
     });
 
-    it('changes the project without adding a history entry', async () => {
+    it('changes the project in the backlog without adding a history entry', async () => {
         const router = renderTasks('/my-work');
         await settle();
         await act(() => router.navigate('/tasks?project=2&iteration=backlog'));
@@ -144,7 +169,7 @@ describe('the Tasks backlog follows the work scope', () => {
 
         await userEvent.selectOptions(projectSelect(), 'Alpha');
         await settle();
-        expect(locationText()).toBe('/tasks?project=1&iteration=backlog');
+        expect(locationText()).toBe('/tasks?project=1&iteration=12');
 
         await act(() => router.navigate(-1));
         await settle();

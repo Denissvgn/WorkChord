@@ -32,7 +32,8 @@ describe('useScopeLink', () => {
     it('leaves links to other pages and links without a known scope unchanged', () => {
         useScopeStore.setState({ project: 1, iteration: 12 });
         expect(builderAt('/team')('/triage?view=3')).toBe('/triage?view=3');
-        expect(builderAt('/team')('/plan/master?step=schedule')).toBe('/plan/master?step=schedule');
+        expect(builderAt('/team')('/plan/share/abc')).toBe('/plan/share/abc');
+        expect(builderAt('/team')('/plan/master?step=schedule')).toBe('/plan/master?step=schedule&project=1&iteration=12');
 
         useScopeStore.setState({ project: null, iteration: null });
         expect(builderAt('/team')('/tasks')).toBe('/tasks');

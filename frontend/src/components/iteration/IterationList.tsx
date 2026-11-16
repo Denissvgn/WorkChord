@@ -16,6 +16,7 @@ import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
 import { IterationCapacityLine } from './IterationCapacityLine';
+import { useLinkScope, useScopeLink } from '../../features/scope/useScopeLink';
 
 interface IterationListProps {
     onEdit?: (iteration: Iteration) => void;
@@ -25,6 +26,14 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     const queryClient = useQueryClient();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const navigate = useNavigate();
+    const scopeLink = useScopeLink();
+    const { project: scopeProject } = useLinkScope();
+    // The plan of one iteration opens with that iteration in scope; its project comes along
+    // unless All projects is chosen, the same rule as choosing the iteration anywhere else.
+    const planLink = (iteration: Iteration) => scopeLink('/plan/master', {
+        project: scopeProject === 'all' ? 'all' : iteration.project_id ?? 'all',
+        iteration: iteration.id,
+    });
     const { t } = useTranslation();
     const toast = useToast();
     const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions; name: string; taskCount: number | null } | null>(null);
@@ -185,13 +194,13 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
                                 className="mr-auto"
                                 onClick={() => {
                                     setSelectedIterationId(iteration.id);
-                                    navigate('/plan/master');
+                                    navigate(planLink(iteration));
                                 }}
                             >
                                 {t('iterations.planThisIteration')}
                             </Button>
                         ) : (
-                            <Link to="/plan/master" className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
+                            <Link to={scopeLink('/plan/master')} className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
                         )}
                         <Button
                             variant="ghost"
