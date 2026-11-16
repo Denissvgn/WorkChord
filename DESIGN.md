@@ -101,7 +101,7 @@ components:
 
 **Creative North Star: "The Planning Thread"**
 
-WorkChord is a restrained operational workspace: dense enough for real planning work, calm enough to scan for hours. A cobalt thread marks hierarchy, selection, and the next meaningful planning step; it is directional infrastructure, not decoration. The deep navy conductor bar owns workspace switching, while contextual navigation and persistent work objects stay on quieter paper-like surfaces.
+WorkChord is a restrained operational workspace: dense enough for real planning work, calm enough to scan for hours. A cobalt thread marks hierarchy, selection, and the next meaningful planning step; it is directional infrastructure, not decoration. The deep navy conductor bar carries the scope bar and workspace-wide controls, one sidebar holds every destination, and persistent work objects stay on quieter paper-like surfaces.
 
 The interface favors explicit state, compact controls, and visible recovery over KPI volume or ornamental dashboards. Semantic colors describe durable record status and transient feedback consistently across light, dark, blue, and green themes. Motion is brief and explanatory; reduced-motion users retain state feedback without continuous or spatial effects.
 
@@ -112,7 +112,7 @@ The interface favors explicit state, compact controls, and visible recovery over
 - One persistent work object and one primary action per page.
 - Structural borders and low ambient depth instead of decorative elevation.
 - Canonical record-status colors that never borrow the action color.
-- Contextual side navigation and a labeled workspace drawer at 1180px and below.
+- One sidebar for every destination, shown as a labeled drawer at 1180px and below.
 
 ## Colors
 
@@ -120,8 +120,8 @@ The palette combines cool paper neutrals with a deliberately scarce cobalt plann
 
 ### Primary
 
-- **Planning Thread:** Locates the active workspace, current planning step, focus, and directional links. Its soft tint supports selected rows and contextual emphasis.
-- **Conductor Navy:** Owns the global workspace layer. It separates workspace switching from page-level actions without turning every page into a dark surface.
+- **Planning Thread:** Locates the active destination, current planning step, focus, and directional links. Its soft tint supports selected rows and contextual emphasis.
+- **Conductor Navy:** Owns the global top bar. It separates the scope bar and workspace-wide controls from page-level actions without turning every page into a dark surface.
 
 ### Secondary
 
@@ -170,9 +170,9 @@ The palette combines cool paper neutrals with a deliberately scarce cobalt plann
 
 ## Layout
 
-The desktop shell uses a 52px conductor bar, a 220px contextual sidebar, and a fluid main workspace. Standard pages cap at 1240px with 32px horizontal and 24px vertical gutters; data-heavy workbenches can reach 1440px or take the full available height. Repeated page sections use a 20px vertical rhythm, while component internals generally follow 4px, 8px, 12px, 16px, and 20px grouping intervals.
+The desktop shell uses a 52px conductor bar, a 220px sidebar, and a fluid main workspace. Standard pages cap at 1240px with 32px horizontal and 24px vertical gutters; data-heavy workbenches can reach 1440px or take the full available height. Repeated page sections use a 20px vertical rhythm, while component internals generally follow 4px, 8px, 12px, 16px, and 20px grouping intervals.
 
-Master-detail workspaces may use a 260px rail, fluid central canvas, and 320px inspector when space permits. At 1180px and below, the persistent sidebar becomes a labeled drawer while the workspace taxonomy remains unchanged. At 520px, page gutters reduce to 16px, multi-column forms and KPI grids become one column, secondary details collapse, and primary actions stretch when that improves reach. Coarse-pointer controls provide at least 44px touch targets, and full-screen layers use dynamic viewport units plus safe-area insets.
+Master-detail workspaces may use a 260px rail, fluid central canvas, and 320px inspector when space permits. At 1180px and below, the persistent sidebar becomes a labeled drawer while the destinations and their order remain unchanged. At 520px, page gutters reduce to 16px, multi-column forms and KPI grids become one column, secondary details collapse, and primary actions stretch when that improves reach. Coarse-pointer controls provide at least 44px touch targets, and full-screen layers use dynamic viewport units plus safe-area insets.
 
 **The Persistent Object Rule.** Each page keeps one work object visually dominant; secondary controls belong in Filters, disclosures, or overflow.
 
@@ -224,18 +224,62 @@ WorkChord uses gently compact corners: 4px for tags and tight internal geometry,
 
 ### Navigation
 
-The conductor bar is a true workspace switcher; its active item uses a soft cobalt surface and a 2px bottom planning thread. The sidebar contains only destinations relevant to the current workspace. At 1180px and below, both workspace switching and contextual destinations move into a labeled, focus-managed drawer.
+The sidebar is the only navigation layer; its destinations, groups and order are set in [Structure of the interface](#structure-of-the-interface). The active item uses a soft cobalt surface and a planning-thread marker. The conductor bar holds the scope bar and workspace-wide controls, not navigation tabs. At 1180px and below, the sidebar moves into a labeled, focus-managed drawer.
 
 ### Planning Readiness
 
 Readiness is a persistent operational summary, not a KPI cluster. It exposes the next incomplete planning step, uses warnings for actionable exceptions, and provides an explicit retry when aggregate state is unavailable.
+
+## Structure of the interface
+
+These rules fix how pages are reached, scoped, framed and coloured. Each rule is one sentence that a reviewer can check against a running page.
+
+### Navigation
+
+- One sidebar holds every destination in the app, and the top bar has no work-area tabs.
+- The sidebar lists ten destinations in this order: Overview, My Work and Triage; then the group Plan with Projects, Plan and Gantt; then the group Deliver with Tasks and Analytics; then the group Setup with Team and Settings.
+- Roadmap is a view of Projects and has no sidebar item of its own.
+- The agent pipeline is a layout of Tasks and has no sidebar item of its own.
+- Iterations and iteration capacity are managed in Plan and have no sidebar item of their own.
+- The work calendar is a section of Settings and has no sidebar item of its own.
+- Agent connection and the model catalog are part of Team and have no sidebar item of their own.
+- The Plan item is the only sidebar item that shows a progress counter, and the counter reads as the number of complete checkpoints out of six.
+- Each old path redirects to its new place and keeps every query parameter of the old URL: `/plan/master` to `/plan`, `/iterations` to `/plan?panel=iterations`, `/roadmap` to `/projects?view=roadmap`, `/agent-pipeline` to `/tasks?layout=pipeline`, `/agent-team/setup` to `/team?tab=connect`, and `/calendar` to `/settings?tab=calendar`.
+
+### Scope
+
+- One scope bar in the top bar sets Project and Iteration for every scoped page: Overview, Plan, Gantt, Tasks and Analytics.
+- Project is either one project or All projects.
+- Iteration is either one iteration of the selected project or Backlog, which means work with no iteration.
+- The scope is carried in the URL as the query parameters `project` and `iteration`, so a copied link opens the same scope.
+- The browser remembers the last scope and applies it when a scoped page opens without scope parameters in its URL.
+- No page has an iteration selector of its own.
+- On workspace-wide pages (My Work, Triage, Projects, Team and Settings) the scope bar is read-only text.
+
+### Page frame
+
+- Every page opens with PageHeader, which holds the title, one sentence of purpose, at most one primary action and at most two secondary actions.
+- Every further page-level action sits in the single overflow menu of PageHeader.
+- A page has at most one PageToolbar row, and that row holds only search, filters, the view switch and view options.
+- Filters use the shared FilterBar, which shows one removable chip for each active condition.
+- Switching between views of the same records uses ViewSwitch.
+- A record with more than four fields is created and edited in the slide-over drawer.
+- Modal is used only for confirmations and for forms of up to four fields.
+- No page uses an inline form card to create or edit a record.
+
+### Colour
+
+- Each page has at most one primary action.
+- Cobalt marks hierarchy, focus and the next step, and nothing else.
+- Red and amber mark actionable exceptions, and nothing else.
+- Status hues (planned slate, active cyan, resolved emerald and closed violet) mark record status, and nothing else.
 
 ## Do's and Don'ts
 
 ### Do:
 
 - **Do** keep one primary action and one persistent work object per page.
-- **Do** use cobalt to connect workspace, selection, focus, and the next planning move.
+- **Do** use cobalt to connect the active destination, selection, focus, and the next planning move.
 - **Do** promote exceptions, missing inputs, and recovery ahead of aggregate KPI volume.
 - **Do** put secondary controls into Filters, disclosures, or overflow.
 - **Do** preserve visible labels, keyboard focus, 44px coarse-pointer targets, and explicit unavailable-state alternatives.
