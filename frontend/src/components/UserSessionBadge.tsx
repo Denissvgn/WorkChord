@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { User, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { sessionService, type UserSession } from '../services/sessionService';
-import { IdentityBadge } from '../features/identity/IdentityProvider';
+import { IdentityBadge } from '../features/identity/AccountMenu';
 import { useIdentity } from '../features/identity/identityContext';
 
 export const UserSessionBadge = () => {

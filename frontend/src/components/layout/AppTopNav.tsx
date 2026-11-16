@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { getDestinationForPath } from '../../navigation/destinations';
 import { metadataForPath, warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
+import { AccountMenuRowContext } from '../../features/identity/accountMenuRow';
 import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
@@ -19,6 +20,7 @@ export const AppTopNav = () => {
     const location = useLocation();
     const scopeLink = useScopeLink();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [accountMenuRow, setAccountMenuRow] = useState<HTMLElement | null>(null);
     const mobileNavRestoreFocusRef = useRef<HTMLElement | null>(null);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
         open: mobileMenuOpen,
@@ -115,8 +117,11 @@ export const AppTopNav = () => {
                     <Menu aria-hidden="true" className="h-5 w-5" />
                     <span className="mobile-nav-trigger-label">{t('nav.navigationMenu')}</span>
                 </button>
-                <UserSessionBadge />
+                <AccountMenuRowContext.Provider value={accountMenuRow}>
+                    <UserSessionBadge />
+                </AccountMenuRowContext.Provider>
             </div>
+            <div ref={setAccountMenuRow} className="topnav-account-row" />
 
             {mobileMenuOpen && (
                 <div className="mobile-nav-layer">

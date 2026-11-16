@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
-import { IdentityProvider, IdentityBadge } from './IdentityProvider';
+import { IdentityProvider } from './IdentityProvider';
+import { IdentityBadge } from './AccountMenu';
 import { useQueryClient } from '@tanstack/react-query';
 import type { QueryClient } from '@tanstack/react-query';
 import { act } from '@testing-library/react';
