@@ -37,10 +37,9 @@ import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
-import { useIterationStore } from '../store/iterationStore';
+import { useWorkScope } from '../features/scope/useWorkScope';
 import { useLinkScope, useScopeLink } from '../features/scope/useScopeLink';
-import { resolveWorkScope } from '../features/scope/workScope';
-import { IterationSelector } from '../components/iteration/IterationSelector';
+import { resolveWorkScope, type ScopeIteration as ScopeIterationValue } from '../features/scope/workScope';
 import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import type { SavedView } from '../types/savedView';
 import { savedViewService } from '../services/savedViewService';
@@ -89,7 +88,9 @@ const PLANNING_ISSUE_COPY_KEYS: Record<
 
 const TasksPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
+    const { iteration, setIteration } = useWorkScope();
+    const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
+    const isBacklog = iteration === 'backlog';
     const scopeLink = useScopeLink();
     const linkedScope = useLinkScope();
     // Older links open the backlog with ?scope=backlog; the scope now says so with iteration=backlog.
@@ -103,6 +104,10 @@ const TasksPage = () => {
     const [selectedSavedViewId, setSelectedSavedViewId] = useState<number | null>(null);
     const appliedRequestedViewIdRef = useRef<number | null>(null);
     const appliedPlanningContext = useRef<string | null>(null);
+    const appliedPlanningIterationRef = useRef<string | null>(null);
+    // The iteration this page chose itself; a scope change to it keeps the filters and view.
+    const appliedScopeChangeRef = useRef<number | null>(null);
+    const shownIterationRef = useRef<ScopeIterationValue | undefined>(iteration);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
@@ -225,40 +230,41 @@ const TasksPage = () => {
         requestedSavedViewId && savedViewsError,
     );
 
+    // A link that names an iteration for planning opens the scope on it once; the scope bar then
+    // changes it freely. A name that matches no iteration is dropped from the URL.
     useEffect(() => {
         if (!iterations || iterations.length === 0) return;
+        if (rawPlanningIterationId === null) {
+            appliedPlanningIterationRef.current = null;
+            return;
+        }
+        if (appliedPlanningIterationRef.current === rawPlanningIterationId) return;
+        appliedPlanningIterationRef.current = rawPlanningIterationId;
 
-        if (rawPlanningIterationId !== null) {
-            const requestedIterationExists = (
-                requestedPlanningIterationId !== null
-                && iterations.some(iteration => (
-                    iteration.id === requestedPlanningIterationId
-                ))
-            );
-            if (requestedIterationExists) {
-                if (selectedIterationId !== requestedPlanningIterationId) {
-                    setSelectedIterationId(requestedPlanningIterationId);
-                }
-                return;
+        const requestedIterationExists = (
+            requestedPlanningIterationId !== null
+            && iterations.some(item => item.id === requestedPlanningIterationId)
+        );
+        if (requestedIterationExists) {
+            if (selectedIterationId !== requestedPlanningIterationId) {
+                appliedScopeChangeRef.current = requestedPlanningIterationId;
+                setIteration(requestedPlanningIterationId);
             }
-
-            const nextSearchParams = new URLSearchParams(searchParams);
-            nextSearchParams.delete(PLANNING_ITERATION_PARAM);
-            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-            setSearchParams(nextSearchParams, { replace: true });
+            return;
         }
 
-        chooseDefaultIteration(iterations);
+        const nextSearchParams = new URLSearchParams(searchParams);
+        nextSearchParams.delete(PLANNING_ITERATION_PARAM);
+        nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
+        setSearchParams(nextSearchParams, { replace: true });
     }, [
-        chooseDefaultIteration,
-        isBacklog,
         iterations,
         rawPlanningIterationId,
         requestedPlanningIterationId,
         searchParams,
         selectedIterationId,
+        setIteration,
         setSearchParams,
-        setSelectedIterationId,
     ]);
 
     useEffect(() => {
@@ -337,12 +343,13 @@ const TasksPage = () => {
         ) {
             return;
         }
-        setSelectedIterationId(focusedTask.iteration_id);
+        appliedScopeChangeRef.current = focusedTask.iteration_id;
+        setIteration(focusedTask.iteration_id);
     }, [
         focusedTaskQuery.data,
         iterations,
         selectedIterationId,
-        setSelectedIterationId,
+        setIteration,
     ]);
 
     useEffect(() => {
@@ -424,6 +431,18 @@ const TasksPage = () => {
         setSearchParams(nextSearchParams, { replace: true });
     }, [searchParams, setSearchParams]);
 
+    // Another iteration in the scope bar starts with no filters and no saved view.
+    useEffect(() => {
+        const previous = shownIterationRef.current;
+        shownIterationRef.current = iteration;
+        if (previous === undefined || previous === iteration) return;
+        if (appliedScopeChangeRef.current === iteration) {
+            appliedScopeChangeRef.current = null;
+            return;
+        }
+        clearIterationViewContext();
+    }, [clearIterationViewContext, iteration]);
+
     useEffect(() => {
         if (!requestedSavedViewId) {
             if (appliedRequestedViewIdRef.current === null) return undefined;
@@ -493,11 +512,6 @@ const TasksPage = () => {
                             <div className="wc-page-sub">{t('tasks.description')}</div>
                         </div>
                         <div className="row tasks-header-actions">
-                        <IterationSelector
-                            showLabel
-                            className="tasks-iteration-selector"
-                            onChange={clearIterationViewContext}
-                        />
                         <OverflowMenu
                             className="tasks-overflow-trigger"
                             label={t('actions.moreActions')}

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { IterationList } from '../components/iteration/IterationList';
 import { IterationForm } from '../components/iteration/IterationForm';
 import { IterationImportDialog } from '../components/iteration/IterationImportDialog';
@@ -9,7 +10,9 @@ import { PlanReturnBar } from '../components/planning/PlanReturnBar';
 import { Plus, Upload } from 'lucide-react';
 
 const IterationsPage = () => {
-    const [isCreating, setIsCreating] = useState(false);
+    const [searchParams] = useSearchParams();
+    // The scope bar's New iteration opens this page with the form ready.
+    const [isCreating, setIsCreating] = useState(() => searchParams.get('create') === '1');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { t } = useTranslation();
     const [editingIteration, setEditingIteration] = useState<Iteration | null>(null);

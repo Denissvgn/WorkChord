@@ -12,7 +12,14 @@ const triageServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
+const scopeServiceMocks = vi.hoisted(() => ({
+    iterations: { getAll: vi.fn() },
+    projects: { getAll: vi.fn() },
+}));
+
 vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningSummaryMock);
+vi.mock('../../services/iterationService', () => ({ iterationService: scopeServiceMocks.iterations }));
+vi.mock('../../services/projectService', () => ({ projectService: scopeServiceMocks.projects }));
 vi.mock('../../services/triageService', () => ({ triageService: triageServiceMock }));
 vi.mock('../../navigation/routeModules', async importOriginal => ({
     ...await importOriginal<typeof import('../../navigation/routeModules')>(),
@@ -38,6 +45,10 @@ describe('AppTopNav', () => {
         });
         triageServiceMock.getAll.mockReset();
         triageServiceMock.getAll.mockResolvedValue([]);
+        scopeServiceMocks.iterations.getAll.mockReset();
+        scopeServiceMocks.iterations.getAll.mockResolvedValue([]);
+        scopeServiceMocks.projects.getAll.mockReset();
+        scopeServiceMocks.projects.getAll.mockResolvedValue([]);
     });
 
     it('holds the brand, a scope slot, Commands, Help and the account menu, left to right, with no tabs', () => {
@@ -51,7 +62,7 @@ describe('AppTopNav', () => {
         const account = screen.getByRole('button', { name: 'Account menu' });
 
         expect(brand).toHaveAttribute('href', '/');
-        expect(slot).toBeEmptyDOMElement();
+        expect(within(slot).getByTestId('scope-bar')).toBeInTheDocument();
         expect(slot).toHaveAttribute('data-slot', 'scope-bar');
         const inOrder = [brand, slot, commands, help, account];
         for (let index = 1; index < inOrder.length; index += 1) {

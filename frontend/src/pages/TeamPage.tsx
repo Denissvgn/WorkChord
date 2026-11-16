@@ -10,8 +10,7 @@ import { TeamProfileManager } from '../components/team/TeamProfileManager';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
-import { useIterationStore } from '../store/iterationStore';
-import { IterationSelector } from '../components/iteration/IterationSelector';
+import { useWorkScope } from '../features/scope/useWorkScope';
 import { PageHeader, PageLayout } from '../components/ui';
 import type { TeamMember, TeamMemberProfile } from '../types/team';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
@@ -30,7 +29,8 @@ const parseIterationIntent = (value: string | null) => {
 };
 
 const TeamPage = () => {
-    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
+    const { iteration, setIteration } = useWorkScope();
+    const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
     const [searchParams, setSearchParams] = useSearchParams();
     const [isCreating, setIsCreating] = useState(false);
     const [isImporting, setIsImporting] = useState(false);
@@ -77,12 +77,6 @@ const TeamPage = () => {
         && (!hasSelectedIteration || (!isLoadingCurrentMembers && !isCurrentMembersError));
 
     useEffect(() => {
-        if (!iterations) return;
-        if (iterations.length === 0) { if (selectedIterationId !== 0) setSelectedIterationId(0); return; }
-        chooseDefaultIteration(iterations);
-    }, [iterations, selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration]);
-
-    useEffect(() => {
         if (!iterations || !hasTeamIntent) return;
 
         const clearTeamIntent = () => {
@@ -106,7 +100,7 @@ const TeamPage = () => {
                 return;
             }
 
-            setSelectedIterationId(targetIteration.id);
+            setIteration(targetIteration.id);
             setEditingMember(null);
             setAssignmentProfile(null);
 
@@ -129,7 +123,7 @@ const TeamPage = () => {
         iterations,
         searchParams,
         setSearchParams,
-        setSelectedIterationId,
+        setIteration,
     ]);
 
     return (
@@ -139,7 +133,6 @@ const TeamPage = () => {
                 subtitle={selectedIteration ? t('teamPage.capacityBelongsTo', {iteration: selectedIteration.name}) : t('teamPage.description')}
                 actions={hasIterations && (
                     <>
-                        <IterationSelector showLabel disabled={isCreating || !!editingMember} />
                         <button type="button" className="btn" onClick={() => setIsImporting(true)}
                             disabled={isCreating || !!editingMember || selectedIterationId === 0}>
                             <Upload className="h-4 w-4" aria-hidden="true" />

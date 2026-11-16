@@ -262,7 +262,7 @@ const OverviewPage = () => {
         ready: planReady,
         nextId: planNextId,
         queryStates,
-    } = usePlanningReadiness({ autoSelectFirst: true, includeInbox: true });
+    } = usePlanningReadiness({ includeInbox: true });
 
     const iterationSummaryQuery = useQuery({
         queryKey: ['iterationSummary', selectedIterationId],

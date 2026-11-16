@@ -10,6 +10,7 @@ import { SidebarContent } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
 import { ContextHelp } from './ContextHelp';
 import { useScopeLink } from '../../features/scope/useScopeLink';
+import { ScopeBar } from './ScopeBar';
 
 const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
 
@@ -85,8 +86,9 @@ export const AppTopNav = () => {
             <div className="topnav-center">
                 {/* Below 1180px the sidebar folds into the drawer; the bar still names where you are. */}
                 <p className="topnav-location" data-testid="topnav-location">{currentPageName}</p>
-                {/* Reserved for the scope bar. */}
-                <div className="topnav-scope" data-slot="scope-bar" data-testid="topnav-scope-slot" />
+                <div className="topnav-scope" data-slot="scope-bar" data-testid="topnav-scope-slot">
+                    <ScopeBar />
+                </div>
             </div>
 
             <div className="nav-right">

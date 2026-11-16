@@ -31,7 +31,7 @@ import { calendarService } from '../services/calendarService';
 import { iterationService } from '../services/iterationService';
 import { teamService } from '../services/teamService';
 import { dateFnsLocale } from '../i18n/dateLocale';
-import { useIterationStore } from '../store/iterationStore';
+import { useWorkScope } from '../features/scope/useWorkScope';
 import type { Calendar as WorkCalendar, CalendarCreate, CalendarUpdate } from '../types/calendar';
 import type { TeamMember, Vacation } from '../types/team';
 import { usePlanningObservation } from '../features/usePlanningObservation';
@@ -96,11 +96,12 @@ const CalendarPage = () => {
     const { t, i18n } = useTranslation();
     const locale = dateFnsLocale(i18n.language);
     const queryClient = useQueryClient();
-    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
+    const { iteration: scopeIteration } = useWorkScope();
+    const selectedIterationId = typeof scopeIteration === 'number' ? scopeIteration : 0;
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const calendarContext = usePlanningObservation<WorkCalendar>();
     const vacationContext = usePlanningObservation<TeamMember>();
-    const [vacationImportBusy, setVacationImportBusy] = useState(false);
+    const [, setVacationImportBusy] = useState(false);
 
     const [draft, setDraft] = useState<CalendarDraft | null>(null);
     const draftGeneration = useRef(0);
@@ -173,14 +174,6 @@ const CalendarPage = () => {
             activeCalendar.current = undefined;
         };
     }, [calendarId, readCalendarContext]);
-
-    useEffect(() => {
-        if (iterations.length === 0) {
-            if (selectedIterationId !== 0) setSelectedIterationId(0);
-            return;
-        }
-        chooseDefaultIteration(iterations);
-    }, [iterations, selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration]);
 
     const selectedIteration = iterations.find(iteration => iteration.id === selectedIterationId) ?? null;
     const hasSelectedIteration = selectedIteration !== null;
@@ -1039,21 +1032,6 @@ const CalendarPage = () => {
                             {selectedIteration ? selectedIteration.name : t('calendar.noIterationSelected')}
                         </p>
                     </div>
-                    {iterations.length > 0 && (
-                        <select
-                            value={selectedIterationId}
-                            disabled={Boolean(vacationStart || vacationEnd) || vacationImportBusy || addVacationMutation.isPending}
-                            onChange={event => setSelectedIterationId(Number.parseInt(event.target.value, 10))}
-                            className="input"
-                            style={{ width: 'auto' }}
-                            aria-label={t('calendar.iteration')}
-                        >
-                            {isBacklog && <option value={0}>{t('teamwork.backlog')}</option>}
-                            {iterations.map(iteration => (
-                                <option key={iteration.id} value={iteration.id}>{iteration.name}</option>
-                            ))}
-                        </select>
-                    )}
                 </div>
 
                 {isLoadingIterations ? (
