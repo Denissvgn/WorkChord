@@ -17,7 +17,7 @@ interface Capacity {
 
 const localDate = () => { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; };
 
-export const PersonCapacity = ({ profileId, startDate, endDate, manage = false }: { profileId: number; startDate?: string; endDate?: string; manage?: boolean }) => {
+export const PersonCapacity = ({ profileId, startDate, endDate, manage = false, label }: { profileId: number; startDate?: string; endDate?: string; manage?: boolean; label?: string }) => {
     const { t } = useTranslation();
     const id = useId();
     const [expanded, setExpanded] = useState(false);
@@ -52,7 +52,7 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false }
     const calendarChanged = calendarVersion !== null && availability.data?.version !== calendarVersion;
 
     return <details className="space-y-3 rounded-md border border-border p-3" onToggle={event => setExpanded(event.currentTarget.open)}>
-        <summary className="cursor-pointer font-medium text-content-primary">{t(manage ? 'teamwork.myAvailability' : 'teamwork.personCapacity')}</summary>
+        <summary className="cursor-pointer font-medium text-content-primary">{label ?? t(manage ? 'teamwork.myAvailability' : 'teamwork.personCapacity')}</summary>
         <p className="text-sm text-content-secondary">{t('teamwork.capacityHelp')}</p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className="text-sm" htmlFor={`${id}-start`}>{t('teamwork.from')}<input id={`${id}-start`} type="date" className="input w-full" value={start} onChange={event => setStart(event.target.value)} /></label>

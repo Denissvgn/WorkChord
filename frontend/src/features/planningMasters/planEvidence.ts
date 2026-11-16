@@ -2,7 +2,7 @@ import type { IterationPlanningReadinessSummary } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
 import { derivePlanningRecovery } from './masters';
 import type { PlanReadiness } from './masters';
-import { withPlanReturn } from './planningReturn';
+import { planStepHref, withPlanReturn } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 import { PLANNING_ITERATION_PARAM, planningIssueTasksHref } from './planningTaskIssues';
 import type { PlanningTaskIssue } from './planningTaskIssues';
@@ -112,7 +112,7 @@ export const checkpointEvidence = (
             label: t('plan.master.agentWorkingNoCapacity'),
             value: count(readiness.tasksAgentWithoutCapacity ?? 0),
             exception: true,
-            href: withPlanReturn('/team', stepId),
+            href: planStepHref('team'),
             actionLabel: t('plan.master.addCapacityRows'),
         }] : [];
         return [unassigned, missingEffort, ...agentRows, tasksInIteration];
