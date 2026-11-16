@@ -7,8 +7,8 @@ export const landingEnglish = {
     stages: {
         capture: { term: 'Capture', sentence: 'Requests arrive in Triage, where each one gets a decision.' },
         plan: { term: 'Plan', sentence: 'Projects give the context; the Iteration, Capacity and Schedule are set in Plan.' },
-        do: { term: 'Do', sentence: 'Assignees start work from My Work and report blockers in Tasks.' },
-        review: { term: 'Review', sentence: 'Reviewers check the evidence in My Work, and Analytics shows how delivery is going.' },
+        do: { term: 'Do', sentence: 'An Assignee starts work from My Work and reports a Blocker in Tasks.' },
+        review: { term: 'Review', sentence: 'A Reviewer checks the evidence in My Work, and Analytics shows how delivery is going.' },
     },
     openTheWorkspace: 'Open the workspace',
 };
