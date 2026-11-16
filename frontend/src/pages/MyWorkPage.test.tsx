@@ -303,6 +303,31 @@ describe('My Work rows', () => {
 
 const Location = () => <output data-testid="location">{useLocation().search}</output>;
 
+it.each(['active', 'queued', 'blocked', 'awaiting_review', 'review'])('loads the Notifications count without deliveries from the %s queue until Notifications opens', async queue => {
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', queues: {}, has_more: false, next_after_id: null } };
+        if (path === '/notifications') return { data: { items: [
+            { id: 1, task_id: 7, title: 'Task updated', event_type: 'status_changed', read: false },
+        ], has_more: true, next_after_id: 1 } };
+        if (path === '/notifications/deliveries') return { data: { items: [
+            { id: 2, task_id: 7, title: 'First delivery', status: 'sent', attempt_count: 1, max_attempts: 3 },
+            { id: 3, task_id: 7, title: 'Second delivery', status: 'sent', attempt_count: 1, max_attempts: 3 },
+        ], has_more: false, next_after_id: null } };
+        return { data: { items: [], has_more: false, next_after_id: null } };
+    });
+    renderWithProviders(<MyWorkPage />, { initialEntries: [`/my-work?queue=${queue}`] });
+
+    const notifications = await screen.findByRole('button', { name: 'Notifications · 1+', pressed: false });
+    expect(await screen.findByRole('button', { name: 'To review · 0' })).toBeInTheDocument();
+    expect(api.get).not.toHaveBeenCalledWith('/notifications/deliveries', expect.anything());
+
+    fireEvent.click(notifications);
+    expect(await screen.findByText(/First delivery/)).toBeInTheDocument();
+    expect(screen.getByText(/Second delivery/)).toBeInTheDocument();
+    expect(api.get).toHaveBeenCalledWith('/notifications/deliveries', { params: { after_id: 0 } });
+    expect(screen.getByRole('button', { name: 'Notifications · 1+', pressed: true })).toBeInTheDocument();
+});
+
 it('switches six counted queues and preserves the choice in the URL', async () => {
     api.get.mockImplementation(async (path: string) => {
         if (path === '/tasks/my-work') return { data: { state: 'ready', queues: { active: [], queued: [], blocked: [{ id: 7, title: 'Blocked task', status: 'planned', iteration_id: null }], awaiting_review: [] }, has_more: true, next_after_id: 7 } };

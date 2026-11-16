@@ -53,7 +53,7 @@ const MyWorkPage = () => {
     const inbox = useLiveWindow({ queryKey: ['personal-inbox'], enabled: !local || !!identity?.profile, initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.inbox(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const deliveries = useLiveWindow({ queryKey: ['personal-deliveries'], enabled: !local || !!identity?.profile, initialPageParam: 0,
+    const deliveries = useLiveWindow({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox' && (!local || !!identity?.profile), initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.deliveries(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const read = useMutation({ mutationFn: ({ id, value }: { id: number; value: boolean }) => discussionService.read(id, value), onSuccess: () => inbox.refetch() });
