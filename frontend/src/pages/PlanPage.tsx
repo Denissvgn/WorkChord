@@ -8,6 +8,8 @@ import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { CapacitySection } from '../components/capacity/CapacitySection';
 import { PlanShareSection } from '../components/planning/PlanShareSection';
+import { PlanWorkSection } from '../components/planning/PlanWorkSection';
+import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
 import {
     checkpointsDone,
@@ -123,7 +125,9 @@ const checkpointResult = (
 
 /** Evidence comes from the readiness response; the in-place capacity form also needs the iteration's team. */
 const bodyQueries = (stepId: PlanningStepId, queryStates: Readiness['queryStates']): PlanningQueryFeedback[] => (
-    stepId === 'team' ? [queryStates.team] : []
+    stepId === 'team' ? [queryStates.team]
+        : stepId === 'work' ? [queryStates.tasks]
+            : stepId === 'blockers' ? [queryStates.tasks, queryStates.team] : []
 );
 
 /** Today's body of a checkpoint: its evidence rows and the link to the page that owns the change. */
@@ -175,6 +179,15 @@ const CheckpointBody = ({
     if (section.id === 'team' && readiness.currentIteration) {
         return <CapacitySection key={readiness.currentIteration.id} iteration={readiness.currentIteration}
             iterations={readiness.iterations} members={readiness.teamMembers} primary={section.state !== 'done'} />;
+    }
+    if (section.id === 'work' && readiness.currentIteration) {
+        return <PlanWorkSection key={iterationId} iteration={readiness.currentIteration} tasks={readiness.planningLeafTasks}
+            count={section.counts.tasks ?? readiness.planningSummary?.task_count ?? 0} />;
+    }
+    if (section.id === 'blockers' && readiness.currentIteration) {
+        return <PlanBlockersSection key={iterationId} iterationId={iterationId} tasks={readiness.allTasks} members={readiness.teamMembers}
+            unassignedCount={section.counts.unassigned_tasks ?? readiness.planningSummary?.tasks_without_assignee ?? 0}
+            effortCount={section.counts.tasks_without_effort ?? readiness.planningSummary?.tasks_without_effort ?? 0} />;
     }
     // One primary action per page: the open, incomplete checkpoint's own action, done in place when it can be.
     const ownerIsPrimary = section.state !== 'done';

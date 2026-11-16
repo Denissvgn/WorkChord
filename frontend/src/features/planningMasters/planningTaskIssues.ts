@@ -70,8 +70,8 @@ export const planningIssueTasksHref = ({
     iterationId: number;
     returnStepId: PlanningStepId;
 }) => withPlanReturn('/tasks', returnStepId, {
-    // Unassigned work opens ready to assign in bulk; the filter drawer stays closed.
-    ...(issue === 'unassigned' ? { mode: 'bulk' } : {}),
+    // Both planning gaps open the matching work in selection mode.
+    ...(issue === 'unassigned' || issue === 'missing-effort' ? { mode: 'bulk' } : {}),
     [PLANNING_TASK_ISSUE_PARAM]: issue,
     ...(iterationId > 0
         ? { [PLANNING_ITERATION_PARAM]: String(iterationId) }

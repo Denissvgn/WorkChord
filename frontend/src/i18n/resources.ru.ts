@@ -1,3 +1,4 @@
+import { planWorkRussian } from './planWork';
 import { planningInputRussian } from './planningInputMessages';
 import { paginationRU } from './pagination';
 import { timeEntriesRU } from './timeEntries';
@@ -9,6 +10,7 @@ import { surfacesRussian } from './surfaces.ru';
 import { literalsRussian } from './literals.ru';
 export const russianResources = {
         translation: {
+            planWork: planWorkRussian,
             capacity: {
                 hourValue: '{{hours}} ч',
                 people_one: '{{count}} человек',

@@ -9,12 +9,14 @@ import { useScopeStore } from '../features/scope/scopeStore';
 import type { TeamMember, TeamMemberCreate, TeamMemberProfile } from '../types/team';
 import type { IterationPlanningReadinessSummary, PlanCheckpoint } from '../types/iteration';
 import PlanPage from './PlanPage';
+import type { Task, TaskBulkOperationRequest } from '../types/task';
 import planPageSource from './PlanPage.tsx?raw';
 
 const services = vi.hoisted(() => ({
-    iterations: { getAll: vi.fn(), getPlanningReadiness: vi.fn() },
+    iterations: { getAll: vi.fn(), getPlanningReadiness: vi.fn(), getById: vi.fn() },
     team: { getByIteration: vi.fn(), getProfiles: vi.fn(), create: vi.fn(), getWorkload: vi.fn(), addVacation: vi.fn() },
-    tasks: { getByIteration: vi.fn() },
+    tasks: { getByIteration: vi.fn(), getAssigneeRecommendations: vi.fn(), runBulkOperation: vi.fn(), update: vi.fn(), lookup: vi.fn(), move: vi.fn(), importFromText: vi.fn() },
+    labels: { getLabels: vi.fn() },
     gantt: { getChart: vi.fn() },
     triage: { getAll: vi.fn() },
     share: { getCurrent: vi.fn(), create: vi.fn(), revoke: vi.fn() },
@@ -23,6 +25,7 @@ const services = vi.hoisted(() => ({
 vi.mock('../services/iterationService', () => ({ iterationService: services.iterations }));
 vi.mock('../services/teamService', () => ({ teamService: services.team }));
 vi.mock('../services/taskService', () => ({ taskService: services.tasks }));
+vi.mock('../services/labelService', () => ({ labelService: services.labels }));
 vi.mock('../services/ganttService', () => ({ ganttService: services.gantt }));
 vi.mock('../services/triageService', () => ({ triageService: services.triage }));
 vi.mock('../services/planShareService', () => ({ planShareService: services.share }));
@@ -389,5 +392,176 @@ describe('capacity inside Plan', () => {
         ], 412));
         renderPlan();
         expect(await screen.findByText('2 people, 3 agents, 412 h')).toBeVisible();
+    });
+});
+
+const plannedTask = (id: number, overrides: Partial<Task> = {}): Task => ({
+    id, title: `Work item ${id}`, iteration_id: 1, project_id: 1, status: 'planned', version: 1,
+    effort_hours: 2, effort_days: 0.25, nominal_day_hours: 8, tags: ['cap:code'], assignee: null,
+    is_composite: false, is_deferred: false, children: [], ...overrides,
+} as Task);
+
+const workWorkspace = (initial: Task[]) => {
+    const tasks = [...initial];
+    let revision = 7;
+    const rows = [capacityRow(1, 'human'), capacityRow(2, 'agent')];
+    services.iterations.getById.mockImplementation(async () => ({ ...ITERATION, revision }));
+    services.team.getByIteration.mockResolvedValue(rows);
+    services.labels.getLabels.mockResolvedValue([{ slug: 'cap:code', name: 'Code' }, { slug: 'cap:test', name: 'Test' }]);
+    services.tasks.getByIteration.mockImplementation(async () => [...tasks]);
+    services.tasks.getAssigneeRecommendations.mockImplementation(async (id: number) => [{ team_member_id: tasks.find(task => task.id === id)?.tags.includes('cap:test') ? 2 : 1, score: 90 }]);
+    services.team.getWorkload.mockImplementation(async (id: number) => ({ team_member_id: id, allocated_hours: id === 1 ? 20 : 8, capacity_hours: 60 }));
+    services.iterations.getPlanningReadiness.mockImplementation(async () => {
+        const eligible = tasks.filter(task => task.status === 'planned' && !task.is_composite && !task.is_deferred && !task.children?.length);
+        const unassigned = eligible.filter(task => !task.assignee && !task.agent_working).length;
+        const effort = eligible.filter(task => !task.effort_days).length;
+        return summary([
+            checkpoint('iteration', 'done'), checkpoint('team', 'done'), checkpoint('work', 'done', [], { tasks: tasks.length }),
+            checkpoint('blockers', unassigned || effort ? 'warn' : 'done', [], { unassigned_tasks: unassigned, tasks_without_effort: effort }),
+            checkpoint('schedule', 'todo'), checkpoint('review', 'blocked'),
+        ], { task_count: tasks.length, tasks_without_assignee: unassigned, tasks_without_effort: effort });
+    });
+    services.tasks.runBulkOperation.mockImplementation(async (request: TaskBulkOperationRequest) => {
+        expect(request.expected_revisions).toEqual({ 1: revision });
+        const before = revision;
+        if (!request.dry_run) revision++;
+        const results = request.task_ids.map(id => {
+            const index = tasks.findIndex(task => task.id === id);
+            expect(request.expected_versions?.[id]).toBe(tasks[index].version);
+            if (!request.dry_run) tasks[index] = { ...tasks[index], assignee: rows.find(row => row.id === request.payload?.assignee_id), version: tasks[index].version + 1, iteration_revision: revision };
+            return { task_id: id, outcome: request.dry_run ? 'would_update' : 'updated', warnings: [], changes: {}, task: request.dry_run ? null : tasks[index] };
+        });
+        return { requested_count: request.task_ids.length, succeeded_count: request.task_ids.length, failed_count: 0, dry_run: request.dry_run,
+            task_versions: request.expected_versions, input_revisions: { 1: before }, results };
+    });
+    services.tasks.update.mockImplementation(async (id: number, update: Partial<Task>) => {
+        const index = tasks.findIndex(task => task.id === id);
+        tasks[index] = { ...tasks[index], effort_hours: update.effort_hours!, effort_days: update.effort_hours! / 8, version: tasks[index].version + 1 };
+        revision++;
+        return tasks[index];
+    });
+    return tasks;
+};
+const BLOCKERS_ENTRY = '/plan?step=blockers&project=1&iteration=1';
+
+describe('work and blockers inside Plan', () => {
+    it('assigns all 48 unassigned tasks from Plan in one preview and apply', async () => {
+        const tasks = workWorkspace(Array.from({ length: 48 }, (_, index) => plannedTask(index + 1, { tags: [index < 24 ? 'cap:code' : 'cap:test'] })));
+        const { user } = renderPlan(BLOCKERS_ENTRY);
+        const preview = await screen.findByRole('button', { name: 'Preview assignments' });
+        await waitFor(() => expect(preview).toBeEnabled());
+        expect(screen.getByLabelText('Assignee for Code')).toHaveValue('1');
+        expect(screen.getByLabelText('Assignee for Test')).toHaveValue('2');
+        await user.click(preview);
+        await user.click(await screen.findByRole('button', { name: 'Assign 48 tasks' }));
+        await screen.findByText('48 tasks assigned.');
+        expect(tasks.every(task => task.assignee)).toBe(true);
+        expect(new Set(services.tasks.getAssigneeRecommendations.mock.calls.map(call => call[0])).size).toBe(48);
+        const requests = services.tasks.runBulkOperation.mock.calls.map(call => call[0] as TaskBulkOperationRequest);
+        expect(requests.filter(request => request.dry_run).flatMap(request => request.task_ids)).toHaveLength(48);
+        expect(requests.filter(request => !request.dry_run).flatMap(request => request.task_ids)).toEqual(Array.from({ length: 48 }, (_, i) => i + 1));
+        expect(requests.filter(request => !request.dry_run).map(request => request.expected_revisions)).toEqual([{ 1: 7 }, { 1: 8 }]);
+        await waitFor(() => expect(stateText('blockers')).toBe('Done'));
+        expect(screen.getByTestId('location')).toHaveTextContent('/plan?step=blockers&project=1&iteration=1');
+    });
+
+    it('uses planning-readiness counts and lists no finished, active, deferred or composite task', async () => {
+        workWorkspace([plannedTask(1, { effort_days: null, effort_hours: null }),
+            plannedTask(2, { title: 'Finished work', status: 'resolved', effort_days: null }),
+            plannedTask(3, { title: 'Closed work', status: 'closed' }),
+            plannedTask(4, { title: 'Active work', status: 'active' }),
+            plannedTask(5, { title: 'Deferred work', is_deferred: true }),
+            plannedTask(6, { title: 'Composite work', is_composite: true }),
+            plannedTask(7, { title: 'Agent held work', agent_working: true }),
+        ]);
+        services.iterations.getPlanningReadiness.mockResolvedValue(summary([
+            checkpoint('iteration', 'done'), checkpoint('team', 'done'), checkpoint('work', 'done', [], { tasks: 99 }),
+            checkpoint('blockers', 'warn', [], { unassigned_tasks: 48, tasks_without_effort: 12 }),
+            checkpoint('schedule', 'blocked'), checkpoint('review', 'blocked'),
+        ], { task_count: 99, tasks_without_assignee: 48, tasks_without_effort: 12 }));
+        const { user } = renderPlan(BLOCKERS_ENTRY);
+        expect(await screen.findByRole('heading', { name: 'Needs an assignee · 48' })).toBeVisible();
+        expect(screen.getByRole('heading', { name: 'Needs effort · 12' })).toBeVisible();
+        await screen.findByLabelText('Assignee for Code');
+        for (const title of ['Finished work', 'Closed work', 'Active work', 'Deferred work', 'Composite work', 'Agent held work']) expect(screen.queryByText(title)).not.toBeInTheDocument();
+        expect(screen.getAllByRole('link', { name: 'Open in Tasks selection mode' }).every(link => link.getAttribute('href')?.includes('mode=bulk'))).toBe(true);
+        await user.click(toggle('Work'));
+        expect(await screen.findByText(/99 tasks · .* h total effort/)).toBeVisible();
+    });
+
+    it('previews hours per row and marks the row that exceeds capacity before applying', async () => {
+        workWorkspace(Array.from({ length: 48 }, (_, i) => plannedTask(i + 1, { tags: [i < 24 ? 'cap:code' : 'cap:test'] })));
+        const { user } = renderPlan(BLOCKERS_ENTRY);
+        const preview = await screen.findByRole('button', { name: 'Preview assignments' });
+        await waitFor(() => expect(preview).toBeEnabled());
+        await user.click(preview);
+        const region = await screen.findByRole('region', { name: 'Preview assignments' });
+        const rows = within(region).getAllByRole('row');
+        expect(rows[1]).toHaveTextContent('Person 120 h48 h68 hExceeds capacity60 h');
+        expect(rows[2]).toHaveTextContent('Agent 28 h48 h56 h60 h');
+        expect(within(rows[2]).queryByText('Exceeds capacity')).not.toBeInTheDocument();
+        expect(services.tasks.runBulkOperation.mock.calls.every(call => call[0].dry_run)).toBe(true);
+        await user.selectOptions(screen.getByLabelText('Assignee for Code'), '2');
+        expect(screen.queryByRole('region', { name: 'Preview assignments' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Assign 48 tasks' })).not.toBeInTheDocument();
+    });
+
+    it('saves effort as hours with a day hint and refreshes the server count', async () => {
+        workWorkspace([plannedTask(1, { effort_days: null, effort_hours: null })]);
+        const { user } = renderPlan(BLOCKERS_ENTRY);
+        await user.type(await screen.findByRole('spinbutton', { name: /Work item 1.*Effort \(hours\)/ }), '12');
+        expect(screen.getByText('1.5 days at 8 h/day')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(services.tasks.update).toHaveBeenCalledWith(1, { effort_hours: 12, expected_version: 1, expected_revision: 7 }));
+        expect(await screen.findByRole('heading', { name: 'Needs effort · 0' })).toBeVisible();
+    });
+
+    it('stops after a partial assignment and reports the applied count without retrying stale batches', async () => {
+        workWorkspace([plannedTask(1), plannedTask(2, { tags: ['cap:test'] })]);
+        const original = services.tasks.runBulkOperation.getMockImplementation()!;
+        services.tasks.runBulkOperation.mockImplementation(async request => {
+            if (!request.dry_run && request.payload.assignee_id === 2) throw new Error('The iteration changed.');
+            return original(request);
+        });
+        const { user } = renderPlan(BLOCKERS_ENTRY);
+        const preview = await screen.findByRole('button', { name: 'Preview assignments' });
+        await waitFor(() => expect(preview).toBeEnabled());
+        await user.click(preview);
+        await user.click(await screen.findByRole('button', { name: 'Assign 2 tasks' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent('1 tasks assigned. Assignment stopped');
+        expect(services.tasks.runBulkOperation).toHaveBeenCalledTimes(4);
+        expect(screen.queryByRole('button', { name: 'Assign 2 tasks' })).not.toBeInTheDocument();
+        await screen.findByRole('heading', { name: 'Needs an assignee · 1' });
+    });
+
+    it('adds project backlog selections across pages with observed versions', async () => {
+        const tasks = workWorkspace([]);
+        services.tasks.lookup.mockImplementation(async ({ after_id }) => ({ items: after_id ? [plannedTask(12)] : [plannedTask(11)], has_more: !after_id, next_after_id: after_id ? null : 11 }));
+        services.tasks.move.mockImplementation(async (id: number) => { tasks.push(plannedTask(id)); return { iteration_revision: id === 11 ? 8 : 9 }; });
+        const { user } = renderPlan('/plan?step=work&project=1&iteration=1');
+        await user.click(await screen.findByRole('button', { name: 'Add from backlog' }));
+        await user.click(await screen.findByRole('checkbox', { name: 'Work item 11' }));
+        await user.click(screen.getByRole('checkbox', { name: 'Work item 12' }));
+        await user.click(screen.getByRole('button', { name: 'Add 2 tasks' }));
+        await waitFor(() => expect(services.tasks.move).toHaveBeenCalledTimes(2));
+        expect(services.tasks.lookup).toHaveBeenCalledWith(expect.objectContaining({ project_id: 1, backlog_only: true, after_id: 11 }));
+        expect(services.tasks.move.mock.calls).toEqual([
+            [11, { iteration_id: 1, expected_version: 1, expected_revisions: { 1: 7 } }],
+            [12, { iteration_id: 1, expected_version: 1, expected_revisions: { 1: 8 } }],
+        ]);
+        expect(await screen.findByText('2 tasks · 4 h total effort')).toBeVisible();
+    });
+
+    it('imports tasks inside Plan using the existing version-bound import dialog', async () => {
+        workWorkspace([]);
+        services.tasks.importFromText.mockResolvedValue({ task_count: 1, triage_count: 0 });
+        const { user } = renderPlan('/plan?step=work&project=1&iteration=1');
+        await user.click(await screen.findByRole('button', { name: 'Import tasks' }));
+        const dialog = await screen.findByRole('dialog');
+        const editor = within(dialog).getByPlaceholderText('Or paste text here…');
+        await waitFor(() => expect(editor).not.toHaveAttribute('readonly'));
+        await user.type(editor, '- New work');
+        await user.click(within(dialog).getByRole('button', { name: 'Import tasks' }));
+        await waitFor(() => expect(services.tasks.importFromText).toHaveBeenCalledWith(1, '- New work', { destination: 'tasks', expectedRevision: 7 }));
     });
 });
