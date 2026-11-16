@@ -62,8 +62,8 @@ other secret in evidence, reasons, or rationale.
 
 ## Review One Assignment At A Time
 
-1. Read the review queue. Take its first item; never pick a task from the global
-   task list, a notification, or a label.
+1. Read My Work → To review. Take its first item; never pick a task from
+   Tasks, a notification, or a label.
 2. Read the task's complete context with the review assignment ID.
 3. Build the review packet described in
    [review-packet-and-verdict.md](references/review-packet-and-verdict.md):

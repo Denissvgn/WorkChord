@@ -188,8 +188,8 @@ In supervised v0, order work manually and hand off only the current explicit tas
 ## Schedule and Re-read
 
 Dates are calculated. To move a task, change who does it, its effort, what it
-waits for, or its earliest start. People see the same sentence on Gantt
-chart, and its "Try changes" popover edits exactly those inputs. Never set a
+waits for, or its earliest start. People see the same sentence on Gantt,
+and its "Try changes" popover edits exactly those inputs. Never set a
 task's dates directly to force a schedule; the next calculation overrules them.
 
 A date is calculated only for a task that has an assignee in the iteration. Dates

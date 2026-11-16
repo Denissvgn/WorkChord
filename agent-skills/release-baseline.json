@@ -45,6 +45,10 @@
       "version": "1.17.0"
     },
     {
+      "catalog_sha256": "bdb6a68e26a50a6a6ddbf852eb82c39bc534c8d6373351ad37b68f27ae9889ca",
+      "version": "1.17.1"
+    },
+    {
       "catalog_sha256": "ee8e1dcd76b7c75c7f503ddc4b10c5c1c6729ddfc26cb03cf154f9afbf36524f",
       "version": "1.3.0"
     },
@@ -125,6 +129,11 @@
       "version": "1.15.1"
     },
     {
+      "catalog_entry_sha256": "70072bd355949a92ad5d7577eba7f94d90f0f751f6f06d4a4524532290c66d1c",
+      "name": "workchord-pm",
+      "version": "1.15.2"
+    },
+    {
       "catalog_entry_sha256": "557c1f2f026da7d305dde4eb9e366ff3b4d584d6a86fc6c8567f65d324ec64c0",
       "name": "workchord-pm",
       "version": "1.3.0"
@@ -183,6 +192,11 @@
       "catalog_entry_sha256": "352dcc9dcc80a2671d64ec99f79e6f6f699300adb63d37598636b81796c845fd",
       "name": "workchord-reviewer",
       "version": "1.3.1"
+    },
+    {
+      "catalog_entry_sha256": "37fe4f4e93e1539c739123aa2607df151378bbcca9e5739deed6e3d6ab900b68",
+      "name": "workchord-reviewer",
+      "version": "1.3.2"
     },
     {
       "catalog_entry_sha256": "4e1232d87b06c5dbaa6a93207f0c86666105d80527291ee0665bc2278a8cb57a",
