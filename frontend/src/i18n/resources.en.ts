@@ -885,6 +885,16 @@ export const englishResources = {
                 selectTask: 'Select: {{title}}',
                 selectOneIteration: 'Bulk changes apply to one iteration at a time. Clear the selection to pick a task of another iteration.',
                 priorityTitle: 'Priority {{priority}}',
+                reviewerName: 'Reviewer: {{name}}',
+                reviewerAnyone: 'Reviewer: anyone',
+                reviewerAnyoneTitle: 'Any authorized person reviews; no reviewer agent is assigned',
+                agentStatus: 'Agent status',
+            },
+            agentDispatch: {
+                noAgentConnected: 'No agent connected',
+                queued: 'Queued',
+                working: 'Working',
+                waitingForReview: 'Waiting for review',
             },
             disabledReasons: {
                 summaryRequired: 'Write a summary to post the update.',

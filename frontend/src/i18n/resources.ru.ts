@@ -917,6 +917,16 @@ export const russianResources = {
                 selectTask: 'Выбрать: {{title}}',
                 selectOneIteration: 'Массовые изменения применяются к одной итерации. Снимите выбор, чтобы отметить задачу другой итерации.',
                 priorityTitle: 'Приоритет {{priority}}',
+                reviewerName: 'Проверяющий: {{name}}',
+                reviewerAnyone: 'Проверяющий: любой',
+                reviewerAnyoneTitle: 'Проверяет любой человек с правами; агент-проверяющий не назначен',
+                agentStatus: 'Состояние агента',
+            },
+            agentDispatch: {
+                noAgentConnected: 'Агент не подключён',
+                queued: 'В очереди',
+                working: 'Работает',
+                waitingForReview: 'Ждёт проверки',
             },
             disabledReasons: {
                 summaryRequired: 'Напишите итог, чтобы опубликовать обновление.',

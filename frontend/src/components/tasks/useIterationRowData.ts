@@ -36,7 +36,7 @@ export const useIterationRowData = (iterationIds: (number | null | undefined)[],
     }, [tasksStamp]);
     const optionsByIteration = useMemo(() => {
         const map = new Map<number, TaskRowAssigneeOption[]>();
-        teamQueries.forEach((query, index) => map.set(ids[index], (query.data ?? []).map(member => ({ id: member.id, name: member.name, kind: member.profile?.profile_kind }))));
+        teamQueries.forEach((query, index) => map.set(ids[index], (query.data ?? []).map(member => ({ id: member.id, name: member.name, kind: member.profile?.profile_kind, profileId: member.profile_id ?? member.profile?.id ?? null }))));
         return map;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [teamStamp, ids]);

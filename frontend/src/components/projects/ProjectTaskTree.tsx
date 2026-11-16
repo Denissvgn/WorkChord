@@ -9,6 +9,7 @@ import { taskStateChip } from '../tasks/taskStateChip';
 import { getEffectiveEffort } from '../tasks/taskRowValues';
 import { useTaskRowEdits } from '../tasks/useTaskRowEdits';
 import { useIterationRowData } from '../tasks/useIterationRowData';
+import { agentRowValues, useAgentRowFacts } from '../tasks/useAgentRowFacts';
 import { useTaskSelection } from '../tasks/useTaskSelection';
 import { QueryErrorState } from '../feedback/QueryState';
 
@@ -41,6 +42,7 @@ export const ProjectTaskTree = ({ sections }: ProjectTaskTreeProps) => {
     const taskMap = useMemo(() => new Map(flat.map(({ task }) => [task.id, task])), [flat]);
     // Only tasks of an iteration can be picked for, or changed together; backlog tasks have no team.
     const { optionsByIteration, error: optionsError, refetch: refetchOptions } = useIterationRowData(flat.map(({ task }) => task.iteration_id), { loadTasks: false });
+    const agentFacts = useAgentRowFacts(flat.map(({ task }) => task.iteration_id));
 
     const leaves = useMemo(() => flat.filter(({ task }) => isLeaf(task) && task.iteration_id !== null).map(({ task }) => task), [flat]);
     const selectableIds = useMemo(() => new Set(leaves.map(task => task.id)), [leaves]);
@@ -77,6 +79,8 @@ export const ProjectTaskTree = ({ sections }: ProjectTaskTreeProps) => {
                     <ul className="rounded-md border border-border bg-surface-card">
                         {section.rows.map(({ task, level }) => {
                             const canPick = isLeaf(task) && task.iteration_id !== null;
+                            const assigneeOptions = optionsByIteration.get(task.iteration_id ?? -1);
+                            const agentRow = agentRowValues(task, assigneeOptions, agentFacts);
                             return (
                                 <li key={task.id}>
                                     <TaskRow
@@ -87,7 +91,9 @@ export const ProjectTaskTree = ({ sections }: ProjectTaskTreeProps) => {
                                         priority={task.priority}
                                         chip={taskStateChip(task, taskMap)}
                                         assignee={task.assignee ?? null}
-                                        assigneeOptions={optionsByIteration.get(task.iteration_id ?? -1)}
+                                        assigneeOptions={assigneeOptions}
+                                        dispatch={agentRow.dispatch}
+                                        reviewer={agentRow.reviewer}
                                         onAssign={task.iteration_id === null ? undefined : assigneeId => rowEdits.assign(task, assigneeId)}
                                         effort={getEffectiveEffort(task)}
                                         level={level}

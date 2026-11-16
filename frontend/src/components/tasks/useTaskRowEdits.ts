@@ -17,7 +17,7 @@ export const useAssigneeOptions = (iterationId: number | null) => {
         queryFn: () => teamService.getByIteration(iterationId as number),
         enabled: iterationId !== null,
     });
-    const options: TaskRowAssigneeOption[] = data.map(member => ({ id: member.id, name: member.name, kind: member.profile?.profile_kind }));
+    const options: TaskRowAssigneeOption[] = data.map(member => ({ id: member.id, name: member.name, kind: member.profile?.profile_kind, profileId: member.profile_id ?? member.profile?.id ?? null }));
     return { options, error, refetch };
 };
 

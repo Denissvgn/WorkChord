@@ -20,6 +20,9 @@ import { getEffectiveEffort } from '../components/tasks/taskRowValues';
 import { useTaskRowEdits } from '../components/tasks/useTaskRowEdits';
 import { useIterationRowData } from '../components/tasks/useIterationRowData';
 import { useTaskSelection } from '../components/tasks/useTaskSelection';
+import { agentRowValues, useAgentRowFacts } from '../components/tasks/useAgentRowFacts';
+import { taskStateChip } from '../components/tasks/taskStateChip';
+import type { TaskStateChip } from '../components/tasks/taskStateChip';
 import { Button } from '../components/common/Button';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -73,6 +76,7 @@ const MyWorkPage = () => {
     const rowEdits = useTaskRowEdits();
     // A task reference carries no priority, assignee or effort; those come from the iteration's tasks, as in the Tasks list.
     const rowData = useIterationRowData(items.map(task => task.iteration_id));
+    const agentFacts = useAgentRowFacts(items.map(task => task.iteration_id));
     const leaves = useMemo(() => items.flatMap(item => {
         const full = rowData.tasksById.get(item.id);
         return full && item.iteration_id !== null && !full.is_composite && (full.children?.length ?? 0) === 0 ? [full] : [];
@@ -104,15 +108,22 @@ const MyWorkPage = () => {
         {queue !== 'inbox' && items.length > 0 && <ul className="rounded-lg border border-border bg-surface-card">{items.map(task => {
             const full = rowData.tasksById.get(task.id);
             const canPick = selectableIds.has(task.id);
+            const assigneeOptions = rowData.optionsByIteration.get(task.iteration_id ?? -1);
+            const agentRow = full ? agentRowValues(full, assigneeOptions, agentFacts) : null;
+            // The same chip as the Tasks list once the iteration's tasks load; until then only what the reference says.
+            const chip: TaskStateChip | null = full ? taskStateChip(full, rowData.tasksById)
+                : task.blocked_reason ? { kind: 'blocked' } : task.status === 'resolved' ? { kind: 'inReview' } : null;
             return <li key={task.id}>
                 <TaskRow id={task.id} title={task.title} titleText={`#${task.id} · ${task.title}`} status={task.status}
                     statusLocked={full ? full.is_composite || (full.children?.length ?? 0) > 0 : false}
                     priority={full?.priority}
-                    chip={task.blocked_reason ? { kind: 'blocked' } : queue === 'review' || queue === 'awaiting_review' ? { kind: 'inReview' } : null}
+                    chip={chip}
                     meta={[task.project_name ?? t('teamwork.workspace'), task.iteration_name ?? t('teamwork.backlog'),
                         task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : null, task.blocked_reason].filter(Boolean).join(' · ')}
                     assignee={full ? full.assignee ?? null : undefined}
-                    assigneeOptions={rowData.optionsByIteration.get(task.iteration_id ?? -1)}
+                    assigneeOptions={assigneeOptions}
+                    dispatch={agentRow?.dispatch}
+                    reviewer={agentRow ? agentRow.reviewer : agentFacts.reviewerById.size > 0 ? null : undefined}
                     onAssign={full && task.iteration_id !== null ? assigneeId => rowEdits.assign(task, assigneeId) : undefined}
                     effort={full ? getEffectiveEffort(full) : undefined}
                     overdue={full?.is_overdue}

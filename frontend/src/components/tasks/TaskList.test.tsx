@@ -13,6 +13,7 @@ const taskServiceMock = vi.hoisted(() => ({
     update: vi.fn(),
     changeStatus: vi.fn(),
     runBulkOperation: vi.fn(),
+    lookup: vi.fn(),
 }));
 
 const labelServiceMock = vi.hoisted(() => ({
@@ -27,8 +28,10 @@ vi.mock('../../services/labelService', () => ({
     labelService: labelServiceMock,
 }));
 
+const teamMock = vi.hoisted(() => ({ getByIteration: vi.fn() }));
+
 vi.mock('../../services/teamService', () => ({
-    teamService: { getByIteration: vi.fn().mockResolvedValue([{ id: 5, name: 'Ada' }]) },
+    teamService: teamMock,
 }));
 
 vi.mock('../../services/projectService', () => ({
@@ -84,6 +87,11 @@ const task = (id: number): Task => ({
     dependencies: [],
 });
 
+beforeEach(() => {
+    teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
+    taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
+});
+
 const rowOf = (title: string) => screen.getByRole('button', { name: title }).closest<HTMLElement>('[data-task-row]')!;
 // user-event reports a move onto a child as the pointer leaving the row, so hover is raised directly.
 const hover = (row: HTMLElement) => fireEvent.mouseOver(row);
@@ -93,6 +101,8 @@ const INTERACTIVE = 'button, a[href], input, select, textarea, [tabindex]:not([t
 describe('TaskList accessibility', () => {
     beforeEach(() => {
         Object.values(taskServiceMock).forEach(mock => mock.mockReset());
+        teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
+        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
         labelServiceMock.getGroups.mockReset();
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
@@ -191,6 +201,8 @@ it('leaves sorting, grouping, selection and merging to the page and shows a lead
 describe('TaskList rows and groups', () => {
     beforeEach(() => {
         Object.values(taskServiceMock).forEach(mock => mock.mockReset());
+        teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
+        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
         labelServiceMock.getGroups.mockReset();
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
@@ -240,6 +252,8 @@ describe('TaskList rows and groups', () => {
 describe('TaskList rows', () => {
     beforeEach(() => {
         Object.values(taskServiceMock).forEach(mock => mock.mockReset());
+        teamMock.getByIteration.mockResolvedValue([{ id: 5, name: 'Ada' }]);
+        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
         labelServiceMock.getGroups.mockReset();
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
@@ -367,6 +381,33 @@ describe('TaskList rows', () => {
         await user.click(within(row).getByRole('button', { name: /Status: Planned/ }));
         await user.click(screen.getByRole('menuitem', { name: 'Active' }));
         await waitFor(() => expect(taskServiceMock.changeStatus).toHaveBeenCalledWith(1, 'active', undefined, 1));
+    });
+
+    it('shows the agent status line under an agent assignee and the Reviewer beside it', async () => {
+        const agent = { id: 6, name: 'Build agent' };
+        teamMock.getByIteration.mockResolvedValue([
+            { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },
+            { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } },
+        ]);
+        taskServiceMock.lookup.mockResolvedValue({ items: [{ id: 3, title: 'Task 3', status: 'resolved', version: 1, iteration_id: 1,
+            project_id: null, parent_id: null, owner_profile_id: null, reviewer_name: 'Review bot' }], has_more: false, next_after_id: null, limit: 100 });
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), assignee: agent, agent_working: true },
+            { ...task(2), assignee: agent, agent_working: true, claimed_by: { id: 3, name: 'builder', display_name: 'Builder' }, status: 'active' },
+            { ...task(3), assignee: agent, agent_working: false, status: 'resolved' },
+            { ...task(4), assignee: { id: 5, name: 'Ada' }, agent_working: false },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" groupByStatus={false} />);
+        await screen.findByRole('button', { name: 'Task 1' });
+        const lineOf = (title: string) => rowOf(title).querySelector('[data-agent-dispatch]')?.textContent;
+        await waitFor(() => expect(lineOf('Task 1')).toBe('Agent status: Queued'));
+        expect(lineOf('Task 2')).toBe('Agent status: Working');
+        expect(lineOf('Task 3')).toBe('Agent status: Waiting for review');
+        expect(lineOf('Task 4')).toBeUndefined();
+        await waitFor(() => expect(rowOf('Task 3')).toHaveTextContent('Reviewer: Review bot'));
+        expect(taskServiceMock.lookup).toHaveBeenCalledWith(expect.objectContaining({ iteration_id: 1, task_status: 'resolved' }), expect.anything());
+        // Neither line is something to reach: the row keeps status, title and assignee at rest.
+        expect(rowOf('Task 3').querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);
     });
 
     it('names one state chip, chosen by priority', async () => {

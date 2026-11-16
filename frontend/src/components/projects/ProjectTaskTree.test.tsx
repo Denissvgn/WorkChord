@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { ProjectTaskTree } from './ProjectTaskTree';
@@ -7,9 +7,10 @@ import type { Task } from '../../types/task';
 const services = vi.hoisted(() => ({
     runBulkOperation: vi.fn(),
     team: vi.fn(),
+    lookup: vi.fn(),
 }));
 
-vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: vi.fn().mockResolvedValue([]) } }));
+vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: vi.fn().mockResolvedValue([]), lookup: services.lookup } }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: services.team } }));
 vi.mock('../../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]), getMilestones: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../../services/iterationService', () => ({ iterationService: { getById: vi.fn().mockResolvedValue({ id: 1, name: 'Iteration', project_id: null }) } }));
@@ -19,6 +20,10 @@ const task = (id: number, overrides: Partial<Task> = {}): Task => ({
     assignee: { id: 5, name: 'Ada' }, status: 'planned', is_overdue: false, is_delayed: false, is_composite: false, is_optional: false,
     is_deferred: false, tags: [], sort_order: id, external_links: [], request_count: 0, version: 1, children: [], dependencies: [],
     agent_readiness: { is_ready: true, blockers: [], warnings: [], criteria: [] }, ...overrides,
+});
+
+beforeEach(() => {
+    services.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null, limit: 100 });
 });
 
 const sections = (...tasks: Task[]) => [{ key: 'all', tasks }];
@@ -46,6 +51,38 @@ describe('ProjectTaskTree', () => {
         expect(rowOf('Task 1')).toHaveTextContent('Ada');
         expect(rowOf('Task 2')).toHaveTextContent('Unassigned');
         expect(screen.queryByText(/Olga Owner/)).toBeNull();
+    });
+
+    it('shows the agent status line under an agent assignee and the Reviewer beside it', async () => {
+        const agent = { id: 6, name: 'Build agent' };
+        services.team.mockResolvedValue([
+            { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },
+            { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } },
+        ]);
+        services.lookup.mockResolvedValue({ items: [{ id: 3, title: 'Task 3', status: 'resolved', version: 1, iteration_id: 1,
+            project_id: 1, parent_id: null, owner_profile_id: null, reviewer_name: null }], has_more: false, next_after_id: null, limit: 100 });
+        renderWithProviders(<ProjectTaskTree sections={sections(
+            task(1, { assignee: agent, agent_working: true }),
+            task(2, { assignee: agent, agent_working: true, claimed_by: { id: 3, name: 'builder', display_name: 'Builder' }, status: 'active' }),
+            task(3, { assignee: agent, agent_working: false, status: 'resolved' }),
+            task(4, { agent_working: false }),
+        )} />);
+        const lineOf = (title: string) => rowOf(title).querySelector('[data-agent-dispatch]')?.textContent;
+        await waitFor(() => expect(lineOf('Task 1')).toBe('Agent status: Queued'));
+        expect(lineOf('Task 2')).toBe('Agent status: Working');
+        expect(lineOf('Task 3')).toBe('Agent status: Waiting for review');
+        expect(lineOf('Task 4')).toBeUndefined();
+        await waitFor(() => expect(rowOf('Task 3')).toHaveTextContent('Reviewer: anyone'));
+        expect(rowOf('Task 1')).not.toHaveTextContent('Reviewer');
+        // Rows not yet submitted keep an empty reviewer cell, so the columns line up.
+        expect(rowOf('Task 1').querySelector('[data-reviewer-cell]')).toBeEmptyDOMElement();
+    });
+
+    it('leaves the reviewer cell out when no task is submitted, so the title keeps the room', async () => {
+        services.team.mockResolvedValue([]);
+        renderWithProviders(<ProjectTaskTree sections={sections(task(1), task(2))} />);
+        await waitFor(() => expect(services.lookup).toHaveBeenCalled());
+        expect(rowOf('Task 1').querySelector('[data-reviewer-cell]')).toBeNull();
     });
 
     it('offers the assignee picker with the people and agents of the iteration', async () => {

@@ -26,6 +26,8 @@ import { taskStateChip } from './taskStateChip';
 import { getEffectiveEffort } from './taskRowValues';
 import type { TaskRowAssigneeOption } from './TaskRow';
 import { useAssigneeOptions, useTaskRowEdits } from './useTaskRowEdits';
+import { agentRowValues, useAgentRowFacts } from './useAgentRowFacts';
+import type { AgentRowFacts } from './useAgentRowFacts';
 import type { Task, TaskStatus } from '../../types/task';
 import type { Label } from '../../types/label';
 import type { TaskFilters } from './TaskFiltersBar';
@@ -342,6 +344,7 @@ export const TaskList = ({
     const scrollElement = rowsNode?.closest<HTMLElement>('#workspace-main') ?? null;
     const virtualizeRows = !isDraggingEnabled && scrollElement !== null && rowItems.length > VIRTUALIZE_AFTER_ROWS;
     const { options: assigneeOptions, error: assigneeOptionsError, refetch: refetchAssigneeOptions } = useAssigneeOptions(iterationId);
+    const agentFacts = useAgentRowFacts([iterationId]);
     const rowEdits = useTaskRowEdits();
     // The order a person sees, used to select a range between two ticked rows.
     const selectionOrder = useMemo(() => {
@@ -385,6 +388,7 @@ export const TaskList = ({
         collapsedParents,
         onToggleParent: toggleParent,
         assigneeOptions,
+        agentFacts,
         onAssign: (task: Task, assigneeId: number | null) => rowEdits.assign(task, assigneeId),
         onStatusChange: (task: Task, status: TaskStatus) => rowEdits.changeStatus(task, status),
     };
@@ -602,6 +606,7 @@ interface RowContext {
     collapsedParents: Set<number>;
     onToggleParent: (taskId: number) => void;
     assigneeOptions: TaskRowAssigneeOption[];
+    agentFacts: AgentRowFacts;
     onAssign: (task: Task, assigneeId: number | null) => void;
     onStatusChange: (task: Task, status: TaskStatus) => void;
 }
@@ -689,6 +694,7 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps }: TaskItemContentP
     );
 
     const childProps = (child: Task) => ({ task: child, level: level + 1, ctx });
+    const agentRow = agentRowValues(task, ctx.assigneeOptions, ctx.agentFacts);
 
     return (
         <div className="group">
@@ -702,6 +708,8 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps }: TaskItemContentP
                 assignee={task.assignee ?? null}
                 assigneeOptions={ctx.assigneeOptions}
                 onAssign={assigneeId => ctx.onAssign(task, assigneeId)}
+                dispatch={agentRow.dispatch}
+                reviewer={agentRow.reviewer}
                 effort={getEffectiveEffort(task)}
                 level={level}
                 lead={lead}

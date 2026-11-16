@@ -8,6 +8,8 @@ import type { OverflowMenuItem } from '../ui/OverflowMenu';
 import { statusTextClassName } from '../ui/tone';
 import { canTransition, TASK_TRANSITIONS } from '../../features/taskTransitions';
 import { isDone } from './taskStateChip';
+import { AGENT_DISPATCH_LABEL_KEY } from '../../features/agentDispatch';
+import type { AgentDispatchState } from '../../features/agentDispatch';
 import type { TaskStateChip } from './taskStateChip';
 import type { TaskStatus } from '../../types/task';
 
@@ -19,7 +21,7 @@ const chipClassName: Record<TaskStateChip['kind'], string> = {
     inReview: 'bg-surface-subtle text-content-secondary',
 };
 
-export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid' }
+export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null }
 
 export interface TaskRowProps {
     id: number;
@@ -52,8 +54,13 @@ export interface TaskRowProps {
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
     /** Why this row cannot join the current selection; the checkbox stays visible but off. */
     selectDisabledReason?: string;
-    /** Room right after the assignee, for what a later view adds to it, such as the dispatch state. */
-    afterAssignee?: ReactNode;
+    /** For an agent assignee, the one line under the name that says where its work stands. */
+    dispatch?: AgentDispatchState | null;
+    /**
+     * The Reviewer beside the assignee: a name, or `{ name: null }` when any authorized person
+     * reviews. `null` keeps the cell empty so columns line up; `undefined` leaves it out.
+     */
+    reviewer?: { name: string | null } | null;
     overdue?: boolean;
     deferred?: boolean;
     className?: string;
@@ -65,7 +72,7 @@ export interface TaskRowProps {
  */
 export const TaskRow = ({
     id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
-    level = 0, lead, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, afterAssignee,
+    level = 0, lead, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
     const { t } = useTranslation();
@@ -166,27 +173,45 @@ export const TaskRow = ({
             )}
 
             {assignee !== undefined && (
-                <span className="hidden w-36 shrink-0 items-center gap-1 text-xs text-content-secondary md:flex">
-                    <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                    {onAssign ? (
-                        <select data-page-chrome-control="select"
-                            aria-label={`${t('taskList.assignee')}: ${title}`}
-                            value={assignee?.id ?? ''}
-                            onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
-                            className="h-8 min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                        >
-                            <option value="">{t('common.unassigned')}</option>
-                            {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
-                        </select>
-                    ) : (
-                        <span className="min-w-0 truncate" title={assigneeName}>
-                            <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
+                <span className="hidden w-36 shrink-0 flex-col justify-center text-xs text-content-secondary md:flex">
+                    <span className="flex min-w-0 items-center gap-1">
+                        <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                        {onAssign ? (
+                            <select data-page-chrome-control="select"
+                                aria-label={`${t('taskList.assignee')}: ${title}`}
+                                value={assignee?.id ?? ''}
+                                onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
+                                className={clsx(
+                                    'min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+                                    dispatch ? 'h-6' : 'h-8',
+                                )}
+                            >
+                                <option value="">{t('common.unassigned')}</option>
+                                {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
+                            </select>
+                        ) : (
+                            <span className="min-w-0 truncate" title={assigneeName}>
+                                <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
+                            </span>
+                        )}
+                    </span>
+                    {dispatch && (
+                        <span data-agent-dispatch={dispatch} className="truncate pl-5 leading-4 text-content-tertiary">
+                            <span className="sr-only">{t('taskList.agentStatus')}: </span>{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
                         </span>
                     )}
                 </span>
             )}
 
-            {afterAssignee}
+            {reviewer !== undefined && (
+                <span data-reviewer-cell="" className="hidden w-32 shrink-0 text-xs text-content-secondary lg:block">
+                    {reviewer && (
+                        <span className="block truncate" title={reviewer.name ? t('taskList.reviewerName', { name: reviewer.name }) : t('taskList.reviewerAnyoneTitle')}>
+                            {reviewer.name ? t('taskList.reviewerName', { name: reviewer.name }) : t('taskList.reviewerAnyone')}
+                        </span>
+                    )}
+                </span>
+            )}
 
             {effort !== undefined && (effort === null ? (
                 <span className="w-12 shrink-0 text-right text-xs text-content-tertiary" title={t('domain.unknownEstimate')}>

@@ -126,9 +126,11 @@ export const agentService = {
         return response.data;
     },
 
-    async getActorRoster(includeDisabled = false): Promise<AgentActorRosterItem[]> {
+    /** `quiet` keeps a refusal from reading as an expired session, for a reader who only may lack access. */
+    async getActorRoster(includeDisabled = false, { quiet = false }: { quiet?: boolean } = {}): Promise<AgentActorRosterItem[]> {
         const response = await api.get<AgentActorRosterItem[]>('/agent/actors', {
             params: { include_disabled: includeDisabled },
+            skipIdentityExpiry: quiet || undefined,
         });
         return response.data;
     },
