@@ -70,6 +70,10 @@ export function mapLegacyPath(pathname: string, search: string): string | null {
   // Compose final query.
   let query = rawSearch;
   if (extraPairs.length > 0) {
+    // Drop a trailing separator so appending does not produce '&&'. A trailing
+    // '&' carries no pair, so the caller's pairs stay unchanged. This also
+    // collapses a search that is only '?' or only '&' to empty.
+    while (query.endsWith('&')) query = query.slice(0, -1);
     query = query === '' ? extraPairs.join('&') : query + '&' + extraPairs.join('&');
   }
 
