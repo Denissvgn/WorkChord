@@ -1,15 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2 } from 'lucide-react';
 import { teamService } from '../../services/teamService';
+import { agentService } from '../../services/agentService';
+import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { getApiErrorMessage } from '../../utils/apiError';
+import { formatDateTime } from '../../utils/formatDate';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { useConfirmDialog } from '../common/useConfirmDialog';
-import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { QueryErrorState } from '../feedback/QueryState';
+import { SlideOverDrawer } from '../ui';
+import { PersonCapacity } from '../tasks/PersonCapacity';
 import { usePlanningObservation } from '../../features/usePlanningObservation';
-import { planningInputService } from '../../services/planningInputService';
+import { planningInputService, type ObservedPlanningInput } from '../../services/planningInputService';
 import type {
     TeamMemberAssignmentMode,
     TeamMemberProfile,
@@ -21,6 +26,8 @@ import type {
 } from '../../types/team';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
+import { actorName, modelName, statusKnown, type AgentStatus, type DirectoryActor, type DirectoryRow } from './directoryModel';
+import type { AgentActorRosterItem } from '../../types/agent';
 
 const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
 
@@ -65,127 +72,343 @@ const optionalText = (value?: string | null) => {
     return text || null;
 };
 
+const formFromProfile = (profile: TeamMemberProfile): TeamMemberProfileCreate => ({
+    seed_key: profile.seed_key || '',
+    display_name: profile.display_name,
+    email: profile.email || '',
+    headline: profile.headline || '',
+    summary: profile.summary || '',
+    notes: profile.notes || '',
+    automation_enabled: profile.automation_enabled,
+    profile_kind: profile.profile_kind,
+    assignment_modes: [...profile.assignment_modes],
+});
+
 interface TeamProfileManagerProps {
-    currentIterationId?: number | null;
-    currentIterationName?: string | null;
-    assignedProfileIds?: number[];
-    onAssignProfile?: (profile: TeamMemberProfile) => void;
+    /** The person or agent to edit; absent when a person is being added. */
+    row: DirectoryRow | null;
+    onClose: () => void;
+    /** Called with the profile's id once a person has been added or an agent's profile has been created. */
+    onCreated: (profileId: number) => void;
 }
 
-export const TeamProfileManager = ({
-    currentIterationId = null,
-    currentIterationName = null,
-    assignedProfileIds = [],
-    onAssignProfile,
-}: TeamProfileManagerProps) => {
-    const { t } = useTranslation();
+type ObservedProfile = ObservedPlanningInput<TeamMemberProfile>;
+type ProfileContext = ReturnType<typeof usePlanningObservation<TeamMemberProfile>>;
+
+/** The profile as it was observed: the editable values and the revisions they were read at stay together. */
+interface FormBase {
+    fields: TeamMemberProfileCreate;
+    revisions: Record<number, number>;
+}
+
+const sameFields = (a: TeamMemberProfileCreate, b: TeamMemberProfileCreate) => JSON.stringify(a) === JSON.stringify(b);
+
+const MODE_FOR_ROLE: Record<string, TeamMemberAssignmentMode> = { pm: 'ownership', worker: 'execution', verifier: 'verification' };
+
+const useInvalidateTeam = () => {
     const queryClient = useQueryClient();
-    const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null);
-    const [profileForm, setProfileForm] = useState<TeamMemberProfileCreate>(emptyProfileForm);
-    const [editingProfileId, setEditingProfileId] = useState<number | null>(null);
+    return () => Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] }),
+        queryClient.invalidateQueries({ queryKey: ['team'] }),
+        queryClient.invalidateQueries({ queryKey: ['assigneeRecommendations'] }),
+        queryClient.invalidateQueries({ queryKey: ['agent-actor-roster'] }),
+    ]);
+};
+
+/** The read-only model and connection of an agent, with the one sentence on when it receives work. */
+const AgentSection = ({ row }: { row: DirectoryRow }) => {
+    const { t } = useTranslation();
+    // Actor details (last seen, eligible models) come from the same roster read, so they are shown only when its status is known.
+    const readable = statusKnown(row.status) && row.actors.length > 0;
+    return (
+        <section aria-labelledby="team-drawer-agent" className="space-y-2">
+            <h3 id="team-drawer-agent" className="text-sm font-semibold text-content-primary">{t('teamProfiles.modelBinding')}</h3>
+            <p className="text-sm text-content-secondary">{t('teamProfiles.agentDispatchNote')}</p>
+            {!readable && (
+                <StatusList status={row.status ?? { model: undefined, connection: 'unknown' }} />
+            )}
+            {readable && row.actors.length === 1 && <ActorBinding entry={row.actors[0]} />}
+            {readable && row.actors.length > 1 && row.actors.map(entry => {
+                const role = entry.role ? t(`teamPage.roles.${entry.role}`) : null;
+                const label = role ? `${role} · ${actorName(entry.actor)}` : actorName(entry.actor);
+                return (
+                    <div key={entry.actor.id} role="group" aria-label={label} className="space-y-1 border-t border-border pt-2">
+                        <p className="text-sm font-medium text-content-primary">{label}</p>
+                        <ActorBinding entry={entry} />
+                    </div>
+                );
+            })}
+            {row.rosterState === 'unavailable' && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
+        </section>
+    );
+};
+
+/** A connection and a model as the status says; Unknown when the roster could not be read. */
+const StatusList = ({ status, lastSeenAt }: { status: AgentStatus; lastSeenAt?: string | null }) => {
+    const { t, i18n } = useTranslation();
+    return (
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+            <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
+            <dd>{t(`teamPage.connection.${status.connection}`)}</dd>
+            {lastSeenAt && statusKnown(status) && (
+                <>
+                    <dt className="text-content-secondary">{t('teamProfiles.lastSeen')}</dt>
+                    <dd>{formatDateTime(lastSeenAt, i18n.language)}</dd>
+                </>
+            )}
+            <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
+            <dd>{status.model === undefined ? t('teamPage.unknown') : status.model ? modelName(status.model) : t('teamPage.noModel')}</dd>
+        </dl>
+    );
+};
+
+/** One actor's connection, when it was last seen, its default model and every model it may use. */
+const ActorBinding = ({ entry }: { entry: DirectoryActor }) => {
+    const { t } = useTranslation();
+    const bindings = statusKnown(entry.status) ? entry.actor.eligible_model_bindings : [];
+    return (
+        <>
+            <StatusList status={entry.status} lastSeenAt={entry.actor.last_seen_at} />
+            {bindings.length > 0 && (
+                <ul className="space-y-1 text-sm" aria-label={t('teamProfiles.modelBinding')}>
+                    {bindings.map(binding => (
+                        <li key={binding.id} className="flex flex-wrap items-center gap-2">
+                            <span className="font-medium text-content-primary">{binding.model_catalog ? modelName(binding) : binding.model_catalog_key}</span>
+                            {binding.model_catalog && <span className="text-content-secondary">{binding.model_catalog.provider}</span>}
+                            {binding.is_default && <span className="text-content-secondary">· {t('teamProfiles.defaultModel')}</span>}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </>
+    );
+};
+
+/**
+ * The drawer for one person or agent: profile, capabilities, default availability and, for an agent, its model.
+ * A row without a profile (an agent that has not been given one) is handled apart, so this drawer never
+ * offers to create an unrelated person for it.
+ */
+export const TeamProfileManager = ({ row, onClose, onCreated }: TeamProfileManagerProps) => {
+    if (row === null) return <ProfileDrawer row={null} initial={null} onClose={onClose} onCreated={onCreated} />;
+    if (row.profile === null) return <AgentWithoutProfileDrawer row={row} onClose={onClose} onCreated={onCreated} />;
+    return <ObservedProfileDrawer row={row} profileId={row.profile.id} onClose={onClose} onCreated={onCreated} />;
+};
+
+/** Reads the profile first, so the form and the revisions it will be saved at come from the same observation. */
+const ObservedProfileDrawer = ({ row, profileId, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow; profileId: number }) => {
+    const { t } = useTranslation();
+    const [initial, setInitial] = useState<ObservedProfile | null>(null);
+    const [failure, setFailure] = useState<unknown>(null);
+
+    const load = useCallback(() => {
+        setFailure(null);
+        planningInputService.readInitial<TeamMemberProfile>('profile', profileId).then(
+            observed => setInitial(observed),
+            cause => setFailure(cause),
+        );
+    }, [profileId]);
+
+    useEffect(() => { queueMicrotask(load); }, [load]);
+
+    if (initial) {
+        return <ProfileDrawer row={row} initial={initial} onClose={onClose} onCreated={onCreated} />;
+    }
+    return (
+        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}>
+            <div className="space-y-6 p-5">
+                {failure === null
+                    ? <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>
+                    : <QueryErrorState error={failure} onRetry={load} />}
+                {row.kind === 'agent' && <AgentSection row={row} />}
+            </div>
+        </SlideOverDrawer>
+    );
+};
+
+/** An agent that has no profile yet: say so, and offer to create its profile and link it to the agent. */
+const AgentWithoutProfileDrawer = ({ row, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow }) => {
+    const { t } = useTranslation();
+    const { hasAdminAccess } = useAdminAccess();
+    const invalidate = useInvalidateTeam();
+    const [error, setError] = useState<string | null>(null);
+    // If linking fails after the profile exists, a retry links it instead of creating a second one.
+    const [createdProfileId, setCreatedProfileId] = useState<number | null>(null);
+    const actor: AgentActorRosterItem | null = row.actors[0]?.actor ?? null;
+
+    const linkMutation = useMutation({
+        mutationFn: async () => {
+            if (!actor) throw new Error('Agent not found');
+            let profileId = createdProfileId;
+            if (profileId === null) {
+                const mode = MODE_FOR_ROLE[actor.role];
+                const profile = await teamService.createProfile({
+                    ...emptyProfileForm,
+                    seed_key: null,
+                    display_name: (actor.display_name || actor.name).trim(),
+                    email: null,
+                    headline: null,
+                    summary: null,
+                    notes: null,
+                    profile_kind: 'agent',
+                    assignment_modes: mode ? [mode] : [],
+                });
+                profileId = profile.id;
+                setCreatedProfileId(profileId);
+            }
+            try {
+                await agentService.linkActorProfile(actor.id, profileId);
+            } catch (cause) {
+                throw new LinkProfileError(cause);
+            }
+            return profileId;
+        },
+        onSuccess: async profileId => {
+            await invalidate();
+            onCreated(profileId);
+        },
+        onError: err => setError(err instanceof LinkProfileError
+            ? `${t('teamProfiles.failedLinkProfile')} ${getApiErrorMessage(err.cause, '')}`.trim()
+            : getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
+    });
+
+    return (
+        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}
+            footer={<div className="flex justify-end"><Button type="button" variant="ghost" onClick={onClose}>{t('actions.close')}</Button></div>}>
+            <div className="space-y-6 p-5">
+                {error && <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{error}</div>}
+                <AgentSection row={row} />
+                <section aria-labelledby="team-drawer-no-profile" className="space-y-2">
+                    <h3 id="team-drawer-no-profile" className="text-sm font-semibold text-content-primary">{t('teamProfiles.profile')}</h3>
+                    <p className="text-sm text-content-secondary">{t('teamProfiles.noProfileYet')}</p>
+                    {!hasAdminAccess && <p className="text-sm text-content-secondary">{t('teamProfiles.linkProfileNeedsAdminKey')}</p>}
+                    <Button type="button" variant="secondary" disabled={!hasAdminAccess || !actor} isLoading={linkMutation.isPending}
+                        onClick={() => { setError(null); linkMutation.mutate(); }}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t('teamProfiles.createLinkProfile')}
+                    </Button>
+                </section>
+            </div>
+        </SlideOverDrawer>
+    );
+};
+
+class LinkProfileError extends Error {
+    constructor(cause: unknown) { super('Linking the profile failed', { cause }); }
+}
+
+interface ProfileDrawerProps {
+    row: DirectoryRow | null;
+    /** The observation the form is filled from; absent when a person is being added. */
+    initial: ObservedProfile | null;
+    onClose: () => void;
+    onCreated: (profileId: number) => void;
+}
+
+const ProfileDrawer = ({ row, initial, onClose, onCreated }: ProfileDrawerProps) => {
+    const { t } = useTranslation();
+    const profileId = initial?.resource.id ?? null;
+    const [profileForm, setProfileForm] = useState<TeamMemberProfileCreate>(
+        () => (initial ? formFromProfile(initial.resource) : emptyProfileForm),
+    );
+    const [base, setBase] = useState<FormBase | null>(
+        () => (initial ? { fields: formFromProfile(initial.resource), revisions: initial.expected_revisions } : null),
+    );
     const [skillForm, setSkillForm] = useState<TeamMemberProfileSkillCreate>(emptySkillForm);
     const [editingSkillId, setEditingSkillId] = useState<number | null>(null);
-    // Forms open on request so the profile list and the selected profile lead the page.
-    const [profileFormOpen, setProfileFormOpen] = useState(false);
     const [skillFormOpen, setSkillFormOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
-    const profileContext = usePlanningObservation<TeamMemberProfile>();
-    const skillContext = usePlanningObservation<TeamMemberProfile>();
+    const context: ProfileContext = usePlanningObservation<TeamMemberProfile>();
+    const current = context.observation ?? initial;
 
-    const {
-        data: profiles = [],
-        error: profilesError,
-        isLoading: profilesLoading,
-        refetch: refetchProfiles,
-    } = useQuery({
-        queryKey: ['teamMemberProfiles'],
-        queryFn: teamService.getProfiles,
-    });
+    const skills: TeamMemberProfileSkill[] = current?.resource.skills ?? [];
+    const agent = row?.kind === 'agent';
+    const saving = context.loading;
 
-    const selectedProfile = useMemo(
-        () => profiles.find(profile => profile.id === selectedProfileId) ?? profiles[0] ?? null,
-        [profiles, selectedProfileId],
-    );
-    const assignedProfileIdSet = useMemo(
-        () => new Set(assignedProfileIds),
-        [assignedProfileIds],
-    );
-    const readSkillContext = skillContext.read;
-    useEffect(() => {
-        const id = selectedProfile?.id;
-        if (id) queueMicrotask(() => { void readSkillContext('profile', id); });
-    }, [selectedProfile?.id, readSkillContext]);
-
-    const invalidate = () => {
-        queryClient.invalidateQueries({ queryKey: ['teamMemberProfiles'] });
-        queryClient.invalidateQueries({ queryKey: ['team'] });
-        queryClient.invalidateQueries({ queryKey: ['assigneeRecommendations'] });
+    /**
+     * Reads the profile again. After a save the form shows what was stored. After a capability change
+     * the saved revisions move on only if nobody else changed the profile fields in the meantime, so a
+     * later save of an out-of-date form is still refused. Keeping a draft is the explicit way to move on.
+     */
+    const refresh = async (id: number, mode: 'saved' | 'capability' | 'keepDraft') => {
+        const fresh = await context.read('profile', id, true);
+        if (!fresh) return;
+        const fields = formFromProfile(fresh.resource);
+        if (mode === 'saved') {
+            setProfileForm(fields);
+            setBase({ fields, revisions: fresh.expected_revisions });
+        } else if (mode === 'keepDraft') {
+            setBase({ fields, revisions: fresh.expected_revisions });
+        } else {
+            setBase(previous => (previous && sameFields(previous.fields, fields) ? { fields, revisions: fresh.expected_revisions } : previous));
+        }
     };
+
+    const invalidate = useInvalidateTeam();
 
     const createProfileMutation = useMutation({
         mutationFn: (data: TeamMemberProfileCreate) => teamService.createProfile(data),
         meta: { success: data => feedbackMessage(t, 'created', 'profile', (data as { display_name?: string }).display_name) } satisfies MutationFeedbackMeta,
-        onSuccess: profile => {
-            invalidate();
-            setSelectedProfileId(profile.id);
-            setProfileForm(emptyProfileForm);
-            setEditingProfileId(null);
-            setProfileFormOpen(false);
+        onSuccess: async profile => {
+            await invalidate();
+            onCreated(profile.id);
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
     });
 
     const updateProfileMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data, profileContext.observation!.expected_revisions),
+        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileUpdate }) => teamService.updateProfile(id, data, base!.revisions),
         meta: { success: data => feedbackMessage(t, 'saved', 'profile', (data as { display_name?: string }).display_name) } satisfies MutationFeedbackMeta,
-        onSuccess: profile => {
-            invalidate();
-            setSelectedProfileId(profile.id);
-            setProfileForm(emptyProfileForm);
-            setEditingProfileId(null);
-            setProfileFormOpen(false);
+        onSuccess: async (_data, variables) => {
+            await invalidate();
+            void refresh(variables.id, 'saved');
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveProfile'))),
     });
 
     const deleteProfileMutation = useMutation({
         mutationFn: ({ id, revisions }: { id: number; revisions: Record<number, number> }) => teamService.deleteProfile(id, revisions),
-        meta: { success: (_data, variables) => feedbackMessage(t, 'deleted', 'profile', profiles.find(profile => profile.id === (variables as { id: number }).id)?.display_name) } satisfies MutationFeedbackMeta,
-        onSuccess: () => {
-            invalidate();
-            setSelectedProfileId(null);
+        meta: { success: () => feedbackMessage(t, 'deleted', 'profile', row?.name) } satisfies MutationFeedbackMeta,
+        onSuccess: async () => {
+            await invalidate();
+            onClose();
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedDeleteProfile'))),
     });
 
+    const closeSkillForm = () => {
+        setSkillForm(emptySkillForm);
+        setEditingSkillId(null);
+        setSkillFormOpen(false);
+    };
+
     const createSkillMutation = useMutation({
-        mutationFn: ({ profileId, data }: { profileId: number; data: TeamMemberProfileSkillCreate }) => teamService.createProfileSkill(profileId, data, skillContext.observation!.expected_revisions),
-        onSuccess: (_data, variables) => {
-            invalidate();
-            void skillContext.read('profile', variables.profileId);
-            setSkillForm(emptySkillForm);
-            setEditingSkillId(null);
-            setSkillFormOpen(false);
+        mutationFn: ({ id, data }: { id: number; data: TeamMemberProfileSkillCreate }) => teamService.createProfileSkill(id, data, current!.expected_revisions),
+        onSuccess: async (_data, variables) => {
+            await invalidate();
+            void refresh(variables.id, 'capability');
+            closeSkillForm();
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveSkill'))),
     });
 
     const updateSkillMutation = useMutation({
-        mutationFn: ({ profileId, skillId, data }: { profileId: number; skillId: number; data: TeamMemberProfileSkillCreate }) => teamService.updateProfileSkill(profileId, skillId, data, skillContext.observation!.expected_revisions),
-        onSuccess: (_data, variables) => {
-            invalidate();
-            void skillContext.read('profile', variables.profileId);
-            setSkillForm(emptySkillForm);
-            setEditingSkillId(null);
-            setSkillFormOpen(false);
+        mutationFn: ({ id, skillId, data }: { id: number; skillId: number; data: TeamMemberProfileSkillCreate }) => teamService.updateProfileSkill(id, skillId, data, current!.expected_revisions),
+        onSuccess: async (_data, variables) => {
+            await invalidate();
+            void refresh(variables.id, 'capability');
+            closeSkillForm();
         },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedSaveSkill'))),
     });
 
     const deleteSkillMutation = useMutation({
-        mutationFn: ({ profileId, skillId, revisions }: { profileId: number; skillId: number; revisions: Record<number, number> }) => teamService.deleteProfileSkill(profileId, skillId, revisions),
-        onSuccess: (_data, variables) => { invalidate(); void skillContext.read('profile', variables.profileId); },
+        mutationFn: ({ id, skillId, revisions }: { id: number; skillId: number; revisions: Record<number, number> }) => teamService.deleteProfileSkill(id, skillId, revisions),
+        onSuccess: async (_data, variables) => {
+            await invalidate();
+            void refresh(variables.id, 'capability');
+        },
         onError: err => setError(getApiErrorMessage(err, t('teamProfiles.failedDeleteSkill'))),
     });
 
@@ -201,8 +424,8 @@ export const TeamProfileManager = ({
             summary: optionalText(profileForm.summary),
             notes: optionalText(profileForm.notes),
         };
-        if (editingProfileId !== null) {
-            if (!profileContext.observation || profileContext.loading) return;
+        if (profileId !== null) {
+            if (!base || context.loading) return;
             const updateData: TeamMemberProfileUpdate = {
                 display_name: data.display_name,
                 email: data.email,
@@ -213,49 +436,24 @@ export const TeamProfileManager = ({
                 profile_kind: data.profile_kind,
                 assignment_modes: data.assignment_modes,
             };
-            updateProfileMutation.mutate({ id: editingProfileId, data: updateData });
+            updateProfileMutation.mutate({ id: profileId, data: updateData });
         } else {
             createProfileMutation.mutate(data);
         }
     };
 
-    const editProfile = async (selected: TeamMemberProfile) => {
-        const observed = await profileContext.read('profile', selected.id);
-        if (!observed) return;
-        const profile = observed.resource;
-        setEditingProfileId(profile.id);
-        setSelectedProfileId(profile.id);
-        setProfileForm({
-            seed_key: profile.seed_key || '',
-            display_name: profile.display_name,
-            email: profile.email || '',
-            headline: profile.headline || '',
-            summary: profile.summary || '',
-            notes: profile.notes || '',
-            automation_enabled: profile.automation_enabled,
-            profile_kind: profile.profile_kind,
-            assignment_modes: [...profile.assignment_modes],
-        });
-    };
-
-    const toggleAssignmentMode = (
-        assignmentMode: TeamMemberAssignmentMode,
-        checked: boolean,
-    ) => {
+    const toggleAssignmentMode = (mode: TeamMemberAssignmentMode, checked: boolean) => {
         setProfileForm(current => ({
             ...current,
             assignment_modes: checked
-                ? current.assignment_modes.includes(assignmentMode)
-                    ? current.assignment_modes
-                    : [...current.assignment_modes, assignmentMode]
-                : current.assignment_modes.filter(mode => mode !== assignmentMode),
+                ? current.assignment_modes.includes(mode) ? current.assignment_modes : [...current.assignment_modes, mode]
+                : current.assignment_modes.filter(item => item !== mode),
         }));
     };
 
     const submitSkill = (event: React.FormEvent) => {
         event.preventDefault();
-        if (!selectedProfile) return;
-        if (!skillContext.observation || skillContext.loading) return;
+        if (profileId === null || !current || context.loading) return;
         setError(null);
         const skillName = skillForm.skill_name.trim();
         const data = {
@@ -266,19 +464,13 @@ export const TeamProfileManager = ({
             keywords_json: skillForm.keywords_json,
             notes: optionalText(skillForm.notes),
         };
-        if (editingSkillId) {
-            updateSkillMutation.mutate({ profileId: selectedProfile.id, skillId: editingSkillId, data });
-        } else {
-            createSkillMutation.mutate({ profileId: selectedProfile.id, data });
-        }
+        if (editingSkillId) updateSkillMutation.mutate({ id: profileId, skillId: editingSkillId, data });
+        else createSkillMutation.mutate({ id: profileId, data });
     };
 
-    const editSkill = async (selected: TeamMemberProfileSkill) => {
-        if (!selectedProfile) return;
-        const observed = await skillContext.read('profile', selectedProfile.id);
-        const skill = observed?.resource.skills.find(item => item.id === selected.id);
-        if (!skill) return;
+    const editSkill = (skill: TeamMemberProfileSkill) => {
         setEditingSkillId(skill.id);
+        setSkillFormOpen(true);
         setSkillForm({
             skill_key: skill.skill_key,
             skill_name: skill.skill_name,
@@ -291,180 +483,157 @@ export const TeamProfileManager = ({
         });
     };
 
-    const confirmProfileDelete = async (profile: TeamMemberProfile) => {
+    const confirmProfileDelete = async () => {
+        if (profileId === null) return;
         try {
-            const observed = await planningInputService.readInitial<TeamMemberProfile>('profile', profile.id);
+            const observed = await planningInputService.readInitial<TeamMemberProfile>('profile', profileId);
             requestConfirmation({ title: t('actions.delete'), description: t('teamProfiles.deleteProfileConfirm', { name: observed.resource.display_name }),
                 confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
-                onConfirm: () => deleteProfileMutation.mutateAsync({ id: profile.id, revisions: observed.expected_revisions }) });
+                onConfirm: () => deleteProfileMutation.mutateAsync({ id: profileId, revisions: observed.expected_revisions }) });
         } catch (cause) { setError(getApiErrorMessage(cause, t('teamProfiles.failedDeleteProfile'))); }
     };
 
-    const confirmSkillDelete = async (profile: TeamMemberProfile, skill: TeamMemberProfileSkill) => {
+    const confirmSkillDelete = async (skill: TeamMemberProfileSkill) => {
+        if (profileId === null) return;
         try {
-            const observed = await planningInputService.readInitial<TeamMemberProfile>('profile', profile.id);
-            const current = observed.resource.skills.find(row => row.id === skill.id);
+            const observed = await planningInputService.readInitial<TeamMemberProfile>('profile', profileId);
+            const current = observed.resource.skills.find(item => item.id === skill.id);
             if (!current) return;
             requestConfirmation({ title: t('actions.delete'), description: current.skill_name,
                 confirmLabel: t('actions.delete'), cancelLabel: t('actions.cancel'), closeLabel: t('actions.close'),
-                onConfirm: () => deleteSkillMutation.mutateAsync({ profileId: profile.id, skillId: skill.id, revisions: observed.expected_revisions }) });
+                onConfirm: () => deleteSkillMutation.mutateAsync({ id: profileId, skillId: skill.id, revisions: observed.expected_revisions }) });
         } catch (cause) { setError(getApiErrorMessage(cause, t('teamProfiles.failedDeleteSkill'))); }
     };
 
+    const summaryLine = (skill: TeamMemberProfileSkill) => {
+        const summary = t('teamProfiles.skillSummary', { category: skill.category || t('teamProfiles.uncategorized'), level: skill.level, interest: skill.interest });
+        return skill.is_weakness ? t('teamProfiles.skillSummaryWeakness', { summary }) : summary;
+    };
+
+    const formId = 'team-profile-form';
+    const title = row ? row.name : t('teamProfiles.addPerson');
+
     return (
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-            {profilesLoading && <QueryLoadingState className="lg:col-span-2" />}
-            {profilesError && <QueryErrorState className="lg:col-span-2" error={profilesError} onRetry={() => void refetchProfiles()} />}
-            <div className="card p-4">
-                <div className="mb-4 flex items-center justify-between">
-                    <div>
-                        <h2 className="text-lg font-semibold text-content-primary">{t('teamProfiles.title')}</h2>
-                        <p className="text-sm text-content-secondary">
-                            {t('teamProfiles.description')}
-                        </p>
-                    </div>
-                    {!profileFormOpen && editingProfileId === null && (
-                        <Button type="button" size="sm" variant="secondary" onClick={() => setProfileFormOpen(true)}>
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            {t('teamProfiles.newProfile')}
+        <SlideOverDrawer
+            open
+            onClose={onClose}
+            title={title}
+            subtitle={row ? t(`teamPage.kinds.${row.kind}`) : t('teamProfiles.addPersonHint')}
+            footer={(
+                <div className="flex justify-between gap-2">
+                    {profileId !== null ? (
+                        <Button type="button" variant="ghost" className="text-feedback-danger-foreground" onClick={() => void confirmProfileDelete()}>
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
+                            {t('actions.delete')}
                         </Button>
-                    )}
+                    ) : <span />}
+                    <div className="flex gap-2">
+                        <Button type="button" variant="ghost" onClick={onClose}>{t('actions.cancel')}</Button>
+                        <Button type="submit" form={formId} disabled={saving}
+                            isLoading={createProfileMutation.isPending || updateProfileMutation.isPending}>
+                            {profileId !== null ? t('teamProfiles.save') : t('teamProfiles.create')}
+                        </Button>
+                    </div>
                 </div>
-
-                <p
-                    className="mb-4 rounded-md border border-feedback-info-border bg-feedback-info-muted p-3 text-sm text-feedback-info-foreground"
-                    role="note"
-                >
-                    {t('teamProfiles.dispatchEligibilityNotice')}
-                </p>
-
-                {(profileContext.loading || skillContext.loading) && <p role="status">{t('common.loading')}</p>}
-                {(Boolean(profileContext.error) || Boolean(skillContext.error)) && <QueryErrorState error={profileContext.error ?? skillContext.error}
-                    onRetry={() => { if (editingProfileId) void editProfile(selectedProfile!); else if (selectedProfile) void skillContext.read('profile', selectedProfile.id); }} />}
+            )}
+        >
+            <div className="space-y-6 p-5">
+                {context.loading && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
+                {Boolean(context.error) && (
+                    <QueryErrorState error={context.error} onRetry={() => { if (profileId !== null) void context.read('profile', profileId, true); }} />
+                )}
                 {error && (
-                    <div
-                        className="mb-3 rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground"
-                        role="alert"
-                    >
+                    <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">
                         {error}
-                        {selectedProfile && <Button type="button" size="sm" variant="secondary" onClick={() => {
-                            void (editingProfileId ? profileContext : skillContext).read('profile', editingProfileId ?? selectedProfile.id, true);
-                        }}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>}
+                        {profileId !== null && (
+                            <Button type="button" size="sm" variant="secondary" onClick={() => { void refresh(profileId, 'keepDraft'); }}>
+                                {t('taskEditor.keepDraftWithCurrentVersion')}
+                            </Button>
+                        )}
                     </div>
                 )}
 
-                <div className="space-y-3">
-                    {profiles.map(profile => {
-                        const isAssignedToCurrentIteration = assignedProfileIdSet.has(profile.id);
-                        return (
-                            <div
-                                key={profile.id}
-                                data-testid="profile-card"
-                                className={`rounded-md border p-3 transition-colors ${selectedProfile?.id === profile.id ? 'border-action bg-action-muted' : 'border-border bg-surface-card'}`}
-                            >
-                                <button
-                                    type="button"
-                                    disabled={selectedProfile?.id !== profile.id && (Boolean(editingSkillId) || Boolean(skillForm.skill_name || skillForm.notes || skillForm.skill_key))}
-                                    onClick={() => setSelectedProfileId(profile.id)}
-                                    className="w-full text-left"
-                                >
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div>
-                                            <div className="font-medium text-content-primary">{profile.display_name}</div>
-                                            <div className="text-sm text-content-secondary">{profile.headline || profile.email || t('teamProfiles.noHeadline')}</div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-2 flex flex-wrap gap-1">
-                                        <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-primary">
-                                            {t(`teamProfiles.profileKinds.${profile.profile_kind}`)}
-                                        </span>
-                                        <span className={`rounded-full px-2 py-0.5 text-xs ${profile.automation_enabled ? 'bg-action-muted text-action' : 'bg-surface-subtle text-content-secondary'}`}>
-                                            {profile.automation_enabled
-                                                ? t('teamProfiles.automationRecommendationsOn')
-                                                : t('teamProfiles.automationRecommendationsOff')}
-                                        </span>
-                                        {profile.assignment_modes.map(mode => (
-                                            <span
-                                                key={mode}
-                                                className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-secondary"
-                                            >
-                                                {t(`teamProfiles.assignmentModeOptions.${mode}`)}
-                                            </span>
-                                        ))}
-                                        {profile.assignment_modes.length === 0 && (
-                                            <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs text-feedback-warning-foreground">
-                                                {t('teamProfiles.noAssignmentModes')}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {profile.seed_key && (
-                                        <div className="mt-2 text-xs text-content-tertiary">
-                                            {t('teamProfiles.seedKeyValue', { seedKey: profile.seed_key })}
-                                        </div>
-                                    )}
-                                    <div className="mt-2 flex flex-wrap gap-1">
-                                        {profile.skills.slice(0, 6).map(skill => (
-                                            <span
-                                                key={skill.id}
-                                                className={`rounded-full px-2 py-0.5 text-xs ${skill.is_weakness ? 'bg-feedback-warning-muted text-feedback-warning-foreground' : 'bg-surface-subtle text-content-primary'}`}
-                                            >
-                                                {skill.skill_name} {skill.is_weakness ? t('teamProfiles.weak') : t('teamProfiles.levelCompact', { level: skill.level })}
-                                            </span>
-                                        ))}
-                                        {profile.skills.length === 0 && (
-                                            <span className="text-xs text-content-tertiary">{t('teamProfiles.noSkills')}</span>
-                                        )}
-                                    </div>
-                                </button>
-                                {currentIterationId && onAssignProfile && (
-                                    <div className="mt-3 flex justify-end">
-                                        <Button
-                                            type="button"
-                                            size="sm"
-                                            variant={isAssignedToCurrentIteration ? 'outline' : 'secondary'}
-                                            disabled={isAssignedToCurrentIteration}
-                                            onClick={() => onAssignProfile(profile)}
-                                        >
-                                            {isAssignedToCurrentIteration
-                                                ? t('teamProfiles.alreadyAssigned')
-                                                : t('teamProfiles.addToIteration', { iteration: currentIterationName || t('teamProfiles.iterationFallback') })}
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                    {!profilesLoading && !profilesError && profiles.length === 0 && (
-                        <div className="rounded-md border border-dashed border-border py-8 text-center text-sm text-content-tertiary">
-                            {t('teamProfiles.empty')}
+                {agent && row && <AgentSection row={row} />}
+
+                <form id={formId} onSubmit={submitProfile} className="space-y-3" aria-label={t('teamProfiles.profile')}>
+                    <h3 className="text-sm font-semibold text-content-primary">{t('teamProfiles.profile')}</h3>
+                    <Input
+                        id="profile-seed-key"
+                        aria-describedby="profile-seed-key-help"
+                        label={t('teamProfiles.seedKey')}
+                        value={profileForm.seed_key || ''}
+                        onChange={event => setProfileForm({ ...profileForm, seed_key: event.target.value })}
+                        placeholder={t('teamProfiles.seedKeyPlaceholder')}
+                        readOnly={profileId !== null}
+                    />
+                    <p id="profile-seed-key-help" className="-mt-2 text-xs text-content-tertiary">
+                        {profileId !== null ? t('teamProfiles.seedKeyImmutableHelp') : t('teamProfiles.seedKeyHelp')}
+                    </p>
+                    <Input label={t('teamProfiles.displayName')} value={profileForm.display_name} onChange={event => setProfileForm({ ...profileForm, display_name: event.target.value })} required />
+                    <Input label={t('teamProfiles.email')} type="email" value={profileForm.email || ''} onChange={event => setProfileForm({ ...profileForm, email: event.target.value })} />
+                    <Input label={t('teamProfiles.headline')} value={profileForm.headline || ''} onChange={event => setProfileForm({ ...profileForm, headline: event.target.value })} placeholder={t('teamProfiles.headlinePlaceholder')} />
+                    <textarea
+                        aria-label={t('teamProfiles.summaryPlaceholder')}
+                        value={profileForm.summary || ''}
+                        onChange={event => setProfileForm({ ...profileForm, summary: event.target.value })}
+                        placeholder={t('teamProfiles.summaryPlaceholder')}
+                        className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                    />
+                    <div className="field">
+                        <label htmlFor="profile-kind" className="field-lbl">{t('teamProfiles.profileKind')}</label>
+                        <select
+                            id="profile-kind"
+                            className="input"
+                            value={profileForm.profile_kind}
+                            onChange={event => setProfileForm({ ...profileForm, profile_kind: event.target.value as TeamMemberProfileKind })}
+                        >
+                            {PROFILE_KINDS.map(kind => <option key={kind} value={kind}>{t(`teamProfiles.profileKinds.${kind}`)}</option>)}
+                        </select>
+                    </div>
+                    <fieldset className="rounded-md border border-border-subtle p-3">
+                        <legend className="px-1 text-sm font-medium text-content-primary">{t('teamProfiles.assignmentModes')}</legend>
+                        <div className="mt-1 grid gap-2 sm:grid-cols-2">
+                            {ASSIGNMENT_MODES.map(mode => (
+                                <label key={mode} className="flex items-center gap-2 text-sm text-content-primary">
+                                    <input
+                                        type="checkbox"
+                                        checked={profileForm.assignment_modes.includes(mode)}
+                                        onChange={event => toggleAssignmentMode(mode, event.target.checked)}
+                                        className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
+                                    />
+                                    {t(`teamProfiles.assignmentModeOptions.${mode}`)}
+                                </label>
+                            ))}
                         </div>
-                    )}
-                </div>
-            </div>
+                    </fieldset>
+                    <div>
+                        <label className="flex items-center gap-2 text-sm text-content-primary">
+                            <input
+                                type="checkbox"
+                                aria-describedby="profile-automation-help"
+                                checked={profileForm.automation_enabled}
+                                onChange={event => setProfileForm({ ...profileForm, automation_enabled: event.target.checked })}
+                                className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
+                            />
+                            {t('teamProfiles.useForRecommendations')}
+                        </label>
+                        <p id="profile-automation-help" className="mt-1 text-xs text-content-tertiary">{t('teamProfiles.automationEligibilityHelp')}</p>
+                    </div>
+                </form>
 
-            <div className="space-y-4">
-
-                {selectedProfile && (
-                    <div className="card space-y-3 p-4">
+                {profileId !== null && (
+                    <section aria-labelledby="team-drawer-capabilities" className="space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-medium text-content-primary">{selectedProfile.display_name}</h3>
-                            <div className="flex gap-1">
-                                <Button type="button" size="sm" variant="ghost" onClick={() => editProfile(selectedProfile)}>{t('actions.edit')}</Button>
-                                <Button
-                                    type="button"
-                                    size="sm"
-                                    variant="ghost"
-                                    className="text-feedback-danger-foreground"
-                                    aria-label={t('actions.delete')}
-                                    onClick={() => void confirmProfileDelete(selectedProfile)}
-                                >
-                                    <Trash2 className="h-4 w-4" />
+                            <h3 id="team-drawer-capabilities" className="text-sm font-semibold text-content-primary">{t('teamProfiles.capabilities')}</h3>
+                            {!skillFormOpen && (
+                                <Button type="button" size="sm" variant="secondary" onClick={() => setSkillFormOpen(true)}>
+                                    <Plus className="h-4 w-4" aria-hidden="true" />
+                                    {t('teamProfiles.addSkill')}
                                 </Button>
-                            </div>
+                            )}
                         </div>
-
-                        {(skillFormOpen || editingSkillId !== null) ? (
-                            <form onSubmit={submitSkill} className="space-y-2 rounded-md border border-border-subtle bg-surface-muted p-3">
+                        {skillFormOpen && (
+                            <form onSubmit={submitSkill} className="space-y-2 rounded-md border border-border-subtle bg-surface-muted p-3" aria-label={t('teamProfiles.capabilities')}>
                                 <Input label={t('teamProfiles.skill')} value={skillForm.skill_name} onChange={event => setSkillForm({ ...skillForm, skill_name: event.target.value })} placeholder={t('teamProfiles.skillPlaceholder')} required />
                                 <div className="grid grid-cols-2 gap-2">
                                     <Input label={t('teamProfiles.category')} value={skillForm.category || ''} onChange={event => setSkillForm({ ...skillForm, category: event.target.value })} placeholder={t('teamProfiles.categoryPlaceholder')} />
@@ -477,10 +646,7 @@ export const TeamProfileManager = ({
                                 <Input
                                     label={t('teamProfiles.keywords')}
                                     value={(skillForm.keywords_json || []).join(', ')}
-                                    onChange={event => setSkillForm({
-                                        ...skillForm,
-                                        keywords_json: event.target.value.split(',').map(item => item.trim()).filter(Boolean),
-                                    })}
+                                    onChange={event => setSkillForm({ ...skillForm, keywords_json: event.target.value.split(',').map(item => item.trim()).filter(Boolean) })}
                                     placeholder={t('teamProfiles.keywordsPlaceholder')}
                                 />
                                 <label className="flex items-center gap-2 text-sm text-content-primary">
@@ -493,178 +659,40 @@ export const TeamProfileManager = ({
                                     {t('teamProfiles.markAsWeakness')}
                                 </label>
                                 <div className="flex gap-2">
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() => {
-                                            setEditingSkillId(null);
-                                            setSkillForm(emptySkillForm);
-                                            setSkillFormOpen(false);
-                                        }}
-                                    >
-                                        {t('actions.cancel')}
-                                    </Button>
-                                    <Button
-                                        type="submit"
-                                        size="sm"
-                                        disabled={!skillContext.observation || skillContext.loading}
-                                        isLoading={createSkillMutation.isPending || updateSkillMutation.isPending}
-                                    >
+                                    <Button type="button" size="sm" variant="ghost" onClick={closeSkillForm}>{t('actions.cancel')}</Button>
+                                    <Button type="submit" size="sm" disabled={context.loading}
+                                        isLoading={createSkillMutation.isPending || updateSkillMutation.isPending}>
                                         {editingSkillId ? t('teamProfiles.saveSkill') : t('teamProfiles.addSkill')}
                                     </Button>
                                 </div>
                             </form>
-                        ) : (
-                            <Button type="button" size="sm" variant="secondary" onClick={() => setSkillFormOpen(true)}>
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                {t('teamProfiles.addSkill')}
-                            </Button>
                         )}
-
-                        <div className="space-y-2">
-                            {selectedProfile.skills.map(skill => (
-                                <div key={skill.id} className="flex items-center justify-between rounded-md border border-border-subtle px-3 py-2">
+                        <ul className="space-y-2">
+                            {skills.map(skill => (
+                                <li key={skill.id} className="flex items-center justify-between rounded-md border border-border-subtle px-3 py-2">
                                     <div>
                                         <div className="text-sm font-medium text-content-primary">{skill.skill_name}</div>
-                                        <div className="text-xs text-content-secondary">
-                                            {skill.is_weakness
-                                                ? t('teamProfiles.skillSummaryWeakness', {
-                                                    summary: t('teamProfiles.skillSummary', {
-                                                        category: skill.category || t('teamProfiles.uncategorized'),
-                                                        level: skill.level,
-                                                        interest: skill.interest,
-                                                    }),
-                                                })
-                                                : t('teamProfiles.skillSummary', {
-                                                    category: skill.category || t('teamProfiles.uncategorized'),
-                                                    level: skill.level,
-                                                    interest: skill.interest,
-                                                })}
-                                        </div>
+                                        <div className="text-xs text-content-secondary">{summaryLine(skill)}</div>
                                     </div>
                                     <div className="flex gap-1">
-                                        <Button type="button" size="sm" variant="ghost" onClick={() => editSkill(skill)}>
-                                            {t('actions.edit')}
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            size="sm"
-                                            variant="ghost"
-                                            className="text-feedback-danger-foreground"
-                                            aria-label={t('actions.delete')}
-                                            onClick={() => void confirmSkillDelete(selectedProfile, skill)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
+                                        <Button type="button" size="sm" variant="ghost" onClick={() => editSkill(skill)}>{t('actions.edit')}</Button>
+                                        <Button type="button" size="sm" variant="ghost" className="text-feedback-danger-foreground"
+                                            aria-label={`${t('actions.delete')} ${skill.skill_name}`} onClick={() => void confirmSkillDelete(skill)}>
+                                            <Trash2 className="h-4 w-4" aria-hidden="true" />
                                         </Button>
                                     </div>
-                                </div>
+                                </li>
                             ))}
-                        </div>
-                    </div>
+                            {skills.length === 0 && <li className="text-sm text-content-tertiary">{t('teamProfiles.noSkills')}</li>}
+                        </ul>
+                    </section>
                 )}
-                {(profileFormOpen || editingProfileId !== null) && (
-                    <form onSubmit={submitProfile} className="card space-y-3 p-4">
-                        <h3 className="font-medium text-content-primary">{editingProfileId ? t('teamProfiles.editProfile') : t('teamProfiles.createProfile')}</h3>
-                        <div>
-                            <Input
-                                id="profile-seed-key"
-                                aria-describedby="profile-seed-key-help"
-                                label={t('teamProfiles.seedKey')}
-                                value={profileForm.seed_key || ''}
-                                onChange={event => setProfileForm({ ...profileForm, seed_key: event.target.value })}
-                                placeholder={t('teamProfiles.seedKeyPlaceholder')}
-                                readOnly={editingProfileId !== null}
-                            />
-                            <p id="profile-seed-key-help" className="mt-1 text-xs text-content-tertiary">
-                                {editingProfileId !== null
-                                    ? t('teamProfiles.seedKeyImmutableHelp')
-                                    : t('teamProfiles.seedKeyHelp')}
-                            </p>
-                        </div>
-                        <Input label={t('teamProfiles.displayName')} value={profileForm.display_name} onChange={event => setProfileForm({ ...profileForm, display_name: event.target.value })} required />
-                        <Input label={t('teamProfiles.email')} type="email" value={profileForm.email || ''} onChange={event => setProfileForm({ ...profileForm, email: event.target.value })} />
-                        <Input label={t('teamProfiles.headline')} value={profileForm.headline || ''} onChange={event => setProfileForm({ ...profileForm, headline: event.target.value })} placeholder={t('teamProfiles.headlinePlaceholder')} />
-                        <textarea
-                            aria-label={t('teamProfiles.summaryPlaceholder')}
-                            value={profileForm.summary || ''}
-                            onChange={event => setProfileForm({ ...profileForm, summary: event.target.value })}
-                            placeholder={t('teamProfiles.summaryPlaceholder')}
-                            className="min-h-[80px] w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                        />
-                        <div className="field">
-                            <label htmlFor="profile-kind" className="field-lbl">
-                                {t('teamProfiles.profileKind')}
-                            </label>
-                            <select
-                                id="profile-kind"
-                                className="input"
-                                value={profileForm.profile_kind}
-                                onChange={event => setProfileForm({
-                                    ...profileForm,
-                                    profile_kind: event.target.value as TeamMemberProfileKind,
-                                })}
-                            >
-                                {PROFILE_KINDS.map(profileKind => (
-                                    <option key={profileKind} value={profileKind}>
-                                        {t(`teamProfiles.profileKinds.${profileKind}`)}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <fieldset className="rounded-md border border-border-subtle p-3">
-                            <legend className="px-1 text-sm font-medium text-content-primary">
-                                {t('teamProfiles.assignmentModes')}
-                            </legend>
-                            <div className="mt-1 grid gap-2 sm:grid-cols-2">
-                                {ASSIGNMENT_MODES.map(assignmentMode => (
-                                    <label
-                                        key={assignmentMode}
-                                        className="flex items-center gap-2 text-sm text-content-primary"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={profileForm.assignment_modes.includes(assignmentMode)}
-                                            onChange={event => toggleAssignmentMode(assignmentMode, event.target.checked)}
-                                            className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                                        />
-                                        {t(`teamProfiles.assignmentModeOptions.${assignmentMode}`)}
-                                    </label>
-                                ))}
-                            </div>
-                        </fieldset>
-                        <div>
-                            <label className="flex items-center gap-2 text-sm text-content-primary">
-                                <input
-                                    type="checkbox"
-                                    aria-describedby="profile-automation-help"
-                                    checked={profileForm.automation_enabled}
-                                    onChange={event => setProfileForm({ ...profileForm, automation_enabled: event.target.checked })}
-                                    className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                                />
-                                {t('teamProfiles.useForRecommendations')}
-                            </label>
-                            <p id="profile-automation-help" className="mt-1 text-xs text-content-tertiary">
-                                {t('teamProfiles.automationEligibilityHelp')}
-                            </p>
-                        </div>
-                        <div className="flex justify-between gap-2">
-                            <Button type="button" variant="ghost" onClick={() => {
-                                setEditingProfileId(null);
-                                setProfileForm(emptyProfileForm);
-                                setProfileFormOpen(false);
-                            }}>
-                                {t('actions.cancel')}
-                            </Button>
-                            <Button type="submit" disabled={Boolean(editingProfileId) && (!profileContext.observation || profileContext.loading)} isLoading={createProfileMutation.isPending || updateProfileMutation.isPending}>
-                                <Plus className="mr-2 h-4 w-4" />
-                                {editingProfileId ? t('teamProfiles.save') : t('teamProfiles.create')}
-                            </Button>
-                        </div>
-                    </form>
+
+                {profileId !== null && (
+                    <PersonCapacity profileId={profileId} manage label={t('teamProfiles.defaultAvailability')} />
                 )}
                 {confirmationDialog}
             </div>
-        </div>
+        </SlideOverDrawer>
     );
 };
