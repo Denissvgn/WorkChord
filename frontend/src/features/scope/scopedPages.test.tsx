@@ -229,4 +229,22 @@ describe('a scope in the URL survives opening a page that still has its own iter
         const link = await screen.findByRole('link', { name: i18n.t('teamwork.iterationTasks') });
         expect(link).toHaveAttribute('href', '/tasks?project=2&iteration=22');
     });
+
+    it('changes the iteration on Gantt without adding a history entry', async () => {
+        const router = renderApp('/my-work', false);
+        await waitForReady();
+        await settle();
+        await act(() => router.navigate('/gantt?project=1&iteration=12'));
+        await settle();
+        await waitFor(() => expect(iterationSelect()).toHaveValue('12'));
+
+        await userEvent.selectOptions(iterationSelect(), '21');
+        await settle();
+        expect(locationText()).toBe('/gantt?project=2&iteration=21');
+        expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 21 });
+
+        await act(() => router.navigate(-1));
+        await settle();
+        expect(router.state.location.pathname).toBe('/my-work');
+    });
 });

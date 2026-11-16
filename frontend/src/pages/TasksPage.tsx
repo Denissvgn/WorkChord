@@ -460,8 +460,9 @@ const TasksPage = () => {
 
     if (!iterations || iterations.length === 0 || isBacklogView) {
         return <PageLayout>
+            {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
             <PageHeader title={t('tasks.title')} subtitle={t('teamwork.backlogHelp')}
-                actions={<Link className="btn secondary" to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+                actions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
             <div className="space-y-6"><TaskSearch /><BacklogPanel /></div>
             <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
                 title={task => task?.title ?? t('taskEditor.editTask')} />
@@ -473,7 +474,8 @@ const TasksPage = () => {
             {/* Main Content Area */}
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
                 <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
-                    <Link className="text-sm font-medium text-action hover:underline" to={scopeLink('/tasks', { iteration: 'backlog' })}>{t('teamwork.projectBacklog')}</Link>
+                    {/* Opening the backlog changes only the scope, so it replaces this entry. */}
+                    <Link className="text-sm font-medium text-action hover:underline" replace to={scopeLink('/tasks', { iteration: 'backlog' })}>{t('teamwork.projectBacklog')}</Link>
                     <TaskSearch narrowsList />
                     {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
                 </div>

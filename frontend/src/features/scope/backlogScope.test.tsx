@@ -176,3 +176,90 @@ describe('the project selector of the Tasks backlog sets the work scope', () => 
         expect(router.state.location.pathname).toBe('/my-work');
     });
 });
+
+describe('the Tasks links into and out of the Backlog change only the scope', () => {
+    beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] });
+        vi.setSystemTime(new Date('2026-11-16T12:00:00Z'));
+        iterationServiceMock.getAll.mockReset();
+        iterationServiceMock.getAll.mockResolvedValue(ITERATIONS);
+        projectServiceMock.getAll.mockReset();
+        projectServiceMock.getAll.mockResolvedValue(PROJECTS);
+        taskServiceMock.lookup.mockReset();
+        taskServiceMock.lookup.mockResolvedValue({ items: [], has_more: false, next_after_id: null });
+        savedViewServiceMock.getAll.mockResolvedValue([]);
+        useScopeStore.setState({ project: null, iteration: null });
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    const openTasksFromMyWork = async (entry: string) => {
+        const router = renderTasks('/my-work');
+        await settle();
+        await act(() => router.navigate(entry));
+        await settle();
+        return router;
+    };
+
+    const goBack = async (router: ReturnType<typeof renderTasks>) => {
+        await act(() => router.navigate(-1));
+        await settle();
+    };
+
+    it('enters the Backlog, changes the project, and Back returns to the page before Tasks', async () => {
+        const router = await openTasksFromMyWork('/tasks');
+        expect(locationText()).toBe('/tasks?project=1&iteration=12');
+
+        await userEvent.click(await screen.findByRole('link', { name: i18n.t('teamwork.projectBacklog') }));
+        await settle();
+        expect(locationText()).toBe('/tasks?project=1&iteration=backlog');
+        expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 'backlog' });
+
+        await waitFor(() => expect(projectSelect()).toHaveDisplayValue('Alpha'));
+        await userEvent.selectOptions(projectSelect(), 'Gamma');
+        await settle();
+        expect(locationText()).toBe('/tasks?project=3&iteration=backlog');
+
+        await goBack(router);
+        expect(router.state.location.pathname).toBe('/my-work');
+    });
+
+    it('leaves the Backlog for the iteration tasks, and Back returns to the page before Tasks', async () => {
+        const router = await openTasksFromMyWork('/tasks?project=2&iteration=backlog');
+        await waitFor(() => expect(projectSelect()).toHaveDisplayValue('Beta'));
+
+        await userEvent.click(screen.getByRole('link', { name: i18n.t('teamwork.iterationTasks') }));
+        await settle();
+        expect(locationText()).toBe('/tasks?project=2&iteration=21');
+        expect(screen.getByText('Iteration task list')).toBeInTheDocument();
+
+        await goBack(router);
+        expect(router.state.location.pathname).toBe('/my-work');
+    });
+
+    it('changes the iteration in the iteration view, and Back returns to the page before Tasks', async () => {
+        const router = await openTasksFromMyWork('/tasks');
+        const selector = await screen.findByRole('combobox', { name: i18n.t('iterationIndicator.selectIteration') });
+
+        await userEvent.selectOptions(selector, '11');
+        await settle();
+        expect(locationText()).toBe('/tasks?project=1&iteration=11');
+
+        await goBack(router);
+        expect(router.state.location.pathname).toBe('/my-work');
+    });
+
+    it('opens Iterations as a new page when there are no iterations, so Back returns to Tasks', async () => {
+        iterationServiceMock.getAll.mockResolvedValue([]);
+        const router = await openTasksFromMyWork('/tasks');
+
+        await userEvent.click(await screen.findByRole('link', { name: i18n.t('tasks.goToIterations') }));
+        await settle();
+        expect(router.state.location.pathname).toBe('/iterations');
+
+        await goBack(router);
+        expect(router.state.location.pathname).toBe('/tasks');
+    });
+});
