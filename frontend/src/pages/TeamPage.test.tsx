@@ -226,7 +226,7 @@ describe('Team page', () => {
         expect(header.getByRole('button', { name: 'Connect an agent' })).not.toHaveClass('btn-primary');
     });
 
-    it('opens Connect from the header and Models from the tab', async () => {
+    it('opens the agent connection steps from the header and the model catalog from its tab', async () => {
         const { user } = renderTeam();
         await screen.findByRole('button', { name: 'Open Ada Lovelace' });
         expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['Members', 'Models', 'Connect']);
@@ -234,11 +234,26 @@ describe('Team page', () => {
 
         await user.click(screen.getByRole('button', { name: 'Connect an agent' }));
         expect(screen.getByRole('tab', { name: 'Connect' })).toHaveAttribute('aria-selected', 'true');
-        expect(screen.getByRole('tabpanel')).toHaveTextContent('Connecting agents is not on this page yet');
+        const connect = within(screen.getByRole('tabpanel'));
+        expect(connect.getByRole('heading', { level: 2, name: 'Connect an agent' })).toBeVisible();
+        expect(connect.getByText('Unlock editing to read the current team and connect an agent.')).toBeVisible();
+        expect(connect.getByText('Advanced: apply a team manifest')).toBeVisible();
+        expect(screen.getByRole('tabpanel')).not.toHaveTextContent('not on this page yet');
         expect(screen.queryByRole('table')).not.toBeInTheDocument();
+        // The steps carry their own next action, so the header offers no competing actions here.
+        expect(within(screen.getByTestId('page-header')).queryByRole('button', { name: 'Add person' })).not.toBeInTheDocument();
+        expect(within(screen.getByTestId('page-header')).queryByRole('button', { name: 'Connect an agent' })).not.toBeInTheDocument();
+
+        // The admin key is asked for in place by the shared Unlock editing control.
+        const unlock = connect.getByRole('button', { name: 'Unlock editing' });
+        await user.click(unlock);
+        expect(unlock).toHaveAttribute('aria-expanded', 'true');
+        expect(connect.getByLabelText(/Admin key/i)).toHaveAttribute('type', 'password');
 
         await user.click(screen.getByRole('tab', { name: 'Models' }));
         expect(screen.getByRole('tab', { name: 'Models' })).toHaveAttribute('aria-selected', 'true');
+        expect(within(screen.getByRole('tabpanel')).getByText('Agent key required')).toBeVisible();
+        expect(screen.getByRole('tabpanel')).not.toHaveTextContent('not on this page yet');
     });
 
     it('opens the Connect tab straight from the address', async () => {
