@@ -13,6 +13,8 @@ import { ScopeBar } from '../../components/layout/ScopeBar';
 import TasksPage from '../../pages/TasksPage';
 import { useScopeStore } from './scopeStore';
 import { useWorkScope } from './useWorkScope';
+import { scopedLink } from './workScope';
+import { overviewTaskDrawerHref } from '../overview/overviewTaskThread';
 
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getSummary: vi.fn() }));
 const ganttServiceMock = vi.hoisted(() => ({ getChart: vi.fn(), previewSchedule: vi.fn(), explainSchedule: vi.fn() }));
@@ -37,7 +39,11 @@ vi.mock('../../components/tasks/TaskFiltersBar', () => ({ TaskFiltersBar: () => 
 vi.mock('../../components/tasks/SavedViewsControl', () => ({ SavedViewsControl: () => <p>Saved views</p> }));
 vi.mock('../../components/tasks/BacklogPanel', () => ({ BacklogPanel: () => <p>Backlog task list</p> }));
 vi.mock('../../components/tasks/TaskSearch', () => ({ TaskSearch: () => null }));
-vi.mock('../../components/tasks/TaskEditorDrawer', () => ({ TaskEditorDrawer: () => null }));
+vi.mock('../../components/tasks/TaskEditorDrawer', () => ({
+    TaskEditorDrawer: ({ open, onClose }: { open: boolean; onClose: () => void }) => (
+        open ? <button type="button" onClick={onClose}>Close task</button> : null
+    ),
+}));
 
 const iteration = (id: number, project_id: number, start_date: string, end_date: string) => ({
     id, name: `Iteration ${id}`, calendar_id: 1, project_id, start_date, end_date, working_days: 10,
@@ -231,6 +237,73 @@ describe('a scope in the URL survives opening a scoped page', () => {
             expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 11 });
         });
     }
+
+    describe('a task opened from Overview moves the scope once, and the scope bar then decides', () => {
+        /** Opens the task as Overview links to it, from a page whose scope is iteration 12 of Alpha, then closes its drawer. */
+        const openTaskFromOverviewAndClose = async () => {
+            taskServiceMock.getById.mockResolvedValue({ id: 42, iteration_id: 11, title: 'Overview task' });
+            const router = renderApp('/?project=1&iteration=12', false);
+            await waitForReady();
+            await settle();
+
+            await act(() => router.navigate(scopedLink(overviewTaskDrawerHref(42, 'attention'), { project: 1, iteration: 12 })));
+            await waitFor(() => expect(iterationPicker()).toHaveValue('Iteration 11'));
+            await settle();
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 11 });
+
+            await userEvent.click(screen.getByRole('button', { name: 'Close task' }));
+            await settle();
+            const params = new URLSearchParams(router.state.location.search);
+            expect(params.get('task')).toBeNull();
+            expect(params.get('from')).toBe('overview');
+            expect(params.get('returnTask')).toBe('42');
+            expect(taskServiceMock.getById).toHaveBeenCalledWith(42);
+            return router;
+        };
+
+        const scopeParams = (router: ReturnType<typeof renderApp>) => {
+            const params = new URLSearchParams(router.state.location.search);
+            return { project: params.get('project'), iteration: params.get('iteration') };
+        };
+
+        it('keeps another iteration chosen after the drawer closes', async () => {
+            const router = await openTaskFromOverviewAndClose();
+
+            await userEvent.click(iterationPicker());
+            await userEvent.click(screen.getByRole('option', { name: /Iteration 12/ }));
+            await settle();
+
+            expect(iterationPicker()).toHaveValue('Iteration 12');
+            expect(scopeParams(router)).toEqual({ project: '1', iteration: '12' });
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
+        });
+
+        it('keeps Backlog chosen after the drawer closes', async () => {
+            const router = await openTaskFromOverviewAndClose();
+
+            await userEvent.click(iterationPicker());
+            await userEvent.click(screen.getByRole('option', { name: new RegExp(`^${i18n.t('scopeBar.backlog')}`) }));
+            await settle();
+
+            expect(await screen.findByText('Backlog task list')).toBeInTheDocument();
+            expect(iterationPicker()).toHaveValue(i18n.t('scopeBar.backlog'));
+            expect(scopeParams(router)).toEqual({ project: '1', iteration: 'backlog' });
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 'backlog' });
+        });
+
+        it('keeps another project chosen after the drawer closes', async () => {
+            const router = await openTaskFromOverviewAndClose();
+
+            await userEvent.click(projectPicker());
+            await userEvent.click(screen.getByRole('option', { name: 'Beta' }));
+            await settle();
+
+            expect(projectPicker()).toHaveValue('Beta');
+            expect(iterationPicker()).toHaveValue('Iteration 22');
+            expect(scopeParams(router)).toEqual({ project: '2', iteration: '22' });
+            expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 22 });
+        });
+    });
 
     it('opens the Tasks backlog from an older ?scope=backlog link and keeps it in the scope', async () => {
         useScopeStore.getState().remember({ project: 2, iteration: 21 });

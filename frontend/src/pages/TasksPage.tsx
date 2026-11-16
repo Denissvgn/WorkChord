@@ -108,6 +108,8 @@ const TasksPage = () => {
     // The iteration this page chose itself; a scope change to it keeps the filters and view.
     const appliedScopeChangeRef = useRef<number | null>(null);
     const shownIterationRef = useRef<ScopeIterationValue | undefined>(iteration);
+    // The task whose iteration was already brought into the scope.
+    const appliedFocusedTaskContextRef = useRef<number | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
@@ -333,19 +335,29 @@ const TasksPage = () => {
         setSearchParams,
     ]);
 
+    // A task opened by a link moves the scope to its iteration once, when that task is first
+    // shown. The task stays in the URL after its drawer closes (to return to Overview), and the
+    // scope bar then changes the scope freely: this never moves it back.
     useEffect(() => {
+        if (focusedTaskContextId === null) {
+            appliedFocusedTaskContextRef.current = null;
+            return;
+        }
+        if (appliedFocusedTaskContextRef.current === focusedTaskContextId) return;
         const focusedTask = focusedTaskQuery.data;
+        if (!focusedTask || focusedTask.id !== focusedTaskContextId || !iterations) return;
+        appliedFocusedTaskContextRef.current = focusedTaskContextId;
         if (
-            !focusedTask
-            || focusedTask.iteration_id === null
+            focusedTask.iteration_id === null
             || focusedTask.iteration_id === selectedIterationId
-            || !iterations?.some(iteration => iteration.id === focusedTask.iteration_id)
+            || !iterations.some(iteration => iteration.id === focusedTask.iteration_id)
         ) {
             return;
         }
         appliedScopeChangeRef.current = focusedTask.iteration_id;
         setIteration(focusedTask.iteration_id);
     }, [
+        focusedTaskContextId,
         focusedTaskQuery.data,
         iterations,
         selectedIterationId,
