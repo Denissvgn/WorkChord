@@ -9,10 +9,11 @@ interface UnsavedLeaveGuardProps {
     leaveLabel: string;
     stayLabel: string;
     closeLabel: string;
+    blockSearchChanges?: boolean;
 }
 
-const BlockingGuard = ({ when, title, description, leaveLabel, stayLabel, closeLabel }: UnsavedLeaveGuardProps) => {
-    const blocker = useBlocker(({ currentLocation, nextLocation }) => when && currentLocation.pathname !== nextLocation.pathname);
+const BlockingGuard = ({ when, title, description, leaveLabel, stayLabel, closeLabel, blockSearchChanges }: UnsavedLeaveGuardProps) => {
+    const blocker = useBlocker(({ currentLocation, nextLocation }) => when && (currentLocation.pathname !== nextLocation.pathname || Boolean(blockSearchChanges && currentLocation.search !== nextLocation.search)));
     return <ConfirmDialog
         open={blocker.state === 'blocked'}
         title={title}

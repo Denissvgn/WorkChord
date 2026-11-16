@@ -1,6 +1,5 @@
 import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
 import { refreshCapacity } from './capacityMutations';
-import { VacationCsvImport } from '../team/VacationCsvImport';
 import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
@@ -99,7 +98,6 @@ const VacationManagerEditor = ({ member, onClose, revisions, controls, onSaved }
                 <div className="bg-surface-muted rounded-lg p-4 mb-4">
                     <div className="mb-3 flex items-center justify-between gap-3">
                         <h3 className="text-sm font-medium text-content-secondary">{t('teamVacations.addPeriod')}</h3>
-                        <VacationCsvImport iterationId={member.iteration_id} onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['team'] }); onSaved(); }} />
                     </div>
                     {importError && <p role="alert">{importError}</p>}
                     <fieldset disabled={addMutation.isPending || deleteMutation.isPending} className="m-0 min-w-0 border-0 p-0">{controls}</fieldset>

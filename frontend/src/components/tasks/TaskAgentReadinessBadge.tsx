@@ -150,7 +150,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
 
     return (
         <>
-            <button
+            <button data-page-chrome-control="button"
                 ref={triggerRef}
                 type="button"
                 onClick={(e) => {

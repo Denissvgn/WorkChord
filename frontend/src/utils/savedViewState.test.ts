@@ -18,4 +18,11 @@ describe('effective saved view state', () => {
         expect(savedViewModified(view, { ...defaultFilters, ...change }, 'priority')).toBe(true);
     });
     it('marks a changed ordering as modified', () => expect(savedViewModified(view, defaultFilters, 'title')).toBe(true));
+    it('does not count a condition applied by a hand-over as a change while it keeps its value', () => {
+        const handedOver = { planningIssue: 'unassigned' as const };
+        expect(savedViewModified(null, { ...defaultFilters, planningIssue: 'unassigned' }, 'priority', handedOver)).toBe(false);
+        expect(savedViewModified(null, defaultFilters, 'priority', handedOver)).toBe(false);
+        expect(savedViewModified(null, { ...defaultFilters, planningIssue: 'missing-effort' }, 'priority', handedOver)).toBe(true);
+        expect(savedViewModified(null, { ...defaultFilters, planningIssue: 'unassigned', status: 'active' }, 'priority', handedOver)).toBe(true);
+    });
 });

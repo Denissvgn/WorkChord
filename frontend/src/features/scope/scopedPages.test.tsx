@@ -36,9 +36,9 @@ vi.mock('../../components/gantt/GanttChart', () => ({ GanttChart: () => <p>Gantt
 vi.mock('../../components/tasks/TaskList', () => ({ TaskList: () => <p>Iteration task list</p> }));
 vi.mock('../../components/tasks/KanbanBoard/KanbanBoard', () => ({ KanbanBoard: () => <p>Board</p> }));
 vi.mock('../../components/tasks/TaskFiltersBar', () => ({ TaskFiltersBar: () => <p>Filters</p> }));
-vi.mock('../../components/tasks/SavedViewsControl', () => ({ SavedViewsControl: () => <p>Saved views</p> }));
+vi.mock('../../components/tasks/SavedViewsControl', () => ({ SavedViewPicker: ({ label }: { label: string }) => <span>{label}</span> }));
+vi.mock('../../services/sessionService', () => ({ sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 1, principal_id: null }) } }));
 vi.mock('../../components/tasks/BacklogPanel', () => ({ BacklogPanel: () => <p>Backlog task list</p> }));
-vi.mock('../../components/tasks/TaskSearch', () => ({ TaskSearch: () => null }));
 vi.mock('../../components/tasks/TaskEditorDrawer', () => ({
     TaskEditorDrawer: ({ open, onClose }: { open: boolean; onClose: () => void }) => (
         open ? <button type="button" onClick={onClose}>Close task</button> : null

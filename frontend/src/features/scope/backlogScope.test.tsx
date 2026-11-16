@@ -20,11 +20,11 @@ vi.mock('../../services/iterationService', () => ({ iterationService: iterationS
 vi.mock('../../services/projectService', () => ({ projectService: projectServiceMock }));
 vi.mock('../../services/taskService', () => ({ taskService: taskServiceMock }));
 vi.mock('../../services/savedViewService', () => ({ savedViewService: savedViewServiceMock }));
-vi.mock('../../components/tasks/TaskSearch', () => ({ TaskSearch: () => null }));
 vi.mock('../../components/tasks/TaskList', () => ({ TaskList: () => <p>Iteration task list</p> }));
 vi.mock('../../components/tasks/KanbanBoard/KanbanBoard', () => ({ KanbanBoard: () => <p>Iteration board</p> }));
 vi.mock('../../components/tasks/TaskFiltersBar', () => ({ TaskFiltersBar: () => null }));
-vi.mock('../../components/tasks/SavedViewsControl', () => ({ SavedViewsControl: () => null }));
+vi.mock('../../components/tasks/SavedViewsControl', () => ({ SavedViewPicker: ({ label }: { label: string }) => <span>{label}</span> }));
+vi.mock('../../services/sessionService', () => ({ sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 1, principal_id: null }) } }));
 vi.mock('../../components/tasks/TaskEditorDrawer', () => ({ TaskEditorDrawer: () => null }));
 
 const iteration = (id: number, project_id: number, start_date: string, end_date: string) => ({
@@ -87,7 +87,8 @@ const renderTasks = (entry: string) => {
 
 const locationText = () => screen.getByTestId('location').textContent;
 const settle = () => act(() => new Promise(resolve => setTimeout(resolve, 50)));
-const projectSelect = () => screen.getByRole('combobox', { name: i18n.t('teamwork.project') });
+// The Backlog's own project list (the scope bar's project picker is a combobox with the same name).
+const projectSelect = () => screen.getAllByRole('combobox', { name: i18n.t('teamwork.project') }).find(element => element.tagName === 'SELECT') as HTMLSelectElement;
 const lastLookup = () => taskServiceMock.lookup.mock.calls.at(-1)?.[0];
 
 describe('the project selector of the Tasks backlog sets the work scope', () => {
@@ -215,11 +216,15 @@ describe('the Tasks links into and out of the Backlog change only the scope', ()
         await settle();
     };
 
-    it('enters the Backlog, changes the project, and Back returns to the page before Tasks', async () => {
+    it('enters the Backlog from the scope bar, changes the project, and Back returns to the page before Tasks', async () => {
+        showScopeBar = true;
         const router = await openTasksFromMyWork('/tasks');
         expect(locationText()).toBe('/tasks?project=1&iteration=12');
+        // The page itself has no Backlog link; the scope bar offers it.
+        expect(screen.queryByRole('link', { name: i18n.t('teamwork.projectBacklog') })).not.toBeInTheDocument();
 
-        await userEvent.click(await screen.findByRole('link', { name: i18n.t('teamwork.projectBacklog') }));
+        await userEvent.click(await screen.findByRole('combobox', { name: i18n.t('scopeBar.iteration') }));
+        await userEvent.click(screen.getByRole('option', { name: new RegExp(i18n.t('scopeBar.backlog')) }));
         await settle();
         expect(locationText()).toBe('/tasks?project=1&iteration=backlog');
         expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 'backlog' });

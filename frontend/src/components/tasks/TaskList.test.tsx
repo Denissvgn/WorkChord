@@ -95,7 +95,7 @@ describe('TaskList accessibility', () => {
             <TaskList
                 iterationId={1}
                 sortKey="priority"
-                onSortKeyChange={() => undefined}
+               
             />,
         );
 
@@ -109,7 +109,7 @@ describe('TaskList accessibility', () => {
             <TaskList
                 iterationId={1}
                 sortKey="priority"
-                onSortKeyChange={() => undefined}
+               
                 requestedMode="merge"
             />,
         );
@@ -132,7 +132,7 @@ it('retains the merge opening revision while a live list refreshes', async () =>
     const original = [task(1), task(2)].map(value => ({ ...value, iteration_revision: 1 }));
     taskServiceMock.getByIteration.mockResolvedValue(original);
     taskServiceMock.mergeTasks.mockRejectedValue({ response: { status: 409, data: { detail: { message: 'Observed plan changed' } } } });
-    const { user, queryClient } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} requestedMode="merge" />);
+    const { user, queryClient } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" requestedMode="merge" />);
     const selections = await screen.findAllByRole('checkbox', { name: 'Select for merge' });
     await user.click(selections[0]); await user.click(selections[1]);
     await user.click(screen.getByRole('button', { name: 'Merge (2)' }));
@@ -155,7 +155,7 @@ it('selects every matching task and focuses the assignee picker when a hand-off 
         <TaskList
             iterationId={1}
             sortKey="priority"
-            onSortKeyChange={() => undefined}
+           
             requestedMode="bulk"
             preselectAllInBulk
         />,
@@ -166,12 +166,16 @@ it('selects every matching task and focuses the assignee picker when a hand-off 
     await waitFor(() => expect(assignee).toHaveFocus());
 });
 
-it('offers selection as a visible action instead of a menu', async () => {
+it('leaves sorting, grouping, selection and merging to the page and shows a leading row inside the list', async () => {
     taskServiceMock.getByIteration.mockResolvedValue([task(1)]);
-    renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} />);
+    renderWithProviders(<TaskList iterationId={1} sortKey="priority" leadingRow={<p>Quick add row</p>} />);
 
-    expect(await screen.findByRole('button', { name: 'Select' })).toBeVisible();
-    expect(screen.getByRole('button', { name: 'Merge tasks' })).toBeVisible();
+    expect(await screen.findByRole('button', { name: 'Task 1' })).toBeInTheDocument();
+    expect(screen.getByText('Quick add row')).toBeInTheDocument();
+    for (const name of ['Select', 'Merge tasks', 'Group by status']) {
+        expect(screen.queryByRole('button', { name })).not.toBeInTheDocument();
+    }
+    expect(screen.queryByRole('combobox', { name: 'Sort tasks' })).not.toBeInTheDocument();
 });
 
 describe('TaskList rows and groups', () => {
@@ -185,24 +189,22 @@ describe('TaskList rows and groups', () => {
         taskServiceMock.getByIteration.mockResolvedValue([
             { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' }, { ...task(4), status: 'closed' },
         ]);
-        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} />);
+        const { user, rerender } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
         const groups = await screen.findAllByRole('heading', { level: 2 });
         expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Closed1 task']);
         expect(screen.getByRole('button', { name: /Closed/ })).toHaveAttribute('aria-expanded', 'false');
         expect(screen.queryByRole('button', { name: 'Task 4' })).toBeNull();
         await user.click(screen.getByRole('button', { name: /Closed/ }));
         expect(screen.getByRole('button', { name: 'Task 4' })).toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Group by status' }));
+        rerender(<TaskList iterationId={1} sortKey="priority" groupByStatus={false} />);
         expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
-        expect(screen.getByRole('button', { name: 'Group by status' })).toHaveAttribute('aria-pressed', 'false');
     });
 
     it('keeps secondary facts behind Details and one manual-order list without groups', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([{ ...task(1), tags: ['backend'] }]);
-        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="sort_order" onSortKeyChange={() => undefined} />);
+        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="sort_order" />);
         expect(await screen.findByRole('button', { name: 'Task 1' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
-        expect(screen.getByRole('button', { name: 'Group by status' })).toBeDisabled();
         expect(screen.queryByText('backend')).toBeNull();
         await user.click(screen.getByRole('button', { name: 'Details (2): Task 1' }));
         expect(screen.getByText('backend')).toBeInTheDocument();
@@ -215,7 +217,7 @@ describe('TaskList rows and groups', () => {
         vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(1200);
         vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(900);
         vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1200);
-        renderWithProviders(<main id="workspace-main"><TaskList iterationId={1} sortKey="priority" onSortKeyChange={() => undefined} /></main>);
+        renderWithProviders(<main id="workspace-main"><TaskList iterationId={1} sortKey="priority" /></main>);
         expect(await screen.findByRole('heading', { name: /Planned/ })).toBeInTheDocument();
         const rendered = screen.getAllByRole('button', { name: /^Task \d+$/ }).length;
         expect(rendered).toBeGreaterThan(0);

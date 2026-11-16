@@ -13,7 +13,7 @@ accessible work that another person can review. Open a task to see its currently
 
 ## Capture, assign, and estimate
 
-1. Open **Tasks → Project backlog**, choose a project, and select **Capture a task**.
+1. In the scope bar, choose a project and **Backlog**, open **Tasks**, and select **Capture a task**.
 2. Give the task a title, a goal, and observable acceptance criteria. Add context
    and verification instructions when someone else needs them to do or review the work.
 3. Select the responsible person. This ownership survives movement between
@@ -26,12 +26,13 @@ Triage can also convert a request directly into a project's backlog. An
 iteration is optional for capture and urgent manual execution. AI assistance is
 available through **Optional AI assistance**; no agent setup is needed for this workflow.
 
-Use **Search tasks** or the command menu to find a task by title or ID. Results
-include its project, iteration or backlog, and state. Task links keep the
-surrounding view available when the editor closes. Modified saved-view filters
-are local drafts: **Save changes** updates your view, **Save as…** creates a new
-one, and **Reset to saved view** discards the modifications. Save before sharing
-a view link; reloading restores its saved filters.
+Use the command menu to find a task by title or ID in any project. Results
+include its project, iteration or backlog, and state. On **Tasks**, the search
+field narrows the list in place. Task links keep the surrounding view available
+when the editor closes. The Tasks title names the view shown and opens the list
+of saved views. Each filter shows as a chip you can remove. Changed filters stay
+in the page link until you save them: **Save changes** updates your view,
+**Save as…** creates a new one, and **Reset to saved view** discards the changes.
 
 ## Plan capacity and delivery prerequisites
 
