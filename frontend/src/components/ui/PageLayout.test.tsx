@@ -69,4 +69,75 @@ describe('PageHeader', () => {
         expect(screen.queryByRole('button', { name: 'Print' })).not.toBeInTheDocument();
         expect(error).toHaveBeenCalledTimes(1);
     });
+
+    it('counts actions wrapped in a fragment: two primary buttons render one and log an error', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderWithProviders(
+            <PageHeader
+                title="Projects"
+                primaryAction={(
+                    <>
+                        <button type="button">Create project</button>
+                        <button type="button">Import project</button>
+                    </>
+                )}
+            />,
+        );
+
+        expect(screen.getByRole('button', { name: 'Create project' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Import project' })).not.toBeInTheDocument();
+        expect(error).toHaveBeenCalledTimes(1);
+        expect(error.mock.calls[0][0]).toContain('one primary action');
+    });
+
+    it('counts secondary actions wrapped in a fragment and drops the third', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderWithProviders(
+            <PageHeader
+                title="Projects"
+                secondaryActions={(
+                    <>
+                        <button type="button">Export</button>
+                        <>
+                            <button type="button">Share</button>
+                            <button type="button">Print</button>
+                        </>
+                    </>
+                )}
+            />,
+        );
+
+        expect(screen.getByRole('button', { name: 'Export' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Print' })).not.toBeInTheDocument();
+        expect(error).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders slots as given and stays quiet on the compatibility path', () => {
+        const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        renderWithProviders(
+            <PageHeader
+                title="Planning"
+                unlimitedActions
+                secondaryActions={(
+                    <>
+                        <button type="button">One</button>
+                        <button type="button">Two</button>
+                        <button type="button">Three</button>
+                    </>
+                )}
+                primaryAction={(
+                    <>
+                        <button type="button">Save</button>
+                        <button type="button">Publish</button>
+                    </>
+                )}
+            />,
+        );
+
+        for (const name of ['One', 'Two', 'Three', 'Save', 'Publish']) {
+            expect(screen.getByRole('button', { name })).toBeInTheDocument();
+        }
+        expect(error).not.toHaveBeenCalled();
+    });
 });

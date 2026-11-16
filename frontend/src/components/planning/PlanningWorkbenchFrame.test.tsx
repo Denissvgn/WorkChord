@@ -37,4 +37,36 @@ describe('PlanningWorkbenchFrame', () => {
         expect(within(header).getByText('Period').tagName).toBe('DT');
         expect(within(header).getByText('Iteration 1').tagName).toBe('DD');
     });
+
+    it('renders every action the planning pages hand it, including several inside one fragment', () => {
+        renderWithProviders(
+            <PlanningWorkbenchFrame
+                title="Calendar"
+                secondaryActions={(
+                    <>
+                        <button type="button">Discard</button>
+                        <button type="button">New calendar</button>
+                        <button type="button">Fullscreen</button>
+                    </>
+                )}
+                primaryAction={(
+                    <>
+                        <button type="button">Save</button>
+                        <button type="button">Apply</button>
+                    </>
+                )}
+            >
+                <div>Planning canvas</div>
+            </PlanningWorkbenchFrame>,
+        );
+
+        const header = screen.getByTestId('page-header');
+        expect(within(header).getAllByRole('button').map(button => button.textContent)).toEqual([
+            'Discard',
+            'New calendar',
+            'Fullscreen',
+            'Save',
+            'Apply',
+        ]);
+    });
 });

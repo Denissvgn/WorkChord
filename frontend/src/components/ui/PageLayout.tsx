@@ -1,4 +1,4 @@
-import { Children } from 'react';
+import { Children, Fragment, cloneElement, isValidElement } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { OverflowMenu, type OverflowMenuItem } from './OverflowMenu';
@@ -43,12 +43,27 @@ type PageHeaderProps = {
     subtitle?: ReactNode;
     /** @deprecated Use `primaryAction`, `secondaryActions` and `overflowItems`. */
     actions?: ReactNode;
+    /**
+     * Compatibility path for pages that have not moved to the action limits yet:
+     * the primary and secondary slots are rendered exactly as given, with no
+     * count and no truncation. New pages must not set it.
+     */
+    unlimitedActions?: boolean;
 };
 
 const MAX_SECONDARY_ACTIONS = 2;
 
-/** Splits a slot into its elements so the number of actions can be counted. */
-const slotItems = (slot: ReactNode): ReactNode[] => Children.toArray(slot);
+/**
+ * Splits a slot into its elements so the number of actions can be counted.
+ * Fragments are opened, so wrapping actions in `<>…</>` does not hide them.
+ */
+const slotItems = (slot: ReactNode, prefix = ''): ReactNode[] =>
+    Children.toArray(slot).flatMap(item => {
+        if (!isValidElement<{ children?: ReactNode }>(item)) return [item];
+        const key = `${prefix}${item.key ?? ''}`;
+        if (item.type === Fragment) return slotItems(item.props.children, `${key}/`);
+        return [cloneElement(item, { key })];
+    });
 
 /**
  * The header every page opens with.
@@ -70,11 +85,12 @@ export const PageHeader = ({
     context,
     meta,
     actions,
+    unlimitedActions = false,
     className,
 }: PageHeaderProps) => {
     const primaryItems = slotItems(primaryAction);
     const secondaryItems = slotItems(secondaryActions);
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV && !unlimitedActions) {
         if (primaryItems.length > 1) {
             console.error(`PageHeader accepts one primary action but received ${primaryItems.length}.`);
         }
@@ -82,8 +98,8 @@ export const PageHeader = ({
             console.error(`PageHeader accepts at most ${MAX_SECONDARY_ACTIONS} secondary actions but received ${secondaryItems.length}.`);
         }
     }
-    const primary = primaryItems.slice(0, 1);
-    const secondary = secondaryItems.slice(0, MAX_SECONDARY_ACTIONS);
+    const primary = unlimitedActions ? primaryItems : primaryItems.slice(0, 1);
+    const secondary = unlimitedActions ? secondaryItems : secondaryItems.slice(0, MAX_SECONDARY_ACTIONS);
     const menu = overflowItems && overflowItems.length > 0 ? <OverflowMenu items={overflowItems} /> : overflow;
     const sentence = purpose ?? subtitle;
     const hasActions = Boolean(context || primary.length || secondary.length || menu || actions);

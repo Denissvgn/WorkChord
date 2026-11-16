@@ -68,6 +68,7 @@ export const PlanningWorkbenchFrame = ({
             secondaryActions={secondaryActions}
             primaryAction={primaryAction}
             overflow={overflowAction}
+            unlimitedActions
         />
         {state && (
             <div className="planning-workbench-state-region">
