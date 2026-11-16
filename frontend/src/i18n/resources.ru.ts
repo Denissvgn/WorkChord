@@ -458,6 +458,11 @@ export const russianResources = {
                 exitFullScreen: 'Выйти из полноэкранного режима',
                 moreActions: 'Другие действия',
             },
+            filterBar: {
+                more: 'Ещё фильтры',
+                active: 'Активные фильтры',
+                remove: 'Убрать фильтр {{filter}}',
+            },
             statuses: {
                 planned: 'Запланировано',
                 active: 'Активно',

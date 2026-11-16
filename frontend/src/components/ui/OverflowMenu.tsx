@@ -16,10 +16,13 @@ export const OverflowMenu = ({
     items,
     label,
     className,
+    alwaysMenu = false,
 }: {
     items: OverflowMenuItem[];
     label?: string;
     className?: string;
+    /** Keep the menu button even for one item, so a page header never gains a visible extra action. */
+    alwaysMenu?: boolean;
 }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
@@ -77,7 +80,7 @@ export const OverflowMenu = ({
     };
 
     // One action needs no menu: show it as a labelled button.
-    if (items.length === 1) {
+    if (items.length === 1 && !alwaysMenu) {
         const [only] = items;
         return (
             <div className={clsx('relative', className)}>

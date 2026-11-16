@@ -52,54 +52,31 @@ export const PlanningWorkbenchFrame = ({
     headerClassName,
     canvasClassName,
     testId,
-}: PlanningWorkbenchFrameProps) => {
-    const hasActions = Boolean(contextControl || secondaryActions || primaryAction || overflowAction);
-
-    return (
-        <PageLayout
-            variant={variant}
-            className={clsx('planning-workbench-frame', className)}
-            testId={testId}
-        >
-            <PlanReturnBar />
-            <PageHeader
-                className={clsx('planning-workbench-header', headerClassName)}
-                title={title}
-                subtitle={description}
-                meta={facts.length > 0 ? <PlanningWorkbenchFacts facts={facts} /> : undefined}
-                actions={hasActions ? (
-                    <div className="planning-workbench-action-row">
-                        {contextControl && (
-                            <div className="planning-workbench-context-control">
-                                {contextControl}
-                            </div>
-                        )}
-                        {secondaryActions && (
-                            <div className="planning-workbench-secondary-actions">
-                                {secondaryActions}
-                            </div>
-                        )}
-                        {primaryAction && (
-                            <div className="planning-workbench-primary-action">
-                                {primaryAction}
-                            </div>
-                        )}
-                        {overflowAction && (
-                            <div className="planning-workbench-overflow-action">
-                                {overflowAction}
-                            </div>
-                        )}
-                    </div>
-                ) : undefined}
-            />
-            {state && (
-                <div className="planning-workbench-state-region">
-                    {state}
-                </div>
-            )}
-            <div className={clsx('planning-workbench-canvas', canvasClassName)}>
-                {children}
+}: PlanningWorkbenchFrameProps) => (
+    <PageLayout
+        variant={variant}
+        className={clsx('planning-workbench-frame', className)}
+        testId={testId}
+    >
+        <PlanReturnBar />
+        <PageHeader
+            className={clsx('planning-workbench-header', headerClassName)}
+            title={title}
+            purpose={description}
+            meta={facts.length > 0 ? <PlanningWorkbenchFacts facts={facts} /> : undefined}
+            context={contextControl}
+            secondaryActions={secondaryActions}
+            primaryAction={primaryAction}
+            overflow={overflowAction}
+            unlimitedSecondaryActions
+        />
+        {state && (
+            <div className="planning-workbench-state-region">
+                {state}
             </div>
-        </PageLayout>
-    );
-};
+        )}
+        <div className={clsx('planning-workbench-canvas', canvasClassName)}>
+            {children}
+        </div>
+    </PageLayout>
+);
