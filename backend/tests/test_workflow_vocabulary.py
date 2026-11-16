@@ -65,6 +65,9 @@ def test_pipeline_response_has_exactly_the_vocabulary_stages_in_order() -> None:
     [
         (lambda v: v.update(schema_version="other/v1"), "Unsupported workflow vocabulary schema"),
         (lambda v: v["roles"][0]["name"].pop("ru"), "needs exactly"),
+        (lambda v: v["destinations"][0]["name"].pop("ru"), "needs exactly"),
+        (lambda v: v["checkpoints"].append(dict(v["checkpoints"][0])), "Duplicate workflow vocabulary id"),
+        (lambda v: v["terms"][-1]["name"].pop("ru"), "needs exactly"),
         (lambda v: v["actions"].append(dict(v["actions"][0])), "Duplicate workflow vocabulary id"),
         (lambda v: v["terms"][0].update(means="a | b"), "must not contain"),
         (lambda v: v["queues"][0].update(extra="x"), "unknown fields"),

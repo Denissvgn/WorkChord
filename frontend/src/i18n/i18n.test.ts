@@ -139,9 +139,9 @@ describe('lazy language resources', () => {
         expect(i18n.t('overview.attention.unassignedTitle', { count: 2 }))
             .toBe('2 unassigned tasks');
         expect(i18n.t('overview.attention.intakeTitle', { count: 1 }))
-            .toBe('1 intake item needs triage');
+            .toBe('1 request needs triage');
         expect(i18n.t('overview.attention.intakeTitle', { count: 2 }))
-            .toBe('2 intake items need triage');
+            .toBe('2 requests need triage');
         expect(i18n.t('overview.focus.reviewRemainingExceptions', { count: 1 }))
             .toBe('Review 1 remaining exception');
         expect(i18n.t('overview.focus.reviewRemainingExceptions', { count: 2 }))
@@ -158,13 +158,13 @@ describe('lazy language resources', () => {
             count: 2,
         })).toBe('50% implemented — 1 of 2 tasks implemented');
         expect(i18n.t('nav.deliveryAttentionIntake', { count: 1 }))
-            .toBe('Delivery Hub needs attention: 1 intake item awaits triage. Open Triage.');
+            .toBe('Delivery Hub needs attention: 1 request awaits triage. Open Triage.');
         expect(i18n.t('nav.deliveryAttentionIntake', { count: 2 }))
-            .toBe('Delivery Hub needs attention: 2 intake items await triage. Open Triage.');
+            .toBe('Delivery Hub needs attention: 2 requests await triage. Open Triage.');
         expect(i18n.t('nav.planningAttention', { count: 1 }))
-            .toBe('Timeline & Planning needs attention: 1 Plan Work checkpoint remains.');
+            .toBe('Timeline & Planning needs attention: 1 Plan checkpoint remains.');
         expect(i18n.t('nav.planningAttention', { count: 5 }))
-            .toBe('Timeline & Planning needs attention: 5 Plan Work checkpoints remain.');
+            .toBe('Timeline & Planning needs attention: 5 Plan checkpoints remain.');
         expect(i18n.t('plan.master.daysCount', { count: 1 })).toBe('1 day');
         expect(i18n.t('plan.master.daysCount', { count: 2 })).toBe('2 days');
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 1 }))

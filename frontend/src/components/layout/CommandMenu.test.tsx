@@ -201,7 +201,7 @@ describe('CommandMenu', () => {
             expect.stringContaining('Open Resource & Settings home'),
             expect.stringContaining('Open Tasks'),
             expect.stringContaining('Open Gantt'),
-            expect.stringContaining('Open Plan Work'),
+            expect.stringContaining('Open Plan'),
         ]);
         expect(within(dialog).getAllByRole('heading', { level: 3 }).map(heading => heading.textContent))
             .toEqual(['Current workspace', 'Recent & relevant']);
@@ -233,10 +233,10 @@ describe('CommandMenu', () => {
         await user.keyboard('{Control>}k{/Control}');
         const dialog = screen.getByRole('dialog', { name: 'Command menu' });
         const search = within(dialog).getByRole('combobox', { name: 'Search commands' });
-        await user.type(search, 'Plan Work');
+        await user.type(search, 'Plan');
 
-        expect(within(dialog).getByRole('option', { name: /Continue Plan Work/ })).toBeVisible();
-        expect(within(dialog).queryByRole('option', { name: /Open Plan Work/ }))
+        expect(within(dialog).getByRole('option', { name: /Continue Plan/ })).toBeVisible();
+        expect(within(dialog).queryByRole('option', { name: /Open Plan/ }))
             .not.toBeInTheDocument();
     });
 
@@ -252,7 +252,7 @@ describe('CommandMenu', () => {
         await user.keyboard('{Control>}k{/Control}');
         const dialog = screen.getByRole('dialog', { name: 'Command menu' });
         expect(within(dialog).getAllByRole('option')[0])
-            .toHaveAccessibleName(/Continue Plan Work/);
+            .toHaveAccessibleName(/Continue Plan/);
 
         await user.keyboard('{Enter}');
         expect(screen.getByTestId('command-location')).toHaveTextContent('/plan/master');
@@ -296,7 +296,7 @@ describe('CommandMenu', () => {
         expect(scrollIntoView.mock.contexts.at(-1)).toBe(activeOption);
     });
 
-    it('opens the stable Plan Work launcher instead of skipping to Plan Master', async () => {
+    it('opens the stable Plan launcher instead of skipping to Plan Master', async () => {
         const { user } = renderWithProviders(
             <>
                 <CommandMenu />
@@ -307,7 +307,7 @@ describe('CommandMenu', () => {
 
         await user.keyboard('{Control>}k{/Control}');
         const dialog = screen.getByRole('dialog', { name: 'Command menu' });
-        await user.click(within(dialog).getByRole('option', { name: /Open Plan Work/ }));
+        await user.click(within(dialog).getByRole('option', { name: /Open Plan/ }));
 
         expect(screen.getByTestId('command-location')).toHaveTextContent('/plan');
     });

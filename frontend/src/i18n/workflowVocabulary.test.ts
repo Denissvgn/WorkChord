@@ -8,7 +8,7 @@ import { russianResources } from './resources.ru';
 
 type Localized = { en: string; ru: string };
 type Entry = { id: string; name: Localized | string; group?: Localized; description?: Localized };
-type Vocabulary = Record<'roles' | 'task_states' | 'actions' | 'queues' | 'triage_dispositions' | 'pipeline_stages', Entry[]>;
+type Vocabulary = Record<'destinations' | 'checkpoints' | 'terms' | 'roles' | 'task_states' | 'actions' | 'queues' | 'triage_dispositions' | 'pipeline_stages', Entry[]>;
 
 // The same vocabulary generates the shared block in every agent role skill.
 const vocabulary = JSON.parse(
@@ -18,6 +18,31 @@ const vocabulary = JSON.parse(
 // Interface labels that must use the shared names. When a screen adopts
 // another vocabulary term, add its keys here in the same change.
 const LABEL_KEYS: Array<{ section: keyof Vocabulary; id: string; field: 'name' | 'group' | 'description'; keys: string[] }> = [
+    { section: 'destinations', id: 'overview', field: 'name', keys: ['nav.overview', 'documentTitles.overview'] },
+    { section: 'destinations', id: 'my_work', field: 'name', keys: ['teamwork.myWork'] },
+    { section: 'destinations', id: 'triage', field: 'name', keys: ['nav.triage', 'documentTitles.triage', 'surfaces.triagePage.triageIntake', 'literals.triage_intake'] },
+    { section: 'destinations', id: 'projects', field: 'name', keys: ['nav.projects', 'documentTitles.projects'] },
+    { section: 'destinations', id: 'plan', field: 'name', keys: ['nav.planWork', 'documentTitles.plan', 'documentTitles.planMaster', 'plan.title', 'plan.hub.planIterationTitle'] },
+    { section: 'destinations', id: 'gantt', field: 'name', keys: ['nav.gantt', 'documentTitles.gantt', 'gantt.title'] },
+    { section: 'destinations', id: 'tasks', field: 'name', keys: ['nav.tasks', 'documentTitles.tasks'] },
+    { section: 'destinations', id: 'analytics', field: 'name', keys: ['nav.analytics', 'documentTitles.analytics'] },
+    { section: 'destinations', id: 'team', field: 'name', keys: ['nav.team', 'documentTitles.team'] },
+    { section: 'destinations', id: 'settings', field: 'name', keys: ['nav.settings', 'documentTitles.settings'] },
+    { section: 'checkpoints', id: 'iteration', field: 'name', keys: ['plan.steps.iteration.title'] },
+    { section: 'checkpoints', id: 'capacity', field: 'name', keys: ['plan.steps.team.title'] },
+    { section: 'checkpoints', id: 'work', field: 'name', keys: ['plan.steps.work.title'] },
+    { section: 'checkpoints', id: 'blockers', field: 'name', keys: ['plan.steps.blockers.title'] },
+    { section: 'checkpoints', id: 'schedule', field: 'name', keys: ['plan.steps.schedule.title'] },
+    { section: 'checkpoints', id: 'review', field: 'name', keys: ['plan.steps.review.title'] },
+    { section: 'terms', id: 'iteration', field: 'name', keys: ['domain.iteration', 'plan.master.planningPeriod'] },
+    { section: 'terms', id: 'assignee', field: 'name', keys: ['taskList.assignee', 'surfaces.taskForm.assignee', 'surfaces.triagePage.assignee'] },
+    { section: 'terms', id: 'reviewer', field: 'name', keys: ['domain.reviewer'] },
+    { section: 'terms', id: 'labels', field: 'name', keys: ['surfaces.taskForm.tags', 'surfaces.triagePage.tags', 'taskFilters.labels'] },
+    { section: 'terms', id: 'waits_for', field: 'name', keys: ['taskList.dependsOn', 'surfaces.taskForm.dependencies', 'surfaces.triagePage.dependencies', 'taskFilters.dependencies'] },
+    { section: 'terms', id: 'earliest_start', field: 'name', keys: ['gantt.inputEarliestStart', 'surfaces.taskForm.minStartDate'] },
+    { section: 'terms', id: 'due_by', field: 'name', keys: ['gantt.inputDueBy', 'surfaces.taskForm.maxEndDate'] },
+    { section: 'terms', id: 'request', field: 'name', keys: ['seedDisplay.labels.label_request.name'] },
+    { section: 'terms', id: 'notifications', field: 'name', keys: ['teamwork.queue_inbox'] },
     { section: 'roles', id: 'pm', field: 'name', keys: ['agentTeamSetup.roles.pm'] },
     { section: 'roles', id: 'worker', field: 'name', keys: ['agentTeamSetup.roles.worker'] },
     { section: 'roles', id: 'reviewer', field: 'name', keys: ['agentTeamSetup.roles.verifier'] },
@@ -76,6 +101,15 @@ const catalogs = {
 } as const;
 
 describe('shared workflow vocabulary', () => {
+    it('keeps English and Russian key sets equal, allowing language-specific plural forms', () => {
+        const keys = (value: unknown, prefix = ''): string[] => (
+            value && typeof value === 'object'
+                ? Object.entries(value).flatMap(([key, child]) => keys(child, prefix ? `${prefix}.${key}` : key))
+                : [prefix.replace(/_(zero|one|two|few|many|other)$/, '')]
+        );
+        expect([...new Set(keys(catalogs.en))].sort()).toEqual([...new Set(keys(catalogs.ru))].sort());
+    });
+
     it.each(LABEL_KEYS.flatMap(entry => entry.keys.flatMap(key => (['en', 'ru'] as const).map(language => ({
         ...entry, key, language,
     })))))('$language $key uses the shared name for $section $id', ({ section, id, field, key, language }) => {
@@ -85,10 +119,11 @@ describe('shared workflow vocabulary', () => {
         expect(lookup(catalogs[language], key)).toBe(names?.[language]);
     });
 
-    it('maps every role, task state, action, queue, disposition and pipeline stage to an interface label', () => {
+    it('maps every shared destination, checkpoint, localized term and workflow entry to an interface label', () => {
         const mapped = new Set(LABEL_KEYS.map(entry => `${entry.section}.${entry.id}`));
-        const required = (['roles', 'task_states', 'actions', 'queues', 'triage_dispositions', 'pipeline_stages'] as const)
+        const required = (['destinations', 'checkpoints', 'roles', 'task_states', 'actions', 'queues', 'triage_dispositions', 'pipeline_stages'] as const)
             .flatMap(section => vocabulary[section].map(item => `${section}.${item.id}`));
+        required.push(...vocabulary.terms.filter(item => typeof item.name === 'object').map(item => `terms.${item.id}`));
         expect(required.filter(item => !mapped.has(item))).toEqual([]);
     });
 });
