@@ -67,8 +67,8 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| approve_native_connection | NativeSessionService(…).approve | 125 | `NativeSessionService(db).approve(request_id, data.verification_code)` |
-| approve_native_connection | NativeSessionService | 125 | `NativeSessionService(db)` |
+| approve_native_connection | NativeSessionService(…).approve | 126 | `NativeSessionService(db).approve(request_id, data.verification_code)` |
+| approve_native_connection | NativeSessionService | 126 | `NativeSessionService(db)` |
 
 ### Boundary effects
 
@@ -78,7 +78,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `approve_native_connection` | `NativeSessionService(db).approve` | 125 |
+| unresolved_call | `approve_native_connection` | `NativeSessionService(db).approve` | 126 |
 
 ## Behavior
 

@@ -129,9 +129,9 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| exchange_native_connection | NativeSessionService(…).exchange | 110 | `NativeSessionService(db).exchange(data.request_id, data.code_verifier, ..., request.headers.get(...))` |
-| exchange_native_connection | NativeSessionService | 110 | `NativeSessionService(db)` |
-| exchange_native_connection | get_client_ip | 111 | `get_client_ip(request)` |
+| exchange_native_connection | NativeSessionService(…).exchange | 111 | `NativeSessionService(db).exchange(data.request_id, data.code_verifier, ..., request.headers.get(...))` |
+| exchange_native_connection | NativeSessionService | 111 | `NativeSessionService(db)` |
+| exchange_native_connection | get_client_ip | 112 | `get_client_ip(request)` |
 | get_client_ip | ip_address | 52 | `ip_address(direct_ip)` |
 | get_client_ip | any | 53 | `any(...)` |
 | get_client_ip | ip_network | 54 | `ip_network(network, strict=False)` |
@@ -149,7 +149,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `exchange_native_connection` | `NativeSessionService(db).exchange` | 110 |
+| unresolved_call | `exchange_native_connection` | `NativeSessionService(db).exchange` | 111 |
 | external_call | `get_client_ip` | `ip_address` | 52 |
 | external_call | `get_client_ip` | `any` | 53 |
 | external_call | `get_client_ip` | `ip_network` | 54 |

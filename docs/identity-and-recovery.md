@@ -2,6 +2,8 @@
 
 ## Choose the access mode
 
+`GET /api/auth/me` needs no credential. Besides the access mode and the caller's identity, it lists the server's `features`, so a client can choose what to use without comparing versions: `observer-sessions-v1`, `person-assignment-reads-v1`, `team-topology-read-v1`, `agdash-external-links-v1`, `harness-session-metadata-v1`, `runtime-observations-v1` and `person-run-reads-v1`. A server without a feature does not list it.
+
 `WORKCHORD_AUTH_MODE=managed` is the default. Ordinary APIs require a verified human session, a native bearer session, or an enabled agent credential with the appropriate membership. Missing provider configuration shows a setup message and denies private API access.
 
 `WORKCHORD_AUTH_MODE=trusted_local` explicitly enables open collaboration for a trusted, isolated workspace. The account menu labels this mode. It is a deployment setting, never selected automatically when sign-in fails. Every settings change and recovery still require operator credentials. Restart every replica consistently when changing modes.

@@ -28,6 +28,7 @@ flowchart LR
     n4["backend/app/services/external_link_service.py"]
     n5["backend/app/utils/url_policy.py"]
     n6["backend/tests/test_agdash_link_provider.py"]
+    n7["backend/tests/test_server_features.py"]
     n0 --> n2
     n0 --> n3
     n0 --> n4
@@ -38,6 +39,7 @@ flowchart LR
     n3 --> n5
     n4 --> n2
     n6 --> n2
+    n7 --> n2
     click n0 "../modules/tasks.md"
     click n1 "../modules/schemas___init__.md"
     click n2 "../modules/schemas_external_link.md"
@@ -45,6 +47,7 @@ flowchart LR
     click n4 "../modules/external_link_service.md"
     click n5 "../modules/url_policy.md"
     click n6 "../modules/test_agdash_link_provider.md"
+    click n7 "../modules/test_server_features.md"
 ```
 
 ### Internal neighbors
@@ -56,6 +59,7 @@ flowchart LR
 | Inbound | [schemas_task](../modules/schemas_task.md) |
 | Inbound | [external_link_service](../modules/external_link_service.md) |
 | Inbound | [test_agdash_link_provider](../modules/test_agdash_link_provider.md) |
+| Inbound | [test_server_features](../modules/test_server_features.md) |
 | Outbound | [url_policy](../modules/url_policy.md) |
 
 ### External packages

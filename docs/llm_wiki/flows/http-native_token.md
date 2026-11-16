@@ -183,11 +183,11 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| native_token | AuthorityError | 364 | `AuthorityError(data not statically known)` |
-| native_token | request.headers.get (backend/app/routers/identity.py:native_token) | 366 | `request.headers.get('Authorization')` |
-| native_token | internal_authority | 368 | `internal_authority(db)` |
+| native_token | AuthorityError | 365 | `AuthorityError(data not statically known)` |
+| native_token | request.headers.get (backend/app/routers/identity.py:native_token) | 367 | `request.headers.get('Authorization')` |
+| native_token | internal_authority | 369 | `internal_authority(db)` |
 | internal_authority | db.info.get | 92 | `db.info.get('authority_internal', False)` |
-| native_token | _get_session_by_token | 369 | `_get_session_by_token(db, ...)` |
+| native_token | _get_session_by_token | 370 | `_get_session_by_token(db, ...)` |
 | _get_session_by_token | _SESSION_TOKEN_PATTERN.fullmatch | 73 | `_SESSION_TOKEN_PATTERN.fullmatch(token)` |
 | _get_session_by_token | db.execute | 75 | `db.execute(...)` |
 | _get_session_by_token | select(…).where | 76 | `select(UserSession).where(...)` |
@@ -203,7 +203,7 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `native_token` | `request.headers.get` | 366 |
+| unresolved_call | `native_token` | `request.headers.get` | 367 |
 | unresolved_call | `internal_authority` | `db.info.get` | 92 |
 | unresolved_call | `_get_session_by_token` | `_SESSION_TOKEN_PATTERN.fullmatch` | 73 |
 | unresolved_call | `_get_session_by_token` | `db.execute` | 75 |

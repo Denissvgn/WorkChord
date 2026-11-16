@@ -161,7 +161,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| describe_native_connection | NativeSessionService.describe | 118 | `NativeSessionService(db).describe(request_id)` |
+| describe_native_connection | NativeSessionService.describe | 119 | `NativeSessionService(db).describe(request_id)` |
 | NativeSessionService.describe | NativeSessionService.approver | 81 | `self.approver(data not statically known)` |
 | NativeSessionService.approver | self.db.info.get | 33 | `self.db.info.get('authority')` |
 | NativeSessionService.approver | get_settings | 35 | `get_settings(data not statically known)` |

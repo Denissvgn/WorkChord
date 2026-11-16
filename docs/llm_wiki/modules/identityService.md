@@ -76,4 +76,4 @@ flowchart LR
 |-------|------|------|----------------|-------------|
 | [WorkProfile](../entities/WorkProfile.md) | Interface | 4 | — | A linked profile is verified; a trusted-local session's own choice is not. |
 | [WorkspaceIdentity](../entities/WorkspaceIdentity.md) | Interface | 6 | — | — |
-| [AccountSession](../entities/AccountSession.md) | Interface | 22 | — | One session of this account, or on a trusted-local server, one paired reader. |
+| [AccountSession](../entities/AccountSession.md) | Interface | 24 | — | One session of this account, or on a trusted-local server, one paired reader. |

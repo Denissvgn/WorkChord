@@ -1,6 +1,6 @@
 # Database
 
-**Location:** `backend/app/routers/identity.py:25`
+**Location:** `backend/app/routers/identity.py:26`
 **Kind:** Type alias
 **Bases:** —
 **Module:** [routers_identity](../modules/routers_identity.md)

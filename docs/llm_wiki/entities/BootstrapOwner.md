@@ -1,6 +1,6 @@
 # BootstrapOwner
 
-**Location:** `backend/app/routers/identity.py:28`
+**Location:** `backend/app/routers/identity.py:29`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [routers_identity](../modules/routers_identity.md)
