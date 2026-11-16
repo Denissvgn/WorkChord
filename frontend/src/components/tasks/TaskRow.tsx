@@ -173,7 +173,7 @@ export const TaskRow = ({
             )}
 
             {assignee !== undefined && (
-                <span className="hidden w-36 shrink-0 flex-col justify-center text-xs text-content-secondary md:flex">
+                <span className="hidden w-40 shrink-0 flex-col justify-center text-xs text-content-secondary md:flex">
                     <span className="flex min-w-0 items-center gap-1">
                         <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                         {onAssign ? (
@@ -196,7 +196,7 @@ export const TaskRow = ({
                         )}
                     </span>
                     {dispatch && (
-                        <span data-agent-dispatch={dispatch} className="truncate pl-5 leading-4 text-content-tertiary">
+                        <span data-agent-dispatch={dispatch} title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])} className="truncate pl-5 leading-4 text-content-tertiary">
                             {/* "Agent status unknown" already names what it is about. */}
                             {dispatch !== 'unknown' && <span className="sr-only">{t('taskList.agentStatus')}: </span>}{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
                         </span>
