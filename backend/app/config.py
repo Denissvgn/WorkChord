@@ -139,6 +139,10 @@ class Settings(BaseSettings):
     session_max_age_seconds: int = 30 * 24 * 60 * 60
     session_touch_interval_seconds: int = 300
     agent_last_seen_interval_seconds: int = 300
+    # Advisory runtime observations: how long operator cleanup keeps them, and
+    # how many one observer may record per hour.
+    agent_observation_retention_days: int = 30
+    agent_observation_hourly_limit: int = 600
 
     # Deployment-owned write fence. This is restart-bound configuration rather
     # than mutable process memory or a row in the database being migrated.
@@ -405,6 +409,20 @@ class Settings(BaseSettings):
         if self.auth_observer_absolute_max_age_seconds < self.auth_observer_session_max_age_seconds:
             raise ValueError("AUTH_OBSERVER_ABSOLUTE_MAX_AGE_SECONDS must be at least AUTH_OBSERVER_SESSION_MAX_AGE_SECONDS")
         return self
+
+    @field_validator("agent_observation_retention_days")
+    @classmethod
+    def validate_observation_retention(cls, value: int) -> int:
+        if not 1 <= value <= 3650:
+            raise ValueError("AGENT_OBSERVATION_RETENTION_DAYS must be between 1 and 3650")
+        return value
+
+    @field_validator("agent_observation_hourly_limit")
+    @classmethod
+    def validate_observation_hourly_limit(cls, value: int) -> int:
+        if not 1 <= value <= 100_000:
+            raise ValueError("AGENT_OBSERVATION_HOURLY_LIMIT must be between 1 and 100000")
+        return value
 
     @field_validator("session_touch_interval_seconds")
     @classmethod

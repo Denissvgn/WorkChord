@@ -79,18 +79,22 @@ def _validate_harness_metadata(value: dict[str, Any]) -> dict[str, Any]:
         return value
     if not isinstance(harness, dict) or set(harness) != {"kind", "session_id"}:
         raise ValueError("metadata.harness must be an object with exactly kind and session_id")
-    kind, session_id = harness["kind"], harness["session_id"]
+    check_harness_identity(harness["kind"], harness["session_id"], label="metadata.harness")
+    return value
+
+
+def check_harness_identity(kind: Any, session_id: Any, *, label: str) -> None:
+    """A short lowercase runtime name and the runtime's own session identifier, never a path or secret."""
     if not isinstance(kind, str) or not HARNESS_KIND_PATTERN.fullmatch(kind):
-        raise ValueError("metadata.harness.kind must be a short lowercase runtime name")
+        raise ValueError(f"{label}.kind must be a short lowercase runtime name")
     if (not isinstance(session_id, str) or not 1 <= len(session_id) <= 255 or not session_id.isprintable()
             or any(character in session_id for character in "/\\ ")):
-        raise ValueError("metadata.harness.session_id must be the runtime's identifier, not a path")
+        raise ValueError(f"{label}.session_id must be the runtime's identifier, not a path")
     from app.autonomy.canonical import ensure_secret_free
     try:
-        ensure_secret_free(harness)
+        ensure_secret_free({"kind": kind, "session_id": session_id})
     except ValueError as exc:
-        raise ValueError("metadata.harness must not contain credentials") from exc
-    return value
+        raise ValueError(f"{label} must not contain credentials") from exc
 
 
 def _validate_bounded_json(value: dict[str, Any], *, label: str) -> dict[str, Any]:

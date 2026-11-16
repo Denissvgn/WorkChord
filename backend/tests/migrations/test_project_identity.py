@@ -68,7 +68,9 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
                 seed_dependents(db)
         before_rows, before_catalog = database_rows(engine), schema_snapshot(engine)
         run_alembic_upgrade(backup=False, run_repairs=False)
-        assert database_rows(engine) == before_rows
+        after_rows = database_rows(engine)
+        assert after_rows.pop("agent_runtime_observations") == []
+        assert after_rows == before_rows
         after_catalog = schema_snapshot(engine)
         allocation = after_catalog["team_members"]
         assert allocation["columns"].pop("allocation_token") == {"type": {"family": "text"}, "nullable": False}
@@ -89,6 +91,8 @@ def test_upgrade_preserves_dependents_and_retained_allocation_floor(tmp_path, co
             assert rebuilt["columns"].pop(column) == {"type": {"family": "text"}, "nullable": False}
             assert rebuilt["columns"].pop("client_label") == {"type": {"family": "text"}, "nullable": True}
             rebuilt["checks"].remove(f"ck_{table}_{column}")
+        # A later revision adds the advisory runtime observation table.
+        assert after_catalog.pop("agent_runtime_observations")["checks"] == ["ck_agent_runtime_observations_kind"]
         assert after_catalog == before_catalog
         with engine.begin() as db:
             assert "AUTOINCREMENT" in db.scalar(text("SELECT sql FROM sqlite_master WHERE name='projects'"))

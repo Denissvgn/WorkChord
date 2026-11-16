@@ -144,4 +144,5 @@ from app.models.discussion import TaskComment, TaskCommentRevision, TaskSubscrip
 from app.models.native_connection import NativeConnection
 from app.models.delivery_observation import DeliveryObservation
 from app.models.execution_usage import ExecutionUsageRecord
+from app.models.runtime_observation import AgentRuntimeObservation
 from app.models.time_entry import TimeEntry, TimeEntryRevision

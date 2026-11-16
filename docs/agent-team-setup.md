@@ -135,7 +135,30 @@ Operators may select a topology; a PM can read only its bound topology.
 - `connection_state` describes observed freshness.
 - `availability_unknown` is intentional without independent runtime/provider
   observations. Concrete task eligibility uses queue, capacity and binding
-  checks and remains separate from availability.
+  checks and remains separate from availability. Advisory runtime
+  observations (see below) do not change it.
+
+## Record advisory runtime observations
+
+An independent observer, such as a dashboard paired as a read-only observer,
+records what it saw of a runtime session with POST `/api/agent/observations`:
+the kind (`session_active`, `session_idle`, `session_ended` or
+`model_observed` with the observed model), the harness kind and session ID, the
+time it observed it, an idempotency key, and optionally the task, run or actor
+it concerns. Only a paired observer or an operator may record one. A task or run
+must be readable by the observer, and an observer names an actor only through a
+run or assignment of such a task. Repeating a key with the same content returns
+the first observation; different content is refused. Each observer may record
+`AGENT_OBSERVATION_HOURLY_LIMIT` observations per hour (600 by default).
+
+Observations are advisory. Recording one writes only its own row: no actor,
+`last_seen_at`, queue revision, assignment, run, task event, topology member or
+webhook changes, and no routing, readiness, assignment or work decision reads
+them. Status and report keep `availability_unknown`. People, observers and
+operators read them with GET `/api/agent/observations`, limited to the tasks
+they can see; agent keys cannot read them, so agents cannot steer on them.
+Operators remove observations older than `AGENT_OBSERVATION_RETENTION_DAYS` (30
+by default) in bounded batches with POST `/api/agent/observations/cleanup`.
 
 Routing previews and every exact-actor assignment, reassignment, verification,
 rework, and recovery command enforce the caller's current topology revision
