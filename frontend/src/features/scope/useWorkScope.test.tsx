@@ -145,6 +145,21 @@ describe('useWorkScope', () => {
         await waitFor(() => expect(locationText()).toBe('/my-work'));
     });
 
+    it('treats a scoped page opened with a trailing slash as a scoped page', async () => {
+        const router = renderAt('/my-work', '/tasks/');
+        await waitForReady();
+
+        expect(latest?.isReadOnly).toBe(false);
+        expect(locationText()).toBe('/tasks/?project=1&iteration=12');
+
+        act(() => latest!.setProject(2));
+        await waitFor(() => expect(locationText()).toBe('/tasks/?project=2&iteration=22'));
+        expect(latest!.linkTo('/gantt/')).toBe('/gantt/?project=2&iteration=22');
+
+        await act(() => router.navigate(-1));
+        await waitFor(() => expect(locationText()).toBe('/my-work'));
+    });
+
     it('lets the project follow an iteration chosen in another project', async () => {
         renderAt('/plan?project=1&iteration=12');
         await waitForReady();

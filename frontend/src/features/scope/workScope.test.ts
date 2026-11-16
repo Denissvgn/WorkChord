@@ -123,4 +123,12 @@ describe('scopedLink', () => {
         expect(['/', '/plan', '/plan/master', '/gantt', '/tasks', '/analytics'].every(isScopedPath)).toBe(true);
         expect(['/my-work', '/triage', '/projects', '/team', '/settings', '/plan/share/abc'].some(isScopedPath)).toBe(false);
     });
+
+    it('treats route variants the router opens as the same page', () => {
+        expect(['/tasks/', '/Tasks', '/plan/master/', '/gantt//', '//'].every(isScopedPath)).toBe(true);
+        expect(['/tasks/extra', '/my-work/', '/plan/share/abc/'].some(isScopedPath)).toBe(false);
+        expect(scopedLink('/tasks/', scope)).toBe('/tasks/?project=2&iteration=22');
+        expect(scopedLink('/analytics/?range=30#flow', scope)).toBe('/analytics/?range=30&project=2&iteration=22#flow');
+        expect(scopedLink('/my-work/', scope)).toBe('/my-work/');
+    });
 });

@@ -1,3 +1,4 @@
+import { matchPath } from 'react-router-dom';
 import { DESTINATIONS, type DestinationId } from '../../navigation/destinations';
 import { formatScope, parseScope } from '../../navigation/scopeParams';
 
@@ -30,13 +31,19 @@ export const SCOPED_DESTINATIONS: readonly DestinationId[] = ['overview', 'plan'
 /** Pages inside a scoped destination that show the same scope as the page it opens. */
 const SCOPED_SUBPATHS: readonly string[] = ['/plan/master'];
 
-const SCOPED_PATHS = new Set([
+const SCOPED_PATHS: readonly string[] = [
     ...DESTINATIONS.filter(destination => SCOPED_DESTINATIONS.includes(destination.id)).map(destination => destination.path),
     ...SCOPED_SUBPATHS,
-]);
+];
 
-/** True for the page a scoped destination opens, and for the planning page inside Plan. */
-export const isScopedPath = (pathname: string): boolean => SCOPED_PATHS.has(pathname);
+/**
+ * True for the page a scoped destination opens, and for the planning page inside Plan.
+ * Paths are matched the way the router matches its routes, so variants such as a
+ * trailing slash or different letter case count as the same page.
+ */
+export const isScopedPath = (pathname: string): boolean => (
+    SCOPED_PATHS.some(path => matchPath({ path, caseSensitive: false, end: true }, pathname) !== null)
+);
 
 export const sameScope = (a: PartialWorkScope | undefined, b: PartialWorkScope | undefined): boolean => (
     (a?.project ?? null) === (b?.project ?? null) && (a?.iteration ?? null) === (b?.iteration ?? null)
