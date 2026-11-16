@@ -2,8 +2,7 @@ export type SettingsSectionId =
     | 'theme' | 'shortcuts'
     | 'language' | 'work_calendar' | 'scheduling' | 'templates_labels' | 'notifications'
     | 'github' | 'webhooks' | 'web_intake' | 'ai_provider'
-    | 'access' | 'runtime' | 'about'
-    | 'models_agents';
+    | 'access' | 'runtime' | 'about';
 
 /**
  * The translation keys of the field labels and panel headings each Settings
@@ -135,30 +134,4 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'settings.restartRequired',
     ],
     about: [],
-    // Outside the four groups, but still found by search.
-    models_agents: [
-        'modelAdministration.title',
-        'modelAdministration.actorRoster',
-        'modelAdministration.modelCatalog',
-        'modelAdministration.modelBindings',
-        'modelAdministration.auditControls',
-        'modelAdministration.auditRationale',
-        'modelAdministration.reconcileLiveAssignments',
-        'modelAdministration.createCatalogEntry',
-        'modelAdministration.catalogKey',
-        'modelAdministration.provider',
-        'modelAdministration.configuredAlias',
-        'modelAdministration.reasoningTier',
-        'modelAdministration.contextTier',
-        'modelAdministration.costTier',
-        'modelAdministration.latencyTier',
-        'modelAdministration.modalities',
-        'modelAdministration.lastVerified',
-        'modelAdministration.createBinding',
-        'modelAdministration.actor',
-        'modelAdministration.catalogEntry',
-        'modelAdministration.tools',
-        'modelAdministration.dataPolicy',
-        'modelAdministration.defaultBinding',
-    ],
 };

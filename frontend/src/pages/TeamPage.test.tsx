@@ -226,7 +226,7 @@ describe('Team page', () => {
         expect(header.getByRole('button', { name: 'Connect an agent' })).not.toHaveClass('btn-primary');
     });
 
-    it('opens Connect from the header and keeps Models and Connect as placeholders', async () => {
+    it('opens Connect from the header and Models from the tab', async () => {
         const { user } = renderTeam();
         await screen.findByRole('button', { name: 'Open Ada Lovelace' });
         expect(screen.getAllByRole('tab').map(tab => tab.textContent)).toEqual(['Members', 'Models', 'Connect']);
@@ -238,7 +238,7 @@ describe('Team page', () => {
         expect(screen.queryByRole('table')).not.toBeInTheDocument();
 
         await user.click(screen.getByRole('tab', { name: 'Models' }));
-        expect(screen.getByRole('tabpanel')).toHaveTextContent('Models are not on this page yet');
+        expect(screen.getByRole('tab', { name: 'Models' })).toHaveAttribute('aria-selected', 'true');
     });
 
     it('opens the Connect tab straight from the address', async () => {
