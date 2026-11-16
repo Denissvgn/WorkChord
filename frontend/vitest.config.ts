@@ -5,8 +5,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
-    // Pending: these navigation check files run under Node's built-in test runner and
-    // stay out of vitest until their helpers exist. Remove this entry when they do.
+    // These navigation check files use Node's built-in test runner; npm run test:navigation runs them.
     exclude: [...configDefaults.exclude, 'src/navigation/*.check.test.ts'],
     clearMocks: true,
     restoreMocks: true,

@@ -7,4 +7,4 @@ Run from `frontend/`: `node --test src/navigation/legacyPaths.check.test.ts src/
 The implementer must not edit `legacyPaths.check.test.ts` or `scopeParams.check.test.ts`; a failing case means the helper is wrong.
 Each case has its own name and assertion message, so a failure names the input and the expected output.
 The checks import only `node:test`, `node:assert` and the helper under test.
-Both files are excluded from vitest and from the app's TypeScript build until the helpers exist.
+Both files run with `npm run test:navigation`, which `npm run test:run` includes; vitest skips them because they use Node's runner.

@@ -24,9 +24,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"],
-  "exclude": [
-    // Pending: navigation check files import helpers that do not exist yet. Remove this entry when they do.
-    "src/navigation/*.check.test.ts"
-  ]
+  "include": ["src"]
 }

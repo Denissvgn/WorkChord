@@ -11,7 +11,8 @@
     "lint:classes": "node scripts/check-tailwind-classes.mjs",
     "lint:query-feedback": "node scripts/check-query-feedback.mjs",
     "test": "npm run test:run",
-    "test:run": "vitest run",
+    "test:run": "vitest run && npm run test:navigation",
+    "test:navigation": "node --test src/navigation/legacyPaths.check.test.ts src/navigation/scopeParams.check.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
