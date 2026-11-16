@@ -184,6 +184,8 @@ export const englishResources = {
                 "editingLocked": "locked",
                 "editingUnlocked": "unlocked",
                 "editingNote": "Changes need the admin key in this browser tab. One key unlocks every protected settings section.",
+                "editingByRole": "Your workspace role lets you edit without the admin key.",
+                "keyNotChecked": "The server could not be reached to check this key. Nothing was saved; try again.",
                 "unlock": "Unlock",
                 "lock": "Lock",
                 "unlockHelp": "Enter the admin key the operator gave you. It stays in this browser tab.",

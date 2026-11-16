@@ -1,15 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { IdentityProvider } from './IdentityProvider';
 import { IdentityBadge } from './AccountMenu';
+import api from '../../services/api';
 import { clearAdminApiKey, hasAdminApiKey } from '../../utils/adminAccess';
 
 const service = vi.hoisted(() => ({ get: vi.fn(), logout: vi.fn(), transferGuest: vi.fn(), chooseLocalProfile: vi.fn() }));
 vi.mock('./identityService', () => ({ identityService: service }));
-
-const scheduling = vi.hoisted(() => ({ getRules: vi.fn() }));
-vi.mock('../../services/schedulingRulesService', () => ({ schedulingRulesService: scheduling }));
 
 const team = vi.hoisted(() => ({ getProfiles: vi.fn() }));
 vi.mock('../../services/teamService', () => ({ teamService: team }));
@@ -29,43 +27,87 @@ const renderLocalMenu = () => renderWithProviders(<IdentityProvider>
     <IdentityBadge />
 </IdentityProvider>);
 
+const openMenu = async (user: ReturnType<typeof renderLocalMenu>['user']) => {
+    await user.click(await screen.findByRole('button', { name: 'Account and access' }));
+    return screen.getByRole('dialog', { name: 'Account and access' });
+};
+
 describe('account menu', () => {
     beforeEach(() => {
         vi.resetAllMocks();
         sessionStorage.clear();
         clearAdminApiKey();
         service.get.mockResolvedValue(localWorkspace);
-        team.getProfiles.mockResolvedValue([{ id: 3, display_name: 'Ada', profile_kind: 'human' }]);
-        scheduling.getRules.mockResolvedValue({});
+        team.getProfiles.mockResolvedValue([
+            { id: 3, display_name: 'Ada', profile_kind: 'human' },
+            { id: 4, display_name: 'Grace', profile_kind: 'human' },
+        ]);
     });
 
-    it('shows the working profile, the sign-in state and the editing state, and changes each from the menu', async () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it('shows the working profile, the sign-in state and the editing state from one menu', async () => {
         const { user } = renderLocalMenu();
-        await user.click(await screen.findByRole('button', { name: 'Account and access' }));
-        const menu = screen.getByRole('dialog', { name: 'Account and access' });
+        const menu = await openMenu(user);
 
         expect(within(menu).getByText('Working as: Ada')).toBeInTheDocument();
+        expect(within(menu).getByRole('button', { name: 'Work as this person' })).toBeInTheDocument();
+        expect(within(menu).getByRole('button', { name: 'Add me' })).toBeInTheDocument();
         expect(within(menu).getByText('Local workspace, not a verified sign-in')).toBeInTheDocument();
         expect(within(menu).getByText('Editing: locked')).toBeInTheDocument();
-        expect(within(menu).getByRole('button', { name: 'Add me' })).toBeInTheDocument();
-        expect(within(menu).queryByRole('button', { name: 'Sign out' })).not.toBeInTheDocument();
+        expect(within(menu).getByRole('button', { name: 'Unlock' })).toBeInTheDocument();
         expect(within(menu).getByRole('link', { name: 'My preferences' })).toHaveAttribute('href', '/settings?tab=theme');
         expect(within(menu).getByRole('link', { name: 'Access' })).toHaveAttribute('href', '/settings?tab=access');
+        expect(within(menu).queryByRole('button', { name: 'Sign out' })).not.toBeInTheDocument();
+    });
+
+    it('changes the working profile from the menu', async () => {
+        service.chooseLocalProfile.mockResolvedValue({ profile: { id: 4, display_name: 'Grace' } });
+        service.get.mockResolvedValueOnce(localWorkspace).mockResolvedValue({ ...localWorkspace, profile: { id: 4, display_name: 'Grace' } });
+        const { user } = renderLocalMenu();
+        const menu = await openMenu(user);
+
+        await user.selectOptions(within(menu).getByLabelText('Person profile'), '4');
+        await user.click(within(menu).getByRole('button', { name: 'Work as this person' }));
+
+        expect(service.chooseLocalProfile).toHaveBeenCalledWith(4);
+        // A profile change remounts the app under IdentityProvider, so the menu opens again to show the new profile.
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument());
+        const reopened = await openMenu(user);
+        expect(within(reopened).getByText('Working as: Grace')).toBeInTheDocument();
+    });
+
+    it('unlocks editing from the menu, keeps a rejected key out of storage, and locks again', async () => {
+        const check = vi.spyOn(api, 'get')
+            .mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { response: { status: 401 } }))
+            .mockResolvedValueOnce({ data: {} });
+        const { user } = renderLocalMenu();
+        let menu = await openMenu(user);
 
         await user.click(within(menu).getByRole('button', { name: 'Unlock' }));
-        await user.type(within(menu).getByLabelText('Admin key'), 'operator-key');
+        await user.type(within(menu).getByLabelText('Admin key'), 'wrong-key');
+        await user.click(within(menu).getByRole('button', { name: 'Unlock' }));
+
+        // The rejection shows in place: the menu stays open and nothing is stored.
+        expect(await within(menu).findByText('The server rejected this key. Nothing was saved.')).toBeInTheDocument();
+        expect(hasAdminApiKey()).toBe(false);
+        expect(check).toHaveBeenLastCalledWith('/scheduling-rules', { headers: { 'X-Admin-API-Key': 'wrong-key' } });
+
+        await user.type(within(menu).getByLabelText('Admin key'), 'right-key');
         await user.click(within(menu).getByRole('button', { name: 'Unlock' }));
         await waitFor(() => expect(hasAdminApiKey()).toBe(true));
-        expect(scheduling.getRules).toHaveBeenCalledOnce();
-        // A key change remounts the app under IdentityProvider, so the menu opens again to show the new state.
-        await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument());
-        await user.click(await screen.findByRole('button', { name: 'Account and access' }));
-        expect(screen.getByText('Editing: unlocked')).toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Lock' }));
+        // The accepted key remounts the app, so the menu opens again to show the unlocked state.
+        await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument());
+        menu = await openMenu(user);
+        expect(within(menu).getByText('Editing: unlocked')).toBeInTheDocument();
+
+        await user.click(within(menu).getByRole('button', { name: 'Lock' }));
         expect(hasAdminApiKey()).toBe(false);
-        await user.click(await screen.findByRole('button', { name: 'Account and access' }));
-        expect(screen.getByText('Editing: locked')).toBeInTheDocument();
+        menu = await openMenu(user);
+        expect(within(menu).getByText('Editing: locked')).toBeInTheDocument();
     });
 
     it('closes on Escape and on an outside click, and returns focus to its button', async () => {

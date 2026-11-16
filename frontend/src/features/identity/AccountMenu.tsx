@@ -8,7 +8,6 @@ import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { protectedQueryKeys } from '../../components/settings/protectedQueryKeys';
 import { teamService } from '../../services/teamService';
-import { schedulingRulesService } from '../../services/schedulingRulesService';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { ADMIN_API_KEY_CHANGED_EVENT, clearAdminApiKey, hasAdminApiKey, setAdminApiKey } from '../../utils/adminAccess';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
@@ -105,26 +104,21 @@ export const IdentityBadge = () => {
         }
         setVerifying(true);
         setKeyMessage(null);
-        setAdminApiKey(key);
-        removeProtectedQueries();
         try {
-            // One protected read tells whether the server accepts this key, as on the Settings page.
-            await schedulingRulesService.getRules();
+            // One protected read tells whether the server accepts the key. The key is sent with this request
+            // only and stored after the server accepts it: storing it remounts the app under IdentityProvider,
+            // which would drop this menu and any message it shows.
+            await api.get('/scheduling-rules', { headers: { 'X-Admin-API-Key': key } });
+            setAdminApiKey(key);
+            removeProtectedQueries();
             setDraftKey('');
             setUnlockOpen(false);
             refreshProtectedQueries();
         } catch (cause) {
             const status = getApiErrorStatus(cause);
-            if (status === 401 || status === 403 || status === 503) {
-                clearAdminApiKey();
-                removeProtectedQueries();
-                setKeyMessage(t(status === 503 ? 'settings.adminAccessBackendNotConfigured' : 'settings.adminAccessRejected'));
-            } else {
-                setDraftKey('');
-                setUnlockOpen(false);
-                setKeyMessage(t('settings.adminAccessUnverified'));
-                refreshProtectedQueries();
-            }
+            setKeyMessage(status === 401 || status === 403 || status === 503
+                ? t(status === 503 ? 'settings.adminAccessBackendNotConfigured' : 'settings.adminAccessRejected')
+                : t('identity.keyNotChecked'));
         } finally {
             setVerifying(false);
         }
@@ -157,7 +151,7 @@ export const IdentityBadge = () => {
             id={panelId}
             role="dialog"
             aria-label={t('identity.accountMenu')}
-            className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[90vw] space-y-4 rounded-xl border border-border bg-surface-card p-4 text-sm text-content-primary shadow-lg"
+            className="absolute right-0 top-full z-50 mt-2 max-h-[80vh] w-80 max-w-[90vw] space-y-4 overflow-y-auto rounded-xl border border-border bg-surface-card p-4 text-sm text-content-primary shadow-lg"
         >
             <section className="space-y-2" aria-labelledby={`${panelId}-working`}>
                 <h3 id={`${panelId}-working`} className="font-semibold">{t('identity.workingAsHeading')}</h3>
@@ -211,7 +205,7 @@ export const IdentityBadge = () => {
                         : !unlockOpen && <Button size="sm" variant="secondary" aria-expanded={unlockOpen} aria-controls={`${panelId}-unlock`}
                             onClick={() => setUnlockOpen(true)}>{t('identity.unlock')}</Button>}
                 </div>
-                <p className="text-xs text-content-secondary">{t('identity.editingNote')}</p>
+                <p className="text-xs text-content-secondary">{hasAdminKey && !keyStored ? t('identity.editingByRole') : t('identity.editingNote')}</p>
                 {!hasAdminKey && unlockOpen && <form id={`${panelId}-unlock`} className="space-y-2" onSubmit={unlock}>
                     <p className="text-xs text-content-secondary">{t('identity.unlockHelp')}</p>
                     <Input
