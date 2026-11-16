@@ -572,7 +572,7 @@ export const GanttChart = ({
             status: t(`statuses.${task.status}`),
             flags: taskTimingFlags(task),
             ...formatTaskTimelineDates(dates),
-        });
+        }) + ` · ${t('taskList.assignee')}: ${task.assignee?.name ?? t('common.unassigned')}`;
     };
 
     const getTaskAccessibleLabel = (task: GanttTask) => {
@@ -1322,7 +1322,7 @@ export const GanttChart = ({
                                             aria-label={getTaskAccessibleLabel(task)}
                                         >
                                             {/* The label follows the visible part of a long bar instead of scrolling away with its start. */}
-                                            <span className="sticky left-2 shrink-0 font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]"><TaskAssigneeDisplay task={task} iterationId={iterationId} bar durationDays={hasCompleteTimelineDates(taskDates) ? differenceInCalendarDays(parseISO(taskDates.end), parseISO(taskDates.start)) + 1 : undefined} /></span>
+                                            <span className="sticky left-2 min-w-0 max-w-96 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]"><TaskAssigneeDisplay task={task} iterationId={iterationId} bar durationDays={hasCompleteTimelineDates(taskDates) ? differenceInCalendarDays(parseISO(taskDates.end), parseISO(taskDates.start)) + 1 : undefined} /></span>
                                             {sandboxMode && (
                                                 <>
                                                     {/* Right edge: drag to change effort. */}

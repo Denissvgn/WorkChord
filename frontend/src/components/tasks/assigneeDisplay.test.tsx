@@ -84,10 +84,30 @@ describe('assignee consistency across task views', () => {
 
     it('hides Owner when it equals the assignee profile and shows Owner when it differs', async () => {
         const { rerender } = renderWithProviders(readView(base));
-        await waitFor(() => expect(services.team).toHaveBeenCalled());
+        expect(await screen.findByText('No agent connected')).toBeInTheDocument();
         expect(screen.queryByText('Owner')).not.toBeInTheDocument();
         rerender(readView({ ...base, owner_profile_id: 11, owner: { id: 11, name: 'Priya' } }));
         expect(await screen.findByText('Priya')).toBeInTheDocument();
         expect(screen.getByText('Owner')).toBeInTheDocument();
+    });
+
+    it('shows Owner when the assignee profile cannot be read', async () => {
+        services.team.mockRejectedValue(new Error('Capacity unavailable'));
+        const { queryClient } = renderWithProviders(readView({ ...base, owner_profile_id: 11, owner: { id: 11, name: 'Priya' } }));
+        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.status).toBe('error'));
+        expect(await screen.findByText('Owner')).toBeInTheDocument();
+        expect(screen.getByText('Priya')).toBeInTheDocument();
+    });
+
+    it('keeps the full assignee name accessible and in the tooltip on a short Gantt bar', async () => {
+        const name = 'Builder responsible for importing regional holidays and coordinating calendar updates';
+        const task = { ...base, assignee: { id: 7, name }, end_date: base.start_date };
+        services.task.mockResolvedValue(task);
+        const { container } = renderWithProviders(<GanttChart iterationId={2} startDate="2026-11-16" endDate="2026-11-30" tasks={[task as unknown as GanttTask]} weekends={[]} holidays={[]} memberVacations={{}} />);
+        const bar = container.querySelector('[data-gantt-task-id="101"]');
+        expect(bar).toHaveAccessibleName(expect.stringContaining(name));
+        expect(bar).toHaveAttribute('title', expect.stringContaining(name));
+        await waitFor(() => expect(bar?.querySelector('[data-agent-dispatch]')).toHaveTextContent('No agent connected'));
+        expect(within(bar as HTMLElement).getByTitle(name)).toHaveTextContent(name);
     });
 });

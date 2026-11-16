@@ -10,7 +10,7 @@ export const TaskAssigneeDisplay = ({ task, iterationId, bar = false, durationDa
     const { t } = useTranslation();
     const { dispatch, reviewer, kind } = useTaskAssigneeDisplay(task, iterationId);
     const Icon = kind === 'agent' ? Bot : User;
-    return <span data-task-people={task.id} className={`inline-flex min-w-0 items-start gap-3 text-xs ${bar ? 'max-w-96 rounded bg-surface-card px-1 text-content-primary' : 'text-content-secondary'}`}>
+    return <span data-task-people={task.id} className={`inline-flex min-w-0 items-start gap-3 text-xs ${bar ? 'max-w-full rounded bg-surface-card px-1 text-content-primary' : 'text-content-secondary'}`}>
         <span data-assignee-cell="" className="flex min-w-0 flex-col">
             <span className="flex min-w-0 items-center gap-1">
                 <Icon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />

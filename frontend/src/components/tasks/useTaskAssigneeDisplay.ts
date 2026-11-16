@@ -15,6 +15,6 @@ export const useTaskAssigneeDisplay = (task: Task | GanttTask, iterationId: numb
     const options = team.data?.map(member => ({ id: member.id, name: member.name, kind: member.profile?.profile_kind, profileId: member.profile_id ?? member.profile?.id ?? null }));
     const option = options?.find(member => member.id === task.assignee?.id);
     const values = agentRowValues({ ...detail.data, ...task }, options, facts);
-    return { ...values, profileId: option ? option.profileId ?? null : undefined, kind: option?.kind };
+    return { ...values, profileId: option ? option.profileId ?? null : undefined, kind: option?.kind, teamReadFailed: team.isError };
 };
 
