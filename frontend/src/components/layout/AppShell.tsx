@@ -14,7 +14,7 @@ import { useWorkScope } from '../../features/scope/useWorkScope';
 
 // Full-height routes where the main area must not scroll itself
 // (the inner component controls overflow).
-const SCROLL_LOCK_PATHS = ['/gantt', '/plan/master', '/tasks', '/triage'];
+const SCROLL_LOCK_PATHS = ['/gantt', '/tasks', '/triage'];
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
     const { theme } = useThemeStore();

@@ -151,7 +151,7 @@ describe('TasksPage', () => {
             dependencies: { items: [], has_more: false, next_after_id: null, limit: 50 }, execution_context_complete: false });
     });
 
-    it('clears create intent while preserving a Plan Master return checkpoint', async () => {
+    it('clears create intent while preserving a return to its Plan checkpoint', async () => {
         const { user } = renderWithProviders(
             <>
                 <TasksPage />
@@ -163,7 +163,7 @@ describe('TasksPage', () => {
         expect(await screen.findByRole('dialog')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancel draft' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Return to plan' }))
-            .toHaveAttribute('href', '/plan/master?step=work&returned=1');
+            .toHaveAttribute('href', '/plan?step=work&returned=1');
 
         await user.click(screen.getByRole('button', { name: 'Cancel draft' }));
 
@@ -216,7 +216,7 @@ describe('TasksPage', () => {
             'unassigned',
         );
         expect(screen.getByRole('link', { name: 'Return to plan' }))
-            .toHaveAttribute('href', '/plan/master?step=schedule&returned=1');
+            .toHaveAttribute('href', '/plan?step=schedule&returned=1');
         expect(screen.queryByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
         await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent(
             '?planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',

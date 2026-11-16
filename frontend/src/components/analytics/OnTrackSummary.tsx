@@ -4,7 +4,7 @@ import type { IterationSummary } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
 import { formatEffortDays } from '../../utils/workNumbers';
 import { MetricCount } from '../tasks/MetricCount';
-import { planMasterStepHref } from '../../features/planningMasters/planningReturn';
+import { planStepHref } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type Verdict = 'done' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack';
@@ -45,7 +45,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                 {summary.scheduled_finish
                     ? t('analytics.onTrack.finishAgainstEnd', { finish: formatDate(summary.scheduled_finish, locale), end: formatDate(summary.end_date, locale) })
                     : t('analytics.onTrack.endsOn', { end: formatDate(summary.end_date, locale) })}
-                {verdict === 'noSchedule' && <> <Link to={scopeLink(planMasterStepHref('schedule'))} className="font-medium text-action underline">{t('analytics.onTrack.planIt')}</Link></>}
+                {verdict === 'noSchedule' && <> <Link to={scopeLink(planStepHref('schedule'))} className="font-medium text-action underline">{t('analytics.onTrack.planIt')}</Link></>}
             </p>
             <p className="text-sm text-content-secondary">
                 {t('analytics.onTrack.effortLine', { remaining: effort(remaining), capacity: left === null ? t('analytics.onTrack.capacityUnknown') : effort(left), days: summary.remaining_working_days ?? 0 })}

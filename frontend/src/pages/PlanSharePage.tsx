@@ -214,7 +214,7 @@ const PlanSharePage = () => {
                             <p className="py-3 text-sm text-content-secondary">{t('plan.master.noSharedTeam')}</p>
                         )}
                     </div>
-                    <Link to={scopeLink('/plan/master')} className="btn mt-4 w-full">
+                    <Link to={scopeLink('/plan')} className="btn mt-4 w-full">
                         {t('plan.master.openPlanMaster')}
                     </Link>
                 </aside>

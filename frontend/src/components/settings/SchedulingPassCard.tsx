@@ -1,10 +1,12 @@
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Trash2, ChevronDown, ChevronRight, GripVertical, Plus, X, ArrowUp, ArrowDown, Info } from 'lucide-react';
+import { Trash2, ChevronRight, GripVertical, Plus, X, ArrowUp, ArrowDown, Info } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
+import { ReadOnlyFieldset } from './ReadOnlyFieldset';
+import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import type { SchedulingPass, SortCriterion } from '../../types/schedulingRules';
 import { TASK_FIELDS, FILTER_FIELDS, OPERATORS, FILTER_VALUES } from '../../types/schedulingRules';
 import { schedulingPassDisplay } from '../../i18n/schedulingDisplay';
@@ -116,6 +118,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
         >
             {/* Header */}
             <div className="flex flex-wrap items-start gap-3 p-4 sm:flex-nowrap sm:items-center sm:gap-4">
+                <ReadOnlyFieldset>
                 <button
                     type="button"
                     {...attributes}
@@ -131,20 +134,18 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     onChange={handleToggleEnabled}
                     aria-label={t('settingsScheduling.aria.enablePass', { id: pass.id })}
                 />
+                </ReadOnlyFieldset>
 
                 <button
                     type="button"
                     onClick={() => setExpanded(!expanded)}
                     className="min-w-0 flex-1 text-left"
+                    aria-haspopup="dialog"
                     aria-expanded={expanded}
-                    aria-controls={detailsId}
+                    aria-controls={expanded ? detailsId : undefined}
                 >
                     <div className="flex items-center gap-2">
-                        {expanded ? (
-                            <ChevronDown className="w-4 h-4 shrink-0 text-content-tertiary" aria-hidden="true" />
-                        ) : (
-                            <ChevronRight className="w-4 h-4 shrink-0 text-content-tertiary" aria-hidden="true" />
-                        )}
+                        <ChevronRight className="w-4 h-4 shrink-0 text-content-tertiary" aria-hidden="true" />
                         <span className="min-w-0 break-words">
                             <span className="font-medium text-content-primary">{display.name}</span>
                             {display.isBuiltIn && (
@@ -159,6 +160,7 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                     )}
                 </button>
 
+                <ReadOnlyFieldset>
                 <button
                     type="button"
                     onClick={onRemove}
@@ -168,11 +170,22 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                 >
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </button>
+                </ReadOnlyFieldset>
             </div>
 
-            {/* Expanded Details */}
-            {expanded && (
-                <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-6 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
+            {/* The details open in the shared drawer; changes stay in the rules until they are saved. */}
+            <SlideOverDrawer
+                open={expanded}
+                title={display.name}
+                subtitle={display.isBuiltIn ? display.technicalId : undefined}
+                ariaLabel={display.name}
+                onClose={() => setExpanded(false)}
+                closeLabel={t('actions.close')}
+                className="max-w-xl"
+            >
+                <ReadOnlyFieldset>
+                <div id={detailsId} className="space-y-6 p-5">
+                    <p className="text-xs text-content-secondary">{t('settingsScheduling.drawerHint')}</p>
                     {/* Basic Info */}
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
@@ -357,7 +370,8 @@ export const SchedulingPassCard = ({ pass, sortableId, onChange, onRemove }: Pro
                         </div>
                     </div>
                 </div>
-            )}
+                </ReadOnlyFieldset>
+            </SlideOverDrawer>
         </div>
     );
 };

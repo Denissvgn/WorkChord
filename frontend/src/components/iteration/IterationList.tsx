@@ -32,7 +32,7 @@ export const IterationList = ({ onEdit, projectId }: IterationListProps) => {
     const { project: scopeProject } = useLinkScope();
     // The plan of one iteration opens with that iteration in scope; its project comes along
     // unless All projects is chosen, the same rule as choosing the iteration anywhere else.
-    const planLink = (iteration: Iteration) => scopeLink('/plan/master', {
+    const planLink = (iteration: Iteration) => scopeLink('/plan', {
         project: scopeProject === 'all' ? 'all' : iteration.project_id ?? 'all',
         iteration: iteration.id,
     });
@@ -203,7 +203,7 @@ export const IterationList = ({ onEdit, projectId }: IterationListProps) => {
                                 {t('iterations.planThisIteration')}
                             </Button>
                         ) : (
-                            <Link to={scopeLink('/plan/master')} className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
+                            <Link to={scopeLink('/plan')} className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
                         )}
                         <Button
                             variant="ghost"

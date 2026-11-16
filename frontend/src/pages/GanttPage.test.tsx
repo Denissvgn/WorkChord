@@ -99,6 +99,7 @@ describe('GanttPage hardening', () => {
         await screen.findByText('Gantt chart');
         await user.click(screen.getByRole('button', { name: i18n.t('gantt.sandboxMode') }));
         await user.click(screen.getByRole('button', { name: 'Make draft edit' }));
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.previewResult') }));
 
         const previewAlert = await screen.findByRole('alert');
         expect(previewAlert).toHaveTextContent(i18n.t('gantt.simulationWarning'));
@@ -114,13 +115,50 @@ describe('GanttPage hardening', () => {
         expect(screen.getByRole('button', { name: i18n.t('gantt.applyChanges') })).toBeDisabled();
     });
 
+    it('previews current edits before applying and can discard them', async () => {
+        ganttServiceMock.previewSchedule.mockResolvedValue({ tasks: [taskFixture], input_revision: 4, input_planning_revision: 8 });
+        taskServiceMock.batchUpdate.mockResolvedValue({});
+        const { user } = renderWithProviders(<GanttPage />);
+        await screen.findByText('Gantt chart');
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.sandboxMode') }));
+        expect(screen.getByText(new RegExp(i18n.t('gantt.sandboxBody')))).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Make draft edit' }));
+        const apply = screen.getByRole('button', { name: i18n.t('gantt.applyChangesCount', { count: 1 }) });
+        expect(apply).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.previewResult') }));
+        await waitFor(() => expect(apply).toBeEnabled());
+        await user.click(apply);
+        await waitFor(() => expect(taskServiceMock.batchUpdate).toHaveBeenCalledWith(1, expect.objectContaining({ expected_revision: 4, expected_planning_revision: 8 })));
+        await waitFor(() => expect(screen.getByRole('button', { name: i18n.t('gantt.sandboxMode') })).toBeVisible());
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.sandboxMode') }));
+        await user.click(screen.getByRole('button', { name: 'Make draft edit' }));
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.discardEdits') }));
+        expect(screen.getByRole('button', { name: i18n.t('gantt.applyChanges') })).toBeDisabled();
+        expect(taskServiceMock.batchUpdate).toHaveBeenCalledTimes(1);
+    });
+
+    it('prevents another apply when saving is unconfirmed', async () => {
+        ganttServiceMock.previewSchedule.mockResolvedValue({ tasks: [taskFixture], input_revision: 4, input_planning_revision: 8 });
+        taskServiceMock.batchUpdate.mockRejectedValue(new Error('Connection lost'));
+        const { user } = renderWithProviders(<GanttPage />);
+        await screen.findByText('Gantt chart');
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.sandboxMode') }));
+        await user.click(screen.getByRole('button', { name: 'Make draft edit' }));
+        await user.click(screen.getByRole('button', { name: i18n.t('gantt.previewResult') }));
+        const apply = screen.getByRole('button', { name: i18n.t('gantt.applyChangesCount', { count: 1 }) });
+        await waitFor(() => expect(apply).toBeEnabled());
+        await user.click(apply);
+        await waitFor(() => expect(apply).toBeDisabled());
+        expect(taskServiceMock.batchUpdate).toHaveBeenCalledTimes(1);
+    });
+
     it('offers retry and an explicit safe exit when a schedule explanation fails', async () => {
         ganttServiceMock.explainSchedule.mockRejectedValue(new Error('Explanation unavailable'));
         const { user } = renderWithProviders(<GanttPage />);
 
         await screen.findByText('Gantt chart');
-        // Explain schedule is a visible header action, not hidden in a menu.
-        await user.click(screen.getAllByRole('button', { name: i18n.t('gantt.explainSchedule') })[0]);
+        await user.click(screen.getByRole('button', { name: i18n.t('actions.moreActions') }));
+        await user.click(screen.getByRole('menuitem', { name: i18n.t('gantt.explainSchedule') }));
 
         const explanationAlert = await screen.findByRole('alert');
         expect(explanationAlert).toHaveTextContent(i18n.t('gantt.explanationFailed'));

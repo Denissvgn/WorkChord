@@ -71,7 +71,7 @@ export const PlanningWorkflowHelpContent = ({
                 body: t(`${translationPrefix}.recoverBody`),
             },
         ];
-    const destination = surface === 'plan' ? '/plan/master' : '/plan';
+    const destination = '/plan';
 
     return (
         <div className="planning-workflow-help">

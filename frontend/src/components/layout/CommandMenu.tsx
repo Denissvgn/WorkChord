@@ -306,7 +306,7 @@ export const CommandMenu = () => {
                         ? [homeCommand.label, homeCommand.description]
                         : undefined,
                     icon: MapPin,
-                    to: '/plan/master',
+                    to: '/plan',
                 }
                 : {
                     id: 'current-workspace-action',
