@@ -26,6 +26,7 @@ import { snapshotService } from '../services/snapshotService';
 import type { IterationSnapshot } from '../services/snapshotService';
 import { getAdminAccessErrorMessage } from '../utils/adminAccess';
 import { formatDateTime } from '../utils/formatDate';
+import { OverflowMenu } from '../components/ui';
 import { PlanningWorkbenchFrame } from '../components/planning/PlanningWorkbenchFrame';
 
 const DECISION_COUNT_LABELS = [
@@ -391,26 +392,11 @@ const GanttPage = () => {
                     {sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
                 </Button>
             )}
-            secondaryActions={(
-                <>
-                    <Button variant="secondary" onClick={() => explainMutation.mutate(selectedIterationId)}
-                        disabled={!canExplainSchedule || sandboxMode || explainMutation.isPending} isLoading={explainMutation.isPending}>
-                        <Sparkles className="h-4 w-4 text-feedback-purple" aria-hidden="true" />
-                        {t('gantt.explainSchedule')}
-                    </Button>
-                    <Button variant="ghost" onClick={() => setSnapshotsOpen(true)} disabled={selectedIterationId <= 0}>
-                        <History className="h-4 w-4" aria-hidden="true" />
-                        {t('snapshots.open')}
-                    </Button>
-                    <Button variant="ghost" onClick={() => setIsFullScreen(value => !value)}
-                        aria-label={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
-                        title={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}>
-                        {isFullScreen
-                            ? <Minimize2 className="h-4 w-4" aria-hidden="true" />
-                            : <Maximize2 className="h-4 w-4" aria-hidden="true" />}
-                    </Button>
-                </>
-            )}
+            overflowAction={<OverflowMenu alwaysMenu items={[
+                { label: t('gantt.explainSchedule'), icon: <Sparkles className="h-4 w-4" />, onSelect: () => explainMutation.mutate(selectedIterationId), disabled: !canExplainSchedule || sandboxMode || explainMutation.isPending },
+                { label: t('snapshots.open'), icon: <History className="h-4 w-4" />, onSelect: () => setSnapshotsOpen(true), disabled: selectedIterationId <= 0 },
+                { label: t(isFullScreen ? 'actions.exitFullScreen' : 'actions.enterFullScreen'), icon: isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />, onSelect: () => setIsFullScreen(value => !value) },
+            ]} />}
             state={(sandboxMode || currentSimulationError || visibleExplanationError || visibleExplanation) ? (
                 <>
             {sandboxMode && (
@@ -429,6 +415,9 @@ const GanttPage = () => {
                                     </span>
                                 ) : ` ${t('gantt.noEditsYet')}`}
                             </p>
+                            {sandboxChangeCount > 0 && schedulePreviewQuery.isSuccess && !schedulePreviewQuery.isFetching && (
+                                <p className="mt-1 text-sm font-medium text-feedback-warning-foreground" role="status">{t('gantt.previewResult')}</p>
+                            )}
                             {sandboxChangeCount > 0 && !schedulePreviewQuery.isSuccess && !schedulePreviewQuery.isError && (
                                 <p className="mt-1 text-xs text-feedback-warning-foreground" role="status">
                                     {t('gantt.simulationPending')}
@@ -448,6 +437,7 @@ const GanttPage = () => {
                             <Undo2 className="w-4 h-4 mr-2" /> {t('gantt.discardEdits')}
                         </Button>
                         <Button
+                            variant="secondary"
                             onClick={() => {
                                 if (canApplySandboxChanges) applySandboxMutation.mutate();
                             }}

@@ -1188,6 +1188,7 @@ export const englishResources = {
                 dragToLink: 'Drag onto another task to make it wait for this one',
                 removeStartPin: 'Remove the earliest-start pin on {{title}} ({{date}})',
                 datesAreCalculated: 'Dates are calculated. To move a task, change its assignee, effort, waits for, or earliest start.',
+                previewResult: 'Preview result',
                 inputAssignee: 'Assignee',
                 inputEarliestStart: 'Earliest start',
                 inputDueBy: 'Due by',

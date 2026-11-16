@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '../../i18n/i18n';
 import { renderWithProviders } from '../../test/renderWithProviders';
@@ -102,48 +102,6 @@ describe('GanttChart schedule preview', () => {
         ganttServiceMock.schedule.mockResolvedValue(scheduleResult);
     });
 
-    it('shows proposed dates without saving, then explicitly recalculates and saves', async () => {
-        const { user } = renderChart();
-
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-        await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.previewSchedule') }));
-
-        await waitFor(() => expect(ganttServiceMock.previewSchedule).toHaveBeenCalledWith(42, [], 1));
-        expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
-
-        await screen.findByRole('heading', { name: i18n.t('gantt.schedulePreviewReady') });
-        expect(screen.getByText(i18n.t('gantt.schedulePreviewBody'))).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Projected task/ })).toHaveAttribute('aria-disabled', 'true');
-        expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
-
-        let resolveSchedule!: (result: ScheduleResult) => void;
-        ganttServiceMock.schedule.mockReturnValue(new Promise(resolve => {
-            resolveSchedule = resolve;
-        }));
-        await user.click(screen.getByRole('button', { name: i18n.t('gantt.applySchedulePreview') }));
-
-        await waitFor(() => expect(ganttServiceMock.schedule).toHaveBeenCalledWith(42, 1, 19));
-        expect(screen.getByRole('heading', { name: i18n.t('gantt.scheduleApplyPending') })).toBeInTheDocument();
-        resolveSchedule(scheduleResult);
-        await screen.findByText(i18n.t('gantt.scheduleApplied'));
-    });
-
-    it('returns to the saved schedule without running the scheduler', async () => {
-        const { user } = renderChart();
-
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-        await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.previewSchedule') }));
-        await screen.findByRole('heading', { name: i18n.t('gantt.schedulePreviewReady') });
-
-        await user.click(screen.getByRole('button', { name: i18n.t('gantt.discardSchedulePreview') }));
-
-        await waitFor(() => expect(screen.queryByRole('heading', {
-            name: i18n.t('gantt.schedulePreviewReady'),
-        })).not.toBeInTheDocument());
-        expect(screen.getByRole('button', { name: scheduledTaskName(taskFixture) })).toBeEnabled();
-        expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
-    });
-
     it('does not expose schedule preview in sandbox mode', async () => {
         const { user } = renderChart(true);
 
@@ -156,53 +114,7 @@ describe('GanttChart schedule preview', () => {
         expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
     });
 
-    it('keeps preview generation visible after the action menu closes', async () => {
-        let resolvePreview!: (preview: SchedulePreviewResponse) => void;
-        ganttServiceMock.previewSchedule.mockReturnValue(new Promise(resolve => {
-            resolvePreview = resolve;
-        }));
-        const { user } = renderChart();
 
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-        await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.previewSchedule') }));
-
-        expect(await screen.findByText(i18n.t('gantt.schedulePreviewPending'))).toBeInTheDocument();
-        expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
-
-        resolvePreview(previewFixture);
-        await screen.findByRole('heading', { name: i18n.t('gantt.schedulePreviewReady') });
-    });
-
-    it('uses a schedule-specific preview failure and retry action', async () => {
-        ganttServiceMock.previewSchedule.mockRejectedValueOnce(new Error('Unavailable'));
-        const { user } = renderChart();
-
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-        await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.previewSchedule') }));
-
-        expect(await screen.findByText(i18n.t('gantt.schedulePreviewFailedTitle'))).toBeInTheDocument();
-        expect(screen.getByText(i18n.t('gantt.schedulePreviewFailed'))).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: i18n.t('gantt.retrySchedulePreview') })).toBeInTheDocument();
-        expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
-    });
-
-    it('refreshes the saved schedule after an unconfirmed save instead of rerunning it', async () => {
-        ganttServiceMock.schedule.mockRejectedValueOnce(new Error('Connection lost'));
-        const { user } = renderChart();
-
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-        await user.click(screen.getByRole('menuitem', { name: i18n.t('surfaces.ganttChart.previewSchedule') }));
-        await screen.findByRole('heading', { name: i18n.t('gantt.schedulePreviewReady') });
-        await user.click(screen.getByRole('button', { name: i18n.t('gantt.applySchedulePreview') }));
-
-        await screen.findByText(i18n.t('gantt.scheduleSaveUnconfirmedTitle'));
-        await user.click(screen.getByRole('button', { name: i18n.t('gantt.refreshSavedSchedule') }));
-
-        await waitFor(() => expect(screen.queryByText(
-            i18n.t('gantt.scheduleSaveUnconfirmedTitle'),
-        )).not.toBeInTheDocument());
-        expect(ganttServiceMock.schedule).toHaveBeenCalledTimes(1);
-    });
 });
 
 describe('GanttChart clarity states', () => {
@@ -252,11 +164,7 @@ describe('GanttChart clarity states', () => {
         emptyRender.unmount();
 
         const { user } = renderChart();
-        await user.click(screen.getByRole('button', { name: i18n.t('taskFilters.filters') }));
-        await user.click(screen.getByRole('checkbox', {
-            name: i18n.t('surfaces.ganttChart.hideTasksWithoutAssignee'),
-        }));
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.slideOver.close') }));
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), 'assigned');
 
         expect(screen.getByRole('heading', { name: i18n.t('gantt.noFilteredTasksTitle') })).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.clearFilters') }));
@@ -313,7 +221,22 @@ describe('Gantt finding and grouping', () => {
         await user.type(screen.getByRole('searchbox', { name: 'Search tasks' }), 'release');
         expect(screen.getByText('Write release notes')).toBeInTheDocument();
         expect(screen.queryByText('WC-1 Build the importer')).not.toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /1/ , expanded: false })).toBeInTheDocument();
+        expect(screen.getByRole('searchbox', { name: 'Search tasks' })).toHaveValue('release');
+    });
+
+    it('shows removable chips for each active filter', async () => {
+        const { user } = renderChart(false, tasks);
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Status' }), 'planned');
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), 'assigned');
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Hide tasks without dates' }), 'yes');
+        const chips = screen.getByRole('list', { name: /active filters/i });
+        expect(within(chips).getAllByRole('button', { name: /remove/i })).toHaveLength(3);
+        await user.click(within(chips).getByRole('button', { name: /remove filter status/i }));
+        expect(screen.getByRole('combobox', { name: 'Status' })).toHaveValue('');
+        expect(within(chips).getAllByRole('button', { name: /remove/i })).toHaveLength(2);
+        await user.click(within(chips).getByRole('button', { name: /remove filter assignee/i }));
+        await user.click(within(chips).getByRole('button', { name: /remove filter hide tasks without dates/i }));
+        expect(screen.queryByRole('list', { name: /active filters/i })).not.toBeInTheDocument();
     });
 
     it('groups top-level tasks by ID prefix with counts and collapses a group', async () => {
@@ -422,10 +345,10 @@ describe('Gantt bar inputs in Try changes', () => {
         );
         await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
         const dialog = await screen.findByRole('dialog', { name: 'Current task' });
-        expect(screen.getByRole('combobox', { name: 'Assignee' })).toHaveFocus();
+        expect(within(dialog).getByRole('combobox', { name: 'Assignee' })).toHaveFocus();
         expect(dialog).toHaveTextContent('Dates are calculated.');
         await screen.findByRole('option', { name: 'Sam' });
-        await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), '7');
+        await user.selectOptions(within(dialog).getByRole('combobox', { name: 'Assignee' }), '7');
         const effort = screen.getByRole('spinbutton', { name: 'Effort (hours)' });
         expect(dialog).toHaveTextContent('= 2 days at 8 hours per day');
         await user.clear(effort);

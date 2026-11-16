@@ -3,11 +3,10 @@ import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react'
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { RefreshCw, ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
-import { Checkbox } from '../common/Checkbox';
 import { TaskEditModal } from './TaskEditModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ganttService } from '../../services/ganttService';
@@ -20,7 +19,7 @@ import { useToast } from '../feedback/toast';
 import { dateFnsLocale } from '../../i18n/dateLocale';
 import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
-import { OverflowMenu, SlideOverDrawer } from '../ui';
+import { FilterBar, OverflowMenu, PageToolbar } from '../ui';
 import { GanttBarInputs } from './GanttBarInputs';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
@@ -190,7 +189,6 @@ export const GanttChart = ({
     const [barDrag, setBarDrag] = useState<BarDrag | null>(null);
     const suppressBarClick = useRef(false);
     const [barInputs, setBarInputs] = useState<{ task: GanttTask; anchor: { top: number; left: number }; origin: HTMLElement } | null>(null);
-    const [isFiltersOpen, setIsFiltersOpen] = useState(false);
     const [showLinks, setShowLinksState] = useState(readStoredShowLinks);
     const setShowLinks = (value: boolean) => {
         setShowLinksState(value);
@@ -980,9 +978,33 @@ export const GanttChart = ({
                     </Link>
                 </div>
             )}
-            {/* Toolbar */}
-            <div className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-card p-3 sm:p-4">
-                <div role="group" aria-label={t('surfaces.ganttChart.timelineControls')} className="flex min-w-0 flex-wrap items-center gap-2">
+            <PageToolbar
+                search={<input
+                        type="search"
+                        value={searchText}
+                        onChange={event => setSearchText(event.target.value)}
+                        placeholder={t('surfaces.ganttChart.searchPlaceholder')}
+                        aria-label={t('surfaces.ganttChart.searchTasks')}
+                        className="input h-9 w-44 text-sm"
+                    />}
+                filters={<FilterBar filters={[
+                    { id: 'status', label: t('surfaces.ganttChart.statusFilter'), value: statusFilter, options: LEGEND_STATUSES.map(status => ({ value: status, label: t(`statuses.${status}`) })) },
+                    { id: 'assignee', label: t('surfaces.ganttChart.assignee'), value: selectedAssigneeId === null ? (hideUnassigned ? 'assigned' : '') : String(selectedAssigneeId), options: [{ value: 'assigned', label: t('surfaces.ganttChart.hideTasksWithoutAssignee') }, ...uniqueAssignees.map(assignee => ({ value: String(assignee.id), label: assignee.name }))] },
+                    { id: 'dates', label: t('surfaces.ganttChart.hideUnscheduled'), value: hideUnscheduled ? 'yes' : '', options: [{ value: 'yes', label: t('common.yes') }] },
+                ]} onChange={(id, value) => {
+                    if (id === 'status') setStatusFilter(value as GanttStatusFilter);
+                    if (id === 'assignee') { setHideUnassigned(value === 'assigned'); setSelectedAssigneeId(value && value !== 'assigned' ? Number(value) : null); }
+                    if (id === 'dates') setHideUnscheduled(value === 'yes');
+                }} onClear={clearFilters} />}
+                viewOptions={<>
+                    <select data-page-chrome-control="select" value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
+                        aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
+                        <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
+                        <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
+                        <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
+                        <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
+                        <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
+                    </select>
                     <Button variant="ghost" size="sm" onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}
                         aria-label={t('surfaces.ganttChart.zoomTimelineOut')} title={t('surfaces.ganttChart.zoomOutShortcut')}>
                         <ZoomOut className="h-4 w-4" aria-hidden="true" />
@@ -1007,62 +1029,9 @@ export const GanttChart = ({
                         <GitBranch className="mr-2 h-4 w-4" aria-hidden="true" />
                         {t('surfaces.ganttChart.dependencyLinks')}
                     </Button>
-                </div>
-                <div className="flex min-w-0 flex-wrap items-center gap-2">
-                    <input
-                        type="search"
-                        value={searchText}
-                        onChange={event => setSearchText(event.target.value)}
-                        placeholder={t('surfaces.ganttChart.searchPlaceholder')}
-                        aria-label={t('surfaces.ganttChart.searchTasks')}
-                        className="input h-9 w-44 text-sm"
-                    />
-                    <select value={statusFilter} onChange={event => setStatusFilter(event.target.value as GanttStatusFilter)}
-                        aria-label={t('surfaces.ganttChart.statusFilter')} className="input h-9 w-auto text-sm">
-                        <option value="">{t('surfaces.ganttChart.anyStatus')}</option>
-                        {LEGEND_STATUSES.map(status => <option key={status} value={status}>{t(`statuses.${status}`)}</option>)}
-                    </select>
-                    <select value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
-                        aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
-                        <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
-                        <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
-                        <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
-                        <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
-                        <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
-                    </select>
-                    <Button
-                        variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
-                        size="sm"
-                        onClick={() => setIsFiltersOpen(true)}
-                        aria-expanded={isFiltersOpen}
-                        aria-label={activeFilterCount > 0
-                            ? t('surfaces.ganttChart.openFiltersWithCount', { count: activeFilterCount })
-                            : t('taskFilters.filters')}
-                    >
-                        <ListFilter className="mr-2 h-4 w-4" />
-                        {t('taskFilters.filters')}
-                        {activeFilterCount > 0 && (
-                            <span
-                                aria-hidden="true"
-                                className="ml-1 rounded-full bg-surface-card/80 px-1.5 py-0.5 text-xs tabular-nums"
-                            >
-                                {activeFilterCount}
-                            </span>
-                        )}
-                    </Button>
                     <OverflowMenu
                         label={t('surfaces.ganttChart.chartActions')}
                         items={[
-                            ...(!sandboxMode && !schedulePreview ? [{
-                                label: schedulePreviewMutation.isPending
-                                    ? t('surfaces.ganttChart.generatingSchedulePreview')
-                                    : t('surfaces.ganttChart.previewSchedule'),
-                                icon: <RefreshCw className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: beginSchedulePreview,
-                                disabled: schedulePreviewMutation.isPending
-                                    || scheduleMutation.isPending
-                                    || isRefreshingSavedSchedule,
-                            }] : []),
                             {
                                 label: t(isSortedByDate
                                     ? 'surfaces.ganttChart.restoreTaskOrder'
@@ -1102,8 +1071,8 @@ export const GanttChart = ({
                             },
                         ]}
                     />
-                </div>
-            </div>
+                </>}
+            />
 
             <details className="shrink-0 border-b border-border bg-surface-card px-4 py-2 text-xs text-content-secondary">
                 <summary className="cursor-pointer font-medium text-content-primary">{t('surfaces.ganttChart.legend')}</summary>
@@ -1124,50 +1093,6 @@ export const GanttChart = ({
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-1.5 w-5 rounded-full bg-content-tertiary" />{t('surfaces.ganttChart.legendGroupSpan')}</li>
                 </ul>
             </details>
-
-            <SlideOverDrawer
-                open={isFiltersOpen}
-                title={t('taskFilters.filters')}
-                subtitle={t('surfaces.ganttChart.filtersDescription')}
-                icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
-                onClose={() => setIsFiltersOpen(false)}
-                footer={(
-                    <Button
-                        className="w-full"
-                        type="button"
-                        variant="secondary"
-                        onClick={clearFilters}
-                        disabled={activeFilterCount === 0}
-                    >
-                        {t('surfaces.ganttChart.clearFilters')}
-                    </Button>
-                )}
-            >
-                <div className="space-y-5 p-4">
-                    <label className="block text-sm text-content-secondary">
-                        <span className="mb-1 block text-xs font-medium uppercase tracking-wide">
-                            {t('surfaces.ganttChart.assignee')}
-                        </span>
-                        <select
-                            value={selectedAssigneeId ?? ''}
-                            onChange={event => {
-                                const nextAssigneeId = event.target.value ? parseInt(event.target.value) : null;
-                                setSelectedAssigneeId(nextAssigneeId);
-                                if (nextAssigneeId !== null) setHideUnassigned(false);
-                            }}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        >
-                            <option value="">{t('surfaces.ganttChart.allAssignees')}</option>
-                            {uniqueAssignees.map(assignee => <option key={assignee.id} value={assignee.id}>{assignee.name}</option>)}
-                        </select>
-                    </label>
-                    <Checkbox
-                        checked={hideUnassigned}
-                        onChange={setHideUnassigned}
-                        label={t('surfaces.ganttChart.hideTasksWithoutAssignee')}
-                    />
-                </div>
-            </SlideOverDrawer>
 
             {(schedulePreviewMutation.isPending || isRefreshingSavedSchedule) && (
                 <QueryLoadingState

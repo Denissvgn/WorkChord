@@ -1224,6 +1224,7 @@ export const russianResources = {
                 dragToLink: 'Перетащите на другую задачу, чтобы она ждала эту',
                 removeStartPin: 'Убрать закрепление начала у «{{title}}» ({{date}})',
                 datesAreCalculated: 'Даты рассчитываются. Чтобы сдвинуть задачу, измените исполнителя, трудозатраты, то, чего она ждёт, или самое раннее начало.',
+                previewResult: 'Результат предпросмотра',
                 inputAssignee: 'Исполнитель',
                 inputEarliestStart: 'Самое раннее начало',
                 inputDueBy: 'Срок',
