@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { AgentActorRosterItem, AgentModelBinding } from '../../types/agent';
 import type { TeamMemberProfile } from '../../types/team';
-import { buildDirectory } from './directoryModel';
+import { agentStatus, buildDirectory, statusKnown } from './directoryModel';
 
 const NOW = Date.parse('2026-07-28T10:05:00Z');
 
@@ -40,11 +40,11 @@ describe('team directory model', () => {
         const [row] = rows;
         expect(row.kind).toBe('agent');
         expect(row.roles).toEqual(['worker', 'reviewer']);
-        expect(row.actors.map(entry => [entry.actor.id, entry.role, entry.model?.model_catalog?.configured_model_alias, entry.connection])).toEqual([
+        expect(row.actors.map(entry => [entry.actor.id, entry.role, entry.status.model?.model_catalog?.configured_model_alias, entry.status.connection])).toEqual([
             [9, 'worker', 'claude-sonnet-5-5', 'connected'],
             [10, 'reviewer', 'claude-opus-5-5', 'not_connected'],
         ]);
-        expect(row.connection).toBe('connected');
+        expect(row.status).toEqual({ model: row.actors[0].status.model, connection: 'connected' });
     });
 
     it('keeps two actors with the same role on one profile', () => {
@@ -65,8 +65,28 @@ describe('team directory model', () => {
     it('says Unknown for an agent when the roster cannot be read', () => {
         const [row] = buildDirectory([profile({ assignment_modes: ['execution'] })], [], 'unavailable', NOW);
         expect(row.actors).toEqual([]);
-        expect(row.model).toBeUndefined();
-        expect(row.connection).toBe('unknown');
+        expect(row.status).toEqual({ model: undefined, connection: 'unknown' });
         expect(row.roles).toEqual(['worker']);
+    });
+
+    it('says Unknown for every actor and row when cached roster data is passed but the roster is not loaded', () => {
+        const reviewer = actor({ id: 10, name: 'reviewer', role: 'verifier', eligible_model_bindings: [binding(10, 'claude-opus-5-5')] });
+        const roster = [actor({}), reviewer, actor({ id: 12, display_name: 'Elsewhere', profile_id: 99 })];
+        for (const state of ['unavailable', 'loading'] as const) {
+            const rows = buildDirectory([profile({})], roster, state, NOW);
+            expect(rows.map(row => row.actors.length)).toEqual([1, 2]);
+            for (const row of rows) {
+                expect(row.rosterState).toBe(state);
+                expect(row.status).toEqual({ model: undefined, connection: 'unknown' });
+                expect(statusKnown(row.status)).toBe(false);
+                for (const entry of row.actors) expect(entry.status).toEqual({ model: undefined, connection: 'unknown' });
+            }
+        }
+    });
+
+    it('reads the model and connection only through agentStatus', () => {
+        expect(agentStatus([actor({})], 'loaded', NOW).connection).toBe('connected');
+        expect(agentStatus([actor({})], 'unavailable', NOW)).toEqual({ model: undefined, connection: 'unknown' });
+        expect(agentStatus([], 'loaded', NOW)).toEqual({ model: null, connection: 'not_connected' });
     });
 });

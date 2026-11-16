@@ -9,13 +9,21 @@ export type ConnectionState = 'connected' | 'not_connected' | 'unknown';
 /** An agent counts as connected when it has been seen by the server this recently. */
 export const CONNECTED_WINDOW_MS = 15 * 60 * 1000;
 
+/** Loaded: the roster was read in this request. Loading: the first read is under way. Unavailable: no key, or the read failed. */
+export type RosterState = 'loaded' | 'loading' | 'unavailable';
+
+/** What an agent's model and connection cells show. */
+export interface AgentStatus {
+    /** The default model; null when it has none, undefined when it is Unknown. */
+    model: AgentModelBinding | null | undefined;
+    connection: ConnectionState;
+}
+
 /** One agent actor as read from the roster: a profile can have several, for example a Worker and a Reviewer. */
 export interface DirectoryActor {
     actor: AgentActorRosterItem;
     role: DirectoryRole | null;
-    /** The actor's default model; null when it has none. */
-    model: AgentModelBinding | null;
-    connection: Exclude<ConnectionState, 'unknown'>;
+    status: AgentStatus;
 }
 
 export interface DirectoryRow {
@@ -28,13 +36,11 @@ export interface DirectoryRow {
     actors: DirectoryActor[];
     roles: DirectoryRole[];
     skills: TeamMemberProfileSkill[];
-    /** The first actor's default model; null when it has none, undefined when it cannot be read. */
-    model: AgentModelBinding | null | undefined;
-    /** Connected when any of the row's actors is connected; null for people. */
-    connection: ConnectionState | null;
+    /** The first actor's model, and Connected when any of the row's actors is connected; null for people. */
+    status: AgentStatus | null;
+    /** Whether the roster behind every status on this row could be read. */
+    rosterState: RosterState;
 }
-
-export type RosterState = 'loaded' | 'unavailable';
 
 const ROLE_ORDER: DirectoryRole[] = ['pm', 'worker', 'reviewer'];
 const ACTOR_ROLES: Record<string, DirectoryRole> = { pm: 'pm', worker: 'worker', verifier: 'reviewer' };
@@ -44,13 +50,13 @@ const inRoleOrder = (roles: (DirectoryRole | null | undefined)[]) => ROLE_ORDER.
 
 const rolePosition = (role: DirectoryRole | null) => (role ? ROLE_ORDER.indexOf(role) : ROLE_ORDER.length);
 
-export const connectionOf = (actor: AgentActorRosterItem, now: number): Exclude<ConnectionState, 'unknown'> => {
+const connectionOf = (actor: AgentActorRosterItem, now: number): Exclude<ConnectionState, 'unknown'> => {
     if (!actor.enabled || actor.lifecycle_state === 'disabled' || !actor.last_seen_at) return 'not_connected';
     const seen = Date.parse(actor.last_seen_at);
     return Number.isFinite(seen) && now - seen <= CONNECTED_WINDOW_MS ? 'connected' : 'not_connected';
 };
 
-export const defaultBinding = (actor: AgentActorRosterItem): AgentModelBinding | null => {
+const defaultBinding = (actor: AgentActorRosterItem): AgentModelBinding | null => {
     const usable = actor.eligible_model_bindings.filter(binding => binding.enabled);
     return usable.find(binding => binding.is_default) ?? usable[0] ?? null;
 };
@@ -61,6 +67,23 @@ export const modelName = (binding: AgentModelBinding) => (
 
 export const actorName = (actor: AgentActorRosterItem) => actor.display_name || actor.name;
 
+const UNKNOWN_STATUS: AgentStatus = { model: undefined, connection: 'unknown' };
+
+/**
+ * The only place a model or connection is read from roster data. It says Unknown whenever the roster
+ * is not loaded, so actors cached from an earlier read never show a state after a refresh fails.
+ */
+export const agentStatus = (actors: AgentActorRosterItem[], rosterState: RosterState, now: number): AgentStatus => {
+    if (rosterState !== 'loaded') return UNKNOWN_STATUS;
+    return {
+        model: actors[0] ? defaultBinding(actors[0]) : null,
+        connection: actors.some(actor => connectionOf(actor, now) === 'connected') ? 'connected' : 'not_connected',
+    };
+};
+
+/** True when a status was read from the roster rather than left Unknown. */
+export const statusKnown = (status: AgentStatus | null): status is AgentStatus => status !== null && status.connection !== 'unknown';
+
 /** The role that tells this actor apart within its row, or null when it has none or shares it with another actor. */
 export const distinctRole = (row: DirectoryRow, entry: DirectoryActor): DirectoryRole | null => (
     entry.role && row.actors.filter(other => other.role === entry.role).length === 1 ? entry.role : null
@@ -68,11 +91,10 @@ export const distinctRole = (row: DirectoryRow, entry: DirectoryActor): Director
 
 const profileRoles = (profile: TeamMemberProfile) => inRoleOrder(profile.assignment_modes.map(mode => MODE_ROLES[mode]));
 
-const directoryActor = (actor: AgentActorRosterItem, now: number): DirectoryActor => ({
+const directoryActor = (actor: AgentActorRosterItem, rosterState: RosterState, now: number): DirectoryActor => ({
     actor,
     role: ACTOR_ROLES[actor.role] ?? null,
-    model: defaultBinding(actor),
-    connection: connectionOf(actor, now),
+    status: agentStatus([actor], rosterState, now),
 });
 
 /**
@@ -86,12 +108,11 @@ export const buildDirectory = (
     rosterState: RosterState,
     now: number = Date.now(),
 ): DirectoryRow[] => {
-    const known = rosterState === 'loaded';
     const profileIds = new Set(profiles.map(profile => profile.id));
     const actorsByProfile = new Map<number, DirectoryActor[]>();
     const unlinked: DirectoryActor[] = [];
     for (const actor of roster) {
-        const entry = directoryActor(actor, now);
+        const entry = directoryActor(actor, rosterState, now);
         if (actor.profile_id != null && profileIds.has(actor.profile_id)) {
             actorsByProfile.set(actor.profile_id, [...(actorsByProfile.get(actor.profile_id) ?? []), entry]);
         } else {
@@ -110,8 +131,8 @@ export const buildDirectory = (
             actors,
             roles: actorRoles.length || !profile ? actorRoles : profileRoles(profile),
             skills: profile?.skills ?? [],
-            model: !known ? undefined : actors[0]?.model ?? null,
-            connection: !known ? 'unknown' : actors.some(entry => entry.connection === 'connected') ? 'connected' : 'not_connected',
+            status: agentStatus(actors.map(entry => entry.actor), rosterState, now),
+            rosterState,
         };
     };
 
@@ -126,8 +147,8 @@ export const buildDirectory = (
             actors: [],
             roles: profileRoles(profile),
             skills: profile.skills,
-            model: null,
-            connection: null,
+            status: null,
+            rosterState,
         };
     });
     for (const entry of unlinked) rows.push(agentRow(`actor-${entry.actor.id}`, actorName(entry.actor), null, [entry]));

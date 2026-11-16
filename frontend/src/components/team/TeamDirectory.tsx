@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Bot, User } from 'lucide-react';
@@ -11,7 +11,10 @@ import { Button } from '../common/Button';
 import { InlineEmptyState, Pill, TableFrame } from '../ui';
 import type { PillTone } from '../ui';
 import { TeamProfileManager } from './TeamProfileManager';
-import { actorName, buildDirectory, distinctRole, modelName, type ConnectionState, type DirectoryActor, type DirectoryRow } from './directoryModel';
+import {
+    actorName, buildDirectory, distinctRole, modelName,
+    type AgentStatus, type ConnectionState, type DirectoryActor, type DirectoryRow, type RosterState,
+} from './directoryModel';
 
 const MAX_CHIPS = 3;
 const CONNECTION_TONE: Record<ConnectionState, PillTone> = { connected: 'green', not_connected: 'gray', unknown: 'yellow' };
@@ -43,12 +46,13 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
         enabled: canReadRoster,
         retry: false,
     });
-    const rosterLoading = canReadRoster && rosterQuery.isLoading;
-    const rosterUnavailable = !canReadRoster || rosterQuery.isError;
+    // Only a successful read counts: after a failed refresh the cached roster is stale and every state is Unknown.
+    const rosterState: RosterState = !canReadRoster || rosterQuery.isError ? 'unavailable'
+        : rosterQuery.isSuccess ? 'loaded' : 'loading';
 
     const rows = useMemo(
-        () => buildDirectory(profilesQuery.data ?? [], rosterQuery.data ?? [], rosterUnavailable ? 'unavailable' : 'loaded', now),
-        [profilesQuery.data, rosterQuery.data, rosterUnavailable, now],
+        () => buildDirectory(profilesQuery.data ?? [], rosterQuery.data ?? [], rosterState, now),
+        [profilesQuery.data, rosterQuery.data, rosterState, now],
     );
     const drawerRow = drawer?.mode === 'edit' ? rows.find(row => row.key === drawer.key) ?? null : null;
     const hasAgents = rows.some(row => row.kind === 'agent');
@@ -62,16 +66,23 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
         return role ? t(`teamPage.roles.${role}`) : actorName(entry.actor);
     };
 
-    const cell = (row: DirectoryRow, value: string | null | undefined, empty: string) => (
-        row.kind !== 'agent' ? <span className="text-content-tertiary">—</span>
-            : rosterLoading ? <span className="text-content-secondary">{t('common.loading')}</span>
-                : value === undefined ? t('teamPage.unknown')
-                    : value ?? <span className="text-content-secondary">{empty}</span>
+    // Every model and connection cell is drawn from an AgentStatus, which is Unknown unless the roster was read.
+    const modelText = (status: AgentStatus) => (
+        status.model === undefined ? t('teamPage.unknown')
+            : status.model ? modelName(status.model) : <span className="text-content-secondary">{t('teamPage.noModel')}</span>
+    );
+    const connectionPill = (status: AgentStatus) => (
+        <Pill tone={CONNECTION_TONE[status.connection]}>{t(`teamPage.connection.${status.connection}`)}</Pill>
+    );
+    const statusCell = (row: DirectoryRow, render: (status: AgentStatus) => ReactNode) => (
+        row.status === null ? <span className="text-content-tertiary">—</span>
+            : row.rosterState === 'loading' ? <span className="text-content-secondary">{t('common.loading')}</span>
+                : render(row.status)
     );
 
     return (
         <div className="space-y-3">
-            {hasAgents && rosterUnavailable && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
+            {hasAgents && rosterState === 'unavailable' && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
             {rows.length === 0 ? (
                 <InlineEmptyState
                     title={t('teamPage.emptyTitle')}
@@ -125,14 +136,14 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
                                                 </span>
                                             )}
                                         </td>
-                                        {row.actors.length > 1 ? (
+                                        {row.actors.length > 1 && row.rosterState !== 'loading' ? (
                                             <>
                                                 <td className="px-3 py-3">
                                                     <ul className="space-y-1">
                                                         {row.actors.map(entry => (
                                                             <li key={entry.actor.id} data-testid="actor-model">
                                                                 <span className="text-content-secondary">{actorLabel(row, entry)} · </span>
-                                                                {entry.model ? modelName(entry.model) : <span className="text-content-secondary">{t('teamPage.noModel')}</span>}
+                                                                {modelText(entry.status)}
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -142,7 +153,7 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
                                                         {row.actors.map(entry => (
                                                             <li key={entry.actor.id} data-testid="actor-connection" className="flex flex-wrap items-center gap-1">
                                                                 <span className="text-content-secondary">{actorLabel(row, entry)}</span>
-                                                                <Pill tone={CONNECTION_TONE[entry.connection]}>{t(`teamPage.connection.${entry.connection}`)}</Pill>
+                                                                {connectionPill(entry.status)}
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -150,12 +161,8 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
                                             </>
                                         ) : (
                                             <>
-                                                <td className="px-3 py-3">{cell(row, row.model === undefined ? undefined : row.model ? modelName(row.model) : null, t('teamPage.noModel'))}</td>
-                                                <td className="px-3 py-3">
-                                                    {row.kind !== 'agent' || !row.connection ? <span className="text-content-tertiary">—</span>
-                                                        : rosterLoading ? <span className="text-content-secondary">{t('common.loading')}</span>
-                                                            : <Pill tone={CONNECTION_TONE[row.connection]}>{t(`teamPage.connection.${row.connection}`)}</Pill>}
-                                                </td>
+                                                <td className="px-3 py-3">{statusCell(row, modelText)}</td>
+                                                <td className="px-3 py-3">{statusCell(row, connectionPill)}</td>
                                             </>
                                         )}
                                     </tr>
@@ -169,7 +176,6 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
                 <TeamProfileManager
                     key={drawer.mode === 'add' ? 'add' : drawer.key}
                     row={drawerRow}
-                    rosterUnavailable={rosterUnavailable}
                     onClose={() => onDrawerChange(null)}
                     onCreated={id => onDrawerChange({ mode: 'edit', key: `profile-${id}` })}
                 />

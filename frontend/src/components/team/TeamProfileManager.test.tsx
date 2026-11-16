@@ -64,8 +64,8 @@ const rowFor = (profile: TeamMemberProfile, roster: AgentActorRosterItem[] = [],
     buildDirectory([profile], roster, state, Date.parse('2026-07-28T10:05:00Z'))[0]
 );
 
-const renderDrawer = (row: DirectoryRow | null, extra: { rosterUnavailable?: boolean; onCreated?: (id: number) => void; onClose?: () => void } = {}) => renderWithProviders(
-    <TeamProfileManager row={row} rosterUnavailable={extra.rosterUnavailable ?? false}
+const renderDrawer = (row: DirectoryRow | null, extra: { onCreated?: (id: number) => void; onClose?: () => void } = {}) => renderWithProviders(
+    <TeamProfileManager row={row}
         onClose={extra.onClose ?? vi.fn()} onCreated={extra.onCreated ?? vi.fn()} />,
 );
 
@@ -150,7 +150,7 @@ describe('team profile drawer', () => {
     });
 
     it('says Unknown for the model and connection when the roster cannot be read', async () => {
-        renderDrawer(rowFor(profileFixture(), [], 'unavailable'), { rosterUnavailable: true });
+        renderDrawer(rowFor(profileFixture(), [], 'unavailable'));
         await screen.findByRole('textbox', { name: 'Display name' });
 
         expect(screen.getAllByText('Unknown')).toHaveLength(2);

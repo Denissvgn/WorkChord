@@ -26,7 +26,7 @@ import type {
 } from '../../types/team';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
-import { actorName, modelName, type DirectoryActor, type DirectoryRow } from './directoryModel';
+import { actorName, modelName, statusKnown, type AgentStatus, type DirectoryActor, type DirectoryRow } from './directoryModel';
 import type { AgentActorRosterItem } from '../../types/agent';
 
 const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
@@ -87,8 +87,6 @@ const formFromProfile = (profile: TeamMemberProfile): TeamMemberProfileCreate =>
 interface TeamProfileManagerProps {
     /** The person or agent to edit; absent when a person is being added. */
     row: DirectoryRow | null;
-    /** The roster could not be read, so the agent's model and connection are Unknown. */
-    rosterUnavailable: boolean;
     onClose: () => void;
     /** Called with the profile's id once a person has been added or an agent's profile has been created. */
     onCreated: (profileId: number) => void;
@@ -118,20 +116,16 @@ const useInvalidateTeam = () => {
 };
 
 /** The read-only model and connection of an agent, with the one sentence on when it receives work. */
-const AgentSection = ({ row, rosterUnavailable }: { row: DirectoryRow; rosterUnavailable: boolean }) => {
+const AgentSection = ({ row }: { row: DirectoryRow }) => {
     const { t } = useTranslation();
-    const readable = !rosterUnavailable && row.actors.length > 0;
+    // Actor details (last seen, eligible models) come from the same roster read, so they are shown only when its status is known.
+    const readable = statusKnown(row.status) && row.actors.length > 0;
     return (
         <section aria-labelledby="team-drawer-agent" className="space-y-2">
             <h3 id="team-drawer-agent" className="text-sm font-semibold text-content-primary">{t('teamProfiles.modelBinding')}</h3>
             <p className="text-sm text-content-secondary">{t('teamProfiles.agentDispatchNote')}</p>
             {!readable && (
-                <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                    <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
-                    <dd>{row.connection && !rosterUnavailable ? t(`teamPage.connection.${row.connection}`) : t('teamPage.unknown')}</dd>
-                    <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
-                    <dd>{row.model === undefined || rosterUnavailable ? t('teamPage.unknown') : t('teamPage.noModel')}</dd>
-                </dl>
+                <StatusList status={row.status ?? { model: undefined, connection: 'unknown' }} />
             )}
             {readable && row.actors.length === 1 && <ActorBinding entry={row.actors[0]} />}
             {readable && row.actors.length > 1 && row.actors.map(entry => {
@@ -144,29 +138,37 @@ const AgentSection = ({ row, rosterUnavailable }: { row: DirectoryRow; rosterUna
                     </div>
                 );
             })}
-            {rosterUnavailable && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
+            {row.rosterState === 'unavailable' && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
         </section>
+    );
+};
+
+/** A connection and a model as the status says; Unknown when the roster could not be read. */
+const StatusList = ({ status, lastSeenAt }: { status: AgentStatus; lastSeenAt?: string | null }) => {
+    const { t, i18n } = useTranslation();
+    return (
+        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+            <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
+            <dd>{t(`teamPage.connection.${status.connection}`)}</dd>
+            {lastSeenAt && statusKnown(status) && (
+                <>
+                    <dt className="text-content-secondary">{t('teamProfiles.lastSeen')}</dt>
+                    <dd>{formatDateTime(lastSeenAt, i18n.language)}</dd>
+                </>
+            )}
+            <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
+            <dd>{status.model === undefined ? t('teamPage.unknown') : status.model ? modelName(status.model) : t('teamPage.noModel')}</dd>
+        </dl>
     );
 };
 
 /** One actor's connection, when it was last seen, its default model and every model it may use. */
 const ActorBinding = ({ entry }: { entry: DirectoryActor }) => {
-    const { t, i18n } = useTranslation();
-    const bindings = entry.actor.eligible_model_bindings;
+    const { t } = useTranslation();
+    const bindings = statusKnown(entry.status) ? entry.actor.eligible_model_bindings : [];
     return (
         <>
-            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                <dt className="text-content-secondary">{t('teamPage.columns.connection')}</dt>
-                <dd>{t(`teamPage.connection.${entry.connection}`)}</dd>
-                {entry.actor.last_seen_at && (
-                    <>
-                        <dt className="text-content-secondary">{t('teamProfiles.lastSeen')}</dt>
-                        <dd>{formatDateTime(entry.actor.last_seen_at, i18n.language)}</dd>
-                    </>
-                )}
-                <dt className="text-content-secondary">{t('teamPage.columns.model')}</dt>
-                <dd>{entry.model ? modelName(entry.model) : t('teamPage.noModel')}</dd>
-            </dl>
+            <StatusList status={entry.status} lastSeenAt={entry.actor.last_seen_at} />
             {bindings.length > 0 && (
                 <ul className="space-y-1 text-sm" aria-label={t('teamProfiles.modelBinding')}>
                     {bindings.map(binding => (
@@ -187,14 +189,14 @@ const ActorBinding = ({ entry }: { entry: DirectoryActor }) => {
  * A row without a profile (an agent that has not been given one) is handled apart, so this drawer never
  * offers to create an unrelated person for it.
  */
-export const TeamProfileManager = ({ row, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps) => {
-    if (row === null) return <ProfileDrawer row={null} initial={null} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
-    if (row.profile === null) return <AgentWithoutProfileDrawer row={row} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
-    return <ObservedProfileDrawer row={row} profileId={row.profile.id} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
+export const TeamProfileManager = ({ row, onClose, onCreated }: TeamProfileManagerProps) => {
+    if (row === null) return <ProfileDrawer row={null} initial={null} onClose={onClose} onCreated={onCreated} />;
+    if (row.profile === null) return <AgentWithoutProfileDrawer row={row} onClose={onClose} onCreated={onCreated} />;
+    return <ObservedProfileDrawer row={row} profileId={row.profile.id} onClose={onClose} onCreated={onCreated} />;
 };
 
 /** Reads the profile first, so the form and the revisions it will be saved at come from the same observation. */
-const ObservedProfileDrawer = ({ row, profileId, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow; profileId: number }) => {
+const ObservedProfileDrawer = ({ row, profileId, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow; profileId: number }) => {
     const { t } = useTranslation();
     const [initial, setInitial] = useState<ObservedProfile | null>(null);
     const [failure, setFailure] = useState<unknown>(null);
@@ -210,7 +212,7 @@ const ObservedProfileDrawer = ({ row, profileId, rosterUnavailable, onClose, onC
     useEffect(() => { queueMicrotask(load); }, [load]);
 
     if (initial) {
-        return <ProfileDrawer row={row} initial={initial} rosterUnavailable={rosterUnavailable} onClose={onClose} onCreated={onCreated} />;
+        return <ProfileDrawer row={row} initial={initial} onClose={onClose} onCreated={onCreated} />;
     }
     return (
         <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}>
@@ -218,14 +220,14 @@ const ObservedProfileDrawer = ({ row, profileId, rosterUnavailable, onClose, onC
                 {failure === null
                     ? <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>
                     : <QueryErrorState error={failure} onRetry={load} />}
-                {row.kind === 'agent' && <AgentSection row={row} rosterUnavailable={rosterUnavailable} />}
+                {row.kind === 'agent' && <AgentSection row={row} />}
             </div>
         </SlideOverDrawer>
     );
 };
 
 /** An agent that has no profile yet: say so, and offer to create its profile and link it to the agent. */
-const AgentWithoutProfileDrawer = ({ row, rosterUnavailable, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow }) => {
+const AgentWithoutProfileDrawer = ({ row, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow }) => {
     const { t } = useTranslation();
     const { hasAdminAccess } = useAdminAccess();
     const invalidate = useInvalidateTeam();
@@ -275,7 +277,7 @@ const AgentWithoutProfileDrawer = ({ row, rosterUnavailable, onClose, onCreated 
             footer={<div className="flex justify-end"><Button type="button" variant="ghost" onClick={onClose}>{t('actions.close')}</Button></div>}>
             <div className="space-y-6 p-5">
                 {error && <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{error}</div>}
-                <AgentSection row={row} rosterUnavailable={rosterUnavailable} />
+                <AgentSection row={row} />
                 <section aria-labelledby="team-drawer-no-profile" className="space-y-2">
                     <h3 id="team-drawer-no-profile" className="text-sm font-semibold text-content-primary">{t('teamProfiles.profile')}</h3>
                     <p className="text-sm text-content-secondary">{t('teamProfiles.noProfileYet')}</p>
@@ -299,12 +301,11 @@ interface ProfileDrawerProps {
     row: DirectoryRow | null;
     /** The observation the form is filled from; absent when a person is being added. */
     initial: ObservedProfile | null;
-    rosterUnavailable: boolean;
     onClose: () => void;
     onCreated: (profileId: number) => void;
 }
 
-const ProfileDrawer = ({ row, initial, rosterUnavailable, onClose, onCreated }: ProfileDrawerProps) => {
+const ProfileDrawer = ({ row, initial, onClose, onCreated }: ProfileDrawerProps) => {
     const { t } = useTranslation();
     const profileId = initial?.resource.id ?? null;
     const [profileForm, setProfileForm] = useState<TeamMemberProfileCreate>(
@@ -552,7 +553,7 @@ const ProfileDrawer = ({ row, initial, rosterUnavailable, onClose, onCreated }: 
                     </div>
                 )}
 
-                {agent && row && <AgentSection row={row} rosterUnavailable={rosterUnavailable} />}
+                {agent && row && <AgentSection row={row} />}
 
                 <form id={formId} onSubmit={submitProfile} className="space-y-3" aria-label={t('teamProfiles.profile')}>
                     <h3 className="text-sm font-semibold text-content-primary">{t('teamProfiles.profile')}</h3>

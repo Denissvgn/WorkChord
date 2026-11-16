@@ -162,6 +162,53 @@ describe('Team page', () => {
         expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
 
+    it('shows Unknown for every agent, row and drawer, when a refresh fails after the roster was read', async () => {
+        setAdminApiKey('operator-key');
+        const opusBinding: AgentModelBinding = {
+            ...binding, id: 6, actor_id: 12, model_catalog_key: 'opus',
+            model_catalog: { ...binding.model_catalog!, id: 4, key: 'opus', configured_model_alias: 'claude-opus-5-5' },
+        };
+        services.agent.getActorRoster.mockResolvedValue([
+            actor({}),
+            actor({ id: 12, name: 'builder-review', display_name: 'Builder Review', role: 'verifier', profile_id: 2, last_seen_at: null, eligible_model_bindings: [opusBinding] }),
+            actor({ id: 10, name: 'idle', display_name: 'Idle Agent', profile_id: 3, eligible_model_bindings: [] }),
+        ]);
+        const { user, queryClient } = renderTeam();
+
+        await screen.findByRole('button', { name: 'Open Builder' });
+        await waitFor(() => expect(within(rowFor('Builder')).getAllByTestId('actor-connection')).toHaveLength(2));
+        expect(within(rowFor('Idle Agent')).getByText('Connected')).toBeVisible();
+
+        // The roster stays cached; only the refresh fails.
+        services.agent.getActorRoster.mockRejectedValue({ response: { status: 503, data: { detail: 'Unavailable' } } });
+        await act(async () => { await queryClient.refetchQueries({ queryKey: ['agent-actor-roster'] }); });
+        expect(queryClient.getQueryState(['agent-actor-roster', true])?.status).toBe('error');
+        expect(queryClient.getQueryData(['agent-actor-roster', true])).toHaveLength(3);
+
+        await waitFor(() => expect(within(rowFor('Builder')).queryByText('Connected')).not.toBeInTheDocument());
+        const shared = within(rowFor('Builder'));
+        expect(shared.getAllByTestId('actor-model').map(item => item.textContent)).toEqual(['Worker · Unknown', 'Reviewer · Unknown']);
+        expect(shared.getAllByTestId('actor-connection').map(item => item.textContent)).toEqual(['WorkerUnknown', 'ReviewerUnknown']);
+        const single = within(rowFor('Idle Agent'));
+        expect(single.getAllByText('Unknown')).toHaveLength(2);
+        expect(single.queryByText('Connected')).not.toBeInTheDocument();
+        expect(single.queryByText('No model')).not.toBeInTheDocument();
+        for (const text of ['Connected', 'Not connected', 'claude-sonnet-5-5', 'claude-opus-5-5']) {
+            expect(screen.queryByText(text)).not.toBeInTheDocument();
+        }
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+        expect(screen.getByText(/need the admin key/)).toBeVisible();
+
+        await user.click(screen.getByRole('button', { name: 'Open Builder' }));
+        const drawer = within(await screen.findByRole('dialog', { name: 'Builder' }));
+        const agent = within(drawer.getByRole('region', { name: 'Model binding' }));
+        expect(agent.getAllByText('Unknown')).toHaveLength(2);
+        for (const text of ['Connected', 'Not connected', 'claude-sonnet-5-5', 'claude-opus-5-5', 'Last seen']) {
+            expect(agent.queryByText(text)).not.toBeInTheDocument();
+        }
+        expect(agent.queryByRole('list', { name: 'Model binding' })).not.toBeInTheDocument();
+    });
+
     it('passes the page chrome check, holds no iteration capacity table, and says where capacity is set', async () => {
         const { container } = renderTeam();
         await screen.findByRole('button', { name: 'Open Ada Lovelace' });
