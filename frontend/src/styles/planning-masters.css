@@ -5167,3 +5167,11 @@
 
 /* Read-first task view: text areas grow with their content, so the drawer has one scroll. */
 .task-read-view textarea { field-sizing: content; min-height: 4.5rem; max-height: none; }
+
+/* Keep the Gantt controls together at desktop widths. Active chips may flow below them. */
+.wc .gantt-toolbar { flex-wrap: nowrap; }
+.wc .gantt-toolbar .wc-page-toolbar-search { flex: 0 1 160px; min-width: 120px; }
+.wc .gantt-toolbar .wc-page-toolbar-filters { flex: 1 1 auto; order: initial; }
+.wc .gantt-toolbar .wc-page-toolbar-end { order: initial; }
+.wc .gantt-toolbar .wc-filter-controls { flex-wrap: nowrap; }
+.wc .gantt-toolbar .wc-filter-select { min-width: 5rem; max-width: 9rem; }

@@ -27,6 +27,7 @@ import type { IterationSnapshot } from '../services/snapshotService';
 import { getAdminAccessErrorMessage } from '../utils/adminAccess';
 import { formatDateTime } from '../utils/formatDate';
 import { OverflowMenu } from '../components/ui';
+import type { OverflowMenuItem } from '../components/ui/OverflowMenu';
 import { PlanningWorkbenchFrame } from '../components/planning/PlanningWorkbenchFrame';
 
 const DECISION_COUNT_LABELS = [
@@ -82,7 +83,19 @@ const GanttPage = () => {
     const latestExplainIterationRef = useRef<number | null>(null);
 
     // Sandbox state
+    const chartActionsRef = useRef<OverflowMenuItem[]>([]);
+    const [chartActions, setChartActions] = useState<OverflowMenuItem[]>([]);
+    const updateChartActions = useCallback((items: OverflowMenuItem[]) => {
+        chartActionsRef.current = items;
+        setChartActions(previous => {
+            const signature = (list: OverflowMenuItem[]) => JSON.stringify(list.map(item => [item.label, item.disabled]));
+            if (signature(previous) === signature(items)) return previous;
+            return items.map((item, index) => ({ ...item, onSelect: () => chartActionsRef.current[index]?.onSelect() }));
+        });
+    }, []);
     const [sandboxMode, setSandboxMode] = useState(false);
+    const [applySaveUnconfirmed, setApplySaveUnconfirmed] = useState(false);
+    const [validatedDraft, setValidatedDraft] = useState<string | null>(null);
     const [sandboxChanges, setSandboxChanges] = useState<Record<number, Partial<GanttTask>>>({});
 
     const { data: iterations, isLoading: iterationsLoading, isError: iterationsError, refetch: refetchIterations } = useQuery({
@@ -188,11 +201,12 @@ const GanttPage = () => {
     const schedulePreviewQuery = useQuery({
         queryKey: ['gantt-schedule-preview', selectedIterationId, sandboxChanges, ganttTasks?.iteration.revision],
         queryFn: () => ganttService.previewSchedule(selectedIterationId, buildBatchTasks(), ganttTasks?.iteration.revision),
-        enabled: sandboxMode && selectedIterationId > 0 && sandboxChangeCount > 0,
+        enabled: false,
         staleTime: Infinity,
         retry: false,
     });
-    const canApplySandboxChanges = sandboxChangeCount > 0
+    const draftKey = JSON.stringify([selectedIterationId, ganttTasks?.iteration.revision, sandboxChanges]);
+    const canApplySandboxChanges = validatedDraft === draftKey && !applySaveUnconfirmed && sandboxChangeCount > 0
         && schedulePreviewQuery.isSuccess
         && !schedulePreviewQuery.isFetching;
 
@@ -201,7 +215,7 @@ const GanttPage = () => {
         if (!sandboxMode || sandboxChangeCount === 0) {
             return { sandboxedTasks: ganttTasks.tasks, currentSimulationError: null };
         }
-        if (schedulePreviewQuery.data) {
+        if (validatedDraft === draftKey && schedulePreviewQuery.data) {
             return {
                 sandboxedTasks: markSandboxModified(schedulePreviewQuery.data.tasks, sandboxChanges),
                 currentSimulationError: null,
@@ -219,6 +233,8 @@ const GanttPage = () => {
         sandboxChanges,
         sandboxChangeCount,
         schedulePreviewQuery.data,
+        validatedDraft,
+        draftKey,
         schedulePreviewQuery.isError,
         schedulePreviewQuery.error,
         t,
@@ -240,6 +256,7 @@ const GanttPage = () => {
     const visibleEditingTask = editingExplanationTask ? taskLookup.get(editingExplanationTask.id) || null : null;
 
     const handleSaveSandbox = (taskId: number, changes: Partial<GanttTask>) => {
+        setValidatedDraft(null);
         setSandboxChanges(prev => ({
             ...prev,
             [taskId]: {
@@ -264,6 +281,7 @@ const GanttPage = () => {
             toast.success(t('feedback.ganttApplySuccess'));
         },
         onError: (err: unknown) => {
+            setApplySaveUnconfirmed(true);
             toast.error(getApiErrorMessage(err, t('feedback.ganttApplyFailed')));
         }
     });
@@ -382,8 +400,9 @@ const GanttPage = () => {
             primaryAction={(
                 <Button
                     variant={sandboxMode ? 'secondary' : 'primary'}
+                    disabled={applySaveUnconfirmed}
                     onClick={() => {
-                        if (sandboxMode) setSandboxChanges({});
+                        if (sandboxMode) { setSandboxChanges({}); setValidatedDraft(null); setApplySaveUnconfirmed(false); void refetchGantt(); }
                         setSandboxMode(!sandboxMode);
                     }}
                     title={t('gantt.sandboxTooltip')}
@@ -396,6 +415,7 @@ const GanttPage = () => {
                 { label: t('gantt.explainSchedule'), icon: <Sparkles className="h-4 w-4" />, onSelect: () => explainMutation.mutate(selectedIterationId), disabled: !canExplainSchedule || sandboxMode || explainMutation.isPending },
                 { label: t('snapshots.open'), icon: <History className="h-4 w-4" />, onSelect: () => setSnapshotsOpen(true), disabled: selectedIterationId <= 0 },
                 { label: t(isFullScreen ? 'actions.exitFullScreen' : 'actions.enterFullScreen'), icon: isFullScreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />, onSelect: () => setIsFullScreen(value => !value) },
+                ...chartActions,
             ]} />}
             state={(sandboxMode || currentSimulationError || visibleExplanationError || visibleExplanation) ? (
                 <>
@@ -415,10 +435,7 @@ const GanttPage = () => {
                                     </span>
                                 ) : ` ${t('gantt.noEditsYet')}`}
                             </p>
-                            {sandboxChangeCount > 0 && schedulePreviewQuery.isSuccess && !schedulePreviewQuery.isFetching && (
-                                <p className="mt-1 text-sm font-medium text-feedback-warning-foreground" role="status">{t('gantt.previewResult')}</p>
-                            )}
-                            {sandboxChangeCount > 0 && !schedulePreviewQuery.isSuccess && !schedulePreviewQuery.isError && (
+                            {sandboxChangeCount > 0 && schedulePreviewQuery.isFetching && (
                                 <p className="mt-1 text-xs text-feedback-warning-foreground" role="status">
                                     {t('gantt.simulationPending')}
                                 </p>
@@ -426,13 +443,17 @@ const GanttPage = () => {
                         </div>
                     </div>
                     <div className="planning-workbench-state-actions self-end sm:self-center">
+                        <Button variant="secondary" onClick={() => { void schedulePreviewQuery.refetch().then(result => { if (result.isSuccess) setValidatedDraft(draftKey); }); }} disabled={sandboxChangeCount === 0 || schedulePreviewQuery.isFetching || applySaveUnconfirmed} isLoading={schedulePreviewQuery.isFetching}>
+                            {t('gantt.previewResult')}
+                        </Button>
                         <Button
                             variant="secondary"
                             onClick={() => {
                                 setSandboxChanges({});
+                                setValidatedDraft(null);
+                                if (applySaveUnconfirmed) { setApplySaveUnconfirmed(false); void refetchGantt(); }
                             }}
-                            disabled={Object.keys(sandboxChanges).length === 0}
-                            className="text-feedback-warning-foreground border-feedback-warning-border hover:bg-feedback-warning-muted-hover/50"
+                            disabled={Object.keys(sandboxChanges).length === 0 || applySaveUnconfirmed}
                         >
                             <Undo2 className="w-4 h-4 mr-2" /> {t('gantt.discardEdits')}
                         </Button>
@@ -444,11 +465,20 @@ const GanttPage = () => {
                             isLoading={applySandboxMutation.isPending}
                             disabled={!canApplySandboxChanges}
                             title={sandboxChangeCount > 0 && !canApplySandboxChanges ? t('gantt.applyPreviewRequired') : undefined}
-                            className="bg-feedback-success hover:bg-feedback-success/90 text-feedback-success-emphasis ring-feedback-success"
                         >
                             <Check className="w-4 h-4 mr-2" /> {sandboxChangeCount > 0 ? t('gantt.applyChangesCount', { count: sandboxChangeCount }) : t('gantt.applyChanges')}
                         </Button>
                     </div>
+                </div>
+            )}
+
+            {sandboxMode && applySaveUnconfirmed && (
+                <div role="alert" className="rounded-lg border border-feedback-danger-border bg-feedback-danger-muted p-4">
+                    <h3>{t('gantt.scheduleSaveUnconfirmedTitle')}</h3>
+                    <p>{t('gantt.scheduleSaveUnconfirmedBody')}</p>
+                    <Button variant="secondary" onClick={() => { void refetchGantt().then(result => { if (result.isSuccess) { setSandboxChanges({}); setValidatedDraft(null); setApplySaveUnconfirmed(false); } }); }}>
+                        {t('gantt.refreshSavedSchedule')}
+                    </Button>
                 </div>
             )}
 
@@ -465,7 +495,7 @@ const GanttPage = () => {
                                     type="button"
                                     size="sm"
                                     variant="secondary"
-                                    onClick={() => { void schedulePreviewQuery.refetch(); }}
+                                    onClick={() => { void schedulePreviewQuery.refetch().then(result => { if (result.isSuccess) setValidatedDraft(draftKey); }); }}
                                     isLoading={schedulePreviewQuery.isFetching}
                                 >
                                     <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -662,6 +692,7 @@ const GanttPage = () => {
                         holidays={ganttTasks.holidays || []}
                         memberVacations={ganttTasks.member_vacations || {}}
                         sandboxMode={sandboxMode}
+                        onChartActionsChange={updateChartActions}
                         onSaveSandbox={handleSaveSandbox}
                     />
                 </div>

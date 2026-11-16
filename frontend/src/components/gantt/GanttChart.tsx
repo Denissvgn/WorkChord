@@ -3,23 +3,19 @@ import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react'
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
-import { ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Eye, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
 import { TaskEditModal } from './TaskEditModal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ganttService } from '../../services/ganttService';
 import clsx from 'clsx';
-import { UnscheduledTasks } from './UnscheduledTasks';
-import type { GanttTask, SchedulePreviewResponse } from '../../types/gantt';
+import type { GanttTask } from '../../types/gantt';
 import { STATUS_TONE, toneSolidClassName } from '../ui/tone';
-import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
-import { useToast } from '../feedback/toast';
 import { dateFnsLocale } from '../../i18n/dateLocale';
 import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
 import { FilterBar, OverflowMenu, PageToolbar } from '../ui';
+import type { OverflowMenuItem } from '../ui/OverflowMenu';
 import { GanttBarInputs } from './GanttBarInputs';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
@@ -35,6 +31,7 @@ interface GanttChartProps {
     memberVacations: Record<number, string[]>;
     sandboxMode?: boolean;
     onSaveSandbox?: (taskId: number, updatedData: Partial<GanttTask>) => void;
+    onChartActionsChange?: (items: OverflowMenuItem[]) => void;
 }
 
 const ZOOM_MIN = 20;
@@ -119,7 +116,7 @@ const hasCompleteTimelineDates = (
 export const GanttChart = ({
     iterationId,
     hoursPerDay = 8,
-    iterationRevision,    startDate,
+    startDate,
     endDate,
     tasks,
     weekends,
@@ -127,28 +124,16 @@ export const GanttChart = ({
     memberVacations,
     sandboxMode = false,
     onSaveSandbox,
+    onChartActionsChange,
 }: GanttChartProps) => {
     const { t, i18n: activeI18n } = useTranslation();
     const scopeLink = useScopeLink();
-    const toast = useToast();
-    const queryClient = useQueryClient();
     const [expandedTasks, setExpandedTasks] = useState<Set<number>>(new Set());
     const initialExpansionDone = useRef(false);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const chartInstructionsId = useId();
-    const [schedulePreview, setSchedulePreview] = useState<SchedulePreviewResponse | null>(null);
-    const [isRefreshingSavedSchedule, setIsRefreshingSavedSchedule] = useState(false);
-    const sourceTasks = schedulePreview?.tasks ?? tasks;
-    const focusChart = useCallback(() => {
-        window.requestAnimationFrame(() => scrollContainerRef.current?.focus());
-    }, []);
-
-    // A preview becomes stale as soon as its source changes, and it must never
-    // be mixed with an active edit sandbox (which has its own preview contract).
-    useEffect(() => {
-        setSchedulePreview(null);
-        setEditingTask(null);
-    }, [iterationId, tasks, sandboxMode]);
+    const sourceTasks = tasks;
+    useEffect(() => { setEditingTask(null); }, [iterationId, tasks, sandboxMode]);
 
     useEffect(() => {
         initialExpansionDone.current = false;
@@ -517,37 +502,6 @@ export const GanttChart = ({
         return map;
     }, [rows]);
 
-    const currentTaskDatesById = useMemo(() => {
-        const datesById = new Map<number, TaskTimelineDates>();
-        const collectDates = (taskList: GanttTask[]) => {
-            taskList.forEach(task => {
-                datesById.set(task.id, getTaskTimelineDates(task));
-                collectDates(task.children ?? []);
-            });
-        };
-        collectDates(tasks);
-        return datesById;
-    }, [tasks]);
-
-    const previewChangedTaskIds = useMemo(() => {
-        if (!schedulePreview) return new Set<number>();
-
-        const changed = new Set<number>();
-        const collectChangedTasks = (taskList: GanttTask[]) => {
-            taskList.forEach(task => {
-                const current = currentTaskDatesById.get(task.id);
-                const projected = getTaskTimelineDates(task);
-                if (current && (current.start !== projected.start || current.end !== projected.end)) {
-                    changed.add(task.id);
-                }
-                collectChangedTasks(task.children ?? []);
-            });
-        };
-
-        collectChangedTasks(schedulePreview.tasks);
-        return changed;
-    }, [currentTaskDatesById, schedulePreview]);
-
     const expandableTaskIds = useMemo(() => {
         const ids = new Set<number>();
         const collectIds = (taskList: GanttTask[]) => {
@@ -591,68 +545,6 @@ export const GanttChart = ({
             else next.add(taskId);
             return next;
         });
-    };
-
-    // feedback-policy: mutation pending,inline - preview is non-persistent and exposes inline retry.
-    const schedulePreviewMutation = useMutation({
-        mutationFn: () => ganttService.previewSchedule(iterationId, [], iterationRevision),
-        onSuccess: preview => {
-            setEditingTask(null);
-            setSchedulePreview(preview);
-        },
-    });
-
-    // feedback-policy: mutation pending,inline - Apply is disabled while pending and failures retain the preview for retry.
-    const scheduleMutation = useMutation({
-        mutationFn: () => ganttService.schedule(iterationId, schedulePreview?.input_revision ?? iterationRevision, schedulePreview?.input_planning_revision),
-        onSuccess: async () => {
-            setSchedulePreview(null);
-            await Promise.all([
-                queryClient.invalidateQueries({ queryKey: ['gantt', iterationId] }),
-                queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] }),
-            ]);
-            toast.success(t('gantt.scheduleApplied'));
-            focusChart();
-        },
-    });
-
-    const beginSchedulePreview = () => {
-        if (
-            sandboxMode
-            || schedulePreview
-            || schedulePreviewMutation.isPending
-            || scheduleMutation.isPending
-            || isRefreshingSavedSchedule
-        ) return;
-        scheduleMutation.reset();
-        schedulePreviewMutation.mutate();
-    };
-
-    const applySchedulePreview = () => {
-        if (!schedulePreview || scheduleMutation.isPending) return;
-        scheduleMutation.mutate();
-    };
-
-    const returnToSavedSchedule = () => {
-        scheduleMutation.reset();
-        setSchedulePreview(null);
-        focusChart();
-    };
-
-    const refreshSavedSchedule = async () => {
-        if (isRefreshingSavedSchedule) return;
-        setIsRefreshingSavedSchedule(true);
-        setSchedulePreview(null);
-        scheduleMutation.reset();
-        try {
-            await Promise.all([
-                queryClient.refetchQueries({ queryKey: ['gantt', iterationId], type: 'active' }),
-                queryClient.refetchQueries({ queryKey: ['tasks', iterationId], type: 'active' }),
-            ]);
-        } finally {
-            setIsRefreshingSavedSchedule(false);
-            focusChart();
-        }
     };
 
     const getTaskBaseColorClass = (task: GanttTask) => {
@@ -719,39 +611,6 @@ export const GanttChart = ({
             guidance: getUnscheduledTaskGuidance(task),
         },
     );
-
-    const getPreviewTaskDescription = (task: GanttTask) => {
-        const projectedDates = getTaskTimelineDates(task);
-        const currentDates = currentTaskDatesById.get(task.id);
-
-        if (!hasCompleteTimelineDates(projectedDates)) {
-            return t('gantt.schedulePreviewTaskUnscheduled', { title: task.title });
-        }
-
-        const projected = formatTaskTimelineDates(projectedDates);
-        if (!currentDates || !hasCompleteTimelineDates(currentDates)) {
-            return t('gantt.schedulePreviewTaskNewDates', {
-                title: task.title,
-                ...projected,
-            });
-        }
-
-        const current = formatTaskTimelineDates(currentDates);
-        if (previewChangedTaskIds.has(task.id)) {
-            return t('gantt.schedulePreviewTaskMoved', {
-                title: task.title,
-                currentStart: current.start,
-                currentEnd: current.end,
-                projectedStart: projected.start,
-                projectedEnd: projected.end,
-            });
-        }
-
-        return t('gantt.schedulePreviewTaskUnchanged', {
-            title: task.title,
-            ...projected,
-        });
-    };
 
     const getCalendarDayLabel = (day: Date) => {
         const date = format(day, 'PPPP', { locale: dateFnsLocale(activeI18n.language) });
@@ -864,7 +723,7 @@ export const GanttChart = ({
 
     const SIDEBAR_WIDTH = taskColumnWidth;
     const startBarDrag = (event: ReactPointerEvent<HTMLElement>, task: GanttTask, kind: BarDrag['kind']) => {
-        if (!sandboxMode || schedulePreview || event.button !== 0) return;
+        if (!sandboxMode || event.button !== 0) return;
         event.stopPropagation();
         const startX = event.clientX;
         const drag: BarDrag = { kind, task, startX, dayDelta: 0, pointerX: event.clientX, pointerY: event.clientY };
@@ -914,7 +773,6 @@ export const GanttChart = ({
             ? t('gantt.dependencySummary', { predecessors, successors })
             : '';
     };
-    const zoomPercent = Math.round((zoomLevel / ZOOM_DEFAULT) * 100);
     const zoomOut = () => setZoomLevel(value => Math.max(ZOOM_MIN, value - ZOOM_STEP));
     const zoomIn = () => setZoomLevel(value => Math.min(ZOOM_MAX, value + ZOOM_STEP));
     const todayIndex = visibleDays.findIndex(day => isSameDay(day, new Date()));
@@ -945,93 +803,12 @@ export const GanttChart = ({
         && activeFilterCount > 0
         && displayTasks.length === 0;
 
-    return (
-        <div role="region" aria-label={t('surfaces.ganttChart.chartRegion')} className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow" onKeyDown={handleChartShortcut}>
-            {unscheduledTaskCount > 0 && (
-                // One summary replaces a warning on every unscheduled row.
-                <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
-                    <CalendarOff aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
-                    <span className="min-w-0 flex-1">
-                        {unassignedTaskCount > 0
-                            ? t('surfaces.ganttChart.unscheduledSummaryUnassigned', { count: unscheduledTaskCount })
-                            : t('surfaces.ganttChart.unscheduledSummary', { count: unscheduledTaskCount })}
-                    </span>
-                    {unassignedTaskCount > 0 && (
-                        <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
-                            {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
-                        </Link>
-                    )}
-                    <Button size="sm" variant="ghost" aria-pressed={hideUnscheduled} onClick={() => setHideUnscheduled(value => !value)}>
-                        {hideUnscheduled ? t('surfaces.ganttChart.showUnscheduled') : t('surfaces.ganttChart.hideUnscheduled')}
-                    </Button>
-                </div>
-            )}
-            {unscheduledTaskCount === 0 && provisionalTaskCount > 0 && (
-                // Dated but unassigned work looks scheduled; say once that it is not.
-                <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
-                    <UserX aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
-                    <span className="min-w-0 flex-1">
-                        {t('surfaces.ganttChart.provisionalSummary', { count: provisionalTaskCount })}
-                    </span>
-                    <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
-                        {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
-                    </Link>
-                </div>
-            )}
-            <PageToolbar
-                search={<input
-                        type="search"
-                        value={searchText}
-                        onChange={event => setSearchText(event.target.value)}
-                        placeholder={t('surfaces.ganttChart.searchPlaceholder')}
-                        aria-label={t('surfaces.ganttChart.searchTasks')}
-                        className="input h-9 w-44 text-sm"
-                    />}
-                filters={<FilterBar filters={[
-                    { id: 'status', label: t('surfaces.ganttChart.statusFilter'), value: statusFilter, options: LEGEND_STATUSES.map(status => ({ value: status, label: t(`statuses.${status}`) })) },
-                    { id: 'assignee', label: t('surfaces.ganttChart.assignee'), value: selectedAssigneeId === null ? (hideUnassigned ? 'assigned' : '') : String(selectedAssigneeId), options: [{ value: 'assigned', label: t('surfaces.ganttChart.hideTasksWithoutAssignee') }, ...uniqueAssignees.map(assignee => ({ value: String(assignee.id), label: assignee.name }))] },
-                    { id: 'dates', label: t('surfaces.ganttChart.hideUnscheduled'), value: hideUnscheduled ? 'yes' : '', options: [{ value: 'yes', label: t('common.yes') }] },
-                ]} onChange={(id, value) => {
-                    if (id === 'status') setStatusFilter(value as GanttStatusFilter);
-                    if (id === 'assignee') { setHideUnassigned(value === 'assigned'); setSelectedAssigneeId(value && value !== 'assigned' ? Number(value) : null); }
-                    if (id === 'dates') setHideUnscheduled(value === 'yes');
-                }} onClear={clearFilters} />}
-                viewOptions={<>
-                    <select data-page-chrome-control="select" value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
-                        aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
-                        <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
-                        <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
-                        <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
-                        <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
-                        <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
-                    </select>
-                    <Button variant="ghost" size="sm" onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}
-                        aria-label={t('surfaces.ganttChart.zoomTimelineOut')} title={t('surfaces.ganttChart.zoomOutShortcut')}>
-                        <ZoomOut className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                    <span className="min-w-14 text-center text-sm tabular-nums text-content-secondary" aria-live="polite">
-                        {t('surfaces.ganttChart.zoomLevel', { percent: zoomPercent })}
-                    </span>
-                    <Button variant="ghost" size="sm" onClick={zoomIn} disabled={zoomLevel >= ZOOM_MAX}
-                        aria-label={t('surfaces.ganttChart.zoomTimelineIn')} title={t('surfaces.ganttChart.zoomInShortcut')}>
-                        <ZoomIn className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                    <Button variant="secondary" size="sm" onClick={scrollToToday} disabled={todayIndex < 0}
-                        title={todayIndex < 0 ? t('surfaces.ganttChart.todayOutsideTimeline') : t('surfaces.ganttChart.todayShortcut')}>
-                        <Crosshair className="mr-2 h-4 w-4" aria-hidden="true" />
-                        {t('surfaces.ganttChart.today')}
-                    </Button>
-                    <Button variant="secondary" size="sm" onClick={fitIteration}>
-                        <CalendarRange className="mr-2 h-4 w-4" aria-hidden="true" />
-                        {t('surfaces.ganttChart.fitIteration')}
-                    </Button>
-                    <Button variant="ghost" size="sm" aria-pressed={showLinks} onClick={() => setShowLinks(!showLinks)}>
-                        <GitBranch className="mr-2 h-4 w-4" aria-hidden="true" />
-                        {t('surfaces.ganttChart.dependencyLinks')}
-                    </Button>
-                    <OverflowMenu
-                        label={t('surfaces.ganttChart.chartActions')}
-                        items={[
+    const chartActions: OverflowMenuItem[] = [
+                            { label: t('surfaces.ganttChart.zoomTimelineOut'), icon: <ZoomOut className="h-4 w-4" />, onSelect: zoomOut, disabled: zoomLevel <= ZOOM_MIN },
+                            { label: t('surfaces.ganttChart.zoomTimelineIn'), icon: <ZoomIn className="h-4 w-4" />, onSelect: zoomIn, disabled: zoomLevel >= ZOOM_MAX },
+                            { label: t('surfaces.ganttChart.today'), icon: <Crosshair className="h-4 w-4" />, onSelect: scrollToToday, disabled: todayIndex < 0 },
+                            { label: t('surfaces.ganttChart.fitIteration'), icon: <CalendarRange className="h-4 w-4" />, onSelect: fitIteration },
+                            { label: `${t('surfaces.ganttChart.dependencyLinks')} (${showLinks ? '✓' : '—'})`, icon: <GitBranch className="h-4 w-4" aria-hidden="true" />, onSelect: () => setShowLinks(!showLinks) },
                             {
                                 label: t(isSortedByDate
                                     ? 'surfaces.ganttChart.restoreTaskOrder'
@@ -1069,8 +846,68 @@ export const GanttChart = ({
                                     : <Minimize2 className="h-4 w-4" aria-hidden="true" />,
                                 onSelect: () => setIsCompressed(value => !value),
                             },
-                        ]}
-                    />
+                        ];
+    useEffect(() => { onChartActionsChange?.(chartActions); });
+    useEffect(() => () => { onChartActionsChange?.([]); }, [onChartActionsChange]);
+
+    return (
+        <div role="region" aria-label={t('surfaces.ganttChart.chartRegion')} className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg bg-surface-card shadow" onKeyDown={handleChartShortcut}>
+            {unscheduledTaskCount > 0 && (
+                // One summary replaces a warning on every unscheduled row.
+                <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
+                    <CalendarOff aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
+                    <span className="min-w-0 flex-1">
+                        {unassignedTaskCount > 0
+                            ? t('surfaces.ganttChart.unscheduledSummaryUnassigned', { count: unscheduledTaskCount })
+                            : t('surfaces.ganttChart.unscheduledSummary', { count: unscheduledTaskCount })}
+                    </span>
+                    {unassignedTaskCount > 0 && (
+                        <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
+                            {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
+                        </Link>
+                    )}
+                </div>
+            )}
+            {unscheduledTaskCount === 0 && provisionalTaskCount > 0 && (
+                // Dated but unassigned work looks scheduled; say once that it is not.
+                <div role="status" className="flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface-muted px-4 py-2 text-sm text-content-primary">
+                    <UserX aria-hidden="true" className="h-4 w-4 shrink-0 text-content-secondary" />
+                    <span className="min-w-0 flex-1">
+                        {t('surfaces.ganttChart.provisionalSummary', { count: provisionalTaskCount })}
+                    </span>
+                    <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
+                        {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
+                    </Link>
+                </div>
+            )}
+            <PageToolbar className="gantt-toolbar"
+                search={<input
+                        type="search"
+                        value={searchText}
+                        onChange={event => setSearchText(event.target.value)}
+                        placeholder={t('surfaces.ganttChart.searchPlaceholder')}
+                        aria-label={t('surfaces.ganttChart.searchTasks')}
+                        className="input h-9 w-44 text-sm"
+                    />}
+                filters={<FilterBar filters={[
+                    { id: 'status', label: t('surfaces.ganttChart.statusFilter'), value: statusFilter, options: LEGEND_STATUSES.map(status => ({ value: status, label: t(`statuses.${status}`) })) },
+                    { id: 'assignee', label: t('surfaces.ganttChart.assignee'), value: selectedAssigneeId === null ? (hideUnassigned ? 'assigned' : '') : String(selectedAssigneeId), options: [{ value: 'assigned', label: t('surfaces.ganttChart.hideTasksWithoutAssignee') }, ...uniqueAssignees.map(assignee => ({ value: String(assignee.id), label: assignee.name }))] },
+                    { id: 'dates', label: t('surfaces.ganttChart.hideUnscheduled'), value: hideUnscheduled ? 'yes' : '', options: [{ value: 'yes', label: t('common.yes') }] },
+                ]} onChange={(id, value) => {
+                    if (id === 'status') setStatusFilter(value as GanttStatusFilter);
+                    if (id === 'assignee') { setHideUnassigned(value === 'assigned'); setSelectedAssigneeId(value && value !== 'assigned' ? Number(value) : null); }
+                    if (id === 'dates') setHideUnscheduled(value === 'yes');
+                }} onClear={clearFilters} />}
+                viewOptions={<>
+                    <select data-page-chrome-control="select" value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
+                        aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
+                        <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
+                        <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
+                        <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
+                        <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
+                        <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
+                    </select>
+                    {!onChartActionsChange && <OverflowMenu label={t('surfaces.ganttChart.chartActions')} items={chartActions} />}
                 </>}
             />
 
@@ -1093,97 +930,6 @@ export const GanttChart = ({
                     <li className="flex items-center gap-1.5"><span aria-hidden="true" className="inline-block h-1.5 w-5 rounded-full bg-content-tertiary" />{t('surfaces.ganttChart.legendGroupSpan')}</li>
                 </ul>
             </details>
-
-            {(schedulePreviewMutation.isPending || isRefreshingSavedSchedule) && (
-                <QueryLoadingState
-                    className="m-3 shrink-0 sm:m-4"
-                    message={isRefreshingSavedSchedule
-                        ? t('gantt.refreshingSavedSchedule')
-                        : t('gantt.schedulePreviewPending')}
-                />
-            )}
-
-            {schedulePreview && (
-                <section
-                    className="m-3 shrink-0 rounded-lg border border-action bg-action-muted/50 p-4 sm:m-4"
-                    role="status"
-                    aria-live="polite"
-                >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                        <div className="flex min-w-0 items-start gap-3">
-                            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-surface-card text-action shadow-sm">
-                                <Eye className="h-5 w-5" aria-hidden="true" />
-                            </div>
-                            <div className="min-w-0">
-                                <h2 className="font-semibold text-content-primary">
-                                    {t(scheduleMutation.isPending
-                                        ? 'gantt.scheduleApplyPending'
-                                        : 'gantt.schedulePreviewReady')}
-                                </h2>
-                                <p className="mt-1 text-sm text-content-secondary">
-                                    {t(scheduleMutation.isPending
-                                        ? 'gantt.scheduleApplyPendingBody'
-                                        : 'gantt.schedulePreviewBody')}
-                                </p>
-                                {Boolean(schedulePreview.schedule_result?.capacity_issues?.length) && <p className="mt-2 text-sm text-feedback-warning-foreground">{t('teamwork.capacityConflicts')}</p>}
-                                {!scheduleMutation.isPending && <UnscheduledTasks items={schedulePreview.schedule_result?.unscheduled} />}
-                                {!scheduleMutation.isPending && (
-                                    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-content-secondary">
-                                        {previewChangedTaskIds.size > 0 ? (
-                                        <span>{t('gantt.schedulePreviewChangedTasks', { count: previewChangedTaskIds.size })}</span>
-                                        ) : (
-                                            <span>{t('gantt.schedulePreviewNoDateChanges')}</span>
-                                        )}
-                                        {schedulePreview.overdue_task_ids.length > 0 && (
-                                            <span>{t('gantt.schedulePreviewOverdueTasks', { count: schedulePreview.overdue_task_ids.length })}</span>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex flex-wrap gap-2 self-end sm:self-auto">
-                            <Button
-                                type="button"
-                                size="sm"
-                                variant="secondary"
-                                onClick={returnToSavedSchedule}
-                                disabled={scheduleMutation.isPending || scheduleMutation.isError}
-                            >
-                                {t('gantt.discardSchedulePreview')}
-                            </Button>
-                            <Button
-                                type="button"
-                                size="sm"
-                                onClick={applySchedulePreview}
-                                isLoading={scheduleMutation.isPending}
-                                disabled={scheduleMutation.isError || Boolean(schedulePreview.schedule_result?.capacity_issues?.length)}
-                            >
-                                {t('gantt.applySchedulePreview')}
-                            </Button>
-                        </div>
-                    </div>
-                </section>
-            )}
-
-            {schedulePreviewMutation.isError && (
-                <QueryErrorState
-                    className="m-3 shrink-0 sm:m-4"
-                    title={t('gantt.schedulePreviewFailedTitle')}
-                    message={t('gantt.schedulePreviewFailed')}
-                    retryLabel={t('gantt.retrySchedulePreview')}
-                    onRetry={beginSchedulePreview}
-                />
-            )}
-
-            {scheduleMutation.isError && (
-                <QueryErrorState
-                    className="m-3 shrink-0 sm:m-4"
-                    title={t('gantt.scheduleSaveUnconfirmedTitle')}
-                    message={t('gantt.scheduleSaveUnconfirmedBody')}
-                    retryLabel={t('gantt.refreshSavedSchedule')}
-                    onRetry={() => void refreshSavedSchedule()}
-                />
-            )}
 
             {/* Main Virtualized Area */}
             {displayTasks.length === 0 ? (
@@ -1221,7 +967,6 @@ export const GanttChart = ({
                     tabIndex={0}
                     aria-label={t('gantt.chartRegion')}
                     aria-describedby={chartInstructionsId}
-                    aria-busy={schedulePreviewMutation.isPending || scheduleMutation.isPending || isRefreshingSavedSchedule}
                     onMouseDown={onMouseDown}
                     onMouseLeave={stopDragging}
                     onMouseUp={stopDragging}
@@ -1519,11 +1264,6 @@ export const GanttChart = ({
                                                 {t('surfaces.ganttChart.dependencyCount', { count: (task.dependencies?.length ?? 0) + (successorsById.get(task.id)?.length ?? 0) })}
                                             </span>
                                         )}
-                                        {previewChangedTaskIds.has(task.id) && (
-                                            <span className="truncate rounded bg-action-muted px-1 text-action">
-                                                {t('gantt.previewDatesChanged')}
-                                            </span>
-                                        )}
                                     </div>
                                 </div>
 
@@ -1553,11 +1293,8 @@ export const GanttChart = ({
                                                 task.is_delayed && !isProvisional && "ring-2 ring-feedback-purple ring-offset-1",
                                                 task.is_overdue && "ring-2 ring-feedback-danger ring-offset-1",
                                                 task.isSandboxModified && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
-                                                previewChangedTaskIds.has(task.id) && "ring-2 ring-focus ring-offset-2 border border-action font-semibold",
                                                 highlightedTaskIds.has(task.id) && focusTaskId !== task.id && "outline outline-2 outline-offset-2 outline-action",
-                                                schedulePreview
-                                                    ? "cursor-not-allowed opacity-80"
-                                                    : "cursor-pointer hover:brightness-110 active:brightness-90"
+                                                "cursor-pointer hover:brightness-110 active:brightness-90"
                                             )}
                                             style={{
                                                 left: `${taskPosition.left + (barDrag?.kind === 'move' && barDrag.task.id === task.id ? barDrag.dayDelta * zoomLevel : 0)}px`,
@@ -1571,7 +1308,6 @@ export const GanttChart = ({
                                             onBlur={() => setHoveredTaskId(null)}
                                             onClick={(event) => {
                                                 event.stopPropagation();
-                                                if (schedulePreview) return;
                                                 if (suppressBarClick.current) { suppressBarClick.current = false; return; }
                                                 if (sandboxMode) {
                                                     const rect = event.currentTarget.getBoundingClientRect();
@@ -1587,16 +1323,13 @@ export const GanttChart = ({
                                                 }
                                                 setEditingTask(task);
                                             }}
-                                            aria-disabled={schedulePreview ? true : undefined}
                                             aria-haspopup={sandboxMode ? 'dialog' : undefined}
-                                            title={schedulePreview ? getPreviewTaskDescription(task) : getTaskTooltip(task)}
-                                            aria-label={schedulePreview
-                                                ? getPreviewTaskDescription(task)
-                                                : getTaskAccessibleLabel(task)}
+                                            title={getTaskTooltip(task)}
+                                            aria-label={getTaskAccessibleLabel(task)}
                                         >
                                             {/* The label follows the visible part of a long bar instead of scrolling away with its start. */}
                                             <span className={clsx("sticky left-2 min-w-0 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]", !isProvisional && "drop-shadow-md")}>{getTaskBarText(task)}</span>
-                                            {sandboxMode && !schedulePreview && (
+                                            {sandboxMode && (
                                                 <>
                                                     {/* Right edge: drag to change effort. */}
                                                     <span aria-hidden="true" title={t('gantt.dragToChangeEffort')}
@@ -1620,16 +1353,6 @@ export const GanttChart = ({
                                             </button>
                                         )}
                                         </>
-                                    ) : schedulePreview ? (
-                                        <div
-                                            className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-feedback-warning-border bg-feedback-warning-muted px-2 text-xs text-feedback-warning-foreground"
-                                            role="note"
-                                            aria-label={getPreviewTaskDescription(task)}
-                                            title={getPreviewTaskDescription(task)}
-                                        >
-                                            <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                                            <span className="font-medium">{t('gantt.notScheduled')}</span>
-                                        </div>
                                     ) : (
                                         <button
                                             type="button"

@@ -94,29 +94,6 @@ const renderChart = (sandboxMode = false, chartTasks: GanttTask[] = [taskFixture
     />,
 );
 
-describe('GanttChart schedule preview', () => {
-    beforeEach(() => {
-        ganttServiceMock.previewSchedule.mockReset();
-        ganttServiceMock.schedule.mockReset();
-        ganttServiceMock.previewSchedule.mockResolvedValue(previewFixture);
-        ganttServiceMock.schedule.mockResolvedValue(scheduleResult);
-    });
-
-    it('does not expose schedule preview in sandbox mode', async () => {
-        const { user } = renderChart(true);
-
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-
-        expect(screen.queryByRole('menuitem', {
-            name: i18n.t('surfaces.ganttChart.previewSchedule'),
-        })).not.toBeInTheDocument();
-        expect(ganttServiceMock.previewSchedule).not.toHaveBeenCalled();
-        expect(ganttServiceMock.schedule).not.toHaveBeenCalled();
-    });
-
-
-});
-
 describe('GanttChart clarity states', () => {
     beforeEach(() => {
         ganttServiceMock.previewSchedule.mockReset();
@@ -193,19 +170,14 @@ describe('GanttChart clarity states', () => {
 });
 
 describe('Gantt timeline controls', () => {
-    it('zooms with visible buttons and with + and - shortcuts', async () => {
+    it('offers zoom, Today and Fit in chart actions', async () => {
         const { user } = renderChart();
-        expect(screen.getByText('Zoom 100%')).toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Zoom timeline in' }));
-        expect(screen.getByText('Zoom 125%')).toBeInTheDocument();
-        await user.click(screen.getByRole('button', { name: 'Zoom timeline out' }));
-        await user.click(screen.getByRole('button', { name: 'Zoom timeline out' }));
-        expect(screen.getByText('Zoom 75%')).toBeInTheDocument();
-        screen.getByRole('region', { name: 'Schedule chart' }).focus();
-        await user.keyboard('+');
-        expect(screen.getByText('Zoom 100%')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Fit iteration' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Today/ })).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
+        expect(screen.getByRole('menuitem', { name: 'Zoom timeline in' })).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', { name: 'Zoom timeline out' })).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', { name: 'Fit iteration' })).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', { name: 'Today' })).toBeInTheDocument();
+        await user.click(screen.getByRole('menuitem', { name: 'Zoom timeline in' }));
     });
 });
 
@@ -327,9 +299,8 @@ describe('Gantt dependency links', () => {
         expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(1);
         expect(screen.getAllByText('1 link')).toHaveLength(2);
         expect(screen.getByRole('button', { name: /Build the importer.*Waits for 1; 0 wait for it\./ })).toBeInTheDocument();
-        const toggle = screen.getByRole('button', { name: 'Dependency links' });
-        expect(toggle).toHaveAttribute('aria-pressed', 'true');
-        await user.click(toggle);
+        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
+        await user.click(screen.getByRole('menuitem', { name: /Dependency links/ }));
         expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(0);
         expect(window.localStorage.getItem('workchord:gantt-show-dependency-links')).toBe('false');
     });
