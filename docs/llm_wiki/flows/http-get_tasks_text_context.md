@@ -113,16 +113,16 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_tasks_text_context | db.scalar | 842 | `db.scalar(...)` |
-| get_tasks_text_context | select(…).where | 842 | `select(Iteration.revision).where(...)` |
-| get_tasks_text_context | select | 842 | `select(Iteration.revision)` |
-| get_tasks_text_context | HTTPException | 844 | `HTTPException(404, detail='Iteration not found or inaccessible')` |
-| get_tasks_text_context | service.get_tasks_as_text | 845 | `service.get_tasks_as_text(iteration_id)` |
-| get_tasks_text_context | db.scalar | 846 | `db.scalar(...)` |
-| get_tasks_text_context | select(…).where | 846 | `select(Iteration.revision).where(...)` |
-| get_tasks_text_context | select | 846 | `select(Iteration.revision)` |
-| get_tasks_text_context | AggregateVersionConflict | 848 | `AggregateVersionConflict(iteration_id, before, after)` |
-| get_tasks_text_context | TaskTextContext | 849 | `TaskTextContext(text=text, iteration_id=iteration_id, iteration_revision=before)` |
+| get_tasks_text_context | db.scalar | 845 | `db.scalar(...)` |
+| get_tasks_text_context | select(…).where | 845 | `select(Iteration.revision).where(...)` |
+| get_tasks_text_context | select | 845 | `select(Iteration.revision)` |
+| get_tasks_text_context | HTTPException | 847 | `HTTPException(404, detail='Iteration not found or inaccessible')` |
+| get_tasks_text_context | service.get_tasks_as_text | 848 | `service.get_tasks_as_text(iteration_id)` |
+| get_tasks_text_context | db.scalar | 849 | `db.scalar(...)` |
+| get_tasks_text_context | select(…).where | 849 | `select(Iteration.revision).where(...)` |
+| get_tasks_text_context | select | 849 | `select(Iteration.revision)` |
+| get_tasks_text_context | AggregateVersionConflict | 851 | `AggregateVersionConflict(iteration_id, before, after)` |
+| get_tasks_text_context | TaskTextContext | 852 | `TaskTextContext(text=text, iteration_id=iteration_id, iteration_revision=before)` |
 
 ### Boundary effects
 
@@ -132,14 +132,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_tasks_text_context` | `db.scalar` | 842 |
-| unresolved_call | `get_tasks_text_context` | `select(Iteration.revision).where` | 842 |
-| external_call | `get_tasks_text_context` | `select` | 842 |
-| external_call | `get_tasks_text_context` | `HTTPException` | 844 |
-| unresolved_call | `get_tasks_text_context` | `service.get_tasks_as_text` | 845 |
-| unresolved_call | `get_tasks_text_context` | `db.scalar` | 846 |
-| unresolved_call | `get_tasks_text_context` | `select(Iteration.revision).where` | 846 |
-| external_call | `get_tasks_text_context` | `select` | 846 |
+| unresolved_call | `get_tasks_text_context` | `db.scalar` | 845 |
+| unresolved_call | `get_tasks_text_context` | `select(Iteration.revision).where` | 845 |
+| external_call | `get_tasks_text_context` | `select` | 845 |
+| external_call | `get_tasks_text_context` | `HTTPException` | 847 |
+| unresolved_call | `get_tasks_text_context` | `service.get_tasks_as_text` | 848 |
+| unresolved_call | `get_tasks_text_context` | `db.scalar` | 849 |
+| unresolved_call | `get_tasks_text_context` | `select(Iteration.revision).where` | 849 |
+| external_call | `get_tasks_text_context` | `select` | 849 |
 
 ## Behavior
 

@@ -183,7 +183,7 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_task_timeline_page | domain_result | 1026 | `domain_result(...)` |
+| get_task_timeline_page | domain_result | 1029 | `domain_result(...)` |
 | domain_result | HTTPException | 51 | `HTTPException(409, detail=exc.detail(...))` |
 | domain_result | exc.detail | 51 | `exc.detail(data not statically known)` |
 | domain_result | HTTPException | 53 | `HTTPException(404, detail=str(...))` |
@@ -191,7 +191,7 @@ flowchart LR
 | domain_result | HTTPException | 55 | `HTTPException(422, detail=[...])` |
 | domain_result | str | 55 | `str(exc)` |
 | domain_result | HTTPException | 57 | `HTTPException(404, detail='Task not found or inaccessible')` |
-| get_task_timeline_page | TaskTimelineService.page | 1026 | `TaskTimelineService(db).page(task_id, limit=limit, cursor=cursor)` |
+| get_task_timeline_page | TaskTimelineService.page | 1029 | `TaskTimelineService(db).page(task_id, limit=limit, cursor=cursor)` |
 | TaskTimelineService.page | ValueError (backend/app/services/task…:TaskTimelineService.page) | 45 | `ValueError('Use a timeline page limit from 1 to 500')` |
 | TaskTimelineService.page | self.db.scalar | 47 | `self.db.scalar(...)` |
 

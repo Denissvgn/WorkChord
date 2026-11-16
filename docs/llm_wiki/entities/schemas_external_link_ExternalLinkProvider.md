@@ -1,6 +1,6 @@
 # ExternalLinkProvider
 
-**Location:** `backend/app/schemas/external_link.py:27`
+**Location:** `backend/app/schemas/external_link.py:38`
 **Kind:** Enum
 **Bases:** `str`, `Enum`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)
@@ -18,6 +18,7 @@ Supported external link providers.
 | `FIGMA` | `'figma'` | — |
 | `SENTRY` | `'sentry'` | — |
 | `CUSTOM` | `'custom'` | — |
+| `AGDASH` | `'agdash'` | — |
 
 ## Methods
 
@@ -46,7 +47,7 @@ flowchart LR
 
 | Module | Methods | Attributes |
 |---|---:|---|
-| [schemas_external_link](../modules/schemas_external_link.md) | 0 | `CUSTOM`, `FIGMA`, `GITHUB`, `GITLAB`, `SENTRY` |
+| [schemas_external_link](../modules/schemas_external_link.md) | 0 | `AGDASH`, `CUSTOM`, `FIGMA`, `GITHUB`, `GITLAB`, `SENTRY` |
 
 ### Structure
 

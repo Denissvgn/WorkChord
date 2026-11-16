@@ -1,6 +1,6 @@
 # ExternalLinkResponse
 
-**Location:** `backend/app/schemas/external_link.py:116`
+**Location:** `backend/app/schemas/external_link.py:130`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)

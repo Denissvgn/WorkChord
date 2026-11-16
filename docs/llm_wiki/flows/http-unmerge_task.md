@@ -128,12 +128,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| unmerge_task | service.get_by_id | 744 | `service.get_by_id(task_id)` |
-| unmerge_task | HTTPException | 746 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| unmerge_task | len | 751 | `len(task.children)` |
-| unmerge_task | HTTPException | 752 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
-| unmerge_task | IterationService | 757 | `IterationService(db)` |
-| unmerge_task | IterationService.get_by_id | 758 | `iteration_service.get_by_id(task.iteration_id)` |
+| unmerge_task | service.get_by_id | 747 | `service.get_by_id(task_id)` |
+| unmerge_task | HTTPException | 749 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| unmerge_task | len | 754 | `len(task.children)` |
+| unmerge_task | HTTPException | 755 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Task has no children to unmerge')` |
+| unmerge_task | IterationService | 760 | `IterationService(db)` |
+| unmerge_task | IterationService.get_by_id | 761 | `iteration_service.get_by_id(task.iteration_id)` |
 | IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -148,9 +148,9 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `unmerge_task` | `service.get_by_id` | 744 |
-| external_call | `unmerge_task` | `HTTPException` | 746 |
-| external_call | `unmerge_task` | `HTTPException` | 752 |
+| unresolved_call | `unmerge_task` | `service.get_by_id` | 747 |
+| external_call | `unmerge_task` | `HTTPException` | 749 |
+| external_call | `unmerge_task` | `HTTPException` | 755 |
 | unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |

@@ -103,14 +103,14 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| add_dependency | service.add_dependency | 620 | `service.add_dependency(task_id, data.depends_on_id, expected_version=data.expected_version)` |
-| add_dependency | _raise_task_version_conflict | 622 | `_raise_task_version_conflict(exc)` |
+| add_dependency | service.add_dependency | 623 | `service.add_dependency(task_id, data.depends_on_id, expected_version=data.expected_version)` |
+| add_dependency | _raise_task_version_conflict | 625 | `_raise_task_version_conflict(exc)` |
 | _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 59 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 | _raise_task_version_conflict | exc.detail | 61 | `exc.detail(data not statically known)` |
-| add_dependency | HTTPException (backend/app/routers/tasks.py:add_dependency) | 624 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
-| add_dependency | str | 626 | `str(e)` |
-| add_dependency | HTTPException (backend/app/routers/tasks.py:add_dependency) | 629 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not add dependency. Check that both tasks exist and are different.')` |
-| add_dependency | MessageResponse | 633 | `MessageResponse(message=..., success=True)` |
+| add_dependency | HTTPException (backend/app/routers/tasks.py:add_dependency) | 627 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| add_dependency | str | 629 | `str(e)` |
+| add_dependency | HTTPException (backend/app/routers/tasks.py:add_dependency) | 632 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Could not add dependency. Check that both tasks exist and are different.')` |
+| add_dependency | MessageResponse | 636 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -120,11 +120,11 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `add_dependency` | `service.add_dependency` | 620 |
+| unresolved_call | `add_dependency` | `service.add_dependency` | 623 |
 | external_call | `_raise_task_version_conflict` | `HTTPException` | 59 |
 | unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 61 |
-| external_call | `add_dependency` | `HTTPException` | 624 |
-| external_call | `add_dependency` | `HTTPException` | 629 |
+| external_call | `add_dependency` | `HTTPException` | 627 |
+| external_call | `add_dependency` | `HTTPException` | 632 |
 
 ## Behavior
 

@@ -99,4 +99,4 @@ flowchart LR
 
 ## Behavior
 
-This flow starts at `create_task_external_link` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Validates the link with its provider's URL rule: display URLs must be public http(s) without credentials, except that an `agdash` session link may use a loopback host. Repeating an `agdash` link with the same external key on the same task returns the existing link instead of creating another. Validation errors return 400; a missing task returns 404.

@@ -7,7 +7,7 @@
 **Target:**
 
 ```typescript
-'github' | 'gitlab' | 'figma' | 'sentry' | 'custom' | string
+'github' | 'gitlab' | 'figma' | 'sentry' | 'custom' | 'agdash' | string
 ```
 
 ## Description

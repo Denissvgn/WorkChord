@@ -3503,3 +3503,39 @@ A topology read returns each team member's actor, role, profile, lifecycle, read
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a71977faf45d3e37f1056b067b54487c39f304a8065a4c7a974a831775cf74be`
+- Pages created: 2
+- Pages updated: 53
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3125
+- Pages deprecated: 0
+- Semantic fields preserved: 1
+- Moved entities: none
+
+### agdash session links
+
+External links accept an `agdash` provider for agent sessions observed by agdash. Only that provider may use a loopback display URL, since the server never fetches display links; repeated links with the same external key return the existing one. The task timeline labels them as observed sessions and notes when one opens only on the observing computer.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:a71977faf45d3e37f1056b067b54487c39f304a8065a4c7a974a831775cf74be`
+- Pages created: 0
+- Pages updated: 1
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3179
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

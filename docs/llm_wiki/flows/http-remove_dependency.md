@@ -92,12 +92,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| remove_dependency | service.remove_dependency | 651 | `service.remove_dependency(task_id, depends_on_id, expected_version=expected_version)` |
-| remove_dependency | _raise_task_version_conflict | 653 | `_raise_task_version_conflict(exc)` |
+| remove_dependency | service.remove_dependency | 654 | `service.remove_dependency(task_id, depends_on_id, expected_version=expected_version)` |
+| remove_dependency | _raise_task_version_conflict | 656 | `_raise_task_version_conflict(exc)` |
 | _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…aise_task_version_conflict) | 59 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 | _raise_task_version_conflict | exc.detail | 61 | `exc.detail(data not statically known)` |
-| remove_dependency | HTTPException (backend/app/routers/tasks.py:remove_dependency) | 655 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| remove_dependency | MessageResponse | 659 | `MessageResponse(message=..., success=True)` |
+| remove_dependency | HTTPException (backend/app/routers/tasks.py:remove_dependency) | 658 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| remove_dependency | MessageResponse | 662 | `MessageResponse(message=..., success=True)` |
 
 ### Boundary effects
 
@@ -107,10 +107,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `remove_dependency` | `service.remove_dependency` | 651 |
+| unresolved_call | `remove_dependency` | `service.remove_dependency` | 654 |
 | external_call | `_raise_task_version_conflict` | `HTTPException` | 59 |
 | unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 61 |
-| external_call | `remove_dependency` | `HTTPException` | 655 |
+| external_call | `remove_dependency` | `HTTPException` | 658 |
 
 ## Behavior
 

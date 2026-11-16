@@ -123,10 +123,10 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| get_subtasks | service.get_by_id | 598 | `service.get_by_id(task_id)` |
-| get_subtasks | HTTPException | 600 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| get_subtasks | IterationService | 605 | `IterationService(db)` |
-| get_subtasks | IterationService.get_by_id | 606 | `iteration_service.get_by_id(task.iteration_id)` |
+| get_subtasks | service.get_by_id | 601 | `service.get_by_id(task_id)` |
+| get_subtasks | HTTPException | 603 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| get_subtasks | IterationService | 608 | `IterationService(db)` |
+| get_subtasks | IterationService.get_by_id | 609 | `iteration_service.get_by_id(task.iteration_id)` |
 | IterationService.get_by_id | self.db.execute | 323 | `self.db.execute(...)` |
 | IterationService.get_by_id | select(…).options(…).where | 324 | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where(...)` |
 | IterationService.get_by_id | select(…).options | 324 | `select(Iteration).options(selectinload(...), selectinload(...))` |
@@ -143,8 +143,8 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `get_subtasks` | `service.get_by_id` | 598 |
-| external_call | `get_subtasks` | `HTTPException` | 600 |
+| unresolved_call | `get_subtasks` | `service.get_by_id` | 601 |
+| external_call | `get_subtasks` | `HTTPException` | 603 |
 | unresolved_call | `IterationService.get_by_id` | `self.db.execute` | 323 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options(selectinload(Iteration.calendar), selectinload(Iteration.project)).where` | 324 |
 | unresolved_call | `IterationService.get_by_id` | `select(Iteration).options` | 324 |

@@ -21,13 +21,15 @@ sequenceDiagram
     p0-->>p2: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
     p0-->>p3: str(e)
     p0-->>p4: link_service.update(link_id, data)
+    p0-->>p2: HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))
+    p0-->>p3: str(e)
     p0-->>p2: HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)
     p0-->>p5: link_service.link_to_response(link)
 ```
 
-> Call sequence diagram shows 6 of 6 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
+> Call sequence diagram shows 8 of 8 interactions; 0 omitted to keep the visualization within the 30-interaction and generated-diagram limits, with uncertain identities omitted rather than inferred.
 
-> Captured boundary calls: external 3 of 3 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
+> Captured boundary calls: external 5 of 5 (0 omitted); unresolved 3 of 3 (0 omitted). These counts cover the captured static trace.
 > Detailed flow queries retain their own coverage and limits; omitted paths may execute at runtime.
 
 ## Data flow
@@ -40,7 +42,7 @@ sequenceDiagram
 
 Source steps: 1; effect analysis evaluated: 1, partial: 0, unavailable: 0. Counts include steps omitted from the displayed trace.
 
-Collector observations for 1 source steps with known totals: observed: 8, emitted: 8, omitted: 0. Unavailable totals are excluded.
+Collector observations for 1 source steps with known totals: observed: 10, emitted: 10, omitted: 0. Unavailable totals are excluded.
 
 ```mermaid
 flowchart LR
@@ -50,13 +52,17 @@ flowchart LR
     s4["4. str"]
     s5["5. link_service.update"]
     s6["6. HTTPException"]
-    s7["7. link_service.link_to_response"]
+    s7["7. str"]
+    s8["8. HTTPException"]
+    s9["9. link_service.link_to_response"]
     s1 -. "ExternalLinkUpdate.model_validate(raw_data)" .-> s2
     s1 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))" .-> s3
     s1 -. "str(e)" .-> s4
     s1 -. "link_service.update(link_id, data)" .-> s5
-    s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s6
-    s1 -. "link_service.link_to_response(link)" .-> s7
+    s1 -. "HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))" .-> s6
+    s1 -. "str(e)" .-> s7
+    s1 -. "HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)" .-> s8
+    s1 -. "link_service.link_to_response(link)" .-> s9
     b0["mutation link_service.update"]
     s1 -. "mutation link_service.update" .-> b0
     click s1 "../modules/tasks.md"
@@ -68,11 +74,13 @@ flowchart LR
 
 | Step | Inputs | Reads | Writes | Returns |
 |---|---|---|---|---|
-| `update_external_link` | `link_id: int`, `raw_data: Annotated[dict, Body(...)]`, `link_service: Annotated[ExternalLinkService, Depends(get_external_link_service)]` | `ValidationError`, `status`, `status` | - | `link_service.link_to_response(...)` |
+| `update_external_link` | `link_id: int`, `raw_data: Annotated[dict, Body(...)]`, `link_service: Annotated[ExternalLinkService, Depends(get_external_link_service)]` | `ValidationError`, `status`, `ExternalLinkValidationError`, `status`, `status` | - | `link_service.link_to_response(...)` |
 | `ExternalLinkUpdate.model_validate` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `str` | - | - | - | - |
 | `link_service.update` | - | - | - | - |
+| `HTTPException` | - | - | - | - |
+| `str` | - | - | - | - |
 | `HTTPException` | - | - | - | - |
 | `link_service.link_to_response` | - | - | - | - |
 
@@ -83,15 +91,17 @@ flowchart LR
 | update_external_link | ExternalLinkUpdate.model_validate | 529 | `ExternalLinkUpdate.model_validate(raw_data)` |
 | update_external_link | HTTPException | 531 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
 | update_external_link | str | 533 | `str(e)` |
-| update_external_link | link_service.update | 536 | `link_service.update(link_id, data)` |
-| update_external_link | HTTPException | 538 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
-| update_external_link | link_service.link_to_response | 542 | `link_service.link_to_response(link)` |
+| update_external_link | link_service.update | 537 | `link_service.update(link_id, data)` |
+| update_external_link | HTTPException | 539 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(...))` |
+| update_external_link | str | 539 | `str(e)` |
+| update_external_link | HTTPException | 541 | `HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=...)` |
+| update_external_link | link_service.link_to_response | 545 | `link_service.link_to_response(link)` |
 
 ### Boundary effects
 
 | Kind | Target | Step | Line |
 |---|---|---|---:|
-| mutation | `link_service.update` | `update_external_link` | 536 |
+| mutation | `link_service.update` | `update_external_link` | 537 |
 
 ### Static analysis gaps
 
@@ -99,9 +109,10 @@ flowchart LR
 |---|---|---|---:|
 | unresolved_call | `update_external_link` | `ExternalLinkUpdate.model_validate` | 529 |
 | external_call | `update_external_link` | `HTTPException` | 531 |
-| external_call | `update_external_link` | `HTTPException` | 538 |
-| unresolved_call | `update_external_link` | `link_service.link_to_response` | 542 |
+| external_call | `update_external_link` | `HTTPException` | 539 |
+| external_call | `update_external_link` | `HTTPException` | 541 |
+| unresolved_call | `update_external_link` | `link_service.link_to_response` | 545 |
 
 ## Behavior
 
-This flow starts at `update_external_link` and is classified as `http`. The generated call and data-flow sections are bounded static projections; runtime conditions and side effects require source-level confirmation.
+Applies a partial update after checking the resulting provider and URL pair, so a loopback URL cannot remain on, or move to, a provider other than `agdash`. Validation errors return 400; a missing link returns 404.

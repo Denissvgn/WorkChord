@@ -4,7 +4,7 @@
 
 ## Description
 
-Centralized outbound URL and host validation.
+Centralized outbound URL and host validation. Display links never resolve or fetch hosts; only `agdash` session links may name a loopback host, while private network addresses stay refused.
 
 ## Imports
 
@@ -56,3 +56,4 @@ flowchart LR
 | `normalize_external_http_url` | `(value: str, *, require_https: bool = False, allow_http_localhost: bool = False, allow_http_private: bool = False, resolve: bool = True) -> str` | — | Normalize and validate an outbound HTTP(S) URL. |
 | `normalize_provider_api_url` | `(value: str) -> str` | — | Validate a provider API URL that may carry credentials in headers. |
 | `normalize_stored_display_url` | `(value: str) -> str` | — | Validate externally displayed user-supplied links before persistence. |
+| `normalize_loopback_display_url` | `(value: str) -> str` | — | A displayed link that may also point at this viewer's own machine (a loopback host). |

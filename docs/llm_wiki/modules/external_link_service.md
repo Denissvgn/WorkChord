@@ -13,7 +13,7 @@ External link service.
 | `app.commands` | `commit_or_flush` |
 | `app.models.external_link` | `ExternalLink`, `ExternalLinkEntityType` |
 | `app.models.task` | `Task` |
-| `app.schemas.external_link` | `ExternalLinkCreate`, `ExternalLinkEntityType`, `ExternalLinkProvider`, `ExternalLinkResponse`, `ExternalLinkUpdate`, `TaskExternalLinkCreate` |
+| `app.schemas.external_link` | `ExternalLinkCreate`, `ExternalLinkEntityType`, `ExternalLinkProvider`, `ExternalLinkResponse`, `ExternalLinkUpdate`, `TaskExternalLinkCreate`, `normalize_link_url` |
 | `app.services.outbound_webhook_service` | `emit_outbound_webhook_event` |
 | `app.services.task_context_revision_service` | `reserve_task_context_revision` |
 | `dataclasses` | `dataclass` |
@@ -107,7 +107,7 @@ flowchart LR
 
 | Class | Line | Bases | Description |
 |-------|------|-------|-------------|
-| [ExternalLinkValidationError](../entities/ExternalLinkValidationError.md) | 25 | `ValueError` | Raised when a provider-specific link cannot be parsed. |
-| [ExternalLinkConflictError](../entities/ExternalLinkConflictError.md) | 29 | `Exception` | Raised when a provider-specific link already exists for an entity. |
-| [ParsedGitHubLink](../entities/ParsedGitHubLink.md) | 34 | — | Normalized GitHub link details ready for persistence. |
-| [ExternalLinkService](../entities/ExternalLinkService.md) | 63 | — | Service for generic external links and task-scoped link operations. |
+| [ExternalLinkValidationError](../entities/ExternalLinkValidationError.md) | 26 | `ValueError` | Raised when a provider-specific link cannot be parsed. |
+| [ExternalLinkConflictError](../entities/ExternalLinkConflictError.md) | 30 | `Exception` | Raised when a provider-specific link already exists for an entity. |
+| [ParsedGitHubLink](../entities/ParsedGitHubLink.md) | 35 | — | Normalized GitHub link details ready for persistence. |
+| [ExternalLinkService](../entities/ExternalLinkService.md) | 64 | — | Service for generic external links and task-scoped link operations. |

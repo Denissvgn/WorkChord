@@ -1,6 +1,6 @@
 # ExternalLinkCreate
 
-**Location:** `backend/app/schemas/external_link.py:61`
+**Location:** `backend/app/schemas/external_link.py:74`
 **Kind:** Pydantic model
 **Bases:** `ExternalLinkFields`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)

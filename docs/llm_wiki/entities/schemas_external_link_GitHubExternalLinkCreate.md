@@ -1,6 +1,6 @@
 # GitHubExternalLinkCreate
 
-**Location:** `backend/app/schemas/external_link.py:74`
+**Location:** `backend/app/schemas/external_link.py:87`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_external_link](../modules/schemas_external_link.md)

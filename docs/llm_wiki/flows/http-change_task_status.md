@@ -189,12 +189,12 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| change_task_status | service.change_status | 919 | `service.change_status(task_id=task_id, new_status=data.status, reason=data.reason, expected_version=data.expected_version)` |
-| change_task_status | _raise_task_version_conflict | 926 | `_raise_task_version_conflict(exc)` |
+| change_task_status | service.change_status | 922 | `service.change_status(task_id=task_id, new_status=data.status, reason=data.reason, expected_version=data.expected_version)` |
+| change_task_status | _raise_task_version_conflict | 929 | `_raise_task_version_conflict(exc)` |
 | _raise_task_version_conflict | HTTPException (backend/app/routers/tasks…ise_task_version_conflict) | 59 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 | _raise_task_version_conflict | exc.detail | 61 | `exc.detail(data not statically known)` |
-| change_task_status | HTTPException (backend/app/routers/tasks.py:change_task_status) | 928 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
-| change_task_status | _localized_detail | 930 | `_localized_detail(db, str(...))` |
+| change_task_status | HTTPException (backend/app/routers/tasks.py:change_task_status) | 931 | `HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=...)` |
+| change_task_status | _localized_detail | 933 | `_localized_detail(db, str(...))` |
 | _localized_detail | resolve_runtime_ui_language | 66 | `resolve_runtime_ui_language(db)` |
 | resolve_runtime_ui_language | normalize_language | 406 | `normalize_language(default)` |
 | normalize_language | str(…).strip().lower | 35 | `str(value or '').strip().lower(data not statically known)` |
@@ -209,10 +209,10 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `change_task_status` | `service.change_status` | 919 |
+| unresolved_call | `change_task_status` | `service.change_status` | 922 |
 | external_call | `_raise_task_version_conflict` | `HTTPException` | 59 |
 | unresolved_call | `_raise_task_version_conflict` | `exc.detail` | 61 |
-| external_call | `change_task_status` | `HTTPException` | 928 |
+| external_call | `change_task_status` | `HTTPException` | 931 |
 | unresolved_call | `normalize_language` | `str(value or '').strip().lower` | 35 |
 | unresolved_call | `normalize_language` | `str(value or '').strip` | 35 |
 | step_limit | `change_task_status` | `first 12 steps` | 0 |
