@@ -890,6 +890,11 @@ export const russianResources = {
                 claimExpired: 'Назначение агенту {{name}} истекло — задача снова доступна',
                 unmergeTitle: 'Разделить и вывести дочерние задачи на верхний уровень',
                 reorderTask: 'Изменить порядок задачи',
+                blocked: 'Заблокирована',
+                inReview: 'На проверке',
+                openTask: 'Открыть задачу',
+                selectTask: 'Выбрать: {{title}}',
+                priorityTitle: 'Приоритет {{priority}}',
             },
             disabledReasons: {
                 summaryRequired: 'Напишите итог, чтобы опубликовать обновление.',

@@ -98,5 +98,8 @@ it('lets a local session choose who it works as instead of a dead end, then coun
         <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?queue=queued'] });
     expect(await screen.findByRole('button', { name: 'Up next · 1' })).toBeInTheDocument();
     expect(screen.getByText('Working as Sam Ortiz · local, not verified')).toBeInTheDocument();
-    expect(await screen.findByRole('button', { name: '#7 · Assigned to my row' })).toBeInTheDocument();
+    const title = await screen.findByRole('button', { name: '#7 · Assigned to my row' });
+    // My Work uses the same 44 px row as the task list: status, title, then the menu on hover.
+    expect(title.closest('[data-task-row]')?.className).toContain('min-h-11');
+    expect(screen.getByRole('button', { name: /^Status: Planned/ })).toBeInTheDocument();
 });

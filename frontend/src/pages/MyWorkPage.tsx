@@ -13,6 +13,8 @@ import api from '../services/api';
 import { discussionService } from '../services/discussionService';
 import type { TaskReference, TaskReferencePage } from '../types/task';
 import { CurrentTaskModal } from '../components/tasks/GuardedTaskModal';
+import { TaskRow } from '../components/tasks/TaskRow';
+import { useTaskRowEdits } from '../components/tasks/useTaskRowEdits';
 import { Button } from '../components/common/Button';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -58,6 +60,7 @@ const MyWorkPage = () => {
         const count = work.data.pages.reduce((total, page) => total + (page.queues[key]?.length ?? 0), 0);
         return `${t(`teamwork.queue_${key}`)} · ${count}${work.hasNextPage ? '+' : ''}`;
     };
+    const rowEdits = useTaskRowEdits();
     const selectTask = (id: number | null) => { const next = new URLSearchParams(params); if (id) next.set('task', String(id)); else next.delete('task'); setParams(next); };
 
     return <PageLayout><PageHeader title={t('teamwork.myWork')} subtitle={t('teamwork.myWorkHelp')} /><section className="space-y-5">
@@ -73,10 +76,14 @@ const MyWorkPage = () => {
             <LocalProfilePicker current={null} onChosen={() => identityContext?.refresh()} />
         </section>}
         {workQueue && workState && workState !== 'ready' && !(workState === 'profile_unlinked' && local) && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>}
-        {queue !== 'inbox' && <ul className="divide-y divide-border">{items.map(task => <li key={task.id} className="flex flex-col gap-1 py-3">
-            <button type="button" className="min-h-9 break-words text-left font-medium text-action hover:underline" onClick={() => selectTask(task.id)}>#{task.id} · {task.title}</button>
-            <p className="text-sm text-content-secondary">{task.project_name ?? t('teamwork.workspace')} · {task.iteration_name ?? t('teamwork.backlog')} · {task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : t(`statuses.${task.status}`)}</p>
-            {task.blocked_reason && <p className="text-sm text-feedback-warning-foreground">{task.blocked_reason}</p>}
+        {queue !== 'inbox' && items.length > 0 && <ul className="rounded-lg border border-border bg-surface-card">{items.map(task => <li key={task.id}>
+            <TaskRow id={task.id} title={task.title} titleText={`#${task.id} · ${task.title}`} status={task.status}
+                chip={task.blocked_reason ? { kind: 'blocked' } : queue === 'review' || queue === 'awaiting_review' ? { kind: 'inReview' } : null}
+                meta={[task.project_name ?? t('teamwork.workspace'), task.iteration_name ?? t('teamwork.backlog'),
+                    task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : null, task.blocked_reason].filter(Boolean).join(' · ')}
+                onOpen={() => selectTask(task.id)}
+                onStatusChange={status => rowEdits.changeStatus(task, status)}
+                menuItems={[{ label: t('taskList.openTask'), onSelect: () => selectTask(task.id) }]} />
         </li>)}</ul>}
         {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <p className="text-sm text-content-secondary">{t('teamwork.emptyQueue')}</p>}
         {queue === 'inbox' && <>

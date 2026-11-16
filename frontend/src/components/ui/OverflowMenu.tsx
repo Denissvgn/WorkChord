@@ -17,12 +17,20 @@ export const OverflowMenu = ({
     label,
     className,
     alwaysMenu = false,
+    align = 'end',
+    trigger,
+    triggerClassName,
 }: {
     items: OverflowMenuItem[];
     label?: string;
     className?: string;
     /** Keep the menu button even for one item, so a page header never gains a visible extra action. */
     alwaysMenu?: boolean;
+    /** Which edge of the button the menu lines up with. */
+    align?: 'start' | 'end';
+    /** Replaces the three-dot icon, such as a status icon that opens its moves. */
+    trigger?: ReactNode;
+    triggerClassName?: string;
 }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
@@ -104,9 +112,9 @@ export const OverflowMenu = ({
                 aria-haspopup="menu"
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
-                className="btn icon"
+                className={triggerClassName ?? 'btn icon'}
             >
-                <MoreHorizontal className="h-4 w-4" />
+                {trigger ?? <MoreHorizontal className="h-4 w-4" />}
             </button>
             {open && (
                 <>
@@ -115,7 +123,7 @@ export const OverflowMenu = ({
                         id={menuId}
                         role="menu"
                         style={{
-                            position: 'absolute', right: 0, top: '100%', zIndex: 20, marginTop: 4, width: 208,
+                            position: 'absolute', ...(align === 'start' ? { left: 0 } : { right: 0 }), top: '100%', zIndex: 20, marginTop: 4, width: 208,
                             overflow: 'hidden', borderRadius: 'var(--r-md)', border: '1px solid var(--border-2)',
                             background: 'var(--panel)', padding: 4, boxShadow: 'var(--sh-pop)',
                         }}
