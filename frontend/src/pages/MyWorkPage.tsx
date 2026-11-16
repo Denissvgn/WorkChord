@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useLiveWindow } from '../features/useLiveWindow';
 import { LiveWindowStatus } from '../components/feedback/LiveWindowStatus';
 import { PageLayout, PageHeader, PageToolbar, ViewSwitch } from '../components/ui';
+import { PersonCapacity } from '../components/tasks/PersonCapacity';
 import { useIdentity } from '../features/identity/identityContext';
 import { LocalProfilePicker } from '../features/identity/LocalProfilePicker';
 import { NotificationsPanel } from '../components/notifications/NotificationsPanel';
@@ -107,6 +108,7 @@ const MyWorkPage = () => {
             onChange={key => { const next = new URLSearchParams(params); next.set('queue', key); next.delete('task'); setParams(next); }} />} />
         <section className="space-y-5">
         {local && identity?.profile && <p className="text-sm text-content-secondary">{t('identity.workingAsLocal', { name: identity.profile.display_name })}</p>}
+        {identity?.profile && <PersonCapacity key={identity.profile.id} profileId={identity.profile.id} manage />}
         <LiveWindowStatus window={selectedQuery} />
         {selectedQuery.isLoading && <p role="status">{t('common.loading')}</p>}
         {selectedQuery.isError && <QueryErrorState error={selectedQuery.error} fallback={t('teamwork.loadFailed')} onRetry={() => void selectedQuery.refetch()} />}

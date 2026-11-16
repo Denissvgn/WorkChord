@@ -12,7 +12,7 @@ import { taskDetailResponse } from '../test/fixtures/taskDetail';
 
 const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn(), post: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
-vi.mock('../components/tasks/PersonCapacity', () => ({ PersonCapacity: () => null }));
+vi.mock('../components/tasks/PersonCapacity', () => ({ PersonCapacity: ({ profileId, manage }: { profileId: number; manage: boolean }) => <div data-testid="capacity">{profileId}:{String(manage)}</div> }));
 vi.mock('../components/tasks/TaskWorkPanel', () => ({ TaskWorkPanel: () => null }));
 vi.mock('../components/tasks/TaskTimelinePanel', () => ({ TaskTimelinePanel: () => null }));
 vi.mock('../components/tasks/DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
@@ -88,6 +88,7 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', principal: null, profile: null } as never, refresh, signOut: vi.fn() }}>
         <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work'] });
     expect(await screen.findByRole('heading', { name: 'Who are you working as?' })).toBeInTheDocument();
+    expect(screen.queryByTestId('capacity')).toBeNull();
     expect(screen.queryByText(/Ask a workspace operator/)).toBeNull();
     const person = await screen.findByRole('combobox', { name: 'Person profile' });
     expect(screen.queryByRole('option', { name: 'Build agent' })).toBeNull();
@@ -106,6 +107,7 @@ it('lets a local session choose who it works as instead of a dead end, then coun
         <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?queue=queued'] });
     expect(await screen.findByRole('button', { name: 'Up next · 1' })).toBeInTheDocument();
     expect(screen.getByText('Working as Sam Ortiz · local, not verified')).toBeInTheDocument();
+    expect(screen.getByTestId('capacity')).toHaveTextContent('4:true');
     const title = await screen.findByRole('button', { name: '#7 · Assigned to my row' });
     // My Work uses the same 44 px row as the task list: status, title, then the menu on hover.
     expect(title.closest('[data-task-row]')).toHaveClass('h-11');
@@ -303,16 +305,16 @@ const Location = () => <output data-testid="location">{useLocation().search}</ou
 
 it('switches six counted queues and preserves the choice in the URL', async () => {
     api.get.mockImplementation(async (path: string) => {
-        if (path === '/tasks/my-work') return { data: { state: 'ready', queues: { active: [], queued: [], blocked: [], awaiting_review: [] }, has_more: false } };
+        if (path === '/tasks/my-work') return { data: { state: 'ready', queues: { active: [], queued: [], blocked: [{ id: 7, title: 'Blocked task', status: 'planned', iteration_id: null }], awaiting_review: [] }, has_more: true, next_after_id: 7 } };
         if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
         return { data: [] };
     });
     const { container } = renderWithProviders(<><MyWorkPage /><Location /></>, { initialEntries: ['/my-work?queue=blocked'] });
     const group = within(container.querySelector('.seg') as HTMLElement);
     await waitFor(() => expect(group.getAllByRole('button')).toHaveLength(6));
-    expect(await group.findByRole('button', { name: 'Blocked · 0', pressed: true })).toBeInTheDocument();
-    fireEvent.click(group.getByRole('button', { name: 'Up next · 0' }));
+    expect(await group.findByRole('button', { name: 'Blocked · 1+', pressed: true })).toBeInTheDocument();
+    fireEvent.click(group.getByRole('button', { name: 'Up next · 0+' }));
     expect(screen.getByTestId('location')).toHaveTextContent('queue=queued');
-    expect(group.getByRole('button', { name: 'Up next · 0', pressed: true })).toBeInTheDocument();
+    expect(group.getByRole('button', { name: 'Up next · 0+', pressed: true })).toBeInTheDocument();
     expectPageChrome(container, { status: 'migrated' });
 });
