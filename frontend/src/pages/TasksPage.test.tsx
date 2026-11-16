@@ -10,11 +10,9 @@ const iterationServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
-const iterationStoreMock = vi.hoisted(() => ({
-    selectedIterationId: 1,
-    isBacklog: false,
-    setSelectedIterationId: vi.fn(),
-    chooseDefaultIteration: vi.fn(),
+const workScopeMock = vi.hoisted(() => ({
+    iteration: 1 as number | 'backlog',
+    setIteration: vi.fn(),
 }));
 const savedViewServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
@@ -34,8 +32,9 @@ vi.mock('../services/taskService', () => ({
     taskService: taskServiceMock,
 }));
 
-vi.mock('../store/iterationStore', () => ({
-    useIterationStore: () => iterationStoreMock,
+vi.mock('../features/scope/useWorkScope', () => ({
+    useWorkScope: () => workScopeMock,
+    useSetWorkScope: () => ({ setProject: vi.fn(), setIteration: vi.fn(), setScope: vi.fn() }),
 }));
 
 vi.mock('../components/tasks/TaskList', () => ({
@@ -66,10 +65,6 @@ vi.mock('../components/tasks/TaskFiltersBar', () => ({
 
 vi.mock('../components/tasks/SavedViewsControl', () => ({
     SavedViewsControl: () => <div>Saved views</div>,
-}));
-
-vi.mock('../components/iteration/IterationSelector', () => ({
-    IterationSelector: () => <div>Iteration selector</div>,
 }));
 
 vi.mock('../components/common/Modal', () => ({
@@ -137,8 +132,8 @@ const focusedTask = {
 
 describe('TasksPage', () => {
     beforeEach(() => {
-        iterationStoreMock.selectedIterationId = 1;
-        iterationStoreMock.setSelectedIterationId.mockReset();
+        workScopeMock.iteration = 1;
+        workScopeMock.setIteration.mockReset();
         iterationServiceMock.getAll.mockReset();
         iterationServiceMock.getAll.mockResolvedValue([
             { id: 1, name: 'Iteration one', start_date: '2026-01-01', end_date: '2026-01-14' },

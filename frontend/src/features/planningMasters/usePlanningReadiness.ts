@@ -1,11 +1,11 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ganttService } from '../../services/ganttService';
 import { iterationService } from '../../services/iterationService';
 import { taskService } from '../../services/taskService';
 import { teamService } from '../../services/teamService';
 import { triageService } from '../../services/triageService';
-import { useIterationStore } from '../../store/iterationStore';
+import { useWorkScope } from '../scope/useWorkScope';
 import type { GanttResponse } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
@@ -22,7 +22,6 @@ import {
 
 type PlanningReadinessOptions = {
     includeInbox?: boolean;
-    autoSelectFirst?: boolean;
 };
 
 const HOURS_PER_DAY = 8;
@@ -247,11 +246,11 @@ export const countPlanningExceptions = (
 
 export const usePlanningReadiness = ({
     includeInbox = false,
-    // Every planning surface selects the same default iteration, so readiness
-    // never depends on which page was opened first.
-    autoSelectFirst = true,
 }: PlanningReadinessOptions = {}) => {
-    const { selectedIterationId, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
+    // Every planning surface reads the same scope, so readiness never depends on which page
+    // was opened first. The scope already holds a default iteration once iterations load.
+    const { iteration } = useWorkScope();
+    const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
 
     // feedback-policy: query loading,error,retry,empty - aggregate state is returned to the owning workspace.
     const iterationsQuery = useQuery({
@@ -261,28 +260,6 @@ export const usePlanningReadiness = ({
     });
 
     const iterations = useMemo(() => iterationsQuery.data ?? [], [iterationsQuery.data]);
-
-    useEffect(() => {
-        if (!iterationsQuery.isSuccess) return;
-
-        const selectedExists = iterations.some(iteration => iteration.id === selectedIterationId);
-        if (selectedIterationId > 0 && !selectedExists) {
-            // The chosen iteration no longer exists: keep the chosen project and open on its
-            // default iteration.
-            chooseDefaultIteration(iterations);
-            return;
-        }
-
-        if (autoSelectFirst && selectedIterationId === 0 && iterations.length > 0) {
-            chooseDefaultIteration(iterations);
-        }
-    }, [
-        autoSelectFirst,
-        chooseDefaultIteration,
-        iterations,
-        iterationsQuery.isSuccess,
-        selectedIterationId,
-    ]);
 
     const currentIteration = useMemo<Iteration | null>(
         () => iterations.find(iteration => iteration.id === selectedIterationId) ?? null,
@@ -443,8 +420,6 @@ export const usePlanningReadiness = ({
 
     return {
         selectedIterationId,
-        setSelectedIterationId,
-        selectIteration: setSelectedIterationId,
         iterations,
         currentIteration,
         hasCurrentIteration,

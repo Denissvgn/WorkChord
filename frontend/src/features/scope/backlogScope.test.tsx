@@ -8,6 +8,7 @@ import { createTestQueryClient } from '../../test/renderWithProviders';
 import i18n from '../../i18n/i18n';
 import TasksPage from '../../pages/TasksPage';
 import { useScopeStore } from './scopeStore';
+import { ScopeBar } from '../../components/layout/ScopeBar';
 import { useWorkScope } from './useWorkScope';
 
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn() }));
@@ -49,6 +50,9 @@ const backlogTask = (id: number, projectId: number) => ({
     project_name: PROJECTS.find(project => project.id === projectId)?.name, status: 'todo',
 });
 
+/** True when the shell also shows the scope bar. The Tasks backlog has its own project select, so most tests leave it out. */
+let showScopeBar = false;
+
 /** Stands in for the app shell: it holds the scope for every page, as AppShell does. */
 const Shell = () => {
     const { isReady } = useWorkScope();
@@ -57,6 +61,7 @@ const Shell = () => {
         <>
             <output data-testid="location">{`${location.pathname}${location.search}`}</output>
             <output data-testid="ready">{String(isReady)}</output>
+            {showScopeBar && <ScopeBar />}
             <Outlet />
         </>
     );
@@ -87,6 +92,7 @@ const lastLookup = () => taskServiceMock.lookup.mock.calls.at(-1)?.[0];
 
 describe('the project selector of the Tasks backlog sets the work scope', () => {
     beforeEach(() => {
+        showScopeBar = false;
         vi.useFakeTimers({ toFake: ['Date'] });
         vi.setSystemTime(new Date('2026-11-16T12:00:00Z'));
         iterationServiceMock.getAll.mockReset();
@@ -179,6 +185,7 @@ describe('the project selector of the Tasks backlog sets the work scope', () => 
 
 describe('the Tasks links into and out of the Backlog change only the scope', () => {
     beforeEach(() => {
+        showScopeBar = false;
         vi.useFakeTimers({ toFake: ['Date'] });
         vi.setSystemTime(new Date('2026-11-16T12:00:00Z'));
         iterationServiceMock.getAll.mockReset();
@@ -240,10 +247,12 @@ describe('the Tasks links into and out of the Backlog change only the scope', ()
     });
 
     it('changes the iteration in the iteration view, and Back returns to the page before Tasks', async () => {
+        showScopeBar = true;
         const router = await openTasksFromMyWork('/tasks');
-        const selector = await screen.findByRole('combobox', { name: i18n.t('iterationIndicator.selectIteration') });
+        const picker = await screen.findByRole('combobox', { name: i18n.t('scopeBar.iteration') });
 
-        await userEvent.selectOptions(selector, '11');
+        await userEvent.click(picker);
+        await userEvent.click(screen.getByRole('option', { name: /Iteration 11/ }));
         await settle();
         expect(locationText()).toBe('/tasks?project=1&iteration=11');
 

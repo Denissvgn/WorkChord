@@ -20,9 +20,11 @@ import { useLinkScope, useScopeLink } from '../../features/scope/useScopeLink';
 
 interface IterationListProps {
     onEdit?: (iteration: Iteration) => void;
+    /** Lists only this project's iterations; every iteration when omitted. */
+    projectId?: number;
 }
 
-export const IterationList = ({ onEdit }: IterationListProps) => {
+export const IterationList = ({ onEdit, projectId }: IterationListProps) => {
     const queryClient = useQueryClient();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
     const navigate = useNavigate();
@@ -42,10 +44,11 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     const [importingId, setImportingId] = useState<number | null>(null);
     const [importFile, setImportFile] = useState<File | null>(null);
     const importFileInputRef = useRef<HTMLInputElement>(null);
-    const { data: iterations, isLoading, isError, error, refetch } = useQuery({
+    const { data: allIterations, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['iterations'],
         queryFn: iterationService.getAll,
     });
+    const iterations = projectId === undefined ? allIterations : allIterations?.filter(item => item.project_id === projectId);
 
     const deleteMutation = useMutation({
         mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => iterationService.delete(id, revisions),

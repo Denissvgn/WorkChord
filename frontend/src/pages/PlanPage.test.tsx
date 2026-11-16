@@ -17,6 +17,7 @@ const planningReadinessMock = vi.hoisted(() => ({
 }));
 
 vi.mock('../features/planningMasters/usePlanningReadiness', () => planningReadinessMock);
+vi.mock('./IterationsPage', () => ({ default: () => <p>Iterations of the project</p> }));
 
 const queryState = (overrides: Record<string, unknown> = {}) => ({
     enabled: true,
@@ -264,6 +265,16 @@ describe('PlanPage mixed planning launcher', () => {
         expect(within(directTools).getByRole('link', { name: 'Triage' }))
             .toHaveAttribute('href', '/triage');
         useScopeStore.setState({ project: null, iteration: null });
+    });
+
+    it('shows the iterations when the scope bar opens Plan on them, and the hub otherwise', () => {
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
+        const opened = renderWithProviders(<PlanPage />, { initialEntries: ['/plan?panel=iterations&project=1&iteration=2'] });
+        expect(screen.getByText('Iterations of the project')).toBeInTheDocument();
+        opened.unmount();
+
+        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+        expect(screen.queryByText('Iterations of the project')).not.toBeInTheDocument();
     });
 
     it('keeps responsive checkpoint layout in CSS instead of an inline six-column grid', () => {

@@ -1,7 +1,7 @@
 import { useAdminAccess } from '../hooks/useAdminAccess';
 import { planningInputService } from '../services/planningInputService';
 import type { Iteration } from '../types/iteration';
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -16,8 +16,7 @@ import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { Modal } from '../components/common/Modal';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { AlertTriangle, Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History, RefreshCw } from 'lucide-react';
-import { useIterationStore } from '../store/iterationStore';
-import { IterationSelector } from '../components/iteration/IterationSelector';
+import { useWorkScope } from '../features/scope/useWorkScope';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
 import type { TaskBatchUpdateItem, TaskUpdate } from '../types/task';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -70,7 +69,8 @@ const GanttPage = () => {
     const { hasAdminAccess } = useAdminAccess();
     const { t } = useTranslation();
     const toast = useToast();
-    const { selectedIterationId, isBacklog, chooseDefaultIteration } = useIterationStore();
+    const { iteration } = useWorkScope();
+    const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
     const [explanation, setExplanation] = useState<{ iterationId: number; data: ExplainScheduleResponse } | null>(null);
     const [explanationError, setExplanationError] = useState<{ iterationId: number; message: string } | null>(null);
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -301,9 +301,16 @@ const GanttPage = () => {
         )
     );
 
-    useEffect(() => {
-        if (iterations && iterations.length > 0) chooseDefaultIteration(iterations);
-    }, [iterations, selectedIterationId, isBacklog, chooseDefaultIteration]);
+    // Choosing another iteration in the scope bar leaves the explanation and the sandbox of the last one.
+    const [shownIterationId, setShownIterationId] = useState(selectedIterationId);
+    if (shownIterationId !== selectedIterationId) {
+        setShownIterationId(selectedIterationId);
+        setExplanation(null);
+        setExplanationError(null);
+        setEditingExplanationTask(null);
+        setSandboxChanges({});
+        setSandboxMode(false);
+    }
 
     if (iterationsLoading) {
         return (
@@ -371,20 +378,6 @@ const GanttPage = () => {
                 </span>
             )}
             description={t('gantt.description')}
-            contextControl={(
-                <IterationSelector
-                    showLabel
-                    className="min-w-0"
-                    onChange={() => {
-                        latestExplainIterationRef.current = null;
-                        setExplanation(null);
-                        setExplanationError(null);
-                        setEditingExplanationTask(null);
-                        setSandboxChanges({});
-                        setSandboxMode(false);
-                    }}
-                />
-            )}
             primaryAction={(
                 <Button
                     variant={sandboxMode ? 'secondary' : 'primary'}
