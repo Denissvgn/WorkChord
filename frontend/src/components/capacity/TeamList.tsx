@@ -2,7 +2,7 @@ import { planningInputService, type ObservedRevisions } from '../../services/pla
 import { useState } from 'react';
 import { useQueries, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp, Loader2, Trash2, User, Plane, Calendar } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2, Trash2, User, Plane } from 'lucide-react';
 import { teamService } from '../../services/teamService';
 import { Button } from '../common/Button';
 import { useConfirmDialog } from '../common/useConfirmDialog';
@@ -85,7 +85,6 @@ export const TeamList = ({ iterationId, onEdit, layout = 'cards' }: TeamListProp
                     member={member}
                     onEdit={onEdit}
                     onDelete={() => void confirmMemberDelete(member)}
-                    onManageVacations={() => setManagingVacationsForId(member.id)}
                 />
             ))}
             {layout === 'table' && Boolean(members?.length) && <CapacityTable members={members ?? []} workloads={workloads}
@@ -164,14 +163,12 @@ const TeamMemberCard = ({
     member,
     scale,
     onDelete,
-    onEdit,
-    onManageVacations
+    onEdit
 }: {
     member: TeamMember,
     scale: number,
     onDelete: () => void,
     onEdit: (m: TeamMember) => void,
-    onManageVacations: () => void
 }) => {
     const { t } = useTranslation();
     const [showCapacity, setShowCapacity] = useState(false);
@@ -252,16 +249,6 @@ const TeamMemberCard = ({
                     title={t('teamCapacity.capacityBreakdown')}
                 >
                     {showCapacity ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onManageVacations}
-                    className="text-feedback-purple-foreground hover:bg-feedback-purple-muted"
-                    title={t('teamVacations.title')}
-                    aria-label={t('teamVacations.title')}
-                >
-                    <Calendar className="w-4 h-4" />
                 </Button>
                 <Button
                     variant="ghost"
