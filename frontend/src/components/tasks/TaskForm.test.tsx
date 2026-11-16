@@ -76,6 +76,21 @@ describe('task template application', () => {
         expect(JSON.parse(JSON.stringify(api.post.mock.calls[0][1]))).not.toHaveProperty('priority');
     });
 
+    it('edits effort in hours and saves the hours value', async () => {
+        configure(template());
+        const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        const effort = await screen.findByRole('spinbutton', { name: 'Effort (hours)' });
+        expect(screen.queryByRole('spinbutton', { name: 'Effort (days)' })).not.toBeInTheDocument();
+        expect(screen.getByText('= n days at 8 hours per day')).toBeInTheDocument();
+        await user.clear(effort);
+        await user.type(effort, '12');
+        expect(screen.getByText('= 1.5 days at 8 hours per day')).toBeInTheDocument();
+        await user.type(screen.getByRole('textbox', { name: 'Task title' }), 'Estimate check');
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalled());
+        expect(api.post.mock.calls[0][1].effort_hours).toBe(12);
+    });
+
     it('does not blindly create again after an uncertain result without a current comparison', async () => {
         configure(template());
         api.post.mockRejectedValueOnce(new TypeError('No verified response'));

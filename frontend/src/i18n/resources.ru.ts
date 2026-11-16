@@ -93,7 +93,7 @@ export const russianResources = {
                 "action_commit": "Включить в итерацию",
                 "action_uncommit": "Вернуть в бэклог проекта",
                 "action_review": "Проверить работу",
-                "findDependency": "Найти предшествующую задачу",
+                "findDependency": "Найти задачу, которую нужно дождаться",
                 "firstPage": "Первая страница",
                 "moreResults": "Следующие результаты",
                 "backlog": "Бэклог проекта",

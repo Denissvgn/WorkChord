@@ -402,7 +402,7 @@ describe('Gantt dependency links', () => {
         const { user, container } = renderChart(false, [predecessor, successor]);
         expect(container.querySelectorAll('svg path[marker-end]')).toHaveLength(1);
         expect(screen.getAllByText('1 link')).toHaveLength(2);
-        expect(screen.getByRole('button', { name: /Build the importer.*Depends on 1; 0 depend on it\./ })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Build the importer.*Waits for 1; 0 wait for it\./ })).toBeInTheDocument();
         const toggle = screen.getByRole('button', { name: 'Dependency links' });
         expect(toggle).toHaveAttribute('aria-pressed', 'true');
         await user.click(toggle);
@@ -421,10 +421,10 @@ describe('Gantt bar inputs in Try changes', () => {
         );
         await user.click(screen.getByRole('button', { name: scheduledTaskName(taskFixture) }));
         const dialog = await screen.findByRole('dialog', { name: 'Current task' });
-        expect(screen.getByRole('combobox', { name: 'Who does it' })).toHaveFocus();
+        expect(screen.getByRole('combobox', { name: 'Assignee' })).toHaveFocus();
         expect(dialog).toHaveTextContent('Dates are calculated.');
         await screen.findByRole('option', { name: 'Sam' });
-        await user.selectOptions(screen.getByRole('combobox', { name: 'Who does it' }), '7');
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Assignee' }), '7');
         const effort = screen.getByRole('spinbutton', { name: 'Effort (days)' });
         await user.clear(effort);
         await user.type(effort, '3');

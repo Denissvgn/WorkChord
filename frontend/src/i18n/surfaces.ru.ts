@@ -854,6 +854,7 @@ export const surfacesRussian = {
         effortDays: "Трудозатраты, дни",
         newTag: "Новая метка",
         effortHours: "Трудозатраты, часы",
+        effortDaysHint: "= {{days}} дн. по {{hours}} ч. в день",
         minStartDate: "Самое раннее начало",
         statusManagement: "Управление статусом",
         statusLockedByEdits: 'Сохраните или отмените изменения, чтобы сменить статус.',
