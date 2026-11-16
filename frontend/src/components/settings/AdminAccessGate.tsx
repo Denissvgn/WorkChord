@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAdminAccess, useKeylessReader } from '../../hooks/useAdminAccess';
 import { Button } from '../common/Button';
 import { AdminAccessPanel } from './AdminAccessPanel';
+import { useSharedUnlock } from './sharedUnlock';
 
 interface AdminAccessGateProps {
     children: ReactNode;
@@ -27,6 +28,7 @@ export const AdminAccessGate = ({
     const { t } = useTranslation();
     const { hasAdminKey } = useAdminAccess();
     const reader = useKeylessReader();
+    const shared = useSharedUnlock();
     const hasAccess = accessGranted ?? hasAdminKey;
     const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
@@ -34,7 +36,30 @@ export const AdminAccessGate = ({
         return <>{children}</>;
     }
     if (readable && reader.settings) {
+        if (shared) {
+            // The page's own Unlock editing control serves this section.
+            return (
+                <fieldset disabled aria-describedby={shared.noteId} className="m-0 min-w-0 border-0 p-0">
+                    {children}
+                </fieldset>
+            );
+        }
         return <ReadOnlySettings headingLevel={headingLevel}>{children}</ReadOnlySettings>;
+    }
+    if (shared) {
+        return (
+            <div className="card card-pad max-w-3xl">
+                <div className="admin-access-gate">
+                    <div className="iconbox warn">
+                        <LockKeyhole aria-hidden="true" className="h-4 w-4" />
+                    </div>
+                    <div className="admin-access-gate-copy">
+                        <Heading>{t('settings.adminAccessProtectedTitle')}</Heading>
+                        <p>{t('settings.sharedUnlockProtectedDescription')}</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
