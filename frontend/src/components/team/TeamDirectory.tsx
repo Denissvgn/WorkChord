@@ -56,10 +56,11 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
         queryFn: teamService.getProfiles,
     });
     // The roster needs the admin key; without it the page stays readable and the agent columns say Unknown.
+    // The read is optional, so a rejected key shows Unknown and is not taken for an expired session.
     // feedback-policy: query loading,error,retry,empty
     const rosterQuery = useQuery({
         queryKey: ['agent-actor-roster', true],
-        queryFn: () => agentService.getActorRoster(true),
+        queryFn: () => agentService.getActorRoster(true, { optional: true }),
         enabled: canReadRoster,
         retry: false,
         // Connection is judged by when the server last saw each agent, so the roster is read again while the page is open.
