@@ -1379,110 +1379,6 @@
   gap: 12px;
   align-items: end;
 }
-.wc .roadmap-filter-trigger-count {
-  display: inline-grid;
-  min-width: 20px;
-  min-height: 20px;
-  place-items: center;
-  padding-inline: 5px;
-  border-radius: 999px;
-  background: var(--thread-soft);
-  color: var(--thread-ink);
-  font-size: var(--wc-type-micro);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.wc .roadmap-active-filters {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--wc-r-md);
-  background: var(--panel-2);
-}
-.wc .roadmap-active-filters-label {
-  flex: 0 0 auto;
-  color: var(--ink-3);
-  font-size: var(--wc-type-meta);
-  font-weight: 600;
-}
-.wc .roadmap-active-filter-list {
-  display: flex;
-  min-width: 0;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-.wc .roadmap-active-filter-chip,
-.wc .roadmap-active-filter-more {
-  display: inline-flex;
-  min-height: 28px;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  border: 1px solid var(--border-2);
-  border-radius: 999px;
-  background: var(--panel);
-  color: var(--ink-2);
-  font-size: var(--wc-type-meta);
-  font-weight: 500;
-  line-height: var(--wc-leading-ui);
-  cursor: pointer;
-}
-.wc .roadmap-active-filter-chip:hover,
-.wc .roadmap-active-filter-more:hover {
-  border-color: var(--thread);
-  background: var(--thread-soft);
-  color: var(--thread-ink);
-}
-.wc .roadmap-active-filter-more {
-  color: var(--thread-ink);
-  border-color: var(--thread-line);
-}
-.wc .roadmap-filter-drawer-content {
-  display: grid;
-  gap: 24px;
-  padding: 20px;
-}
-.wc .roadmap-filter-section {
-  display: grid;
-  min-width: 0;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-.wc .roadmap-filter-section > legend {
-  margin-block-end: 2px;
-  color: var(--ink);
-  font-size: var(--wc-type-label);
-  font-weight: 650;
-  line-height: var(--wc-leading-ui);
-}
-.wc .roadmap-filter-drawer-grid {
-  grid-template-columns: minmax(0, 1fr);
-}
-.wc .roadmap-filter-drawer-grid .field-lbl {
-  font-size: var(--wc-type-meta);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-.wc .roadmap-filter-date-reset {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.wc .roadmap-filter-date-reset .field-hint {
-  min-width: 0;
-  margin: 0;
-}
-.wc .roadmap-filter-date-reset .btn {
-  flex: 0 0 auto;
-}
 .wc .roadmap-timeline-scroll {
   --roadmap-project-rail-width: 280px;
   overscroll-behavior-inline: contain;
@@ -1561,20 +1457,9 @@
 }
 .wc .projects-workspace {
   display: grid;
+  /* The column never grows to the timeline's or the table's own width; both scroll inside it. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
-}
-.wc .projects-workspace-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-.wc .projects-workspace-title {
-  margin: 0;
-  color: var(--ink);
-  font-size: var(--wc-type-heading);
-  font-weight: 650;
-  line-height: var(--wc-leading-ui);
 }
 .wc .projects-workspace-facts {
   margin: 4px 0 0;
@@ -1618,18 +1503,6 @@
 .wc button.projects-exception:hover { border-color: var(--ink-3); }
 .wc button.projects-exception:focus-visible { outline: 2px solid var(--focus, var(--accent)); outline-offset: 2px; }
 .wc button.projects-exception[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
-.wc .projects-filter-toolbar {
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(150px, 190px) minmax(150px, 190px) auto;
-  gap: 8px;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--wc-r-md);
-  background: var(--panel-2);
-}
-.wc .projects-filter-toolbar > * { min-width: 0; }
-.wc .projects-filter-toolbar > .btn { justify-self: end; }
 .wc .projects-saved-view {
   justify-self: start;
   display: inline-flex;
@@ -1645,82 +1518,97 @@
 .wc .projects-table {
   min-height: 240px;
 }
-.wc .projects-initiatives {
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--wc-r-md);
-  background: var(--panel);
-}
-.wc .projects-initiatives > summary {
-  padding: 0;
-  cursor: pointer;
-  list-style: none;
-}
-.wc .projects-initiatives > summary::-webkit-details-marker { display: none; }
-.wc .projects-initiatives-summary {
+/* Portfolio counts under the page title; each count filters to the projects it counts. */
+.wc .projects-header-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  min-height: 58px;
-  padding: 10px 14px;
+  gap: 6px 12px;
 }
-.wc .projects-initiatives-summary > svg {
-  flex: 0 0 auto;
-  color: var(--ink-3);
-  transition: transform 160ms ease-out;
+.wc .projects-header-meta .projects-workspace-facts { margin: 0; }
+.wc .projects-header-meta .projects-exceptions { justify-content: flex-start; }
+/* One header row per initiative, in the list and in the roadmap rail. */
+.wc .projects-group-row > th {
+  border-block: 1px solid var(--border);
+  background: var(--panel-2);
 }
-.wc .projects-initiatives[open] .projects-initiatives-summary > svg {
-  transform: rotate(180deg);
-}
-.wc .projects-initiatives-summary > span:not(.projects-initiatives-state) {
+.wc .projects-group:first-of-type .projects-group-row > th { border-block-start: 0; }
+.wc .projects-group-header {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 12px;
   min-width: 0;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: 1px;
 }
-.wc .projects-initiatives-summary strong {
+.wc .projects-group-copy { display: grid; grid-template-columns: minmax(0, 1fr); flex: 1 1 auto; gap: 2px; min-width: 0; }
+.wc .projects-group-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-width: 0;
+}
+.wc .projects-group-name {
+  margin: 0;
   color: var(--ink);
   font-size: var(--wc-type-base);
   font-weight: 650;
+  line-height: var(--wc-leading-ui);
 }
-.wc .projects-initiatives-summary small {
-  overflow: hidden;
+.wc .projects-group-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  margin: 0;
   color: var(--ink-3);
   font-size: var(--wc-type-meta);
+  line-height: var(--wc-leading-body);
+}
+/* In the narrow roadmap rail each fact keeps to one line; the full text is in its title. */
+.wc .roadmap-project-rail .projects-group-meta { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.wc .roadmap-project-rail .projects-group-meta > span {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.wc .projects-initiatives-state {
-  flex: 0 0 auto;
-  min-width: 26px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--panel-2);
-  color: var(--ink-2);
-  font-size: var(--wc-type-meta);
-  font-weight: 650;
-  text-align: center;
-}
-.wc .projects-initiatives-state.is-error {
-  background: var(--blocked-soft);
-  color: var(--blocked-ink);
-}
-.wc .projects-initiatives[open] > summary {
-  border-block-end: 1px solid var(--border);
-}
-.wc .projects-initiatives-content {
-  display: grid;
-  gap: 12px;
-  padding: 14px;
-}
-.wc .projects-initiatives-actions {
+.wc .projects-group-actions {
   display: flex;
-  justify-content: flex-end;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
 }
-.wc .projects-initiatives-table {
+/* A project without dates on the roadmap: the way to date it sits on its track. */
+.wc .roadmap-undated-track {
+  position: relative;
+  z-index: 20; /* above the today line */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+}
+.wc .roadmap-undated-note {
+  color: var(--ink-3);
+  font-size: var(--wc-type-meta);
+}
+.wc .projects-dates-popover {
+  position: fixed;
+  z-index: 50;
+  width: 288px;
+  max-width: calc(100vw - 32px);
+  display: grid;
+  gap: 10px;
+  padding: 14px;
   border: 1px solid var(--border);
-  border-radius: var(--wc-r);
+  border-radius: var(--wc-r-md);
+  background: var(--panel);
+  box-shadow: var(--sh-2);
+}
+.wc .projects-dates-popover-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--wc-type-label);
+  font-weight: 650;
 }
 .wc .wc-content-rail {
   display: grid;
@@ -3398,16 +3286,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .wc .settings-search-results { grid-column: auto; }
-  .wc .projects-initiatives-summary small { display: none; }
-  .wc .roadmap-filter-date-reset {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .wc .roadmap-filter-date-reset .btn { width: 100%; }
-  .wc .roadmap-active-filters {
-    align-items: flex-start;
-    flex-direction: column;
-  }
   .wc .roadmap-timeline-scroll {
     --roadmap-project-rail-width: clamp(144px, 42vw, 184px);
   }
@@ -3899,16 +3777,7 @@
   .wc .agent-team-member-facts {
     grid-template-columns: minmax(0, 1fr);
   }
-  .wc .projects-workspace-head {
-    flex-direction: column;
-    align-items: stretch;
-  }
   .wc .projects-exceptions { justify-content: flex-start; }
-  .wc .projects-filter-toolbar { grid-template-columns: minmax(0, 1fr); }
-  .wc .projects-filter-toolbar > .btn {
-    width: 100%;
-    justify-self: stretch;
-  }
   .wc .calendar-period-nav { align-items: stretch; }
   .wc .calendar-period-controls {
     display: grid;
