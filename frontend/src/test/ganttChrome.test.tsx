@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { useIterationStore } from '../store/iterationStore';
 import type { GanttResponse, GanttTask } from '../types/gantt';
@@ -56,10 +56,31 @@ it('checks the loaded Gantt page and chart chrome', async () => {
     services.getAll.mockResolvedValue([iterationFixture]);
     services.getChart.mockResolvedValue(ganttFixture);
     const { container, user } = renderWithProviders(<GanttPage />);
-    await screen.findByTestId('page-toolbar');
-    expect(screen.getByRole('searchbox', { name: 'Search tasks' })).toBeInTheDocument();
+    const toolbar = within(await screen.findByTestId('page-toolbar'));
+    expect(toolbar.getByRole('searchbox', { name: 'Search tasks' })).toBeInTheDocument();
+    for (const name of ['Status', 'Assignee', 'Hide tasks without dates', 'Group by']) {
+        expect(toolbar.getByRole('combobox', { name })).toBeInTheDocument();
+    }
+    for (const name of ['Zoom timeline out', 'Zoom timeline in', 'Today', 'Fit iteration']) {
+        expect(toolbar.getByRole('button', { name })).toHaveAttribute('title', name);
+    }
     expectPageChrome(container);
     expect(screen.getAllByRole('button', { name: /more actions/i })).toHaveLength(1);
     await user.click(screen.getByRole('button', { name: /more actions/i }));
-    expect(screen.getByRole('menuitem', { name: 'Zoom timeline in' })).toBeInTheDocument();
+    for (const name of ['Zoom timeline out', 'Zoom timeline in', 'Today', 'Fit iteration', 'Preview schedule']) {
+        expect(screen.queryByRole('menuitem', { name })).not.toBeInTheDocument();
+    }
+    expect(screen.getByRole('menuitem', { name: /Dependency links/ })).toBeInTheDocument();
+    await user.keyboard('{Escape}');
+
+    const tryChanges = screen.getByRole('button', { name: 'Try changes' });
+    expect(tryChanges).toHaveAccessibleDescription('Edit tasks and see the recalculated schedule before anything is saved.');
+    expect(screen.queryByText(/Nothing is saved until you choose Apply/)).not.toBeInTheDocument();
+    await user.click(tryChanges);
+    expect(screen.getByText(/Nothing is saved until you choose Apply; Discard returns to the saved schedule/)).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Preview result' })).toBeDisabled();
+    const stopTrying = screen.getByRole('button', { name: 'Stop trying changes' });
+    expect(stopTrying).toHaveAccessibleDescription('Edit tasks and see the recalculated schedule before anything is saved.');
+    await user.click(stopTrying);
+    expect(screen.getByRole('button', { name: 'Try changes' })).toBeInTheDocument();
 });

@@ -5173,5 +5173,7 @@
 .wc .gantt-toolbar .wc-page-toolbar-search { flex: 0 1 160px; min-width: 120px; }
 .wc .gantt-toolbar .wc-page-toolbar-filters { flex: 1 1 auto; order: initial; }
 .wc .gantt-toolbar .wc-page-toolbar-end { order: initial; }
+.wc .gantt-toolbar .wc-page-toolbar-view-options { display: flex; align-items: center; gap: 4px; }
+.wc .gantt-toolbar .wc-page-toolbar-view-options > select { width: 160px; }
 .wc .gantt-toolbar .wc-filter-controls { flex-wrap: nowrap; }
 .wc .gantt-toolbar .wc-filter-select { min-width: 5rem; max-width: 9rem; }

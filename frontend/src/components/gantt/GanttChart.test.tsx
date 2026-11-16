@@ -170,14 +170,18 @@ describe('GanttChart clarity states', () => {
 });
 
 describe('Gantt timeline controls', () => {
-    it('offers zoom, Today and Fit in chart actions', async () => {
+    it('offers zoom, Today and Fit directly in the toolbar with named tooltips', async () => {
         const { user } = renderChart();
-        await user.click(screen.getByRole('button', { name: i18n.t('surfaces.ganttChart.chartActions') }));
-        expect(screen.getByRole('menuitem', { name: 'Zoom timeline in' })).toBeInTheDocument();
-        expect(screen.getByRole('menuitem', { name: 'Zoom timeline out' })).toBeInTheDocument();
-        expect(screen.getByRole('menuitem', { name: 'Fit iteration' })).toBeInTheDocument();
-        expect(screen.getByRole('menuitem', { name: 'Today' })).toBeInTheDocument();
-        await user.click(screen.getByRole('menuitem', { name: 'Zoom timeline in' }));
+        const toolbar = within(screen.getByTestId('page-toolbar'));
+        for (const name of ['Zoom timeline in', 'Zoom timeline out', 'Fit iteration', 'Today']) {
+            expect(toolbar.getByRole('button', { name })).toHaveAttribute('title', name);
+        }
+        const zoomOut = toolbar.getByRole('button', { name: 'Zoom timeline out' });
+        await user.click(zoomOut);
+        await user.click(zoomOut);
+        expect(zoomOut).toBeDisabled();
+        await user.click(toolbar.getByRole('button', { name: 'Zoom timeline in' }));
+        expect(zoomOut).toBeEnabled();
     });
 });
 

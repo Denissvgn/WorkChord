@@ -804,10 +804,6 @@ export const GanttChart = ({
         && displayTasks.length === 0;
 
     const chartActions: OverflowMenuItem[] = [
-                            { label: t('surfaces.ganttChart.zoomTimelineOut'), icon: <ZoomOut className="h-4 w-4" />, onSelect: zoomOut, disabled: zoomLevel <= ZOOM_MIN },
-                            { label: t('surfaces.ganttChart.zoomTimelineIn'), icon: <ZoomIn className="h-4 w-4" />, onSelect: zoomIn, disabled: zoomLevel >= ZOOM_MAX },
-                            { label: t('surfaces.ganttChart.today'), icon: <Crosshair className="h-4 w-4" />, onSelect: scrollToToday, disabled: todayIndex < 0 },
-                            { label: t('surfaces.ganttChart.fitIteration'), icon: <CalendarRange className="h-4 w-4" />, onSelect: fitIteration },
                             { label: `${t('surfaces.ganttChart.dependencyLinks')} (${showLinks ? '✓' : '—'})`, icon: <GitBranch className="h-4 w-4" aria-hidden="true" />, onSelect: () => setShowLinks(!showLinks) },
                             {
                                 label: t(isSortedByDate
@@ -907,6 +903,18 @@ export const GanttChart = ({
                         <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
                         <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
                     </select>
+                    <Button variant="secondary" className="icon" aria-label={t('surfaces.ganttChart.zoomTimelineOut')} onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}>
+                        <ZoomOut aria-hidden="true" className="h-4 w-4" />
+                    </Button>
+                    <Button variant="secondary" className="icon" aria-label={t('surfaces.ganttChart.zoomTimelineIn')} onClick={zoomIn} disabled={zoomLevel >= ZOOM_MAX}>
+                        <ZoomIn aria-hidden="true" className="h-4 w-4" />
+                    </Button>
+                    <Button variant="secondary" className="icon" aria-label={t('surfaces.ganttChart.today')} onClick={scrollToToday} disabled={todayIndex < 0}>
+                        <Crosshair aria-hidden="true" className="h-4 w-4" />
+                    </Button>
+                    <Button variant="secondary" className="icon" aria-label={t('surfaces.ganttChart.fitIteration')} onClick={fitIteration}>
+                        <CalendarRange aria-hidden="true" className="h-4 w-4" />
+                    </Button>
                     {!onChartActionsChange && <OverflowMenu label={t('surfaces.ganttChart.chartActions')} items={chartActions} />}
                 </>}
             />

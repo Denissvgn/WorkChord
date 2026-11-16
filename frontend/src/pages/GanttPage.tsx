@@ -1,7 +1,7 @@
 import { useAdminAccess } from '../hooks/useAdminAccess';
 import { planningInputService } from '../services/planningInputService';
 import type { Iteration } from '../types/iteration';
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useId } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -70,6 +70,7 @@ const GanttPage = () => {
     const queryClient = useQueryClient();
     const { hasAdminAccess } = useAdminAccess();
     const { t } = useTranslation();
+    const tryChangesDescriptionId = useId();
     const toast = useToast();
     const { iteration } = useWorkScope();
     const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
@@ -405,10 +406,12 @@ const GanttPage = () => {
                         if (sandboxMode) { setSandboxChanges({}); setValidatedDraft(null); setApplySaveUnconfirmed(false); void refetchGantt(); }
                         setSandboxMode(!sandboxMode);
                     }}
-                    title={t('gantt.sandboxTooltip')}
+                    aria-label={sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
+                    aria-describedby={tryChangesDescriptionId}
                 >
-                    <FlaskConical className="h-4 w-4" />
+                    <FlaskConical aria-hidden="true" className="h-4 w-4" />
                     {sandboxMode ? t('gantt.exitSandbox') : t('gantt.sandboxMode')}
+                    <span id={tryChangesDescriptionId} className="sr-only">{t('gantt.sandboxTooltip')}</span>
                 </Button>
             )}
             overflowAction={<OverflowMenu alwaysMenu items={[
