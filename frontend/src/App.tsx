@@ -23,7 +23,6 @@ const TriagePage = lazy(routeModuleLoaders.triage);
 const ProjectsPage = lazy(routeModuleLoaders.projects);
 const ProjectDetailPage = lazy(routeModuleLoaders.projectDetail);
 const ProjectReleaseDetailPage = lazy(routeModuleLoaders.projectReleaseDetail);
-const RoadmapPage = lazy(routeModuleLoaders.roadmap);
 const GanttPage = lazy(routeModuleLoaders.gantt);
 const AnalyticsPage = lazy(routeModuleLoaders.analytics);
 const SettingsPage = lazy(routeModuleLoaders.settings);
@@ -60,7 +59,7 @@ const WorkspaceRoutes = () => (
     <Route path="/projects" element={<ProjectsPage />} />
     <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
     <Route path="/projects/:projectId/releases/:releaseId" element={<ProjectReleaseDetailPage />} />
-    <Route path="/roadmap" element={<LegacyRedirect><RoadmapPage /></LegacyRedirect>} />
+    <Route path="/roadmap" element={<LegacyRedirect><ProjectsPage /></LegacyRedirect>} />
     <Route path="/gantt" element={<GanttPage />} />
     <Route path="/analytics" element={<AnalyticsPage />} />
     <Route path="/settings" element={<SettingsPage />} />

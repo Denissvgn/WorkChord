@@ -3,10 +3,21 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
+    addMonths,
+    endOfMonth,
+    endOfQuarter,
+    endOfYear,
+    format,
+    startOfMonth,
+    startOfQuarter,
+    startOfYear,
+} from 'date-fns';
+import {
     AlertTriangle,
-    ChevronDown,
     FolderOpen,
+    List,
     LoaderCircle,
+    Map as MapIcon,
     Plus,
     Search,
     Target,
@@ -14,13 +25,43 @@ import {
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { Input } from '../components/common/Input';
-import { Modal } from '../components/common/Modal';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { InitiativeForm } from '../components/projects/InitiativeForm';
+import { InitiativeGroupHeader } from '../components/projects/InitiativeGroupHeader';
 import { ProjectForm } from '../components/projects/ProjectForm';
-import { projectStatusBadgeClassName } from '../components/projects/projectStatusStyles';
-import { InlineEmptyState, OverflowMenu, PageHeader, PageLayout, TableFrame } from '../components/ui';
+import { RoadmapView } from '../components/projects/RoadmapView';
+import {
+    HEALTH_NEEDS_ATTENTION,
+    NONE_VALUE,
+    PORTFOLIO_PARAMS,
+    PROJECT_HEALTHS,
+    PROJECT_STATUSES,
+    groupByInitiative,
+    hasActiveFilters,
+    matchesPortfolioFilters,
+    ownerKeyForProject,
+    readPortfolioFilters,
+    readPortfolioView,
+    readSavedViewId,
+    readTimelineWindow,
+    type PortfolioFilters,
+    type PortfolioView,
+} from '../components/projects/projectPortfolio';
+import { projectHealthBadgeClassName, projectStatusBadgeClassName } from '../components/projects/projectStatusStyles';
+import {
+    FilterBar,
+    InlineEmptyState,
+    OverflowMenu,
+    PageHeader,
+    PageLayout,
+    PageToolbar,
+    SegmentedControl,
+    SlideOverDrawer,
+    TableFrame,
+    ViewSwitch,
+    type FilterBarFilter,
+} from '../components/ui';
 import { projectService } from '../services/projectService';
 import { savedViewService } from '../services/savedViewService';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -37,6 +78,7 @@ import type {
 import { feedbackMessage } from '../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../features/mutationFeedback';
 import { formatEffortDays } from '../utils/workNumbers';
+
 const projectStatusLabelKeys: Record<ProjectStatus, string> = {
     proposed: 'surfaces.projectsPage.proposed',
     planned: 'surfaces.projectsPage.planned',
@@ -53,53 +95,13 @@ const projectHealthLabelKeys: Record<ProjectHealth, string> = {
     off_track: 'surfaces.projectsPage.offTrack',
 };
 
-const healthClassName = (health: string) => {
-    switch (health) {
-        case 'on_track':
-            return 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border';
-        case 'at_risk':
-            return 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border';
-        case 'off_track':
-            return 'bg-feedback-danger-muted text-feedback-danger-foreground border-feedback-danger-border';
-        default:
-            return 'bg-surface-muted text-content-primary border-border';
-    }
-};
-
-const riskLabelKeys: Record<string, string> = {
-    unknown: 'surfaces.projectsPage.unknown',
-    on_track: 'surfaces.projectsPage.onTrack',
-    at_risk: 'surfaces.projectsPage.atRisk',
-    off_track: 'surfaces.projectsPage.offTrack',
-};
-
-const riskClassName = (risk: string) => {
-    switch (risk) {
-        case 'on_track':
-            return 'bg-feedback-success-muted text-feedback-success-foreground border-feedback-success-border';
-        case 'at_risk':
-            return 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border';
-        case 'off_track':
-            return 'bg-feedback-danger-muted text-feedback-danger-foreground border-feedback-danger-border';
-        default:
-            return 'bg-surface-muted text-content-primary border-border';
-    }
-};
-
-
+/** The filters a saved projects view carries: search, status and health. */
 const projectFiltersFromSavedView = (view: SavedView) => {
     const raw = view.filters_json;
-    const status: ProjectStatus | '' = typeof raw.status === 'string' && raw.status in projectStatusLabelKeys
-        ? raw.status as ProjectStatus
-        : '';
-    const health: ProjectHealth | '' = typeof raw.health === 'string' && raw.health in projectHealthLabelKeys
-        ? raw.health as ProjectHealth
-        : '';
-
     return {
         search: typeof raw.search === 'string' ? raw.search : '',
-        status,
-        health,
+        status: typeof raw.status === 'string' && raw.status in projectStatusLabelKeys ? raw.status : '',
+        health: typeof raw.health === 'string' && raw.health in projectHealthLabelKeys ? raw.health : '',
     };
 };
 
@@ -114,6 +116,30 @@ const SORT_COLUMNS: Array<{ key: SortKey; labelKey: string; center?: boolean }> 
     { key: 'signals', labelKey: 'surfaces.projectsPage.signals' },
 ];
 const RISK_ORDER: Record<string, number> = { unknown: 1, on_track: 0, at_risk: 2, off_track: 3 };
+
+/** The URL key of each FilterBar filter. */
+const FILTER_PARAM: Record<string, string> = {
+    status: PORTFOLIO_PARAMS.status,
+    health: PORTFOLIO_PARAMS.health,
+    owner: PORTFOLIO_PARAMS.owner,
+    initiative: PORTFOLIO_PARAMS.initiative,
+};
+const ALL_FILTER_PARAMS = [
+    PORTFOLIO_PARAMS.search,
+    PORTFOLIO_PARAMS.status,
+    PORTFOLIO_PARAMS.health,
+    PORTFOLIO_PARAMS.owner,
+    PORTFOLIO_PARAMS.initiative,
+    PORTFOLIO_PARAMS.attention,
+];
+
+type WindowPreset = 'quarter' | 'sixMonths' | 'year' | 'fit';
+const WINDOW_PRESETS: Array<{ value: Exclude<WindowPreset, 'fit'>; labelKey: string; range: () => [Date, Date] }> = [
+    { value: 'quarter', labelKey: 'surfaces.roadmapPage.presetQuarter', range: () => { const start = startOfQuarter(new Date()); return [start, endOfQuarter(start)]; } },
+    { value: 'sixMonths', labelKey: 'surfaces.roadmapPage.presetSixMonths', range: () => { const start = startOfMonth(new Date()); return [start, endOfMonth(addMonths(start, 5))]; } },
+    { value: 'year', labelKey: 'surfaces.roadmapPage.presetYear', range: () => { const start = startOfYear(new Date()); return [start, endOfYear(start)]; } },
+];
+const inputDate = (date: Date) => format(date, 'yyyy-MM-dd');
 
 const ProjectSummaryCells = ({
     isLoading,
@@ -144,7 +170,7 @@ const ProjectSummaryCells = ({
                 <td className="px-3 py-3 text-center text-content-tertiary">—</td>
                 <td className="px-3 py-3 text-center text-content-tertiary">—</td>
                 <td className="px-3 py-3">
-                    <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(health))}>{t(projectHealthLabelKeys[health])}</span>
+                    <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', projectHealthBadgeClassName(health))}>{t(projectHealthLabelKeys[health])}</span>
                 </td>
             </>
         );
@@ -153,50 +179,46 @@ const ProjectSummaryCells = ({
     return (
         <>
             <td className="px-3 py-3 text-center">
-                <span className="font-medium text-content-primary">{summary?.total_tasks ?? 0}</span>
+                <span className="font-medium text-content-primary">{summary.total_tasks ?? 0}</span>
                 <span className="ml-1 text-xs text-content-secondary">
-                    / {summary?.completed_tasks ?? 0} {t('surfaces.projectsPage.done')}
+                    / {summary.completed_tasks ?? 0} {t('surfaces.projectsPage.done')}
                 </span>
             </td>
             <td className="px-3 py-3 text-center">
                 <span className="font-medium text-content-primary">
-                    {formatEffortDays(summary?.remaining_effort_days, i18n.language) ?? t('common.unknown')}
+                    {formatEffortDays(summary.remaining_effort_days, i18n.language) ?? t('common.unknown')}
                 </span>
                 <span className="ml-1 text-xs text-content-secondary">
-                    / {formatEffortDays(summary?.total_effort_days, i18n.language) ?? t('common.unknown')}
+                    / {formatEffortDays(summary.total_effort_days, i18n.language) ?? t('common.unknown')}
                 </span>
             </td>
             <td className="px-3 py-3">
                 {/* Health and the delivery signals read together in one place. */}
                 <div className="flex flex-wrap gap-1.5">
                     {/* Each chip names what it measures; an unknown date risk adds nothing the Target column does not show. */}
-                    <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(health))}>
+                    <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', projectHealthBadgeClassName(health))}>
                         {t('surfaces.projectsPage.healthSignal', { value: t(projectHealthLabelKeys[health]) })}
                     </span>
-                    {summary && summary.target_date_risk !== 'unknown' && (
-                        <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium', riskClassName(summary.target_date_risk))}>
-                            {t('surfaces.projectsPage.targetSignal', { value: t(riskLabelKeys[summary.target_date_risk]) })}
+                    {summary.target_date_risk !== 'unknown' && (
+                        <span className={clsx('inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium', projectHealthBadgeClassName(summary.target_date_risk))}>
+                            {t('surfaces.projectsPage.targetSignal', { value: t(projectHealthLabelKeys[summary.target_date_risk as ProjectHealth] ?? 'surfaces.projectsPage.unknown') })}
                         </span>
                     )}
-                    {(summary?.blocked_tasks ?? 0) > 0 && (
+                    {(summary.blocked_tasks ?? 0) > 0 && (
                         <span className="inline-flex items-center rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs text-feedback-warning-foreground">
                             <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
-                            <span aria-hidden="true">{summary?.blocked_tasks}</span>
+                            <span aria-hidden="true">{summary.blocked_tasks}</span>
                             <span className="sr-only">
-                                {t('surfaces.projectsPage.blockedTaskCount', {
-                                    count: summary?.blocked_tasks,
-                                })}
+                                {t('surfaces.projectsPage.blockedTaskCount', { count: summary.blocked_tasks })}
                             </span>
                         </span>
                     )}
-                    {(summary?.overdue_tasks ?? 0) > 0 && (
+                    {(summary.overdue_tasks ?? 0) > 0 && (
                         <span className="inline-flex items-center rounded-full bg-feedback-danger-muted px-2 py-0.5 text-xs text-feedback-danger-foreground">
                             <Target aria-hidden="true" className="mr-1 h-3 w-3" />
-                            <span aria-hidden="true">{summary?.overdue_tasks}</span>
+                            <span aria-hidden="true">{summary.overdue_tasks}</span>
                             <span className="sr-only">
-                                {t('surfaces.projectsPage.overdueTaskCount', {
-                                    count: summary?.overdue_tasks,
-                                })}
+                                {t('surfaces.projectsPage.overdueTaskCount', { count: summary.overdue_tasks })}
                             </span>
                         </span>
                     )}
@@ -226,15 +248,12 @@ const ProjectRow = ({
     };
     return (
         <tr className="group cursor-pointer border-b border-border-subtle hover:bg-surface-muted" onClick={openRow}>
-            <td className="px-3 py-3">
+            <td className="py-3 pl-6 pr-3">
                 <Link to={`/projects/${project.id}`} className="font-medium text-content-primary hover:text-action">
                     {project.name}
                 </Link>
-                {/* The initiative when there is one; "Unassigned" here read as if the project had no owner. */}
-                {(project.initiative || project.description) && (
-                    <p className="mt-1 truncate text-xs text-content-secondary">
-                        {[project.initiative?.name, project.description].filter(Boolean).join(' · ')}
-                    </p>
+                {project.description && (
+                    <p className="mt-1 max-w-md truncate text-xs text-content-secondary" title={project.description}>{project.description}</p>
                 )}
             </td>
             <td className="px-3 py-3">
@@ -271,12 +290,12 @@ const ProjectsPage = () => {
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const [editingInitiative, setEditingInitiative] = useState<Initiative | null>(null);
     const [initiativeError, setInitiativeError] = useState<string | null>(null);
-    const [search, setSearch] = useState('');
-    const [statusFilter, setStatusFilter] = useState<ProjectStatus | ''>('');
-    const [healthFilter, setHealthFilter] = useState<ProjectHealth | ''>('');
-    // A portfolio count opens the projects it counts.
-    const [exceptionFilter, setExceptionFilter] = useState<'at_risk' | 'unassessed' | 'unassigned' | null>(null);
-    const requestedSavedViewId = Number(searchParams.get('view')) || null;
+    // Search, filters, the view and the timeline window live in the address, so
+    // switching views keeps them and a link reopens the same portfolio.
+    const view: PortfolioView = readPortfolioView(searchParams);
+    const filters: PortfolioFilters = useMemo(() => readPortfolioFilters(searchParams), [searchParams]);
+    const timelineWindow = useMemo(() => readTimelineWindow(searchParams), [searchParams]);
+    const requestedSavedViewId = readSavedViewId(searchParams);
     const appliedSavedViewIdRef = useRef<number | null>(null);
 
     const { data: projectsData, isLoading, error: projectsError, refetch: refetchProjects } = useQuery({
@@ -313,13 +332,26 @@ const ProjectsPage = () => {
         [portfolioSummaries],
     );
 
-    const clearRequestedViewParam = useCallback(() => {
-        if (!searchParams.has('view')) return;
-        const nextParams = new URLSearchParams(searchParams);
-        nextParams.delete('view');
-        appliedSavedViewIdRef.current = null;
-        setSearchParams(nextParams, { replace: true });
-    }, [searchParams, setSearchParams]);
+    const updateParams = useCallback((changes: Record<string, string | null>) => {
+        setSearchParams(current => {
+            const next = new URLSearchParams(current);
+            Object.entries(changes).forEach(([key, value]) => {
+                if (value) next.set(key, value);
+                else next.delete(key);
+            });
+            return next;
+        }, { replace: true });
+    }, [setSearchParams]);
+
+    /** A filter change leaves the saved view it started from. */
+    const updateFilters = useCallback((changes: Record<string, string | null>) => {
+        updateParams(requestedSavedViewId !== null ? { ...changes, [PORTFOLIO_PARAMS.view]: null } : changes);
+    }, [requestedSavedViewId, updateParams]);
+
+    // Leaving a saved view lets the same view be opened again later.
+    useEffect(() => {
+        if (requestedSavedViewId === null) appliedSavedViewIdRef.current = null;
+    }, [requestedSavedViewId]);
 
     useEffect(() => {
         if (
@@ -331,40 +363,31 @@ const ProjectsPage = () => {
         ) {
             return;
         }
-
         appliedSavedViewIdRef.current = requestedSavedViewId;
-        const filters = projectFiltersFromSavedView(requestedSavedView);
-        const timeoutId = window.setTimeout(() => {
-            setSearch(filters.search);
-            setStatusFilter(filters.status);
-            setHealthFilter(filters.health);
-        }, 0);
-
-        return () => window.clearTimeout(timeoutId);
-    }, [requestedSavedView, requestedSavedViewId]);
+        const saved = projectFiltersFromSavedView(requestedSavedView);
+        updateParams({
+            ...Object.fromEntries(ALL_FILTER_PARAMS.map(key => [key, null])),
+            [PORTFOLIO_PARAMS.search]: saved.search || null,
+            [PORTFOLIO_PARAMS.status]: saved.status || null,
+            [PORTFOLIO_PARAMS.health]: saved.health || null,
+        });
+    }, [requestedSavedView, requestedSavedViewId, updateParams]);
 
     const activeSavedView = requestedSavedViewId !== null && requestedSavedView?.view_type === 'projects'
         ? requestedSavedView
         : null;
 
-    const filteredProjects = useMemo(() => {
-        const normalizedSearch = search.trim().toLowerCase();
-        return projects.filter(project => {
-            if (normalizedSearch && !project.name.toLowerCase().includes(normalizedSearch)) {
-                return false;
-            }
-            if (statusFilter && project.status !== statusFilter) {
-                return false;
-            }
-            if (healthFilter && project.health !== healthFilter) {
-                return false;
-            }
-            if (exceptionFilter === 'at_risk' && !['at_risk', 'off_track'].includes(project.health)) return false;
-            if (exceptionFilter === 'unassessed' && project.health !== 'unknown') return false;
-            if (exceptionFilter === 'unassigned' && project.initiative_id) return false;
-            return true;
-        });
-    }, [projects, search, statusFilter, healthFilter, exceptionFilter]);
+    const filteredProjects = useMemo(
+        () => projects.filter(project => matchesPortfolioFilters(project, filters)),
+        [projects, filters],
+    );
+    const filtersActive = hasActiveFilters(filters);
+    const hasActiveProjectFilters = filtersActive || Boolean(activeSavedView);
+    // Initiatives are part of the portfolio too: with no projects yet, their
+    // headers still show (empty) so they can be seen and edited.
+    const hasPortfolio = projects.length > 0 || initiatives.length > 0;
+    const showViews = filteredProjects.length > 0 || (hasPortfolio && !filtersActive);
+
     const [sort, setSort] = useState<{ key: SortKey; descending: boolean }>({ key: 'name', descending: false });
     const toggleSort = (key: SortKey) => setSort(current => ({ key, descending: current.key === key ? !current.descending : false }));
     const sortedProjects = useMemo(() => {
@@ -388,20 +411,14 @@ const ProjectsPage = () => {
             return sort.descending ? -order : order;
         });
     }, [filteredProjects, portfolioSummariesByProject, sort]);
-    const hasActiveProjectFilters = Boolean(
-        search.trim()
-        || statusFilter
-        || healthFilter
-        || exceptionFilter
-        || activeSavedView,
+    const listGroups = useMemo(
+        () => groupByInitiative(sortedProjects, project => project, initiatives, !filtersActive),
+        [sortedProjects, initiatives, filtersActive],
     );
+    const initiativesById = useMemo(() => new Map(initiatives.map(initiative => [initiative.id, initiative])), [initiatives]);
 
     const clearProjectFilters = () => {
-        setSearch('');
-        setStatusFilter('');
-        setHealthFilter('');
-        setExceptionFilter(null);
-        clearRequestedViewParam();
+        updateFilters(Object.fromEntries(ALL_FILTER_PARAMS.map(key => [key, null])));
     };
 
     const projectCountByInitiative = useMemo(() => {
@@ -418,6 +435,62 @@ const ProjectsPage = () => {
     // "No risk flags" is only true when every project's health has been assessed.
     const unassessedProjectCount = projects.filter(project => project.health === 'unknown').length;
     const unassignedProjectCount = projects.filter(project => !project.initiative_id).length;
+
+    const ownerOptions = useMemo(() => {
+        const owners = new Map<string, string>();
+        projects.forEach(project => {
+            const key = ownerKeyForProject(project);
+            if (key) owners.set(key, formatPortfolioOwnerLabel(project.owner_profile, project.owner, project.owner_id));
+        });
+        return Array.from(owners, ([value, label]) => ({ value, label }))
+            .sort((a, b) => a.label.localeCompare(b.label) || a.value.localeCompare(b.value));
+    }, [projects]);
+
+    const filterBarFilters: FilterBarFilter[] = [
+        {
+            id: 'status',
+            label: t('surfaces.projectsPage.status'),
+            value: filters.status,
+            options: PROJECT_STATUSES.map(status => ({ value: status, label: t(projectStatusLabelKeys[status]) })),
+        },
+        {
+            id: 'health',
+            label: t('surfaces.projectsPage.health'),
+            value: filters.health || (filters.attention === 'at_risk' ? HEALTH_NEEDS_ATTENTION : ''),
+            options: [
+                ...PROJECT_HEALTHS.map(health => ({ value: health, label: t(projectHealthLabelKeys[health]) })),
+                { value: HEALTH_NEEDS_ATTENTION, label: t('surfaces.projectsPage.atRiskOrOffTrack') },
+            ],
+        },
+        {
+            id: 'owner',
+            label: t('surfaces.projectsPage.owner'),
+            value: filters.owner,
+            options: [{ value: NONE_VALUE, label: t('surfaces.projectsPage.noOwner') }, ...ownerOptions],
+        },
+        {
+            id: 'initiative',
+            label: t('surfaces.projectsPage.initiative'),
+            value: filters.initiative,
+            options: [
+                { value: NONE_VALUE, label: t('surfaces.projectsPage.noInitiative') },
+                ...initiatives.map(initiative => ({ value: String(initiative.id), label: initiative.name })),
+            ],
+        },
+    ];
+
+    const changeFilter = (id: string, value: string) => {
+        if (id === 'health') {
+            // "At risk or off track" is the at-risk count's condition; a single health replaces it.
+            const needsAttention = value === HEALTH_NEEDS_ATTENTION;
+            updateFilters({
+                [PORTFOLIO_PARAMS.health]: needsAttention ? null : value || null,
+                [PORTFOLIO_PARAMS.attention]: needsAttention ? 'at_risk' : null,
+            });
+            return;
+        }
+        updateFilters({ [FILTER_PARAM[id]]: value || null });
+    };
 
     const deleteInitiativeMutation = useMutation({
         mutationFn: (initiativeId: number) => projectService.deleteInitiative(initiativeId),
@@ -450,16 +523,98 @@ const ProjectsPage = () => {
             onConfirm: () => deleteInitiativeMutation.mutateAsync(initiative.id),
         });
     };
+    const editInitiativeById = (initiativeId: number) => {
+        const initiative = initiativesById.get(initiativeId);
+        if (initiative) setEditingInitiative(initiative);
+    };
+    const deleteInitiativeById = (initiativeId: number) => {
+        const initiative = initiativesById.get(initiativeId);
+        if (initiative && !deleteInitiativeMutation.isPending) handleDeleteInitiative(initiative);
+    };
+
+    const activePreset: WindowPreset | '' = !timelineWindow.from && !timelineWindow.to
+        ? 'fit'
+        : WINDOW_PRESETS.find(preset => {
+            const [start, end] = preset.range();
+            return timelineWindow.from === inputDate(start) && timelineWindow.to === inputDate(end);
+        })?.value ?? '';
+    const choosePreset = (value: WindowPreset) => {
+        const preset = WINDOW_PRESETS.find(candidate => candidate.value === value);
+        if (!preset) {
+            updateParams({ [PORTFOLIO_PARAMS.from]: null, [PORTFOLIO_PARAMS.to]: null });
+            return;
+        }
+        const [start, end] = preset.range();
+        updateParams({ [PORTFOLIO_PARAMS.from]: inputDate(start), [PORTFOLIO_PARAMS.to]: inputDate(end) });
+    };
+
+    const closeProjectEditor = () => { setIsCreating(false); setEditingProject(null); };
+    const closeInitiativeEditor = () => { setIsCreatingInitiative(false); setEditingInitiative(null); };
+
+    const exceptionButton = (pressed: boolean, onClick: () => void, label: string, risk = false) => (
+        <button data-page-chrome-control="button" type="button" className={clsx('projects-exception', risk && 'is-risk')}
+            aria-pressed={pressed} onClick={onClick}>
+            {risk && <AlertTriangle aria-hidden="true" className="h-4 w-4" />}
+            {label}
+        </button>
+    );
+
+    const headerMeta = projectsData && projects.length > 0 ? (
+        <div className="projects-header-meta">
+            <p className="projects-workspace-facts">
+                {t('surfaces.projectsPage.portfolioSummary', { active: activeProjectCount, total: projects.length })}
+                {hasActiveProjectFilters && (
+                    <span aria-live="polite">
+                        {' · '}
+                        {t('surfaces.projectsPage.showingProjects', { shown: filteredProjects.length, total: projects.length })}
+                    </span>
+                )}
+            </p>
+            <div className="projects-exceptions" role="group" aria-label={t('surfaces.projectsPage.portfolioExceptions')}>
+                {atRiskProjectCount > 0
+                    ? exceptionButton(
+                        filters.attention === 'at_risk',
+                        () => changeFilter('health', filters.attention === 'at_risk' ? '' : HEALTH_NEEDS_ATTENTION),
+                        t('surfaces.projectsPage.atRiskCount', { count: atRiskProjectCount }),
+                        true,
+                    )
+                    : unassessedProjectCount > 0
+                        ? exceptionButton(
+                            filters.health === 'unknown',
+                            () => changeFilter('health', filters.health === 'unknown' ? '' : 'unknown'),
+                            t('surfaces.projectsPage.healthNotAssessed', { count: unassessedProjectCount }),
+                        )
+                        : <span className="projects-exception is-clear">{t('surfaces.projectsPage.noRiskFlags')}</span>}
+                {unassignedProjectCount > 0 && exceptionButton(
+                    filters.initiative === NONE_VALUE,
+                    () => updateFilters({ [PORTFOLIO_PARAMS.initiative]: filters.initiative === NONE_VALUE ? null : NONE_VALUE }),
+                    t('surfaces.projectsPage.unassignedCount', { count: unassignedProjectCount }),
+                )}
+                {activeSavedView && (
+                    <span className="projects-saved-view">
+                        {t('surfaces.projectsPage.savedView')}: {activeSavedView.name}
+                    </span>
+                )}
+            </div>
+        </div>
+    ) : undefined;
 
     return (
-        <PageLayout>
+        <PageLayout variant={view === 'roadmap' ? 'wide' : 'default'}>
             <PageHeader
                 title={t('surfaces.projectsPage.projects')}
-                subtitle={t('surfaces.projectsPage.planAndTrackWorkAcrossIterations')}
-                actions={projectsData && projects.length === 0 ? undefined : (
+                purpose={t('surfaces.projectsPage.purpose')}
+                meta={headerMeta}
+                primaryAction={projectsData && !hasPortfolio ? undefined : (
                     <Button onClick={() => setIsCreating(true)}>
                         <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                         {t('surfaces.projectsPage.newProject')}
+                    </Button>
+                )}
+                secondaryActions={(
+                    <Button variant="secondary" onClick={() => setIsCreatingInitiative(true)}>
+                        <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
+                        {t('surfaces.projectsPage.newInitiative')}
                     </Button>
                 )}
             />
@@ -471,358 +626,233 @@ const ProjectsPage = () => {
             {projectsError && projectsData && (
                 <QueryStaleState message={t('surfaces.projectsPage.staleProjects')} onRetry={() => { void refetchProjects(); }} />
             )}
+            {initiativesLoading && !initiativesData && projectsData && <QueryLoadingState message={t('surfaces.projectsPage.loadingInitiatives')} />}
+            {initiativesError && !initiativesData && <QueryErrorState error={initiativesError} onRetry={() => { void refetchInitiatives(); }} />}
+            {initiativesError && initiativesData && (
+                <QueryStaleState message={t('surfaces.projectsPage.staleInitiatives')} onRetry={() => { void refetchInitiatives(); }} />
+            )}
+            {initiativeError && (
+                <div role="alert" className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">
+                    {initiativeError}
+                </div>
+            )}
 
             {projectsData && (
                 <section className="projects-workspace" aria-labelledby="projects-workspace-title">
-                    <div className="projects-workspace-head">
-                        <div>
-                            <h2 id="projects-workspace-title" className="projects-workspace-title">
-                                {t('surfaces.projectsPage.projectPortfolio')}
-                            </h2>
-                            <p className="projects-workspace-facts">
-                                {t('surfaces.projectsPage.portfolioSummary', {
-                                    active: activeProjectCount,
-                                    total: projects.length,
-                                })}
-                                {hasActiveProjectFilters && (
-                                    <span aria-live="polite">
-                                        {' · '}
-                                        {t('surfaces.projectsPage.showingProjects', {
-                                            shown: filteredProjects.length,
-                                            total: projects.length,
-                                        })}
-                                    </span>
-                                )}
-                            </p>
-                        </div>
-                        {projects.length > 0 && (
-                            <div
-                                className="projects-exceptions"
-                                aria-label={t('surfaces.projectsPage.portfolioExceptions')}
-                            >
-                                {atRiskProjectCount > 0 ? (
-                                    <button type="button" className="projects-exception is-risk" aria-pressed={exceptionFilter === 'at_risk'}
-                                        onClick={() => setExceptionFilter(value => value === 'at_risk' ? null : 'at_risk')}>
-                                        <AlertTriangle aria-hidden="true" className="h-4 w-4" />
-                                        {t('surfaces.projectsPage.atRiskCount', { count: atRiskProjectCount })}
-                                    </button>
-                                ) : unassessedProjectCount > 0 ? (
-                                    <button type="button" className="projects-exception" aria-pressed={exceptionFilter === 'unassessed'}
-                                        onClick={() => setExceptionFilter(value => value === 'unassessed' ? null : 'unassessed')}>
-                                        {t('surfaces.projectsPage.healthNotAssessed', { count: unassessedProjectCount })}
-                                    </button>
-                                ) : (
-                                    <span className="projects-exception is-clear">
-                                        {t('surfaces.projectsPage.noRiskFlags')}
-                                    </span>
-                                )}
-                                {unassignedProjectCount > 0 && (
-                                    <button type="button" className="projects-exception" aria-pressed={exceptionFilter === 'unassigned'}
-                                        onClick={() => setExceptionFilter(value => value === 'unassigned' ? null : 'unassigned')}>
-                                        {t('surfaces.projectsPage.unassignedCount', { count: unassignedProjectCount })}
-                                    </button>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                    <h2 id="projects-workspace-title" className="sr-only">{t('surfaces.projectsPage.projectPortfolio')}</h2>
 
-                    {projects.length > 0 && (
-                        <>
-                            <div
-                                className="projects-filter-toolbar"
-                                role="search"
-                                aria-label={t('surfaces.projectsPage.projectFilters')}
-                            >
-                                <div className="projects-filter-search relative">
-                                    <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-content-tertiary" />
+                    {hasPortfolio && (
+                        <PageToolbar
+                            label={t('surfaces.projectsPage.projectFilters')}
+                            search={(
+                                <div className="relative">
+                                    <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-content-tertiary" />
                                     <Input
+                                        type="search"
                                         aria-label={t('surfaces.projectsPage.searchProjects')}
-                                        value={search}
-                                        onChange={event => {
-                                            clearRequestedViewParam();
-                                            setSearch(event.target.value);
-                                        }}
+                                        value={filters.search}
+                                        onChange={event => updateFilters({ [PORTFOLIO_PARAMS.search]: event.target.value || null })}
                                         placeholder={t('surfaces.projectsPage.searchProjects')}
                                         className="pl-9"
                                     />
                                 </div>
-                                <select
-                                    aria-label={t('surfaces.projectsPage.statusFilterLabel')}
-                                    value={statusFilter}
-                                    onChange={event => {
-                                        clearRequestedViewParam();
-                                        setStatusFilter(event.target.value as ProjectStatus | '');
-                                    }}
-                                    className="input"
-                                >
-                                    <option value="">{t('surfaces.projectsPage.allStatuses')}</option>
-                                    {Object.entries(projectStatusLabelKeys).map(([value, labelKey]) => (
-                                        <option key={value} value={value}>{t(labelKey)}</option>
-                                    ))}
-                                </select>
-                                <select
-                                    aria-label={t('surfaces.projectsPage.healthFilterLabel')}
-                                    value={healthFilter}
-                                    onChange={event => {
-                                        clearRequestedViewParam();
-                                        setHealthFilter(event.target.value as ProjectHealth | '');
-                                    }}
-                                    className="input"
-                                >
-                                    <option value="">{t('surfaces.projectsPage.allHealth')}</option>
-                                    {Object.entries(projectHealthLabelKeys).map(([value, labelKey]) => (
-                                        <option key={value} value={value}>{t(labelKey)}</option>
-                                    ))}
-                                </select>
-                                {hasActiveProjectFilters && (
-                                    <Button variant="ghost" size="sm" onClick={clearProjectFilters}>
-                                        {t('surfaces.projectsPage.clearFilters')}
-                                    </Button>
-                                )}
-                            </div>
-                            {activeSavedView && (
-                                <div className="projects-saved-view">
-                                    {t('surfaces.projectsPage.savedView')}: {activeSavedView.name}
-                                </div>
                             )}
-                        </>
-                    )}
-
-                    {projects.length > 0 && portfolioSummariesLoading && (
-                        <div
-                            aria-busy="true"
-                            aria-live="polite"
-                            className="flex items-center gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 text-sm text-content-secondary"
-                            role="status"
-                        >
-                            <LoaderCircle aria-hidden="true" className="h-4 w-4 animate-spin text-action" />
-                            {t('surfaces.projectsPage.loadingPortfolioSummaries')}
-                        </div>
-                    )}
-                    {projects.length > 0 && portfolioSummariesError && (
-                        <QueryStaleState
-                            message={t('surfaces.projectsPage.portfolioSummariesUnavailable')}
-                            onRetry={() => { void refetchPortfolioSummaries(); }}
+                            filters={(
+                                <FilterBar
+                                    filters={filterBarFilters}
+                                    onChange={changeFilter}
+                                    onClear={clearProjectFilters}
+                                />
+                            )}
+                            viewSwitch={(
+                                <ViewSwitch<PortfolioView>
+                                    label={t('surfaces.projectsPage.viewSwitch')}
+                                    value={view}
+                                    onChange={next => updateParams({ [PORTFOLIO_PARAMS.view]: next === 'roadmap' ? 'roadmap' : null })}
+                                    options={[
+                                        { value: 'list', label: t('surfaces.projectsPage.viewList'), icon: <List aria-hidden="true" className="h-4 w-4" /> },
+                                        { value: 'roadmap', label: t('surfaces.projectsPage.viewRoadmap'), icon: <MapIcon aria-hidden="true" className="h-4 w-4" /> },
+                                    ]}
+                                />
+                            )}
+                            viewOptions={view === 'roadmap' ? (
+                                <SegmentedControl<WindowPreset>
+                                    label={t('surfaces.roadmapPage.windowPresets')}
+                                    value={activePreset as WindowPreset}
+                                    onChange={choosePreset}
+                                    options={[
+                                        ...WINDOW_PRESETS.map(preset => ({ value: preset.value, label: t(preset.labelKey) })),
+                                        { value: 'fit' as const, label: t('surfaces.roadmapPage.presetFit') },
+                                    ]}
+                                />
+                            ) : undefined}
                         />
                     )}
 
-                    <TableFrame className="projects-table">
-                        {/* Focusable, so the table can be scrolled with the keyboard when it does not fit. Relative, so
-                            screen-reader-only labels inside stay within it instead of widening the page. */}
-                        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be reachable by keyboard to scroll it. */}
-                        <div aria-busy={portfolioSummariesLoading} className="relative overflow-x-auto" tabIndex={0} role="region" aria-label={t('surfaces.projectsPage.projectsTable')}>
-                            <table className="w-full min-w-[860px]">
-                                <thead className="bg-surface-muted">
-                                    <tr className="border-b border-border text-left text-xs font-medium text-content-secondary">
-                                        {SORT_COLUMNS.map(column => (
-                                            <th key={column.key} scope="col" className={clsx('px-3 py-3', column.center && 'text-center')}
-                                                aria-sort={sort.key === column.key ? (sort.descending ? 'descending' : 'ascending') : undefined}>
-                                                <button type="button" onClick={() => toggleSort(column.key)}
-                                                    className="inline-flex items-center gap-1 font-medium hover:text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
-                                                    {t(column.labelKey)}
-                                                    <span aria-hidden="true">{sort.key === column.key ? (sort.descending ? '↓' : '↑') : ''}</span>
-                                                </button>
-                                            </th>
-                                        ))}
-                                        <th scope="col" className="sticky right-0 w-12 bg-surface-muted px-2 py-3"><span className="sr-only">{t('surfaces.projectsPage.actions')}</span></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {sortedProjects.map(project => (
-                                        <ProjectRow
-                                            key={project.id}
-                                            isSummaryLoading={portfolioSummariesLoading}
-                                            project={project}
-                                            summary={portfolioSummariesByProject.get(project.id)}
-                                            onEdit={setEditingProject}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    {!hasPortfolio && (
+                        <TableFrame className="py-16 text-center">
+                            <InlineEmptyState
+                                className="mx-auto max-w-xl"
+                                icon={<FolderOpen className="h-5 w-5" />}
+                                title={t('surfaces.projectsPage.noProjectsFound')}
+                                description={t('surfaces.projectsPage.createAProjectToGroupTaskWork')}
+                                actions={(
+                                    <Button onClick={() => setIsCreating(true)}>
+                                        <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
+                                        {t('surfaces.projectsPage.newProject')}
+                                    </Button>
+                                )}
+                            />
+                        </TableFrame>
+                    )}
 
-                        {projects.length > 0 && filteredProjects.length === 0 && (
-                            <div className="py-16 text-center">
-                                <InlineEmptyState
-                                    className="mx-auto max-w-xl"
-                                    icon={<Search className="h-5 w-5" />}
-                                    title={t('surfaces.projectsPage.noProjectsMatchFilters')}
-                                    description={t('surfaces.projectsPage.adjustOrClearProjectFilters')}
-                                    actions={hasActiveProjectFilters ? (
-                                        <Button onClick={clearProjectFilters}>
-                                            {t('surfaces.projectsPage.clearFilters')}
-                                        </Button>
-                                    ) : undefined}
-                                />
-                            </div>
-                        )}
+                    {hasPortfolio && !showViews && (
+                        <TableFrame className="py-16 text-center">
+                            <InlineEmptyState
+                                className="mx-auto max-w-xl"
+                                icon={<Search className="h-5 w-5" />}
+                                title={t('surfaces.projectsPage.noProjectsMatchFilters')}
+                                description={t('surfaces.projectsPage.adjustOrClearProjectFilters')}
+                                actions={hasActiveProjectFilters ? (
+                                    <Button onClick={clearProjectFilters}>
+                                        {t('surfaces.projectsPage.clearFilters')}
+                                    </Button>
+                                ) : undefined}
+                            />
+                        </TableFrame>
+                    )}
 
-                        {projects.length === 0 && (
-                            <div className="py-16 text-center">
-                                <InlineEmptyState
-                                    className="mx-auto max-w-xl"
-                                    icon={<FolderOpen className="h-5 w-5" />}
-                                    title={t('surfaces.projectsPage.noProjectsFound')}
-                                    description={t('surfaces.projectsPage.createAProjectToGroupTaskWork')}
-                                    actions={(
-                                        <Button onClick={() => setIsCreating(true)}>
-                                            <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
-                                            {t('surfaces.projectsPage.newProject')}
-                                        </Button>
-                                    )}
+                    {showViews && view === 'roadmap' && (
+                        <RoadmapView
+                            projects={filteredProjects}
+                            initiatives={initiatives}
+                            includeEmptyGroups={!filtersActive}
+                            window={timelineWindow}
+                            onResetWindow={() => choosePreset('fit')}
+                            onEditInitiative={editInitiativeById}
+                            onDeleteInitiative={deleteInitiativeById}
+                        />
+                    )}
+
+                    {showViews && view === 'list' && (
+                        <>
+                            {portfolioSummariesLoading && (
+                                <div
+                                    aria-busy="true"
+                                    aria-live="polite"
+                                    className="flex items-center gap-2 rounded-md border border-border bg-surface-muted px-3 py-2 text-sm text-content-secondary"
+                                    role="status"
+                                >
+                                    <LoaderCircle aria-hidden="true" className="h-4 w-4 animate-spin text-action" />
+                                    {t('surfaces.projectsPage.loadingPortfolioSummaries')}
+                                </div>
+                            )}
+                            {portfolioSummariesError && (
+                                <QueryStaleState
+                                    message={t('surfaces.projectsPage.portfolioSummariesUnavailable')}
+                                    onRetry={() => { void refetchPortfolioSummaries(); }}
                                 />
-                            </div>
-                        )}
-                    </TableFrame>
+                            )}
+                            <TableFrame className="projects-table">
+                                {/* Focusable, so the table can be scrolled with the keyboard when it does not fit. Relative, so
+                                    screen-reader-only labels inside stay within it instead of widening the page. */}
+                                {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be reachable by keyboard to scroll it. */}
+                                <div aria-busy={portfolioSummariesLoading} className="relative overflow-x-auto" tabIndex={0} role="region" aria-label={t('surfaces.projectsPage.projectsTable')}>
+                                    <table className="w-full min-w-[860px]">
+                                        <thead className="bg-surface-muted">
+                                            <tr className="border-b border-border text-left text-xs font-medium text-content-secondary">
+                                                {SORT_COLUMNS.map(column => (
+                                                    <th key={column.key} scope="col" className={clsx('px-3 py-3', column.key === 'name' && 'pl-6', column.center && 'text-center')}
+                                                        aria-sort={sort.key === column.key ? (sort.descending ? 'descending' : 'ascending') : undefined}>
+                                                        <button data-page-chrome-control="button" type="button" onClick={() => toggleSort(column.key)}
+                                                            className="inline-flex items-center gap-1 font-medium hover:text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                                                            {t(column.labelKey)}
+                                                            <span aria-hidden="true">{sort.key === column.key ? (sort.descending ? '↓' : '↑') : ''}</span>
+                                                        </button>
+                                                    </th>
+                                                ))}
+                                                <th scope="col" className="sticky right-0 w-12 bg-surface-muted px-2 py-3"><span className="sr-only">{t('surfaces.projectsPage.actions')}</span></th>
+                                            </tr>
+                                        </thead>
+                                        {listGroups.map(group => {
+                                            const initiative = group.initiative;
+                                            const manageable = initiative ? initiativesById.has(initiative.id) : false;
+                                            return (
+                                                <tbody key={group.key} className="projects-group">
+                                                    <tr className="projects-group-row">
+                                                        <th scope="rowgroup" colSpan={SORT_COLUMNS.length + 1} className="px-3 py-2 text-left font-normal">
+                                                            <InitiativeGroupHeader
+                                                                initiative={initiative}
+                                                                projectCount={group.items.length}
+                                                                onEdit={initiative && manageable ? () => editInitiativeById(initiative.id) : undefined}
+                                                                onDelete={initiative && manageable ? () => deleteInitiativeById(initiative.id) : undefined}
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    {group.items.length === 0 && (
+                                                        <tr className="border-b border-border-subtle">
+                                                            <td colSpan={SORT_COLUMNS.length + 1} className="py-3 pl-6 pr-3 text-sm text-content-secondary">
+                                                                {t('surfaces.projectsPage.noProjectsInInitiative')}
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                    {group.items.map(project => (
+                                                        <ProjectRow
+                                                            key={project.id}
+                                                            isSummaryLoading={portfolioSummariesLoading}
+                                                            project={project}
+                                                            summary={portfolioSummariesByProject.get(project.id)}
+                                                            onEdit={setEditingProject}
+                                                        />
+                                                    ))}
+                                                </tbody>
+                                            );
+                                        })}
+                                    </table>
+                                </div>
+                            </TableFrame>
+                        </>
+                    )}
                 </section>
             )}
 
-            <details className="projects-initiatives">
-                <summary>
-                    <span className="projects-initiatives-summary">
-                        <ChevronDown aria-hidden="true" className="h-4 w-4" />
-                        <span>
-                            <strong>{t('surfaces.projectsPage.initiatives')}</strong>
-                            <small>{t('surfaces.projectsPage.groupRelatedProjectsAroundStrategicGoals')}</small>
-                        </span>
-                        {initiativesError && !initiativesData ? (
-                            <span className="projects-initiatives-state is-error">
-                                {t('surfaces.projectsPage.initiativesUnavailable')}
-                            </span>
-                        ) : (
-                            <span className="projects-initiatives-state tnum">{initiatives.length}</span>
-                        )}
-                    </span>
-                </summary>
-                <div className="projects-initiatives-content">
-                    <div className="projects-initiatives-actions">
-                        <Button variant="secondary" size="sm" onClick={() => setIsCreatingInitiative(true)}>
-                            <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
-                            {t('surfaces.projectsPage.newInitiative')}
-                        </Button>
-                    </div>
-
-                    {initiativeError && (
-                        <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground">
-                            {initiativeError}
-                        </div>
-                    )}
-
-                    {initiativesLoading && !initiativesData && <QueryLoadingState message={t('surfaces.projectsPage.loadingInitiatives')} />}
-                    {initiativesError && !initiativesData && <QueryErrorState error={initiativesError} onRetry={() => { void refetchInitiatives(); }} />}
-                    {initiativesError && initiativesData && (
-                        <QueryStaleState message={t('surfaces.projectsPage.staleInitiatives')} onRetry={() => { void refetchInitiatives(); }} />
-                    )}
-                    {initiativesData && (
-                        <div className="projects-initiatives-table overflow-x-auto">
-                            <table className="w-full min-w-[760px]">
-                                <thead className="bg-surface-muted">
-                                    <tr className="border-b border-border text-left text-xs font-medium uppercase tracking-wide text-content-secondary">
-                                        <th className="px-3 py-2">{t('surfaces.projectsPage.initiative')}</th>
-                                        <th className="px-3 py-2">{t('surfaces.projectsPage.health')}</th>
-                                        <th className="px-3 py-2">{t('surfaces.projectsPage.owner')}</th>
-                                        <th className="px-3 py-2">{t('surfaces.projectsPage.target')}</th>
-                                        <th className="px-3 py-2 text-center">{t('surfaces.projectsPage.projects')}</th>
-                                        <th className="px-3 py-2 text-right">{t('surfaces.projectsPage.actions')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {initiatives.map(initiative => (
-                                        <tr key={initiative.id} className="border-b border-border-subtle hover:bg-surface-muted">
-                                            <td className="px-3 py-3">
-                                                <div className="font-medium text-content-primary">{initiative.name}</div>
-                                                {initiative.description && (
-                                                    <p className="mt-1 max-w-md truncate text-xs text-content-secondary">
-                                                        {initiative.description}
-                                                    </p>
-                                                )}
-                                            </td>
-                                            <td className="px-3 py-3">
-                                                <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', healthClassName(initiative.health))}>
-                                                    {t(projectHealthLabelKeys[initiative.health])}
-                                                </span>
-                                            </td>
-                                            <td className="px-3 py-3 text-sm text-content-secondary">
-                                                {formatPortfolioOwnerLabel(initiative.owner_profile, initiative.owner, initiative.owner_id)}
-                                            </td>
-                                            <td className="px-3 py-3 text-sm text-content-secondary">{formatDate(initiative.target_date)}</td>
-                                            <td className="px-3 py-3 text-center text-sm font-medium text-content-primary">
-                                                {projectCountByInitiative.get(initiative.id) ?? 0}
-                                            </td>
-                                            <td className="px-3 py-3 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <Button variant="ghost" size="sm" onClick={() => setEditingInitiative(initiative)}>
-                                                        {t('surfaces.projectsPage.edit')}
-                                                    </Button>
-                                                    <Button
-                                                        variant="danger"
-                                                        size="sm"
-                                                        onClick={() => handleDeleteInitiative(initiative)}
-                                                        disabled={deleteInitiativeMutation.isPending}
-                                                    >
-                                                        {t('surfaces.projectsPage.delete')}
-                                                    </Button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            {!initiativesLoading && initiatives.length === 0 && (
-                                <div className="py-8 text-center text-sm text-content-secondary">
-                                    {t('surfaces.projectsPage.noInitiativesYetCreateOneToGroupProjectsOnTheRoadmap')}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </details>
-
-            <Modal
+            <SlideOverDrawer
                 open={Boolean(isCreating || editingProject)}
                 title={editingProject ? t('surfaces.projectsPage.editProject') : t('surfaces.projectsPage.createProject')}
                 closeLabel={t('actions.close')}
-                onClose={() => { setIsCreating(false); setEditingProject(null); }}
+                onClose={closeProjectEditor}
             >
-                {(isCreating || editingProject) && (
+                <div className="p-5">
+                    {(isCreating || editingProject) && (
                         <ProjectForm
                             initialData={editingProject || undefined}
                             onSuccess={(project) => {
-                                setIsCreating(false);
-                                setEditingProject(null);
-                                if (!editingProject) {
-                                    navigate(`/projects/${project.id}`);
-                                }
+                                const created = !editingProject;
+                                closeProjectEditor();
+                                if (created) navigate(`/projects/${project.id}`);
                             }}
-                            onCancel={() => {
-                                setIsCreating(false);
-                                setEditingProject(null);
-                            }}
+                            onCancel={closeProjectEditor}
                         />
-                )}
-            </Modal>
+                    )}
+                </div>
+            </SlideOverDrawer>
 
-            <Modal
+            <SlideOverDrawer
                 open={Boolean(isCreatingInitiative || editingInitiative)}
                 title={editingInitiative ? t('surfaces.projectsPage.editInitiative') : t('surfaces.projectsPage.createInitiative')}
                 closeLabel={t('actions.close')}
-                onClose={() => { setIsCreatingInitiative(false); setEditingInitiative(null); }}
-                className="max-w-xl"
+                onClose={closeInitiativeEditor}
             >
-                {(isCreatingInitiative || editingInitiative) && (
-                    <InitiativeForm
-                        initialData={editingInitiative || undefined}
-                        onSuccess={() => {
-                            setIsCreatingInitiative(false);
-                            setEditingInitiative(null);
-                        }}
-                        onCancel={() => {
-                            setIsCreatingInitiative(false);
-                            setEditingInitiative(null);
-                        }}
-                    />
-                )}
-            </Modal>
+                <div className="p-5">
+                    {(isCreatingInitiative || editingInitiative) && (
+                        <InitiativeForm
+                            initialData={editingInitiative || undefined}
+                            onSuccess={closeInitiativeEditor}
+                            onCancel={closeInitiativeEditor}
+                        />
+                    )}
+                </div>
+            </SlideOverDrawer>
             {confirmationDialog}
         </PageLayout>
     );
