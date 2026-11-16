@@ -890,6 +890,14 @@ export const englishResources = {
                 reviewerAnyoneTitle: 'Any authorized person reviews; no reviewer agent is assigned',
                 agentStatus: 'Agent status',
             },
+            assigneePicker: {
+                agentRole: 'Agent', personRole: 'Team member',
+                people: 'People', agents: 'Agents', outside: 'Not in this iteration', more: 'More',
+                load: '{{percent}}% load', loadUnknown: 'Load unavailable', addAndAssign: 'Add to iteration and assign',
+                confirmHint: 'Saving adds {{name}} to this iteration with 100% availability, {{overhead}}% overhead and a 1× coefficient, then assigns this task.',
+                addFailed: 'Could not add capacity. Your task has not been saved. Retry to check the iteration before adding again.',
+                capacityAdded: 'Capacity is in the iteration. The task assignment still needs to be saved if saving failed.',
+            },
             agentDispatch: {
                 noAgentConnected: 'No agent connected',
                 queued: 'Queued',
