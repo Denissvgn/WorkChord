@@ -29,16 +29,24 @@ const writeDismissed = (dismissed: boolean) => {
     }
 };
 
+/**
+ * Reopened from Help. `pending` until the steps are known; `incomplete` lasts until setup is
+ * complete, when the panel hides itself as usual; `complete` (setup was already complete)
+ * lasts until the panel is closed again.
+ */
+export type GetStartedRequest = false | 'pending' | 'incomplete' | 'complete';
+
 interface GetStartedVisibility {
     /** Dismissed in this browser. */
     dismissed: boolean;
-    /** Reopened from Help: shown even when every step is done, until it is closed again. */
-    requested: boolean;
+    requested: GetStartedRequest;
     dismiss: () => void;
     reopen: () => void;
+    /** Records how far setup was when it was reopened, and ends a reopening once setup completes. */
+    settleRequest: (complete: boolean) => void;
 }
 
-export const useGetStartedVisibility = create<GetStartedVisibility>(set => ({
+export const useGetStartedVisibility = create<GetStartedVisibility>((set, get) => ({
     dismissed: readGetStartedDismissed(),
     requested: false,
     dismiss: () => {
@@ -47,6 +55,11 @@ export const useGetStartedVisibility = create<GetStartedVisibility>(set => ({
     },
     reopen: () => {
         writeDismissed(false);
-        set({ dismissed: false, requested: true });
+        set({ dismissed: false, requested: 'pending' });
+    },
+    settleRequest: complete => {
+        const { requested } = get();
+        if (requested === 'pending') set({ requested: complete ? 'complete' : 'incomplete' });
+        else if (requested === 'incomplete' && complete) set({ requested: false });
     },
 }));

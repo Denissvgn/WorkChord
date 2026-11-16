@@ -35,10 +35,9 @@ export const useFirstRunProgress = (): FirstRunProgress => {
     // feedback-policy: query loading,error,retry,empty - the panel stays hidden until the iterations are known.
     const iterations = useQuery({ queryKey: ['iterations'], queryFn: iterationService.getAll, staleTime: 60000 });
     const iterationList = iterations.data;
-    // The iteration Plan opens: the one in scope, or the latest one when the scope names none.
-    const iterationId = iterationList?.some(item => item.id === selectedIterationId)
-        ? selectedIterationId
-        : iterationList?.[0]?.id ?? 0;
+    // The iteration Plan opens: the one in scope, by the same rule as Plan. Backlog, or a project
+    // without iterations, opens none, so no other iteration's capacity, tasks or schedule count.
+    const iterationId = iterationList?.some(item => item.id === selectedIterationId) ? selectedIterationId : 0;
     // feedback-policy: query loading,error,retry,empty - the panel stays hidden until readiness is known.
     const readiness = useQuery({
         queryKey: planningNavigationSummaryKey(iterationId),

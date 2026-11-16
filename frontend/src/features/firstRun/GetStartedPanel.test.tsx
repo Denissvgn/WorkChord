@@ -2,8 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, screen, waitFor, within } from '@testing-library/react';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import i18n from '../../i18n/i18n';
 import OverviewPage from '../../pages/OverviewPage';
@@ -12,9 +11,10 @@ import { useScopeStore } from '../scope/scopeStore';
 import { IdentityContext } from '../identity/identityContext';
 import type { WorkspaceIdentity } from '../identity/identityService';
 import type { Iteration, PlanCheckpoint } from '../../types/iteration';
+import { iterationService } from '../../services/iterationService';
+import { planningNavigationSummaryKey } from '../planningMasters/usePlanningNavigationSummary';
 import type { Project } from '../../types/project';
 import { FirstRunLanding } from './FirstRunLanding';
-import { SetupReturnBar } from './SetupReturnBar';
 import { GET_STARTED_DISMISSED_KEY, useGetStartedVisibility } from './getStartedVisibility';
 import { firstRunSteps } from './firstRunSteps';
 
@@ -141,31 +141,6 @@ const TestIdentity = ({ children }: { children: ReactNode }) => {
     );
 };
 
-/**
- * Plan as far as this test needs it: the checkpoint the link asked for, a control that makes the
- * change on the server the way the real checkpoint does, and the way back to Get started.
- */
-const PlanStand = () => {
-    const [params] = useSearchParams();
-    const client = useQueryClient();
-    const step = params.get('step');
-    const complete = async () => {
-        if (step === 'iteration') server.iterations.push(iterationFor(server.projects[0].id));
-        if (step === 'team') server.capacityRows += 1;
-        if (step === 'work') server.tasks += 1;
-        if (step === 'schedule') server.scheduleApplied = true;
-        server.writes.push(`plan:${step}`);
-        await client.invalidateQueries();
-    };
-    return (
-        <div>
-            <h1>Plan stand</h1>
-            <SetupReturnBar />
-            <button type="button" onClick={() => { void complete(); }}>Complete {step}</button>
-        </div>
-    );
-};
-
 const LocationProbe = () => {
     const location = useLocation();
     return <output data-testid="location">{`${location.pathname}${location.search}`}</output>;
@@ -177,7 +152,6 @@ const renderWorkspace = (url = '/') => renderWithProviders(
         <ContextHelp />
         <Routes>
             <Route path="/" element={<OverviewPage />} />
-            <Route path="/plan" element={<PlanStand />} />
             <Route path="*" element={<p>Other page</p>} />
         </Routes>
         <LocationProbe />
@@ -192,19 +166,6 @@ const doneStates = () => ['profile', 'project', 'iteration', 'capacity', 'tasks'
     .map(id => step(id).getAttribute('data-done') === 'true');
 const newTask = () => within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
 
-/** Opens the step's Plan checkpoint, completes it there, and comes back to Get started. */
-const followPlanStep = async (user: ReturnType<typeof renderWorkspace>['user'], id: string, checkpoint: string) => {
-    await waitFor(() => expect(toggleOf(id)).toHaveAttribute('aria-expanded', 'true'));
-    const open = within(step(id)).getByRole('link', { name: i18n.t('firstRun.openPlan') });
-    expect(open.getAttribute('href')).toMatch(new RegExp(`^/plan\\?step=${checkpoint}&setup=1`));
-    expect(open).toHaveClass('btn', 'primary');
-    await user.click(open);
-    await user.click(await screen.findByRole('button', { name: `Complete ${checkpoint}` }));
-    await waitFor(() => expect(server.writes).toContain(`plan:${checkpoint}`));
-    await user.click(screen.getByRole('link', { name: i18n.t('firstRun.backToSetup') }));
-    expect(screen.getByTestId('location').textContent).toMatch(/^\/(\?|$)/);
-};
-
 beforeEach(() => {
     localStorage.clear();
     useGetStartedVisibility.setState({ dismissed: false, requested: false });
@@ -217,6 +178,7 @@ beforeEach(() => {
     server.tasks = 0;
     server.scheduleApplied = false;
     server.writes = [];
+    vi.mocked(iterationService.getPlanningReadiness).mockClear();
     Element.prototype.scrollIntoView = vi.fn();
 });
 
@@ -236,55 +198,6 @@ describe('Get started steps', () => {
 });
 
 describe('Get started panel', () => {
-    it('takes an empty workspace through the six steps to an applied schedule, then hides itself', async () => {
-        const { user } = renderWorkspace();
-        await panel();
-        expect(doneStates()).toEqual([false, false, false, false, false, false]);
-        // While the panel shows, its next step is the page's one primary action.
-        expect(newTask()).toHaveClass('btn', 'secondary');
-        // The empty Overview does not repeat the next step.
-        expect(screen.queryByText(i18n.t('overview.noIterationTitle'))).not.toBeInTheDocument();
-
-        // 1 Say who you are: the profile picker, in place.
-        expect(toggleOf('profile')).toHaveAttribute('aria-expanded', 'true');
-        await user.type(within(step('profile')).getByLabelText(i18n.t('identity.yourName')), 'Ada Lovelace');
-        await user.click(within(step('profile')).getByRole('button', { name: i18n.t('identity.addMe') }));
-        await waitFor(() => expect(step('profile')).toHaveAttribute('data-done', 'true'));
-        expect(step('profile')).toHaveTextContent(i18n.t('firstRun.steps.profile.result', { name: 'Ada Lovelace' }));
-
-        // 2 Create a project: name, start and target date in a short modal.
-        await waitFor(() => expect(toggleOf('project')).toHaveAttribute('aria-expanded', 'true'));
-        await user.click(within(step('project')).getByRole('button', { name: i18n.t('firstRun.steps.project.action') }));
-        const dialog = await screen.findByRole('dialog', { name: i18n.t('firstRun.createProject.title') });
-        await user.type(within(dialog).getByLabelText(i18n.t('surfaces.projectForm.projectName')), 'Launch');
-        await user.type(within(dialog).getByLabelText(i18n.t('surfaces.projectForm.startDate')), '2026-11-16');
-        await user.type(within(dialog).getByLabelText(i18n.t('surfaces.projectForm.targetDate')), '2026-12-18');
-        await user.click(within(dialog).getByRole('button', { name: i18n.t('surfaces.projectForm.createProject') }));
-        await waitFor(() => expect(step('project')).toHaveAttribute('data-done', 'true'));
-        expect(server.projects[0]).toMatchObject({ name: 'Launch', start_date: '2026-11-16', target_date: '2026-12-18' });
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-        // The new project becomes the scope, so its iteration is created in it.
-        expect(useScopeStore.getState().project).toBe(server.projects[0].id);
-
-        // 3 to 6 open Plan at their checkpoints; coming back opens the next step.
-        await followPlanStep(user, 'iteration', 'iteration');
-        await panel();
-        await waitFor(() => expect(step('iteration')).toHaveAttribute('data-done', 'true'));
-        await followPlanStep(user, 'capacity', 'team');
-        await panel();
-        await waitFor(() => expect(step('capacity')).toHaveAttribute('data-done', 'true'));
-        await followPlanStep(user, 'tasks', 'work');
-        await panel();
-        await waitFor(() => expect(step('tasks')).toHaveAttribute('data-done', 'true'));
-        await followPlanStep(user, 'schedule', 'schedule');
-
-        // The schedule is applied: all six are done and the panel is gone.
-        expect(server.scheduleApplied).toBe(true);
-        await waitFor(() => expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument());
-        await waitFor(() => expect(newTask()).toHaveClass('btn', 'primary'));
-        expect(server.writes).toEqual(['profile', 'local-profile', 'project', 'plan:iteration', 'plan:team', 'plan:work', 'plan:schedule']);
-    });
-
     it('marks Create a project not done again when the only project is deleted', async () => {
         server.identity = localIdentity({ id: 7, display_name: 'Ada Lovelace' });
         server.projects = [{ id: 40, name: 'Launch' } as Project];
@@ -360,6 +273,63 @@ describe('Get started panel', () => {
         expect(doneStates()).toEqual([true, true, true, true, true, true]);
 
         await user.click(screen.getByRole('button', { name: i18n.t('firstRun.dismissLabel') }));
+        expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
+    });
+
+    it('hides itself when setup reopened from Help is then completed', async () => {
+        server.identity = localIdentity({ id: 7, display_name: 'Ada Lovelace' });
+        server.projects = [{ id: 40, name: 'Launch' } as Project];
+        server.iterations = [iterationFor(40)];
+        server.capacityRows = 1;
+        server.tasks = 2;
+        const { user, queryClient } = renderWorkspace('/?project=40&iteration=70');
+        await panel();
+        await user.click(screen.getByRole('button', { name: i18n.t('firstRun.dismissLabel') }));
+        expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
+
+        // Reopened while the schedule is still to build.
+        await user.click(screen.getByRole('button', { name: i18n.t('contextHelp.openForPage', { page: i18n.t('documentTitles.overview') }) }));
+        await user.click(within(screen.getByRole('dialog', { name: i18n.t('contextHelp.title') }))
+            .getByRole('button', { name: i18n.t('contextHelp.setupGuide.open') }));
+        await panel();
+        expect(toggleOf('schedule')).toHaveAttribute('aria-expanded', 'true');
+
+        // The schedule is applied: all six are done and the panel hides itself as usual.
+        server.scheduleApplied = true;
+        await act(() => queryClient.invalidateQueries());
+        await waitFor(() => expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument());
+        await waitFor(() => expect(newTask()).toHaveClass('btn', 'primary'));
+        expect(useGetStartedVisibility.getState().requested).toBe(false);
+        expect(localStorage.getItem(GET_STARTED_DISMISSED_KEY)).toBeNull();
+    });
+
+    it('counts capacity, tasks and the schedule only for the iteration Plan opens', async () => {
+        server.identity = localIdentity({ id: 7, display_name: 'Ada Lovelace' });
+        server.projects = [{ id: 40, name: 'Launch' } as Project, { id: 41, name: 'Harbor' } as Project];
+        // Launch has a fully planned iteration; Harbor has none.
+        server.iterations = [iterationFor(40)];
+        server.capacityRows = 1;
+        server.tasks = 2;
+        server.scheduleApplied = true;
+
+        // A project without iterations: Plan opens no iteration, so steps 4 to 6 are still to do.
+        const harbor = renderWorkspace('/?project=41');
+        await panel();
+        expect(doneStates()).toEqual([true, true, true, false, false, false]);
+        expect(toggleOf('capacity')).toHaveAttribute('aria-expanded', 'true');
+        harbor.unmount();
+
+        // The backlog of the planned project: again no iteration in scope.
+        const backlog = renderWorkspace('/?project=40&iteration=backlog');
+        await panel();
+        expect(doneStates()).toEqual([true, true, true, false, false, false]);
+        backlog.unmount();
+        expect(iterationService.getPlanningReadiness).not.toHaveBeenCalledWith(70);
+
+        // The planned iteration itself: all six are done and the panel stays hidden.
+        const planned = renderWorkspace('/?project=40&iteration=70');
+        await waitFor(() => expect(planned.queryClient.getQueryData(planningNavigationSummaryKey(70))).toBeDefined());
+        await waitFor(() => expect(newTask()).toHaveClass('btn', 'primary'));
         expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
     });
 

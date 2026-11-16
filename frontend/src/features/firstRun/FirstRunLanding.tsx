@@ -4,18 +4,20 @@ import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import { OPEN_SETUP_GUIDE_EVENT } from '../../components/layout/setupGuideEvents';
 import { projectService } from '../../services/projectService';
 import { useGetStartedVisibility } from './getStartedVisibility';
+import { useSetupReturn } from './setupReturn';
 
 const OVERVIEW_PATH = '/';
 
 /**
  * Two ways into the Get started panel on Overview. A workspace with no project opens on
  * Overview, whatever page was requested first; later navigation is left alone. Help, Setup
- * guide reopens the panel from any page.
+ * guide reopens the panel from any page. Showing Overview again ends a step opened from the panel.
  */
 export const FirstRunLanding = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const reopen = useGetStartedVisibility(state => state.reopen);
+    const finishSetupStep = useSetupReturn(state => state.finish);
     const navigationType = useNavigationType();
     const firstLocation = useRef(location.key);
     const movedOn = useRef(false);
@@ -27,6 +29,9 @@ export const FirstRunLanding = () => {
     }, [location.key, navigationType]);
     const pathname = useRef(location.pathname);
     useEffect(() => { pathname.current = location.pathname; }, [location.pathname]);
+    useEffect(() => {
+        if (location.pathname === OVERVIEW_PATH) finishSetupStep();
+    }, [finishSetupStep, location.pathname]);
     // feedback-policy: query loading,error,retry,empty - without an answer the requested page stays; each page shows its own states.
     const projects = useQuery({ queryKey: ['projects'], queryFn: () => projectService.getAll(), staleTime: 60000 });
 
