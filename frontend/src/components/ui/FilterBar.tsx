@@ -17,12 +17,29 @@ export type FilterBarFilter = {
     options: FilterBarOption[];
     /** The chosen option's value; an empty string means the filter is off. */
     value: string;
+    /** `date` shows a date field instead of a list; the chip shows the matching option's label when there is one. */
+    type?: 'select' | 'date';
+    /**
+     * A condition with no control of its own, shown only as its chip: one value of a filter that
+     * holds several, or a condition another page handed over. Removing the chip sends `onChange(id, '')`.
+     */
+    chipOnly?: boolean;
 };
 
 /** How many filters are shown as quick filters; the rest sit under "More filters". */
 const QUICK_FILTER_LIMIT = 5;
 
-const FilterSelect = ({ filter, onChange, id }: { filter: FilterBarFilter; onChange: (value: string) => void; id?: string }) => (
+const FilterSelect = ({ filter, onChange, id }: { filter: FilterBarFilter; onChange: (value: string) => void; id?: string }) => filter.type === 'date' ? (
+    <input
+        type="date"
+        id={id}
+        className="input wc-filter-select wc-filter-date"
+        aria-label={filter.label}
+        value={filter.value}
+        data-active={filter.value !== '' || undefined}
+        onChange={event => onChange(event.target.value)}
+    />
+) : (
     <select
         data-page-chrome-control="select"
         id={id}
@@ -48,13 +65,16 @@ const FilterSelect = ({ filter, onChange, id }: { filter: FilterBarFilter; onCha
  * them, so removing the last active condition returns the default, unfiltered
  * list. The first five filters are quick filters in the row; any others are
  * under a "More filters" popover. Each active condition also shows as one chip
- * that removes just that condition, and "Clear" removes them all. Place it in
- * the `filters` slot of PageToolbar.
+ * that removes just that condition, and "Clear" removes them all. A filter
+ * with `type: 'date'` is a date field; a `chipOnly` condition has no control
+ * and shows only as its chip. Place it in the `filters` slot of PageToolbar.
  */
-export const FilterBar = ({ filters, onChange, onClear, className }: {
+export const FilterBar = ({ filters, onChange, onClear, quickLimit = QUICK_FILTER_LIMIT, className }: {
     filters: FilterBarFilter[];
     onChange: (id: string, value: string) => void;
     onClear: () => void;
+    /** How many filters stay in the row, at most five; a toolbar short of room shows fewer. */
+    quickLimit?: number;
     className?: string;
 }) => {
     const { t } = useTranslation();
@@ -62,10 +82,13 @@ export const FilterBar = ({ filters, onChange, onClear, className }: {
     const moreButtonRef = useRef<HTMLButtonElement>(null);
     const panelId = useId();
 
-    const quickFilters = filters.slice(0, QUICK_FILTER_LIMIT);
-    const moreFilters = filters.slice(QUICK_FILTER_LIMIT);
+    const controls = filters.filter(filter => !filter.chipOnly);
+    const quickCount = Math.min(Math.max(quickLimit, 0), QUICK_FILTER_LIMIT);
+    const quickFilters = controls.slice(0, quickCount);
+    const moreFilters = controls.slice(quickCount);
     const activeFilters = filters.filter(filter => filter.value !== '');
-    const activeMoreCount = moreFilters.filter(filter => filter.value !== '').length;
+    // Conditions without a quick control (those under More filters and chip-only ones) are counted on the button.
+    const activeMoreCount = activeFilters.length - quickFilters.filter(filter => filter.value !== '').length;
 
     useEffect(() => {
         if (!moreOpen) return;

@@ -30,7 +30,7 @@ export const SortableTaskItem = ({ id, children, disabled }: SortableTaskItemPro
 
     return (
         <div ref={setNodeRef} style={style} className="flex items-start gap-2">
-            <button
+            <button data-page-chrome-control="button"
                 className="mt-3 p-1 text-content-tertiary cursor-grab active:cursor-grabbing hover:text-content-secondary touch-none"
                 {...attributes}
                 {...listeners}
