@@ -10,7 +10,7 @@ import type {
 import { ConnectAgentSteps } from './ConnectAgentSteps';
 import i18n from '../../i18n/i18n';
 import { AGENT_TEAM_STEP_DEFINITIONS, AGENT_TEAM_STEP_IDS } from '../../features/agentTeamSetup/masters';
-import { runtimeSnippet } from '../../features/agentTeamSetup/connectAgent';
+import { hasPM, runtimeSnippet } from '../../features/agentTeamSetup/connectAgent';
 
 vi.mock('../../services/agentService', () => ({ agentService: {
     getAgentTeamStatus: vi.fn(), getAgentTeamStartingPoints: vi.fn(), getModelCatalog: vi.fn(), createModelCatalogEntry: vi.fn(),
@@ -48,12 +48,12 @@ const model: AgentModelCatalogEntry = {
     id: 1, key: 'catalog-model', provider: 'OpenAI', configured_model_alias: 'Catalog model', reasoning_tier: 2, context_tier: 'large', cost_tier: 'medium',
     latency_tier: 'balanced', modality_tags: ['text'], enabled: true, revision: 1, last_verified_at: null, created_at: '', updated_at: '',
 };
-const planFor = (manifest: AgentTeamMaster): AgentTeamPlan => ({
+const planFor = (manifest: AgentTeamMaster, actorKey = manifest.workers.at(-1)!.actor_key): AgentTeamPlan => ({
     schema_version: 'agent-team-reconciliation-plan-v1', topology_key: 'team', expected_topology_revision: 7, manifest_digest: 'a'.repeat(64),
     plan_digest: 'b'.repeat(64), blocker_codes: [],
     actions: [{
         action_id: 'create-new', action_digest: 'c'.repeat(64), reconciliation_class: 'create', operation: 'create_member',
-        actor_key: manifest.workers.at(-1)!.actor_key, target_actor_id: null, expected_object_revision: null, expected_actor_revision: null,
+        actor_key: actorKey, target_actor_id: null, expected_object_revision: null, expected_actor_revision: null,
         before: null, after: null, preconditions: {}, blocker_code: null, requires_explicit_confirmation: false, authority_change: true,
     }],
 });
@@ -68,6 +68,21 @@ async function toReview() {
     await view.user.click(screen.getByRole('button', { name: 'Continue' }));
     await view.user.selectOptions(screen.getByRole('combobox', { name: 'Which model will it use?' }), 'catalog-model');
     await view.user.click(screen.getByRole('button', { name: 'Review change' }));
+    return view;
+}
+const blockedReceipt = (code: string) => ({
+    schema_version: 'agent-team-apply-receipt-v1' as const, apply_id: 'apply', topology_key: 'team', manifest_digest: 'a'.repeat(64), plan_digest: 'b'.repeat(64),
+    expected_topology_revision: 7, resulting_topology_revision: 7, status: 'blocked' as const, replayed: false,
+    receipts: [{
+        action_id: 'create-new', action_digest: 'c'.repeat(64), reconciliation_class: 'create' as const, operation: 'create_member', actor_key: 'codex-worker-1',
+        status: 'blocked' as const, target_actor_id: null, before_revision: null, after_revision: null, blocker_code: code, next_action: 'Server guidance',
+    }],
+    pending_action_ids: [], blocker_codes: [code],
+});
+async function toConnect() {
+    const view = await toReview();
+    await view.user.click(await screen.findByRole('button', { name: 'Continue to connect' }));
+    await view.user.click(screen.getByRole('button', { name: 'Connect agent' }));
     return view;
 }
 async function connect() {
@@ -204,6 +219,109 @@ describe('Connect agent steps', () => {
         expect(service.applyAgentTeamAction).toHaveBeenCalledTimes(2);
         expect(service.applyAgentTeamAction.mock.calls[0]).toEqual(service.applyAgentTeamAction.mock.calls[1]);
         expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument();
+    });
+
+    it('treats a rejected apply as settled and reviews again with a fresh topology, plan and request', async () => {
+        service.applyAgentTeamAction.mockRejectedValueOnce(new AxiosError('Conflict', '409', undefined, undefined, {
+            status: 409, data: { detail: { code: 'agent_team_plan_digest_conflict', message: 'Plan digest is stale' } },
+        } as never));
+        const view = await toConnect();
+        const reviewStep = await screen.findByRole('region', { name: '4. Review' });
+        const alert = within(reviewStep).getByRole('alert');
+        expect(alert).toHaveTextContent('The team changed while you were reviewing. Review again to get the current plan.');
+        expect(alert).not.toHaveTextContent('Plan digest is stale');
+        await view.user.click(within(alert).getByText('Server code'));
+        expect(within(alert).getByText('agent_team_plan_digest_conflict')).toBeVisible();
+        expect(screen.queryByRole('button', { name: 'Retry connection' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: '1. Role' })).toBeEnabled();
+        expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled();
+
+        const reads = service.getAgentTeamStatus.mock.calls.length;
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, topology_revision: 8 });
+        service.planAgentTeamMaster.mockImplementation(async manifest => ({ ...planFor(manifest), expected_topology_revision: 8, plan_digest: 'd'.repeat(64) }));
+        await view.user.click(screen.getByRole('button', { name: 'Review change' }));
+        await view.user.click(await screen.findByRole('button', { name: 'Continue to connect' }));
+        expect(service.getAgentTeamStatus.mock.calls.length).toBeGreaterThan(reads);
+        expect(service.planAgentTeamMaster).toHaveBeenLastCalledWith(expect.anything(), 8);
+        await view.user.click(screen.getByRole('button', { name: 'Connect agent' }));
+        await screen.findByText('Waiting for the runtime acknowledgement…');
+        expect(service.applyAgentTeamAction).toHaveBeenCalledTimes(2);
+        const [first, second] = service.applyAgentTeamAction.mock.calls;
+        expect(second[1]).toMatchObject({ expected_topology_revision: 8, plan_digest: 'd'.repeat(64) });
+        expect(second[4].idempotencyKey).not.toBe(first[4].idempotencyKey);
+    });
+
+    it('reviews a blocked apply again and drops the member the blocked request left declared but unconfigured', async () => {
+        service.applyAgentTeamAction.mockResolvedValueOnce(blockedReceipt('action_blocked'));
+        const view = await toConnect();
+        const reviewStep = await screen.findByRole('region', { name: '4. Review' });
+        expect(within(reviewStep).getByRole('alert')).toHaveTextContent('The server could not approve this change.');
+        expect(within(reviewStep).getByText('action_blocked')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Retry connection' })).not.toBeInTheDocument();
+
+        // The server stored the blocked manifest, so the attempted member is now declared but not configured.
+        const attempted = service.validateAgentTeamMaster.mock.calls[0][0].workers[1];
+        service.getAgentTeamStartingPoints.mockResolvedValue({ current: { ...current, workers: [...current.workers, attempted] }, template: current });
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, members: [memberStatus(attempted, { configured: false, actor_id: null })] });
+        await view.user.click(screen.getByRole('button', { name: 'Review change' }));
+        await screen.findByRole('button', { name: 'Continue to connect' });
+        const resent = service.validateAgentTeamMaster.mock.calls[1][0];
+        expect(resent.workers.map(item => item.actor_key)).toEqual(['existing-worker', 'codex-worker-1']);
+        expect(resent.controller).toEqual(current.controller);
+        expect(resent.verifiers).toEqual(current.verifiers);
+    });
+
+    it('stops at an unconfirmed key delivery with recovery guidance instead of an endless retry', async () => {
+        service.applyAgentTeamAction.mockResolvedValueOnce(blockedReceipt('credential_delivery_uncertain'));
+        const view = await toConnect();
+        const connectStep = await screen.findByRole('region', { name: '5. Connect' });
+        const alert = within(connectStep).getByRole('alert');
+        expect(alert).toHaveTextContent('could not confirm that it wrote the key to the credential folder');
+        expect(alert).toHaveTextContent('Retrying will not change that.');
+        expect(within(alert).getByText('credential_delivery_uncertain')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Retry connection' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Connect agent' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: '1. Role' })).toBeDisabled();
+        expect(service.applyAgentTeamAction).toHaveBeenCalledTimes(1);
+
+        await view.user.click(within(alert).getByRole('button', { name: 'Open advanced setup' }));
+        expect(screen.queryByRole('list', { name: 'Connection steps' })).not.toBeInTheDocument();
+        expect(await screen.findByRole('complementary', { name: i18n.t('agentTeamSetup.readinessTitle') })).toBeInTheDocument();
+    });
+
+    it('lets the guided flow connect a PM that the team declares but never configured', async () => {
+        const configured = memberStatus(current.workers[0]);
+        service.getAgentTeamStatus.mockResolvedValue({
+            ...status, members: [memberStatus(current.controller, { configured: false, actor_id: null }), configured, memberStatus(current.verifiers[0])],
+        });
+        service.planAgentTeamMaster.mockImplementation(async manifest => planFor(manifest, manifest.controller.actor_key));
+        const view = renderWithProviders(<ConnectAgentSteps />);
+        await view.user.click(await screen.findByRole('radio', { name: 'PM' }));
+        expect(screen.queryByText('This team already has a PM. A team has one PM.')).not.toBeInTheDocument();
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('radio', { name: 'Codex' }));
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.selectOptions(screen.getByRole('combobox', { name: 'Which model will it use?' }), 'catalog-model');
+        await view.user.click(screen.getByRole('button', { name: 'Review change' }));
+        expect(await screen.findByText('This replaces primary-pm, a PM the team declares but never connected.')).toBeVisible();
+        const sent = service.validateAgentTeamMaster.mock.calls[0][0];
+        expect(sent.controller).toMatchObject({ role: 'pm', actor_key: 'codex-pm-1', skill_package: { name: 'workchord-pm' } });
+        expect(sent.workers).toEqual(current.workers);
+        expect(sent.verifiers).toEqual(current.verifiers);
+        await view.user.click(screen.getByRole('button', { name: 'Continue to connect' }));
+        await view.user.click(screen.getByRole('button', { name: 'Connect agent' }));
+        await screen.findByText('Waiting for the runtime acknowledgement…');
+        expect(service.applyAgentTeamAction).toHaveBeenCalledWith(sent, expect.anything(), 'create-new', true, expect.any(Object));
+    });
+
+    it('counts a PM as present only when it is configured or not reported as pending', () => {
+        const pending = { ...status, members: [memberStatus(current.controller, { configured: false })] };
+        expect(hasPM(current, pending)).toBe(false);
+        expect(hasPM(current, { ...status, members: [memberStatus(current.controller)] })).toBe(true);
+        expect(hasPM(current, status)).toBe(true);
+        expect(hasPM(null, status)).toBe(false);
+        expect(hasPM(null, { ...status, members: [memberStatus(current.controller)] })).toBe(true);
     });
 
     it('offers PM only while the team has no PM and adds a catalog entry in a drawer', async () => {

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import type { AgentTeamMaster, AgentTeamMemberSpec, AgentTeamRole, AgentTeamStatus } from '../../types/agent';
 import { assertAgentTeamMasterSecretFree } from './manifest';
 
@@ -14,19 +15,36 @@ const roleRecordNames: Record<AgentTeamRole, string> = { pm: 'PM', worker: 'Work
 
 export const teamMembers = (manifest: AgentTeamMaster) => [manifest.controller, ...manifest.workers, ...manifest.verifiers];
 
-/** The manifest allows one PM, so PM is offered only while the team has none. */
+/** A declared member the server reports as not configured: kept in the manifest but never created. */
+const isPending = (key: string, status: AgentTeamStatus) => status.members.some(item => item.actor_key === key && !item.configured);
+
+/**
+ * The manifest allows one PM, so PM is offered only while the team has none. A PM
+ * that is declared but never configured (for example one a template declared) is
+ * not a PM yet; connecting a PM replaces it.
+ */
 export const hasPM = (current: AgentTeamMaster | null, status: AgentTeamStatus) => Boolean(
-    current?.controller || status.members.some(member => member.role === 'pm' && member.configured),
+    status.members.some(member => member.role === 'pm' && member.configured)
+    || (current?.controller && !isPending(current.controller.actor_key, status)),
+);
+
+/** True when connecting a PM replaces a declared PM that was never configured. */
+export const replacesPendingPM = (current: AgentTeamMaster | null, status: AgentTeamStatus) => Boolean(
+    current?.controller && isPending(current.controller.actor_key, status),
 );
 
 /**
  * Builds the manifest the server would hold after adding one member: the current
  * topology unchanged plus the new member. A team without a topology starts from the
  * server template, whose members of the chosen role the new member replaces.
+ *
+ * `previousAttempt` is the member an earlier, unsuccessful connect sent. The server
+ * keeps the manifest of a blocked apply, so that member can be declared but never
+ * configured; it is dropped here instead of being left beside the new one.
  */
 export function buildConnectedMember(
     points: { current: AgentTeamMaster | null; template: AgentTeamMaster },
-    status: AgentTeamStatus, role: AgentTeamRole, runtime: AgentRuntime, model: string,
+    status: AgentTeamStatus, role: AgentTeamRole, runtime: AgentRuntime, model: string, previousAttempt?: string,
 ): { manifest: AgentTeamMaster; member: AgentTeamMemberSpec } {
     const manifest = structuredClone(points.current ?? points.template);
     const source = role === 'pm' ? points.template.controller
@@ -36,7 +54,13 @@ export function buildConnectedMember(
         if (role === 'worker') manifest.workers = [];
         if (role === 'verifier') manifest.verifiers = [];
     }
+    const dropped = previousAttempt && isPending(previousAttempt, status) ? previousAttempt : null;
+    if (dropped) {
+        manifest.workers = manifest.workers.filter(item => item.actor_key !== dropped);
+        manifest.verifiers = manifest.verifiers.filter(item => item.actor_key !== dropped);
+    }
     const occupied = new Set([...teamMembers(manifest).map(member => member.actor_key), ...status.members.map(member => member.actor_key)]);
+    if (dropped && !teamMembers(manifest).some(item => item.actor_key === dropped)) occupied.delete(dropped);
     let index = 1;
     while (occupied.has(`${runtime}-${role}-${index}`)) index += 1;
     const key = `${runtime}-${role}-${index}`;
@@ -95,7 +119,7 @@ export const CONNECT_STEPS = ['role', 'runtime', 'model', 'review', 'connect'] a
 export const STEP_INDEX = { role: 0, runtime: 1, model: 2, review: 3, connect: 4 } as const;
 
 export type ConnectIssueReason = 'role' | 'runtime' | 'model' | 'sink' | 'teamChanged' | 'unavailable' | 'other'
-    | 'applyIncomplete' | 'applyUnconfirmed';
+    | 'applyUnconfirmed' | 'deliveryUncertain';
 export interface ConnectIssue { step: number; reason: ConnectIssueReason; code: string }
 
 /** Places a server code beside the answer that caused it, with a plain-language reason. */
@@ -108,4 +132,15 @@ export function connectIssue(code: string, path = ''): ConnectIssue {
     if (/runtime/.test(target)) return { step: STEP_INDEX.runtime, reason: 'runtime', code: safeCode };
     if (/role|profile|scope|package|assignment_mode/.test(target)) return { step: STEP_INDEX.role, reason: 'role', code: safeCode };
     return { step: STEP_INDEX.review, reason: 'other', code: safeCode };
+}
+
+/**
+ * Whether a failed apply request may still have been carried out. Without a server
+ * answer, on a timeout, a rate limit or a server error it may have run, so the same
+ * request (same idempotency key) is retried to read its receipt. Any other 4xx answer
+ * is a definite rejection: nothing was applied, and the change is reviewed again.
+ */
+export function applyOutcomeUnknown(error: unknown): boolean {
+    const code = axios.isAxiosError(error) ? error.response?.status : undefined;
+    return code === undefined || code === 408 || code === 429 || code >= 500;
 }

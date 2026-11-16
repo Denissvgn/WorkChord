@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { agentService } from '../../services/agentService';
 import type { AgentModelCatalogCreate, AgentTeamMaster, AgentTeamMemberSpec, AgentTeamPlan, AgentTeamRole } from '../../types/agent';
 import {
-    AGENT_RUNTIMES, CONNECT_STEPS, RUNTIME_PRODUCT_NAMES, STEP_INDEX, buildConnectedMember, connectIssue, credentialFilename, hasPM, runtimeSnippet,
-    type AgentRuntime, type ConnectIssue,
+    AGENT_RUNTIMES, CONNECT_STEPS, RUNTIME_PRODUCT_NAMES, STEP_INDEX, applyOutcomeUnknown, buildConnectedMember, connectIssue, credentialFilename, hasPM,
+    replacesPendingPM, runtimeSnippet, type AgentRuntime, type ConnectIssue,
 } from '../../features/agentTeamSetup/connectAgent';
 import { assertAgentTeamMasterSecretFree } from '../../features/agentTeamSetup/manifest';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
@@ -49,7 +49,10 @@ export const ConnectAgentSteps = () => {
     const inFlight = useRef(false);
     const [applied, setApplied] = useState(false);
     const [uncertain, setUncertain] = useState(false);
+    // The server created the member but could not confirm the key delivery; only an explicit replacement recovers it.
+    const [deliveryBlocked, setDeliveryBlocked] = useState(false);
     const command = useRef<ReturnType<typeof createAgentCommandMetadata> | null>(null);
+    const previousAttempt = useRef<string | undefined>(undefined);
     const [adding, setAdding] = useState(false);
     const [draft, setDraft] = useState<AgentModelCatalogCreate>(emptyModel);
     const [modelError, setModelError] = useState(false);
@@ -94,7 +97,7 @@ export const ConnectAgentSteps = () => {
             if (!freshStatus.data || freshStatus.error || !freshPoints.data || freshPoints.error || !freshStatus.data.can_mutate) {
                 setIssues([{ step: STEP_INDEX.review, reason: 'unavailable', code: 'team_unavailable' }]); setStep(STEP_INDEX.review); return;
             }
-            const built = buildConnectedMember(freshPoints.data, freshStatus.data, role, runtime, model);
+            const built = buildConnectedMember(freshPoints.data, freshStatus.data, role, runtime, model, previousAttempt.current);
             const validation = await agentService.validateAgentTeamMaster(built.manifest);
             if (!validation.valid || validation.blocker_codes.length) {
                 showIssues((validation.blocker_codes.length ? validation.blocker_codes : ['validation_failed']).map(code => connectIssue(code)));
@@ -119,18 +122,25 @@ export const ConnectAgentSteps = () => {
         const action = candidate.plan.actions.find(item => item.actor_key === candidate.member.actor_key && item.operation === 'create_member');
         if (!action) return;
         inFlight.current = true; setBusy(true); setIssues([]);
+        previousAttempt.current = candidate.member.actor_key;
         // One idempotency key per candidate, so a retry recovers the first receipt instead of creating a second agent.
         command.current ??= createAgentCommandMetadata(`Connect ${candidate.member.display_name} with model ${candidate.member.default_model_binding_key}.`);
+        // A settled refusal: the server keeps and replays it for this idempotency key, so the change is reviewed again.
+        const reviewAgain = (next: ConnectIssue[]) => { setCandidate(null); command.current = null; setUncertain(false); showIssues(next); };
         try {
             const receipt = await agentService.applyAgentTeamAction(candidate.manifest, candidate.plan, action.action_id, true, command.current);
             const ownReceipt = receipt.receipts.find(item => item.action_id === action.action_id);
             if (ownReceipt?.status !== 'applied' && ownReceipt?.status !== 'no_change') {
-                setIssues((receipt.blocker_codes.length ? receipt.blocker_codes : ['apply_incomplete'])
-                    .map(code => ({ ...connectIssue(code), step: STEP_INDEX.connect, reason: 'applyIncomplete' as const })));
-                setUncertain(true); return;
+                const code = ownReceipt?.blocker_code ?? receipt.blocker_codes[0] ?? 'apply_incomplete';
+                if (code === 'credential_delivery_uncertain') {
+                    setUncertain(false); setDeliveryBlocked(true);
+                    setIssues([{ step: STEP_INDEX.connect, reason: 'deliveryUncertain', code }]);
+                } else reviewAgain([connectIssue(code)]);
+                return;
             }
             setUncertain(false); setApplied(true); await status.refetch();
-        } catch {
+        } catch (error) {
+            if (!applyOutcomeUnknown(error)) { reviewAgain(requestIssues(error)); return; }
             setUncertain(true);
             setIssues([{ step: STEP_INDEX.connect, reason: 'applyUnconfirmed', code: 'apply_unconfirmed' }]);
         } finally { inFlight.current = false; setBusy(false); }
@@ -150,7 +160,8 @@ export const ConnectAgentSteps = () => {
     const available = hasAdminKey && status.data?.can_mutate && points.data && catalog.data;
     const pmAvailable = Boolean(available && !hasPM(points.data.current, status.data!));
     const roles: AgentTeamRole[] = ['worker', 'verifier', ...(pmAvailable ? ['pm' as const] : [])];
-    const editStep = (index: number) => { if (!applied && !uncertain && !busy) setStep(index); };
+    const locked = applied || uncertain || deliveryBlocked;
+    const editStep = (index: number) => { if (!locked && !busy) setStep(index); };
     const stepIssues = issues.filter(issue => issue.step === step);
 
     return <SharedUnlockContext.Provider value={{ noteId: 'connect-unlock-note' }}>
@@ -178,7 +189,7 @@ export const ConnectAgentSteps = () => {
                     <ol aria-label={t(`${P}.stepsLabel`)} className="grid grid-cols-5 border-b border-border">
                         {CONNECT_STEPS.map((id, index) => <li key={id}>
                             <button type="button" aria-current={step === index ? 'step' : undefined}
-                                disabled={busy || applied || uncertain || index > step} onClick={() => editStep(index)}
+                                disabled={busy || locked || index > step} onClick={() => editStep(index)}
                                 className={`w-full border-b-2 px-3 py-3 text-left text-sm disabled:cursor-default ${step === index ? 'border-action font-semibold text-action' : 'border-transparent text-content-secondary'}`}>
                                 {t(`${P}.stepHeading`, { number: index + 1, name: t(`${P}.steps.${id}`) })}
                             </button>
@@ -228,6 +239,9 @@ export const ConnectAgentSteps = () => {
                                 <dt className="text-content-secondary">{t(`${P}.reviewList.${label}`)}</dt><dd className="break-words font-medium">{value}</dd>
                             </div>)}</dl>
                             {!points.data.current && <p className="text-sm text-content-secondary">{t(`${P}.templateNote`)}</p>}
+                            {role === 'pm' && replacesPendingPM(points.data.current, status.data!) && (
+                                <p className="text-sm text-content-secondary">{t(`${P}.pendingPmNote`, { name: points.data.current!.controller.display_name })}</p>
+                            )}
                             <p className="text-sm text-content-secondary">{t(`${P}.preserved`)}</p>
                         </>}
                         {step === STEP_INDEX.connect && candidate && <>
@@ -257,15 +271,18 @@ export const ConnectAgentSteps = () => {
                         {stepIssues.map(issue => <div key={`${issue.reason}-${issue.code}`} role="alert" className="space-y-2 text-sm text-feedback-danger-foreground">
                             <p>{t(`${P}.issues.${issue.reason}`)}</p>
                             <details><summary className="cursor-pointer">{t(`${P}.serverCode`)}</summary><code>{issue.code}</code></details>
+                            {issue.reason === 'deliveryUncertain' && (
+                                <Button variant="secondary" onClick={() => setAdvanced(true)}>{t(`${P}.openAdvanced`)}</Button>
+                            )}
                         </div>)}
                         <div className="flex gap-3 border-t border-border pt-4">
-                            {step > 0 && !applied && !uncertain && <Button variant="secondary" disabled={busy} onClick={() => editStep(step - 1)}>{t(`${P}.back`)}</Button>}
+                            {step > 0 && !locked && <Button variant="secondary" disabled={busy} onClick={() => editStep(step - 1)}>{t(`${P}.back`)}</Button>}
                             {step < STEP_INDEX.model && <Button disabled={busy || (role === 'pm' && !pmAvailable)} onClick={() => { setIssues([]); setStep(step + 1); }}>{t(`${P}.continue`)}</Button>}
                             {(step === STEP_INDEX.model || (step === STEP_INDEX.review && !candidate)) && (
                                 <Button disabled={busy || !model} onClick={() => void review()}>{busy ? t(`${P}.reviewing`) : t(`${P}.review`)}</Button>
                             )}
                             {step === STEP_INDEX.review && candidate && <Button onClick={() => setStep(STEP_INDEX.connect)}>{t(`${P}.toConnect`)}</Button>}
-                            {step === STEP_INDEX.connect && !applied && (
+                            {step === STEP_INDEX.connect && !applied && !deliveryBlocked && (
                                 <Button disabled={busy || !candidate} onClick={() => void apply()}>
                                     {busy ? t(`${P}.connecting`) : uncertain ? t(`${P}.retry`) : t(`${P}.connectAction`)}
                                 </Button>
