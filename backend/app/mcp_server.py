@@ -398,6 +398,17 @@ def create_mcp_server() -> FastMCP:
         )
 
     @mcp.tool(annotations=READ_ONLY_TOOL)
+    async def agent_get_team_topology() -> dict[str, Any]:
+        """Return the bound team's members, roles, model binding keys and runtime references."""
+        return await _tool_call(
+            ("planning:read", "admin"),
+            lambda db, actor: mcp_agent_tools.get_agent_team_topology(
+                db,
+                actor,
+            ),
+        )
+
+    @mcp.tool(annotations=READ_ONLY_TOOL)
     async def agent_get_team_setup_status() -> dict[str, Any]:
         """Return desired, configured, and runtime readiness for the bound team."""
         return await _tool_call(

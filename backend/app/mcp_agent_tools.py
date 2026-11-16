@@ -1308,6 +1308,15 @@ async def get_agent_capabilities(
     return response.model_dump(mode="json")
 
 
+async def get_agent_team_topology(
+    db: AsyncSession,
+    actor: AgentActor,
+) -> dict[str, Any]:
+    """MCP handler: return team members and runtime references for the caller's topology."""
+    topology = await AgentTeamSetupService(db).topology(actor)
+    return topology.model_dump(mode="json")
+
+
 async def get_agent_team_setup_status(
     db: AsyncSession,
     actor: AgentActor,

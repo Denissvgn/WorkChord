@@ -74,6 +74,7 @@ from app.schemas.agent_team_setup import (
     AgentTeamRuntimeAcknowledgementResponse,
     AgentTeamSetupReport,
     AgentTeamStatusResponse,
+    AgentTeamTopologyResponse,
     AgentTeamValidateResponse,
 )
 from app.schemas.agent_planning import AgentPlanningCommandContext
@@ -288,6 +289,27 @@ async def get_assignment_reader(
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Missing X-Agent-API-Key header",
+    )
+
+
+async def get_topology_reader(
+    service: Annotated[AgentService, Depends(get_agent_service)],
+    agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+) -> AgentActor | None:
+    """An agent key reads the team on the status rule; None means a person reads it.
+
+    The team is workspace-wide, so people need a workspace role, a trusted-local
+    browser, or operator access; a project role alone does not admit them.
+    """
+    if agent_api_key:
+        return await get_agent_admin_actor(service, agent_api_key, None)
+    authority = service.db.info.get("authority")
+    if authority is not None and (authority.operator or authority.kind in {"human", "local"} and (
+            authority.local or authority.workspace_role is not None)):
+        return None
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Reading the agent team needs a workspace role or an agent key.",
     )
 
 
@@ -523,6 +545,25 @@ async def get_agent_team_starting_points(
     """The applied manifest and a catalog-filled template, so setup never starts from an empty object."""
     try:
         result = await service.starting_points(actor, server_url=str(request.base_url).rstrip("/"))
+    except Exception as exc:
+        _handle_agent_error(exc, structured=True)
+    response.headers["Cache-Control"] = "private, no-store"
+    return result
+
+
+@router.get(
+    "/agent/team-setup/topology",
+    response_model=AgentTeamTopologyResponse,
+)
+async def get_agent_team_topology(
+    response: Response,
+    reader: Annotated[AgentActor | None, Depends(get_topology_reader)],
+    service: Annotated[AgentTeamSetupService, Depends(get_agent_team_setup_service)],
+    topology_key: Annotated[Optional[str], Query()] = None,
+):
+    """Return team members, roles, model binding keys and runtime references; never credentials."""
+    try:
+        result = await service.topology(reader, topology_key=topology_key)
     except Exception as exc:
         _handle_agent_error(exc, structured=True)
     response.headers["Cache-Control"] = "private, no-store"
