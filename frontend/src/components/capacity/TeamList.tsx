@@ -2,10 +2,12 @@ import { planningInputService, type ObservedRevisions } from '../../services/pla
 import { useState } from 'react';
 import { useQueries, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp, Loader2, Trash2, User, Plane, Calendar } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2, Trash2, User, Plane } from 'lucide-react';
 import { teamService } from '../../services/teamService';
 import { Button } from '../common/Button';
 import { useConfirmDialog } from '../common/useConfirmDialog';
+import { CapacityTable } from './CapacityTable';
+import { refreshCapacity } from './capacityMutations';
 import { VacationManager } from './VacationManager';
 import type { MemberCapacity, MemberWorkload, TeamMember } from '../../types/team';
 import { QueryErrorState } from '../feedback/QueryState';
@@ -17,10 +19,11 @@ import { formatDecimal } from '../../utils/workNumbers';
 
 interface TeamListProps {
     iterationId: number;
+    layout?: 'cards' | 'table';
     onEdit: (member: TeamMember) => void;
 }
 
-export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
+export const TeamList = ({ iterationId, onEdit, layout = 'cards' }: TeamListProps) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const toast = useToast();
@@ -36,7 +39,7 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
         mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => teamService.delete(id, revisions),
         meta: { success: (_data, variables) => feedbackMessage(t, 'deleted', 'teamMember', members?.find(member => member.id === (variables as { id: number }).id)?.name) } satisfies MutationFeedbackMeta,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
+            void refreshCapacity(queryClient);
         },
         onError: error => {
             toast.error(getApiErrorMessage(error, t('teamCapacity.deleteFailed')));
@@ -74,17 +77,18 @@ export const TeamList = ({ iterationId, onEdit }: TeamListProps) => {
 
     return (
         <div className="grid grid-cols-1 gap-4">
-            {members && members.length > 0 && <CapacityTotals workloads={loaded} expected={members.length} />}
-            {members?.map((member) => (
+            {layout === 'cards' && members && members.length > 0 && <CapacityTotals workloads={loaded} expected={members.length} />}
+            {layout === 'cards' && members?.map((member) => (
                 <TeamMemberCard
                     key={member.id}
                     scale={scale}
                     member={member}
                     onEdit={onEdit}
                     onDelete={() => void confirmMemberDelete(member)}
-                    onManageVacations={() => setManagingVacationsForId(member.id)}
                 />
             ))}
+            {layout === 'table' && Boolean(members?.length) && <CapacityTable members={members ?? []} workloads={workloads}
+                onEdit={onEdit} onTimeOff={setManagingVacationsForId} onRemove={member => void confirmMemberDelete(member)} removing={deleteMutation.isPending} />}
             {members?.length === 0 && (
                 <div className="text-center py-12 text-content-tertiary bg-surface-muted rounded-lg border border-dashed border-border">
                     {t('teamCapacity.noAssignments')}
@@ -159,14 +163,12 @@ const TeamMemberCard = ({
     member,
     scale,
     onDelete,
-    onEdit,
-    onManageVacations
+    onEdit
 }: {
     member: TeamMember,
     scale: number,
     onDelete: () => void,
     onEdit: (m: TeamMember) => void,
-    onManageVacations: () => void
 }) => {
     const { t } = useTranslation();
     const [showCapacity, setShowCapacity] = useState(false);
@@ -247,16 +249,6 @@ const TeamMemberCard = ({
                     title={t('teamCapacity.capacityBreakdown')}
                 >
                     {showCapacity ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onManageVacations}
-                    className="text-feedback-purple-foreground hover:bg-feedback-purple-muted"
-                    title={t('teamVacations.title')}
-                    aria-label={t('teamVacations.title')}
-                >
-                    <Calendar className="w-4 h-4" />
                 </Button>
                 <Button
                     variant="ghost"

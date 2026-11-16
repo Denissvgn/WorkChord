@@ -1,26 +1,40 @@
 import { filtersFromSavedView, sortKeyFromSavedView } from '../features/savedViews/taskViewState';
-import { savedViewModified } from '../utils/savedViewState';
+import {
+    activeFilterCount as countActiveFilters,
+    filtersFromSearchParams,
+    groupByStatusFromSearchParams,
+    searchParamsNameView,
+    sortKeyFromSearchParams,
+    TASK_CLEARED_VIEW_PARAM,
+    TASK_FILTER_PARAMS,
+    TASK_GROUP_PARAM,
+    TASK_SORT_PARAM,
+    writeClearedViewMarker,
+    writeFiltersToSearchParams,
+    writeSortKeyToSearchParams,
+} from '../features/savedViews/taskViewParams';
 import { BacklogPanel } from '../components/tasks/BacklogPanel';
-import { TaskSearch } from '../components/tasks/TaskSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     AlertTriangle,
-    Bookmark,
+    Bot,
+    FileText,
     LayoutGrid,
     List,
-    ListFilter,
     Maximize2,
     Minimize2,
     Plus,
+    Search,
     Upload,
     Waypoints,
     X,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { Button } from '../components/common/Button';
+import { Input } from '../components/common/Input';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { TaskList } from '../components/tasks/TaskList';
@@ -31,17 +45,20 @@ import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
 import { QuickCapture } from '../components/tasks/QuickCapture';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
 import { TaskFiltersBar } from '../components/tasks/TaskFiltersBar';
+import { TaskTextEditorModal } from '../components/tasks/TaskTextEditorModal';
+import { TaskViewOptions } from '../components/tasks/TaskViewOptions';
 import { TASK_PART_PARAM } from '../components/tasks/TaskReadView';
 import type { Task } from '../types/task';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
-import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
+import { SavedViewPicker } from '../components/tasks/SavedViewsControl';
+import { useSavedViewManager } from '../components/tasks/useSavedViewManager';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
 import { useWorkScope } from '../features/scope/useWorkScope';
 import { urlNamesIteration } from '../features/scope/namedIteration';
 import { useLinkScope, useScopeLink } from '../features/scope/useScopeLink';
 import { resolveWorkScope, type ScopeIteration as ScopeIterationValue } from '../features/scope/workScope';
-import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
+import { PageHeader, PageLayout, PageToolbar, ViewSwitch } from '../components/ui';
 import type { SavedView } from '../types/savedView';
 import { savedViewService } from '../services/savedViewService';
 import { savedViewDisplay } from '../i18n/seedDisplay';
@@ -64,27 +81,31 @@ import {
     parsePlanningIterationId,
     parsePlanningTaskIssue,
 } from '../features/planningMasters/planningTaskIssues';
-import type {
-    PlanningTaskIssue,
-} from '../features/planningMasters/planningTaskIssues';
+import { PLANNING_RETURN_STEP_PARAM } from '../features/planningMasters/planningReturn';
 
-type ViewMode = 'list' | 'board';
-const PLANNING_ISSUE_COPY_KEYS: Record<
-    PlanningTaskIssue,
-    { title: string; body: string }
-> = {
-    unassigned: {
-        title: 'tasks.planningIssueUnassignedTitle',
-        body: 'tasks.planningIssueUnassignedBody',
-    },
-    'missing-effort': {
-        title: 'tasks.planningIssueMissingEffortTitle',
-        body: 'tasks.planningIssueMissingEffortBody',
-    },
-    any: {
-        title: 'tasks.planningIssueAnyTitle',
-        body: 'tasks.planningIssueAnyBody',
-    },
+type ViewMode = 'list' | 'board' | 'pipeline';
+const VIEW_PARAM = 'view';
+const SEARCH_PARAM = 'q';
+
+const viewModeFromParam = (value: string | null): ViewMode => (
+    value === 'board' || value === 'pipeline' ? value : 'list'
+);
+
+/** Conditions another page applied on the way here, such as Plan handing over its scheduling gaps. */
+const handedOverFilters = (params: URLSearchParams): Partial<TaskFilters> => {
+    const planningIssue = parsePlanningTaskIssue(params.get(PLANNING_TASK_ISSUE_PARAM));
+    const fromPlan = params.has(PLANNING_RETURN_STEP_PARAM) || params.has(PLANNING_ITERATION_PARAM);
+    return planningIssue && fromPlan ? { planningIssue } : {};
+};
+
+/** Shows the view's filters and order in `params`, or no filters for All tasks. */
+const writeViewToSearchParams = (params: URLSearchParams, view: SavedView | null) => {
+    writeFiltersToSearchParams(params, view ? filtersFromSavedView(view) : defaultFilters);
+    writeSortKeyToSearchParams(params, (view && sortKeyFromSavedView(view)) ?? 'priority');
+    params.delete(TASK_CLEARED_VIEW_PARAM);
+    if (view) params.set(VIEW_PARAM, String(view.id));
+    else params.delete(VIEW_PARAM);
+    return params;
 };
 
 const TasksPage = () => {
@@ -101,11 +122,14 @@ const TasksPage = () => {
     const [isCreating, setIsCreating] = useState(false);
     const [createTitle, setCreateTitle] = useState('');
     const [isImporting, setIsImporting] = useState(false);
-    const [filters, setFilters] = useState<TaskFilters>(defaultFilters);
-    const [sortKey, setSortKey] = useState<SortKey>('priority');
-    const [selectedSavedViewId, setSelectedSavedViewId] = useState<number | null>(null);
+    const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
+    // The view, its filters, order, grouping, search and layout all live in the URL.
+    const filters = useMemo(() => filtersFromSearchParams(searchParams), [searchParams]);
+    const sortKey = useMemo(() => sortKeyFromSearchParams(searchParams), [searchParams]);
+    const groupByStatus = groupByStatusFromSearchParams(searchParams);
+    const searchText = searchParams.get(SEARCH_PARAM) ?? '';
+    const [systemFilters] = useState(() => handedOverFilters(searchParams));
     const appliedRequestedViewIdRef = useRef<number | null>(null);
-    const appliedPlanningContext = useRef<string | null>(null);
     const appliedPlanningIterationRef = useRef<string | null>(null);
     // The iteration this page chose itself; a scope change to it keeps the filters and view.
     const appliedScopeChangeRef = useRef<number | null>(null);
@@ -113,6 +137,7 @@ const TasksPage = () => {
     // The task opened by the URL, and whether it may still move the scope to its iteration.
     const taskScopeMoveRef = useRef<{ taskId: number; pending: boolean } | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
+    const toolbarRef = useRef<HTMLDivElement>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
         searchParams.get(OVERVIEW_TASK_RETURN_PARAM),
@@ -127,16 +152,11 @@ const TasksPage = () => {
     const focusedTaskContextId = requestedTaskId
         ?? (isFromOverview ? returnTaskId : null);
     const iterationNamedByUrl = urlNamesIteration(locationSearch) || legacyBacklogRequested;
-    const requestedSavedViewId = Number(searchParams.get('view')) || null;
+    const requestedSavedViewId = Number(searchParams.get(VIEW_PARAM)) || null;
     const createTaskRequested = searchParams.get('create') === '1';
     const filtersRequested = searchParams.get('panel') === 'filters';
-    const fullscreenRequested = searchParams.get('fullscreen') === '1';
-    const manualSortRequested = searchParams.get('sort') === 'manual';
-    const requestedLayout = searchParams.get('layout');
-    // The filters panel, fullscreen and layout live in the URL, so links and Back restore them.
-    const isFiltersOpen = filtersRequested;
-    const isFullScreen = fullscreenRequested;
-    const viewMode: ViewMode = requestedLayout === 'board' ? 'board' : 'list';
+    const isFullScreen = searchParams.get('fullscreen') === '1';
+    const viewMode = viewModeFromParam(searchParams.get('layout'));
     const requestedTaskMode = searchParams.get('mode');
     const rawPlanningIssue = searchParams.get(PLANNING_TASK_ISSUE_PARAM);
     const requestedPlanningIssue = parsePlanningTaskIssue(rawPlanningIssue);
@@ -150,41 +170,20 @@ const TasksPage = () => {
     const isCreateModalOpen = requestedTaskId === null
         && (isCreating || (createTaskRequested && selectedIterationId > 0));
     const { t } = useTranslation();
-    const activeFilterCount =
-        Number(filters.planningIssue !== null) +
-        Number(filters.assigneeId !== null) +
-        Number(filters.projectId !== null) +
-        Number(filters.priority !== null) +
-        Number(filters.status !== null) +
-        Number(filters.hasDependency !== null) +
-        Number(filters.isOverdue !== null) +
-        Number(filters.isIterationOverflow != null) +
-        Number(filters.isBlocked != null) +
-        Number(filters.agentReady !== null) +
-        Number(Boolean(filters.startDateFrom)) +
-        Number(Boolean(filters.startDateTo)) +
-        Number(Boolean(filters.endDateFrom)) +
-        Number(Boolean(filters.endDateTo)) +
-        filters.labelSlugs.length +
-        filters.labelGroupKeys.length;
-    const planningIssueCopy = filters.planningIssue
-        ? PLANNING_ISSUE_COPY_KEYS[filters.planningIssue]
-        : null;
+    const activeFilterCount = countActiveFilters(filters);
 
-    const setTaskContextParam = useCallback((key: string, value: string | null) => {
+    const updateSearchParams = useCallback((change: (next: URLSearchParams) => void) => {
         const nextSearchParams = new URLSearchParams(searchParams);
-        if (value === null) nextSearchParams.delete(key);
-        else nextSearchParams.set(key, value);
+        change(nextSearchParams);
         setSearchParams(nextSearchParams, { replace: true });
     }, [searchParams, setSearchParams]);
 
-    const openFilters = useCallback(() => {
-        setTaskContextParam('panel', 'filters');
-    }, [setTaskContextParam]);
-
-    const closeFilters = useCallback(() => {
-        setTaskContextParam('panel', null);
-    }, [setTaskContextParam]);
+    const setTaskContextParam = useCallback((key: string, value: string | null) => {
+        updateSearchParams(next => {
+            if (value === null) next.delete(key);
+            else next.set(key, value);
+        });
+    }, [updateSearchParams]);
 
     const changeViewMode = useCallback((layout: ViewMode) => {
         setTaskContextParam('layout', layout === 'list' ? null : layout);
@@ -218,10 +217,6 @@ const TasksPage = () => {
         queryKey: ['saved-views', 'tasks'],
         queryFn: () => savedViewService.getAll({ view_type: 'tasks' }),
     });
-    const selectedSavedView = useMemo(
-        () => savedViews.find(view => view.id === selectedSavedViewId) ?? null,
-        [savedViews, selectedSavedViewId],
-    );
     const requestedSavedView = useMemo(
         () => savedViews.find(view => view.id === requestedSavedViewId) ?? null,
         [requestedSavedViewId, savedViews],
@@ -235,6 +230,57 @@ const TasksPage = () => {
     const requestedSavedViewLoadFailed = Boolean(
         requestedSavedViewId && savedViewsError,
     );
+
+    const changeFilters = useCallback((nextFilters: TaskFilters) => {
+        updateSearchParams(next => writeClearedViewMarker(writeFiltersToSearchParams(next, nextFilters), next.has(VIEW_PARAM)));
+    }, [updateSearchParams]);
+
+    const changeSortKey = useCallback((nextSortKey: SortKey) => {
+        updateSearchParams(next => writeClearedViewMarker(writeSortKeyToSearchParams(next, nextSortKey), next.has(VIEW_PARAM)));
+    }, [updateSearchParams]);
+
+    const changeGrouping = useCallback((grouped: boolean) => {
+        setTaskContextParam(TASK_GROUP_PARAM, grouped ? null : 'none');
+    }, [setTaskContextParam]);
+
+    const changeSearch = useCallback((value: string) => {
+        setTaskContextParam(SEARCH_PARAM, value ? value.slice(0, 200) : null);
+    }, [setTaskContextParam]);
+
+    const showSavedView = useCallback((view: SavedView | null) => {
+        appliedRequestedViewIdRef.current = view?.id ?? null;
+        updateSearchParams(next => writeViewToSearchParams(next, view));
+    }, [updateSearchParams]);
+
+    const clearViewContext = useCallback(() => {
+        showSavedView(null);
+    }, [showSavedView]);
+
+    // The empty list's Clear filters removes every condition that hides tasks: the view's filters and the search.
+    const clearListConditions = useCallback(() => {
+        appliedRequestedViewIdRef.current = null;
+        updateSearchParams(next => {
+            writeViewToSearchParams(next, null);
+            next.delete(SEARCH_PARAM);
+        });
+    }, [updateSearchParams]);
+
+    const savedViewManager = useSavedViewManager({
+        filters,
+        sortKey,
+        systemFilters,
+        selectedViewId: requestedSavedView?.is_valid ? requestedSavedView.id : null,
+        onSelectedViewIdChange: viewId => {
+            // A view just saved, duplicated or updated already shows these filters; only its name changes.
+            if (viewId === null) {
+                clearViewContext();
+                return;
+            }
+            appliedRequestedViewIdRef.current = viewId;
+            setTaskContextParam(VIEW_PARAM, String(viewId));
+        },
+        onApplyView: showSavedView,
+    });
 
     // A link that names an iteration for planning opens the scope on it once; the scope bar then
     // changes it freely. A name that matches no iteration is dropped from the URL.
@@ -259,27 +305,26 @@ const TasksPage = () => {
             return;
         }
 
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete(PLANNING_ITERATION_PARAM);
-        nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-        setSearchParams(nextSearchParams, { replace: true });
+        updateSearchParams(next => {
+            next.delete(PLANNING_ITERATION_PARAM);
+            next.delete(PLANNING_TASK_ISSUE_PARAM);
+        });
     }, [
         iterations,
         rawPlanningIterationId,
         requestedPlanningIterationId,
-        searchParams,
         selectedIterationId,
         setIteration,
-        setSearchParams,
+        updateSearchParams,
     ]);
 
     useEffect(() => {
         if (!legacyBacklogRequested) return;
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete('scope');
-        nextSearchParams.set('iteration', 'backlog');
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [legacyBacklogRequested, searchParams, setSearchParams]);
+        updateSearchParams(next => {
+            next.delete('scope');
+            next.set('iteration', 'backlog');
+        });
+    }, [legacyBacklogRequested, updateSearchParams]);
 
     // Leaving the backlog opens the project's default iteration, else the default across projects.
     const iterationTasksScope = useMemo(() => {
@@ -288,56 +333,18 @@ const TasksPage = () => {
         return inProject.iteration === 'backlog' ? resolveWorkScope({}, {}, iterations) : inProject;
     }, [iterations, linkedScope.project]);
 
-    // A project page links here with ?projectId=<id>; apply it as the project filter once.
-    const requestedProjectId = Number(searchParams.get('projectId')) || null;
-    const [appliedProjectId, setAppliedProjectId] = useState<number | null>(null);
-    if (requestedProjectId !== null && appliedProjectId !== requestedProjectId) {
-        setAppliedProjectId(requestedProjectId);
-        setFilters(current => ({ ...current, projectId: requestedProjectId }));
-    }
-
+    // A planning issue the page does not know is dropped from the URL.
     useEffect(() => {
-        const context = `${rawPlanningIssue}:${requestedSavedViewId}`;
-        if (appliedPlanningContext.current === context) return;
-        appliedPlanningContext.current = context;
-        if (rawPlanningIssue !== null && requestedPlanningIssue === null) {
-            const nextSearchParams = new URLSearchParams(searchParams);
-            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-            setSearchParams(nextSearchParams, { replace: true });
-            return;
-        }
+        if (rawPlanningIssue === null || requestedPlanningIssue !== null) return;
+        setTaskContextParam(PLANNING_TASK_ISSUE_PARAM, null);
+    }, [rawPlanningIssue, requestedPlanningIssue, setTaskContextParam]);
 
-        if (requestedPlanningIssue) {
-            if (requestedSavedViewId) {
-                const nextSearchParams = new URLSearchParams(searchParams);
-                nextSearchParams.delete('view');
-                setSearchParams(nextSearchParams, { replace: true });
-            }
-            appliedRequestedViewIdRef.current = null;
-            // eslint-disable-next-line react-hooks/set-state-in-effect -- a planning link also rewrites the URL, so this runs after render.
-            setSelectedSavedViewId(null);
-            setFilters(current => (
-                current.planningIssue === requestedPlanningIssue
-                    ? current
-                    : { ...current, planningIssue: requestedPlanningIssue }
-            ));
-            return;
-        }
-
-        if (!requestedSavedViewId) {
-            setFilters(current => (
-                current.planningIssue === null
-                    ? current
-                    : { ...current, planningIssue: null }
-            ));
-        }
-    }, [
-        rawPlanningIssue,
-        requestedPlanningIssue,
-        requestedSavedViewId,
-        searchParams,
-        setSearchParams,
-    ]);
+    // The Filters command (?panel=filters) moves focus to the first filter in the toolbar.
+    useEffect(() => {
+        if (!filtersRequested || iterationsLoading) return;
+        toolbarRef.current?.querySelector<HTMLElement>('.wc-page-toolbar-filters select, .wc-page-toolbar-filters input')?.focus();
+        setTaskContextParam('panel', null);
+    }, [filtersRequested, iterationsLoading, setTaskContextParam]);
 
     // The scope in the URL decides. A task opened by a URL that names no iteration moves the
     // scope to the task's iteration once; a link, a reload or a scope already chosen that names
@@ -373,32 +380,20 @@ const TasksPage = () => {
         setIteration,
     ]);
 
-    useEffect(() => {
-        if (!manualSortRequested) return;
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- applied once, together with removing ?sort from the URL.
-        setSortKey('sort_order');
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete('sort');
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [manualSortRequested, searchParams, setSearchParams]);
-
     const closeTaskCreator = useCallback(() => {
         setIsCreating(false);
         setCreateTitle('');
         if (!createTaskRequested) return;
-
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete('create');
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [createTaskRequested, searchParams, setSearchParams]);
+        setTaskContextParam('create', null);
+    }, [createTaskRequested, setTaskContextParam]);
 
     const closeFocusedTask = useCallback(() => {
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete(OVERVIEW_TASK_PARAM);
-        nextSearchParams.delete(OVERVIEW_TASK_THREAD_PARAM);
-        nextSearchParams.delete(TASK_PART_PARAM);
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [searchParams, setSearchParams]);
+        updateSearchParams(next => {
+            next.delete(OVERVIEW_TASK_PARAM);
+            next.delete(OVERVIEW_TASK_THREAD_PARAM);
+            next.delete(TASK_PART_PARAM);
+        });
+    }, [updateSearchParams]);
     // Opening a task puts it in the URL, so a refresh or a copied link reopens it.
     const openTask = useCallback((task: Task) => {
         const nextSearchParams = new URLSearchParams(searchParams);
@@ -407,52 +402,19 @@ const TasksPage = () => {
         setSearchParams(nextSearchParams);
     }, [searchParams, setSearchParams]);
 
-    const applySavedView = useCallback((view: SavedView) => {
-        setFilters(filtersFromSavedView(view));
-        const savedSortKey = sortKeyFromSavedView(view);
-        setSortKey(savedSortKey ?? "priority");
-    }, []);
-
-    const selectSavedView = useCallback((viewId: number | null) => {
-        setSelectedSavedViewId(viewId);
-        const nextSearchParams = new URLSearchParams(searchParams);
-        if (viewId) {
-            nextSearchParams.set('view', String(viewId));
-            nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-        } else {
-            nextSearchParams.delete('view');
-        }
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [searchParams, setSearchParams]);
-
-    const clearViewContext = useCallback(() => {
-        setFilters(defaultFilters);
-        setSortKey('priority');
-        appliedRequestedViewIdRef.current = null;
-        setSelectedSavedViewId(null);
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete('view');
-        nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [searchParams, setSearchParams]);
-
-    const changeFilters = useCallback((nextFilters: TaskFilters) => {
-        setFilters(nextFilters);
-    }, []);
-
+    // Another iteration in the scope bar starts with no filters, no search and no saved view.
     const clearIterationViewContext = useCallback(() => {
-        setFilters(defaultFilters);
-        setSortKey('priority');
         appliedRequestedViewIdRef.current = null;
-        setSelectedSavedViewId(null);
-        const nextSearchParams = new URLSearchParams(searchParams);
-        nextSearchParams.delete('view');
-        nextSearchParams.delete(PLANNING_TASK_ISSUE_PARAM);
-        nextSearchParams.delete(PLANNING_ITERATION_PARAM);
-        setSearchParams(nextSearchParams, { replace: true });
-    }, [searchParams, setSearchParams]);
+        updateSearchParams(next => {
+            Object.values(TASK_FILTER_PARAMS).forEach(param => next.delete(param));
+            next.delete(TASK_SORT_PARAM);
+            next.delete(TASK_CLEARED_VIEW_PARAM);
+            next.delete(VIEW_PARAM);
+            next.delete(SEARCH_PARAM);
+            next.delete(PLANNING_ITERATION_PARAM);
+        });
+    }, [updateSearchParams]);
 
-    // Another iteration in the scope bar starts with no filters and no saved view.
     useEffect(() => {
         const previous = shownIterationRef.current;
         shownIterationRef.current = iteration;
@@ -464,61 +426,122 @@ const TasksPage = () => {
         clearIterationViewContext();
     }, [clearIterationViewContext, iteration]);
 
+    // A link that names only a saved view (?view=<id>) shows that view's filters and order once.
+    // A link that also carries filters or an order shows those: it is the view as someone left it.
     useEffect(() => {
         if (!requestedSavedViewId) {
-            if (appliedRequestedViewIdRef.current === null) return undefined;
-            const clearTimer = window.setTimeout(() => {
-                appliedRequestedViewIdRef.current = null;
-                setSelectedSavedViewId(null);
-                setFilters(defaultFilters);
-                setSortKey('priority');
-            }, 0);
-            return () => window.clearTimeout(clearTimer);
+            appliedRequestedViewIdRef.current = null;
+            return;
         }
-        if (
-            appliedRequestedViewIdRef.current === requestedSavedViewId
-            || !requestedSavedView?.is_valid
-        ) {
-            return undefined;
-        }
+        if (appliedRequestedViewIdRef.current === requestedSavedViewId || !requestedSavedView?.is_valid) return;
+        appliedRequestedViewIdRef.current = requestedSavedViewId;
+        if (searchParamsNameView(searchParams)) return;
+        updateSearchParams(next => writeViewToSearchParams(next, requestedSavedView));
+    }, [requestedSavedView, requestedSavedViewId, searchParams, updateSearchParams]);
 
-        const applyTimer = window.setTimeout(() => {
-            appliedRequestedViewIdRef.current = requestedSavedViewId;
-            setSelectedSavedViewId(requestedSavedView.id);
-            applySavedView(requestedSavedView);
-        }, 0);
-        return () => window.clearTimeout(applyTimer);
-    }, [applySavedView, requestedSavedView, requestedSavedViewId]);
+    const header = (title: ReactNode, ready: boolean) => {
+        const { modified, canMutateSelected, selectedView, statusMessage, statusIsError } = savedViewManager;
+        const secondaryAction = ready && modified
+            ? (canMutateSelected
+                ? (
+                    <Button variant="secondary" onClick={() => void savedViewManager.saveChanges()} isLoading={savedViewManager.isSaving}>
+                        {t('teamwork.saveChanges')}
+                    </Button>
+                )
+                : (
+                    <Button variant="secondary" onClick={savedViewManager.openSaveAs}>
+                        {t('teamwork.saveAs')}
+                    </Button>
+                ))
+            : undefined;
+        // A failed save is shown on its own line, so the Modified view notice never hides it.
+        const modifiedNotice = ready && modified && (
+            <p role="status" className="tasks-view-state">
+                <span className="font-medium text-feedback-warning-foreground">{t('teamwork.modifiedView')}</span>
+                {' · '}
+                {t(selectedView ? 'tasks.modifiedViewHelp' : 'tasks.draftViewHelp')}
+            </p>
+        );
+        const statusNote = statusMessage && (statusIsError
+            ? <p role="alert" className="tasks-view-state is-error">{statusMessage}</p>
+            : !modifiedNotice && <p role="status" className="tasks-view-state">{statusMessage}</p>);
+        const meta = modifiedNotice || statusNote
+            ? <>{modifiedNotice}{statusNote}</>
+            : undefined;
+        return (
+            <PageHeader
+                title={title}
+                purpose={t('tasks.description')}
+                meta={meta}
+                primaryAction={(
+                    <Button
+                        className="tasks-primary-action"
+                        onClick={() => setIsCreating(true)}
+                        disabled={!ready || isCreating || selectedIterationId === 0}
+                    >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t('tasks.newTask')}
+                    </Button>
+                )}
+                secondaryActions={secondaryAction}
+                overflowItems={[
+                    {
+                        label: t('actions.import'),
+                        icon: <Upload className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => setIsImporting(true),
+                        disabled: !ready || selectedIterationId === 0,
+                    },
+                    {
+                        label: t('taskFilters.textMode'),
+                        icon: <FileText className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => setIsTextEditorOpen(true),
+                        disabled: !ready || selectedIterationId === 0,
+                    },
+                    {
+                        label: t('actions.enterFullScreen'),
+                        icon: <Maximize2 className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: enterFullscreen,
+                        disabled: !ready,
+                    },
+                ]}
+            />
+        );
+    };
 
-    if (iterationsLoading) {
-        return <QueryLoadingState message={t('queryFeedback.loading')} />;
-    }
-
-    if (iterationsError) {
-        return <QueryErrorState error={iterationsError} onRetry={() => void refetchIterations()} />;
+    if (iterationsLoading || iterationsError) {
+        return (
+            <PageLayout>
+                {header(t('tasks.title'), false)}
+                {iterationsLoading
+                    ? <QueryLoadingState message={t('queryFeedback.loading')} />
+                    : <QueryErrorState error={iterationsError} onRetry={() => void refetchIterations()} />}
+            </PageLayout>
+        );
     }
 
     if (!iterations || iterations.length === 0 || isBacklogView) {
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
-            <PageHeader title={t('tasks.title')} subtitle={t('teamwork.backlogHelp')}
-                actions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
-            <div className="space-y-6"><TaskSearch /><BacklogPanel /></div>
+            <PageHeader title={t('tasks.title')} purpose={t('teamwork.backlogHelp')}
+                secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+            <BacklogPanel />
             <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
                 title={task => task?.title ?? t('taskEditor.editTask')} />
         </PageLayout>;
     }
 
+    const viewName = savedViewManager.selectedView
+        ? savedViewDisplay(savedViewManager.selectedView).name
+        : t('tasks.allTasks');
+    const viewNotice = requestedSavedViewLoadFailed
+        ? { title: t('tasks.savedViewsLoadFailed'), body: t('tasks.savedViewsLoadFailedBody') }
+        : requestedSavedViewMissing
+            ? { title: t('tasks.savedViewUnavailable'), body: t('tasks.savedViewUnavailableBody') }
+            : null;
+
     return (
         <PageLayout variant="workbench" className="wc-workbench-flush tasks-workbench">
-            {/* Main Content Area */}
             <div className="tasks-workbench-shell flex-1 min-w-0 flex flex-col h-full overflow-hidden">
-                <div className="max-h-80 shrink-0 space-y-2 overflow-y-auto border-b border-border p-3">
-                    {/* Opening the backlog changes only the scope, so it replaces this entry. */}
-                    <Link className="text-sm font-medium text-action hover:underline" replace to={scopeLink('/tasks', { iteration: 'backlog' })}>{t('teamwork.projectBacklog')}</Link>
-                    <TaskSearch narrowsList />
-                    {savedViewModified(selectedSavedView, filters, sortKey) && !filters.planningIssue && <p role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')} · {t('teamwork.draftViewHelp')}</p>}
-                </div>
                 <PlanReturnBar />
                 <OverviewTaskReturnBar
                     active={isFromOverview}
@@ -526,208 +549,74 @@ const TasksPage = () => {
                     taskTitle={focusedTaskQuery.data?.title}
                     returnActionRef={overviewReturnActionRef}
                 />
-                <div className="tasks-workbench-header-wrap flex-shrink-0 px-4 pt-4 pb-3">
-                    <div className="wc-page-head tasks-workbench-header" data-testid="page-header">
-                        <div className="tasks-workbench-heading">
-                            <h1 className="wc-page-title">{t('tasks.title')}</h1>
-                            <div className="wc-page-sub">{t('tasks.description')}</div>
-                        </div>
-                        <div className="row tasks-header-actions">
-                        <OverflowMenu
-                            className="tasks-overflow-trigger"
-                            label={t('actions.moreActions')}
-                            items={[
-                                {
-                                    label: t('actions.import'),
-                                    icon: <Upload className="h-4 w-4" aria-hidden="true" />,
-                                    onSelect: () => setIsImporting(true),
-                                    disabled: selectedIterationId === 0,
-                                },
-                                {
-                                    label: t('actions.enterFullScreen'),
-                                    icon: <Maximize2 className="h-4 w-4" aria-hidden="true" />,
-                                    onSelect: enterFullscreen,
-                                },
-                            ]}
-                        />
-                        <div className="tasks-primary-slot">
-                            <Button
-                                className="tasks-primary-action"
-                                onClick={() => setIsCreating(true)}
-                                disabled={isCreating || selectedIterationId === 0}
-                            >
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                {t('tasks.newTask')}
-                            </Button>
-                        </div>
-                        </div>
-                    </div>
+                <div className="tasks-workbench-header-wrap flex-shrink-0">
+                    {header(<SavedViewPicker manager={savedViewManager} label={viewName} />, true)}
                 </div>
 
-                {selectedIterationId > 0 && (
-                    <div className="tasks-context-wrap flex-shrink-0 px-6 pb-3">
-                        <section
-                            className={clsx(
-                                'tasks-view-context border-y px-1 py-2.5 text-sm',
-                                requestedSavedViewMissing || requestedSavedViewLoadFailed
-                                    ? 'border-feedback-warning-border bg-feedback-warning-muted'
-                                    : 'border-border-subtle',
-                            )}
-                            aria-label={t('tasks.viewContext')}
-                        >
-                            <div className="tasks-view-context-copy flex min-w-0 items-center gap-2">
-                                {requestedSavedViewMissing || requestedSavedViewLoadFailed ? (
-                                    <AlertTriangle
-                                        className="h-4 w-4 shrink-0 text-feedback-warning-foreground"
-                                        aria-hidden="true"
-                                    />
-                                ) : (
-                                    <Bookmark
-                                        className="h-4 w-4 shrink-0 text-action"
-                                        aria-hidden="true"
-                                    />
-                                )}
-                                <div className="min-w-0">
-                                    <div className="truncate font-medium text-content-primary">
-                                        {requestedSavedViewLoadFailed
-                                            ? t('tasks.savedViewsLoadFailed')
-                                            : requestedSavedViewMissing
-                                                ? t('tasks.savedViewUnavailable')
-                                                : requestedSavedViewId && savedViewsLoading
-                                                    ? t('tasks.loadingSavedView')
-                                            : selectedSavedView
-                                                ? savedViewDisplay(selectedSavedView).name
-                                                : planningIssueCopy
-                                                    ? t(planningIssueCopy.title)
-                                                    : activeFilterCount > 0
-                                                        ? t('tasks.customView')
-                                                        : t('tasks.allTasks')}
-                                    </div>
-                                    <div className="text-xs text-content-secondary">
-                                        {requestedSavedViewLoadFailed
-                                            ? t('tasks.savedViewsLoadFailedBody')
-                                            : requestedSavedViewMissing
-                                                ? t('tasks.savedViewUnavailableBody')
-                                                : requestedSavedViewId && savedViewsLoading
-                                                    ? t('tasks.loadingSavedViewBody')
-                                            : !selectedSavedView && planningIssueCopy
-                                                ? t(planningIssueCopy.body)
-                                                : activeFilterCount > 0
-                                                    ? t('tasks.activeFilterCount', { count: activeFilterCount })
-                                                    : t('tasks.noActiveFilters')}
-                                    </div>
-                                </div>
+                <div ref={toolbarRef} className="tasks-toolbar-wrap flex-shrink-0">
+                    <PageToolbar
+                        compact
+                        label={t('tasks.toolbar')}
+                        search={(
+                            <div className="relative">
+                                <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-content-tertiary" />
+                                <Input
+                                    type="search"
+                                    aria-label={t('tasks.searchList')}
+                                    placeholder={t('tasks.searchPlaceholder')}
+                                    value={searchText}
+                                    maxLength={200}
+                                    onChange={event => changeSearch(event.target.value)}
+                                    className="pl-9"
+                                />
                             </div>
-                            <div className="tasks-context-actions flex flex-wrap items-center gap-2">
-                                {(activeFilterCount > 0 || selectedSavedViewId || requestedSavedViewId) && (
-                                    <Button
-                                        className="tasks-clear-view"
-                                        variant="ghost"
-                                        size="sm"
-                                        aria-label={t('tasks.clearView')}
-                                        onClick={clearViewContext}
-                                    >
-                                        <X className="mr-1 h-4 w-4" aria-hidden="true" />
-                                        <span>{t('tasks.clearView')}</span>
-                                    </Button>
-                                )}
-                                <Button
-                                    variant={activeFilterCount > 0 ? 'secondary' : 'outline'}
-                                    size="sm"
-                                    onClick={openFilters}
-                                    aria-expanded={isFiltersOpen}
-                                >
-                                    <ListFilter className="mr-1 h-4 w-4" aria-hidden="true" />
-                                    {t('taskFilters.filters')}
-                                    {activeFilterCount > 0 && (
-                                        <span className="ml-1 rounded-full bg-surface-card/80 px-1.5 py-0.5 text-xs tabular-nums">
-                                            {activeFilterCount}
-                                        </span>
-                                    )}
-                                </Button>
-                            </div>
-                            <div className="tasks-view-switcher flex w-fit bg-surface-subtle p-1 rounded-lg" role="group" aria-label={t('tasks.title')}>
-                            <button
-                                type="button"
-                                onClick={() => changeViewMode('list')}
-                                aria-pressed={viewMode === 'list'}
-                                className={clsx(
-                                    "relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-2",
-                                    viewMode === 'list' ? "text-content-primary" : "text-content-secondary hover:text-content-primary"
-                                )}
-                            >
-                                {viewMode === 'list' && (
-                                    <motion.div
-                                        layoutId="view-tab"
-                                        className="absolute inset-0 bg-surface-card shadow-sm rounded-md"
-                                        initial={false}
-                                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                                    />
-                                )}
-                                <span className="relative z-10 flex items-center gap-2">
-                                    <List className="w-4 h-4" />
-                                    {t('tasks.list')}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => changeViewMode('board')}
-                                aria-pressed={viewMode === 'board'}
-                                className={clsx(
-                                    "relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-2",
-                                    viewMode === 'board' ? "text-content-primary" : "text-content-secondary hover:text-content-primary"
-                                )}
-                            >
-                                {viewMode === 'board' && (
-                                    <motion.div
-                                        layoutId="view-tab"
-                                        className="absolute inset-0 bg-surface-card shadow-sm rounded-md"
-                                        initial={false}
-                                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                                    />
-                                )}
-                                <span className="relative z-10 flex items-center gap-2">
-                                    <LayoutGrid className="w-4 h-4" />
-                                    {t('tasks.board')}
-                                </span>
-                            </button>
-                            </div>
-                        </section>
-                    </div>
-                )}
-
-                <SlideOverDrawer
-                    open={isFiltersOpen && requestedTaskId === null}
-                    title={t('taskFilters.filters')}
-                    icon={<ListFilter className="h-4 w-4" aria-hidden="true" />}
-                    onClose={closeFilters}
-                >
-                    {selectedIterationId > 0 && (
-                        <>
+                        )}
+                        filters={(
                             <TaskFiltersBar
                                 iterationId={selectedIterationId}
                                 filters={filters}
                                 onFiltersChange={changeFilters}
                             />
-                            <section className="border-t border-border px-4 py-4">
-                                <h2 className="mb-3 text-sm font-semibold text-content-primary">{t('surfaces.savedViews.savedViews')}</h2>
-                                <SavedViewsControl
-                                    filters={filters}
-                                    sortKey={sortKey}
-                                    selectedViewId={selectedSavedViewId}
-                                    onSelectedViewIdChange={viewId => {
-                                        if (viewId === null) {
-                                            clearViewContext();
-                                            return;
-                                        }
-                                        selectSavedView(viewId);
-                                    }}
-                                    onApplyView={applySavedView}
-                                />
-                            </section>
-                        </>
+                        )}
+                        viewSwitch={(
+                            <ViewSwitch<ViewMode>
+                                label={t('tasks.layout')}
+                                value={viewMode}
+                                onChange={changeViewMode}
+                                options={[
+                                    { value: 'list', label: t('tasks.list'), icon: <List aria-hidden="true" className="h-4 w-4" /> },
+                                    { value: 'board', label: t('tasks.board'), icon: <LayoutGrid aria-hidden="true" className="h-4 w-4" /> },
+                                    { value: 'pipeline', label: t('tasks.pipeline'), icon: <Bot aria-hidden="true" className="h-4 w-4" /> },
+                                ]}
+                            />
+                        )}
+                        viewOptions={viewMode === 'list' ? (
+                            <TaskViewOptions
+                                sortKey={sortKey}
+                                onSortKeyChange={changeSortKey}
+                                groupByStatus={groupByStatus}
+                                onGroupByStatusChange={changeGrouping}
+                            />
+                        ) : undefined}
+                    />
+                    {requestedSavedViewId && savedViewsLoading && (
+                        <p role="status" className="tasks-view-notice">{t('tasks.loadingSavedView')}</p>
                     )}
-                </SlideOverDrawer>
+                    {viewNotice && (
+                        <div role="status" className="tasks-view-notice is-warning">
+                            <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                            <span className="min-w-0 flex-1">
+                                <strong className="font-medium">{viewNotice.title}</strong>
+                                {' · '}
+                                {viewNotice.body}
+                            </span>
+                            <Button variant="ghost" size="sm" onClick={clearViewContext}>
+                                <X className="mr-1 h-4 w-4" aria-hidden="true" />
+                                {t('tasks.clearView')}
+                            </Button>
+                        </div>
+                    )}
+                </div>
 
                 <TaskEditorDrawer
                     taskId={requestedTaskId}
@@ -768,7 +657,7 @@ const TasksPage = () => {
                             <div className="flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
                                 <div>
                                     <h2 className="text-2xl font-bold text-content-primary">
-                                        {viewMode === 'list' ? t('tasks.taskList') : t('tasks.boardView')}
+                                        {viewMode === 'board' ? t('tasks.boardView') : t('tasks.taskList')}
                                     </h2>
                                     <p className="text-content-secondary text-sm">{t('tasks.focusMode')}</p>
                                 </div>
@@ -778,28 +667,24 @@ const TasksPage = () => {
                             </div>
                         )}
 
-                        {viewMode === 'list' ? (
+                        {viewMode === 'list' && (
                             <div className="h-full overflow-y-auto">
                                 <div className={clsx(
                                     'tasks-list-content',
-                                    isFullScreen ? 'p-6' : 'px-6 pb-6',
+                                    isFullScreen ? 'p-6' : 'px-4 pb-6',
                                 )}>
-                                    <div className="mb-3">
-                                        <QuickCapture target={{ kind: 'task', iterationId: selectedIterationId }}
-                                            onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />
-                                    </div>
                                     <TaskList
                                         iterationId={selectedIterationId}
                                         filters={filters}
                                         sortKey={sortKey}
-                                        onSortKeyChange={setSortKey}
-                                        hasActiveFilters={activeFilterCount > 0}
-                                        activeViewName={selectedSavedView
-                                            ? savedViewDisplay(selectedSavedView).name
-                                            : planningIssueCopy
-                                                ? t(planningIssueCopy.title)
-                                                : undefined}
-                                        onClearFilters={clearViewContext}
+                                        groupByStatus={groupByStatus}
+                                        leadingRow={(
+                                            <QuickCapture listRow target={{ kind: 'task', iterationId: selectedIterationId }}
+                                                onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />
+                                        )}
+                                        hasActiveFilters={activeFilterCount > 0 || searchText !== ''}
+                                        activeViewName={savedViewManager.selectedView ? viewName : undefined}
+                                        onClearFilters={clearListConditions}
                                         onCreateTask={() => setIsCreating(true)}
                                         requestedMode={taskMode}
                                         onModeChange={mode => setTaskContextParam('mode', mode)}
@@ -808,14 +693,25 @@ const TasksPage = () => {
                                     />
                                 </div>
                             </div>
-                        ) : (
+                        )}
+                        {viewMode === 'board' && (
                             <div className="h-full overflow-hidden">
                                 <KanbanBoard iterationId={selectedIterationId} filters={filters} />
                             </div>
                         )}
+                        {viewMode === 'pipeline' && (
+                            <section className="tasks-pipeline-placeholder" aria-labelledby="tasks-pipeline-title">
+                                <Bot aria-hidden="true" className="h-5 w-5 text-content-tertiary" />
+                                <h2 id="tasks-pipeline-title" className="text-base font-semibold text-content-primary">{t('tasks.pipelineTitle')}</h2>
+                                <p className="max-w-lg text-sm text-content-secondary">{t('tasks.pipelineBody')}</p>
+                                <Link className="btn secondary" to={scopeLink('/agent-pipeline')}>{t('tasks.openAgentPipeline')}</Link>
+                            </section>
+                        )}
                     </FullscreenWorkspace>
                 )}
             </div>
+
+            {savedViewManager.dialogs}
 
             {isCreateModalOpen && <GuardedTaskModal
                 title={t('tasks.createNewTask')} closeLabel={t('actions.close')}
@@ -826,6 +722,13 @@ const TasksPage = () => {
                 <ImportTasksModal
                     iterationId={selectedIterationId}
                     onClose={() => setIsImporting(false)}
+                />
+            )}
+
+            {isTextEditorOpen && (
+                <TaskTextEditorModal
+                    iterationId={selectedIterationId}
+                    onClose={() => setIsTextEditorOpen(false)}
                 />
             )}
         </PageLayout>

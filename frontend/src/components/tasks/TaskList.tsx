@@ -9,7 +9,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     ChevronRight, ChevronDown, CheckCircle2, Circle,
-    Trash2, Plus, Edit, CornerDownRight, AlertTriangle, ArrowUpDown, GripVertical, Layers, Unlink, Bot, ClipboardCheck, Info
+    Trash2, Plus, Edit, CornerDownRight, AlertTriangle, GripVertical, Layers, Unlink, Bot, Info
 } from 'lucide-react';
 import { taskService } from '../../services/taskService';
 import { labelService } from '../../services/labelService';
@@ -81,7 +81,10 @@ interface TaskListProps {
     iterationId: number;
     filters?: TaskFilters;
     sortKey: SortKey;
-    onSortKeyChange: (sortKey: SortKey) => void;
+    /** Group the rows by status; manual order always shows one list. */
+    groupByStatus?: boolean;
+    /** A row shown above the tasks, inside the list, such as quick add. */
+    leadingRow?: ReactNode;
     hasActiveFilters?: boolean;
     activeViewName?: string;
     onClearFilters?: () => void;
@@ -98,7 +101,8 @@ export const TaskList = ({
     iterationId,
     filters,
     sortKey,
-    onSortKeyChange,
+    groupByStatus = true,
+    leadingRow,
     hasActiveFilters = false,
     activeViewName,
     onClearFilters,
@@ -112,7 +116,7 @@ export const TaskList = ({
     const { t } = useTranslation();
     const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
     const [addingChildTo, setAddingChildTo] = useState<number | null>(null);
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
@@ -415,13 +419,7 @@ export const TaskList = ({
     const isDraggingEnabled = sortKey === 'sort_order' && !reorderMutation.isPending;
 
     // Group by status unless the list is in manual order, where one sequence is dragged.
-    const groupByStatus = searchParams.get('group') !== 'none';
     const grouped = groupByStatus && sortKey !== 'sort_order';
-    const toggleGrouping = () => setSearchParams(previous => {
-        const next = new URLSearchParams(previous);
-        if (groupByStatus) next.set('group', 'none'); else next.delete('group');
-        return next;
-    }, { replace: true });
     const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set(['closed']));
     const toggleGroup = (status: string) => setCollapsedGroups(previous => {
         const next = new Set(previous);
@@ -445,8 +443,8 @@ export const TaskList = ({
     const virtualizeRows = !isDraggingEnabled && scrollElement !== null && rowItems.length > VIRTUALIZE_AFTER_ROWS;
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
-            <button type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
-                className="flex min-h-11 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+            <button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
+                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
                 <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
@@ -577,41 +575,7 @@ export const TaskList = ({
                         {isMergeMode ? t('taskList.cancelMerge') : t('taskList.cancelBulkEdit')}
                     </Button>
                 </div>
-            ) : (
-                <div className="mb-2 flex flex-wrap items-center justify-end gap-2">
-                <div className="flex items-center gap-2">
-                    <ArrowUpDown className="w-4 h-4 text-content-secondary" />
-                    <select
-                        value={sortKey}
-                        onChange={e => onSortKeyChange(e.target.value as SortKey)}
-                        aria-label={t('taskList.sortTasks')}
-                        className="text-sm border border-border-strong rounded-md px-2 py-1 bg-surface-card"
-                    >
-                        <option value="priority">{t('taskList.sortPriority')}</option>
-                        <option value="sort_order">{t('taskList.sortManual')}</option>
-                        <option value="status">{t('taskList.sortStatus')}</option>
-                        <option value="title">{t('taskList.sortTitle')}</option>
-                    </select>
-                    {sortKey === 'sort_order' && (
-                        <span className="max-w-56 text-xs leading-snug text-content-secondary">
-                            {t('taskList.manualSortHint')}
-                        </span>
-                    )}
-                </div>
-                    <Button variant="ghost" size="sm" aria-pressed={grouped} disabled={sortKey === 'sort_order'}
-                        title={sortKey === 'sort_order' ? t('taskList.groupNeedsSort') : undefined} onClick={toggleGrouping}>
-                        {t('taskList.groupByStatus')}
-                    </Button>
-                    <Button variant="secondary" size="sm" onClick={() => setTaskMode('bulk')}>
-                        <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
-                        {t('taskList.select')}
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => setTaskMode('merge')}>
-                        <Layers className="h-4 w-4" aria-hidden="true" />
-                        {t('taskList.mergeTasks')}
-                    </Button>
-                </div>
-            )}
+            ) : null}
 
             {isBulkMode && selectedBulkTaskIds.size > 0 && (
                 <TaskBulkOperationsPanel
@@ -625,6 +589,7 @@ export const TaskList = ({
             )}
 
             <div ref={setRowsNode} className="rounded-lg border border-border bg-surface-card">
+            {leadingRow && <div className="task-list-leading-row">{leadingRow}</div>}
             {isDraggingEnabled ? (
                 <DndContext
                     sensors={sensors}
@@ -948,10 +913,10 @@ const TaskItemContent = ({
 
     return (
         <div className="group">
-            {/* One 44 px line per task; secondary facts open below with Details. */}
+            {/* One 40 px line per task; secondary facts open below with Details. */}
             <div
                 className={clsx(
-                    "relative flex min-h-11 items-center gap-2 border-b border-border-subtle bg-surface-card py-1 pr-2 hover:bg-surface-hover",
+                    "relative flex min-h-10 items-center gap-2 border-b border-border-subtle bg-surface-card py-0.5 pr-2 hover:bg-surface-hover",
                     task.is_overdue && "border-l-4 border-l-feedback-danger-border",
                     task.is_deferred && "opacity-75 bg-surface-muted",
                     isMergeMode && isSelected && "bg-feedback-indigo-muted",
@@ -990,7 +955,7 @@ const TaskItemContent = ({
 
                 {/* Drag Handle - only visible when sorting manually */}
                 {isDraggingEnabled && dragHandleProps && (
-                    <button
+                    <button data-page-chrome-control="button"
                         type="button"
                         aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
 
@@ -1002,7 +967,7 @@ const TaskItemContent = ({
                 )}
 
                 {hasChildren ? (
-                    <button
+                    <button data-page-chrome-control="button"
                         type="button"
                         aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`} title={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
                         aria-expanded={isExpanded}
@@ -1029,7 +994,7 @@ const TaskItemContent = ({
                     P{task.priority}
                 </span>
 
-                <button type="button" onClick={() => onEdit(task)} title={task.title}
+                <button data-page-chrome-control="button" type="button" onClick={() => onEdit(task)} title={task.title}
                     className={clsx("min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus", task.status === 'closed' && "line-through text-content-secondary")}>
                     {task.title}
                 </button>

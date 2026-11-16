@@ -6,7 +6,9 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
-import { PlanQuickAddCapacity } from '../components/planning/PlanQuickAddCapacity';
+import { CapacitySection } from '../components/capacity/CapacitySection';
+import { PlanIterationCheckpoint } from '../components/planning/PlanIterationCheckpoint';
+import { PlanIterationDrawers } from '../components/planning/PlanIterationDrawers';
 import { PlanShareSection } from '../components/planning/PlanShareSection';
 import { PageHeader, PageLayout } from '../components/ui';
 import {
@@ -26,8 +28,8 @@ import { usePlanningReadiness } from '../features/planningMasters/usePlanningRea
 import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import type { IterationPlanningReadinessSummary } from '../types/iteration';
+import { formatDecimal } from '../utils/workNumbers';
 import { formatDate } from '../utils/formatDate';
-import IterationsPage from './IterationsPage';
 
 type Translate = ReturnType<typeof useTranslation>['t'];
 type Readiness = ReturnType<typeof usePlanningReadiness>;
@@ -83,16 +85,18 @@ const checkpointResult = (
                 : t('plan.page.noIterationResult');
         }
         case 'team': {
-            if (state === 'warn') {
-                return t('plan.status.peopleWithoutAllocation', { count: counts.people_without_capacity ?? 0 });
-            }
-            if (state !== 'done') return t('plan.status.noPeople');
+            if (!summary?.team_member_count) return t('plan.status.noPeople');
             const agents = summary?.team_agent_count ?? 0;
             const members = summary?.team_member_count ?? counts.people ?? 0;
             const capacity = summary?.team_capacity_hours ?? 0;
-            return agents > 0
-                ? t('plan.status.capacityMixReady', { people: members - agents, agents, capacity })
-                : t('plan.status.teamReady', { count: members, capacity });
+            const result = t('capacity.result', {
+                people: t('capacity.people', { count: members - agents }),
+                agents: t('capacity.agents', { count: agents }),
+                hours: formatDecimal(capacity, language),
+            });
+            return state === 'warn'
+                ? result + ' · ' + t('plan.status.peopleWithoutAllocation', { count: counts.people_without_capacity ?? 0 })
+                : result;
         }
         case 'work':
             return state === 'done'
@@ -147,6 +151,10 @@ const CheckpointBody = ({
         );
     }
 
+    if (section.id === 'iteration') {
+        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'} />;
+    }
+
     const queries = bodyQueries(section.id, readiness.queryStates).filter(query => query.enabled);
     const failed = queries.find(query => query.isBlockingError);
     if (failed) {
@@ -169,11 +177,12 @@ const CheckpointBody = ({
     const facts = readinessWithServerCounts(readiness.readinessData, readiness.planningSummary);
     const evidence = checkpointEvidence(section.id, facts, t, i18n.language, iterationId);
     const owner = checkpointOwnerLink(section.id, facts, t, iterationId);
-    const quickCapacity = section.id === 'team' && readiness.currentIteration
-        ? <PlanQuickAddCapacity iteration={readiness.currentIteration} members={readiness.teamMembers} />
-        : null;
+    if (section.id === 'team' && readiness.currentIteration) {
+        return <CapacitySection key={readiness.currentIteration.id} iteration={readiness.currentIteration}
+            iterations={readiness.iterations} members={readiness.teamMembers} primary={section.state !== 'done'} />;
+    }
     // One primary action per page: the open, incomplete checkpoint's own action, done in place when it can be.
-    const ownerIsPrimary = section.state !== 'done' && !quickCapacity;
+    const ownerIsPrimary = section.state !== 'done';
 
     return (
         <>
@@ -195,7 +204,6 @@ const CheckpointBody = ({
                     ))}
                 </dl>
             </section>
-            {quickCapacity}
             {section.id === 'review' && iterationId > 0 && <PlanShareSection iterationId={iterationId} />}
             <div className="plan-section-owner">
                 <Link className={clsx('btn', ownerIsPrimary ? 'primary' : 'secondary')} to={scopeLink(owner.href)}>
@@ -400,10 +408,12 @@ const PlanCheckpoints = () => {
     );
 };
 
-/** Plan shows the iterations of the scope's project when its link asks for them, else the six checkpoints. */
-const PlanPage = () => {
-    const [searchParams] = useSearchParams();
-    return searchParams.get('panel') === 'iterations' ? <IterationsPage /> : <PlanCheckpoints />;
-};
+/** Plan is the six checkpoints; iterations are managed in drawers that open over them. */
+const PlanPage = () => (
+    <>
+        <PlanCheckpoints />
+        <PlanIterationDrawers />
+    </>
+);
 
 export default PlanPage;

@@ -1,16 +1,14 @@
-import { useId, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronRight, X, FileText, XCircle } from 'lucide-react';
-import { Button } from '../common/Button';
 import { teamService } from '../../services/teamService';
 import { projectService } from '../../services/projectService';
 import { labelService } from '../../services/labelService';
-import { TaskTextEditorModal } from './TaskTextEditorModal';
 import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { labelDisplay, labelGroupDisplay } from '../../i18n/seedDisplay';
-import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { QueryErrorState } from '../feedback/QueryState';
 import { formatDate } from '../../utils/formatDate';
+import { FilterBar, type FilterBarFilter } from '../ui';
 import type { PlanningTaskIssue } from '../../features/planningMasters/planningTaskIssues';
 
 export interface TaskFilters {
@@ -38,37 +36,24 @@ interface TaskFiltersBarProps {
     onFiltersChange: (filters: TaskFilters) => void;
 }
 
-// FilterBadge component for showing/removing active filters
-const FilterBadge = ({
-    label,
-    value,
-    onRemove,
-}: {
-    label: string;
-    value: string;
-    onRemove: () => void;
-}) => {
-    const { t } = useTranslation();
-    return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-action-muted text-action text-xs font-medium border border-action">
-            <span className="text-content-secondary">{label}:</span>
-            <span>{value}</span>
-            <button
-                onClick={onRemove}
-                className="ml-1 hover:text-action hover:bg-status-active-muted rounded-full p-0.5"
-                aria-label={t('taskFilters.removeFilter', { label })} title={t('taskFilters.removeFilter', { label })}
-            >
-                <XCircle className="w-3 h-3" />
-            </button>
-        </span>
-    );
-};
+const YES = 'yes';
+const NO = 'no';
+const LABEL_CHIP = 'label:';
+const LABEL_GROUP_CHIP = 'labelGroup:';
+const DATE_FILTERS = ['startDateFrom', 'startDateTo', 'endDateFrom', 'endDateTo'] as const;
+/** Assignee and status stay in the row, so the compact toolbar keeps one line down to a 1024px viewport. */
+const QUICK_FILTERS = 2;
 
+const yesNoValue = (value: boolean | null | undefined) => (value === true ? YES : value === false ? NO : '');
+const yesNoFilter = (value: string) => (value === '' ? null : value === YES);
+const numberFilter = (value: string) => (value === '' ? null : Number(value));
+
+/**
+ * The task filters in the shared FilterBar: the two most used conditions in the row, the rest under
+ * More filters, and one removable chip for every active condition, including each label.
+ */
 export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFiltersBarProps) => {
     const { t } = useTranslation();
-    const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-    const advancedId = useId();
-    const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
 
     const teamQuery = useQuery({
         queryKey: ['team', iterationId],
@@ -89,524 +74,196 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange }: TaskFi
     const labelGroups = useMemo(() => labelsQuery.data ?? [], [labelsQuery.data]);
     const optionQueries = [teamQuery, projectsQuery, labelsQuery];
     const optionError = optionQueries.find(query => query.isError)?.error;
-    const optionsLoading = optionQueries.some(query => query.isLoading);
 
-    const labels = useMemo(() => {
-        return labelGroups.flatMap(group =>
-            group.labels.map(label => ({
-                ...label,
-                name: labelDisplay(label).name,
-                groupKey: group.key,
-                groupName: labelGroupDisplay(group).name,
-            }))
-        );
-    }, [labelGroups]);
+    const labels = useMemo(() => labelGroups.flatMap(group => group.labels.map(label => ({
+        slug: label.slug,
+        name: `${labelDisplay(label).name} · ${labelGroupDisplay(group).name}`,
+    }))), [labelGroups]);
 
-    const selectedGroups = labelGroups.filter(group => filters.labelGroupKeys.includes(group.key));
-    const selectedLabels = labels.filter(label => filters.labelSlugs.includes(label.slug));
-
-    // Quick filter helpers
-    const assigneeName = useMemo(() => {
-        if (filters.assigneeId === null) return null;
-        if (filters.assigneeId === -1) return t('taskFilters.unassigned');
-        return teamMembers?.find(m => m.id === filters.assigneeId)?.name || null;
-    }, [filters.assigneeId, teamMembers, t]);
-
-    const statusDisplay: Record<string, string> = {
-        planned: t('taskFilters.statusPlanned'),
-        active: t('taskFilters.statusActive'),
-        resolved: t('taskFilters.statusResolved'),
-        closed: t('taskFilters.statusClosed'),
-    };
-    const planningIssueDisplay: Record<PlanningTaskIssue, string> = {
-        any: t('taskFilters.planningIssueAny'),
-        unassigned: t('taskFilters.planningIssueUnassigned'),
-        'missing-effort': t('taskFilters.planningIssueMissingEffort'),
+    const yesNoOptions = (yes: string, no: string) => [{ value: YES, label: yes }, { value: NO, label: no }];
+    const dateLabels: Record<typeof DATE_FILTERS[number], string> = {
+        startDateFrom: t('taskFilters.startFrom'),
+        startDateTo: t('taskFilters.startTo'),
+        endDateFrom: t('taskFilters.endFrom'),
+        endDateTo: t('taskFilters.endTo'),
     };
 
-    const hasActiveFilters =
-        filters.planningIssue !== null ||
-        filters.assigneeId !== null ||
-        filters.projectId !== null ||
-        filters.priority !== null ||
-        filters.status !== null ||
-        filters.hasDependency !== null ||
-        filters.isOverdue !== null ||
-        filters.isIterationOverflow != null ||
-        filters.isBlocked != null ||
-        filters.agentReady !== null ||
-        filters.startDateFrom ||
-        filters.startDateTo ||
-        filters.endDateFrom ||
-        filters.endDateTo ||
-        filters.labelSlugs.length > 0 ||
-        filters.labelGroupKeys.length > 0;
+    const assigneeOptions = [
+        { value: '-1', label: t('taskFilters.unassigned') },
+        ...(teamMembers ?? []).map(member => ({ value: String(member.id), label: member.name })),
+    ];
+    // A person or project the options do not list yet still names the condition.
+    if (filters.assigneeId !== null && !assigneeOptions.some(option => option.value === String(filters.assigneeId))) {
+        assigneeOptions.push({ value: String(filters.assigneeId), label: `#${filters.assigneeId}` });
+    }
+    const projectOptions = (projects ?? []).map(project => ({ value: String(project.id), label: project.name }));
+    if (filters.projectId !== null && !projectOptions.some(option => option.value === String(filters.projectId))) {
+        projectOptions.push({ value: String(filters.projectId), label: `#${filters.projectId}` });
+    }
 
-    // Check if only quick filters are active (no advanced filters)
-    const hasOnlyQuickFilters =
-        (
-            filters.planningIssue !== null
-            || filters.assigneeId !== null
-            || filters.status !== null
-            || filters.isOverdue !== null
-        ) &&
-        !filters.projectId &&
-        !filters.priority &&
-        filters.hasDependency === null &&
-        filters.agentReady === null &&
-        !filters.startDateFrom &&
-        !filters.startDateTo &&
-        !filters.endDateFrom &&
-        !filters.endDateTo &&
-        filters.labelSlugs.length === 0 &&
-        filters.labelGroupKeys.length === 0;
-
-    const resetFilters = () => {
-        onFiltersChange(defaultFilters);
-    };
-
-    // Badge removal handlers
-    const removePlanningIssueFilter = () => onFiltersChange({
-        ...filters,
-        planningIssue: null,
-    });
-    const removeAssigneeFilter = () => onFiltersChange({ ...filters, assigneeId: null });
-    const removeStatusFilter = () => onFiltersChange({ ...filters, status: null });
-    const removeOverdueFilter = () => onFiltersChange({ ...filters, isOverdue: null });
-    const removeProjectFilter = () => onFiltersChange({ ...filters, projectId: null });
-    const removePriorityFilter = () => onFiltersChange({ ...filters, priority: null });
-    const removeDependencyFilter = () => onFiltersChange({ ...filters, hasDependency: null });
-    const removeAgentReadyFilter = () => onFiltersChange({ ...filters, agentReady: null });
-
-    const addLabelGroup = (key: string) => {
-        if (!key || filters.labelGroupKeys.includes(key)) return;
-        onFiltersChange({
-            ...filters,
-            labelGroupKeys: [...filters.labelGroupKeys, key],
-        });
-    };
-
-    const removeLabelGroup = (key: string) => {
-        onFiltersChange({
-            ...filters,
-            labelGroupKeys: filters.labelGroupKeys.filter(groupKey => groupKey !== key),
-        });
-    };
-
-    const addLabel = (slug: string) => {
-        if (!slug || filters.labelSlugs.includes(slug)) return;
-        onFiltersChange({
-            ...filters,
-            labelSlugs: [...filters.labelSlugs, slug],
-        });
-    };
-
-    const removeLabel = (slug: string) => {
-        onFiltersChange({
-            ...filters,
-            labelSlugs: filters.labelSlugs.filter(labelSlug => labelSlug !== slug),
-        });
-    };
-
-    // Build active badges list
-    const activeBadges: { label: string; value: string; onRemove: () => void }[] = [];
-
-    if (filters.isIterationOverflow != null) activeBadges.push({
-        label: t('workStatus.iterationOverflow'), value: t(filters.isIterationOverflow ? 'workStatus.iterationOverflow' : 'workStatus.withinIteration'),
-        onRemove: () => onFiltersChange({ ...filters, isIterationOverflow: null }),
-    });
-    if (filters.isBlocked != null) activeBadges.push({
-        label: t('workStatus.blocked'), value: t(filters.isBlocked ? 'workStatus.blocked' : 'workStatus.notBlocked'),
-        onRemove: () => onFiltersChange({ ...filters, isBlocked: null }),
-    });
-    if (filters.planningIssue) {
-        activeBadges.push({
+    const barFilters: FilterBarFilter[] = [
+        {
+            id: 'assigneeId',
+            label: t('taskFilters.assignee'),
+            value: filters.assigneeId === null ? '' : String(filters.assigneeId),
+            options: assigneeOptions,
+        },
+        {
+            id: 'status',
+            label: t('taskFilters.status'),
+            value: filters.status ?? '',
+            options: [
+                { value: 'planned', label: t('taskFilters.statusPlanned') },
+                { value: 'active', label: t('taskFilters.statusActive') },
+                { value: 'resolved', label: t('taskFilters.statusResolved') },
+                { value: 'closed', label: t('taskFilters.statusClosed') },
+            ],
+        },
+        {
+            id: 'isBlocked',
+            label: t('workStatus.blocked'),
+            value: yesNoValue(filters.isBlocked),
+            options: yesNoOptions(t('taskFilters.yes'), t('taskFilters.no')),
+        },
+        {
+            id: 'planningIssue',
             label: t('taskFilters.planningReadiness'),
-            value: planningIssueDisplay[filters.planningIssue],
-            onRemove: removePlanningIssueFilter,
-        });
-    }
-    if (assigneeName) {
-        activeBadges.push({ label: t('taskFilters.assignee'), value: assigneeName, onRemove: removeAssigneeFilter });
-    }
-    if (filters.status) {
-        activeBadges.push({ label: t('taskFilters.status'), value: statusDisplay[filters.status] || filters.status, onRemove: removeStatusFilter });
-    }
-    if (filters.isOverdue !== null) {
-        activeBadges.push({ label: t('taskFilters.overdue'), value: filters.isOverdue ? t('taskFilters.yes') : t('taskFilters.no'), onRemove: removeOverdueFilter });
-    }
-    if (filters.projectId) {
-        const projectName = projects?.find(p => p.id === filters.projectId)?.name || `#${filters.projectId}`;
-        activeBadges.push({ label: t('taskFilters.project'), value: projectName, onRemove: removeProjectFilter });
-    }
-    if (filters.priority) {
-        activeBadges.push({ label: t('taskFilters.priority'), value: String(filters.priority), onRemove: removePriorityFilter });
-    }
-    if (filters.hasDependency !== null) {
-        activeBadges.push({ label: t('taskFilters.dependencies'), value: filters.hasDependency ? t('taskFilters.yes') : t('taskFilters.no'), onRemove: removeDependencyFilter });
-    }
-    if (filters.agentReady !== null) {
-        activeBadges.push({ label: t('taskFilters.agentReadiness'), value: filters.agentReady ? t('taskFilters.ready') : t('taskFilters.notReady'), onRemove: removeAgentReadyFilter });
-    }
-    // Every active condition gets a chip, so a saved view always shows what it filters on.
-    ([
-        ['startDateFrom', 'taskFilters.startFrom'],
-        ['startDateTo', 'taskFilters.startTo'],
-        ['endDateFrom', 'taskFilters.endFrom'],
-        ['endDateTo', 'taskFilters.endTo'],
-    ] as const).forEach(([key, labelKey]) => {
-        if (filters[key]) activeBadges.push({ label: t(labelKey), value: formatDate(filters[key]), onRemove: () => onFiltersChange({ ...filters, [key]: '' }) });
-    });
-    selectedGroups.forEach(group => activeBadges.push({
-        label: t('taskFilters.labelGroups'), value: labelGroupDisplay(group).name,
-        onRemove: () => onFiltersChange({ ...filters, labelGroupKeys: filters.labelGroupKeys.filter(key => key !== group.key) }),
-    }));
-    selectedLabels.forEach(label => activeBadges.push({
-        label: t('taskFilters.labels'), value: label.name,
-        onRemove: () => onFiltersChange({ ...filters, labelSlugs: filters.labelSlugs.filter(slug => slug !== label.slug) }),
-    }));
+            value: filters.planningIssue ?? '',
+            options: [
+                { value: 'any', label: t('taskFilters.planningIssueAny') },
+                { value: 'unassigned', label: t('taskFilters.planningIssueUnassigned') },
+                { value: 'missing-effort', label: t('taskFilters.planningIssueMissingEffort') },
+            ],
+        },
+        {
+            id: 'isOverdue',
+            label: t('taskFilters.overdue'),
+            value: yesNoValue(filters.isOverdue),
+            options: yesNoOptions(t('taskFilters.yes'), t('taskFilters.no')),
+        },
+        {
+            id: 'projectId',
+            label: t('taskFilters.project'),
+            value: filters.projectId === null ? '' : String(filters.projectId),
+            options: projectOptions,
+        },
+        {
+            id: 'priority',
+            label: t('taskFilters.priority'),
+            value: filters.priority === null ? '' : String(filters.priority),
+            options: Array.from({ length: 10 }, (_, index) => ({ value: String(index + 1), label: String(index + 1) })),
+        },
+        {
+            id: 'hasDependency',
+            label: t('taskFilters.dependencies'),
+            value: yesNoValue(filters.hasDependency),
+            options: yesNoOptions(t('taskFilters.yes'), t('taskFilters.no')),
+        },
+        {
+            id: 'agentReady',
+            label: t('taskFilters.agentReadiness'),
+            value: yesNoValue(filters.agentReady),
+            options: yesNoOptions(t('taskFilters.ready'), t('taskFilters.notReady')),
+        },
+        {
+            id: 'isIterationOverflow',
+            label: t('workStatus.iterationOverflow'),
+            value: yesNoValue(filters.isIterationOverflow),
+            options: yesNoOptions(t('taskFilters.yes'), t('taskFilters.no')),
+        },
+        ...DATE_FILTERS.map(key => ({
+            id: key,
+            label: dateLabels[key],
+            type: 'date' as const,
+            value: filters[key],
+            options: filters[key] ? [{ value: filters[key], label: formatDate(filters[key]) }] : [],
+        })),
+        // A label group or label is added from its list; each chosen one is a chip of its own.
+        {
+            id: 'labelGroupKeys',
+            label: t('taskFilters.labelGroups'),
+            value: '',
+            options: labelGroups
+                .filter(group => !filters.labelGroupKeys.includes(group.key))
+                .map(group => ({ value: group.key, label: labelGroupDisplay(group).name })),
+        },
+        {
+            id: 'labelSlugs',
+            label: t('taskFilters.labels'),
+            value: '',
+            options: labels.filter(label => !filters.labelSlugs.includes(label.slug)).map(label => ({ value: label.slug, label: label.name })),
+        },
+        ...filters.labelGroupKeys.map(key => {
+            const group = labelGroups.find(candidate => candidate.key === key);
+            return {
+                id: `${LABEL_GROUP_CHIP}${key}`,
+                label: t('taskFilters.labelGroups'),
+                value: key,
+                options: [{ value: key, label: group ? labelGroupDisplay(group).name : key }],
+                chipOnly: true,
+            };
+        }),
+        ...filters.labelSlugs.map(slug => ({
+            id: `${LABEL_CHIP}${slug}`,
+            label: t('taskFilters.labels'),
+            value: slug,
+            options: [{ value: slug, label: labels.find(label => label.slug === slug)?.name ?? slug }],
+            chipOnly: true,
+        })),
+    ];
+
+    const changeFilter = (id: string, value: string) => {
+        if (id.startsWith(LABEL_CHIP)) {
+            const slug = id.slice(LABEL_CHIP.length);
+            onFiltersChange({ ...filters, labelSlugs: filters.labelSlugs.filter(candidate => candidate !== slug) });
+            return;
+        }
+        if (id.startsWith(LABEL_GROUP_CHIP)) {
+            const key = id.slice(LABEL_GROUP_CHIP.length);
+            onFiltersChange({ ...filters, labelGroupKeys: filters.labelGroupKeys.filter(candidate => candidate !== key) });
+            return;
+        }
+        switch (id) {
+            case 'labelSlugs':
+                if (value && !filters.labelSlugs.includes(value)) onFiltersChange({ ...filters, labelSlugs: [...filters.labelSlugs, value] });
+                return;
+            case 'labelGroupKeys':
+                if (value && !filters.labelGroupKeys.includes(value)) onFiltersChange({ ...filters, labelGroupKeys: [...filters.labelGroupKeys, value] });
+                return;
+            case 'assigneeId':
+            case 'projectId':
+            case 'priority':
+                onFiltersChange({ ...filters, [id]: numberFilter(value) });
+                return;
+            case 'status':
+                onFiltersChange({ ...filters, status: value || null });
+                return;
+            case 'planningIssue':
+                onFiltersChange({ ...filters, planningIssue: (value as PlanningTaskIssue) || null });
+                return;
+            case 'isOverdue':
+            case 'isBlocked':
+            case 'hasDependency':
+            case 'agentReady':
+            case 'isIterationOverflow':
+                onFiltersChange({ ...filters, [id]: yesNoFilter(value) });
+                return;
+            default:
+                if ((DATE_FILTERS as readonly string[]).includes(id)) onFiltersChange({ ...filters, [id]: value });
+        }
+    };
 
     return (
-        <div className="space-y-3 p-4">
-            {optionsLoading && <QueryLoadingState className="mb-3 min-h-16 py-3" />}
+        <>
+            <FilterBar filters={barFilters} quickLimit={QUICK_FILTERS} onChange={changeFilter} onClear={() => onFiltersChange(defaultFilters)} />
             {optionError && (
                 <QueryErrorState
-                    className="mb-3"
+                    className="mt-2"
                     error={optionError}
                     fallback={t('queryFeedback.optionLoadFailed')}
                     onRetry={() => optionQueries.forEach(query => void query.refetch())}
                 />
             )}
-            {/* Quick Filters - always visible */}
-            <div className="flex items-center gap-3 flex-wrap">
-                <span className="text-xs font-semibold text-content-secondary uppercase tracking-wide">{t('taskFilters.quickFilters')}</span>
-
-                <select
-                    value={filters.planningIssue ?? ''}
-                    onChange={event => onFiltersChange({
-                        ...filters,
-                        planningIssue: (
-                            event.target.value as PlanningTaskIssue
-                        ) || null,
-                    })}
-                    aria-label={t('taskFilters.planningReadiness')}
-                    className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    <option value="">{t('taskFilters.planningReadiness')}</option>
-                    <option value="any">{t('taskFilters.planningIssueAny')}</option>
-                    <option value="unassigned">{t('taskFilters.planningIssueUnassigned')}</option>
-                    <option value="missing-effort">{t('taskFilters.planningIssueMissingEffort')}</option>
-                </select>
-
-                {/* Assignee */}
-                <select
-                    value={filters.assigneeId ?? ''}
-                    onChange={e => onFiltersChange({
-                        ...filters,
-                        assigneeId: e.target.value ? parseInt(e.target.value) : null
-                    })}
-                    aria-label={t('taskFilters.assignee')}
-                    className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    <option value="">{t('taskFilters.assignee')}</option>
-                    <option value="-1">{t('taskFilters.unassigned')}</option>
-                    {teamMembers?.map(m => (
-                        <option key={m.id} value={m.id}>{m.name}</option>
-                    ))}
-                </select>
-
-                {/* Status */}
-                <select
-                    value={filters.status ?? ''}
-                    onChange={e => onFiltersChange({
-                        ...filters,
-                        status: e.target.value || null
-                    })}
-                    aria-label={t('taskFilters.status')}
-                    className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    <option value="">{t('taskFilters.status')}</option>
-                    <option value="planned">{t('taskFilters.statusPlanned')}</option>
-                    <option value="active">{t('taskFilters.statusActive')}</option>
-                    <option value="resolved">{t('taskFilters.statusResolved')}</option>
-                    <option value="closed">{t('taskFilters.statusClosed')}</option>
-                </select>
-
-                {/* Overdue */}
-                <select
-                    value={filters.isOverdue === null ? '' : filters.isOverdue ? 'yes' : 'no'}
-                    onChange={e => onFiltersChange({
-                        ...filters,
-                        isOverdue: e.target.value === '' ? null : e.target.value === 'yes'
-                    })}
-                    aria-label={t('taskFilters.overdue')}
-                    className="px-2 py-1.5 text-sm border border-border-strong rounded-md bg-surface-card focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    <option value="">{t('taskFilters.overdue')}</option>
-                    <option value="yes">{t('taskFilters.overdue')}</option>
-                    <option value="no">{t('taskFilters.notOverdue')}</option>
-                </select>
-
-                {/* Active filter badges */}
-                {activeBadges.length > 0 && (
-                    <div className="flex gap-1 items-center ml-2 flex-wrap">
-                        {activeBadges.map(badge => (
-                            <FilterBadge key={`${badge.label}:${badge.value}`} {...badge} />
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-                <label htmlFor={`${advancedId}-overflow`} className="text-sm text-content-secondary">{t('workStatus.iterationOverflow')}</label>
-                <select id={`${advancedId}-overflow`} className="min-h-11 rounded-md border border-border bg-surface-card px-3 text-sm"
-                    value={filters.isIterationOverflow === null || filters.isIterationOverflow === undefined ? '' : String(filters.isIterationOverflow)}
-                    onChange={event => onFiltersChange({ ...filters, isIterationOverflow: event.target.value === '' ? null : event.target.value === 'true' })}>
-                    <option value="">{t('workStatus.any')}</option><option value="true">{t('workStatus.iterationOverflow')}</option>
-                    <option value="false">{t('workStatus.withinIteration')}</option>
-                </select>
-                <label htmlFor={`${advancedId}-blocked`} className="text-sm text-content-secondary">{t('workStatus.blocked')}</label>
-                <select id={`${advancedId}-blocked`} className="min-h-11 rounded-md border border-border bg-surface-card px-3 text-sm"
-                    value={filters.isBlocked === null || filters.isBlocked === undefined ? '' : String(filters.isBlocked)}
-                    onChange={event => onFiltersChange({ ...filters, isBlocked: event.target.value === '' ? null : event.target.value === 'true' })}>
-                    <option value="">{t('workStatus.any')}</option><option value="true">{t('workStatus.blocked')}</option>
-                    <option value="false">{t('workStatus.notBlocked')}</option>
-                </select>
-            </div>
-            {/* Advanced toggle + actions */}
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border-subtle">
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        aria-expanded={isAdvancedOpen}
-                        aria-controls={advancedId}
-                        onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                        className="text-content-secondary"
-                    >
-                        {isAdvancedOpen ? (
-                            <ChevronDown className="w-4 h-4 mr-1" />
-                        ) : (
-                            <ChevronRight className="w-4 h-4 mr-1" />
-                        )}
-                        {t('taskFilters.advancedFilters')}
-                        {!hasOnlyQuickFilters && hasActiveFilters && (
-                            <span className="ml-1 bg-surface-hover text-content-primary text-xs rounded-full px-1.5">
-                                {activeBadges.filter(b => !['assignee', 'status', 'overdue'].includes(b.label.toLowerCase())).length}
-                            </span>
-                        )}
-                    </Button>
-
-                    {hasActiveFilters && (
-                        <Button variant="ghost" size="sm" onClick={resetFilters} className="text-content-secondary">
-                            <X className="w-4 h-4 mr-1" />
-                            {t('taskFilters.reset')}
-                        </Button>
-                    )}
-                </div>
-
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsTextEditorOpen(true)}
-                    className="text-content-secondary border-dashed hover:border-action hover:text-action"
-                >
-                    <FileText className="w-4 h-4 mr-1" />
-                    {t('taskFilters.textMode')}
-                </Button>
-            </div>
-
-            {/* Advanced filters - collapsible */}
-            <div id={advancedId}>
-            {isAdvancedOpen && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-3 pt-3 border-t border-border-subtle">
-                    {/* Project filter */}
-                    <div>
-                        <label htmlFor={`${advancedId}-project`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.project')}</label>
-                        <select id={`${advancedId}-project`}
-                            value={filters.projectId ?? ''}
-                            onChange={e => onFiltersChange({
-                                ...filters,
-                                projectId: e.target.value ? parseInt(e.target.value) : null
-                            })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        >
-                            <option value="">{t('workStatus.any')}</option>
-                            {projects?.map(project => (
-                                <option key={project.id} value={project.id}>{project.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Priority filter */}
-                    <div>
-                        <label htmlFor={`${advancedId}-priority`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.priority')}</label>
-                        <select id={`${advancedId}-priority`}
-                            value={filters.priority ?? ''}
-                            onChange={e => onFiltersChange({
-                                ...filters,
-                                priority: e.target.value ? parseInt(e.target.value) : null
-                            })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        >
-                            <option value="">{t('workStatus.any')}</option>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(p => (
-                                <option key={p} value={p}>{p}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Has dependency filter */}
-                    <div>
-                        <label htmlFor={`${advancedId}-dependencies`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.dependencies')}</label>
-                        <select id={`${advancedId}-dependencies`}
-                            value={filters.hasDependency === null ? '' : filters.hasDependency ? 'yes' : 'no'}
-                            onChange={e => onFiltersChange({
-                                ...filters,
-                                hasDependency: e.target.value === '' ? null : e.target.value === 'yes'
-                            })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        >
-                            <option value="">{t('workStatus.any')}</option>
-                            <option value="yes">{t('taskFilters.yes')}</option>
-                            <option value="no">{t('taskFilters.no')}</option>
-                        </select>
-                    </div>
-
-                    {/* Agent readiness filter */}
-                    <div>
-                        <label htmlFor={`${advancedId}-agentReadiness`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.agentReadiness')}</label>
-                        <select id={`${advancedId}-agentReadiness`}
-                            value={filters.agentReady === null ? '' : filters.agentReady ? 'ready' : 'not-ready'}
-                            onChange={e => onFiltersChange({
-                                ...filters,
-                                agentReady: e.target.value === '' ? null : e.target.value === 'ready'
-                            })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        >
-                            <option value="">{t('taskFilters.any')}</option>
-                            <option value="ready">{t('taskFilters.ready')}</option>
-                            <option value="not-ready">{t('taskFilters.notReady')}</option>
-                        </select>
-                    </div>
-
-                    {/* Label group filter */}
-                    <div>
-                        <label htmlFor={`${advancedId}-labelGroups`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.labelGroups')}</label>
-                        <select id={`${advancedId}-labelGroups`}
-                            value=""
-                            onChange={e => addLabelGroup(e.target.value)}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        >
-                            <option value="">{t('taskFilters.add')}</option>
-                            {labelGroups
-                                .filter(group => !filters.labelGroupKeys.includes(group.key))
-                                .map(group => (
-                                    <option key={group.key} value={group.key}>{group.name}</option>
-                                ))}
-                        </select>
-                        {selectedGroups.length > 0 && (
-                            <div className="mt-1 flex flex-wrap gap-1">
-                                {selectedGroups.map(group => (
-                                    <button
-                                        key={group.key}
-                                        type="button"
-                                        onClick={() => removeLabelGroup(group.key)}
-                                        className="text-wc-micro px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
-                                    >
-                                        {group.name} ×
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Label filter */}
-                    <div>
-                        <label htmlFor={`${advancedId}-labels`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.labels')}</label>
-                        <select id={`${advancedId}-labels`}
-                            value=""
-                            onChange={e => addLabel(e.target.value)}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        >
-                            <option value="">{t('taskFilters.add')}</option>
-                            {labels
-                                .filter(label => !filters.labelSlugs.includes(label.slug))
-                                .map(label => (
-                                    <option key={label.slug} value={label.slug}>
-                                        {label.name} · {label.groupName}
-                                    </option>
-                                ))}
-                        </select>
-                        {selectedLabels.length > 0 && (
-                            <div className="mt-1 flex flex-wrap gap-1">
-                                {selectedLabels.map(label => (
-                                    <button
-                                        key={label.slug}
-                                        type="button"
-                                        onClick={() => removeLabel(label.slug)}
-                                        className="text-wc-micro px-1.5 py-0.5 rounded border border-border bg-surface-muted text-content-secondary hover:bg-surface-subtle"
-                                    >
-                                        {label.slug} ×
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Start date from */}
-                    <div>
-                        <label htmlFor={`${advancedId}-startFrom`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.startFrom')}</label>
-                        <input id={`${advancedId}-startFrom`}
-                            type="date"
-                            value={filters.startDateFrom}
-                            onChange={e => onFiltersChange({ ...filters, startDateFrom: e.target.value })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        />
-                    </div>
-
-                    {/* Start date to */}
-                    <div>
-                        <label htmlFor={`${advancedId}-startTo`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.startTo')}</label>
-                        <input id={`${advancedId}-startTo`}
-                            type="date"
-                            value={filters.startDateTo}
-                            onChange={e => onFiltersChange({ ...filters, startDateTo: e.target.value })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        />
-                    </div>
-
-                    {/* End date from */}
-                    <div>
-                        <label htmlFor={`${advancedId}-endFrom`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.endFrom')}</label>
-                        <input id={`${advancedId}-endFrom`}
-                            type="date"
-                            value={filters.endDateFrom}
-                            onChange={e => onFiltersChange({ ...filters, endDateFrom: e.target.value })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        />
-                    </div>
-
-                    {/* End date to */}
-                    <div>
-                        <label htmlFor={`${advancedId}-endTo`} className="block text-xs font-medium text-content-secondary mb-1">{t('taskFilters.endTo')}</label>
-                        <input id={`${advancedId}-endTo`}
-                            type="date"
-                            value={filters.endDateTo}
-                            onChange={e => onFiltersChange({ ...filters, endDateTo: e.target.value })}
-                            className="w-full px-2 py-1 text-sm border border-border-strong rounded"
-                        />
-                    </div>
-                </div>
-            )}
-
-            </div>
-            {isTextEditorOpen && (
-                <TaskTextEditorModal
-                    iterationId={iterationId}
-                    onClose={() => setIsTextEditorOpen(false)}
-                />
-            )}
-        </div>
+        </>
     );
 };

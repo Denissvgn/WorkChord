@@ -1,3 +1,4 @@
+import WorkCalendarSettings from '../components/settings/WorkCalendarSettings';
 import { useEffect, useId, useMemo, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import {
@@ -420,15 +421,7 @@ const SettingsPage = () => {
                     </div>,
                 );
             case 'work_calendar':
-                return (
-                    <section className="card card-pad settings-panel-narrow space-y-3">
-                        <p className="text-sm text-content-secondary">{t('settingsPage.workCalendar.placeholder')}</p>
-                        <Link to="/calendar" className="btn secondary sm w-fit">
-                            <CalendarDays aria-hidden="true" className="h-3.5 w-3.5" />
-                            {t('settingsPage.workCalendar.open')}
-                        </Link>
-                    </section>
-                );
+                return <WorkCalendarSettings />;
             case 'scheduling':
                 return gated(<SchedulingRulesSettings />, { managesReadOnly: true });
             case 'templates_labels':

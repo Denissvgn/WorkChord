@@ -9,7 +9,8 @@ export const routeModuleLoaders = {
     planMaster: () => import('../pages/PlanPage'),
     planShare: () => import('../pages/PlanSharePage'),
     calendar: () => import('../pages/CalendarPage'),
-    iterations: () => import('../pages/IterationsPage'),
+    // The old iterations page is part of Plan; its path redirects there.
+    iterations: () => import('../pages/PlanPage'),
     team: () => import('../pages/TeamPage'),
     tasks: () => import('../pages/TasksPage'),
     myWork: () => import('../pages/MyWorkPage'),

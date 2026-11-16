@@ -18,4 +18,12 @@ describe('PageToolbar', () => {
         expect(container.querySelector('.wc-page-toolbar-view-options')).toBeNull();
         expect(screen.getByLabelText('Search')).toBeInTheDocument();
     });
+
+    it('marks a compact toolbar so it keeps one row on narrower content', () => {
+        const { rerender } = render(<PageToolbar label="Task controls" search={<input aria-label="Search" />} />);
+        expect(screen.getByRole('group', { name: 'Task controls' })).not.toHaveClass('is-compact');
+
+        rerender(<PageToolbar compact label="Task controls" search={<input aria-label="Search" />} />);
+        expect(screen.getByRole('group', { name: 'Task controls' })).toHaveClass('is-compact');
+    });
 });
