@@ -16,6 +16,8 @@ export interface WorkspaceIdentity {
     /** "observe" for a paired read-only reader; null with no session. */
     access?: 'full' | 'observe' | null;
     observer?: { client_label: string | null; expires_at: string; renewable_until: string } | null;
+    /** Server features a client may use, such as `person-run-reads-v1`. */
+    features?: string[];
 }
 
 /** One session of this account, or on a trusted-local server, one paired reader. */

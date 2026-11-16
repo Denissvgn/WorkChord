@@ -17,6 +17,7 @@ from app.http_authority import resolve_http_identity
 from app.models.identity import Principal, WorkspaceMembership, WorkspaceAuthorityState, ProjectMembership, PrincipalProfileLink, CommandAudit
 from app.models.user_session import UserSession
 from app.security import require_admin_api_key
+from app.server_features import SERVER_FEATURES
 from app.services.identity_service import IdentityService, local_work_profile, renewable_until, require_identity_writes, session_grant
 from app.services.session_service import _cookie_options, _get_session_by_token, get_client_ip, get_current_session
 from app.utils.time import utc_now
@@ -169,7 +170,7 @@ async def me(request: Request, response: Response, db: Database):
     result = {"mode": settings.workchord_auth_mode, "authenticated": authority is not None and authority.principal_id is not None,
               "configured": bool(settings.oidc_issuer_url and settings.oidc_client_id and settings.oidc_redirect_uri),
               "principal": None, "profile": None, "csrf_token": None, "workspace_role": None, "projects": {}, "authentication_error": authentication_error,
-              "access": None, "observer": None}
+              "access": None, "observer": None, "features": list(SERVER_FEATURES)}
     if authority is not None and authority.session_id is not None:
         current = await db.get(UserSession, authority.session_id)
         if current is not None:
