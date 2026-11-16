@@ -50,11 +50,19 @@ export const hasPositivePlanningEffort = (value: number | null): value is number
     Number.isFinite(value) && value !== null && value > 0
 );
 
+/** Resolved and closed work is finished, so it is never at risk. */
+export const isFinished = (task: Pick<Task, 'status'>) => task.status === 'resolved' || task.status === 'closed';
+
+/** A late, unstarted or out-of-limits schedule signal. */
+export const hasDeliverySignal = (task: Pick<Task, 'is_overdue' | 'is_delayed' | 'is_outside_constraints'>) => (
+    Boolean(task.is_overdue || task.is_delayed || task.is_outside_constraints)
+);
+
 export const taskMatchesPlanningIssue = (
     task: Task,
     issue: PlanningTaskIssue,
 ) => {
-    if (issue === 'at-risk') return isPlanningLeafTask(task) && Boolean(task.is_overdue || task.is_delayed || task.is_outside_constraints);
+    if (issue === 'at-risk') return isPlanningLeafTask(task) && !isFinished(task) && hasDeliverySignal(task);
     if (!isPlanningGapCandidate(task)) return false;
     if (issue === 'unscheduled') return !task.start_date || !task.end_date;
     const isUnassigned = !task.assignee && !task.agent_working;

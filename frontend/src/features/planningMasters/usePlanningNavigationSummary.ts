@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { iterationService } from '../../services/iterationService';
 import { useIterationStore } from '../../store/iterationStore';
 import type { Iteration } from '../../types/iteration';
-import { deriveStatus, readiness } from './masters';
+import { deriveStatus, nextStep, readiness } from './masters';
 import type { PlanReadiness } from './masters';
 
 export const planningNavigationSummaryKey = (iterationId?: number) => (
@@ -57,10 +57,9 @@ export const usePlanningNavigationSummary = () => {
         inboxCount: 0,
         checkpointStates: Object.fromEntries((summaryQuery.data?.checkpoints ?? []).map(item => [item.id, item.state])),
     }), [currentIteration, hasCurrentIteration, iterations.length, summaryQuery.data]);
-    const ready = useMemo(
-        () => readiness(deriveStatus(readinessData)),
-        [readinessData],
-    );
+    const status = useMemo(() => deriveStatus(readinessData), [readinessData]);
+    const ready = useMemo(() => readiness(status), [status]);
+    const nextId = useMemo(() => nextStep(status), [status]);
 
     const refetch = async () => Promise.allSettled([
         iterationsQuery.refetch(),
@@ -73,6 +72,8 @@ export const usePlanningNavigationSummary = () => {
         selectedIterationId,
         selectIteration: setSelectedIterationId,
         ready,
+        /** The first checkpoint that is not complete. */
+        nextId,
         isIterationsLoading: iterationsQuery.isLoading,
         isIterationsError: iterationsQuery.isError && iterationsQuery.data === undefined,
         isIterationsFetching: iterationsQuery.isFetching,
