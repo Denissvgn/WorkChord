@@ -4,7 +4,6 @@ import type { KeyboardEvent, ReactNode } from 'react';
 import {
     Activity,
     ArrowRight,
-    Bot,
     Building2,
     CalendarClock,
     CalendarDays,
@@ -26,7 +25,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { SchedulingRulesSettings } from '../components/settings/SchedulingRulesSettings';
 import { EmailSettingsPanel } from '../components/settings/EmailSettingsPanel';
@@ -40,7 +39,6 @@ import { AdminAccessGate } from '../components/settings/AdminAccessGate';
 import { AgentAccessPanel } from '../components/settings/AgentAccessPanel';
 import { AccessKeysSummary } from '../components/settings/AccessKeysSummary';
 import { ConnectedReadersPanel } from '../components/settings/ConnectedReadersPanel';
-import { AgentModelAdministration } from '../components/settings/AgentModelAdministration';
 import { SystemHealthPanel } from '../components/settings/SystemHealthPanel';
 import { SharedUnlockContext } from '../components/settings/sharedUnlock';
 import { ReadOnlyFieldset } from '../components/settings/ReadOnlyFieldset';
@@ -53,8 +51,6 @@ import { useAdminAccess, useKeylessReader } from '../hooks/useAdminAccess';
 import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
 type SettingsGroupId = 'myPreferences' | 'workspace' | 'connections' | 'accessSystem';
-/** Search results also show sections that sit outside the four groups. */
-type SearchGroupId = SettingsGroupId | 'linkedFromAiProvider';
 /** Where a section's values are kept: in this browser only, or on the server for everyone. */
 type SavedIn = 'browser' | 'workspace';
 /** One part of a section whose parts are kept in different places. */
@@ -77,7 +73,7 @@ interface SettingsSection {
 }
 
 interface SettingsGroup {
-    id: SearchGroupId;
+    id: SettingsGroupId;
     labelKey: string;
     items: SettingsSection[];
 }
@@ -143,20 +139,8 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
     },
 ];
 
-/**
- * Model and agent administration belongs with the team. Until it moves there it
- * keeps its old address and is linked from the AI provider section, outside the
- * four groups.
- */
-const MODELS_AGENTS_SECTION = section('models_agents', 'modelsAgents', Bot, 'workspace', false);
-
-const SETTINGS_SECTIONS = [...SETTINGS_GROUPS.flatMap(group => group.items), MODELS_AGENTS_SECTION];
-
-/** Search covers every section, including the one reached from AI provider. */
-const SEARCH_GROUPS: SettingsGroup[] = [
-    ...SETTINGS_GROUPS,
-    { id: 'linkedFromAiProvider', labelKey: 'settingsPage.groups.linkedFromAiProvider', items: [MODELS_AGENTS_SECTION] },
-];
+const SETTINGS_SECTIONS = SETTINGS_GROUPS.flatMap(group => group.items);
+const SEARCH_GROUPS = SETTINGS_GROUPS;
 const DEFAULT_SECTION: SettingsSectionId = 'theme';
 const LAST_SECTION_STORAGE_KEY = 'workchord.settings.lastSection';
 
@@ -263,7 +247,7 @@ const SettingsPage = () => {
 
     // An earlier tab value is rewritten to the section that now holds its settings; an unknown one is dropped.
     useEffect(() => {
-        if (rawTab === null || isSectionId(rawTab)) return;
+        if (rawTab === null || isSectionId(rawTab) || rawTab === 'models' || rawTab === 'models_agents') return;
         const nextParams = new URLSearchParams(searchParams);
         const renamed = RENAMED_TABS[rawTab];
         if (renamed) nextParams.set('tab', renamed);
@@ -449,8 +433,8 @@ const SettingsPage = () => {
                         {gated(<RuntimeConfigSettings parts={['llm']} />)}
                         <p className="settings-related-note">
                             {t('settingsPage.aiProviderModelsNote')}{' '}
-                            <Link to={settingsHref('models_agents')}>
-                                {t(MODELS_AGENTS_SECTION.labelKey)}
+                            <Link to="/team?tab=models">
+                                {t('teamPage.tabs.models')}
                                 <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
                             </Link>
                         </p>
@@ -486,18 +470,14 @@ const SettingsPage = () => {
                         <SystemHealthPanel />
                     </div>
                 );
-            case 'models_agents':
-                return (
-                    <div className="space-y-5">
-                        <p className="text-sm text-content-secondary">
-                            {t('settingsPage.agentKeyOnAccess')}{' '}
-                            <Link to={settingsHref('access')} className="font-medium text-action underline">{t('settingsPage.openAdminAccess')}</Link>
-                        </p>
-                        <AgentModelAdministration />
-                    </div>
-                );
         }
     };
+
+    if (['models', 'models_agents'].includes(searchParams.get('tab') ?? '')) {
+        const params = new URLSearchParams(searchParams);
+        params.set('tab', 'models');
+        return <Navigate to={`/team?${params.toString()}`} replace />;
+    }
 
     return (
         <PageLayout>

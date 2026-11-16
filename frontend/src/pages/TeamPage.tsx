@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { InlineEmptyState, PageHeader, PageLayout } from '../components/ui';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
+import { AgentModelAdministration } from '../components/team/AgentModelAdministration';
 import { TeamDirectory, type DrawerTarget } from '../components/team/TeamDirectory';
 
 import { ConnectAgentSteps } from '../components/team/ConnectAgentSteps';
@@ -91,7 +92,7 @@ const TeamPage = () => {
                     </>
                 )}
                 {activeTab === 'models' && (
-                    <InlineEmptyState title={t('teamPage.modelsPlaceholderTitle')} description={t('teamPage.modelsPlaceholderBody')} />
+                    <AgentModelAdministration />
                 )}
                 {activeTab === 'connect' && (
                     <ConnectAgentSteps />
