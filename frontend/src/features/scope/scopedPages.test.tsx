@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useState, type ReactNode } from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createMemoryRouter, Outlet, RouterProvider, useLocation } from 'react-router-dom';
@@ -213,10 +213,11 @@ describe('a scope in the URL survives opening a scoped page', () => {
     for (const deferred of [false, true]) {
         const when = deferred ? 'after the shell has set the scope' : 'with the shell';
 
-        it(`moves the scope to the iteration of a task opened from a link ${when}`, async () => {
+        it(`moves the scope to the iteration of a task opened from a link that names no iteration ${when}`, async () => {
             taskServiceMock.getById.mockResolvedValue({ id: 42, iteration_id: 21, title: 'Linked task' });
+            useScopeStore.getState().remember({ project: 1, iteration: 12 });
 
-            renderApp('/tasks?task=42&project=1&iteration=12', deferred);
+            renderApp('/tasks?task=42', deferred);
             await waitForReady();
             if (deferred) await userEvent.click(screen.getByRole('button', { name: 'Open page' }));
 
@@ -224,6 +225,20 @@ describe('a scope in the URL survives opening a scoped page', () => {
             await settle();
             expect(locationText()).toBe('/tasks?task=42&project=2&iteration=21');
             expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 21 });
+        });
+
+        it(`keeps the iteration a task link names, not the task's own ${when}`, async () => {
+            taskServiceMock.getById.mockResolvedValue({ id: 42, iteration_id: 21, title: 'Linked task' });
+
+            renderApp('/tasks?task=42&project=1&iteration=12', deferred);
+            await waitForReady();
+            if (deferred) await userEvent.click(screen.getByRole('button', { name: 'Open page' }));
+
+            await waitFor(() => expect(taskServiceMock.getById).toHaveBeenCalledWith(42));
+            await settle();
+            expect(locationText()).toBe('/tasks?task=42&project=1&iteration=12');
+            expect(iterationPicker()).toHaveValue('Iteration 12');
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
         });
 
         it(`moves the scope to the iteration a planning link names ${when}`, async () => {
@@ -238,7 +253,7 @@ describe('a scope in the URL survives opening a scoped page', () => {
         });
     }
 
-    describe('a task opened from Overview moves the scope once, and the scope bar then decides', () => {
+    describe('a task opened from Overview keeps the scope its link names, and the scope bar then decides', () => {
         /** Opens the task as Overview links to it, from a page whose scope is iteration 12 of Alpha, then closes its drawer. */
         const openTaskFromOverviewAndClose = async () => {
             taskServiceMock.getById.mockResolvedValue({ id: 42, iteration_id: 11, title: 'Overview task' });
@@ -247,17 +262,18 @@ describe('a scope in the URL survives opening a scoped page', () => {
             await settle();
 
             await act(() => router.navigate(scopedLink(overviewTaskDrawerHref(42, 'attention'), { project: 1, iteration: 12 })));
-            await waitFor(() => expect(iterationPicker()).toHaveValue('Iteration 11'));
+            await waitFor(() => expect(taskServiceMock.getById).toHaveBeenCalledWith(42));
             await settle();
-            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 11 });
+            expect(iterationPicker()).toHaveValue('Iteration 12');
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
 
             await userEvent.click(screen.getByRole('button', { name: 'Close task' }));
             await settle();
             const params = new URLSearchParams(router.state.location.search);
             expect(params.get('task')).toBeNull();
+            expect(params.get('thread')).toBeNull();
             expect(params.get('from')).toBe('overview');
             expect(params.get('returnTask')).toBe('42');
-            expect(taskServiceMock.getById).toHaveBeenCalledWith(42);
             return router;
         };
 
@@ -266,24 +282,28 @@ describe('a scope in the URL survives opening a scoped page', () => {
             return { project: params.get('project'), iteration: params.get('iteration') };
         };
 
+        const chooseBacklog = async () => {
+            await userEvent.click(iterationPicker());
+            await userEvent.click(screen.getByRole('option', { name: new RegExp(`^${i18n.t('scopeBar.backlog')}`) }));
+            await settle();
+        };
+
         it('keeps another iteration chosen after the drawer closes', async () => {
             const router = await openTaskFromOverviewAndClose();
 
             await userEvent.click(iterationPicker());
-            await userEvent.click(screen.getByRole('option', { name: /Iteration 12/ }));
+            await userEvent.click(screen.getByRole('option', { name: /Iteration 11/ }));
             await settle();
 
-            expect(iterationPicker()).toHaveValue('Iteration 12');
-            expect(scopeParams(router)).toEqual({ project: '1', iteration: '12' });
-            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
+            expect(iterationPicker()).toHaveValue('Iteration 11');
+            expect(scopeParams(router)).toEqual({ project: '1', iteration: '11' });
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 11 });
         });
 
         it('keeps Backlog chosen after the drawer closes', async () => {
             const router = await openTaskFromOverviewAndClose();
 
-            await userEvent.click(iterationPicker());
-            await userEvent.click(screen.getByRole('option', { name: new RegExp(`^${i18n.t('scopeBar.backlog')}`) }));
-            await settle();
+            await chooseBacklog();
 
             expect(await screen.findByText('Backlog task list')).toBeInTheDocument();
             expect(iterationPicker()).toHaveValue(i18n.t('scopeBar.backlog'));
@@ -302,6 +322,67 @@ describe('a scope in the URL survives opening a scoped page', () => {
             expect(iterationPicker()).toHaveValue('Iteration 22');
             expect(scopeParams(router)).toEqual({ project: '2', iteration: '22' });
             expect(useScopeStore.getState()).toMatchObject({ project: 2, iteration: 22 });
+        });
+
+        it('keeps Backlog after a refresh of the page left by the drawer-close flow', async () => {
+            const router = await openTaskFromOverviewAndClose();
+            await chooseBacklog();
+            const url = `${router.state.location.pathname}${router.state.location.search}`;
+            expect(new URLSearchParams(router.state.location.search).get('returnTask')).toBe('42');
+            cleanup();
+            taskServiceMock.getById.mockClear();
+
+            renderApp(url, false);
+            await waitForReady();
+            await waitFor(() => expect(taskServiceMock.getById).toHaveBeenCalledWith(42));
+            await settle();
+
+            expect(locationText()).toBe(url);
+            expect(await screen.findByText('Backlog task list')).toBeInTheDocument();
+            expect(iterationPicker()).toHaveValue(i18n.t('scopeBar.backlog'));
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 'backlog' });
+        });
+    });
+
+    describe('a copied link with Overview task context opens the scope it names in a browser that remembered another', () => {
+        beforeEach(() => {
+            taskServiceMock.getById.mockReset();
+            taskServiceMock.getById.mockResolvedValue({ id: 42, iteration_id: 11, title: 'Overview task' });
+            useScopeStore.getState().remember({ project: 2, iteration: 21 });
+        });
+
+        const COPIED = [
+            { label: 'Backlog', search: '?layout=board&from=overview&returnTask=42&project=1&iteration=backlog', iteration: 'backlog' },
+            { label: 'another iteration than the task\'s', search: '?layout=board&from=overview&returnTask=42&project=1&iteration=12', iteration: 12 },
+            { label: 'Backlog with the task drawer open', search: '?layout=board&task=42&from=overview&returnTask=42&thread=attention&project=1&iteration=backlog', iteration: 'backlog' },
+            { label: 'another iteration with the task drawer open', search: '?layout=board&task=42&from=overview&returnTask=42&thread=attention&project=1&iteration=12', iteration: 12 },
+        ] as const;
+
+        for (const copied of COPIED) {
+            it(`keeps ${copied.label}`, async () => {
+                const url = `/tasks${copied.search}`;
+                renderApp(url, false);
+                await waitForReady();
+                await waitFor(() => expect(taskServiceMock.getById).toHaveBeenCalledWith(42));
+                await settle();
+
+                expect(locationText()).toBe(url);
+                expect(iterationPicker()).toHaveValue(
+                    copied.iteration === 'backlog' ? i18n.t('scopeBar.backlog') : `Iteration ${copied.iteration}`,
+                );
+                expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: copied.iteration });
+            });
+        }
+
+        it('does not move the scope for Overview return context alone when the link names no iteration', async () => {
+            useScopeStore.getState().remember({ project: 1, iteration: 12 });
+            renderApp('/tasks?layout=board&from=overview&returnTask=42', false);
+            await waitForReady();
+            await waitFor(() => expect(taskServiceMock.getById).toHaveBeenCalledWith(42));
+            await settle();
+
+            expect(locationText()).toBe('/tasks?layout=board&from=overview&returnTask=42&project=1&iteration=12');
+            expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 12 });
         });
     });
 

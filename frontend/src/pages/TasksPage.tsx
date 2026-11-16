@@ -4,7 +4,7 @@ import { BacklogPanel } from '../components/tasks/BacklogPanel';
 import { TaskSearch } from '../components/tasks/TaskSearch';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     AlertTriangle,
@@ -38,6 +38,7 @@ import { SavedViewsControl } from '../components/tasks/SavedViewsControl';
 import { defaultFilters } from '../utils/taskFilterDefaults';
 import { iterationService } from '../services/iterationService';
 import { useWorkScope } from '../features/scope/useWorkScope';
+import { urlNamesIteration } from '../features/scope/namedIteration';
 import { useLinkScope, useScopeLink } from '../features/scope/useScopeLink';
 import { resolveWorkScope, type ScopeIteration as ScopeIterationValue } from '../features/scope/workScope';
 import { OverflowMenu, PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
@@ -88,6 +89,7 @@ const PLANNING_ISSUE_COPY_KEYS: Record<
 
 const TasksPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const { search: locationSearch } = useLocation();
     const { iteration, setIteration } = useWorkScope();
     const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
     const isBacklog = iteration === 'backlog';
@@ -108,8 +110,8 @@ const TasksPage = () => {
     // The iteration this page chose itself; a scope change to it keeps the filters and view.
     const appliedScopeChangeRef = useRef<number | null>(null);
     const shownIterationRef = useRef<ScopeIterationValue | undefined>(iteration);
-    // The task whose iteration was already brought into the scope.
-    const appliedFocusedTaskContextRef = useRef<number | null>(null);
+    // The task opened by the URL, and whether it may still move the scope to its iteration.
+    const taskScopeMoveRef = useRef<{ taskId: number; pending: boolean } | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
@@ -121,8 +123,10 @@ const TasksPage = () => {
     const isFromOverview = (
         searchParams.get(OVERVIEW_TASK_ORIGIN_PARAM) === OVERVIEW_TASK_ORIGIN
     );
+    // The return bar names the task Overview opened; it is not scope, so it never moves the scope.
     const focusedTaskContextId = requestedTaskId
         ?? (isFromOverview ? returnTaskId : null);
+    const iterationNamedByUrl = urlNamesIteration(locationSearch) || legacyBacklogRequested;
     const requestedSavedViewId = Number(searchParams.get('view')) || null;
     const createTaskRequested = searchParams.get('create') === '1';
     const filtersRequested = searchParams.get('panel') === 'filters';
@@ -335,18 +339,22 @@ const TasksPage = () => {
         setSearchParams,
     ]);
 
-    // A task opened by a link moves the scope to its iteration once, when that task is first
-    // shown. The task stays in the URL after its drawer closes (to return to Overview), and the
-    // scope bar then changes the scope freely: this never moves it back.
+    // The scope in the URL decides. A task opened by a URL that names no iteration moves the
+    // scope to the task's iteration once; a link, a reload or a scope already chosen that names
+    // an iteration (Backlog too) keeps it. The scope bar then changes the scope freely.
     useEffect(() => {
-        if (focusedTaskContextId === null) {
-            appliedFocusedTaskContextRef.current = null;
+        if (requestedTaskId === null) {
+            taskScopeMoveRef.current = null;
             return;
         }
-        if (appliedFocusedTaskContextRef.current === focusedTaskContextId) return;
+        if (taskScopeMoveRef.current?.taskId !== requestedTaskId) {
+            taskScopeMoveRef.current = { taskId: requestedTaskId, pending: !iterationNamedByUrl };
+        }
+        const move = taskScopeMoveRef.current;
+        if (!move.pending) return;
         const focusedTask = focusedTaskQuery.data;
-        if (!focusedTask || focusedTask.id !== focusedTaskContextId || !iterations) return;
-        appliedFocusedTaskContextRef.current = focusedTaskContextId;
+        if (!focusedTask || focusedTask.id !== requestedTaskId || !iterations) return;
+        move.pending = false;
         if (
             focusedTask.iteration_id === null
             || focusedTask.iteration_id === selectedIterationId
@@ -357,9 +365,10 @@ const TasksPage = () => {
         appliedScopeChangeRef.current = focusedTask.iteration_id;
         setIteration(focusedTask.iteration_id);
     }, [
-        focusedTaskContextId,
         focusedTaskQuery.data,
+        iterationNamedByUrl,
         iterations,
+        requestedTaskId,
         selectedIterationId,
         setIteration,
     ]);
