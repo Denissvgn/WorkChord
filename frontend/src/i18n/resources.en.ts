@@ -4661,6 +4661,8 @@ export const englishResources = {
                     pasteGitHubPRIssueOrBranchURL: "Paste GitHub PR, issue, or branch URL",
                     requestSources: "Request sources",
                     refreshFailed: "Refresh failed",
+                    agdashSession: "Observed session",
+                    agdashLocal: "Opens on the computer that observed this session.",
                     refreshGitHubStatus: "Refresh GitHub status",
                     noEventsYet: "No events yet.",
                     legacy: "Legacy",

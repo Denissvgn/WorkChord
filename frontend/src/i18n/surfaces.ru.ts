@@ -889,6 +889,8 @@ export const surfacesRussian = {
         pasteGitHubPRIssueOrBranchURL: "Вставьте URL GitHub PR, issue или branch",
         requestSources: "Источники запросов",
         refreshFailed: "Не удалось обновить",
+        agdashSession: "Наблюдаемый сеанс",
+        agdashLocal: "Открывается на компьютере, где наблюдался этот сеанс.",
         refreshGitHubStatus: "Обновить статус GitHub",
         noEventsYet: "Событий пока нет.",
         legacy: "Наследие",

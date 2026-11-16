@@ -17,6 +17,7 @@ from app.schemas.external_link import (
     ExternalLinkResponse,
     ExternalLinkUpdate,
     TaskExternalLinkCreate,
+    normalize_link_url,
 )
 from app.services.outbound_webhook_service import emit_outbound_webhook_event
 from app.services.task_context_revision_service import reserve_task_context_revision
@@ -188,8 +189,23 @@ class ExternalLinkService:
         *,
         commit: bool = True,
     ) -> ExternalLink:
-        """Create a generic external link."""
+        """Create a generic external link.
+
+        An agdash session link with an external key is created once per entity:
+        repeating it returns the existing link, so a retried publish never adds
+        duplicates.
+        """
         entity_type = self._enum_value(data.entity_type)
+        provider = self._enum_value(data.provider)
+        if provider == ExternalLinkProvider.AGDASH.value and data.external_key:
+            existing = await self.db.scalar(select(ExternalLink).where(
+                ExternalLink.entity_type == entity_type,
+                ExternalLink.entity_id == data.entity_id,
+                ExternalLink.provider == provider,
+                ExternalLink.external_key == data.external_key,
+            ).order_by(ExternalLink.id).limit(1))
+            if existing is not None:
+                return existing
         if entity_type == ModelExternalLinkEntityType.TASK.value:
             await reserve_task_context_revision(
                 self.db,
@@ -344,6 +360,13 @@ class ExternalLinkService:
             return None
 
         update_data = data.model_dump(exclude_unset=True)
+        if "provider" in update_data or "url" in update_data:
+            # The URL rule depends on the provider, so check the resulting pair.
+            provider = self._enum_value(update_data.get("provider", link.provider))
+            try:
+                normalize_link_url(update_data.get("url", link.url), provider)
+            except ValueError as exc:
+                raise ExternalLinkValidationError(str(exc)) from exc
         if update_data and link.entity_type == ModelExternalLinkEntityType.TASK.value:
             await reserve_task_context_revision(
                 self.db,

@@ -62,6 +62,17 @@ describe('TaskTimelinePanel', () => {
         taskServiceMock.refreshGitHubExternalLink.mockReset();
     });
 
+    it('names an agdash session link and says a loopback one opens on the observing computer', async () => {
+        taskServiceMock.getExternalLinks.mockResolvedValue([{ id: 2, entity_type: 'task', entity_id: 42,
+            provider: 'agdash', external_key: 'session-7', url: 'http://127.0.0.1:8730/sessions/7', title: 'Claude Code session',
+            metadata_json: {}, is_legacy: false }]);
+        renderWithProviders(<TaskTimelinePanel task={task} />);
+        const link = await screen.findByRole('link', { name: /Claude Code session/ });
+        expect(link).toHaveTextContent('Observed session');
+        expect(link).toHaveAttribute('href', 'http://127.0.0.1:8730/sessions/7');
+        expect(link.getAttribute('title')).toContain('Opens on the computer that observed this session.');
+    });
+
     it('hides cached private links when a later read fails', async () => {
         taskServiceMock.getExternalLinks.mockResolvedValue([{ id: 1, entity_type: 'task', entity_id: 42,
             provider: 'github', url: 'https://github.com/example/private/pull/1', title: 'Private source link',
