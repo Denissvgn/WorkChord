@@ -28,6 +28,12 @@ export const TASK_FILTER_PARAMS = {
 
 export const TASK_SORT_PARAM = 'sort';
 export const TASK_GROUP_PARAM = 'group';
+/**
+ * A saved view link whose every condition and order were removed says so with `filters=none`, so a reload or a
+ * shared copy shows the emptied view instead of the view's saved conditions.
+ */
+export const TASK_CLEARED_VIEW_PARAM = 'filters';
+export const TASK_CLEARED_VIEW_VALUE = 'none';
 
 const TASK_STATUSES = ['planned', 'active', 'resolved', 'closed'];
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -112,10 +118,22 @@ export const writeFiltersToSearchParams = (params: URLSearchParams, filters: Tas
     return params;
 };
 
-/** True when the URL names any filter or a sort, so it carries a view of its own. */
+/** True when the URL names any filter or a sort, or says they were all removed, so it carries a view of its own. */
 export const searchParamsNameView = (params: URLSearchParams) => (
-    Object.values(TASK_FILTER_PARAMS).some(param => params.has(param)) || params.has(TASK_SORT_PARAM)
+    Object.values(TASK_FILTER_PARAMS).some(param => params.has(param))
+    || params.has(TASK_SORT_PARAM)
+    || params.get(TASK_CLEARED_VIEW_PARAM) === TASK_CLEARED_VIEW_VALUE
 );
+
+/**
+ * After a change to the filters or order: while a saved view is shown and the URL names no filter and no order,
+ * marks the view as emptied on purpose; otherwise drops the mark.
+ */
+export const writeClearedViewMarker = (params: URLSearchParams, viewShown: boolean) => {
+    params.delete(TASK_CLEARED_VIEW_PARAM);
+    if (viewShown && !searchParamsNameView(params)) params.set(TASK_CLEARED_VIEW_PARAM, TASK_CLEARED_VIEW_VALUE);
+    return params;
+};
 
 export const sortKeyFromSearchParams = (params: URLSearchParams): SortKey => {
     const value = params.get(TASK_SORT_PARAM);

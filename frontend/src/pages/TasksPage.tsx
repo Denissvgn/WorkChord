@@ -5,9 +5,11 @@ import {
     groupByStatusFromSearchParams,
     searchParamsNameView,
     sortKeyFromSearchParams,
+    TASK_CLEARED_VIEW_PARAM,
     TASK_FILTER_PARAMS,
     TASK_GROUP_PARAM,
     TASK_SORT_PARAM,
+    writeClearedViewMarker,
     writeFiltersToSearchParams,
     writeSortKeyToSearchParams,
 } from '../features/savedViews/taskViewParams';
@@ -100,6 +102,7 @@ const handedOverFilters = (params: URLSearchParams): Partial<TaskFilters> => {
 const writeViewToSearchParams = (params: URLSearchParams, view: SavedView | null) => {
     writeFiltersToSearchParams(params, view ? filtersFromSavedView(view) : defaultFilters);
     writeSortKeyToSearchParams(params, (view && sortKeyFromSavedView(view)) ?? 'priority');
+    params.delete(TASK_CLEARED_VIEW_PARAM);
     if (view) params.set(VIEW_PARAM, String(view.id));
     else params.delete(VIEW_PARAM);
     return params;
@@ -229,11 +232,11 @@ const TasksPage = () => {
     );
 
     const changeFilters = useCallback((nextFilters: TaskFilters) => {
-        updateSearchParams(next => writeFiltersToSearchParams(next, nextFilters));
+        updateSearchParams(next => writeClearedViewMarker(writeFiltersToSearchParams(next, nextFilters), next.has(VIEW_PARAM)));
     }, [updateSearchParams]);
 
     const changeSortKey = useCallback((nextSortKey: SortKey) => {
-        updateSearchParams(next => writeSortKeyToSearchParams(next, nextSortKey));
+        updateSearchParams(next => writeClearedViewMarker(writeSortKeyToSearchParams(next, nextSortKey), next.has(VIEW_PARAM)));
     }, [updateSearchParams]);
 
     const changeGrouping = useCallback((grouped: boolean) => {
@@ -396,6 +399,7 @@ const TasksPage = () => {
         updateSearchParams(next => {
             Object.values(TASK_FILTER_PARAMS).forEach(param => next.delete(param));
             next.delete(TASK_SORT_PARAM);
+            next.delete(TASK_CLEARED_VIEW_PARAM);
             next.delete(VIEW_PARAM);
             next.delete(SEARCH_PARAM);
             next.delete(PLANNING_ITERATION_PARAM);

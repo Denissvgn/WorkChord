@@ -156,6 +156,35 @@ describe('Tasks header and toolbar', () => {
         }));
     });
 
+    it('keeps a saved view emptied of every condition after a reload and in a shared link', async () => {
+        const first = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: ['/tasks?view=12'] });
+        const chips = await screen.findByRole('list', { name: 'Active filters' });
+        await waitFor(() => expect(within(chips).getByText('Status: Planned')).toBeInTheDocument());
+
+        await first.user.click(within(chips).getByRole('button', { name: 'Remove filter Status: Planned' }));
+        await first.user.click(within(screen.getByRole('list', { name: 'Active filters' })).getByRole('button', { name: 'Remove filter Assignee: Ana' }));
+
+        expect(await screen.findByText('Modified view')).toBeInTheDocument();
+        expect(screen.queryByRole('list', { name: 'Active filters' })).not.toBeInTheDocument();
+        expect(screen.getByTestId('location-search')).toHaveTextContent(/^\?view=12&filters=none$/);
+        const emptiedLink = `/tasks${screen.getByTestId('location-search').textContent}`;
+        first.unmount();
+
+        // A reload, or the same link opened by someone else, shows the emptied view, not the saved conditions.
+        const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: [emptiedLink] });
+        expect(await screen.findByRole('heading', { level: 1, name: 'Ana planned' })).toBeInTheDocument();
+        await waitFor(() => expect(taskTitles()).toHaveLength(TASKS.length));
+        expect(screen.queryByRole('list', { name: 'Active filters' })).not.toBeInTheDocument();
+        expect(screen.getByText('Modified view')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument();
+        expect(screen.getByTestId('location-search')).toHaveTextContent(/^\?view=12&filters=none$/);
+
+        // Adding a condition again drops the mark; the URL names the condition instead.
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Status' }), 'Active');
+        await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent('status=active'));
+        expect(screen.getByTestId('location-search')).not.toHaveTextContent('filters=none');
+    });
+
     it('lists the saved views in the title menu with Save as, Save changes, Duplicate and Delete', async () => {
         const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: ['/tasks'] });
         await user.click(await screen.findByRole('button', { name: 'All tasks' }));
