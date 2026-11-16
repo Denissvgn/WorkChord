@@ -516,6 +516,25 @@ describe('work and blockers inside Plan', () => {
         expect(await screen.findByRole('heading', { name: 'Needs effort · 0' })).toBeVisible();
     });
 
+    it.each([
+        { language: 'en', hints: ['1 day at 8 h/day', '2 days at 8 h/day', '5 days at 8 h/day'] },
+        { language: 'ru', hints: ['1 день при 8 ч/день', '2 дня при 8 ч/день', '5 дней при 8 ч/день'] },
+    ])('pluralizes the inline effort hint for 1, 2 and 5 days in $language', async ({ language, hints }) => {
+        await changeAppLanguage(language);
+        try {
+            workWorkspace([plannedTask(1, { effort_days: null, effort_hours: null })]);
+            const { user } = renderPlan(BLOCKERS_ENTRY);
+            const input = await screen.findByRole('spinbutton', { name: /Work item 1/ });
+            for (const [index, hours] of [8, 16, 40].entries()) {
+                await user.clear(input);
+                await user.type(input, String(hours));
+                expect(screen.getByText(hints[index])).toBeVisible();
+            }
+        } finally {
+            await changeAppLanguage('en');
+        }
+    });
+
     it('stops after a partial assignment and reports the applied count without retrying stale batches', async () => {
         workWorkspace([plannedTask(1), plannedTask(2, { tags: ['cap:test'] })]);
         const original = services.tasks.runBulkOperation.getMockImplementation()!;
@@ -528,7 +547,7 @@ describe('work and blockers inside Plan', () => {
         await waitFor(() => expect(preview).toBeEnabled());
         await user.click(preview);
         await user.click(await screen.findByRole('button', { name: 'Assign 2 tasks' }));
-        expect(await screen.findByRole('alert')).toHaveTextContent('1 tasks assigned. Assignment stopped');
+        expect(await screen.findByRole('alert')).toHaveTextContent('1 task assigned. Assignment stopped');
         expect(services.tasks.runBulkOperation).toHaveBeenCalledTimes(4);
         expect(screen.queryByRole('button', { name: 'Assign 2 tasks' })).not.toBeInTheDocument();
         await screen.findByRole('heading', { name: 'Needs an assignee · 1' });

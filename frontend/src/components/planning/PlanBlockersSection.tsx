@@ -192,7 +192,7 @@ const EffortRow = ({ task, disabled, onSaved }: { task: Task; disabled: boolean;
     return <li className="py-3"><form className="flex flex-wrap items-center gap-3" onSubmit={event => { event.preventDefault(); void save(); }}>
         <label className="min-w-0 flex-1" htmlFor={`plan-effort-${task.id}`}>{task.title}<span className="block text-sm text-content-secondary">{t('planWork.effortHours')}</span></label>
         <div><input id={`plan-effort-${task.id}`} className="input w-28" type="number" min="0.01" step="any" required disabled={disabled || pending} value={value} onChange={event => setValue(event.target.value)} aria-describedby={`plan-days-${task.id}`} />
-            <p id={`plan-days-${task.id}`} className="text-xs text-content-secondary">{t('planWork.days', { days: formatDecimal(hours / (task.nominal_day_hours ?? 8), i18n.language), hours: task.nominal_day_hours ?? 8 })}</p></div>
+            <p id={`plan-days-${task.id}`} className="text-xs text-content-secondary">{t('planWork.days', { count: hours / (task.nominal_day_hours ?? 8), days: formatDecimal(hours / (task.nominal_day_hours ?? 8), i18n.language), hours: task.nominal_day_hours ?? 8 })}</p></div>
         <Button type="submit" variant="secondary" disabled={disabled || pending || !Number.isFinite(hours) || hours <= 0}>{t('actions.save')}</Button>
     </form>{error && <p role="alert" className="text-feedback-danger-foreground">{error}</p>}</li>;
 };
