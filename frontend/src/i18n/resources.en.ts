@@ -2094,6 +2094,11 @@ export const englishResources = {
                 },
                 planning: 'Planning',
                 planWork: 'Plan',
+                groups: {
+                    plan: 'Plan',
+                    deliver: 'Deliver',
+                    setup: 'Setup',
+                },
                 home: 'Go to {{appName}} overview',
                 skipToContent: 'Skip to workspace content',
                 workspaceSelector: 'Workspace selector',

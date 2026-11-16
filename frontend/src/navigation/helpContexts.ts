@@ -1,7 +1,9 @@
 import {
-    getWorkspaceForPath,
-    PRIMARY_NAV_ITEMS,
-} from './workspaces';
+    DESTINATIONS,
+    getDestinationForPath,
+    getDestinationGroup,
+} from './destinations';
+import { getWorkspaceForPath } from './workspaces';
 import {
     metadataForPath,
     type RouteModuleKey,
@@ -100,13 +102,20 @@ const relatedLinkForPath = (to: string): HelpRelatedLink => {
     if (special) return { to, ...special };
 
     const pathname = to.split('?')[0] ?? to;
-    const navItem = PRIMARY_NAV_ITEMS.find(item => item.to === pathname);
-    if (navItem) {
+    const destination = DESTINATIONS.find(candidate => candidate.path === pathname);
+    if (destination) {
         return {
             to,
-            labelKey: navItem.labelKey,
-            defaultLabel: navItem.defaultLabel,
+            labelKey: destination.labelKey,
+            defaultLabel: destination.defaultLabel,
         };
+    }
+
+    // A view or section of a destination is named by its page title; like i18next itself,
+    // fall back to the key when a catalog lacks it.
+    const route = metadataForPath(pathname);
+    if (route.key !== 'notFound') {
+        return { to, labelKey: route.titleKey, defaultLabel: route.titleKey };
     }
 
     return {
@@ -116,25 +125,24 @@ const relatedLinkForPath = (to: string): HelpRelatedLink => {
     };
 };
 
-const routeContainsItem = (pathname: string, itemPath: string) => (
-    itemPath === '/'
-        ? pathname === '/'
-        : pathname === itemPath || pathname.startsWith(`${itemPath}/`)
-);
-
 export const getHelpContext = (pathname: string) => {
     const route = metadataForPath(pathname);
-    const workspace = getWorkspaceForPath(pathname);
+    const destination = getDestinationForPath(pathname);
     const configuredPaths = RELATED_PATHS_BY_ROUTE[route.key];
-    const fallbackPaths = workspace.items
-        .filter(item => !routeContainsItem(pathname, item.to))
-        .slice(0, 3)
-        .map(item => item.to);
+    // Without configured links, offer the other destinations of the same sidebar group.
+    const fallbackPaths = destination
+        ? getDestinationGroup(destination.id).destinations
+            .filter(candidate => candidate.id !== destination.id)
+            .slice(0, 3)
+            .map(candidate => candidate.path)
+        : DESTINATIONS.slice(0, 3).map(candidate => candidate.path);
 
     return {
         routeKey: route.key,
         pageTitleKey: route.titleKey,
-        workspace,
+        destination,
+        // The current shell still frames help by its work area.
+        workspace: getWorkspaceForPath(pathname),
         provider: CONTENT_PROVIDER_BY_ROUTE[route.key] ?? 'workspace',
         relatedLinks: (configuredPaths ?? fallbackPaths).map(relatedLinkForPath),
         glossary: GLOSSARY_BY_ROUTE[route.key] ?? [],
