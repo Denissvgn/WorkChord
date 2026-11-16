@@ -24,6 +24,7 @@ const QUICK_FILTER_LIMIT = 5;
 
 const FilterSelect = ({ filter, onChange, id }: { filter: FilterBarFilter; onChange: (value: string) => void; id?: string }) => (
     <select
+        data-page-chrome-control="select"
         id={id}
         className="input wc-filter-select"
         aria-label={filter.label}
@@ -93,6 +94,7 @@ export const FilterBar = ({ filters, onChange, onClear, className }: {
                 {moreFilters.length > 0 && (
                     <div className="wc-filter-more">
                         <button
+                            data-page-chrome-control="button"
                             ref={moreButtonRef}
                             type="button"
                             className="btn"
@@ -127,6 +129,7 @@ export const FilterBar = ({ filters, onChange, onClear, className }: {
                         <li key={filter.id} className="wc-filter-chip">
                             <span>{chipText(filter)}</span>
                             <button
+                                data-page-chrome-control="button"
                                 type="button"
                                 aria-label={t('filterBar.remove', { filter: chipText(filter) })}
                                 title={t('filterBar.remove', { filter: chipText(filter) })}
@@ -137,7 +140,7 @@ export const FilterBar = ({ filters, onChange, onClear, className }: {
                         </li>
                     ))}
                     <li>
-                        <button type="button" className="btn ghost sm" onClick={onClear}>{t('actions.clear')}</button>
+                        <button data-page-chrome-control="button" type="button" className="btn ghost sm" onClick={onClear}>{t('actions.clear')}</button>
                     </li>
                 </ul>
             )}

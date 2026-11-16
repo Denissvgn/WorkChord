@@ -45,7 +45,7 @@ export const SegmentedControl = <T extends string,>({ label, options, value, onC
     return (
         <div ref={groupRef} role="group" aria-label={label} className={clsx('seg', className)}>
             {options.map((option, index) => (
-                <button key={option.value} type="button" aria-pressed={option.value === value} disabled={disabled}
+                <button data-page-chrome-control="button" key={option.value} type="button" aria-pressed={option.value === value} disabled={disabled}
                     tabIndex={arrowKeys && index !== stopIndex ? -1 : undefined}
                     className="inline-flex items-center justify-center gap-1.5"
                     onClick={() => onChange(option.value)}
