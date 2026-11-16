@@ -2,7 +2,7 @@ import { Home } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../components/common/Button';
-import { PageHeader, SectionCard } from '../components/ui';
+import { PageHeader, PageLayout, SectionCard } from '../components/ui';
 
 const NotFoundPage = () => {
     const { t } = useTranslation();
@@ -10,7 +10,7 @@ const NotFoundPage = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="space-y-6" data-testid="not-found-page">
+        <PageLayout testId="not-found-page">
             <PageHeader
                 title={t('notFound.title')}
                 subtitle={t('notFound.description')}
@@ -25,7 +25,7 @@ const NotFoundPage = () => {
                     {t('notFound.returnHome')}
                 </Button>
             </SectionCard>
-        </div>
+        </PageLayout>
     );
 };
 
