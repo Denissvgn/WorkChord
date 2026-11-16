@@ -4,8 +4,8 @@ import type { ReactNode } from 'react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import OverviewPage from '../../pages/OverviewPage';
 import PlanPage from '../../pages/PlanPage';
-import PlanMasterPage from '../../pages/PlanMasterPage';
 import { deriveStatus, EMPTY_READINESS, nextStep, readiness } from '../../features/planningMasters/masters';
+import { PLANNING_STEP_IDS } from '../../features/planningMasters/planningReturn';
 import type { Iteration, IterationSummary } from '../../types/iteration';
 import { AppSidebar } from './AppSidebar';
 
@@ -94,7 +94,15 @@ const planningState = (overrides: Record<string, unknown> = {}) => {
         currentIteration: iteration,
         teamMembers: [],
         allTasks: [],
+        hasCurrentIteration: true,
         readinessData,
+        // The page reads the checkpoint states from the server's response.
+        planningSummary: {
+            iteration_id: iteration.id, team_member_count: 2, team_capacity_hours: 80, team_members_no_capacity: 0,
+            task_count: 3, tasks_without_assignee: 0, tasks_without_effort: 0,
+            has_schedule: readinessData.hasGanttSchedule, risk_count: 0,
+            checkpoints: PLANNING_STEP_IDS.map(id => ({ id, state: status[id].state, reason_codes: [], counts: {} })),
+        },
         status,
         ready: readiness(status),
         nextId: nextStep(status),
@@ -105,6 +113,7 @@ const planningState = (overrides: Record<string, unknown> = {}) => {
             tasks: queryState(),
             gantt: queryState(),
             inbox: queryState(),
+            checkpoints: queryState(),
         },
         refetch: vi.fn().mockResolvedValue([]),
     };
@@ -184,32 +193,5 @@ describe('plan progress placement', () => {
         expect(within(nav).getByRole('link', { name: 'Plan' })).toHaveTextContent(/^Plan$/);
         expect(progressTexts()).toHaveLength(1);
         expect(progressTexts()[0]).toHaveTextContent('6 of 6');
-    });
-
-    it('shows plan progress on the checkpoint view as the counter and once as "n of 6", with no bar', () => {
-        const state = planningState();
-        useState(state);
-        renderWithProviders(<Shell><PlanMasterPage /></Shell>, { initialEntries: ['/plan/master'] });
-
-        const nav = screen.getByRole('navigation', { name: 'Primary navigation' });
-        expect(within(nav).getByRole('link', { name: 'Plan' }))
-            .toHaveTextContent(`${state.ready.done}/6`);
-        const outsideNav = progressTexts().filter(el => !el.closest('nav'));
-        expect(outsideNav).toHaveLength(1);
-        expect(outsideNav[0]).toHaveTextContent(`${state.ready.done} of 6`);
-        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-    });
-
-    it('shows no counter at 6 of 6 on the checkpoint view, leaving the single "6 of 6"', () => {
-        const state = planningState({ hasGanttSchedule: true, riskCount: 0 });
-        expect(state.ready.done).toBe(6);
-        useState(state);
-        renderWithProviders(<Shell><PlanMasterPage /></Shell>, { initialEntries: ['/plan/master'] });
-
-        const nav = screen.getByRole('navigation', { name: 'Primary navigation' });
-        expect(within(nav).getByRole('link', { name: 'Plan' })).toHaveTextContent(/^Plan$/);
-        expect(progressTexts()).toHaveLength(1);
-        expect(progressTexts()[0]).toHaveTextContent('6 of 6');
-        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     });
 });

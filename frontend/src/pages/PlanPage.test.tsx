@@ -1,284 +1,272 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { screen, within } from '@testing-library/react';
-import {
-    deriveStatus,
-    EMPTY_READINESS,
-    nextStep,
-    readiness,
-} from '../features/planningMasters/masters';
-import i18n from '../i18n/i18n';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { screen, waitFor, within } from '@testing-library/react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { changeAppLanguage } from '../i18n/i18n';
+import { LegacyRedirect } from '../navigation/LegacyRedirect';
+import { expectPageChrome } from '../test/pageChrome';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { useScopeStore } from '../features/scope/scopeStore';
+import type { IterationPlanningReadinessSummary, PlanCheckpoint } from '../types/iteration';
 import PlanPage from './PlanPage';
 import planPageSource from './PlanPage.tsx?raw';
 
-const planningReadinessMock = vi.hoisted(() => ({
-    usePlanningReadiness: vi.fn(),
+const services = vi.hoisted(() => ({
+    iterations: { getAll: vi.fn(), getPlanningReadiness: vi.fn() },
+    team: { getByIteration: vi.fn(), getProfiles: vi.fn(), create: vi.fn() },
+    tasks: { getByIteration: vi.fn() },
+    gantt: { getChart: vi.fn() },
+    triage: { getAll: vi.fn() },
+    share: { getCurrent: vi.fn(), create: vi.fn(), revoke: vi.fn() },
 }));
 
-vi.mock('../features/planningMasters/usePlanningReadiness', () => planningReadinessMock);
+vi.mock('../services/iterationService', () => ({ iterationService: services.iterations }));
+vi.mock('../services/teamService', () => ({ teamService: services.team }));
+vi.mock('../services/taskService', () => ({ taskService: services.tasks }));
+vi.mock('../services/ganttService', () => ({ ganttService: services.gantt }));
+vi.mock('../services/triageService', () => ({ triageService: services.triage }));
+vi.mock('../services/planShareService', () => ({ planShareService: services.share }));
 vi.mock('./IterationsPage', () => ({ default: () => <p>Iterations of the project</p> }));
 
-const queryState = (overrides: Record<string, unknown> = {}) => ({
-    enabled: true,
-    hasData: true,
-    dataUpdatedAt: Date.parse('2026-08-03T12:00:00Z'),
-    isLoading: false,
-    isFetching: false,
-    isError: false,
-    isBlockingError: false,
-    isRefetchError: false,
-    error: null,
-    refetch: vi.fn().mockResolvedValue(undefined),
+const ITERATION = {
+    id: 1, name: 'August plan', calendar_id: 1, project: null, project_id: 1,
+    start_date: '2026-08-03', end_date: '2026-08-14', working_days: 10,
+};
+const PLAN_ENTRY = '/plan?project=1&iteration=1';
+
+const checkpoint = (
+    id: PlanCheckpoint['id'],
+    state: PlanCheckpoint['state'],
+    reason_codes: string[] = [],
+    counts: Record<string, number> = {},
+): PlanCheckpoint => ({ id, state, reason_codes, counts });
+
+const summary = (
+    checkpoints: PlanCheckpoint[],
+    overrides: Partial<IterationPlanningReadinessSummary> = {},
+): IterationPlanningReadinessSummary => ({
+    iteration_id: 1, team_member_count: 0, team_capacity_hours: 0, team_members_no_capacity: 0,
+    task_count: 0, tasks_without_assignee: 0, tasks_without_effort: 0, has_schedule: false, risk_count: 0,
+    checkpoints, checkpoints_done: checkpoints.filter(item => item.state === 'done').length, checkpoints_total: 6,
     ...overrides,
 });
 
-const planningState = ({
-    readinessOverrides = {},
-    queryOverrides = {},
-    isFetching = false,
-    refetch = vi.fn().mockResolvedValue([]),
-}: {
-    readinessOverrides?: Record<string, unknown>;
-    queryOverrides?: Record<string, Record<string, unknown>>;
-    isFetching?: boolean;
-    refetch?: ReturnType<typeof vi.fn>;
-} = {}) => {
-    const readinessData = {
-        ...EMPTY_READINESS,
-        iterationCount: 1,
-        hasCurrentIteration: true,
-        currentIterationName: 'August plan',
-        currentIterationStart: '2026-08-01',
-        currentIterationEnd: '2026-08-14',
-        currentIterationDays: 10,
-        teamMemberCount: 2,
-        teamCapacity: 80,
-        taskCount: 3,
-        hasGanttSchedule: false,
-        inboxCount: 3,
-        ...readinessOverrides,
-    };
-    const status = deriveStatus(readinessData);
-    return {
-        currentIteration: {
-            id: 1,
-            name: 'August plan',
-            start_date: '2026-08-01',
-            end_date: '2026-08-14',
-        },
-        readinessData,
-        status,
-        ready: readiness(status),
-        nextId: nextStep(status),
-        isFetching,
-        queryStates: {
-            iterations: queryState(queryOverrides.iterations),
-            team: queryState(queryOverrides.team),
-            tasks: queryState(queryOverrides.tasks),
-            gantt: queryState(queryOverrides.gantt),
-            inbox: queryState(queryOverrides.inbox),
-        },
-        refetch,
-    };
+// The server's response for each fixture, as app/services/plan_checkpoints.py derives it.
+const FIXTURES = {
+    empty: summary([
+        checkpoint('iteration', 'done'),
+        checkpoint('team', 'todo', ['no_people']),
+        checkpoint('work', 'todo', ['no_tasks']),
+        checkpoint('blockers', 'blocked', ['add_work_first']),
+        checkpoint('schedule', 'blocked', ['complete_earlier_checkpoints']),
+        checkpoint('review', 'blocked', ['build_schedule_first']),
+    ]),
+    twoOfSix: summary([
+        checkpoint('iteration', 'done'),
+        checkpoint('team', 'warn', ['people_without_capacity'], { people_without_capacity: 1 }),
+        checkpoint('work', 'done', [], { tasks: 4 }),
+        checkpoint('blockers', 'warn', ['unassigned_tasks'], { unassigned_tasks: 2 }),
+        checkpoint('schedule', 'blocked', ['complete_earlier_checkpoints']),
+        checkpoint('review', 'blocked', ['build_schedule_first']),
+    ], { team_member_count: 2, team_members_no_capacity: 1, task_count: 4, tasks_without_assignee: 2 }),
+    sixOfSix: summary([
+        checkpoint('iteration', 'done'),
+        checkpoint('team', 'done', [], { people: 2 }),
+        checkpoint('work', 'done', [], { tasks: 4 }),
+        checkpoint('blockers', 'done'),
+        checkpoint('schedule', 'done'),
+        checkpoint('review', 'done'),
+    ], { team_member_count: 2, team_capacity_hours: 128, task_count: 4, has_schedule: true }),
 };
 
-describe('PlanPage mixed planning launcher', () => {
-    beforeEach(() => {
-        planningReadinessMock.usePlanningReadiness.mockReset();
-    });
+const TITLES = ['Iteration', 'Capacity', 'Work', 'Blockers', 'Schedule', 'Review'] as const;
+const IDS = ['iteration', 'team', 'work', 'blockers', 'schedule', 'review'] as const;
 
-    it('keeps readiness in one accessible, progressively disclosed launch surface', async () => {
-        const state = planningState();
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(state);
-        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+const LocationProbe = () => {
+    const location = useLocation();
+    return <output data-testid="location">{`${location.pathname}${location.search}`}</output>;
+};
 
-        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-        expect(screen.getByText('Plan readiness')).toBeVisible();
+const section = (id: typeof IDS[number]) => screen.getByTestId(`plan-section-${id}`);
+const toggle = (title: string) => screen.getByRole('button', { name: new RegExp(`${title}$`) });
+const stateText = (id: typeof IDS[number]) => within(section(id)).getByText((_, element) => (
+    element?.classList.contains('pill') ?? false
+)).textContent;
 
-        // The primary action names and opens the next incomplete step.
-        const primaryAction = screen.getByRole('link', { name: 'Schedule' });
-        expect(primaryAction).toHaveAttribute('href', '/plan/master?step=schedule');
+const renderPlan = (entry = PLAN_ENTRY) => renderWithProviders(<><PlanPage /><LocationProbe /></>, { initialEntries: [entry] });
 
-        expect(screen.getAllByText(/\d+ of \d+/)).toHaveLength(1);
-        expect(screen.getByText(
-            `${state.ready.done} of ${state.ready.total} checkpoints complete`,
-        )).toBeVisible();
+beforeEach(() => {
+    vi.clearAllMocks();
+    useScopeStore.setState({ project: 1, iteration: 1 });
+    services.iterations.getAll.mockResolvedValue([ITERATION]);
+    services.iterations.getPlanningReadiness.mockResolvedValue(FIXTURES.empty);
+    // The browser's own inputs disagree with the server on purpose: the page must show the server's states.
+    services.team.getByIteration.mockResolvedValue([]);
+    services.team.getProfiles.mockResolvedValue([]);
+    services.tasks.getByIteration.mockResolvedValue([]);
+    services.gantt.getChart.mockResolvedValue({ tasks: [], holidays: [], weekends: [] });
+    services.triage.getAll.mockResolvedValue([]);
+    services.share.getCurrent.mockResolvedValue(null);
+});
 
-        await user.click(screen.getByText(
-            'Planning checkpoints',
-            { selector: '.plan-hub-checkpoints > summary span' },
-        ));
+afterEach(() => {
+    useScopeStore.setState({ project: null, iteration: null });
+});
 
-        const checkpointList = screen.getByRole('list', { name: 'Planning checkpoints' });
-        expect(within(checkpointList).getAllByRole('listitem')).toHaveLength(6);
-        expect(within(checkpointList).getByText('Schedule').closest('li'))
-            .toHaveAttribute('aria-current', 'step');
-    });
+describe('Plan is one page of six checkpoints', () => {
+    it('lists the six checkpoints once, in order, with the first incomplete one open and no launcher content', async () => {
+        services.iterations.getPlanningReadiness.mockResolvedValue(FIXTURES.twoOfSix);
+        const { container } = renderPlan();
 
-    it('names review and sharing as the completed plan action', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            readinessOverrides: {
-                hasGanttSchedule: true,
-                riskCount: 0,
-            },
-        }));
-        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+        const list = await screen.findByRole('list', { name: 'Checkpoints' });
+        expect(within(list).getAllByRole('heading', { level: 2 }).map(heading => heading.textContent?.replace(/^Checkpoint \d+: /, '')))
+            .toEqual([...TITLES]);
+        expect(screen.getByRole('heading', { level: 1, name: 'Plan' })).toBeVisible();
+        expect(screen.getByText('August plan')).toBeVisible();
+        expect(screen.getByText('2 of 6')).toBeVisible();
 
-        expect(screen.getByText('6 of 6 checkpoints complete')).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Review & share' }))
-            .toHaveAttribute('href', '/plan/master');
-    });
+        // Capacity is the first checkpoint that is not done.
+        expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'true');
+        for (const title of TITLES.filter(item => item !== 'Capacity')) {
+            expect(toggle(title)).toHaveAttribute('aria-expanded', 'false');
+        }
+        expect(section('team').querySelector('.plan-section-body')).toBeVisible();
 
-    it('moves inactive and beta planning jobs into direct tools', async () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            readinessOverrides: { inboxCount: 0, riskCount: 0 },
-        }));
-        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
-
+        for (const gone of ['Planning checkpoints', 'Direct planning tools', 'Recommended', 'Plan readiness']) {
+            expect(screen.queryByText(new RegExp(gone))).not.toBeInTheDocument();
+        }
         expect(screen.queryByRole('heading', { name: 'Needs attention' })).not.toBeInTheDocument();
-        await user.click(screen.getByText('Direct planning tools'));
-        const directTools = screen.getByRole('navigation', { name: 'Direct planning tools' });
-        expect(within(directTools).getByRole('heading', { name: 'Shape work' })).toBeVisible();
-        expect(within(directTools).getByRole('heading', { name: 'Schedule & capacity' })).toBeVisible();
-        expect(within(directTools).getByRole('heading', { name: 'Automation' })).toBeVisible();
-        expect(within(directTools).getByRole('link', { name: 'Plan a project or release' }))
-            .toHaveAttribute('href', '/projects');
-        expect(within(directTools).getByRole('link', { name: 'Triage' }))
-            .toHaveAttribute('href', '/triage');
-        expect(within(directTools).getByRole('link', { name: 'Prepare agent-ready work' }))
-            .toHaveAttribute('href', '/agent-pipeline');
+        expect(planPageSource).not.toMatch(/plan-hub|STEP_DEFS|directTools|attentionJobs/);
+        expectPageChrome(container, { status: 'migrated' });
     });
 
-    it('promotes only planning jobs with live signals', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            readinessOverrides: { inboxCount: 2, riskCount: 3 },
-        }));
-        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+    it('names the checkpoint a waiting one waits for, offers no action there, and uses no red or amber', async () => {
+        const { user } = renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
 
-        expect(screen.getByRole('heading', { name: 'Needs attention' })).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Process intake' }))
-            .toHaveAccessibleDescription(/2 in queue/);
-        expect(screen.getByRole('link', { name: 'Replan at-risk work' }))
-            .toHaveAccessibleDescription(/3 active signals/);
-        expect(screen.getByRole('link', { name: 'Plan a project or release' }))
-            .not.toBeVisible();
-        expect(screen.getByRole('link', { name: 'Prepare agent-ready work' }))
-            .not.toBeVisible();
+        // Blockers waits for Work, Schedule for the first earlier incomplete one, Review for Schedule.
+        expect(stateText('blockers')).toBe('Waiting on checkpoint 3');
+        expect(stateText('schedule')).toBe('Waiting on checkpoint 2');
+        expect(stateText('review')).toBe('Waiting on checkpoint 5');
+        expect(within(section('blockers')).getByText('Starts when Work is done.')).toBeVisible();
+
+        await user.click(toggle('Blockers'));
+        const blockers = section('blockers');
+        const body = blockers.querySelector<HTMLElement>('.plan-section-body')!;
+        expect(body).toHaveTextContent('This checkpoint waits for checkpoint 3, Work.');
+        expect(within(body).queryAllByRole('link')).toEqual([]);
+        expect(within(body).queryAllByRole('button')).toEqual([]);
+        // The only control in a waiting section is its own expand toggle.
+        expect(within(blockers).getAllByRole('button')).toEqual([toggle('Blockers')]);
+
+        for (const id of ['blockers', 'schedule', 'review'] as const) {
+            const waiting = section(id);
+            const marked = [waiting, ...Array.from(waiting.querySelectorAll('*'))];
+            expect(marked.filter(element => /\b(warn|blocked|danger|exception|error)\b/.test(element.getAttribute('class') ?? '')))
+                .toEqual([]);
+            expect(waiting.querySelector('.pill')).toHaveClass('opt');
+        }
     });
 
-    it('keeps the launcher usable when auxiliary intake status is unavailable', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            queryOverrides: {
-                inbox: {
-                    hasData: false,
-                    isError: true,
-                    isBlockingError: true,
-                    error: new Error('Intake unavailable'),
-                },
-            },
-        }));
-        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+    it('opens /plan/master?step=team as /plan with the Capacity section open', async () => {
+        services.iterations.getPlanningReadiness.mockResolvedValue(FIXTURES.sixOfSix);
+        renderWithProviders(<>
+            <Routes>
+                <Route path="/plan" element={<PlanPage />} />
+                <Route path="/plan/master" element={<LegacyRedirect><p>Old checkpoint page</p></LegacyRedirect>} />
+            </Routes>
+            <LocationProbe />
+        </>, { initialEntries: ['/plan/master?step=team&project=1&iteration=1'] });
 
-        expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
-        expect(screen.getByText('Intake status unavailable')).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Process intake' })).toBeVisible();
+        await screen.findByRole('list', { name: 'Checkpoints' });
+        expect(screen.queryByText('Old checkpoint page')).not.toBeInTheDocument();
+        expect(screen.getByTestId('location')).toHaveTextContent(/^\/plan\?step=team&project=1&iteration=1$/);
+        expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'true');
+        expect(TITLES.filter(title => toggle(title).getAttribute('aria-expanded') === 'true')).toEqual(['Capacity']);
     });
 
-    it('uses a blocking recovery state when core planning data has no usable value', () => {
-        const retry = vi.fn().mockResolvedValue([]);
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            queryOverrides: {
-                tasks: {
-                    hasData: false,
-                    isError: true,
-                    isBlockingError: true,
-                    error: new Error('Tasks unavailable'),
-                },
-            },
-            refetch: retry,
-        }));
-        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+    it.each([
+        ['an empty iteration', FIXTURES.empty, '1 of 6',
+            ['Done', 'Next', 'Next', 'Waiting on checkpoint 3', 'Waiting on checkpoint 2', 'Waiting on checkpoint 5'], 'Capacity'],
+        ['2 of 6', FIXTURES.twoOfSix, '2 of 6',
+            ['Done', 'Needs attention', 'Done', 'Needs attention', 'Waiting on checkpoint 2', 'Waiting on checkpoint 5'], 'Capacity'],
+        ['6 of 6', FIXTURES.sixOfSix, '6 of 6',
+            ['Done', 'Done', 'Done', 'Done', 'Done', 'Done'], 'Review'],
+    ])('shows the states of the planning-readiness response for %s', async (_name, response, progress, labels, openTitle) => {
+        services.iterations.getPlanningReadiness.mockResolvedValue(response);
+        renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
 
-        expect(screen.getByText('Planning data is unavailable')).toBeVisible();
-        expect(screen.queryByRole('heading', { name: 'Plan', level: 1 })).not.toBeInTheDocument();
+        expect(services.iterations.getPlanningReadiness).toHaveBeenCalledWith(1);
+        expect(IDS.map(id => section(id).getAttribute('data-state'))).toEqual(response.checkpoints!.map(item => item.state));
+        expect(IDS.map(stateText)).toEqual(labels);
+        expect(screen.getByText(progress)).toBeVisible();
+        expect(TITLES.filter(title => toggle(title).getAttribute('aria-expanded') === 'true')).toEqual([openTitle]);
     });
 
-    it('preserves content and exposes a busy refresh contract during background fetching', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            isFetching: true,
-        }));
-        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+    it('keeps the at-risk signals in the Review section with a link to Gantt', async () => {
+        services.iterations.getPlanningReadiness.mockResolvedValue(summary(
+            FIXTURES.sixOfSix.checkpoints!.map(item => (item.id === 'review'
+                ? checkpoint('review', 'warn', ['risks_to_acknowledge'], { risks: 1 })
+                : item)),
+            { team_member_count: 2, task_count: 4, has_schedule: true, risk_count: 1 },
+        ));
+        renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
 
-        expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
-        const refresh = screen.getByRole('button', { name: 'Refreshing…' });
-        expect(refresh).toBeDisabled();
-        expect(refresh).toHaveAttribute('aria-busy', 'true');
+        const review = section('review');
+        expect(within(review).getByText('Needs attention')).toBeVisible();
+        expect(within(review).getByText('1 planning exception to review')).toBeVisible();
+        expect(within(review).getByText('At-risk signals')).toBeVisible();
+        expect(await within(review).findByRole('link', { name: 'Open 1 at-risk signal in Gantt' }))
+            .toHaveAttribute('href', '/gantt?fromPlanStep=review&project=1&iteration=1');
     });
 
-    it('announces the result of an explicit refresh', async () => {
-        const refetch = vi.fn().mockResolvedValue([
-            { status: 'fulfilled', value: { isError: false } },
-        ]);
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({ refetch }));
-        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+    it('re-reads readiness on return and opens the next checkpoint once the returned one is done', async () => {
+        services.iterations.getPlanningReadiness.mockResolvedValueOnce(FIXTURES.empty).mockResolvedValue(FIXTURES.twoOfSix);
+        renderPlan('/plan?step=work&returned=1&project=1&iteration=1');
 
-        await user.click(screen.getByRole('button', { name: 'Refresh' }));
-
-        expect(refetch).toHaveBeenCalledTimes(1);
-        expect(await screen.findByRole('status')).toHaveTextContent('Planning data updated.');
+        await waitFor(() => expect(services.iterations.getPlanningReadiness).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(/^\/plan\?project=1&iteration=1$/));
+        expect(stateText('work')).toBe('Done');
+        expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'true');
+        expect(toggle('Work')).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('keeps current content and names the recovery when refresh fails', async () => {
-        const refetch = vi.fn().mockResolvedValue([
-            { status: 'fulfilled', value: { isError: true } },
-        ]);
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({ refetch }));
-        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
+    it('opens one section at a time and keeps it in the link', async () => {
+        const { user } = renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
 
-        await user.click(screen.getByRole('button', { name: 'Refresh' }));
-
-        expect(screen.getByRole('heading', { name: 'Plan', level: 1 })).toBeVisible();
-        expect(await screen.findByRole('alert'))
-            .toHaveTextContent('Some planning data could not be refreshed. Try again.');
+        await user.click(toggle('Iteration'));
+        expect(toggle('Iteration')).toHaveAttribute('aria-expanded', 'true');
+        expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.getByTestId('location')).toHaveTextContent('step=iteration');
+        expect(within(section('iteration')).getByRole('link', { name: /Open iterations/ }))
+            .toHaveAttribute('href', '/iterations?fromPlanStep=iteration');
     });
 
-    it('carries the scope in its links to Tasks, Gantt and the planning page', async () => {
-        useScopeStore.setState({ project: 1, iteration: 12 });
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState({
-            readinessOverrides: { inboxCount: 0, riskCount: 3 },
-        }));
-        const { user } = renderWithProviders(<PlanPage />, { initialEntries: ['/plan?project=2&iteration=21'] });
-
-        expect(screen.getByRole('link', { name: 'Replan at-risk work' }))
-            .toHaveAttribute('href', '/gantt?project=2&iteration=21');
-        expect(screen.getByRole('link', { name: i18n.t('plan.hub.openPeriodSetup', { period: 'August plan' }) }))
-            .toHaveAttribute('href', '/plan/master?project=2&iteration=21');
-        expect(screen.getByRole('link', { name: i18n.t('plan.steps.schedule.title') }))
-            .toHaveAttribute('href', '/plan/master?step=schedule&project=2&iteration=21');
-        await user.click(screen.getByText('Direct planning tools'));
-        const directTools = screen.getByRole('navigation', { name: 'Direct planning tools' });
-        expect(within(directTools).getByRole('link', { name: 'Tasks' }))
-            .toHaveAttribute('href', '/tasks?project=2&iteration=21');
-        expect(within(directTools).getByRole('link', { name: 'Gantt' }))
-            .toHaveAttribute('href', '/gantt?project=2&iteration=21');
-        expect(within(directTools).getByRole('link', { name: 'Triage' }))
-            .toHaveAttribute('href', '/triage');
-        useScopeStore.setState({ project: null, iteration: null });
+    it('shows the iterations when the scope bar opens Plan on them', () => {
+        renderPlan('/plan?panel=iterations&project=1&iteration=1');
+        expect(screen.getByText('Iterations of the project')).toBeVisible();
     });
 
-    it('shows the iterations when the scope bar opens Plan on them, and the hub otherwise', () => {
-        planningReadinessMock.usePlanningReadiness.mockReturnValue(planningState());
-        const opened = renderWithProviders(<PlanPage />, { initialEntries: ['/plan?panel=iterations&project=1&iteration=2'] });
-        expect(screen.getByText('Iterations of the project')).toBeInTheDocument();
-        opened.unmount();
+    it('says the checkpoints are unavailable when the readiness response fails, and retries', async () => {
+        services.iterations.getPlanningReadiness.mockRejectedValueOnce(new Error('offline')).mockResolvedValue(FIXTURES.empty);
+        const { user } = renderPlan();
 
-        renderWithProviders(<PlanPage />, { initialEntries: ['/plan'] });
-        expect(screen.queryByText('Iterations of the project')).not.toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: 'Checkpoint states are unavailable' })).toBeVisible();
+        await user.click(screen.getByRole('button', { name: /Retry/ }));
+        expect(await screen.findByRole('list', { name: 'Checkpoints' })).toBeVisible();
     });
 
-    it('keeps responsive checkpoint layout in CSS instead of an inline six-column grid', () => {
-        expect(planPageSource).not.toContain('repeat(${STEP_DEFS.length}, 1fr)');
-        expect(planPageSource).toContain('className="plan-hub-checkpoint-grid"');
+    it('has English and Russian copy for the page', async () => {
+        await changeAppLanguage('ru');
+        try {
+            renderPlan();
+            expect(await screen.findByRole('list', { name: 'Контрольные точки' })).toBeVisible();
+            expect(screen.getByText('1 из 6')).toBeVisible();
+            expect(stateText('blockers')).toBe('Ждёт контрольную точку 3');
+        } finally {
+            await changeAppLanguage('en');
+        }
     });
 });

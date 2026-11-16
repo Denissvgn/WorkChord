@@ -313,7 +313,7 @@ describe('CommandMenu', () => {
             .toHaveAccessibleName(/Continue Plan/);
 
         await user.keyboard('{Enter}');
-        expect(screen.getByTestId('command-location')).toHaveTextContent('/plan/master');
+        expect(screen.getByTestId('command-location')).toHaveTextContent(/^\/plan$/);
     });
 
     it('keeps visual and keyboard command order aligned outside Tasks', async () => {
@@ -354,7 +354,7 @@ describe('CommandMenu', () => {
         expect(scrollIntoView.mock.contexts.at(-1)).toBe(activeOption);
     });
 
-    it('opens the stable Plan launcher instead of skipping to Plan Master', async () => {
+    it('opens Plan from any page', async () => {
         const { user } = renderWithProviders(
             <>
                 <CommandMenu />

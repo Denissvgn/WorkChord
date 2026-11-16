@@ -60,7 +60,6 @@ describe('responsive shell contracts', () => {
         for (const selector of [
             '.wc .brand',
             '.wc .mobile-nav-trigger',
-            '.wc .plan-master-step-rail .step-item',
             '.wc .plan-share-link-field input',
             '.wc .sb-item',
         ]) {
@@ -158,7 +157,6 @@ describe('responsive shell contracts', () => {
 
     it('preserves interactive step states without making passive checks look clickable', () => {
         const stepRule = cssRule('.wc .step-item');
-        const planStepRule = cssRule('.wc .plan-master-step-rail .step-item');
 
         expect(stepRule).toContain('background: transparent;');
         expect(stepRule).not.toContain('cursor: pointer;');
@@ -168,7 +166,6 @@ describe('responsive shell contracts', () => {
         );
         expect(cssRule('.wc .step-item[aria-current="step"]'))
             .toContain('background: var(--thread-soft);');
-        expect(planStepRule).not.toContain('background: transparent;');
     });
 
     it('keeps the Master hierarchy role-based and tokenized', () => {
@@ -235,7 +232,6 @@ describe('responsive shell contracts', () => {
         }
         expect(mobileRules).toContain('min-height: clamp(18rem, 48dvh, 26rem);');
         expect(mobileRules).toContain('font-size: 16px;');
-        expect(mobileRules).toContain('font-size: var(--wc-type-page);');
         expect(mobileRules).not.toMatch(
             /agent-team-master-layout > \.agent-team-runtime-aux\s*{[^}]*grid-row/s,
         );

@@ -36,5 +36,6 @@ describe('page chrome', () => {
         const Page = (await routeModuleLoaders[key]()).default;
         const { container } = renderWithProviders(<Page />, { initialEntries: [path === '*' ? '/missing' : path] });
         expectPageChrome(container, { status });
-    });
+    // The first dynamic import of a page module can be slow while the whole suite runs.
+    }, 20_000);
 });

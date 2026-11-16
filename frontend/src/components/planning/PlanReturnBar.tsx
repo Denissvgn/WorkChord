@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import {
     isPlanningStepId,
-    planMasterStepHref,
+    planStepHref,
     PLANNING_RETURN_STEP_PARAM,
 } from '../../features/planningMasters/planningReturn';
 
@@ -25,7 +25,7 @@ export const PlanReturnBar = () => {
                 })}</strong>
                 <span>{t('plan.master.returnAfterChanges')}</span>
             </div>
-            <Link className="btn sm" to={scopeLink(planMasterStepHref(stepId, { returned: true }))}>
+            <Link className="btn sm" to={scopeLink(planStepHref(stepId, { returned: true }))}>
                 <ArrowLeft aria-hidden="true" size={13} />
                 {t('plan.master.returnToCheckpoint')}
             </Link>

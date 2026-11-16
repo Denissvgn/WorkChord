@@ -570,69 +570,6 @@
   color: var(--ink-2);
   font-size: var(--wc-type-meta);
 }
-.wc .plan-master-header {
-  flex-shrink: 0;
-  padding-block-start: 14px;
-  padding-inline: 24px;
-  border-block-end: 1px solid var(--border);
-  background: var(--panel);
-}
-.wc .plan-master-mobile-context {
-  display: none;
-}
-.wc .plan-master-page {
-  display: flex;
-  height: 100%;
-  min-height: 0;
-  flex-direction: column;
-}
-.wc .plan-master-full-state {
-  display: flex;
-  min-height: 100%;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
-  padding: 24px;
-}
-.wc .plan-master-full-state-header {
-  max-width: 48rem;
-  text-align: center;
-}
-.wc .plan-master-full-state-header .wc-page-sub {
-  margin-inline: auto;
-}
-.wc .plan-master-title-row {
-  display: flex;
-  min-width: 0;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  padding-block-end: 14px;
-}
-.wc .plan-master-title-row > div {
-  min-width: 0;
-}
-.wc .plan-master-period {
-  flex-shrink: 0;
-  margin: 0;
-  color: var(--ink-2);
-  font-size: var(--wc-type-label);
-  font-weight: 600;
-}
-.wc .plan-master-progress-text {
-  flex-shrink: 0;
-  margin: 0;
-  color: var(--ink-3);
-  font-size: var(--wc-type-label);
-  font-weight: 600;
-}
-.wc .plan-master-page > .wc-master {
-  flex: 1;
-}
-.wc .plan-master-shell {
-  grid-template-columns: 260px minmax(0, 1fr);
-}
 .wc .plan-return-bar {
   display: flex;
   min-width: 0;
@@ -909,18 +846,6 @@
   transform-origin: left center;
   transition: transform var(--wc-motion-medium) var(--wc-ease-standard);
 }
-.wc .plan-master-mobile-step-select {
-  display: none;
-}
-.wc .plan-master-data-banner {
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  margin-block-start: 8px;
-  margin-inline: 24px;
-}
-.wc .plan-master-data-banner .btn {
-  margin-inline-start: auto;
-}
 .wc .plan-share-link-field {
   display: grid;
   gap: 5px;
@@ -939,6 +864,125 @@
   background: var(--panel);
   font: inherit;
   font-weight: 400;
+}
+/* Plan: six checkpoint sections in order, the open one showing its body. */
+.wc .plan-page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  color: var(--ink-2);
+  font-size: var(--wc-type-label);
+}
+.wc .plan-page-meta > span + span::before {
+  content: "·";
+  margin-inline-end: 12px;
+  color: var(--ink-4);
+}
+.wc .plan-sections {
+  display: flex;
+  max-width: 960px;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--wc-r-md);
+  background: var(--panel);
+}
+.wc .plan-section + .plan-section {
+  border-block-start: 1px solid var(--border);
+}
+.wc .plan-section-head {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+  padding: 12px 16px;
+}
+.wc .plan-section-number {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  grid-row: span 2;
+  place-items: center;
+  align-self: start;
+  margin-block-start: 6px;
+  border: 1px solid var(--border-2);
+  border-radius: 50%;
+  color: var(--ink-3);
+  font-size: var(--wc-type-meta);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.wc .plan-section.is-done .plan-section-number {
+  border-color: var(--wc-status-resolved-line);
+  color: var(--wc-status-resolved-ink);
+  background: var(--wc-status-resolved-soft);
+}
+.wc .plan-section.is-next .plan-section-number {
+  border-color: var(--accent-line);
+  color: var(--accent-ink);
+}
+.wc .plan-section-title {
+  margin: 0;
+  font-size: var(--wc-type-heading);
+  font-weight: 600;
+  line-height: var(--wc-leading-ui);
+}
+.wc .plan-section-toggle.btn {
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 36px;
+  margin-inline-start: -8px;
+  padding-inline: 8px;
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+}
+.wc .plan-section-chevron {
+  margin-inline-start: auto;
+  color: var(--ink-3);
+  transition: transform var(--wc-motion-medium) var(--wc-ease-standard);
+}
+.wc .plan-section.is-open .plan-section-chevron {
+  transform: rotate(180deg);
+}
+.wc .plan-section-status {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 0;
+}
+.wc .plan-section-result {
+  min-width: 0;
+  color: var(--ink-2);
+  font-size: var(--wc-type-base);
+  overflow-wrap: anywhere;
+}
+.wc .plan-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 16px 56px;
+}
+.wc .plan-section-waiting {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--wc-type-base);
+  line-height: var(--wc-leading-body);
+}
+.wc .plan-section-owner {
+  display: flex;
+  justify-content: flex-start;
+}
+@media (max-width: 1100px) {
+  .wc .plan-section-body {
+    padding-inline-start: 16px;
+  }
 }
 /* ── Utility ──────────────────────────────────────────────────────────────── */
 .wc .row    { display: flex; align-items: center; gap: 8px; }
@@ -2302,20 +2346,6 @@
 .wc .step-item.current .step-title { color: var(--thread-ink); }
 .wc .step-title { font-size: var(--wc-type-base); font-weight: 500; color: var(--ink); line-height: var(--wc-leading-ui); }
 .wc .step-sub   { font-size: var(--wc-type-meta); color: var(--ink-3); margin-top: 2px; }
-.wc .plan-master-step-rail {
-  margin: 0;
-  list-style: none;
-}
-.wc .plan-master-step-rail > li {
-  min-width: 0;
-}
-.wc .plan-master-step-rail .step-item {
-  width: 100%;
-  grid-template-columns: 22px minmax(0, 1fr);
-  color: inherit;
-  font: inherit;
-  text-align: start;
-}
 
 /* ── Primary planning launch surface ─────────────────────────────────────── */
 .wc .mcard {
@@ -2338,268 +2368,6 @@
 .wc .mcard.primary .mc-icon { background: var(--thread); color: var(--thread-on); border-color: var(--thread); }
 .wc .mcard .mc-title { margin: 0; font-size: var(--wc-type-heading); font-weight: 600; letter-spacing: -0.01em; }
 .wc .mcard .mc-desc { margin: 6px 0 0; font-size: var(--wc-type-base); color: var(--ink-3); line-height: var(--wc-leading-body); }
-
-/* ── Plan Work mixed launcher ─────────────────────────────────────────────── */
-.wc .plan-hub-primary {
-  min-height: 0;
-  gap: 18px;
-  padding: 22px;
-}
-.wc .plan-hub-primary-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-}
-.wc .plan-hub-primary-copy {
-  display: flex;
-  min-width: 0;
-  align-items: flex-start;
-  gap: 14px;
-}
-.wc .plan-hub-primary-title-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.wc .plan-hub-primary-action { flex: 0 0 auto; }
-.wc .plan-hub-readiness {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.4fr);
-  align-items: end;
-  gap: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--thread-line);
-}
-.wc .plan-hub-readiness-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 3px;
-}
-.wc .plan-hub-readiness-copy strong {
-  color: var(--ink);
-  font-size: var(--wc-type-base);
-  font-weight: 600;
-}
-.wc .plan-hub-readiness-copy span {
-  color: var(--ink-3);
-  font-size: var(--wc-type-meta);
-  line-height: var(--wc-leading-body);
-}
-.wc .plan-hub-readiness-copy .plan-status-scope {
-  margin-block-end: 1px;
-  color: var(--thread-ink);
-  font-weight: 600;
-}
-.wc .plan-hub-checkpoints {
-  border-top: 1px solid var(--border);
-}
-.wc .plan-hub-checkpoints > summary,
-.wc .plan-hub-direct-tools > summary {
-  display: flex;
-  min-height: 42px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--ink-2);
-  cursor: pointer;
-  font-size: var(--wc-type-meta);
-  font-weight: 600;
-  list-style: none;
-}
-.wc .plan-hub-checkpoints > summary::-webkit-details-marker,
-.wc .plan-hub-direct-tools > summary::-webkit-details-marker { display: none; }
-.wc .plan-hub-checkpoints > summary:focus-visible,
-.wc .plan-hub-direct-tools > summary:focus-visible {
-  outline: 2px solid var(--thread);
-  outline-offset: 2px;
-}
-.wc .plan-hub-checkpoints > summary svg,
-.wc .plan-hub-direct-tools > summary svg {
-  flex: 0 0 auto;
-  transition: transform .14s ease-out;
-}
-.wc .plan-hub-checkpoints[open] > summary svg,
-.wc .plan-hub-direct-tools[open] > summary svg { transform: rotate(180deg); }
-.wc .plan-hub-checkpoint-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: 20px;
-  margin: 0;
-  padding: 4px 0 0;
-  list-style: none;
-}
-.wc .plan-hub-checkpoint-grid .mini-step {
-  grid-template-columns: 22px minmax(0, 1fr);
-  align-items: flex-start;
-  gap: 9px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-.wc .plan-hub-checkpoint-grid .mini-step + .mini-step { border-top: 0; }
-.wc .plan-hub-checkpoint-grid .ms-dot {
-  width: 22px;
-  height: 22px;
-}
-.wc .plan-hub-checkpoint-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 2px;
-}
-.wc .plan-hub-checkpoint-copy strong {
-  color: var(--ink);
-  font-size: var(--wc-type-meta);
-  font-weight: 600;
-  line-height: var(--wc-leading-ui);
-}
-.wc .plan-hub-checkpoint-copy > span {
-  color: var(--ink-3);
-  font-size: var(--wc-type-micro);
-  line-height: var(--wc-leading-body);
-}
-.wc .plan-hub-jobs { margin-top: 28px; }
-.wc .plan-hub-section-heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 8px;
-}
-.wc .plan-hub-section-heading h2 {
-  margin: 0;
-  color: var(--ink);
-  font-size: var(--wc-type-label);
-  font-weight: 600;
-  letter-spacing: -0.005em;
-}
-.wc .plan-hub-section-heading p {
-  max-width: 60ch;
-  margin: 0;
-  color: var(--ink-3);
-  font-size: var(--wc-type-meta);
-  line-height: var(--wc-leading-body);
-  text-align: end;
-}
-.wc .plan-hub-job-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 28px;
-}
-.wc .plan-hub-job {
-  display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-  padding: 15px 10px;
-  border-top: 1px solid var(--border);
-  border-radius: var(--wc-r-sm);
-  color: inherit;
-  text-decoration: none;
-  transition: background-color .12s ease-out, color .12s ease-out;
-}
-.wc .plan-hub-job:hover { background: var(--panel-2); }
-.wc .plan-hub-job:focus-visible {
-  outline: 2px solid var(--thread);
-  outline-offset: 2px;
-}
-.wc .plan-hub-job .mc-icon {
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--panel-3);
-  color: var(--ink-2);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.wc .plan-hub-job-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 3px;
-}
-.wc .plan-hub-job-copy strong {
-  color: var(--ink);
-  font-size: var(--wc-type-base);
-  font-weight: 600;
-}
-.wc .plan-hub-job-copy > span {
-  color: var(--ink-3);
-  font-size: var(--wc-type-meta);
-  line-height: var(--wc-leading-body);
-}
-.wc .plan-hub-job-copy small {
-  color: var(--ink-3);
-  font-size: var(--wc-type-micro);
-}
-.wc .plan-hub-job-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--thread-ink);
-  font-size: var(--wc-type-meta);
-  font-weight: 600;
-}
-.wc .plan-hub-direct-tools {
-  margin-top: 24px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.wc .plan-hub-direct-tools > summary { min-height: 52px; }
-.wc .plan-hub-direct-tools > summary > span {
-  display: flex;
-  min-width: 0;
-  align-items: baseline;
-  gap: 10px;
-}
-.wc .plan-hub-direct-tools > summary small {
-  color: var(--ink-3);
-  font-size: var(--wc-type-micro);
-  font-weight: 400;
-}
-.wc .plan-hub-direct-tool-groups {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  padding: 0 0 14px;
-}
-.wc .plan-hub-direct-tool-group {
-  min-width: 0;
-}
-.wc .plan-hub-direct-tool-group h3 {
-  margin: 0 0 6px;
-  padding-inline: 8px;
-  color: var(--ink-3);
-  font-size: var(--wc-type-meta);
-  font-weight: 600;
-}
-.wc .plan-hub-direct-tool-list {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 2px;
-}
-.wc .plan-hub-direct-tool-list .btn {
-  width: 100%;
-  justify-content: flex-start;
-}
-.wc .plan-hub-refresh-status {
-  color: var(--done-ink);
-  font-size: var(--wc-type-meta);
-}
-.wc .plan-hub-refresh-status.error { color: var(--danger); }
-.wc .plan-hub-period-name {
-  min-width: 0;
-  overflow: hidden;
-  font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
 /* ── Mini-steps (overview + primary card) ─────────────────────────────────── */
 .wc .mini-step {
@@ -3354,58 +3122,6 @@
     min-height: 44px;
     font-size: 16px;
   }
-  .wc .plan-master-header {
-    padding-block-start: 10px;
-  }
-  .wc .plan-master-breadcrumbs {
-    display: none;
-  }
-  .wc .plan-master-title-row {
-    align-items: flex-start;
-    padding-block-end: 7px;
-  }
-  .wc .plan-master-title-row .wc-page-title {
-    font-size: var(--wc-type-page);
-  }
-  .wc .plan-master-title-row .wc-page-sub,
-  .wc .plan-master-title-row > .plan-master-period {
-    display: none;
-  }
-  .wc .plan-master-mobile-context {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .wc .plan-master-mobile-context-title {
-    margin: 0;
-    color: var(--ink);
-    font-size: var(--wc-type-base);
-    font-weight: 600;
-    line-height: var(--wc-leading-ui);
-  }
-  .wc .plan-master-mobile-context-row {
-    display: flex;
-    min-width: 0;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .wc .plan-master-mobile-context-row > span {
-    font-size: var(--wc-type-label);
-    font-weight: 600;
-    line-height: var(--wc-leading-ui);
-  }
-  .wc .plan-master-mobile-context-row > span:first-child {
-    min-width: 0;
-    overflow: hidden;
-    color: var(--ink-2);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .wc .plan-master-mobile-context-row > span:last-child {
-    flex-shrink: 0;
-    color: var(--ink-3);
-  }
   .wc .plan-checkpoint {
     gap: 16px;
   }
@@ -3525,37 +3241,6 @@
   }
   .wc .wc-page-actions > * {
     max-width: 100%;
-  }
-  .wc .plan-master-header {
-    padding-inline: 20px;
-  }
-  .wc .plan-master-mobile-step-select {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-    min-width: 0;
-    min-height: 44px;
-    margin-block-end: 8px;
-    padding-block: 0;
-    border: 0;
-    background: transparent;
-    color: var(--ink);
-    font: inherit;
-    line-height: var(--wc-leading-ui);
-  }
-  .wc .plan-master-mobile-step-select > span {
-    color: var(--ink-2);
-    font-size: var(--wc-type-label);
-    font-weight: 600;
-  }
-  .wc .plan-master-mobile-step-select > select {
-    min-height: 44px;
-    height: 44px;
-    font-size: 16px;
-  }
-  .wc .plan-master-data-banner {
-    margin-inline: 20px;
   }
   .wc .agent-team-mobile-context {
     display: grid;
@@ -3767,14 +3452,6 @@
   .wc .kpi-grid-4,
   .wc .kpi-grid-5,
   .wc .kpi-grid-6 { grid-template-columns: repeat(2, 1fr); }
-  .wc .plan-hub-checkpoint-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .wc .plan-hub-job-list { grid-template-columns: minmax(0, 1fr); }
-  .wc .plan-hub-section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .wc .plan-hub-section-heading p { text-align: start; }
   .wc .overview-data-status {
     grid-template-columns: auto minmax(0, 1fr);
   }
@@ -3872,39 +3549,6 @@
   .wc .plan-checkpoint-evidence dl > div {
     gap: 10px;
   }
-  .wc .plan-hub-primary {
-    gap: 16px;
-    padding: 18px 16px;
-  }
-  .wc .plan-hub-primary-header,
-  .wc .plan-hub-readiness {
-    align-items: stretch;
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .wc .plan-hub-primary-header { flex-direction: column; }
-  .wc .plan-hub-primary-action {
-    width: 100%;
-    min-height: 48px;
-    justify-content: center;
-  }
-  .wc .plan-hub-checkpoint-grid { grid-template-columns: minmax(0, 1fr); }
-  .wc .plan-hub-job {
-    grid-template-columns: 32px minmax(0, 1fr);
-    align-items: flex-start;
-  }
-  .wc .plan-hub-job-action {
-    grid-column: 2;
-    justify-self: start;
-  }
-  .wc .plan-hub-direct-tools > summary > span {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .wc .plan-hub-direct-tool-groups {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-  }
   .wc .plan-checkpoint-action,
   .wc .plan-checkpoint-share {
     align-items: stretch;
@@ -3977,16 +3621,6 @@
     white-space: nowrap;
   }
   .wc .wc-workbench { padding: 12px; }
-  .wc .plan-master-header {
-    padding-inline: 16px;
-  }
-  .wc .plan-master-data-banner {
-    align-items: flex-start;
-    margin-inline: 16px;
-  }
-  .wc .plan-master-data-banner .btn {
-    margin-inline-start: 0;
-  }
   .wc .wc-master-main {
     padding: 14px 16px 96px;
   }
@@ -4968,10 +4602,6 @@
   .wc .settings-nav-item,
   .wc .settings-nav-search input,
   .wc .sb-item,
-  .wc .plan-hub-checkpoints > summary,
-  .wc .plan-hub-direct-tools > summary,
-  .wc .plan-hub-job,
-  .wc .plan-master-step-rail .step-item,
   .wc .ofm-item,
   .wc .seg button {
     min-height: 44px;
@@ -5074,8 +4704,6 @@
   }
   .wc .wc-slide-over,
   .wc .master-progress > span,
-  .wc .plan-hub-checkpoints > summary svg,
-  .wc .plan-hub-direct-tools > summary svg,
   .wc .overview-details-toggle,
   .wc .overview-focus-more-exceptions svg,
   .wc .overview-task-open-icon,
