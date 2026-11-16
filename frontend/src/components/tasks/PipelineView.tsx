@@ -9,6 +9,7 @@ import { AdminAccessGate } from '../settings/AdminAccessGate';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../feedback/QueryState';
 import { usePipeline } from './usePipeline';
 import { taskMatchesFilters } from '../../utils/taskFilters';
+import { pipelineTasksInScope } from '../../features/overview/overviewSignals';
 import type { TaskFilters } from './TaskFiltersBar';
 import type { LabelGroup } from '../../types/label';
 import type { ScopeIteration, ScopeProject } from '../../features/scope/workScope';
@@ -36,10 +37,8 @@ export function PipelineView({ query, project, iteration, search, agent, filters
     const { t } = useTranslation();
     const [params, setParams] = useSearchParams();
     const { pipeline, canRead, usableData, isPending, isError, error, refetch } = query;
-    const filterAndSegment = (tasks: Task[]) => tasks.filter(task => (
-        (project === undefined || project === 'all' || task.project_id === project)
-        && (iteration === undefined || (iteration === 'backlog' ? task.iteration_id === null : task.iteration_id === iteration))
-        && (!agent || task.claimed_by?.display_name === agent || task.assignee?.name === agent)
+    const filterAndSegment = (tasks: Task[]) => pipelineTasksInScope(tasks, project, iteration).filter(task => (
+        (!agent || task.claimed_by?.display_name === agent || task.assignee?.name === agent)
         && (!search || `${task.title} ${task.description ?? ''}`.toLowerCase().includes(search.toLowerCase()))
         && taskMatchesFilters(task, filters, labelGroups)
     ));
