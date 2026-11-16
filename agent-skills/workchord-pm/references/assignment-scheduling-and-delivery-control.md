@@ -122,7 +122,7 @@ Never let assignment bypass definition or start readiness. Never treat assignmen
 Keep dispatch bound to the plan:
 
 - Pass the task's assignee as `team_member_id`. The server refuses a row from another iteration, and refuses a row that differs from the task's assignee. When you omit the field, the server uses the task's assignee.
-- Dispatch to an agent bound to the assignee row's profile. Enforced model-aware routing refuses any other agent with `actor_capacity_profile_mismatch`, and a task without an assignee with `capacity_owner_missing`. In supervised compatibility routing the server does not check this for you; hold to it anyway, or the Gantt chart names one assignee while another agent does the work.
+- Dispatch to an agent bound to the assignee row's profile. Enforced model-aware routing refuses any other agent with `actor_capacity_profile_mismatch`, and a task without an assignee with `capacity_owner_missing`. In supervised compatibility routing the server does not check this for you; hold to it anyway, or Gantt names one assignee while another agent does the work.
 - To send the task to a different agent, first move the task to that agent's row, preview and apply the schedule, and then create the assignment.
 - An agent that works on a task without an assignee counts against the plan as `agent_working_no_capacity`. Never dispatch such a task to get work moving; assign and schedule it first.
 - Pass `reviewer_profile_id` on every execution assignment. Choose a profile other than the assignee row's profile.
@@ -157,7 +157,7 @@ In assigned-work v1, set queue order explicitly. Expect the server to select wor
 
 Within one queue class, order by explicit queue rank, priority (`1` highest), not-before or scheduled start, task `sort_order`, and task ID as a stable tie-breaker. Require the work response to include its selection reason and complete sort tuple.
 
-Give each agent's queue the order its assignee row has on the Gantt chart. An agent starts the first item of its queue whose dependencies are done, so the queue order and the dependency links are what keep the order of the work. Dates do not: see [Start order and dates](#start-order-and-dates).
+Give each agent's queue the order its assignee row has on Gantt. An agent starts the first item of its queue whose dependencies are done, so the queue order and the dependency links are what keep the order of the work. Dates do not: see [Start order and dates](#start-order-and-dates).
 
 Treat pagination cursors as opaque, actor-bound snapshots. Read the first work
 page for the authoritative decision, then follow `pagination.next_cursor` only
@@ -188,12 +188,12 @@ In supervised v0, order work manually and hand off only the current explicit tas
 ## Schedule and Re-read
 
 Dates are calculated. To move a task, change who does it, its effort, what it
-waits for, or its earliest start. People see the same sentence on the Gantt
+waits for, or its earliest start. People see the same sentence on Gantt
 chart, and its "Try changes" popover edits exactly those inputs. Never set a
 task's dates directly to force a schedule; the next calculation overrules them.
 
 A date is calculated only for a task that has an assignee in the iteration. Dates
-on an unassigned task are leftovers or imports: people see them on the Gantt as
+on an unassigned task are leftovers or imports: people see them on Gantt as
 dashed "no assignee" bars, and the next calculation clears them. Read
 `plan-readiness` first and require the `team` and `blockers` checkpoints to be
 `done` before you preview.
@@ -261,11 +261,11 @@ appear feasible.
 
 ## Supervise Delivery
 
-Use the agent pipeline as a control view. `GET /api/agent/pipeline` places
+Use Tasks, Pipeline view as the delivery control view. `GET /api/agent/pipeline` places
 each open task in exactly one stage. The stage names, what each means, and the
 one PM action for each are in the generated "Agent pipeline stages" table in
 [workflow-and-names.md](workflow-and-names.md); people see the same names on
-the Agent Pipeline page. Agents never pick work from a stage: a task moves past
+Tasks, Pipeline view. Agents never pick work from a stage: a task moves past
 Ready to assign only through an exact agent assignment.
 
 For executing work:

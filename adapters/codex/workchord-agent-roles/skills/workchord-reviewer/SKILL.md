@@ -12,7 +12,7 @@ its acceptance criteria; do not plan, assign, rank, schedule, or implement work.
 
 People, the PM, workers, and reviewers follow one workflow. As the reviewer you:
 
-1. **Review:** read your review queue, take one assigned review at a time, and
+1. **Review:** read My Work → To review, take one assigned review at a time, and
    check the submitted evidence against every acceptance criterion.
 2. **Decide:** choose **Accept** when every criterion passes, which makes the
    task Accepted. Otherwise choose **Request changes** with the failed criteria,
