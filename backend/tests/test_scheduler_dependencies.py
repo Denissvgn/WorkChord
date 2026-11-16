@@ -264,6 +264,78 @@ async def test_summary_predecessor_waits_for_current_child_dates(db_session, mis
         assert tasks[2].start_date > max(task.end_date for task in tasks[:2])
 
 
+@pytest.mark.parametrize("status", ["resolved", "closed", "canceled"])
+@pytest.mark.parametrize("saved_dates", [
+    (None, None),
+    (date(2026, 2, 2), None),
+    (None, date(2026, 2, 3)),
+    (date(2026, 2, 2), date(2026, 2, 3)),
+], ids=["undated", "start_only", "end_only", "dated"])
+@pytest.mark.parametrize("planned_sibling", [False, True], ids=["finished_only", "mixed"])
+async def test_finished_child_does_not_block_summary_dependents(
+    db_session, status, saved_dates, planned_sibling,
+):
+    iteration, _, tasks = await make_plan(db_session, 3, [0, 1, 2], [])
+    child, dependent, sibling = tasks
+    summary = Task(title="Grouped work", iteration=iteration, is_summary=True)
+    db_session.add(summary)
+    await db_session.flush()
+    child.parent_id = summary.id
+    if status == "canceled":
+        child.canceled_at = datetime(2026, 1, 4, tzinfo=timezone.utc)
+    else:
+        child.status = status
+    child.start_date, child.end_date = saved_dates
+    if planned_sibling:
+        sibling.parent_id = summary.id
+    sibling.min_start_date = date(2026, 1, 12)
+    dependent.min_start_date = date(2026, 1, 6)
+    db_session.add(TaskDependency(task_id=dependent.id, depends_on_id=summary.id))
+    await db_session.commit()
+
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id)
+
+    assert result.success and not result.unscheduled
+    assert (child.start_date, child.end_date) == saved_dates
+    assert dependent.start_date >= dependent.min_start_date
+    assert dependent.end_date is not None
+    if planned_sibling:
+        assert dependent.start_date > sibling.end_date
+    dated_children = [task for task in [child, sibling] if task.parent_id == summary.id
+                      and task.start_date is not None and task.end_date is not None]
+    if dated_children:
+        assert summary.start_date == min(task.start_date for task in dated_children)
+        assert summary.end_date == max(task.end_date for task in dated_children)
+        assert dependent.start_date > summary.end_date
+    else:
+        assert summary.start_date is None and summary.end_date is None
+        assert dependent.start_date == dependent.min_start_date
+
+
+@pytest.mark.parametrize("status", ["resolved", "closed", "canceled"])
+async def test_finished_undated_child_satisfies_nested_summaries(db_session, status):
+    iteration, _, tasks = await make_plan(db_session, 2, [0, 1], [])
+    child, dependent = tasks
+    outer = Task(title="Outer group", iteration=iteration, is_summary=True)
+    inner = Task(title="Inner group", iteration=iteration, is_summary=True, parent=outer)
+    db_session.add_all([outer, inner])
+    await db_session.flush()
+    child.parent_id = inner.id
+    if status == "canceled":
+        child.canceled_at = datetime(2026, 1, 4, tzinfo=timezone.utc)
+    else:
+        child.status = status
+    db_session.add(TaskDependency(task_id=dependent.id, depends_on_id=outer.id))
+    await db_session.commit()
+
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id)
+
+    assert result.success and not result.unscheduled
+    assert child.start_date is None and child.end_date is None
+    assert dependent.start_date == iteration.start_date
+    assert dependent.end_date is not None
+
+
 async def test_task_dependency_cycle_is_left_unscheduled(db_session):
     iteration, _, tasks = await make_plan(db_session, 2, [0, 1], [(0, 1), (1, 0)])
     result = await SchedulerService(db_session).schedule_iteration(iteration.id)

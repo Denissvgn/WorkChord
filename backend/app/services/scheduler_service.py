@@ -626,8 +626,8 @@ class SchedulerService:
                 ranks[task.id] = (len(scheduling_passes),
                     get_fallback_sort_key((task, get_task_earliest_start(task))), index)
 
-        # A summary predecessor becomes ready only after its children have
-        # current dates; dates saved by an earlier forecast are not evidence.
+        # A summary predecessor waits for current child dates or satisfied work;
+        # dates saved by an earlier forecast are not evidence of readiness.
         composite_tasks = [task for task in all_tasks if task.children]
         nodes = leaf_tasks + composite_tasks
         pending = {task.id: task for task in nodes}
@@ -643,9 +643,10 @@ class SchedulerService:
         ready = []
         for task in nodes:
             waiting = {predecessor_id for predecessor_id in predecessors[task.id]
-                       if predecessor_id in pending or predecessor_id not in task_map
-                       or task_map[predecessor_id].start_date is None
-                       or task_map[predecessor_id].end_date is None}
+                       if predecessor_id not in satisfied_predecessor_ids
+                       and (predecessor_id in pending or predecessor_id not in task_map
+                            or task_map[predecessor_id].start_date is None
+                            or task_map[predecessor_id].end_date is None)}
             outstanding[task.id] = waiting
             for predecessor_id in waiting:
                 dependents[predecessor_id].append(task.id)
@@ -657,11 +658,18 @@ class SchedulerService:
             _, task_id = heapq.heappop(ready)
             task = pending.pop(task_id)
             if task.children:
-                children = [task_map[child_id] for child_id in predecessors[task_id]]
-                if not children:
+                children = [task_map[child_id] for child_id in predecessors[task_id]
+                            if task_map[child_id].start_date is not None
+                            and task_map[child_id].end_date is not None]
+                if children:
+                    task.start_date = min(child.start_date for child in children)
+                    task.end_date = max(child.end_date for child in children)
+                elif predecessors[task_id]:
+                    # All children are satisfied without dates; release dependents
+                    # without inventing dates for completed or canceled work.
+                    satisfied_predecessor_ids.add(task_id)
+                else:
                     continue
-                task.start_date = min(child.start_date for child in children)
-                task.end_date = max(child.end_date for child in children)
             else:
                 earliest_start = get_task_earliest_start(task)
                 if task.assignee_id in assignee_last_end:
@@ -673,7 +681,7 @@ class SchedulerService:
                 )
                 if task.start_date is not None and task.end_date is not None:
                     assignee_last_end[task.assignee_id] = task.end_date
-            if task.start_date is None or task.end_date is None:
+            if task_id not in satisfied_predecessor_ids and (task.start_date is None or task.end_date is None):
                 continue
             for dependent_id in dependents[task_id]:
                 outstanding[dependent_id].remove(task_id)
