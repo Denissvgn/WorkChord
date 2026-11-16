@@ -78,12 +78,9 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
                 />
             ) : (
                 <>
-                    {groupedPreview.map(group => (
-                        <div key={group.status} className="mb-4">
-                            <h3 className="mb-2 text-sm font-semibold text-content-primary">{t(`statuses.${group.status}`)} · {group.total}</h3>
-                            <ProjectTaskTree tasks={group.tasks} />
-                        </div>
-                    ))}
+                    <ProjectTaskTree dependencyTasks={tasks} sections={groupedPreview.map(group => ({
+                        key: group.status, heading: `${t(`statuses.${group.status}`)} · ${group.total}`, tasks: group.tasks,
+                    }))} />
                     {tasks.length > PROJECT_TASK_PREVIEW && (
                         <Link className="btn sm secondary" to={scopeLink(`/tasks?project=${numericProjectId}`, { project: numericProjectId })}>
                             {t('surfaces.projectDetail.viewAllTasks', { count: tasks.length })}
