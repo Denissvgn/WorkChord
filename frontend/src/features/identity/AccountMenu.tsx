@@ -49,18 +49,15 @@ export const IdentityBadge = () => {
     useEffect(() => {
         if (!open) return;
         const onPointerDown = (event: PointerEvent) => {
-            const root = wrapper.current;
-            if (root?.contains(event.target as Node)) return;
-            const focusWasInside = Boolean(root?.contains(document.activeElement));
+            if (wrapper.current?.contains(event.target as Node)) return;
             close(false);
-            if (focusWasInside) {
-                // The pointer's default action moves focus after this handler, so the return waits for it.
-                // It applies only when nothing else took focus, so a field the user clicked keeps it.
-                window.setTimeout(() => {
-                    const active = document.activeElement;
-                    if (!active || active === document.body) trigger.current?.focus();
-                }, 0);
-            }
+            // The pointer's default action moves focus to the clicked control after this handler, so the return
+            // waits for it. A dialog that the click opened keeps its own focus.
+            window.setTimeout(() => {
+                const active = document.activeElement;
+                if (active && active !== document.body && active.closest('[role="dialog"]')) return;
+                trigger.current?.focus();
+            }, 0);
         };
         const onKeyDown = (event: KeyboardEvent) => {
             if (event.key !== 'Escape') return;
@@ -116,7 +113,7 @@ export const IdentityBadge = () => {
             // One protected read tells whether the server accepts the key. The key is sent with this request
             // only and stored after the server accepts it: storing it remounts the app under IdentityProvider,
             // which would drop this menu and any message it shows.
-            await api.get('/scheduling-rules', { headers: { 'X-Admin-API-Key': key } });
+            await api.get('/scheduling-rules', { headers: { 'X-Admin-API-Key': key }, skipIdentityExpiry: true });
             setAdminApiKey(key);
             removeProtectedQueries();
             setDraftKey('');
@@ -214,6 +211,9 @@ export const IdentityBadge = () => {
                             onClick={() => setUnlockOpen(true)}>{t('identity.unlock')}</Button>}
                 </div>
                 <p className="text-xs text-content-secondary">{editingNote}</p>
+                {signedInPerson && <Link className="text-xs underline" to="/team" onClick={() => close(false)}>
+                    {t('identity.manageInTeam', { team: t('nav.team') })}
+                </Link>}
                 {!hasAdminKey && !signedInPerson && unlockOpen && <form id={`${panelId}-unlock`} className="space-y-2" onSubmit={unlock}>
                     <p className="text-xs text-content-secondary">{t('identity.unlockHelp')}</p>
                     <Input

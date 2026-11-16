@@ -186,6 +186,7 @@ export const englishResources = {
                 "editingNote": "Changes need the admin key in this browser tab. One key unlocks every protected settings section.",
                 "editingByRole": "Your workspace role lets you edit without the admin key.",
                 "editingFollowsRole": "Editing follows the workspace role of this account.",
+                "manageInTeam": "Manage roles in {{team}}",
                 "keyNotChecked": "The server could not be reached to check this key. Nothing was saved; try again.",
                 "unlock": "Unlock",
                 "lock": "Lock",

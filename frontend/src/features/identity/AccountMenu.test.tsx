@@ -1,10 +1,29 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
+import { AxiosError } from 'axios';
+import type { AxiosAdapter, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { IdentityProvider } from './IdentityProvider';
 import { IdentityBadge } from './AccountMenu';
-import api from '../../services/api';
+import api, { IDENTITY_EXPIRED_EVENT } from '../../services/api';
 import { clearAdminApiKey, hasAdminApiKey } from '../../utils/adminAccess';
+
+const originalAdapter = api.defaults.adapter;
+
+/**
+ * Answers requests at the transport level, so the real request and response interceptors of the API client run.
+ * Each reply is an HTTP status; a status of 400 or above is raised the way axios raises it.
+ */
+const answerFromServer = (...statuses: number[]) => {
+    const adapter = vi.fn<AxiosAdapter>(async (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => {
+        const status = statuses.shift() ?? 200;
+        const response: AxiosResponse = { data: {}, status, statusText: String(status), headers: {}, config };
+        if (status >= 400) throw new AxiosError(`Request failed with status ${status}`, 'ERR_BAD_REQUEST', config, null, response);
+        return response;
+    });
+    api.defaults.adapter = adapter;
+    return adapter;
+};
 
 const service = vi.hoisted(() => ({ get: vi.fn(), logout: vi.fn(), transferGuest: vi.fn(), chooseLocalProfile: vi.fn() }));
 vi.mock('./identityService', () => ({ identityService: service }));
@@ -45,6 +64,7 @@ describe('account menu', () => {
     });
 
     afterEach(() => {
+        api.defaults.adapter = originalAdapter;
         vi.restoreAllMocks();
     });
 
@@ -80,9 +100,9 @@ describe('account menu', () => {
     });
 
     it('unlocks editing from the menu, keeps a rejected key out of storage, and locks again', async () => {
-        const check = vi.spyOn(api, 'get')
-            .mockRejectedValueOnce(Object.assign(new Error('Unauthorized'), { response: { status: 401 } }))
-            .mockResolvedValueOnce({ data: {} });
+        const server = answerFromServer(401, 200);
+        const sessionEnded = vi.fn();
+        window.addEventListener(IDENTITY_EXPIRED_EVENT, sessionEnded);
         const { user } = renderLocalMenu();
         let menu = await openMenu(user);
 
@@ -93,11 +113,19 @@ describe('account menu', () => {
         // The rejection shows in place: the menu stays open and nothing is stored.
         expect(await within(menu).findByText('The server rejected this key. Nothing was saved.')).toBeInTheDocument();
         expect(hasAdminApiKey()).toBe(false);
-        expect(check).toHaveBeenLastCalledWith('/scheduling-rules', { headers: { 'X-Admin-API-Key': 'wrong-key' } });
+        // A rejected key is not an expired session: the real interceptor does not report one, so no banner follows.
+        expect(sessionEnded).not.toHaveBeenCalled();
+        expect(screen.queryByText('Your session expired. Sign in again to continue.')).not.toBeInTheDocument();
+        window.removeEventListener(IDENTITY_EXPIRED_EVENT, sessionEnded);
+        const [checked] = server.mock.calls[0];
+        expect(checked.url).toBe('/scheduling-rules');
+        expect(checked.headers.get('X-Admin-API-Key')).toBe('wrong-key');
 
+        await user.clear(within(menu).getByLabelText('Admin key'));
         await user.type(within(menu).getByLabelText('Admin key'), 'right-key');
         await user.click(within(menu).getByRole('button', { name: 'Unlock' }));
         await waitFor(() => expect(hasAdminApiKey()).toBe(true));
+        expect(server.mock.calls[1][0].headers.get('X-Admin-API-Key')).toBe('right-key');
 
         // The accepted key remounts the app, so the menu opens again to show the unlocked state.
         await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument());
@@ -123,6 +151,7 @@ describe('account menu', () => {
         expect(within(menu).getByText('Signed in with your team account.')).toBeInTheDocument();
         expect(within(menu).getByText('Editing: locked')).toBeInTheDocument();
         expect(within(menu).getByText('Editing follows the workspace role of this account.')).toBeInTheDocument();
+        expect(within(menu).getByRole('link', { name: 'Manage roles in Team' })).toHaveAttribute('href', '/team');
         expect(within(menu).queryByRole('button', { name: 'Unlock' })).not.toBeInTheDocument();
         expect(within(menu).getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
     });
@@ -158,6 +187,20 @@ describe('account menu', () => {
         await user.click(trigger);
         screen.getByRole('link', { name: 'Access' }).focus();
         await user.click(document.body);
+        expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument();
+        expect(trigger).toHaveFocus();
+    });
+
+    it('returns focus to its button after an outside click on another focusable control', async () => {
+        const { user } = renderWithProviders(<IdentityProvider>
+            <IdentityBadge />
+            <button type="button">Elsewhere on the page</button>
+        </IdentityProvider>);
+        const trigger = await screen.findByRole('button', { name: 'Account and access' });
+
+        await user.click(trigger);
+        await user.click(screen.getByRole('button', { name: 'Elsewhere on the page' }));
+
         expect(screen.queryByRole('dialog', { name: 'Account and access' })).not.toBeInTheDocument();
         expect(trigger).toHaveFocus();
     });
