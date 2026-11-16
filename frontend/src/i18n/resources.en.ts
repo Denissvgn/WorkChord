@@ -4071,6 +4071,10 @@ export const englishResources = {
                         resolved: "Resolved",
                         closed: "Closed",
                     },
+                    captions: {
+                        noAssignee: "No assignee",
+                        assigned: "Assigned",
+                    },
                     invalidTransition: "Invalid status transition from {{from}} to {{to}}",
                     movedOnBoard: "Moved on board",
                     updateFailed: "The task move could not be saved. Reload the board and try again.",

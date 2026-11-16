@@ -171,6 +171,10 @@ export const surfacesRussian = {
             resolved: "Решено",
             closed: "Закрыто",
         },
+        captions: {
+            noAssignee: "Без исполнителя",
+            assigned: "Назначено",
+        },
         invalidTransition: "Недопустимый переход статуса: {{from}} → {{to}}",
         movedOnBoard: "Перемещено на доске",
         updateFailed: "Не удалось сохранить перемещение задачи. Перезагрузите доску и повторите попытку.",

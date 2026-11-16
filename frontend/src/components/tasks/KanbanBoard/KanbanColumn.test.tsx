@@ -41,7 +41,7 @@ describe('Board card', () => {
     it('labels the claim time and says when effort is unknown', () => {
         renderWithProviders(<KanbanCard task={task(7, { effort_days: null, claimed_by: { display_name: 'Agent A' }, claim_expires_at: '2030-01-02T18:42:00Z' } as Partial<Task>)} />);
         expect(screen.getByText(/^Claimed by Agent A, held until /)).toBeInTheDocument();
-        expect(screen.getByText('No estimate')).toBeInTheDocument();
+        expect(screen.getByText('Unestimated')).toBeInTheDocument();
         expect(screen.getAllByText(/#7/)).toHaveLength(1);
     });
 

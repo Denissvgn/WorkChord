@@ -2,22 +2,37 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
 import type { Task } from '../../../types/task';
-import { Bot, Clock, User as UserIcon, AlertCircle, GripVertical } from 'lucide-react';
+import { AlertCircle, Bot, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
-import { formatEffortDays } from '../../../utils/workNumbers';
 import { formatClaimUntil } from './claimTime';
 import { priorityChipClassName } from '../../ui/tone';
+import { agentRowValues } from '../useAgentRowFacts';
+import type { AgentRowFacts } from '../useAgentRowFacts';
+import type { TaskRowAssigneeOption } from '../TaskRow';
+import { taskStateChip } from '../taskStateChip';
+import { getEffectiveEffort } from '../taskRowValues';
+import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } from '../taskRowParts';
 
+/** What a card needs beyond its task, the same inputs a list row takes, shared by every card on the board. */
+export interface BoardCardContext {
+    taskMap: Map<number, Task>;
+    assigneeOptions: TaskRowAssigneeOption[];
+    agentFacts: AgentRowFacts;
+}
 
 interface KanbanCardProps {
     task: Task;
     onOpen?: (task: Task, trigger?: HTMLElement) => void;
+    context?: BoardCardContext;
 }
 
-export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
+/** One task on the board: the same title, state chip, assignee and effort a list row shows. */
+export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
     const { t, i18n } = useTranslation();
-    const effort = formatEffortDays(task.effort_days, i18n.language);
     const claimUntil = task.claim_expires_at ? formatClaimUntil(task.claim_expires_at, i18n.language) : null;
+    const chip = context ? taskStateChip(task, context.taskMap) : null;
+    const { dispatch } = context ? agentRowValues(task, context.assigneeOptions, context.agentFacts) : { dispatch: null };
+    const assigneeKind = context?.assigneeOptions.find(option => option.id === task.assignee?.id)?.kind;
     const {
         attributes,
         listeners,
@@ -52,7 +67,7 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
         <div
             ref={setNodeRef}
             style={style}
-
+            data-task-card={task.id}
             className="group relative bg-surface-card p-4 rounded-xl border border-border-subtle shadow-sm hover:shadow-md transition-all duration-200 cursor-grab active:cursor-grabbing select-none hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
             <div>
@@ -87,34 +102,25 @@ export const KanbanCard = ({ task, onOpen }: KanbanCardProps) => {
                 {/* Title */}
                 {'parent_context' in task && Array.isArray(task.parent_context) && task.parent_context.length > 0 &&
                     <p className="mb-1 truncate text-xs text-content-secondary">{task.parent_context.join(' / ')}</p>}
-                <h4 className="mb-3 text-sm font-medium leading-snug text-content-primary">
+                <h4 className={clsx('text-sm font-medium leading-snug text-content-primary', chip ? 'mb-2' : 'mb-3')}>
                     <button type="button" className="text-left hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                         aria-label={t('workStatus.openTask', { title: task.title })}
                         onClick={event => onOpen?.(task, event.currentTarget)}>{task.title}</button>
                 </h4>
+                {chip && <TaskStateChipBadge chip={chip} className="mb-3" />}
 
-                {/* Footer: Meta Info */}
-                <div className="flex items-center justify-between text-xs text-content-secondary">
-                    <div className="flex items-center gap-2">
-                        {task.assignee ? (
-                            <div className="flex items-center gap-1.5 bg-surface-muted px-2 py-1 rounded-md">
-                                <span className="w-4 h-4 rounded-full bg-feedback-indigo-muted text-feedback-indigo-foreground flex items-center justify-center text-wc-micro font-bold">
-                                    {task.assignee.name.charAt(0)}
-                                </span>
-                                <span className="max-w-[80px] truncate">{task.assignee.name}</span>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md text-content-tertiary border border-border-subtle border-dashed">
-                                <UserIcon className="w-3 h-3" />
-                                <span>{t('surfaces.kanbanCard.unassigned')}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex items-center gap-1 bg-surface-muted px-2 py-1 rounded-md">
-                        <Clock className="w-3 h-3 text-content-tertiary" aria-hidden="true" />
-                        <span>{effort ?? t('surfaces.kanbanCard.noEstimate')}</span>
-                    </div>
+                {/* Footer: the assignee with its kind, the agent status under it, and the effort */}
+                <div className="flex items-start justify-between gap-2 text-xs text-content-secondary">
+                    <span data-assignee-cell="" className="flex min-w-0 flex-col">
+                        <span className="flex min-w-0 items-center gap-1.5">
+                            <AssigneeKindIcon kind={assigneeKind} className="h-3.5 w-3.5" />
+                            <span className="min-w-0 truncate" title={task.assignee?.name ?? t('common.unassigned')}>
+                                {task.assignee?.name ?? t('common.unassigned')}
+                            </span>
+                        </span>
+                        {dispatch && <AgentDispatchLine dispatch={dispatch} className="block truncate pl-[1.125rem] text-wc-micro text-content-tertiary" />}
+                    </span>
+                    <EffortValue effort={getEffectiveEffort(task)} className="shrink-0 text-right" />
                 </div>
             </div>
         </div>

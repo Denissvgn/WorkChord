@@ -1,25 +1,18 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import { Bot, CheckCircle2, Circle, CornerDownRight, User } from 'lucide-react';
+import { CheckCircle2, Circle, CornerDownRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { OverflowMenu } from '../ui/OverflowMenu';
 import type { OverflowMenuItem } from '../ui/OverflowMenu';
 import { statusTextClassName } from '../ui/tone';
 import { canTransition, TASK_TRANSITIONS } from '../../features/taskTransitions';
 import { isDone } from './taskStateChip';
-import { AGENT_DISPATCH_LABEL_KEY } from '../../features/agentDispatch';
 import type { AgentDispatchState } from '../../features/agentDispatch';
 import type { TaskStateChip } from './taskStateChip';
 import type { TaskStatus } from '../../types/task';
-
-const chipClassName: Record<TaskStateChip['kind'], string> = {
-    blocked: 'bg-feedback-danger-muted text-feedback-danger-foreground',
-    needsDefinition: 'bg-feedback-warning-muted text-feedback-warning-foreground',
-    waits: 'bg-surface-subtle text-content-secondary',
-    ready: 'bg-action-muted text-action',
-    inReview: 'bg-surface-subtle text-content-secondary',
-};
+import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } from './taskRowParts';
+import { AssigneeSelect } from './AssigneeSelect';
 
 export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null }
 
@@ -90,7 +83,6 @@ export const TaskRow = ({
     const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
     const statusIcon = isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
     const assigneeKind = assigneeOptions?.find(option => option.id === assignee?.id)?.kind;
-    const AssigneeIcon = assigneeKind === 'agent' ? Bot : User;
     const assigneeName = assignee?.name ?? t('common.unassigned');
     const options = assignee && assignee.id !== undefined && !assigneeOptions?.some(option => option.id === assignee.id)
         ? [{ id: assignee.id, name: assignee.name }, ...(assigneeOptions ?? [])]
@@ -174,43 +166,33 @@ export const TaskRow = ({
 
             {meta && <span className="hidden min-w-0 max-w-[16rem] shrink truncate text-xs text-content-secondary lg:block">{meta}</span>}
 
-            {chip && (
-                <span className={clsx('hidden shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs sm:inline', chipClassName[chip.kind])}>
-                    {chip.kind === 'waits' ? t('taskList.dependsOnCount', { count: chip.count }) : t(chipLabelKey[chip.kind])}
-                </span>
-            )}
+            {chip && <TaskStateChipBadge chip={chip} className="hidden sm:inline" />}
 
             {assignee !== undefined && (
                 // Two tight lines, 16 px and 14 px, so the row stays 44 px: the name, then the agent status under it.
                 <span data-assignee-cell="" className="hidden w-40 shrink-0 flex-col justify-center text-xs text-content-secondary md:flex">
                     <span className={clsx('flex min-w-0 items-center gap-1', dispatch && 'h-4')}>
-                        <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                        <AssigneeKindIcon kind={assigneeKind} className="h-3.5 w-3.5" />
                         {onAssign ? (
-                            <select data-page-chrome-control="select"
+                            <AssigneeSelect data-page-chrome-control="select"
                                 aria-label={`${t('taskList.assignee')}: ${title}`}
                                 title={assigneeName}
-                                value={assignee?.id ?? ''}
-                                onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
+                                value={assignee?.id}
+                                options={options}
+                                emptyLabel={t('common.unassigned')}
+                                onChange={onAssign}
                                 className={clsx(
                                     'min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 py-0 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
                                     dispatch ? 'h-4 leading-4' : 'h-8',
                                 )}
-                            >
-                                <option value="">{t('common.unassigned')}</option>
-                                {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
-                            </select>
+                            />
                         ) : (
                             <span className="min-w-0 flex-1 truncate leading-4" title={assigneeName}>
                                 <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
                             </span>
                         )}
                     </span>
-                    {dispatch && (
-                        <span data-agent-dispatch={dispatch} title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])} className="block h-3.5 truncate pl-[1.125rem] text-wc-micro text-content-tertiary">
-                            {/* "Agent status unknown" already names what it is about. */}
-                            {dispatch !== 'unknown' && <span className="sr-only">{t('taskList.agentStatus')}: </span>}{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
-                        </span>
-                    )}
+                    {dispatch && <AgentDispatchLine dispatch={dispatch} className="block h-3.5 truncate pl-[1.125rem] text-wc-micro text-content-tertiary" />}
                 </span>
             )}
 
@@ -224,14 +206,7 @@ export const TaskRow = ({
                 </span>
             )}
 
-            {effort !== undefined && (effort === null ? (
-                <span className="w-12 shrink-0 text-right text-xs text-content-tertiary" title={t('domain.unknownEstimate')}>
-                    <span aria-hidden="true">—</span>
-                    <span className="sr-only">{t('domain.unknownEstimate')}</span>
-                </span>
-            ) : (
-                <span className="w-12 shrink-0 text-right text-xs tabular-nums text-content-secondary">{t('units.daysCompact', { count: effort })}</span>
-            ))}
+            {effort !== undefined && <EffortValue effort={effort} className="w-12 shrink-0 text-right" />}
 
             {/* The slot keeps its width, so the row does not shift when the menu appears. */}
             <span className="flex h-8 w-8 shrink-0 items-center justify-center">
@@ -240,10 +215,3 @@ export const TaskRow = ({
         </div>
     );
 };
-
-const chipLabelKey = {
-    blocked: 'taskList.blocked',
-    needsDefinition: 'taskList.needsDefinition',
-    ready: 'taskList.readyToStart',
-    inReview: 'taskList.inReview',
-} as const;

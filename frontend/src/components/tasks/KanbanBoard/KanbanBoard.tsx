@@ -2,7 +2,7 @@ import { isGraphLimitError } from '../../../utils/graphLimitError';
 import { PagedTaskBrowser } from '../PagedTaskBrowser';
 import { useState, useMemo, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
     DndContext,
     closestCorners,
@@ -22,9 +22,14 @@ import { labelService } from '../../../services/labelService';
 import type { Task, TaskBatchUpdateResponse, TaskStatus, TaskUpdate } from '../../../types/task';
 import type { TaskFilters } from '../TaskFiltersBar';
 import { selectVisibleWork } from '../../../utils/visibleWork';
+import { filterTaskBySearch } from '../../../utils/taskFilters';
+import { AssigneeSelect } from '../AssigneeSelect';
+import { useAgentRowFacts } from '../useAgentRowFacts';
+import { assigneeOptionsFrom } from '../useTaskRowEdits';
 import { TaskEditorDrawer } from '../TaskEditorDrawer';
 import { WorkFreshness } from '../../feedback/WorkFreshness';
 import { KanbanColumn } from './KanbanColumn';
+import type { BoardCardContext } from './KanbanCard';
 import { KanbanCard } from './KanbanCard';
 import { createPortal } from 'react-dom';
 import { STATUS_TONE } from '../../ui/tone';
@@ -42,10 +47,11 @@ interface KanbanBoardProps {
 
 type ColumnId = 'planned-unassigned' | 'planned-assigned' | 'active' | 'resolved' | 'closed';
 
-const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus }[] = [
-    // Lifecycle names, the same words as status everywhere else; Planned splits by whether someone owns it.
-    { id: 'planned-unassigned', titleKey: 'plannedUnassigned', status: 'planned' },
-    { id: 'planned-assigned', titleKey: 'plannedAssigned', status: 'planned' },
+const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus; captionKey?: 'noAssignee' | 'assigned' }[] = [
+    // Headers use the lifecycle names of the vocabulary (the same words as status everywhere else);
+    // Planned splits by whether someone owns it, and the caption says which half a column is.
+    { id: 'planned-unassigned', titleKey: 'plannedUnassigned', status: 'planned', captionKey: 'noAssignee' },
+    { id: 'planned-assigned', titleKey: 'plannedAssigned', status: 'planned', captionKey: 'assigned' },
     { id: 'active', titleKey: 'active', status: 'active' },
     { id: 'resolved', titleKey: 'resolved', status: 'resolved' },
     { id: 'closed', titleKey: 'closed', status: 'closed' },
@@ -72,6 +78,9 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const assigneeSelectId = useId();
     const assigneeSelectRef = useRef<HTMLSelectElement>(null);
+    // The list's search applies to the board too: the same ?q= in the toolbar narrows both views.
+    const [searchParams] = useSearchParams();
+    const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
 
     // Data Fetching
     const tasksQuery = useQuery({
@@ -91,6 +100,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const tasks = useMemo(() => tasksQuery.data ?? [], [tasksQuery.data]);
     const team = useMemo(() => teamQuery.data ?? [], [teamQuery.data]);
     const labelGroups = useMemo(() => labelsQuery.data ?? [], [labelsQuery.data]);
+    const assigneeOptions = useMemo(() => assigneeOptionsFrom(team), [team]);
 
     // feedback-policy: mutation pending,inline - drag is locked while saving and selection failures stay recoverable.
     const updateTaskMutation = useMutation({
@@ -154,7 +164,23 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     };
 
     // Filtering & Grouping
-    const filteredTasks = useMemo(() => selectVisibleWork(tasks, filters, labelGroups).leaves, [tasks, filters, labelGroups]);
+    const searchedTasks = useMemo(() => tasks
+        .map(task => filterTaskBySearch(task, searchText))
+        .filter((task): task is Task => task !== null), [tasks, searchText]);
+    const filteredTasks = useMemo(() => selectVisibleWork(searchedTasks, filters, labelGroups).leaves, [searchedTasks, filters, labelGroups]);
+
+    // What a card shows beyond its task: the same state chip, assignee status and effort a list row uses.
+    const agentFacts = useAgentRowFacts(filteredTasks);
+    const taskMap = useMemo(() => {
+        const map = new Map<number, Task>();
+        const walk = (list: Task[]) => list.forEach(task => {
+            map.set(task.id, task);
+            if (task.children) walk(task.children);
+        });
+        walk(tasks);
+        return map;
+    }, [tasks]);
+    const cardContext = useMemo<BoardCardContext>(() => ({ taskMap, assigneeOptions, agentFacts }), [taskMap, assigneeOptions, agentFacts]);
 
     const columns = useMemo(() => {
         const cols: Record<ColumnId, Task[]> = {
@@ -336,10 +362,12 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                             key={col.id}
                             id={col.id}
                             onOpen={(task, trigger) => { openTrigger.current = trigger ?? null; setOpenedTaskId(task.id); }}
-                            title={t(`surfaces.kanbanBoard.columns.${col.titleKey}`)}
+                            title={t(`statuses.${col.status}`)}
+                            caption={col.captionKey ? t(`surfaces.kanbanBoard.captions.${col.captionKey}`) : undefined}
                             tasks={columns[col.id]}
                             count={columns[col.id].length}
                             tone={STATUS_TONE[col.status]}
+                            context={cardContext}
                         />
                     ))}
                 </div>
@@ -407,19 +435,17 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                         <label className="block text-sm font-medium text-content-primary" htmlFor={assigneeSelectId}>
                             {t('surfaces.kanbanBoard.assignee')}
                         </label>
-                        <select
+                        <AssigneeSelect
                             ref={assigneeSelectRef}
                             id={assigneeSelectId}
-                            value={selectedAssigneeId ?? ''}
-                            onChange={event => setSelectedAssigneeId(event.target.value ? Number(event.target.value) : null)}
+                            aria-label={t('surfaces.kanbanBoard.assignee')}
+                            value={selectedAssigneeId}
+                            options={assigneeOptions}
+                            emptyLabel={t('surfaces.kanbanBoard.chooseAssigneePlaceholder')}
+                            onChange={setSelectedAssigneeId}
                             disabled={updateTaskMutation.isPending}
                             className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-base text-content-primary shadow-sm focus:outline-none focus:ring-2 focus:ring-focus disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                            <option value="">{t('surfaces.kanbanBoard.chooseAssigneePlaceholder')}</option>
-                            {team.map(member => (
-                                <option key={member.id} value={member.id}>{member.name}</option>
-                            ))}
-                        </select>
+                        />
                         {updateTaskMutation.isError && (
                             <p role="alert" className="text-sm text-feedback-danger-foreground">
                                 {t('surfaces.kanbanBoard.assignmentMoveFailed')}
