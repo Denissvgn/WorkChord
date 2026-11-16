@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Bot, User } from 'lucide-react';
@@ -17,11 +17,28 @@ import {
 } from './directoryModel';
 
 const MAX_CHIPS = 3;
+/** How often connection ages are recomputed and the roster is read again while the page is open. */
+const CLOCK_TICK_MS = 30_000;
 const CONNECTION_TONE: Record<ConnectionState, PillTone> = { connected: 'green', not_connected: 'gray', unknown: 'yellow' };
 
 /** The skills worth showing first: strengths by level, weaknesses last. */
 const chipSkills = (row: DirectoryRow) => [...row.skills]
     .sort((a, b) => Number(a.is_weakness) - Number(b.is_weakness) || b.level - a.level || a.skill_name.localeCompare(b.skill_name));
+
+/** The current time, moving on every tick so values that depend on age do not freeze at mount. */
+const useNow = (tickMs: number) => {
+    const [now, setNow] = useState(() => Date.now());
+    useEffect(() => {
+        const timer = setInterval(() => setNow(Date.now()), tickMs);
+        return () => clearInterval(timer);
+    }, [tickMs]);
+    return now;
+};
+
+const refusedStatus = (error: unknown) => {
+    const status = (error as { response?: { status?: number } } | null)?.response?.status;
+    return status === 401 || status === 403;
+};
 
 export type DrawerTarget = { mode: 'add' } | { mode: 'edit'; key: string } | null;
 
@@ -31,7 +48,7 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
     const { hasAdminAccess } = useAdminAccess();
     const { hasAgentKey } = useAgentAccess();
     const canReadRoster = hasAdminAccess || hasAgentKey;
-    const [now] = useState(() => Date.now());
+    const tick = useNow(CLOCK_TICK_MS);
 
     // feedback-policy: query loading,error,retry,empty
     const profilesQuery = useQuery({
@@ -45,7 +62,11 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
         queryFn: () => agentService.getActorRoster(true),
         enabled: canReadRoster,
         retry: false,
+        // Connection is judged by when the server last saw each agent, so the roster is read again while the page is open.
+        refetchInterval: query => (refusedStatus(query.state.error) ? false : CLOCK_TICK_MS),
     });
+    // One clock for every connection age, in the rows and the drawer: it moves on each tick and with each roster read.
+    const now = Math.max(tick, rosterQuery.dataUpdatedAt);
     // Only a successful read counts: after a failed refresh the cached roster is stale and every state is Unknown.
     const rosterState: RosterState = !canReadRoster || rosterQuery.isError ? 'unavailable'
         : rosterQuery.isSuccess ? 'loaded' : 'loading';

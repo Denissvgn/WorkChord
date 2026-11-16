@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AgentActorRosterItem, AgentModelBinding } from '../types/agent';
 import type { TeamMemberProfile, TeamMemberProfileSkill } from '../types/team';
 import { clearAdminApiKey, setAdminApiKey } from '../utils/adminAccess';
+import { CONNECTED_WINDOW_MS } from '../components/team/directoryModel';
 import { expectPageChrome } from '../test/pageChrome';
 import { renderWithProviders } from '../test/renderWithProviders';
 import TeamPage from './TeamPage';
@@ -67,7 +68,7 @@ describe('Team page', () => {
             resource_id: id, resource: PEOPLE.find(item => item.id === id), expected_revisions: { 1: 1 }, complete: true,
         }));
     });
-    afterEach(() => { clearAdminApiKey(); });
+    afterEach(() => { clearAdminApiKey(); vi.useRealTimers(); });
 
     it('lists people and agents in one table with the model and connection state of each agent', async () => {
         setAdminApiKey('operator-key');
@@ -278,6 +279,43 @@ describe('Team page', () => {
 
         await screen.findByRole('button', { name: 'Open Builder' });
         await waitFor(() => expect(within(rowFor('Builder')).getByText('Not connected')).toBeVisible());
+    });
+
+    it('lets a connection age while the page stays open, in the row and the drawer', async () => {
+        // Date and intervals are faked; timeouts stay real so the page can render and settle.
+        vi.useFakeTimers({ toFake: ['Date', 'setInterval', 'clearInterval'] });
+        vi.setSystemTime(new Date('2026-11-16T10:00:00Z'));
+        setAdminApiKey('operator-key');
+        // The agent was seen a minute before the page opened and then stopped: every later read returns the same time.
+        services.agent.getActorRoster.mockResolvedValue([actor({ last_seen_at: '2026-11-16T09:59:00Z' })]);
+        const { queryClient } = renderTeam();
+
+        await screen.findByRole('button', { name: 'Open Builder' });
+        await waitFor(() => expect(within(rowFor('Builder')).getByText('Connected')).toBeVisible());
+        act(() => { screen.getByRole('button', { name: 'Open Builder' }).click(); });
+        // The drawer re-renders once the profile is read, so it is looked up afresh on every check.
+        const binding = () => within(within(screen.getByRole('dialog', { name: 'Builder' })).getByRole('region', { name: 'Model binding' }));
+        await waitFor(() => expect(services.planning.readInitial).toHaveBeenCalled());
+        await waitFor(() => expect(binding().getByText('Last seen')).toBeVisible());
+        expect(binding().getByText('Connected')).toBeVisible();
+
+        // Halfway through the window a refresh succeeds; the agent is still within it.
+        await act(async () => { await vi.advanceTimersByTimeAsync(CONNECTED_WINDOW_MS / 2); });
+        const readsBefore = services.agent.getActorRoster.mock.calls.length;
+        // The open page reads the roster again on its own.
+        expect(readsBefore).toBeGreaterThan(1);
+        await act(async () => { await queryClient.refetchQueries({ queryKey: ['agent-actor-roster'] }); });
+        expect(services.agent.getActorRoster.mock.calls.length).toBeGreaterThan(readsBefore);
+        expect(queryClient.getQueryState(['agent-actor-roster', true])?.status).toBe('success');
+        expect(within(rowFor('Builder')).getByText('Connected')).toBeVisible();
+        expect(binding().getByText('Connected')).toBeVisible();
+
+        // Past the window, without leaving the page, the same agent is no longer connected.
+        await act(async () => { await vi.advanceTimersByTimeAsync(CONNECTED_WINDOW_MS / 2 + 60_000); });
+        await waitFor(() => expect(within(rowFor('Builder')).getByText('Not connected')).toBeVisible());
+        expect(within(rowFor('Builder')).queryByText('Connected')).not.toBeInTheDocument();
+        expect(binding().getByText('Not connected')).toBeVisible();
+        expect(binding().queryByText('Connected')).not.toBeInTheDocument();
     });
 
     it('shows an empty directory with a way to start', async () => {

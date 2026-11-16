@@ -127,7 +127,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/team/ImportTeamModal.tsx': 'b0663a95bdbc701e',
     'src/components/capacity/TeamForm.tsx': '52d7886942492305',
     'src/components/capacity/TeamList.tsx': '3729e8c0dcce00b3',
-    'src/components/team/TeamDirectory.tsx': 'c71452e7b5dc9396',
+    'src/components/team/TeamDirectory.tsx': 'a7e98c622e688db4',
     'src/components/team/TeamProfileManager.tsx': 'a7d02d546837d9ac',
     'src/components/capacity/VacationManager.tsx': 'f8414b0f137392f9',
     'src/i18n/SystemLanguageProvider.tsx': '52087c287c3e9315',
