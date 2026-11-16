@@ -122,6 +122,12 @@ describe('shared workflow vocabulary', () => {
         expect(lookup(catalogs[language], key)).toBe(names?.[language]);
     });
 
+    it.each(['capture', 'plan', 'do', 'review'])('uses the vocabulary English name for the landing workflow step %s', stepId => {
+        const step = workflowSteps.find(item => item.id === stepId);
+        expect(step, `workflow.${stepId} is missing from the vocabulary`).toBeDefined();
+        expect(lookup(catalogs.en, `landing.stages.${stepId}.term`)).toBe(step?.name);
+    });
+
     it.each(['capture', 'plan', 'do', 'review'])('uses the vocabulary Russian name for the landing workflow step %s', stepId => {
         const step = workflowSteps.find(item => item.id === stepId);
         expect(step, `workflow.${stepId} is missing from the vocabulary`).toBeDefined();

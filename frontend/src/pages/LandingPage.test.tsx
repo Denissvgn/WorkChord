@@ -10,7 +10,7 @@ it('renders one heading, one paragraph, the four workflow stages and one workspa
     expect(screen.queryAllByRole('heading')).toHaveLength(1);
 
     const stages = within(screen.getByRole('list', { name: 'Workflow' })).getAllByRole('listitem');
-    expect(stages.map(stage => stage.querySelector('.landing-stage__term')?.textContent)).toEqual(['Capture', 'Plan', 'Do', 'Review']);
+    expect(stages.map(stage => stage.querySelector('.landing-stage__term')?.textContent)).toEqual(['Capture', 'Plan and assign', 'Do', 'Review']);
 
     const actions = screen.getAllByRole('link', { name: 'Open the workspace' });
     expect(actions).toHaveLength(1);

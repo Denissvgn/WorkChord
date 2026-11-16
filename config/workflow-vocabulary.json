@@ -57,7 +57,7 @@
     {
       "id": "plan",
       "name": "Plan and assign",
-      "name_ru": "План",
+      "name_ru": "Планирование и назначение",
       "person": "Plan: Iteration, Capacity, Work, Blockers, Schedule, Review.",
       "pm": "Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments.",
       "worker": "—",
