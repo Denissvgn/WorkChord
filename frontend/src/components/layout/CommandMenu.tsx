@@ -126,8 +126,9 @@ const withTaskCommand = (
     const params = isTasksWorkspacePath(location.pathname)
         ? new URLSearchParams(location.search)
         : new URLSearchParams();
+    // One-shot commands replace each other; the order (sort) is part of the view and stays.
     if (key !== 'layout') {
-        ['create', 'panel', 'sort', 'mode', 'fullscreen'].forEach(param => {
+        ['create', 'panel', 'mode', 'fullscreen'].forEach(param => {
             if (param !== key) params.delete(param);
         });
     }

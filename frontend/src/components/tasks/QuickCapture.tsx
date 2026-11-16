@@ -2,6 +2,7 @@ import { useId, useRef, useState, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { CornerDownLeft, Plus } from 'lucide-react';
+import clsx from 'clsx';
 import { Button } from '../common/Button';
 import { taskService } from '../../services/taskService';
 import { triageService } from '../../services/triageService';
@@ -16,8 +17,13 @@ export type QuickCaptureTarget = { kind: 'task'; iterationId: number } | { kind:
 /**
  * One line that captures work from a title and Enter. Priority is left to the
  * server default, and "More fields" carries the title into the full form.
+ * `listRow` draws it as the first row of a list instead of a field of its own.
  */
-export const QuickCapture = ({ target, onExpand }: { target: QuickCaptureTarget; onExpand: (title: string) => void }) => {
+export const QuickCapture = ({ target, onExpand, listRow = false }: {
+    target: QuickCaptureTarget;
+    onExpand: (title: string) => void;
+    listRow?: boolean;
+}) => {
     const { t } = useTranslation();
     const id = useId();
     const inputRef = useRef<HTMLInputElement>(null);
@@ -51,15 +57,16 @@ export const QuickCapture = ({ target, onExpand }: { target: QuickCaptureTarget;
         capture.mutate(value);
     };
     const label = t(target.kind === 'task' ? 'quickCapture.taskLabel' : 'quickCapture.triageLabel');
-    return <form onSubmit={submit} className="space-y-1" aria-label={label}>
-        <div className="flex items-center gap-2 rounded-md border border-border bg-surface-card px-2 py-1 focus-within:ring-2 focus-within:ring-focus">
+    return <form onSubmit={submit} className={clsx(listRow ? 'border-b border-border-subtle' : 'space-y-1')} aria-label={label}>
+        <div className={clsx('flex items-center gap-2 focus-within:ring-2 focus-within:ring-focus',
+            listRow ? 'px-3 py-0.5 focus-within:ring-inset' : 'rounded-md border border-border bg-surface-card px-2 py-1')}>
             <Plus className="h-4 w-4 shrink-0 text-content-tertiary" aria-hidden="true" />
             <label htmlFor={`${id}-title`} className="sr-only">{label}</label>
             <input ref={inputRef} id={`${id}-title`} value={title} maxLength={500} readOnly={capture.isPending}
                 onChange={event => { setTitle(event.target.value); if (capture.isError) capture.reset(); }}
                 placeholder={t(target.kind === 'task' ? 'quickCapture.taskPlaceholder' : 'quickCapture.triagePlaceholder')}
                 aria-describedby={`${id}-hint`}
-                className="min-h-9 min-w-0 flex-1 bg-transparent text-sm text-content-primary outline-none placeholder:text-content-tertiary" />
+                className={clsx('min-w-0 flex-1 bg-transparent text-sm text-content-primary outline-none placeholder:text-content-tertiary', listRow ? 'min-h-8' : 'min-h-9')} />
             <span id={`${id}-hint`} className="hidden items-center gap-1 text-xs text-content-tertiary sm:inline-flex">
                 <CornerDownLeft className="h-3 w-3" aria-hidden="true" />{t('quickCapture.enterHint')}
             </span>
@@ -68,8 +75,8 @@ export const QuickCapture = ({ target, onExpand }: { target: QuickCaptureTarget;
                 {t('quickCapture.moreFields')}
             </Button>
         </div>
-        {capture.isPending && <p role="status" className="text-xs text-content-secondary">{t('quickCapture.saving')}</p>}
-        {capture.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">
+        {capture.isPending && <p role="status" className={clsx('text-xs text-content-secondary', listRow && 'px-3 pb-1')}>{t('quickCapture.saving')}</p>}
+        {capture.isError && <p role="alert" className={clsx('text-sm text-feedback-danger-foreground', listRow && 'px-3 pb-1')}>
             {getApiErrorMessage(capture.error, t('quickCapture.failed'))}
         </p>}
     </form>;

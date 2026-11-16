@@ -64,7 +64,11 @@ vi.mock('../components/tasks/TaskFiltersBar', () => ({
 }));
 
 vi.mock('../components/tasks/SavedViewsControl', () => ({
-    SavedViewsControl: () => <div>Saved views</div>,
+    SavedViewPicker: ({ label }: { label: string }) => <span>{label}</span>,
+}));
+
+vi.mock('../services/sessionService', () => ({
+    sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 1, principal_id: null }) },
 }));
 
 vi.mock('../components/common/Modal', () => ({
@@ -167,7 +171,7 @@ describe('TasksPage', () => {
         expect(screen.getByTestId('location-search')).toHaveTextContent('?fromPlanStep=work');
     });
 
-    it('applies a URL-selected saved view and keeps its context visible', async () => {
+    it('applies a URL-selected saved view: its name is the title and its filters move into the URL', async () => {
         savedViewServiceMock.getAll.mockResolvedValue([{
             id: 12,
             name: 'Needs owners',
@@ -186,18 +190,17 @@ describe('TasksPage', () => {
             updated_at: '2026-08-01T00:00:00Z',
         }]);
 
-        renderWithProviders(<TasksPage />, {
+        renderWithProviders(<><TasksPage /><LocationProbe /></>, {
             initialEntries: ['/tasks?view=12'],
         });
 
-        expect(await screen.findByText('Needs owners')).toBeVisible();
-        expect(screen.getByText('1 active filter')).toBeVisible();
-        expect(screen.getByRole('button', { name: 'Clear view' })).toBeVisible();
+        expect(await screen.findByRole('heading', { level: 1, name: 'Needs owners' })).toBeVisible();
+        await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent('?view=12&assignee=none'));
         expect(savedViewServiceMock.getAll).toHaveBeenCalledWith({ view_type: 'tasks' });
     });
 
-    it('hydrates an exact Planning issue and clears it without losing return context', async () => {
-        const { user } = renderWithProviders(
+    it('hydrates an exact Planning issue, keeps the return context and moves the Filters command to the toolbar', async () => {
+        renderWithProviders(
             <>
                 <TasksPage />
                 <LocationProbe />
@@ -209,27 +212,16 @@ describe('TasksPage', () => {
             },
         );
 
-        expect(await screen.findByText(
-            'Planning blockers · Needs assignees',
-        )).toBeVisible();
-        expect(screen.getByText(
-            'Showing Plan tasks without an assignee.',
-        )).toBeVisible();
-        expect(screen.getByTestId('task-planning-issue')).toHaveTextContent(
+        expect(await screen.findByTestId('task-planning-issue')).toHaveTextContent(
             'unassigned',
         );
         expect(screen.getByRole('link', { name: 'Return to plan' }))
             .toHaveAttribute('href', '/plan/master?step=schedule&returned=1');
-        expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
-
-        await user.click(screen.getByRole('button', { name: 'Clear view' }));
-
-        await waitFor(() => expect(
-            screen.getByTestId('task-planning-issue'),
-        ).toHaveTextContent('none'));
-        expect(screen.getByTestId('location-search')).toHaveTextContent(
-            '?panel=filters&iterationId=1&fromPlanStep=schedule',
-        );
+        expect(screen.queryByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
+        await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent(
+            '?planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',
+        ));
+        expect(screen.queryByText('Modified view')).not.toBeInTheDocument();
     });
 
     it('rejects an unknown Planning issue without changing the period or return checkpoint', async () => {
@@ -268,20 +260,21 @@ describe('TasksPage', () => {
         expect(screen.queryByRole('button', { name: 'Planning help' })).not.toBeInTheDocument();
     });
 
-    it('opens filters and board layout from command URLs', async () => {
+    it('opens the board layout from the URL with one header and one New task action', async () => {
         renderWithProviders(<TasksPage />, {
-            initialEntries: ['/tasks?panel=filters&layout=board'],
+            initialEntries: ['/tasks?layout=board'],
         });
 
-        const viewContext = await screen.findByRole('region', { name: 'Task view context' });
-        expect(within(viewContext).getByRole('button', { name: 'Board' }))
+        const layout = await screen.findByRole('group', { name: 'Task layout' });
+        expect(within(layout).getByRole('button', { name: 'Board' }))
             .toHaveAttribute('aria-pressed', 'true');
-        expect(within(viewContext).getByRole('button', { name: 'Filters' })).toBeVisible();
-        expect(within(viewContext).getByRole('button', { name: 'List' })).toBeVisible();
+        expect(within(layout).getByRole('button', { name: 'List' })).toHaveAttribute('aria-pressed', 'false');
+        expect(within(layout).getByRole('button', { name: 'Pipeline' })).toBeVisible();
+        expect(screen.getAllByText('Board').some(element => element.tagName === 'DIV')).toBe(true);
         const newTaskAction = screen.getByRole('button', { name: 'New task' });
-        expect(newTaskAction.closest('.tasks-primary-slot')).not.toBeNull();
+        expect(newTaskAction.closest('.wc-page-primary')).not.toBeNull();
         expect(screen.getAllByRole('button', { name: 'New task' })).toHaveLength(1);
-        expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
+        expect(screen.queryByRole('button', { name: 'View options' })).not.toBeInTheDocument();
     });
 
     it('opens an exact Overview task in a drawer over the board and preserves return context', async () => {
