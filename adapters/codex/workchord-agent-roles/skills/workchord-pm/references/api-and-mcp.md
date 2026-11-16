@@ -278,7 +278,7 @@ authorized application/human surface; never invent a missing tool.
 
 ## Send the Planning Fields That Make a Plan Readable
 
-The planning commands accept more fields than they require. A command that sends only the required ones succeeds and leaves the Roadmap, the task list, or the Gantt chart empty. Send these, and confirm each name against the live operation metadata:
+The planning commands accept more fields than they require. A command that sends only the required ones succeeds and leaves Projects, Roadmap view, Tasks, or Gantt empty. Send these, and confirm each name against the live operation metadata:
 
 | Command | Required | Send as well |
 | --- | --- | --- |

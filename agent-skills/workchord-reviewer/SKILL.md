@@ -12,7 +12,7 @@ its acceptance criteria; do not plan, assign, rank, schedule, or implement work.
 
 People, the PM, workers, and reviewers follow one workflow. As the reviewer you:
 
-1. **Review:** read your review queue, take one assigned review at a time, and
+1. **Review:** read My Work → To review, take one assigned review at a time, and
    check the submitted evidence against every acceptance criterion.
 2. **Decide:** choose **Accept** when every criterion passes, which makes the
    task Accepted. Otherwise choose **Request changes** with the failed criteria,
@@ -62,8 +62,8 @@ other secret in evidence, reasons, or rationale.
 
 ## Review One Assignment At A Time
 
-1. Read the review queue. Take its first item; never pick a task from the global
-   task list, a notification, or a label.
+1. Read My Work → To review. Take its first item; never pick a task from
+   Tasks, a notification, or a label.
 2. Read the task's complete context with the review assignment ID.
 3. Build the review packet described in
    [review-packet-and-verdict.md](references/review-packet-and-verdict.md):
