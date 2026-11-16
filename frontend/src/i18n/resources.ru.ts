@@ -2153,6 +2153,11 @@ export const russianResources = {
                 },
                 planning: 'Планирование',
                 planWork: 'План',
+                groups: {
+                    plan: 'План',
+                    deliver: 'Выполнение',
+                    setup: 'Настройка',
+                },
                 home: 'Перейти к обзору {{appName}}',
                 skipToContent: 'Перейти к содержимому рабочего пространства',
                 workspaceSelector: 'Переключатель рабочих пространств',

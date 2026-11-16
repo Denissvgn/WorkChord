@@ -1,22 +1,19 @@
+// Compatibility layer for the shell that still renders three work areas with top-bar tabs.
+// Destinations, their labels, icons and paths come from the registry in ./destinations;
+// this file only arranges them into the old areas and adds the old view pages as links.
+// Delete it once the sidebar, top bar, command menu and help render the registry directly.
 import type { LucideIcon } from 'lucide-react';
 import {
-    LayoutDashboard,
-    Calendar,
-    Inbox,
-    Users,
-    ListTodo,
-    FolderOpen,
-    Map,
-    GanttChartSquare,
-    Settings,
-    Repeat,
-    BarChart,
     Bot,
-    MapPin,
+    Calendar,
+    GanttChartSquare,
+    Map,
     Network,
+    Repeat,
+    Settings,
     Truck,
-    UserCheck,
 } from 'lucide-react';
+import { getDestination, getDestinationForPath, type DestinationId } from './destinations';
 
 export type WorkspaceKey = 'delivery' | 'planning' | 'resource';
 
@@ -39,6 +36,26 @@ export interface WorkspaceMetadata {
     items: NavItem[];
 }
 
+const destinationItem = (id: DestinationId): NavItem => {
+    const destination = getDestination(id);
+    return {
+        to: destination.path,
+        labelKey: destination.labelKey,
+        defaultLabel: destination.defaultLabel,
+        icon: destination.icon,
+    };
+};
+
+// Old pages that the registry treats as views or sections of a destination. Until they
+// redirect, the current shell keeps a link to each so every page stays reachable.
+const VIEW_ITEMS = {
+    roadmap: { to: '/roadmap', labelKey: 'nav.roadmap', defaultLabel: 'Roadmap', icon: Map },
+    iterations: { to: '/iterations', labelKey: 'nav.iterations', defaultLabel: 'Iterations', icon: Repeat },
+    calendar: { to: '/calendar', labelKey: 'nav.calendar', defaultLabel: 'Calendar', icon: Calendar, secondary: true },
+    agentPipeline: { to: '/agent-pipeline', labelKey: 'nav.agentPipeline', defaultLabel: 'Agent Pipeline', icon: Bot, secondary: true },
+    agentTeamSetup: { to: '/agent-team/setup', labelKey: 'nav.agentTeamSetup', defaultLabel: 'Agent Team Setup', icon: Network },
+} as const satisfies Record<string, NavItem>;
+
 export const WORKSPACES: WorkspaceMetadata[] = [
     {
         key: 'delivery',
@@ -46,17 +63,16 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         defaultLabel: 'Delivery Hub',
         descriptionKey: 'nav.workAreaDescriptions.delivery',
         defaultDescription: 'Tasks, intake, projects, and delivery flow.',
-        // Distinct marks: the hub, your own queue and the task list are three different places.
         icon: Truck,
         defaultPath: '/',
         items: [
-            { to: '/', labelKey: 'nav.overview', defaultLabel: 'Overview', icon: LayoutDashboard },
-            { to: '/my-work', labelKey: 'teamwork.myWork', defaultLabel: 'My Work', icon: UserCheck },
-            { to: '/tasks', labelKey: 'nav.tasks', defaultLabel: 'Tasks', icon: ListTodo },
-            { to: '/triage', labelKey: 'nav.triage', defaultLabel: 'Triage', icon: Inbox },
-            { to: '/projects', labelKey: 'nav.projects', defaultLabel: 'Projects', icon: FolderOpen },
-            { to: '/agent-pipeline', labelKey: 'nav.agentPipeline', defaultLabel: 'Agent Pipeline', icon: Bot, secondary: true },
-        ]
+            destinationItem('overview'),
+            destinationItem('my_work'),
+            destinationItem('tasks'),
+            destinationItem('triage'),
+            destinationItem('projects'),
+            VIEW_ITEMS.agentPipeline,
+        ],
     },
     {
         key: 'planning',
@@ -67,12 +83,12 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         icon: GanttChartSquare,
         defaultPath: '/plan',
         items: [
-            { to: '/plan', labelKey: 'nav.planWork', defaultLabel: 'Plan Work', icon: MapPin },
-            { to: '/gantt', labelKey: 'nav.gantt', defaultLabel: 'Gantt', icon: GanttChartSquare },
-            { to: '/roadmap', labelKey: 'nav.roadmap', defaultLabel: 'Roadmap', icon: Map },
-            { to: '/iterations', labelKey: 'nav.iterations', defaultLabel: 'Iterations', icon: Repeat },
-            { to: '/calendar', labelKey: 'nav.calendar', defaultLabel: 'Calendar', icon: Calendar, secondary: true },
-        ]
+            destinationItem('plan'),
+            destinationItem('gantt'),
+            VIEW_ITEMS.roadmap,
+            VIEW_ITEMS.iterations,
+            VIEW_ITEMS.calendar,
+        ],
     },
     {
         key: 'resource',
@@ -83,26 +99,29 @@ export const WORKSPACES: WorkspaceMetadata[] = [
         icon: Settings,
         defaultPath: '/team',
         items: [
-            { to: '/team', labelKey: 'nav.team', defaultLabel: 'Team', icon: Users },
-            { to: '/analytics', labelKey: 'nav.analytics', defaultLabel: 'Analytics', icon: BarChart },
-            { to: '/agent-team/setup', labelKey: 'nav.agentTeamSetup', defaultLabel: 'Agent Team Setup', icon: Network },
-            { to: '/settings', labelKey: 'nav.settings', defaultLabel: 'Settings', icon: Settings },
-        ]
-    }
+            destinationItem('team'),
+            destinationItem('analytics'),
+            VIEW_ITEMS.agentTeamSetup,
+            destinationItem('settings'),
+        ],
+    },
 ];
 
-export const PRIMARY_NAV_ITEMS = WORKSPACES.flatMap(workspace => workspace.items);
+const isWithin = (pathname: string, to: string) => pathname === to || pathname.startsWith(`${to}/`);
 
-export const getWorkspaceFromPath = (pathname: string): WorkspaceKey => {
-    const workspace = WORKSPACES.find(candidate => candidate.items.some(item => (
-        item.to === '/'
-            ? pathname === '/'
-            : pathname === item.to || pathname.startsWith(`${item.to}/`)
+/**
+ * The old area for a path. An old view page stays in the area that lists it; every other
+ * path follows the destination that owns it in the registry.
+ */
+export const getWorkspaceForPath = (pathname: string): WorkspaceMetadata => {
+    const viewArea = WORKSPACES.find(workspace => workspace.items.some(item => (
+        Object.values(VIEW_ITEMS).some(view => view.to === item.to) && isWithin(pathname, item.to)
     )));
+    if (viewArea) return viewArea;
 
-    return workspace?.key ?? 'delivery';
+    const destination = getDestinationForPath(pathname);
+    const area = destination
+        ? WORKSPACES.find(workspace => workspace.items.some(item => item.to === destination.path))
+        : undefined;
+    return area ?? WORKSPACES[0]!;
 };
-
-export const getWorkspaceForPath = (pathname: string): WorkspaceMetadata => (
-    WORKSPACES.find(workspace => workspace.key === getWorkspaceFromPath(pathname)) ?? WORKSPACES[0]!
-);

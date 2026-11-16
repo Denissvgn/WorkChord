@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { CommandMenu, RECENT_COMMANDS_STORAGE_KEY } from './CommandMenu';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../../utils/singleKeyShortcutPreference';
-import { PRIMARY_NAV_ITEMS } from '../../navigation/workspaces';
+import { DESTINATIONS } from '../../navigation/destinations';
 import i18n from '../../i18n/i18n';
 
 const lookup = vi.hoisted(() => vi.fn());
@@ -35,10 +35,10 @@ describe('CommandMenu', () => {
         const { user } = renderWithProviders(<CommandMenu />, { initialEntries: ['/settings'] });
         await user.keyboard('{Control>}k{/Control}');
         const search = screen.getByRole('combobox', { name: 'Search commands' });
-        for (const item of PRIMARY_NAV_ITEMS) {
+        for (const destination of DESTINATIONS) {
             await user.clear(search);
-            await user.type(search, i18n.t(item.labelKey, item.defaultLabel));
-            expect(screen.getAllByRole('option').length, item.to).toBeGreaterThan(0);
+            await user.type(search, i18n.t(destination.labelKey, destination.defaultLabel));
+            expect(screen.getAllByRole('option').length, destination.path).toBeGreaterThan(0);
         }
     });
 
