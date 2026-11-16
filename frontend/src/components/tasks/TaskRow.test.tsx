@@ -88,4 +88,29 @@ describe('TaskRow', () => {
         expect(screen.queryByRole('button', { name: 'Actions for Task 1' })).toBeNull();
         expect(screen.getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
     });
+
+    it('shows the drag handle on hover and focus in a slot that keeps its width, and keeps it while the row is dragged', () => {
+        const props = {
+            id: 1, title: 'Task 1', status: 'planned' as const, assignee: { id: 5, name: 'Ada' }, onAssign: vi.fn(), onStatusChange: vi.fn(),
+            onOpen: vi.fn(), menuItems: [{ label: 'Details', onSelect: vi.fn() }], selectionActive: true, onToggleSelect: vi.fn(),
+            handle: <button type="button">Drag: Task 1</button>,
+        };
+        const { rerender } = renderWithProviders(<TaskRow {...props} />);
+        const row = screen.getByRole('button', { name: 'Task 1' }).closest<HTMLElement>('[data-task-row]')!;
+        const slot = row.querySelector<HTMLElement>('[data-drag-slot]')!;
+        expect(slot).toHaveClass('w-6', 'shrink-0');
+        expect(screen.queryByRole('button', { name: 'Drag: Task 1' })).toBeNull();
+        // Checkbox, status, title and assignee: still four parts with a handle slot and an active selection.
+        expect(row.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).toHaveLength(4);
+        fireEvent.mouseOver(row);
+        expect(screen.getByRole('button', { name: 'Drag: Task 1' })).toBeInTheDocument();
+        fireEvent.mouseOut(row);
+        expect(screen.queryByRole('button', { name: 'Drag: Task 1' })).toBeNull();
+        fireEvent.focus(screen.getByRole('button', { name: 'Task 1' }));
+        expect(screen.getByRole('button', { name: 'Drag: Task 1' })).toBeInTheDocument();
+        fireEvent.blur(screen.getByRole('button', { name: 'Task 1' }));
+        expect(screen.queryByRole('button', { name: 'Drag: Task 1' })).toBeNull();
+        rerender(<TaskRow {...props} revealed />);
+        expect(screen.getByRole('button', { name: 'Drag: Task 1' })).toBeInTheDocument();
+    });
 });

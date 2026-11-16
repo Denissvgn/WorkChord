@@ -42,8 +42,12 @@ export interface TaskRowProps {
     /** Days; `undefined` leaves the column out and `null` shows an unknown estimate. */
     effort?: number | null;
     level?: number;
-    /** Hierarchy controls shown before the status, such as an expander or a drag handle. */
+    /** Hierarchy controls shown before the status, such as an expander. */
     lead?: ReactNode;
+    /** A drag handle, shown with the checkbox and the menu on hover and focus. */
+    handle?: ReactNode;
+    /** Keeps the handle and the menu shown, such as while the row is dragged. */
+    revealed?: boolean;
     onOpen: () => void;
     onStatusChange?: (status: TaskStatus) => void;
     menuItems: OverflowMenuItem[];
@@ -68,19 +72,19 @@ export interface TaskRowProps {
 
 /**
  * One 44 px task row for the list, My Work and the project task tree. At rest it holds the
- * status, the title and the assignee; the checkbox and the menu appear on hover and focus, and
- * every checkbox stays while some rows are selected.
+ * status, the title and the assignee; the checkbox, the drag handle and the menu appear on hover
+ * and focus, and every checkbox stays while some rows are selected.
  */
 export const TaskRow = ({
     id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
-    level = 0, lead, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
+    level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
     const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const [focused, setFocused] = useState(false);
     // While some rows are selected every checkbox shows; the menu stays on hover and focus only.
-    const menuShown = hovered || focused;
+    const menuShown = hovered || focused || revealed;
     const checkboxShown = menuShown || selected || selectionActive;
     const statusName = t(`statuses.${status}`, { defaultValue: status });
     const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
@@ -125,6 +129,7 @@ export const TaskRow = ({
             </span>
 
             {level > 0 && <CornerDownRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />}
+            {handle !== undefined && <span data-drag-slot="" className="flex h-6 w-6 shrink-0 items-center justify-center">{menuShown && handle}</span>}
             {lead}
 
             {transitions.length > 0 && onStatusChange ? (

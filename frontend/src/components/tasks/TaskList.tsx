@@ -650,6 +650,7 @@ const SortableTaskItem = (props: TaskItemProps) => {
             <TaskItemContent
                 {...props}
                 dragHandleProps={{ ...attributes, ...listeners }}
+                dragging={isDragging}
             />
         </div>
     );
@@ -657,9 +658,10 @@ const SortableTaskItem = (props: TaskItemProps) => {
 
 interface TaskItemContentProps extends TaskItemProps {
     dragHandleProps?: Record<string, unknown>;
+    dragging?: boolean;
 }
 
-const TaskItemContent = ({ task, level, ctx, dragHandleProps }: TaskItemContentProps) => {
+const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }: TaskItemContentProps) => {
     const [showDetails, setShowDetails] = useState(false);
     const detailsId = useId();
     const { t } = useTranslation();
@@ -675,18 +677,19 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps }: TaskItemContentP
         + 1;
     const claimExpired = Boolean(task.claim_expires_at && new Date(task.claim_expires_at).getTime() < ctx.nowMs);
 
+    const handle = ctx.isDraggingEnabled && dragHandleProps ? (
+        <button data-page-chrome-control="button"
+            type="button"
+            aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
+            className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
+            {...dragHandleProps}
+        >
+            <GripVertical className="w-4 h-4" />
+        </button>
+    ) : undefined;
+
     const lead = (
         <>
-            {ctx.isDraggingEnabled && dragHandleProps && (
-                <button data-page-chrome-control="button"
-                    type="button"
-                    aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
-                    className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
-                    {...dragHandleProps}
-                >
-                    <GripVertical className="w-4 h-4" />
-                </button>
-            )}
             {hasChildren ? (
                 <button data-page-chrome-control="button"
                     type="button"
@@ -723,6 +726,8 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps }: TaskItemContentP
                 effort={getEffectiveEffort(task)}
                 level={level}
                 lead={lead}
+                handle={handle}
+                revealed={dragging}
                 onOpen={() => ctx.onOpen(task)}
                 onStatusChange={status => ctx.onStatusChange(task, status)}
                 selected={ctx.selectedIds.has(task.id)}

@@ -302,6 +302,43 @@ describe('TaskList rows', () => {
         expect(within(rowOf('Task 2')).getByRole('button', { name: 'Actions for Task 2' })).toBeInTheDocument();
     });
 
+    it('keeps rows in manual order to four interactive parts, with the drag handle on hover and focus only', async () => {
+        const parent = { ...task(3), children: [{ ...task(4), parent_id: 3 }] };
+        taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2), parent]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="sort_order" />);
+        await screen.findByRole('button', { name: 'Task 1' });
+
+        const titles = ['Task 1', 'Task 2', 'Task 3', 'Task 4'];
+        for (const title of titles) {
+            expect(within(rowOf(title)).queryByRole('button', { name: `Drag: ${title}` })).toBeNull();
+            expect(rowOf(title).querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);
+        }
+
+        // Hover and keyboard focus reveal the handle, so dragging stays reachable.
+        hover(rowOf('Task 1'));
+        expect(within(rowOf('Task 1')).getByRole('button', { name: 'Drag: Task 1' })).toBeInTheDocument();
+        unhover(rowOf('Task 1'));
+        expect(within(rowOf('Task 1')).queryByRole('button', { name: 'Drag: Task 1' })).toBeNull();
+        within(rowOf('Task 2')).getByRole('button', { name: 'Task 2' }).focus();
+        expect(await within(rowOf('Task 2')).findByRole('button', { name: 'Drag: Task 2' })).toBeInTheDocument();
+        (document.activeElement as HTMLElement | null)?.blur();
+
+        // With a selection active, every selectable row shows its checkbox and still stays within four parts.
+        hover(rowOf('Task 1'));
+        fireEvent.click(within(rowOf('Task 1')).getByRole('checkbox', { name: 'Select: Task 1' }));
+        unhover(rowOf('Task 1'));
+        await waitFor(() => expect(within(rowOf('Task 2')).queryByRole('button', { name: 'Drag: Task 2' })).toBeNull());
+        for (const title of titles) {
+            const row = rowOf(title);
+            // A parent is not selected itself; its leaf tasks are.
+            if (title === 'Task 3') expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
+            else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeInTheDocument();
+            expect(within(row).queryByRole('button', { name: `Drag: ${title}` })).toBeNull();
+            expect(within(row).queryByRole('button', { name: `Actions for ${title}` })).toBeNull();
+            expect(row.querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);
+        }
+    });
+
     it('assigns ten tasks in five interactions: tick one, shift-click the tenth, Assign, choose, apply', async () => {
         const tasks = Array.from({ length: 12 }, (_, index) => task(index + 1));
         taskServiceMock.getByIteration.mockResolvedValue(tasks);
