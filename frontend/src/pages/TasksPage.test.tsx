@@ -12,7 +12,9 @@ const iterationServiceMock = vi.hoisted(() => ({
 
 const iterationStoreMock = vi.hoisted(() => ({
     selectedIterationId: 1,
+    isBacklog: false,
     setSelectedIterationId: vi.fn(),
+    chooseDefaultIteration: vi.fn(),
 }));
 const savedViewServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),

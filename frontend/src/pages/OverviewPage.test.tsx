@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import type { UserEvent } from '@testing-library/user-event';
 import { renderWithProviders } from '../test/renderWithProviders';
+import { useScopeStore } from '../features/scope/scopeStore';
 import type { Iteration, IterationSummary } from '../types/iteration';
 import type { Task, TaskStatus } from '../types/task';
 import type { PlanningTeamMember } from '../features/planningMasters/usePlanningReadiness';
@@ -550,6 +551,40 @@ describe('Overview partial-data resilience', () => {
         expect(await screen.findByRole('heading', { name: '6 unassigned tasks' })).toBeVisible();
         expect(screen.getByRole('link', { name: 'Assign 6 tasks' }).getAttribute('href'))
             .toMatch(/^\/tasks\?mode=bulk&planningIssue=unassigned&iterationId=\d+$/);
+    });
+
+    it('carries the scope in its links to scoped pages', async () => {
+        useScopeStore.setState({ project: 1, iteration: 12 });
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(
+            overviewPlanningState({
+                currentIteration: {
+                    ...iteration,
+                    start_date: new Date(Date.now() - 86_400_000).toISOString().slice(0, 10),
+                    end_date: new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10),
+                },
+                tasks: [30, 31, 32, 33, 34, 35].map(id => task(id, 'planned')),
+            }),
+        );
+
+        renderWithProviders(<OverviewPage />, { initialEntries: ['/?project=2&iteration=21'] });
+
+        expect(await screen.findByRole('heading', { name: '6 unassigned tasks' })).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Assign 6 tasks' }).getAttribute('href'))
+            .toMatch(/^\/tasks\?mode=bulk&planningIssue=unassigned&iterationId=\d+&project=2&iteration=21$/);
+        useScopeStore.setState({ project: null, iteration: null });
+    });
+
+    it('carries the scope in the setup link to Plan', () => {
+        useScopeStore.setState({ project: 2, iteration: 'backlog' });
+        planningReadinessMock.usePlanningReadiness.mockReturnValue(
+            overviewPlanningState({ currentIteration: null }),
+        );
+
+        renderWithProviders(<OverviewPage />);
+
+        expect(screen.getByRole('link', { name: 'Create iteration' }))
+            .toHaveAttribute('href', '/plan?project=2&iteration=backlog');
+        useScopeStore.setState({ project: null, iteration: null });
     });
 
     it('excludes completed tasks from overdue and unassigned attention', async () => {

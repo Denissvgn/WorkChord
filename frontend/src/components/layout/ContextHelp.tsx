@@ -23,6 +23,7 @@ import { TaskWorkflowHelpContent } from '../tasks/TaskWorkflowGuide';
 import { SlideOverDrawer } from '../ui';
 import { openCommandMenu } from './commandMenuEvents';
 import { openSetupGuide } from './setupGuideEvents';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 const TASK_SHORTCUTS = [
     { key: 'N', labelKey: 'commandMenu.commands.newTask.label' },
@@ -34,6 +35,7 @@ const TASK_SHORTCUTS = [
 
 export const ContextHelp = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const location = useLocation();
     const shortcutDescriptionId = useId();
     const [open, setOpen] = useState(false);
@@ -246,7 +248,7 @@ export const ContextHelp = () => {
                             {helpContext.relatedLinks.map(link => (
                                 <Link
                                     key={link.to}
-                                    to={link.to}
+                                    to={scopeLink(link.to)}
                                     onClick={closeForNavigation}
                                 >
                                     <span>

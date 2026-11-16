@@ -22,6 +22,7 @@ import { formatDate } from '../../utils/formatDate';
 import { useTranslation } from 'react-i18next';
 import { OverflowMenu, SlideOverDrawer } from '../ui';
 import { GanttBarInputs } from './GanttBarInputs';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 interface GanttChartProps {
     iterationId: number;
@@ -129,6 +130,7 @@ export const GanttChart = ({
     onSaveSandbox,
 }: GanttChartProps) => {
     const { t, i18n: activeI18n } = useTranslation();
+    const scopeLink = useScopeLink();
     const toast = useToast();
     const queryClient = useQueryClient();
     const [expandedTasks, setExpandedTasks] = useState<Set<number>>(new Set());
@@ -957,7 +959,7 @@ export const GanttChart = ({
                             : t('surfaces.ganttChart.unscheduledSummary', { count: unscheduledTaskCount })}
                     </span>
                     {unassignedTaskCount > 0 && (
-                        <Link className="btn sm" to={planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' })}>
+                        <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
                             {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
                         </Link>
                     )}
@@ -973,7 +975,7 @@ export const GanttChart = ({
                     <span className="min-w-0 flex-1">
                         {t('surfaces.ganttChart.provisionalSummary', { count: provisionalTaskCount })}
                     </span>
-                    <Link className="btn sm" to={planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' })}>
+                    <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
                         {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
                     </Link>
                 </div>
@@ -1280,7 +1282,7 @@ export const GanttChart = ({
                             {t('surfaces.ganttChart.clearFilters')}
                         </Button>
                     ) : (
-                        <Link className="btn primary sm mt-4" to="/tasks?create=1">
+                        <Link className="btn primary sm mt-4" to={scopeLink('/tasks?create=1')}>
                             {t('gantt.addTask')}
                         </Link>
                     )}

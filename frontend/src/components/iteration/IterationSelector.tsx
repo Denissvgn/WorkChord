@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
-import { useIterationStore, pickDefaultIteration } from '../../store/iterationStore';
+import { useIterationStore } from '../../store/iterationStore';
 import { iterationService } from '../../services/iterationService';
 import type { Iteration } from '../../types/iteration';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
@@ -21,22 +21,17 @@ export const IterationSelector = ({
     disabled = false,
 }: IterationSelectorProps) => {
     const { t } = useTranslation();
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const { selectedIterationId, isBacklog, setSelectedIterationId, chooseDefaultIteration } = useIterationStore();
 
     const { data: iterations, isLoading, error, refetch } = useQuery({
         queryKey: ['iterations'],
         queryFn: iterationService.getAll,
     });
 
-    // Auto-select first iteration if current doesn't exist
+    // Choose the default iteration when none is chosen; Backlog is a choice and is kept.
     useEffect(() => {
-        if (iterations && iterations.length > 0) {
-            const iterationExists = iterations.some(i => i.id === selectedIterationId);
-            if (selectedIterationId === 0 || !iterationExists) {
-                setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-            }
-        }
-    }, [iterations, selectedIterationId, setSelectedIterationId]);
+        if (iterations && iterations.length > 0) chooseDefaultIteration(iterations);
+    }, [iterations, selectedIterationId, isBacklog, chooseDefaultIteration]);
 
     if (isLoading) return <QueryLoadingState className={className} />;
     if (error) return <QueryErrorState className={className} error={error} onRetry={() => void refetch()} />;
@@ -72,6 +67,7 @@ export const IterationSelector = ({
                 disabled={disabled}
                 className="min-w-0 max-w-full truncate rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
             >
+                {isBacklog && <option value={0}>{t('teamwork.backlog')}</option>}
                 {iterations.map(iter => (
                     <option key={iter.id} value={iter.id}>{formatIterationOption(iter)}</option>
                 ))}

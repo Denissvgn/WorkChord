@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { Button } from '../common/Button';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 
@@ -20,6 +21,7 @@ export const TaskWorkflowHelpContent = ({
     onNavigate?: () => void;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
 
     return (
         <div className="task-workflow-help">
@@ -62,7 +64,7 @@ export const TaskWorkflowHelpContent = ({
             </section>
             {showAction && (
                 <Link
-                    to="/plan/master"
+                    to={scopeLink('/plan/master')}
                     className="btn secondary sm"
                     onClick={onNavigate}
                 >

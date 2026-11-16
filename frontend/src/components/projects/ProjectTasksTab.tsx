@@ -16,12 +16,14 @@ import {
     StatusSegmentStrip
 } from '../ui';
 import { STATUS_TONE } from '../ui/tone';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, isLoading: areTasksLoading }: {
     tasks: Task[]; summary?: import('../../types/project').ProjectSummary; projectId: number; isLoading: boolean;
 }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const scopeLink = useScopeLink();
     const [newBacklogTask, setNewBacklogTask] = useState(false);
     const PROJECT_TASK_PREVIEW = 10;
     const statusCounts = summary?.status_counts || {};
@@ -40,7 +42,7 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
             actions={(
                 <div className="flex flex-wrap gap-2">
                     <Button variant="secondary" size="sm" onClick={() => setNewBacklogTask(true)}>{t('projectTabs.newTask')}</Button>
-                    <Button variant="secondary" size="sm" onClick={() => navigate(`/tasks?layout=list&project=${numericProjectId}`)}>{t('projectTabs.openTasks')}</Button>
+                    <Button variant="secondary" size="sm" onClick={() => navigate(scopeLink(`/tasks?layout=list&project=${numericProjectId}`, { project: numericProjectId }))}>{t('projectTabs.openTasks')}</Button>
                 </div>
             )}
         >
@@ -83,7 +85,7 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
                         </div>
                     ))}
                     {tasks.length > PROJECT_TASK_PREVIEW && (
-                        <Link className="btn sm secondary" to={`/tasks?project=${numericProjectId}`}>
+                        <Link className="btn sm secondary" to={scopeLink(`/tasks?project=${numericProjectId}`, { project: numericProjectId })}>
                             {t('surfaces.projectDetail.viewAllTasks', { count: tasks.length })}
                         </Link>
                     )}

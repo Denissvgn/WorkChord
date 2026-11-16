@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../styles/landing.css';
+import { useScopeLink } from '../features/scope/useScopeLink';
 
 // The four workflow stages in order. Copy lives in the landing catalog (EN and RU).
 const STAGES = ['capture', 'plan', 'do', 'review'] as const;
 
 const LandingPage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     return (
         <div className="landing-page">
             <a
@@ -35,7 +37,7 @@ const LandingPage = () => {
                             </li>
                         ))}
                     </ol>
-                    <Link className="landing-button" to="/">{t('landing.openTheWorkspace')}</Link>
+                    <Link className="landing-button" to={scopeLink('/')}>{t('landing.openTheWorkspace')}</Link>
                 </section>
             </main>
         </div>

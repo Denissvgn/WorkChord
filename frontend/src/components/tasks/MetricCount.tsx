@@ -7,6 +7,7 @@ import { Modal } from '../common/Modal';
 import { QueryErrorState } from '../feedback/QueryState';
 import { taskService } from '../../services/taskService';
 import type { MetricScope, WorkMetricName } from '../../services/taskService';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 /**
  * A count that opens the tasks it counts. The server picks them with the same
@@ -16,6 +17,7 @@ export const MetricCount = ({ metric, scope, title, children, className }: {
     metric: WorkMetricName; scope: MetricScope | null; title: string; children: ReactNode; className?: string;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const [open, setOpen] = useState(false);
     // feedback-policy: query loading,error,retry,empty - the dialog keeps explicit loading, retry and empty feedback.
     const matches = useQuery({
@@ -39,7 +41,7 @@ export const MetricCount = ({ metric, scope, title, children, className }: {
                 {matches.data.items.length === 0 ? <p className="text-sm">{t('metricList.empty')}</p> : (
                     <ul className="max-h-[60vh] divide-y divide-border overflow-y-auto">
                         {matches.data.items.map(item => <li key={item.id} className="flex flex-col py-2">
-                            <Link to={`/tasks?task=${item.id}`} className="min-h-9 break-words font-medium text-action hover:underline" onClick={() => setOpen(false)}>
+                            <Link to={scopeLink(`/tasks?task=${item.id}`)} className="min-h-9 break-words font-medium text-action hover:underline" onClick={() => setOpen(false)}>
                                 #{item.id} · {item.title}
                             </Link>
                             <span className="text-xs text-content-secondary">

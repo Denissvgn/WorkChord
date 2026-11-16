@@ -16,7 +16,7 @@ import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { Modal } from '../components/common/Modal';
 import { FullscreenWorkspace } from '../components/common/FullscreenWorkspace';
 import { AlertTriangle, Sparkles, Maximize2, Minimize2, FlaskConical, Undo2, Check, History, RefreshCw } from 'lucide-react';
-import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
+import { useIterationStore } from '../store/iterationStore';
 import { IterationSelector } from '../components/iteration/IterationSelector';
 import type { ExplainScheduleResponse, GanttTask } from '../types/gantt';
 import type { TaskBatchUpdateItem, TaskUpdate } from '../types/task';
@@ -70,7 +70,7 @@ const GanttPage = () => {
     const { hasAdminAccess } = useAdminAccess();
     const { t } = useTranslation();
     const toast = useToast();
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    const { selectedIterationId, isBacklog, chooseDefaultIteration } = useIterationStore();
     const [explanation, setExplanation] = useState<{ iterationId: number; data: ExplainScheduleResponse } | null>(null);
     const [explanationError, setExplanationError] = useState<{ iterationId: number; message: string } | null>(null);
     const [isFullScreen, setIsFullScreen] = useState(false);
@@ -302,13 +302,8 @@ const GanttPage = () => {
     );
 
     useEffect(() => {
-        if (iterations && iterations.length > 0) {
-            const iterationExists = iterations.some(i => i.id === selectedIterationId);
-            if (selectedIterationId === 0 || !iterationExists) {
-                setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-            }
-        }
-    }, [iterations, selectedIterationId, setSelectedIterationId]);
+        if (iterations && iterations.length > 0) chooseDefaultIteration(iterations);
+    }, [iterations, selectedIterationId, isBacklog, chooseDefaultIteration]);
 
     if (iterationsLoading) {
         return (
