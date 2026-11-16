@@ -1,6 +1,6 @@
 # AgentTaskPatch
 
-**Location:** `backend/app/schemas/agent.py:273`
+**Location:** `backend/app/schemas/agent.py:281`
 **Kind:** Pydantic model
 **Bases:** `TaskUpdate`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

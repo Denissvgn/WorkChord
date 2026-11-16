@@ -26,23 +26,27 @@ flowchart LR
     n0["backend/app/database.py"]
     n1["backend/app/models/__init__.py"]
     n2["backend/app/models/execution_usage.py"]
-    n3["backend/app/services/execution_usage_service.py"]
-    n4["backend/app/utils/time.py"]
-    n5["backend/tests/test_execution_usage.py"]
+    n3["backend/app/services/agent_run_read_service.py"]
+    n4["backend/app/services/execution_usage_service.py"]
+    n5["backend/app/utils/time.py"]
+    n6["backend/tests/test_execution_usage.py"]
     n1 --> n2
     n2 --> n0
-    n2 --> n4
+    n2 --> n5
     n3 --> n2
     n3 --> n4
-    n5 --> n2
-    n5 --> n3
-    n5 --> n4
+    n4 --> n2
+    n4 --> n5
+    n6 --> n2
+    n6 --> n4
+    n6 --> n5
     click n0 "../modules/app_database.md"
     click n1 "../modules/models___init__.md"
     click n2 "../modules/models_execution_usage.md"
-    click n3 "../modules/execution_usage_service.md"
-    click n4 "../modules/time.md"
-    click n5 "../modules/test_execution_usage.md"
+    click n3 "../modules/agent_run_read_service.md"
+    click n4 "../modules/execution_usage_service.md"
+    click n5 "../modules/time.md"
+    click n6 "../modules/test_execution_usage.md"
 ```
 
 ### Internal neighbors
@@ -50,6 +54,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | [models___init__](../modules/models___init__.md) |
+| Inbound | [agent_run_read_service](../modules/agent_run_read_service.md) |
 | Inbound | [execution_usage_service](../modules/execution_usage_service.md) |
 | Inbound | [test_execution_usage](../modules/test_execution_usage.md) |
 | Outbound | [app_database](../modules/app_database.md) |

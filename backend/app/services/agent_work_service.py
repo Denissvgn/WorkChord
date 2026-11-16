@@ -32,6 +32,7 @@ from app.models.team_member import TeamMember, TeamMemberProfile
 from app.models.triage import TriageItem
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.agent import (
+    declared_harness,
     AgentActorResponse,
     AgentActorRosterProfile,
     AgentActorRosterProfileSkill,
@@ -2315,6 +2316,8 @@ class AgentWorkService:
             claim_generation=task.claim_generation,
             status="running",
             trace_id=data.trace_id,
+            harness_kind=declared_harness(data.metadata)[0],
+            harness_session_id=declared_harness(data.metadata)[1],
             model_binding_id=(
                 selected_binding.id if selected_binding is not None else None
             ),

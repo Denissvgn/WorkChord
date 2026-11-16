@@ -19,6 +19,7 @@ Agent integration API router.
 | `app.schemas.agent` | `AgentActorCreate`, `AgentActorCreatedResponse`, `AgentActorRosterItem`, `AgentActorResponse`, `AgentActorUpdate`, `AgentDiscoveryTriageCreate`, `AgentDiscoveryTriageResponse`, `AgentCapabilitiesResponse`, `AgentReviewVerdict`, `AgentReviewVerdictResponse`, `AgentReviewQueueResponse`, `AgentRecoveryListResponse`, `AgentRecoveryRequeue`, `AgentRecoveryRequeueResponse`, `AgentRunCreate`, `AgentRunEventCreate`, `AgentRunEventResponse`, `AgentRunFinish`, `AgentRunResponse`, `AgentTaskAssignmentCreate`, `AgentAssignmentReadItem`, `AgentTaskAssignmentResponse`, `AgentTaskAssignmentUpdate`, `AgentTaskContextResponse`, `AgentTaskCreate`, `AgentTaskPatch`, `AgentWorkBegin`, `AgentWorkBeginResponse`, `AgentWorkDecisionResponse`, `AgentWorkRenew`, `AgentWorkSubmit`, `AgentWorkTerminal`, `AgentWorkTerminalResponse`, `ModelAwareAgentTaskAssignmentCreate`, `ModelAwareAgentTaskAssignmentUpdate`, `ModelAwareAgentWorkBegin`, `TaskClaimRequest`, `TaskClaimResponse`, `TaskEventCreate`, `TaskEventResponse`, `AgentPipelineResponse`, `AgentProjectUpdateCreate`, `AgentProjectUpdateResponse`, `AgentRunDetailResponse` |
 | `app.schemas.agent_planning` | `AgentPlanningCommandContext` |
 | `app.schemas.agent_routing` | `AgentRoutingPreviewCreate`, `AgentRoutingPreviewResponse` |
+| `app.schemas.agent_run_read` | `AgentRunReadItem` |
 | `app.schemas.agent_skill_bundle` | `SkillBundleCatalogResponse` |
 | `app.schemas.agent_team_setup` | `AgentTeamApplyRequest`, `AgentTeamApplyResponse`, `AgentTeamManifestRequest`, `AgentTeamPlanRequest`, `AgentTeamReconciliationPlan`, `AgentTeamRuntimeAcknowledgement`, `AgentTeamRuntimeAcknowledgementResponse`, `AgentTeamSetupReport`, `AgentTeamStatusResponse`, `AgentTeamTopologyResponse`, `AgentTeamValidateResponse` |
 | `app.schemas.common` | `MessageResponse` |
@@ -28,6 +29,7 @@ Agent integration API router.
 | `app.security` | `ADMIN_API_KEY_HEADER`, `admin_api_key_is_valid` |
 | `app.services.agent_routing_rollout` | `AgentRoutingRolloutService`, `AgentRoutingTopologyReadinessStatus` |
 | `app.services.agent_routing_service` | `AgentRoutingConflictError`, `AgentRoutingService` |
+| `app.services.agent_run_read_service` | `AgentRunReadService` |
 | `app.services.agent_service` | `AgentConflictError`, `AgentPermissionError`, `AgentService`, `actor_has_scope`, `actor_scopes`, `require_scope` |
 | `app.services.agent_skill_bundle_service` | `AgentSkillBundleService`, `SkillBundleArtifactError` |
 | `app.services.agent_team_setup_service` | `AgentTeamSetupConflictError`, `AgentTeamSetupService` |
@@ -62,7 +64,7 @@ flowchart LR
 | Direction | Module |
 |---|---|
 | Inbound | `backend` (9) |
-| Outbound | `backend` (27) |
+| Outbound | `backend` (29) |
 
 ### External packages
 
@@ -70,7 +72,7 @@ flowchart LR
 |---|---:|---:|
 | python | 2 | 0 |
 
-> All 36 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 38 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Functions
 
@@ -135,6 +137,7 @@ flowchart LR
 | `_run_response` | `(service: AgentService, run) -> AgentRunResponse` | — | — |
 | `_run_detail_response` | `(service: AgentService, run) -> AgentRunDetailResponse` | — | — |
 | `get_agent_pipeline` | *(async)* `(service: Annotated[AgentService, Depends(get_agent_service)], _: Annotated[None, Depends(require_pipeline_read_access)])` | `@router.get('/agent/pipeline', response_model=AgentPipelineResponse)` | Retrieve all current tasks grouped by their agent pipeline columns. |
+| `list_agent_runs` | *(async)* `(service: Annotated[AgentService, Depends(get_agent_service)], agent_api_key: Annotated[Optional[str], Header(alias='X-Agent-API-Key')] = None, task_id: Optional[int] = Query(default=None, ge=1), harness_kind: Optional[str] = Query(default=None, max_length=40), harness_session_id: Optional[str] = Query(default=None, max_length=255), status_filter: Optional[str] = Query(default=None, alias='status', max_length=50), actor_id: Optional[int] = Query(default=None, ge=1), limit: int = Query(default=50, ge=1, le=200))` | `@router.get('/agent/runs', response_model=list[AgentRunReadItem])` | List runs of the tasks the reader can see: status, model, harness session and declared usage. |
 | `get_agent_run_detail` | *(async)* `(run_id: int, service: Annotated[AgentService, Depends(get_agent_service)], _: Annotated[None, Depends(require_agent_read_access)])` | `@router.get('/agent/runs/{run_id}', response_model=AgentRunDetailResponse)` | Get the full details of an agent run including chronological trace events. |
 | `get_execution_usage` | *(async)* `(run_id: int, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.get('/agent/runs/{run_id}/usage', response_model=ExecutionUsageResponse \| None)` | — |
 | `record_execution_usage` | *(async)* `(run_id: int, data: ExecutionUsageWrite, actor: Annotated[AgentActor, Depends(get_agent_actor)], db: Annotated[AsyncSession, Depends(get_db, scope='function')])` | `@router.post('/agent/runs/{run_id}/usage', response_model=ExecutionUsageResponse)` | — |

@@ -28,6 +28,7 @@ from app.models.task import Task, TaskDependency, TaskStatus
 from app.models.team_member import TeamMemberProfile
 from app.query_limits import CollectionLimitExceededError, MAX_BOUNDED_LIST_ITEMS
 from app.schemas.agent import (
+    declared_harness,
     AgentActorCreate,
     AgentRunCreate,
     AgentRunEventCreate,
@@ -1073,6 +1074,8 @@ class AgentService:
             claim_generation=data.claim_generation,
             status="running",
             trace_id=data.trace_id,
+            harness_kind=declared_harness(data.metadata)[0],
+            harness_session_id=declared_harness(data.metadata)[1],
             model_trust_state=(
                 "unverifiable" if (data.model or "").strip() else "unreported"
             ),

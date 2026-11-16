@@ -131,17 +131,17 @@ flowchart LR
 
 | From | To | Line | Call |
 |---|---|---:|---|
-| submit_my_agent_work | service.submit | 992 | `service.submit(actor, data, idempotency_key=idempotency_key)` |
-| submit_my_agent_work | _handle_agent_error | 998 | `_handle_agent_error(exc, structured=True)` |
-| _handle_agent_error | isinstance | 324 | `isinstance(exc, AgentPermissionError)` |
-| _handle_agent_error | str | 326 | `str(exc)` |
+| submit_my_agent_work | service.submit | 994 | `service.submit(actor, data, idempotency_key=idempotency_key)` |
+| submit_my_agent_work | _handle_agent_error | 1000 | `_handle_agent_error(exc, structured=True)` |
+| _handle_agent_error | isinstance | 326 | `isinstance(exc, AgentPermissionError)` |
 | _handle_agent_error | str | 328 | `str(exc)` |
-| _handle_agent_error | HTTPException | 330 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
-| _handle_agent_error | isinstance | 331 | `isinstance(exc, AgentRoutingConflictError)` |
-| _handle_agent_error | HTTPException | 332 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
-| _handle_agent_error | exc.detail | 332 | `exc.detail(data not statically known)` |
-| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | str | 330 | `str(exc)` |
+| _handle_agent_error | HTTPException | 332 | `HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=detail)` |
+| _handle_agent_error | isinstance | 333 | `isinstance(exc, AgentRoutingConflictError)` |
 | _handle_agent_error | HTTPException | 334 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
+| _handle_agent_error | exc.detail | 334 | `exc.detail(data not statically known)` |
+| _handle_agent_error | isinstance | 335 | `isinstance(exc, AgentTeamSetupConflictError)` |
+| _handle_agent_error | HTTPException | 336 | `HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.detail(...))` |
 
 ### Boundary effects
 
@@ -151,14 +151,14 @@ flowchart LR
 
 | Kind | Step | Target | Line |
 |---|---|---|---:|
-| unresolved_call | `submit_my_agent_work` | `service.submit` | 992 |
-| external_call | `_handle_agent_error` | `isinstance` | 324 |
-| external_call | `_handle_agent_error` | `HTTPException` | 330 |
-| external_call | `_handle_agent_error` | `isinstance` | 331 |
+| unresolved_call | `submit_my_agent_work` | `service.submit` | 994 |
+| external_call | `_handle_agent_error` | `isinstance` | 326 |
 | external_call | `_handle_agent_error` | `HTTPException` | 332 |
-| unresolved_call | `_handle_agent_error` | `exc.detail` | 332 |
 | external_call | `_handle_agent_error` | `isinstance` | 333 |
 | external_call | `_handle_agent_error` | `HTTPException` | 334 |
+| unresolved_call | `_handle_agent_error` | `exc.detail` | 334 |
+| external_call | `_handle_agent_error` | `isinstance` | 335 |
+| external_call | `_handle_agent_error` | `HTTPException` | 336 |
 | step_limit | `submit_my_agent_work` | `first 12 steps` | 0 |
 
 ## Behavior

@@ -25,30 +25,34 @@ flowchart LR
     n0["backend/app/mcp_agent_tools.py"]
     n1["backend/app/routers/agent.py"]
     n2["backend/app/routers/task_domain.py"]
-    n3["backend/app/schemas/execution_usage.py"]
-    n4["backend/app/services/execution_usage_service.py"]
-    n5["backend/tests/test_agent_skill_routing_guidance.py"]
-    n6["backend/tests/test_execution_usage.py"]
-    n0 --> n3
+    n3["backend/app/schemas/agent_run_read.py"]
+    n4["backend/app/schemas/execution_usage.py"]
+    n5["backend/app/services/execution_usage_service.py"]
+    n6["backend/tests/test_agent_skill_routing_guidance.py"]
+    n7["backend/tests/test_execution_usage.py"]
     n0 --> n4
+    n0 --> n5
     n1 --> n3
     n1 --> n4
-    n2 --> n3
+    n1 --> n5
     n2 --> n4
-    n4 --> n3
-    n5 --> n0
-    n5 --> n1
-    n5 --> n3
+    n2 --> n5
+    n3 --> n4
+    n5 --> n4
     n6 --> n0
-    n6 --> n3
+    n6 --> n1
     n6 --> n4
+    n7 --> n0
+    n7 --> n4
+    n7 --> n5
     click n0 "../modules/mcp_agent_tools.md"
     click n1 "../modules/routers_agent.md"
     click n2 "../modules/routers_task_domain.md"
-    click n3 "../modules/schemas_execution_usage.md"
-    click n4 "../modules/execution_usage_service.md"
-    click n5 "../modules/test_agent_skill_routing_guidance.md"
-    click n6 "../modules/test_execution_usage.md"
+    click n3 "../modules/agent_run_read.md"
+    click n4 "../modules/schemas_execution_usage.md"
+    click n5 "../modules/execution_usage_service.md"
+    click n6 "../modules/test_agent_skill_routing_guidance.md"
+    click n7 "../modules/test_execution_usage.md"
 ```
 
 ### Internal neighbors
@@ -58,6 +62,7 @@ flowchart LR
 | Inbound | [mcp_agent_tools](../modules/mcp_agent_tools.md) |
 | Inbound | [routers_agent](../modules/routers_agent.md) |
 | Inbound | [routers_task_domain](../modules/routers_task_domain.md) |
+| Inbound | [agent_run_read](../modules/agent_run_read.md) |
 | Inbound | [execution_usage_service](../modules/execution_usage_service.md) |
 | Inbound | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) |
 | Inbound | [test_execution_usage](../modules/test_execution_usage.md) |

@@ -1,6 +1,6 @@
 # AgentRunEvent
 
-**Location:** `backend/app/models/agent.py:1133`
+**Location:** `backend/app/models/agent.py:1137`
 **Kind:** Class
 **Bases:** `Base`
 **Module:** [models_agent](../modules/models_agent.md)

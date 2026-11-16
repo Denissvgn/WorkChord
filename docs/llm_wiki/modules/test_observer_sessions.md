@@ -38,8 +38,9 @@ flowchart LR
     n6["backend/tests/test_managed_authority.py"]
     n7["backend/tests/test_observer_sessions.py"]
     n8["backend/tests/test_person_assignment_reads.py"]
-    n9["backend/tests/test_runtime_observations.py"]
-    n10["backend/tests/test_team_topology_read.py"]
+    n9["backend/tests/test_person_run_reads.py"]
+    n10["backend/tests/test_runtime_observations.py"]
+    n11["backend/tests/test_team_topology_read.py"]
     n1 --> n3
     n2 --> n0
     n2 --> n1
@@ -64,17 +65,21 @@ flowchart LR
     n8 --> n5
     n8 --> n6
     n8 --> n7
-    n9 --> n0
     n9 --> n3
     n9 --> n5
     n9 --> n6
     n9 --> n7
-    n10 --> n1
-    n10 --> n2
+    n10 --> n0
     n10 --> n3
     n10 --> n5
     n10 --> n6
     n10 --> n7
+    n11 --> n1
+    n11 --> n2
+    n11 --> n3
+    n11 --> n5
+    n11 --> n6
+    n11 --> n7
     click n0 "../modules/config.md"
     click n1 "../modules/user_session.md"
     click n2 "../modules/identity_service.md"
@@ -84,8 +89,9 @@ flowchart LR
     click n6 "../modules/test_managed_authority.md"
     click n7 "../modules/test_observer_sessions.md"
     click n8 "../modules/test_person_assignment_reads.md"
-    click n9 "../modules/test_runtime_observations.md"
-    click n10 "../modules/test_team_topology_read.md"
+    click n9 "../modules/test_person_run_reads.md"
+    click n10 "../modules/test_runtime_observations.md"
+    click n11 "../modules/test_team_topology_read.md"
 ```
 
 ### Internal neighbors
@@ -94,6 +100,7 @@ flowchart LR
 |---|---|
 | Inbound | [test_agdash_link_provider](../modules/test_agdash_link_provider.md) |
 | Inbound | [test_person_assignment_reads](../modules/test_person_assignment_reads.md) |
+| Inbound | [test_person_run_reads](../modules/test_person_run_reads.md) |
 | Inbound | [test_runtime_observations](../modules/test_runtime_observations.md) |
 | Inbound | [test_team_topology_read](../modules/test_team_topology_read.md) |
 | Outbound | [config](../modules/config.md) |

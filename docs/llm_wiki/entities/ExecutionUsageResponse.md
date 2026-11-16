@@ -37,15 +37,18 @@ flowchart LR
     n1["BaseModel"]
     n2["get_execution_usage (backend/app/routers/agent.py)"]
     n3["record_execution_usage (backend/app/routers/agent.py)"]
-    n4["ExecutionUsageService.response (backend/app/services/execution_usage_service.py)"]
+    n4["backend/app/schemas/agent_run_read.py"]
+    n5["ExecutionUsageService.response (backend/app/services/execution_usage_service.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
+    n5 --> n0
     click n0 "../modules/schemas_execution_usage.md"
     click n2 "../modules/routers_agent.md"
     click n3 "../modules/routers_agent.md"
-    click n4 "../modules/execution_usage_service.md"
+    click n4 "../modules/agent_run_read.md"
+    click n5 "../modules/execution_usage_service.md"
 ```
 
 ### Summary
@@ -66,4 +69,5 @@ flowchart LR
 |---|---|---|---:|
 | `get_execution_usage` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
 | `record_execution_usage` | type_reference | [routers_agent](../modules/routers_agent.md) | — |
+| `agent_run_read` | import | [agent_run_read](../modules/agent_run_read.md) | — |
 | `ExecutionUsageService.response` | call | [execution_usage_service](../modules/execution_usage_service.md) | 1 |

@@ -1,6 +1,6 @@
 # AgentRunCreate
 
-**Location:** `backend/app/schemas/agent.py:344`
+**Location:** `backend/app/schemas/agent.py:352`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -52,18 +52,24 @@ flowchart LR
     n4["AgentService.start_run (backend/app/services/agent_service.py)"]
     n5["test_legacy_run_start_classifies_reported_model_evidence (backend/tests/test_agent_run_trust_compatibility.py)"]
     n6["begins (backend/tests/test_harness_session_metadata.py)"]
+    n7["test_a_started_run_keeps_its_declared_harness_session (backend/tests/test_person_run_reads.py)"]
+    n8["test_the_declared_harness_is_read_from_validated_metadata (backend/tests/test_person_run_reads.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
     n4 --> n0
     n5 --> n0
     n6 --> n0
+    n7 --> n0
+    n8 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
     click n4 "../modules/agent_service.md"
     click n5 "../modules/test_agent_run_trust_compatibility.md"
     click n6 "../modules/test_harness_session_metadata.md"
+    click n7 "../modules/test_person_run_reads.md"
+    click n8 "../modules/test_person_run_reads.md"
 ```
 
 ### Summary
@@ -87,3 +93,5 @@ flowchart LR
 | `AgentService.start_run` | type_reference | [agent_service](../modules/agent_service.md) | — |
 | `test_legacy_run_start_classifies_reported_model_evidence` | call | [test_agent_run_trust_compatibility](../modules/test_agent_run_trust_compatibility.md) | 1 |
 | `begins` | call | [test_harness_session_metadata](../modules/test_harness_session_metadata.md) | 1 |
+| `test_a_started_run_keeps_its_declared_harness_session` | call | [test_person_run_reads](../modules/test_person_run_reads.md) | 1 |
+| `test_the_declared_harness_is_read_from_validated_metadata` | call | [test_person_run_reads](../modules/test_person_run_reads.md) | 1 |

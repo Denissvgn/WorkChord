@@ -115,6 +115,8 @@ from app.schemas.runtime_observation import (
     AgentRuntimeObservationResponse,
 )
 from app.services.runtime_observation_service import RuntimeObservationService
+from app.schemas.agent_run_read import AgentRunReadItem
+from app.services.agent_run_read_service import AgentRunReadService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -1431,6 +1433,37 @@ async def get_agent_pipeline(
     """Retrieve all current tasks grouped by their agent pipeline columns."""
     cols = await service.get_pipeline()
     return AgentPipelineResponse(**cols)
+
+
+@router.get("/agent/runs", response_model=list[AgentRunReadItem])
+async def list_agent_runs(
+    service: Annotated[AgentService, Depends(get_agent_service)],
+    agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+    task_id: Optional[int] = Query(default=None, ge=1),
+    harness_kind: Optional[str] = Query(default=None, max_length=40),
+    harness_session_id: Optional[str] = Query(default=None, max_length=255),
+    status_filter: Optional[str] = Query(default=None, alias="status", max_length=50),
+    actor_id: Optional[int] = Query(default=None, ge=1),
+    limit: int = Query(default=50, ge=1, le=200),
+):
+    """List runs of the tasks the reader can see: status, model, harness session and declared usage.
+
+    People read on the pipeline's rule, operators read all, and an agent key
+    needs ``planning:read``. Run events and logs stay with run detail.
+    """
+    if agent_api_key:
+        actor = await get_agent_actor(service, agent_api_key)
+        try:
+            require_scope(actor, "planning:read")
+        except AgentPermissionError as exc:
+            _handle_agent_error(exc)
+    else:
+        authority = service.db.info.get("authority")
+        if not (_reads_work_as_person(authority) or authority is not None and authority.operator):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sign in to read runs.")
+    return await AgentRunReadService(service.db).list(
+        task_id=task_id, harness_kind=harness_kind, harness_session_id=harness_session_id,
+        status=status_filter, actor_id=actor_id, limit=limit)
 
 
 @router.get("/agent/runs/{run_id}", response_model=AgentRunDetailResponse)

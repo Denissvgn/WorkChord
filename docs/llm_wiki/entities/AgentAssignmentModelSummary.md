@@ -1,6 +1,6 @@
 # AgentAssignmentModelSummary
 
-**Location:** `backend/app/schemas/agent.py:715`
+**Location:** `backend/app/schemas/agent.py:723`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

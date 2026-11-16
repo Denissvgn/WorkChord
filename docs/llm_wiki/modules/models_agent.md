@@ -40,7 +40,7 @@ flowchart LR
 
 | Direction | Module |
 |---|---|
-| Inbound | `backend` (72) |
+| Inbound | `backend` (74) |
 | Inbound | `scripts` (2) |
 | Outbound | `backend` (5) |
 
@@ -50,7 +50,7 @@ flowchart LR
 |---|---:|---:|
 | python | 1 | 0 |
 
-> All 76 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
+> All 78 module neighbor(s) are summarized by package because the module-level view exceeds the 12-node limit.
 
 ## Classes
 
@@ -70,7 +70,7 @@ flowchart LR
 | [AgentIdempotencyRecord](../entities/AgentIdempotencyRecord.md) | 955 | `Base` | Replay-safe record for agent and PM mutations. |
 | [TaskEvent](../entities/TaskEvent.md) | 985 | `Base` | Append-only ledger entry for task mutations and agent checkpoints. |
 | [AgentRun](../entities/models_agent_AgentRun.md) | 1031 | `Base` | Trace record for one automated agent execution. |
-| [AgentRunEvent](../entities/models_agent_AgentRunEvent.md) | 1133 | `Base` | Append-only event emitted during an agent run. |
+| [AgentRunEvent](../entities/models_agent_AgentRunEvent.md) | 1137 | `Base` | Append-only event emitted during an agent run. |
 
 ## Functions
 
