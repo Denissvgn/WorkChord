@@ -59,20 +59,37 @@ export function formatScope(scope: Scope, search: string): string {
   }
 
   // Find and replace existing project/iteration keys in place.
+  // Write each scope key once at the position of its first occurrence;
+  // remove later duplicate occurrences of that key.
   let projectReplaced = false;
   let iterationReplaced = false;
+
+  const remove = new Set<number>();
 
   for (let i = 0; i < pairs.length; i++) {
     const eqIdx = pairs[i].indexOf('=');
     if (eqIdx === -1) continue;
     const key = pairs[i].slice(0, eqIdx);
-    if (key === 'project' && !projectReplaced) {
-      pairs[i] = `project=${scope.project}`;
-      projectReplaced = true;
-    } else if (key === 'iteration' && !iterationReplaced) {
-      pairs[i] = `iteration=${scope.iteration}`;
-      iterationReplaced = true;
+    if (key === 'project') {
+      if (!projectReplaced) {
+        pairs[i] = `project=${scope.project}`;
+        projectReplaced = true;
+      } else {
+        remove.add(i);
+      }
+    } else if (key === 'iteration') {
+      if (!iterationReplaced) {
+        pairs[i] = `iteration=${scope.iteration}`;
+        iterationReplaced = true;
+      } else {
+        remove.add(i);
+      }
     }
+  }
+
+  // Remove later duplicate occurrences of the scope keys.
+  if (remove.size > 0) {
+    pairs = pairs.filter((_, idx) => !remove.has(idx));
   }
 
   // Append missing keys: project before iteration.
