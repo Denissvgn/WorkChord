@@ -78,8 +78,8 @@
       "scope_preset": "worker-v1",
       "skill_package": {
         "name": "workchord-worker",
-        "sha256": "ac74a80bfff5ef07b88807a2faeac4805cb6b1c6eede50df3d35511d5b4aa48b",
-        "version": "1.13.0"
+        "sha256": "1595e63ca7e439c532303a6ff1fc2f1818771ea99b87ffe2c239df417eecea79",
+        "version": "1.14.0"
       }
     }
   ]

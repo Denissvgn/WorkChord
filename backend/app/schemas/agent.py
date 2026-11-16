@@ -64,6 +64,35 @@ def _validate_actor_scopes(value: list[str]) -> list[str]:
     return value
 
 
+HARNESS_KIND_PATTERN = re.compile(r"^[a-z0-9][a-z0-9._-]{0,39}$")
+
+
+def _validate_harness_metadata(value: dict[str, Any]) -> dict[str, Any]:
+    """Check the optional harness session an actor declares when it begins work.
+
+    ``{"harness": {"kind": "claude-code", "session_id": "..."}}`` lets an
+    independent observer match a run to the runtime session that performed it.
+    It is the actor's declaration; WorkChord stores it and does not verify it.
+    """
+    harness = value.get("harness")
+    if harness is None:
+        return value
+    if not isinstance(harness, dict) or set(harness) != {"kind", "session_id"}:
+        raise ValueError("metadata.harness must be an object with exactly kind and session_id")
+    kind, session_id = harness["kind"], harness["session_id"]
+    if not isinstance(kind, str) or not HARNESS_KIND_PATTERN.fullmatch(kind):
+        raise ValueError("metadata.harness.kind must be a short lowercase runtime name")
+    if (not isinstance(session_id, str) or not 1 <= len(session_id) <= 255 or not session_id.isprintable()
+            or any(character in session_id for character in "/\\ ")):
+        raise ValueError("metadata.harness.session_id must be the runtime's identifier, not a path")
+    from app.autonomy.canonical import ensure_secret_free
+    try:
+        ensure_secret_free(harness)
+    except ValueError as exc:
+        raise ValueError("metadata.harness must not contain credentials") from exc
+    return value
+
+
 def _validate_bounded_json(value: dict[str, Any], *, label: str) -> dict[str, Any]:
     """Reject persistence packets that can amplify storage and webhook payloads."""
     encoded = json.dumps(
@@ -338,7 +367,7 @@ class AgentRunCreate(BaseModel):
     @field_validator("metadata")
     @classmethod
     def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
-        return _validate_bounded_json(value, label="Run metadata")
+        return _validate_harness_metadata(_validate_bounded_json(value, label="Run metadata"))
 
 
 class AgentRunEventCreate(BaseModel):
@@ -928,7 +957,7 @@ class AgentWorkBegin(BaseModel):
     @field_validator("metadata")
     @classmethod
     def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
-        return _validate_bounded_json(value, label="Work metadata")
+        return _validate_harness_metadata(_validate_bounded_json(value, label="Work metadata"))
 
 
 class ModelAwareAgentWorkBegin(BaseModel):
@@ -959,7 +988,7 @@ class ModelAwareAgentWorkBegin(BaseModel):
     @field_validator("metadata")
     @classmethod
     def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
-        return _validate_bounded_json(value, label="Work metadata")
+        return _validate_harness_metadata(_validate_bounded_json(value, label="Work metadata"))
 
 
 class AgentWorkBeginResponse(BaseModel):

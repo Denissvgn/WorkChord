@@ -1,6 +1,6 @@
 {
   "api_contract": "workchord-agent/v1",
-  "catalog_version": "1.14.0",
+  "catalog_version": "1.15.0",
   "schema_version": "workchord-agent-skills/v1",
   "skills": [
     {
@@ -189,23 +189,23 @@
       "archives": [
         {
           "format": "tar.gz",
-          "path": "workchord-worker-1.13.0.tar.gz",
-          "sha256": "ac74a80bfff5ef07b88807a2faeac4805cb6b1c6eede50df3d35511d5b4aa48b",
+          "path": "workchord-worker-1.14.0.tar.gz",
+          "sha256": "1595e63ca7e439c532303a6ff1fc2f1818771ea99b87ffe2c239df417eecea79",
           "size": 92188
         },
         {
           "format": "zip",
-          "path": "workchord-worker-1.13.0.zip",
-          "sha256": "257294bf171f82144472c22ffad6c7b4b57dd43a7b793843734b31085ff2326b",
-          "size": 82808
+          "path": "workchord-worker-1.14.0.zip",
+          "sha256": "39c207dd9dbd50907ece959cc7e8327c86241d4de2c336c1c6cf44eb60b9c97e",
+          "size": 83841
         }
       ],
       "entrypoint": "SKILL.md",
       "files": [
         {
           "path": "SKILL.md",
-          "sha256": "124b09e7394e296b9ac30fcce81de5bafc8aaa8d208d78580de0439471afe808",
-          "size": 10652
+          "sha256": "5b0cb654f396c2b11897a9522e90cfd97eb0776f88b5b7263dbfffdd57c11554",
+          "size": 10729
         },
         {
           "path": "agents/openai.yaml",
@@ -219,8 +219,8 @@
         },
         {
           "path": "references/claim-run-and-task-state.md",
-          "sha256": "c90a81f017733396e960daac318923b24773baea046a14fc3eb6ce744f428cbc",
-          "size": 7245
+          "sha256": "762ad7a33cf6c936ac402c36a959b1e27ebcb0ad2e6caf64dfffa6443612138d",
+          "size": 8201
         },
         {
           "path": "references/events-errors-and-recovery.md",
@@ -274,8 +274,8 @@
       ],
       "role": "worker",
       "server_compatibility": ">=1.8.0,<2.0.0",
-      "version": "1.13.0"
+      "version": "1.14.0"
     }
   ],
-  "source_revision": "sha256:110f0b958465f25dc39b38430a5918796327d15e91a1714ab16cf8aaaa96808f"
+  "source_revision": "sha256:7de230b947211de8f7656c6b7dedbb487fd0515e297105d0a28b28ebb6a9ca94"
 }
