@@ -88,7 +88,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/components/tasks/TimeEntriesPanel.tsx': 'ec418c8617746822',
     'src/components/projects/TimeEntriesReport.tsx': 'e713a6d28f0867fa',
     'src/components/tasks/PagedTaskBrowser.tsx': '5e20eeaf74bec28f',
-    'src/pages/MyWorkPage.tsx': 'e4703dc32c60b546',
+    'src/pages/MyWorkPage.tsx': 'b4d44c74c390f92d',
     'src/components/tasks/TaskDiscussion.tsx': '3eef4282f9fcb368',
     'src/components/tasks/PersonCapacity.tsx': '7d3d6e58292d4be1',
     'src/components/tasks/DeliveryDependencies.tsx': '6510bec3f65b6bc5',
