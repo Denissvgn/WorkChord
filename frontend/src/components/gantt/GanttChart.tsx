@@ -1,3 +1,4 @@
+import { TaskAssigneeDisplay } from '../tasks/TaskAssigneeDisplay';
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
 import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
@@ -556,16 +557,6 @@ export const GanttChart = ({
         task.is_delayed ? t('gantt.flagLateStart') : null,
     ].filter(Boolean).map(flag => ` ${flag}`).join('');
 
-    // The bar repeats nothing from the task column: who carries it and for how long.
-    const getTaskBarText = (task: GanttTask) => {
-        const dates = getTaskTimelineDates(task);
-        const days = hasCompleteTimelineDates(dates)
-            ? differenceInCalendarDays(parseISO(dates.end), parseISO(dates.start)) + 1
-            : null;
-        const owner = task.assignee?.name ?? t('common.unassigned');
-        return days === null ? owner : t('gantt.taskBarText', { owner, count: days });
-    };
-
     const formatTaskTimelineDates = (dates: { start: string; end: string }) => ({
         start: formatDate(dates.start, activeI18n.language),
         end: formatDate(dates.end, activeI18n.language),
@@ -581,7 +572,7 @@ export const GanttChart = ({
             status: t(`statuses.${task.status}`),
             flags: taskTimingFlags(task),
             ...formatTaskTimelineDates(dates),
-        });
+        }) + ` · ${t('taskList.assignee')}: ${task.assignee?.name ?? t('common.unassigned')}`;
     };
 
     const getTaskAccessibleLabel = (task: GanttTask) => {
@@ -1253,12 +1244,7 @@ export const GanttChart = ({
                                         <div className="font-medium truncate text-sm flex-1 text-content-primary" title={task.title}>{task.title}</div>
                                     </div>
                                     <div className="mt-1 flex items-center gap-1.5 pl-6 text-wc-micro text-content-tertiary">
-                                        <span
-                                            className="max-w-[96px] truncate"
-                                            title={task.assignee?.name ?? t('common.unassigned')}
-                                        >
-                                            {task.assignee?.name ?? t('common.unassigned')}
-                                        </span>
+                                        {!taskPosition && <TaskAssigneeDisplay task={task} iterationId={iterationId} />}
                                         <span
                                             aria-label={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
                                             title={t('surfaces.ganttChart.priorityScale', { priority: task.priority })}
@@ -1292,7 +1278,7 @@ export const GanttChart = ({
                                         <button
                                             type="button"
                                             className={clsx(
-                                                "absolute top-3 z-10 flex h-6 items-center rounded px-2 text-xs transition-all",
+                                                "absolute top-1 z-10 flex h-10 items-center rounded px-2 text-xs transition-all",
                                                 // Dashed and unfilled: nobody carries this work, so nothing calculated its dates.
                                                 isProvisional
                                                     ? "border border-dashed border-border-strong bg-surface-muted text-content-secondary"
@@ -1336,7 +1322,7 @@ export const GanttChart = ({
                                             aria-label={getTaskAccessibleLabel(task)}
                                         >
                                             {/* The label follows the visible part of a long bar instead of scrolling away with its start. */}
-                                            <span className={clsx("sticky left-2 min-w-0 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]", !isProvisional && "drop-shadow-md")}>{getTaskBarText(task)}</span>
+                                            <span className="sticky left-2 min-w-0 max-w-96 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]"><TaskAssigneeDisplay task={task} iterationId={iterationId} bar durationDays={hasCompleteTimelineDates(taskDates) ? differenceInCalendarDays(parseISO(taskDates.end), parseISO(taskDates.start)) + 1 : undefined} /></span>
                                             {sandboxMode && (
                                                 <>
                                                     {/* Right edge: drag to change effort. */}

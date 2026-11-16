@@ -109,13 +109,13 @@ describe('GanttChart clarity states', () => {
         expect(screen.getByRole('region', { name: i18n.t('gantt.chartRegion') })).toHaveAccessibleDescription(
             i18n.t('gantt.chartInstructions'),
         );
-        expect(screen.getByTitle(i18n.t('gantt.taskBarSummary', {
+        expect(screen.getByRole('button', { name: scheduledTaskName(taskFixture) })).toHaveAttribute('title', i18n.t('gantt.taskBarSummary', {
             title: taskFixture.title,
             status: i18n.t('statuses.planned'),
             start: formatDate(taskFixture.start_date),
             end: formatDate(taskFixture.end_date),
             flags: '',
-        }))).toBeInTheDocument();
+        }) + ` · ${i18n.t('taskList.assignee')}: ${i18n.t('common.unassigned')}`);
     });
 
     it('shows an explicit unscheduled action instead of fabricating a calendar bar', () => {

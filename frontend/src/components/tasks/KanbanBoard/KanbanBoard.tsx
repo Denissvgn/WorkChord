@@ -24,7 +24,6 @@ import type { TaskFilters } from '../TaskFiltersBar';
 import { selectVisibleWork } from '../../../utils/visibleWork';
 import { filterTaskBySearch } from '../../../utils/taskFilters';
 import { AssigneeSelect } from '../AssigneeSelect';
-import { useAgentRowFacts } from '../useAgentRowFacts';
 import { assigneeOptionsFrom } from '../useTaskRowEdits';
 import { TaskEditorDrawer } from '../TaskEditorDrawer';
 import { WorkFreshness } from '../../feedback/WorkFreshness';
@@ -169,8 +168,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
         .filter((task): task is Task => task !== null), [tasks, searchText]);
     const filteredTasks = useMemo(() => selectVisibleWork(searchedTasks, filters, labelGroups).leaves, [searchedTasks, filters, labelGroups]);
 
-    // What a card shows beyond its task: the same state chip, assignee status and effort a list row uses.
-    const agentFacts = useAgentRowFacts(filteredTasks);
+    // What a card shows beyond its task: the task map its state chip reads.
     const taskMap = useMemo(() => {
         const map = new Map<number, Task>();
         const walk = (list: Task[]) => list.forEach(task => {
@@ -180,7 +178,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
         walk(tasks);
         return map;
     }, [tasks]);
-    const cardContext = useMemo<BoardCardContext>(() => ({ taskMap, assigneeOptions, agentFacts }), [taskMap, assigneeOptions, agentFacts]);
+    const cardContext = useMemo<BoardCardContext>(() => ({ taskMap }), [taskMap]);
 
     const columns = useMemo(() => {
         const cols: Record<ColumnId, Task[]> = {

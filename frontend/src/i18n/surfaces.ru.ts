@@ -161,6 +161,7 @@ export const surfacesRussian = {
         unassigned: "Не назначено",
         claimedBy: "Назначено агенту {{name}}",
         claimHeldUntil: "Взято агентом {{name}} до {{time}}",
+        claimHeldUntilTime: "Взято до {{time}}",
         noEstimate: "Без оценки",
     },
     kanbanBoard: {

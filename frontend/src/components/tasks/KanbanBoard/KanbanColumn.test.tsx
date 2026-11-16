@@ -38,9 +38,11 @@ describe('Board column', () => {
 });
 
 describe('Board card', () => {
-    it('labels the claim time and says when effort is unknown', () => {
-        renderWithProviders(<KanbanCard task={task(7, { effort_days: null, claimed_by: { display_name: 'Agent A' }, claim_expires_at: '2030-01-02T18:42:00Z' } as Partial<Task>)} />);
-        expect(screen.getByText(/^Claimed by Agent A, held until /)).toBeInTheDocument();
+    it('shows the capacity assignee instead of the runtime claimant, the claim expiry, and says when effort is unknown', () => {
+        renderWithProviders(<KanbanCard task={task(7, { effort_days: null, assignee: { id: 4, name: 'Builder' }, claimed_by: { display_name: 'Agent A' }, claim_expires_at: '2030-01-02T18:42:00Z' } as Partial<Task>)} />);
+        expect(screen.getByText('Builder')).toBeInTheDocument();
+        expect(screen.queryByText(/Claimed by Agent A/)).not.toBeInTheDocument();
+        expect(screen.getByText(/^Held until /)).toBeInTheDocument();
         expect(screen.getByText('Unestimated')).toBeInTheDocument();
         expect(screen.getAllByText(/#7/)).toHaveLength(1);
     });

@@ -1,3 +1,6 @@
+import { AssigneePicker } from './AssigneePicker';
+import type { TeamMemberProfile } from '../../types/team';
+import { planningInputService } from '../../services/planningInputService';
 import { usePlanningObservation } from '../../features/usePlanningObservation';
 import type { Iteration } from '../../types/iteration';
 import { DeliveryDependencies } from './DeliveryDependencies';
@@ -103,6 +106,9 @@ export const TaskForm = ({
     const draftScope = identity?.identity?.principal?.id ?? (identity?.identity?.mode === 'trusted_local' ? 'local' : null);
     const draftKey = draftScope === null ? null : `workchord-draft:${draftScope}:${mode}:${iterationId}:${parentProjectId ?? initialData?.project_id ?? "none"}:${initialData?.id ?? `new-${parentId ?? 'root'}`}`;
     const queryClient = useQueryClient();
+    const [outsideProfile, setOutsideProfile] = useState<TeamMemberProfile | null>(null);
+    const [addingCapacity, setAddingCapacity] = useState(false);
+    const [capacityAdded, setCapacityAdded] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [statusMessage, setStatusMessage] = useState<string | null>(null);
     const [aiContext, setAiContext] = useState('');
@@ -134,7 +140,7 @@ export const TaskForm = ({
     const [formData, setFormData] = useState<TaskEditorValues>(() => recoveredDraft
         ?? (initialTitle && !initialData ? { ...initialValues, title: initialTitle } : initialValues));
     const [baseline, setBaseline] = useState<TaskEditorValues>(() => initialValues);
-    const isDirty = JSON.stringify(formData) !== JSON.stringify(baseline);
+    const isDirty = outsideProfile !== null || JSON.stringify(formData) !== JSON.stringify(baseline);
     const clearDraft = useCallback(() => removeTaskDraft(draftKey, true), [draftKey]);
     useEffect(() => {
         onDiscardReady?.(clearDraft);
@@ -296,7 +302,7 @@ export const TaskForm = ({
             setError(mapped.message);
         },
     });
-    const isSubmitting = createMutation.isPending || updateMutation.isPending || createTriageMutation.isPending || statusPending || isRefreshing;
+    const isSubmitting = addingCapacity || createMutation.isPending || updateMutation.isPending || createTriageMutation.isPending || statusPending || isRefreshing;
     useEffect(() => { onPendingChange?.(isSubmitting); }, [isSubmitting, onPendingChange]);
 
     const handleStatusPending = useCallback((value: boolean) => {
@@ -486,7 +492,7 @@ export const TaskForm = ({
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (pendingWrite || isSubmitting || !currentTask && iterationId !== null && (creationContext.loading || formData.expected_revision === null)) return;
         if (isSubmitting || workDirty || discussionDirty || timeDirty) return;
@@ -505,6 +511,41 @@ export const TaskForm = ({
         if (validationIssue) {
             setError(t(`taskEditor.validation.${validationIssue.code}`));
             return;
+        }
+
+        if (outsideProfile && iterationId !== null && mode === 'direct') {
+            setAddingCapacity(true);
+            onPendingChange?.(true);
+            try {
+                // Re-read before a retry so a successful capacity write is never duplicated.
+                const currentMembers = await teamService.getByIteration(iterationId);
+                let member = currentMembers.find(candidate => candidate.profile_id === outsideProfile.id);
+                if (!member) {
+                    const context = await planningInputService.readInitial('member', iterationId, true, { profile_id: outsideProfile.id });
+                    member = await teamService.create(iterationId, {
+                        profile_id: outsideProfile.id, name: outsideProfile.display_name,
+                        position: outsideProfile.headline?.trim() || t(outsideProfile.profile_kind === 'agent' ? 'assigneePicker.agentRole' : 'assigneePicker.personRole'), email: outsideProfile.email ?? undefined,
+                        availability_percent: 100, professionalism_coefficient: 1,
+                        operational_utilization: outsideProfile.profile_kind === 'agent' ? 0 : 20,
+                    }, context.expected_revisions);
+                }
+                values.assignee_id = member.id;
+                setCapacityAdded(true);
+                // Creating capacity changes the iteration revision required by task creation.
+                const context = await planningInputService.readInitial('iteration', iterationId);
+                values.expected_revision = context.expected_revisions[iterationId];
+                queryClient.setQueryData(['team', iterationId], [...currentMembers.filter(candidate => candidate.id !== member.id), member]);
+                setFormData(values);
+                setOutsideProfile(null);
+                void queryClient.invalidateQueries({ queryKey: ['workload'] });
+                void queryClient.invalidateQueries({ queryKey: ['gantt'] });
+            } catch (cause) {
+                setError(getApiErrorMessage(cause, t('assigneePicker.addFailed')));
+                setAddingCapacity(false);
+                onPendingChange?.(false);
+                return;
+            }
+            setAddingCapacity(false);
         }
 
         if (mode === 'sandbox' && currentTask && onSaveSandbox) {
@@ -682,19 +723,6 @@ export const TaskForm = ({
                 required
             />
 
-            <div>
-                <label className="field-lbl" htmlFor={`${formId}-owner`}>{t('domain.owner')}</label>
-                {owners.isLoading && <p className="text-sm text-content-secondary">{t('common.loading')}</p>}
-                {owners.isError && <QueryErrorState error={owners.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void owners.refetch()} />}
-                <select id={`${formId}-owner`} className="input w-full" value={formData.owner_profile_id ?? ''}
-                    onChange={event => setFormData(values => ({ ...values, owner_profile_id: event.target.value ? Number(event.target.value) : null }))}>
-                    <option value="">{t('domain.unassignedOwner')}</option>
-                    {currentTask?.owner && !owners.data?.items.some(owner => owner.id === currentTask.owner!.id) && <option value={currentTask.owner.id}>{currentTask.owner.name}</option>}
-                    {(owners.data?.items ?? []).map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
-                </select>
-                <p className="mt-1 text-sm text-content-secondary">{t('domain.ownerHelp')}</p>
-                {formData.owner_profile_id && <PersonCapacity key={formData.owner_profile_id} profileId={formData.owner_profile_id} startDate={iteration?.start_date} endDate={iteration?.end_date} />}
-            </div>
 
             {/* Priority + Assignee */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -708,22 +736,12 @@ export const TaskForm = ({
                     max="10"
                 />
 
-                <div>
-                    <label htmlFor={`${formId}-assignee`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.assignee')}</label>
-                    <select
- disabled={Boolean(currentTask?.is_composite) || iterationId === null}                        id={`${formId}-assignee`}
-                        value={formData.assignee_id || ''}
-                        onChange={e => setFormData({ ...formData, assignee_id: e.target.value ? parseInt(e.target.value) : null })}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                    >
-                        <option value="">{t('surfaces.taskForm.unassigned')}</option>
-                        {teamMembers?.map(member => (
-                            <option key={member.id} value={member.id}>
-                                {member.name} ({member.position})
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <AssigneePicker id={`${formId}-assignee`} members={teamMembers ?? []} value={formData.assignee_id ?? null}
+                    profile={outsideProfile} disabled={Boolean(currentTask?.is_composite) || iterationId === null}
+                    allowAdd={mode === 'direct'} onChange={(assigneeId, profile) => {
+                        setOutsideProfile(profile); setCapacityAdded(false);
+                        setFormData(values => ({ ...values, assignee_id: assigneeId }));
+                    }} />
             </div>
 
             {/* Assignee recommendations (only for existing) */}
@@ -1025,7 +1043,21 @@ export const TaskForm = ({
             </CollapsibleSection>
 
             {/* === COLLAPSIBLE: ADVANCED OPTIONS === */}
-            <CollapsibleSection title={t('taskForm.advancedOptions')}>
+            <CollapsibleSection title={t('assigneePicker.more')}>
+            <div>
+                <label className="field-lbl" htmlFor={`${formId}-owner`}>{t('domain.owner')}</label>
+                {owners.isLoading && <p className="text-sm text-content-secondary">{t('common.loading')}</p>}
+                {owners.isError && <QueryErrorState error={owners.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void owners.refetch()} />}
+                <select id={`${formId}-owner`} className="input w-full" value={formData.owner_profile_id ?? ''}
+                    onChange={event => setFormData(values => ({ ...values, owner_profile_id: event.target.value ? Number(event.target.value) : null }))}>
+                    <option value="">{t('domain.unassignedOwner')}</option>
+                    {currentTask?.owner && !owners.data?.items.some(owner => owner.id === currentTask.owner!.id) && <option value={currentTask.owner.id}>{currentTask.owner.name}</option>}
+                    {(owners.data?.items ?? []).map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
+                </select>
+                <p className="mt-1 text-sm text-content-secondary">{t('domain.ownerHelp')}</p>
+                {formData.owner_profile_id && <PersonCapacity key={formData.owner_profile_id} profileId={formData.owner_profile_id} startDate={iteration?.start_date} endDate={iteration?.end_date} />}
+            </div>
+
                 {mode === 'sandbox' && currentTask && (
                     <div>
                         <label htmlFor={`${formId}-sandbox-status`} className="block text-sm font-medium text-content-primary mb-1">
@@ -1141,6 +1173,7 @@ export const TaskForm = ({
                 onDirty={setTimeDirty} onPending={handleStatusPending} />}
             {currentTask && mode === 'direct' && <CollapsibleSection title={t('taskTimeline.title', { defaultValue: t('domain.history') })}><TaskTimelinePanel task={currentTask} /></CollapsibleSection>}
 
+            {capacityAdded && <p role="status" className="text-sm text-content-secondary">{t('assigneePicker.capacityAdded')}</p>}
             {/* === ACTION BUTTONS === */}
             <div className="flex flex-col items-stretch gap-2 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
                 {canSendToTriage ? (
@@ -1174,7 +1207,7 @@ export const TaskForm = ({
                         disabled={isSubmitting || workDirty || discussionDirty || timeDirty || sessionUnavailable || !currentTask && iterationId !== null && (creationContext.loading || formData.expected_revision === null) || Boolean(conflict) || Boolean(pendingWrite)}
                     >
                         <Save className="w-4 h-4 mr-2" />
-                        {mode === 'sandbox'
+                        {outsideProfile ? t('assigneePicker.addAndAssign') : mode === 'sandbox'
                             ? t('taskEditor.saveSandbox')
                             : currentTask
                                 ? t('taskEditor.updateTask')

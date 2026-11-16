@@ -1,3 +1,4 @@
+import { TaskAssigneeDisplay } from '../TaskAssigneeDisplay';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
@@ -6,18 +7,13 @@ import { AlertCircle, Bot, GripVertical } from 'lucide-react';
 import clsx from 'clsx';
 import { formatClaimUntil } from './claimTime';
 import { priorityChipClassName } from '../../ui/tone';
-import { agentRowValues } from '../useAgentRowFacts';
-import type { AgentRowFacts } from '../useAgentRowFacts';
-import type { TaskRowAssigneeOption } from '../TaskRow';
 import { taskStateChip } from '../taskStateChip';
 import { getEffectiveEffort } from '../taskRowValues';
-import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } from '../taskRowParts';
+import { EffortValue, TaskStateChipBadge } from '../taskRowParts';
 
-/** What a card needs beyond its task, the same inputs a list row takes, shared by every card on the board. */
+/** What a card needs beyond its task: the task map the state chip reads, shared by every card on the board. */
 export interface BoardCardContext {
     taskMap: Map<number, Task>;
-    assigneeOptions: TaskRowAssigneeOption[];
-    agentFacts: AgentRowFacts;
 }
 
 interface KanbanCardProps {
@@ -31,8 +27,6 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
     const { t, i18n } = useTranslation();
     const claimUntil = task.claim_expires_at ? formatClaimUntil(task.claim_expires_at, i18n.language) : null;
     const chip = context ? taskStateChip(task, context.taskMap) : null;
-    const { dispatch } = context ? agentRowValues(task, context.assigneeOptions, context.agentFacts) : { dispatch: null };
-    const assigneeKind = context?.assigneeOptions.find(option => option.id === task.assignee?.id)?.kind;
     const {
         attributes,
         listeners,
@@ -80,7 +74,7 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
                     </button>
                 </div>
-                {(task.is_overdue || task.claimed_by) && (
+                {(task.is_overdue || (task.claimed_by && claimUntil)) && (
                     <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
                         {task.is_overdue && (
                             <span className="flex items-center gap-1 text-feedback-danger-foreground">
@@ -88,12 +82,10 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                                 {t('surfaces.kanbanCard.overdue')}
                             </span>
                         )}
-                        {task.claimed_by && (
+                        {task.claimed_by && claimUntil && (
                             <span className="flex items-center gap-1 text-content-secondary">
                                 <Bot className="h-4 w-4 shrink-0" aria-hidden="true" />
-                                {claimUntil
-                                    ? t('surfaces.kanbanCard.claimHeldUntil', { name: task.claimed_by.display_name, time: claimUntil })
-                                    : t('surfaces.kanbanCard.claimedBy', { name: task.claimed_by.display_name })}
+                                {t('surfaces.kanbanCard.claimHeldUntilTime', { time: claimUntil })}
                             </span>
                         )}
                     </div>
@@ -109,17 +101,9 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                 </h4>
                 {chip && <TaskStateChipBadge chip={chip} className="mb-3" />}
 
-                {/* Footer: the assignee with its kind, the agent status under it, and the effort */}
+                {/* Footer: the capacity assignee with its dispatch line and reviewer, and the effort */}
                 <div className="flex items-start justify-between gap-2 text-xs text-content-secondary">
-                    <span data-assignee-cell="" className="flex min-w-0 flex-col">
-                        <span className="flex min-w-0 items-center gap-1.5">
-                            <AssigneeKindIcon kind={assigneeKind} className="h-3.5 w-3.5" />
-                            <span className="min-w-0 truncate" title={task.assignee?.name ?? t('common.unassigned')}>
-                                {task.assignee?.name ?? t('common.unassigned')}
-                            </span>
-                        </span>
-                        {dispatch && <AgentDispatchLine dispatch={dispatch} className="block truncate pl-[1.125rem] text-wc-micro text-content-tertiary" />}
-                    </span>
+                    <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
                     <EffortValue effort={getEffectiveEffort(task)} className="shrink-0 text-right" />
                 </div>
             </div>
