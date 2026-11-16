@@ -1,7 +1,7 @@
 import type { Task, TaskStatus } from '../types/task';
 
 /**
- * Where an agent's work on a task stands, as one line under the agent's name. `unknown` is the
+ * Where an agent's work on a task stands, as one short line with the agent's name. `unknown` is the
  * neutral line for a reader whose reads cannot say whether an agent is connected.
  */
 export type AgentDispatchState = 'noAgentConnected' | 'queued' | 'working' | 'waitingForReview' | 'unknown';

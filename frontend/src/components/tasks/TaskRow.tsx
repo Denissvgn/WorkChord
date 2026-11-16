@@ -54,7 +54,7 @@ export interface TaskRowProps {
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
     /** Why this row cannot join the current selection; the checkbox stays visible but off. */
     selectDisabledReason?: string;
-    /** For an agent assignee, the one line under the name that says where its work stands. */
+    /** For an agent assignee, the status after the name that says where its work stands. */
     dispatch?: AgentDispatchState | null;
     /**
      * The Reviewer beside the assignee: a name, or `{ name: null }` when any authorized person
@@ -93,7 +93,7 @@ export const TaskRow = ({
         <div
             data-task-row={id}
             className={clsx(
-                'relative flex min-h-11 items-center gap-2 border-b border-border-subtle bg-surface-card pr-2 hover:bg-surface-hover',
+                'relative flex h-11 items-center gap-2 border-b border-border-subtle bg-surface-card pr-2 hover:bg-surface-hover',
                 overdue && 'border-l-4 border-l-feedback-danger-border',
                 deferred && 'bg-surface-muted opacity-75',
                 selected && 'bg-action-muted',
@@ -173,30 +173,28 @@ export const TaskRow = ({
             )}
 
             {assignee !== undefined && (
-                <span className="hidden w-40 shrink-0 flex-col justify-center text-xs text-content-secondary md:flex">
-                    <span className="flex min-w-0 items-center gap-1">
-                        <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
-                        {onAssign ? (
-                            <select data-page-chrome-control="select"
-                                aria-label={`${t('taskList.assignee')}: ${title}`}
-                                value={assignee?.id ?? ''}
-                                onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
-                                className={clsx(
-                                    'min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
-                                    dispatch ? 'h-6' : 'h-8',
-                                )}
-                            >
-                                <option value="">{t('common.unassigned')}</option>
-                                {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
-                            </select>
-                        ) : (
-                            <span className="min-w-0 truncate" title={assigneeName}>
-                                <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
-                            </span>
-                        )}
-                    </span>
+                // One line, so the row stays 44 px: the agent status follows the name and truncates, its full text in the title.
+                <span data-assignee-cell="" className="hidden w-40 shrink-0 items-center gap-1 text-xs text-content-secondary md:flex">
+                    <AssigneeIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                    {onAssign ? (
+                        <select data-page-chrome-control="select"
+                            aria-label={`${t('taskList.assignee')}: ${title}`}
+                            title={assigneeName}
+                            value={assignee?.id ?? ''}
+                            onChange={event => onAssign(event.target.value === '' ? null : Number(event.target.value))}
+                            className="h-8 min-w-0 flex-1 cursor-pointer appearance-none truncate rounded border-0 bg-transparent px-1 text-xs text-content-secondary hover:bg-surface-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                        >
+                            <option value="">{t('common.unassigned')}</option>
+                            {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
+                        </select>
+                    ) : (
+                        <span className="min-w-0 flex-1 truncate" title={assigneeName}>
+                            <span className="sr-only">{t('taskList.assignee')}: </span>{assigneeName}
+                        </span>
+                    )}
+                    {dispatch && <span aria-hidden="true" className="shrink-0 text-content-tertiary">·</span>}
                     {dispatch && (
-                        <span data-agent-dispatch={dispatch} title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])} className="truncate pl-5 leading-4 text-content-tertiary">
+                        <span data-agent-dispatch={dispatch} title={t(AGENT_DISPATCH_LABEL_KEY[dispatch])} className="min-w-0 max-w-[50%] shrink-0 truncate leading-4 text-content-tertiary">
                             {/* "Agent status unknown" already names what it is about. */}
                             {dispatch !== 'unknown' && <span className="sr-only">{t('taskList.agentStatus')}: </span>}{t(AGENT_DISPATCH_LABEL_KEY[dispatch])}
                         </span>

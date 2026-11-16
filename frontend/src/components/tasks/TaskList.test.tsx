@@ -266,7 +266,7 @@ describe('TaskList rows', () => {
         await screen.findByRole('button', { name: 'Task 1' });
 
         const row = rowOf('Task 1');
-        expect(row.className).toContain('min-h-11');
+        expect(row).toHaveClass('h-11');
         const atRest = Array.from(row.querySelectorAll(INTERACTIVE));
         expect(atRest.length).toBeLessThanOrEqual(4);
         expect(within(row).getByRole('button', { name: /Status: Planned/ })).toBeInTheDocument();
@@ -385,7 +385,7 @@ describe('TaskList rows', () => {
         await waitFor(() => expect(taskServiceMock.changeStatus).toHaveBeenCalledWith(1, 'active', undefined, 1));
     });
 
-    it('shows the agent status line under an agent assignee and the Reviewer beside it', async () => {
+    it('shows the agent status after the name of an agent assignee and the Reviewer beside it', async () => {
         const agent = { id: 6, name: 'Build agent' };
         teamMock.getByIteration.mockResolvedValue([
             { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },

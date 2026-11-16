@@ -101,7 +101,7 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     expect(screen.getByText('Working as Sam Ortiz · local, not verified')).toBeInTheDocument();
     const title = await screen.findByRole('button', { name: '#7 · Assigned to my row' });
     // My Work uses the same 44 px row as the task list: status, title, then the menu on hover.
-    expect(title.closest('[data-task-row]')?.className).toContain('min-h-11');
+    expect(title.closest('[data-task-row]')).toHaveClass('h-11');
     expect(screen.getByRole('button', { name: /^Status: Planned/ })).toBeInTheDocument();
 });
 
@@ -167,7 +167,7 @@ describe('My Work rows', () => {
         tasks.forEach(item => expect(rowOf(item.title).querySelectorAll('span.rounded-full')).toHaveLength(1));
     });
 
-    it('shows the agent status line under an agent assignee, with the Reviewer beside it', async () => {
+    it('shows the agent status after the name of an agent assignee, with the Reviewer beside it', async () => {
         const agent = { id: 6, name: 'Build agent' };
         const claim = { id: 3, name: 'builder', display_name: 'Builder' };
         arrange([

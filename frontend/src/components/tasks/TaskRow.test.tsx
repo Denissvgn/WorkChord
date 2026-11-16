@@ -4,7 +4,7 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { TaskRow } from './TaskRow';
 
 describe('TaskRow', () => {
-    it('shows the agent status line under the assignee and the Reviewer beside it', () => {
+    it('shows the agent status after the assignee name and the Reviewer beside it', () => {
         renderWithProviders(
             <TaskRow id={1} title="Task 1" status="resolved" assignee={{ id: 6, name: 'Build agent' }}
                 assigneeOptions={[{ id: 6, name: 'Build agent', kind: 'agent' }]} onAssign={vi.fn()} onOpen={vi.fn()} menuItems={[]}
@@ -14,12 +14,32 @@ describe('TaskRow', () => {
         const picker = screen.getByRole('combobox', { name: 'Assignee: Task 1' });
         const line = row.querySelector<HTMLElement>('[data-agent-dispatch]')!;
         expect(line).toHaveTextContent('Agent status: Waiting for review');
-        // The line sits under the name, in the assignee cell, and the Reviewer follows that cell.
-        expect(picker.closest('span.flex-col')).toContainElement(line);
+        // The status follows the name on the same line of the assignee cell, and the Reviewer follows that cell.
+        const cell = row.querySelector<HTMLElement>('[data-assignee-cell]')!;
+        expect(picker.parentElement).toBe(cell);
+        expect(line.parentElement).toBe(cell);
+        expect(cell).not.toHaveClass('flex-col');
+        expect(line).toHaveClass('truncate');
+        expect(line).toHaveAttribute('title', 'Waiting for review');
+        expect(picker).toHaveAttribute('title', 'Build agent');
         expect(row.textContent!.indexOf('Waiting for review')).toBeLessThan(row.textContent!.indexOf('Reviewer: Review bot'));
-        // The row stays 44 px and the status line adds nothing to reach by keyboard.
-        expect(row.className).toContain('min-h-11');
+        // The status adds nothing to reach by keyboard.
         expect(row.querySelectorAll('button, select, input')).toHaveLength(2);
+    });
+
+    it('keeps every row at the 44 px the virtualized list measures, with or without an agent status', () => {
+        const { rerender } = renderWithProviders(
+            <TaskRow id={1} title="Task 1" status="planned" assignee={{ id: 6, name: 'Build agent' }}
+                assigneeOptions={[{ id: 6, name: 'Build agent', kind: 'agent' }]} onAssign={vi.fn()} onOpen={vi.fn()} menuItems={[]}
+                dispatch="noAgentConnected" reviewer={null} />,
+        );
+        const rowOf = () => screen.getByRole('button', { name: 'Task 1' }).closest<HTMLElement>('[data-task-row]')!;
+        // A fixed height, not a minimum, so a long status truncates instead of growing the row.
+        expect(rowOf()).toHaveClass('h-11');
+        expect(rowOf().className).not.toMatch(/\bmin-h-/);
+        expect(rowOf().querySelector('.flex-col')).toBeNull();
+        rerender(<TaskRow id={1} title="Task 1" status="planned" assignee={{ id: 5, name: 'Ada' }} onOpen={vi.fn()} menuItems={[]} />);
+        expect(rowOf()).toHaveClass('h-11');
     });
 
     it('names anyone as Reviewer when no reviewer agent holds the review, and keeps the cell empty before submission', () => {

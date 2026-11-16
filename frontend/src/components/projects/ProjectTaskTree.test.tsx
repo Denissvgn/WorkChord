@@ -37,7 +37,7 @@ describe('ProjectTaskTree', () => {
         renderWithProviders(<ProjectTaskTree sections={sections(task(1, { children: [task(2, { parent_id: 1, status: 'resolved' })], is_composite: true }))} />);
         const parent = rowOf('Task 1');
         const child = rowOf('Task 2');
-        expect(parent.className).toContain('min-h-11');
+        expect(parent).toHaveClass('h-11');
         expect(parent).toHaveTextContent('P2');
         expect(parent).toHaveTextContent('Ada');
         expect(child).toHaveTextContent('In review');
@@ -55,7 +55,7 @@ describe('ProjectTaskTree', () => {
         expect(screen.queryByText(/Olga Owner/)).toBeNull();
     });
 
-    it('shows the agent status line under an agent assignee and the Reviewer beside it', async () => {
+    it('shows the agent status after the name of an agent assignee and the Reviewer beside it', async () => {
         const agent = { id: 6, name: 'Build agent' };
         services.team.mockResolvedValue([
             { id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } },
