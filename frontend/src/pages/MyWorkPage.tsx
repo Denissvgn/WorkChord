@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { useLiveWindow } from '../features/useLiveWindow';
 import { LiveWindowStatus } from '../components/feedback/LiveWindowStatus';
 import { PageLayout, PageHeader } from '../components/ui';
@@ -14,7 +15,11 @@ import { discussionService } from '../services/discussionService';
 import type { TaskReference, TaskReferencePage } from '../types/task';
 import { CurrentTaskModal } from '../components/tasks/GuardedTaskModal';
 import { TaskRow } from '../components/tasks/TaskRow';
+import { TaskSelectionBar } from '../components/tasks/TaskSelectionBar';
+import { getEffectiveEffort } from '../components/tasks/taskRowValues';
 import { useTaskRowEdits } from '../components/tasks/useTaskRowEdits';
+import { useIterationRowData } from '../components/tasks/useIterationRowData';
+import { useTaskSelection } from '../components/tasks/useTaskSelection';
 import { Button } from '../components/common/Button';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -52,7 +57,12 @@ const MyWorkPage = () => {
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const retry = useMutation({ mutationFn: discussionService.retry, onSuccess: () => deliveries.refetch() });
     const selectedQuery = queue === 'inbox' ? inbox : queue === 'review' ? reviews : work;
-    const items = queue === 'review' ? reviews.data?.pages.flatMap(page => page.items) ?? [] : work.data?.pages.flatMap(page => page.queues[queue] ?? []) ?? [];
+    const reviewPages = reviews.data?.pages;
+    const workPages = work.data?.pages;
+    const items = useMemo(
+        () => queue === 'review' ? reviewPages?.flatMap(page => page.items) ?? [] : workPages?.flatMap(page => page.queues[queue] ?? []) ?? [],
+        [queue, reviewPages, workPages],
+    );
     const workState = work.data?.pages[0].state;
     const workQueue = WORK_QUEUES.includes(queue);
     const queueLabel = (key: Queue) => {
@@ -61,6 +71,18 @@ const MyWorkPage = () => {
         return `${t(`teamwork.queue_${key}`)} · ${count}${work.hasNextPage ? '+' : ''}`;
     };
     const rowEdits = useTaskRowEdits();
+    // A task reference carries no priority, assignee or effort; those come from the iteration's tasks, as in the Tasks list.
+    const rowData = useIterationRowData(items.map(task => task.iteration_id));
+    const leaves = useMemo(() => items.flatMap(item => {
+        const full = rowData.tasksById.get(item.id);
+        return full && item.iteration_id !== null && !full.is_composite && (full.children?.length ?? 0) === 0 ? [full] : [];
+    }), [items, rowData.tasksById]);
+    const selectableIds = useMemo(() => new Set(leaves.map(task => task.id)), [leaves]);
+    const order = useMemo(() => leaves.map(task => task.id), [leaves]);
+    const iterationOf = useCallback((id: number) => rowData.tasksById.get(id)?.iteration_id, [rowData.tasksById]);
+    const selection = useTaskSelection({ selectableIds, order, iterationOf });
+    const selectedTasks = useMemo(() => leaves.filter(task => selection.selectedIds.has(task.id)), [leaves, selection.selectedIds]);
+    const scopeIterationId = selectedTasks[0]?.iteration_id ?? null;
     const selectTask = (id: number | null) => { const next = new URLSearchParams(params); if (id) next.set('task', String(id)); else next.delete('task'); setParams(next); };
 
     return <PageLayout><PageHeader title={t('teamwork.myWork')} subtitle={t('teamwork.myWorkHelp')} /><section className="space-y-5">
@@ -76,15 +98,33 @@ const MyWorkPage = () => {
             <LocalProfilePicker current={null} onChosen={() => identityContext?.refresh()} />
         </section>}
         {workQueue && workState && workState !== 'ready' && !(workState === 'profile_unlinked' && local) && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>}
-        {queue !== 'inbox' && items.length > 0 && <ul className="rounded-lg border border-border bg-surface-card">{items.map(task => <li key={task.id}>
-            <TaskRow id={task.id} title={task.title} titleText={`#${task.id} · ${task.title}`} status={task.status}
-                chip={task.blocked_reason ? { kind: 'blocked' } : queue === 'review' || queue === 'awaiting_review' ? { kind: 'inReview' } : null}
-                meta={[task.project_name ?? t('teamwork.workspace'), task.iteration_name ?? t('teamwork.backlog'),
-                    task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : null, task.blocked_reason].filter(Boolean).join(' · ')}
-                onOpen={() => selectTask(task.id)}
-                onStatusChange={status => rowEdits.changeStatus(task, status)}
-                menuItems={[{ label: t('taskList.openTask'), onSelect: () => selectTask(task.id) }]} />
-        </li>)}</ul>}
+        {queue !== 'inbox' && rowData.error && <QueryErrorState error={rowData.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={rowData.refetch} />}
+        {queue !== 'inbox' && scopeIterationId !== null && <TaskSelectionBar iterationId={scopeIterationId} selectedTasks={selectedTasks}
+            matchingCount={selection.matchingIds.length} onSelectAll={selection.selectAll} onClearSelection={selection.clear} />}
+        {queue !== 'inbox' && items.length > 0 && <ul className="rounded-lg border border-border bg-surface-card">{items.map(task => {
+            const full = rowData.tasksById.get(task.id);
+            const canPick = selectableIds.has(task.id);
+            return <li key={task.id}>
+                <TaskRow id={task.id} title={task.title} titleText={`#${task.id} · ${task.title}`} status={task.status}
+                    statusLocked={full ? full.is_composite || (full.children?.length ?? 0) > 0 : false}
+                    priority={full?.priority}
+                    chip={task.blocked_reason ? { kind: 'blocked' } : queue === 'review' || queue === 'awaiting_review' ? { kind: 'inReview' } : null}
+                    meta={[task.project_name ?? t('teamwork.workspace'), task.iteration_name ?? t('teamwork.backlog'),
+                        task.status === 'closed' && task.acceptance_current === false ? t('teamwork.acceptanceNeedsReview') : null, task.blocked_reason].filter(Boolean).join(' · ')}
+                    assignee={full ? full.assignee ?? null : undefined}
+                    assigneeOptions={rowData.optionsByIteration.get(task.iteration_id ?? -1)}
+                    onAssign={full && task.iteration_id !== null ? assigneeId => rowEdits.assign(task, assigneeId) : undefined}
+                    effort={full ? getEffectiveEffort(full) : undefined}
+                    overdue={full?.is_overdue}
+                    onOpen={() => selectTask(task.id)}
+                    onStatusChange={status => rowEdits.changeStatus(task, status)}
+                    menuItems={[{ label: t('taskList.openTask'), onSelect: () => selectTask(task.id) }]}
+                    selected={selection.selectedIds.has(task.id)}
+                    selectionActive={selection.selectionActive}
+                    onToggleSelect={canPick ? ({ shiftKey }) => selection.toggle(task.id, shiftKey) : undefined}
+                    selectDisabledReason={canPick && !selection.canAdd(task.id) ? t('taskList.selectOneIteration') : undefined} />
+            </li>;
+        })}</ul>}
         {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <p className="text-sm text-content-secondary">{t('teamwork.emptyQueue')}</p>}
         {queue === 'inbox' && <>
             <ul className="divide-y divide-border">{inbox.data?.pages.flatMap(page => page.items).map(item => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">

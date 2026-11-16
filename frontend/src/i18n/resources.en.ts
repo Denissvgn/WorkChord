@@ -881,6 +881,7 @@ export const englishResources = {
                 inReview: 'In review',
                 openTask: 'Open task',
                 selectTask: 'Select: {{title}}',
+                selectOneIteration: 'Bulk changes apply to one iteration at a time. Clear the selection to pick a task of another iteration.',
                 priorityTitle: 'Priority {{priority}}',
             },
             disabledReasons: {
@@ -4673,9 +4674,13 @@ export const englishResources = {
                     moreChanges: "More changes",
                     kinds: {
                         assign: "Assign", status: "Status", priority: "Priority", iteration: "Iteration",
-                        project: "Set project", milestone: "Set milestone", addLabels: "Add labels",
-                        removeLabels: "Remove labels", flags: "Set deferred", delete: "Delete tasks",
+                        project: "Set project", clearProject: "Clear project", milestone: "Set milestone", clearMilestone: "Clear milestone",
+                        addLabels: "Add labels", removeLabels: "Remove labels", flags: "Optional or deferred", delete: "Delete tasks",
                     },
+                    clearProjectHelp_one: "Removes the project from {{count}} task.",
+                    clearProjectHelp_other: "Removes the project from {{count}} tasks.",
+                    clearMilestoneHelp_one: "Removes the milestone from {{count}} task.",
+                    clearMilestoneHelp_other: "Removes the milestone from {{count}} tasks.",
                     rejected_one: "Nothing was changed: {{count}} task cannot take this change.",
                     rejected_other: "Nothing was changed: {{count}} tasks cannot take this change.",
                     movePartial: "Moved {{done}} of {{count}} tasks. {{message}}",

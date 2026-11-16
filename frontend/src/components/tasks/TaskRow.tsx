@@ -50,6 +50,10 @@ export interface TaskRowProps {
     selectionActive?: boolean;
     /** Leaves out the checkbox for rows that cannot be selected. */
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
+    /** Why this row cannot join the current selection; the checkbox stays visible but off. */
+    selectDisabledReason?: string;
+    /** Room right after the assignee, for what a later view adds to it, such as the dispatch state. */
+    afterAssignee?: ReactNode;
     overdue?: boolean;
     deferred?: boolean;
     className?: string;
@@ -61,7 +65,7 @@ export interface TaskRowProps {
  */
 export const TaskRow = ({
     id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
-    level = 0, lead, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect,
+    level = 0, lead, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, afterAssignee,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
     const { t } = useTranslation();
@@ -100,10 +104,12 @@ export const TaskRow = ({
                     <input
                         type="checkbox"
                         checked={selected}
+                        disabled={selectDisabledReason !== undefined}
+                        title={selectDisabledReason}
                         onChange={() => undefined}
                         onClick={event => onToggleSelect({ shiftKey: event.shiftKey })}
                         aria-label={t('taskList.selectTask', { title })}
-                        className="h-4 w-4 cursor-pointer rounded border-border-strong text-action focus:ring-focus"
+                        className="h-4 w-4 cursor-pointer rounded border-border-strong text-action focus:ring-focus disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 )}
             </span>
@@ -179,6 +185,8 @@ export const TaskRow = ({
                     )}
                 </span>
             )}
+
+            {afterAssignee}
 
             {effort !== undefined && (effort === null ? (
                 <span className="w-12 shrink-0 text-right text-xs text-content-tertiary" title={t('domain.unknownEstimate')}>

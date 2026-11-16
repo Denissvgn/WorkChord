@@ -2,27 +2,28 @@ import { isGraphLimitError } from '../../utils/graphLimitError';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
 import { statusTextClassName } from '../ui/tone';
 import { LabelChip } from '../labels/LabelChip';
-import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
     ChevronRight, ChevronDown,
-    Trash2, Plus, Edit, AlertTriangle, GripVertical, Layers, Unlink, Bot, Info
+    Trash2, Plus, Edit, AlertTriangle, GripVertical, Unlink, Bot, Info
 } from 'lucide-react';
 import { taskService } from '../../services/taskService';
 import { labelService } from '../../services/labelService';
 import { Button } from '../common/Button';
 import { ConfirmDialog } from '../common/ConfirmDialog';
-import { Modal } from '../common/Modal';
 import { GuardedTaskModal } from './GuardedTaskModal';
 import { selectVisibleWork } from '../../utils/visibleWork';
 import { WorkFreshness } from '../feedback/WorkFreshness';
 import { TaskAgentReadinessBadge } from './TaskAgentReadinessBadge';
-import { TaskBulkOperationsPanel } from './TaskBulkOperationsPanel';
+import { TaskSelectionBar } from './TaskSelectionBar';
 import { TaskRow } from './TaskRow';
+import { useTaskSelection } from './useTaskSelection';
 import { taskStateChip } from './taskStateChip';
+import { getEffectiveEffort } from './taskRowValues';
 import type { TaskRowAssigneeOption } from './TaskRow';
 import { useAssigneeOptions, useTaskRowEdits } from './useTaskRowEdits';
 import type { Task, TaskStatus } from '../../types/task';
@@ -66,15 +67,6 @@ type TaskOrderRequest = Parameters<typeof taskService.reorder>[0];
 type ReorderVariables = {
     order: TaskOrderRequest;
     undoOrder: TaskOrderRequest;
-};
-
-// Calculate effective effort for composite tasks (sum of children)
-const getEffectiveEffort = (task: Task): number | null => {
-    if (task.children && task.children.length > 0) {
-        const values = task.children.map(getEffectiveEffort);
-        return values.some(value => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
-    }
-    return task.effort_days;
 };
 
 // Get dependency task names from taskMap
@@ -128,13 +120,6 @@ export const TaskList = ({
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
     // Selection is direct: any row can be ticked, with no mode to enter first.
-    const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-    const selectionAnchor = useRef<number | null>(null);
-    const [showMergeModal, setShowMergeModal] = useState(false);
-    const [mergeParentTitle, setMergeParentTitle] = useState('');
-    const [mergeRevision, setMergeRevision] = useState<number | undefined>(undefined);
-    const mergeTitleRef = useRef<HTMLInputElement>(null);
-    const mergeTitleId = useId();
     const [nowMs, setNowMs] = useState(() => Date.now());
     const [collapsedParents, setCollapsedParents] = useState<Set<number>>(() => new Set());
     const toggleParent = useCallback((taskId: number) => setCollapsedParents(previous => {
@@ -142,11 +127,6 @@ export const TaskList = ({
         if (next.has(taskId)) next.delete(taskId); else next.add(taskId);
         return next;
     }), []);
-    const clearSelection = useCallback(() => {
-        setSelectedIds(new Set());
-        selectionAnchor.current = null;
-        if (requestedMode) onModeChange?.(null);
-    }, [requestedMode, onModeChange]);
 
     useEffect(() => {
         const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
@@ -205,37 +185,6 @@ export const TaskList = ({
         },
     });
 
-    const mergeMutation = useMutation({
-        mutationFn: (data: { task_ids: number[]; parent_title: string; expected_revision: number }) =>
-            taskService.mergeTasks(iterationId, data),
-        onSuccess: (parent, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
-            queryClient.invalidateQueries({ queryKey: ['gantt'] });
-            toast.success(t('taskList.mergeSuccess', { count: variables.task_ids.length }), {
-                dedupeKey: `task-merge-${parent.id}`,
-                durationMs: 10_000,
-                actionLabel: t('taskList.undo'),
-                onAction: async () => {
-                    try {
-                        await taskService.unmergeTask(parent.id, true, parent.iteration_revision);
-                        await Promise.all([
-                            queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] }),
-                            queryClient.invalidateQueries({ queryKey: ['gantt'] }),
-                            queryClient.invalidateQueries({ queryKey: ['workload'] }),
-                        ]);
-                        toast.success(t('taskList.mergeRestored'));
-                    } catch (error) {
-                        toast.error(getApiErrorMessage(error, t('taskList.mergeUndoFailed')));
-                        throw error;
-                    }
-                },
-            });
-            clearSelection();
-            setShowMergeModal(false);
-            setMergeParentTitle('');
-        },
-    });
-
     const unmergeMutation = useMutation({
         mutationFn: (taskId: number) => taskService.unmergeTask(taskId, true, iterationRevision),
         onSuccess: async () => {
@@ -247,17 +196,6 @@ export const TaskList = ({
         },
     });
 
-
-    // Handle merge confirmation
-    const handleMergeConfirm = () => {
-        if (selectedTasks.length >= 2 && mergeParentTitle.trim() && mergeRevision !== undefined) {
-            mergeMutation.mutate({
-                task_ids: selectedTasks.map(task => task.id),
-                parent_title: mergeParentTitle.trim(),
-                expected_revision: mergeRevision
-            });
-        }
-    };
 
     // Filter and sort tasks based on filters and selected key
     const filteredAndSortedTasks = useMemo(() => {
@@ -288,17 +226,6 @@ export const TaskList = ({
 
     const visibleTasks = useMemo(() => selectVisibleWork(filteredAndSortedTasks).leaves, [filteredAndSortedTasks]);
     const selectableIds = useMemo(() => new Set(visibleTasks.map(task => task.id)), [visibleTasks]);
-    // Only tasks still in the list count, so a filter change never leaves a hidden task selected.
-    const selectedTasks = useMemo(() => visibleTasks.filter(task => selectedIds.has(task.id)), [visibleTasks, selectedIds]);
-    // A hand-off to assign work starts with every matching task selected, once.
-    // Adjusting state during render (not in an effect) avoids a cascading render.
-    const [preselectApplied, setPreselectApplied] = useState(false);
-    if (requestedMode !== 'bulk' && preselectApplied) {
-        setPreselectApplied(false);
-    } else if (requestedMode === 'bulk' && preselectAllInBulk && !preselectApplied && visibleTasks.length > 0) {
-        setPreselectApplied(true);
-        setSelectedIds(new Set(visibleTasks.map(task => task.id)));
-    }
 
     const labelsBySlug = useMemo(() => {
         const map = new Map<string, Label>();
@@ -426,22 +353,19 @@ export const TaskList = ({
         rowItems.forEach(item => { if (item.kind === 'task') walk(item.task); });
         return ids;
     }, [rowItems, collapsedParents, selectableIds]);
-    const toggleSelect = (taskId: number, shiftKey: boolean) => {
-        const next = new Set(selectedIds);
-        const anchor = selectionAnchor.current;
-        const from = anchor === null ? -1 : selectionOrder.indexOf(anchor);
-        const to = selectionOrder.indexOf(taskId);
-        if (shiftKey && from >= 0 && to >= 0) {
-            // Shift-click ticks every row between the last ticked row and this one.
-            selectionOrder.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(id => next.add(id));
-        } else if (next.has(taskId)) {
-            next.delete(taskId);
-        } else {
-            next.add(taskId);
-        }
-        selectionAnchor.current = taskId;
-        setSelectedIds(next);
-    };
+    const selection = useTaskSelection({ selectableIds, order: selectionOrder });
+    const clearSelection = () => { selection.clear(); if (requestedMode) onModeChange?.(null); };
+    // Only tasks still in the list count, so a filter change never leaves a hidden task selected.
+    const selectedTasks = useMemo(() => visibleTasks.filter(task => selection.selectedIds.has(task.id)), [visibleTasks, selection.selectedIds]);
+    // A hand-off to assign work starts with every matching task selected, once.
+    // Adjusting state during render (not in an effect) avoids a cascading render.
+    const [preselectApplied, setPreselectApplied] = useState(false);
+    if (requestedMode !== 'bulk' && preselectApplied) {
+        setPreselectApplied(false);
+    } else if (requestedMode === 'bulk' && preselectAllInBulk && !preselectApplied && visibleTasks.length > 0) {
+        setPreselectApplied(true);
+        selection.replace(visibleTasks.map(task => task.id));
+    }
     const rowContext: RowContext = {
         onOpen: onOpenTask ?? setEditingTask,
         onAddSubtask: setAddingChildTo,
@@ -454,10 +378,10 @@ export const TaskList = ({
         taskMap,
         labelsBySlug,
         nowMs,
-        selectedIds,
+        selectedIds: selection.selectedIds,
         selectableIds,
         selectionActive: selectedTasks.length > 0,
-        onToggleSelect: toggleSelect,
+        onToggleSelect: selection.toggle,
         collapsedParents,
         onToggleParent: toggleParent,
         assigneeOptions,
@@ -498,16 +422,13 @@ export const TaskList = ({
             )}
             {(deleteMutation.isPending
                 || reorderMutation.isPending
-                || mergeMutation.isPending
                 || unmergeMutation.isPending) && (
                 <p className="sr-only" role="status" aria-live="polite">
                     {deleteMutation.isPending
                         ? t('taskList.deletingTask')
                         : reorderMutation.isPending
                             ? t('taskList.savingOrder')
-                            : mergeMutation.isPending
-                                ? t('taskList.mergingTasks')
-                                : t('taskList.splittingTask')}
+                            : t('taskList.splittingTask')}
                 </p>
             )}
             {unmergeMutation.isError && (
@@ -520,17 +441,12 @@ export const TaskList = ({
                 />
             )}
             {selectedTasks.length > 0 && (
-                <TaskBulkOperationsPanel
+                <TaskSelectionBar
                     iterationId={iterationId}
                     selectedTasks={selectedTasks}
                     matchingCount={visibleTasks.length}
-                    onSelectAll={() => setSelectedIds(new Set(visibleTasks.map(task => task.id)))}
+                    onSelectAll={selection.selectAll}
                     onClearSelection={clearSelection}
-                    onMerge={() => {
-                        mergeMutation.reset();
-                        setMergeRevision(iterationRevision);
-                        setShowMergeModal(true);
-                    }}
                     openAssign={preselectAllInBulk}
                 />
             )}
@@ -623,74 +539,6 @@ export const TaskList = ({
                 onConfirm={() => { if (deletingTask) deleteMutation.mutate(deletingTask); }}
             />
 
-            {/* Merge Modal */}
-            <Modal
-                open={showMergeModal}
-                title={<span className="flex items-center gap-2 text-feedback-indigo"><Layers className="h-5 w-5" />{t('taskList.mergeModalTitle')}</span>}
-                closeLabel={t('actions.close')}
-                onClose={() => { if (!mergeMutation.isPending) { setShowMergeModal(false); setMergeParentTitle(''); } }}
-                closeDisabled={mergeMutation.isPending}
-                initialFocusRef={mergeTitleRef}
-                className="max-w-md"
-            >
-                {showMergeModal && (
-                    <>
-                        {mergeMutation.isError && <Button type="button" variant="secondary" disabled={mergeMutation.isPending} onClick={() => {
-                            void refetchTasks().then(result => setMergeRevision(result.data?.[0]?.iteration_revision));
-                        }}>{t('planningInput.reviewAgain')}</Button>}
-                        <p className="mb-4 text-content-secondary">
-                            {t('taskList.selectedTasks', { count: selectedTasks.length })}
-                        </p>
-                        <div className="mb-4">
-                            <label
-                                className="block text-sm font-medium text-content-primary mb-1"
-                                htmlFor={mergeTitleId}
-                            >
-                                {t('taskList.parentTitleLabel')}
-                            </label>
-                            <input
-                                id={mergeTitleId}
-                                ref={mergeTitleRef}
-                                type="text"
-                                value={mergeParentTitle}
-                                onChange={(e) => setMergeParentTitle(e.target.value)}
-                                placeholder={t('taskList.parentTitlePlaceholder')}
-                                className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-focus"
-                            />
-                        </div>
-                        {mergeMutation.isError && (
-                            <QueryErrorState
-                                className="mb-4"
-                                error={mergeMutation.error}
-                                fallback={t('taskList.mergeFailed')}
-                                onRetry={() => {
-                                    if (mergeMutation.variables) mergeMutation.mutate(mergeMutation.variables);
-                                }}
-                            />
-                        )}
-                        <div className="flex justify-end gap-3">
-                            <Button
-                                variant="secondary"
-                                onClick={() => {
-                                    setShowMergeModal(false);
-                                    setMergeParentTitle('');
-                                }}
-                                disabled={mergeMutation.isPending}
-                            >
-                                {t('actions.cancel')}
-                            </Button>
-                            <Button
-                                variant="primary"
-                                onClick={handleMergeConfirm}
-                                disabled={mergeRevision === undefined || !mergeParentTitle.trim() || mergeMutation.isPending}
-                                isLoading={mergeMutation.isPending}
-                            >
-                                {t('taskList.mergeTasks')}
-                            </Button>
-                        </div>
-                    </>
-                )}
-            </Modal>
         </div>
     );
 };

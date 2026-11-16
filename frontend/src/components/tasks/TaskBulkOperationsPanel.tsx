@@ -13,12 +13,15 @@ import { QueryErrorState } from '../feedback/QueryState';
 import type { Task, TaskBulkAction, TaskStatus } from '../../types/task';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
-type BulkKind = 'assign' | 'status' | 'priority' | 'iteration' | 'project' | 'milestone' | 'addLabels' | 'removeLabels' | 'flags' | 'delete';
+type BulkKind = 'assign' | 'status' | 'priority' | 'iteration' | 'project' | 'clearProject' | 'milestone' | 'clearMilestone' | 'addLabels' | 'removeLabels' | 'flags' | 'delete';
+
+/** What the bar needs of a selected task. */
+export type BulkSelectedTask = Pick<Task, 'id' | 'title' | 'version'>;
 
 interface TaskBulkOperationsPanelProps {
     iterationId: number;
     /** The selected tasks, all leaves of one iteration. */
-    selectedTasks: Task[];
+    selectedTasks: BulkSelectedTask[];
     /** How many tasks match the list's filters; offered as "Select all n matching". */
     matchingCount: number;
     onSelectAll: () => void;
@@ -52,6 +55,7 @@ export const TaskBulkOperationsPanel = ({
     const [value, setValue] = useState('');
     const [reason, setReason] = useState('');
     const [milestoneId, setMilestoneId] = useState('');
+    const [isOptional, setIsOptional] = useState('');
     const [isDeferred, setIsDeferred] = useState('');
     const [failures, setFailures] = useState<{ taskId: number; message: string }[]>([]);
     const selectedCount = selectedTasks.length;
@@ -59,7 +63,7 @@ export const TaskBulkOperationsPanel = ({
 
     const teamQuery = useQuery({ queryKey: ['team', iterationId], queryFn: () => teamService.getByIteration(iterationId), enabled: kind === 'assign' });
     const iterationsQuery = useQuery({ queryKey: ['iterations'], queryFn: () => iterationService.getAll(), enabled: kind === 'iteration' });
-    const iterationQuery = useQuery({ queryKey: ['iteration', iterationId], queryFn: () => iterationService.getById(iterationId), enabled: kind === 'project' || kind === 'milestone' });
+    const iterationQuery = useQuery({ queryKey: ['iteration', iterationId], queryFn: () => iterationService.getById(iterationId) });
     const projectsQuery = useQuery({ queryKey: ['projects'], queryFn: () => projectService.getAll(), enabled: kind === 'project' || kind === 'milestone' });
     const scopedProjectId = iterationQuery.data?.project_id ?? null;
     const projectId = scopedProjectId ?? (value && (kind === 'project' || kind === 'milestone') ? Number(value) : null);
@@ -70,7 +74,7 @@ export const TaskBulkOperationsPanel = ({
     useEffect(() => { editorRef.current?.querySelector<HTMLElement>('select, input')?.focus(); }, [kind]);
 
     const choose = (next: BulkKind | null) => {
-        setKind(next); setValue(''); setReason(''); setMilestoneId(''); setIsDeferred(''); setFailures([]);
+        setKind(next); setValue(''); setReason(''); setMilestoneId(''); setIsOptional(''); setIsDeferred(''); setFailures([]);
     };
 
     const request = (): { action: TaskBulkAction; payload: Record<string, unknown> } | null => {
@@ -89,15 +93,22 @@ export const TaskBulkOperationsPanel = ({
                 return scopedProjectId !== null || value
                     ? { action: 'set_project', payload: { project_id: scopedProjectId ?? Number(value), ...(milestoneId ? { milestone_id: Number(milestoneId) } : {}) } }
                     : null;
+            case 'clearProject':
+                // An iteration that belongs to a project keeps it, so the server would refuse this.
+                return iterationQuery.isSuccess && scopedProjectId === null ? { action: 'clear_project', payload: {} } : null;
             case 'milestone':
                 return milestoneId ? { action: 'set_milestone', payload: { milestone_id: Number(milestoneId) } } : null;
+            case 'clearMilestone':
+                return { action: 'clear_milestone', payload: {} };
             case 'addLabels':
             case 'removeLabels': {
                 const labels = value.split(/[\n,]/).map(label => label.trim()).filter(Boolean);
                 return labels.length ? { action: kind === 'addLabels' ? 'add_labels' : 'remove_labels', payload: { labels } } : null;
             }
             case 'flags':
-                return isDeferred ? { action: 'set_flags', payload: { is_deferred: isDeferred === 'true' } } : null;
+                return isOptional || isDeferred
+                    ? { action: 'set_flags', payload: { ...(isOptional ? { is_optional: isOptional === 'true' } : {}), ...(isDeferred ? { is_deferred: isDeferred === 'true' } : {}) } }
+                    : null;
             case 'delete':
                 return { action: 'delete', payload: {} };
             default:
@@ -185,13 +196,13 @@ export const TaskBulkOperationsPanel = ({
             case 'milestone':
                 return (
                     <>
-                        {scopedProjectId === null && kind === 'project' && (
+                        {scopedProjectId === null && (
                             <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.projectLabel')} value={value} onChange={event => { setValue(event.target.value); setMilestoneId(''); }} className={selectClassName}>
                                 <option value="">{t('surfaces.taskBulk.chooseProject')}</option>
                                 {(projectsQuery.data ?? []).map(project => <option key={project.id} value={project.id}>{project.name}</option>)}
                             </select>
                         )}
-                        {scopedProjectId !== null && kind === 'project' && <span className="text-sm text-content-primary">{iterationQuery.data?.project?.name}</span>}
+                        {scopedProjectId !== null && <span className="text-sm text-content-primary">{iterationQuery.data?.project?.name}</span>}
                         <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.milestoneLabel')} value={milestoneId} onChange={event => setMilestoneId(event.target.value)} disabled={projectId === null} className={selectClassName}>
                             <option value="">{kind === 'project' ? t('surfaces.taskBulk.leaveMilestoneUnchangedUnlessIncompatible') : t('surfaces.taskBulk.chooseMilestone')}</option>
                             {(milestonesQuery.data ?? []).map(milestone => <option key={milestone.id} value={milestone.id}>{milestone.name}</option>)}
@@ -203,12 +214,22 @@ export const TaskBulkOperationsPanel = ({
                 return <input aria-label={t('surfaces.taskBulk.labelsLabel')} value={value} onChange={event => setValue(event.target.value)} placeholder={t('surfaces.taskBulk.labelsCommaSeparated')} className={`${selectClassName} w-64`} />;
             case 'flags':
                 return (
-                    <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.deferredLabel')} value={isDeferred} onChange={event => setIsDeferred(event.target.value)} className={selectClassName}>
-                        <option value="">{t('surfaces.taskBulk.deferredUnchanged')}</option>
-                        <option value="true">{t('surfaces.taskBulk.setDeferred')}</option>
-                        <option value="false">{t('surfaces.taskBulk.clearDeferred')}</option>
-                    </select>
+                    <>
+                        <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.optionalLabel')} value={isOptional} onChange={event => setIsOptional(event.target.value)} className={selectClassName}>
+                            <option value="">{t('surfaces.taskBulk.optionalUnchanged')}</option>
+                            <option value="true">{t('surfaces.taskBulk.setOptional')}</option>
+                            <option value="false">{t('surfaces.taskBulk.clearOptional')}</option>
+                        </select>
+                        <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.deferredLabel')} value={isDeferred} onChange={event => setIsDeferred(event.target.value)} className={selectClassName}>
+                            <option value="">{t('surfaces.taskBulk.deferredUnchanged')}</option>
+                            <option value="true">{t('surfaces.taskBulk.setDeferred')}</option>
+                            <option value="false">{t('surfaces.taskBulk.clearDeferred')}</option>
+                        </select>
+                    </>
                 );
+            case 'clearProject':
+            case 'clearMilestone':
+                return <span className="text-sm text-content-primary">{t(kind === 'clearProject' ? 'surfaces.taskBulk.clearProjectHelp' : 'surfaces.taskBulk.clearMilestoneHelp', { count: selectedCount })}</span>;
             case 'delete':
                 return (
                     <span className="flex items-center gap-1 text-xs text-feedback-danger-foreground">
@@ -233,7 +254,10 @@ export const TaskBulkOperationsPanel = ({
                 <OverflowMenu
                     label={t('surfaces.taskBulk.moreChanges')}
                     alwaysMenu
-                    items={(['project', 'milestone', 'addLabels', 'removeLabels', 'flags', 'delete'] as const).map(key => ({
+                    items={(['project', 'clearProject', 'milestone', 'clearMilestone', 'addLabels', 'removeLabels', 'flags', 'delete'] as const)
+                        // A project-scoped iteration keeps its project, so clearing it is not offered.
+                        .filter(key => key !== 'clearProject' || scopedProjectId === null)
+                        .map(key => ({
                         label: actionLabel(key), onSelect: () => choose(key), tone: key === 'delete' ? 'danger' as const : undefined,
                     }))}
                 />

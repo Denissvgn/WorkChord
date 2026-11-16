@@ -913,6 +913,7 @@ export const russianResources = {
                 inReview: 'На проверке',
                 openTask: 'Открыть задачу',
                 selectTask: 'Выбрать: {{title}}',
+                selectOneIteration: 'Массовые изменения применяются к одной итерации. Снимите выбор, чтобы отметить задачу другой итерации.',
                 priorityTitle: 'Приоритет {{priority}}',
             },
             disabledReasons: {

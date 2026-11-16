@@ -1,5 +1,5 @@
-import { expect, it, vi } from 'vitest';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { createTestQueryClient, renderWithProviders } from '../test/renderWithProviders';
 import MyWorkPage from './MyWorkPage';
 import { IdentityContext } from '../features/identity/identityContext';
@@ -102,4 +102,76 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     // My Work uses the same 44 px row as the task list: status, title, then the menu on hover.
     expect(title.closest('[data-task-row]')?.className).toContain('min-h-11');
     expect(screen.getByRole('button', { name: /^Status: Planned/ })).toBeInTheDocument();
+});
+
+describe('My Work rows', () => {
+    const fullTask = (id: number, iterationId: number, overrides: Partial<Task> = {}) => ({
+        id, iteration_id: iterationId, project_id: null, parent_id: null, title: `Task ${id}`, priority: 2, effort_days: 3, effort_hours: 24,
+        assignee: null, status: 'planned', is_overdue: false, is_delayed: false, is_composite: false, is_optional: false, is_deferred: false,
+        tags: [], sort_order: id, external_links: [], request_count: 0, version: 1, children: [], dependencies: [],
+        agent_readiness: { is_ready: true, blockers: [], warnings: [], criteria: [] }, ...overrides,
+    }) as unknown as Task;
+    const reference = (id: number, iterationId: number) => ({ id, title: `Task ${id}`, status: 'planned', version: 1, iteration_id: iterationId, project_id: null, parent_id: null, owner_profile_id: null });
+    const rowOf = (title: string) => screen.getByRole('button', { name: `#${title.replace('Task ', '')} · ${title}` }).closest<HTMLElement>('[data-task-row]')!;
+
+    const arrange = (tasks: Task[]) => {
+        api.get.mockImplementation(async (path: string) => {
+            if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null,
+                queues: { active: tasks.map(item => reference(item.id, item.iteration_id as number)), queued: [], blocked: [], awaiting_review: [] } } };
+            const iteration = /^\/iterations\/(\d+)\/(tasks|team)$/.exec(path);
+            if (iteration?.[2] === 'tasks') return { data: tasks.filter(item => item.iteration_id === Number(iteration[1])) };
+            if (iteration?.[2] === 'team') return { data: [{ id: 5, name: 'Ada', profile: { profile_kind: 'human' } }, { id: 6, name: 'Build agent', profile: { profile_kind: 'agent' } }] };
+            return { data: [] };
+        });
+        api.post.mockImplementation(async (path: string, body: { dry_run: boolean; task_ids: number[] }) => ({ data: path === '/tasks/bulk-operations' ? {
+            dry_run: body.dry_run, requested_count: body.task_ids.length, succeeded_count: body.task_ids.length, failed_count: 0,
+            task_versions: Object.fromEntries(body.task_ids.map(id => [id, 1])), input_revisions: { 1: 3 },
+            results: body.task_ids.map(id => ({ task_id: id, outcome: body.dry_run ? 'would_update' : 'updated', changes: {}, warnings: [] })),
+        } : {} }));
+    };
+
+    it('shows priority, an assignee picker and effort, like the task list', async () => {
+        arrange([fullTask(1, 1, { assignee: { id: 5, name: 'Ada' }, priority: 3, effort_days: 4 })]);
+        renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work'] });
+        const row = (await screen.findByRole('button', { name: '#1 · Task 1' })).closest<HTMLElement>('[data-task-row]')!;
+        await waitFor(() => expect(within(row).getByRole('combobox', { name: 'Assignee: Task 1' })).toHaveValue('5'));
+        expect(row).toHaveTextContent('P3');
+        expect(row).toHaveTextContent('4d');
+        expect(within(row).getByRole('option', { name: 'Build agent' })).toBeInTheDocument();
+    });
+
+    it('selects a range and assigns it from the bulk bar without a mode to enter', async () => {
+        arrange([1, 2, 3, 4].map(id => fullTask(id, 1)));
+        const { user } = renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work'] });
+        await screen.findByRole('button', { name: '#1 · Task 1' });
+        await waitFor(() => expect(within(rowOf('Task 1')).getByRole('combobox', { name: 'Assignee: Task 1' })).toBeInTheDocument());
+        expect(screen.queryByRole('checkbox')).toBeNull();
+
+        fireEvent.mouseOver(rowOf('Task 1'));
+        await user.click(await screen.findByRole('checkbox', { name: 'Select: Task 1' }));
+        await user.keyboard('{Shift>}');
+        await user.click(screen.getByRole('checkbox', { name: 'Select: Task 3' }));
+        await user.keyboard('{/Shift}');
+        expect(screen.getByText('Selected tasks: 3')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Assign' }));
+        await user.selectOptions(await screen.findByRole('combobox', { name: 'Choose assignee' }), 'Ada');
+        await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+        await waitFor(() => expect(api.post.mock.calls.filter(([path]) => path === '/tasks/bulk-operations')).toHaveLength(2));
+        const applied = api.post.mock.calls.filter(([path]) => path === '/tasks/bulk-operations').at(-1)![1];
+        expect(applied).toMatchObject({ action: 'set_assignee', payload: { assignee_id: 5 }, dry_run: false, task_ids: [1, 2, 3] });
+    });
+
+    it('keeps a selection to one iteration, because a bulk change applies to one', async () => {
+        arrange([fullTask(1, 1), fullTask(2, 2)]);
+        const { user } = renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work'] });
+        await screen.findByRole('button', { name: '#1 · Task 1' });
+        await waitFor(() => expect(within(rowOf('Task 2')).getByRole('combobox', { name: 'Assignee: Task 2' })).toBeInTheDocument());
+
+        fireEvent.mouseOver(rowOf('Task 1'));
+        await user.click(await screen.findByRole('checkbox', { name: 'Select: Task 1' }));
+        const other = await within(rowOf('Task 2')).findByRole('checkbox', { name: 'Select: Task 2' });
+        expect(other).toBeDisabled();
+        expect(other).toHaveAttribute('title', expect.stringContaining('one iteration'));
+    });
 });

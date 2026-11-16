@@ -1,8 +1,18 @@
-import { describe, expect, it } from 'vitest';
-import { screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { ProjectTaskTree } from './ProjectTaskTree';
 import type { Task } from '../../types/task';
+
+const services = vi.hoisted(() => ({
+    runBulkOperation: vi.fn(),
+    team: vi.fn(),
+}));
+
+vi.mock('../../services/taskService', () => ({ taskService: { runBulkOperation: services.runBulkOperation, update: vi.fn(), changeStatus: vi.fn(), getByIteration: vi.fn().mockResolvedValue([]) } }));
+vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: services.team } }));
+vi.mock('../../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]), getMilestones: vi.fn().mockResolvedValue([]) } }));
+vi.mock('../../services/iterationService', () => ({ iterationService: { getById: vi.fn().mockResolvedValue({ id: 1, name: 'Iteration', project_id: null }) } }));
 
 const task = (id: number, overrides: Partial<Task> = {}): Task => ({
     id, iteration_id: 1, project_id: 1, parent_id: null, title: `Task ${id}`, priority: 2, effort_days: 3, effort_hours: 24,
@@ -11,15 +21,83 @@ const task = (id: number, overrides: Partial<Task> = {}): Task => ({
     agent_readiness: { is_ready: true, blockers: [], warnings: [], criteria: [] }, ...overrides,
 });
 
+const sections = (...tasks: Task[]) => [{ key: 'all', tasks }];
+const rowOf = (title: string) => screen.getByRole('button', { name: title }).closest<HTMLElement>('[data-task-row]')!;
+
 describe('ProjectTaskTree', () => {
     it('shows each task as the shared row: status, priority, title, state, assignee and effort', () => {
-        renderWithProviders(<ProjectTaskTree tasks={[task(1, { children: [task(2, { parent_id: 1, status: 'resolved' })], is_composite: true })]} />);
-        const parent = screen.getByRole('button', { name: 'Task 1' }).closest<HTMLElement>('[data-task-row]')!;
-        const child = screen.getByRole('button', { name: 'Task 2' }).closest<HTMLElement>('[data-task-row]')!;
+        services.team.mockResolvedValue([]);
+        renderWithProviders(<ProjectTaskTree sections={sections(task(1, { children: [task(2, { parent_id: 1, status: 'resolved' })], is_composite: true }))} />);
+        const parent = rowOf('Task 1');
+        const child = rowOf('Task 2');
         expect(parent.className).toContain('min-h-11');
         expect(parent).toHaveTextContent('P2');
         expect(parent).toHaveTextContent('Ada');
         expect(child).toHaveTextContent('In review');
         expect(child.style.paddingLeft).toBe('32px');
+    });
+
+    it('shows the assignee who does the task, never the owner', () => {
+        services.team.mockResolvedValue([]);
+        renderWithProviders(<ProjectTaskTree sections={sections(
+            task(1, { assignee: { id: 5, name: 'Ada' }, owner: { id: 9, name: 'Olga Owner' } }),
+            task(2, { assignee: null, owner: { id: 9, name: 'Olga Owner' } }),
+        )} />);
+        expect(rowOf('Task 1')).toHaveTextContent('Ada');
+        expect(rowOf('Task 2')).toHaveTextContent('Unassigned');
+        expect(screen.queryByText(/Olga Owner/)).toBeNull();
+    });
+
+    it('offers the assignee picker with the people and agents of the iteration', async () => {
+        services.team.mockResolvedValue([{ id: 5, name: 'Ada', profile: { profile_kind: 'human' } }, { id: 6, name: 'Build agent', profile: { profile_kind: 'agent' } }]);
+        renderWithProviders(<ProjectTaskTree sections={sections(task(1))} />);
+        const picker = await within(rowOf('Task 1')).findByRole('combobox', { name: 'Assignee: Task 1' });
+        await waitFor(() => expect(within(picker).getByRole('option', { name: 'Build agent' })).toBeInTheDocument());
+        expect(picker).toHaveValue('5');
+    });
+
+    it('selects across the sections and assigns them from one bulk bar', async () => {
+        services.team.mockResolvedValue([{ id: 5, name: 'Ada', profile: { profile_kind: 'human' } }]);
+        services.runBulkOperation.mockImplementation(async (request: { dry_run: boolean; task_ids: number[] }) => ({
+            dry_run: request.dry_run, requested_count: request.task_ids.length, succeeded_count: request.task_ids.length, failed_count: 0,
+            task_versions: {}, input_revisions: {},
+            results: request.task_ids.map(id => ({ task_id: id, outcome: request.dry_run ? 'would_update' : 'updated', changes: {}, warnings: [] })),
+        }));
+        const { user } = renderWithProviders(<ProjectTaskTree sections={[
+            { key: 'active', heading: 'Active', tasks: [task(1, { status: 'active' }), task(2, { status: 'active' })] },
+            { key: 'planned', heading: 'Planned', tasks: [task(3)] },
+        ]} />);
+
+        fireEvent.mouseOver(rowOf('Task 1'));
+        await user.click(await screen.findByRole('checkbox', { name: 'Select: Task 1' }));
+        await user.keyboard('{Shift>}');
+        await user.click(screen.getByRole('checkbox', { name: 'Select: Task 3' }));
+        await user.keyboard('{/Shift}');
+        expect(screen.getAllByTestId('task-bulk-operations')).toHaveLength(1);
+        expect(screen.getByText('Selected tasks: 3')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Merge (3)' })).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Assign' }));
+        await user.selectOptions(await screen.findByRole('combobox', { name: 'Choose assignee' }), 'Ada');
+        await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+        await waitFor(() => expect(services.runBulkOperation).toHaveBeenCalledTimes(2));
+        expect(services.runBulkOperation.mock.calls.at(-1)![0]).toMatchObject({ action: 'set_assignee', payload: { assignee_id: 5 }, dry_run: false, task_ids: [1, 2, 3] });
+    });
+
+    it('does not offer a checkbox on a parent or a backlog task, and not across iterations', async () => {
+        services.team.mockResolvedValue([]);
+        const { user } = renderWithProviders(<ProjectTaskTree sections={sections(
+            task(1, { children: [task(2, { parent_id: 1 })], is_composite: true }),
+            task(3, { iteration_id: null }),
+            task(4, { iteration_id: 2 }),
+        )} />);
+        fireEvent.mouseOver(rowOf('Task 1'));
+        expect(screen.queryByRole('checkbox', { name: 'Select: Task 1' })).toBeNull();
+        fireEvent.mouseOver(rowOf('Task 3'));
+        expect(screen.queryByRole('checkbox', { name: 'Select: Task 3' })).toBeNull();
+        fireEvent.mouseOver(rowOf('Task 2'));
+        await user.click(screen.getByRole('checkbox', { name: 'Select: Task 2' }));
+        const other = within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' });
+        expect(other).toBeDisabled();
     });
 });
