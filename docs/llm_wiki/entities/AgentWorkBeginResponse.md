@@ -1,6 +1,6 @@
 # AgentWorkBeginResponse
 
-**Location:** `backend/app/schemas/agent.py:965`
+**Location:** `backend/app/schemas/agent.py:994`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

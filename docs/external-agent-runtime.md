@@ -201,6 +201,18 @@ assessments without enforced autonomous selection. `enforced` requires current
 topology readiness, assessment, preview and selected binding evidence. A worker
 must use the mode and capabilities advertised by its deployment.
 
+## Declare the harness session
+
+When the runtime gives a worker its own session or conversation identifier, the
+worker sends it once when it begins work, as run metadata:
+`{"metadata": {"harness": {"kind": "claude-code", "session_id": "..."}}}`. `kind`
+is a short lowercase runtime name and `session_id` is the runtime's identifier,
+never a file path; malformed or credential-shaped values are refused. `trace_id`
+stays the worker's per-attempt run ID, because one session can serve several
+assignments. Like usage reports, the harness session is the actor's
+declaration: it lets an independent observer match a run to the session that
+performed it, and WorkChord stores it without verifying it.
+
 ## Record usage and evaluate outcomes
 
 Follow [execution usage](execution-usage.md): report attempt totals with an

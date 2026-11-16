@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.14.0"
+CATALOG_VERSION = "1.15.0"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -808,7 +808,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.13.0",
+        "version": "1.14.0",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,

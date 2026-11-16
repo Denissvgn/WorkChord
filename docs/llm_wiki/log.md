@@ -3539,3 +3539,39 @@ External links accept an `agdash` provider for agent sessions observed by agdash
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d5b1c3f635a5290332d57cb618ffa84fc4d68ad8ce53dd42fe355b678156fa92`
+- Pages created: 1
+- Pages updated: 71
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3111
+- Pages deprecated: 0
+- Semantic fields preserved: 4
+- Moved entities: none
+
+### Declared harness sessions
+
+The worker role package records the runtime session identifier, when its runtime provides one, as `metadata.harness` on begin, while `trace_id` stays the per-attempt run ID. Begin and run schemas check the declared shape and refuse paths or credential-shaped values. The worker package and catalog advance one version together, with the example master pin and closeout digest.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:d5b1c3f635a5290332d57cb618ffa84fc4d68ad8ce53dd42fe355b678156fa92`
+- Pages created: 0
+- Pages updated: 16
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3165
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

@@ -1,6 +1,6 @@
 # AgentAssignmentReadItem
 
-**Location:** `backend/app/schemas/agent.py:690`
+**Location:** `backend/app/schemas/agent.py:719`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

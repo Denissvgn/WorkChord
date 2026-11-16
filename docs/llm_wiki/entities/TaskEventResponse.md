@@ -1,6 +1,6 @@
 # TaskEventResponse
 
-**Location:** `backend/app/schemas/agent.py:296`
+**Location:** `backend/app/schemas/agent.py:325`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

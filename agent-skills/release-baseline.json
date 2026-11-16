@@ -33,6 +33,10 @@
       "version": "1.14.0"
     },
     {
+      "catalog_sha256": "dc6a0d921869616d82f451d94e9d6ad751dbc4e945d18c13638b4cb8db213698",
+      "version": "1.15.0"
+    },
+    {
       "catalog_sha256": "ee8e1dcd76b7c75c7f503ddc4b10c5c1c6729ddfc26cb03cf154f9afbf36524f",
       "version": "1.3.0"
     },
@@ -171,6 +175,11 @@
       "catalog_entry_sha256": "8dab69290187b6000910edb9da3d8e42a638b82f38b1c539690c26e498605988",
       "name": "workchord-worker",
       "version": "1.13.0"
+    },
+    {
+      "catalog_entry_sha256": "a0f451466a7ccc4365d93d551bcc1d3046d6000712f38cff649ef24a5254b52d",
+      "name": "workchord-worker",
+      "version": "1.14.0"
     },
     {
       "catalog_entry_sha256": "c5d8fc003ae547b6478a808347181eb2952d1ffd4ae1603153bbc44f57e42602",

@@ -1,6 +1,6 @@
 # ModelAwareAgentWorkBegin
 
-**Location:** `backend/app/schemas/agent.py:934`
+**Location:** `backend/app/schemas/agent.py:963`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
@@ -59,6 +59,7 @@ flowchart LR
     n8["test_wave6_scenario_12_matching_self_report_is_unattested_and_mismatch_inert (backend/tests/test_agent_routing_wave6_qualification.py)"]
     n9["backend/tests/test_agent_skill_routing_guidance.py"]
     n10["test_model_aware_commands_own_selection_and_observed_model_fields (backend/tests/test_agent_work_routing_lineage.py)"]
+    n11["begins (backend/tests/test_harness_session_metadata.py)"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -69,6 +70,7 @@ flowchart LR
     n8 --> n0
     n9 --> n0
     n10 --> n0
+    n11 --> n0
     click n0 "../modules/schemas_agent.md"
     click n2 "../modules/mcp_agent_tools.md"
     click n3 "../modules/routers_agent.md"
@@ -79,6 +81,7 @@ flowchart LR
     click n8 "../modules/test_agent_routing_wave6_qualification.md"
     click n9 "../modules/test_agent_skill_routing_guidance.md"
     click n10 "../modules/test_agent_work_routing_lineage.md"
+    click n11 "../modules/test_harness_session_metadata.md"
 ```
 
 ### Summary
@@ -106,3 +109,4 @@ flowchart LR
 | `test_wave6_scenario_12_matching_self_report_is_unattested_and_mismatch_inert` | call | [test_agent_routing_wave6_qualification](../modules/test_agent_routing_wave6_qualification.md) | 2 |
 | `test_agent_skill_routing_guidance` | import | [test_agent_skill_routing_guidance](../modules/test_agent_skill_routing_guidance.md) | — |
 | `test_model_aware_commands_own_selection_and_observed_model_fields` | call | [test_agent_work_routing_lineage](../modules/test_agent_work_routing_lineage.md) | 1 |
+| `begins` | call | [test_harness_session_metadata](../modules/test_harness_session_metadata.md) | 1 |

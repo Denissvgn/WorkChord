@@ -420,13 +420,13 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [index](modules/index.md) | 23 | 0 |
 | [mutationFeedback](modules/mutationFeedback.md) | 23 | 0 |
 | [planningInputService](modules/planningInputService.md) | 23 | 1 |
+| [schemas_agent](modules/schemas_agent.md) | 22 | 9 |
 | [identity_service](modules/identity_service.md) | 22 | 10 |
 | [types_agent](modules/types_agent.md) | 22 | 1 |
 | [types_team](modules/types_team.md) | 22 | 0 |
-| [schemas_agent](modules/schemas_agent.md) | 21 | 8 |
+| [autonomy_canonical](modules/autonomy_canonical.md) | 21 | 0 |
 | [tone](modules/tone.md) | 21 | 1 |
 | [teamService](modules/teamService.md) | 21 | 3 |
-| [autonomy_canonical](modules/autonomy_canonical.md) | 20 | 0 |
 | [schemas_team](modules/schemas_team.md) | 20 | 1 |
 | [snapshot_service](modules/snapshot_service.md) | 20 | 20 |
 | [recovery](modules/recovery.md) | 19 | 3 |
@@ -1009,6 +1009,7 @@ Type-only bindings and declaration-file dependencies remain part of the coupling
 | [test_effective_deferral](modules/test_effective_deferral.md) | 0 | 15 |
 | [test_execution_usage](modules/test_execution_usage.md) | 0 | 11 |
 | [test_execution_working_dates](modules/test_execution_working_dates.md) | 0 | 14 |
+| [test_harness_session_metadata](modules/test_harness_session_metadata.md) | 0 | 1 |
 | [test_human_work_queries](modules/test_human_work_queries.md) | 0 | 10 |
 | [test_identity_lifecycle](modules/test_identity_lifecycle.md) | 0 | 14 |
 | [test_mcp_tool_annotations](modules/test_mcp_tool_annotations.md) | 0 | 1 |

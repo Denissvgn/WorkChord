@@ -1,6 +1,6 @@
 # ModelAwareAgentTaskAssignmentUpdate
 
-**Location:** `backend/app/schemas/agent.py:608`
+**Location:** `backend/app/schemas/agent.py:637`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

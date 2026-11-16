@@ -1,6 +1,6 @@
 # AgentActorCreatedResponse
 
-**Location:** `backend/app/schemas/agent.py:226`
+**Location:** `backend/app/schemas/agent.py:255`
 **Kind:** Pydantic model
 **Bases:** `AgentActorResponse`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

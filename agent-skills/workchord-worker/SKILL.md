@@ -129,8 +129,9 @@ so the plan people read matches the work you do.
 Read [claim-run-and-task-state.md](references/claim-run-and-task-state.md).
 
 - Prefer the server's atomic begin action. Supply its assignment ID, queue
-  revision, lease request, safe run metadata, and one deterministic idempotency
-  key. Compare the context task version with the assignment-bound version
+  revision, lease request, safe run metadata (including the harness session
+  identifier when your runtime gives you one), and one deterministic
+  idempotency key. Compare the context task version with the assignment-bound version
   before calling; the server revalidates that binding inside begin.
 - For model-aware work in effective `enforced` mode, also send the exact
   assigned binding ID/revision and the runtime's observed resolved model

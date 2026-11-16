@@ -25,6 +25,26 @@ Supply the server-advertised atomic begin action with:
 - requested lease within advertised limits;
 - trace/correlation data and run metadata that contain no secrets.
 
+### Record The Harness Session
+
+When the runtime that runs you gives you its own session or conversation
+identifier (through its launcher, a hook, or the runtime handoff), send it once
+in begin as run metadata:
+
+```json
+{"metadata": {"harness": {"kind": "claude-code", "session_id": "<the identifier the runtime gave you>"}}}
+```
+
+Use a short lowercase runtime name for `kind`. Keep `trace_id` as your
+external run ID: one harness session can serve several assignments, and the
+idempotency keys below need an ID per execution attempt. Never guess, derive, or
+invent a session identifier, never send a file path or transcript location, and
+omit `harness` when the runtime does not give you an identifier. If a resumed
+session reports a different identifier, add the same `harness` object to the
+payload of your next checkpoint event. The value is your declaration so an
+independent observer can match your run to its session; WorkChord does not
+verify it.
+
 Before the call, compare the task/version returned in complete context with the
 assignment's bound task/version. Atomic begin does not accept a caller-supplied
 task ID or `expected_task_version`; it locks the assigned task and revalidates

@@ -1,6 +1,6 @@
 # AgentRoutingTopologyReadinessResponse
 
-**Location:** `backend/app/schemas/agent.py:722`
+**Location:** `backend/app/schemas/agent.py:751`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

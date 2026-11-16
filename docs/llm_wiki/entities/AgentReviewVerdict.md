@@ -1,6 +1,6 @@
 # AgentReviewVerdict
 
-**Location:** `backend/app/schemas/agent.py:1062`
+**Location:** `backend/app/schemas/agent.py:1091`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)
