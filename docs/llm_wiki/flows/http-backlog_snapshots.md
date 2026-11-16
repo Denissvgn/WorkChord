@@ -140,7 +140,7 @@ flowchart LR
 | BacklogSnapshotService.list | require_project | 53 | `require_project(self.db, project_id)` |
 | require_project | db.info.get | 74 | `db.info.get('authority')` |
 | require_project | get_settings | 76 | `get_settings(data not statically known)` |
-| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| get_settings | Settings | 524 | `Settings(data not statically known)` |
 | require_project | AuthorityError | 78 | `AuthorityError('authentication_required', 'Sign in to continue.', 401)` |
 | require_project | authority.allows | 79 | `authority.allows(project_id, action)` |
 | require_project | AuthorityError | 80 | `AuthorityError(data not statically known)` |

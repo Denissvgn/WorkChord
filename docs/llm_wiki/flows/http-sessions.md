@@ -138,7 +138,7 @@ flowchart LR
 | sessions | select | 398 | `select(UserSession)` |
 | sessions | _local_observers | 399 | `_local_observers(authority)` |
 | _local_observers | get_settings | 388 | `get_settings(data not statically known)` |
-| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| get_settings | Settings | 524 | `Settings(data not statically known)` |
 | sessions | select(…).where | 400 | `select(UserSession).where(UserSession.principal_id.is_(...), ...)` |
 | sessions | select | 400 | `select(UserSession)` |
 | sessions | UserSession.principal_id.is_ | 400 | `UserSession.principal_id.is_(None)` |

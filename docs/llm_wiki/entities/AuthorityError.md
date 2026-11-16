@@ -96,4 +96,4 @@ flowchart LR
 | `bootstrap` | call | [routers_identity](../modules/routers_identity.md) | 3 |
 | `choose_local_profile` | call | [routers_identity](../modules/routers_identity.md) | 2 |
 
-> References: showing 12 of 72 logical references; 60 omitted by the 12-row generated summary limit.
+> References: showing 12 of 75 logical references; 63 omitted by the 12-row generated summary limit.

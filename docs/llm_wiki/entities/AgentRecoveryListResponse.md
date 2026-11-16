@@ -1,6 +1,6 @@
 # AgentRecoveryListResponse
 
-**Location:** `backend/app/schemas/agent.py:1150`
+**Location:** `backend/app/schemas/agent.py:1154`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

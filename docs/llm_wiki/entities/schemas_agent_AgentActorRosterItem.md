@@ -1,6 +1,6 @@
 # AgentActorRosterItem
 
-**Location:** `backend/app/schemas/agent.py:831`
+**Location:** `backend/app/schemas/agent.py:835`
 **Kind:** Pydantic model
 **Bases:** `AgentActorResponse`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

@@ -3575,3 +3575,48 @@ The worker role package records the runtime session identifier, when its runtime
 - Pages deprecated: 0
 - Semantic fields preserved: 0
 - Moved entities: none
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9f5a98f3f6910aa08e16ef460fa3fed89cdb2760797107ee75ff30fa52d17e29`
+- Pages created: 16
+- Pages updated: 325
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 2861
+- Pages deprecated: 0
+- Semantic fields preserved: 6
+- Moved entities: none
+- Flow pages initialized: 3 (http=3)
+- Workflow pages created: 2
+- Dependency pages initialized: 0
+- Surface policy updated: no
+- Infrastructure added: 0
+- Infrastructure changed: 2
+- Infrastructure moved: 0
+- Infrastructure removed: 0
+- Unsupported infrastructure YAML: 9
+
+### Advisory runtime observations
+
+Paired observers and operators record advisory observations of runtime sessions: state or observed model, the harness session, and optional task, run or actor references the observer can verify. Recording writes only the observation row; dispatch, routing, readiness and work code never read the table, agent keys cannot read it, and status keeps `availability_unknown`. Operators remove old rows in bounded batches.
+
+## 2026-11-16
+
+### Wiki sync
+- Source: `.`
+- Generator version: `4.0.1`
+- Source selection profile: none (default discovery)
+- Source selection fingerprint: none
+- Source snapshot digest: `sha256:9f5a98f3f6910aa08e16ef460fa3fed89cdb2760797107ee75ff30fa52d17e29`
+- Pages created: 0
+- Pages updated: 17
+- Pages metadata-only: 0
+- Pages skipped (unchanged): 3180
+- Pages deprecated: 0
+- Semantic fields preserved: 0
+- Moved entities: none

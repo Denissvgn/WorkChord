@@ -184,7 +184,7 @@ flowchart LR
 | task_review_queue | require_project | 180 | `require_project(db, project_id)` |
 | require_project | db.info.get (backend/app/authority.py:require_project) | 74 | `db.info.get('authority')` |
 | require_project | get_settings | 76 | `get_settings(data not statically known)` |
-| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| get_settings | Settings | 524 | `Settings(data not statically known)` |
 
 ### Boundary effects
 

@@ -67,6 +67,7 @@ flowchart LR
     n9["backend/tests/test_agent_team_setup.py"]
     n10["identity_evidence (backend/tests/test_agent_team_setup_stored_contract.py)"]
     n11["member_records (backend/tests/test_agent_team_setup_stored_contract.py)"]
+    n12["backend/tests/test_runtime_observations.py"]
     n0 --> n1
     n2 --> n0
     n3 --> n0
@@ -78,6 +79,7 @@ flowchart LR
     n9 --> n0
     n10 --> n0
     n11 --> n0
+    n12 --> n0
     click n0 "../modules/models_agent.md"
     click n1 "../modules/app_database.md"
     click n2 "../modules/models___init__.md"
@@ -90,6 +92,7 @@ flowchart LR
     click n9 "../modules/test_agent_team_setup.md"
     click n10 "../modules/test_agent_team_setup_stored_contract.md"
     click n11 "../modules/test_agent_team_setup_stored_contract.md"
+    click n12 "../modules/test_runtime_observations.md"
 ```
 
 ### Summary
@@ -118,3 +121,4 @@ flowchart LR
 | `test_agent_team_setup` | import | [test_agent_team_setup](../modules/test_agent_team_setup.md) | — |
 | `identity_evidence` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
 | `member_records` | type_reference | [test_agent_team_setup_stored_contract](../modules/test_agent_team_setup_stored_contract.md) | — |
+| `test_runtime_observations` | import | [test_runtime_observations](../modules/test_runtime_observations.md) | — |

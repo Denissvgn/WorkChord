@@ -1,6 +1,6 @@
 # AgentRoutingRolloutStatusResponse
 
-**Location:** `backend/app/schemas/agent.py:769`
+**Location:** `backend/app/schemas/agent.py:773`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

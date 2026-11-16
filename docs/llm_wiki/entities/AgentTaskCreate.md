@@ -1,6 +1,6 @@
 # AgentTaskCreate
 
-**Location:** `backend/app/schemas/agent.py:264`
+**Location:** `backend/app/schemas/agent.py:268`
 **Kind:** Pydantic model
 **Bases:** `TaskCreate`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

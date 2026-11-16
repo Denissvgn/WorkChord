@@ -1,6 +1,6 @@
 # AgentWorkTerminal
 
-**Location:** `backend/app/schemas/agent.py:1059`
+**Location:** `backend/app/schemas/agent.py:1063`
 **Kind:** Pydantic model
 **Bases:** `BaseModel`
 **Module:** [schemas_agent](../modules/schemas_agent.md)

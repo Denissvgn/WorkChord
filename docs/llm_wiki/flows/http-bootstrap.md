@@ -163,7 +163,7 @@ flowchart LR
 |---|---|---:|---|
 | bootstrap | require_identity_writes | 240 | `require_identity_writes(data not statically known)` |
 | require_identity_writes | get_settings | 31 | `get_settings(data not statically known)` |
-| get_settings | Settings | 506 | `Settings(data not statically known)` |
+| get_settings | Settings | 524 | `Settings(data not statically known)` |
 | require_identity_writes | MaintenanceModeError | 32 | `MaintenanceModeError(operation='identity lifecycle', mode=...)` |
 | require_identity_writes | get_settings | 32 | `get_settings(data not statically known)` |
 | bootstrap | internal_authority | 241 | `internal_authority(db)` |
