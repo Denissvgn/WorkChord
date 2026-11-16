@@ -53,6 +53,18 @@ describe('iteration outlook on Analytics', () => {
         expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'iteration_overflow' }, expect.anything());
     });
 
+    it('shows schedule exceptions with unknown values when counts are missing on older summaries', () => {
+        renderWithProviders(<OnTrackSummary summary={summary({ metric_contract_version: 1, late_start_tasks: undefined, iteration_overflow_tasks: undefined })} />);
+        for (const [label, definition] of [
+            ['Late start', 'Tasks that started after their planned start or have not started by that date.'],
+            ['Iteration overflow', 'Tasks scheduled to finish after the iteration ends.'],
+        ]) {
+            const row = screen.getByText(label).parentElement!;
+            expect(within(row).getByText(`${definition} Unknown`)).toBeVisible();
+            expect(within(row).queryByRole('button')).not.toBeInTheDocument();
+        }
+    });
+
     it('discloses the total when a schedule exception list is truncated', async () => {
         vi.mocked(taskService.metricMatches).mockResolvedValue({ metric: 'late_start', has_more: true, items: Array.from({ length: 200 }, (_, index) => ({ id: index + 1, title: `Task ${index + 1}`, status: 'planned', project_name: 'Orchard', iteration_name: 'Iteration 7' })) });
         const { user } = renderWithProviders(<OnTrackSummary summary={summary({ late_start_tasks: 201 })} />);

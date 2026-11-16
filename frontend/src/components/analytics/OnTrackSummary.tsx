@@ -62,7 +62,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                         {t('analytics.onTrack.blocked', { count: summary.blocked_tasks })}
                     </MetricCount></>}
             </p>
-            {summary.metric_contract_version === 2 && <dl className="space-y-2 text-sm">
+            <dl className="space-y-2 text-sm">
                 {([
                     ['lateStart', 'late_start', summary.late_start_tasks],
                     ['iterationOverflow', 'iteration_overflow', summary.iteration_overflow_tasks],
@@ -72,7 +72,7 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                         {count == null ? t('common.unknown') : <MetricCount metric={metric} scope={scope} title={t("workStatus." + label)} total={count}>{t('analytics.onTrack.taskCount', { count })}</MetricCount>}
                     </dd>
                 </div>)}
-            </dl>}
+            </dl>
             <div className="space-y-2" aria-hidden="true">
                 {([['remaining', remaining, 'var(--wc-status-active)'], ['capacity', left, 'var(--wc-status-resolved)']] as const).map(([key, value, color]) => (
                     <div key={key} className="grid grid-cols-[9rem_1fr_5rem] items-center gap-3 text-sm">
