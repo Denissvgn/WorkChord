@@ -52,6 +52,8 @@ import { useAdminAccess, useKeylessReader } from '../hooks/useAdminAccess';
 import { useSingleKeyShortcutPreference } from '../hooks/useSingleKeyShortcutPreference';
 
 type SettingsGroupId = 'myPreferences' | 'workspace' | 'connections' | 'accessSystem';
+/** Search results also show sections that sit outside the four groups. */
+type SearchGroupId = SettingsGroupId | 'linkedFromAiProvider';
 /** Where a section's values are kept: in this browser only, or on the server for everyone. */
 type SavedIn = 'browser' | 'workspace';
 /** One part of a section whose parts are kept in different places. */
@@ -74,7 +76,7 @@ interface SettingsSection {
 }
 
 interface SettingsGroup {
-    id: SettingsGroupId;
+    id: SearchGroupId;
     labelKey: string;
     items: SettingsSection[];
 }
@@ -148,6 +150,12 @@ const SETTINGS_GROUPS: SettingsGroup[] = [
 const MODELS_AGENTS_SECTION = section('models_agents', 'modelsAgents', Bot, 'workspace', false);
 
 const SETTINGS_SECTIONS = [...SETTINGS_GROUPS.flatMap(group => group.items), MODELS_AGENTS_SECTION];
+
+/** Search covers every section, including the one reached from AI provider. */
+const SEARCH_GROUPS: SettingsGroup[] = [
+    ...SETTINGS_GROUPS,
+    { id: 'linkedFromAiProvider', labelKey: 'settingsPage.groups.linkedFromAiProvider', items: [MODELS_AGENTS_SECTION] },
+];
 const DEFAULT_SECTION: SettingsSectionId = 'theme';
 const LAST_SECTION_STORAGE_KEY = 'workchord.settings.lastSection';
 
@@ -241,7 +249,7 @@ const SettingsPage = () => {
             const present = new Set(text.split(/[^\p{L}\p{N}:-]+/u));
             return words.every(word => present.has(word));
         };
-        const filterBy = (matches: (text: string) => boolean) => SETTINGS_GROUPS
+        const filterBy = (matches: (text: string) => boolean) => SEARCH_GROUPS
             .map(group => ({ ...group, items: group.items.filter(item => matches(searchable(group, item))) }))
             .filter(group => group.items.length > 0);
         const exact = filterBy(wholeWords);

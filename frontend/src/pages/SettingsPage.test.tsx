@@ -239,6 +239,22 @@ describe('SettingsPage', () => {
         expect(within(navigation).queryByText('No settings match this search.')).not.toBeInTheDocument();
     });
 
+    it.each(['catalog', 'Configured model alias'])(
+        'finds Models and agents, which sits outside the four groups, by "%s"',
+        async query => {
+            const { user } = renderSettings('/settings?tab=theme');
+
+            const navigation = screen.getByRole('navigation', { name: 'Settings navigation' });
+            // Without a search the section is not one of the four groups.
+            expect(within(navigation).queryByRole('link', { name: 'Models and agents' })).not.toBeInTheDocument();
+            await user.type(within(navigation).getByRole('searchbox', { name: 'Search settings' }), query);
+            const groupRegion = within(navigation).getByRole('region', { name: 'Linked from AI provider' });
+            const link = within(groupRegion).getByRole('link', { name: 'Models and agents' });
+            expect(link).toHaveAttribute('href', expect.stringContaining('tab=models_agents'));
+            expect(within(navigation).queryByText('No settings match this search.')).not.toBeInTheDocument();
+        },
+    );
+
     it('gives the theme radiogroup complete keyboard behavior', async () => {
         const { user } = renderSettings('/settings?tab=theme');
 

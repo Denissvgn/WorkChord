@@ -151,24 +151,28 @@ describe('SchedulingRulesSettings', () => {
 
         const modifierToggle = await screen.findByRole('button', { name: 'professionalism' });
         await user.click(modifierToggle);
-        const modifierCard = modifierToggle.closest('.rounded-lg') as HTMLElement | null;
-        if (!modifierCard) throw new Error('Modifier card not found');
-        const modifierId = within(modifierCard).getByLabelText('ID');
+        // The details open in the drawer, which stays open while the ID changes.
+        const modifierDrawer = screen.getByRole('dialog');
+        const modifierId = within(modifierDrawer).getByLabelText('ID');
         await user.clear(modifierId);
         await user.type(modifierId, 'custom_modifier');
         expect(modifierId).toHaveValue('custom_modifier');
+        expect(modifierToggle).toBeInTheDocument();
         expect(modifierToggle).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('dialog')).toBe(modifierDrawer);
+        await user.click(within(modifierDrawer).getByRole('button', { name: 'Close' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
 
         const passToggle = screen.getByRole('button', {
             name: 'critical_deadline Nearest deadline first',
         });
         await user.click(passToggle);
-        const passCard = passToggle.closest('.rounded-lg') as HTMLElement | null;
-        if (!passCard) throw new Error('Scheduling pass card not found');
-        const passId = within(passCard).getByLabelText('ID');
+        const passDrawer = screen.getByRole('dialog');
+        const passId = within(passDrawer).getByLabelText('ID');
         await user.clear(passId);
         await user.type(passId, 'deadline_first');
         expect(passId).toHaveValue('deadline_first');
+        expect(passToggle).toBeInTheDocument();
         expect(passToggle).toHaveAttribute('aria-expanded', 'true');
     });
 });

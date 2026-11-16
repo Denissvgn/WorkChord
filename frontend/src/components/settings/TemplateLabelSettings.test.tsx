@@ -188,12 +188,12 @@ describe('TemplateLabelSettings hardening', () => {
 
         await openLabels();
         await rowAction(user, 'Workflow', 'Edit group');
-        expect(screen.getByLabelText('Description')).toBeInTheDocument();
+        const groupEditor = screen.getByRole('dialog', { name: 'Edit group' });
+        expect(within(groupEditor).getByLabelText('Description')).toBeInTheDocument();
+        await user.click(within(groupEditor).getByRole('button', { name: 'Close group form' }));
 
         await rowAction(user, 'Planning', 'Edit label');
-        const labelEditor = screen.getByRole('heading', { name: 'Edit label' })
-            .closest('.border-t') as HTMLElement | null;
-        if (!labelEditor) throw new Error('Label editor not found');
+        const labelEditor = screen.getByRole('dialog', { name: 'Edit label' });
         expect(within(labelEditor).getByLabelText('Group')).toBeInTheDocument();
         expect(within(labelEditor).getByLabelText('Description')).toBeInTheDocument();
     });

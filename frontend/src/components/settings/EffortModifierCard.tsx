@@ -1,9 +1,10 @@
 import { useState, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
+import { Trash2, ChevronRight, Info } from 'lucide-react';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
 import { ReadOnlyFieldset } from './ReadOnlyFieldset';
+import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import type { EffortModifier } from '../../types/schedulingRules';
 import { MATH_OPERATIONS, FORMULA_TEMPLATES, FORMULA_ASSIGNEE_FIELDS } from '../../types/schedulingRules';
 import { effortModifierDisplay } from '../../i18n/schedulingDisplay';
@@ -157,14 +158,11 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                     type="button"
                     onClick={() => setExpanded(!expanded)}
                     className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                    aria-haspopup="dialog"
                     aria-expanded={expanded}
-                    aria-controls={detailsId}
+                    aria-controls={expanded ? detailsId : undefined}
                 >
-                    {expanded ? (
-                        <ChevronDown className="w-4 h-4 text-content-tertiary" />
-                    ) : (
-                        <ChevronRight className="w-4 h-4 text-content-tertiary" />
-                    )}
+                    <ChevronRight aria-hidden="true" className="w-4 h-4 text-content-tertiary" />
                     <span className="min-w-0 break-words">
                         <span className="font-medium text-content-primary">{display.name}</span>
                         {display.isBuiltIn && (
@@ -176,11 +174,9 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                 </button>
 
                 {/* Preview */}
-                {!expanded && (
-                    <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-none sm:max-w-xs">
-                        {modifier.formula || modifier.operation || '—'}
-                    </div>
-                )}
+                <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-none sm:max-w-xs">
+                    {modifier.formula || modifier.operation || '—'}
+                </div>
 
                 <ReadOnlyFieldset>
                 <button
@@ -195,10 +191,19 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                 </ReadOnlyFieldset>
             </div>
 
-            {/* Expanded Details */}
-            {expanded && (
+            {/* The details open in the shared drawer; changes stay in the rules until they are saved. */}
+            <SlideOverDrawer
+                open={expanded}
+                title={display.name}
+                subtitle={display.isBuiltIn ? display.technicalId : undefined}
+                ariaLabel={display.name}
+                onClose={() => setExpanded(false)}
+                closeLabel={t('actions.close')}
+                className="max-w-xl"
+            >
                 <ReadOnlyFieldset>
-                <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-4 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
+                <div id={detailsId} className="space-y-4 p-5">
+                    <p className="text-xs text-content-secondary">{t('settingsScheduling.drawerHint')}</p>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
                             label={t('settingsScheduling.fields.id')}
@@ -363,7 +368,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                     </div>
                 </div>
                 </ReadOnlyFieldset>
-            )}
+            </SlideOverDrawer>
         </div>
     );
 };

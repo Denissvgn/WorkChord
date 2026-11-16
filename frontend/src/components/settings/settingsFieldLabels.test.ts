@@ -47,6 +47,7 @@ const PANELS: Array<{ name: string; section: SettingsSectionId; text: () => stri
     { name: 'RuntimeConfigSettings llm', section: 'ai_provider', text: () => runtimePart('llm') },
     { name: 'AdminAccessPanel', section: 'access', text: () => source('AdminAccessPanel.tsx') },
     { name: 'AgentAccessPanel', section: 'access', text: () => source('AgentAccessPanel.tsx') },
+    { name: 'AgentModelAdministration', section: 'models_agents', text: () => source('AgentModelAdministration.tsx') },
 ];
 
 describe('settings field labels for search', () => {

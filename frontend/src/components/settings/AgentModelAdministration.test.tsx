@@ -190,8 +190,8 @@ describe('AgentModelAdministration', () => {
         expect(screen.getByText('Selectable binding evidence')).toBeInTheDocument();
 
         expect(screen.queryByRole('heading', { name: 'Audited change controls' })).not.toBeInTheDocument();
-        expect(screen.queryByRole('heading', { name: 'Create catalog entry' })).not.toBeInTheDocument();
-        expect(screen.queryByRole('heading', { name: 'Create model binding' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Create catalog entry' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Create model binding' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Disable' })).not.toBeInTheDocument();
     });
@@ -201,16 +201,31 @@ describe('AgentModelAdministration', () => {
             capabilitiesFixture(['admin']),
         );
 
-        renderWithProviders(<AgentModelAdministration />);
+        const { user } = renderWithProviders(<AgentModelAdministration />);
 
         expect(await screen.findByText('Actor scope: admin · changes enabled')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Audited change controls' })).toBeInTheDocument();
         expect(screen.getByRole('textbox', { name: 'Change rationale' })).toBeRequired();
-        expect(screen.getByRole('heading', { name: 'Create catalog entry' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Create model binding' })).toBeInTheDocument();
-        expect(screen.getAllByRole('button', { name: 'Create' })).toHaveLength(2);
         expect(screen.getAllByRole('button', { name: /^Edit / })).toHaveLength(2);
         expect(screen.getAllByRole('button', { name: /^Disable / })).toHaveLength(2);
+
+        // New entries and bindings open in the drawer, with the audit reason beside the fields.
+        await user.click(screen.getByRole('button', { name: 'Create catalog entry' }));
+        const catalogDrawer = screen.getByRole('dialog', { name: 'Create catalog entry' });
+        expect(within(catalogDrawer).getByRole('textbox', { name: 'Change rationale' })).toBeRequired();
+        expect(within(catalogDrawer).getByRole('textbox', { name: 'Configured model alias' })).toHaveValue('');
+        expect(within(catalogDrawer).getByRole('button', { name: 'Create' })).toBeDisabled();
+        await user.click(within(catalogDrawer).getByRole('button', { name: 'Cancel' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
+
+        await user.click(screen.getByRole('button', { name: 'Create model binding' }));
+        const bindingDrawer = screen.getByRole('dialog', { name: 'Create model binding' });
+        expect(within(bindingDrawer).getByRole('combobox', { name: 'Actor' })).toHaveValue('');
+        await user.type(within(bindingDrawer).getByRole('textbox', { name: 'Change rationale' }), 'Bind the new worker.');
+        expect(within(bindingDrawer).getByRole('button', { name: 'Create' })).toBeEnabled();
+        await user.click(within(bindingDrawer).getByRole('button', { name: 'Cancel' }));
+        // The reason typed in the drawer is the same one the page shows.
+        expect(screen.getByRole('textbox', { name: 'Change rationale' })).toHaveValue('Bind the new worker.');
     });
 
     it('labels disabled and unselectable bindings without claiming task eligibility', async () => {
@@ -380,18 +395,20 @@ describe('AgentModelAdministration', () => {
         await user.click(screen.getByRole('button', {
             name: 'Edit model catalog entry Balanced Code',
         }));
-        expect(screen.getByRole('heading', { name: 'Edit catalog entry' })).toBeInTheDocument();
-        const alias = screen.getByRole('textbox', { name: 'Configured model alias' });
+        const drawer = screen.getByRole('dialog', { name: 'Edit catalog entry' });
+        expect(within(drawer).getByRole('textbox', { name: 'Change rationale' })).toHaveValue('Update the configured alias.');
+        const alias = within(drawer).getByRole('textbox', { name: 'Configured model alias' });
         await user.clear(alias);
         await user.type(alias, 'Balanced Code v2');
 
-        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
 
-        expect(await screen.findByRole('alert')).toHaveTextContent(
+        // The conflict shows in the drawer, which keeps the draft.
+        expect(await within(drawer).findByRole('alert')).toHaveTextContent(
             'model_catalog revision is stale',
         );
-        expect(screen.getByRole('heading', { name: 'Edit catalog entry' })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: 'Stable catalog key' })).toHaveValue('balanced-code');
+        expect(screen.getByRole('dialog', { name: 'Edit catalog entry' })).toBeInTheDocument();
+        expect(within(drawer).getByRole('textbox', { name: 'Stable catalog key' })).toHaveValue('balanced-code');
         expect(alias).toHaveValue('Balanced Code v2');
         expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenLastCalledWith(
             11,
@@ -399,12 +416,12 @@ describe('AgentModelAdministration', () => {
             expect.any(Object),
         );
 
-        await user.click(screen.getByRole('button', { name: 'Prepare overwrite' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Prepare overwrite' }));
         const overwriteDialog = await screen.findByRole('dialog', {
             name: 'Prepare this draft to overwrite the latest state?',
         });
         await user.click(within(overwriteDialog).getByRole('button', { name: 'Prepare overwrite' }));
-        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
         await waitFor(() => {
             expect(agentServiceMock.updateModelCatalogEntry).toHaveBeenLastCalledWith(
                 11,
@@ -415,6 +432,8 @@ describe('AgentModelAdministration', () => {
                 expect.any(Object),
             );
         });
+        // A saved draft closes the drawer.
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     });
 
     it('preserves a stale binding draft until overwrite is explicitly prepared', async () => {
@@ -444,18 +463,18 @@ describe('AgentModelAdministration', () => {
         await user.click(screen.getByRole('button', {
             name: 'Edit binding for Worker Alpha using Balanced Code',
         }));
-        expect(screen.getByRole('heading', { name: 'Edit model binding' })).toBeInTheDocument();
-        const tools = screen.getByRole('textbox', { name: 'Tools' });
+        const drawer = screen.getByRole('dialog', { name: 'Edit model binding' });
+        const tools = within(drawer).getByRole('textbox', { name: 'Tools' });
         await user.clear(tools);
         await user.type(tools, 'code-edit, shell');
 
-        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
 
-        expect(await screen.findByRole('alert')).toHaveTextContent(
+        expect(await within(drawer).findByRole('alert')).toHaveTextContent(
             'model_binding revision is stale',
         );
-        expect(screen.getByRole('heading', { name: 'Edit model binding' })).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: 'Actor' })).toHaveValue('2');
+        expect(screen.getByRole('dialog', { name: 'Edit model binding' })).toBeInTheDocument();
+        expect(within(drawer).getByRole('combobox', { name: 'Actor' })).toHaveValue('2');
         expect(tools).toHaveValue('code-edit, shell');
         expect(agentServiceMock.updateModelBinding).toHaveBeenLastCalledWith(
             21,
@@ -463,12 +482,12 @@ describe('AgentModelAdministration', () => {
             expect.any(Object),
         );
 
-        await user.click(screen.getByRole('button', { name: 'Prepare overwrite' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Prepare overwrite' }));
         const overwriteDialog = await screen.findByRole('dialog', {
             name: 'Prepare this draft to overwrite the latest state?',
         });
         await user.click(within(overwriteDialog).getByRole('button', { name: 'Prepare overwrite' }));
-        await user.click(screen.getByRole('button', { name: 'Save' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Save' }));
         await waitFor(() => {
             expect(agentServiceMock.updateModelBinding).toHaveBeenLastCalledWith(
                 21,
@@ -479,5 +498,7 @@ describe('AgentModelAdministration', () => {
                 expect.any(Object),
             );
         });
+        // A saved draft closes the drawer.
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     });
 });

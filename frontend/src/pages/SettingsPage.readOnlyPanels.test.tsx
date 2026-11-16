@@ -165,21 +165,40 @@ describe('SettingsPage read-only panels', () => {
         expect(menuItem('Move up')).toHaveAttribute('aria-disabled', 'true');
         expect(menuItem('View group')).not.toHaveAttribute('aria-disabled');
         await user.click(menuItem('View group'));
-        expect(screen.getByRole('heading', { name: 'Group details' })).toBeVisible();
-        expect(screen.getByRole('textbox', { name: /Key/ })).toHaveValue('workflow');
-        expect(screen.getByRole('textbox', { name: /Key/ })).toBeDisabled();
-        expect(screen.getByRole('button', { name: 'Save group' })).toBeDisabled();
+        const groupDrawer = await screen.findByRole('dialog', { name: 'Group details' });
+        expect(within(groupDrawer).getByRole('textbox', { name: /Key/ })).toHaveValue('workflow');
+        expect(within(groupDrawer).getByRole('textbox', { name: /Key/ })).toBeDisabled();
+        expect(within(groupDrawer).getByRole('button', { name: 'Save group' })).toBeDisabled();
+        await user.click(within(groupDrawer).getByRole('button', { name: 'Close group form' }));
+
+        // A label opens read-only in its own drawer.
+        await user.click(screen.getByRole('button', { name: 'Actions for Planning' }));
+        expect(menuItem('Archive label')).toHaveAttribute('aria-disabled', 'true');
+        await user.click(menuItem('View label'));
+        const labelDrawer = await screen.findByRole('dialog', { name: 'Label details' });
+        expect(within(labelDrawer).getByRole('textbox', { name: /Slug/ })).toHaveValue('planning');
+        expect(within(labelDrawer).getByRole('textbox', { name: /Slug/ })).toBeDisabled();
+        expect(within(labelDrawer).getByRole('combobox', { name: 'Group' })).toBeDisabled();
+        expect(within(labelDrawer).getByRole('button', { name: 'Save label' })).toBeDisabled();
+        await user.click(within(labelDrawer).getByRole('button', { name: 'Close label form' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
         expect(templateServiceMock.update).not.toHaveBeenCalled();
         expect(labelServiceMock.updateGroup).not.toHaveBeenCalled();
+        expect(labelServiceMock.updateLabel).not.toHaveBeenCalled();
 
         // The one control in the Settings header unlocks the same panel.
         await unlock(user);
         expect(screen.getByRole('button', { name: 'New group' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'Add label' })).toBeEnabled();
-        expect(screen.getByRole('textbox', { name: /Key/ })).toBeEnabled();
         await user.click(screen.getByRole('button', { name: 'Actions for Workflow' }));
-        expect(menuItem('Edit group')).not.toHaveAttribute('aria-disabled');
         expect(menuItem('Archive group')).not.toHaveAttribute('aria-disabled');
+        await user.click(menuItem('Edit group'));
+        const editDrawer = await screen.findByRole('dialog', { name: 'Edit group' });
+        expect(within(editDrawer).getByRole('textbox', { name: /Key/ })).toBeEnabled();
+        expect(within(editDrawer).getByRole('button', { name: 'Save group' })).toBeEnabled();
+        await user.click(within(editDrawer).getByRole('button', { name: 'Close group form' }));
+        await user.click(screen.getByRole('button', { name: 'New group' }));
+        expect(await screen.findByRole('dialog', { name: 'New group' })).toBeVisible();
     });
 
     it('lets readers collapse and expand the scheduling rules, with every change disabled until Unlock editing', async () => {
@@ -195,21 +214,24 @@ describe('SettingsPage read-only panels', () => {
         await user.click(modifiers);
         expect(modifiers).toHaveAttribute('aria-expanded', 'true');
 
-        // One rule opens to show its details, which cannot be changed.
+        // One rule opens in the drawer to show its details, which cannot be changed.
         expect(screen.getByRole('checkbox', { name: 'Enable professionalism modifier' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Remove modifier' })).toBeDisabled();
         const rule = screen.getByRole('button', { name: /^professionalism/i });
         expect(rule).toBeEnabled();
         await user.click(rule);
         expect(rule).toHaveAttribute('aria-expanded', 'true');
-        const ruleId = screen.getByDisplayValue('professionalism');
+        const drawer = screen.getByRole('dialog');
+        const ruleId = within(drawer).getByDisplayValue('professionalism');
         expect(ruleId).toBeDisabled();
+        expect(within(drawer).getByLabelText('Fallback')).toBeDisabled();
+        await user.click(within(drawer).getByRole('button', { name: 'Close' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
 
         await unlock(user);
-        // Saving the key reloads the rules, so the rule is opened again.
-        const reloadedRule = screen.getByRole('button', { name: /^professionalism/i });
-        if (reloadedRule.getAttribute('aria-expanded') !== 'true') await user.click(reloadedRule);
-        expect(screen.getByDisplayValue('professionalism')).toBeEnabled();
+        await user.click(screen.getByRole('button', { name: /^professionalism/i }));
+        expect(within(screen.getByRole('dialog')).getByDisplayValue('professionalism')).toBeEnabled();
+        await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Close' }));
         expect(screen.getByRole('checkbox', { name: 'Enable professionalism modifier' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'Add modifier' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'Reset to defaults' })).toBeEnabled();
@@ -251,30 +273,34 @@ describe('SettingsPage read-only panels', () => {
         expect(screen.queryByRole('button', { name: 'Edit Merged PR resolves' })).toBeNull();
 
         await user.click(screen.getByRole('button', { name: 'View Merged PR resolves' }));
-        const reason = screen.getByRole('textbox', { name: 'Reason template' });
+        const drawer = await screen.findByRole('dialog', { name: 'View Merged PR resolves' });
+        const reason = within(drawer).getByRole('textbox', { name: 'Reason template' });
         expect(reason).toHaveValue('Resolved by {repo} PR #{pr_number} after merge');
         expect(reason).toBeDisabled();
-        expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('Merged PR resolves');
-        expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('Resolve the task when its PR merges');
-        expect(screen.getByRole('combobox', { name: 'Event' })).toHaveValue('github_pr_merged');
-        expect(screen.getByRole('combobox', { name: 'From status' })).toHaveValue('active');
-        expect(screen.getByRole('combobox', { name: 'Target status' })).toHaveValue('resolved');
-        expect(screen.getByRole('spinbutton', { name: 'Order' })).toHaveValue(20);
-        expect(screen.getByRole('combobox', { name: 'Event' })).toBeDisabled();
-        expect(screen.queryByRole('button', { name: 'Save rule' })).toBeNull();
+        expect(within(drawer).getByRole('textbox', { name: /^Name/ })).toHaveValue('Merged PR resolves');
+        expect(within(drawer).getByRole('textbox', { name: 'Description' })).toHaveValue('Resolve the task when its PR merges');
+        expect(within(drawer).getByRole('combobox', { name: 'Event' })).toHaveValue('github_pr_merged');
+        expect(within(drawer).getByRole('combobox', { name: 'From status' })).toHaveValue('active');
+        expect(within(drawer).getByRole('combobox', { name: 'Target status' })).toHaveValue('resolved');
+        expect(within(drawer).getByRole('spinbutton', { name: 'Order' })).toHaveValue(20);
+        expect(within(drawer).getByRole('checkbox', { name: 'Enabled' })).toBeDisabled();
+        expect(within(drawer).getByRole('combobox', { name: 'Event' })).toBeDisabled();
+        expect(within(drawer).queryByRole('button', { name: 'Save rule' })).toBeNull();
 
-        await user.click(screen.getByRole('button', { name: 'Close' }));
-        expect(screen.queryByRole('textbox', { name: 'Reason template' })).toBeNull();
+        await user.click(within(drawer).getByRole('button', { name: 'Close' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
         expect(githubServiceMock.createStatusAutomationRule).not.toHaveBeenCalled();
         expect(githubServiceMock.updateStatusAutomationRule).not.toHaveBeenCalled();
         expect(githubServiceMock.deleteStatusAutomationRule).not.toHaveBeenCalled();
         expect(systemSettingsServiceMock.updateGitHub).not.toHaveBeenCalled();
 
         await unlock(user);
-        expect(screen.getByRole('button', { name: 'Edit Merged PR resolves' })).toBeEnabled();
         expect(screen.getByRole('button', { name: 'New rule' })).toBeEnabled();
-        expect(screen.getByRole('textbox', { name: 'Reason template' })).toBeEnabled();
         expect(screen.getByDisplayValue('https://github.example.com/api/v3')).toBeEnabled();
+        await user.click(screen.getByRole('button', { name: 'Edit Merged PR resolves' }));
+        const editDrawer = await screen.findByRole('dialog', { name: 'Edit Merged PR resolves' });
+        expect(within(editDrawer).getByRole('textbox', { name: 'Reason template' })).toBeEnabled();
+        expect(within(editDrawer).getByRole('button', { name: 'Save rule' })).toBeEnabled();
     });
 
     it('opens a webhook target read-only through View, with its headers and subscriptions, before Unlock editing', async () => {
@@ -284,25 +310,26 @@ describe('SettingsPage read-only panels', () => {
         }]);
         const { user } = renderSettings('webhooks');
 
-        await user.click(await screen.findByRole('button', { name: 'View: Ops hook' }));
-        expect(screen.queryByText('Choose View on a target to see all of its details.')).toBeNull();
-        expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('Ops hook');
-        expect(screen.getByRole('textbox', { name: /^Name/ })).toBeDisabled();
-        expect(screen.getByRole('textbox', { name: /^URL/ })).toHaveValue('https://hooks.example.com/1');
-        expect(screen.getByRole('textbox', { name: 'Description' })).toHaveValue('Routes ops events');
-        const headers = screen.getByRole('textbox', { name: 'Headers JSON' });
+        expect(await screen.findByText('Choose View on a target to see all of its details.')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'View: Ops hook' }));
+        const drawer = await screen.findByRole('dialog', { name: 'View: Ops hook' });
+        expect(within(drawer).getByRole('textbox', { name: /^Name/ })).toHaveValue('Ops hook');
+        expect(within(drawer).getByRole('textbox', { name: /^Name/ })).toBeDisabled();
+        expect(within(drawer).getByRole('textbox', { name: /^URL/ })).toHaveValue('https://hooks.example.com/1');
+        expect(within(drawer).getByRole('textbox', { name: 'Description' })).toHaveValue('Routes ops events');
+        const headers = within(drawer).getByRole('textbox', { name: 'Headers JSON' });
         expect(headers).toHaveValue(JSON.stringify({ 'X-Route': 'ops-desk' }, null, 2));
         expect(headers).toBeDisabled();
-        expect(screen.getByRole('checkbox', { name: 'GitHub PR merged' })).toBeChecked();
-        expect(screen.getByRole('checkbox', { name: 'GitHub PR merged' })).toBeDisabled();
+        expect(within(drawer).getByRole('checkbox', { name: 'GitHub PR merged' })).toBeChecked();
+        expect(within(drawer).getByRole('checkbox', { name: 'GitHub PR merged' })).toBeDisabled();
         // The secret itself stays hidden; only whether one is stored is shown.
-        expect(screen.getByLabelText('Secret')).toHaveValue('');
-        expect(screen.getByLabelText('Secret')).toHaveAttribute('placeholder', 'Signed');
-        expect(screen.queryByRole('checkbox', { name: 'Clear stored secret on save' })).toBeNull();
-        expect(screen.queryByRole('button', { name: 'Save target' })).toBeNull();
+        expect(within(drawer).getByLabelText('Secret')).toHaveValue('');
+        expect(within(drawer).getByLabelText('Secret')).toHaveAttribute('placeholder', 'Signed');
+        expect(within(drawer).queryByRole('checkbox', { name: 'Clear stored secret on save' })).toBeNull();
+        expect(within(drawer).queryByRole('button', { name: 'Save target' })).toBeNull();
 
-        await user.click(screen.getByRole('button', { name: 'Close' }));
-        expect(screen.getByText('Choose View on a target to see all of its details.')).toBeVisible();
+        await user.click(within(drawer).getByRole('button', { name: 'Close' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
         expect(webhookServiceMock.updateTarget).not.toHaveBeenCalled();
         expect(webhookServiceMock.createTarget).not.toHaveBeenCalled();
     });
