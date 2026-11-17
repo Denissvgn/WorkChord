@@ -453,7 +453,8 @@ try {
       await new Promise(resolve => requestAnimationFrame(resolve));
       await Promise.all(document.getAnimations().filter(animation => animation instanceof CSSTransition).map(animation => animation.finished.catch(() => {})));
     });
-    const labels = await page.getByRole('navigation', { name: 'Work queues', exact: true }).evaluate(nav => {
+    // The queue switch is a group inside the toolbar that carries the same name; the inner one holds only the queues.
+    const labels = await page.getByRole('group', { name: 'Work queues', exact: true }).last().evaluate(nav => {
       const rgb = value => (value.match(/[\d.]+/g) || []).map(Number);
       const luminance = color => color.slice(0, 3).map(value => value / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
       return [...nav.querySelectorAll('button')].filter(button => !button.disabled).map(button => {
