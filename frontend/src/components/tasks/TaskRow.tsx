@@ -131,7 +131,10 @@ export const TaskRow = ({
                     align="start"
                     label={`${t('taskList.taskStatus', { status: statusName })}: ${title}`}
                     className="shrink-0"
-                    triggerClassName={clsx('btn ghost icon sm', statusTextClassName[status])}
+                    triggerClassName={statusTextClassName[status]}
+                    triggerVariant="ghost"
+                    triggerSize="sm"
+                    triggerIconOnly
                     trigger={statusIcon}
                     items={transitions.filter(next => canTransition(status, next)).map(next => ({
                         label: t(`statuses.${next}`, { defaultValue: next }),
@@ -211,7 +214,7 @@ export const TaskRow = ({
 
             {/* The slot keeps its width, so the row does not shift when the menu appears. */}
             <span className="flex h-8 w-8 shrink-0 items-center justify-center">
-                {menuShown && <OverflowMenu label={t('taskList.taskActions', { title })} items={menuItems} alwaysMenu triggerClassName="btn ghost icon sm" />}
+                {menuShown && <OverflowMenu label={t('taskList.taskActions', { title })} items={menuItems} alwaysMenu triggerVariant="ghost" triggerSize="sm" triggerIconOnly />}
             </span>
         </div>
     );

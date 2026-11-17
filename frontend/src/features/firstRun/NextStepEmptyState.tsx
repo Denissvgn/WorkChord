@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '../../components/common/Button';
+import { ButtonLink } from '../../components/common/ButtonLink';
 import { InlineEmptyState } from '../../components/ui/InlineEmptyState';
 import { useNextSetupAction, type NextAction } from './useNextSetupAction';
 
@@ -26,7 +26,7 @@ export const NextStepEmptyState = ({ title, description, icon, className, fallba
             className={className}
             headingLevel={headingLevel}
             actions={'to' in action ? (
-                <Link className="btn primary" to={action.to}>{action.label}</Link>
+                <ButtonLink variant="primary" to={action.to}>{action.label}</ButtonLink>
             ) : (
                 <Button variant="primary" onClick={action.onClick}>{action.label}</Button>
             )}
