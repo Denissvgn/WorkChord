@@ -122,7 +122,7 @@ export const surfacesRussian = {
         assignOwners_few: 'Назначить {{count}} задачи',
         assignOwners_many: 'Назначить {{count}} задач',
         assignOwners_other: 'Назначить {{count}} задачи',
-        hideUnscheduled: 'Скрыть задачи без дат',
+        hideUnscheduled: 'Скрыть без дат',
         showUnscheduled: 'Показать задачи без дат',
         zoomTimelineIn: "Увеличить масштаб временной шкалы",
         condenseLongTaskSpans: "Скрыть промежуточные даты в длинных интервалах",
