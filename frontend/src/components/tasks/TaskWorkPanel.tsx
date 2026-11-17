@@ -18,11 +18,38 @@ import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 import { Select } from '../../components/common/Select';
-export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, onEditBrief, initialAction }: {
+
+const DRAFT_TTL_MS = 86400000;
+const PROGRESS_STATES = ['pending', 'in_progress', 'completed'];
+const sameProgress = (left: CriterionProgress, right: CriterionProgress) => left.criterion_id === right.criterion_id
+    && left.criterion_revision === right.criterion_revision && left.state === right.state && left.evidence === right.evidence;
+const progressRows = (value: unknown): CriterionProgress[] | null => Array.isArray(value) && value.length <= 100
+    && value.every((item: CriterionProgress) => typeof item?.criterion_id === 'string' && Number.isInteger(item.criterion_revision)
+        && typeof item.evidence === 'string' && PROGRESS_STATES.includes(item.state)) ? value as CriterionProgress[] : null;
+
+/**
+ * Lays a saved progress draft over the current criteria. Rows for removed or reworded criteria are
+ * dropped, so the panel always lists the current brief. The draft is stale only when the person
+ * changed a criterion whose saved progress also changed on the server since the draft was taken;
+ * a brief edit alone never makes it stale.
+ */
+const restoreProgress = (stored: { version?: unknown; criteria?: unknown; base?: unknown } | null, initial: CriterionProgress[], version: number) => {
+    const rows = progressRows(stored?.criteria);
+    if (!stored || !rows) return { criteria: initial, version, base: initial };
+    const base = progressRows(stored.base);
+    const criteria = initial.map(row => rows.find(item => item.criterion_id === row.criterion_id && item.criterion_revision === row.criterion_revision) ?? row);
+    const conflict = stored.version !== version && criteria.some((row, index) => {
+        if (sameProgress(row, initial[index])) return false;
+        const observed = base?.find(item => item.criterion_id === row.criterion_id && item.criterion_revision === row.criterion_revision);
+        return !observed || !sameProgress(observed, initial[index]);
+    });
+    // A conflicting draft keeps the progress it was taken from until the person keeps or discards it.
+    return conflict && Number.isInteger(stored.version) ? { criteria, version: stored.version as number, base: base ?? [] } : { criteria, version, base: initial };
+};
+
+export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, onEditBrief }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void;
-    /** Preselects an action, for example when the task view's header sends the person here. */
-    initialAction?: string;
     /** Opens the brief for editing, so a missing acceptance criterion can be added. */
     onEditBrief?: () => void;
 }) => {
@@ -32,22 +59,19 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const key = draftKey ? `${draftKey}:progress` : null;
     const initial = (task.brief?.acceptance_criteria ?? []).map(criterion => task.progress?.criteria.find(item => item.criterion_id === criterion.id && item.criterion_revision === criterion.revision)
         ?? { criterion_id: criterion.id, criterion_revision: criterion.revision, state: 'pending' as const, evidence: '' });
-    const [draftVersion, setDraftVersion] = useState(() => {
-        try { const stored = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null'); return stored && Number.isInteger(stored.version) && Date.now() - stored.savedAt < 86400000 ? stored.version as number : task.version; } catch { return task.version; }
-    });
-    const [criteria, setCriteria] = useState<CriterionProgress[]>(() => {
+    const [restored] = useState(() => {
         try {
             const stored = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
-            if (stored && Date.now() - stored.savedAt < 86400000 && Array.isArray(stored.criteria) && stored.criteria.length <= 100
-                && stored.criteria.every((item: CriterionProgress) => typeof item.criterion_id === "string" && Number.isInteger(item.criterion_revision)
-                    && typeof item.evidence === 'string' && ['pending', 'in_progress', 'completed'].includes(item.state))) return stored.criteria;
-        } catch { /* Keep the server evidence when a draft is unavailable. */ }
-        return initial;
+            return restoreProgress(stored && Date.now() - stored.savedAt < DRAFT_TTL_MS ? stored : null, initial, task.version);
+        } catch { return restoreProgress(null, initial, task.version); }
     });
-    const [reason, setReason] = useState(() => { try { const stored = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null'); return stored && Date.now() - stored.savedAt < 86400000 && typeof stored.reason === 'string' ? stored.reason : ''; } catch { return ''; } });
+    const [base, setBase] = useState(restored.base);
+    const [draftVersion, setDraftVersion] = useState(restored.version);
+    const [criteria, setCriteria] = useState<CriterionProgress[]>(restored.criteria);
+    const [reason, setReason] = useState(() => { try { const stored = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null'); return stored && Date.now() - stored.savedAt < DRAFT_TTL_MS && typeof stored.reason === 'string' ? stored.reason : ''; } catch { return ''; } });
     const savedCommand = () => {
         try { const value = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
-            if (value && Date.now() - value.savedAt < 86400000 && typeof value.action === 'string' && value.action.length < 50 && typeof value.iterationId === 'string'
+            if (value && Date.now() - value.savedAt < DRAFT_TTL_MS && typeof value.action === 'string' && value.action.length < 50 && typeof value.iterationId === 'string'
                 && value.commandRevisions && Object.entries(value.commandRevisions).length <= 500
                 && Object.entries(value.commandRevisions).every(([id, revision]) => /^[1-9][0-9]*$/.test(id) && Number.isSafeInteger(revision) && Number(revision) > 0)) return value;
         } catch { /* Keep the original server observation if a local context is malformed. */ }
@@ -57,7 +81,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         ? { [task.iteration_id]: savedCommand()?.commandRevisions[task.iteration_id] ?? task.iteration_revision } : {});
     const [commandRevisions, setCommandRevisions] = useState<ObservedRevisions>(() => savedCommand()?.commandRevisions ?? sourceRevisions);
     const targetContext = usePlanningObservation<Iteration>();
-    const [action, setAction] = useState(() => savedCommand()?.action ?? initialAction ?? '');
+    const [action, setAction] = useState(() => savedCommand()?.action ?? '');
     const [contextError, setContextError] = useState<unknown>(null);
     const [iterationId, setIterationId] = useState<string>(() => savedCommand()?.iterationId ?? '');
     const staleDraft = draftVersion !== task.version;
@@ -67,10 +91,11 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         onDirty(dirty);
         if (!key) return;
         try {
-            if (dirty) sessionStorage.setItem(key, JSON.stringify({ version: draftVersion, savedAt: Date.now(), criteria, reason, action, iterationId, commandRevisions }));
+            // `base` is the server progress the draft was taken from, so a later read can tell a brief edit from a conflicting progress write.
+            if (dirty) sessionStorage.setItem(key, JSON.stringify({ version: draftVersion, savedAt: Date.now(), criteria, base, reason, action, iterationId, commandRevisions }));
             else sessionStorage.removeItem(key);
         } catch { /* The in-page draft remains usable. */ }
-    }, [dirty, criteria, reason, key, onDirty, draftVersion, action, iterationId, commandRevisions]);
+    }, [dirty, criteria, reason, key, onDirty, draftVersion, action, iterationId, commandRevisions, base]);
     useEffect(() => () => onDirty(false), [onDirty]);
     // feedback-policy: query loading,error,retry,empty
     const actions = useQuery({
@@ -156,8 +181,8 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         </div>}
         {staleDraft && <div role="alert" className="space-y-2 text-sm text-feedback-warning-foreground">
             <p>{t('domain.staleProgress')}</p>
-            <Button type="button" size="sm" variant="secondary" disabled={pending || criteria.some(item => !initial.some(current => current.criterion_id === item.criterion_id && current.criterion_revision === item.criterion_revision))}
-                onClick={() => setDraftVersion(task.version)}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
+            <Button type="button" size="sm" variant="secondary" disabled={pending}
+                onClick={() => { setDraftVersion(task.version); setBase(initial); }}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
         </div>}
         {task.brief && <fieldset disabled={disabled || pending || reason.length > 0 || Boolean(task.canceled_at) || task.status === 'closed'} className="space-y-3">
             <legend className="mb-2 font-medium text-content-primary">{t('domain.progress')}</legend>
@@ -177,7 +202,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         </fieldset>}
         {dirty && <div className="flex flex-wrap items-center gap-2 text-sm">
             <span className="text-content-secondary">{t('domain.progressDraft')}</span>
-            <Button type="button" variant="ghost" size="sm" disabled={pending} onClick={() => { setCriteria(initial); setReason(''); setDraftVersion(task.version); }}>{t('domain.discardProgress')}</Button>
+            <Button type="button" variant="ghost" size="sm" disabled={pending} onClick={() => { setCriteria(initial); setReason(''); setDraftVersion(task.version); setBase(initial); }}>{t('domain.discardProgress')}</Button>
         </div>}
         <fieldset disabled={disabled || pending || criteriaDirty || staleDraft || actions.isError || actions.isLoading} className="space-y-3">
             <Input label={t('domain.reason')} required value={reason} maxLength={2000} onChange={event => setReason(event.target.value)} />

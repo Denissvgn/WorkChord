@@ -54,6 +54,50 @@ describe('criterion progress saves', () => {
         await user.click(screen.getByRole('button', { name: 'Save progress' }));
         await waitFor(() => expect(service.progress).toHaveBeenCalledWith(42, expect.objectContaining({ expected_version: 3 })));
     });
+
+    it('lists the current criteria with no stale-draft warning after a brief change', async () => {
+        // A draft taken while the brief had no criteria, before a criterion was added.
+        sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 2, savedAt: Date.now(), criteria: [], base: [],
+            reason: 'Checked the output', action: '' }));
+        renderPanel();
+        expect(screen.queryByText(/This progress draft belongs to an older version/)).not.toBeInTheDocument();
+        expect(screen.queryByText('No acceptance criteria yet.')).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Inspect the result')).toHaveValue('pending');
+        expect(screen.getByRole('textbox', { name: /Reason for the action or review/ })).toHaveValue('Checked the output');
+        await waitFor(() => expect(JSON.parse(sessionStorage.getItem('workchord-draft:person:42:progress')!).version).toBe(3));
+    });
+
+    it('keeps evidence for an unchanged criterion across a brief change and saves it with the current version', async () => {
+        sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 2, savedAt: Date.now(),
+            criteria: [
+                { criterion_id: 'criterion', criterion_revision: 1, state: 'completed', evidence: 'Saw it work' },
+                { criterion_id: 'removed', criterion_revision: 1, state: 'completed', evidence: 'No longer in the brief' },
+            ],
+            base: [
+                { criterion_id: 'criterion', criterion_revision: 1, state: 'pending', evidence: '' },
+                { criterion_id: 'removed', criterion_revision: 1, state: 'pending', evidence: '' },
+            ] }));
+        service.progress.mockResolvedValue(task);
+        const { user } = renderPanel();
+        expect(screen.queryByText(/This progress draft belongs to an older version/)).not.toBeInTheDocument();
+        expect(screen.queryByText('Criterion removed from the current brief')).not.toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: 'Evidence' })).toHaveValue('Saw it work');
+        await user.click(screen.getByRole('button', { name: 'Save progress' }));
+        await waitFor(() => expect(service.progress).toHaveBeenCalledWith(42, expect.objectContaining({ expected_version: 3, criteria: [
+            { criterion_id: 'criterion', criterion_revision: 1, state: 'completed', evidence: 'Saw it work' },
+        ] })));
+    });
+
+    it('still warns when the saved progress of an edited criterion changed on the server', () => {
+        const recorded = { ...task, progress: { criteria: [{ criterion_id: 'criterion', criterion_revision: 1, state: 'in_progress' as const, evidence: 'Recorded elsewhere' }], artifacts: [], brief_revision: 1, artifact_revision: 0 } } as Task;
+        sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 2, savedAt: Date.now(),
+            criteria: [{ criterion_id: 'criterion', criterion_revision: 1, state: 'completed', evidence: 'My evidence' }],
+            base: [{ criterion_id: 'criterion', criterion_revision: 1, state: 'pending', evidence: '' }] }));
+        renderWithProviders(<TaskWorkPanel task={recorded} disabled={false} draftKey="workchord-draft:person:42"
+            onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} />);
+        expect(screen.getByText(/This progress draft belongs to an older version/)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Save progress' })).toBeDisabled();
+    });
 });
 
 
@@ -123,7 +167,7 @@ describe('acceptance requirements and who decides', () => {
     const actionsFor = (version: number) => ({ task_id: 42, version, claim_generation: 0, running_run_ids: [], live_assignment_ids: [],
         actions: [{ action: 'resolve_manual', allowed: true, blockers: [] }, { action: 'accept_review', allowed: true, blockers: [] }, { action: 'review', allowed: true, blockers: [] }] });
     const panel = (current: Task, onEditBrief = vi.fn()) => ({ onEditBrief, ...renderWithProviders(<TaskWorkPanel task={current} disabled={false} draftKey={null}
-        onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} onEditBrief={onEditBrief} initialAction="resolve_manual" />) });
+        onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} onEditBrief={onEditBrief} />) });
 
     beforeEach(() => { vi.clearAllMocks(); service.actions.mockResolvedValue(actionsFor(3)); });
 
