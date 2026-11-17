@@ -243,6 +243,23 @@ describe('Tasks header and toolbar', () => {
         expect(screen.getByTestId('location-search')).not.toHaveTextContent('filters=none');
     });
 
+    it('reopens both saved quick filters from the saved view response', async () => {
+        const view = {
+            ...anaPlannedView,
+            filters_json: { assigneeId: 7, status: 'planned', milestoneId: 5, needsAttention: true },
+        };
+        savedViewServiceMock.getAll.mockResolvedValue([view]);
+
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks'] });
+        await user.click(await screen.findByRole('button', { name: 'All tasks' }));
+        await user.click(await screen.findByRole('menuitemradio', { name: /Ana planned/ }));
+
+        const chips = await screen.findByRole('list', { name: 'Active filters' });
+        expect(await within(chips).findByText('Milestone: #5')).toBeInTheDocument();
+        expect(within(chips).getByText('Needs attention: Yes')).toBeInTheDocument();
+        expect(screen.queryByText('Modified view')).not.toBeInTheDocument();
+    });
+
     it('shows a failed Save changes next to the Modified view notice', async () => {
         savedViewServiceMock.update.mockRejectedValue({ response: { status: 409, data: { detail: 'The view changed elsewhere' } } });
         const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?view=12'] });
@@ -325,8 +342,8 @@ describe('Tasks header and toolbar', () => {
         await waitFor(() => expect(taskTitles()).toEqual(['Ship release build']));
     });
 
-    it('says that Milestone and Needs attention are not stored when changes to a view are saved', async () => {
-        const updated = { ...anaPlannedView, filters_json: { assigneeId: 7, status: 'active' } };
+    it('saves Milestone and Needs attention with changes to a view', async () => {
+        const updated = { ...anaPlannedView, filters_json: { assigneeId: 7, status: 'active', milestoneId: 5, needsAttention: true } };
         savedViewServiceMock.update.mockImplementation(async () => {
             savedViewServiceMock.getAll.mockResolvedValue([updated]);
             return updated;
@@ -336,28 +353,25 @@ describe('Tasks header and toolbar', () => {
         });
 
         expect(await screen.findByText('Modified view')).toBeInTheDocument();
-        expect(screen.getByText(/Not saved with a view: Milestone, Needs attention\./)).toBeInTheDocument();
         await user.click(screen.getByRole('button', { name: 'Save changes' }));
 
         await waitFor(() => expect(savedViewServiceMock.update).toHaveBeenCalled());
         const [id, payload] = savedViewServiceMock.update.mock.calls[0];
         expect(id).toBe(12);
-        expect(payload.filters_json).toMatchObject({ assigneeId: 7, status: 'active' });
-        expect(payload.filters_json).not.toHaveProperty('milestoneId');
-        expect(payload.filters_json).not.toHaveProperty('needsAttention');
-        expect(await screen.findByText('Saved view updated. Not saved with it: Milestone, Needs attention.')).toBeInTheDocument();
+        expect(payload.filters_json).toMatchObject({ assigneeId: 7, status: 'active', milestoneId: 5, needsAttention: true });
+        expect(await screen.findByText('Saved view updated')).toBeInTheDocument();
     });
 
-    it('does not call a view modified when only Milestone or Needs attention differ from it', async () => {
+    it('marks a view modified when Milestone or Needs attention differ from it', async () => {
         renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?assignee=7&status=planned&milestone=5&attention=yes&view=12'] });
 
         expect(await screen.findByRole('heading', { level: 1, name: 'Ana planned' })).toBeInTheDocument();
-        expect(screen.queryByText('Modified view')).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: 'Save changes' })).not.toBeInTheDocument();
+        expect(await screen.findByText('Modified view')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Save changes' })).toBeInTheDocument();
     });
 
-    it('names the conditions a new saved view will not store in the Save as dialog', async () => {
-        const created = { ...anaPlannedView, id: 13, name: 'Needs a look', filters_json: { status: 'active' } };
+    it('saves Needs attention with a new saved view', async () => {
+        const created = { ...anaPlannedView, id: 13, name: 'Needs a look', filters_json: { status: 'active', needsAttention: true } };
         savedViewServiceMock.create.mockImplementation(async () => {
             savedViewServiceMock.getAll.mockResolvedValue([anaPlannedView, created]);
             return created;
@@ -366,15 +380,14 @@ describe('Tasks header and toolbar', () => {
 
         await user.click(await screen.findByRole('button', { name: 'Save as…' }));
         const dialog = screen.getByRole('dialog');
-        expect(within(dialog).getByRole('note')).toHaveTextContent('Not saved with a view: Needs attention. It narrows this list for this visit only.');
+        expect(within(dialog).queryByRole('note')).not.toBeInTheDocument();
         await user.type(within(dialog).getByRole('textbox', { name: 'Name' }), 'Needs a look');
         await user.click(within(dialog).getByRole('button', { name: 'Save' }));
 
         await waitFor(() => expect(savedViewServiceMock.create).toHaveBeenCalled());
         const payload = savedViewServiceMock.create.mock.calls[0][0];
-        expect(payload.filters_json).toMatchObject({ status: 'active' });
-        expect(payload.filters_json).not.toHaveProperty('needsAttention');
-        expect(await screen.findByText('Saved view created. Not saved with it: Needs attention.')).toBeInTheDocument();
+        expect(payload.filters_json).toMatchObject({ status: 'active', needsAttention: true });
+        expect(await screen.findByText('Saved view created')).toBeInTheDocument();
     });
 
     it('narrows the visible list while typing in search and restores it when search is cleared', async () => {

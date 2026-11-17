@@ -168,7 +168,7 @@ describe('destination counters', () => {
         const plan = getDestination('plan');
         expect(formatDestinationCounter(plan, { planProgress: { done: 0, total: 6 } })).toBe('0/6');
         expect(formatDestinationCounter(plan, { planProgress: { done: 4, total: 6 } })).toBe('4/6');
-        expect(formatDestinationCounter(plan, { planProgress: { done: 6, total: 6 } })).toBeNull();
+        expect(formatDestinationCounter(plan, { planProgress: { done: 6, total: 6 } })).toBe('6/6');
         expect(formatDestinationCounter(plan, {})).toBeNull();
     });
 

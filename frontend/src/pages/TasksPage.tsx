@@ -464,7 +464,7 @@ const TasksPage = () => {
     }, [requestedSavedView, requestedSavedViewId, searchParams, updateSearchParams]);
 
     const header = (title: ReactNode, ready: boolean) => {
-        const { modified, canMutateSelected, selectedView, statusMessage, statusIsError, unsavedConditions } = savedViewManager;
+        const { modified, canMutateSelected, selectedView, statusMessage, statusIsError } = savedViewManager;
         const secondaryAction = ready && modified
             ? (canMutateSelected
                 ? (
@@ -484,7 +484,6 @@ const TasksPage = () => {
                 <span className="font-medium text-feedback-warning-foreground">{t('teamwork.modifiedView')}</span>
                 {' · '}
                 {t(selectedView ? 'tasks.modifiedViewHelp' : 'tasks.draftViewHelp')}
-                {unsavedConditions && ` ${t('surfaces.savedViews.notSaved', { conditions: unsavedConditions })}`}
             </p>
         );
         const statusNote = statusMessage && (statusIsError

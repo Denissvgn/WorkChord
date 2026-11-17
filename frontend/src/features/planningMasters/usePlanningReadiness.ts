@@ -10,7 +10,6 @@ import type { GanttResponse } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
 import type { TeamMember } from '../../types/team';
-import { deriveStatus, nextStep, readiness } from './masters';
 import { planningNavigationSummaryKey } from './usePlanningNavigationSummary';
 import type { PlanReadiness } from './masters';
 import {
@@ -364,9 +363,7 @@ export const usePlanningReadiness = ({
         ganttLastBuilt: '',
         riskCount: planningExceptionCount,
         inboxCount: includeInbox ? (inboxQuery.data?.length ?? 0) : 0,
-        checkpointStates: Object.fromEntries((checkpointsQuery.data?.checkpoints ?? []).map(item => [item.id, item.state])),
     }), [
-        checkpointsQuery.data,
         currentIteration,
         hasCurrentIteration,
         inboxQuery.data,
@@ -380,10 +377,6 @@ export const usePlanningReadiness = ({
         teamMembers.length,
         teamMembersNoCap,
     ]);
-
-    const status = useMemo(() => deriveStatus(readinessData), [readinessData]);
-    const ready = useMemo(() => readiness(status), [status]);
-    const nextId = useMemo(() => nextStep(status), [status]);
 
     const queryStates = {
         iterations: queryFeedback(iterationsQuery, true),
@@ -435,9 +428,6 @@ export const usePlanningReadiness = ({
         readinessData,
         /** The server's planning-readiness response, which owns the checkpoint states. */
         planningSummary: checkpointsQuery.data,
-        status,
-        ready,
-        nextId,
         isLoading: iterationsQuery.isLoading || isReadinessLoading,
         isError: Boolean(queryError),
         isIterationsLoading: iterationsQuery.isLoading,

@@ -222,7 +222,6 @@ describe('usePlanningReadiness query contract', () => {
             teamCapacity: 56,
             teamMembersNoCap: 0,
         });
-        expect(result.current.status.schedule.state).toBe('done');
         expect(result.current.planningLeafTasks.map(task => task.id)).toEqual([2]);
     });
 

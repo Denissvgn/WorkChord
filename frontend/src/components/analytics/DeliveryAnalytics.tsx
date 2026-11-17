@@ -6,17 +6,13 @@ import { QueryErrorState } from '../feedback/QueryState';
 import type { DeliveryQueueItem } from '../../types/deliveryMetrics';
 import { formatDateTime } from '../../utils/formatDate';
 import { useScopeLink } from '../../features/scope/useScopeLink';
-import { useWorkScope } from '../../features/scope/useWorkScope';
+import { useAnalyticsScope } from './useAnalyticsScope';
 
-/**
- * Delivery history for the iteration chosen in the scope bar. Backlog (work with no iteration)
- * and All projects have no matching report, so they request nothing and say so.
- */
+/** Delivery history for the scope chosen in the scope bar. */
 export const DeliveryAnalytics = ({ days }: { days: number }) => {
     const { t, i18n } = useTranslation();
     const scopeLink = useScopeLink();
-    const { iteration } = useWorkScope();
-    const params = typeof iteration === 'number' ? { iteration_id: iteration, lookback_days: days } : undefined;
+    const params = useAnalyticsScope(days);
     const enabled = params !== undefined;
     // feedback-policy: query loading,error,retry,empty
     const report = useQuery({ queryKey: ['deliveryMetrics', params], queryFn: () => deliveryMetricsService.get(params!), enabled });
@@ -38,8 +34,7 @@ export const DeliveryAnalytics = ({ days }: { days: number }) => {
             <div><h2 id="delivery-analytics-title" className="text-lg font-semibold">{t('deliveryAnalytics.title')}</h2>
                 <p className="mt-1 max-w-prose text-sm text-content-secondary">{t('deliveryAnalytics.description')}</p></div>
         </div>
-        {!enabled && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.unavailableScope')}</p>}
-        {enabled && report.isLoading && <p role="status">{t('common.loading')}</p>}
+        {(!enabled || report.isLoading) && <p role="status">{t('common.loading')}</p>}
         {enabled && report.isError && <QueryErrorState error={report.error} onRetry={() => { void report.refetch(); }} />}
         {data && <>
             <p className="text-sm text-content-secondary">{t('deliveryAnalytics.observedWindow', {

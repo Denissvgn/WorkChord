@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import { Button } from '../components/common/Button';
 import { PageHeader, PageLayout } from '../components/ui';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
-import { AgentModelAdministration } from '../components/team/AgentModelAdministration';
+import { AgentModelAdministration, type ModelHeaderActions } from '../components/team/AgentModelAdministration';
 import { TeamDirectory, type DrawerTarget } from '../components/team/TeamDirectory';
 import { ConnectAgentSteps } from '../components/team/ConnectAgentSteps';
 
@@ -21,6 +21,7 @@ const TeamPage = () => {
     const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
     const [drawer, setDrawer] = useState<DrawerTarget>(null);
+    const [modelActions, setModelActions] = useState<ModelHeaderActions | null>(null);
     // An empty members list offers Add person itself, so the header does not repeat it.
     const [membersEmpty, setMembersEmpty] = useState(false);
     // That header button can disappear while the drawer it opened is still open, so the drawer falls back to Members.
@@ -40,12 +41,13 @@ const TeamPage = () => {
             <PageHeader
                 title={t('teamPage.title')}
                 purpose={t('teamPage.purpose')}
-                primaryAction={activeTab !== 'connect' && !(activeTab === 'members' && membersEmpty) && (
+                primaryAction={activeTab === 'models' ? modelActions?.primaryAction : activeTab === 'members' && !membersEmpty && (
                     <Button type="button" onClick={() => { openTab('members'); setDrawer({ mode: 'add' }); }}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('teamPage.addPerson')}
                     </Button>
                 )}
+                overflowItems={activeTab === 'models' ? modelActions?.overflowItems : undefined}
                 secondaryActions={activeTab !== 'connect' && (
                     <Button type="button" variant="secondary" onClick={() => { setDrawer(null); openTab('connect'); }}>
                         {t('teamPage.connectAgent')}
@@ -96,7 +98,7 @@ const TeamPage = () => {
                     </>
                 )}
                 {activeTab === 'models' && (
-                    <AgentModelAdministration />
+                    <AgentModelAdministration onHeaderActionsChange={setModelActions} />
                 )}
                 {activeTab === 'connect' && (
                     <ConnectAgentSteps />

@@ -40,6 +40,12 @@ The web application has ten destinations, in this order: three without a group, 
   - **Team** manages the people, agents and models that do the work, including agent connection and the model catalog.
   - **Settings** holds personal preferences and workspace configuration in four groups.
 
+### Scope
+
+- The scope bar in the top bar sets the shared scope, Project and Iteration, for the scoped pages.
+- The command menu is a second way to set that same shared scope, and it offers iteration switching. It writes the scope the scope bar shows; it does not keep a scope of its own.
+- No page has its own iteration selector.
+
 ### Names in the interface
 
 - **Iteration** is the name for a bounded period of work; the interface never calls it a planning period, sprint or cycle.
@@ -90,7 +96,8 @@ Every section header says where its setting is saved: in this browser or for the
 ### First run
 
 - Overview shows a Get started panel with six steps: Say who you are, Create a project, Create an iteration, Add capacity, Add tasks, Build the schedule.
-- Each step opens the real page where that step is done.
+- The first two steps, Say who you are and Create a project, are done inline in the panel on Overview; this is a decided exception to opening a page for every step.
+- The other four steps open their Plan checkpoint: Create an iteration opens Iteration, Add capacity opens Capacity, Add tasks opens Work, and Build the schedule opens Schedule.
 - A step is marked done from the workspace data, never from a stored flag.
 - Every empty page shows one sentence and one button for the single next step.
 

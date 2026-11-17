@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { UNSAFE_DataRouterContext, useBlocker } from 'react-router-dom';
 import { ConfirmDialog } from './ConfirmDialog';
+import { leaveGuardsBypassed } from './leaveGuardBypass';
 
 interface UnsavedLeaveGuardProps {
     when: boolean;
@@ -13,7 +14,7 @@ interface UnsavedLeaveGuardProps {
 }
 
 const BlockingGuard = ({ when, title, description, leaveLabel, stayLabel, closeLabel, blockSearchChanges }: UnsavedLeaveGuardProps) => {
-    const blocker = useBlocker(({ currentLocation, nextLocation }) => when && (currentLocation.pathname !== nextLocation.pathname || Boolean(blockSearchChanges && currentLocation.search !== nextLocation.search)));
+    const blocker = useBlocker(({ currentLocation, nextLocation }) => !leaveGuardsBypassed() && when && (currentLocation.pathname !== nextLocation.pathname || Boolean(blockSearchChanges && currentLocation.search !== nextLocation.search)));
     return <ConfirmDialog
         open={blocker.state === 'blocked'}
         title={title}

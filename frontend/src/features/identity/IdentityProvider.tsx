@@ -13,6 +13,7 @@ import { AGENT_API_KEY_CHANGED_EVENT } from '../../utils/agentAccess';
 import { createWorkspaceQueryClient, installWorkspaceQueryPolicy } from '../workspaceQueryPolicy';
 import { setSessionIntegrity, IDENTITY_EXPIRED_EVENT } from '../../services/api';
 import { identityService } from './identityService';
+import { useScopeStore } from '../scope/scopeStore';
 import type { WorkspaceIdentity } from './identityService';
 
 import { IdentityContext } from './identityContext';
@@ -80,6 +81,8 @@ export const IdentityProvider = ({ children, navigateAfterSignOut = target => wi
             clearDrafts(previous.current);
             clearAdminApiKey();
             clearAgentApiKey();
+            // The remembered project and iteration belong to the previous person.
+            useScopeStore.getState().remember({ project: null, iteration: null });
         }
         if (scope) {
             previous.current = scope;
@@ -103,6 +106,7 @@ export const IdentityProvider = ({ children, navigateAfterSignOut = target => wi
             clearDrafts();
             clearAdminApiKey();
             clearAgentApiKey();
+            useScopeStore.getState().remember({ project: null, iteration: null });
             sessionStorage.removeItem('workchord-principal-scope');
             previous.current = null;
             queryClient.clear();

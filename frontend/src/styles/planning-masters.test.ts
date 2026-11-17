@@ -27,6 +27,21 @@ describe('responsive shell contracts', () => {
         expect(cssRule('.wc .overview-first-run:empty')).toContain('display: none;');
     });
 
+    it('keeps the sidebar with its Plan counter at 1024px and folds it into the drawer only below that', () => {
+        expect(cssRule('.wc .workspace')).toContain('grid-template-columns: 220px 1fr;');
+        const foldStart = planningMastersCss.indexOf('@media (max-width: 1023px) {');
+        expect(foldStart).toBeGreaterThan(-1);
+        const foldEnd = planningMastersCss.indexOf('\n}\n', foldStart);
+        const fold = planningMastersCss.slice(foldStart, foldEnd);
+        expect(fold).toContain('.wc .sidebar { display: none; }');
+        expect(fold).toContain('.wc .mobile-nav-trigger { display: inline-flex; }');
+        const narrowStart = planningMastersCss.indexOf('@media (min-width: 1024px) and (max-width: 1180px) {');
+        expect(narrowStart).toBeGreaterThan(-1);
+        expect(planningMastersCss.slice(narrowStart, narrowStart + 120)).toContain('grid-template-columns: 188px 1fr;');
+        // No rule hides the sidebar above 1023px.
+        expect(planningMastersCss).not.toMatch(/@media \(max-width: 1180px\) \{[^}]*\.wc \.sidebar \{ display: none/);
+    });
+
     it('keeps every shell control at least 44px on mobile and hybrid touch devices', () => {
         const responsiveStart = planningMastersCss.indexOf('@media (max-width: 1180px)');
         const responsiveEnd = planningMastersCss.indexOf('@media (max-width: 720px)', responsiveStart);

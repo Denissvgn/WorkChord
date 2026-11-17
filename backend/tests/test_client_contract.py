@@ -11,6 +11,7 @@ from pydantic import ValidationError
 from app.config import Settings
 from app.schemas.task import TaskStatusChange, TaskUpdate
 from app.schemas.agent import AgentActorCreate
+from app.schemas.agent_routing import AgentModelMutationReceipt
 from app.schemas.triage import TriageConvertToTaskRequest
 from app.services.task_service import TaskVersionConflictError
 
@@ -59,6 +60,56 @@ def test_missing_paged_reader_fails_contract_export(monkeypatch, path, schema_na
     monkeypatch.setattr(app, "openapi", lambda: schema)
     with pytest.raises(ValueError, match="Client routes no longer registered"):
         exporter["build_contract"]()
+
+
+MODEL_CATALOG_ROUTES = [
+    ("/api/agent/model-catalog", "get", "200", None),
+    ("/api/agent/model-catalog", "post", "201", "AgentModelMutationReceipt"),
+    ("/api/agent/model-catalog/{catalog_id}", "patch", "200", "AgentModelMutationReceipt"),
+    ("/api/agent/model-catalog/{catalog_id}/disable", "post", "200", "AgentModelMutationReceipt"),
+]
+
+RECEIPT_FIELDS = {
+    "operation": "model_catalog.create",
+    "target_type": "model_catalog",
+    "target_id": 3,
+    "idempotency_key": "catalog-create-1",
+    "rationale": "Declare the first model.",
+    "correlation_id": "correlation-1",
+    "authoritative_revision": 1,
+    "result": {"key": "standard-code"},
+}
+
+
+@pytest.mark.parametrize("path,method,success_status,receipt", MODEL_CATALOG_ROUTES)
+def test_model_catalog_routes_accept_either_credential_header(path, method, success_status, receipt):
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    operation = exporter["build_contract"]()["paths"][path][method]
+    headers = {p["name"]: p for p in operation["parameters"] if p["in"] == "header"}
+    # Agents keep sending their own key; the operator may send the admin key instead.
+    for name in ("X-Agent-API-Key", "X-Admin-API-Key"):
+        assert name in headers and headers[name].get("required", False) is False
+    response = operation["responses"][success_status]["content"]["application/json"]["schema"]
+    if receipt is None:
+        assert response["items"]["$ref"] == "#/components/schemas/AgentModelCatalogResponse"
+    else:
+        assert response["$ref"] == f"#/components/schemas/{receipt}"
+
+
+def test_model_receipt_actor_is_an_agent_id_or_null_for_the_operator():
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    receipt = exporter["build_contract"]()["components"]["schemas"]["AgentModelMutationReceipt"]
+    assert "actor_id" in receipt["required"]
+    assert receipt["properties"]["actor_id"]["anyOf"] == [
+        {"type": "integer", "minimum": 1.0}, {"type": "null"},
+    ]
+    agent_receipt = AgentModelMutationReceipt.model_validate({**RECEIPT_FIELDS, "actor_id": 7})
+    assert agent_receipt.model_dump(mode="json")["actor_id"] == 7
+    operator_receipt = AgentModelMutationReceipt.model_validate({**RECEIPT_FIELDS, "actor_id": None})
+    assert operator_receipt.model_dump(mode="json")["actor_id"] is None
+    for invalid in ({**RECEIPT_FIELDS, "actor_id": 0}, RECEIPT_FIELDS):
+        with pytest.raises(ValidationError):
+            AgentModelMutationReceipt.model_validate(invalid)
 
 
 @pytest.mark.parametrize("payload", [
@@ -112,3 +163,26 @@ def test_actor_provisioning_does_not_require_or_invent_runtime_binding():
     assert actor.model_binding is None
     assert actor.work_policy == "assigned_only"
     assert actor.max_parallel_work == 1
+
+
+@pytest.mark.parametrize('path', ['/api/tasks/delivery-metrics', '/api/tasks/execution-usage'])
+def test_analytics_contract_adds_optional_scope_modes(path):
+    exporter = runpy.run_path(str(ROOT / 'scripts/generate_client_contract.py'))
+    operation = exporter['build_contract']()['paths'][path]['get']
+    params = {item['name']: item for item in operation['parameters'] if item['in'] == 'query'}
+    assert {'project_id', 'iteration_id', 'lookback_days', 'backlog', 'all_projects'} <= params.keys()
+    for name in ('backlog', 'all_projects'):
+        assert params[name]['required'] is False
+        assert params[name]['schema']['type'] == 'boolean'
+        assert params[name]['schema']['default'] is False
+    assert params['lookback_days']['schema']['default'] == 30
+    if path.endswith('execution-usage'):
+        assert {'budget_amount', 'budget_currency'} <= params.keys()
+
+
+def test_metric_matches_exports_pagination_contract():
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    contract = exporter["build_contract"]()
+    operation = contract["paths"]["/api/tasks/metric-matches"]["get"]
+    assert {"limit", "after_id"} <= {p["name"] for p in operation["parameters"]}
+    assert {"items", "has_more", "next_after_id"} <= contract["components"]["schemas"]["MetricMatchPage"]["properties"].keys()

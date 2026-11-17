@@ -1,15 +1,20 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { UNSAFE_DataRouterContext, useBlocker } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { useDraftDismissal } from './useDraftDismissal';
+import { leaveGuardsBypassed } from '../common/leaveGuardBypass';
 
 type DraftGuard = ReturnType<typeof useDraftDismissal>;
 
 const DraftRouteBlocker = ({ guard }: { guard: DraftGuard }) => {
-    const blocker = useBlocker(() => guard.status.current.dirty || guard.status.current.pending);
+    const blocker = useBlocker(() => !leaveGuardsBypassed() && (guard.status.current.dirty || guard.status.current.pending));
+    // The router accepts one answer per blocked navigation; a second one is an invalid transition.
+    const answered = useRef(false);
     useEffect(() => {
-        if (blocker.state !== 'blocked') return;
+        if (blocker.state !== 'blocked') { answered.current = false; return; }
+        if (answered.current) return;
+        answered.current = true;
         if (guard.status.current.pending) blocker.reset();
         else guard.request(() => blocker.proceed(), () => blocker.reset());
     }, [blocker, guard]);
