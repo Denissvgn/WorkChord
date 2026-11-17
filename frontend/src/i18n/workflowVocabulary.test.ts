@@ -25,7 +25,7 @@ const LABEL_KEYS: Array<{ section: keyof Vocabulary; id: string; field: 'name' |
     { section: 'destinations', id: 'my_work', field: 'name', keys: ['teamwork.myWork'] },
     { section: 'destinations', id: 'triage', field: 'name', keys: ['nav.triage', 'documentTitles.triage', 'surfaces.triagePage.triageIntake', 'literals.triage_intake'] },
     { section: 'destinations', id: 'projects', field: 'name', keys: ['nav.projects', 'documentTitles.projects'] },
-    { section: 'destinations', id: 'plan', field: 'name', keys: ['nav.planWork', 'documentTitles.plan', 'documentTitles.planMaster', 'plan.title', 'plan.hub.planIterationTitle'] },
+    { section: 'destinations', id: 'plan', field: 'name', keys: ['nav.planWork', 'documentTitles.plan', 'plan.title', 'plan.hub.planIterationTitle'] },
     { section: 'destinations', id: 'gantt', field: 'name', keys: ['nav.gantt', 'documentTitles.gantt', 'gantt.title'] },
     { section: 'destinations', id: 'tasks', field: 'name', keys: ['nav.tasks', 'documentTitles.tasks'] },
     { section: 'destinations', id: 'analytics', field: 'name', keys: ['nav.analytics', 'documentTitles.analytics'] },

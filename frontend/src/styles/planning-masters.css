@@ -1859,18 +1859,6 @@
   font-size: var(--wc-type-meta);
   line-height: var(--wc-leading-body);
 }
-.wc .planning-workflow-trigger { white-space: nowrap; }
-.wc .planning-workflow-drawer > header {
-  height: auto;
-  min-height: 56px;
-  padding-block: 10px;
-}
-.wc .planning-workflow-drawer > header h2,
-.wc .planning-workflow-drawer > header p {
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
-}
 .wc .planning-workflow-help {
   display: flex;
   flex-direction: column;
@@ -3039,20 +3027,6 @@
   }
   .wc .tasks-workbench-header-wrap {
     padding: 10px 12px 8px;
-  }
-  .wc .task-workflow-trigger {
-    width: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0;
-  }
-  .wc .task-workflow-trigger > span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
   }
   .wc .tasks-list-content {
     padding-inline: 12px;

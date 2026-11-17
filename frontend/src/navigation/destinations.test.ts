@@ -80,6 +80,7 @@ describe('navigation registry', () => {
 });
 
 describe('route ownership', () => {
+    const redirectPaths = ['/plan/master', '/iterations', '/roadmap', '/agent-pipeline', '/agent-team/setup', '/calendar'];
     it.each(routeMetadata.map(route => [route.path, route.key] as const))(
         'route %s (%s) resolves to exactly one destination',
         pattern => {
@@ -121,7 +122,7 @@ describe('route ownership', () => {
     });
 
     it('claims only paths that the router serves', () => {
-        const routePaths = new Set(routeMetadata.map(route => route.path));
+        const routePaths = new Set([...routeMetadata.map(route => route.path), ...redirectPaths]);
         const claimed = DESTINATIONS.flatMap(destination => destination.owns);
         expect(claimed.filter(pattern => !routePaths.has(pattern))).toEqual([]);
         expect(new Set(claimed).size).toBe(claimed.length);
@@ -132,7 +133,7 @@ describe('route ownership', () => {
         const appPaths = [...appSource.matchAll(/<Route path="([^"]+)"/g)]
             .map(match => match[1])
             .filter(path => path !== '*');
-        expect([...appPaths].sort()).toEqual(routeMetadata.map(route => route.path).sort());
+        expect([...appPaths].sort()).toEqual([...routeMetadata.map(route => route.path), ...redirectPaths].sort());
     });
 });
 

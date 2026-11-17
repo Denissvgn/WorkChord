@@ -59,7 +59,7 @@ describe('AppTopNav', () => {
         const brand = screen.getByRole('link', { name: 'Go to WorkChord overview' });
         const slot = screen.getByTestId('topnav-scope-slot');
         const commands = screen.getByRole('button', { name: 'Open command menu' });
-        const help = screen.getByRole('button', { name: 'Open help for Roadmap' });
+        const help = screen.getByRole('button', { name: 'Open help for Projects' });
         const account = screen.getByRole('button', { name: 'Account menu' });
 
         expect(brand).toHaveAttribute('href', '/');

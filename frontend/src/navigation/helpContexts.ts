@@ -43,7 +43,6 @@ const DESTINATION_HELP: Record<DestinationId, DestinationHelp> = {
 // Only these pages open a guide below their summary, and their guide is the page's own.
 const WORKFLOW_BY_ROUTE: Partial<Record<RouteModuleKey, WorkflowGuideKey>> = {
     plan: 'plan',
-    planMaster: 'plan',
     planShare: 'plan',
     gantt: 'gantt',
     tasks: 'tasks',

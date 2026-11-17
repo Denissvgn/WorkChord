@@ -17,9 +17,9 @@ import {
 import { Checkbox } from '../common/Checkbox';
 import {
     PlanningWorkflowHelpContent,
-} from '../planning/PlanningWorkflowGuide';
+} from '../planning/PlanningWorkflowHelpContent';
 import { SettingsGoalHelpContent } from '../settings/SettingsGoalHelpContent';
-import { TaskWorkflowHelpContent } from '../tasks/TaskWorkflowGuide';
+import { TaskWorkflowHelpContent } from '../tasks/TaskWorkflowHelpContent';
 import { SlideOverDrawer } from '../ui';
 import { openCommandMenu } from './commandMenuEvents';
 import { openSetupGuide } from './setupGuideEvents';
