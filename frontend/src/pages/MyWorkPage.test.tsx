@@ -6,18 +6,20 @@ import { IdentityContext } from '../features/identity/identityContext';
 import { buildTaskEditorDefaults } from '../components/tasks/taskEditorContract';
 import { writeTaskDraft } from '../components/tasks/taskDraftStorage';
 import type { Task } from '../types/task';
+import { useLocation } from 'react-router-dom';
+import { expectPageChrome } from '../test/pageChrome';
 import { taskDetailResponse } from '../test/fixtures/taskDetail';
 
 const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn(), post: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
-vi.mock('../components/tasks/PersonCapacity', () => ({ PersonCapacity: () => null }));
+vi.mock('../components/tasks/PersonCapacity', () => ({ PersonCapacity: ({ profileId, manage }: { profileId: number; manage: boolean }) => <div data-testid="capacity">{profileId}:{String(manage)}</div> }));
 vi.mock('../components/tasks/TaskWorkPanel', () => ({ TaskWorkPanel: () => null }));
 vi.mock('../components/tasks/TaskTimelinePanel', () => ({ TaskTimelinePanel: () => null }));
 vi.mock('../components/tasks/DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
 vi.mock('../components/tasks/TaskDiscussion', () => ({ TaskDiscussion: () => null }));
 vi.mock('../components/tasks/TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 
-it('waits for a current task read before initializing a clean editor', async () => {
+it('opens a task in the shared read view after a current read', async () => {
     const client = createTestQueryClient();
     const previous = { id: 9, iteration_id: null, project_id: 1, title: 'Previous task title',
         version: 1, status: 'planned', priority: 50, effort_days: null, effort_hours: null,
@@ -28,7 +30,7 @@ it('waits for a current task read before initializing a clean editor', async () 
     api.get.mockImplementation((path: string) => {
         if (path === '/tasks/9/detail') return new Promise(resolve => { resolveDetail = resolve; });
         if (path === '/tasks/my-work') return Promise.resolve({ data: {
-            state: 'ready', queues: { active: [] }, has_more: false, next_after_id: null } });
+            state: 'ready', queues: { active: [{ id: 9, title: 'Current task title', status: 'planned', iteration_id: null }] }, has_more: false, next_after_id: null } });
         if (path === '/projects/page') return Promise.resolve({ data: {
             items: [{ id: 1, name: 'Project' }], has_more: false, upper_id: 1 } });
         if (path === '/tasks/owner-options' || path === '/tasks/lookup') {
@@ -36,12 +38,16 @@ it('waits for a current task read before initializing a clean editor', async () 
         }
         return Promise.resolve({ data: [] });
     });
-    renderWithProviders(<MyWorkPage />, { queryClient: client, initialEntries: ['/my-work?task=9'] });
+    renderWithProviders(<MyWorkPage />, { queryClient: client, initialEntries: ['/my-work'] });
     try {
+        fireEvent.click(await screen.findByRole('button', { name: '#9 · Current task title' }));
         await waitFor(() => expect(resolveDetail).toBeTypeOf('function'));
         const openedBeforeCurrentRead = screen.queryByRole('textbox', { name: /Task title/i });
         await act(async () => resolveDetail({ data: { task: current,
             dependencies: { items: [], has_more: false }, children: { items: [], has_more: false }, ancestors: [] } }));
+        expect(await screen.findByRole('button', { name: 'Edit all fields' })).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: /Task title/i })).toBeNull();
+        fireEvent.click(screen.getByRole('button', { name: 'Edit all fields' }));
         const title = await screen.findByRole('textbox', { name: /Task title/i });
         expect(title).toHaveValue('Current task title');
         expect(openedBeforeCurrentRead).toBeNull();
@@ -62,8 +68,9 @@ it('recovers user input with its original observed version instead of silently r
         if (path === '/tasks/owner-options' || path === '/tasks/lookup') return { data: { items: [], has_more: false } };
         return { data: [] };
     });
-    const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local' } as never, refresh: vi.fn(), signOut: vi.fn() }}>
+    const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', profile: { id: 4, display_name: 'Sam' } } as never, refresh: vi.fn(), signOut: vi.fn() }}>
         <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?task=9'] });
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit all fields' }));
     expect(await screen.findByRole('textbox', { name: /Task title/i })).toHaveValue('Recovered user intent');
     await waitFor(() => expect(JSON.parse(sessionStorage.getItem(key)!).values.expected_version).toBe(1));
     view.unmount();
@@ -81,6 +88,7 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', principal: null, profile: null } as never, refresh, signOut: vi.fn() }}>
         <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work'] });
     expect(await screen.findByRole('heading', { name: 'Who are you working as?' })).toBeInTheDocument();
+    expect(screen.queryByTestId('capacity')).toBeNull();
     expect(screen.queryByText(/Ask a workspace operator/)).toBeNull();
     const person = await screen.findByRole('combobox', { name: 'Person profile' });
     expect(screen.queryByRole('option', { name: 'Build agent' })).toBeNull();
@@ -99,6 +107,7 @@ it('lets a local session choose who it works as instead of a dead end, then coun
         <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?queue=queued'] });
     expect(await screen.findByRole('button', { name: 'Up next · 1' })).toBeInTheDocument();
     expect(screen.getByText('Working as Sam Ortiz · local, not verified')).toBeInTheDocument();
+    expect(screen.getByTestId('capacity')).toHaveTextContent('4:true');
     const title = await screen.findByRole('button', { name: '#7 · Assigned to my row' });
     // My Work uses the same 44 px row as the task list: status, title, then the menu on hover.
     expect(title.closest('[data-task-row]')).toHaveClass('h-11');
@@ -290,4 +299,47 @@ describe('My Work rows', () => {
         expect(other).toBeDisabled();
         expect(other).toHaveAttribute('title', expect.stringContaining('one iteration'));
     });
+});
+
+const Location = () => <output data-testid="location">{useLocation().search}</output>;
+
+it.each(['active', 'queued', 'blocked', 'awaiting_review', 'review'])('loads the Notifications count without deliveries from the %s queue until Notifications opens', async queue => {
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', queues: {}, has_more: false, next_after_id: null } };
+        if (path === '/notifications') return { data: { items: [
+            { id: 1, task_id: 7, title: 'Task updated', event_type: 'status_changed', read: false },
+        ], has_more: true, next_after_id: 1 } };
+        if (path === '/notifications/deliveries') return { data: { items: [
+            { id: 2, task_id: 7, title: 'First delivery', status: 'sent', attempt_count: 1, max_attempts: 3 },
+            { id: 3, task_id: 7, title: 'Second delivery', status: 'sent', attempt_count: 1, max_attempts: 3 },
+        ], has_more: false, next_after_id: null } };
+        return { data: { items: [], has_more: false, next_after_id: null } };
+    });
+    renderWithProviders(<MyWorkPage />, { initialEntries: [`/my-work?queue=${queue}`] });
+
+    const notifications = await screen.findByRole('button', { name: 'Notifications · 1+', pressed: false });
+    expect(await screen.findByRole('button', { name: 'To review · 0' })).toBeInTheDocument();
+    expect(api.get).not.toHaveBeenCalledWith('/notifications/deliveries', expect.anything());
+
+    fireEvent.click(notifications);
+    expect(await screen.findByText(/First delivery/)).toBeInTheDocument();
+    expect(screen.getByText(/Second delivery/)).toBeInTheDocument();
+    expect(api.get).toHaveBeenCalledWith('/notifications/deliveries', { params: { after_id: 0 } });
+    expect(screen.getByRole('button', { name: 'Notifications · 1+', pressed: true })).toBeInTheDocument();
+});
+
+it('switches six counted queues and preserves the choice in the URL', async () => {
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', queues: { active: [], queued: [], blocked: [{ id: 7, title: 'Blocked task', status: 'planned', iteration_id: null }], awaiting_review: [] }, has_more: true, next_after_id: 7 } };
+        if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
+        return { data: [] };
+    });
+    const { container } = renderWithProviders(<><MyWorkPage /><Location /></>, { initialEntries: ['/my-work?queue=blocked'] });
+    const group = within(container.querySelector('.seg') as HTMLElement);
+    await waitFor(() => expect(group.getAllByRole('button')).toHaveLength(6));
+    expect(await group.findByRole('button', { name: 'Blocked · 1+', pressed: true })).toBeInTheDocument();
+    fireEvent.click(group.getByRole('button', { name: 'Up next · 0+' }));
+    expect(screen.getByTestId('location')).toHaveTextContent('queue=queued');
+    expect(group.getByRole('button', { name: 'Up next · 0+', pressed: true })).toBeInTheDocument();
+    expectPageChrome(container, { status: 'migrated' });
 });
