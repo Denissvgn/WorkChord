@@ -292,7 +292,8 @@ try {
   await createOwned('Confirm the deployment checklist and coordinate the next review');
   await page.goto('/my-work?queue=queued');
   await page.getByRole('heading', { name: 'My Work', exact: true }).waitFor();
-  await page.getByRole('button', { name: /Согласовать критерии/ }).waitFor();
+  // The row's title button reads "#id · title"; its status button also names the title.
+  await page.getByRole('button', { name: `#${nestedHandoff.id} · ${nestedHandoff.title}`, exact: true }).waitFor();
   const peerContext = await browser.newContext({ baseURL, locale: 'en-US' });
   const peerPage = await peerContext.newPage();
   peerPage.on('pageerror', error => errors.push(error.message));
