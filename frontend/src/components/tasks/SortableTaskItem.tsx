@@ -4,6 +4,7 @@ import { GripVertical } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '../../components/common/Button';
 interface SortableTaskItemProps {
     id: number;
     children: ReactNode;
@@ -30,14 +31,14 @@ export const SortableTaskItem = ({ id, children, disabled }: SortableTaskItemPro
 
     return (
         <div ref={setNodeRef} style={style} className="flex items-start gap-2">
-            <button data-page-chrome-control="button"
+            <Button data-page-chrome-control="button"
                 className="mt-3 p-1 text-content-tertiary cursor-grab active:cursor-grabbing hover:text-content-secondary touch-none"
                 {...attributes}
                 {...listeners}
                 aria-label={t('taskList.reorderTask')} title={t('taskList.reorderTask')}
-            >
+             variant="secondary">
                 <GripVertical className="w-4 h-4" aria-hidden="true" />
-            </button>
+            </Button>
             <div className="flex-1">{children}</div>
         </div>
     );

@@ -113,15 +113,15 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
     return (
         <Modal
             open
-            title={<span className="flex items-center justify-between gap-4"><span>{t('taskImport.title')}</span><button
+            title={<span className="flex items-center justify-between gap-4"><span>{t('taskImport.title')}</span><Button
                             type="button"
                             onClick={() => setIsFullScreen(!isFullScreen)}
                             className="p-1 hover:bg-surface-subtle rounded text-content-secondary"
                             title={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
                             aria-label={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
-                        >
+                         variant="secondary">
                             {isFullScreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-                        </button></span>}
+                        </Button></span>}
             closeLabel={t('actions.close')}
             onClose={onClose}
             closeDisabled={importMutation.isPending}
@@ -171,7 +171,7 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
                     {!isFullScreen && (
                         <div className="shrink-0 space-y-3">
                             <div className="grid grid-cols-2 gap-2">
-                                <button
+                                <Button
                                     type="button"
                                     onClick={() => setDestination('tasks')}
                                     className={clsx(
@@ -180,11 +180,11 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
                                             ? "border-action bg-action-muted text-action"
                                             : "border-border bg-surface-card text-content-secondary hover:bg-surface-muted"
                                     )}
-                                >
+                                 variant="secondary">
                                     <FileText className="w-4 h-4" />
                                     {t('taskImport.destinationTasks')}
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="button"
                                     onClick={() => setDestination('triage')}
                                     className={clsx(
@@ -193,10 +193,10 @@ const ImportTasksBody = ({ iterationId, onClose, initialRevision, isLoading, que
                                             ? "border-action bg-action-muted text-action"
                                             : "border-border bg-surface-card text-content-secondary hover:bg-surface-muted"
                                     )}
-                                >
+                                 variant="secondary">
                                     <Inbox className="w-4 h-4" />
                                     {t('taskImport.destinationTriage')}
-                                </button>
+                                </Button>
                             </div>
                             <input
                                 ref={fileInputRef}

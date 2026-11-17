@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { filtersFromSavedView, sortKeyFromSavedView } from '../features/savedViews/taskViewState';
 import {
     activeFilterCount as countActiveFilters,
@@ -21,7 +22,7 @@ import { BacklogPanel } from '../components/tasks/BacklogPanel';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     AlertTriangle,
@@ -44,7 +45,7 @@ import { QueryErrorState, QueryLoadingState } from '../components/feedback/Query
 import { TaskList } from '../components/tasks/TaskList';
 import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
-import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
+import { GuardedTaskDrawer } from '../components/tasks/GuardedTaskDrawer';
 import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
 import { QuickCapture } from '../components/tasks/QuickCapture';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
@@ -552,7 +553,7 @@ const TasksPage = () => {
         ]}
     />;
 
-    const taskCreator = isCreateModalOpen && <GuardedTaskModal
+    const taskCreator = isCreateModalOpen && <GuardedTaskDrawer
         title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={closeTaskCreator}
         iterationId={isBacklogView ? null : selectedIterationId} parentProjectId={backlogProjectId}
         initialTitle={createTitle}
@@ -564,7 +565,7 @@ const TasksPage = () => {
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
             <PageHeader title={t('tasks.title')} purpose={t('teamwork.backlogHelp')}
-                secondaryActions={beforeFirstProject ? undefined : <Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : scopeLink(firstRunPlanHref('iteration'))}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'firstRun.steps.iteration.title')}</Link>} />
+                secondaryActions={beforeFirstProject ? undefined : <ButtonLink variant="secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : scopeLink(firstRunPlanHref('iteration'))}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'firstRun.steps.iteration.title')}</ButtonLink>} />
             <PageToolbar compact label={t('tasks.toolbar')} viewSwitch={viewSwitch} />
             {beforeFirstProject ? (
                 <NextStepEmptyState

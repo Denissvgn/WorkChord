@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Check, ChevronDown, X } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '../../components/common/Button';
+import { ButtonLink } from '../../components/common/ButtonLink';
 import { useIdentity } from '../identity/identityContext';
 import { LocalProfilePicker } from '../identity/LocalProfilePicker';
 import { useScopeLink } from '../scope/useScopeLink';
@@ -83,10 +83,10 @@ const StepBody = ({ step, isNext }: { step: FirstRunStep; isNext: boolean }) => 
         <>
             <p className="plan-section-waiting">{t(`firstRun.steps.${step.id}.body`)}</p>
             <div className="plan-section-owner">
-                <Link className={clsx('btn', primary ? 'primary' : 'secondary')} to={scopeLink(firstRunPlanHref(checkpoint))}>
+                <ButtonLink variant={primary ? 'primary' : 'secondary'} to={scopeLink(firstRunPlanHref(checkpoint))}>
                     {t('firstRun.openPlan')}
                     <ArrowRight aria-hidden="true" size={14} />
-                </Link>
+                </ButtonLink>
             </div>
         </>
     );

@@ -6,6 +6,7 @@ import type { TeamMember } from '../../../types/team';
 import { renderWithProviders } from '../../../test/renderWithProviders';
 import { KanbanBoard } from './KanbanBoard';
 
+import { Button } from '../../../components/common/Button';
 const dragState = vi.hoisted(() => ({
     activeId: 1,
     overId: 'planned-assigned' as string | number,
@@ -41,15 +42,15 @@ interface DndContextMockProps {
 vi.mock('@dnd-kit/core', () => ({
     DndContext: ({ children, onDragEnd }: DndContextMockProps) => (
         <div>
-            <button
+            <Button
                 type="button"
                 onClick={() => onDragEnd?.({
                     active: { id: dragState.activeId },
                     over: { id: dragState.overId },
                 })}
-            >
+             variant="secondary">
                 Simulate board drop
-            </button>
+            </Button>
             {children}
         </div>
     ),

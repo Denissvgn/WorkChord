@@ -13,6 +13,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import type { Task, TaskBulkAction, TaskStatus } from '../../types/task';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 type BulkKind = 'assign' | 'status' | 'priority' | 'iteration' | 'project' | 'clearProject' | 'milestone' | 'clearMilestone' | 'addLabels' | 'removeLabels' | 'flags' | 'delete';
 
 /** What the bar needs of a selected task. */
@@ -166,20 +167,20 @@ export const TaskBulkOperationsPanel = ({
         switch (kind) {
             case 'assign':
                 return (
-                    <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.chooseAssignee')} value={value} onChange={event => setValue(event.target.value)} className={selectClassName}>
+                    <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.chooseAssignee')} value={value} onChange={event => setValue(event.target.value)} className={selectClassName}>
                         <option value="">{t('surfaces.taskBulk.chooseAssignee')}</option>
                         <option value={NONE}>{t('common.unassigned')}</option>
                         <option value={AUTO}>{t('surfaces.taskBulk.actions.autoAssign')}</option>
                         {(teamQuery.data ?? []).map(member => <option key={member.id} value={member.id}>{member.name}</option>)}
-                    </select>
+                    </Select>
                 );
             case 'status':
                 return (
                     <>
-                        <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.statusLabel')} value={value} onChange={event => setValue(event.target.value)} className={selectClassName}>
+                        <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.statusLabel')} value={value} onChange={event => setValue(event.target.value)} className={selectClassName}>
                             <option value="">{t('surfaces.taskBulk.chooseStatus')}</option>
                             {STATUS_OPTIONS.map(status => <option key={status} value={status}>{t(`statuses.${status}`, { defaultValue: status })}</option>)}
-                        </select>
+                        </Select>
                         <input aria-label={t('surfaces.taskBulk.reasonLabel')} value={reason} onChange={event => setReason(event.target.value)} placeholder={t('surfaces.taskBulk.reasonOptional')} className={selectClassName} />
                     </>
                 );
@@ -187,26 +188,26 @@ export const TaskBulkOperationsPanel = ({
                 return <input aria-label={t('surfaces.taskBulk.priorityLabel')} type="number" min="1" max="10" value={value} onChange={event => setValue(event.target.value)} className={`${selectClassName} w-20`} />;
             case 'iteration':
                 return (
-                    <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.chooseIteration')} value={value} onChange={event => setValue(event.target.value)} className={selectClassName}>
+                    <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.chooseIteration')} value={value} onChange={event => setValue(event.target.value)} className={selectClassName}>
                         <option value="">{t('surfaces.taskBulk.chooseIteration')}</option>
                         {(iterationsQuery.data ?? []).filter(iteration => iteration.id !== iterationId).map(iteration => <option key={iteration.id} value={iteration.id}>{iteration.name}</option>)}
-                    </select>
+                    </Select>
                 );
             case 'project':
             case 'milestone':
                 return (
                     <>
                         {scopedProjectId === null && (
-                            <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.projectLabel')} value={value} onChange={event => { setValue(event.target.value); setMilestoneId(''); }} className={selectClassName}>
+                            <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.projectLabel')} value={value} onChange={event => { setValue(event.target.value); setMilestoneId(''); }} className={selectClassName}>
                                 <option value="">{t('surfaces.taskBulk.chooseProject')}</option>
                                 {(projectsQuery.data ?? []).map(project => <option key={project.id} value={project.id}>{project.name}</option>)}
-                            </select>
+                            </Select>
                         )}
                         {scopedProjectId !== null && <span className="text-sm text-content-primary">{iterationQuery.data?.project?.name}</span>}
-                        <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.milestoneLabel')} value={milestoneId} onChange={event => setMilestoneId(event.target.value)} disabled={projectId === null} className={selectClassName}>
+                        <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.milestoneLabel')} value={milestoneId} onChange={event => setMilestoneId(event.target.value)} disabled={projectId === null} className={selectClassName}>
                             <option value="">{kind === 'project' ? t('surfaces.taskBulk.leaveMilestoneUnchangedUnlessIncompatible') : t('surfaces.taskBulk.chooseMilestone')}</option>
                             {(milestonesQuery.data ?? []).map(milestone => <option key={milestone.id} value={milestone.id}>{milestone.name}</option>)}
-                        </select>
+                        </Select>
                     </>
                 );
             case 'addLabels':
@@ -215,16 +216,16 @@ export const TaskBulkOperationsPanel = ({
             case 'flags':
                 return (
                     <>
-                        <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.optionalLabel')} value={isOptional} onChange={event => setIsOptional(event.target.value)} className={selectClassName}>
+                        <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.optionalLabel')} value={isOptional} onChange={event => setIsOptional(event.target.value)} className={selectClassName}>
                             <option value="">{t('surfaces.taskBulk.optionalUnchanged')}</option>
                             <option value="true">{t('surfaces.taskBulk.setOptional')}</option>
                             <option value="false">{t('surfaces.taskBulk.clearOptional')}</option>
-                        </select>
-                        <select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.deferredLabel')} value={isDeferred} onChange={event => setIsDeferred(event.target.value)} className={selectClassName}>
+                        </Select>
+                        <Select data-page-chrome-control="select" aria-label={t('surfaces.taskBulk.deferredLabel')} value={isDeferred} onChange={event => setIsDeferred(event.target.value)} className={selectClassName}>
                             <option value="">{t('surfaces.taskBulk.deferredUnchanged')}</option>
                             <option value="true">{t('surfaces.taskBulk.setDeferred')}</option>
                             <option value="false">{t('surfaces.taskBulk.clearDeferred')}</option>
-                        </select>
+                        </Select>
                     </>
                 );
             case 'clearProject':

@@ -9,6 +9,7 @@ import { useScopeStore } from '../../features/scope/scopeStore';
 import { DESTINATIONS, DESTINATION_VIEWS } from '../../navigation/destinations';
 import i18n from '../../i18n/i18n';
 
+import { Button } from '../../components/common/Button';
 const lookup = vi.hoisted(() => vi.fn());
 vi.mock('../../services/taskService', () => ({ taskService: { lookup } }));
 const projects = vi.hoisted(() => vi.fn());
@@ -188,7 +189,7 @@ describe('CommandMenu', () => {
     it('lets users turn shortcuts off and ignores keys from controls', async () => {
         const { user } = renderWithProviders(
             <>
-                <button type="button">Focused control</button>
+                <Button type="button" variant="secondary">Focused control</Button>
                 <div data-testid="neutral-target">Workspace canvas</div>
                 <CommandMenu />
                 <LocationProbe />

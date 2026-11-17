@@ -5,6 +5,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { WorkRefreshStatus } from './WorkRefreshStatus';
 
+import { Button } from '../../components/common/Button';
 const Reader = () => {
     const { data } = useQuery({ queryKey: ['tasks', 'refresh-status'], queryFn: async () => 'loaded' });
     return <p>{data ?? 'loading'}</p>;
@@ -12,7 +13,7 @@ const Reader = () => {
 
 const Page = () => {
     const [open, setOpen] = useState(false);
-    return <><WorkRefreshStatus /><button type="button" onClick={() => setOpen(true)}>Open</button>{open && <Reader />}</>;
+    return <><WorkRefreshStatus /><Button type="button" onClick={() => setOpen(true)} variant="secondary">Open</Button>{open && <Reader />}</>;
 };
 
 afterEach(() => vi.restoreAllMocks());

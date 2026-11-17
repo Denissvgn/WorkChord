@@ -1,3 +1,4 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { useState } from 'react';
 import {
     CalendarClock,
@@ -11,7 +12,6 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { useScopeLink } from '../../features/scope/useScopeLink';
@@ -89,14 +89,14 @@ export const PlanningWorkflowHelpContent = ({
                 ))}
             </ul>
             {showAction && (
-                <Link
+                <ButtonLink
                     to={scopeLink(destination)}
-                    className="btn secondary sm"
+
                     onClick={onNavigate}
-                >
+                 variant="secondary" size="sm">
                     {t(`${translationPrefix}.action`)}
                     <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-                </Link>
+                </ButtonLink>
             )}
         </div>
     );

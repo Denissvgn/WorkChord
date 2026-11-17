@@ -9,6 +9,7 @@ import { taskService } from '../../services/taskService';
 import type { MetricScope, WorkMetricName } from '../../services/taskService';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
+import { Button } from '../../components/common/Button';
 /**
  * A count that opens the tasks it counts. The server picks them with the same
  * predicate as the count; the response may be limited.
@@ -27,10 +28,10 @@ export const MetricCount = ({ metric, scope, title, children, className, total }
     });
     if (scope === null) return <span className={className}>{children}</span>;
     return <>
-        <button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog"
-            className={`rounded underline decoration-dotted underline-offset-4 hover:text-action focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className ?? ''}`}>
+        <Button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog"
+            className={`rounded underline decoration-dotted underline-offset-4 hover:text-action focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className ?? ''}`} variant="plain">
             {children}
-        </button>
+        </Button>
         <Modal open={open} title={title} closeLabel={t('actions.close')} onClose={() => setOpen(false)} className="max-w-xl">
             {matches.isLoading && <p role="status">{t('common.loading')}</p>}
             {matches.isError && <QueryErrorState error={matches.error} fallback={t('metricList.loadFailed')} onRetry={() => void matches.refetch()} />}

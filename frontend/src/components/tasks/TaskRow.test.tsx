@@ -3,6 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { TaskRow } from './TaskRow';
 
+import { Button } from '../../components/common/Button';
 describe('TaskRow', () => {
     it('shows the agent status on a line under the assignee name and the Reviewer beside it', () => {
         renderWithProviders(
@@ -93,7 +94,7 @@ describe('TaskRow', () => {
         const props = {
             id: 1, title: 'Task 1', status: 'planned' as const, assignee: { id: 5, name: 'Ada' }, onAssign: vi.fn(), onStatusChange: vi.fn(),
             onOpen: vi.fn(), menuItems: [{ label: 'Details', onSelect: vi.fn() }], selectionActive: true, onToggleSelect: vi.fn(),
-            handle: <button type="button">Drag: Task 1</button>,
+            handle: <Button type="button" variant="secondary">Drag: Task 1</Button>,
         };
         const { rerender } = renderWithProviders(<TaskRow {...props} />);
         const row = screen.getByRole('button', { name: 'Task 1' }).closest<HTMLElement>('[data-task-row]')!;

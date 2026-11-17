@@ -4,6 +4,7 @@ import i18n from '../../i18n/i18n';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { PlanningWorkbenchFrame } from './PlanningWorkbenchFrame';
 
+import { Button } from '../../components/common/Button';
 describe('PlanningWorkbenchFrame', () => {
     afterEach(() => {
         vi.restoreAllMocks();
@@ -15,10 +16,10 @@ describe('PlanningWorkbenchFrame', () => {
                 title="Schedule"
                 description="Review the current plan."
                 facts={[{ id: 'period', label: 'Period', value: 'Iteration 1' }]}
-                contextControl={<button type="button">Choose period</button>}
-                secondaryActions={<button type="button">Help</button>}
-                primaryAction={<button type="button">Preview changes</button>}
-                overflowAction={<button type="button">More actions</button>}
+                contextControl={<Button type="button" variant="secondary">Choose period</Button>}
+                secondaryActions={<Button type="button" variant="secondary">Help</Button>}
+                primaryAction={<Button type="button" variant="secondary">Preview changes</Button>}
+                overflowAction={<Button type="button" variant="secondary">More actions</Button>}
             >
                 <div>Planning canvas</div>
             </PlanningWorkbenchFrame>,
@@ -49,15 +50,15 @@ describe('PlanningWorkbenchFrame', () => {
                 title="Calendar"
                 secondaryActions={(
                     <>
-                        <button type="button">Discard</button>
-                        <button type="button">New calendar</button>
-                        <button type="button">Fullscreen</button>
+                        <Button type="button" variant="secondary">Discard</Button>
+                        <Button type="button" variant="secondary">New calendar</Button>
+                        <Button type="button" variant="secondary">Fullscreen</Button>
                     </>
                 )}
                 primaryAction={(
                     <>
-                        <button type="button">Save</button>
-                        <button type="button">Apply</button>
+                        <Button type="button" variant="secondary">Save</Button>
+                        <Button type="button" variant="secondary">Apply</Button>
                     </>
                 )}
             >

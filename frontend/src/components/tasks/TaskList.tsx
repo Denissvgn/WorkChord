@@ -19,7 +19,7 @@ import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
 import { firstRunPlanHref } from '../../features/firstRun/firstRunSteps';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import { ConfirmDialog } from '../common/ConfirmDialog';
-import { GuardedTaskModal } from './GuardedTaskModal';
+import { GuardedTaskDrawer } from './GuardedTaskDrawer';
 import { selectVisibleWork } from '../../utils/visibleWork';
 import { WorkFreshness } from '../feedback/WorkFreshness';
 import { TaskAgentReadinessBadge } from './TaskAgentReadinessBadge';
@@ -409,12 +409,12 @@ export const TaskList = ({
     };
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
-            <button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
-                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+            <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
+                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
                 <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
-            </button>
+            </Button>
         </h2>
     ) : (
         <TaskItemContent task={item.task} level={0} ctx={rowContext} />
@@ -515,7 +515,7 @@ export const TaskList = ({
                 )
             )}
 
-            {(editingTask || addingChildTo) && <GuardedTaskModal
+            {(editingTask || addingChildTo) && <GuardedTaskDrawer
                 key={editingTask?.id ?? `child-${addingChildTo}`}
                 title={editingTask ? t('tasks.editTask') : t('tasks.addSubtask')}
                 closeLabel={t('actions.close')}
@@ -675,28 +675,28 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
     const claimExpired = Boolean(task.claim_expires_at && new Date(task.claim_expires_at).getTime() < ctx.nowMs);
 
     const handle = ctx.isDraggingEnabled && dragHandleProps ? (
-        <button data-page-chrome-control="button"
+        <Button data-page-chrome-control="button"
             type="button"
             aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
-            className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
+                className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
             {...dragHandleProps}
-        >
+         variant="plain">
             <GripVertical className="w-4 h-4" />
-        </button>
+        </Button>
     ) : undefined;
 
     const lead = (
         <>
             {hasChildren ? (
-                <button data-page-chrome-control="button"
+                <Button data-page-chrome-control="button"
                     type="button"
                     aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`} title={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
                     aria-expanded={isExpanded}
                     onClick={() => ctx.onToggleParent(task.id)}
                     className="shrink-0 rounded p-1 hover:bg-surface-subtle"
-                >
+                 variant="plain">
                     {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                </button>
+                </Button>
             ) : (
                 <span className="h-6 w-6 shrink-0" aria-hidden="true" />
             )}

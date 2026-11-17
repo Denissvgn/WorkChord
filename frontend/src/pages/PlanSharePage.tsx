@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -8,7 +9,7 @@ import {
     ListChecks,
     Users,
 } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
@@ -214,9 +215,9 @@ const PlanSharePage = () => {
                             <p className="py-3 text-sm text-content-secondary">{t('plan.master.noSharedTeam')}</p>
                         )}
                     </div>
-                    <Link to={scopeLink('/plan')} className="btn mt-4 w-full">
+                    <ButtonLink to={scopeLink('/plan')}  className="mt-4 w-full">
                         {t('plan.master.openPlanMaster')}
-                    </Link>
+                    </ButtonLink>
                 </aside>
             </div>
         </PageLayout>

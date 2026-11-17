@@ -37,6 +37,7 @@ import type {
     OutboundWebhookTargetUpdate,
 } from '../../types/outboundWebhook';
 
+import { Select } from '../../components/common/Select';
 interface TargetFormState {
     name: string;
     description: string;
@@ -850,7 +851,7 @@ export const OutboundWebhooksPanel = () => {
                         <p className="text-sm text-content-secondary">{t('settingsWebhooks.deliveriesHelp')}</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        <select
+                        <Select
                             value={deliveryTargetId}
                             onChange={event => setDeliveryTargetId(event.target.value ? Number(event.target.value) : '')}
                             aria-label={t('settingsWebhooks.target')}
@@ -861,8 +862,8 @@ export const OutboundWebhooksPanel = () => {
                             {targets.map(target => (
                                 <option key={target.id} value={target.id}>{target.name}</option>
                             ))}
-                        </select>
-                        <select
+                        </Select>
+                        <Select
                             value={deliveryStatus}
                             onChange={event => setDeliveryStatus(event.target.value as OutboundWebhookDeliveryStatus | '')}
                             aria-label={t('settingsWebhooks.status')}
@@ -873,7 +874,7 @@ export const OutboundWebhooksPanel = () => {
                             <option value="delivered">{t('settingsWebhooks.statuses.delivered')}</option>
                             <option value="failed">{t('settingsWebhooks.statuses.failed')}</option>
                             <option value="pending">{t('settingsWebhooks.statuses.pending')}</option>
-                        </select>
+                        </Select>
                     </div>
                 </div>
                 {deliveriesError ? (

@@ -12,7 +12,7 @@ import { readTaskEditorSnapshot, keepNewestTaskSnapshot } from './taskEditorSnap
 type FormProps = Omit<ComponentProps<typeof TaskForm>, 'onSuccess' | 'onCancel' | 'onDirtyChange' | 'onPendingChange' | 'onDiscardReady' | 'confirmUnsavedOnCancel'>;
 
 // Creating and editing a task share one container: the same slide-over drawer the task editor uses.
-export const GuardedTaskModal = ({ title, closeLabel, onClose, ...form }: FormProps & {
+export const GuardedTaskDrawer = ({ title, closeLabel, onClose, ...form }: FormProps & {
     title: ReactNode; closeLabel: string; onClose: () => void;
 }) => {
     const guard = useDraftDismissal(onClose);
@@ -31,11 +31,11 @@ const OpenedTaskModal = ({ initialData, onClose }: { initialData: Task; onClose:
     const { t } = useTranslation();
     // One coherent read initializes this opening; background data never rebases an active draft.
     const [snapshot] = useState(initialData);
-    return <GuardedTaskModal title={snapshot.title} closeLabel={t('actions.close')}
+    return <GuardedTaskDrawer title={snapshot.title} closeLabel={t('actions.close')}
         iterationId={snapshot.iteration_id} initialData={snapshot} onClose={onClose} />;
 };
 
-export const CurrentTaskModal = ({ taskId, onClose }: { taskId: number; onClose: () => void }) => {
+export const CurrentTaskDrawer = ({ taskId, onClose }: { taskId: number; onClose: () => void }) => {
     const { t } = useTranslation();
     const openingId = useId();
     // feedback-policy: query loading,error,retry,empty - each opening waits for its authoritative read.

@@ -8,10 +8,11 @@ import { taskService } from '../../services/taskService';
 import { projectService } from '../../services/projectService';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
-import { GuardedTaskModal } from './GuardedTaskModal';
+import { GuardedTaskDrawer } from './GuardedTaskDrawer';
 import { useLinkScope, useScopeLink } from '../../features/scope/useScopeLink';
 import { useSetWorkScope } from '../../features/scope/useWorkScope';
 
+import { Select } from '../../components/common/Select';
 export const BacklogPanel = () => {
     const { t } = useTranslation();
     const scopeLink = useScopeLink();
@@ -34,9 +35,9 @@ export const BacklogPanel = () => {
     return <section className="space-y-3" aria-labelledby={`${id}-title`}>
         <h2 id={`${id}-title`} className="text-lg font-semibold">{t('teamwork.projectBacklog')}</h2>
         <div className="flex flex-wrap items-end gap-3"><div className="min-w-0 flex-1"><label className="field-lbl" htmlFor={`${id}-project`}>{t('teamwork.project')}</label>
-            <select id={`${id}-project`} className="input w-full" value={projectId ?? ''} onChange={event => chooseProject(event.target.value)}>
+            <Select id={`${id}-project`} className="input w-full" value={projectId ?? ''} onChange={event => chooseProject(event.target.value)}>
                 <option value="">{t('teamwork.allProjects')}</option>{projects.data?.map(project => <option key={project.id} value={project.id}>{project.name}</option>)}
-            </select></div><Button disabled={!projectId || !projects.data?.some(project => project.id === projectId)} onClick={() => setCreating(true)}>{t('teamwork.captureTask')}</Button></div>
+            </Select></div><Button disabled={!projectId || !projects.data?.some(project => project.id === projectId)} onClick={() => setCreating(true)}>{t('teamwork.captureTask')}</Button></div>
         {!projectId && <p className="text-sm text-content-secondary">{t('teamwork.chooseProject')}</p>}
         {projects.isLoading && <p role="status">{t('common.loading')}</p>}
         {projects.isError && <QueryErrorState error={projects.error} fallback={t('teamwork.loadFailed')} onRetry={() => void projects.refetch()} />}
@@ -49,7 +50,7 @@ export const BacklogPanel = () => {
         })}</ul>
         {tasks.isSuccess && tasks.data.pages.every(page => page.items.length === 0) && <p className="text-sm text-content-secondary">{t('teamwork.emptyBacklog')}</p>}
         {tasks.hasNextPage && <Button variant="secondary" disabled={tasks.isFetchingNextPage} onClick={() => void tasks.fetchNextPage()}>{t('teamwork.loadMore')}</Button>}
-        {creating && projectId && <GuardedTaskModal title={t('teamwork.captureTask')} closeLabel={t('actions.close')} iterationId={null} parentProjectId={projectId}
+        {creating && projectId && <GuardedTaskDrawer title={t('teamwork.captureTask')} closeLabel={t('actions.close')} iterationId={null} parentProjectId={projectId}
             onClose={() => { setCreating(false); void tasks.refetch(); }} />}
     </section>;
 };

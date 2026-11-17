@@ -7,6 +7,7 @@ import { useActiveMount } from '../tasks/useDraftDismissal';
 import type { ObservedRevisions } from '../../services/planningInputService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { Button } from '../common/Button';
+import { buttonClassName } from '../common/buttonStyles';
 
 export const VacationCsvImport = ({ iterationId, onSuccess, onBusyChange }: { iterationId: number; onSuccess: () => void; onBusyChange?: (busy: boolean) => void }) => {
     const { t } = useTranslation();
@@ -35,7 +36,7 @@ export const VacationCsvImport = ({ iterationId, onSuccess, onBusyChange }: { it
         } catch (cause) { if (active()) setError(cause); }
     };
     return <div className="space-y-2">
-        <label className="btn secondary cursor-pointer">{t('teamVacations.importCsv')}
+        <label className={buttonClassName('secondary', 'md', 'cursor-pointer')}>{t('teamVacations.importCsv')}
             <input type="file" accept=".csv,text/csv" className="hidden" disabled={write.isPending || context.loading}
                 onChange={event => { void chooseFile(event.target.files?.[0]); event.currentTarget.value = ''; }} />
         </label>

@@ -23,7 +23,7 @@ vi.mock('./DeliveryDependencies', () => ({ DeliveryDependencies: () => null }));
 vi.mock('./TaskDiscussion', () => ({ TaskDiscussion: () => null }));
 vi.mock('./TimeEntriesPanel', () => ({ TimeEntriesPanel: () => null }));
 vi.mock('./TaskTimelinePanel', () => ({ TaskTimelinePanel: () => null }));
-vi.mock('../gantt/TaskEditModal', () => ({ TaskEditModal: () => null }));
+vi.mock('../gantt/TaskEditDrawer', () => ({ TaskEditDrawer: () => null }));
 vi.mock('@tanstack/react-virtual', () => ({ useVirtualizer: (options: { count: number; horizontal?: boolean }) => ({
     getTotalSize: () => options.count * 50,
     getVirtualItems: () => options.horizontal ? [] : Array.from({ length: options.count }, (_, index) => ({ index, start: index * 50, size: 50 })),

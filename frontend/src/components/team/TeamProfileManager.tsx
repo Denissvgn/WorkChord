@@ -29,6 +29,7 @@ import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { actorName, modelName, statusKnown, type AgentStatus, type DirectoryActor, type DirectoryRow } from './directoryModel';
 import type { AgentActorRosterItem } from '../../types/agent';
 
+import { Select } from '../../components/common/Select';
 const PROFILE_KINDS: TeamMemberProfileKind[] = ['human', 'agent', 'hybrid'];
 
 const ASSIGNMENT_MODES: TeamMemberAssignmentMode[] = [
@@ -581,14 +582,14 @@ const ProfileDrawer = ({ row, initial, onClose, onCreated }: ProfileDrawerProps)
                     />
                     <div className="field">
                         <label htmlFor="profile-kind" className="field-lbl">{t('teamProfiles.profileKind')}</label>
-                        <select
+                        <Select
                             id="profile-kind"
                             className="input"
                             value={profileForm.profile_kind}
                             onChange={event => setProfileForm({ ...profileForm, profile_kind: event.target.value as TeamMemberProfileKind })}
                         >
                             {PROFILE_KINDS.map(kind => <option key={kind} value={kind}>{t(`teamProfiles.profileKinds.${kind}`)}</option>)}
-                        </select>
+                        </Select>
                     </div>
                     <fieldset className="rounded-md border border-border-subtle p-3">
                         <legend className="px-1 text-sm font-medium text-content-primary">{t('teamProfiles.assignmentModes')}</legend>

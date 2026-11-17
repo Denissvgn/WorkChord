@@ -28,6 +28,7 @@ import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { useSettingsReadOnly } from './sharedUnlock';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 const arrayMove = <T,>(items: T[], from: number, to: number) => {
     const next = [...items];
     const [moved] = next.splice(from, 1);
@@ -595,7 +596,7 @@ export const TemplateLabelSettings = () => {
                 role="tablist"
                 aria-label={t('surfaces.templateLabels.managementSections')}
             >
-                <button
+                <Button
                     type="button"
                     role="tab"
                     id="template-labels-tab-templates"
@@ -609,11 +610,11 @@ export const TemplateLabelSettings = () => {
                     className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'templates' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
-                >
+                 variant="plain">
                     <FileText aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.templates')}
-                </button>
-                <button
+                </Button>
+                <Button
                     type="button"
                     role="tab"
                     id="template-labels-tab-labels"
@@ -627,10 +628,10 @@ export const TemplateLabelSettings = () => {
                     className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'labels' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
-                >
+                 variant="plain">
                     <Tags aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.labels')}
-                </button>
+                </Button>
             </div>
 
             {activeSection === 'templates' && (
@@ -654,7 +655,7 @@ export const TemplateLabelSettings = () => {
 
                         <div className="flex flex-wrap gap-2">
                             {templateTypes.map(option => (
-                                <button
+                                <Button
                                     key={option.value}
                                     type="button"
                                     onClick={() => setActiveTemplateType(option.value)}
@@ -664,9 +665,9 @@ export const TemplateLabelSettings = () => {
                                             ? 'border-action bg-action-muted text-action'
                                             : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted'
                                     }`}
-                                >
+                                 variant="plain">
                                     {t(option.labelKey)}
-                                </button>
+                                </Button>
                             ))}
                         </div>
 
@@ -727,7 +728,7 @@ export const TemplateLabelSettings = () => {
                                 />
                                 <div>
                                     <label htmlFor={templateTypeId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.type')}</label>
-                                    <select
+                                    <Select
                                         id={templateTypeId}
                                         value={templateForm.state.template_type}
                                         onChange={event => updateTemplateForm('template_type', event.target.value as TemplateType)}
@@ -736,7 +737,7 @@ export const TemplateLabelSettings = () => {
                                         {templateTypes.map(option => (
                                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                                 <div>
                                     <label htmlFor={templateDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
@@ -1052,7 +1053,7 @@ export const TemplateLabelSettings = () => {
                                         {t('surfaces.templateLabels.group')}
                                         <RequiredIndicator />
                                     </label>
-                                    <select
+                                    <Select
                                         id={labelGroupId}
                                         aria-label={t('surfaces.templateLabels.group')}
                                         value={labelForm.state.group_id}
@@ -1063,7 +1064,7 @@ export const TemplateLabelSettings = () => {
                                         {labelGroups.map(group => (
                                             <option key={group.id} value={group.id}>{labelGroupDisplay(group).name}</option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                                 <Input label={t('surfaces.templateLabels.slug')} value={labelForm.state.slug} onChange={event => updateLabelForm('slug', event.target.value)} required />
                                 <Input label={t('surfaces.templateLabels.name')} value={labelForm.state.name} onChange={event => updateLabelForm('name', event.target.value)} required />

@@ -14,6 +14,7 @@ import type { TaskStatus } from '../../types/task';
 import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } from './taskRowParts';
 import { AssigneeSelect } from './AssigneeSelect';
 
+import { Button } from '../../components/common/Button';
 export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null }
 
 export interface TaskRowProps {
@@ -130,7 +131,10 @@ export const TaskRow = ({
                     align="start"
                     label={`${t('taskList.taskStatus', { status: statusName })}: ${title}`}
                     className="shrink-0"
-                    triggerClassName={clsx('btn ghost icon sm', statusTextClassName[status])}
+                    triggerClassName={statusTextClassName[status]}
+                    triggerVariant="ghost"
+                    triggerSize="sm"
+                    triggerIconOnly
                     trigger={statusIcon}
                     items={transitions.filter(next => canTransition(status, next)).map(next => ({
                         label: t(`statuses.${next}`, { defaultValue: next }),
@@ -151,7 +155,7 @@ export const TaskRow = ({
                 </span>
             )}
 
-            <button
+            <Button
                 data-page-chrome-control="button"
                 type="button"
                 onClick={onOpen}
@@ -160,9 +164,9 @@ export const TaskRow = ({
                     'min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
                     status === 'closed' && 'text-content-secondary line-through',
                 )}
-            >
+             variant="plain">
                 {titleText ?? title}
-            </button>
+            </Button>
 
             {meta && <span className="hidden min-w-0 max-w-[16rem] shrink truncate text-xs text-content-secondary lg:block">{meta}</span>}
 
@@ -210,7 +214,7 @@ export const TaskRow = ({
 
             {/* The slot keeps its width, so the row does not shift when the menu appears. */}
             <span className="flex h-8 w-8 shrink-0 items-center justify-center">
-                {menuShown && <OverflowMenu label={t('taskList.taskActions', { title })} items={menuItems} alwaysMenu triggerClassName="btn ghost icon sm" />}
+                {menuShown && <OverflowMenu label={t('taskList.taskActions', { title })} items={menuItems} alwaysMenu triggerVariant="ghost" triggerSize="sm" triggerIconOnly />}
             </span>
         </div>
     );

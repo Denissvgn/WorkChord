@@ -553,11 +553,11 @@ const ProjectsPage = () => {
     const closeInitiativeEditor = () => { setIsCreatingInitiative(false); setEditingInitiative(null); };
 
     const exceptionButton = (pressed: boolean, onClick: () => void, label: string, risk = false) => (
-        <button data-page-chrome-control="button" type="button" className={clsx('projects-exception', risk && 'is-risk')}
-            aria-pressed={pressed} onClick={onClick}>
+        <Button data-page-chrome-control="button" type="button" className={clsx('projects-exception !h-7', risk && 'is-risk')}
+            aria-pressed={pressed} onClick={onClick} variant="secondary" size="sm">
             {risk && <AlertTriangle aria-hidden="true" className="h-4 w-4" />}
             {label}
-        </button>
+        </Button>
     );
 
     const headerMeta = projectsData && projects.length > 0 ? (
@@ -762,11 +762,11 @@ const ProjectsPage = () => {
                                                 {SORT_COLUMNS.map(column => (
                                                     <th key={column.key} scope="col" className={clsx('px-3 py-3', column.key === 'name' && 'pl-6', column.center && 'text-center')}
                                                         aria-sort={sort.key === column.key ? (sort.descending ? 'descending' : 'ascending') : undefined}>
-                                                        <button data-page-chrome-control="button" type="button" onClick={() => toggleSort(column.key)}
-                                                            className="inline-flex items-center gap-1 font-medium hover:text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                                                        <Button data-page-chrome-control="button" type="button" onClick={() => toggleSort(column.key)}
+                                                            className="inline-flex items-center gap-1 font-medium hover:text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                                                             {t(column.labelKey)}
                                                             <span aria-hidden="true">{sort.key === column.key ? (sort.descending ? '↓' : '↑') : ''}</span>
-                                                        </button>
+                                                        </Button>
                                                     </th>
                                                 ))}
                                                 <th scope="col" className="sticky right-0 w-12 bg-surface-muted px-2 py-3"><span className="sr-only">{t('surfaces.projectsPage.actions')}</span></th>

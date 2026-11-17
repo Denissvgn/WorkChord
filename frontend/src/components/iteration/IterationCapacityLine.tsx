@@ -4,6 +4,7 @@ import { iterationService } from '../../services/iterationService';
 import { planningNavigationSummaryKey } from '../../features/planningMasters/usePlanningNavigationSummary';
 import { formatDecimal } from '../../utils/workNumbers';
 
+import { Button } from '../../components/common/Button';
 /** One labelled capacity bar per iteration: planned hours against capacity, tasks, and whether a schedule exists. */
 export const IterationCapacityLine = ({ iterationId }: { iterationId: number }) => {
     const { t, i18n } = useTranslation();
@@ -16,7 +17,7 @@ export const IterationCapacityLine = ({ iterationId }: { iterationId: number }) 
     });
     if (readiness.isLoading) return <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>;
     if (readiness.isError || !readiness.data) {
-        return <p className="text-sm text-content-secondary">{t('iterations.capacityUnavailable')} <button type="button" className="underline" onClick={() => void readiness.refetch()}>{t('queryFeedback.retry')}</button></p>;
+        return <p className="text-sm text-content-secondary">{t('iterations.capacityUnavailable')} <Button type="button" className="underline" onClick={() => void readiness.refetch()} variant="secondary">{t('queryFeedback.retry')}</Button></p>;
     }
     const data = readiness.data;
     const capacity = data.team_capacity_hours;

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { act, screen, waitFor } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
-import { CurrentTaskModal } from './GuardedTaskModal';
+import { CurrentTaskDrawer } from './GuardedTaskDrawer';
 import type { Task, TaskDetail } from '../../types/task';
 
 const service = vi.hoisted(() => ({ getDetail: vi.fn() }));
@@ -21,7 +21,7 @@ const detail = (id = 9, version = 2, title = 'Current task') => ({ task: { id, v
 
 it('preserves typing and the original version when a newer background read arrives', async () => {
     service.getDetail.mockResolvedValueOnce(detail()).mockResolvedValueOnce(detail(9, 3, 'External edit'));
-    const { user, queryClient } = renderWithProviders(<CurrentTaskModal taskId={9} onClose={() => undefined} />);
+    const { user, queryClient } = renderWithProviders(<CurrentTaskDrawer taskId={9} onClose={() => undefined} />);
     await user.clear(await screen.findByRole('textbox', { name: 'Draft title' }));
     await user.type(screen.getByRole('textbox', { name: 'Draft title' }), 'Unsaved intent');
     await act(() => queryClient.invalidateQueries({ queryKey: ['taskEditor'] }));
@@ -35,10 +35,10 @@ it('cancels an obsolete opening and never initializes the next task from its del
     let finish!: (value: TaskDetail) => void;
     service.getDetail.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }))
         .mockResolvedValueOnce(detail(10, 4, 'Next task'));
-    const view = renderWithProviders(<CurrentTaskModal key={9} taskId={9} onClose={() => undefined} />);
+    const view = renderWithProviders(<CurrentTaskDrawer key={9} taskId={9} onClose={() => undefined} />);
     await waitFor(() => expect(service.getDetail).toHaveBeenCalledTimes(1));
     const signal = service.getDetail.mock.calls[0][2] as AbortSignal;
-    view.rerender(<CurrentTaskModal key={10} taskId={10} onClose={() => undefined} />);
+    view.rerender(<CurrentTaskDrawer key={10} taskId={10} onClose={() => undefined} />);
     expect(await screen.findByRole('textbox', { name: 'Draft title' })).toHaveValue('Next task');
     expect(signal.aborted).toBe(true);
     await act(async () => finish(detail(9, 1, 'Obsolete response')));
@@ -48,7 +48,7 @@ it('cancels an obsolete opening and never initializes the next task from its del
 it('ignores a lower version and removes server actions when access is denied', async () => {
     service.getDetail.mockResolvedValueOnce(detail(9, 4)).mockResolvedValueOnce(detail(9, 2, 'Old task'))
         .mockRejectedValueOnce({ response: { status: 403 } });
-    const { queryClient } = renderWithProviders(<CurrentTaskModal taskId={9} onClose={() => undefined} />);
+    const { queryClient } = renderWithProviders(<CurrentTaskDrawer taskId={9} onClose={() => undefined} />);
     await screen.findByRole('textbox', { name: 'Draft title' });
     await act(() => queryClient.invalidateQueries({ queryKey: ['taskEditor'] }));
     expect(screen.getByTestId('observed-version')).toHaveTextContent('4');
@@ -59,7 +59,7 @@ it('ignores a lower version and removes server actions when access is denied', a
 
 it('rejects mismatched task identities instead of opening an unrelated editor', async () => {
     service.getDetail.mockResolvedValueOnce(detail(10));
-    renderWithProviders(<CurrentTaskModal taskId={9} onClose={() => undefined} />);
+    renderWithProviders(<CurrentTaskDrawer taskId={9} onClose={() => undefined} />);
     await screen.findByRole('alert');
     expect(screen.queryByRole('textbox', { name: 'Draft title' })).not.toBeInTheDocument();
 });
@@ -69,7 +69,7 @@ it('initializes version, title, criterion and acceptance together from the new o
     current.task.is_accepted = false;
     current.task.brief = { acceptance_criteria: [{ id: 'result', revision: 2, text: 'Current criterion' }] } as Task['brief'];
     service.getDetail.mockResolvedValueOnce(current);
-    const view = renderWithProviders(<CurrentTaskModal taskId={9} onClose={() => undefined} />);
+    const view = renderWithProviders(<CurrentTaskDrawer taskId={9} onClose={() => undefined} />);
     view.queryClient.setQueryData(['task', 9], { ...current.task, version: 2, is_accepted: true });
     expect(await screen.findByRole('textbox', { name: 'Draft title' })).toHaveValue('Reviewed new title');
     expect(screen.getByTestId('observed-version')).toHaveTextContent('5');

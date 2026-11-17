@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Copy, ExternalLink, RefreshCw, Share2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
+import { buttonClassName } from '../common/buttonStyles';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
@@ -146,7 +147,7 @@ export const PlanShareSection = ({ iterationId }: { iterationId: number }) => {
                         <Copy aria-hidden="true" size={14} />
                         {t('plan.master.copyShareLink')}
                     </Button>
-                    <a className="btn ghost" href={shareUrl} target="_blank" rel="noreferrer">
+                    <a className={buttonClassName('ghost')} href={shareUrl} target="_blank" rel="noreferrer">
                         <ExternalLink aria-hidden="true" size={14} />
                         {t('plan.master.openSharedPlan')}
                     </a>

@@ -414,13 +414,13 @@ export const SchedulingRulesSettings = () => {
             <fieldset className="contents" disabled={isMutating} aria-busy={isMutating}>
                 {/* Effort Modifiers Section */}
                 <div className="card">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => toggleSection('modifiers')}
                         className="flex w-full items-center justify-between text-left"
                         aria-expanded={expandedSections.has('modifiers')}
                         aria-controls="scheduling-modifiers-panel"
-                    >
+                     variant="secondary">
                         <h3 className="flex min-w-0 items-center gap-2 text-lg font-semibold text-content-primary">
                             {expandedSections.has('modifiers') ? (
                                 <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -432,7 +432,7 @@ export const SchedulingRulesSettings = () => {
                         <span className="shrink-0 text-sm text-content-secondary">
                             {t('settingsScheduling.sections.modifiers.count', { count: localRules.effort_modifiers.length })}
                         </span>
-                    </button>
+                    </Button>
 
                     {expandedSections.has('modifiers') && (
                         <div id="scheduling-modifiers-panel" className="mt-4 space-y-4">
@@ -457,13 +457,13 @@ export const SchedulingRulesSettings = () => {
 
                 {/* Scheduling Passes Section */}
                 <div className="card">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => toggleSection('passes')}
                         className="flex w-full items-center justify-between text-left"
                         aria-expanded={expandedSections.has('passes')}
                         aria-controls="scheduling-passes-panel"
-                    >
+                     variant="secondary">
                         <h3 className="flex min-w-0 items-center gap-2 text-lg font-semibold text-content-primary">
                             {expandedSections.has('passes') ? (
                                 <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -475,7 +475,7 @@ export const SchedulingRulesSettings = () => {
                         <span className="shrink-0 text-sm text-content-secondary">
                             {t('settingsScheduling.sections.passes.count', { count: localRules.scheduling_passes.length })}
                         </span>
-                    </button>
+                    </Button>
 
                     {expandedSections.has('passes') && (
                         <div id="scheduling-passes-panel" className="mt-4 space-y-4">
@@ -512,13 +512,13 @@ export const SchedulingRulesSettings = () => {
 
                 {/* Constraints Section */}
                 <div className="card">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => toggleSection('constraints')}
                         className="flex w-full items-center justify-between text-left"
                         aria-expanded={expandedSections.has('constraints')}
                         aria-controls="scheduling-constraints-panel"
-                    >
+                     variant="secondary">
                         <h3 className="flex min-w-0 items-center gap-2 text-lg font-semibold text-content-primary">
                             {expandedSections.has('constraints') ? (
                                 <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -527,7 +527,7 @@ export const SchedulingRulesSettings = () => {
                             )}
                             <span className="break-words">{t('settingsScheduling.sections.constraints.title')}</span>
                         </h3>
-                    </button>
+                    </Button>
 
                     {expandedSections.has('constraints') && (
                         <ReadOnlyFieldset>

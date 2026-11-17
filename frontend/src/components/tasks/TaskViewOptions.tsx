@@ -4,6 +4,7 @@ import { SlidersHorizontal } from 'lucide-react';
 import { Select } from '../common/Select';
 import type { SortKey } from './TaskList';
 
+import { Button } from '../../components/common/Button';
 /**
  * How the task list is arranged: grouping and order, in one popover next to the view switch. The trigger is an
  * icon button so the toolbar keeps one row; its name and tooltip are "View options".
@@ -35,20 +36,20 @@ export const TaskViewOptions = ({ sortKey, onSortKeyChange, groupByStatus, onGro
 
     return (
         <div className="wc-filter-more">
-            <button
+            <Button
                 data-page-chrome-control="button"
                 ref={triggerRef}
                 type="button"
-                className="btn icon"
+
                 aria-label={t('tasks.viewOptions')}
                 title={t('tasks.viewOptions')}
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 aria-controls={open ? panelId : undefined}
                 onClick={() => setOpen(current => !current)}
-            >
+             variant="secondary" iconOnly>
                 <SlidersHorizontal aria-hidden="true" className="h-4 w-4" />
-            </button>
+            </Button>
             {open && (
                 <>
                     <div className="wc-filter-more-backdrop" onClick={() => setOpen(false)} aria-hidden />

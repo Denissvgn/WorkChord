@@ -23,6 +23,7 @@ import type {
 import type { TaskStatus } from '../../types/task';
 import { githubRuleDisplay } from '../../i18n/seedDisplay';
 
+import { Select } from '../../components/common/Select';
 const eventOptions: Array<{ value: GitHubAutomationEventType; labelKey: string }> = [
     { value: 'github_pr_opened', labelKey: 'settingsGithubAutomation.events.github_pr_opened' },
     { value: 'github_pr_reopened', labelKey: 'settingsGithubAutomation.events.github_pr_reopened' },
@@ -401,7 +402,7 @@ export const GitHubSettingsPanel = () => {
                         />
                         <div>
                             <label htmlFor={eventSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.event')}</label>
-                            <select
+                            <Select
                                 id={eventSelectId}
                                 value={form.github_event_type}
                                 onChange={event => updateField('github_event_type', event.target.value as GitHubAutomationEventType)}
@@ -410,12 +411,12 @@ export const GitHubSettingsPanel = () => {
                                 {eventOptions.map(option => (
                                     <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                                 ))}
-                            </select>
+                            </Select>
                         </div>
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label htmlFor={fromStatusSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.fromStatus')}</label>
-                                <select
+                                <Select
                                     id={fromStatusSelectId}
                                     value={form.from_status || ''}
                                     onChange={event => updateField('from_status', (event.target.value || null) as TaskStatus | null)}
@@ -425,11 +426,11 @@ export const GitHubSettingsPanel = () => {
                                     {statusOptions.map(status => (
                                         <option key={status} value={status}>{statusLabel(status)}</option>
                                     ))}
-                                </select>
+                                </Select>
                             </div>
                             <div>
                                 <label htmlFor={targetStatusSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.targetStatus')}</label>
-                                <select
+                                <Select
                                     id={targetStatusSelectId}
                                     value={form.target_status}
                                     onChange={event => updateField('target_status', event.target.value as GitHubAutomationTargetStatus)}
@@ -438,7 +439,7 @@ export const GitHubSettingsPanel = () => {
                                     {targetStatusOptions.map(status => (
                                         <option key={status} value={status}>{statusLabel(status)}</option>
                                     ))}
-                                </select>
+                                </Select>
                             </div>
                         </div>
                         <Input

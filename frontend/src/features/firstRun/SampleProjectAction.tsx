@@ -1,8 +1,9 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/common/Button';
+import { ButtonLink } from '../../components/common/ButtonLink';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { useIdentity } from '../identity/identityContext';
@@ -113,7 +114,7 @@ export const SampleProjectAction = () => {
                 <p role="status" className="text-sm">{t(busy ? 'firstRun.sample.working' : own?.complete ? 'firstRun.sample.loaded' : 'firstRun.sample.partial')}</p>
                 <details open={!own?.complete}><summary className="cursor-pointer text-sm">{t('firstRun.sample.exists', { count: records.length })}</summary>{inventory}</details>
                 <div className="flex flex-wrap gap-2">
-                    {own?.complete && project && iteration && <Link className="btn secondary" to={`/plan?project=${project.id}&iteration=${iteration.id}`}>{t('firstRun.openPlan')}</Link>}
+                    {own?.complete && project && iteration && <ButtonLink variant="secondary" to={`/plan?project=${project.id}&iteration=${iteration.id}`}>{t('firstRun.openPlan')}</ButtonLink>}
                     <Button variant="secondary" disabled={busy} onClick={() => setConfirming(true)}>{t('firstRun.sample.remove')}</Button>
                 </div>
             </>}
