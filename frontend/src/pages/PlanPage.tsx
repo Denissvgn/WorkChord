@@ -387,7 +387,7 @@ const PlanCheckpoints = () => {
     const noIteration = queryStates.iterations.hasData && !hasCurrentIteration;
     const setupFirst = noIteration && setupProgress.known && (setupProgress.nextId === 'profile' || setupProgress.nextId === 'project');
     const iterationIsNext = noIteration && setupProgress.known && setupProgress.nextId === 'iteration';
-    const done = sections ? checkpointsDone(sections) : null;
+    const done = sections && hasCurrentIteration ? checkpointsDone(sections) : null;
     const header = (
         <PageHeader
             title={t('plan.title')}

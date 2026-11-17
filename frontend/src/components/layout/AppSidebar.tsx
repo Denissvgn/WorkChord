@@ -69,6 +69,9 @@ const SidebarDestination = ({
     const Icon = destination.icon;
     const counter = formatDestinationCounter(destination, counterValues);
     const source = getCounterSource(destination);
+    const progress = counterValues.planProgress;
+    const planComplete = source === 'planProgress' && progress !== undefined
+        && progress.total > 0 && progress.done >= progress.total;
     const counterDescription = counter === null
         ? undefined
         : source === 'requestsWaiting'
@@ -92,7 +95,7 @@ const SidebarDestination = ({
             <span className="sb-label">{label}</span>
             {counter !== null && (
                 <>
-                    <span className="sb-count" aria-hidden="true">{counter}</span>
+                    <span className="sb-count" data-complete={planComplete ? 'true' : undefined} aria-hidden="true">{counter}</span>
                     <span id={counterDescriptionId} className="sr-only">{counterDescription}</span>
                 </>
             )}

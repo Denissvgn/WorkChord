@@ -100,7 +100,7 @@ describe('AppSidebar', () => {
     describe('counters', () => {
         const planLink = () => screen.getByRole('link', { name: 'Plan' });
 
-        it('shows plan progress only as the counter on the Plan item, and only while the plan is below 6 of 6', () => {
+        it('shows plan progress only as the counter on the Plan item, including a complete plan at 6/6', () => {
             planningSummaryMock.usePlanningNavigationSummary.mockReturnValue(planSummary({
                 ready: { done: 4, total: 6, pct: 67 },
             }));
@@ -118,8 +118,9 @@ describe('AppSidebar', () => {
             }));
             renderWithProviders(<AppSidebar />, { initialEntries: ['/plan'] });
 
-            expect(planLink()).toHaveTextContent(/^Plan$/);
-            expect(screen.queryByText(/\d\/6/)).not.toBeInTheDocument();
+            expect(planLink()).toHaveTextContent('6/6');
+            expect(planLink()).toHaveAccessibleDescription('6 of 6 plan steps complete');
+            expect(screen.getByText('6/6')).toHaveAttribute('data-complete', 'true');
         });
 
         it('shows no plan counter while progress is loading or unavailable', () => {

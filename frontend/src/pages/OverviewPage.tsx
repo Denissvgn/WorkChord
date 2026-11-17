@@ -249,8 +249,9 @@ const OverviewPage = () => {
         }
         if (hasResult(readinessState)) {
             viewIterations.forEach((item, index) => {
-                const { ready, nextId } = planProgress(item, iterations.length, readinessQueries[index]?.data);
-                if (ready.done < ready.total) {
+                const progress = planProgress(item, readinessQueries[index]?.data);
+                if (progress && progress.ready.done < progress.ready.total) {
+                    const { ready, nextId } = progress;
                     candidates.push({ kind: 'plan', count: ready.total - ready.done, iteration: item, plan: { ...ready, nextId } });
                 }
             });

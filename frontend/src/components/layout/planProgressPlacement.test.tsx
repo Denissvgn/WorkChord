@@ -188,15 +188,16 @@ describe('plan progress placement', () => {
         expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     });
 
-    it('shows no counter at 6 of 6, leaving the single "6 of 6" on the Plan page', () => {
+    it('shows 6/6 on the Plan item for a complete plan, and "6 of 6" once on the Plan page', () => {
         const state = planningState({ hasGanttSchedule: true, riskCount: 0 });
         expect(state.ready.done).toBe(6);
         useState(state);
         renderWithProviders(<Shell><PlanPage /></Shell>, { initialEntries: ['/plan'] });
 
         const nav = screen.getByRole('navigation', { name: 'Primary navigation' });
-        expect(within(nav).getByRole('link', { name: 'Plan' })).toHaveTextContent(/^Plan$/);
-        expect(progressTexts()).toHaveLength(1);
-        expect(progressTexts()[0]).toHaveTextContent('6 of 6');
+        expect(within(nav).getByRole('link', { name: 'Plan' })).toHaveTextContent('6/6');
+        const outsideNav = progressTexts().filter(el => !el.closest('nav'));
+        expect(outsideNav).toHaveLength(1);
+        expect(outsideNav[0]).toHaveTextContent('6 of 6');
     });
 });

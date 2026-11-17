@@ -38,7 +38,12 @@ const readinessResponse = {
     team_agent_count: 0,
     has_schedule: false,
     risk_count: 0,
-    checkpoints: [],
+    checkpoints: ['iteration', 'team', 'work', 'blockers', 'schedule', 'review'].map((id, index) => ({
+        id,
+        state: index < 2 ? 'done' : 'todo',
+        reason_codes: [],
+        counts: {},
+    })),
 };
 
 const planLink = () => within(screen.getByRole('navigation', { name: 'Primary navigation' }))
@@ -75,6 +80,26 @@ describe('Plan counter with the real planning summary', () => {
 
         resolveReadiness(readinessResponse);
         await within(planLink()).findByText(/^\d\/6$/);
+    });
+
+    it('shows no counter for a partial readiness response, and 6/6 for a complete plan', async () => {
+        useIterationStore.setState({ selectedIterationId: iteration.id });
+        services.getPlanningReadiness.mockResolvedValue({
+            ...readinessResponse,
+            checkpoints: readinessResponse.checkpoints.slice(0, 3),
+        });
+        const { unmount } = renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
+        await vi.waitFor(() => expect(services.getPlanningReadiness).toHaveBeenCalled());
+        await new Promise(resolve => setTimeout(resolve, 20));
+        expect(planLink()).toHaveTextContent(/^Plan$/);
+        unmount();
+
+        services.getPlanningReadiness.mockResolvedValue({
+            ...readinessResponse,
+            checkpoints: readinessResponse.checkpoints.map(item => ({ ...item, state: 'done' })),
+        });
+        renderWithProviders(<AppSidebar />, { initialEntries: ['/settings'] });
+        await within(planLink()).findByText('6/6');
     });
 
     it('shows no counter when the readiness request fails', async () => {

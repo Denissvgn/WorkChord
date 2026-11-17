@@ -37,7 +37,7 @@ type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
  * Where a sidebar counter takes its number from.
  * - `none`: the destination shows no counter.
  * - `requestsWaiting`: the number of active Triage requests.
- * - `planProgress`: complete Plan checkpoints out of six, shown only while the plan is incomplete.
+ * - `planProgress`: complete Plan checkpoints out of six, always shown once the server's checkpoint count is known, including a complete plan.
  */
 type DestinationCounterSource = 'none' | 'requestsWaiting' | 'planProgress';
 
@@ -232,7 +232,7 @@ export const formatDestinationCounter = (
     }
     if (source === 'planProgress') {
         const progress = values.planProgress;
-        if (!progress || progress.total <= 0 || progress.done >= progress.total) return null;
+        if (!progress || progress.total <= 0) return null;
         return `${Math.max(0, progress.done)}/${progress.total}`;
     }
     return null;
