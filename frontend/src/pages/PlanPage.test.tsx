@@ -229,6 +229,27 @@ describe('Plan is one page of six checkpoints', () => {
             .toHaveAttribute('href', '/tasks?planningIssue=at-risk&fromPlanStep=review&project=1&iteration=1');
     });
 
+    it('names the reason beside each at-risk task in Review', async () => {
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
+            scheduledTask({ is_delayed: true }),
+            scheduledTask({ id: 12, title: 'Ship notes', is_overdue: true, is_outside_constraints: true }),
+        ], holidays: [], weekends: [] });
+        services.iterations.getPlanningReadiness.mockResolvedValue(summary(
+            FIXTURES.sixOfSix.checkpoints!.map(item => (item.id === 'review'
+                ? checkpoint('review', 'warn', ['risks_to_acknowledge'], { risks: 2 })
+                : item)),
+            { team_member_count: 2, task_count: 4, has_schedule: true, risk_count: 2 },
+        ));
+        renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
+
+        const list = await within(section('review')).findByRole('region', { name: 'Tasks at risk' });
+        const first = within(list).getByRole('link', { name: 'Prepare release' }).closest('li')!;
+        expect(first).toHaveTextContent('Starts before today');
+        const second = within(list).getByRole('link', { name: 'Ship notes' }).closest('li')!;
+        expect(second).toHaveTextContent('Past its end date; Outside its date limits');
+    });
+
     it('re-reads readiness on return and opens the next checkpoint once the returned one is done', async () => {
         services.iterations.getPlanningReadiness.mockResolvedValueOnce(FIXTURES.empty).mockResolvedValue(FIXTURES.twoOfSix);
         renderPlan('/plan?step=work&returned=1&project=1&iteration=1');
@@ -706,6 +727,20 @@ describe('schedule and review inside Plan', () => {
         expect(await screen.findByText(message)).toBeVisible();
         expect(screen.getByRole('link', { name: 'Prepare release' })).toHaveAttribute('href', '/tasks?task=11&fromPlanStep=schedule&project=1&iteration=1');
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
+    it('says every task has dates after Apply schedule when the saved result lists no unscheduled tasks', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [] };
+        let applied = false;
+        services.gantt.schedule.mockImplementation(async () => { applied = true; return result; });
+        services.gantt.getChart.mockImplementation(async () => ({ iteration: { ...ITERATION, revision: 7 }, tasks: applied ? [scheduledTask()] : [], schedule_result: applied ? saved : null }));
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
+        expect(await screen.findByText('Schedule applied.')).toBeVisible();
+        expect(await screen.findByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
     it('does not mark Schedule Done from a successful apply when readiness still says it is incomplete', async () => {

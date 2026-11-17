@@ -58,6 +58,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
     const ends = scheduleLeaves(tasks).flatMap(task => task.end_date ? [task.end_date] : []);
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
+    const everyTaskDated = scheduleLeaves(tasks).every(task => task.status !== 'planned' || Boolean(task.start_date && task.end_date));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -94,7 +95,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
                 {result?.unscheduled?.length ? <ul className="plan-schedule-reasons">{result.unscheduled.map(task => <li key={task.task_id}>
                     <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(task.task_id) }))}>{task.task_title}</Link>
                     <p>{task.message}</p>
-                </li>)}</ul> : <p className="text-sm text-content-secondary">{t(result?.unscheduled ? 'planSchedule.allDated' : 'planSchedule.calculateForReasons')}</p>}
+                </li>)}</ul> : <p className="text-sm text-content-secondary">{t(result?.unscheduled || everyTaskDated ? 'planSchedule.allDated' : 'planSchedule.calculateForReasons')}</p>}
             </section>
         </>}
     </div>;

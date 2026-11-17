@@ -672,7 +672,7 @@ export const IterationForm = (props: IterationFormProps) => {
     ].join(':');
 
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
-    return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id}>
+    return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id} draft={props.initialData}>
         {(observed, controls) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} />}
     </PlanningInputBoundary>;
 };

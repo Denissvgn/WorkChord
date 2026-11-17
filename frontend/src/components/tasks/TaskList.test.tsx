@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import type { Task } from '../../types/task';
 import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
@@ -560,6 +561,16 @@ describe('TaskList empty states', () => {
         expect(onClearFilters).toHaveBeenCalledTimes(1);
         expect(screen.queryByRole('button', { name: /new task/i })).not.toBeInTheDocument();
         expect(onCreateTask).not.toHaveBeenCalled();
+    });
+
+    it('shows why each task is at risk when opened from the at-risk signals', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), is_delayed: true, iteration_revision: 1 },
+            { ...task(2), is_overdue: true, iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Starts before today')).toBeInTheDocument();
+        expect(screen.getByText('Past its end date')).toBeInTheDocument();
     });
 
     it('offers the one next step when the iteration has no tasks yet', async () => {

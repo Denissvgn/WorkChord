@@ -79,6 +79,22 @@ describe('IterationForm hardening', () => {
         ));
     });
 
+    it('shows no conflict prompt when the server copy matches the opened iteration', async () => {
+        renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByDisplayValue('August plan');
+        expect(screen.queryByRole('button', { name: 'Load latest version' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Keep draft with current version' })).not.toBeInTheDocument();
+        expect(screen.queryByText('Current server values')).not.toBeInTheDocument();
+    });
+
+    it('names the fields that changed on the server when it differs from the opened iteration', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ end_date: '2026-08-21', name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByText(/This was changed on the server after you opened it: Name, End\./)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Load latest version' })).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Keep draft with current version' })).toBeVisible();
+    });
+
     it('keeps the calendar under More: the default is not sent, a chosen one is', async () => {
         const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
         expect(screen.queryByLabelText('Calendar')).not.toBeInTheDocument();

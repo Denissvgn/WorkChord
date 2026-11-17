@@ -1,4 +1,5 @@
 import { isGraphLimitError } from '../../utils/graphLimitError';
+import { atRiskReasons } from '../../features/planningMasters/atRiskReasons';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
 import { statusTextClassName } from '../ui/tone';
 import { LabelChip } from '../labels/LabelChip';
@@ -409,6 +410,7 @@ export const TaskList = ({
         agentFacts,
         onAssign: (task: Task, assigneeId: number | null) => rowEdits.assign(task, assigneeId),
         onStatusChange: (task: Task, status: TaskStatus) => rowEdits.changeStatus(task, status),
+        showRiskReasons: filters?.planningIssue === 'at-risk',
     };
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
@@ -620,6 +622,8 @@ interface RowContext {
     agentFacts: AgentRowFacts;
     onAssign: (task: Task, assigneeId: number | null) => void;
     onStatusChange: (task: Task, status: TaskStatus) => void;
+    /** Names why each task is at risk, when the list was opened from Plan's at-risk signals. */
+    showRiskReasons: boolean;
 }
 
 interface TaskItemProps {
@@ -734,6 +738,7 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
                 selected={ctx.selectedIds.has(task.id)}
                 onToggleSelect={isSelectable ? ({ shiftKey }) => ctx.onToggleSelect(task.id, shiftKey) : undefined}
                 selectDisabledReason={isSelectable ? undefined : t('taskList.selectParentUnavailable')}
+                meta={ctx.showRiskReasons ? atRiskReasons(task, t).join('; ') || undefined : undefined}
                 overdue={task.is_overdue}
                 deferred={task.is_deferred}
                 menuItems={[

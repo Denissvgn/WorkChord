@@ -11,6 +11,8 @@ export const planScheduleEnglish = {
     calculateForReasons: 'Calculate the schedule to see why tasks have no dates.',
     risks: 'Schedule risks', afterEnd: 'End after the iteration ({{date}})', overCapacity: 'Over capacity',
     noneOverCapacity: 'No assignee is over capacity.', capacityIssues: 'Capacity needs attention',
+    riskOverdue: 'Past its end date', riskStartsBeforeToday: 'Starts before today', riskOutsideLimits: 'Outside its date limits',
+    atRiskTasks: 'Tasks at risk',
 };
 
 export const planScheduleRussian = {
@@ -26,4 +28,6 @@ export const planScheduleRussian = {
     calculateForReasons: 'Рассчитайте расписание, чтобы увидеть причины отсутствия дат.',
     risks: 'Риски расписания', afterEnd: 'Окончание после итерации ({{date}})', overCapacity: 'Превышение мощности',
     noneOverCapacity: 'Ни у кого из исполнителей нет превышения мощности.', capacityIssues: 'Мощность требует внимания',
+    riskOverdue: 'Срок прошёл', riskStartsBeforeToday: 'Начало раньше сегодняшнего дня', riskOutsideLimits: 'Вне ограничений по датам',
+    atRiskTasks: 'Задачи под риском',
 };
