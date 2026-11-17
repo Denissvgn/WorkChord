@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../test/renderWithProviders';
 import SettingsPage from './SettingsPage';
 import { CommandMenu } from '../components/layout/CommandMenu';
+import i18n, { ensureLanguageResources } from '../i18n/i18n';
 import { SINGLE_KEY_SHORTCUTS_STORAGE_KEY } from '../utils/singleKeyShortcutPreference';
 
 const themeStoreMock = vi.hoisted(() => ({
@@ -238,6 +239,28 @@ describe('SettingsPage', () => {
         const groupRegion = within(navigation).getByRole('region', { name: group });
         expect(within(groupRegion).getByRole('link', { name: section })).toBeVisible();
         expect(within(navigation).queryByText('No settings match this search.')).not.toBeInTheDocument();
+    });
+
+    it.each([
+        ['en', 'Divisor', 'Scheduling', 'Workspace'],
+        ['en', 'Multiplier', 'Scheduling', 'Workspace'],
+        ['en', 'Filter conditions', 'Scheduling', 'Workspace'],
+        ['en', 'Sort criteria', 'Scheduling', 'Workspace'],
+        ['ru', 'Делитель', 'Планирование', 'Рабочее пространство'],
+        ['ru', 'Множитель', 'Планирование', 'Рабочее пространство'],
+        ['ru', 'Условия фильтра', 'Планирование', 'Рабочее пространство'],
+        ['ru', 'Критерии сортировки', 'Планирование', 'Рабочее пространство'],
+    ])('finds Scheduling by %s label %s', async (language, field, section, group) => {
+        await ensureLanguageResources(language);
+        await i18n.changeLanguage(language);
+        try {
+            const { user } = renderSettings('/settings?tab=theme');
+            const navigation = screen.getByRole('navigation');
+            await user.type(within(navigation).getByRole('searchbox'), field);
+            expect(within(within(navigation).getByRole('region', { name: group })).getByRole('link', { name: section })).toBeVisible();
+        } finally {
+            await i18n.changeLanguage('en');
+        }
     });
 
     it('gives the theme radiogroup complete keyboard behavior', async () => {
