@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode, type RefObject } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Bot, User } from 'lucide-react';
@@ -43,8 +43,17 @@ const refusedStatus = (error: unknown) => {
 
 export type DrawerTarget = { mode: 'add' } | { mode: 'edit'; key: string } | null;
 
-/** Everyone who can do work in one table; a row opens the drawer for that person or agent. */
-export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget; onDrawerChange: (target: DrawerTarget) => void }) => {
+/**
+ * Everyone who can do work in one table; a row opens the drawer for that person or agent.
+ * `onEmptyChange` reports when the empty state, with its own Add person button, is shown.
+ */
+export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange, drawerFallbackFocusRef }: {
+    drawer: DrawerTarget;
+    onDrawerChange: (target: DrawerTarget) => void;
+    onEmptyChange?: (empty: boolean) => void;
+    /** Where focus goes when the drawer closes and the control that opened it is gone. */
+    drawerFallbackFocusRef?: RefObject<HTMLElement | null>;
+}) => {
     const { t } = useTranslation();
     const { hasAdminAccess } = useAdminAccess();
     const { hasAgentKey } = useAgentAccess();
@@ -79,6 +88,11 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
     );
     const drawerRow = drawer?.mode === 'edit' ? rows.find(row => row.key === drawer.key) ?? null : null;
     const hasAgents = rows.some(row => row.kind === 'agent');
+    const isEmpty = profilesQuery.isSuccess && rows.length === 0;
+    useEffect(() => {
+        onEmptyChange?.(isEmpty);
+        return () => onEmptyChange?.(false);
+    }, [isEmpty, onEmptyChange]);
 
     if (profilesQuery.isLoading) return <QueryLoadingState />;
     if (profilesQuery.isError) return <QueryErrorState error={profilesQuery.error} onRetry={() => void profilesQuery.refetch()} />;
@@ -202,6 +216,7 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
                     row={drawerRow}
                     onClose={() => onDrawerChange(null)}
                     onCreated={id => onDrawerChange({ mode: 'edit', key: `profile-${id}` })}
+                    fallbackFocusRef={drawerFallbackFocusRef}
                 />
             )}
         </div>

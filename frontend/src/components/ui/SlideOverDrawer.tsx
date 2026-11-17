@@ -19,6 +19,7 @@ export const SlideOverDrawer = ({
     className,
     initialFocusRef,
     restoreFocusRef,
+    fallbackFocusRef,
     closeOnBackdropClick = true,
     closeDisabled = false,
     closeLabel: closeLabelProp,
@@ -36,6 +37,8 @@ export const SlideOverDrawer = ({
     className?: string;
     initialFocusRef?: RefObject<HTMLElement | null>;
     restoreFocusRef?: RefObject<HTMLElement | null>;
+    /** Where focus goes on close when the control that opened the drawer is gone. */
+    fallbackFocusRef?: RefObject<HTMLElement | null>;
     closeOnBackdropClick?: boolean;
     closeDisabled?: boolean;
     closeLabel?: string;
@@ -48,6 +51,7 @@ export const SlideOverDrawer = ({
         onClose,
         initialFocusRef,
         restoreFocusRef,
+        fallbackFocusRef,
         closeDisabled,
     });
 

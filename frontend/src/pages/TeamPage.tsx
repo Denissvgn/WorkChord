@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,10 @@ const TeamPage = () => {
     const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
     const [drawer, setDrawer] = useState<DrawerTarget>(null);
+    // An empty members list offers Add person itself, so the header does not repeat it.
+    const [membersEmpty, setMembersEmpty] = useState(false);
+    // That header button can disappear while the drawer it opened is still open, so the drawer falls back to Members.
+    const membersTabRef = useRef<HTMLAnchorElement>(null);
     const activeTab = parseTab(searchParams.get('tab'));
 
     const tabParams = (tab: TeamTab) => {
@@ -36,7 +40,7 @@ const TeamPage = () => {
             <PageHeader
                 title={t('teamPage.title')}
                 purpose={t('teamPage.purpose')}
-                primaryAction={activeTab !== 'connect' && (
+                primaryAction={activeTab !== 'connect' && !(activeTab === 'members' && membersEmpty) && (
                     <Button type="button" onClick={() => { openTab('members'); setDrawer({ mode: 'add' }); }}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('teamPage.addPerson')}
@@ -67,6 +71,7 @@ const TeamPage = () => {
                 {TEAM_TABS.map(tab => (
                     <Link
                         key={tab}
+                        ref={tab === 'members' ? membersTabRef : undefined}
                         id={`team-tab-${tab}`}
                         role="tab"
                         aria-selected={activeTab === tab}
@@ -87,7 +92,7 @@ const TeamPage = () => {
                 {activeTab === 'members' && (
                     <>
                         <p className="text-sm text-content-secondary">{t('teamPage.capacityNote')}</p>
-                        <TeamDirectory drawer={drawer} onDrawerChange={setDrawer} />
+                        <TeamDirectory drawer={drawer} onDrawerChange={setDrawer} onEmptyChange={setMembersEmpty} drawerFallbackFocusRef={membersTabRef} />
                     </>
                 )}
                 {activeTab === 'models' && (

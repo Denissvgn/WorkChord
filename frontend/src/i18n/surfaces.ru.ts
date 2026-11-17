@@ -312,6 +312,7 @@ export const surfacesRussian = {
         postFirstUpdate: "Опубликовать первое обновление",
         noMilestonesYet: "Вех пока нет.",
         targetDateRisk: "Риск целевой даты",
+        factsLabel: "Сведения о проекте",
         projectStatuses: {
             proposed: "Предложено",
             planned: "Запланировано",
@@ -537,6 +538,7 @@ export const surfacesRussian = {
         attachOrDetach: "Привязать или отвязать",
         markShipped: "Отметить выпущенным",
         releaseMetadata: "Метаданные релиза",
+        factsLabel: "Сведения о релизе",
         noTasksLinkedToThisRelease: "К этому релизу не привязаны задачи.",
         loadingRelease: "Загрузка релиза…",
         releaseNotFound: "Релиз не найден",

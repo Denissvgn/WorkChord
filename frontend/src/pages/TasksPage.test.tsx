@@ -172,6 +172,30 @@ describe('TasksPage', () => {
         expect(screen.getByTestId('location-search')).toHaveTextContent('?fromPlanStep=work');
     });
 
+    it('returns focus to New task when its drawer closes with Escape', async () => {
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks'] });
+
+        // The loading header shows a disabled copy of the action first.
+        await waitFor(() => expect(screen.getByRole('button', { name: 'New task' })).toBeEnabled());
+        screen.getByRole('button', { name: 'New task' }).focus();
+        await user.keyboard('{Enter}');
+        expect(await screen.findByRole('dialog', { name: 'Create new task' })).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('button', { name: 'New task' })).toHaveFocus();
+    });
+
+    it('moves focus to New task when a drawer opened from another page closes', async () => {
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?create=1'] });
+
+        expect(await screen.findByRole('dialog', { name: 'Create new task' })).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('button', { name: 'New task' })).toHaveFocus();
+    });
+
     it('applies a URL-selected saved view: its name is the title and its filters move into the URL', async () => {
         savedViewServiceMock.getAll.mockResolvedValue([{
             id: 12,

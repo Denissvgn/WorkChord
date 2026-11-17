@@ -85,7 +85,9 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                 ))}
             </div>
             <details>
-                <summary className="cursor-pointer text-sm font-medium text-action">{t('analytics.showTable')}</summary>
+                <summary className="cursor-pointer text-sm font-medium text-action">
+                    {t('analytics.showTable')}<span className="sr-only">: {t('analytics.onTrack.title')}</span>
+                </summary>
                 <table className="mt-2 w-full max-w-md text-left text-sm">
                     <caption className="sr-only">{t('analytics.onTrack.title')}</caption>
                     <tbody>
