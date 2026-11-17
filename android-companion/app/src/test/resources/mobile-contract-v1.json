@@ -873,6 +873,90 @@
           "title": "MessageResponse",
           "type": "object"
         },
+        "MetricMatchItem": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "iteration_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Name"
+            },
+            "project_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Name"
+            },
+            "status": {
+              "title": "Status",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "status",
+            "project_name",
+            "iteration_name"
+          ],
+          "title": "MetricMatchItem",
+          "type": "object"
+        },
+        "MetricMatchPage": {
+          "properties": {
+            "has_more": {
+              "title": "Has More",
+              "type": "boolean"
+            },
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/MetricMatchItem"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "metric": {
+              "title": "Metric",
+              "type": "string"
+            },
+            "next_after_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next After Id"
+            }
+          },
+          "required": [
+            "metric",
+            "items",
+            "has_more"
+          ],
+          "title": "MetricMatchPage",
+          "type": "object"
+        },
         "NativeApprovalResponse": {
           "properties": {
             "approved": {
@@ -6726,6 +6810,130 @@
             }
           },
           "summary": "Lookup Tasks",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/metric-matches": {
+        "get": {
+          "description": "The tasks behind one work-metric count, chosen by the predicate that counts them.",
+          "operationId": "metric_matches_api_tasks_metric_matches_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "metric",
+              "required": true,
+              "schema": {
+                "maxLength": 40,
+                "title": "Metric",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "release_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Release Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 200,
+                "maximum": 500,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "after_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "After Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MetricMatchPage"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Metric Matches",
           "tags": [
             "Task domain"
           ]

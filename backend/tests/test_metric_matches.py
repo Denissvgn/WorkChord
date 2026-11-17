@@ -33,3 +33,31 @@ async def test_metric_matches_route_scopes_and_rejects_unknown_metrics(delivery_
         assert {"id", "title", "status", "project_name", "iteration_name"} <= set(listed.json()["items"][0])
         assert (await browser.get("/api/tasks/metric-matches", params={"metric": "everything", "project_id": scenario.projects[0]})).status_code == 422
         assert (await browser.get("/api/tasks/metric-matches", params={"metric": "total"})).status_code == 422
+
+
+async def test_metric_matches_pages_return_every_task_once(delivery_store):
+    from app.models.task import Task
+
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        db.add_all([Task(title=f"Matching {i}", project_id=scenario.projects[0]) for i in range(225)])
+        await db.commit()
+        counts = await aggregate_metrics(db, project_id=scenario.projects[0])
+    async with client() as browser:
+        params = {"metric": "total", "project_id": scenario.projects[0]}
+        legacy = (await browser.get("/api/tasks/metric-matches", params=params)).json()
+        assert len(legacy["items"]) == 200 and "next_after_id" not in legacy
+        ids = []
+        cursor = 0
+        while True:
+            response = await browser.get("/api/tasks/metric-matches", params={**params, "limit": 73, "after_id": cursor})
+            assert response.status_code == 200, response.text
+            page = response.json()
+            ids.extend(item["id"] for item in page["items"])
+            if not page["has_more"]:
+                assert page["next_after_id"] is None
+                break
+            assert page["next_after_id"] > cursor
+            cursor = page["next_after_id"]
+        assert len(ids) == counts["total_tasks"] > 200
+        assert ids == sorted(set(ids))
