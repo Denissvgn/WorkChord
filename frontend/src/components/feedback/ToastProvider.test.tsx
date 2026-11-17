@@ -3,9 +3,10 @@ import { act, render, screen } from '@testing-library/react';
 import { ToastProvider } from './ToastProvider';
 import { useToast } from './toast';
 
+import { Button } from '../../components/common/Button';
 const Trigger = ({ kind }: { kind: 'success' | 'error' }) => {
     const toast = useToast();
-    return <button type="button" onClick={() => toast[kind](kind === 'error' ? 'The project could not be saved.' : 'Project saved.')}>show</button>;
+    return <Button type="button" onClick={() => toast[kind](kind === 'error' ? 'The project could not be saved.' : 'Project saved.')} variant="secondary">show</Button>;
 };
 
 describe('one feedback rule for toasts', () => {

@@ -1,3 +1,4 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { useState } from 'react';
 import {
     Bot,
@@ -8,7 +9,6 @@ import {
     UserRoundCheck,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import { Button } from '../common/Button';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
@@ -63,14 +63,14 @@ export const TaskWorkflowHelpContent = ({
                 </div>
             </section>
             {showAction && (
-                <Link
+                <ButtonLink
                     to={scopeLink('/plan')}
-                    className="btn secondary sm"
+
                     onClick={onNavigate}
-                >
+                 variant="secondary" size="sm">
                     {t('tasks.guide.openPlanWork')}
                     <ChevronRight aria-hidden="true" className="h-3.5 w-3.5" />
-                </Link>
+                </ButtonLink>
             )}
         </div>
     );

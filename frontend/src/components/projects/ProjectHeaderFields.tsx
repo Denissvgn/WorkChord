@@ -14,6 +14,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { PlanningInputBoundary } from '../planning/PlanningInputBoundary';
 import { healthLabelKeys, projectStatusLabelKeys } from './projectDetailShared';
 
+import { Select } from '../../components/common/Select';
 type Field = 'status' | 'health' | 'dates' | 'owner';
 const inputClass = 'rounded-md border border-border-strong bg-surface-card px-2 py-1.5 text-sm text-content-primary';
 
@@ -48,16 +49,16 @@ const HeaderFieldEditor = ({ field, observed, controls, onClose }: {
                 <input type="date" className={inputClass} value={draft[key] ?? ''} onChange={event => setDraft({ ...draft, [key]: event.target.value || null })} />
             </label>)}</> : field === 'owner' ? <label className="flex flex-col gap-1 text-sm">
                 {t('surfaces.projectForm.owner')}
-                <select className={inputClass} value={draft.owner_profile_id ?? ''} onChange={event => setDraft({ owner_id: null, owner_profile_id: event.target.value ? Number(event.target.value) : null })} disabled={owners.isLoading || owners.isError}>
+                <Select className={inputClass} value={draft.owner_profile_id ?? ''} onChange={event => setDraft({ owner_id: null, owner_profile_id: event.target.value ? Number(event.target.value) : null })} disabled={owners.isLoading || owners.isError}>
                     <option value="">{t('surfaces.projectForm.unassigned')}</option>
                     {project.owner_profile && !owners.data?.some(owner => owner.id === project.owner_profile_id) && <option value={project.owner_profile.id}>{formatTeamMemberProfileLabel(project.owner_profile)}</option>}
                     {owners.data?.map(owner => <option key={owner.id} value={owner.id}>{formatTeamMemberProfileLabel(owner)}</option>)}
-                </select>
+                </Select>
             </label> : <label className="flex flex-col gap-1 text-sm">
                 {t(`surfaces.projectForm.${field}`)}
-                <select className={inputClass} value={draft[field]} onChange={event => setDraft({ [field]: event.target.value })}>
+                <Select className={inputClass} value={draft[field]} onChange={event => setDraft({ [field]: event.target.value })}>
                     {Object.entries(field === 'status' ? projectStatusLabelKeys : healthLabelKeys).map(([value, label]) => <option key={value} value={value}>{t(label)}</option>)}
-                </select>
+                </Select>
             </label>}
             <Button type="submit" size="sm" variant="secondary" isLoading={save.isPending} disabled={field === 'owner' && (owners.isLoading || owners.isError)}>{t('actions.save')}</Button>
             <Button type="button" size="sm" variant="ghost" onClick={onClose}>{t('actions.cancel')}</Button>
@@ -83,9 +84,9 @@ export const ProjectHeaderFields = ({ project }: { project: Project }) => {
             <dt className="mb-1 text-xs font-medium text-content-secondary">{t(`projectTabs.${field}Label`)}</dt>
             <dd>{editing === field ? <PlanningInputBoundary<Project> kind="project" resourceId={project.id} onCancel={() => setEditing(null)}>
                 {(observed, controls) => <HeaderFieldEditor field={field} observed={observed} controls={controls} onClose={() => setEditing(null)} />}
-            </PlanningInputBoundary> : <button type="button" className="inline-flex items-center gap-2 rounded px-1 py-1 text-sm text-content-primary hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-action"
+            </PlanningInputBoundary> : <Button type="button" className="inline-flex items-center gap-2 rounded px-1 py-1 text-sm text-content-primary hover:bg-surface-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-action"
                 aria-label={t('projectTabs.editField', { field: t(`projectTabs.${field}Label`), value: values[field] })}
-                onClick={() => setEditing(field)}>{values[field]}<Pencil className="h-3 w-3 text-content-tertiary" aria-hidden="true" /></button>}</dd>
+                onClick={() => setEditing(field)} variant="secondary">{values[field]}<Pencil className="h-3 w-3 text-content-tertiary" aria-hidden="true" /></Button>}</dd>
         </div>)}
     </dl>;
 };

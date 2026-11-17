@@ -4,6 +4,8 @@ import { teamService } from '../../services/teamService';
 import type { TeamMember, TeamMemberProfile } from '../../types/team';
 import { QueryErrorState } from '../feedback/QueryState';
 
+import { Button } from '../../components/common/Button';
+import { Select } from '../../components/common/Select';
 export const AssigneePicker = ({ id, members, value, profile, disabled, allowAdd, onChange }: {
     id: string; members: TeamMember[]; value: number | null; profile: TeamMemberProfile | null;
     disabled: boolean; allowAdd: boolean;
@@ -21,7 +23,7 @@ export const AssigneePicker = ({ id, members, value, profile, disabled, allowAdd
     const outside = profiles.data?.filter(candidate => !members.some(member => member.profile_id === candidate.id)) ?? [];
     return <div className="field">
         <label htmlFor={id} className="field-lbl">{t('taskList.assignee')}</label>
-        <select id={id} className="input w-full" disabled={disabled} value={profile ? `profile:${profile.id}` : value ?? ''} onChange={event => {
+        <Select id={id} className="input w-full" disabled={disabled} value={profile ? `profile:${profile.id}` : value ?? ''} onChange={event => {
             const selected = event.target.value;
             if (selected.startsWith('profile:')) onChange(null, outside.find(candidate => candidate.id === Number(selected.slice(8))) ?? null);
             else onChange(selected ? Number(selected) : null, null);
@@ -33,10 +35,10 @@ export const AssigneePicker = ({ id, members, value, profile, disabled, allowAdd
             {outside.length > 0 && <optgroup label={t('assigneePicker.outside')}>
                 {outside.map(candidate => <option key={candidate.id} value={`profile:${candidate.id}`}>{candidate.display_name} · {t('assigneePicker.addAndAssign')}</option>)}
             </optgroup>}
-        </select>
+        </Select>
         {profiles.isLoading && <p role="status" className="mt-1 text-xs text-content-secondary">{t('common.loading')}</p>}
         {profiles.isError && <QueryErrorState error={profiles.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void profiles.refetch()} />}
-        {workloads.some(query => query.isError) && <button type="button" className="btn ghost sm" onClick={() => workloads.filter(query => query.isError).forEach(query => void query.refetch())}>{t('common.retry')}</button>}
+        {workloads.some(query => query.isError) && <Button type="button"  onClick={() => workloads.filter(query => query.isError).forEach(query => void query.refetch())} variant="ghost" size="sm">{t('common.retry')}</Button>}
         {profile && <p className="mt-2 text-xs text-content-secondary">{t('assigneePicker.confirmHint', { name: profile.display_name, overhead: profile.profile_kind === 'agent' ? 0 : 20 })}</p>}
     </div>;
 };

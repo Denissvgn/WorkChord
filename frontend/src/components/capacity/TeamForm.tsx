@@ -16,6 +16,7 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 /** Default overhead (meetings, support) taken out of a capacity row's hours. */
 const PERSON_OVERHEAD = 20;
 const AGENT_OVERHEAD = 0;
@@ -229,7 +230,7 @@ const TeamFormEditor = ({
                         >
                             {t('teamCapacity.globalProfile')}
                         </label>
-                        <select
+                        <Select
                             id={profileSelectId}
                             aria-describedby={profileHelpId}
                             value={formData.profile_id ?? ''}
@@ -244,7 +245,7 @@ const TeamFormEditor = ({
                                     {profile.headline ? ` - ${profile.headline}` : ''}
                                 </option>
                             ))}
-                        </select>
+                        </Select>
                         <p id={profileHelpId} className="mt-1 text-xs text-content-secondary">
                             {t('teamCapacity.profileHelp')}
                         </p>

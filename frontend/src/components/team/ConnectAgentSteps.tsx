@@ -195,11 +195,11 @@ export const ConnectAgentSteps = () => {
                 {available && !advanced && <>
                     <ol aria-label={t(`${P}.stepsLabel`)} className="grid grid-cols-5 border-b border-border">
                         {CONNECT_STEPS.map((id, index) => <li key={id}>
-                            <button type="button" aria-current={step === index ? 'step' : undefined}
+                            <Button type="button" aria-current={step === index ? 'step' : undefined}
                                 disabled={busy || locked || index > step} onClick={() => editStep(index)}
-                                className={`w-full border-b-2 px-3 py-3 text-left text-sm disabled:cursor-default ${step === index ? 'border-action font-semibold text-action' : 'border-transparent text-content-secondary'}`}>
+                                className={`w-full border-b-2 px-3 py-3 text-left text-sm disabled:cursor-default ${step === index ? 'border-action font-semibold text-action' : 'border-transparent text-content-secondary'}`} variant="secondary">
                                 {t(`${P}.stepHeading`, { number: index + 1, name: t(`${P}.steps.${id}`) })}
-                            </button>
+                            </Button>
                         </li>)}
                     </ol>
                     <section aria-labelledby="connect-step-title" aria-busy={busy} className="max-w-3xl space-y-5">

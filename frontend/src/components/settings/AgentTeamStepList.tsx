@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AGENT_TEAM_STEP_DEFINITIONS, stateTone } from '../../features/agentTeamSetup/masters';
 import type { AgentTeamStepId } from '../../features/agentTeamSetup/masters';
 import type { useAgentTeamReadiness } from '../../features/agentTeamSetup/useAgentTeamReadiness';
+import { Button } from '../../components/common/Button';
 type AgentTeamStepScope = 'authority' | 'topology' | 'runtime';
 const stepScope = (stepId: string): AgentTeamStepScope => {
     if (stepId === 'authority') return 'authority';
@@ -72,10 +73,10 @@ export const AgentTeamStepList = ({
                                         </span>
                                         <span>
                                             {onOpenSection && MANIFEST_STEPS.has(definition.id) ? (
-                                                <button type="button" className="step-title text-left underline decoration-dotted underline-offset-4 hover:text-action"
-                                                    onClick={() => onOpenSection(definition.id)} aria-label={t('agentTeamSetup.openSection', { step: t(definition.titleKey) })}>
+                                                <Button type="button" className="step-title text-left underline decoration-dotted underline-offset-4 hover:text-action"
+                                                    onClick={() => onOpenSection(definition.id)} aria-label={t('agentTeamSetup.openSection', { step: t(definition.titleKey) })} variant="secondary">
                                                     {t(definition.titleKey)}
-                                                </button>
+                                                </Button>
                                             ) : (
                                                 <span className="step-title">
                                                     {t(definition.titleKey)}

@@ -6,6 +6,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { teamService } from '../../services/teamService';
 import type { GanttTask } from '../../types/gantt';
 
+import { Select } from '../../components/common/Select';
 export interface GanttBarInputChanges {
     assignee: { id: number; name: string } | null;
     effort_hours: number | null;
@@ -80,10 +81,10 @@ export const GanttBarInputs = ({ task, iterationId, hoursPerDay, taskOptions, an
             {team.isError && <QueryErrorState error={team.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void team.refetch()} />}
             <label className="block">
                 <span className="field-lbl">{t('gantt.inputAssignee')}</span>
-                <select ref={firstFieldRef} className="input w-full" value={assigneeId} onChange={event => setAssigneeId(event.target.value)}>
+                <Select ref={firstFieldRef} className="input w-full" value={assigneeId} onChange={event => setAssigneeId(event.target.value)}>
                     <option value="">{t('common.unassigned')}</option>
                     {(team.data ?? []).map(member => <option key={member.id} value={member.id}>{member.name}</option>)}
-                </select>
+                </Select>
             </label>
             <label className="block">
                 <span className="field-lbl">{t('surfaces.taskForm.effortHours')}</span>
@@ -102,12 +103,12 @@ export const GanttBarInputs = ({ task, iterationId, hoursPerDay, taskOptions, an
             </div>
             <label className="block">
                 <span className="field-lbl">{t('gantt.inputWaitsFor')}</span>
-                <select multiple className="input h-24 w-full" value={waitsFor.map(String)}
+                <Select multiple className="input h-24 w-full" value={waitsFor.map(String)}
                     onChange={event => setWaitsFor(Array.from(event.target.selectedOptions, option => Number(option.value)))}>
                     {taskOptions.filter(option => option.id !== task.id).map(option => (
                         <option key={option.id} value={option.id}>#{option.id} · {option.title}</option>
                     ))}
-                </select>
+                </Select>
             </label>
             <div className="flex flex-wrap justify-end gap-2">
                 <Button type="button" variant="ghost" size="sm" onClick={onMoreFields}>{t('gantt.moreFields')}</Button>

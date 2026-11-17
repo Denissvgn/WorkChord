@@ -1,14 +1,15 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { TaskAssigneeDisplay } from '../tasks/TaskAssigneeDisplay';
+import { Select } from '../../components/common/Select';
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
 import { useState, useMemo, useRef, useEffect, useCallback, useId } from 'react';
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
 import { ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
-import { TaskEditModal } from './TaskEditModal';
+import { TaskEditDrawer } from './TaskEditDrawer';
 import clsx from 'clsx';
 import type { GanttTask } from '../../types/gantt';
 import { STATUS_TONE, toneSolidClassName } from '../ui/tone';
@@ -849,9 +850,9 @@ export const GanttChart = ({
                             : t('surfaces.ganttChart.unscheduledSummary', { count: unscheduledTaskCount })}
                     </span>
                     {unassignedTaskCount > 0 && (
-                        <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
+                        <ButtonLink  to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))} size="sm">
                             {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
-                        </Link>
+                        </ButtonLink>
                     )}
                 </div>
             )}
@@ -862,9 +863,9 @@ export const GanttChart = ({
                     <span className="min-w-0 flex-1">
                         {t('surfaces.ganttChart.provisionalSummary', { count: provisionalTaskCount })}
                     </span>
-                    <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
+                    <ButtonLink  to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))} size="sm">
                         {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
-                    </Link>
+                    </ButtonLink>
                 </div>
             )}
             <PageToolbar className="gantt-toolbar"
@@ -886,14 +887,14 @@ export const GanttChart = ({
                     if (id === 'dates') setHideUnscheduled(value === 'yes');
                 }} onClear={clearFilters} />}
                 viewOptions={<>
-                    <select data-page-chrome-control="select" value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
+                    <Select data-page-chrome-control="select" value={groupBy} onChange={event => chooseGroupBy(event.target.value as GanttGroupBy)}
                         aria-label={t('surfaces.ganttChart.groupBy')} className="input h-9 w-auto text-sm">
                         <option value="none">{t('surfaces.ganttChart.groupNone')}</option>
                         <option value="milestone">{t('surfaces.ganttChart.groupMilestone')}</option>
                         <option value="prefix">{t('surfaces.ganttChart.groupPrefix')}</option>
                         <option value="assignee">{t('surfaces.ganttChart.groupAssignee')}</option>
                         <option value="status">{t('surfaces.ganttChart.groupStatus')}</option>
-                    </select>
+                    </Select>
                     <Button variant="secondary" className="icon" aria-label={t('surfaces.ganttChart.zoomTimelineOut')} onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}>
                         <ZoomOut aria-hidden="true" className="h-4 w-4" />
                     </Button>
@@ -952,9 +953,9 @@ export const GanttChart = ({
                             {t('surfaces.ganttChart.clearFilters')}
                         </Button>
                     ) : (
-                        <Link className="btn primary sm mt-4" to={scopeLink('/tasks?create=1')}>
+                        <ButtonLink  className="mt-4" to={scopeLink('/tasks?create=1')} variant="primary" size="sm">
                             {t('gantt.addTask')}
-                        </Link>
+                        </ButtonLink>
                     )}
                 </section>
             ) : (
@@ -1161,16 +1162,16 @@ export const GanttChart = ({
                                     style={{ top: `${virtualRow.start}px`, height: `${virtualRow.size}px` }}>
                                     <div className="absolute inset-y-0 left-0 z-20 flex flex-col justify-center border-r border-border bg-surface-muted px-2 sm:sticky sm:inset-y-auto sm:h-full"
                                         style={{ width: `${SIDEBAR_WIDTH}px` }}>
-                                        <button type="button" aria-expanded={!collapsed} disabled={activeFilterCount > 0}
+                                        <Button type="button" aria-expanded={!collapsed} disabled={activeFilterCount > 0}
                                             className="flex min-w-0 items-center gap-1 rounded text-left text-sm font-semibold text-content-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                                             onClick={() => setToggledGroups(previous => {
                                                 const next = new Set(previous);
                                                 if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
                                                 return next;
-                                            })}>
+                                            })} variant="plain">
                                             {collapsed ? <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />}
                                             <span className="truncate">{t('surfaces.ganttChart.groupHeader', { label: row.label, count: row.count })}</span>
-                                        </button>
+                                        </Button>
                                         {(groupRange || row.unassigned > 0) && (
                                             <div className="mt-1 flex items-center gap-1.5 pl-5 text-wc-micro text-content-tertiary">
                                                 {groupRange && <span className="truncate">{groupRange}</span>}
@@ -1224,7 +1225,7 @@ export const GanttChart = ({
                                                     <ChevronDown className="h-4 w-4" />
                                                 </span>
                                             ) : (
-                                                <button
+                                                <Button
                                                     type="button"
                                                     onClick={() => toggleExpand(task.id)}
                                                     className="p-0.5 hover:bg-surface-subtle rounded text-content-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
@@ -1234,11 +1235,11 @@ export const GanttChart = ({
                                                         : t('gantt.expandTask', { title: task.title })} title={isTaskExpanded
                                                         ? t('gantt.collapseTask', { title: task.title })
                                                         : t('gantt.expandTask', { title: task.title })}
-                                                >
+                                                 variant="plain">
                                                     {isTaskExpanded
                                                         ? <ChevronDown className="h-4 w-4" />
                                                         : <ChevronRight className="h-4 w-4" />}
-                                                </button>
+                                                </Button>
                                             )
                                         ) : <span className="w-5" />}
                                         <div className="font-medium truncate text-sm flex-1 text-content-primary" title={task.title}>{task.title}</div>
@@ -1275,7 +1276,7 @@ export const GanttChart = ({
                                     ))}
 
                                     {taskPosition ? (<>
-                                        <button
+                                        <Button
                                             type="button"
                                             className={clsx(
                                                 "absolute top-1 z-10 flex h-10 items-center rounded px-2 text-xs transition-all",
@@ -1320,7 +1321,7 @@ export const GanttChart = ({
                                             aria-haspopup={sandboxMode ? 'dialog' : undefined}
                                             title={getTaskTooltip(task)}
                                             aria-label={getTaskAccessibleLabel(task)}
-                                        >
+                                         variant="plain">
                                             {/* The label follows the visible part of a long bar instead of scrolling away with its start. */}
                                             <span className="sticky left-2 min-w-0 max-w-96 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]"><TaskAssigneeDisplay task={task} iterationId={iterationId} bar durationDays={hasCompleteTimelineDates(taskDates) ? differenceInCalendarDays(parseISO(taskDates.end), parseISO(taskDates.start)) + 1 : undefined} /></span>
                                             {sandboxMode && (
@@ -1335,20 +1336,20 @@ export const GanttChart = ({
                                                         onPointerDown={event => startBarDrag(event, task, 'link')} />
                                                 </>
                                             )}
-                                        </button>
+                                        </Button>
                                         {sandboxMode && task.isSandboxModified && task.min_start_date && (
-                                            <button type="button"
+                                            <Button type="button"
                                                 className="absolute top-3 z-10 flex h-6 items-center gap-1 rounded border border-border bg-surface-card px-1.5 text-xs text-content-secondary hover:bg-surface-muted"
                                                 style={{ left: `${Math.max(0, taskPosition.left - 64)}px` }}
                                                 aria-label={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
                                                 title={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
-                                                onClick={event => { event.stopPropagation(); onSaveSandbox?.(task.id, { min_start_date: null, sandbox_update: undefined }); }}>
+                                                onClick={event => { event.stopPropagation(); onSaveSandbox?.(task.id, { min_start_date: null, sandbox_update: undefined }); }} variant="plain">
                                                 <Pin className="h-3 w-3" aria-hidden="true" /><X className="h-3 w-3" aria-hidden="true" />
-                                            </button>
+                                            </Button>
                                         )}
                                         </>
                                     ) : (
-                                        <button
+                                        <Button
                                             type="button"
                                             className="absolute left-2 right-2 top-2.5 z-10 flex h-7 w-fit max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-md border border-dashed border-border-strong bg-surface-card px-2 text-xs text-content-secondary transition-colors hover:bg-surface-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                                             onClick={(event) => {
@@ -1357,10 +1358,10 @@ export const GanttChart = ({
                                             }}
                                             aria-label={t('gantt.openUnscheduledTask', { title: task.title })}
                                             title={getUnscheduledTaskDescription(task)}
-                                        >
+                                         variant="plain">
                                             <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                                             <span className="shrink-0 font-medium">{t('gantt.notScheduled')}</span>
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             </div>
@@ -1389,7 +1390,7 @@ export const GanttChart = ({
                 />
             )}
 
-            <TaskEditModal
+            <TaskEditDrawer
                 task={editingTask}
                 iterationId={iterationId}
                 isOpen={!!editingTask}

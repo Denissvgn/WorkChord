@@ -3,13 +3,14 @@ import { screen, waitFor } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { PlanningInputBoundary } from './PlanningInputBoundary';
+import { Button } from '../../components/common/Button';
 const reader = vi.hoisted(() => vi.fn());
 vi.mock('../../services/planningInputService', () => ({ planningInputService: { readInitial: reader } }));
 const initial = { kind: 'project', resource_id: 7, resource: { id: 7, name: 'Current server name' }, complete: true, expected_revisions: { 1: 4, 2: 8 } };
 beforeEach(() => { vi.clearAllMocks(); reader.mockResolvedValue(initial); });
 const Editor = ({ name, save }: { name: string; save: (value: string) => void }) => {
     const [draft, setDraft] = useState(name);
-    return <><input aria-label="Project name" value={draft} onChange={event => setDraft(event.target.value)} /><button onClick={() => save(draft)}>Save draft</button></>;
+    return <><input aria-label="Project name" value={draft} onChange={event => setDraft(event.target.value)} /><Button onClick={() => save(draft)} variant="secondary">Save draft</Button></>;
 };
 it('pins complete initial context and retains input during explicit comparison, then reloads only on request', async () => {
     const save = vi.fn();

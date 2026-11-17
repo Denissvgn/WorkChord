@@ -6,6 +6,7 @@ import { renderWithProviders } from '../test/renderWithProviders';
 import type { Task } from '../types/task';
 import TasksPage from './TasksPage';
 
+import { Button } from '../components/common/Button';
 const iterationServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
@@ -85,7 +86,7 @@ vi.mock('../components/tasks/TaskForm', () => ({
     }) => (
         <div>
             {initialData && <p>Editing {initialData.title}</p>}
-            <button type="button" onClick={onCancel}>Cancel draft</button>
+            <Button type="button" onClick={onCancel} variant="secondary">Cancel draft</Button>
         </div>
     ),
 }));

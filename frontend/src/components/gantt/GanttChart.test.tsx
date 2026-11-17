@@ -26,7 +26,7 @@ vi.mock('@tanstack/react-virtual', () => ({
     }),
 }));
 
-vi.mock('./TaskEditModal', () => ({ TaskEditModal: () => null }));
+vi.mock('./TaskEditDrawer', () => ({ TaskEditDrawer: () => null }));
 const teamServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn().mockResolvedValue([{ id: 7, name: 'Sam' }]) }));
 vi.mock('../../services/teamService', () => ({ teamService: teamServiceMock }));
 

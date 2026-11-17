@@ -16,6 +16,7 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, initialAction }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void;
@@ -151,10 +152,10 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
             {criteria.length === 0 && <p className="text-sm text-content-secondary">{t('domain.noCriteria')}</p>}
             {criteria.map(item => <div className="space-y-2" key={item.criterion_id}>
                 <label className="field-lbl" htmlFor={`${id}-${item.criterion_id}-state`}>{task.brief?.acceptance_criteria.find(criterion => criterion.id === item.criterion_id)?.text ?? t('domain.retiredCriterion')}</label>
-                <select id={`${id}-${item.criterion_id}-state`} className="input w-full" value={item.state}
+                <Select id={`${id}-${item.criterion_id}-state`} className="input w-full" value={item.state}
                     onChange={event => setCriteria(values => values.map(row => row.criterion_id === item.criterion_id ? { ...row, state: event.target.value as CriterionProgress['state'] } : row))}>
                     {(['pending', 'in_progress', 'completed'] as const).map(state => <option value={state} key={state}>{t(`domain.${state}`)}</option>)}
-                </select>
+                </Select>
                 <label className="field-lbl" htmlFor={`${id}-${item.criterion_id}-evidence`}>{t('domain.evidence')}</label>
                 <textarea id={`${id}-${item.criterion_id}-evidence`} className="input min-h-20 w-full" maxLength={8000} value={item.evidence}
                     onChange={event => setCriteria(values => values.map(row => row.criterion_id === item.criterion_id ? { ...row, evidence: event.target.value } : row))} />
@@ -170,10 +171,10 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
             {available.length > 0 ? <div className="flex flex-wrap items-end gap-2">
                 <div className="min-w-0 flex-1">
                     <label className="field-lbl" htmlFor={`${id}-action`}>{t('domain.action')}</label>
-                    <select id={`${id}-action`} className="input w-full" value={action} onChange={event => { setAction(event.target.value); setIterationId(''); targetContext.reset(); setCommandRevisions(sourceRevisions); }}>
+                    <Select id={`${id}-action`} className="input w-full" value={action} onChange={event => { setAction(event.target.value); setIterationId(''); targetContext.reset(); setCommandRevisions(sourceRevisions); }}>
                         <option value="">{t('domain.chooseAction')}</option>
                         {available.map(item => <option value={item.action} key={item.action}>{t(`domain.action_${item.action}`)}</option>)}
-                    </select>
+                    </Select>
                 </div>
                 <Button type="button" variant="secondary" disabled={!reason.trim() || !available.some(item => item.action === action) || ['commit', 'uncommit'].includes(action) && (targetContext.loading || task.iteration_id !== null && !commandRevisions[task.iteration_id] || action === 'commit' && (!iterationId || !commandRevisions[Number(iterationId)]))}
                     onClick={() => run('command')}>{t('domain.applyAction')}</Button>
@@ -184,22 +185,22 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                 {iterations.isLoading && <QueryLoadingState className="min-h-12" />}
                 {iterations.isError && <QueryErrorState error={iterations.error} fallback={t('domain.iterationsFailed')} onRetry={() => void iterations.refetch()} />}
                 <label className="field-lbl" htmlFor={`${id}-iteration`}>{t('domain.iteration')}</label>
-                <select id={`${id}-iteration`} className="input w-full" value={iterationId} onChange={event => void chooseIteration(event.target.value)}>
+                <Select id={`${id}-iteration`} className="input w-full" value={iterationId} onChange={event => void chooseIteration(event.target.value)}>
                     <option value="">{t('domain.chooseIteration')}</option>
                     {iterations.data?.filter(item => item.project_id === task.project_id || item.project_id === null).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
-                </select>
+                </Select>
             </div>}
             {task.status === 'resolved' && canReview && reviewCriteria.length > 0 && <fieldset className="space-y-3">
                 <legend className="mb-1 font-medium text-content-primary">{t('domain.reviewResults')}</legend>
                 <p className="text-sm text-content-secondary">{t('domain.reviewResultsHelp')}</p>
                 {reviewCriteria.map(criterion => <div key={criterion.id} className="space-y-2">
                     <label className="field-lbl" htmlFor={`${id}-${criterion.id}-result`}>{t('domain.resultFor', { criterion: criterion.text })}</label>
-                    <select id={`${id}-${criterion.id}-result`} className="input w-full" value={resultFor(criterion.id).result}
+                    <Select id={`${id}-${criterion.id}-result`} className="input w-full" value={resultFor(criterion.id).result}
                         onChange={event => setReviewResults(values => ({ ...values, [criterion.id]: { ...resultFor(criterion.id), result: event.target.value as '' | 'pass' | 'fail' } }))}>
                         <option value="">{t('domain.resultNotChecked')}</option>
                         <option value="pass">{t('domain.resultPass')}</option>
                         <option value="fail">{t('domain.resultFail')}</option>
-                    </select>
+                    </Select>
                     <label className="field-lbl" htmlFor={`${id}-${criterion.id}-note`}>{t('domain.resultNote')}</label>
                     <textarea id={`${id}-${criterion.id}-note`} className="input min-h-16 w-full" maxLength={1000} value={resultFor(criterion.id).note}
                         onChange={event => setReviewResults(values => ({ ...values, [criterion.id]: { ...resultFor(criterion.id), note: event.target.value } }))} />

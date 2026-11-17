@@ -7,6 +7,7 @@ import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage } from '../../utils/apiError';
 
+import { Select } from '../../components/common/Select';
 interface Absence { id: number; version: number; start_date: string; end_date: string }
 interface Availability { version: number; calendar_id: number | null; calendar_selection_required: boolean; allocation_calendar_conflicts: number[]; absences: Absence[] }
 interface Capacity {
@@ -76,7 +77,7 @@ export const PersonCapacity = ({ profileId, startDate, endDate, manage = false, 
             {availability.data && <>
                 {(availability.data.calendar_selection_required || availability.data.allocation_calendar_conflicts.length > 0) && <p className="text-sm text-feedback-warning-foreground">{t('teamwork.chooseCalendar')}</p>}
                 <label className="field-lbl" htmlFor={`${id}-calendar`}>{t('teamwork.personCalendar')}</label>
-                <select id={`${id}-calendar`} className="input w-full" value={calendar || availability.data.calendar_id || ''} disabled={pending} onChange={event => { if (calendarVersion === null) setCalendarVersion(availability.data!.version); setCalendar(event.target.value); }}><option value="">{t('teamwork.chooseCalendar')}</option>{calendars.data?.map(item => <option key={item.id} value={item.id}>{item.name} · {item.year} · {item.timezone ?? t('teamwork.unknownCalendar')}</option>)}</select>
+                <Select id={`${id}-calendar`} className="input w-full" value={calendar || availability.data.calendar_id || ''} disabled={pending} onChange={event => { if (calendarVersion === null) setCalendarVersion(availability.data!.version); setCalendar(event.target.value); }}><option value="">{t('teamwork.chooseCalendar')}</option>{calendars.data?.map(item => <option key={item.id} value={item.id}>{item.name} · {item.year} · {item.timezone ?? t('teamwork.unknownCalendar')}</option>)}</Select>
                 <Button type="button" size="sm" variant="secondary" disabled={!calendar || calendarVersion === null || calendarChanged || pending} onClick={() => selectCalendar.mutate()}>{t('teamwork.saveCalendar')}</Button>
                 {calendarChanged && <div role="status" className="space-y-2 text-sm text-feedback-warning-foreground"><p>{t('taskEditor.conflictTitle')}</p><p>{calendars.data?.find(item => item.id === availability.data?.calendar_id)?.name ?? t('teamwork.chooseCalendar')}</p><Button type="button" size="sm" variant="secondary" disabled={pending} onClick={() => setCalendarVersion(availability.data!.version)}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button></div>}
                 <h4 className="pt-3 font-medium">{t('teamwork.absences')}</h4>

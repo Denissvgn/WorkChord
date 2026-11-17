@@ -60,13 +60,13 @@ export const PostUpdateDrawer = ({
                                 <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                                 <span>{error}</span>
                             </div>
-                            <button
+                            <Button
                                 type="button"
                                 className="bg-transparent p-0 text-xs font-medium text-feedback-danger-foreground hover:underline"
                                 onClick={onDismissError}
-                            >
+                             variant="secondary">
                                 {t('surfaces.projectDetail.dismiss')}
-                            </button>
+                            </Button>
                         </div>
                     )}
 
@@ -86,7 +86,7 @@ export const PostUpdateDrawer = ({
                                     gray: 'border-border bg-surface-muted text-content-primary',
                                 };
                                 return (
-                                    <button
+                                    <Button
                                         key={value}
                                         type="button"
                                         role="radio"
@@ -96,10 +96,10 @@ export const PostUpdateDrawer = ({
                                             'inline-flex h-9 items-center gap-2 rounded-md border px-3 text-sm transition-colors',
                                             active ? clsx(activeCls[tone], 'font-semibold') : 'border-border bg-surface-card text-content-primary hover:bg-surface-muted',
                                         )}
-                                    >
+                                     variant="secondary">
                                         <span className={clsx('h-2 w-2 rounded-full', dot)} />
                                         {t(labelKey)}
-                                    </button>
+                                    </Button>
                                 );
                             })}
                         </div>

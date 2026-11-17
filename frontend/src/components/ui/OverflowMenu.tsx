@@ -3,6 +3,8 @@ import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from 'react';
 import clsx from 'clsx';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../common/Button';
+import type { ButtonSize, ButtonVariant } from '../common/buttonStyles';
 
 export type OverflowMenuItem = {
     label: ReactNode;
@@ -20,6 +22,9 @@ export const OverflowMenu = ({
     align = 'end',
     trigger,
     triggerClassName,
+    triggerVariant = 'outline',
+    triggerSize = 'md',
+    triggerIconOnly = true,
 }: {
     items: OverflowMenuItem[];
     label?: string;
@@ -31,6 +36,9 @@ export const OverflowMenu = ({
     /** Replaces the three-dot icon, such as a status icon that opens its moves. */
     trigger?: ReactNode;
     triggerClassName?: string;
+    triggerVariant?: ButtonVariant;
+    triggerSize?: ButtonSize;
+    triggerIconOnly?: boolean;
 }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
@@ -103,8 +111,7 @@ export const OverflowMenu = ({
 
     return (
         <div className={clsx('relative', className)}>
-            <button
-                data-page-chrome-control="button"
+            <Button
                 ref={triggerRef}
                 type="button"
                 onClick={() => open ? closeMenu() : setOpen(true)}
@@ -112,10 +119,13 @@ export const OverflowMenu = ({
                 aria-haspopup="menu"
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
-                className={triggerClassName ?? 'btn icon'}
+                variant={triggerVariant}
+                size={triggerSize}
+                iconOnly={triggerIconOnly}
+                className={triggerClassName}
             >
                 {trigger ?? <MoreHorizontal className="h-4 w-4" />}
-            </button>
+            </Button>
             {open && (
                 <>
                     <div style={{ position: 'fixed', inset: 0, zIndex: 10 }} onClick={() => closeMenu()} aria-hidden />

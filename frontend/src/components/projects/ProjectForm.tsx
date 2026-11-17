@@ -278,7 +278,7 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.projectForm.owner')}</label>
-                    <select
+                    <Select
                         aria-label={t('surfaces.projectForm.owner')}
                         value={formData.owner_profile_id ?? ''}
                         onChange={event => setFormData({
@@ -299,7 +299,7 @@ const ProjectFormEditor = ({ initialData, onSuccess, onCancel, revisions, contex
                                 {formatTeamMemberProfileLabel(owner)}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                 </div>
             </div>
 

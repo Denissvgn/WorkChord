@@ -3,6 +3,7 @@ import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 
+import { Button } from '../../components/common/Button';
 export interface ScopePickerOption {
     /** Identifies the option; unique within one picker. */
     key: string;
@@ -222,7 +223,7 @@ export const ScopePicker = ({
                         {visible.length === 0 && <p className="scope-picker-empty" role="status">{noMatches}</p>}
                         {groups.map((group, groupIndex) => {
                             const rows = group.options.map(option => (
-                                <button
+                                <Button
                                     key={option.key}
                                     id={optionId(option.key)}
                                     type="button"
@@ -234,7 +235,7 @@ export const ScopePicker = ({
                                     data-selected={option.selected || undefined}
                                     onMouseEnter={() => setActiveKey(option.key)}
                                     onClick={() => choose(option)}
-                                >
+                                 variant="secondary">
                                     {renderOption ? renderOption(option) : (
                                         <>
                                             <span className="scope-picker-option-label">{option.label}</span>
@@ -242,7 +243,7 @@ export const ScopePicker = ({
                                             {option.detail && <span className="scope-picker-detail">{option.detail}</span>}
                                         </>
                                     )}
-                                </button>
+                                </Button>
                             ));
                             return group.name === null ? (
                                 <div key={`group-${groupIndex}`} role="presentation" className={clsx(groupIndex > 0 && 'scope-picker-rule')}>{rows}</div>

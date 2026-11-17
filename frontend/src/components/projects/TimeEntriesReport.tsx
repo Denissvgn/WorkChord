@@ -13,6 +13,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { TimeEntriesPanel } from '../tasks/TimeEntriesPanel';
 
+import { Select } from '../../components/common/Select';
 export const TimeEntriesReport = ({ projectId }: { projectId: number }) => {
     const { enabled, capability } = useTimeEntries();
     const { t } = useTranslation();
@@ -50,9 +51,9 @@ const ReportContent = ({ projectId }: { projectId: number }) => {
             <Input label={t('timeEntries.start')} type="date" value={start} onChange={event => setStart(event.target.value)} />
             <Input label={t('timeEntries.end')} type="date" value={end} onChange={event => setEnd(event.target.value)} />
             <div><label className="field-lbl" htmlFor={`time-scope-${projectId}`}>{t('timeEntries.scope')}</label>
-                <select id={`time-scope-${projectId}`} className="input w-full" value={scope} onChange={event => setScope(event.target.value as 'mine' | 'project')}>
+                <Select id={`time-scope-${projectId}`} className="input w-full" value={scope} onChange={event => setScope(event.target.value as 'mine' | 'project')}>
                     <option value="mine">{t('timeEntries.mine')}</option>{canManage && <option value="project">{t('timeEntries.team')}</option>}
-                </select></div>
+                </Select></div>
         </div>
         {(!start || !end || end < start) && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('timeEntries.invalid')}</p>}
         <LiveWindowStatus window={report} />

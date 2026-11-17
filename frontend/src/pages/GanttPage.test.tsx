@@ -7,6 +7,7 @@ import type { GanttResponse, GanttTask } from '../types/gantt';
 import type { Iteration } from '../types/iteration';
 import GanttPage from './GanttPage';
 
+import { Button } from '../components/common/Button';
 const ganttServiceMock = vi.hoisted(() => ({
     getChart: vi.fn(),
     previewSchedule: vi.fn(),
@@ -33,9 +34,9 @@ vi.mock('../components/gantt/GanttChart', () => ({
         <div>
             <p>Gantt chart</p>
             {sandboxMode && (
-                <button type="button" onClick={() => onSaveSandbox(1, { title: 'Draft task' })}>
+                <Button type="button" onClick={() => onSaveSandbox(1, { title: 'Draft task' })} variant="secondary">
                     Make draft edit
-                </button>
+                </Button>
             )}
         </div>
     ),

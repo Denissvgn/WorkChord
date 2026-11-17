@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { ArrowLeft, Waypoints } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ButtonLink } from '../../components/common/ButtonLink';
 import { useScopeLink } from '../scope/useScopeLink';
 import { FIRST_RUN_SETUP_PARAM } from './firstRunSteps';
 import { useSetupReturn } from './setupReturn';
@@ -28,10 +29,10 @@ export const SetupReturnBar = () => {
                 <strong>{t('firstRun.returnTitle')}</strong>
                 <span>{t('firstRun.returnBody')}</span>
             </div>
-            <Link className="btn sm" to={scopeLink('/')}>
+            <ButtonLink variant="primary" size="sm" to={scopeLink('/')}>
                 <ArrowLeft aria-hidden="true" size={13} />
                 {t('firstRun.backToSetup')}
-            </Link>
+            </ButtonLink>
         </aside>
     );
 };

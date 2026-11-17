@@ -38,6 +38,7 @@ import { useSetWorkScope } from '../../features/scope/useWorkScope';
 import type { ScopeProject, ScopeIteration } from '../../features/scope/workScope';
 import { useLinkScope, useScopeLink } from '../../features/scope/useScopeLink';
 
+import { Button } from '../../components/common/Button';
 type CommandGroup = 'results' | 'tasks' | 'current' | 'navigate' | 'suggested';
 
 interface CommandAction {
@@ -612,10 +613,10 @@ export const CommandMenu = () => {
 
             {picker && <div className="command-menu-view-mode">
                 <p>{t(picker === 'project' ? 'commandMenu.switchProject' : 'commandMenu.switchIteration')}</p>
-                <button type="button" onClick={() => { setPicker(null); setQuery(''); setActiveIndex(0); setShowAllCommands(true); }}>{t('commandMenu.showAllCommands')}</button>
+                <Button type="button" onClick={() => { setPicker(null); setQuery(''); setActiveIndex(0); setShowAllCommands(true); }} variant="secondary">{t('commandMenu.showAllCommands')}</Button>
             </div>}
             {picker && (picker === 'project' ? projectResults : iterationResults).isLoading && <p role="status">{t('common.loading')}</p>}
-            {picker && (picker === 'project' ? projectResults : iterationResults).isError && <p role="alert">{t('teamwork.loadFailed')} <button type="button" onClick={() => void (picker === 'project' ? projectResults : iterationResults).refetch()}>{t('teamwork.retry')}</button></p>}
+            {picker && (picker === 'project' ? projectResults : iterationResults).isError && <p role="alert">{t('teamwork.loadFailed')} <Button type="button" onClick={() => void (picker === 'project' ? projectResults : iterationResults).refetch()} variant="secondary">{t('teamwork.retry')}</Button></p>}
             {!picker && !hasSearchQuery && (
                 <div className="command-menu-view-mode">
                     <p>
@@ -623,23 +624,23 @@ export const CommandMenu = () => {
                             ? t('commandMenu.allCommandsHint', { count: orderedCommands.length })
                             : t('commandMenu.suggestedCommandsHint')}
                     </p>
-                    <button
+                    <Button
                         type="button"
                         onClick={() => {
                             setShowAllCommands(value => !value);
                             setActiveIndex(0);
                             searchInputRef.current?.focus();
                         }}
-                    >
+                     variant="secondary">
                         {showAllCommands
                             ? t('commandMenu.showSuggestedCommands')
                             : t('commandMenu.showAllCommands')}
-                    </button>
+                    </Button>
                 </div>
             )}
 
             {!picker && hasSearchQuery && taskResults.isFetching && <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>}
-            {!picker && hasSearchQuery && taskResults.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('teamwork.loadFailed')} <button type="button" onClick={() => void taskResults.refetch()}>{t('teamwork.retry')}</button></p>}
+            {!picker && hasSearchQuery && taskResults.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t('teamwork.loadFailed')} <Button type="button" onClick={() => void taskResults.refetch()} variant="secondary">{t('teamwork.retry')}</Button></p>}
             <div
                 id="workchord-command-results"
                 className="command-menu-results"
@@ -672,7 +673,7 @@ export const CommandMenu = () => {
                                         const Icon = command.icon;
                                         const active = activeIndex === index;
                                         return (
-                                            <button
+                                            <Button
                                                 key={command.id}
                                                 id={`workchord-command-option-${command.id}`}
                                                 type="button"
@@ -688,7 +689,7 @@ export const CommandMenu = () => {
                                                 }
                                                 onMouseEnter={() => setActiveIndex(index)}
                                                 onClick={() => runCommand(command)}
-                                            >
+                                             variant="secondary">
                                                 <span className="command-menu-item-icon" aria-hidden="true">
                                                     <Icon className="h-4 w-4" />
                                                 </span>
@@ -699,7 +700,7 @@ export const CommandMenu = () => {
                                                 {singleKeyShortcutsEnabled && command.shortcut && (
                                                     <kbd aria-hidden="true">{command.shortcut}</kbd>
                                                 )}
-                                            </button>
+                                            </Button>
                                         );
                                     })}
                                 </div>

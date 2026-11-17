@@ -1,6 +1,6 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
@@ -31,7 +31,7 @@ export const PlanWorkSection = ({ iteration, tasks, count }: { iteration: Iterat
         <div className="flex flex-wrap gap-2">
             <Button variant="secondary" disabled={!iteration.project_id} onClick={() => setPicker(true)}>{t('planWork.addBacklog')}</Button>
             <Button variant="secondary" onClick={() => setImporting(true)}>{t('planWork.import')}</Button>
-            <Link className="btn secondary" to={scopeLink(withPlanReturn('/tasks', 'work'))}>{t('planWork.openTasks')}</Link>
+            <ButtonLink  to={scopeLink(withPlanReturn('/tasks', 'work'))} variant="secondary">{t('planWork.openTasks')}</ButtonLink>
         </div>
         {!iteration.project_id && <p className="text-sm text-content-secondary">{t('planWork.projectRequired')}</p>}
         {picker && iteration.project_id && <BacklogPicker iteration={iteration} onClose={() => setPicker(false)} onChanged={refresh} />}

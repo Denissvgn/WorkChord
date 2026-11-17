@@ -12,6 +12,7 @@ import clsx from 'clsx';
 import { RequestSourceLinksPanel } from '../requestSources/RequestSourceLinksPanel';
 import { formatDateTime } from '../../utils/formatDate';
 
+import { Button } from '../../components/common/Button';
 const t = i18n.t.bind(i18n);
 
 interface TaskTimelinePanelProps {
@@ -304,28 +305,28 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                             placeholder={t('surfaces.taskTimeline.pasteGitHubPRIssueOrBranchURL')}
                             className="min-w-0 flex-1 rounded-md border border-border-strong px-3 py-1.5 text-xs text-content-primary shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
                         />
-                        <button
+                        <Button
                             type="button"
                             onClick={handleGitHubLink}
                             disabled={createGitHubLinkMutation.isPending || !githubUrl.trim()}
                             className="inline-flex items-center justify-center gap-1 rounded-md bg-action px-3 py-1.5 text-xs font-medium text-content-emphasis transition hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
-                        >
+                         variant="secondary">
                             <Plus className="h-3.5 w-3.5" />
                             {t('surfaces.taskTimeline.link')}
-                        </button>
+                        </Button>
                     </div>
 
                     {linkError && (
                         <div className="mb-3 flex items-start justify-between gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-xs text-feedback-danger-foreground">
                             <span>{linkError}</span>
-                            <button
+                            <Button
                                 type="button"
                                 onClick={() => setLinkError(null)}
                                 className="shrink-0 rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
                                 aria-label={t('surfaces.taskTimeline.dismissExternalLinkError')} title={t('surfaces.taskTimeline.dismissExternalLinkError')}
-                            >
+                             variant="secondary">
                                 <X className="h-3.5 w-3.5" />
-                            </button>
+                            </Button>
                         </div>
                     )}
 
@@ -386,34 +387,34 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
                                             </span>
                                         )}
                                         {isRefreshableGitHubPr(link) && (
-                                            <button
+                                            <Button
                                                 type="button"
                                                 onClick={() => handleRefreshLink(link.id!)}
                                                 disabled={refreshGitHubLinkMutation.isPending}
                                                 className="task-link-icon-action inline-flex shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-action-muted hover:text-action disabled:cursor-not-allowed disabled:opacity-50"
                                                 aria-label={t('surfaces.taskTimeline.refreshNamedLink', { label })}
                                                 title={t('surfaces.taskTimeline.refreshGitHubStatus')}
-                                            >
+                                             variant="secondary">
                                                 <RefreshCw className={clsx(
                                                     "h-3 w-3",
                                                     refreshingLinkId === link.id && "animate-spin"
                                                 )} />
-                                            </button>
+                                            </Button>
                                         )}
                                         {!link.is_legacy && link.id && (
-                                            <button
+                                            <Button
                                                 type="button"
                                                 onClick={() => handleDeleteLink(link.id!)}
                                                 disabled={deleteLinkMutation.isPending}
                                                 className="task-link-icon-action inline-flex shrink-0 items-center justify-center border-l border-border text-content-tertiary hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground disabled:cursor-not-allowed disabled:opacity-50"
                                                 aria-label={t('surfaces.taskTimeline.deleteNamedLink', { label })}
                                                 title={t('surfaces.taskTimeline.deleteLink')}
-                                            >
+                                             variant="secondary">
                                                 <Trash2 className={clsx(
                                                     "h-3 w-3",
                                                     deletingLinkId === link.id && "opacity-50"
                                                 )} />
-                                            </button>
+                                            </Button>
                                         )}
                                     </span>
                                 );
@@ -484,8 +485,8 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
             ) : (
                 <div className="text-sm text-content-secondary">{t('surfaces.taskTimeline.noEventsYet')}</div>
             )}
-            {timelineQuery.hasNextPage && <button type="button" className="btn btn-secondary" disabled={timelineQuery.isFetchingNextPage}
-                onClick={() => void timelineQuery.fetchNextPage()}>{t('teamwork.loadMore')}</button>}
+            {timelineQuery.hasNextPage && <Button type="button"  disabled={timelineQuery.isFetchingNextPage}
+                onClick={() => void timelineQuery.fetchNextPage()} variant="secondary">{t('teamwork.loadMore')}</Button>}
         </div>
     );
 };

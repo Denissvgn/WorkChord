@@ -406,7 +406,7 @@ const IterationFormEditor = ({
                     <p className="mt-1 text-xs text-content-tertiary">{t('projectIterations.lockedScopeHelp')}</p>
                 </div>
             ) : (
-                <select
+                <Select
                     aria-label={t('iterations.projectScope')}
                     value={mode === 'series' ? seriesDraft.project_id : singleDraft.project_id}
                     onChange={event => {
@@ -425,7 +425,7 @@ const IterationFormEditor = ({
                             {project.name}
                         </option>
                     ))}
-                </select>
+                </Select>
             )}
         </div>
     );
@@ -497,24 +497,24 @@ const IterationFormEditor = ({
             <CollapsibleSection title={t('iterationForm.more')} defaultOpen={Boolean(singleDraft.manager_email)}>
                 {!initialData && (
                     <div role="group" aria-label={t('iterationForm.kind')} className="grid grid-cols-2 gap-2 rounded-lg border border-border bg-surface-muted p-1">
-                        <button
+                        <Button
                             type="button"
                             aria-pressed={mode === 'single'}
                             className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'single' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                             onClick={() => setMode('single')}
-                        >
+                         variant="secondary">
                             <CalendarRange className="h-4 w-4" />
                             {t('iterationForm.singleMode')}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
                             aria-pressed={mode === 'series'}
                             className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium ${mode === 'series' ? 'bg-surface-card text-content-primary shadow-sm ring-1 ring-action' : 'text-content-secondary hover:text-content-primary'}`}
                             onClick={() => setMode('series')}
-                        >
+                         variant="secondary">
                             <Repeat className="h-4 w-4" />
                             {t('iterationForm.seriesMode')}
-                        </button>
+                        </Button>
                     </div>
                 )}
 

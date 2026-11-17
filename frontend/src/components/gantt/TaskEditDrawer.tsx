@@ -5,7 +5,7 @@ import type { GanttTask } from '../../types/gantt';
 import type { Task, TaskUpdate } from '../../types/task';
 import { TaskEditorDrawer } from '../tasks/TaskEditorDrawer';
 
-interface TaskEditModalProps {
+interface TaskEditDrawerProps {
     task: GanttTask | null;
     iterationId: number;
     isOpen: boolean;
@@ -40,14 +40,14 @@ const mergeGanttDraft = (task: GanttTask, fullTask: Task): Task => ({
  * "Edit all fields" for the full form. While previewing changes, it opens straight
  * in the form and keeps the edits in the preview instead of saving them.
  */
-export const TaskEditModal = ({
+export const TaskEditDrawer = ({
     task,
     iterationId,
     isOpen,
     onClose,
     sandboxMode = false,
     onSaveSandbox,
-}: TaskEditModalProps) => {
+}: TaskEditDrawerProps) => {
     // Names the chosen assignee on the preview bar. The form reads the same query for its assignee
     // picker and owns its loading, error and retry, so a member can only be picked once this has data.
     const { data: teamMembers = [] } = useQuery({

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LogOut, User } from 'lucide-react';
 import { Button } from '../../components/common/Button';
+import { Select } from '../../components/common/Select';
 import { Input } from '../../components/common/Input';
 import { protectedQueryKeys } from '../../components/settings/protectedQueryKeys';
 import { teamService } from '../../services/teamService';
@@ -162,13 +163,13 @@ export const IdentityBadge = () => {
                     <p>{identity.profile ? t('identity.linkedProfile', { name: identity.profile.display_name }) : t('identity.profileUnlinked')}</p>
                     {operator && identity.principal?.kind === 'human' && <div className="space-y-2">
                         <label className="block text-sm">{t('identity.chooseProfile')}
-                            <select className="mt-1 min-h-11 w-full rounded-md border border-border bg-surface-card px-2" value={profileId}
+                            <Select plain className="mt-1 min-h-11 w-full rounded-md border border-border bg-surface-card px-2" value={profileId}
                                 onChange={event => setProfileId(event.target.value)} disabled={profilesQuery.isLoading}>
                                 <option value="">{t('identity.chooseProfile')}</option>
                                 {(profilesQuery.data ?? []).map(profile => <option key={profile.id} value={profile.id}>{profile.display_name} (#{profile.id})</option>)}
-                            </select>
+                            </Select>
                         </label>
-                        {profilesQuery.isError && <button type="button" className="underline" onClick={() => { void profilesQuery.refetch(); }}>{t('taskEditor.retry')}</button>}
+                        {profilesQuery.isError && <Button variant="plain" type="button" className="underline" onClick={() => { void profilesQuery.refetch(); }}>{t('taskEditor.retry')}</Button>}
                         <Button size="sm" variant="secondary" disabled={!profileId} onClick={async () => {
                             try {
                                 await api.put(`/auth/principals/${identity.principal!.id}/profile`, { profile_id: Number(profileId), reason: 'Owner explicitly linked the verified account to this work profile' });
@@ -234,7 +235,8 @@ export const IdentityBadge = () => {
     </div>;
 
     return <div ref={wrapper} className="relative flex items-center gap-2">
-        <button
+        <Button
+            variant="plain"
             ref={trigger}
             type="button"
             className="session-badge cursor-pointer"
@@ -246,7 +248,7 @@ export const IdentityBadge = () => {
         >
             <User className="h-4 w-4" aria-hidden="true" />
             <strong>{name}</strong>
-        </button>
+        </Button>
         {/* In the top bar this is the bar's own row; elsewhere (tests, standalone use) the panel stays beside the trigger. */}
         {panel && (accountMenuRow ? createPortal(panel, accountMenuRow) : panel)}
     </div>;
