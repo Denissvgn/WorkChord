@@ -128,6 +128,7 @@ const TasksPage = () => {
     const legacyBacklogRequested = searchParams.get('scope') === 'backlog';
     const isBacklogView = isBacklog || legacyBacklogRequested;
     const [isCreating, setIsCreating] = useState(false);
+    const newTaskButtonRef = useRef<HTMLButtonElement>(null);
     const [createTitle, setCreateTitle] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
@@ -495,9 +496,11 @@ const TasksPage = () => {
                 meta={meta}
                 primaryAction={(
                     <Button
+                        ref={newTaskButtonRef}
                         className="tasks-primary-action"
                         onClick={() => setIsCreating(true)}
-                        disabled={!ready || isCreating || !canCreateTask}
+                        // Stays enabled while the drawer is open, so closing the drawer can return focus to it.
+                        disabled={!ready || !canCreateTask}
                     >
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('tasks.newTask')}
@@ -557,6 +560,8 @@ const TasksPage = () => {
         title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={closeTaskCreator}
         iterationId={isBacklogView ? null : selectedIterationId} parentProjectId={backlogProjectId}
         initialTitle={createTitle}
+        // Opened by a link from another page, the drawer has no opener here; closing it returns focus to New task.
+        restoreFocusRef={createTaskRequested && !isCreating ? newTaskButtonRef : undefined}
     />;
 
     if (viewMode !== 'pipeline' && (!iterations || iterations.length === 0 || isBacklogView)) {
