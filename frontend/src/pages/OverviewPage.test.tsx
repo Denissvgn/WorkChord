@@ -4,6 +4,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { expectPageChrome } from '../test/pageChrome';
 import { useScopeStore } from '../features/scope/scopeStore';
+import { useGetStartedVisibility } from '../features/firstRun/getStartedVisibility';
 import type { AgentPipeline } from '../types/agent';
 import type { Iteration, PlanCheckpoint } from '../types/iteration';
 import type { Task, TaskReference } from '../types/task';
@@ -710,6 +711,64 @@ describe('Overview', () => {
         expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
         expect(screen.queryByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).not.toBeInTheDocument();
         expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
+    });
+
+    describe.each([
+        { scope: 'All projects', url: '/?project=all&iteration=backlog', projectId: undefined },
+        { scope: 'one project', url: '/?project=1&iteration=backlog', projectId: 1 },
+    ])('with no iterations and $scope with Backlog', ({ url, projectId }) => {
+        const backlogPage = (items: TaskReference[]) => ({ items, has_more: false, next_after_id: null, limit: 100 });
+        const emptyStateTitle = () => screen.queryByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') });
+        const workNow = () => screen.findByRole('region', { name: i18n.t('overview.workNow') });
+
+        beforeEach(() => {
+            api.iterations.mockResolvedValue([]);
+            // Get started would name the next step itself; with it dismissed the page's own empty state is in view.
+            useGetStartedVisibility.setState({ dismissed: true, requested: false });
+        });
+
+        afterEach(() => {
+            useGetStartedVisibility.setState({ dismissed: false, requested: false });
+        });
+
+        it('shows loading, not the empty state, while the backlog is read', async () => {
+            api.lookup.mockReturnValue(new Promise(() => undefined));
+            renderOverview(url);
+            expect(await within(await workNow()).findByText(i18n.t('overview.dataStatus.sectionLoading'))).toBeInTheDocument();
+            expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+        });
+
+        it('shows the error with Retry, not the empty state, when the backlog cannot be read', async () => {
+            api.lookup.mockRejectedValue(new Error('offline'));
+            const { user } = renderOverview(url);
+            const section = await workNow();
+            expect(await within(section).findByText(i18n.t('overview.dataStatus.sectionUnavailable'))).toBeInTheDocument();
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+
+            // Once the backlog loads, Retry shows its work.
+            api.lookup.mockResolvedValue(backlogPage(BACKLOG));
+            await user.click(within(section).getByRole('button', { name: i18n.t('queryFeedback.retry') }));
+            expect(await figure('overview-figure-done')).toHaveTextContent('2');
+            expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+        });
+
+        it('shows the backlog work when there is some', async () => {
+            api.lookup.mockResolvedValue(backlogPage(BACKLOG));
+            renderOverview(url);
+            expect(await figure('overview-figure-done')).toHaveTextContent('2');
+            expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+            expect(api.lookup.mock.calls.every(([params]) => params.project_id === projectId)).toBe(true);
+        });
+
+        it('shows the empty state once the backlog is read and holds no work', async () => {
+            api.lookup.mockResolvedValue(backlogPage([]));
+            renderOverview(url);
+            expect(await screen.findByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).toBeInTheDocument();
+            expect(screen.queryByRole('region', { name: i18n.t('overview.workNow') })).not.toBeInTheDocument();
+        });
     });
 
     it('says what is needed when the pipeline cannot be read', async () => {

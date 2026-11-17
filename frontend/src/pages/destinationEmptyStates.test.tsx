@@ -131,6 +131,7 @@ const respond = (fullUrl: string) => {
     // Triage search runs on the server: a search that matches nothing returns no rows.
     if (url === '/triage') return new URLSearchParams(query).get('q') ? [] : (scenario.triage ?? []);
     if (/^\/iterations\/\d+\/tasks$/.test(url)) return scenario.tasks ?? [];
+    if (url === '/tasks/lookup') return { ...PAGE, items: [] };
     if (url === '/agent/pipeline') {
         return { needs_definition: [], ready_to_assign: [], assigned_waiting: [], start_ready: [], executing: [],
             verification_required: [], recovery_required: [], ...scenario.pipeline };

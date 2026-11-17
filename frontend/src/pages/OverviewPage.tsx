@@ -290,9 +290,10 @@ const OverviewPage = () => {
     const iterationsFailed = navigation.isIterationsError;
     const hasNoIterations = !iterationsLoading && !iterationsFailed && iterations.length === 0;
     const scopeKnown = project !== undefined && scopeIteration !== undefined;
-    // Without iterations the page is empty unless the backlog holds work.
-    const hasBacklogWork = isBacklog && allRoots.length > 0;
-    const noIterationsEmpty = hasNoIterations && !hasBacklogWork;
+    // Without iterations the page is empty only once a successful backlog read finds no work; while the
+    // read loads or after it fails, the sections show its loading state or its error with Retry.
+    const backlogConfirmedEmpty = isBacklog && backlogQuery.isSuccess && allRoots.length === 0;
+    const noIterationsEmpty = hasNoIterations && (!isBacklog || backlogConfirmedEmpty);
     const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && !noIterationsEmpty;
 
     const openList = parseOverviewCountList(new URLSearchParams(location.search).get(OVERVIEW_COUNT_LIST_PARAM));
