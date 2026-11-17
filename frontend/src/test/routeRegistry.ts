@@ -1,12 +1,8 @@
 import type { RouteModuleKey } from '../navigation/routeModules';
 
-/**
- * `page` routes open with the shared page header. A `public` route is a page of its own outside the
- * workspace frame (the landing page): it keeps one top-level heading and the shared controls.
- */
-type RouteStatus = { key: RouteModuleKey; status: 'migrated' | 'pending'; path: string; frame?: 'page' | 'public' };
+type RouteStatus = { key: RouteModuleKey; status: 'migrated' | 'pending'; path: string };
 export const routeRegistry: RouteStatus[] = [
-    { key: 'landing', path: '/welcome', status: 'migrated', frame: 'public' },
+    { key: 'landing', path: '/welcome', status: 'migrated' },
     { key: 'overview', path: '/', status: 'migrated' },
     { key: 'planMaster', path: '/plan/master', status: 'migrated' },
     { key: 'planShare', path: '/plan/share/:publicId', status: 'migrated' },

@@ -1,11 +1,9 @@
 import { computeAccessibleName } from 'dom-accessibility-api';
 
-export const expectPageChrome = (container: HTMLElement, options: { status?: 'migrated' | 'pending'; frame?: 'page' | 'public' } = {}) => {
+export const expectPageChrome = (container: HTMLElement, options: { status?: 'migrated' | 'pending' } = {}) => {
     if (options.status === 'pending') return;
     const failures: string[] = [];
-    if (options.frame === 'public') {
-        if (container.querySelectorAll('h1').length !== 1) failures.push('Expected one top-level heading');
-    } else if (container.querySelectorAll('[data-testid="page-header"]').length !== 1) failures.push('Expected one PageHeader');
+    if (container.querySelectorAll('[data-testid="page-header"]').length !== 1) failures.push('Expected one PageHeader');
     if (container.querySelectorAll('button.btn-primary').length > 1) failures.push('More than one primary button');
     if (container.querySelectorAll('[data-testid="page-toolbar"]').length > 1) failures.push('More than one PageToolbar');
     for (const control of container.querySelectorAll('button, select')) {

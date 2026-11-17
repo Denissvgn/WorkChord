@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../styles/landing.css';
 import { useScopeLink } from '../features/scope/useScopeLink';
+import { ButtonLink } from '../components/common/ButtonLink';
+import { PageHeader } from '../components/ui';
 
 // The four workflow stages in order. Copy lives in the landing catalog (EN and RU).
 const STAGES = ['capture', 'plan', 'do', 'review'] as const;
@@ -26,9 +28,12 @@ const LandingPage = () => {
             </header>
 
             <main id="landing-main" className="landing-main" tabIndex={-1}>
-                <section className="landing-hero" aria-labelledby="landing-title">
-                    <h1 id="landing-title">{t('landing.heroTitle')}</h1>
-                    <p className="landing-hero__lede">{t('landing.heroLede')}</p>
+                <section className="landing-hero" aria-label={t('landing.heroTitle')}>
+                    <PageHeader
+                        title={t('landing.heroTitle')}
+                        purpose={t('landing.heroLede')}
+                        primaryAction={<ButtonLink variant="plain" className="landing-button" to={scopeLink('/')}>{t('landing.openTheWorkspace')}</ButtonLink>}
+                    />
                     <ol className="landing-stages" aria-label={t('landing.workflowLabel')}>
                         {STAGES.map(key => (
                             <li className="landing-stage" key={key}>
@@ -37,7 +42,6 @@ const LandingPage = () => {
                             </li>
                         ))}
                     </ol>
-                    <Link className="landing-button" to={scopeLink('/')}>{t('landing.openTheWorkspace')}</Link>
                 </section>
             </main>
         </div>

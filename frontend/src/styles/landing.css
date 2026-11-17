@@ -30,6 +30,7 @@ html:has(.landing-page) {
 
 .landing-page h1,
 .landing-page p,
+.landing-page .wc-page-sub,
 .landing-page ol {
   margin: 0;
 }
@@ -124,13 +125,29 @@ html:has(.landing-page) {
   animation: landing-settle var(--dur-landing-short) var(--ease-landing-out) both;
 }
 
-.landing-hero h1 {
+.landing-hero .wc-page-head {
+  display: grid;
+  gap: var(--space-landing-xl);
+  justify-items: start;
+}
+
+.landing-hero .wc-page-copy {
+  display: grid;
+  gap: var(--space-landing-lg);
+}
+
+.landing-hero .wc-page-actions,
+.landing-hero .wc-page-primary {
+  display: flex;
+}
+
+.landing-hero .wc-page-title {
   max-width: 18ch;
   font-size: clamp(2.25rem, 4vw + 0.75rem, 4.25rem);
   line-height: 1.02;
 }
 
-.landing-hero__lede {
+.landing-hero .wc-page-sub {
   max-width: 60ch;
   color: var(--color-landing-ink-soft);
   font-size: var(--text-landing-md);

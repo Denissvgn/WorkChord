@@ -42,6 +42,21 @@ describe('page frame lint rules', () => {
         expect(reports[0].text).toMatch(/at most one PageToolbar/);
     });
 
+    it('rejects two toolbars held in constants and rendered in one tree', async () => {
+        const reports = await lint('secondToolbarVariables', 'src/pages/Example.tsx');
+        expect(reports.map(report => report.rule)).toEqual(['workchord/single-page-toolbar']);
+        expect(reports[0].text).toMatch(/at most one PageToolbar/);
+    });
+
+    it('rejects two toolbars in one fragment', async () => {
+        const reports = await lint('secondToolbarFragment', 'src/pages/Example.tsx');
+        expect(reports.map(report => report.rule)).toEqual(['workchord/single-page-toolbar']);
+    });
+
+    it('accepts a toolbar in each arm of one conditional', async () => {
+        expect(await lint('exclusiveToolbars', 'src/pages/Example.tsx')).toEqual([]);
+    });
+
     it('accepts a page built from the shared parts with one toolbar in each return', async () => {
         expect(await lint('sharedParts', 'src/pages/Example.tsx')).toEqual([]);
     });

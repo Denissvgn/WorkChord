@@ -1,0 +1,12 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// A toolbar in each arm of one conditional: only one arm renders.
+export const Example = ({ active }: { active: boolean }) => {
+    const archived = <PageToolbar label="Archived" />;
+    return (
+        <PageLayout>
+            <PageHeader title="Example" purpose="One sentence." />
+            {active ? <PageToolbar label="Active" /> : archived}
+        </PageLayout>
+    );
+};

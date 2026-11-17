@@ -52,7 +52,7 @@ describe('page chrome', () => {
     it('leaves no route pending', () => {
         expect(routeRegistry.filter(route => route.status === 'pending').map(route => route.path)).toEqual([]);
     });
-    it.each(routeRegistry)('checks the page frame of route $path', async ({ key, path, status, frame }) => {
+    it.each(routeRegistry)('checks the page frame of route $path', async ({ key, path, status }) => {
         installWorkspaceApi();
         const sample = samplePath(path === '*' ? '/missing' : path);
         const Page = (await routeModuleLoaders[key]()).default;
@@ -64,9 +64,9 @@ describe('page chrome', () => {
             {Target && <Route path="*" element={<Target />} />}
         </Routes>, { initialEntries: [sample] });
         // A page that reads records shows its header once they arrive.
-        await waitFor(() => expectPageChrome(container, { status, frame }), { timeout: 5000 });
+        await waitFor(() => expectPageChrome(container, { status }), { timeout: 5000 });
         await act(() => new Promise(resolve => setTimeout(resolve, 50)));
-        expectPageChrome(container, { status, frame });
+        expectPageChrome(container, { status });
     // The first dynamic import of a page module can be slow while the whole suite runs.
     }, 20_000);
 });
