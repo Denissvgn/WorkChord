@@ -173,6 +173,18 @@ describe('assignee consistency across task views', () => {
         expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
     });
 
+    it.each([
+        ['loading', () => new Promise(() => undefined)],
+        ['failed', () => Promise.reject(new Error('Capacity unavailable'))],
+    ] as const)('claims no dispatch state while the team read that says the assignee is an agent is %s', async (state, read) => {
+        services.team.mockImplementation(read);
+        const { queryClient } = renderWithProviders(readView(base));
+        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.[state === 'loading' ? 'fetchStatus' : 'status'])
+            .toBe(state === 'loading' ? 'fetching' : 'error'));
+        expect(screen.getByText('Builder', { selector: '[data-assignee-cell] *' })).toBeInTheDocument();
+        expect(document.querySelector('[data-agent-dispatch]')).toBeNull();
+    });
+
     it('requests task detail on the Gantt only for rows whose assignee is an agent', async () => {
         services.team.mockResolvedValue([
             { id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent' } },

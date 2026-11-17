@@ -98,8 +98,9 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     const criteria = task.brief?.acceptance_criteria ?? [];
     const doneCount = criteria.filter(criterion => progressFor(criterion.id)?.state === 'completed').length;
     const next = NEXT_TRANSITION[task.status];
-    // A connected agent that has not been sent the task gets it through dispatch, not a manual start.
-    // The link opens the pipeline's dispatch panel; in the pipeline that panel is already above.
+    // A connected agent that has not been sent the task gets it through dispatch, not a manual start,
+    // in the header and in Work & review alike. The link opens the pipeline's dispatch panel; in the
+    // pipeline that panel is already above.
     const offerDispatch = task.status === 'planned' && assigneeDisplay.dispatch === 'notSentYet';
     const dispatchShown = params.get('layout') === 'pipeline';
     // Owner is shown only when it is known to differ from the assignee's profile: with no assignee,
@@ -235,6 +236,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                 <section aria-label={t('taskView.partWork')} className="flex flex-col gap-5">
                     <TaskWorkPanel key={`${task.id}:${task.version}:${workAction ?? ''}`} task={task} draftKey={draftKey} disabled={editingBrief}
                         initialAction={workAction} onEditBrief={startBriefEdit} onDirty={markDirty} onPending={onPending} onReload={onReload}
+                        offerDispatch={offerDispatch}
                         onUpdated={latest => { setWorkAction(undefined); onTaskUpdated(latest); }} />
                     <DeliveryDependencies task={task} disabled={locked} onPending={onPending} onUpdated={onTaskUpdated} />
                     {task.project_id && <TimeEntriesPanel projectId={task.project_id} taskId={task.id} draftKey={draftKey} disabled={editingBrief}
