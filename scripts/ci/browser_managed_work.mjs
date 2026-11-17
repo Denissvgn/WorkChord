@@ -317,6 +317,7 @@ try {
   assert.equal(started.status(), 200, await started.text());
   await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ state: 'hidden', timeout: 45000 });
   await page.goto(`/my-work?queue=active&task=${observed.id}`);
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).waitFor();
   const peerComment = await peerContext.request.post(`/api/tasks/${observed.id}/comments`, {
     headers: peerHeaders, data: { body: 'Peer comment arrives in foreground', mentions: [] } });
@@ -489,6 +490,7 @@ try {
   await page.getByRole('button', { name: 'New task', exact: true }).click();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Preserve the structured intake');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Keep the draft through triage');
+  await page.getByRole('button', { name: 'More', exact: true }).click();
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('Context must survive the handoff.');
   await page.getByRole('button', { name: 'Add criterion', exact: true }).click();
   await page.getByRole('textbox', { name: 'Criterion 1', exact: true }).fill('The criterion keeps its identity');
