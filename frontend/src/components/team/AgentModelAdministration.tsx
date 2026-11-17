@@ -1,5 +1,4 @@
-import { useMemo, useRef, useState, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     AlertTriangle,
@@ -29,7 +28,7 @@ import { Checkbox } from '../common/Checkbox';
 import { Input, RequiredIndicator } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { InlineEmptyState } from '../ui';
-import { OverflowMenu } from '../ui/OverflowMenu';
+import type { OverflowMenuItem } from '../ui/OverflowMenu';
 import { useToast } from '../feedback/toast';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { ModelCatalog } from './ModelCatalog';
@@ -123,7 +122,14 @@ const conflictRevisionFromError = (error: unknown): number | null => {
         : null;
 };
 
-export const AgentModelAdministration = ({ headerActions }: { headerActions?: HTMLElement | null }) => {
+export interface ModelHeaderActions {
+    primaryAction: ReactNode;
+    overflowItems: OverflowMenuItem[];
+}
+
+export const AgentModelAdministration = ({ onHeaderActionsChange }: {
+    onHeaderActionsChange?: (actions: ModelHeaderActions | null) => void;
+}) => {
     const { t } = useTranslation();
     const { hasAgentKey } = useAgentAccess();
     const queryClient = useQueryClient();
@@ -462,10 +468,10 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
         setCatalogDrawerOpen(true);
     };
 
-    const createCatalog = () => {
+    const createCatalog = useCallback(() => {
         setCatalogForm(EMPTY_CATALOG_FORM);
         setCatalogDrawerOpen(true);
-    };
+    }, []);
 
     const closeCatalogDrawer = () => {
         if (isMutating) return;
@@ -488,10 +494,10 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
         setBindingDrawerOpen(true);
     };
 
-    const createBinding = () => {
+    const createBinding = useCallback(() => {
         setBindingForm(EMPTY_BINDING_FORM);
         setBindingDrawerOpen(true);
-    };
+    }, []);
 
     const closeBindingDrawer = () => {
         if (isMutating) return;
@@ -528,6 +534,31 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
         });
     };
 
+    const evidenceLoading = rosterQuery.isPending || catalogQuery.isPending || bindingsQuery.isPending;
+    const evidenceError = rosterQuery.error || catalogQuery.error || bindingsQuery.error;
+    const actionsReady = hasAgentKey && capabilitiesCurrent && canRead && !evidenceLoading && !evidenceError;
+    const headerActions = useMemo<ModelHeaderActions | null>(() => {
+        if (!actionsReady) return null;
+        return {
+            primaryAction: canAdminister ? (
+                <Button type="button" onClick={catalog.length === 0 ? createCatalog : createBinding} disabled={isMutating}>
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                    {t(catalog.length === 0 ? 'modelAdministration.addModel' : 'modelAdministration.addBinding')}
+                </Button>
+            ) : <ButtonLink variant="primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>,
+            overflowItems: canAdminister ? [
+                { label: t('modelAdministration.newModel'), onSelect: createCatalog, disabled: isMutating },
+                { label: t('modelAdministration.newBinding'), onSelect: createBinding, disabled: isMutating },
+            ] : [],
+        };
+    }, [actionsReady, canAdminister, catalog.length, createBinding, createCatalog, isMutating, t]);
+
+    useEffect(() => {
+        onHeaderActionsChange?.(headerActions);
+    }, [headerActions, onHeaderActionsChange]);
+
+    useEffect(() => () => onHeaderActionsChange?.(null), [onHeaderActionsChange]);
+
     if (!hasAgentKey) {
         return (
             <InlineEmptyState
@@ -538,21 +569,12 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
         );
     }
 
-    const unavailableState = (content: ReactNode) => (
-        <>
-            {headerActions && createPortal(
-                <Button type="button" disabled>{t('modelAdministration.addModel')}</Button>, headerActions,
-            )}
-            {content}
-        </>
-    );
-
     if (capabilitiesQuery.isPending) {
-        return unavailableState(<QueryLoadingState message={t('modelAdministration.checkingAccess')} />);
+        return <QueryLoadingState message={t('modelAdministration.checkingAccess')} />;
     }
 
     if (capabilitiesQuery.isError) {
-        return unavailableState(
+        return (
             <QueryErrorState
                 error={capabilitiesQuery.error}
                 fallback={t('modelAdministration.accessFailed')}
@@ -562,7 +584,7 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
     }
 
     if (!canRead) {
-        return unavailableState(
+        return (
             <QueryErrorState
                 message={t('modelAdministration.readScopeRequired')}
                 title={t('modelAdministration.accessDenied')}
@@ -570,14 +592,12 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
         );
     }
 
-    const evidenceLoading = rosterQuery.isPending || catalogQuery.isPending || bindingsQuery.isPending;
     if (evidenceLoading) {
-        return unavailableState(<QueryLoadingState message={t('modelAdministration.loading')} />);
+        return <QueryLoadingState message={t('modelAdministration.loading')} />;
     }
 
-    const evidenceError = rosterQuery.error || catalogQuery.error || bindingsQuery.error;
     if (evidenceError) {
-        return unavailableState(
+        return (
             <QueryErrorState
                 error={evidenceError}
                 fallback={t('modelAdministration.loadFailed')}
@@ -651,18 +671,6 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
 
     return (
         <div className="space-y-5">
-            {headerActions && createPortal(
-                canAdminister ? <>
-                    <Button type="button" onClick={catalog.length === 0 ? createCatalog : createBinding} disabled={isMutating}>
-                        <Plus className="h-4 w-4" aria-hidden="true" />
-                        {t(catalog.length === 0 ? 'modelAdministration.addModel' : 'modelAdministration.addBinding')}
-                    </Button>
-                    <OverflowMenu alwaysMenu items={[
-                        { label: t('modelAdministration.newModel'), onSelect: createCatalog, disabled: isMutating },
-                        { label: t('modelAdministration.newBinding'), onSelect: createBinding, disabled: isMutating },
-                    ]} />
-                </> : <ButtonLink variant="primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>, headerActions,
-            )}
             {!catalogDrawerOpen && !bindingDrawerOpen && conflictNotice}
 
             <section aria-label={catalog.length === 0 ? t('modelAdministration.modelCatalog') : undefined} aria-labelledby={catalog.length > 0 ? "catalog-heading" : undefined}>
@@ -681,7 +689,7 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
                             description={t('emptyStates.team.catalogBody')}
                             actions={canAdminister ? (
                                 <Button type="button" variant="secondary" onClick={createCatalog} disabled={isMutating}>{t('modelAdministration.addModel')}</Button>
-                            ) : <ButtonLink variant={headerActions ? "secondary" : "primary"} to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>}
+                            ) : <ButtonLink variant={onHeaderActionsChange ? "secondary" : "primary"} to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>}
                         />
                     ) : (
                         <ModelCatalog entries={catalog} canAdminister={canAdminister} busy={isMutating} onEdit={editCatalog} onToggle={entry => askReason(() => entry.enabled ? disableCatalogMutation.mutate(entry) : enableCatalogMutation.mutate(entry))} />
@@ -767,7 +775,7 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
                             description={t('emptyStates.team.bindingsBody')}
                             actions={canAdminister ? (
                                 <Button type="button" variant="secondary" onClick={createBinding} disabled={isMutating}>{t('modelAdministration.addBinding')}</Button>
-                            ) : <ButtonLink variant={headerActions ? "secondary" : "primary"} to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>}
+                            ) : <ButtonLink variant={onHeaderActionsChange ? "secondary" : "primary"} to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>}
                         />
                     ) : (
                         <ModelBindings bindings={bindings} actorNames={new Map(actors.map(actor => [actor.id, actor.display_name]))} catalog={catalogById} canAdminister={canAdminister} busy={isMutating} onEdit={editBinding} onToggle={binding => askReason(() => binding.enabled ? disableBindingMutation.mutate(binding) : enableBindingMutation.mutate(binding))} />

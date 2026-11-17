@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
     AgentActor,
@@ -10,6 +10,7 @@ import type {
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { AgentModelAdministration } from './AgentModelAdministration';
 import TeamPage from '../../pages/TeamPage';
+import { changeAppLanguage } from '../../i18n/i18n';
 
 const agentAccessMock = vi.hoisted(() => ({
     useAgentAccess: vi.fn(),
@@ -216,7 +217,7 @@ describe('AgentModelAdministration', () => {
         ['access denied', 'Model-routing access denied'],
         ['loading evidence', 'Loading model and actor evidence…'],
         ['evidence error', 'Model and actor evidence could not be loaded.'],
-    ])('shows one disabled header primary while %s', async (state, message) => {
+    ])('omits header creation actions while %s', async (state, message) => {
         const pending = () => new Promise<never>(() => {});
         const error = { response: { status: 503 } };
         if (state === 'checking access') agentServiceMock.getCapabilities.mockImplementation(pending);
@@ -227,25 +228,86 @@ describe('AgentModelAdministration', () => {
 
         const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
         expect(await screen.findByText(message)).toBeVisible();
-        const primary = within(screen.getByTestId('page-header')).getByRole('button', { name: 'Add a model' });
-        expect(primary).toBeDisabled();
-        expect(primary).toHaveClass('btn-primary');
-        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        const header = within(screen.getByTestId('page-header'));
+        expect(header.queryByRole('button', { name: /Add a (model|binding)/ })).not.toBeInTheDocument();
+        expect(header.queryByRole('button', { name: 'More actions' })).not.toBeInTheDocument();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(0);
     });
 
-    it('opens both creation drawers from the header overflow', async () => {
+    it('removes known header actions when a catalog refresh fails', async () => {
+        const { container, queryClient } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        const header = within(screen.getByTestId('page-header'));
+        await header.findByRole('button', { name: 'Add a binding' });
+        agentServiceMock.getModelCatalog.mockRejectedValue({ response: { status: 503 } });
+        await act(async () => {
+            await queryClient.refetchQueries({ queryKey: ['agent-model-catalog'] });
+        });
+        expect(await screen.findByText('Model and actor evidence could not be loaded.')).toBeVisible();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(0);
+        expect(header.queryByRole('button', { name: 'More actions' })).not.toBeInTheDocument();
+    });
+
+    it('shows one unlock primary when no agent key is saved', () => {
+        agentAccessMock.useAgentAccess.mockReturnValue({ hasAgentKey: false });
+        const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        expect(screen.getByRole('link', { name: 'Unlock editing' })).toHaveClass('btn-primary');
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        expect(screen.getByTestId('page-header').querySelector('.btn-primary')).toBeNull();
+    });
+
+    it.each([
+        ['en', 'Add a model', 'More actions', 'New model', 'New binding', 'Create catalog entry', 'Create model binding'],
+        ['ru', 'Добавить модель', 'Другие действия', 'Новая модель', 'Новая привязка', 'Создать запись каталога', 'Создать привязку модели'],
+    ])('opens both creation drawers from the header overflow in %s', async (language, primaryLabel, overflowLabel, modelLabel, bindingLabel, catalogTitle, bindingTitle) => {
+        await changeAppLanguage(language);
         agentServiceMock.getModelCatalog.mockResolvedValue([]);
         agentServiceMock.getModelBindings.mockResolvedValue([]);
-        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
-        await within(screen.getByTestId('page-header')).findByRole('button', { name: 'Add a model' });
-        const header = within(screen.getByTestId('page-header'));
-        await user.click(await header.findByRole('button', { name: 'More actions' }));
-        await user.click(screen.getByRole('menuitem', { name: 'New model' }));
-        expect(screen.getByRole('dialog', { name: 'Create catalog entry' })).toBeVisible();
+        const { user, container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        const header = screen.getByTestId('page-header');
+        const primary = await within(header).findByRole('button', { name: primaryLabel });
+        expect(primary.parentElement).toHaveClass('wc-page-primary');
+        expect(primary.parentElement?.children).toHaveLength(1);
+        const overflow = within(header).getByRole('button', { name: overflowLabel });
+        expect(overflow.closest('.wc-page-overflow')).not.toBeNull();
+        expect(overflow.closest('.wc-page-primary')).toBeNull();
+        expect(header.querySelectorAll('.wc-page-overflow')).toHaveLength(1);
+        await user.click(overflow);
+        await user.click(screen.getByRole('menuitem', { name: modelLabel }));
+        const catalogDrawer = screen.getByRole('dialog', { name: catalogTitle });
+        expect(catalogDrawer).toBeVisible();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        expect(catalogDrawer.querySelectorAll('.btn-primary')).toHaveLength(1);
         await user.keyboard('{Escape}');
-        await user.click(header.getByRole('button', { name: 'More actions' }));
-        await user.click(screen.getByRole('menuitem', { name: 'New binding' }));
-        expect(screen.getByRole('dialog', { name: 'Create model binding' })).toBeVisible();
+        expect(overflow).toHaveFocus();
+        await user.click(overflow);
+        await user.click(screen.getByRole('menuitem', { name: bindingLabel }));
+        const bindingDrawer = screen.getByRole('dialog', { name: bindingTitle });
+        expect(bindingDrawer).toBeVisible();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        expect(bindingDrawer.querySelectorAll('.btn-primary')).toHaveLength(1);
+    });
+
+    it.each([false, true])('shows one header unlock primary to a planning reader with catalog %s', async hasCatalog => {
+        agentServiceMock.getCapabilities.mockResolvedValue(capabilitiesFixture(['planning:read']));
+        agentServiceMock.getModelCatalog.mockResolvedValue(hasCatalog ? [catalogFixture()] : []);
+        agentServiceMock.getModelBindings.mockResolvedValue([]);
+        const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        const header = within(screen.getByTestId('page-header'));
+        expect(await header.findByRole('link', { name: 'Unlock editing' })).toHaveClass('btn-primary');
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        expect(header.queryByRole('button', { name: 'More actions' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /^Edit / })).not.toBeInTheDocument();
+    });
+
+    it.each([
+        [false, 'Добавить модель'],
+        [true, 'Добавить привязку'],
+    ])('shows one Russian next-step primary with catalog %s', async (hasCatalog, label) => {
+        await changeAppLanguage('ru');
+        agentServiceMock.getModelCatalog.mockResolvedValue(hasCatalog ? [catalogFixture()] : []);
+        const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        expect(await within(screen.getByTestId('page-header')).findByRole('button', { name: label })).toHaveClass('btn-primary');
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
     });
 
     it('keeps mutation controls unavailable to a planning reader', async () => {
