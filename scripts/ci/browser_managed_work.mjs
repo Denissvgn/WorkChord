@@ -148,6 +148,8 @@ try {
   await page.getByRole('button', { name: 'New task', exact: true }).click();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Canonical browser work');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Capture and deliver urgent human work');
+  // A new task shows a short form; the rest of the brief and the owner sit under More.
+  await page.getByRole('button', { name: 'More', exact: true }).click();
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('The task starts without a forecast or an invented estimate.');
   await page.getByRole('textbox', { name: 'Scope', exact: true }).fill('One independently checked result');
   await page.getByRole('button', { name: 'Add criterion', exact: true }).click();
