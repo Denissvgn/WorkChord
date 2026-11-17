@@ -43,6 +43,7 @@ type Translate = ReturnType<typeof useTranslation>['t'];
 type Readiness = ReturnType<typeof usePlanningReadiness>;
 
 const STEP_PARAM = 'step';
+const ITERATION_PARAM = 'iteration';
 
 // Status hues for status; cobalt only for the next step; amber only where something needs doing.
 // A waiting checkpoint stays neutral.
@@ -299,15 +300,39 @@ const PlanCheckpoints = () => {
     const scopeLink = useScopeLink();
     const setupProgress = useFirstRunProgress();
     const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
-    // Opening or closing a section by hand wins over the default for the rest of the visit.
-    const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null } | null>(null);
+    // Opening or closing a section by hand wins over the default for the rest of the visit to that
+    // iteration; another iteration in scope starts again from its first incomplete checkpoint.
+    const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null; iterationId?: number } | null>(null);
+
+    // A section kept in the link belongs to the iteration it was opened for. When the scope moves to
+    // another iteration and the link still names that section, it is set aside, so the new iteration
+    // opens on its first incomplete checkpoint. A section that arrives with the link, or together with
+    // the new iteration, is kept.
+    const linkStep = searchParams.get(STEP_PARAM);
+    const scopeIteration = searchParams.get(ITERATION_PARAM);
+    const [stepScope, setStepScope] = useState({ iteration: scopeIteration, step: linkStep, stale: false });
+    if (stepScope.iteration !== scopeIteration || stepScope.step !== linkStep) {
+        const iterationChanged = stepScope.iteration !== null && scopeIteration !== null
+            && stepScope.iteration !== scopeIteration;
+        const stale = linkStep !== null && linkStep === stepScope.step && (stepScope.stale || iterationChanged);
+        setStepScope({ iteration: scopeIteration, step: linkStep, stale });
+    }
+    const requestedStep = stepScope.stale ? null : linkStep;
+    useEffect(() => {
+        if (!stepScope.stale) return;
+        setSearchParams(previous => {
+            const next = new URLSearchParams(previous);
+            next.delete(STEP_PARAM);
+            return next;
+        }, { replace: true });
+    }, [setSearchParams, stepScope.stale]);
 
     const sections = planCheckpointSections(planningSummary, { hasIteration: hasCurrentIteration });
-    const requestedStep = searchParams.get(STEP_PARAM);
     const defaultOpen = isPlanningStepId(requestedStep)
         ? requestedStep
         : sections ? firstIncompleteCheckpoint(sections) : null;
-    const openId = openOverride ? openOverride.id : defaultOpen;
+    const override = openOverride && openOverride.iterationId === currentIteration?.id ? openOverride : null;
+    const openId = override ? override.id : defaultOpen;
 
     // Coming back from Tasks, Team or Gantt re-reads readiness; a section that is now done gives
     // way to the first incomplete one.
@@ -338,7 +363,7 @@ const PlanCheckpoints = () => {
 
     const toggle = (id: PlanningStepId) => {
         const next = openId === id ? null : id;
-        setOpenOverride({ id: next });
+        setOpenOverride({ id: next, iterationId: currentIteration?.id });
         if (next) {
             setSearchParams(previous => {
                 const params = new URLSearchParams(previous);

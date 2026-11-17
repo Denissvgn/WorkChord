@@ -62,6 +62,7 @@ export const teamworkEnglish = {
     "queue_review": "To review",
     "queue_inbox": "Notifications",
     "state_profile_unlinked": "Ask a workspace operator to link your account to your human work profile.",
+    "state_profile_unlinked_admin_key": "The admin key in this tab makes this browser act as the workspace operator, so your work as {{name}} is hidden. Lock editing to see it.",
     "state_membership_required": "Ask a project manager to grant access to the work you need.",
     "workspace": "Workspace",
     "backlog": "Backlog",

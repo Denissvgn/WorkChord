@@ -6,6 +6,7 @@ import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
 import { QueryErrorState } from '../feedback/QueryState';
 import { ImportTasksModal } from '../tasks/ImportTasksModal';
+import { GuardedTaskDrawer } from '../tasks/GuardedTaskDrawer';
 import { taskService } from '../../services/taskService';
 import { iterationService } from '../../services/iterationService';
 import { useScopeLink } from '../../features/scope/useScopeLink';
@@ -21,6 +22,7 @@ export const PlanWorkSection = ({ iteration, tasks, count }: { iteration: Iterat
     const client = useQueryClient();
     const [picker, setPicker] = useState(false);
     const [importing, setImporting] = useState(false);
+    const [creating, setCreating] = useState(false);
     const refresh = async () => {
         await Promise.all(['tasks', 'backlog', 'planning-navigation-summary', 'workload', 'gantt', 'projectSummary'].map(key => client.invalidateQueries({ queryKey: [key] })));
     };
@@ -29,12 +31,16 @@ export const PlanWorkSection = ({ iteration, tasks, count }: { iteration: Iterat
         <p>{t('planWork.total', { count, hours: formatDecimal(hours, i18n.language) })}</p>
         {tasks.some(task => !task.effort_days) && <p className="text-sm text-content-secondary">{t('planWork.unknownEffort')}</p>}
         <div className="flex flex-wrap gap-2">
+            {/* A new task is created here in this iteration, so planning never has to leave Plan to add work. */}
+            <Button variant={count === 0 ? 'primary' : 'secondary'} onClick={() => setCreating(true)}>{t('tasks.newTask')}</Button>
             <Button variant="secondary" disabled={!iteration.project_id} onClick={() => setPicker(true)}>{t('planWork.addBacklog')}</Button>
             <Button variant="secondary" onClick={() => setImporting(true)}>{t('planWork.import')}</Button>
             <ButtonLink  to={scopeLink(withPlanReturn('/tasks', 'work'))} variant="secondary">{t('planWork.openTasks')}</ButtonLink>
         </div>
         {!iteration.project_id && <p className="text-sm text-content-secondary">{t('planWork.projectRequired')}</p>}
         {picker && iteration.project_id && <BacklogPicker iteration={iteration} onClose={() => setPicker(false)} onChanged={refresh} />}
+        {creating && <GuardedTaskDrawer title={t('tasks.createNewTask')} closeLabel={t('actions.close')} iterationId={iteration.id}
+            onClose={() => { setCreating(false); void refresh(); }} />}
         {importing && <ImportTasksModal iterationId={iteration.id} onClose={() => { setImporting(false); void refresh(); }} />}
     </div>;
 };

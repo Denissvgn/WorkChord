@@ -4044,7 +4044,7 @@ export const englishResources = {
                     enterEffortHours: "Enter estimated effort in hours",
                 },
                 taskImport: {
-                    ltPriority110GtLtAssigneeGtLtDaysGtLtTitleGt: "- &lt;Priority 1-10&gt; &lt;Assignee&gt; &lt;Days&gt; &lt;Title&gt;",
+                    ltPriority110GtLtAssigneeGtLtDaysGtLtTitleGt: "- <Priority 1-10> <Assignee> <Days> <Title>",
                     text3Name25Title: "- 3 \"Name\" 2.5 Title",
                 },
                 taskReadiness: {

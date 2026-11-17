@@ -28,6 +28,7 @@ import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
+import { clearAdminApiKey, hasAdminApiKey } from '../utils/adminAccess';
 
 const QUEUES = ['active', 'queued', 'blocked', 'awaiting_review', 'review', 'inbox'] as const;
 const WORK_QUEUES: readonly string[] = ['active', 'queued', 'blocked', 'awaiting_review'];
@@ -70,6 +71,7 @@ const MyWorkPage = () => {
         [queue, reviewPages, workPages],
     );
     const workState = work.data?.pages[0].state;
+    const operatorKeyHidesProfile = local && Boolean(identity?.profile) && workState === 'profile_unlinked' && hasAdminApiKey();
     const workQueue = WORK_QUEUES.includes(queue);
     const queueLabel = (key: Queue) => {
         const source = key === 'review' ? reviews : key === 'inbox' ? inbox : work;
@@ -115,7 +117,13 @@ const MyWorkPage = () => {
         <LiveWindowStatus window={selectedQuery} />
         {selectedQuery.isLoading && <p role="status">{t('common.loading')}</p>}
         {selectedQuery.isError && <QueryErrorState error={selectedQuery.error} fallback={t('teamwork.loadFailed')} onRetry={() => void selectedQuery.refetch()} />}
-        {workQueue && workState && workState !== 'ready' && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>}
+        {workQueue && workState && workState !== 'ready' && (operatorKeyHidesProfile
+            // On a trusted-local server the admin key in this tab makes every read the operator's, so the chosen person's work is not returned.
+            ? <div className="flex flex-wrap items-center gap-3 rounded-md border border-border p-4 text-sm">
+                <p className="min-w-0 flex-1">{t('teamwork.state_profile_unlinked_admin_key', { name: identity?.profile?.display_name })}</p>
+                <Button size="sm" variant="secondary" onClick={clearAdminApiKey}>{t('identity.lock')}</Button>
+            </div>
+            : <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>)}
         {queue !== 'inbox' && rowData.error && <QueryErrorState error={rowData.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={rowData.refetch} />}
         {queue !== 'inbox' && scopeIterationId !== null && <TaskSelectionBar iterationId={scopeIterationId} selectedTasks={selectedTasks}
             matchingCount={selection.matchingIds.length} onSelectAll={selection.selectAll} onClearSelection={selection.clear} />}

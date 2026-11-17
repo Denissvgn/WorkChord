@@ -114,6 +114,20 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     expect(screen.getByRole('button', { name: /^Status: Planned/ })).toBeInTheDocument();
 });
 
+it('says the admin key in this tab hides the chosen person\'s work and offers Lock', async () => {
+    sessionStorage.setItem('workchord_admin_api_key', 'operator-key');
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'profile_unlinked', queues: {}, has_more: false, next_after_id: null } };
+        return { data: [] };
+    });
+    const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', principal: null, profile: { id: 4, display_name: 'Sam Ortiz', verified: false } } as never, refresh: vi.fn(), signOut: vi.fn() }}>
+        <MyWorkPage /></IdentityContext.Provider>);
+    expect(await screen.findByText('The admin key in this tab makes this browser act as the workspace operator, so your work as Sam Ortiz is hidden. Lock editing to see it.')).toBeInTheDocument();
+    expect(screen.queryByText('Ask a workspace operator to link your account to your human work profile.')).not.toBeInTheDocument();
+    await view.user.click(screen.getByRole('button', { name: 'Lock' }));
+    expect(sessionStorage.getItem('workchord_admin_api_key')).toBeNull();
+});
+
 describe('My Work rows', () => {
     const fullTask = (id: number, iterationId: number, overrides: Partial<Task> = {}) => ({
         id, iteration_id: iterationId, project_id: null, parent_id: null, title: `Task ${id}`, priority: 2, effort_days: 3, effort_hours: 24,
