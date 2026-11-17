@@ -78,7 +78,9 @@ describe('color roles', () => {
         expect(holidayLegend).toBeDefined();
         expect(holidayLegend).not.toMatch(forbidden);
         expect(gantt.match(/isHol \? "([^"]+)"/g)?.join(' ')).not.toMatch(forbidden);
-        expect(gantt).toContain('repeating-linear-gradient(135deg,var(--color-surface-muted)');
+        const holidayGradient = 'repeating-linear-gradient(135deg,rgb(var(--color-surface-muted))_0_2px,rgb(var(--color-surface-card))_2px_4px)';
+        expect(gantt.match(/isHol \? "([^"]+)"/g)?.join(' ')).toContain(holidayGradient);
+        expect(holidayLegend).toContain(holidayGradient);
         expect(email.match(/<Mail[\s\S]*?\/>/)?.[0]).not.toMatch(forbidden);
         expect(email.match(/enabled \? '([^']+)'/)?.[1]).not.toMatch(forbidden);
     });
