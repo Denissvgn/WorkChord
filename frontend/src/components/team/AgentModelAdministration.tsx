@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -538,12 +538,21 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
         );
     }
 
+    const unavailableState = (content: ReactNode) => (
+        <>
+            {headerActions && createPortal(
+                <Button type="button" disabled>{t('modelAdministration.addModel')}</Button>, headerActions,
+            )}
+            {content}
+        </>
+    );
+
     if (capabilitiesQuery.isPending) {
-        return <QueryLoadingState message={t('modelAdministration.checkingAccess')} />;
+        return unavailableState(<QueryLoadingState message={t('modelAdministration.checkingAccess')} />);
     }
 
     if (capabilitiesQuery.isError) {
-        return (
+        return unavailableState(
             <QueryErrorState
                 error={capabilitiesQuery.error}
                 fallback={t('modelAdministration.accessFailed')}
@@ -553,7 +562,7 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
     }
 
     if (!canRead) {
-        return (
+        return unavailableState(
             <QueryErrorState
                 message={t('modelAdministration.readScopeRequired')}
                 title={t('modelAdministration.accessDenied')}
@@ -563,12 +572,12 @@ export const AgentModelAdministration = ({ headerActions }: { headerActions?: HT
 
     const evidenceLoading = rosterQuery.isPending || catalogQuery.isPending || bindingsQuery.isPending;
     if (evidenceLoading) {
-        return <QueryLoadingState message={t('modelAdministration.loading')} />;
+        return unavailableState(<QueryLoadingState message={t('modelAdministration.loading')} />);
     }
 
     const evidenceError = rosterQuery.error || catalogQuery.error || bindingsQuery.error;
     if (evidenceError) {
-        return (
+        return unavailableState(
             <QueryErrorState
                 error={evidenceError}
                 fallback={t('modelAdministration.loadFailed')}

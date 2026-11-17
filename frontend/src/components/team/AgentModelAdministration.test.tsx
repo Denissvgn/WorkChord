@@ -210,13 +210,36 @@ describe('AgentModelAdministration', () => {
         expect(within(screen.getByTestId('page-header')).getByRole('button', { name: action })).toHaveClass('btn-primary');
     });
 
+    it.each([
+        ['checking access', 'Checking model-routing access…'],
+        ['access error', 'Model-routing access could not be confirmed.'],
+        ['access denied', 'Model-routing access denied'],
+        ['loading evidence', 'Loading model and actor evidence…'],
+        ['evidence error', 'Model and actor evidence could not be loaded.'],
+    ])('shows one disabled header primary while %s', async (state, message) => {
+        const pending = () => new Promise<never>(() => {});
+        const error = { response: { status: 503 } };
+        if (state === 'checking access') agentServiceMock.getCapabilities.mockImplementation(pending);
+        if (state === 'access error') agentServiceMock.getCapabilities.mockRejectedValue(error);
+        if (state === 'access denied') agentServiceMock.getCapabilities.mockResolvedValue(capabilitiesFixture([]));
+        if (state === 'loading evidence') agentServiceMock.getModelCatalog.mockImplementation(pending);
+        if (state === 'evidence error') agentServiceMock.getModelCatalog.mockRejectedValue(error);
+
+        const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        expect(await screen.findByText(message)).toBeVisible();
+        const primary = within(screen.getByTestId('page-header')).getByRole('button', { name: 'Add a model' });
+        expect(primary).toBeDisabled();
+        expect(primary).toHaveClass('btn-primary');
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+    });
+
     it('opens both creation drawers from the header overflow', async () => {
         agentServiceMock.getModelCatalog.mockResolvedValue([]);
         agentServiceMock.getModelBindings.mockResolvedValue([]);
         const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
         await within(screen.getByTestId('page-header')).findByRole('button', { name: 'Add a model' });
         const header = within(screen.getByTestId('page-header'));
-        await user.click(header.getByRole('button', { name: 'More actions' }));
+        await user.click(await header.findByRole('button', { name: 'More actions' }));
         await user.click(screen.getByRole('menuitem', { name: 'New model' }));
         expect(screen.getByRole('dialog', { name: 'Create catalog entry' })).toBeVisible();
         await user.keyboard('{Escape}');
