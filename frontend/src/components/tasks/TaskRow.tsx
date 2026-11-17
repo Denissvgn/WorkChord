@@ -15,7 +15,7 @@ import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } 
 import { AssigneeSelect } from './AssigneeSelect';
 
 import { Button } from '../../components/common/Button';
-export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null }
+export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null; agentConnected?: boolean }
 
 export interface TaskRowProps {
     id: number;

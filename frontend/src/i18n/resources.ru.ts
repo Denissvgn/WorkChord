@@ -392,6 +392,7 @@ export const russianResources = {
                 linkCopied: 'Ссылка скопирована.',
                 linkCopyFailed: 'Не удалось скопировать ссылку.',
                 reviewWork: 'Проверить',
+                sendToAgent: 'Отправить агенту',
                 saveToChangeStatus: 'Сохраните или отмените изменения, чтобы сменить статус.',
                 goal: 'Цель',
                 noBrief: 'Описания пока нет.',
@@ -847,6 +848,7 @@ export const russianResources = {
             },
             agentDispatch: {
                 noAgentConnected: 'Агент не подключён',
+                notSentYet: 'Ещё не отправлено агенту',
                 queued: 'В очереди',
                 working: 'Работает',
                 waitingForReview: 'Ждёт проверки',

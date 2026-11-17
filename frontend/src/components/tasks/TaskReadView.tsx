@@ -9,6 +9,8 @@ import { Link2, Pencil } from 'lucide-react';
 import type { Task, TaskBrief } from '../../types/task';
 import { taskService } from '../../services/taskService';
 import { Button } from '../common/Button';
+import { ButtonLink } from '../common/ButtonLink';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
@@ -57,6 +59,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
 }) => {
     const { t, i18n } = useTranslation();
     const assigneeDisplay = useTaskAssigneeDisplay(task, task.iteration_id);
+    const scopeLink = useScopeLink();
     const toast = useToast();
     const queryClient = useQueryClient();
     const [params, setParams] = useSearchParams();
@@ -95,6 +98,12 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     const criteria = task.brief?.acceptance_criteria ?? [];
     const doneCount = criteria.filter(criterion => progressFor(criterion.id)?.state === 'completed').length;
     const next = NEXT_TRANSITION[task.status];
+    // A connected agent that has not been sent the task gets it through dispatch, not a manual start.
+    const offerDispatch = task.status === 'planned' && assigneeDisplay.dispatch === 'notSentYet';
+    // Owner is shown only when it is known to differ from the assignee's profile: with no assignee,
+    // or once that profile has been read. While it loads, fails or has no team row, Owner stays hidden.
+    const ownerDiffers = Boolean(task.owner) && (!task.assignee
+        || (assigneeDisplay.profileId !== undefined && task.owner?.id !== assigneeDisplay.profileId));
     const copyLink = async () => {
         const url = new URL(window.location.href);
         url.searchParams.set('task', String(task.id));
@@ -119,13 +128,16 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                         {t(`statuses.${task.status}`)}
                     </span>
                     <TaskAssigneeDisplay task={task} iterationId={task.iteration_id} />
-                    {task.owner && !assigneeDisplay.profileResolving && task.owner.id !== assigneeDisplay.profileId && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
+                    {task.owner && ownerDiffers && <span className="text-content-secondary">{t('taskView.owner')} <b className="font-semibold text-content-primary">{task.owner.name}</b></span>}
                     {task.end_date && <span className="text-content-secondary">{t('taskView.due')} <b className="font-semibold text-content-primary">{formatDate(task.end_date, i18n.language)}</b></span>}
                     <span className="flex-1" />
                     <Button type="button" variant="ghost" size="sm" aria-label={t('taskView.copyLink')} title={t('taskView.copyLink')} onClick={() => { void copyLink(); }}>
                         <Link2 className="h-4 w-4" aria-hidden="true" />
                     </Button>
-                    {next && (
+                    {offerDispatch && (locked
+                        ? <Button type="button" size="sm" disabled>{t('taskView.sendToAgent')}</Button>
+                        : <ButtonLink size="sm" to={scopeLink(`/tasks?layout=pipeline&task=${task.id}`)}>{t('taskView.sendToAgent')}</ButtonLink>)}
+                    {next && !offerDispatch && (
                         <Button type="button" size="sm" disabled={locked} onClick={() => { setWorkAction(next.action); setPart('work'); }}>
                             {t(next.labelKey)}
                         </Button>

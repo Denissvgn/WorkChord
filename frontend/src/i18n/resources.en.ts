@@ -376,6 +376,7 @@ export const englishResources = {
                 linkCopied: 'Link copied.',
                 linkCopyFailed: 'The link could not be copied.',
                 reviewWork: 'Review',
+                sendToAgent: 'Send to the agent',
                 saveToChangeStatus: 'Save or discard your edits to change status.',
                 goal: 'Goal',
                 noBrief: 'No brief yet.',
@@ -818,6 +819,7 @@ export const englishResources = {
             },
             agentDispatch: {
                 noAgentConnected: 'No agent connected',
+                notSentYet: 'Not sent to the agent yet',
                 queued: 'Queued',
                 working: 'Working',
                 waitingForReview: 'Waiting for review',
