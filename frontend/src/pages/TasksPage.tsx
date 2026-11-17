@@ -147,7 +147,8 @@ const TasksPage = () => {
     const taskScopeMoveRef = useRef<{ taskId: number; pending: boolean } | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
-    const [selectionBarHost, setSelectionBarHost] = useState<HTMLElement | null>(null);
+    const [toolbarSelectionHost, setSelectionBarHost] = useState<HTMLElement | null>(null);
+    const [fullscreenSelectionHost, setFullscreenSelectionHost] = useState<HTMLElement | null>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
         searchParams.get(OVERVIEW_TASK_RETURN_PARAM),
@@ -166,6 +167,8 @@ const TasksPage = () => {
     const createTaskRequested = searchParams.get('create') === '1';
     const filtersRequested = searchParams.get('panel') === 'filters';
     const isFullScreen = searchParams.get('fullscreen') === '1';
+    // The toolbar sits outside the full-screen dialog, so full-screen mode needs its own host inside it.
+    const selectionBarHost = isFullScreen ? fullscreenSelectionHost : toolbarSelectionHost;
     const viewMode = viewModeFromParam(searchParams.get('layout'));
     const pipelineQuery = usePipeline(viewMode === 'pipeline');
     const agentFilter = searchParams.get('agent') ?? '';
@@ -709,7 +712,8 @@ const TasksPage = () => {
                         className="tasks-workbench-content flex-1 overflow-hidden relative"
                     >
                         {isFullScreen && (
-                            <div className="flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
+                            <div className="relative flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
+                                <div ref={setFullscreenSelectionHost} data-testid="fullscreen-selection-slot" className="tasks-selection-slot tasks-selection-slot-fullscreen" />
                                 <div>
                                     <h2 className="text-2xl font-bold text-content-primary">
                                         {viewMode === 'pipeline' ? t('tasks.pipeline') : viewMode === 'board' ? t('tasks.boardView') : t('tasks.taskList')}
