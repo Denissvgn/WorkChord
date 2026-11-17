@@ -60,7 +60,7 @@ describe('color roles', () => {
         expect(priorityChipClassName(1)).not.toBe(priorityChipClassName(7));
     });
 
-    it('keeps metadata, holidays, and the mail icon neutral', () => {
+    it('source-level check keeps every metadata badge, holiday, and mail icon neutral', () => {
         const interfaceSettings = sourceText('src/components/settings/InterfaceLanguageSettings.tsx');
         const runtimeSettings = sourceText('src/components/settings/RuntimeConfigSettings.tsx');
         const templates = sourceText('src/components/settings/TemplateLabelSettings.tsx');
@@ -68,12 +68,14 @@ describe('color roles', () => {
         const email = sourceText('src/components/settings/EmailSettingsPanel.tsx');
         const forbidden = /(?:action|feedback-(?:danger|warning)|status-(?:planned|active|resolved|closed))/;
 
-        for (const settings of [interfaceSettings, runtimeSettings]) {
+        for (const settings of [interfaceSettings, runtimeSettings, email]) {
             const sourceMap = settings.match(/const sourceClass:[\s\S]*?\n};/)?.[0];
             expect(sourceMap).toBeDefined();
             expect(sourceMap).not.toMatch(forbidden);
         }
-        expect(templates.match(/template\.seed_key && \([\s\S]*?\n\s*\)/)?.[0]).not.toMatch(forbidden);
+        const seededBadges = templates.match(/(?:template|group)\.seed_key && \([\s\S]*?\n\s*\)/g);
+        expect(seededBadges).toHaveLength(2);
+        for (const badge of seededBadges ?? []) expect(badge).not.toMatch(forbidden);
         const holidayLegend = gantt.match(/className="([^"]+)" \/>\{t\('surfaces\.ganttChart\.legendHoliday'\)\}/)?.[1];
         expect(holidayLegend).toBeDefined();
         expect(holidayLegend).not.toMatch(forbidden);
