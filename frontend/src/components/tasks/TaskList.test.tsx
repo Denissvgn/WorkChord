@@ -573,6 +573,26 @@ describe('TaskList empty states', () => {
         expect(screen.getByText('Past its end date')).toBeInTheDocument();
     });
 
+    it('lists a task whose only risk is outside its date limits, using the dates the Tasks list receives', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), start_date: '2026-08-03', min_start_date: '2026-08-05', iteration_revision: 1 },
+            { ...task(2), iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Outside its date limits')).toBeInTheDocument();
+        expect(screen.getByText('Task 1')).toBeInTheDocument();
+        expect(screen.queryByText('Task 2')).not.toBeInTheDocument();
+    });
+
+    it('says a task started late when it began after its planned start, not that it starts before today', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), is_delayed: true, status: 'active', baseline_start_date: '2026-08-03', actual_start_date: '2026-08-06', iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Started after its planned start')).toBeInTheDocument();
+        expect(screen.queryByText('Starts before today')).not.toBeInTheDocument();
+    });
+
     it('offers the one next step when the iteration has no tasks yet', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([]);
         const onCreateTask = vi.fn();

@@ -95,6 +95,23 @@ describe('IterationForm hardening', () => {
         expect(screen.getByRole('button', { name: 'Keep draft with current version' })).toBeVisible();
     });
 
+    it('names a calendar or manager change made on the server', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ calendar_id: 2, manager_email: 'lead@example.com' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByText(/changed on the server after you opened it: Calendar, Manager email\./)).toBeVisible();
+    });
+
+    it('asks what to do when a save is refused as out of date', async () => {
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByDisplayValue('August plan');
+        expect(screen.queryByRole('button', { name: 'Load latest version' })).not.toBeInTheDocument();
+        iterationServiceMock.update.mockRejectedValueOnce({ response: { status: 409, data: { detail: 'Out of date' } } });
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'Changed elsewhere' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        expect(await screen.findByRole('button', { name: 'Load latest version' })).toBeVisible();
+        expect(screen.getByText(/changed on the server after you opened it: Name\./)).toBeVisible();
+    });
+
     it('keeps the calendar under More: the default is not sent, a chosen one is', async () => {
         const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
         expect(screen.queryByLabelText('Calendar')).not.toBeInTheDocument();

@@ -743,6 +743,15 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
+    it('does not claim every task has dates while an active task is undated or the saved result is empty', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask({ status: 'active', start_date: null, end_date: null })], schedule_result: saved, holidays: [], weekends: [] });
+        renderPlan();
+        expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
+        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
     it('does not mark Schedule Done from a successful apply when readiness still says it is incomplete', async () => {
         scheduleWorkspace();
         services.iterations.getPlanningReadiness.mockResolvedValue(scheduleReady);

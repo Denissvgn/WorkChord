@@ -21,7 +21,7 @@ import type {
     IterationSeriesCreate,
     IterationUpdate,
 } from '../../types/iteration';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
 
 interface IterationFormProps {
@@ -181,8 +181,8 @@ const IterationFormEditor = ({
     defaultProjectId,
     onSuccess,
     onCancel,
-    onStateChange, revisions, contextControls,
-}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode }) => {
+    onStateChange, revisions, contextControls, onConflict,
+}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode; onConflict?: () => void }) => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const isActive = useActiveMount();
@@ -341,7 +341,7 @@ const IterationFormEditor = ({
         }
 
         if (initialData) {
-            updateMutation.mutate(payload);
+            updateMutation.mutate(payload, { onError: error => { if ([409, 412].includes(getApiErrorStatus(error) ?? 0)) onConflict?.(); } });
             return;
         }
 
@@ -673,6 +673,6 @@ export const IterationForm = (props: IterationFormProps) => {
 
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
     return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id} draft={props.initialData}>
-        {(observed, controls) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} />}
+        {(observed, controls, _saved, conflict) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} />}
     </PlanningInputBoundary>;
 };

@@ -738,7 +738,7 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
                 selected={ctx.selectedIds.has(task.id)}
                 onToggleSelect={isSelectable ? ({ shiftKey }) => ctx.onToggleSelect(task.id, shiftKey) : undefined}
                 selectDisabledReason={isSelectable ? undefined : t('taskList.selectParentUnavailable')}
-                meta={ctx.showRiskReasons ? atRiskReasons(task, t).join('; ') || undefined : undefined}
+                reasons={ctx.showRiskReasons ? atRiskReasons(task, t) : undefined}
                 overdue={task.is_overdue}
                 deferred={task.is_deferred}
                 menuItems={[

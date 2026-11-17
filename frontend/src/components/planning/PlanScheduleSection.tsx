@@ -10,6 +10,7 @@ import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlan
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse, SchedulePreviewResponse } from '../../types/gantt';
+import { isFinished } from '../../features/planningMasters/planningTaskIssues';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
 import type { Iteration } from '../../types/iteration';
 import type { TeamMember } from '../../types/team';
@@ -58,7 +59,9 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
     const ends = scheduleLeaves(tasks).flatMap(task => task.end_date ? [task.end_date] : []);
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
-    const everyTaskDated = scheduleLeaves(tasks).every(task => task.status !== 'planned' || Boolean(task.start_date && task.end_date));
+    // Only the task data can say every task is dated; an empty unscheduled list or a missing task list cannot.
+    const taskDataKnown = Boolean(preview?.tasks ?? gantt?.tasks);
+    const everyTaskDated = taskDataKnown && scheduleLeaves(tasks).every(task => isFinished(task) || Boolean(task.start_date && task.end_date));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -95,7 +98,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
                 {result?.unscheduled?.length ? <ul className="plan-schedule-reasons">{result.unscheduled.map(task => <li key={task.task_id}>
                     <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(task.task_id) }))}>{task.task_title}</Link>
                     <p>{task.message}</p>
-                </li>)}</ul> : <p className="text-sm text-content-secondary">{t(result?.unscheduled || everyTaskDated ? 'planSchedule.allDated' : 'planSchedule.calculateForReasons')}</p>}
+                </li>)}</ul> : <p className="text-sm text-content-secondary">{t(everyTaskDated ? 'planSchedule.allDated' : 'planSchedule.calculateForReasons')}</p>}
             </section>
         </>}
     </div>;
