@@ -1,6 +1,6 @@
 import i18n from './i18n';
 import type { GitHubStatusAutomationRule } from '../types/github';
-import type { Label, LabelGroup } from '../types/label';
+import type { Label } from '../types/label';
 import type { SavedView, SavedViewDashboardCard } from '../types/savedView';
 import type { WorkTemplate } from '../types/template';
 
@@ -138,18 +138,30 @@ const localizeIfBaseline = (value: string | null | undefined, baseline?: string,
     value && baseline && key && value === baseline ? seedText(key, value) : value
 );
 
-export const labelGroupDisplay = (group: LabelGroup | { seed_key?: string | null; name: string; description?: string | null }) => {
-    const baseline = group.seed_key ? labelGroupBaselines[group.seed_key] : undefined;
+// The embedded group on a label carries only id, key, name and colour, so a seeded group is recognised by its key.
+const labelGroupSeedKeyByKey: Record<string, string> = {
+    type: 'group_type',
+    area: 'group_area',
+    risk: 'group_risk',
+    source: 'group_source',
+    capability: 'group_capability',
+};
+
+export const labelGroupDisplay = (group: { seed_key?: string | null; key?: string; name: string; description?: string | null }) => {
+    const seedKey = group.seed_key ?? (group.key ? labelGroupSeedKeyByKey[group.key] : undefined);
+    const baseline = seedKey ? labelGroupBaselines[seedKey] : undefined;
     return {
-        name: localizeIfBaseline(group.name, baseline?.name, `labelGroups.${group.seed_key}.name`) ?? group.name,
-        description: localizeIfBaseline(group.description, baseline?.description, `labelGroups.${group.seed_key}.description`) ?? group.description,
+        name: localizeIfBaseline(group.name, baseline?.name, `labelGroups.${seedKey}.name`) ?? group.name,
+        description: localizeIfBaseline(group.description, baseline?.description, `labelGroups.${seedKey}.description`) ?? group.description,
     };
 };
 
 export const labelDisplay = (label: Label | { seed_key?: string | null; name: string; description?: string | null }) => {
-    const baseline = label.seed_key ? labelBaselines[label.seed_key] : undefined;
+    // The API writes some seed keys with hyphens (for example label_needs-review); the bundle keys use underscores.
+    const seedKey = label.seed_key?.replace(/-/g, '_');
+    const baseline = seedKey ? labelBaselines[seedKey] : undefined;
     return {
-        name: localizeIfBaseline(label.name, baseline, `labels.${label.seed_key}.name`) ?? label.name,
+        name: localizeIfBaseline(label.name, baseline, `labels.${seedKey}.name`) ?? label.name,
         description: label.description,
     };
 };

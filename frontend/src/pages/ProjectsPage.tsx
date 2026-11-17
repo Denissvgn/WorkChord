@@ -254,7 +254,7 @@ const ProjectRow = ({
                     {project.name}
                 </Link>
                 {project.description && (
-                    <p className="mt-1 max-w-md truncate text-xs text-content-secondary" title={project.description}>{project.description}</p>
+                    <p className="mt-1 max-w-sm truncate text-xs text-content-secondary" title={project.description}>{project.description}</p>
                 )}
             </td>
             <td className="px-3 py-3">
