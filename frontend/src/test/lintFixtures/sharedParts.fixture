@@ -1,0 +1,16 @@
+import { Button } from '../components/common/Button';
+import { Select } from '../components/common/Select';
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// Two returns are two trees, each with one toolbar.
+export const Example = ({ empty }: { empty: boolean }) => {
+    if (empty) {
+        return <PageLayout><PageHeader title="Example" purpose="One sentence." /><PageToolbar label="Empty" /></PageLayout>;
+    }
+    return (
+        <PageLayout>
+            <PageHeader title="Example" purpose="One sentence." primaryAction={<Button>Create</Button>} />
+            <PageToolbar label="Filters" viewOptions={<Select label="Sort"><option>Name</option></Select>} />
+        </PageLayout>
+    );
+};

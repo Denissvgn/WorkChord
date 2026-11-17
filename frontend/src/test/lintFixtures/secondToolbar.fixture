@@ -1,0 +1,9 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+export const Example = () => (
+    <PageLayout>
+        <PageHeader title="Example" purpose="One sentence." />
+        <PageToolbar label="Search" />
+        <PageToolbar label="Filters" />
+    </PageLayout>
+);
