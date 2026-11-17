@@ -19,7 +19,7 @@ import { ReleaseForm } from '../components/releases/ReleaseForm';
 import { PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
-import { getApiErrorMessage } from '../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../utils/apiError';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import type { Release, ReleaseStatus, ReleaseTaskSummary } from '../types/release';
 import { isTaskStatus, pillToneClassName, STATUS_TONE, statusTextClassName, wcPillClass } from '../components/ui/tone';
@@ -145,11 +145,19 @@ const ProjectReleaseDetailPage = () => {
         },
     });
 
-    if (projectError) return <QueryErrorState error={projectError} onRetry={() => void refetchProject()} />;
-
-    if (!projectEnabled || !releaseEnabled) {
-        return <PageLayout><PageHeader title={t('surfaces.releaseDetail.releaseNotFound')} purpose={t('surfaces.releaseDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.releaseDetail.backToProjects')}</Button>} /></PageLayout>;
+    if (!projectEnabled || !releaseEnabled || getApiErrorStatus(projectError) === 404) {
+        return (
+            <PageLayout>
+                <PageHeader
+                    title={t('surfaces.releaseDetail.releaseNotFound')}
+                    purpose={t('surfaces.releaseDetail.missingPurpose')}
+                    primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.releaseDetail.backToProjects')}</Button>}
+                />
+            </PageLayout>
+        );
     }
+
+    if (projectError) return <QueryErrorState error={projectError} onRetry={() => void refetchProject()} />;
 
     if (isLoading) {
         return (
@@ -161,8 +169,16 @@ const ProjectReleaseDetailPage = () => {
     }
 
     if (!release || isError) {
-        if (isError) return <QueryErrorState error={error} onRetry={() => void refetchRelease()} />;
-        return <PageLayout><PageHeader title={t('surfaces.releaseDetail.releaseNotFound')} purpose={t('surfaces.releaseDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate(`/projects/${numericProjectId}`)}>{t('surfaces.releaseDetail.backToProject')}</Button>} /></PageLayout>;
+        if (isError && getApiErrorStatus(error) !== 404) return <QueryErrorState error={error} onRetry={() => void refetchRelease()} />;
+        return (
+            <PageLayout>
+                <PageHeader
+                    title={t('surfaces.releaseDetail.releaseNotFound')}
+                    purpose={t('surfaces.releaseDetail.missingPurpose')}
+                    primaryAction={<Button onClick={() => navigate(`/projects/${numericProjectId}`)}>{t('surfaces.releaseDetail.backToProject')}</Button>}
+                />
+            </PageLayout>
+        );
     }
 
     const releaseProjectId = release.project_id || numericProjectId;

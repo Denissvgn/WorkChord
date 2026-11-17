@@ -406,8 +406,16 @@ const ProjectDetailPage = () => {
         || reorderMilestoneMutation.isPending
     );
 
-    if(!enabled) {
-        return <PageLayout><PageHeader title={t('surfaces.projectDetail.projectNotFound')} purpose={t('surfaces.projectDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>} /></PageLayout>;
+    if (!enabled || getApiErrorStatus(projectError) === 404) {
+        return (
+            <PageLayout>
+                <PageHeader
+                    title={t('surfaces.projectDetail.projectNotFound')}
+                    purpose={t('surfaces.projectDetail.missingPurpose')}
+                    primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>}
+                />
+            </PageLayout>
+        );
     }
 
     if(isProjectLoading) {
@@ -445,7 +453,15 @@ const ProjectDetailPage = () => {
     }
 
     if(!project) {
-        return <PageLayout><PageHeader title={t('surfaces.projectDetail.projectNotFound')} purpose={t('surfaces.projectDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>} /></PageLayout>;
+        return (
+            <PageLayout>
+                <PageHeader
+                    title={t('surfaces.projectDetail.projectNotFound')}
+                    purpose={t('surfaces.projectDetail.missingPurpose')}
+                    primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>}
+                />
+            </PageLayout>
+        );
     }
 
     return (

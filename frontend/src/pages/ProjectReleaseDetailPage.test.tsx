@@ -46,3 +46,29 @@ it('opens the release editor in a slide-over drawer from either edit action', as
         await user.click(within(dialog).getByRole('button', { name: 'Close' }));
     }
 });
+
+it('frames a release 404 returned by the API', async () => {
+    services.release.getById.mockRejectedValue({ response: { status: 404, data: { code: 'not_found', message: 'Release with id 2 not found', details: [] } } });
+    renderPage();
+    const header = await screen.findByTestId('page-header');
+    expect(within(header).getByRole('heading', { name: 'Release not found' })).toBeVisible();
+    expect(within(header).getAllByRole('button')).toHaveLength(1);
+    expect(within(header).getByRole('button', { name: 'Back to project' })).toBeVisible();
+});
+
+it('frames a project 404 on the release page', async () => {
+    services.project.getById.mockRejectedValue({ response: { status: 404, data: { code: 'not_found', message: 'Project with id 1 not found', details: [] } } });
+    renderPage();
+    const header = await screen.findByTestId('page-header');
+    expect(within(header).getByRole('heading', { name: 'Release not found' })).toBeVisible();
+    expect(within(header).getAllByRole('button')).toHaveLength(1);
+    expect(within(header).getByRole('button', { name: 'Back to Projects' })).toBeVisible();
+});
+
+it.each(['project', 'release'] as const)('offers retry for a %s load failure', async resource => {
+    services[resource].getById.mockRejectedValueOnce({ response: { status: 500, data: { code: 'error', message: 'Server unavailable', details: [] } } });
+    const { user } = renderPage();
+    expect(await screen.findByText('Server unavailable')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByRole('heading', { name: 'Launch' })).toBeVisible();
+});
