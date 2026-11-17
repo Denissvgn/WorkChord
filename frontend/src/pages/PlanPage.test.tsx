@@ -6,6 +6,7 @@ import { LegacyRedirect } from '../navigation/LegacyRedirect';
 import { expectPageChrome } from '../test/pageChrome';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { useScopeStore } from '../features/scope/scopeStore';
+import { useSetWorkScope } from '../features/scope/useWorkScope';
 import type { TeamMember, TeamMemberCreate, TeamMemberProfile } from '../types/team';
 import type { IterationPlanningReadinessSummary, PlanCheckpoint } from '../types/iteration';
 import PlanPage from './PlanPage';
@@ -258,20 +259,41 @@ describe('Plan is one page of six checkpoints', () => {
         const next = { ...ITERATION, id: 2, name: 'September plan', start_date: '2026-09-07', end_date: '2026-09-18' };
         services.iterations.getAll.mockResolvedValue([ITERATION, next]);
         services.iterations.getPlanningReadiness.mockImplementation(async (id: number) => (id === 2 ? FIXTURES.empty : FIXTURES.sixOfSix));
+        // The scope bar's own command, so the section opened by hand stays in the link while the iteration changes.
         const ScopeNext = () => {
-            const navigate = useNavigate();
-            return <button type="button" onClick={() => navigate('/plan?project=1&iteration=2')}>Scope the next iteration</button>;
+            const { setIteration } = useSetWorkScope();
+            return <button type="button" onClick={() => setIteration(2)}>Scope the next iteration</button>;
         };
-        const { user } = renderWithProviders(<><PlanPage /><ScopeNext /></>, { initialEntries: [PLAN_ENTRY] });
+        const { user } = renderWithProviders(<><PlanPage /><ScopeNext /><LocationProbe /></>, { initialEntries: [PLAN_ENTRY] });
         await screen.findByRole('list', { name: 'Checkpoints' });
         await waitFor(() => expect(stateText('review')).toBe('Done'));
 
         await user.click(toggle('Iteration'));
         expect(toggle('Iteration')).toHaveAttribute('aria-expanded', 'true');
-        // A new iteration comes into scope, as after New iteration: its own first incomplete checkpoint opens.
+        expect(screen.getByTestId('location')).toHaveTextContent('step=iteration');
+        // A new iteration comes into scope: its own first incomplete checkpoint opens, and the
+        // section chosen for the previous iteration leaves the link.
         await user.click(screen.getByRole('button', { name: 'Scope the next iteration' }));
+        await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(/^\/plan\?project=1&iteration=2$/));
         await waitFor(() => expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'true'));
         expect(toggle('Iteration')).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    it('keeps the section a link names together with another iteration', async () => {
+        const next = { ...ITERATION, id: 2, name: 'September plan', start_date: '2026-09-07', end_date: '2026-09-18' };
+        services.iterations.getAll.mockResolvedValue([ITERATION, next]);
+        services.iterations.getPlanningReadiness.mockImplementation(async (id: number) => (id === 2 ? FIXTURES.empty : FIXTURES.sixOfSix));
+        const OpenNext = () => {
+            const navigate = useNavigate();
+            return <button type="button" onClick={() => navigate('/plan?step=work&project=1&iteration=2')}>Open the next work</button>;
+        };
+        const { user } = renderWithProviders(<><PlanPage /><OpenNext /><LocationProbe /></>, { initialEntries: [PLAN_ENTRY] });
+        await screen.findByRole('list', { name: 'Checkpoints' });
+        await user.click(toggle('Iteration'));
+
+        await user.click(screen.getByRole('button', { name: 'Open the next work' }));
+        await waitFor(() => expect(toggle('Work')).toHaveAttribute('aria-expanded', 'true'));
+        expect(screen.getByTestId('location')).toHaveTextContent('step=work');
     });
 
     it('opens the All iterations drawer over the checkpoints when the link asks for it', async () => {
