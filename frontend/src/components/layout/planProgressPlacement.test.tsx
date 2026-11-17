@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import OverviewPage from '../../pages/OverviewPage';
 import PlanPage from '../../pages/PlanPage';
-import { deriveStatus, nextStep, readiness } from '../../features/planningMasters/masters';
 import { PLANNING_STEP_IDS } from '../../features/planningMasters/planningReturn';
 import type { Iteration, IterationSummary } from '../../types/iteration';
 import { AppSidebar } from './AppSidebar';
@@ -71,8 +70,8 @@ const queryState = () => ({
     refetch: vi.fn().mockResolvedValue({ isError: false }),
 });
 
-// An iteration with a team and tasks but no schedule yet: below 6 of 6.
-const planningState = (overrides: Record<string, unknown> = {}) => {
+// The server's response says how many checkpoints are done, in order; the rest are still to do.
+const planningState = (doneCount: number, overrides: Record<string, unknown> = {}) => {
     const readinessData = {
         iterationCount: 1,
         hasCurrentIteration: true,
@@ -92,7 +91,6 @@ const planningState = (overrides: Record<string, unknown> = {}) => {
         inboxCount: 0,
         ...overrides,
     };
-    const status = deriveStatus(readinessData);
     return {
         selectedIterationId: iteration.id,
         iterations: [iteration],
@@ -105,12 +103,10 @@ const planningState = (overrides: Record<string, unknown> = {}) => {
         planningSummary: {
             iteration_id: iteration.id, team_member_count: 2, team_capacity_hours: 80, team_members_no_capacity: 0,
             task_count: 3, tasks_without_assignee: 0, tasks_without_effort: 0,
-            has_schedule: readinessData.hasGanttSchedule, risk_count: 0,
-            checkpoints: PLANNING_STEP_IDS.map(id => ({ id, state: status[id].state, reason_codes: [], counts: {} })),
+            has_schedule: doneCount >= 5, risk_count: 0,
+            checkpoints: PLANNING_STEP_IDS.map(id => ({ id, state: PLANNING_STEP_IDS.indexOf(id) < doneCount ? 'done' as const : 'todo' as const, reason_codes: [], counts: {} })),
         },
-        status,
-        ready: readiness(status),
-        nextId: nextStep(status),
+        ready: { done: doneCount, total: PLANNING_STEP_IDS.length, pct: Math.round((doneCount / PLANNING_STEP_IDS.length) * 100) },
         isFetching: false,
         queryStates: {
             iterations: queryState(),
@@ -160,7 +156,7 @@ describe('plan progress placement', () => {
     });
 
     it('shows plan progress on the Overview page only as the counter on the Plan item', async () => {
-        const state = planningState();
+        const state = planningState(3);
         expect(state.ready.done).toBeLessThan(6);
         useState(state);
         renderWithProviders(<Shell><OverviewPage /></Shell>, { initialEntries: ['/'] });
@@ -175,7 +171,7 @@ describe('plan progress placement', () => {
     });
 
     it('shows plan progress on the Plan page as the counter and once as "n of 6", and nowhere else', () => {
-        const state = planningState();
+        const state = planningState(3);
         useState(state);
         renderWithProviders(<Shell><PlanPage /></Shell>, { initialEntries: ['/plan'] });
 
@@ -189,7 +185,7 @@ describe('plan progress placement', () => {
     });
 
     it('shows 6/6 on the Plan item for a complete plan, and "6 of 6" once on the Plan page', () => {
-        const state = planningState({ hasGanttSchedule: true, riskCount: 0 });
+        const state = planningState(6);
         expect(state.ready.done).toBe(6);
         useState(state);
         renderWithProviders(<Shell><PlanPage /></Shell>, { initialEntries: ['/plan'] });

@@ -37,24 +37,14 @@ const waitsFor = (
 /**
  * The six sections in order, with the states exactly as the server reported them.
  *
- * Returns null while there is no usable response. Without an iteration in scope there is
- * nothing to ask the server about: the Iteration checkpoint is the next one and every other
- * checkpoint waits for it.
+ * Returns null without an iteration in scope or without a complete response (all six
+ * checkpoints): no checkpoint state is ever worked out in the browser.
  */
 export const planCheckpointSections = (
     summary: IterationPlanningReadinessSummary | undefined,
     { hasIteration }: { hasIteration: boolean },
 ): PlanCheckpointSection[] | null => {
-    if (!hasIteration) {
-        return PLANNING_STEP_IDS.map((id, index) => ({
-            id,
-            number: index + 1,
-            state: index === 0 ? 'todo' : 'blocked',
-            ...(index === 0 ? {} : { waitsFor: 'iteration' as const }),
-            reasonCodes: index === 0 ? ['no_iteration'] : ['iteration_first'],
-            counts: {},
-        }));
-    }
+    if (!hasIteration) return null;
     const checkpoints = summary?.checkpoints;
     if (!checkpoints) return null;
     const byId = new Map(checkpoints.map(item => [item.id, item]));
