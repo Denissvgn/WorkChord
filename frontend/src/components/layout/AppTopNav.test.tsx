@@ -193,6 +193,14 @@ describe('AppTopNav', () => {
             { id: 1, name: 'Agdash', sort_order: 1, initiative: null },
             { id: 2, name: 'Beacon', sort_order: 2, initiative: null },
         ]);
+        const sprint = (id: number, name: string, projectId: number, start: string, end: string) => ({
+            id, name, calendar_id: 1, project_id: projectId, start_date: start, end_date: end, working_days: 10,
+            project: { id: projectId, name: projectId === 1 ? 'Agdash' : 'Beacon', status: 'active', health: 'green' },
+        });
+        scopeServiceMocks.iterations.getAll.mockResolvedValue([
+            sprint(11, 'Sprint 1', 1, '2026-10-01', '2026-10-31'),
+            sprint(21, 'Launch', 2, '2026-09-01', '2026-09-30'),
+        ]);
         const original = window.matchMedia;
         window.matchMedia = ((query: string) => ({
             matches: query === '(max-width: 767px)' || query === '(max-width: 1023px)',
@@ -216,7 +224,13 @@ describe('AppTopNav', () => {
             await waitFor(() => expect(
                 within(screen.getByTestId('mobile-nav-scope')).getByRole('combobox', { name: 'Project' }),
             ).toHaveValue('Beacon'));
-            expect(within(scope).getByRole('combobox', { name: 'Iteration' })).toBeInTheDocument();
+            const iterationPicker = () => within(screen.getByTestId('mobile-nav-scope'))
+                .getByRole('combobox', { name: 'Iteration' });
+            // Choosing a project moves Iteration to that project's current iteration; change it from there.
+            await waitFor(() => expect(iterationPicker()).toHaveValue('Launch'));
+            await user.click(iterationPicker());
+            await user.click(await screen.findByRole('option', { name: /Backlog/ }));
+            await waitFor(() => expect(iterationPicker()).toHaveValue('Backlog'));
         } finally {
             window.matchMedia = original;
         }
