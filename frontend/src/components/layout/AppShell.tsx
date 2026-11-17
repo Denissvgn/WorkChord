@@ -11,6 +11,7 @@ import { DocumentMetadata } from './DocumentMetadata';
 import { CommandMenu } from './CommandMenu';
 import { WorkRefreshStatus } from '../feedback/WorkRefreshStatus';
 import { useWorkScope } from '../../features/scope/useWorkScope';
+import { FirstRunLanding } from '../../features/firstRun/FirstRunLanding';
 
 // Full-height routes where the main area must not scroll itself
 // (the inner component controls overflow).
@@ -45,6 +46,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             <div className="wc app">
                 <DocumentMetadata />
                 <CommandMenu />
+                <FirstRunLanding />
                 <a className="skip-link" href="#workspace-main">
                     {t('nav.skipToContent')}
                 </a>

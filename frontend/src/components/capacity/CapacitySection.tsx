@@ -14,6 +14,8 @@ import { TeamList } from './TeamList';
 import { TeamForm } from './TeamForm';
 import { PlanQuickAddCapacity } from './PlanQuickAddCapacity';
 import { addCapacityRows, refreshCapacity } from './capacityMutations';
+import { useIdentity } from '../../features/identity/identityContext';
+import { ConnectAgentSteps } from '../team/ConnectAgentSteps';
 
 export const CapacitySection = ({ iteration, iterations, members, primary }: {
     iteration: Iteration; iterations: Iteration[]; members: TeamMember[]; primary: boolean;
@@ -24,6 +26,13 @@ export const CapacitySection = ({ iteration, iterations, members, primary }: {
     const [formState, setFormState] = useState({ dirty: false, pending: false });
     const [importing, setImporting] = useState(false);
     const [importingVacations, setImportingVacations] = useState(false);
+    const [connecting, setConnecting] = useState(false);
+    // A connected agent is a new profile: Add capacity offers it once the drawer closes.
+    const closeConnect = () => {
+        setConnecting(false);
+        void client.invalidateQueries({ queryKey: ['teamMemberProfiles'] });
+        void refreshCapacity(client);
+    };
     const previous = iterations.filter(candidate => candidate.id !== iteration.id
         && (candidate.project_id ?? null) === (iteration.project_id ?? null)
         && candidate.end_date < iteration.start_date)
@@ -41,15 +50,33 @@ export const CapacitySection = ({ iteration, iterations, members, primary }: {
         },
         onSettled: () => refreshCapacity(client),
     });
+    // The profile this session works as can add itself in one step, as a person with full availability.
+    const me = useIdentity()?.identity?.profile ?? null;
+    const meOnIteration = me !== null && members.some(member => member.profile_id === me.id);
+    // feedback-policy: mutation pending,inline
+    const addMe = useMutation({
+        mutationFn: (profile: { id: number; display_name: string }) => addCapacityRows(iteration.id, [{
+            name: profile.display_name,
+            position: t('plan.quickCapacity.personRole'),
+            profile_id: profile.id,
+            availability_percent: 100,
+            professionalism_coefficient: 1,
+            operational_utilization: 20,
+        }]),
+        onSettled: () => refreshCapacity(client),
+    });
     return <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-2">
             <PlanQuickAddCapacity iteration={iteration} members={members} primary={primary} />
+            {me && !meOnIteration && <Button variant="secondary" onClick={() => addMe.mutate(me)} disabled={addMe.isPending} isLoading={addMe.isPending}>{t('identity.addMe')}</Button>}
+            <Button variant="secondary" onClick={() => setConnecting(true)}>{t('teamPage.connectAgent')}</Button>
             {previous && <Button variant="secondary" onClick={() => copy.mutate()} disabled={copy.isPending} isLoading={copy.isPending}>{t('capacity.copyPrevious')}</Button>}
             <OverflowMenu className="ml-auto" label={t('capacity.sectionActions')} alwaysMenu items={[
                 { label: t('teamPage.importCapacity'), onSelect: () => setImporting(true) },
                 { label: t('teamVacations.importCsv'), onSelect: () => setImportingVacations(true) },
             ]} />
         </div>
+        {addMe.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(addMe.error, t('plan.quickCapacity.addFailed'))}</p>}
         {copy.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(copy.error, t('capacity.copyFailed'))}</p>}
         {copy.isSuccess && <p role="status" className="text-sm text-content-secondary">{t('capacity.copied')}</p>}
         {importingVacations && <VacationCsvImport iterationId={iteration.id} onSuccess={() => { setImportingVacations(false); void refreshCapacity(client); }} />}
@@ -57,6 +84,9 @@ export const CapacitySection = ({ iteration, iterations, members, primary }: {
         {editing && <SlideOverDrawer open title={t('teamPage.editCapacity')} subtitle={editing.name} closeDisabled={formState.pending} onClose={() => setEditing(null)}>
             <div className="p-5"><TeamForm iterationId={iteration.id} initialData={editing} onStateChange={setFormState}
                 onCancel={() => setEditing(null)} onSuccess={() => { setEditing(null); void refreshCapacity(client); }} /></div>
+        </SlideOverDrawer>}
+        {connecting && <SlideOverDrawer open title={t('teamPage.connectAgent')} onClose={closeConnect}>
+            <div className="p-5"><ConnectAgentSteps /></div>
         </SlideOverDrawer>}
         {importing && <ImportTeamModal iterationId={iteration.id} onClose={() => setImporting(false)} onSuccess={() => { setImporting(false); void refreshCapacity(client); }} />}
     </div>;

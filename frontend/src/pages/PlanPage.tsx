@@ -30,6 +30,7 @@ import type { PlanningStepId } from '../features/planningMasters/planningReturn'
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
 import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import { useScopeLink } from '../features/scope/useScopeLink';
+import { SetupReturnBar } from '../features/firstRun/SetupReturnBar';
 import type { IterationPlanningReadinessSummary } from '../types/iteration';
 import { formatDecimal } from '../utils/workNumbers';
 import { formatDate } from '../utils/formatDate';
@@ -425,6 +426,7 @@ const PlanCheckpoints = () => {
     return (
         <PageLayout variant="wide" className="plan-page">
             {header}
+            <SetupReturnBar />
             <div aria-busy={isFetching || undefined}>{content}</div>
         </PageLayout>
     );

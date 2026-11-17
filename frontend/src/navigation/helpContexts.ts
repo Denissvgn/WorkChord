@@ -50,7 +50,7 @@ const WORKFLOW_BY_ROUTE: Partial<Record<RouteModuleKey, WorkflowGuideKey>> = {
     settings: 'settings',
 };
 
-// The first-run setup panel does not exist yet; the event it will listen for is the entry's action.
+// The entry's action reopens the Get started panel on Overview, from any page.
 export const SETUP_GUIDE_ENTRY = {
     labelKey: 'contextHelp.setupGuide.title',
     defaultLabel: 'Setup guide',

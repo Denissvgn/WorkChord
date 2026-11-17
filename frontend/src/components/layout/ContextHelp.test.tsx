@@ -137,7 +137,7 @@ describe('ContextHelp', () => {
         })).toHaveAttribute('href', '/plan');
     });
 
-    it('opens the setup guide through the event the first-run panel will listen for', async () => {
+    it('opens the setup guide through the event the Get started panel listens for', async () => {
         const listener = vi.fn();
         window.addEventListener(OPEN_SETUP_GUIDE_EVENT, listener);
         try {

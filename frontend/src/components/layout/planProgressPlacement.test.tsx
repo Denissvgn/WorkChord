@@ -20,7 +20,8 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../../features/planningMasters/usePlanningReadiness', () => ({
     usePlanningReadiness: mocks.usePlanningReadiness,
 }));
-vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => ({
+vi.mock('../../features/planningMasters/usePlanningNavigationSummary', async importOriginal => ({
+    ...await importOriginal<typeof import('../../features/planningMasters/usePlanningNavigationSummary')>(),
     usePlanningNavigationSummary: mocks.usePlanningNavigationSummary,
 }));
 vi.mock('../../services/triageService', () => ({ triageService: { getAll: mocks.getTriage } }));
