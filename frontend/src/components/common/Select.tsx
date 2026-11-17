@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { RequiredIndicator } from './Input';
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+    plain?: boolean;
     label?: ReactNode;
     help?: ReactNode;
     error?: string;
@@ -11,7 +12,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 /** A select with the same label, required, help and error contract as `Input`. */
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-    ({ className, label, help, error, id, required, children, 'aria-describedby': ariaDescribedBy, ...props }, ref) => {
+    ({ className, plain = false, label, help, error, id, required, children, 'aria-describedby': ariaDescribedBy, ...props }, ref) => {
         const generatedId = useId();
         const selectId = id ?? generatedId;
         const helpId = help ? `${selectId}-help` : undefined;
@@ -19,7 +20,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         const describedBy = [ariaDescribedBy, helpId, errorId].filter(Boolean).join(' ') || undefined;
         const control = (
             <select data-page-chrome-control="select" ref={ref} id={selectId} aria-describedby={describedBy} aria-invalid={Boolean(error) || undefined}
-                required={required} className={clsx('input', error && 'error', className)} {...props}>
+                required={required} className={clsx(!plain && 'input', error && 'error', className)} {...props}>
                 {children}
             </select>
         );
