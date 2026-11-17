@@ -14,6 +14,10 @@ import { changeAppLanguage } from '../../i18n/i18n';
 import { RoadmapView } from '../../components/projects/RoadmapView';
 import type { Project } from '../../types/project';
 import { formatDate } from '../../utils/formatDate';
+import { useScopeStore } from '../scope/scopeStore';
+import { useWorkScope } from '../scope/useWorkScope';
+import { useFirstRunProgress } from './useFirstRunProgress';
+import { GetStartedPanel } from './GetStartedPanel';
 
 vi.mock('../../services/api', () => ({ default: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() } }));
 vi.mock('../../hooks/useAdminAccess', () => ({ useAdminAccess: () => ({ hasAdminAccess: false }) }));
@@ -41,13 +45,22 @@ const read = (kind: string, id: number) => {
 const readiness = (iterationId: number) => {
     const tasks = list('task').filter(row => row.iteration_id === iterationId);
     const members = list('member').filter(row => row.iteration_id === iterationId);
+    const scheduled = Boolean(read('iteration', iterationId).scheduled) || applied;
     const states = [list('iteration').length > 0, members.length === 2, tasks.length === 8,
-        tasks.length === 8 && tasks.every(task => task.assignee_id && Number(task.effort_hours) > 0), applied, applied];
-    return { checkpoints_done: states.filter(Boolean).length, checkpoints: states.map((done, i) => ({ id: ['iteration', 'team', 'work', 'blockers', 'schedule', 'review'][i], state: done ? 'done' : 'todo' })) };
+        tasks.length === 8 && tasks.every(task => task.assignee_id && Number(task.effort_hours) > 0), scheduled, scheduled];
+    return { team_member_count: members.length, task_count: tasks.length, checkpoints_done: states.filter(Boolean).length,
+        checkpoints: states.map((done, i) => ({ id: ['iteration', 'team', 'work', 'blockers', 'schedule', 'review'][i], state: done ? 'done' : 'todo' })) };
 };
 const fresh = (): SampleManifest => ({ owner: 'local', records: [], complete: false });
 const Location = () => { const location = useLocation(); return <output data-testid="location">{location.pathname}{location.search}</output>; };
 const renderAction = (value = identity) => renderWithProviders(<IdentityContext.Provider value={{ identity: value, refresh: vi.fn(), signOut: vi.fn() }}><SampleProjectAction /><Location /></IdentityContext.Provider>);
+const WorkspaceSetup = () => {
+    const progress = useFirstRunProgress();
+    const { scope, setScope } = useWorkScope();
+    return <><output data-testid="scope">{JSON.stringify(scope)}</output>
+        <button onClick={() => setScope({ project: 'all', iteration: scope?.iteration })}>All projects</button>
+        {progress.known && <GetStartedPanel progress={progress} />}<Location /></>;
+};
 
 beforeEach(async () => {
     vi.resetAllMocks();
@@ -55,6 +68,7 @@ beforeEach(async () => {
     rows = new Map(); nextId = 10; revision = 1; writes = []; applied = false; failIteration = false;
     localStorage.clear();
     useSampleProject.setState({ manifest: null, busy: false });
+    useScopeStore.setState({ project: null, iteration: null });
     rows.set('profile:1', person);
     vi.mocked(api.post).mockImplementation(async (url, body) => {
         const path = String(url); const data = (body ?? {}) as Record<string, unknown>;
@@ -93,6 +107,9 @@ beforeEach(async () => {
     });
     vi.mocked(api.get).mockImplementation(async (url, config) => {
         const path = String(url); const parts = path.split('/'); const id = Number(parts[2]);
+        if (path === '/projects/page' || path === '/iterations/page') return { data: {
+            items: list(path === '/projects/page' ? 'project' : 'iteration'), has_more: false, next_after_id: null, upper_id: nextId,
+        } };
         if (/^\/team-member-profiles\/\d+\/capacity$/.test(path)) {
             const days = [];
             const params = config?.params as { start: string; end: string };
@@ -173,6 +190,62 @@ describe('sample project lifecycle', () => {
         await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(`/plan?project=${list('project')[0]?.id}&iteration=${list('iteration')[0]?.id}`));
         expect(readiness(list('iteration')[0].id).checkpoints_done).toBe(6);
     });
+
+    it.each(['complete', 'partial', 'missing prior scope', 'All projects with sample iteration'] as const)(
+        'restores workspace setup after sample removal with %s', async mode => {
+            const project = record('project', { name: 'Workspace project' });
+            const iteration = record('iteration', { name: 'Workspace iteration', project_id: project.id,
+                start_date: '2026-01-01', end_date: '2026-01-30', scheduled: true });
+            const member = record('member', { name: person.display_name, profile_id: person.id, iteration_id: iteration.id });
+            record('task', { title: 'Workspace task', project_id: project.id, iteration_id: iteration.id,
+                assignee_id: member.id, effort_hours: 2 });
+            const { user } = renderWithProviders(<IdentityContext.Provider value={{ identity, refresh: vi.fn(), signOut: vi.fn() }}>
+                <WorkspaceSetup />
+            </IdentityContext.Provider>, { initialEntries: [`/overview?project=${project.id}&iteration=${iteration.id}`] });
+            await screen.findByTestId('get-started-panel');
+            for (const step of ['profile', 'project', 'iteration', 'capacity', 'tasks', 'schedule']) {
+                expect(screen.getByTestId(`get-started-step-${step}`)).toHaveAttribute('data-done', 'true');
+            }
+            await user.click(screen.getByRole('button', { name: 'Load a sample project' }));
+            await waitFor(() => expect(useSampleProject.getState().manifest?.complete).toBe(true));
+            const sampleProjectId = useSampleProject.getState().manifest!.records.find(row => row.kind === 'project')!.id;
+            await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(`/plan?project=${sampleProjectId}&iteration=`));
+            const sampleIteration = list('iteration').find(row => row.id !== iteration.id)!;
+            expect(useSampleProject.getState().manifest?.previousScope).toEqual({ project: project.id, iteration: iteration.id });
+            expect(JSON.parse(localStorage.getItem('workchord-sample-project')!).previousScope).toEqual({ project: project.id, iteration: iteration.id });
+            if (mode === 'missing prior scope') {
+                rows.delete(`project:${project.id}`);
+                rows.delete(`iteration:${iteration.id}`);
+            }
+            if (mode === 'All projects with sample iteration') await user.click(screen.getByRole('button', { name: 'All projects' }));
+            if (mode === 'partial') {
+                const originalDelete = vi.mocked(api.delete).getMockImplementation()!;
+                vi.mocked(api.delete).mockImplementation(async (...args) => {
+                    if (String(args[0]).includes('/milestones/')) throw new Error('offline');
+                    return originalDelete(...args);
+                });
+            }
+            await user.click(screen.getByRole('button', { name: 'Remove sample data' }));
+            await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Remove sample data' }));
+            const restored = mode === 'missing prior scope' ? { project: 'all', iteration: 'backlog' }
+                : { project: project.id, iteration: iteration.id };
+            await waitFor(() => expect(screen.getByTestId('scope')).toHaveTextContent(JSON.stringify(restored)));
+            expect(screen.getByTestId('location')).toHaveTextContent(`project=${restored.project}&iteration=${restored.iteration}`);
+            expect(useScopeStore.getState()).toMatchObject(restored);
+            expect(rows.has(`iteration:${sampleIteration.id}`)).toBe(false);
+            if (mode !== 'missing prior scope') {
+                await waitFor(() => {
+                    for (const step of ['profile', 'project', 'iteration', 'capacity', 'tasks', 'schedule']) {
+                        expect(screen.getByTestId(`get-started-step-${step}`)).toHaveAttribute('data-done', 'true');
+                    }
+                });
+            }
+            if (mode === 'partial') {
+                expect(await within(screen.getByRole('dialog')).findByText(/Removal stopped/)).toBeVisible();
+                expect(rows.has(`project:${sampleProjectId}`)).toBe(true);
+            } else expect(rows.has(`project:${sampleProjectId}`)).toBe(false);
+        },
+    );
 
     it('applies a schedule at 6 of 6 when the person already has overlapping 100% capacity', async () => {
         const original = sampleProjectFixture('en');

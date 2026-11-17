@@ -1,13 +1,19 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/common/Button';
 import { ConfirmDialog } from '../../components/common/ConfirmDialog';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { useIdentity } from '../identity/identityContext';
 import { loadSampleProject, removeSampleProject, type SampleManifest } from './sampleProject';
 import { useSampleProject } from './sampleProjectStore';
+import { useSetWorkScope } from '../scope/useWorkScope';
+import { resolveWorkScope, sameScope, type ScopeIterationRecord, type WorkScope } from '../scope/workScope';
+import { useScopeStore } from '../scope/scopeStore';
+import { parseScope } from '../../navigation/scopeParams';
+import { projectService } from '../../services/projectService';
+import { iterationService } from '../../services/iterationService';
 
 export const SampleProjectAction = () => {
     const { t, i18n } = useTranslation();
@@ -15,6 +21,16 @@ export const SampleProjectAction = () => {
     const { hasAdminAccess } = useAdminAccess();
     const client = useQueryClient();
     const navigate = useNavigate();
+    const { setScope } = useSetWorkScope();
+    const location = useLocation();
+    const remembered = useScopeStore();
+    const urlScope = parseScope(location.search);
+    const scope = resolveWorkScope(urlScope, remembered, client.getQueryData<ScopeIterationRecord[]>(['iterations']) ?? []);
+    const currentScope = useRef(scope);
+    useLayoutEffect(() => {
+        currentScope.current = { project: urlScope.project ?? remembered.project ?? scope.project,
+            iteration: urlScope.iteration ?? remembered.iteration ?? scope.iteration };
+    }, [urlScope.project, urlScope.iteration, remembered.project, remembered.iteration, scope.project, scope.iteration]);
     const { manifest, busy, save, setBusy } = useSampleProject();
     const [error, setError] = useState(false);
     const [removalFailed, setRemovalFailed] = useState(false);
@@ -35,10 +51,28 @@ export const SampleProjectAction = () => {
         setBusy(true);
         setError(false);
         setRemovalFailed(false);
-        const receipt: SampleManifest = { owner, records: [...records], complete: own?.complete ?? false };
+        const receipt: SampleManifest = { owner, records: [...records], complete: own?.complete ?? false,
+            previousScope: remove ? own?.previousScope : scope };
         try {
             if (remove) {
-                await removeSampleProject(receipt, save);
+                try {
+                    await removeSampleProject(receipt, save);
+                } finally {
+                    const removed = records.filter(record => !receipt.records.some(item => item.kind === record.kind && item.id === record.id));
+                    const selected = currentScope.current;
+                    if (removed.some(record => record.kind === 'project' && record.id === selected?.project
+                        || record.kind === 'iteration' && record.id === selected?.iteration)) {
+                        let restored: WorkScope = { project: 'all', iteration: 'backlog' };
+                        try {
+                            const [projects, iterations] = await Promise.all([projectService.getAll(), iterationService.getAll()]);
+                            const previous = receipt.previousScope;
+                            const available = previous && (previous.project === 'all' || projects.some(item => item.id === previous.project))
+                                && (previous.iteration === 'backlog' || iterations.some(item => item.id === previous.iteration));
+                            restored = resolveWorkScope(available ? previous : { project: 'all' }, {}, iterations);
+                        } catch { /* Keep a safe scope when the remaining workspace cannot be read. */ }
+                        if (sameScope(currentScope.current, selected)) setScope(restored);
+                    }
+                }
                 setConfirming(false);
             } else if (identity.profile) {
                 // Verify durable receipt storage before making the first REST write.

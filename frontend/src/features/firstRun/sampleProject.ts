@@ -6,10 +6,11 @@ import { ganttService } from '../../services/ganttService';
 import { planningInputService } from '../../services/planningInputService';
 import type { WorkProfile } from '../identity/identityService';
 import { sampleProjectFixture } from './sampleProject.fixture';
+import type { WorkScope } from '../scope/workScope';
 
 export type SampleKind = 'project' | 'milestone' | 'iteration' | 'profile' | 'member' | 'task';
 export interface SampleRecord { kind: SampleKind; id: number; name: string; parentId?: number }
-export interface SampleManifest { owner: string; records: SampleRecord[]; complete: boolean }
+export interface SampleManifest { owner: string; records: SampleRecord[]; complete: boolean; previousScope?: WorkScope }
 export type SaveSample = (manifest: SampleManifest) => void;
 const revisions = async (kind: 'project' | 'iteration' | 'profile' | 'member', id: number) =>
     (await planningInputService.readInitial(kind, id)).expected_revisions;
