@@ -13,6 +13,8 @@ interface AdminAccessGateProps {
     recovery?: ReactNode;
     accessGranted?: boolean;
     headingLevel?: 2 | 3;
+    /** Secondary when the page around the gate already leads with a primary action. */
+    saveVariant?: 'primary' | 'secondary';
     /** Show the panel read-only to people who may read it without the key, instead of the gate. */
     readable?: boolean;
     /**
@@ -29,6 +31,7 @@ export const AdminAccessGate = ({
     recovery,
     accessGranted,
     headingLevel = 3,
+    saveVariant = 'primary',
     readable = false,
     managesReadOnly = false,
 }: AdminAccessGateProps) => {
@@ -84,7 +87,7 @@ export const AdminAccessGate = ({
                     </div>
                 </div>
             </div>
-            {showPanel && <AdminAccessPanel headingLevel={headingLevel} />}
+            {showPanel && <AdminAccessPanel headingLevel={headingLevel} saveVariant={saveVariant} />}
         </div>
     );
 };

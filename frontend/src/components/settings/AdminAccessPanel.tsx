@@ -12,8 +12,11 @@ import { protectedQueryKeys } from './protectedQueryKeys';
 
 export const AdminAccessPanel = ({
     headingLevel = 2,
+    saveVariant = 'primary',
 }: {
     headingLevel?: 2 | 3;
+    /** Secondary when the page around the panel already leads with a primary action. */
+    saveVariant?: 'primary' | 'secondary';
 }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
@@ -129,7 +132,7 @@ export const AdminAccessPanel = ({
                     placeholder={t('settings.adminAccessPlaceholder')}
                 />
                 <div className="flex shrink-0 items-end gap-2">
-                    <Button type="button" onClick={() => void saveKey()} isLoading={verifying} className="inline-flex items-center gap-2">
+                    <Button type="button" variant={saveVariant} onClick={() => void saveKey()} isLoading={verifying} className="inline-flex items-center gap-2">
                         <KeyRound className="h-4 w-4" />
                         {t('settings.adminAccessSave')}
                     </Button>

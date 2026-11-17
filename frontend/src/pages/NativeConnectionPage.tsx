@@ -7,6 +7,7 @@ import { useIdentity } from '../features/identity/identityContext';
 import { getApiErrorMessage } from '../utils/apiError';
 import { Button } from '../components/common/Button';
 import { DisabledReason } from '../components/common/DisabledReason';
+import { PageHeader, PageLayout } from '../components/ui';
 
 export default function NativeConnectionPage() {
     const [params] = useSearchParams();
@@ -69,9 +70,8 @@ function NativeConnection({ request }: { request: string }) {
         finally { setSaving(null); }
     };
     const timeLeft = connection.data ? remaining(connection.data.expires_at, now) : null;
-    return <section className="mx-auto max-w-xl space-y-5 p-6" aria-labelledby="native-connection-title">
-        <h1 id="native-connection-title" className="text-2xl font-semibold">{t(observer ? 'teamwork.connectObserver' : 'teamwork.connectDevice')}</h1>
-        <p>{t(observer ? 'teamwork.connectObserverHelp' : 'teamwork.connectHelp')}</p>
+    return <div className="mx-auto max-w-xl"><PageLayout>
+        <PageHeader title={t(observer ? 'teamwork.connectObserver' : 'teamwork.connectDevice')} purpose={t(observer ? 'teamwork.connectObserverHelp' : 'teamwork.connectHelp')} />
         {!valid ? <p role="alert" className="banner warn">{t('teamwork.connectInvalid')}</p>
             : !mayApprove ? <p role="alert" className="banner warn">{t('teamwork.connectHumanRequired')}</p>
                 : connection.isPending ? <p role="status">{t('common.loading')}</p>
@@ -99,5 +99,5 @@ function NativeConnection({ request }: { request: string }) {
                                         </div>
                                         {!confirmed && <DisabledReason reason={t(observer ? 'teamwork.connectObserverConfirmFirst' : 'teamwork.connectConfirmFirst')} />}
                                     </>}
-    </section>;
+    </PageLayout></div>;
 }

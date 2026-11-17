@@ -125,7 +125,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
             actions={<Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button>}
         />
     );
-    if (!canRead) return <AdminAccessGate><span /></AdminAccessGate>;
+    if (!canRead) return <AdminAccessGate headingLevel={2} saveVariant="secondary"><span /></AdminAccessGate>;
     if (isPending && !usableData) return <QueryLoadingState message={t('agentPipeline.loading')} />;
     if (isError && !usableData) return <QueryErrorState error={error} message={t('agentPipeline.pipelineUnavailable')} onRetry={() => { void refetch(); }} />;
 
