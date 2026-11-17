@@ -3988,6 +3988,12 @@
       "TeamMemberProfileCompact": {
         "description": "Compact profile data embedded in team-member responses.",
         "properties": {
+          "agent_connected": {
+            "default": false,
+            "description": "True when an enabled agent is bound to this profile. Read-only; names no agent.",
+            "title": "Agent Connected",
+            "type": "boolean"
+          },
           "assignment_modes": {
             "items": {
               "type": "string"

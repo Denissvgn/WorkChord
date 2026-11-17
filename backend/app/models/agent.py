@@ -14,11 +14,13 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     event,
+    exists,
     text,
 )
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
 
 from app.database import Base
+from app.models.team_member import TeamMemberProfile
 from app.utils.time import UTCDateTime, utc_now
 
 if TYPE_CHECKING:
@@ -109,6 +111,18 @@ class AgentActor(Base):
         back_populates="assessor_actor",
         passive_deletes=True,
     )
+
+
+# Whether an enabled agent actor is bound to the profile: the same actors that can authenticate.
+# It is read with the profile row, so a team-member response can tell every reader whether the
+# agent is connected without naming the actor or exposing anything about its key.
+TeamMemberProfile.agent_connected = column_property(
+    exists().where(
+        AgentActor.profile_id == TeamMemberProfile.id,
+        AgentActor.enabled.is_(True),
+        AgentActor.lifecycle_state == "active",
+    )
+)
 
 
 class AgentModelCatalogEntry(Base):

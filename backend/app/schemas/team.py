@@ -280,6 +280,10 @@ class TeamMemberProfileCompact(BaseModel):
     profile_kind: str = "human"
     assignment_modes: list[str] = Field(default_factory=list)
     skills: list[TeamMemberProfileSkillResponse] = Field(default_factory=list)
+    agent_connected: bool = Field(
+        default=False,
+        description="True when an enabled agent is bound to this profile. Read-only; names no agent.",
+    )
 
 
 class TeamMemberResponse(BaseModel):
