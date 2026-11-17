@@ -1123,7 +1123,7 @@ export const englishResources = {
                 loadFailed: 'The iteration list could not be loaded.',
                 loading: 'Loading iterations…',
                 iterationName: 'Iteration name',
-                iterationNamePlaceholder: 'e.g. Sprint 1',
+                iterationNamePlaceholder: 'e.g. Iteration 1',
                 calendar: 'Calendar',
                 noProjectScope: 'No project scope',
                 startDate: 'Start date',
@@ -4277,7 +4277,7 @@ export const englishResources = {
                     noLabels: "No labels",
                     cancel: "Cancel",
                     mark: "Mark",
-                    item: "Item",
+                    item: "Request",
                     aiDraftPreview: "AI draft preview",
                     statuses: {
                         new: "New",

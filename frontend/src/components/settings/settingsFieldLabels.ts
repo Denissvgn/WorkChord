@@ -55,7 +55,7 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'surfaces.templateLabels.defaultTitle',
         'surfaces.templateLabels.defaultDescription',
         'surfaces.templateLabels.priority',
-        'surfaces.templateLabels.effortDays',
+        'surfaces.taskForm.effortHours',
         'surfaces.templateLabels.defaultLabels',
         'surfaces.templateLabels.checklist',
         'surfaces.templateLabels.defaultPayloadJSON',
