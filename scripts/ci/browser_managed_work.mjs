@@ -237,8 +237,7 @@ try {
   const reviewerMe = await (await reviewerContext.request.get('/api/auth/me')).json();
   await page.goto('/tasks?scope=backlog');
   // The command menu finds tasks across projects; a result opens the task where you are.
-  await page.getByRole('heading', { level: 1 }).first().waitFor();
-  await page.keyboard.press('Control+K');
+  await page.getByRole('button', { name: 'Open command menu', exact: true }).click();
   await page.getByRole('combobox', { name: 'Search commands', exact: true }).fill(`#${capturedTask.id}`);
   await page.getByRole('option', { name: new RegExp(`^#${capturedTask.id} · Canonical browser work`) }).click();
   await editAllFields();
