@@ -281,7 +281,7 @@ export const EmailSettingsPanel = () => {
             {/* Master Toggle */}
             <div className="card flex items-center justify-between gap-4 p-4">
                 <div className="flex min-w-0 items-center gap-3">
-                    <div className={`p-2 rounded-full ${enabled ? 'bg-status-active-muted text-action' : 'bg-surface-subtle text-content-tertiary'}`}>
+                    <div className={`p-2 rounded-full ${enabled ? 'bg-surface-muted text-content-secondary' : 'bg-surface-subtle text-content-tertiary'}`}>
                         <Mail aria-hidden="true" className="w-6 h-6" />
                     </div>
                     <div className="min-w-0">

@@ -252,7 +252,7 @@ const TemplateRow = ({ isBusy, readOnly, template, isFirst, isLast, onEdit, onTo
                     <div className="flex flex-wrap items-center gap-2">
                         <h4 id={headingId} className="font-medium text-content-primary">{display.name}</h4>
                         {template.seed_key && (
-                            <span className="rounded-full bg-action-muted px-2 py-0.5 text-xs font-medium text-action">{t('surfaces.templateLabels.seeded')}</span>
+                            <span className="rounded-full bg-surface-muted px-2 py-0.5 text-xs font-medium text-content-secondary">{t('surfaces.templateLabels.seeded')}</span>
                         )}
                     </div>
                     {display.description && (
