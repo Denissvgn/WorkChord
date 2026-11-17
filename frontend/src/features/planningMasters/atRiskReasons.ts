@@ -8,8 +8,9 @@ type RiskFields = Pick<Task, 'is_overdue' | 'is_delayed' | 'is_outside_constrain
 
 /** Why a task counts as an at-risk signal, in the words Plan and the Tasks list share. */
 export const atRiskReasons = (task: RiskFields, t: Translate): string[] => {
-    const plannedStart = task.baseline_start_date ?? task.start_date;
-    const startedLate = Boolean(task.actual_start_date && plannedStart && task.actual_start_date > plannedStart);
+    // The server flags a started task as delayed only when it began after its planned start, and an
+    // unstarted one only when its start is already past; the Gantt payload carries no baseline date.
+    const startedLate = Boolean(task.actual_start_date);
     return [
         ...(task.is_overdue ? [t('planSchedule.riskOverdue')] : []),
         ...(task.is_delayed ? [t(startedLate ? 'planSchedule.riskStartedLate' : 'planSchedule.riskStartsBeforeToday')] : []),
