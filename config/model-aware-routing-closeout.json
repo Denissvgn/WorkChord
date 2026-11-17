@@ -101,7 +101,7 @@
       "evidence": [
         "frontend/src/components/team/AgentModelAdministration.test.tsx",
         "frontend/src/components/agent/TaskRoutingPanel.test.tsx",
-        "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx"
+        "frontend/src/components/team/AgentManifestWorkflow.test.tsx"
       ],
       "id": "G10",
       "status": "pass"
@@ -319,8 +319,8 @@
     },
     {
       "evidence": [
-        "frontend/src/pages/AgentTeamSetupMasterPage.tsx",
-        "frontend/src/pages/AgentTeamSetupMasterPage.test.tsx",
+        "frontend/src/components/team/AgentManifestWorkflow.tsx",
+        "frontend/src/components/team/AgentManifestWorkflow.test.tsx",
         "frontend/src/features/agentTeamSetup/useAgentTeamReadiness.ts",
         "docs/agent-team-setup.md"
       ],
