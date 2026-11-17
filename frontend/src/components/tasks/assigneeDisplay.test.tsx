@@ -132,6 +132,26 @@ describe('assignee consistency across task views', () => {
         expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
     });
 
+    it('leaves Send to the agent out inside the pipeline, where its dispatch panel already shows', async () => {
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: true } }]);
+        renderWithProviders(readView(base), { initialEntries: ['/tasks?layout=pipeline&task=101'] });
+        expect(await screen.findByText('Not sent to the agent yet')).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Send to the agent' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Start work' })).not.toBeInTheDocument();
+    });
+
+    it('reads the task for a pipeline card that leaves the live assignment unset', async () => {
+        services.team.mockResolvedValue([{ id: 7, name: 'Builder', profile_id: 9, profile: { profile_kind: 'agent', agent_connected: true } }]);
+        services.task.mockClear();
+        services.task.mockResolvedValue({ ...base, agent_working: false });
+        const card = { ...base, agent_working: null } as Task;
+        const pipeline: AgentPipeline = { needs_definition: [card], ready_to_assign: [], assigned_waiting: [], start_ready: [], executing: [], verification_required: [], recovery_required: [] };
+        renderWithProviders(<PipelineView query={{ pipeline, usableData: pipeline, canRead: true, isPending: false, isError: false } as ReturnType<typeof usePipeline>} project={undefined} iteration={undefined} search="" agent="" filters={defaultFilters} labelGroups={[]} onOpenTask={vi.fn()} />,
+            { initialEntries: ['/tasks?layout=pipeline&stage=needs_definition'] });
+        await waitFor(() => expect(document.querySelector('[data-agent-dispatch]')).toHaveTextContent('Not sent to the agent yet'));
+        expect(services.task).toHaveBeenCalledWith(101);
+    });
+
     it('keeps Start work for an agent with no agent connected', async () => {
         renderWithProviders(readView(base));
         expect(await screen.findByText('No agent connected')).toBeInTheDocument();

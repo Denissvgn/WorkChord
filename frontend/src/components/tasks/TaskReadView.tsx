@@ -99,7 +99,9 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     const doneCount = criteria.filter(criterion => progressFor(criterion.id)?.state === 'completed').length;
     const next = NEXT_TRANSITION[task.status];
     // A connected agent that has not been sent the task gets it through dispatch, not a manual start.
+    // The link opens the pipeline's dispatch panel; in the pipeline that panel is already above.
     const offerDispatch = task.status === 'planned' && assigneeDisplay.dispatch === 'notSentYet';
+    const dispatchShown = params.get('layout') === 'pipeline';
     // Owner is shown only when it is known to differ from the assignee's profile: with no assignee,
     // or once that profile has been read. While it loads, fails or has no team row, Owner stays hidden.
     const ownerDiffers = Boolean(task.owner) && (!task.assignee
@@ -134,7 +136,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                     <Button type="button" variant="ghost" size="sm" aria-label={t('taskView.copyLink')} title={t('taskView.copyLink')} onClick={() => { void copyLink(); }}>
                         <Link2 className="h-4 w-4" aria-hidden="true" />
                     </Button>
-                    {offerDispatch && (locked
+                    {offerDispatch && !dispatchShown && (locked
                         ? <Button type="button" size="sm" disabled>{t('taskView.sendToAgent')}</Button>
                         : <ButtonLink size="sm" to={scopeLink(`/tasks?layout=pipeline&task=${task.id}`)}>{t('taskView.sendToAgent')}</ButtonLink>)}
                     {next && !offerDispatch && (
