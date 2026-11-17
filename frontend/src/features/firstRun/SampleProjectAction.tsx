@@ -12,6 +12,7 @@ import { useSampleProject } from './sampleProjectStore';
 import { useSetWorkScope } from '../scope/useWorkScope';
 import { resolveWorkScope, sameScope, type ScopeIterationRecord, type WorkScope } from '../scope/workScope';
 import { useScopeStore } from '../scope/scopeStore';
+import { navigateWithoutLeaveGuards } from '../../components/common/leaveGuardBypass';
 import { parseScope } from '../../navigation/scopeParams';
 import { projectService } from '../../services/projectService';
 import { iterationService } from '../../services/iterationService';
@@ -61,7 +62,7 @@ export const SampleProjectAction = () => {
                 } finally {
                     const removed = records.filter(record => !receipt.records.some(item => item.kind === record.kind && item.id === record.id));
                     const selected = currentScope.current;
-                    await client.invalidateQueries();
+                    // Move the scope off the deleted records before any page refetches them.
                     if (removed.some(record => record.kind === 'project' && record.id === selected?.project
                         || record.kind === 'iteration' && record.id === selected?.iteration)) {
                         let restored: WorkScope = { project: 'all', iteration: 'backlog' };
@@ -80,6 +81,7 @@ export const SampleProjectAction = () => {
                             || record.kind === 'iteration' && record.id === currentScope.current.iteration);
                         if (sameScope(currentScope.current, selected) || sameScope(currentScope.current, repaired) || stillRemoved) setScope(restored);
                     }
+                    await client.invalidateQueries();
                 }
                 setConfirming(false);
             } else if (identity.profile) {
@@ -88,7 +90,7 @@ export const SampleProjectAction = () => {
                 const result = await loadSampleProject(receipt, identity.profile, i18n.language, save);
                 // Scope validation must know the new iteration before its URL is opened.
                 await client.invalidateQueries({ queryKey: ['iterations'] });
-                navigate(`/plan?project=${result.projectId}&iteration=${result.iterationId}`);
+                navigateWithoutLeaveGuards(() => navigate(`/plan?project=${result.projectId}&iteration=${result.iterationId}`));
             }
         } catch { setError(true); setRemovalFailed(remove); }
         finally {
