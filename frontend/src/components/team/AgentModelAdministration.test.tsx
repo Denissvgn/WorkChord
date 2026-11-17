@@ -206,35 +206,103 @@ describe('AgentModelAdministration', () => {
         agentServiceMock.getModelCatalog.mockResolvedValue(hasCatalog ? [catalogFixture()] : []);
         agentServiceMock.getModelBindings.mockResolvedValue(hasBindings ? [bindingFixture()] : []);
         const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
-        expect(await within(screen.getByTestId('page-header')).findByRole('button', { name: action })).toBeVisible();
+        await waitFor(() => expect(within(screen.getByTestId('page-header')).getByRole('button', { name: action })).toBeEnabled());
         expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
         expect(within(screen.getByTestId('page-header')).getByRole('button', { name: action })).toHaveClass('btn-primary');
     });
 
-    it.each([
-        ['checking access', 'Checking model-routing access…'],
-        ['access error', 'Model-routing access could not be confirmed.'],
-        ['access denied', 'Model-routing access denied'],
-        ['loading evidence', 'Loading model and actor evidence…'],
-        ['evidence error', 'Model and actor evidence could not be loaded.'],
-    ])('omits header creation actions while %s', async (state, message) => {
-        const pending = () => new Promise<never>(() => {});
-        const error = { response: { status: 503 } };
-        if (state === 'checking access') agentServiceMock.getCapabilities.mockImplementation(pending);
-        if (state === 'access error') agentServiceMock.getCapabilities.mockRejectedValue(error);
-        if (state === 'access denied') agentServiceMock.getCapabilities.mockResolvedValue(capabilitiesFixture([]));
-        if (state === 'loading evidence') agentServiceMock.getModelCatalog.mockImplementation(pending);
-        if (state === 'evidence error') agentServiceMock.getModelCatalog.mockRejectedValue(error);
+    describe.each([
+        ['en', 'Add a model', 'Unlock editing', 'Retry'],
+        ['ru', 'Добавить модель', 'Открыть редактирование', 'Повторить'],
+    ])('unavailable next steps in %s', (language, addLabel, unlockLabel, retryLabel) => {
+        it.each([
+            ['checking access', 'loading'],
+            ['access error', 'retry'],
+            ['access denied', 'unlock'],
+            ['no key', 'unlock'],
+            ['loading roster', 'loading'],
+            ['loading catalog', 'loading'],
+            ['loading bindings', 'loading'],
+            ['roster error', 'retry'],
+            ['catalog error', 'retry'],
+            ['bindings error', 'retry'],
+        ])('shows exactly one header primary while %s', async (state, action) => {
+            await changeAppLanguage(language);
+            const pending = () => new Promise<never>(() => {});
+            const error = { response: { status: 503 } };
+            if (state === 'checking access') agentServiceMock.getCapabilities.mockImplementation(pending);
+            if (state === 'access error') agentServiceMock.getCapabilities.mockRejectedValue(error);
+            if (state === 'access denied') agentServiceMock.getCapabilities.mockResolvedValue(capabilitiesFixture([]));
+            if (state === 'no key') agentAccessMock.useAgentAccess.mockReturnValue({ hasAgentKey: false });
+            if (state === 'loading roster') agentServiceMock.getActorRoster.mockImplementation(pending);
+            if (state === 'loading catalog') agentServiceMock.getModelCatalog.mockImplementation(pending);
+            if (state === 'loading bindings') agentServiceMock.getModelBindings.mockImplementation(pending);
+            if (state === 'roster error') agentServiceMock.getActorRoster.mockRejectedValue(error);
+            if (state === 'catalog error') agentServiceMock.getModelCatalog.mockRejectedValue(error);
+            if (state === 'bindings error') agentServiceMock.getModelBindings.mockRejectedValue(error);
 
-        const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
-        expect(await screen.findByText(message)).toBeVisible();
-        const header = within(screen.getByTestId('page-header'));
-        expect(header.queryByRole('button', { name: /Add a (model|binding)/ })).not.toBeInTheDocument();
-        expect(header.queryByRole('button', { name: 'More actions' })).not.toBeInTheDocument();
-        expect(container.querySelectorAll('.btn-primary')).toHaveLength(0);
+            const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+            const header = within(screen.getByTestId('page-header'));
+            const primary = await header.findByRole(action === 'unlock' ? 'link' : 'button', {
+                name: action === 'unlock' ? unlockLabel : action === 'retry' ? retryLabel : addLabel,
+            });
+            expect(primary).toHaveClass('btn-primary');
+            expect(primary.parentElement).toHaveClass('wc-page-primary');
+            expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+            expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+            expect(screen.getByTestId('page-header').querySelector('.wc-page-overflow')).toBeNull();
+            if (action === 'loading') expect(primary).toBeDisabled();
+            if (action === 'retry') {
+                expect(primary).toBeEnabled();
+                expect(screen.getAllByRole('button', { name: retryLabel })).toHaveLength(1);
+                expect(screen.getByRole('alert')).toBeVisible();
+            }
+            if (action === 'unlock') expect(primary).toHaveAttribute('href', '/settings?tab=access');
+        });
     });
 
-    it('removes known header actions when a catalog refresh fails', async () => {
+    it.each(['getCapabilities', 'getActorRoster', 'getModelCatalog', 'getModelBindings'] as const)(
+        'retries the failed %s read from the sole header primary', async failedRead => {
+            agentServiceMock[failedRead].mockRejectedValueOnce({ response: { status: 403 } });
+            const { user, container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+            const header = within(screen.getByTestId('page-header'));
+            await user.click(await header.findByRole('button', { name: 'Retry' }));
+            expect(await header.findByRole('button', { name: 'Add a binding' })).toBeVisible();
+            expect(agentServiceMock[failedRead]).toHaveBeenCalledTimes(2);
+            for (const read of ['getCapabilities', 'getActorRoster', 'getModelCatalog', 'getModelBindings'] as const) {
+                if (read !== failedRead) expect(agentServiceMock[read]).toHaveBeenCalledTimes(1);
+            }
+            expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        },
+    );
+
+    it('shows one disabled loading primary during a failed-read retry', async () => {
+        agentServiceMock.getModelCatalog.mockRejectedValueOnce({ response: { status: 403 } });
+        const { user, container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        const header = within(screen.getByTestId('page-header'));
+        const retry = await header.findByRole('button', { name: 'Retry' });
+        agentServiceMock.getModelCatalog.mockImplementation(() => new Promise<never>(() => {}));
+        await user.click(retry);
+        expect(header.getByRole('button', { name: 'Add a model' })).toBeDisabled();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+    });
+
+    it('retries a failed read while another evidence read is still loading', async () => {
+        agentServiceMock.getActorRoster.mockImplementation(() => new Promise<never>(() => {}));
+        agentServiceMock.getModelCatalog.mockRejectedValueOnce({ response: { status: 403 } });
+        const { user, container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        const header = within(screen.getByTestId('page-header'));
+        const retry = await header.findByRole('button', { name: 'Retry' });
+        expect(retry).toBeEnabled();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        await user.click(retry);
+        await waitFor(() => expect(header.getByRole('button', { name: 'Add a model' })).toBeDisabled());
+        expect(agentServiceMock.getModelCatalog).toHaveBeenCalledTimes(2);
+        expect(agentServiceMock.getActorRoster).toHaveBeenCalledTimes(1);
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+    });
+
+    it('replaces known creation actions with one Retry primary when a catalog refresh fails', async () => {
         const { container, queryClient } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
         const header = within(screen.getByTestId('page-header'));
         await header.findByRole('button', { name: 'Add a binding' });
@@ -243,16 +311,19 @@ describe('AgentModelAdministration', () => {
             await queryClient.refetchQueries({ queryKey: ['agent-model-catalog'] });
         });
         expect(await screen.findByText('Model and actor evidence could not be loaded.')).toBeVisible();
-        expect(container.querySelectorAll('.btn-primary')).toHaveLength(0);
+        expect(await header.findByRole('button', { name: 'Retry' })).toHaveClass('btn-primary');
+        expect(header.queryByRole('button', { name: 'Add a binding' })).not.toBeInTheDocument();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
         expect(header.queryByRole('button', { name: 'More actions' })).not.toBeInTheDocument();
     });
 
     it('shows one unlock primary when no agent key is saved', () => {
         agentAccessMock.useAgentAccess.mockReturnValue({ hasAgentKey: false });
         const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
-        expect(screen.getByRole('link', { name: 'Unlock editing' })).toHaveClass('btn-primary');
         expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
-        expect(screen.getByTestId('page-header').querySelector('.btn-primary')).toBeNull();
+        expect(within(screen.getByTestId('page-header')).getByRole('link', { name: 'Unlock editing' })).toHaveClass('btn-primary');
+        const emptyCard = container.querySelector('.inline-empty') as HTMLElement;
+        expect(within(emptyCard).getByRole('link', { name: 'Unlock editing' })).not.toHaveClass('btn-primary');
     });
 
     it.each([
@@ -265,6 +336,7 @@ describe('AgentModelAdministration', () => {
         const { user, container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
         const header = screen.getByTestId('page-header');
         const primary = await within(header).findByRole('button', { name: primaryLabel });
+        await waitFor(() => expect(primary).toBeEnabled());
         expect(primary.parentElement).toHaveClass('wc-page-primary');
         expect(primary.parentElement?.children).toHaveLength(1);
         const overflow = within(header).getByRole('button', { name: overflowLabel });
@@ -306,7 +378,8 @@ describe('AgentModelAdministration', () => {
         await changeAppLanguage('ru');
         agentServiceMock.getModelCatalog.mockResolvedValue(hasCatalog ? [catalogFixture()] : []);
         const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
-        expect(await within(screen.getByTestId('page-header')).findByRole('button', { name: label })).toHaveClass('btn-primary');
+        await waitFor(() => expect(within(screen.getByTestId('page-header')).getByRole('button', { name: label })).toBeEnabled());
+        expect(within(screen.getByTestId('page-header')).getByRole('button', { name: label })).toHaveClass('btn-primary');
         expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
     });
 

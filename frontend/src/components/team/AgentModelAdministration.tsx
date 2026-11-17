@@ -536,22 +536,61 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
 
     const evidenceLoading = rosterQuery.isPending || catalogQuery.isPending || bindingsQuery.isPending;
     const evidenceError = rosterQuery.error || catalogQuery.error || bindingsQuery.error;
-    const actionsReady = hasAgentKey && capabilitiesCurrent && canRead && !evidenceLoading && !evidenceError;
-    const headerActions = useMemo<ModelHeaderActions | null>(() => {
-        if (!actionsReady) return null;
+    const evidenceRetrying = (rosterQuery.isError && rosterQuery.isFetching)
+        || (catalogQuery.isError && catalogQuery.isFetching)
+        || (bindingsQuery.isError && bindingsQuery.isFetching);
+    const { isPending: accessLoading, isError: accessFailed, isFetching: accessFetching, refetch: retryAccess } = capabilitiesQuery;
+    const { isError: rosterFailed, refetch: retryRoster } = rosterQuery;
+    const { isError: catalogFailed, refetch: retryCatalog } = catalogQuery;
+    const { isError: bindingsFailed, refetch: retryBindings } = bindingsQuery;
+    const retryFailedEvidence = useCallback(() => {
+        if (rosterFailed) void retryRoster();
+        if (catalogFailed) void retryCatalog();
+        if (bindingsFailed) void retryBindings();
+    }, [rosterFailed, retryRoster, catalogFailed, retryCatalog, bindingsFailed, retryBindings]);
+
+    const headerActions = useMemo<ModelHeaderActions>(() => {
+        const unlockAction = <ButtonLink variant="primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>;
+        const loadingAction = <Button type="button" disabled>{t('modelAdministration.addModel')}</Button>;
+        if (!hasAgentKey) return { primaryAction: unlockAction, overflowItems: [] };
+        if (accessLoading) return { primaryAction: loadingAction, overflowItems: [] };
+        if (accessFailed) {
+            return {
+                primaryAction: (
+                    <Button type="button" disabled={accessFetching} onClick={() => { void retryAccess(); }}>
+                        {t('queryFeedback.retry')}
+                    </Button>
+                ),
+                overflowItems: [],
+            };
+        }
+        if (!canRead) return { primaryAction: unlockAction, overflowItems: [] };
+        if (evidenceError) {
+            return {
+                primaryAction: (
+                    <Button type="button" disabled={evidenceRetrying} onClick={retryFailedEvidence}>
+                        {t('queryFeedback.retry')}
+                    </Button>
+                ),
+                overflowItems: [],
+            };
+        }
+        if (evidenceLoading) return { primaryAction: loadingAction, overflowItems: [] };
         return {
             primaryAction: canAdminister ? (
                 <Button type="button" onClick={catalog.length === 0 ? createCatalog : createBinding} disabled={isMutating}>
                     <Plus className="h-4 w-4" aria-hidden="true" />
                     {t(catalog.length === 0 ? 'modelAdministration.addModel' : 'modelAdministration.addBinding')}
                 </Button>
-            ) : <ButtonLink variant="primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>,
+            ) : unlockAction,
             overflowItems: canAdminister ? [
                 { label: t('modelAdministration.newModel'), onSelect: createCatalog, disabled: isMutating },
                 { label: t('modelAdministration.newBinding'), onSelect: createBinding, disabled: isMutating },
             ] : [],
         };
-    }, [actionsReady, canAdminister, catalog.length, createBinding, createCatalog, isMutating, t]);
+    }, [hasAgentKey, accessLoading, accessFailed, accessFetching, retryAccess,
+        canRead, canAdminister, evidenceError, evidenceLoading, evidenceRetrying, retryFailedEvidence,
+        catalog.length, createBinding, createCatalog, isMutating, t]);
 
     useEffect(() => {
         onHeaderActionsChange?.(headerActions);
@@ -564,7 +603,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             <InlineEmptyState
                 title={t('emptyStates.team.modelsTitle')}
                 description={t('emptyStates.team.modelsBody')}
-                actions={<ButtonLink variant="primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>}
+                actions={<ButtonLink variant={onHeaderActionsChange ? 'secondary' : 'primary'} to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>}
             />
         );
     }
@@ -578,7 +617,6 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
             <QueryErrorState
                 error={capabilitiesQuery.error}
                 fallback={t('modelAdministration.accessFailed')}
-                onRetry={() => { void capabilitiesQuery.refetch(); }}
             />
         );
     }
@@ -592,18 +630,17 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
         );
     }
 
-    if (evidenceLoading) {
-        return <QueryLoadingState message={t('modelAdministration.loading')} />;
-    }
-
     if (evidenceError) {
         return (
             <QueryErrorState
                 error={evidenceError}
                 fallback={t('modelAdministration.loadFailed')}
-                onRetry={refreshEvidence}
             />
         );
+    }
+
+    if (evidenceLoading) {
+        return <QueryLoadingState message={t('modelAdministration.loading')} />;
     }
 
     // The audit reason and the reconcile choice apply to every change, so the drawers show them too.
