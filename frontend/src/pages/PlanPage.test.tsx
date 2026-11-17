@@ -763,6 +763,19 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
+    it('does not claim every task has dates while a deferred task is undated, and lists it with the server reason', async () => {
+        const { result } = scheduleWorkspace();
+        const message = 'Deferred work is left out of scheduling. Undefer it to schedule it.';
+        const saved = { ...result, unscheduled: [{ task_id: 12, task_title: 'Later work', reason: 'deferred', message }] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
+            scheduledTask(), scheduledTask({ id: 12, title: 'Later work', is_deferred: true, start_date: null, end_date: null }),
+        ], schedule_result: saved, holidays: [], weekends: [] });
+        renderPlan();
+        expect(await screen.findByText(message)).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Later work' })).toHaveAttribute('href', '/tasks?task=12&fromPlanStep=schedule&project=1&iteration=1');
+        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
     it('says every task has dates when the current tasks are all dated, even if an older saved result lists unscheduled tasks', async () => {
         const { result } = scheduleWorkspace();
         const saved = { ...result, unscheduled: [{ task_id: 11, task_title: 'Prepare release', reason: 'prerequisites_pending', message: 'Waiting for a prerequisite.' }] };

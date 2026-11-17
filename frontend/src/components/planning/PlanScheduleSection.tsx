@@ -10,7 +10,7 @@ import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlan
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse, SchedulePreviewResponse } from '../../types/gantt';
-import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
+import { scheduleLeaves, taskLeaves } from '../../features/planningMasters/scheduleEvidence';
 import type { Iteration } from '../../types/iteration';
 import type { TeamMember } from '../../types/team';
 import { formatDate } from '../../utils/formatDate';
@@ -59,7 +59,8 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
     // Only the current task data can say every task is dated; an empty unscheduled list or a missing task list cannot.
-    const leaves = preview?.tasks ?? gantt?.tasks ? scheduleLeaves(tasks) : [];
+    // Deferred tasks count too: the scheduler leaves them undated, so they must not be hidden behind that claim.
+    const leaves = preview?.tasks ?? gantt?.tasks ? taskLeaves(tasks) : [];
     const everyTaskDated = leaves.length > 0 && leaves.every(task => Boolean(task.start_date && task.end_date));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">

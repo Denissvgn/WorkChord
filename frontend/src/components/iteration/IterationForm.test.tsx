@@ -109,6 +109,24 @@ describe('IterationForm hardening', () => {
         await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledWith(17, expect.objectContaining({ name: 'August plan', end_date: '2026-08-14' }), { 17: 5 }));
     });
 
+    it('names a newer server change instead of keeping the draft against it', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2', end_date: '2026-08-28' }), resource_id: 17, expected_revisions: { 17: 6 }, complete: true });
+
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        expect(await screen.findByText(/changed on the server again while you were deciding: End\./)).toBeVisible();
+        expect(screen.getByText(/changed on the server after you opened it: Name, End\./)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Keep draft with current version' })).toBeVisible();
+
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        await waitFor(() => expect(screen.queryByRole('button', { name: 'Keep draft with current version' })).not.toBeInTheDocument());
+        expect(screen.queryByText(/changed on the server again/)).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledWith(17, expect.objectContaining({ name: 'August plan', end_date: '2026-08-14' }), { 17: 6 }));
+    });
+
     it('fills the form with the server values after Load latest version', async () => {
         planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
         const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);

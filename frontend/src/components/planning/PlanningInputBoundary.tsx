@@ -28,19 +28,35 @@ export const PlanningInputBoundary = <T,>({ kind, resourceId, creatingMember = f
     const [conflicted, setConflicted] = useState(false);
     const fields = draft ? DRAFT_FIELDS : WATCHED_FIELDS;
     const baseline = acknowledged ?? (draft as Record<string, unknown> | undefined);
-    const changedFields = baseline && context.observation
-        ? fields.filter(key => {
-            const server = (context.observation!.resource as Record<string, unknown>)[key];
-            return server !== undefined && String(server ?? '') !== String(baseline[key] ?? '');
-        })
-        : [];
-    const acknowledge = (value: { resource: unknown } | null) => { if (value) { setConflicted(false); if (draft) setAcknowledged(value.resource as Record<string, unknown>); } };
+    const differing = (from: Record<string, unknown>, to: Record<string, unknown>) => fields.filter(key =>
+        to[key] !== undefined && String(to[key] ?? '') !== String(from[key] ?? ''));
+    const changedFields = baseline && context.observation ? differing(baseline, context.observation.resource as Record<string, unknown>) : [];
+    // Fields that changed on the server again after the prompt was shown; null while there is no such change.
+    const [changedAgain, setChangedAgain] = useState<string[] | null>(null);
+    const acknowledge = (value: { resource: unknown } | null) => { if (value) { setConflicted(false); setChangedAgain(null); if (draft) setAcknowledged(value.resource as Record<string, unknown>); } };
+    const keepDraft = () => {
+        const shown = context.observation;
+        void read(kind, resourceId, true, creatingMember, getIntent?.()).then(value => {
+            if (!value) return;
+            // Keep the draft only against the version the person was shown; a newer one is named, never accepted silently.
+            if (draft && shown) {
+                const again = differing(shown.resource as Record<string, unknown>, value.resource as Record<string, unknown>);
+                if (again.length > 0 || JSON.stringify(shown.expected_revisions) !== JSON.stringify(value.expected_revisions)) {
+                    setConflicted(true); setChangedAgain(again); return;
+                }
+            }
+            acknowledge(value);
+        });
+    };
     // A save the server refused as out of date is a conflict even when no shown field differs.
     const showControls = !draft || changedFields.length > 0 || conflicted;
     const controls = !showControls ? null : <div className="space-y-2">
         {draft && <p role="status" className="text-sm">{changedFields.length > 0
             ? t('planningInput.changedFields', { fields: changedFields.map(key => t(`planningInput.fields.${key}`)).join(', ') })
             : t('planningInput.changedElsewhere')}</p>}
+        {draft && changedAgain && <p role="status" className="text-sm">{changedAgain.length > 0
+            ? t('planningInput.changedAgainFields', { fields: changedAgain.map(key => t(`planningInput.fields.${key}`)).join(', ') })
+            : t('planningInput.changedAgain')}</p>}
         {context.loading && <p role="status">{t('common.loading')}</p>}
         {Boolean(context.error) && <QueryErrorState error={context.error} onRetry={() => void read(kind, resourceId, true, creatingMember, getIntent?.())} />}
         {context.observation && <details className="text-sm">
@@ -56,7 +72,7 @@ export const PlanningInputBoundary = <T,>({ kind, resourceId, creatingMember = f
                 void read(kind, resourceId, true, creatingMember, getIntent?.()).then(value => { if (value) { setGeneration(value => value + 1); acknowledge(value); } });
             }}>{t('taskEditor.reload')}</Button>
             <Button type="button" size="sm" variant="secondary" disabled={context.loading}
-                onClick={() => void read(kind, resourceId, true, creatingMember, getIntent?.()).then(acknowledge)}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
+                onClick={keepDraft}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
         </div>
     </div>;
     if (!context.observation) return <div className="space-y-3">
