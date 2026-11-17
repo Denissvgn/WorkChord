@@ -24,6 +24,7 @@ import { formatDecimal } from '../utils/workNumbers';
 import { getApiErrorStatus } from '../utils/apiError';
 import { taskService } from '../services/taskService';
 import { iterationService } from '../services/iterationService';
+import { projectService } from '../services/projectService';
 import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { PageHeader, PageLayout, SectionCard, SlideOverDrawer } from '../components/ui';
 import type { PillTone } from '../components/ui/tone';
@@ -179,6 +180,9 @@ const OverviewPage = () => {
         })),
     });
     const pipelineQuery = usePipeline(true);
+    // feedback-policy: query loading,error,retry,empty - New task waits until the projects are known; a task needs a project.
+    const projectsQuery = useQuery({ queryKey: ['projects'], queryFn: () => projectService.getAll(), staleTime: 60000 });
+    const hasProject = (projectsQuery.data?.length ?? 0) > 0;
 
     const tasksState: SourceState = isBacklog ? queryState(backlogQuery) : combine(taskQueries.map(queryState));
     const readinessState: SourceState = isBacklog ? 'unavailable' : combine(readinessQueries.map(queryState));
@@ -339,13 +343,13 @@ const OverviewPage = () => {
                     </span>
                 )}
                 purpose={purpose}
-                primaryAction={(
+                primaryAction={hasProject ? (
                     // While Get started shows, its next step is the page's one primary action.
                     <ButtonLink to={scopeLink('/tasks?create=1')} variant={getStarted.visible ? 'secondary' : 'primary'}>
                         <Plus aria-hidden="true" className="h-4 w-4" />
                         {t('tasks.newTask')}
                     </ButtonLink>
-                )}
+                ) : undefined}
             />
 
             {/* The Get started panel comes first, above everything else on the page. */}

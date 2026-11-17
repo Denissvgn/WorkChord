@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLiveWindow } from '../features/useLiveWindow';
 import { LiveWindowStatus } from '../components/feedback/LiveWindowStatus';
 import { PageLayout, PageHeader, PageToolbar, ViewSwitch } from '../components/ui';
@@ -47,7 +47,7 @@ const MyWorkPage = () => {
     const queues = QUEUES.filter(key => key !== 'inbox' || notificationsAvailable);
     const { selectedIterationId } = useIterationStore();
     const [params, setParams] = useSearchParams();
-    const queue: Queue = queues.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : 'active';
+    const requestedQueue: Queue | null = queues.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : null;
     const selectedId = Number(params.get('task')) || null;
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const work = useLiveWindow({ queryKey: ['human-my-work'], enabled: !actingAsOperator && (!local || !!identity?.profile), initialPageParam: 0,
@@ -60,6 +60,29 @@ const MyWorkPage = () => {
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const inbox = useLiveWindow({ queryKey: ['personal-inbox'], enabled: notificationsAvailable, initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.inbox(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
+    const queueCount = (key: Queue): number | null => {
+        const source = key === 'review' ? reviews : key === 'inbox' ? inbox : work;
+        const pages = source.data?.pages;
+        if (!pages) return null;
+        return key === 'review' || key === 'inbox'
+            ? pages.reduce((total, page) => total + ('items' in page ? page.items.length : 0), 0)
+            : pages.reduce((total, page) => total + ('queues' in page ? (page.queues[key]?.length ?? 0) : 0), 0);
+    };
+    // The queue opened without a queue in the URL: the first, in tab order, that has work. Null while
+    // a queue before it is still loading, so the page does not jump past work that has not arrived yet.
+    const firstQueueWithWork = (): Queue | null => {
+        for (const key of queues) {
+            const count = queueCount(key);
+            if (count === null) return null;
+            if (count > 0) return key;
+        }
+        return 'active';
+    };
+    const decidedQueue = firstQueueWithWork();
+    // Once decided, the opened queue stays put while the person works, even if a task moves out of it.
+    const [openedQueue, setOpenedQueue] = useState<Queue | null>(null);
+    if (openedQueue === null && decidedQueue !== null) setOpenedQueue(decidedQueue);
+    const queue: Queue = requestedQueue ?? openedQueue ?? decidedQueue ?? 'active';
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
     const deliveries = useLiveWindow({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox' && notificationsAvailable, initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.deliveries(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
@@ -78,10 +101,7 @@ const MyWorkPage = () => {
     const workQueue = WORK_QUEUES.includes(queue);
     const queueLabel = (key: Queue) => {
         const source = key === 'review' ? reviews : key === 'inbox' ? inbox : work;
-        const pages = source.data?.pages;
-        const count = !pages ? null : key === 'review' || key === 'inbox'
-            ? pages.reduce((total, page) => total + ('items' in page ? page.items.length : 0), 0)
-            : pages.reduce((total, page) => total + ('queues' in page ? (page.queues[key]?.length ?? 0) : 0), 0);
+        const count = queueCount(key);
         return `${t(`teamwork.queue_${key}`)} · ${count === null ? '…' : `${count}${source.hasNextPage ? '+' : ''}`}`;
     };
     const rowEdits = useTaskRowEdits();

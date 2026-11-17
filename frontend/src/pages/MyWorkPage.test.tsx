@@ -9,6 +9,7 @@ import type { Task } from '../types/task';
 import { useLocation } from 'react-router-dom';
 import { expectPageChrome } from '../test/pageChrome';
 import { taskDetailResponse } from '../test/fixtures/taskDetail';
+import i18n from '../i18n/i18n';
 
 const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn(), post: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
@@ -128,6 +129,30 @@ it.each(['active', 'review', 'inbox'])('explains the operator identity and offer
     expect(screen.queryByTestId('capacity')).not.toBeInTheDocument();
     await view.user.click(screen.getByRole('button', { name: 'Lock' }));
     expect(sessionStorage.getItem('workchord_admin_api_key')).toBeNull();
+});
+
+describe('My Work opening queue', () => {
+    const queuesWithUpNextOnly = () => api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null,
+            queues: { active: [], queued: [{ id: 7, title: 'Up next task', status: 'planned', project_name: 'Calendar' }], blocked: [], awaiting_review: [] } } };
+        return { data: [] };
+    });
+
+    it('opens Up next when Doing is empty and Up next has work', async () => {
+        queuesWithUpNextOnly();
+        renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work'] });
+        expect(await screen.findByRole('button', { name: '#7 · Up next task' })).toBeInTheDocument();
+        expect(screen.queryByText(i18n.t('emptyStates.myWork.queueBody'))).toBeNull();
+        expect(screen.getByRole('button', { name: 'Up next · 1' })).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('keeps the queue the URL names, even when it is empty', async () => {
+        queuesWithUpNextOnly();
+        renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work?queue=active'] });
+        expect(await screen.findByText(i18n.t('emptyStates.myWork.queueBody'))).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: '#7 · Up next task' })).toBeNull();
+        expect(screen.getByRole('button', { name: 'Doing · 0' })).toHaveAttribute('aria-pressed', 'true');
+    });
 });
 
 describe('My Work rows', () => {

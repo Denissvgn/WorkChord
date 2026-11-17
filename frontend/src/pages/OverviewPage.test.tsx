@@ -268,6 +268,7 @@ describe('Overview', () => {
     });
 
     it('shows one attention item, Work now, Agents now and three figures, and passes the page chrome check', async () => {
+        api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }]);
         const { container } = renderOverview();
 
         const attention = await screen.findByRole('region', { name: i18n.t('overview.attentionItem.blocked', { count: 1 }) });
@@ -291,7 +292,7 @@ describe('Overview', () => {
         // The header names the scope's project and dates and leads with New task.
         const header = screen.getByTestId('page-header');
         expect(header).toHaveTextContent('Alpha · Iteration 12');
-        expect(within(header).getByRole('link', { name: i18n.t('tasks.newTask') })).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=12');
+        expect(await within(header).findByRole('link', { name: i18n.t('tasks.newTask') })).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=12');
         expect(within(header).getByRole('link', { name: i18n.t('tasks.newTask') })).toHaveClass('btn', 'primary');
         expect(container.querySelectorAll('.btn.primary')).toHaveLength(1);
 
@@ -618,10 +619,21 @@ describe('Overview', () => {
         expect((heading.closest('section') as HTMLElement).querySelectorAll('[data-testid^="task-card-"]')).toHaveLength(1);
     });
 
+    it('hides New task until a project exists', async () => {
+        api.projects.mockResolvedValue([]);
+        renderOverview('/?project=1&iteration=12');
+        // The page's sections load with the projects; once Work now shows, the projects have answered too.
+        await waitFor(() => expect(api.projects).toHaveBeenCalled());
+        expect(await screen.findByRole('heading', { level: 2, name: i18n.t('overview.workNow') })).toBeInTheDocument();
+        const header = screen.getByTestId('page-header');
+        expect(within(header).queryByRole('link', { name: i18n.t('tasks.newTask') })).toBeNull();
+        expect(screen.queryByRole('link', { name: i18n.t('tasks.newTask') })).toBeNull();
+    });
+
     it('opens New task on the Backlog as a backlog task of the scope project, with no iteration', async () => {
         api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
         const { user } = renderOverview('/?project=1&iteration=backlog');
-        const newTask = within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
+        const newTask = await within(screen.getByTestId('page-header')).findByRole('link', { name: i18n.t('tasks.newTask') });
         expect(newTask).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=backlog');
 
         await user.click(newTask);
@@ -640,8 +652,9 @@ describe('Overview', () => {
     });
 
     it('opens New task with All projects in the iteration in scope', async () => {
+        api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
         const { user } = renderOverview('/?project=all&iteration=21');
-        const newTask = within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
+        const newTask = await within(screen.getByTestId('page-header')).findByRole('link', { name: i18n.t('tasks.newTask') });
         expect(newTask).toHaveAttribute('href', '/tasks?create=1&project=all&iteration=21');
 
         await user.click(newTask);
@@ -654,7 +667,7 @@ describe('Overview', () => {
     it('asks for a project before New task can create a backlog task with All projects', async () => {
         api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
         const { user } = renderOverview('/?project=all&iteration=backlog');
-        await user.click(within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') }));
+        await user.click(await within(screen.getByTestId('page-header')).findByRole('link', { name: i18n.t('tasks.newTask') }));
 
         // A backlog task needs a project, and All projects names none.
         expect(await screen.findByText(i18n.t('teamwork.chooseProject'))).toBeInTheDocument();
