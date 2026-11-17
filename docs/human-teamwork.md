@@ -32,9 +32,10 @@ that content now lives, and they keep their query parameters.
 ## Get started
 
 Start the workspace as described in the [README](../README.md), sign in, and open
-**Overview**. It shows the **Get started** panel until you dismiss it in this browser.
-It lists six steps. Each step opens the page that does it, and each step is
-marked done from the workspace's data rather than from a checkbox:
+**Overview**. It shows the **Get started** panel until all six steps are done or
+you dismiss it in this browser. It lists six steps. Each step opens the page
+that does it, and each step is marked done from the workspace's data rather
+than from a checkbox:
 
 1. **Say who you are.** Work as a work profile. In a trusted-local workspace,
    choose or add your profile from the account menu ("Add me"). In managed
@@ -47,13 +48,22 @@ marked done from the workspace's data rather than from a checkbox:
 4. **Add capacity.** Say who does the work in this iteration: add yourself,
    connect an agent, or add other profiles. The step opens Plan at **Capacity**.
    To connect an agent, see [agent team setup](agent-team-setup.md).
-5. **Add tasks.** Add the work for the iteration from the backlog or by import.
-   The step opens Plan at **Work**.
-6. **Build the schedule.** Build it from the tasks and capacity, then apply it.
-   The step opens Plan at **Schedule** and is done when the schedule is applied.
+5. **Add tasks.** The step opens Plan at **Work**. A new workspace has an empty
+   backlog, so create the first task there: choose **Open in Tasks**, type a
+   title in the **Add a task** row, and press Enter. The task joins the
+   iteration. **Import tasks** adds several at once. When a project's backlog
+   has tasks, **Add from backlog** adds them to the iteration.
+6. **Build the schedule.** The step opens Plan at **Schedule**. Before the
+   schedule can be built, **Blockers** must be clear: every task needs an
+   assignee and an effort in hours. On **Blockers**, choose **Preview
+   assignments**, then **Assign** (its label gives the number of tasks). Enter
+   each missing effort in hours and choose **Save**. Then, on **Schedule**,
+   choose **Calculate schedule**, check the result, and choose **Apply
+   schedule**. The step is done when the schedule is applied.
 
-When all six steps are done, the panel says so. **Dismiss** hides the panel in
-this browser only. Reopen it from **Help → Setup guide**.
+When all six steps are done, the panel hides from Overview by itself. **Dismiss**
+hides it earlier, in this browser only. To see it again, open **Help**, then
+**Setup guide**; it then shows "Every step is done. The schedule is applied."
 
 ## Start with a person and a project
 
