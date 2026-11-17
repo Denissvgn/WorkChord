@@ -20,6 +20,15 @@ MAX_OBSERVATIONS = 20_000
 MAX_QUEUE_ITEMS = 50
 
 
+def validate_report_scope(project_id, iteration_id, *, backlog=False, all_projects=False):
+    if all_projects and (project_id is not None or iteration_id is not None or backlog):
+        raise ValueError("All projects cannot be combined with a project, iteration or backlog filter")
+    if backlog and (project_id is None or iteration_id is not None):
+        raise ValueError("Backlog requires one project and no iteration")
+    if project_id is None and iteration_id is None and not all_projects:
+        raise ValueError("Select a project or an iteration")
+
+
 def _samples(values, *, censored=0, unknown=0):
     return DurationSamples(sample_count=len(values), mean=round(mean(values), 3) if values else None,
         median=round(median(values), 3) if values else None, censored_count=censored, unknown_count=unknown)
@@ -138,9 +147,9 @@ class DeliveryMetricsService:
             raise CollectionLimitExceededError("delivery observations", MAX_OBSERVATIONS)
         return rows
 
-    async def report(self, *, project_id=None, iteration_id=None, lookback_days=30, now=None):
-        if project_id is None and iteration_id is None:
-            raise ValueError("Select a project or an iteration")
+    async def report(self, *, project_id=None, iteration_id=None, lookback_days=30, now=None,
+                     backlog=False, all_projects=False):
+        validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects)
         if not 1 <= lookback_days <= 366:
             raise ValueError("Observation window must be between 1 and 366 elapsed days")
         if project_id is not None:
@@ -159,6 +168,10 @@ class DeliveryMetricsService:
         if iteration_id is not None:
             observed = observed.where(DeliveryObservation.iteration_id == iteration_id)
             live = live.where(Task.iteration_id == iteration_id)
+        if backlog:
+            observed = observed.where(DeliveryObservation.iteration_id.is_(None),
+                                      DeliveryObservation.original_iteration_id.is_(None))
+            live = live.where(Task.iteration_id.is_(None))
         if len((await self.db.scalars(live.with_only_columns(Task.id).limit(MAX_PROJECT_TREE_TASKS + 1))).all()) > MAX_PROJECT_TREE_TASKS:
             raise CollectionLimitExceededError("delivery queue context", MAX_PROJECT_TREE_TASKS)
         rows = await self._window_observations(observed, start)

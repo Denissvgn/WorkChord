@@ -112,3 +112,18 @@ def test_actor_provisioning_does_not_require_or_invent_runtime_binding():
     assert actor.model_binding is None
     assert actor.work_policy == "assigned_only"
     assert actor.max_parallel_work == 1
+
+
+@pytest.mark.parametrize('path', ['/api/tasks/delivery-metrics', '/api/tasks/execution-usage'])
+def test_analytics_contract_adds_optional_scope_modes(path):
+    exporter = runpy.run_path(str(ROOT / 'scripts/generate_client_contract.py'))
+    operation = exporter['build_contract']()['paths'][path]['get']
+    params = {item['name']: item for item in operation['parameters'] if item['in'] == 'query'}
+    assert {'project_id', 'iteration_id', 'lookback_days', 'backlog', 'all_projects'} <= params.keys()
+    for name in ('backlog', 'all_projects'):
+        assert params[name]['required'] is False
+        assert params[name]['schema']['type'] == 'boolean'
+        assert params[name]['schema']['default'] is False
+    assert params['lookback_days']['schema']['default'] == 30
+    if path.endswith('execution-usage'):
+        assert {'budget_amount', 'budget_currency'} <= params.keys()

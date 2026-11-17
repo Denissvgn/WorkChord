@@ -13,6 +13,7 @@ import { useScopeStore } from '../features/scope/scopeStore';
 import { IdentityContext } from '../features/identity/identityContext';
 import type { WorkspaceIdentity } from '../features/identity/identityService';
 import { renderWithProviders } from '../test/renderWithProviders';
+import { installWorkspaceApi } from '../test/workspaceApi';
 import OverviewPage from './OverviewPage';
 import MyWorkPage from './MyWorkPage';
 import TriagePage from './TriagePage';
@@ -24,9 +25,9 @@ import AnalyticsPage from './AnalyticsPage';
 import TeamPage from './TeamPage';
 
 /**
- * Every destination and view, rendered with the real pages and an empty service layer: each must show its
- * empty state with one sentence and one button, a filtered list with no results must offer Clear filters and no
- * create action, and no empty state may link to a path that redirects.
+ * List destinations show one empty-state sentence and next step; Analytics shows empty reports.
+ * Filtered lists with no results offer Clear filters and no create action, and empty states
+ * must not link to paths that redirect.
  */
 
 type Scenario = {
@@ -234,7 +235,6 @@ const CASES: Case[] = [
     { name: 'Tasks board filtered', path: '/tasks?iteration=1&layout=board&q=no-such-task', page: () => <TasksPage />, scenario: { iterations: [ITERATION], tasks: [task(1)] }, filtered: true },
     { name: 'Tasks pipeline', path: '/tasks?layout=pipeline', page: () => <TasksPage />, adminKey: true, copy: 'emptyStates.pipeline.body' },
     { name: 'Tasks pipeline filtered', path: '/tasks?layout=pipeline&q=no-such-task', page: () => <TasksPage />, adminKey: true, scenario: { pipeline: { executing: [task(1)] } }, filtered: true },
-    { name: 'Analytics', path: '/analytics', page: () => <AnalyticsPage />, copy: 'emptyStates.analytics.body' },
     { name: 'Team members', path: '/team', page: () => <TeamPage />, copy: 'emptyStates.team.membersBody' },
     { name: 'Team models without the admin key', path: '/team?tab=models', page: () => <TeamPage />, copy: 'emptyStates.team.modelsBody' },
     { name: 'Team models with an empty catalog and no bindings', path: '/team?tab=models', page: () => <TeamPage />, agentKey: true,
@@ -299,6 +299,23 @@ const actionsOf = (state: HTMLElement) => Array.from(state.querySelectorAll<HTML
 const shownText = (text: string) => Array.from(document.body.querySelectorAll('*')).some(element => ownText(element) === text);
 
 describe('destination and view empty states', () => {
+    it.each(LANGUAGES)('Analytics shows empty workspace reports without requiring an iteration (%s)', async language => {
+        await i18n.changeLanguage(language);
+        const { unplanned } = installWorkspaceApi([
+            [/^\/iterations\/page$/, () => ({ ...PAGE, items: [] })],
+            [/^\/projects\/page$/, () => ({ ...PAGE, items: [] })],
+        ]);
+        const view = renderWithProviders(<AnalyticsPage />, { initialEntries: ['/analytics'] });
+        expect(await screen.findByText(i18n.t('deliveryAnalytics.noSamples'))).toBeVisible();
+        expect(await screen.findByText(i18n.t('executionUsage.noMeasurements'))).toBeVisible();
+        expect(screen.getByRole('heading', { name: i18n.t('deliveryAnalytics.title') })).toBeVisible();
+        expect(screen.getByRole('heading', { name: i18n.t('executionUsage.title') })).toBeVisible();
+        expect(view.container.querySelectorAll('.inline-empty')).toHaveLength(0);
+        expect(api.get).toHaveBeenCalledWith('/tasks/delivery-metrics', { params: { all_projects: true, lookback_days: 30 } });
+        expect(api.get).toHaveBeenCalledWith('/tasks/execution-usage', { params: { all_projects: true, lookback_days: 30 } });
+        expect(unplanned).toEqual([]);
+    });
+
     it.each(
         CASES.flatMap(testCase => LANGUAGES.map(language => ({ testCase, language })))
             .map(({ testCase, language }) => ({ name: testCase.name, language, testCase })),
