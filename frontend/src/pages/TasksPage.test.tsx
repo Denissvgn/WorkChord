@@ -42,7 +42,9 @@ vi.mock('../components/tasks/TaskList', () => ({
     TaskList: ({
         requestedMode,
         filters,
+        selectionBarHost,
     }: {
+        selectionBarHost?: HTMLElement | null;
         requestedMode?: string | null;
         filters?: { planningIssue?: string | null };
     }) => (
@@ -50,6 +52,9 @@ vi.mock('../components/tasks/TaskList', () => ({
             Task list{requestedMode ? ` — ${requestedMode}` : ''}
             <output data-testid="task-planning-issue">
                 {filters?.planningIssue ?? 'none'}
+            </output>
+            <output data-testid="selection-host">
+                {selectionBarHost?.getAttribute('data-testid') ?? (selectionBarHost ? 'toolbar' : 'none')}
             </output>
         </div>
     ),
@@ -283,6 +288,18 @@ describe('TasksPage', () => {
 
         expect(await screen.findByText('Task list — bulk')).toBeVisible();
         expect(screen.queryByRole('button', { name: 'Planning help' })).not.toBeInTheDocument();
+    });
+
+    it('hosts the selection bar inside the full-screen workspace, and in the toolbar otherwise', async () => {
+        const { unmount } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks'] });
+        await screen.findByText(/Task list/);
+        await waitFor(() => expect(screen.getByTestId('selection-host')).toHaveTextContent('toolbar'));
+        unmount();
+
+        renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?fullscreen=1'] });
+        const dialog = await screen.findByRole('dialog');
+        await waitFor(() => expect(screen.getByTestId('selection-host')).toHaveTextContent('fullscreen-selection-slot'));
+        expect(dialog).toContainElement(screen.getByTestId('fullscreen-selection-slot'));
     });
 
     it('opens the board layout from the URL with one header and one New task action', async () => {

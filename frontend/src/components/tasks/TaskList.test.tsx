@@ -261,7 +261,7 @@ describe('TaskList rows', () => {
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
 
-    it('shows at most four interactive parts at rest and the checkbox and menu on hover and focus', async () => {
+    it('shows at most four interactive parts at rest, the checkbox always, and the menu on hover and focus', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2)]);
         const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
         await screen.findByRole('button', { name: 'Task 1' });
@@ -273,14 +273,15 @@ describe('TaskList rows', () => {
         expect(within(row).getByRole('button', { name: /Status: Planned/ })).toBeInTheDocument();
         expect(within(row).getByRole('button', { name: 'Task 1' })).toBeInTheDocument();
         expect(within(row).getByRole('combobox', { name: 'Assignee: Task 1' })).toBeInTheDocument();
-        expect(within(row).queryByRole('checkbox')).toBeNull();
+        expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
         expect(within(row).queryByRole('button', { name: 'Actions for Task 1' })).toBeNull();
 
         hover(row);
         expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
         expect(within(row).getByRole('button', { name: 'Actions for Task 1' })).toBeInTheDocument();
         unhover(row);
-        expect(within(row).queryByRole('checkbox')).toBeNull();
+        expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
+        expect(within(row).queryByRole('button', { name: 'Actions for Task 1' })).toBeNull();
 
         await user.click(within(row).getByRole('button', { name: 'Task 1' }));
         within(row).getByRole('button', { name: 'Task 1' }).focus();
@@ -301,6 +302,39 @@ describe('TaskList rows', () => {
         }
         hover(rowOf('Task 2'));
         expect(within(rowOf('Task 2')).getByRole('button', { name: 'Actions for Task 2' })).toBeInTheDocument();
+    });
+
+    it('shows a selection control on every row at rest, off with its reason on parent and composite rows', async () => {
+        const parent = { ...task(3), children: [{ ...task(4), parent_id: 3 }] };
+        const composite = { ...task(5), is_composite: true };
+        taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2), parent, composite]);
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" selectionBarHost={host} />);
+        await screen.findByRole('button', { name: 'Task 1' });
+
+        const reason = 'This task is made of subtasks and changes through them. Select its subtasks instead.';
+        for (const title of ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5']) {
+            const box = within(rowOf(title)).getByRole('checkbox', { name: `Select: ${title}` });
+            expect(box).toBeVisible();
+            if (title === 'Task 3' || title === 'Task 5') {
+                expect(box).toBeDisabled();
+                expect(box).toHaveAccessibleDescription(reason);
+                expect(box).toHaveAttribute('title', reason);
+            } else {
+                expect(box).toBeEnabled();
+                expect(box).not.toHaveAttribute('aria-describedby');
+            }
+        }
+
+        // A parent row's checkbox cannot be ticked; its subtask's can, and the bar shows in the toolbar's place.
+        fireEvent.click(within(rowOf('Task 3')).getByRole('checkbox', { name: 'Select: Task 3' }));
+        expect(within(host).queryByTestId('task-bulk-operations')).toBeNull();
+        fireEvent.click(within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' }));
+        expect(await within(host).findByText('Selected tasks: 1')).toBeInTheDocument();
+        expect(within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' })).toBeChecked();
+        expect(within(rowOf('Task 3')).getByRole('checkbox', { name: 'Select: Task 3' })).not.toBeChecked();
+        host.remove();
     });
 
     it('keeps rows in manual order to four interactive parts, with the drag handle on hover and focus only', async () => {
@@ -331,9 +365,11 @@ describe('TaskList rows', () => {
         await waitFor(() => expect(within(rowOf('Task 2')).queryByRole('button', { name: 'Drag: Task 2' })).toBeNull());
         for (const title of titles) {
             const row = rowOf(title);
-            // A parent is not selected itself; its leaf tasks are.
-            if (title === 'Task 3') expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
-            else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeInTheDocument();
+            // A parent is not selected itself; its leaf tasks are, so its checkbox shows but is off.
+            if (title === 'Task 3') {
+                expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
+                expect(within(row).getByRole('checkbox', { name: 'Select: Task 3' })).toBeDisabled();
+            } else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeEnabled();
             expect(within(row).queryByRole('button', { name: `Drag: ${title}` })).toBeNull();
             expect(within(row).queryByRole('button', { name: `Actions for ${title}` })).toBeNull();
             expect(row.querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);

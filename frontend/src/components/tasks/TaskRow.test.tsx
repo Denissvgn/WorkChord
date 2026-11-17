@@ -65,7 +65,7 @@ describe('TaskRow', () => {
 
     it('shows a checkbox that cannot be ticked, with the reason, when the row cannot join the selection', () => {
         renderWithProviders(
-            <TaskRow id={1} title="Task 1" status="planned" onOpen={vi.fn()} menuItems={[]} selectionActive
+            <TaskRow id={1} title="Task 1" status="planned" onOpen={vi.fn()} menuItems={[]}
                 onToggleSelect={vi.fn()} selectDisabledReason="Another iteration" />,
         );
         const box = screen.getByRole('checkbox', { name: 'Select: Task 1' });
@@ -73,10 +73,27 @@ describe('TaskRow', () => {
         expect(box).toHaveAttribute('title', 'Another iteration');
     });
 
-    it('shows the checkbox on every row while a selection is active, but the menu only on hover and focus', () => {
+    it('shows a checkbox that is off, with the reason as its description, on a row that cannot be selected at all', () => {
+        renderWithProviders(
+            <TaskRow id={1} title="Task 1" status="planned" onOpen={vi.fn()} menuItems={[]} selectDisabledReason="Select its subtasks instead." />,
+        );
+        const box = screen.getByRole('checkbox', { name: 'Select: Task 1' });
+        expect(box).toBeDisabled();
+        expect(box).not.toBeChecked();
+        expect(box).toHaveAccessibleDescription('Select its subtasks instead.');
+        // The slot carries the tooltip too, because a disabled control gets no pointer events.
+        expect(box.parentElement).toHaveAttribute('title', 'Select its subtasks instead.');
+    });
+
+    it('leaves the slot empty only when there is neither a toggle nor a reason', () => {
+        renderWithProviders(<TaskRow id={1} title="Task 1" status="planned" onOpen={vi.fn()} menuItems={[]} />);
+        expect(screen.queryByRole('checkbox')).toBeNull();
+    });
+
+    it('shows the checkbox on every row at rest, but the menu only on hover and focus', () => {
         renderWithProviders(
             <TaskRow id={1} title="Task 1" status="planned" assignee={{ id: 5, name: 'Ada' }} onAssign={vi.fn()} onStatusChange={vi.fn()}
-                onOpen={vi.fn()} menuItems={[{ label: 'Details', onSelect: vi.fn() }]} selectionActive onToggleSelect={vi.fn()} />,
+                onOpen={vi.fn()} menuItems={[{ label: 'Details', onSelect: vi.fn() }]} onToggleSelect={vi.fn()} />,
         );
         const row = screen.getByRole('button', { name: 'Task 1' }).closest<HTMLElement>('[data-task-row]')!;
         expect(screen.getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
@@ -93,7 +110,7 @@ describe('TaskRow', () => {
     it('shows the drag handle on hover and focus in a slot that keeps its width, and keeps it while the row is dragged', () => {
         const props = {
             id: 1, title: 'Task 1', status: 'planned' as const, assignee: { id: 5, name: 'Ada' }, onAssign: vi.fn(), onStatusChange: vi.fn(),
-            onOpen: vi.fn(), menuItems: [{ label: 'Details', onSelect: vi.fn() }], selectionActive: true, onToggleSelect: vi.fn(),
+            onOpen: vi.fn(), menuItems: [{ label: 'Details', onSelect: vi.fn() }], onToggleSelect: vi.fn(),
             handle: <Button type="button" variant="secondary">Drag: Task 1</Button>,
         };
         const { rerender } = renderWithProviders(<TaskRow {...props} />);
