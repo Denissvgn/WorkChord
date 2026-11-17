@@ -1,4 +1,4 @@
-import { useId, useState, type ComponentProps, type ReactNode } from 'react';
+import { useId, useState, type ComponentProps, type ReactNode, type RefObject } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import type { Task } from '../../types/task';
@@ -12,12 +12,15 @@ import { readTaskEditorSnapshot, keepNewestTaskSnapshot } from './taskEditorSnap
 type FormProps = Omit<ComponentProps<typeof TaskForm>, 'onSuccess' | 'onCancel' | 'onDirtyChange' | 'onPendingChange' | 'onDiscardReady' | 'confirmUnsavedOnCancel'>;
 
 // Creating and editing a task share one container: the same slide-over drawer the task editor uses.
-export const GuardedTaskDrawer = ({ title, closeLabel, onClose, ...form }: FormProps & {
+export const GuardedTaskDrawer = ({ title, closeLabel, onClose, restoreFocusRef, ...form }: FormProps & {
     title: ReactNode; closeLabel: string; onClose: () => void;
+    /** Where focus goes on close when the drawer was not opened from a control on this page. */
+    restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
     const guard = useDraftDismissal(onClose);
     return <>
-        <SlideOverDrawer open title={title} closeLabel={closeLabel} onClose={guard.requestClose} closeDisabled={guard.pending} className="max-w-2xl">
+        <SlideOverDrawer open title={title} closeLabel={closeLabel} onClose={guard.requestClose} closeDisabled={guard.pending}
+            restoreFocusRef={restoreFocusRef} className="max-w-2xl">
             <div className="p-4 sm:p-6">
                 <TaskForm {...form} onSuccess={guard.complete} onCancel={guard.requestClose}
                     onDirtyChange={guard.setDirty} onPendingChange={guard.setPending} onDiscardReady={guard.onDiscardReady} confirmUnsavedOnCancel={false} />

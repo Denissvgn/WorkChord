@@ -3558,6 +3558,7 @@ export const englishResources = {
                     postFirstUpdate: "Post first update",
                     noMilestonesYet: "No milestones yet.",
                     targetDateRisk: "Target date risk",
+                    factsLabel: "Project facts",
                     projectStatuses: {
                         proposed: "Proposed",
                         planned: "Planned",
@@ -3761,6 +3762,7 @@ export const englishResources = {
                     attachOrDetach: "Attach or detach",
                     markShipped: "Mark shipped",
                     releaseMetadata: "Release metadata",
+                    factsLabel: "Release facts",
                     noTasksLinkedToThisRelease: "No tasks linked to this release.",
                     loadingRelease: "Loading release…",
                     releaseNotFound: "Release not found",

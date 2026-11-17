@@ -341,4 +341,48 @@ describe('Team page', () => {
         await act(async () => {});
         expect(screen.queryByRole('table')).not.toBeInTheDocument();
     });
+
+    it('returns focus to the empty state Add person when its drawer closes', async () => {
+        services.team.getProfiles.mockResolvedValue([]);
+        const { user } = renderTeam();
+        await screen.findByText('No one on the team yet');
+        expect(within(screen.getByTestId('page-header')).queryByRole('button', { name: 'Add person' })).not.toBeInTheDocument();
+
+        const opener = within(screen.getByRole('tabpanel')).getByRole('button', { name: 'Add person' });
+        await user.click(opener);
+        await screen.findByRole('dialog', { name: 'Add person' });
+        await user.keyboard('{Escape}');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(opener).toHaveFocus();
+    });
+
+    it('returns focus to the Members tab when Add person was opened from Models and the empty team hides the header button', async () => {
+        services.team.getProfiles.mockResolvedValue([]);
+        const { user } = renderTeam('/team?tab=models');
+        expect(await screen.findByRole('tab', { name: 'Models' })).toHaveAttribute('aria-selected', 'true');
+
+        await user.click(within(screen.getByTestId('page-header')).getByRole('button', { name: 'Add person' }));
+        await screen.findByRole('dialog', { name: 'Add person' });
+        expect(screen.getByRole('tab', { name: 'Members' })).toHaveAttribute('aria-selected', 'true');
+        // The empty list now offers Add person itself, so the button that opened the drawer is gone.
+        await waitFor(() => expect(within(screen.getByTestId('page-header')).queryByRole('button', { name: 'Add person' })).not.toBeInTheDocument());
+
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('tab', { name: 'Members' })).toHaveFocus();
+        expect(document.body).not.toHaveFocus();
+    });
+
+    it('returns focus to the header Add person when it survives the switch from Models', async () => {
+        const { user } = renderTeam('/team?tab=models');
+        const opener = await within(screen.getByTestId('page-header')).findByRole('button', { name: 'Add person' });
+        await user.click(opener);
+        await screen.findByRole('dialog', { name: 'Add person' });
+        await screen.findByRole('button', { name: 'Open Ada Lovelace' });
+
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(within(screen.getByTestId('page-header')).getByRole('button', { name: 'Add person' })).toHaveFocus();
+    });
 });

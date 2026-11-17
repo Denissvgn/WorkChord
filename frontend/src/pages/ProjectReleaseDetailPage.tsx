@@ -257,7 +257,7 @@ const ProjectReleaseDetailPage = () => {
                         </div>
                     </div>
                 </div>
-                <aside className="sticky-rail">
+                <aside className="sticky-rail" aria-label={t('surfaces.releaseDetail.factsLabel')}>
                     <div className="card">
                         <div className="card-head"><h2>{t('surfaces.releaseDetail.releaseMetadata')}</h2></div>
                         <div className="card-pad" style={{display:'flex', flexDirection:'column', gap:10}}>

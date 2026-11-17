@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type RefObject } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Plus, Trash2 } from 'lucide-react';
@@ -91,6 +91,8 @@ interface TeamProfileManagerProps {
     onClose: () => void;
     /** Called with the profile's id once a person has been added or an agent's profile has been created. */
     onCreated: (profileId: number) => void;
+    /** Where focus goes on close when the control that opened the drawer is gone. */
+    fallbackFocusRef?: RefObject<HTMLElement | null>;
 }
 
 type ObservedProfile = ObservedPlanningInput<TeamMemberProfile>;
@@ -190,14 +192,14 @@ const ActorBinding = ({ entry }: { entry: DirectoryActor }) => {
  * A row without a profile (an agent that has not been given one) is handled apart, so this drawer never
  * offers to create an unrelated person for it.
  */
-export const TeamProfileManager = ({ row, onClose, onCreated }: TeamProfileManagerProps) => {
-    if (row === null) return <ProfileDrawer row={null} initial={null} onClose={onClose} onCreated={onCreated} />;
-    if (row.profile === null) return <AgentWithoutProfileDrawer row={row} onClose={onClose} onCreated={onCreated} />;
-    return <ObservedProfileDrawer row={row} profileId={row.profile.id} onClose={onClose} onCreated={onCreated} />;
+export const TeamProfileManager = ({ row, ...drawer }: TeamProfileManagerProps) => {
+    if (row === null) return <ProfileDrawer row={null} initial={null} {...drawer} />;
+    if (row.profile === null) return <AgentWithoutProfileDrawer row={row} {...drawer} />;
+    return <ObservedProfileDrawer row={row} profileId={row.profile.id} {...drawer} />;
 };
 
 /** Reads the profile first, so the form and the revisions it will be saved at come from the same observation. */
-const ObservedProfileDrawer = ({ row, profileId, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow; profileId: number }) => {
+const ObservedProfileDrawer = ({ row, profileId, onClose, onCreated, fallbackFocusRef }: TeamProfileManagerProps & { row: DirectoryRow; profileId: number }) => {
     const { t } = useTranslation();
     const [initial, setInitial] = useState<ObservedProfile | null>(null);
     const [failure, setFailure] = useState<unknown>(null);
@@ -213,10 +215,10 @@ const ObservedProfileDrawer = ({ row, profileId, onClose, onCreated }: TeamProfi
     useEffect(() => { queueMicrotask(load); }, [load]);
 
     if (initial) {
-        return <ProfileDrawer row={row} initial={initial} onClose={onClose} onCreated={onCreated} />;
+        return <ProfileDrawer row={row} initial={initial} onClose={onClose} onCreated={onCreated} fallbackFocusRef={fallbackFocusRef} />;
     }
     return (
-        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}>
+        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)} fallbackFocusRef={fallbackFocusRef}>
             <div className="space-y-6 p-5">
                 {failure === null
                     ? <p role="status" className="text-sm text-content-secondary">{t('common.loading')}</p>
@@ -228,7 +230,7 @@ const ObservedProfileDrawer = ({ row, profileId, onClose, onCreated }: TeamProfi
 };
 
 /** An agent that has no profile yet: say so, and offer to create its profile and link it to the agent. */
-const AgentWithoutProfileDrawer = ({ row, onClose, onCreated }: TeamProfileManagerProps & { row: DirectoryRow }) => {
+const AgentWithoutProfileDrawer = ({ row, onClose, onCreated, fallbackFocusRef }: TeamProfileManagerProps & { row: DirectoryRow }) => {
     const { t } = useTranslation();
     const { hasAdminAccess } = useAdminAccess();
     const invalidate = useInvalidateTeam();
@@ -274,7 +276,7 @@ const AgentWithoutProfileDrawer = ({ row, onClose, onCreated }: TeamProfileManag
     });
 
     return (
-        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)}
+        <SlideOverDrawer open onClose={onClose} title={row.name} subtitle={t(`teamPage.kinds.${row.kind}`)} fallbackFocusRef={fallbackFocusRef}
             footer={<div className="flex justify-end"><Button type="button" variant="ghost" onClick={onClose}>{t('actions.close')}</Button></div>}>
             <div className="space-y-6 p-5">
                 {error && <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{error}</div>}
@@ -304,9 +306,10 @@ interface ProfileDrawerProps {
     initial: ObservedProfile | null;
     onClose: () => void;
     onCreated: (profileId: number) => void;
+    fallbackFocusRef?: RefObject<HTMLElement | null>;
 }
 
-const ProfileDrawer = ({ row, initial, onClose, onCreated }: ProfileDrawerProps) => {
+const ProfileDrawer = ({ row, initial, onClose, onCreated, fallbackFocusRef }: ProfileDrawerProps) => {
     const { t } = useTranslation();
     const profileId = initial?.resource.id ?? null;
     const [profileForm, setProfileForm] = useState<TeamMemberProfileCreate>(
@@ -518,6 +521,7 @@ const ProfileDrawer = ({ row, initial, onClose, onCreated }: ProfileDrawerProps)
         <SlideOverDrawer
             open
             onClose={onClose}
+            fallbackFocusRef={fallbackFocusRef}
             title={title}
             subtitle={row ? t(`teamPage.kinds.${row.kind}`) : t('teamProfiles.addPersonHint')}
             footer={(

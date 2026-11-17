@@ -1357,7 +1357,8 @@
 .wc .wc-filter-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; min-width: 0; }
 .wc .wc-filter-chip {
   display: inline-flex; align-items: center; gap: 4px; max-width: 100%;
-  padding: 1px 4px 1px 8px; border: 1px solid var(--border); border-radius: 4px;
+  /* The stronger border of the filter controls beside it, so the chip keeps its edge in every theme. */
+  padding: 1px 4px 1px 8px; border: 1px solid var(--border-2); border-radius: 4px;
   background: var(--panel-3); color: var(--ink-2); font-size: var(--wc-type-meta);
 }
 .wc .wc-filter-chip > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -494,7 +494,7 @@ const SettingsPage = () => {
             )}
 
             <div className="settings-shell">
-                <aside className="settings-local-nav">
+                <div className="settings-local-nav">
                     <nav aria-label={t('settingsPage.navigationLabel')}>
                         <label className="settings-nav-search">
                             <span className="sr-only">{t('settingsPage.catalog.searchLabel')}</span>
@@ -545,7 +545,7 @@ const SettingsPage = () => {
                             </div>
                         )}
                     </nav>
-                </aside>
+                </div>
 
                 <section className="settings-content" aria-labelledby="settings-destination-title">
                     <header className="settings-destination-header">

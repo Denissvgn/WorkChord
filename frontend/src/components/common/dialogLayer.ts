@@ -59,6 +59,8 @@ interface DialogLayerOptions {
     onClose: () => void;
     initialFocusRef?: RefObject<HTMLElement | null>;
     restoreFocusRef?: RefObject<HTMLElement | null>;
+    /** Where focus goes on close when neither restoreFocusRef nor the element that opened the layer is still on the page. */
+    fallbackFocusRef?: RefObject<HTMLElement | null>;
     closeDisabled?: boolean;
 }
 
@@ -72,6 +74,7 @@ export const useDialogLayer = <T extends HTMLElement>({
     onClose,
     initialFocusRef,
     restoreFocusRef,
+    fallbackFocusRef,
     closeDisabled = false,
 }: DialogLayerOptions) => {
     const dialogRef = useRef<T>(null);
@@ -176,11 +179,13 @@ export const useDialogLayer = <T extends HTMLElement>({
             const restoreTarget = connectedFocusTarget(restoreFocusRef);
             if (restoreTarget) {
                 restoreTarget.focus();
-            } else if (previouslyFocused?.isConnected) {
+            } else if (previouslyFocused?.isConnected && previouslyFocused !== document.body) {
                 previouslyFocused.focus();
+            } else {
+                connectedFocusTarget(fallbackFocusRef)?.focus();
             }
         };
-    }, [initialFocusRef, isTopLayer, open, restoreFocusRef]);
+    }, [fallbackFocusRef, initialFocusRef, isTopLayer, open, restoreFocusRef]);
 
     return {
         dialogRef,
