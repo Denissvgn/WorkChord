@@ -6,7 +6,9 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { clearAdminApiKey, setAdminApiKey } from '../../utils/adminAccess';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
-import { schedulingRulesService } from '../../services/schedulingRulesService';
+import { verifyAdminApiKey } from '../../services/adminAccessService';
+import { useIdentity } from '../../features/identity/identityContext';
+import { OperatorIdentityNotice } from '../../features/identity/OperatorIdentityNotice';
 import { getApiErrorStatus } from '../../utils/apiError';
 import { protectedQueryKeys } from './protectedQueryKeys';
 
@@ -20,7 +22,9 @@ export const AdminAccessPanel = ({
 }) => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
-    const { hasAdminKey } = useAdminAccess();
+    const { hasAdminKey, actingAsOperator } = useAdminAccess();
+    const identity = useIdentity()?.identity;
+    const signedInPerson = identity?.principal?.kind === 'human';
     const [draftKey, setDraftKey] = useState('');
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [verifying, setVerifying] = useState(false);
@@ -47,27 +51,23 @@ export const AdminAccessPanel = ({
 
         setVerifying(true);
         setMessage(null);
-        setAdminApiKey(nextKey);
-        removeProtectedQueries();
         try {
             // One protected read tells whether the server accepts this key.
-            await schedulingRulesService.getRules();
+            await verifyAdminApiKey(nextKey);
+            setAdminApiKey(nextKey);
+            removeProtectedQueries();
             setDraftKey('');
             setMessage({ type: 'success', text: t('settings.adminAccessAccepted') });
             refreshProtectedQueries();
         } catch (cause) {
             const status = getApiErrorStatus(cause);
             if (status === 401 || status === 403 || status === 503) {
-                clearAdminApiKey();
-                removeProtectedQueries();
                 setMessage({
                     type: 'error',
                     text: t(status === 503 ? 'settings.adminAccessBackendNotConfigured' : 'settings.adminAccessRejected'),
                 });
             } else {
-                setDraftKey('');
-                setMessage({ type: 'error', text: t('settings.adminAccessUnverified') });
-                refreshProtectedQueries();
+                setMessage({ type: 'error', text: t('identity.keyNotChecked') });
             }
         } finally {
             setVerifying(false);
@@ -80,6 +80,14 @@ export const AdminAccessPanel = ({
         setDraftKey('');
         setMessage({ type: 'success', text: t('settings.adminAccessCleared') });
     };
+
+    if (signedInPerson) return <section className="card max-w-3xl space-y-4">
+        <Heading className="font-semibold text-content-primary">{t('identity.editing', {
+            state: t(hasAdminKey ? 'identity.editingUnlocked' : 'identity.editingLocked'),
+        })}</Heading>
+        <p className="text-sm text-content-secondary">{t('identity.editingFollowsRole')}</p>
+        {identity.workspace_role && <p className="text-sm">{t('identity.workspaceRole', { role: identity.workspace_role })}</p>}
+    </section>;
 
     return (
         <section className="card max-w-3xl space-y-4">
@@ -108,6 +116,7 @@ export const AdminAccessPanel = ({
                 </div>
             </div>
 
+            {actingAsOperator && <OperatorIdentityNotice />}
             {message && (
                 <div
                     className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${
@@ -128,6 +137,7 @@ export const AdminAccessPanel = ({
                     autoComplete="off"
                     spellCheck={false}
                     value={draftKey}
+                    disabled={verifying}
                     onChange={(event) => setDraftKey(event.target.value)}
                     placeholder={t('settings.adminAccessPlaceholder')}
                 />
@@ -140,6 +150,7 @@ export const AdminAccessPanel = ({
                     {(hasAdminKey || draftKey) && <Button
                         type="button"
                         variant="outline"
+                        disabled={verifying}
                         onClick={clearKey}
                         className="inline-flex items-center gap-2"
                     >

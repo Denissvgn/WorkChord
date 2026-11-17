@@ -6,8 +6,8 @@ import type { WorkspaceIdentity } from '../features/identity/identityService';
 import SettingsPage from './SettingsPage';
 import { ADMIN_API_KEY_STORAGE_KEY } from '../utils/adminAccess';
 
-const rulesService = vi.hoisted(() => ({ getRules: vi.fn() }));
-vi.mock('../services/schedulingRulesService', () => ({ schedulingRulesService: rulesService }));
+const verifyKey = vi.hoisted(() => vi.fn());
+vi.mock('../services/adminAccessService', () => ({ verifyAdminApiKey: verifyKey }));
 
 // Each protected panel is replaced by one field, so the test can tell whether it can be edited.
 // Panels that lock only their own editing controls wrap that field the way the real panels do;
@@ -67,7 +67,7 @@ describe('SettingsPage editing lock', () => {
     beforeEach(() => {
         window.localStorage.clear();
         window.sessionStorage.clear();
-        rulesService.getRules.mockReset().mockResolvedValue([]);
+        verifyKey.mockReset().mockResolvedValue(undefined);
     });
 
     it('shows every protected section read-only behind one Unlock editing control, and that control unlocks them all', async () => {
@@ -87,6 +87,7 @@ describe('SettingsPage editing lock', () => {
         await user.type(screen.getByLabelText('Admin key'), 'operator-key');
         await user.click(screen.getByRole('button', { name: 'Save key' }));
         expect(await screen.findByText('Editing unlocked')).toBeVisible();
+        expect(verifyKey).toHaveBeenCalledWith('operator-key');
         expect(screen.queryByRole('button', { name: 'Unlock editing' })).toBeNull();
 
         for (const [section, label] of PROTECTED) {
