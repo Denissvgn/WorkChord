@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useLocation } from 'react-router-dom';
-import { screen, waitFor, within } from '@testing-library/react';
-import { renderWithProviders } from '../../test/renderWithProviders';
+import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
+import { renderWithProviders as renderTestProviders } from '../../test/renderWithProviders';
 import { IdentityContext } from '../identity/identityContext';
 import type { WorkspaceIdentity } from '../identity/identityService';
 import api from '../../services/api';
@@ -52,6 +52,12 @@ const readiness = (iterationId: number) => {
         checkpoints: states.map((done, i) => ({ id: ['iteration', 'team', 'work', 'blockers', 'schedule', 'review'][i], state: done ? 'done' : 'todo' })) };
 };
 const fresh = (): SampleManifest => ({ owner: 'local', records: [], complete: false });
+const queryClients = new Set<ReturnType<typeof renderTestProviders>['queryClient']>();
+const renderWithProviders = (...args: Parameters<typeof renderTestProviders>) => {
+    const result = renderTestProviders(...args);
+    queryClients.add(result.queryClient);
+    return result;
+};
 const Location = () => { const location = useLocation(); return <output data-testid="location">{location.pathname}{location.search}</output>; };
 const renderAction = (value = identity) => renderWithProviders(<IdentityContext.Provider value={{ identity: value, refresh: vi.fn(), signOut: vi.fn() }}><SampleProjectAction /><Location /></IdentityContext.Provider>);
 const WorkspaceSetup = () => {
@@ -67,6 +73,7 @@ beforeEach(async () => {
     await changeAppLanguage('en');
     rows = new Map(); nextId = 10; revision = 1; writes = []; applied = false; failIteration = false;
     localStorage.clear();
+    sessionStorage.clear();
     useSampleProject.setState({ manifest: null, busy: false });
     useScopeStore.setState({ project: null, iteration: null });
     rows.set('profile:1', person);
@@ -156,6 +163,16 @@ beforeEach(async () => {
     });
 });
 
+afterEach(() => {
+    cleanup();
+    for (const client of queryClients) client.clear();
+    queryClients.clear();
+    useSampleProject.setState({ manifest: null, busy: false });
+    useScopeStore.setState({ project: null, iteration: null });
+    localStorage.clear();
+    sessionStorage.clear();
+});
+
 describe('sample project lifecycle', () => {
     it('loads a dated Roadmap project, two milestones and an applied iteration at 6 of 6', async () => {
         const receipt = fresh();
@@ -191,7 +208,7 @@ describe('sample project lifecycle', () => {
         expect(readiness(list('iteration')[0].id).checkpoints_done).toBe(6);
     });
 
-    it.each(['complete', 'partial', 'missing prior scope', 'All projects with sample iteration'] as const)(
+    it.each(['complete', 'partial', 'missing prior scope', 'All projects with sample iteration', 'scope repair during restoration', 'navigation during restoration'] as const)(
         'restores workspace setup after sample removal with %s', async mode => {
             const project = record('project', { name: 'Workspace project' });
             const iteration = record('iteration', { name: 'Workspace iteration', project_id: project.id,
@@ -199,7 +216,7 @@ describe('sample project lifecycle', () => {
             const member = record('member', { name: person.display_name, profile_id: person.id, iteration_id: iteration.id });
             record('task', { title: 'Workspace task', project_id: project.id, iteration_id: iteration.id,
                 assignee_id: member.id, effort_hours: 2 });
-            const { user } = renderWithProviders(<IdentityContext.Provider value={{ identity, refresh: vi.fn(), signOut: vi.fn() }}>
+            const { user, queryClient } = renderWithProviders(<IdentityContext.Provider value={{ identity, refresh: vi.fn(), signOut: vi.fn() }}>
                 <WorkspaceSetup />
             </IdentityContext.Provider>, { initialEntries: [`/overview?project=${project.id}&iteration=${iteration.id}`] });
             await screen.findByTestId('get-started-panel');
@@ -207,10 +224,16 @@ describe('sample project lifecycle', () => {
                 expect(screen.getByTestId(`get-started-step-${step}`)).toHaveAttribute('data-done', 'true');
             }
             await user.click(screen.getByRole('button', { name: 'Load a sample project' }));
-            await waitFor(() => expect(useSampleProject.getState().manifest?.complete).toBe(true));
+            await waitFor(() => {
+                expect(useSampleProject.getState().manifest?.complete).toBe(true);
+                expect(useSampleProject.getState().busy).toBe(false);
+            });
             const sampleProjectId = useSampleProject.getState().manifest!.records.find(row => row.kind === 'project')!.id;
-            await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent(`/plan?project=${sampleProjectId}&iteration=`));
             const sampleIteration = list('iteration').find(row => row.id !== iteration.id)!;
+            await waitFor(() => {
+                expect(screen.getByTestId('location')).toHaveTextContent(`/plan?project=${sampleProjectId}&iteration=${sampleIteration.id}`);
+                expect(useScopeStore.getState()).toMatchObject({ project: sampleProjectId, iteration: sampleIteration.id });
+            });
             expect(useSampleProject.getState().manifest?.previousScope).toEqual({ project: project.id, iteration: iteration.id });
             expect(JSON.parse(localStorage.getItem('workchord-sample-project')!).previousScope).toEqual({ project: project.id, iteration: iteration.id });
             if (mode === 'missing prior scope') {
@@ -225,15 +248,38 @@ describe('sample project lifecycle', () => {
                     return originalDelete(...args);
                 });
             }
+            let releaseLookup: (() => void) | undefined;
+            let lookupPending = false;
+            if (mode === 'scope repair during restoration' || mode === 'navigation during restoration') {
+                const gate = new Promise<void>(resolve => { releaseLookup = resolve; });
+                const originalGet = vi.mocked(api.get).getMockImplementation()!;
+                vi.mocked(api.get).mockImplementation(async (...args) => {
+                    if (args[0] === '/projects/page' && !rows.has(`project:${sampleProjectId}`)) {
+                        lookupPending = true;
+                        await gate;
+                    }
+                    return originalGet(...args);
+                });
+            }
             await user.click(screen.getByRole('button', { name: 'Remove sample data' }));
             await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Remove sample data' }));
-            const restored = mode === 'missing prior scope' ? { project: 'all', iteration: 'backlog' }
+            if (releaseLookup) {
+                await waitFor(() => expect(lookupPending).toBe(true));
+                act(() => { queryClient.setQueryData(['iterations'], list('iteration')); });
+                await waitFor(() => expect(useScopeStore.getState()).toMatchObject({ project: sampleProjectId, iteration: 'backlog' }));
+                if (mode === 'navigation during restoration') await user.click(screen.getByRole('button', { name: 'All projects' }));
+                await act(async () => { releaseLookup!(); });
+            }
+            const restored = mode === 'missing prior scope' || mode === 'navigation during restoration' ? { project: 'all', iteration: 'backlog' }
                 : { project: project.id, iteration: iteration.id };
-            await waitFor(() => expect(screen.getByTestId('scope')).toHaveTextContent(JSON.stringify(restored)));
-            expect(screen.getByTestId('location')).toHaveTextContent(`project=${restored.project}&iteration=${restored.iteration}`);
-            expect(useScopeStore.getState()).toMatchObject(restored);
+            await waitFor(() => {
+                expect(useSampleProject.getState().busy).toBe(false);
+                expect(screen.getByTestId('scope')).toHaveTextContent(JSON.stringify(restored));
+                expect(screen.getByTestId('location')).toHaveTextContent(`project=${restored.project}&iteration=${restored.iteration}`);
+                expect(useScopeStore.getState()).toMatchObject(restored);
+            });
             expect(rows.has(`iteration:${sampleIteration.id}`)).toBe(false);
-            if (mode !== 'missing prior scope') {
+            if (mode !== 'missing prior scope' && mode !== 'navigation during restoration') {
                 await waitFor(() => {
                     for (const step of ['profile', 'project', 'iteration', 'capacity', 'tasks', 'schedule']) {
                         expect(screen.getByTestId(`get-started-step-${step}`)).toHaveAttribute('data-done', 'true');

@@ -60,17 +60,24 @@ export const SampleProjectAction = () => {
                 } finally {
                     const removed = records.filter(record => !receipt.records.some(item => item.kind === record.kind && item.id === record.id));
                     const selected = currentScope.current;
+                    await client.invalidateQueries();
                     if (removed.some(record => record.kind === 'project' && record.id === selected?.project
                         || record.kind === 'iteration' && record.id === selected?.iteration)) {
                         let restored: WorkScope = { project: 'all', iteration: 'backlog' };
+                        let repaired = selected;
                         try {
                             const [projects, iterations] = await Promise.all([projectService.getAll(), iterationService.getAll()]);
+                            repaired = resolveWorkScope(selected, {}, iterations);
                             const previous = receipt.previousScope;
                             const available = previous && (previous.project === 'all' || projects.some(item => item.id === previous.project))
                                 && (previous.iteration === 'backlog' || iterations.some(item => item.id === previous.iteration));
                             restored = resolveWorkScope(available ? previous : { project: 'all' }, {}, iterations);
                         } catch { /* Keep a safe scope when the remaining workspace cannot be read. */ }
-                        if (sameScope(currentScope.current, selected)) setScope(restored);
+                        // Iteration validation may repair the scope while these reads are pending.
+                        // A scope still pointing at deleted sample data also needs restoration.
+                        const stillRemoved = removed.some(record => record.kind === 'project' && record.id === currentScope.current.project
+                            || record.kind === 'iteration' && record.id === currentScope.current.iteration);
+                        if (sameScope(currentScope.current, selected) || sameScope(currentScope.current, repaired) || stillRemoved) setScope(restored);
                     }
                 }
                 setConfirming(false);
@@ -78,11 +85,13 @@ export const SampleProjectAction = () => {
                 // Verify durable receipt storage before making the first REST write.
                 save(receipt);
                 const result = await loadSampleProject(receipt, identity.profile, i18n.language, save);
+                // Scope validation must know the new iteration before its URL is opened.
+                await client.invalidateQueries({ queryKey: ['iterations'] });
                 navigate(`/plan?project=${result.projectId}&iteration=${result.iterationId}`);
             }
         } catch { setError(true); setRemovalFailed(remove); }
         finally {
-            await client.invalidateQueries();
+            if (!remove) await client.invalidateQueries();
             setBusy(false);
             locked.current = false;
         }
