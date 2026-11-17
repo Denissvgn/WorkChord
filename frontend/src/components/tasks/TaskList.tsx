@@ -405,7 +405,7 @@ export const TaskList = ({
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
             <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
-                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="secondary">
+                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
                 <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
@@ -681,9 +681,9 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
         <Button data-page-chrome-control="button"
             type="button"
             aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
-            className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
+                className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
             {...dragHandleProps}
-         variant="secondary">
+         variant="plain">
             <GripVertical className="w-4 h-4" />
         </Button>
     ) : undefined;
@@ -697,7 +697,7 @@ const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }
                     aria-expanded={isExpanded}
                     onClick={() => ctx.onToggleParent(task.id)}
                     className="shrink-0 rounded p-1 hover:bg-surface-subtle"
-                 variant="secondary">
+                 variant="plain">
                     {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </Button>
             ) : (

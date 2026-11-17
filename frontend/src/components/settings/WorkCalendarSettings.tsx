@@ -714,7 +714,7 @@ const WorkCalendarSettings = () => {
                                 type="button"
                                 onClick={() => setViewMode('calendar')}
                                 aria-pressed={viewMode === 'calendar'}
-                             variant="secondary">
+                             variant="plain">
                                 <Grid className="h-4 w-4" />
                                 {t('calendar.calendarView')}
                             </Button>
@@ -722,7 +722,7 @@ const WorkCalendarSettings = () => {
                                 type="button"
                                 onClick={() => setViewMode('list')}
                                 aria-pressed={viewMode === 'list'}
-                             variant="secondary">
+                             variant="plain">
                                 <List className="h-4 w-4" />
                                 {t('calendar.listView')}
                             </Button>
@@ -782,7 +782,7 @@ const WorkCalendarSettings = () => {
                                     type="button"
                                     onClick={() => toggleWeekend(index)}
                                     className={`pill ${draft.weekend_days.includes(index) ? 'accent' : 'opt'}`}
-                                 variant="secondary">
+                                 variant="plain">
                                     {day}
                                 </Button>
                             ))}
@@ -1001,7 +1001,7 @@ const DateChip = ({ dateKey, locale, iconTone, label, onRemove }: DateChipProps)
             onClick={onRemove}
             className="rounded p-1 text-feedback-danger hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground"
             aria-label={label} title={label}
-         variant="secondary">
+         variant="plain">
             <X className="h-4 w-4" />
         </Button>
     </div>

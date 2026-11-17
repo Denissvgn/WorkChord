@@ -101,7 +101,7 @@ export const AppTopNav = () => {
                     aria-label={t('commandMenu.trigger')}
                     aria-keyshortcuts="Meta+K Control+K"
                     onClick={openCommandMenu}
-                 variant="secondary">
+                 variant="plain">
                     <Command aria-hidden="true" className="h-4 w-4" />
                     <span>{t('commandMenu.triggerLabel')}</span>
                     <kbd>{t('commandMenu.openShortcut')}</kbd>
@@ -114,7 +114,7 @@ export const AppTopNav = () => {
                     aria-expanded={mobileMenuOpen}
                     aria-controls="mobile-primary-navigation"
                     onClick={openMobileMenu}
-                 variant="secondary">
+                 variant="plain">
                     <Menu aria-hidden="true" className="h-5 w-5" />
                     <span className="mobile-nav-trigger-label">{t('nav.navigationMenu')}</span>
                 </Button>
@@ -132,6 +132,7 @@ export const AppTopNav = () => {
                         tabIndex={-1}
                         aria-hidden="true"
                         onClick={requestClose}
+                        variant="plain"
                     />
                     <aside
                         id="mobile-primary-navigation"

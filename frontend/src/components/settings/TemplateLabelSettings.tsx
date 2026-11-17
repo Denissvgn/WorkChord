@@ -610,7 +610,7 @@ export const TemplateLabelSettings = () => {
                     className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'templates' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
-                 variant="secondary">
+                 variant="plain">
                     <FileText aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.templates')}
                 </Button>
@@ -628,7 +628,7 @@ export const TemplateLabelSettings = () => {
                     className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'labels' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
-                 variant="secondary">
+                 variant="plain">
                     <Tags aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.labels')}
                 </Button>
@@ -665,7 +665,7 @@ export const TemplateLabelSettings = () => {
                                             ? 'border-action bg-action-muted text-action'
                                             : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted'
                                     }`}
-                                 variant="secondary">
+                                 variant="plain">
                                     {t(option.labelKey)}
                                 </Button>
                             ))}

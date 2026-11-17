@@ -98,7 +98,7 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                 <h4 className={clsx('text-sm font-medium leading-snug text-content-primary', chip ? 'mb-2' : 'mb-3')}>
                     <Button type="button" className="text-left hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                         aria-label={t('workStatus.openTask', { title: task.title })}
-                        onClick={event => onOpen?.(task, event.currentTarget)} variant="secondary">{task.title}</Button>
+                        onClick={event => onOpen?.(task, event.currentTarget)} variant="plain">{task.title}</Button>
                 </h4>
                 {chip && <TaskStateChipBadge chip={chip} className="mb-3" />}
 

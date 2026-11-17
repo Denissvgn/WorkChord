@@ -26,7 +26,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }, ref) => {
         // An icon-only button shows its accessible name as a tooltip for pointer users.
         const hasText = Children.toArray(children).some(child => typeof child === 'string' || typeof child === 'number');
-        const inferredVariant = className?.split(/\s+/).find(token => ['primary', 'secondary', 'danger', 'warning', 'ghost'].includes(token));
+        const inferredVariant = className?.split(/\s+/).find(token => ['primary', 'secondary', 'danger', 'warning', 'ghost', 'plain'].includes(token));
         const effectiveVariant = variant ?? (inferredVariant as ButtonVariant | undefined) ?? 'primary';
         const tooltip = title ?? (!hasText && typeof props['aria-label'] === 'string' ? props['aria-label'] : undefined);
         return (

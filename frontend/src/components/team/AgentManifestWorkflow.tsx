@@ -909,7 +909,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                             {editorIssues.map((issue, index) => (
                                                 <li key={`${issue.line}-${index}`} className="flex flex-wrap items-baseline gap-2">
                                                     {issue.line !== null
-                                                        ? <Button type="button" className="font-semibold underline" onClick={() => goToLine(issue.line!)} variant="secondary">{t('agentTeamSetup.issueLine', { line: issue.line })}</Button>
+                                                        ? <Button type="button" className="font-semibold underline" onClick={() => goToLine(issue.line!)} variant="plain">{t('agentTeamSetup.issueLine', { line: issue.line })}</Button>
                                                         : <strong>{t('agentTeamSetup.issueNoLine')}</strong>}
                                                     {issue.path && <code className="mono">{issue.path}</code>}
                                                     <span>{issue.message}</span>

@@ -251,7 +251,7 @@ export const InteractiveCalendar = ({
                         onClick={() => setMarkMode(mode)}
                         className={clsx('rounded-md border px-3 py-1 font-medium', markMode === mode
                             ? 'border-action bg-action-muted text-action'
-                            : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted')} variant="secondary">
+                            : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted')} variant="plain">
                         {t(`calendar.mode_${mode}`)}
                     </Button>
                 ))}
@@ -298,7 +298,7 @@ export const InteractiveCalendar = ({
                                         weekend ? t('calendar.tooltipWeekend') :
                                             t('calendar.tooltipWorkday')
                             }
-                         variant="secondary">
+                         variant="plain">
                             {format(day, 'd')}
                         </Button>
                     );

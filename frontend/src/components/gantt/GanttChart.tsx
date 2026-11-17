@@ -1168,7 +1168,7 @@ export const GanttChart = ({
                                                 const next = new Set(previous);
                                                 if (next.has(row.key)) next.delete(row.key); else next.add(row.key);
                                                 return next;
-                                            })} variant="secondary">
+                                            })} variant="plain">
                                             {collapsed ? <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />}
                                             <span className="truncate">{t('surfaces.ganttChart.groupHeader', { label: row.label, count: row.count })}</span>
                                         </Button>
@@ -1235,7 +1235,7 @@ export const GanttChart = ({
                                                         : t('gantt.expandTask', { title: task.title })} title={isTaskExpanded
                                                         ? t('gantt.collapseTask', { title: task.title })
                                                         : t('gantt.expandTask', { title: task.title })}
-                                                 variant="secondary">
+                                                 variant="plain">
                                                     {isTaskExpanded
                                                         ? <ChevronDown className="h-4 w-4" />
                                                         : <ChevronRight className="h-4 w-4" />}
@@ -1321,7 +1321,7 @@ export const GanttChart = ({
                                             aria-haspopup={sandboxMode ? 'dialog' : undefined}
                                             title={getTaskTooltip(task)}
                                             aria-label={getTaskAccessibleLabel(task)}
-                                         variant="secondary">
+                                         variant="plain">
                                             {/* The label follows the visible part of a long bar instead of scrolling away with its start. */}
                                             <span className="sticky left-2 min-w-0 max-w-96 truncate font-medium sm:left-[calc(var(--gantt-task-column)+0.5rem)]"><TaskAssigneeDisplay task={task} iterationId={iterationId} bar durationDays={hasCompleteTimelineDates(taskDates) ? differenceInCalendarDays(parseISO(taskDates.end), parseISO(taskDates.start)) + 1 : undefined} /></span>
                                             {sandboxMode && (
@@ -1343,7 +1343,7 @@ export const GanttChart = ({
                                                 style={{ left: `${Math.max(0, taskPosition.left - 64)}px` }}
                                                 aria-label={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
                                                 title={t('gantt.removeStartPin', { title: task.title, date: formatDate(task.min_start_date, activeI18n.language) })}
-                                                onClick={event => { event.stopPropagation(); onSaveSandbox?.(task.id, { min_start_date: null, sandbox_update: undefined }); }} variant="secondary">
+                                                onClick={event => { event.stopPropagation(); onSaveSandbox?.(task.id, { min_start_date: null, sandbox_update: undefined }); }} variant="plain">
                                                 <Pin className="h-3 w-3" aria-hidden="true" /><X className="h-3 w-3" aria-hidden="true" />
                                             </Button>
                                         )}
@@ -1358,7 +1358,7 @@ export const GanttChart = ({
                                             }}
                                             aria-label={t('gantt.openUnscheduledTask', { title: task.title })}
                                             title={getUnscheduledTaskDescription(task)}
-                                         variant="secondary">
+                                         variant="plain">
                                             <CalendarOff aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
                                             <span className="shrink-0 font-medium">{t('gantt.notScheduled')}</span>
                                         </Button>

@@ -162,7 +162,7 @@ export const TaskAgentReadinessBadge = ({ readiness, mode = 'compact' }: TaskAge
                 aria-expanded={isOpen}
                 aria-controls={isOpen ? panelId : undefined}
                 className={clsx('flex items-center rounded-full border px-2 py-0.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-1', badgeClassName)}
-             variant="secondary">
+             variant="plain">
                 <Icon className="mr-1 h-3 w-3" />
                 {label}
             </Button>

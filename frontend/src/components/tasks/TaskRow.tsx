@@ -161,7 +161,7 @@ export const TaskRow = ({
                     'min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
                     status === 'closed' && 'text-content-secondary line-through',
                 )}
-             variant="secondary">
+             variant="plain">
                 {titleText ?? title}
             </Button>
 
