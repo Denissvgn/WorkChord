@@ -64,6 +64,40 @@ async def test_schedule_keeps_started_and_done_dates(db_session, status):
     assert summary.has_schedule and summary.checkpoints_done == 6
 
 
+@pytest.mark.parametrize("status", ["active", "resolved", "closed"])
+@pytest.mark.parametrize("changed_dates", [
+    {"start_date": date(2026, 11, 18)},
+    {"end_date": date(2026, 11, 19)},
+], ids=["start_moved_forward", "end_moved_back"])
+async def test_recalculation_preserves_started_dates_outside_moved_iteration(
+    db_session, status, changed_dates,
+):
+    iteration, _, tasks = await current_plan(db_session)
+    locked, planned = tasks
+    locked.status = status
+    locked.start_date = locked.end_date = (
+        date(2026, 11, 16) if "start_date" in changed_dates else date(2026, 11, 20)
+    )
+    saved_dates = (locked.start_date, locked.end_date)
+    await db_session.commit()
+    scheduler = SchedulerService(db_session)
+    service = IterationService(db_session)
+    await scheduler.schedule_iteration(iteration.id)
+    assert (await service.get_planning_readiness_summary(iteration.id)).has_schedule
+
+    await service.update(iteration.id, IterationUpdate(**changed_dates))
+    result = await scheduler.schedule_iteration(iteration.id)
+
+    assert result.success and not result.unscheduled
+    assert (locked.start_date, locked.end_date) == saved_dates
+    assert planned.start_date >= max(iteration.start_date, date(2026, 11, 17))
+    assert planned.end_date <= iteration.end_date
+    summary = await service.get_planning_readiness_summary(iteration.id)
+    schedule = next(item for item in summary.checkpoints if item.id == "schedule")
+    assert summary.has_schedule
+    assert schedule.state == "done" and schedule.reason_codes == []
+
+
 async def test_future_iteration_and_nonworking_dates_still_bound_forecasts(db_session):
     iteration, _, tasks = await current_plan(db_session)
     iteration.start_date = date(2026, 11, 21)  # Saturday

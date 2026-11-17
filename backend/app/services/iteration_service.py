@@ -548,17 +548,15 @@ class IterationService:
                         func.sum(
                             case(
                                 (
-                                    or_(
-                                        and_(is_gap_candidate, or_(
-                                            or_(Task.effort_hours.is_(None), Task.effort_hours <= 0),
-                                            Task.start_date.is_(None),
-                                            Task.end_date.is_(None),
-                                            Task.start_date > Task.end_date,
-                                            Task.start_date < today,
-                                        )),
+                                    and_(is_gap_candidate, or_(
+                                        or_(Task.effort_hours.is_(None), Task.effort_hours <= 0),
+                                        Task.start_date.is_(None),
+                                        Task.end_date.is_(None),
+                                        Task.start_date > Task.end_date,
+                                        Task.start_date < today,
                                         Task.start_date < iteration.start_date,
                                         Task.end_date > iteration.end_date,
-                                    ),
+                                    )),
                                     1,
                                 ),
                                 else_=0,
