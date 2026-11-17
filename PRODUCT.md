@@ -62,9 +62,16 @@ The web application has ten destinations, in this order: three without a group, 
 ### One assignee
 
 - A task shows one Assignee, which is the capacity row of a person or of an agent, with an icon that shows which kind it is.
-- When the Assignee is an agent, one status line under its name gives the dispatch state: No agent connected, Queued, Working, or Waiting for review.
+- When the Assignee is an agent, one status line under its name gives the dispatch state, the same for every reader:
+  - **No agent connected**: no enabled agent is connected to the agent's profile and nothing has been sent.
+  - **Not sent to the agent yet**: an agent is connected but the task has not been sent to it. The task view offers Send to the agent instead of Start work.
+  - **Queued**: the task has been sent and the agent has not begun.
+  - **Working**: the agent has begun.
+  - **Waiting for review**: the work has been submitted.
+  - **Agent status unknown**: a read the line needs (whether the agent is connected, or whether the task has been sent) is loading or has failed.
+- A closed task shows no status line.
 - Reviewer is shown beside Assignee.
-- Owner is not shown on a task unless it differs from the assignee's profile, and it stays editable under More.
+- Owner is not shown on a task unless it is known to differ from the assignee's profile; while that profile cannot be read, Owner stays hidden. It stays editable under More.
 
 ### Plan
 

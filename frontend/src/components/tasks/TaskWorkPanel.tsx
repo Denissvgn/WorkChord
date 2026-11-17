@@ -59,11 +59,16 @@ const restoreProgress = (stored: { version?: unknown; criteria?: unknown; base?:
     return conflict && Number.isInteger(stored.version) ? { criteria, version: stored.version as number, base: base ?? [] } : { criteria, version, base: initial };
 };
 
-export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, onEditBrief }: {
+export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, onEditBrief, offerDispatch = false }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void;
     /** Opens the brief for editing, so a missing acceptance criterion can be added. */
     onEditBrief?: () => void;
+    /**
+     * A connected agent has not been sent the task: it gets the task through dispatch, which the
+     * task view's header offers, so manual Start work is not offered here.
+     */
+    offerDispatch?: boolean;
 }) => {
     const { t } = useTranslation();
     const isActive = useActiveMount();
@@ -173,7 +178,9 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const pending = command.isPending;
     const canReview = actions.data?.actions.find(item => item.action === 'review')?.allowed;
     const canAccept = actions.data?.actions.find(item => item.action === 'accept_review')?.allowed;
-    const available = actions.data?.actions.filter(item => item.allowed && ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit'].includes(item.action)) ?? [];
+    const manualActions = ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']
+        .filter(item => !(offerDispatch && item === 'start_manual'));
+    const available = actions.data?.actions.filter(item => item.allowed && manualActions.includes(item.action)) ?? [];
     return <section className="space-y-4 border-t border-border pt-4" aria-labelledby={`${id}-heading`}>
         <h3 id={`${id}-heading`} className="text-base font-semibold text-content-primary">{t('domain.workAndReview')}</h3>
         {task.canceled_at && <p className="text-sm text-content-secondary">{t('domain.canceled')}: {task.canceled_reason}</p>}

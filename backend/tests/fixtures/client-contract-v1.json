@@ -2954,6 +2954,23 @@
             "title": "Id",
             "type": "integer"
           },
+          "kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "human",
+                  "agent",
+                  "hybrid"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Kind of the assignee's profile. Read-only; null when it is not known.",
+            "title": "Kind"
+          },
           "name": {
             "title": "Name",
             "type": "string"
@@ -4918,8 +4935,14 @@
         "type": "object"
       },
       "TeamMemberProfileCompact": {
-        "description": "Compact profile data embedded in team-member responses.",
+        "description": "Compact profile data embedded in team-member responses.\n\nA reader who may read the team row but not the profile itself gets the id, display name,\nkind, automation flag, assignment modes and agent_connected; email, headline and skills\nare then null or empty.",
         "properties": {
+          "agent_connected": {
+            "default": false,
+            "description": "True when an enabled agent is bound to this profile. Read-only; names no agent.",
+            "title": "Agent Connected",
+            "type": "boolean"
+          },
           "assignment_modes": {
             "items": {
               "type": "string"

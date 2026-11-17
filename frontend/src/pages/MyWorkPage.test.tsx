@@ -165,7 +165,7 @@ describe('My Work rows', () => {
     const reference = (id: number, iterationId: number, status: Task['status'] = 'planned') => ({ id, title: `Task ${id}`, status, version: 1, iteration_id: iterationId, project_id: null, parent_id: null, owner_profile_id: null });
     const rowOf = (title: string) => screen.getByRole('button', { name: `#${title.replace('Task ', '')} · ${title}` }).closest<HTMLElement>('[data-task-row]')!;
 
-    const arrange = (tasks: Task[], { shown = tasks, more, reviewers = {} }: { shown?: Task[]; more?: (path: string, config?: { params?: Record<string, unknown> }) => unknown; reviewers?: Record<number, string> } = {}) => {
+    const arrange = (tasks: Task[], { shown = tasks, more, reviewers = {}, agentConnected = false }: { shown?: Task[]; more?: (path: string, config?: { params?: Record<string, unknown> }) => unknown; reviewers?: Record<number, string>; agentConnected?: boolean } = {}) => {
         api.get.mockImplementation(async (path: string, config?: { params?: Record<string, unknown> }) => {
             const extra = more?.(path, config);
             if (extra !== undefined) return extra;
@@ -175,7 +175,7 @@ describe('My Work rows', () => {
                     queued: [], blocked: [], awaiting_review: [] } } };
             const iteration = /^\/iterations\/(\d+)\/(tasks|team)$/.exec(path);
             if (iteration?.[2] === 'tasks') return { data: tasks.filter(item => item.iteration_id === Number(iteration[1])) };
-            if (iteration?.[2] === 'team') return { data: [{ id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human' } }, { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } }] };
+            if (iteration?.[2] === 'team') return { data: [{ id: 5, name: 'Ada', profile_id: 50, profile: { id: 50, profile_kind: 'human', agent_connected: false } }, { id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent', agent_connected: agentConnected } }] };
             return { data: [] };
         });
         api.post.mockImplementation(async (path: string, body: { dry_run: boolean; task_ids: number[] }) => ({ data: path === '/tasks/bulk-operations' ? {
@@ -227,11 +227,7 @@ describe('My Work rows', () => {
             fullTask(4, 1, { assignee: agent, agent_working: false, status: 'resolved' }),
             fullTask(5, 1, { assignee: { id: 5, name: 'Ada' }, agent_working: false }),
             fullTask(7, 1, { assignee: { id: 5, name: 'Ada' }, agent_working: false, status: 'resolved' }),
-        ], { reviewers: { 4: 'Review bot' }, more: path => {
-            // The roster binds an agent to another profile, so none is connected to the Build agent's.
-            if (path === '/agent/actors') return { data: [{ id: 3, name: 'other', enabled: true, lifecycle_state: 'active', profile_id: 70 }] };
-            return undefined;
-        } });
+        ], { reviewers: { 4: 'Review bot' } });
         renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'authenticated', workspace_role: 'operator' } as never, refresh: vi.fn(), signOut: vi.fn() }}>
             <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work'] });
         await screen.findByRole('button', { name: '#1 · Task 1' });
@@ -245,26 +241,30 @@ describe('My Work rows', () => {
         expect(lineOf('Task 5')).toBeUndefined();
         expect(rowOf('Task 7')).toHaveTextContent('Reviewer: anyone');
         expect(rowOf('Task 1')).not.toHaveTextContent('Reviewer');
-        expect(api.get).toHaveBeenCalledWith('/agent/actors', expect.objectContaining({ skipIdentityExpiry: true }));
+        // Whether the agent is connected comes with the team read, not the agent roster.
+        expect(api.get.mock.calls.some(([path]) => path === '/agent/actors')).toBe(false);
         // My Work already named both reviewers, so no task is read again for them.
         expect(api.get.mock.calls.filter(([path]) => /^\/tasks\/\d+\/detail$/.test(path))).toEqual([]);
     });
 
-    it('says the agent status is unknown to a local reader who cannot read the agent roster', async () => {
+    it('tells a local reader without the agent roster that a connected agent has not been sent the task yet', async () => {
         const agent = { id: 6, name: 'Build agent' };
         arrange([
             fullTask(1, 1, { assignee: agent, agent_working: false }),
             fullTask(2, 1, { assignee: agent, agent_working: true }),
             fullTask(3, 1, { assignee: agent, agent_working: true, claimed_by: { id: 3, name: 'builder', display_name: 'Builder' }, status: 'active' }),
-        ]);
+            fullTask(4, 1, { assignee: agent, agent_working: false, status: 'closed' }),
+        ], { agentConnected: true });
         renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', principal: null, profile: { id: 4, display_name: 'Sam Ortiz', verified: false } } as never, refresh: vi.fn(), signOut: vi.fn() }}>
             <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work'] });
         await screen.findByRole('button', { name: '#1 · Task 1' });
         const lineOf = (title: string) => rowOf(title).querySelector('[data-agent-dispatch]')?.textContent;
-        // The line stays, from what the task itself says; it never claims that no agent is connected.
-        await waitFor(() => expect(lineOf('Task 1')).toBe('Agent status unknown'));
+        // The same line an operator sees: the team read says the agent is connected.
+        await waitFor(() => expect(lineOf('Task 1')).toBe('Agent status: Not sent to the agent yet'));
         expect(lineOf('Task 2')).toBe('Agent status: Queued');
         expect(lineOf('Task 3')).toBe('Agent status: Working');
+        // A closed task has no status line.
+        expect(lineOf('Task 4')).toBeUndefined();
         expect(api.get.mock.calls.some(([path]) => path === '/agent/actors')).toBe(false);
     });
 
