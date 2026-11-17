@@ -72,6 +72,9 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
         if (next === 'brief') nextParams.delete(TASK_PART_PARAM); else nextParams.set(TASK_PART_PARAM, next);
         setParams(nextParams, { replace: true });
     };
+    const startBriefEdit = () => {
+        if (task.brief) { setPart('brief'); setBriefDraft(structuredClone(task.brief)); onDirty(true); } else { onEditAll(); }
+    };
     const markDirty = (dirty: boolean) => { setSectionDirty(dirty); onDirty(dirty || editingBrief); };
 
     // feedback-policy: mutation pending,inline
@@ -147,9 +150,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                     <div className="flex items-start justify-between gap-3">
                         {task.brief ? <BriefField label={t('taskView.goal')} value={task.brief.goal} />
                             : <p className="whitespace-pre-wrap text-sm leading-relaxed text-content-primary">{task.description || t('taskView.noBrief')}</p>}
-                        <Button type="button" variant="secondary" size="sm" onClick={() => {
-                            if (task.brief) { setBriefDraft(structuredClone(task.brief)); onDirty(true); } else { onEditAll(); }
-                        }}>
+                        <Button type="button" variant="secondary" size="sm" onClick={startBriefEdit}>
                             <Pencil className="mr-1 h-3.5 w-3.5" aria-hidden="true" />{t('taskView.editBrief')}
                         </Button>
                     </div>
@@ -219,7 +220,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
             {part === 'work' && (
                 <section aria-label={t('taskView.partWork')} className="flex flex-col gap-5">
                     <TaskWorkPanel key={`${task.id}:${task.version}:${workAction ?? ''}`} task={task} draftKey={draftKey} disabled={editingBrief}
-                        initialAction={workAction} onDirty={markDirty} onPending={onPending} onReload={onReload}
+                        initialAction={workAction} onEditBrief={startBriefEdit} onDirty={markDirty} onPending={onPending} onReload={onReload}
                         onUpdated={latest => { setWorkAction(undefined); onTaskUpdated(latest); }} />
                     <DeliveryDependencies task={task} disabled={locked} onPending={onPending} onUpdated={onTaskUpdated} />
                     {task.project_id && <TimeEntriesPanel projectId={task.project_id} taskId={task.id} draftKey={draftKey} disabled={editingBrief}

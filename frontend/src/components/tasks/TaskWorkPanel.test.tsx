@@ -118,3 +118,44 @@ function renderPanel2(current: Task) {
     return renderWithProviders(<TaskWorkPanel task={current} disabled={false} draftKey={null}
         onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} />);
 }
+
+describe('acceptance requirements and who decides', () => {
+    const actionsFor = (version: number) => ({ task_id: 42, version, claim_generation: 0, running_run_ids: [], live_assignment_ids: [],
+        actions: [{ action: 'resolve_manual', allowed: true, blockers: [] }, { action: 'accept_review', allowed: true, blockers: [] }, { action: 'review', allowed: true, blockers: [] }] });
+    const panel = (current: Task, onEditBrief = vi.fn()) => ({ onEditBrief, ...renderWithProviders(<TaskWorkPanel task={current} disabled={false} draftKey={null}
+        onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} onEditBrief={onEditBrief} initialAction="resolve_manual" />) });
+
+    beforeEach(() => { vi.clearAllMocks(); service.actions.mockResolvedValue(actionsFor(3)); });
+
+    it('blocks submitting for review without an acceptance criterion and offers Edit brief', async () => {
+        const noCriteria = { ...task, brief: { ...emptyTaskBrief(), acceptance_criteria: [] } };
+        const { user, onEditBrief } = panel(noCriteria);
+        expect(screen.getByRole('alert')).toHaveTextContent('Add at least one acceptance criterion before submitting for review.');
+        await user.type(await screen.findByRole('textbox', { name: /Reason/ }), 'Done');
+        await waitFor(() => expect(screen.getByRole('combobox', { name: 'Action' })).toBeEnabled());
+        await user.selectOptions(screen.getByRole('combobox', { name: 'Action' }), 'resolve_manual');
+        expect(screen.getByRole('button', { name: 'Apply action' })).toBeDisabled();
+        await user.click(screen.getByRole('button', { name: 'Edit brief' }));
+        expect(onEditBrief).toHaveBeenCalled();
+        expect(service.command).not.toHaveBeenCalled();
+    });
+
+    it('does not show the block when a criterion exists', () => {
+        panel(task);
+        expect(screen.queryByText(/Add at least one acceptance criterion/)).not.toBeInTheDocument();
+    });
+
+    it('says anyone, including the assignee, can accept when no other reviewer is set', async () => {
+        service.getDetail.mockResolvedValue({ task: task, reviewer_name: null });
+        panel({ ...task, status: 'resolved', assignee: { id: 1, name: 'Sam Ortiz' } } as Task);
+        expect(await screen.findByText(/Anyone, including the assignee, can accept\./)).toBeInTheDocument();
+        expect(screen.queryByText(/A separate reviewer decides acceptance/)).not.toBeInTheDocument();
+    });
+
+    it('says a separate reviewer decides only when the reviewer differs from the assignee', async () => {
+        service.getDetail.mockResolvedValue({ task: task, reviewer_name: 'Priya Nair' });
+        panel({ ...task, status: 'resolved', assignee: { id: 1, name: 'Sam Ortiz' } } as Task);
+        expect(await screen.findByText(/A separate reviewer decides acceptance\./)).toBeInTheDocument();
+        expect(screen.queryByText(/Anyone, including the assignee/)).not.toBeInTheDocument();
+    });
+});

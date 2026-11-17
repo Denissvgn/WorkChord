@@ -14,14 +14,17 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { TaskReviewer } from './TaskReviewer';
+import { useTaskReviewer } from './useTaskReviewer';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
 import { Select } from '../../components/common/Select';
-export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, initialAction }: {
+export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, onUpdated, onReload, onEditBrief, initialAction }: {
     task: Task; disabled: boolean; draftKey: string | null; onDirty: (dirty: boolean) => void;
     onPending: (pending: boolean) => void; onUpdated: (task: Task) => void; onReload: () => void;
     /** Preselects an action, for example when the task view's header sends the person here. */
     initialAction?: string;
+    /** Opens the brief for editing, so a missing acceptance criterion can be added. */
+    onEditBrief?: () => void;
 }) => {
     const { t } = useTranslation();
     const isActive = useActiveMount();
@@ -80,6 +83,12 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         // feedback-policy: query loading,error,retry,empty
     });
     const reviewCriteria = task.brief?.acceptance_criteria ?? [];
+    const reviewer = useTaskReviewer(task);
+    const reviewerName = reviewer.data?.reviewer_name;
+    // Who decides acceptance is only known once the work is submitted and the reviewer is loaded.
+    const acceptanceNote = task.status !== 'resolved' || !reviewer.data ? null
+        : reviewerName && reviewerName !== task.assignee?.name ? t('domain.acceptSeparateReviewer') : t('domain.acceptAnyone');
+    const submitBlocked = task.status === 'active' && reviewCriteria.length === 0;
     const [reviewResults, setReviewResults] = useState<Record<string, { result: '' | 'pass' | 'fail'; note: string }>>({});
     const resultFor = (criterionId: string) => reviewResults[criterionId] ?? { result: '' as const, note: '' };
     // The same per-criterion packet the reviewer skill records, so a worker reads one rework format.
@@ -133,6 +142,10 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         {task.canceled_at && <p className="text-sm text-content-secondary">{t('domain.canceled')}: {task.canceled_reason}</p>}
         {task.blocked_reason && <p className="text-sm text-feedback-warning-foreground">{t('domain.blocked')}: {task.blocked_reason}</p>}
         <TaskReviewer task={task} />
+        {submitBlocked && <div role="alert" className="space-y-2 text-sm text-feedback-warning-foreground">
+            <p>{t('domain.submitNeedsCriterion')}</p>
+            {onEditBrief && <Button type="button" size="sm" variant="secondary" disabled={disabled} onClick={onEditBrief}>{t('taskView.editBrief')}</Button>}
+        </div>}
         {actions.isLoading && <QueryLoadingState className="min-h-12" />}
         {actions.isError && <QueryErrorState error={actions.error} fallback={t('domain.actionsFailed')} onRetry={() => void actions.refetch()} />}
         {Boolean(contextError) && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(contextError, t('domain.reloadReview'))}</p>}
@@ -148,7 +161,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
         </div>}
         {task.brief && <fieldset disabled={disabled || pending || reason.length > 0 || Boolean(task.canceled_at) || task.status === 'closed'} className="space-y-3">
             <legend className="mb-2 font-medium text-content-primary">{t('domain.progress')}</legend>
-            <p className="text-sm text-content-secondary">{t('domain.progressHelp')}</p>
+            <p className="text-sm text-content-secondary">{t('domain.progressHelp')}{acceptanceNote && ` ${acceptanceNote}`}</p>
             {criteria.length === 0 && <p className="text-sm text-content-secondary">{t('domain.noCriteria')}</p>}
             {criteria.map(item => <div className="space-y-2" key={item.criterion_id}>
                 <label className="field-lbl" htmlFor={`${id}-${item.criterion_id}-state`}>{task.brief?.acceptance_criteria.find(criterion => criterion.id === item.criterion_id)?.text ?? t('domain.retiredCriterion')}</label>
@@ -176,7 +189,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
                         {available.map(item => <option value={item.action} key={item.action}>{t(`domain.action_${item.action}`)}</option>)}
                     </Select>
                 </div>
-                <Button type="button" variant="secondary" disabled={!reason.trim() || !available.some(item => item.action === action) || ['commit', 'uncommit'].includes(action) && (targetContext.loading || task.iteration_id !== null && !commandRevisions[task.iteration_id] || action === 'commit' && (!iterationId || !commandRevisions[Number(iterationId)]))}
+                <Button type="button" variant="secondary" disabled={!reason.trim() || !available.some(item => item.action === action) || submitBlocked && action === 'resolve_manual' || ['commit', 'uncommit'].includes(action) && (targetContext.loading || task.iteration_id !== null && !commandRevisions[task.iteration_id] || action === 'commit' && (!iterationId || !commandRevisions[Number(iterationId)]))}
                     onClick={() => run('command')}>{t('domain.applyAction')}</Button>
             </div> : <p className="text-sm text-content-secondary">{t('domain.noActions')}</p>}
             {action === 'commit' && <div>
