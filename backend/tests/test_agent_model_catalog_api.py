@@ -28,6 +28,7 @@ from app.models.agent import (
     AgentTaskAssignment,
     TaskEvent,
 )
+from app.models.identity import Principal, WorkspaceAuthorityState
 from app.models.team_member import TeamMemberProfile, TeamMemberProfileSkill
 from app.routers import agent as agent_router
 from app.routers import agent_planning
@@ -262,6 +263,89 @@ async def test_rest_and_mcp_model_authorization_idempotency_and_conflicts(
     finally:
         await client.aclose()
         main_app.dependency_overrides.clear()
+
+
+OPERATOR_KEY = "model-catalog-operator-fixture"
+
+
+@pytest.mark.sqlite
+@pytest.mark.asyncio
+@pytest.mark.parametrize("auth_mode", ["managed", "trusted_local"])
+async def test_model_catalog_list_reads_with_admin_key_agent_key_or_neither(
+    db_session: AsyncSession,
+    monkeypatch: pytest.MonkeyPatch,
+    auth_mode: str,
+) -> None:
+    agent_key = "model-catalog-reader-key"
+    db_session.add_all([
+        AgentActor(
+            name="model-catalog-reader",
+            display_name="Model Catalog Reader",
+            api_key_hash=hash_api_key(agent_key),
+            scopes='["planning:read"]',
+            enabled=True,
+            role="pm",
+        ),
+        AgentModelCatalogEntry(**_catalog_values()),
+        AgentModelCatalogEntry(**_catalog_values("retired-code", enabled=False)),
+    ])
+    if await db_session.get(WorkspaceAuthorityState, 1) is None:
+        operator = Principal(kind="system", display_name="Operator API")
+        db_session.add(operator)
+        await db_session.flush()
+        db_session.add(
+            WorkspaceAuthorityState(id=1, operator_principal_id=operator.id)
+        )
+    await db_session.commit()
+
+    monkeypatch.setenv("WORKCHORD_ADMIN_API_KEY", OPERATOR_KEY)
+    monkeypatch.setenv("WORKCHORD_AUTH_MODE", auth_mode)
+    get_settings.cache_clear()
+    client = await _http_client(main_app, db_session)
+    try:
+        with_admin = await client.get(
+            "/api/agent/model-catalog",
+            headers={"X-Admin-API-Key": OPERATOR_KEY},
+        )
+        with_agent = await client.get(
+            "/api/agent/model-catalog",
+            headers={"X-Agent-API-Key": agent_key},
+        )
+        with_neither = await client.get("/api/agent/model-catalog")
+        with_wrong_admin = await client.get(
+            "/api/agent/model-catalog",
+            headers={"X-Admin-API-Key": "not-the-operator-key"},
+        )
+        admin_disabled = await client.get(
+            "/api/agent/model-catalog",
+            headers={"X-Admin-API-Key": OPERATOR_KEY},
+            params={"include_disabled": "true"},
+        )
+        agent_disabled = await client.get(
+            "/api/agent/model-catalog",
+            headers={"X-Agent-API-Key": agent_key},
+            params={"include_disabled": "true"},
+        )
+    finally:
+        await client.aclose()
+        main_app.dependency_overrides.clear()
+        db_session.info.pop("authority", None)
+        monkeypatch.undo()
+        get_settings.cache_clear()
+
+    assert with_admin.status_code == 200, with_admin.text
+    assert with_agent.status_code == 200, with_agent.text
+    assert [entry["key"] for entry in with_agent.json()] == ["balanced-code"]
+    assert with_admin.json() == with_agent.json()
+    _assert_secret_free(with_admin.json())
+    assert admin_disabled.status_code == 200
+    assert admin_disabled.json() == agent_disabled.json()
+    assert {entry["key"] for entry in admin_disabled.json()} == {
+        "balanced-code",
+        "retired-code",
+    }
+    assert with_neither.status_code == 401
+    assert with_wrong_admin.status_code == 401
 
 
 @pytest.mark.sqlite

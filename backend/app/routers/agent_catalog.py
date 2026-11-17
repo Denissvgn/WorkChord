@@ -1,13 +1,17 @@
 """Agent capability, profile, and operator-owned model catalog API."""
 
-from typing import Annotated, Any, NoReturn
+from typing import Annotated, Any, NoReturn, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.agent import AgentActor
-from app.routers.agent import get_agent_actor
+from app.routers.agent import (
+    _admin_header_actor,
+    get_agent_actor,
+    get_agent_service,
+)
 from app.routers.agent_planning import (
     _handle_agent_error,
     get_agent_planning_command_context,
@@ -31,7 +35,8 @@ from app.services.agent_model_catalog_service import (
 )
 from app.services.agent_planning_service import AgentPlanningService
 from app.services.agent_profile_catalog_service import AgentProfileCatalogService
-from app.services.agent_service import actor_has_scope
+from app.security import ADMIN_API_KEY_HEADER, admin_api_key_is_valid
+from app.services.agent_service import AgentService, actor_has_scope
 
 
 router = APIRouter()
@@ -43,6 +48,23 @@ async def get_agent_model_catalog_service(
     """Return the request-scoped model control service."""
 
     return AgentModelCatalogService(db)
+
+
+async def get_model_catalog_reader(
+    service: Annotated[AgentService, Depends(get_agent_service)],
+    agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
+    admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None,
+) -> AgentActor:
+    """Read the catalog with an agent key, or with the operator's admin key.
+
+    An agent key is authenticated exactly as on every other agent route. Without
+    one, a valid admin key reads the same catalog, so an operator can connect
+    the first agent before any agent key exists.
+    """
+
+    if not agent_api_key and admin_api_key_is_valid(admin_api_key):
+        return _admin_header_actor()
+    return await get_agent_actor(service, agent_api_key)
 
 
 def _handle_model_error(exc: Exception) -> NoReturn:
@@ -136,7 +158,7 @@ async def apply_agent_profile_preset(
     response_model=list[AgentModelCatalogResponse],
 )
 async def list_agent_model_catalog(
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_reader)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
