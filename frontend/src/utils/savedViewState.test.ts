@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defaultFilters } from './taskFilterDefaults';
-import { filterSignature, savedViewFilters, savedViewModified, unsavedConditionKeys } from './savedViewState';
+import { filterSignature, savedViewFilters, savedViewModified } from './savedViewState';
 import type { SavedView } from '../types/savedView';
 
 describe('effective saved view state', () => {
@@ -17,17 +17,10 @@ describe('effective saved view state', () => {
     ])('marks a changed filter as an unsaved modification: %j', change => {
         expect(savedViewModified(view, { ...defaultFilters, ...change }, 'priority')).toBe(true);
     });
-    it('keeps the milestone and needs-attention conditions out of a saved view', () => {
+    it('stores milestone and needs-attention conditions and detects changes to them', () => {
         const shown = { ...defaultFilters, milestoneId: 4, needsAttention: true, status: 'active' };
-        expect(savedViewFilters(shown)).not.toHaveProperty('milestoneId');
-        expect(savedViewFilters(shown)).not.toHaveProperty('needsAttention');
-        expect(savedViewFilters(shown)).toMatchObject({ status: 'active' });
-        expect(savedViewModified(view, { ...defaultFilters, milestoneId: 4, needsAttention: true }, 'priority')).toBe(false);
-    });
-    it('names the unsaved conditions that are set', () => {
-        expect(unsavedConditionKeys(defaultFilters)).toEqual([]);
-        expect(unsavedConditionKeys({ ...defaultFilters, needsAttention: false })).toEqual(['needsAttention']);
-        expect(unsavedConditionKeys({ ...defaultFilters, milestoneId: 4, needsAttention: true, status: 'active' })).toEqual(['milestoneId', 'needsAttention']);
+        expect(savedViewFilters(shown)).toMatchObject({ milestoneId: 4, needsAttention: true, status: 'active' });
+        expect(savedViewModified(view, { ...defaultFilters, milestoneId: 4, needsAttention: true }, 'priority')).toBe(true);
     });
     it('marks a changed ordering as modified', () => expect(savedViewModified(view, defaultFilters, 'title')).toBe(true));
     it('does not count a condition applied by a hand-over as a change while it keeps its value', () => {
