@@ -28,7 +28,7 @@ const HOURS_PER_DAY = 8;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const MILLISECONDS_PER_DAY = 86_400_000;
 
-export type PlanningTeamMember = TeamMember & {
+type PlanningTeamMember = TeamMember & {
     capacity_hours: number;
     planned_hours: number;
 };
@@ -75,7 +75,7 @@ const queryFeedback = (
     };
 };
 
-export const flattenTasks = (list: Task[] = []): Task[] => {
+const flattenTasks = (list: Task[] = []): Task[] => {
     const out: Task[] = [];
     for (const task of list) {
         out.push(task);
@@ -84,7 +84,7 @@ export const flattenTasks = (list: Task[] = []): Task[] => {
     return out;
 };
 
-export const planningLeafTasks = (list: Task[] = []): Task[] => (
+const planningLeafTasks = (list: Task[] = []): Task[] => (
     flattenTasks(list).filter(isPlanningLeafTask)
 );
 
@@ -166,7 +166,7 @@ const boundedCoefficient = (value: number) => (
 
 const roundHours = (value: number) => Math.round(value * 100) / 100;
 
-export const enrichPlanningTeamMembers = ({
+const enrichPlanningTeamMembers = ({
     members,
     tasks,
     iteration,
@@ -222,14 +222,14 @@ const hasSavedDateRange = (task: Task) => {
     return start !== null && end !== null && start <= end;
 };
 
-export const hasSavedPlanningSchedule = (tasks: Task[]) => {
+const hasSavedPlanningSchedule = (tasks: Task[]) => {
     const leaves = planningLeafTasks(tasks);
     return leaves.length > 0 && leaves.every(task => (
         finitePositive(task.effort_days) && hasSavedDateRange(task)
     ));
 };
 
-export const countPlanningExceptions = (
+const countPlanningExceptions = (
     tasks: Task[],
     members: PlanningTeamMember[],
 ) => (

@@ -1,17 +1,13 @@
 import { ButtonLink } from '../common/ButtonLink';
-import { useState } from 'react';
 import {
     Bot,
     CalendarRange,
     CheckCircle2,
     ChevronRight,
-    CircleHelp,
     UserRoundCheck,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useScopeLink } from '../../features/scope/useScopeLink';
-import { Button } from '../common/Button';
-import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 
 export const TaskWorkflowHelpContent = ({
     showAction = true,
@@ -76,33 +72,3 @@ export const TaskWorkflowHelpContent = ({
     );
 };
 
-export const TaskWorkflowGuide = () => {
-    const { t } = useTranslation();
-    const [open, setOpen] = useState(false);
-
-    return (
-        <>
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="task-workflow-trigger gap-1.5"
-                aria-expanded={open}
-                aria-haspopup="dialog"
-                onClick={() => setOpen(true)}
-            >
-                <CircleHelp aria-hidden="true" className="h-4 w-4" />
-                <span>{t('tasks.guide.trigger')}</span>
-            </Button>
-            <SlideOverDrawer
-                open={open}
-                title={t('tasks.guide.title')}
-                subtitle={t('tasks.guide.summary')}
-                icon={<CircleHelp aria-hidden="true" className="h-4 w-4" />}
-                onClose={() => setOpen(false)}
-            >
-                <TaskWorkflowHelpContent onNavigate={() => setOpen(false)} />
-            </SlideOverDrawer>
-        </>
-    );
-};

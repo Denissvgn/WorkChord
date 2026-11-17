@@ -61,8 +61,6 @@ const dynamicMasterKeys = [
     ...['pending', 'applied', 'noChange', 'blocked'].map(
         status => `agentTeamSetup.actionStatuses.${status}`,
     ),
-    ...['done', 'needsAttention', 'blocked', 'notStarted', 'loadingStatus', 'unavailableStatus']
-        .map(state => `plan.master.${state}`),
     'agentTeamSetup.actionHeadingFor',
     'agentTeamSetup.applyActionFor',
     'agentTeamSetup.checksComplete',
@@ -72,8 +70,6 @@ const dynamicMasterKeys = [
     'agentTeamSetup.railProgress',
     'agentTeamSetup.readinessTitle',
     'agentTeamSetup.summaryProgress',
-    'plan.master.checkpointOption',
-    'plan.master.checkpointsComplete',
 ];
 
 describe('lazy language resources', () => {
@@ -86,7 +82,7 @@ describe('lazy language resources', () => {
         expect(i18n.t('common.loading')).toBe('Загрузка…');
     });
 
-    it('keeps dynamic master catalogs complete with matching placeholders', () => {
+    it('keeps dynamic workflow catalogs complete with matching placeholders', () => {
         const english = englishResources.translation as Record<string, unknown>;
         const russian = russianResources.translation as Record<string, unknown>;
 
@@ -108,16 +104,10 @@ describe('lazy language resources', () => {
                 .not.toBe(getCatalogValue(russian, railKey));
         }
 
-        expect(getCatalogValue(english, 'plan.master.checkpoints'))
-            .toBe('Planning checkpoints');
-        expect(getCatalogValue(english, 'plan.master.checkpointsComplete'))
-            .toBe('{{done}} of {{total}} checkpoints complete');
         expect(getCatalogValue(english, 'agentTeamSetup.readinessTitle'))
             .toBe('Agent setup readiness');
         expect(getCatalogValue(english, 'agentTeamSetup.checksComplete'))
             .toBe('{{done}} of {{total}} setup checks complete');
-        expect(getCatalogValue(russian, 'plan.master.checkpoints'))
-            .toBe('Контрольные точки планирования');
         expect(getCatalogValue(russian, 'agentTeamSetup.readinessTitle'))
             .toBe('Готовность настройки агентов');
     });
@@ -158,8 +148,6 @@ describe('lazy language resources', () => {
         expect(i18n.t('nav.counters.requestsWaiting', { count: 2 })).toBe('2 requests waiting');
         expect(i18n.t('nav.counters.planProgress', { done: 4, total: 6 }))
             .toBe('4 of 6 plan steps complete');
-        expect(i18n.t('plan.master.daysCount', { count: 1 })).toBe('1 day');
-        expect(i18n.t('plan.master.daysCount', { count: 2 })).toBe('2 days');
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 1 }))
             .toBe('1 reconciliation action is still pending.');
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 2 }))
@@ -226,9 +214,6 @@ describe('lazy language resources', () => {
             .toBe('На доске задач доступны ещё 2 открытые задачи.');
         expect(i18n.t('overview.workNowRemaining', { count: 5 }))
             .toBe('На доске задач доступны ещё 5 открытых задач.');
-        expect(i18n.t('plan.master.daysCount', { count: 1 })).toBe('1 день');
-        expect(i18n.t('plan.master.daysCount', { count: 2 })).toBe('2 дня');
-        expect(i18n.t('plan.master.daysCount', { count: 5 })).toBe('5 дней');
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 1 }))
             .toBe('Осталось 1 действие согласования.');
         expect(i18n.t('agentTeamSetup.pendingReconciliationActions', { count: 2 }))

@@ -4,8 +4,6 @@ import { parseScope } from '../navigation/scopeParams';
 import { useScopeStore, type RememberedScope } from '../features/scope/scopeStore';
 import { resolveWorkScope, type ScopeIterationRecord } from '../features/scope/workScope';
 
-export { pickDefaultIteration } from '../features/scope/workScope';
-
 /**
  * The iteration-only view of the work scope, for pages that still set the iteration with
  * their own control. The scope store holds the value; useWorkScope puts it in the URL.

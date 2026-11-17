@@ -118,7 +118,7 @@ describe('ContextHelp', () => {
         });
         await roadmapRender.user.click(screen.getByRole('button', {
             name: i18n.t('contextHelp.openForPage', {
-                page: i18n.t('documentTitles.roadmap'),
+                page: i18n.t('nav.projects'),
             }),
         }));
 

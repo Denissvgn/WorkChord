@@ -1,9 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider, useLocation } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { LegacyRedirect } from './LegacyRedirect';
 
-vi.mock('./legacySwitches', () => ({ legacySwitches: { '/plan/master': true, '/iterations': false } }));
 function Location() {
     const location = useLocation();
     return <div>{location.pathname + location.search + location.hash}</div>;
@@ -11,9 +10,10 @@ function Location() {
 function setup(path: string) {
     const router = createMemoryRouter([
         { path: '/before', element: <div>Previous page</div> },
-        { path: '/plan/master', element: <LegacyRedirect><div>Old master</div></LegacyRedirect> },
-        { path: '/iterations', element: <LegacyRedirect><div>Old iterations</div></LegacyRedirect> },
+        ...['/plan/master', '/iterations', '/roadmap', '/agent-pipeline', '/agent-team/setup', '/calendar']
+            .map(route => ({ path: route, element: <LegacyRedirect /> })),
         { path: '/plan', element: <Location /> },
+        { path: '*', element: <Location /> },
     ], { initialEntries: ['/before', path], initialIndex: 1 });
     render(<RouterProvider router={router} />);
     return router;
@@ -25,9 +25,21 @@ describe('legacy redirects', () => {
         await router.navigate(-1);
         await waitFor(() => expect(screen.getByText('Previous page')).toBeInTheDocument());
     });
-    it('renders the old page when its switch is off', async () => {
-        const router = setup('/iterations?scope=team#details');
-        expect(await screen.findByText('Old iterations')).toBeInTheDocument();
-        expect(router.state.location.pathname + router.state.location.search + router.state.location.hash).toBe('/iterations?scope=team#details');
+    it.each([
+        ['/plan/master', '/plan'],
+        ['/iterations', '/plan?panel=iterations'],
+        ['/roadmap', '/projects?view=roadmap'],
+        ['/agent-pipeline', '/tasks?layout=pipeline'],
+        ['/agent-team/setup', '/team?tab=connect'],
+        ['/calendar', '/settings?tab=calendar'],
+    ])('redirects %s to its current destination and keeps caller parameters', async (legacy, destination) => {
+        const query = destination.includes('?')
+            ? `?scope=team&${destination.split('?')[1]}`
+            : '?scope=team';
+        const target = `${destination.split('?')[0]}${query}#details`;
+        const router = setup(`${legacy}?scope=team#details`);
+        await waitFor(() => expect(router.state.location.pathname + router.state.location.search + router.state.location.hash)
+            .toBe(target));
+        expect(await screen.findByText(target)).toBeInTheDocument();
     });
 });

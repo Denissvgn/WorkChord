@@ -5,7 +5,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { getDestinationForPath } from '../navigation/destinations';
 import { mapLegacyPath } from '../navigation/legacyPaths';
-import { legacySwitches } from '../navigation/legacySwitches';
 import {
     accessibleNameViolations,
     headingOrderViolations,
@@ -140,7 +139,7 @@ describe('accessibility invariants on every route', () => {
         const navigationNames = (roles.navigation ?? []).map(element => computeAccessibleName(element));
         expect(navigationNames).toContain('Primary navigation');
         // An old path opens the destination it redirects to.
-        const opened = (legacySwitches[path] ? mapLegacyPath(sample, '') ?? sample : sample).split('?')[0];
+        const opened = (mapLegacyPath(sample, '') ?? sample).split('?')[0];
         const destination = getDestinationForPath(opened);
         const current = Array.from(page.querySelectorAll('[data-testid="app-sidebar"] [aria-current="page"]'))
             .map(element => element.getAttribute('data-destination'));

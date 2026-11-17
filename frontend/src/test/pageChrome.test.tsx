@@ -5,10 +5,7 @@ import { Button } from '../components/common/Button';
 import { Select } from '../components/common/Select';
 import { FilterBar, PageHeader, PageToolbar, ViewSwitch } from '../components/ui';
 import { DESTINATIONS } from '../navigation/destinations';
-import { LegacyRedirect } from '../navigation/LegacyRedirect';
-import { mapLegacyPath } from '../navigation/legacyPaths';
-import { legacySwitches } from '../navigation/legacySwitches';
-import { metadataForPath, routeMetadata, routeModuleLoaders } from '../navigation/routeModules';
+import { routeMetadata, routeModuleLoaders } from '../navigation/routeModules';
 import { expectPageChrome } from './pageChrome';
 import { renderWithProviders } from './renderWithProviders';
 import { routeRegistry } from './routeRegistry';
@@ -56,12 +53,8 @@ describe('page chrome', () => {
         installWorkspaceApi();
         const sample = samplePath(path === '*' ? '/missing' : path);
         const Page = (await routeModuleLoaders[key]()).default;
-        // An old path opens the page it redirects to, so that page is the one the frame rule applies to.
-        const target = legacySwitches[path] ? mapLegacyPath(sample, '') : null;
-        const Target = target ? (await routeModuleLoaders[metadataForPath(target.split('?')[0]).key]()).default : null;
         const { container } = renderWithProviders(<Routes>
-            <Route path={path} element={Target ? <LegacyRedirect><Page /></LegacyRedirect> : <Page />} />
-            {Target && <Route path="*" element={<Target />} />}
+            <Route path={path} element={<Page />} />
         </Routes>, { initialEntries: [sample] });
         // A page that reads records shows its header once they arrive.
         await waitFor(() => expectPageChrome(container, { status }), { timeout: 5000 });

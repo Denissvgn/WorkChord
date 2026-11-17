@@ -1,6 +1,6 @@
 import type { AgentTeamSetupStep, AgentTeamStepState } from '../../types/agent';
 
-export const AGENT_TEAM_STEP_IDS = [
+const AGENT_TEAM_STEP_IDS = [
     'authority',
     'master',
     'controller',
@@ -12,7 +12,7 @@ export const AGENT_TEAM_STEP_IDS = [
 
 export type AgentTeamStepId = typeof AGENT_TEAM_STEP_IDS[number];
 
-export interface AgentTeamStepDefinition {
+interface AgentTeamStepDefinition {
     id: AgentTeamStepId;
     titleKey: string;
     descriptionKey: string;

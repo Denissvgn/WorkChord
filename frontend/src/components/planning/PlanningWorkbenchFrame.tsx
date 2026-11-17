@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { PageHeader, PageLayout } from '../ui';
 import { PlanReturnBar } from './PlanReturnBar';
 
-export type PlanningWorkbenchFact = {
+type PlanningWorkbenchFact = {
     id: string;
     label: ReactNode;
     value: ReactNode;

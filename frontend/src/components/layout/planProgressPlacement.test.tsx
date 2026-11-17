@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import OverviewPage from '../../pages/OverviewPage';
 import PlanPage from '../../pages/PlanPage';
-import { deriveStatus, EMPTY_READINESS, nextStep, readiness } from '../../features/planningMasters/masters';
+import { deriveStatus, nextStep, readiness } from '../../features/planningMasters/masters';
 import { PLANNING_STEP_IDS } from '../../features/planningMasters/planningReturn';
 import type { Iteration, IterationSummary } from '../../types/iteration';
 import { AppSidebar } from './AppSidebar';
@@ -74,7 +74,6 @@ const queryState = () => ({
 // An iteration with a team and tasks but no schedule yet: below 6 of 6.
 const planningState = (overrides: Record<string, unknown> = {}) => {
     const readinessData = {
-        ...EMPTY_READINESS,
         iterationCount: 1,
         hasCurrentIteration: true,
         currentIterationName: iteration.name,
@@ -83,8 +82,13 @@ const planningState = (overrides: Record<string, unknown> = {}) => {
         currentIterationDays: iteration.working_days,
         teamMemberCount: 2,
         teamCapacity: 80,
+        teamMembersNoCap: 0,
         taskCount: 3,
+        tasksWithoutAssignee: 0,
+        tasksWithoutEffort: 0,
         hasGanttSchedule: false,
+        ganttLastBuilt: '',
+        riskCount: 0,
         inboxCount: 0,
         ...overrides,
     };

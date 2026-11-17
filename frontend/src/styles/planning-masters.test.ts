@@ -9,7 +9,7 @@ const planningMastersCss = readFileSync(
     'utf8',
 );
 const agentTeamMasterSource = readFileSync(
-    resolve(process.cwd(), 'src/pages/AgentTeamSetupMasterPage.tsx'),
+    resolve(process.cwd(), 'src/components/team/AgentManifestWorkflow.tsx'),
     'utf8',
 );
 

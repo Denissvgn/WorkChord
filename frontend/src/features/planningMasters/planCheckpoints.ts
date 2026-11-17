@@ -22,8 +22,6 @@ const WAITS_FOR_BY_REASON: Readonly<Record<string, PlanningStepId>> = {
     build_schedule_first: 'schedule',
 };
 
-export const checkpointNumber = (id: PlanningStepId) => PLANNING_STEP_IDS.indexOf(id) + 1;
-
 const waitsFor = (
     item: PlanCheckpoint,
     earlier: readonly PlanCheckpoint[],

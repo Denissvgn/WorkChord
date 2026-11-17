@@ -1,9 +1,7 @@
 import { ButtonLink } from '../common/ButtonLink';
-import { useState } from 'react';
 import {
     CalendarClock,
     ChevronRight,
-    CircleHelp,
     FlaskConical,
     History,
     ListChecks,
@@ -12,8 +10,6 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../common/Button';
-import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type PlanningSurface = 'plan' | 'gantt';
@@ -102,45 +98,3 @@ export const PlanningWorkflowHelpContent = ({
     );
 };
 
-export const PlanningWorkflowGuide = ({ surface }: { surface: PlanningSurface }) => {
-    const { t } = useTranslation();
-    const [open, setOpen] = useState(false);
-    const translationPrefix = `${surface}.help`;
-    const closeForNavigation = () => {
-        setOpen(false);
-        if (typeof window === 'undefined') return;
-        window.setTimeout(() => {
-            document.getElementById('workspace-main')?.focus();
-        }, 0);
-    };
-
-    return (
-        <>
-            <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="planning-workflow-trigger gap-1.5"
-                aria-expanded={open}
-                aria-haspopup="dialog"
-                onClick={() => setOpen(true)}
-            >
-                <CircleHelp aria-hidden="true" className="h-4 w-4" />
-                <span>{t(`${translationPrefix}.trigger`)}</span>
-            </Button>
-            <SlideOverDrawer
-                open={open}
-                title={t(`${translationPrefix}.title`)}
-                subtitle={t(`${translationPrefix}.summary`)}
-                icon={<CircleHelp aria-hidden="true" className="h-4 w-4" />}
-                onClose={() => setOpen(false)}
-                className="planning-workflow-drawer"
-            >
-                <PlanningWorkflowHelpContent
-                    surface={surface}
-                    onNavigate={closeForNavigation}
-                />
-            </SlideOverDrawer>
-        </>
-    );
-};

@@ -12,7 +12,7 @@ export interface EditorIssue {
 const lineAt = (text: string, position: number) => text.slice(0, Math.max(0, position)).split('\n').length;
 
 /** Paths such as `workers[0].role` mapped to the 1-based line where their key or value starts. */
-export const manifestPathLines = (text: string): Map<string, number> => {
+const manifestPathLines = (text: string): Map<string, number> => {
     const lines = new Map<string, number>();
     type Frame = { kind: 'object'; key: string | null } | { kind: 'array'; index: number };
     const stack: Frame[] = [];

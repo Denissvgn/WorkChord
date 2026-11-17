@@ -31,7 +31,7 @@ export type DestinationId =
     | 'team'
     | 'settings';
 
-export type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
+type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
 
 /**
  * Where a sidebar counter takes its number from.
@@ -39,7 +39,7 @@ export type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
  * - `requestsWaiting`: the number of active Triage requests.
  * - `planProgress`: complete Plan checkpoints out of six, shown only while the plan is incomplete.
  */
-export type DestinationCounterSource = 'none' | 'requestsWaiting' | 'planProgress';
+type DestinationCounterSource = 'none' | 'requestsWaiting' | 'planProgress';
 
 export interface Destination {
     id: DestinationId;
@@ -57,7 +57,7 @@ export interface Destination {
     owns: readonly string[];
 }
 
-export interface DestinationGroup {
+interface DestinationGroup {
     id: DestinationGroupId;
     /** The first group has no heading. */
     labelKey?: string;
@@ -196,12 +196,6 @@ export const getDestination = (id: DestinationId): Destination => {
     const destination = DESTINATIONS.find(candidate => candidate.id === id);
     if (!destination) throw new Error(`Unknown destination: ${id}`);
     return destination;
-};
-
-export const getDestinationGroup = (id: DestinationId): DestinationGroup => {
-    const group = DESTINATION_GROUPS.find(candidate => candidate.destinations.some(destination => destination.id === id));
-    if (!group) throw new Error(`Unknown destination: ${id}`);
-    return group;
 };
 
 const ownsPath = (pattern: string, pathname: string) => (

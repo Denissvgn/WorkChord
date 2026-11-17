@@ -7,7 +7,7 @@ import type { PlanningStepId } from './planningReturn';
 export const PLANNING_TASK_ISSUE_PARAM = 'planningIssue';
 export const PLANNING_ITERATION_PARAM = 'iterationId';
 
-export const PLANNING_TASK_ISSUES = [
+const PLANNING_TASK_ISSUES = [
     'unassigned',
     'missing-effort',
     'any',
@@ -39,7 +39,7 @@ export const isPlanningLeafTask = (task: Task) => (
 );
 
 /** The server's rule (app/services/planning_issues.py): only planned leaves are scheduling gaps. */
-export const isPlanningGapCandidate = (task: Task) => task.status === 'planned' && isPlanningLeafTask(task);
+const isPlanningGapCandidate = (task: Task) => task.status === 'planned' && isPlanningLeafTask(task);
 
 /** An agent is working on it, so it is not unassigned, but it still has no capacity row. */
 export const isAgentWorkingWithoutCapacity = (task: Task) => (

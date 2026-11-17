@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
     derivePlanningRecovery,
     deriveStatus,
-    EMPTY_READINESS,
     nextStep,
 } from './masters';
 import type { PlanReadiness } from './masters';
@@ -10,7 +9,6 @@ import type { PlanReadiness } from './masters';
 const readinessFixture = (
     overrides: Partial<PlanReadiness> = {},
 ): PlanReadiness => ({
-    ...EMPTY_READINESS,
     iterationCount: 1,
     hasCurrentIteration: true,
     currentIterationName: 'August plan',
@@ -19,7 +17,14 @@ const readinessFixture = (
     currentIterationDays: 10,
     teamMemberCount: 1,
     teamCapacity: 64,
+    teamMembersNoCap: 0,
     taskCount: 1,
+    tasksWithoutAssignee: 0,
+    tasksWithoutEffort: 0,
+    hasGanttSchedule: false,
+    ganttLastBuilt: '',
+    riskCount: 0,
+    inboxCount: 0,
     ...overrides,
 });
 

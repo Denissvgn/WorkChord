@@ -9,7 +9,7 @@ import type {
 } from '../../types/agent';
 import { ConnectAgentSteps } from './ConnectAgentSteps';
 import i18n from '../../i18n/i18n';
-import { AGENT_TEAM_STEP_DEFINITIONS, AGENT_TEAM_STEP_IDS } from '../../features/agentTeamSetup/masters';
+import { AGENT_TEAM_STEP_DEFINITIONS } from '../../features/agentTeamSetup/masters';
 import { hasPM, runtimeSnippet } from '../../features/agentTeamSetup/connectAgent';
 
 vi.mock('../../services/agentService', () => ({ agentService: {
@@ -345,7 +345,7 @@ describe('Connect agent steps', () => {
     });
 
     it('completes the advanced manifest workflow through all seven steps with validate, plan and apply', async () => {
-        service.getAgentTeamStatus.mockResolvedValue({ ...status, steps: AGENT_TEAM_STEP_IDS.map(id => ({ id, state: 'todo', blocker_codes: [], next_action: null })) });
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, steps: AGENT_TEAM_STEP_DEFINITIONS.map(({ id }) => ({ id, state: 'todo', blocker_codes: [], next_action: null })) });
         const view = renderWithProviders(<ConnectAgentSteps />);
         await screen.findByRole('radio', { name: 'Worker' });
         await view.user.click(screen.getByText('Advanced: apply a team manifest'));
@@ -374,7 +374,7 @@ describe('Connect agent steps', () => {
         await view.user.type(screen.getByRole('textbox', { name: i18n.t('agentTeamSetup.rationale') }), 'Connect the reviewed team members');
         service.getAgentTeamStatus.mockResolvedValue({
             ...status, runtime_ready: true, topology_state: 'runtime_ready', topology_revision: 8,
-            steps: AGENT_TEAM_STEP_IDS.map(id => ({ id, state: 'done', blocker_codes: [], next_action: null })),
+            steps: AGENT_TEAM_STEP_DEFINITIONS.map(({ id }) => ({ id, state: 'done', blocker_codes: [], next_action: null })),
         });
         expect(apply).toBeEnabled();
         await view.user.click(apply);

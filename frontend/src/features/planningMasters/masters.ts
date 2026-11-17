@@ -1,13 +1,12 @@
-import { formatDate } from '../../utils/formatDate';
 import { PLANNING_STEP_IDS } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 import type { PlanningTaskIssue } from './planningTaskIssues';
 
 // Readiness inputs and the wording of each checkpoint's status.
 
-export type StepState = 'done' | 'warn' | 'blocked' | 'todo';
+type StepState = 'done' | 'warn' | 'blocked' | 'todo';
 
-export interface StepStatus {
+interface StepStatus {
     state: StepState;
     summary?: string;
     missing?: string[];
@@ -40,7 +39,7 @@ export interface PlanReadiness {
     checkpointStates?: Partial<Record<PlanningStepId, StepState>>;
 }
 
-export type PlanningRecoveryKind =
+type PlanningRecoveryKind =
     | 'create-period'
     | 'add-team'
     | 'repair-capacity'
@@ -50,7 +49,7 @@ export type PlanningRecoveryKind =
     | 'build-schedule'
     | 'review-plan';
 
-export interface PlanningRecoveryAction {
+interface PlanningRecoveryAction {
     kind: PlanningRecoveryKind;
     ownerStep: PlanningStepId;
     route: string;
@@ -58,15 +57,6 @@ export interface PlanningRecoveryAction {
     planningIssue?: PlanningTaskIssue;
     query?: Record<string, string>;
 }
-
-export const EMPTY_READINESS: PlanReadiness = {
-    iterationCount: 0, hasCurrentIteration: false,
-    currentIterationName: '', currentIterationStart: '', currentIterationEnd: '',
-    currentIterationDays: 0,
-    teamMemberCount: 0, teamCapacity: 0, teamMembersNoCap: 0,
-    taskCount: 0, tasksWithoutAssignee: 0, tasksWithoutEffort: 0,
-    hasGanttSchedule: false, ganttLastBuilt: '', riskCount: 0, inboxCount: 0,
-};
 
 // ── Status derivation (mirrors design's deriveStatus) ───────────────────────
 
@@ -278,91 +268,4 @@ export function readiness(status: Record<string, StepStatus>): { done: number; t
     const total = PLANNING_STEP_IDS.length;
     const done = PLANNING_STEP_IDS.filter(id => status[id].state === 'done').length;
     return { done, total, pct: Math.round((done / total) * 100) };
-}
-
-type Translate = (key: string, options?: Record<string, unknown>) => string;
-
-/** Translate readiness summaries without storing display prose in domain state. */
-export function localizeStatus(
-    status: Record<string, StepStatus>,
-    r: PlanReadiness,
-    translate: Translate,
-): Record<string, StepStatus> {
-    const result: Record<string, StepStatus> = {};
-    for (const id of PLANNING_STEP_IDS) {
-        const current = status[id];
-        let summary: string | undefined;
-        let missing: string[] | undefined;
-
-        if (id === 'iteration') {
-            summary = current.state === 'done'
-                ? translate('plan.status.periodReady', {
-                    name: r.currentIterationName,
-                    start: formatDate(r.currentIterationStart),
-                    end: formatDate(r.currentIterationEnd),
-                })
-                : undefined;
-            missing = current.state === 'done' ? undefined : [translate('plan.status.noPeriod')];
-        } else if (id === 'team') {
-            // Agents count as capacity: show the mix, for example "2 people · 3 agents · 412 h".
-            const agents = r.teamAgentCount ?? 0;
-            summary = current.state === 'done'
-                ? (agents > 0
-                    ? translate('plan.status.capacityMixReady', { people: r.teamMemberCount - agents, agents, capacity: r.teamCapacity })
-                    : translate('plan.status.teamReady', { count: r.teamMemberCount, capacity: r.teamCapacity }))
-                : undefined;
-            missing = current.state === 'done'
-                ? undefined
-                : [r.teamMembersNoCap > 0
-                    ? translate('plan.status.peopleWithoutAllocation', { count: r.teamMembersNoCap })
-                    : translate('plan.status.noPeople')];
-        } else if (id === 'work') {
-            summary = current.state === 'done'
-                ? translate('plan.status.workReady', { count: r.taskCount })
-                : undefined;
-            missing = current.state === 'done'
-                ? undefined
-                : [translate('plan.status.noTasks')];
-        } else if (id === 'blockers') {
-            summary = current.state === 'done' ? translate('plan.status.noBlockers') : undefined;
-            missing = current.state === 'done'
-                ? undefined
-                : r.taskCount === 0
-                    ? [translate('plan.status.addWorkFirst')]
-                    : [
-                        ...(r.tasksWithoutAssignee > 0
-                            ? [translate('plan.status.unassignedTasks', {
-                                count: r.tasksWithoutAssignee,
-                            })]
-                            : []),
-                        ...(r.tasksWithoutEffort > 0
-                            ? [translate('plan.status.tasksWithoutEffort', {
-                                count: r.tasksWithoutEffort,
-                            })]
-                            : []),
-                        ...((r.tasksAgentWithoutCapacity ?? 0) > 0
-                            ? [translate('plan.status.agentWorkingNoCapacity', {
-                                count: r.tasksAgentWithoutCapacity,
-                            })]
-                            : []),
-                    ];
-        } else if (id === 'schedule') {
-            summary = current.state === 'done' ? translate('plan.status.scheduleBuilt') : undefined;
-            missing = current.state === 'done'
-                ? undefined
-                : [current.state === 'blocked'
-                    ? translate('plan.status.completeEarlierSteps')
-                    : translate('plan.status.scheduleNotBuilt')];
-        } else {
-            summary = current.state === 'done' ? translate('plan.status.planReady') : undefined;
-            missing = current.state === 'done'
-                ? undefined
-                : [current.state === 'blocked'
-                    ? translate('plan.status.buildScheduleFirst')
-                    : translate('plan.status.risksToAcknowledge', { count: r.riskCount })];
-        }
-
-        result[id] = { state: current.state, summary, missing };
-    }
-    return result;
 }

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AgentTeamMaster, AgentTeamSetupStep } from '../../types/agent';
 import {
-    AGENT_TEAM_STEP_IDS,
     stateTone,
     stepProgress,
     stepsById,
@@ -24,7 +23,9 @@ describe('agent team setup master state', () => {
     it('derives progress and step state only from the server projection', () => {
         const indexed = stepsById(serverSteps);
 
-        expect(Object.keys(indexed)).toEqual(AGENT_TEAM_STEP_IDS);
+        expect(Object.keys(indexed)).toEqual([
+            'authority', 'master', 'controller', 'workers', 'bindings', 'verifier', 'review',
+        ]);
         expect(indexed.authority?.state).toBe('done');
         expect(indexed.workers?.state).toBe('blocked');
         expect(indexed.review).toBeUndefined();
