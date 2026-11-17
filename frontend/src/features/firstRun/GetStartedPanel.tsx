@@ -9,6 +9,7 @@ import { useIdentity } from '../identity/identityContext';
 import { LocalProfilePicker } from '../identity/LocalProfilePicker';
 import { useScopeLink } from '../scope/useScopeLink';
 import { useSetWorkScope } from '../scope/useWorkScope';
+import { SampleProjectAction } from './SampleProjectAction';
 import { CreateProjectModal } from './CreateProjectModal';
 import { FIRST_RUN_PLAN_CHECKPOINT, firstRunPlanHref, type FirstRunStep, type FirstRunStepId } from './firstRunSteps';
 import { useGetStartedVisibility } from './getStartedVisibility';
@@ -182,7 +183,7 @@ export const GetStartedPanel = ({ progress, secondaryAction }: { progress: First
             </ol>
             <footer className="get-started-foot">
                 <p id="get-started-reopen-hint">{t('firstRun.reopenHint')}</p>
-                <div className="get-started-secondary" data-testid="get-started-secondary-slot">{secondaryAction}</div>
+                <div className="get-started-secondary" data-testid="get-started-secondary-slot">{secondaryAction ?? <SampleProjectAction />}</div>
             </footer>
         </section>
     );
