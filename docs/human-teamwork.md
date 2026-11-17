@@ -25,8 +25,8 @@ Iterations and iteration capacity are managed in **Plan**. The six Plan
 checkpoints are **Iteration**, **Capacity**, **Work**, **Blockers**,
 **Schedule**, and **Review**. Work through them in order.
 
-Older links keep working. Links to `/iterations`, `/roadmap`,
-`/agent-pipeline`, `/agent-team/setup`, and `/calendar` open the place where
+Older links keep working. Links to `/plan/master`, `/iterations`,
+`/roadmap`, `/agent-pipeline`, `/agent-team/setup`, and `/calendar` open the place where
 that content now lives, and they keep their query parameters.
 
 ## Get started
