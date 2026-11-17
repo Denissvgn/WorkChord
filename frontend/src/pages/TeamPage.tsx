@@ -21,6 +21,8 @@ const TeamPage = () => {
     const { t } = useTranslation();
     const [searchParams, setSearchParams] = useSearchParams();
     const [drawer, setDrawer] = useState<DrawerTarget>(null);
+    // An empty members list offers Add person itself, so the header does not repeat it.
+    const [membersEmpty, setMembersEmpty] = useState(false);
     const activeTab = parseTab(searchParams.get('tab'));
 
     const tabParams = (tab: TeamTab) => {
@@ -36,7 +38,7 @@ const TeamPage = () => {
             <PageHeader
                 title={t('teamPage.title')}
                 purpose={t('teamPage.purpose')}
-                primaryAction={activeTab !== 'connect' && (
+                primaryAction={activeTab !== 'connect' && !(activeTab === 'members' && membersEmpty) && (
                     <Button type="button" onClick={() => { openTab('members'); setDrawer({ mode: 'add' }); }}>
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         {t('teamPage.addPerson')}
@@ -87,7 +89,7 @@ const TeamPage = () => {
                 {activeTab === 'members' && (
                     <>
                         <p className="text-sm text-content-secondary">{t('teamPage.capacityNote')}</p>
-                        <TeamDirectory drawer={drawer} onDrawerChange={setDrawer} />
+                        <TeamDirectory drawer={drawer} onDrawerChange={setDrawer} onEmptyChange={setMembersEmpty} />
                     </>
                 )}
                 {activeTab === 'models' && (

@@ -43,8 +43,15 @@ const refusedStatus = (error: unknown) => {
 
 export type DrawerTarget = { mode: 'add' } | { mode: 'edit'; key: string } | null;
 
-/** Everyone who can do work in one table; a row opens the drawer for that person or agent. */
-export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget; onDrawerChange: (target: DrawerTarget) => void }) => {
+/**
+ * Everyone who can do work in one table; a row opens the drawer for that person or agent.
+ * `onEmptyChange` reports when the empty state, with its own Add person button, is shown.
+ */
+export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange }: {
+    drawer: DrawerTarget;
+    onDrawerChange: (target: DrawerTarget) => void;
+    onEmptyChange?: (empty: boolean) => void;
+}) => {
     const { t } = useTranslation();
     const { hasAdminAccess } = useAdminAccess();
     const { hasAgentKey } = useAgentAccess();
@@ -79,6 +86,11 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
     );
     const drawerRow = drawer?.mode === 'edit' ? rows.find(row => row.key === drawer.key) ?? null : null;
     const hasAgents = rows.some(row => row.kind === 'agent');
+    const isEmpty = profilesQuery.isSuccess && rows.length === 0;
+    useEffect(() => {
+        onEmptyChange?.(isEmpty);
+        return () => onEmptyChange?.(false);
+    }, [isEmpty, onEmptyChange]);
 
     if (profilesQuery.isLoading) return <QueryLoadingState />;
     if (profilesQuery.isError) return <QueryErrorState error={profilesQuery.error} onRetry={() => void profilesQuery.refetch()} />;

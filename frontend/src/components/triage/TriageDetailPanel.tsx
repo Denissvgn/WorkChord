@@ -83,21 +83,21 @@ export const TriageDetailPanel = ({
 
     if (!item) {
         return (
-            <aside className="flex h-full flex-col items-center justify-center rounded-lg border border-border bg-surface-card p-8 text-center text-content-secondary">
+            <div className="flex h-full flex-col items-center justify-center rounded-lg border border-border bg-surface-card p-8 text-center text-content-secondary">
                 <Inbox className="mb-3 h-8 w-8 text-content-tertiary" />
                 <p className="font-medium text-content-primary">{t('surfaces.triagePage.noIntakeSelected')}</p>
                 <p className="mt-1 text-sm">{t('surfaces.triagePage.selectAnItemFromTheInbox')}</p>
-            </aside>
+            </div>
         );
     }
 
     const convertDisabled = item.status === 'converted' || !canConvert;
 
     return (
-        <aside className="flex h-full flex-col rounded-lg border border-border bg-surface-card">
+        <aside className="flex h-full flex-col rounded-lg border border-border bg-surface-card" aria-labelledby={`triage-detail-title-${item.id}`}>
             <div className="border-b border-border p-5">
                 <div className="mb-3 flex items-start justify-between gap-3">
-                    <h2 className="text-lg font-semibold leading-6 text-content-primary">{item.title}</h2>
+                    <h2 id={`triage-detail-title-${item.id}`} className="text-lg font-semibold leading-6 text-content-primary">{item.title}</h2>
                     <StatusPill status={item.status} />
                 </div>
                 <div className="flex flex-wrap gap-2">

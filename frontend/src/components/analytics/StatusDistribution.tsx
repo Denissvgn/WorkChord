@@ -47,7 +47,9 @@ export const StatusDistribution = ({ summary }: { summary: IterationSummary }) =
                 </li>
             </ul>
             <details>
-                <summary className="cursor-pointer text-sm font-medium text-action">{t('analytics.showTable')}</summary>
+                <summary className="cursor-pointer text-sm font-medium text-action">
+                    {t('analytics.showTable')}<span className="sr-only">: {t('analytics.status.title')}</span>
+                </summary>
                 <table className="mt-2 w-full max-w-md text-left text-sm">
                     <caption className="sr-only">{t('analytics.status.title')}</caption>
                     <thead><tr className="border-b border-border-subtle">
