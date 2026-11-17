@@ -1,7 +1,7 @@
 import { TaskAssigneeDisplay } from './TaskAssigneeDisplay';
 import { useTaskAssigneeDisplay } from './useTaskAssigneeDisplay';
 import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -9,8 +9,10 @@ import { Link2, Pencil } from 'lucide-react';
 import type { Task, TaskBrief } from '../../types/task';
 import { taskService } from '../../services/taskService';
 import { Button } from '../common/Button';
+import { Input } from '../common/Input';
 import { useToast } from '../feedback/toast';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
+import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { formatDate } from '../../utils/formatDate';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
 import { TaskBriefEditor } from './TaskBriefEditor';
@@ -26,11 +28,23 @@ const PARTS: TaskViewPart[] = ['brief', 'work', 'activity'];
 
 const parsePart = (value: string | null): TaskViewPart => (PARTS.includes(value as TaskViewPart) ? value as TaskViewPart : 'brief');
 
-/** The one next transition people usually take from each status. */
-const NEXT_TRANSITION: Partial<Record<Task['status'], { action: string; labelKey: string }>> = {
-    planned: { action: 'start_manual', labelKey: 'domain.action_start_manual' },
-    active: { action: 'resolve_manual', labelKey: 'domain.action_resolve_manual' },
+/**
+ * The one next transition people usually take from each status. Start and submit run at once with a
+ * standard reason; review needs a result per criterion, so it opens Work & review.
+ */
+const NEXT_TRANSITION: Partial<Record<Task['status'], { action: string; labelKey: string; reasonKey?: string }>> = {
+    planned: { action: 'start_manual', labelKey: 'domain.action_start_manual', reasonKey: 'taskView.startReason' },
+    active: { action: 'resolve_manual', labelKey: 'domain.action_resolve_manual', reasonKey: 'taskView.submitReason' },
     resolved: { action: 'review', labelKey: 'taskView.reviewWork' },
+};
+
+/** True when the server rejected the command because it wants a reason from the person. */
+const reasonRequired = (error: unknown) => {
+    const normalized = normalizeApiError(error, '');
+    if (normalized.status !== 422 && normalized.code !== 'reason_required') return false;
+    return normalized.code === 'reason_required'
+        || normalized.fieldErrors.some(item => item.field === 'reason' || /\breason\b/i.test(item.message))
+        || /\breason\b/i.test(normalized.message);
 };
 
 const BriefField = ({ label, value }: { label: string; value: string }) => (
@@ -62,7 +76,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
     const [params, setParams] = useSearchParams();
     const part = parsePart(params.get(TASK_PART_PARAM));
     const [briefDraft, setBriefDraft] = useState<TaskBrief | null>(null);
-    const [workAction, setWorkAction] = useState<string | undefined>(undefined);
+    const [reasonDraft, setReasonDraft] = useState<string | null>(null);
     const [sectionDirty, setSectionDirty] = useState(false);
     const editingBrief = briefDraft !== null;
     const locked = editingBrief || sectionDirty;
@@ -91,10 +105,39 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
         onSettled: () => onPending(false),
     });
 
+    const next = NEXT_TRANSITION[task.status];
+    // Shared with Work & review, so the header and the panel read one availability snapshot.
+    // feedback-policy: query loading,error,retry,empty
+    const actions = useQuery({ queryKey: ['taskActions', task.id, task.version], queryFn: () => taskService.actions(task.id), enabled: Boolean(next?.reasonKey) });
+    // feedback-policy: mutation pending,inline
+    const transition = useMutation({
+        meta: { success: (_data, variables) => t('feedback.commandDone', { action: t(`domain.action_${(variables as { action: string }).action}`), name: task.title }) } satisfies MutationFeedbackMeta,
+        mutationFn: ({ action, reason }: { action: string; reason: string }) => taskService.command(task.id, {
+            action, expected_version: task.version, reason,
+            expected_claim_generation: actions.data?.claim_generation, expected_running_run_ids: actions.data?.running_run_ids,
+            expected_live_assignment_ids: actions.data?.live_assignment_ids,
+        }),
+        onMutate: () => onPending(true),
+        onSuccess: latest => {
+            setReasonDraft(null);
+            onTaskUpdated(latest);
+            void queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        },
+        onError: error => { if (reasonRequired(error)) setReasonDraft(current => current ?? ''); },
+        onSettled: () => onPending(false),
+    });
+    const criteriaCount = task.brief?.acceptance_criteria.length ?? 0;
+    const runNext = () => {
+        if (!next) return;
+        const available = actions.data?.actions.find(item => item.action === next.action)?.allowed;
+        // Review, a blocked action and a submit without criteria are explained in Work & review.
+        if (!next.reasonKey || !available || (next.action === 'resolve_manual' && criteriaCount === 0)) { setPart('work'); return; }
+        transition.mutate({ action: next.action, reason: t(next.reasonKey) });
+    };
+
     const progressFor = (criterionId: string) => task.progress?.criteria.find(item => item.criterion_id === criterionId);
     const criteria = task.brief?.acceptance_criteria ?? [];
     const doneCount = criteria.filter(criterion => progressFor(criterion.id)?.state === 'completed').length;
-    const next = NEXT_TRANSITION[task.status];
     const copyLink = async () => {
         const url = new URL(window.location.href);
         url.searchParams.set('task', String(task.id));
@@ -126,12 +169,28 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                         <Link2 className="h-4 w-4" aria-hidden="true" />
                     </Button>
                     {next && (
-                        <Button type="button" size="sm" disabled={locked} onClick={() => { setWorkAction(next.action); setPart('work'); }}>
+                        <Button type="button" size="sm" disabled={locked || reasonDraft !== null || (Boolean(next.reasonKey) && actions.isLoading)}
+                            isLoading={transition.isPending && reasonDraft === null} onClick={runNext}>
                             {t(next.labelKey)}
                         </Button>
                     )}
                 </div>
                 {locked && <p role="status" className="rounded-md bg-surface-muted px-3 py-2 text-sm text-content-secondary">{t('taskView.saveToChangeStatus')}</p>}
+                {next && reasonDraft !== null && (
+                    <form className="flex flex-col gap-2 rounded-md border border-border px-3 py-3"
+                        onSubmit={event => { event.preventDefault(); if (reasonDraft.trim()) transition.mutate({ action: next.action, reason: reasonDraft.trim() }); }}>
+                        <p className="text-sm text-content-secondary">{t('taskView.reasonNeeded')}</p>
+                        <Input label={t('domain.reason')} required value={reasonDraft} maxLength={2000} disabled={transition.isPending}
+                            onChange={event => setReasonDraft(event.target.value)} />
+                        <div className="flex justify-end gap-2">
+                            <Button type="button" variant="ghost" size="sm" disabled={transition.isPending} onClick={() => { setReasonDraft(null); transition.reset(); }}>{t('taskView.cancelReason')}</Button>
+                            <Button type="submit" size="sm" disabled={!reasonDraft.trim()} isLoading={transition.isPending}>{t(next.labelKey)}</Button>
+                        </div>
+                    </form>
+                )}
+                {transition.isError && !reasonRequired(transition.error) && (
+                    <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(transition.error, t('taskView.statusChangeFailed'))}</p>
+                )}
                 <nav aria-label={t('taskView.parts')} className="flex gap-1">
                     {PARTS.map(value => (
                         <Button key={value} type="button" aria-current={part === value ? 'page' : undefined}
@@ -219,9 +278,9 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
 
             {part === 'work' && (
                 <section aria-label={t('taskView.partWork')} className="flex flex-col gap-5">
-                    <TaskWorkPanel key={`${task.id}:${task.version}:${workAction ?? ''}`} task={task} draftKey={draftKey} disabled={editingBrief}
-                        initialAction={workAction} onEditBrief={startBriefEdit} onDirty={markDirty} onPending={onPending} onReload={onReload}
-                        onUpdated={latest => { setWorkAction(undefined); onTaskUpdated(latest); }} />
+                    <TaskWorkPanel key={`${task.id}:${task.version}`} task={task} draftKey={draftKey} disabled={editingBrief}
+                        onEditBrief={startBriefEdit} onDirty={markDirty} onPending={onPending} onReload={onReload}
+                        onUpdated={onTaskUpdated} />
                     <DeliveryDependencies task={task} disabled={locked} onPending={onPending} onUpdated={onTaskUpdated} />
                     {task.project_id && <TimeEntriesPanel projectId={task.project_id} taskId={task.id} draftKey={draftKey} disabled={editingBrief}
                         onDirty={markDirty} onPending={onPending} />}
