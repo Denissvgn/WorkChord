@@ -2023,6 +2023,23 @@
               "title": "Id",
               "type": "integer"
             },
+            "kind": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "human",
+                    "agent",
+                    "hybrid"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Kind of the assignee's profile. Read-only; null when it is not known.",
+              "title": "Kind"
+            },
             "name": {
               "title": "Name",
               "type": "string"
