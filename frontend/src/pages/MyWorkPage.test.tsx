@@ -284,9 +284,8 @@ describe('My Work rows', () => {
         const { user } = renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work'] });
         await screen.findByRole('button', { name: '#1 · Task 1' });
         await waitFor(() => expect(within(rowOf('Task 1')).getByRole('combobox', { name: 'Assignee: Task 1' })).toBeInTheDocument());
-        expect(screen.queryByRole('checkbox')).toBeNull();
+        expect(screen.getAllByRole('checkbox')).toHaveLength(4);
 
-        fireEvent.mouseOver(rowOf('Task 1'));
         await user.click(await screen.findByRole('checkbox', { name: 'Select: Task 1' }));
         await user.keyboard('{Shift>}');
         await user.click(screen.getByRole('checkbox', { name: 'Select: Task 3' }));

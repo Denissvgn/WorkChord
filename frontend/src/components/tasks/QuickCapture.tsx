@@ -59,7 +59,7 @@ export const QuickCapture = ({ target, onExpand, listRow = false }: {
     const label = t(target.kind === 'task' ? 'quickCapture.taskLabel' : 'quickCapture.triageLabel');
     return <form onSubmit={submit} className={clsx(listRow ? 'border-b border-border-subtle' : 'space-y-1')} aria-label={label}>
         <div className={clsx('flex items-center gap-2 focus-within:ring-2 focus-within:ring-focus',
-            listRow ? 'px-3 py-0.5 focus-within:ring-inset' : 'rounded-md border border-border bg-surface-card px-2 py-1')}>
+            listRow ? 'px-3 focus-within:ring-inset' : 'rounded-md border border-border bg-surface-card px-2 py-1')}>
             <Plus className="h-4 w-4 shrink-0 text-content-tertiary" aria-hidden="true" />
             <label htmlFor={`${id}-title`} className="sr-only">{label}</label>
             <input ref={inputRef} id={`${id}-title`} value={title} maxLength={500} readOnly={capture.isPending}

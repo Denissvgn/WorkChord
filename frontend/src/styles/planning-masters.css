@@ -231,9 +231,16 @@
   position: relative;
 }
 /* Tasks: one header (the view picker is the title) and one toolbar above the list. */
-.wc .tasks-workbench-header-wrap { padding: 8px 16px 6px; }
+.wc .tasks-workbench-header-wrap { padding: 6px 16px 4px; }
 .wc .tasks-workbench-header-wrap .wc-page-sub { margin-top: 0; }
-.wc .tasks-toolbar-wrap { display: flex; flex-direction: column; gap: 6px; padding: 0 16px 8px; }
+/* The purpose sentence sits beside the title, so the first task starts high on the page. */
+.wc .tasks-workbench-header-wrap .wc-page-copy { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 0; }
+.wc .tasks-toolbar-wrap { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 0 16px 4px; }
+/* The bulk bar takes the toolbar's place: the toolbar keeps its height, so the list never moves. */
+.wc .tasks-selection-slot { position: absolute; inset: 0 16px auto; z-index: 20; background: var(--bg, var(--panel)); }
+.wc .tasks-selection-slot:empty { display: none; }
+.wc .tasks-toolbar-wrap:has(.tasks-selection-slot > *) .wc-page-toolbar-frame { visibility: hidden; }
+.wc .tasks-selection-slot > [data-testid="task-bulk-operations"] { position: static; padding-block: 3px; }
 .wc .tasks-view-picker { position: relative; display: inline-block; vertical-align: bottom; }
 .wc .tasks-view-picker-trigger {
   display: inline-flex; align-items: center; gap: 6px; text-align: start;

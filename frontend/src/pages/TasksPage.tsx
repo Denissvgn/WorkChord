@@ -147,6 +147,7 @@ const TasksPage = () => {
     const taskScopeMoveRef = useRef<{ taskId: number; pending: boolean } | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
+    const [selectionBarHost, setSelectionBarHost] = useState<HTMLElement | null>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
         searchParams.get(OVERVIEW_TASK_RETURN_PARAM),
@@ -609,6 +610,8 @@ const TasksPage = () => {
                 </div>
 
                 <div ref={toolbarRef} className="tasks-toolbar-wrap flex-shrink-0">
+                    {/* While tasks are selected the bulk bar shows here, over the toolbar, so the list does not move. */}
+                    <div ref={setSelectionBarHost} className="tasks-selection-slot" />
                     <PageToolbar
                         compact
                         label={t('tasks.toolbar')}
@@ -730,6 +733,7 @@ const TasksPage = () => {
                                         filters={filters}
                                         sortKey={sortKey}
                                         groupByStatus={groupByStatus}
+                                        selectionBarHost={selectionBarHost}
                                         leadingRow={(
                                             <QuickCapture listRow target={{ kind: 'task', iterationId: selectedIterationId }}
                                                 onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />

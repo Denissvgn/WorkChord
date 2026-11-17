@@ -38,7 +38,7 @@ export interface TaskRowProps {
     level?: number;
     /** Hierarchy controls shown before the status, such as an expander. */
     lead?: ReactNode;
-    /** A drag handle, shown with the checkbox and the menu on hover and focus. */
+    /** A drag handle, shown with the menu on hover and focus. */
     handle?: ReactNode;
     /** Keeps the handle and the menu shown, such as while the row is dragged. */
     revealed?: boolean;
@@ -46,8 +46,6 @@ export interface TaskRowProps {
     onStatusChange?: (status: TaskStatus) => void;
     menuItems: OverflowMenuItem[];
     selected?: boolean;
-    /** Some rows are selected, so every checkbox stays visible. */
-    selectionActive?: boolean;
     /** Leaves out the checkbox for rows that cannot be selected. */
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
     /** Why this row cannot join the current selection; the checkbox stays visible but off. */
@@ -66,20 +64,19 @@ export interface TaskRowProps {
 
 /**
  * One 44 px task row for the list, My Work and the project task tree. At rest it holds the
- * status, the title and the assignee; the checkbox, the drag handle and the menu appear on hover
- * and focus, and every checkbox stays while some rows are selected.
+ * status, the title and the assignee; the selection checkbox is always shown, and the drag handle and
+ * the menu appear on hover and focus.
  */
 export const TaskRow = ({
     id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
-    level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
+    level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
     const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const [focused, setFocused] = useState(false);
-    // While some rows are selected every checkbox shows; the menu stays on hover and focus only.
+    // The checkbox is always shown, so selecting never means hunting for it; the menu stays on hover and focus.
     const menuShown = hovered || focused || revealed;
-    const checkboxShown = menuShown || selected || selectionActive;
     const statusName = t(`statuses.${status}`, { defaultValue: status });
     const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
     const statusIcon = isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
@@ -105,9 +102,9 @@ export const TaskRow = ({
             onFocus={() => setFocused(true)}
             onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}
         >
-            {/* The slot keeps its width, so the row does not shift when the checkbox appears. */}
+            {/* The slot keeps its width for rows that cannot be selected, so the columns line up. */}
             <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-                {checkboxShown && onToggleSelect && (
+                {onToggleSelect && (
                     <input
                         type="checkbox"
                         checked={selected}
