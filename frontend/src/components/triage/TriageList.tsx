@@ -1,12 +1,12 @@
 import {
-    Inbox,
-    Plus
+    Inbox
 } from 'lucide-react';
 import type {
     TriageItem
 } from '../../types/triage';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
 import { InlineEmptyState } from '../ui';
 import { QuickCapture } from '../tasks/QuickCapture';
 
@@ -38,17 +38,11 @@ export const TriageList = ({ items, selectedId, projectsById, iterationsById, li
                         actions={<Button variant="secondary" onClick={onReset}>{t('emptyStates.filtered.clear')}</Button>}
                     />
                 ) : (
-                    <InlineEmptyState
-                        headingLevel={2}
+                    <NextStepEmptyState
                         icon={<Inbox className="h-5 w-5" />}
                         title={t('emptyStates.triage.emptyTitle')}
                         description={t('emptyStates.triage.emptyBody')}
-                        actions={(
-                            <Button onClick={() => onCreate()}>
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                {t('emptyStates.triage.action')}
-                            </Button>
-                        )}
+                        fallback={{ label: t('emptyStates.triage.action'), onClick: () => onCreate() }}
                     />
                 )}
             </div>

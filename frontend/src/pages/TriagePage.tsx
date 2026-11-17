@@ -375,7 +375,8 @@ const TriagePage = () => {
             {supportingQueryError && <QueryErrorState error={supportingQueryError} fallback={t('queryFeedback.optionLoadFailed')}
                 onRetry={() => { void refetchSavedView(); void refetchAllTriage(); void refetchIterations(); void refetchProjects(); }} />}
 
-            {!hasPlannableIterations && (
+            {/* Conversion needs an iteration only once there is a request to convert; an empty page offers one step. */}
+            {!hasPlannableIterations && visibleItems.length > 0 && (
                 <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-feedback-warning-border bg-feedback-warning-muted px-4 py-3 text-sm text-feedback-warning-foreground">
                     <div className="flex min-w-0 items-start gap-2">
                         <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />

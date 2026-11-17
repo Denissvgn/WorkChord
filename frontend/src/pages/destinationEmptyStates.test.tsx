@@ -9,6 +9,8 @@ import { mapLegacyPath } from '../navigation/legacyPaths';
 import { clearAdminApiKey, setAdminApiKey } from '../utils/adminAccess';
 import { useGetStartedVisibility } from '../features/firstRun/getStartedVisibility';
 import { useScopeStore } from '../features/scope/scopeStore';
+import { IdentityContext } from '../features/identity/identityContext';
+import type { WorkspaceIdentity } from '../features/identity/identityService';
 import { renderWithProviders } from '../test/renderWithProviders';
 import OverviewPage from './OverviewPage';
 import MyWorkPage from './MyWorkPage';
@@ -27,6 +29,8 @@ import TeamPage from './TeamPage';
  */
 
 type Scenario = {
+    /** A profile is chosen in this workspace, so the first setup step is past it. */
+    profile?: boolean;
     iterations?: unknown[];
     projects?: unknown[];
     triage?: unknown[];
@@ -157,20 +161,56 @@ type Case = {
     /** A list that filters hide: it must offer Clear filters. */
     filtered?: boolean;
     adminKey?: boolean;
+    /** Copy keys of controls that must not appear on the page: competing actions of an empty workspace. */
+    absent?: string[];
+    /** Rendered with the shell's identity, so the first-run step decides the page's one next step. */
+    setup?: boolean;
 };
+
+/** The text a node shows itself, without its children's text, so a button's icon does not hide its label. */
+const ownText = (element: Element) => Array.from(element.childNodes)
+    .filter(node => node.nodeType === Node.TEXT_NODE)
+    .map(node => node.textContent ?? '')
+    .join('')
+    .trim();
 
 const CASES: Case[] = [
     { name: 'Overview without an iteration', path: '/', page: () => <OverviewPage />, copy: 'emptyStates.overview.iterationBody' },
     { name: 'Overview with an iteration and no work', path: '/', page: () => <OverviewPage />, scenario: { iterations: [ITERATION] } },
     { name: 'My Work', path: '/my-work', page: () => <MyWorkPage /> },
-    { name: 'Triage', path: '/triage', page: () => <TriagePage />, copy: 'emptyStates.triage.emptyBody' },
+    {
+        name: 'Triage',
+        path: '/triage',
+        page: () => <TriagePage />,
+        setup: true,
+        copy: 'emptyStates.triage.emptyBody',
+        // Empty workspace: no iteration notice and no second call to action.
+        absent: ['surfaces.triagePage.createIteration', 'surfaces.triagePage.conversionRequiresAnIteration'],
+    },
     { name: 'Triage filtered', path: '/triage', page: () => <TriagePage />, scenario: { triage: [TRIAGE] }, typeSearch: 'no-such-request', filtered: true },
     { name: 'Projects', path: '/projects', page: () => <ProjectsPage />, copy: 'emptyStates.projects.body' },
     { name: 'Projects filtered', path: '/projects?q=no-such-project', page: () => <ProjectsPage />, scenario: { projects: [PROJECT] }, filtered: true },
     { name: 'Roadmap', path: '/projects?view=roadmap', page: () => <ProjectsPage />, copy: 'emptyStates.projects.body' },
     { name: 'Roadmap filtered', path: '/projects?view=roadmap&q=no-such-project', page: () => <ProjectsPage />, scenario: { projects: [PROJECT] }, filtered: true },
-    { name: 'Plan', path: '/plan', page: () => <PlanPage />, copy: 'emptyStates.plan.body' },
+    {
+        name: 'Plan',
+        path: '/plan',
+        page: () => <PlanPage />,
+        setup: true,
+        copy: 'emptyStates.plan.body',
+        // Empty workspace: the checkpoint actions wait until the setup step before them is done.
+        absent: ['iterations.newIteration', 'iterations.allIterations'],
+    },
     { name: 'Gantt', path: '/gantt', page: () => <GanttPage />, copy: 'emptyStates.gantt.body' },
+    {
+        name: 'Tasks backlog',
+        path: '/tasks',
+        page: () => <TasksPage />,
+        setup: true,
+        copy: 'emptyStates.tasks.backlogBody',
+        // Empty workspace: no capture control and no iteration action beside the one setup step.
+        absent: ['teamwork.captureTask', 'firstRun.steps.iteration.title'],
+    },
     { name: 'Tasks list', path: '/tasks?iteration=1', page: () => <TasksPage />, scenario: { iterations: [ITERATION] }, copy: 'emptyStates.tasks.body' },
     { name: 'Tasks list filtered', path: '/tasks?iteration=1&q=no-such-task', page: () => <TasksPage />, scenario: { iterations: [ITERATION], tasks: [task(1)] }, filtered: true },
     { name: 'Tasks board', path: '/tasks?iteration=1&layout=board', page: () => <TasksPage />, scenario: { iterations: [ITERATION] }, copy: 'emptyStates.tasks.body' },
@@ -190,12 +230,36 @@ type Language = (typeof LANGUAGES)[number];
 /** Terminal punctuation that ends a sentence: a full stop, question or exclamation mark followed by a space or the end. */
 const sentenceCount = (text: string) => (text.match(/[.!?](?=\s|$)/g) ?? []).length;
 
+/** The shell provides the identity to every page; a workspace starts with no profile chosen. */
+const localIdentity = (profile: WorkspaceIdentity['profile']): WorkspaceIdentity => ({
+    mode: 'trusted_local',
+    authenticated: true,
+    configured: true,
+    principal: null,
+    profile,
+    workspace_role: 'owner',
+    projects: {},
+    csrf_token: null,
+    access: 'full',
+});
+
+const withIdentity = (page: ReactElement) => (
+    <IdentityContext.Provider value={{
+        identity: localIdentity(scenario.profile ? { id: 1, display_name: 'Ada Lovelace' } : null),
+        refresh: () => {},
+        signOut: async () => {},
+    }}>
+        {page}
+    </IdentityContext.Provider>
+);
+
 /** Renders a case in one language and returns its empty states once they have appeared. */
 const renderCase = async (testCase: Case, language: Language) => {
     await i18n.changeLanguage(language);
     scenario = testCase.scenario ?? {};
     if (testCase.adminKey) setAdminApiKey('operator-key');
-    const view = renderWithProviders(testCase.page(), { initialEntries: [testCase.path] });
+    const page = testCase.setup ? withIdentity(testCase.page()) : testCase.page();
+    const view = renderWithProviders(page, { initialEntries: [testCase.path] });
     if (testCase.typeSearch) {
         await view.user.type(await screen.findByPlaceholderText(i18n.t('surfaces.triagePage.searchTitleDescriptionSourceKey')), testCase.typeSearch);
     }
@@ -206,6 +270,9 @@ const renderCase = async (testCase: Case, language: Language) => {
 };
 
 const actionsOf = (state: HTMLElement) => Array.from(state.querySelectorAll<HTMLElement>('.inline-empty-actions > *'));
+
+/** Whether any element on the rendered page shows this text itself. */
+const shownText = (text: string) => Array.from(document.body.querySelectorAll('*')).some(element => ownText(element) === text);
 
 describe('destination and view empty states', () => {
     it.each(
@@ -223,6 +290,12 @@ describe('destination and view empty states', () => {
         if (testCase.copy) {
             expect(states[0].querySelector('.inline-empty-copy')?.textContent).toBe(i18n.t(testCase.copy, { lng: language }));
         }
+        for (const key of testCase.absent ?? []) {
+            // The setup progress that decides these controls arrives after the first render: wait for it to settle.
+            await waitFor(() => {
+                expect(shownText(i18n.t(key, { lng: language })), `${key} must not be shown beside the empty state`).toBe(false);
+            }, { timeout: 8000 });
+        }
     }, 30000);
 
     it.each(CASES.filter(testCase => testCase.filtered).flatMap(testCase => LANGUAGES.map(language => ({
@@ -235,6 +308,22 @@ describe('destination and view empty states', () => {
         expect(action.textContent).toBe(i18n.t('emptyStates.filtered.clear', { lng: language }));
         expect(states[0].querySelector('.inline-empty-title')?.textContent).toBe(i18n.t('emptyStates.filtered.title', { lng: language }));
     }, 30000);
+
+    it.each(LANGUAGES.map(language => ({ language })))(
+        'Plan with a project and no iteration leaves New iteration as the one next step ($language)',
+        async ({ language }) => {
+            await i18n.changeLanguage(language);
+            scenario = { profile: true, projects: [PROJECT] };
+            renderWithProviders(withIdentity(<PlanPage />), { initialEntries: ['/plan'] });
+            // The Iteration checkpoint owns the step: no separate empty state, and no All iterations with nothing to list.
+            await waitFor(() => {
+                expect(document.querySelectorAll('.inline-empty')).toHaveLength(0);
+                expect(shownText(i18n.t('iterations.allIterations', { lng: language }))).toBe(false);
+                expect(shownText(i18n.t('iterations.newIteration', { lng: language }))).toBe(true);
+            }, { timeout: 8000 });
+        },
+        30000,
+    );
 
     it.each(CASES.map(testCase => ({ name: testCase.name, testCase })))('$name links to no redirecting path', async ({ testCase }) => {
         const states = await renderCase(testCase, 'en');

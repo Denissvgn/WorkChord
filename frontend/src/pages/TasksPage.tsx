@@ -62,6 +62,8 @@ import { useWorkScope } from '../features/scope/useWorkScope';
 import { urlNamesIteration } from '../features/scope/namedIteration';
 import { useLinkScope, useScopeLink } from '../features/scope/useScopeLink';
 import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
+import { useFirstRunProgress } from '../features/firstRun/useFirstRunProgress';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
 import { resolveWorkScope, type ScopeIteration as ScopeIterationValue } from '../features/scope/workScope';
 import { PageHeader, PageLayout, PageToolbar, ViewSwitch } from '../components/ui';
 import type { SavedView } from '../types/savedView';
@@ -525,6 +527,9 @@ const TasksPage = () => {
         );
     };
 
+    // Read before the loading guard below, so the hook order is the same on every render.
+    const setupProgress = useFirstRunProgress();
+
     if (iterationsLoading || iterationsError) {
         return (
             <PageLayout>
@@ -554,12 +559,20 @@ const TasksPage = () => {
     />;
 
     if (viewMode !== 'pipeline' && (!iterations || iterations.length === 0 || isBacklogView)) {
+        // No project yet means no backlog task can exist: the page offers the one setup step, not capture.
+        const beforeFirstProject = setupProgress.known && setupProgress.facts.projectCount === 0;
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
             <PageHeader title={t('tasks.title')} purpose={t('teamwork.backlogHelp')}
-                secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : scopeLink(firstRunPlanHref('iteration'))}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'firstRun.steps.iteration.title')}</Link>} />
+                secondaryActions={beforeFirstProject ? undefined : <Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : scopeLink(firstRunPlanHref('iteration'))}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'firstRun.steps.iteration.title')}</Link>} />
             <PageToolbar compact label={t('tasks.toolbar')} viewSwitch={viewSwitch} />
-            <BacklogPanel />
+            {beforeFirstProject ? (
+                <NextStepEmptyState
+                    title={t('emptyStates.tasks.backlogTitle')}
+                    description={t('emptyStates.tasks.backlogBody')}
+                    fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
+                />
+            ) : <BacklogPanel />}
             {taskCreator}
             <TaskEditorDrawer taskId={requestedTaskId} open={requestedTaskId !== null} onClose={closeFocusedTask}
                 title={task => task?.title ?? t('taskEditor.editTask')} />

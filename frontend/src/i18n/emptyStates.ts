@@ -38,6 +38,8 @@ export const emptyStatesEnglish = {
         title: 'No tasks yet',
         body: 'Tasks in this iteration appear here in every view once they are added.',
         action: 'New task',
+        backlogTitle: 'No backlog tasks yet',
+        backlogBody: 'Tasks captured without an iteration appear here until one is planned.',
     },
     pipeline: {
         body: 'Agent tasks appear here once work is assigned to an agent.',
@@ -96,6 +98,8 @@ export const emptyStatesRussian = {
         title: 'Задач пока нет',
         body: 'Задачи этой итерации появятся здесь во всех видах, как только их добавят.',
         action: 'Новая задача',
+        backlogTitle: 'В бэклоге задач пока нет',
+        backlogBody: 'Задачи, созданные без итерации, появляются здесь, пока их не запланируют.',
     },
     pipeline: {
         body: 'Задачи агентов появятся здесь, когда работа будет назначена агенту.',
