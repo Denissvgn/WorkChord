@@ -167,6 +167,20 @@ describe('IterationForm hardening', () => {
         expect(iterationServiceMock.update).toHaveBeenCalledTimes(1);
     });
 
+    it('keeps the conflict prompt when the caller passes a refreshed iteration while the form shows the opened one', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user, rerender } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+
+        rerender(<IterationForm initialData={iterationFixture({ name: 'August plan v2' })} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(screen.getByText(/changed on the server after you opened it: Name\./)).toBeVisible();
+        expect(screen.getByLabelText('Iteration name')).toHaveValue('August plan');
+        const update = screen.getByRole('button', { name: 'Update iteration' });
+        expect(update).toBeDisabled();
+        await user.click(update);
+        expect(iterationServiceMock.update).not.toHaveBeenCalled();
+    });
+
     it('fills the form with the server values after Load latest version', async () => {
         planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
         const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);

@@ -675,8 +675,15 @@ export const IterationForm = (props: IterationFormProps) => {
     ].join(':');
 
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
-    // The form keeps the iteration it was opened with until the person loads the latest version.
-    return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id} draft={props.initialData}>
-        {(observed, controls, _saved, conflict, reloaded, unresolved) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : props.initialData} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} conflictUnresolved={unresolved} />}
+    return <IterationEditBoundary key={formKey} {...props} initialData={props.initialData} />;
+};
+
+const IterationEditBoundary = (props: IterationFormProps & { initialData: Iteration }) => {
+    // The form keeps the iteration it was opened with until the person loads the latest version. A later
+    // refetch of the caller's list must not replace it: the conflict prompt compares the server against
+    // what the form shows, and a refreshed copy would hide a change the form would then overwrite.
+    const [opened] = useState(props.initialData);
+    return <PlanningInputBoundary<Iteration> onCancel={props.onCancel} kind="iteration" resourceId={opened.id} draft={opened}>
+        {(observed, controls, _saved, conflict, reloaded, unresolved) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : opened} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} conflictUnresolved={unresolved} />}
     </PlanningInputBoundary>;
 };
