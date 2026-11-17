@@ -138,9 +138,7 @@ const renderSettings = (tab: string, useDataRouter = false) => {
 
 const sections: SettingsSectionId[] = ['theme', 'shortcuts', 'language', 'work_calendar', 'scheduling', 'templates_labels', 'notifications', 'github', 'webhooks', 'web_intake', 'ai_provider', 'access', 'runtime', 'about'];
 
-const fixtureHeadings = new Set(['Workflow', 'Planning', 'Bug report', 'Ops hook', 'Merged PR resolves', 'professionalism', 'critical_deadline', 'pass_1735689600000']);
-
-const checkLabels = (section: SettingsSectionId, root: ParentNode) => {
+const checkLabels = (section: SettingsSectionId, root: ParentNode, fixtureHeadings: Element[] = []) => {
     const indexed = SETTINGS_FIELD_LABEL_KEYS[section].flatMap(key => [1, 2].map(index => i18n.t(key, { index, name: 'Merged PR resolves', id: 'professionalism' })));
     if (SETTINGS_FIELD_LABEL_KEYS[section].includes('settingsScheduling.aria.enablePass')) {
         for (const id of ['critical_deadline', 'pass_1735689600000']) {
@@ -150,12 +148,16 @@ const checkLabels = (section: SettingsSectionId, root: ParentNode) => {
     if (section === 'webhooks' && SETTINGS_FIELD_LABEL_KEYS.webhooks.includes('actions.edit')) indexed.push(`${i18n.t('actions.edit')}: Ops hook`);
     if (section === 'webhooks' && SETTINGS_FIELD_LABEL_KEYS.webhooks.includes('settingsWebhooks.view')) indexed.push(`${i18n.t('settingsWebhooks.view')}: Ops hook`);
     if (section === 'webhooks' && SETTINGS_FIELD_LABEL_KEYS.webhooks.includes('settingsWebhooks.enabled')) indexed.push(`Ops hook: ${i18n.t('settingsWebhooks.enabled')}`);
-    // These names and IDs come from the fixtures, not searchable UI text.
-    const labels = [...root.querySelectorAll('label, legend, h1, h2, h3, h4, h5, h6, [role=heading]')].filter(node => node.id !== 'settings-destination-title').map(node => {
+    // Only these fixture rows and explicitly supplied drawer titles contain user data.
+    const fixtureRows = section === 'templates_labels'
+        ? [...root.querySelectorAll('#work-template-1-heading, #label-group-1-heading')]
+        : [];
+    const excludedHeadings = new Set([...fixtureRows, ...fixtureHeadings]);
+    const labels = [...root.querySelectorAll('label, legend, h1, h2, h3, h4, h5, h6, [role=heading]')].filter(node => node.id !== 'settings-destination-title' && !excludedHeadings.has(node)).map(node => {
         const copy = node.cloneNode(true) as Element;
         copy.querySelectorAll('select, input, textarea, .field-required').forEach(control => control.remove());
         const text = copy.textContent?.trim().replace(/\s*\*\s*$/, '') ?? '';
-        return !node.matches('label, legend') && fixtureHeadings.has(text) ? '' : text;
+        return text;
     }).filter(Boolean);
     // Some real field names are available only through their accessible label.
     root.querySelectorAll('input[aria-label], select[aria-label], textarea[aria-label], [role=radiogroup], [role=radio], [role=switch], [role=checkbox]').forEach(field => {
@@ -198,6 +200,21 @@ describe('Settings search rendered labels', () => {
         await i18n.changeLanguage('en');
     });
 
+    it('rejects product headings that share fixture names', async () => {
+        const view = renderSettings('templates_labels');
+        await screen.findByRole('heading', { name: 'Bug report' });
+        const content = view.container.querySelector('.settings-content')!;
+        checkLabels('templates_labels', content);
+        for (const name of ['Workflow', 'Planning', 'Bug report', 'Ops hook', 'Merged PR resolves', 'professionalism', 'critical_deadline', 'pass_1735689600000']) {
+            const heading = document.createElement('h3');
+            heading.textContent = name;
+            content.append(heading);
+            expect(() => checkLabels('templates_labels', content), name).toThrow('missing rendered labels');
+            heading.remove();
+        }
+        view.unmount();
+    });
+
     it.each(['en', 'ru'].flatMap(language => sections.map(section => ({ language, section }))))('indexes rendered labels in $section ($language)', async ({ language, section }) => {
         await ensureLanguageResources(language);
         await i18n.changeLanguage(language);
@@ -236,27 +253,30 @@ describe('Settings search rendered labels', () => {
         if (section === 'scheduling') {
             await view.user.click(screen.getByRole('button', { name: 'professionalism' }));
             const drawer = screen.getByRole('dialog');
-            checkLabels(section, drawer);
+            const modifierHeading = within(drawer).getByRole('heading', { name: 'professionalism', level: 2 });
+            checkLabels(section, drawer, [modifierHeading]);
             for (const value of ['divide_by_field', 'inverse_percentage', 'multiply', 'divide_constant', 'add_buffer', 'custom', '_operation_']) {
                 await view.user.selectOptions(within(drawer).getByLabelText(i18n.t('settingsScheduling.fields.type')), value);
-                checkLabels(section, drawer);
+                checkLabels(section, drawer, [modifierHeading]);
             }
             await view.user.click(within(drawer).getByRole('button', { name: i18n.t('actions.close') }));
             await view.user.click(screen.getByRole('button', { name: 'critical_deadline Nearest deadline first' }));
             const passDrawer = screen.getByRole('dialog');
-            checkLabels(section, passDrawer);
+            const passHeading = within(passDrawer).getByRole('heading', { name: 'critical_deadline', level: 2 });
+            checkLabels(section, passDrawer, [passHeading]);
             const addButtons = within(passDrawer).getAllByRole('button', { name: i18n.t('settingsScheduling.actions.add') });
             await view.user.click(addButtons[0]);
             await view.user.click(addButtons[1]);
             expect(within(passDrawer).getByRole('combobox', { name: i18n.t('settingsScheduling.aria.conditionField', { index: 2 }) })).toBeInTheDocument();
             expect(within(passDrawer).getByRole('combobox', { name: i18n.t('settingsScheduling.aria.sortField', { index: 2 }) })).toBeInTheDocument();
-            checkLabels(section, passDrawer);
+            checkLabels(section, passDrawer, [passHeading]);
             await view.user.click(within(passDrawer).getByRole('button', { name: i18n.t('actions.close') }));
             const now = vi.spyOn(Date, 'now').mockReturnValue(1735689600000);
             await view.user.click(screen.getByRole('button', { name: i18n.t('settingsScheduling.sections.passes.add') }));
             now.mockRestore();
             await view.user.click(screen.getByRole('button', { name: `pass_1735689600000 ${i18n.t('settingsScheduling.newPassDescription')}` }));
-            checkLabels(section, screen.getByRole('dialog'));
+            const newPassDrawer = screen.getByRole('dialog');
+            checkLabels(section, newPassDrawer, [within(newPassDrawer).getByRole('heading', { name: 'pass_1735689600000', level: 2 })]);
             await view.user.click(within(screen.getByRole('dialog')).getByRole('button', { name: i18n.t('actions.close') }));
             const balance = screen.getByRole('checkbox', { name: i18n.t('settingsScheduling.constraints.balance_workload.label') });
             await view.user.click(balance);
