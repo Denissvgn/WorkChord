@@ -12,7 +12,11 @@
 //
 // For each width (1440 and 1024, at 900 px high), in the page and in the full-screen workspace,
 // it records every row's top edge, ticks two tasks with real pointer clicks, waits for the
-// selection bar, and fails when any row moved or any row has no visible checkbox.
+// selection bar, opens Assign, and fails when any row moved, any row has no visible checkbox, or
+// a control in the bar is cut off or covered.
+//
+// npm run test:run covers the same rule without a browser (TasksPage.toolbar.test.tsx); this script
+// confirms it with real layout.
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -178,6 +182,50 @@ const checkScenario = async (width, fullScreen) => {
             if (!exitReachable) fail(`${label}: the selection bar covers Exit full screen`);
         }
         await screenshot(tab, `${label}-selected`);
+
+        // Opening an editor makes the bar taller: it must stay on screen and usable, and the rows still must not move.
+        const assignPoint = await tab.evaluate(`(() => {
+            const bar = [...document.querySelectorAll('[data-testid=task-bulk-operations]')].find(b => b.getClientRects().length > 0);
+            const button = bar && [...bar.querySelectorAll('button')].find(b => b.textContent.trim() === 'Assign');
+            if (!button) return null;
+            const r = button.getBoundingClientRect();
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        })()`);
+        if (!assignPoint) {
+            fail(`${label}: no Assign button in the selection bar`);
+        } else {
+            await tab.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: assignPoint.x, y: assignPoint.y });
+            await tab.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: assignPoint.x, y: assignPoint.y, button: 'left', clickCount: 1 });
+            await tab.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: assignPoint.x, y: assignPoint.y, button: 'left', clickCount: 1 });
+            if (!await waitFor(tab, `Boolean(document.querySelector('[data-testid=task-bulk-operations] select[aria-label="Choose assignee"]'))`, 5000)) {
+                fail(`${label}: Assign did not open its editor`);
+            } else {
+                await sleep(400);
+                const editor = await tab.evaluate(`(() => {
+                    const bar = [...document.querySelectorAll('[data-testid=task-bulk-operations]')].find(b => b.getClientRects().length > 0);
+                    const r = bar.getBoundingClientRect();
+                    // Every control in the bar must be inside the viewport with nothing outside the bar on top of it.
+                    // (An off control such as Apply before a choice takes no pointer events, so the bar itself is hit there.)
+                    const hidden = [...bar.querySelectorAll('button, select, input')].filter(control => {
+                        const c = control.getBoundingClientRect();
+                        if (c.width === 0 || c.height === 0) return false;
+                        const x = c.left + c.width / 2, y = c.top + c.height / 2;
+                        const inView = c.top >= 0 && c.bottom <= innerHeight && c.left >= 0 && c.right <= innerWidth;
+                        const onTop = document.elementFromPoint(x, y);
+                        return !inView || !(control.disabled ? bar.contains(onTop) : control.contains(onTop));
+                    }).map(control => control.getAttribute('aria-label') || control.textContent.trim());
+                    return { top: Math.round(r.top), bottom: Math.round(r.bottom), controls: bar.querySelectorAll('button, select, input').length, hidden };
+                })()`);
+                console.log(`  with Assign open: bar ${editor.top}-${editor.bottom} px, ${editor.controls} controls, cut off or covered: ${editor.hidden.length ? editor.hidden.join(', ') : 'none'}`);
+                if (editor.top < 0 || editor.bottom > height) fail(`${label}: with Assign open the bar runs off screen (${editor.top}-${editor.bottom} px)`);
+                for (const name of editor.hidden) fail(`${label}: with Assign open, "${name}" is cut off or covered`);
+                const after = await tab.evaluate(READ_ROWS);
+                const moved = after.filter((item, index) => before[index]?.id !== item.id || Math.abs(item.top - before[index].top) > 0.5);
+                console.log(`  with Assign open: tops [${after.map(item => Math.round(item.top)).join(', ')}], moved rows: ${moved.length}`);
+                for (const item of moved) fail(`${label}: row "${item.title}" moved when Assign opened`);
+                await screenshot(tab, `${label}-assign`);
+            }
+        }
     } finally {
         await tab.close();
     }
