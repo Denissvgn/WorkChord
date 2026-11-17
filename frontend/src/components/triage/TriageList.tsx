@@ -48,7 +48,7 @@ export const TriageList = ({ items, selectedId, projectsById, iterationsById, li
             </div>
         ) : (
             <div className="min-h-0 flex-1 overflow-auto">
-                <table className="min-w-[760px] w-full">
+                <table className="min-w-[740px] w-full">
                     <thead className="sticky top-0 z-10 border-b border-border bg-surface-muted text-left text-xs font-semibold uppercase tracking-wide text-content-secondary">
                         <tr>
                             <th className="px-4 py-3">{t('surfaces.triagePage.item')}</th>
