@@ -42,7 +42,7 @@ export const PlanReviewSection = ({ iteration, members, gantt, riskCount }: {
         {signals.length > 0 && <section className="plan-checkpoint-evidence" aria-label={t('planSchedule.atRiskTasks')}>
             <h3>{t('planSchedule.atRiskTasks')}</h3>
             <ul className="plan-schedule-reasons">{signals.map(task => <li key={task.id}>
-                <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'review', { task: String(task.id) }))}>{task.title}</Link>
+                <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'review', { planningIssue: 'at-risk', task: String(task.id) }))}>{task.title}</Link>
                 <p>{atRiskReasons(task, t).join('; ')}</p>
             </li>)}</ul>
         </section>}

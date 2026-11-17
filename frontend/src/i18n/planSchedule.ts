@@ -12,7 +12,7 @@ export const planScheduleEnglish = {
     risks: 'Schedule risks', afterEnd: 'End after the iteration ({{date}})', overCapacity: 'Over capacity',
     noneOverCapacity: 'No assignee is over capacity.', capacityIssues: 'Capacity needs attention',
     riskOverdue: 'Past its end date', riskStartsBeforeToday: 'Starts before today', riskStartedLate: 'Started after its planned start', riskOutsideLimits: 'Outside its date limits',
-    atRiskTasks: 'Tasks at risk',
+    atRiskTasks: 'Tasks at risk', whyAtRisk: 'Why this task is at risk',
 };
 
 export const planScheduleRussian = {
@@ -29,5 +29,5 @@ export const planScheduleRussian = {
     risks: 'Риски расписания', afterEnd: 'Окончание после итерации ({{date}})', overCapacity: 'Превышение мощности',
     noneOverCapacity: 'Ни у кого из исполнителей нет превышения мощности.', capacityIssues: 'Мощность требует внимания',
     riskOverdue: 'Срок прошёл', riskStartsBeforeToday: 'Начало раньше сегодняшнего дня', riskStartedLate: 'Начата позже плана', riskOutsideLimits: 'Вне ограничений по датам',
-    atRiskTasks: 'Задачи под риском',
+    atRiskTasks: 'Задачи под риском', whyAtRisk: 'Почему задача под риском',
 };

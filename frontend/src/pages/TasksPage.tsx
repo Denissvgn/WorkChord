@@ -16,6 +16,7 @@ import {
 } from '../features/savedViews/taskViewParams';
 import { PipelineView } from '../components/tasks/PipelineView';
 import { PipelineTaskEvidence } from '../components/tasks/PipelineTaskEvidence';
+import { AtRiskTaskReasons } from '../components/tasks/AtRiskTaskReasons';
 import { usePipeline } from '../components/tasks/usePipeline';
 import { labelService } from '../services/labelService';
 import { BacklogPanel } from '../components/tasks/BacklogPanel';
@@ -676,7 +677,9 @@ const TasksPage = () => {
                 </div>
 
                 <TaskEditorDrawer
-                    beforeForm={viewMode === 'pipeline' ? task => task ? <PipelineTaskEvidence key={`${task.id}:${task.version}`} task={task} /> : null : undefined}
+                    beforeForm={viewMode === 'pipeline'
+                        ? task => task ? <PipelineTaskEvidence key={`${task.id}:${task.version}`} task={task} /> : null
+                        : filters.planningIssue === 'at-risk' ? task => task ? <AtRiskTaskReasons task={task} /> : null : undefined}
                     taskId={requestedTaskId}
                     open={requestedTaskId !== null}
                     onClose={closeFocusedTask}

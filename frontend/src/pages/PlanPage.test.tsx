@@ -248,6 +248,12 @@ describe('Plan is one page of six checkpoints', () => {
         expect(first).toHaveTextContent('Starts before today');
         const second = within(list).getByRole('link', { name: 'Ship notes' }).closest('li')!;
         expect(second).toHaveTextContent('Past its end date; Outside its date limits');
+        // A task link opens the Tasks list filtered to at-risk work, where the same reasons are shown.
+        const href = new URL(within(second).getByRole('link', { name: 'Ship notes' }).getAttribute('href')!, 'http://localhost');
+        expect(href.pathname).toBe('/tasks');
+        expect(href.searchParams.get('planningIssue')).toBe('at-risk');
+        expect(href.searchParams.get('task')).toBe('12');
+        expect(href.searchParams.get('fromPlanStep')).toBe('review');
     });
 
     it('re-reads readiness on return and opens the next checkpoint once the returned one is done', async () => {
