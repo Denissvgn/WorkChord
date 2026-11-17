@@ -26,7 +26,8 @@ import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { Input, RequiredIndicator } from '../common/Input';
-import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { InlineEmptyState } from '../ui';
 import { useToast } from '../feedback/toast';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { ModelCatalog } from './ModelCatalog';
@@ -526,10 +527,11 @@ export const AgentModelAdministration = () => {
 
     if (!hasAgentKey) {
         return (
-            <div><QueryEmptyState
-                title={t('modelAdministration.accessRequiredTitle')}
-                description={t('modelAdministration.accessRequiredDescription')}
-            /><Link to="/settings?tab=access" className="text-action underline">{t('settingsPage.openAdminAccess')}</Link></div>
+            <InlineEmptyState
+                title={t('emptyStates.team.modelsTitle')}
+                description={t('emptyStates.team.modelsBody')}
+                actions={<Link className="btn primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</Link>}
+            />
         );
     }
 
@@ -657,7 +659,13 @@ export const AgentModelAdministration = () => {
                         )}
                     </div>
                     {catalog.length === 0 ? (
-                        <QueryEmptyState title={t('modelAdministration.noCatalogEntries')} />
+                        <InlineEmptyState
+                            title={t('emptyStates.team.catalogTitle')}
+                            description={t('emptyStates.team.catalogBody')}
+                            actions={canAdminister ? (
+                                <Button type="button" onClick={createCatalog} disabled={isMutating}>{t('modelAdministration.createCatalogEntry')}</Button>
+                            ) : <Link className="btn primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</Link>}
+                        />
                     ) : (
                         <ModelCatalog entries={catalog} canAdminister={canAdminister} busy={isMutating} onEdit={editCatalog} onToggle={entry => askReason(() => entry.enabled ? disableCatalogMutation.mutate(entry) : enableCatalogMutation.mutate(entry))} />
                     )}
@@ -744,7 +752,13 @@ export const AgentModelAdministration = () => {
                         )}
                     </div>
                     {bindings.length === 0 ? (
-                        <QueryEmptyState title={t('modelAdministration.noBindings')} />
+                        <InlineEmptyState
+                            title={t('emptyStates.team.bindingsTitle')}
+                            description={t('emptyStates.team.bindingsBody')}
+                            actions={canAdminister ? (
+                                <Button type="button" onClick={createBinding} disabled={isMutating}>{t('modelAdministration.createBinding')}</Button>
+                            ) : <Link className="btn primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</Link>}
+                        />
                     ) : (
                         <ModelBindings bindings={bindings} actorNames={new Map(actors.map(actor => [actor.id, actor.display_name]))} catalog={catalogById} canAdminister={canAdminister} busy={isMutating} onEdit={editBinding} onToggle={binding => askReason(() => binding.enabled ? disableBindingMutation.mutate(binding) : enableBindingMutation.mutate(binding))} />
                     )}

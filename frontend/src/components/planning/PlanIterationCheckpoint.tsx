@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
 import { useIterationPanels } from '../../features/planningMasters/useIterationPanels';
 import { calendarService } from '../../services/calendarService';
+import { iterationService } from '../../services/iterationService';
 import type { Iteration } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
 
@@ -16,6 +17,10 @@ export const PlanIterationCheckpoint = ({ iteration, done }: { iteration: Iterat
     const panels = useIterationPanels();
     // feedback-policy: query loading,error,retry,empty - the calendar row shows its id until the name is known.
     const calendars = useQuery({ queryKey: ['calendars'], queryFn: calendarService.getAll, staleTime: 60_000, enabled: iteration !== null });
+    // feedback-policy: query loading,error,retry,empty - All iterations stays until the list is known to be empty.
+    const iterations = useQuery({ queryKey: ['iterations'], queryFn: iterationService.getAll, staleTime: 60_000 });
+    // With no iteration at all, All iterations has nothing to list: New iteration is the one action.
+    const hasIterations = iterations.data === undefined || iterations.data.length > 0;
     const calendarName = iteration
         ? calendars.data?.find(calendar => calendar.id === iteration.calendar_id)?.name
             ?? t('plan.page.calendarFallback', { id: iteration.calendar_id })
@@ -54,7 +59,7 @@ export const PlanIterationCheckpoint = ({ iteration, done }: { iteration: Iterat
                     <Button variant="secondary" onClick={() => panels.openEdit(iteration.id)}>{t('actions.edit')}</Button>
                 ) : null}
                 <Button variant={primary ? 'primary' : 'secondary'} onClick={panels.openCreate}>{t('iterations.newIteration')}</Button>
-                <Button variant="secondary" onClick={panels.openList}>{t('iterations.allIterations')}</Button>
+                {hasIterations && <Button variant="secondary" onClick={panels.openList}>{t('iterations.allIterations')}</Button>}
             </div>
         </>
     );

@@ -39,10 +39,18 @@ import { Modal } from '../../common/Modal';
 import { feedbackMessage } from '../../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../../features/mutationFeedback';
 import { canTransition } from '../../../features/taskTransitions';
+import { InlineEmptyState } from '../../ui/InlineEmptyState';
+import { NextStepEmptyState } from '../../../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../../../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../../../features/scope/useScopeLink';
 
 interface KanbanBoardProps {
     iterationId: number;
     filters?: TaskFilters;
+    /** The page's create action, offered when the iteration has no tasks yet. */
+    onCreateTask?: () => void;
+    hasActiveFilters?: boolean;
+    onClearFilters?: () => void;
 }
 
 type ColumnId = 'planned-unassigned' | 'planned-assigned' | 'active' | 'resolved' | 'closed';
@@ -68,8 +76,9 @@ type OwnershipSelection = {
     targetColumn: ColumnId;
 };
 
-export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
+export const KanbanBoard = ({ iterationId, filters, onCreateTask, hasActiveFilters = false, onClearFilters }: KanbanBoardProps) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const queryClient = useQueryClient();
     const [activeId, setActiveId] = useState<number | null>(null);
     const [openedTaskId, setOpenedTaskId] = useState<number | null>(null);
@@ -346,6 +355,25 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     if (tasksQuery.isLoading || teamQuery.isLoading || labelsQuery.isLoading) return <QueryLoadingState />;
     const queryError = tasksQuery.error ?? teamQuery.error ?? labelsQuery.error;
     if (queryError) return <QueryErrorState error={queryError} onRetry={() => { void tasksQuery.refetch(); void teamQuery.refetch(); void labelsQuery.refetch(); }} />;
+    // Nothing to show: say why, and offer the one action that fills it (Clear filters only when filters hide the tasks).
+    if (filteredTasks.length === 0) {
+        return tasks.length > 0 && hasActiveFilters ? (
+            <InlineEmptyState
+                headingLevel={2}
+                title={t('emptyStates.filtered.title')}
+                description={t('emptyStates.filtered.body')}
+                actions={onClearFilters ? <Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button> : undefined}
+            />
+        ) : (
+            <NextStepEmptyState
+                title={t('emptyStates.tasks.title')}
+                description={t('emptyStates.tasks.body')}
+                fallback={onCreateTask
+                    ? { label: t('emptyStates.tasks.action'), onClick: onCreateTask }
+                    : { label: t('firstRun.steps.tasks.title'), to: scopeLink(firstRunPlanHref('work')) }}
+            />
+        );
+    }
     const ownershipColumnTitle = ownershipSelection
         ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'active'}`)
         : '';

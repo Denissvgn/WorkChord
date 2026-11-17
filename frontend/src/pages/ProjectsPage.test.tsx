@@ -135,14 +135,14 @@ describe('ProjectsPage', () => {
 
         await user.type(screen.getByRole('searchbox', { name: 'Search projects' }), 'missing');
 
-        const filteredEmptyHeading = screen.getByRole('heading', { name: 'No projects match these filters' });
+        const filteredEmptyHeading = screen.getByRole('heading', { name: 'Nothing matches the filters' });
         expect(filteredEmptyHeading).toBeVisible();
         expect(within(filteredEmptyHeading.closest('.inline-empty')!).getAllByRole('button')).toHaveLength(1);
 
         await user.click(within(filteredEmptyHeading.closest('.inline-empty')!).getByRole('button', { name: 'Clear filters' }));
 
         expect(screen.getByRole('link', { name: 'Atlas' })).toBeVisible();
-        expect(screen.queryByRole('heading', { name: 'No projects match these filters' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Nothing matches the filters' })).not.toBeInTheDocument();
     });
 
     it('keeps creation as the recovery when no projects exist at all', async () => {
@@ -150,7 +150,7 @@ describe('ProjectsPage', () => {
 
         renderPage('/projects');
 
-        expect(await screen.findByRole('heading', { name: 'No projects found' })).toBeVisible();
+        expect(await screen.findByRole('heading', { name: 'No projects yet' })).toBeVisible();
         expect(screen.queryByRole('button', { name: 'Clear filters' })).not.toBeInTheDocument();
         expect(screen.getAllByRole('button', { name: 'New project' })).toHaveLength(1);
     });
@@ -334,7 +334,7 @@ describe('ProjectsPage', () => {
         expect(within(launchHeader).getByText('Owner: Rina Ito')).toBeVisible();
         expect(within(launchHeader).getByText('Health: At risk')).toBeVisible();
         expect(within(table).getByText('No projects in this initiative yet.')).toBeVisible();
-        expect(screen.queryByRole('heading', { name: 'No projects found' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'No projects yet' })).not.toBeInTheDocument();
         // Without the empty state, New project stays in the header.
         expect(within(screen.getByTestId('page-header')).getByRole('button', { name: 'New project' })).toHaveClass('btn-primary');
 

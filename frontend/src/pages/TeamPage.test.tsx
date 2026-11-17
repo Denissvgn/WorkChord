@@ -236,7 +236,8 @@ describe('Team page', () => {
         expect(screen.getByRole('tab', { name: 'Connect' })).toHaveAttribute('aria-selected', 'true');
         const connect = within(screen.getByRole('tabpanel'));
         expect(connect.getByRole('heading', { level: 2, name: 'Connect an agent' })).toBeVisible();
-        expect(connect.getByText('Unlock editing to read the current team and connect an agent.')).toBeVisible();
+        expect(connect.getByText('Connecting an agent needs the admin key')).toBeVisible();
+        expect(connect.getByText('Connecting and editing agents needs the admin key in this browser tab.')).toBeVisible();
         expect(connect.getByText('Advanced: apply a team manifest')).toBeVisible();
         expect(screen.getByRole('tabpanel')).not.toHaveTextContent('not on this page yet');
         expect(screen.queryByRole('table')).not.toBeInTheDocument();
@@ -252,7 +253,7 @@ describe('Team page', () => {
 
         await user.click(screen.getByRole('tab', { name: 'Models' }));
         expect(screen.getByRole('tab', { name: 'Models' })).toHaveAttribute('aria-selected', 'true');
-        expect(within(screen.getByRole('tabpanel')).getByText('Agent key required')).toBeVisible();
+        expect(within(screen.getByRole('tabpanel')).getByText('Models need the admin key')).toBeVisible();
         expect(screen.getByRole('tabpanel')).not.toHaveTextContent('not on this page yet');
     });
 

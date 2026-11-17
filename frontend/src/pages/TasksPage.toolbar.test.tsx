@@ -284,7 +284,7 @@ describe('Tasks header and toolbar', () => {
     it('clears the search as well as the filters when the empty list offers Clear filters', async () => {
         const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, { initialEntries: ['/tasks?view=12&q=login'] });
         expect(await screen.findByRole('heading', { level: 1, name: 'Ana planned' })).toBeInTheDocument();
-        expect(await screen.findByRole('heading', { level: 2, name: 'No tasks match this view' })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { level: 2, name: 'Nothing matches the filters' })).toBeInTheDocument();
         expect(taskTitles()).toEqual([]);
 
         await user.click(screen.getByRole('button', { name: 'Clear filters' }));

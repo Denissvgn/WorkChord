@@ -5,6 +5,7 @@ import { createTestQueryClient, renderWithProviders } from '../../test/renderWit
 import { REVIEWER_PAGE_SIZE } from './useAgentRowFacts';
 import { TaskList } from './TaskList';
 import { taskDetailResponse } from '../../test/fixtures/taskDetail';
+import type { TaskFilters } from './TaskFiltersBar';
 
 const taskServiceMock = vi.hoisted(() => ({
     getByIteration: vi.fn(),
@@ -502,5 +503,38 @@ describe('TaskList rows', () => {
         expect(chipText('Task 4')).toBe('Ready to start');
         expect(chipText('Task 5')).toBe('In review');
         expect(rowOf('Task 1').querySelectorAll('span.rounded-full')).toHaveLength(1);
+    });
+});
+
+describe('TaskList empty states', () => {
+    const noFilters = {
+        planningIssue: null, assigneeId: null, projectId: null, milestoneId: null, needsAttention: null, priority: null,
+        status: null, hasDependency: null, isOverdue: null, agentReady: null, startDateFrom: '', startDateTo: '',
+    } as unknown as TaskFilters;
+
+    it('offers Clear filters, not a create action, when the filters hide every task (AC2)', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2)].map(value => ({ ...value, iteration_revision: 1 })));
+        const onCreateTask = vi.fn();
+        const onClearFilters = vi.fn();
+        const { user } = renderWithProviders(
+            <TaskList iterationId={1} sortKey="priority" filters={{ ...noFilters, status: 'no-such-status' }}
+                hasActiveFilters onClearFilters={onClearFilters} onCreateTask={onCreateTask} />,
+        );
+        await user.click(await screen.findByRole('button', { name: 'Clear filters' }));
+        expect(onClearFilters).toHaveBeenCalledTimes(1);
+        expect(screen.queryByRole('button', { name: /new task/i })).not.toBeInTheDocument();
+        expect(onCreateTask).not.toHaveBeenCalled();
+    });
+
+    it('offers the one next step when the iteration has no tasks yet', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([]);
+        const onCreateTask = vi.fn();
+        const { user } = renderWithProviders(
+            <TaskList iterationId={1} sortKey="priority" filters={noFilters} onCreateTask={onCreateTask} />,
+        );
+        expect(await screen.findByText('No tasks yet')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Clear filters' })).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'New task' }));
+        expect(onCreateTask).toHaveBeenCalledTimes(1);
     });
 });

@@ -5,6 +5,9 @@ import { useState, useMemo, useCallback, useRef, useId } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../features/scope/useScopeLink';
 import { GanttChart } from '../components/gantt/GanttChart';
 import { ScheduleExplanationDetails } from '../components/gantt/ScheduleExplanationDetails';
 import { TaskEditModal } from '../components/gantt/TaskEditModal';
@@ -67,6 +70,7 @@ const markSandboxModified = (tasks: GanttTask[], changes: Record<number, Partial
 };
 
 const GanttPage = () => {
+    const scopeLink = useScopeLink();
     const queryClient = useQueryClient();
     const { hasAdminAccess } = useAdminAccess();
     const { t } = useTranslation();
@@ -363,13 +367,11 @@ const GanttPage = () => {
                 title={t('gantt.title')}
                 description={t('gantt.description')}
             >
-                <div className="empty">
-                    <h4>{t('gantt.noIterationsTitle')}</h4>
-                    <p>{t('gantt.noIterationsBody')}</p>
-                    <div className="empty-actions">
-                        <Link to="/iterations" className="btn primary">{t('gantt.goToIterations')}</Link>
-                    </div>
-                </div>
+                <NextStepEmptyState
+                    title={t('emptyStates.gantt.title')}
+                    description={t('emptyStates.gantt.body')}
+                    fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
+                />
             </PlanningWorkbenchFrame>
         );
     }

@@ -6,7 +6,12 @@ import clsx from 'clsx';
 import type { Task } from '../../types/task';
 import { priorityChipClassName } from '../ui/tone';
 import { AdminAccessGate } from '../settings/AdminAccessGate';
-import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../feedback/QueryState';
+import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../feedback/QueryState';
+import { InlineEmptyState } from '../ui/InlineEmptyState';
+import { Button } from '../common/Button';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { usePipeline } from './usePipeline';
 import { taskMatchesFilters } from '../../utils/taskFilters';
 import { pipelineTasksInScope } from '../../features/overview/overviewSignals';
@@ -24,7 +29,7 @@ const STAGE_ACTION_KEYS: Partial<Record<string, string>> = {
     verification_required: 'agentPipeline.actions.review',
 };
 
-export function PipelineView({ query, project, iteration, search, agent, filters, labelGroups, onOpenTask }: {
+export function PipelineView({ query, project, iteration, search, agent, filters, labelGroups, onOpenTask, hasActiveFilters = false, onClearFilters }: {
     query: ReturnType<typeof usePipeline>;
     project: ScopeProject | undefined;
     iteration: ScopeIteration | undefined;
@@ -33,7 +38,10 @@ export function PipelineView({ query, project, iteration, search, agent, filters
     filters: TaskFilters;
     labelGroups: LabelGroup[];
     onOpenTask: (task: Task) => void;
+    hasActiveFilters?: boolean;
+    onClearFilters?: () => void;
 }) {
+    const scopeLink = useScopeLink();
     const { t } = useTranslation();
     const [params, setParams] = useSearchParams();
     const { pipeline, canRead, usableData, isPending, isError, error, refetch } = query;
@@ -99,6 +107,24 @@ export function PipelineView({ query, project, iteration, search, agent, filters
         (count, column) => count + column.tasks.length,
         0,
     );
+    // Nothing visible: the stage's list gives way to the empty state, with one action. Clear filters when filters hide
+    // the work; otherwise (no agent work at all yet) the first-run step that brings work in. The stage strip stays.
+    const showEmpty = usableData && filteredTaskCount === 0;
+    const noAgentWork = Object.values(pipeline).every(tasks => tasks.length === 0);
+    const emptyState = noAgentWork || !hasActiveFilters || !onClearFilters ? (
+        <NextStepEmptyState
+            title={t('agentPipeline.emptyTitle')}
+            description={t('emptyStates.pipeline.body')}
+            fallback={{ label: t('firstRun.steps.tasks.title'), to: scopeLink(firstRunPlanHref('work')) }}
+        />
+    ) : (
+        <InlineEmptyState
+            headingLevel={2}
+            title={t('emptyStates.filtered.title')}
+            description={t('emptyStates.filtered.body')}
+            actions={<Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button>}
+        />
+    );
     if (!canRead) return <AdminAccessGate><span /></AdminAccessGate>;
     if (isPending && !usableData) return <QueryLoadingState message={t('agentPipeline.loading')} />;
     if (isError && !usableData) return <QueryErrorState error={error} message={t('agentPipeline.pipelineUnavailable')} onRetry={() => { void refetch(); }} />;
@@ -135,6 +161,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                 </ol>
             </nav>
 
+            {showEmpty ? emptyState : (
             <section aria-labelledby="pipeline-stage-title" className="card card-pad space-y-3">
                 <div>
                     <h2 id="pipeline-stage-title" className="text-base font-semibold">{t('agentPipeline.stageHeading', { stage: activeStage.title, count: activeStage.tasks.length })}</h2>
@@ -179,7 +206,6 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                     </ul>
                 )}
             </section>
-
-        {usableData && Object.values(pipeline).every(tasks => tasks.length === 0) && <QueryEmptyState title={t('agentPipeline.emptyTitle')} description={t('agentPipeline.emptyDescription')} />}
+            )}
     </div>;
 }

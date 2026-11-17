@@ -62,6 +62,7 @@ import {
     ViewSwitch,
     type FilterBarFilter,
 } from '../components/ui';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
 import { projectService } from '../services/projectService';
 import { savedViewService } from '../services/savedViewService';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -691,17 +692,13 @@ const ProjectsPage = () => {
 
                     {!hasPortfolio && (
                         <TableFrame className="py-16 text-center">
-                            <InlineEmptyState
+                            <NextStepEmptyState
                                 className="mx-auto max-w-xl"
                                 icon={<FolderOpen className="h-5 w-5" />}
-                                title={t('surfaces.projectsPage.noProjectsFound')}
-                                description={t('surfaces.projectsPage.createAProjectToGroupTaskWork')}
-                                actions={(
-                                    <Button onClick={() => setIsCreating(true)}>
-                                        <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
-                                        {t('surfaces.projectsPage.newProject')}
-                                    </Button>
-                                )}
+                                title={t('emptyStates.projects.title')}
+                                description={t('emptyStates.projects.body')}
+                                fallback={{ label: t('emptyStates.projects.action'), onClick: () => setIsCreating(true) }}
+                                onCreateProject={() => setIsCreating(true)}
                             />
                         </TableFrame>
                     )}
@@ -711,11 +708,12 @@ const ProjectsPage = () => {
                             <InlineEmptyState
                                 className="mx-auto max-w-xl"
                                 icon={<Search className="h-5 w-5" />}
-                                title={t('surfaces.projectsPage.noProjectsMatchFilters')}
-                                description={t('surfaces.projectsPage.adjustOrClearProjectFilters')}
+                                headingLevel={2}
+                                title={t('emptyStates.filtered.title')}
+                                description={t('emptyStates.filtered.body')}
                                 actions={hasActiveProjectFilters ? (
                                     <Button onClick={clearProjectFilters}>
-                                        {t('surfaces.projectsPage.clearFilters')}
+                                        {t('emptyStates.filtered.clear')}
                                     </Button>
                                 ) : undefined}
                             />
