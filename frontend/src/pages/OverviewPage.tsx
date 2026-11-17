@@ -290,7 +290,10 @@ const OverviewPage = () => {
     const iterationsFailed = navigation.isIterationsError;
     const hasNoIterations = !iterationsLoading && !iterationsFailed && iterations.length === 0;
     const scopeKnown = project !== undefined && scopeIteration !== undefined;
-    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && (isBacklog || !hasNoIterations);
+    // Without iterations the page is empty unless the backlog holds work.
+    const hasBacklogWork = isBacklog && allRoots.length > 0;
+    const noIterationsEmpty = hasNoIterations && !hasBacklogWork;
+    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && !noIterationsEmpty;
 
     const openList = parseOverviewCountList(new URLSearchParams(location.search).get(OVERVIEW_COUNT_LIST_PARAM));
     const closeList = () => {
@@ -361,7 +364,7 @@ const OverviewPage = () => {
                 />
             )}
             {/* Get started already names the next step, so the empty state would repeat it. */}
-            {hasNoIterations && !isBacklog && !getStarted.visible && (
+            {noIterationsEmpty && !getStarted.visible && (
                 <SectionCard>
                     <NextStepEmptyState
                         title={t('emptyStates.overview.iterationTitle')}
