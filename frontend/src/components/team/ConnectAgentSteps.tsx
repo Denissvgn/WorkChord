@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { agentService } from '../../services/agentService';
+import { teamService } from '../../services/teamService';
 import type { AgentModelCatalogCreate, AgentTeamMaster, AgentTeamMemberSpec, AgentTeamPlan, AgentTeamRole } from '../../types/agent';
 import {
     AGENT_RUNTIMES, CONNECT_STEPS, RUNTIME_PRODUCT_NAMES, STEP_INDEX, applyOutcomeUnknown, buildConnectedMember, connectIssue, credentialFilename, hasPM,
@@ -45,7 +46,18 @@ const modelErrorKind = (error: unknown): ModelErrorKind => {
  * the new member; the server validates, plans and applies it, and writes the new
  * member's key only to its credential folder. No key reaches this page.
  */
-export const ConnectAgentSteps = () => {
+/** The server's own reason for a failed read: its message and code, when it sent them. */
+const serverReason = (error: unknown): { message: string | null; code: string | null } => {
+    const detail = axios.isAxiosError(error) ? error.response?.data?.detail : null;
+    const text = (value: unknown) => (typeof value === 'string' && value.trim() ? value.trim().slice(0, 300) : null);
+    if (typeof detail === 'string') return { message: text(detail), code: null };
+    const code = text(detail?.code);
+    const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+    return { message: text(detail?.message), code: code ? (status ? `${code} (${status})` : code) : null };
+};
+const SETUP_GUIDE_URL = 'https://github.com/Denissvgn/WorkChord/blob/main/docs/agent-team-setup.md#prerequisites';
+
+export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean }) => {
     const { t } = useTranslation();
     const { hasAdminKey } = useAdminAccess();
     const [unlock, setUnlock] = useState(false);
@@ -80,12 +92,23 @@ export const ConnectAgentSteps = () => {
     const catalog = useQuery({ queryKey: ['agent-model-catalog', false], queryFn: () => agentService.getModelCatalog(),
         enabled: hasAdminKey && status.data?.can_mutate === true, retry: false });
 
+    // feedback-policy: query loading,error,retry,empty - the name is a courtesy; without it the member's own name is announced.
+    const profiles = useQuery({ queryKey: ['team-member-profiles'], queryFn: () => teamService.getProfiles(),
+        enabled: hasAdminKey && status.data?.can_mutate === true, retry: false });
+    // feedback-policy: query loading,error,retry,empty - the name is a courtesy; without it the member's own name is announced.
+    const presets = useQuery({ queryKey: ['agent-profile-presets'], queryFn: () => agentService.getProfilePresets(),
+        enabled: hasAdminKey && status.data?.can_mutate === true, retry: false });
+
     useEffect(() => {
         if (previousStep.current !== step) heading.current?.focus();
         previousStep.current = step;
     }, [step]);
 
     const runtimeName = (value: AgentRuntime) => RUNTIME_PRODUCT_NAMES[value] ?? t(`${P}.runtimes.${value}`);
+    /** The name Team and the assignee lists show: the profile's display name, which the server's profile preset names when it creates the profile. */
+    const announcedName = (member: AgentTeamMemberSpec) => (Array.isArray(profiles.data) ? profiles.data.find(item => item.seed_key === member.profile_key)?.display_name : undefined)
+        ?? (Array.isArray(presets.data) ? presets.data.find(item => item.key === member.profile_key)?.display_name : undefined)
+        ?? member.display_name;
     const memberStatus = status.data?.members.find(member => member.actor_key === candidate?.member.actor_key);
     const connected = applied && !status.isError && memberStatus?.package_acknowledged
         && memberStatus.acknowledgement_state === 'current' && memberStatus.connection_state === 'observed';
@@ -168,6 +191,9 @@ export const ConnectAgentSteps = () => {
     };
     const loading = status.isPending || (status.data?.can_mutate && (points.isPending || catalog.isPending));
     const failed = status.isError || points.isError || catalog.isError;
+    const loadReasons = [status, points, catalog].map(query => (query.isError ? serverReason(query.error) : null))
+        .filter((reason): reason is NonNullable<typeof reason> => Boolean(reason && (reason.message || reason.code)))
+        .filter((reason, index, all) => all.findIndex(item => item.code === reason.code && item.message === reason.message) === index);
     const available = hasAdminKey && status.data?.can_mutate && points.data && catalog.data;
     const pmAvailable = Boolean(available && !hasPM(points.data.current, status.data!));
     const roles: AgentTeamRole[] = ['worker', 'verifier', ...(pmAvailable ? ['pm' as const] : [])];
@@ -179,7 +205,7 @@ export const ConnectAgentSteps = () => {
         <div className="space-y-6">
             <div className="flex items-start justify-between gap-4">
                 <div>
-                    <h2 className="text-lg font-semibold">{t(`${P}.title`)}</h2>
+                    {showTitle && <h2 className="text-lg font-semibold">{t(`${P}.title`)}</h2>}
                     <p id="connect-unlock-note" className="mt-1 text-sm text-content-secondary">{t(`${P}.intro`)}</p>
                 </div>
                 {hasAdminKey && (status.isError || status.data?.can_mutate === false) && (
@@ -199,6 +225,11 @@ export const ConnectAgentSteps = () => {
                 {loading && <p role="status" className="text-sm">{t(`${P}.loading`)}</p>}
                 {failed && <div role="alert" className="space-y-2 text-sm">
                     <p>{t(`${P}.loadFailed`)}</p>
+                    {loadReasons.map(reason => <p key={reason.code ?? reason.message}>
+                        {reason.message && <span>{t(`${P}.serverReason`, { reason: reason.message })}</span>}
+                        {reason.message && reason.code && ' '}
+                        {reason.code && <span>{t(`${P}.serverCode`)}: <code>{reason.code}</code></span>}
+                    </p>)}
                     <Button variant="secondary" onClick={() => { void status.refetch(); void points.refetch(); void catalog.refetch(); }}>{t(`${P}.retryLoading`)}</Button>
                 </div>}
                 {!loading && !failed && !status.data?.can_mutate && <p role="alert" className="text-sm">{t(`${P}.cannotEdit`)}</p>}
@@ -249,7 +280,7 @@ export const ConnectAgentSteps = () => {
                         {step === STEP_INDEX.review && candidate && <>
                             <p className="text-sm">{t(`${P}.reviewIntro`)}</p>
                             <dl className="divide-y divide-border text-sm">{([
-                                ['member', candidate.member.display_name], ['role', t(`${P}.roles.${role}.name`)], ['runtime', runtimeName(runtime)],
+                                ['member', announcedName(candidate.member)], ['role', t(`${P}.roles.${role}.name`)], ['runtime', runtimeName(runtime)],
                                 ['profile', candidate.member.profile_key], ['model', candidate.member.default_model_binding_key],
                                 ['package', t(`${P}.packageName`, { name: candidate.member.skill_package.name, version: candidate.member.skill_package.version })],
                             ] as const).map(([label, value]) => <div key={label} className="grid grid-cols-[160px_1fr] gap-4 py-3">
@@ -262,7 +293,7 @@ export const ConnectAgentSteps = () => {
                             <p className="text-sm text-content-secondary">{t(`${P}.preserved`)}</p>
                         </>}
                         {step === STEP_INDEX.connect && candidate && <>
-                            {!applied ? <p className="text-sm">{t(`${P}.connectIntro`, { name: candidate.member.display_name })}</p> : <>
+                            {!applied ? <p className="text-sm">{t(`${P}.connectIntro`, { name: announcedName(candidate.member) })}</p> : <>
                                 <p role="status" className="font-medium">{connected ? t(`${P}.connected`) : t(`${P}.waiting`)}</p>
                                 <dl className="space-y-3 text-sm">
                                     <div><dt className="text-content-secondary">{t(`${P}.sinkRef`)}</dt><dd className="break-all font-mono">{candidate.manifest.credential_sink_ref}</dd></div>
@@ -288,6 +319,7 @@ export const ConnectAgentSteps = () => {
                         {stepIssues.map(issue => <div key={`${issue.reason}-${issue.code}`} role="alert" className="space-y-2 text-sm text-feedback-danger-foreground">
                             <p>{t(`${P}.issues.${issue.reason}`)}</p>
                             <details><summary className="cursor-pointer">{t(`${P}.serverCode`)}</summary><code>{issue.code}</code></details>
+                            {issue.reason === 'sink' && <p><a href={SETUP_GUIDE_URL} target="_blank" rel="noreferrer" className="underline">{t(`${P}.issues.sinkGuide`)}</a></p>}
                             {issue.reason === 'deliveryUncertain' && (
                                 <Button variant="secondary" onClick={() => setAdvanced(true)}>{t(`${P}.openAdvanced`)}</Button>
                             )}
