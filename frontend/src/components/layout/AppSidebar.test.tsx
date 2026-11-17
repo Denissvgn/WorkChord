@@ -32,6 +32,9 @@ const DESTINATION_NAMES = [
     'Team', 'Settings',
 ];
 
+// A link's text is its name plus its counter, if it has one; the Plan item has one at 6/6 too.
+const destinationName = (link: HTMLElement) => link.textContent?.replace(/\d+\/\d+|\d+$/, '').trim();
+
 const destinationLinks = () => within(screen.getByRole('navigation', { name: 'Primary navigation' }))
     .getAllByRole('link');
 
@@ -52,7 +55,7 @@ describe('AppSidebar', () => {
     ])('lists the same ten destinations on %s', pathname => {
         renderWithProviders(<AppSidebar />, { initialEntries: [pathname] });
 
-        expect(destinationLinks().map(link => link.textContent?.replace(/\d+\/\d+|\d+$/, '').trim()))
+        expect(destinationLinks().map(destinationName))
             .toEqual(DESTINATION_NAMES);
     });
 
@@ -63,11 +66,11 @@ describe('AppSidebar', () => {
         expect(groups.map(group => group.getAttribute('aria-labelledby')
             && document.getElementById(group.getAttribute('aria-labelledby')!)?.textContent))
             .toEqual(['Plan', 'Deliver', 'Setup']);
-        expect(groups.map(group => within(group).getAllByRole('link').map(link => link.textContent)))
+        expect(groups.map(group => within(group).getAllByRole('link').map(destinationName)))
             .toEqual([['Projects', 'Plan', 'Gantt'], ['Tasks', 'Analytics'], ['Team', 'Settings']]);
         const start = within(screen.getByRole('navigation', { name: 'Primary navigation' }))
             .getAllByRole('link').slice(0, 3);
-        expect(start.map(link => link.textContent)).toEqual(['Overview', 'My Work', 'Triage']);
+        expect(start.map(destinationName)).toEqual(['Overview', 'My Work', 'Triage']);
         for (const link of start) expect(link.closest('[role="group"]')).toBeNull();
     });
 
@@ -83,7 +86,7 @@ describe('AppSidebar', () => {
         renderWithProviders(<AppSidebar />, { initialEntries: [pathname] });
 
         const currentLinks = destinationLinks().filter(link => link.getAttribute('aria-current') === 'page');
-        expect(currentLinks.map(link => link.textContent)).toEqual([current]);
+        expect(currentLinks.map(destinationName)).toEqual([current]);
     });
 
     it('has no work-area switcher, saved-views disclosure or iteration card', () => {

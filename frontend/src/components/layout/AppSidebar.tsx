@@ -63,7 +63,6 @@ const SidebarDestination = ({
     onNavigate?: () => void;
 }) => {
     const { t } = useTranslation();
-    const counterDescriptionId = useId();
     const scopeLink = useScopeLink();
     const label = t(destination.labelKey, destination.defaultLabel);
     const Icon = destination.icon;
@@ -87,17 +86,14 @@ const SidebarDestination = ({
             className="sb-item"
             aria-current={isCurrent ? 'page' : undefined}
             aria-label={label}
-            aria-describedby={counterDescription ? counterDescriptionId : undefined}
+            aria-description={counterDescription}
             data-destination={destination.id}
             onClick={onNavigate}
         >
             <Icon aria-hidden="true" className="h-[14px] w-[14px] shrink-0" />
             <span className="sb-label">{label}</span>
             {counter !== null && (
-                <>
-                    <span className="sb-count" data-complete={planComplete ? 'true' : undefined} aria-hidden="true">{counter}</span>
-                    <span id={counterDescriptionId} className="sr-only">{counterDescription}</span>
-                </>
+                <span className="sb-count" data-complete={planComplete ? 'true' : undefined} aria-hidden="true">{counter}</span>
             )}
         </Link>
     );
