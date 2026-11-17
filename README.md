@@ -19,7 +19,7 @@ deliver, and review project work. External agents can participate through
 authenticated REST and MCP APIs, using their own execution runtimes.
 
 - **Teamwork:** project backlogs, task trees, ownership, discussion, and review with evidence.
-- **Planning:** calendars, shared capacity, dependencies, and List, Board, Gantt, and roadmap views.
+- **Planning:** work calendars, shared capacity, waits-for links, and the Plan and Gantt pages, with a roadmap view in Projects.
 - **Recorded time:** optional private entries and scoped totals for project managers.
 
 The web interface supports English and Russian. An [Android companion](android-companion/)
