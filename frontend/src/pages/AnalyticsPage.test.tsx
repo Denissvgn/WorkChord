@@ -8,17 +8,14 @@ import AnalyticsPage from './AnalyticsPage';
 const metrics = vi.hoisted(() => ({ get: vi.fn() }));
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getSummary: vi.fn() }));
 const projectServiceMock = vi.hoisted(() => ({ getAll: vi.fn() }));
-const taskServiceMock = vi.hoisted(() => ({ getIterationHistory: vi.fn() }));
 
 vi.mock('../services/deliveryMetricsService', () => ({ deliveryMetricsService: metrics }));
 vi.mock('../services/iterationService', () => ({ iterationService: iterationServiceMock }));
 vi.mock('../services/projectService', () => ({ projectService: projectServiceMock }));
-vi.mock('../services/taskService', () => ({ taskService: taskServiceMock }));
-vi.mock('../components/analytics/ExecutionUsagePanel', () => ({ ExecutionUsagePanel: () => null }));
-vi.mock('../components/analytics/OnTrackSummary', () => ({ OnTrackSummary: () => null }));
-vi.mock('../components/analytics/StatusDistribution', () => ({ StatusDistribution: () => null }));
+vi.mock('../components/analytics/ExecutionUsagePanel', () => ({ ExecutionUsagePanel: ({ scope }: { scope: { iteration_id: number } }) => <div>Usage scope {scope.iteration_id}</div> }));
+vi.mock('../components/analytics/OnTrackSummary', () => ({ OnTrackSummary: ({ summary }: { summary: { id: number } }) => <div>On track scope {summary.id}</div> }));
+vi.mock('../components/analytics/StatusDistribution', () => ({ StatusDistribution: ({ summary }: { summary: { id: number } }) => <div>Status scope {summary.id}</div> }));
 vi.mock('../components/tasks/WorkMetricsLine', () => ({ WorkMetricsLine: () => null }));
-vi.mock('../components/dashboard/SavedViewDashboardCards', () => ({ SavedViewDashboardCards: () => null }));
 
 const iteration = (id: number, project_id: number) => ({
     id, name: `Iteration ${id}`, calendar_id: 1, project_id, start_date: '2026-11-01', end_date: '2026-11-30', working_days: 10,
@@ -41,7 +38,6 @@ describe('Analytics page reads the scope bar', () => {
         iterationServiceMock.getAll.mockResolvedValue([iteration(9, 1), iteration(30, 2)]);
         iterationServiceMock.getSummary.mockImplementation(async (id: number) => ({ id, name: `Iteration ${id}`, start_date: '2026-11-01', end_date: '2026-11-30' }));
         projectServiceMock.getAll.mockResolvedValue([{ id: 1, name: 'Orchard', sort_order: 1, initiative: null }, { id: 2, name: 'Grove', sort_order: 2, initiative: null }]);
-        taskServiceMock.getIterationHistory.mockResolvedValue([]);
     });
     afterEach(() => { useScopeStore.setState({ project: null, iteration: null }); });
 
@@ -55,9 +51,25 @@ describe('Analytics page reads the scope bar', () => {
     it('reports the iteration of the scope bar and offers only the window as its own control', async () => {
         await renderPage('/analytics?project=1&iteration=9');
         await waitFor(() => expect(metrics.get).toHaveBeenCalledWith({ iteration_id: 9, lookback_days: 30 }));
-        const section = screen.getByRole('region', { name: 'Delivery and review' });
-        expect(within(section).getAllByRole('combobox')).toHaveLength(1);
-        expect(within(section).getByRole('combobox')).toHaveAccessibleName('Window');
+        const toolbar = screen.getByTestId('page-toolbar');
+        expect(within(toolbar).getAllByRole('combobox')).toHaveLength(1);
+        expect(within(toolbar).getByRole('combobox')).toHaveAccessibleName('Window');
+        expect(screen.queryByRole('heading', { name: 'Saved view dashboard' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('heading', { name: 'Task lifecycle' })).not.toBeInTheDocument();
+    });
+
+    it('updates every section when the scope bar changes', async () => {
+        const { user } = await renderPage('/analytics?project=1&iteration=9');
+        expect(await screen.findByText('On track scope 9')).toBeVisible();
+        expect(screen.getByText('Status scope 9')).toBeVisible();
+        expect(screen.getByText('Usage scope 9')).toBeVisible();
+        await user.click(screen.getByRole('combobox', { name: 'Project' }));
+        await user.click(await screen.findByRole('option', { name: /Grove/ }));
+        expect(await screen.findByText('On track scope 30')).toBeVisible();
+        expect(screen.getByText('Status scope 30')).toBeVisible();
+        expect(screen.getByText('Usage scope 30')).toBeVisible();
+        await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ iteration_id: 30, lookback_days: 30 }));
+        expect(within(screen.getByTestId('page-toolbar')).getAllByRole('combobox')).toHaveLength(1);
     });
 
     it('requests no delivery or execution-usage data when the scope bar is on Backlog', async () => {
@@ -66,7 +78,7 @@ describe('Analytics page reads the scope bar', () => {
         metrics.get.mockClear();
         await user.click(screen.getByRole('combobox', { name: 'Iteration' }));
         await user.click(await screen.findByRole('option', { name: /^Backlog/ }));
-        expect(await screen.findByText('Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.')).toBeVisible();
+        expect((await screen.findAllByText('Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.'))[0]).toBeVisible();
         expect(metrics.get).not.toHaveBeenCalled();
         expect(screen.queryByText('Choose project')).not.toBeInTheDocument();
     });
