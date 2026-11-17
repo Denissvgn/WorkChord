@@ -269,7 +269,12 @@ class TeamMemberProfileResponse(BaseModel):
 
 
 class TeamMemberProfileCompact(BaseModel):
-    """Compact profile data embedded in team-member responses."""
+    """Compact profile data embedded in team-member responses.
+
+    A reader who may read the team row but not the profile itself gets the id, display name,
+    kind, automation flag, assignment modes and agent_connected; email, headline and skills
+    are then null or empty.
+    """
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -302,6 +307,15 @@ class TeamMemberResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def _assignee_profile_for_every_reader(cls, data: Any, handler):
+        """Embed the reader-safe profile part when the reader cannot read the whole profile."""
+        response = handler(data)
+        if response.profile is None:
+            response.profile = getattr(data, "assignee_profile", None)
+        return response
 
 
 class TeamMemberOptionResponse(BaseModel):

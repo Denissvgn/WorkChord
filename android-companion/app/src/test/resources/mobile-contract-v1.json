@@ -3987,7 +3987,7 @@
           "type": "object"
         },
         "TeamMemberProfileCompact": {
-          "description": "Compact profile data embedded in team-member responses.",
+          "description": "Compact profile data embedded in team-member responses.\n\nA reader who may read the team row but not the profile itself gets the id, display name,\nkind, automation flag, assignment modes and agent_connected; email, headline and skills\nare then null or empty.",
           "properties": {
             "agent_connected": {
               "default": false,
