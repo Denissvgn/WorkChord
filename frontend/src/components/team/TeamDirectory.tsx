@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode, type RefObject } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Bot, User } from 'lucide-react';
@@ -47,10 +47,12 @@ export type DrawerTarget = { mode: 'add' } | { mode: 'edit'; key: string } | nul
  * Everyone who can do work in one table; a row opens the drawer for that person or agent.
  * `onEmptyChange` reports when the empty state, with its own Add person button, is shown.
  */
-export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange }: {
+export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange, drawerFallbackFocusRef }: {
     drawer: DrawerTarget;
     onDrawerChange: (target: DrawerTarget) => void;
     onEmptyChange?: (empty: boolean) => void;
+    /** Where focus goes when the drawer closes and the control that opened it is gone. */
+    drawerFallbackFocusRef?: RefObject<HTMLElement | null>;
 }) => {
     const { t } = useTranslation();
     const { hasAdminAccess } = useAdminAccess();
@@ -214,6 +216,7 @@ export const TeamDirectory = ({ drawer, onDrawerChange, onEmptyChange }: {
                     row={drawerRow}
                     onClose={() => onDrawerChange(null)}
                     onCreated={id => onDrawerChange({ mode: 'edit', key: `profile-${id}` })}
+                    fallbackFocusRef={drawerFallbackFocusRef}
                 />
             )}
         </div>
