@@ -1,6 +1,24 @@
 # Tasks, briefs and delivery
 
-Tasks can belong to a project backlog before they are committed to an iteration. A task keeps its ID and human owner when its schedule commitment changes. `owner_profile_id` identifies the durable human owner; `assignee_id` identifies an iteration capacity allocation. Neither field authenticates a caller.
+Tasks can belong to a project backlog before they are committed to an iteration. A task keeps its ID and human owner when its schedule commitment changes. Neither ownership field authenticates a caller.
+
+## Names people see
+
+The interface uses these names on tasks:
+
+- **Assignee**: the person or agent that does the task. It is the iteration
+  capacity allocation behind `assignee_id`.
+- **Reviewer**: the person or agent that checks the work and its evidence.
+- **Owner**: the durable human owner, `owner_profile_id`. A task shows it when
+  that person differs from the Assignee. Projects and initiatives have one owner
+  each, shown as **Owner** on their own pages.
+- **Labels**: names that organize tasks and requests.
+- **Waits for**: the prerequisite tasks that must finish before this task can start.
+  These are local schedule dependencies, separate from delivery prerequisites.
+- **Earliest start** and **Due by**: the date limits for the task, the earliest
+  day it may start and the latest day it should finish.
+- **Effort**: entered in hours. The day equivalent is shown as a hint, using the
+  calendar's nominal workday.
 
 ## Capture and schedule
 
@@ -18,7 +36,7 @@ Scheduling day boundaries use the project's IANA timezone, with the availability
 
 ## Estimates
 
-`effort_hours` is authoritative. `effort_days` is derived using `nominal_day_hours`, independent of personal availability and productivity coefficients. A calendar declares its nominal workday; the compatibility default is eight hours. Inputs supplying both units must agree. Hours are rounded to six decimal places.
+`effort_hours` is authoritative; it is the value people enter in the task form. `effort_days` is derived using `nominal_day_hours`, independent of personal availability and productivity coefficients, and the form shows it as a hint. A calendar declares its nominal workday; the compatibility default is eight hours. Inputs supplying both units must agree. Hours are rounded to six decimal places.
 
 Unknown effort is `null`; zero is a known zero. `estimate_provenance` distinguishes `unknown`, `assumed` and `estimated`. Forecast scheduling requires a positive estimate and reports unavailable work and prerequisites explicitly. Manual human work can start without an estimate or forecast dates.
 
