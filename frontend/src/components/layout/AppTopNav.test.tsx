@@ -187,4 +187,57 @@ describe('AppTopNav', () => {
         expect(within(drawer).getByRole('link', { name: 'Plan' })).toHaveTextContent('2/6');
         expect(screen.getAllByText('2/6')).toHaveLength(2);
     });
+
+    it('changes Project and Iteration from the drawer on a phone', async () => {
+        scopeServiceMocks.projects.getAll.mockResolvedValue([
+            { id: 1, name: 'Agdash', sort_order: 1, initiative: null },
+            { id: 2, name: 'Beacon', sort_order: 2, initiative: null },
+        ]);
+        const original = window.matchMedia;
+        window.matchMedia = ((query: string) => ({
+            matches: query === '(max-width: 767px)' || query === '(max-width: 1023px)',
+            media: query,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            onchange: null,
+            dispatchEvent: vi.fn(),
+        })) as typeof window.matchMedia;
+        try {
+            const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/plan?project=all&iteration=backlog'] });
+            await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+            const scope = within(drawer).getByTestId('mobile-nav-scope');
+            const projectPicker = within(scope).getByRole('combobox', { name: 'Project' });
+            expect(projectPicker).toHaveValue('All projects');
+            await user.click(projectPicker);
+            await user.click(await screen.findByRole('option', { name: /Beacon/ }));
+            await waitFor(() => expect(
+                within(screen.getByTestId('mobile-nav-scope')).getByRole('combobox', { name: 'Project' }),
+            ).toHaveValue('Beacon'));
+            expect(within(scope).getByRole('combobox', { name: 'Iteration' })).toBeInTheDocument();
+        } finally {
+            window.matchMedia = original;
+        }
+    });
+
+    it('folds the sidebar into the drawer only below 1024px', () => {
+        const queries: string[] = [];
+        const original = window.matchMedia;
+        window.matchMedia = ((query: string) => {
+            queries.push(query);
+            return {
+                matches: false, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(),
+                addListener: vi.fn(), removeListener: vi.fn(), onchange: null, dispatchEvent: vi.fn(),
+            };
+        }) as typeof window.matchMedia;
+        try {
+            renderWithProviders(<AppTopNav />, { initialEntries: ['/plan'] });
+            expect(queries).toContain('(max-width: 1023px)');
+            expect(queries).not.toContain('(max-width: 1180px)');
+        } finally {
+            window.matchMedia = original;
+        }
+    });
 });
