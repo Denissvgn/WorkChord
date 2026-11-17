@@ -498,7 +498,7 @@ export const TaskList = ({
                 tasks && tasks.length > 0 ? (
                     <InlineEmptyState
                         headingLevel={2}
-                        title={t('taskList.noFilterMatches')}
+                        title={t('emptyStates.filtered.title')}
                         description={activeViewName ? t('taskList.noFilterMatchesViewBody', { view: activeViewName }) : t('taskList.noFilterMatchesBody')}
                         actions={hasActiveFilters && onClearFilters ? (
                             <Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button>

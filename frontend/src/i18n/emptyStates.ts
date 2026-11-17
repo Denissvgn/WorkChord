@@ -10,9 +10,7 @@ export const emptyStatesEnglish = {
     },
     overview: {
         iterationTitle: 'No iteration yet',
-        iterationBody: 'Iterations connect capacity, tasks, and schedules. Create one to start.',
-        workNowBody: 'Open tasks in the iteration in scope appear here, most urgent first.',
-        listBody: 'Requests and tasks that need attention appear here.',
+        iterationBody: 'Iterations hold the capacity, tasks and schedule for one period of work.',
     },
     myWork: {
         queueBody: 'Tasks assigned to you, and reviews you owe, appear here.',
@@ -30,7 +28,7 @@ export const emptyStatesEnglish = {
     },
     plan: {
         title: 'No iteration selected',
-        body: 'Plan works on one iteration at a time. Create it first, then add its capacity, work and schedule.',
+        body: 'Plan shows one iteration at a time, and its capacity, work and schedule follow once it exists.',
     },
     gantt: {
         title: 'No iteration to show',
@@ -49,11 +47,15 @@ export const emptyStatesEnglish = {
         body: 'Analytics shows the delivery and capacity of one iteration.',
     },
     team: {
-        membersBody: 'Add a person to start. Agents appear here once they are connected.',
+        membersBody: 'Add a person to start; connected agents appear here too.',
         modelsTitle: 'Models need the admin key',
-        modelsBody: 'This tab holds the model catalog and the bindings that route work to models. Viewing and editing them needs the admin key.',
+        modelsBody: 'This tab holds the model catalog and the bindings, and viewing or editing them needs the admin key.',
         connectTitle: 'Connecting an agent needs the admin key',
         connectBody: 'Connecting and editing agents needs the admin key in this browser tab.',
+        catalogTitle: 'No models in the catalog yet',
+        catalogBody: 'The catalog lists the models agents can run on; add one, then bind agents to it.',
+        bindingsTitle: 'No model bindings yet',
+        bindingsBody: 'A binding connects an agent to a model from the catalog.',
         unlock: 'Unlock editing',
     },
 } as const;
@@ -66,9 +68,7 @@ export const emptyStatesRussian = {
     },
     overview: {
         iterationTitle: 'Итераций пока нет',
-        iterationBody: 'Итерации связывают мощность, задачи и расписания. Создайте первую, чтобы начать.',
-        workNowBody: 'Открытые задачи текущей итерации появятся здесь, сначала самые срочные.',
-        listBody: 'Здесь появятся запросы и задачи, которые требуют внимания.',
+        iterationBody: 'Итерации содержат мощность, задачи и расписание одного периода работы.',
     },
     myWork: {
         queueBody: 'Здесь появятся назначенные вам задачи и проверки, которые вы должны выполнить.',
@@ -86,7 +86,7 @@ export const emptyStatesRussian = {
     },
     plan: {
         title: 'Итерация не выбрана',
-        body: 'План работает с одной итерацией за раз. Сначала создайте её, затем добавьте мощность, работу и расписание.',
+        body: 'План показывает одну итерацию за раз; её мощность, работа и расписание появятся после создания.',
     },
     gantt: {
         title: 'Нет итерации для показа',
@@ -105,11 +105,15 @@ export const emptyStatesRussian = {
         body: 'Аналитика показывает поставку и мощность одной итерации.',
     },
     team: {
-        membersBody: 'Добавьте человека, чтобы начать. Агенты появятся здесь после подключения.',
+        membersBody: 'Добавьте человека, чтобы начать; подключённые агенты тоже появятся здесь.',
         modelsTitle: 'Для моделей нужен ключ администратора',
-        modelsBody: 'На этой вкладке хранятся каталог моделей и привязки, которые направляют работу к моделям. Просмотр и изменение требуют ключа администратора.',
+        modelsBody: 'На этой вкладке хранятся каталог моделей и привязки; просмотр и изменение требуют ключа администратора.',
         connectTitle: 'Для подключения агента нужен ключ администратора',
         connectBody: 'Подключение и изменение агентов требует ключа администратора в этой вкладке браузера.',
+        catalogTitle: 'В каталоге пока нет моделей',
+        catalogBody: 'В каталоге перечислены модели, на которых могут работать агенты; добавьте модель и привяжите к ней агентов.',
+        bindingsTitle: 'Привязок моделей пока нет',
+        bindingsBody: 'Привязка связывает агента с моделью из каталога.',
         unlock: 'Открыть редактирование',
     },
 } as const;

@@ -277,6 +277,8 @@ const TasksPage = () => {
             next.delete(SEARCH_PARAM);
         });
     }, [updateSearchParams]);
+    // The list, board and pipeline share the same search and filters; the pipeline also has its agent choice.
+    const listHasActiveFilters = activeFilterCount > 0 || searchText !== '';
 
     const savedViewManager = useSavedViewManager({
         filters,
@@ -713,7 +715,7 @@ const TasksPage = () => {
                                             <QuickCapture listRow target={{ kind: 'task', iterationId: selectedIterationId }}
                                                 onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />
                                         )}
-                                        hasActiveFilters={activeFilterCount > 0 || searchText !== ''}
+                                        hasActiveFilters={listHasActiveFilters}
                                         activeViewName={savedViewManager.selectedView ? viewName : undefined}
                                         onClearFilters={clearListConditions}
                                         onCreateTask={() => setIsCreating(true)}
@@ -727,14 +729,18 @@ const TasksPage = () => {
                         )}
                         {viewMode === 'board' && (
                             <div className="h-full overflow-hidden">
-                                <KanbanBoard iterationId={selectedIterationId} filters={filters} />
+                                <KanbanBoard iterationId={selectedIterationId} filters={filters}
+                                    onCreateTask={() => setIsCreating(true)} hasActiveFilters={listHasActiveFilters}
+                                    onClearFilters={clearListConditions} />
                             </div>
                         )}
                         {viewMode === 'pipeline' && (
                             <div className="h-full overflow-y-auto px-4 pb-6">
                                 <PipelineView query={pipelineQuery} project={project} iteration={iteration}
                                     search={searchText} agent={agentFilter} filters={filters} labelGroups={pipelineLabelGroups}
-                                    onOpenTask={openTask} />
+                                    onOpenTask={openTask}
+                                    hasActiveFilters={listHasActiveFilters || agentFilter !== ''}
+                                    onClearFilters={() => { clearListConditions(); setTaskContextParam('agent', null); }} />
                             </div>
                         )}
                     </FullscreenWorkspace>
