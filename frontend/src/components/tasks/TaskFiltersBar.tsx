@@ -86,10 +86,11 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
     const optionQueries = [teamQuery, projectsQuery, labelsQuery, milestonesQuery];
     const optionError = optionQueries.find(query => query.isError)?.error;
 
-    const labels = useMemo(() => labelGroups.flatMap(group => group.labels.map(label => ({
+    // Not memoised: the names follow the language, which a memo keyed on the groups would not see change.
+    const labels = labelGroups.flatMap(group => group.labels.map(label => ({
         slug: label.slug,
         name: `${labelDisplay(label).name} · ${labelGroupDisplay(group).name}`,
-    }))), [labelGroups]);
+    })));
 
     const yesNoOptions = (yes: string, no: string) => [{ value: YES, label: yes }, { value: NO, label: no }];
     const dateLabels: Record<typeof DATE_FILTERS[number], string> = {

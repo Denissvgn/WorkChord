@@ -67,14 +67,12 @@ export const LabelSelector = ({
     const optionError = activeGroupsQuery.error ?? allGroupsQuery.error;
     const optionsLoading = activeGroupsQuery.isLoading || allGroupsQuery.isLoading;
 
-    const activeLabels = useMemo(() => flattenLabels(activeGroups), [activeGroups]);
-    const labelsBySlug = useMemo(() => {
-        const map = new Map<string, LabelOption>();
-        flattenLabels(allGroups).forEach(option => {
-            map.set(option.slug, option);
-        });
-        return map;
-    }, [allGroups]);
+    // Not memoised: the names follow the language, which a memo keyed on the groups would not see change.
+    const activeLabels = flattenLabels(activeGroups);
+    const labelsBySlug = new Map<string, LabelOption>();
+    flattenLabels(allGroups).forEach(option => {
+        labelsBySlug.set(option.slug, option);
+    });
 
     const selectedValues = value ?? [];
     const availableLabels = activeLabels.filter(option => !selectedValues.includes(option.slug));
