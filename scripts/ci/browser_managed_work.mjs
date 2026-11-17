@@ -43,7 +43,8 @@ const openNested = async () => {
     await page.getByText('Parent', { exact: true }).first().waitFor();
     const expand = page.getByRole('button', { name: /Expand: Parent/i });
     if (await expand.count()) await expand.click();
-    await page.getByRole('button', { name: 'Edit task: Nested leaf', exact: true }).click();
+    // A list row opens its task from the title; editing lives in the row's menu.
+    await page.getByRole('button', { name: 'Nested leaf', exact: true }).click();
   }
   await editAllFields();
   await page.getByRole('textbox', { name: 'Description', exact: true }).waitFor();
@@ -147,6 +148,8 @@ try {
   await page.getByRole('button', { name: 'New task', exact: true }).click();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Canonical browser work');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Capture and deliver urgent human work');
+  // A new task shows a short form; the rest of the brief and the owner sit under More.
+  await page.getByRole('button', { name: 'More', exact: true }).click();
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('The task starts without a forecast or an invented estimate.');
   await page.getByRole('textbox', { name: 'Scope', exact: true }).fill('One independently checked result');
   await page.getByRole('button', { name: 'Add criterion', exact: true }).click();
@@ -233,8 +236,10 @@ try {
   await reviewerPage.getByRole('checkbox', { name: 'Follow this task', exact: true }).waitFor({ state: 'visible' });
   const reviewerMe = await (await reviewerContext.request.get('/api/auth/me')).json();
   await page.goto('/tasks?scope=backlog');
-  await page.getByRole('searchbox', { name: 'Search tasks', exact: true }).fill(`#${capturedTask.id}`);
-  await page.getByRole('region', { name: 'Search tasks', exact: true }).getByRole('link', { name: `#${capturedTask.id} · Canonical browser work`, exact: true }).click();
+  // The command menu finds tasks across projects; a result opens the task where you are.
+  await page.getByRole('button', { name: 'Open command menu', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Search commands', exact: true }).fill(`#${capturedTask.id}`);
+  await page.getByRole('option', { name: new RegExp(`^#${capturedTask.id} · Canonical browser work`) }).click();
   await editAllFields();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'teamwork-editor-desktop.png'), fullPage: true });
@@ -287,7 +292,8 @@ try {
   await createOwned('Confirm the deployment checklist and coordinate the next review');
   await page.goto('/my-work?queue=queued');
   await page.getByRole('heading', { name: 'My Work', exact: true }).waitFor();
-  await page.getByRole('button', { name: /Согласовать критерии/ }).waitFor();
+  // The row's title button reads "#id · title"; its status button also names the title.
+  await page.getByRole('button', { name: `#${nestedHandoff.id} · ${nestedHandoff.title}`, exact: true }).waitFor();
   const peerContext = await browser.newContext({ baseURL, locale: 'en-US' });
   const peerPage = await peerContext.newPage();
   peerPage.on('pageerror', error => errors.push(error.message));
@@ -311,6 +317,7 @@ try {
   assert.equal(started.status(), 200, await started.text());
   await page.getByRole('button', { name: `#${observed.id} · Externally assigned foreground work`, exact: true }).waitFor({ state: 'hidden', timeout: 45000 });
   await page.goto(`/my-work?queue=active&task=${observed.id}`);
+  await editAllFields();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).waitFor();
   const peerComment = await peerContext.request.post(`/api/tasks/${observed.id}/comments`, {
     headers: peerHeaders, data: { body: 'Peer comment arrives in foreground', mentions: [] } });
@@ -446,7 +453,8 @@ try {
       await new Promise(resolve => requestAnimationFrame(resolve));
       await Promise.all(document.getAnimations().filter(animation => animation instanceof CSSTransition).map(animation => animation.finished.catch(() => {})));
     });
-    const labels = await page.getByRole('navigation', { name: 'Work queues', exact: true }).evaluate(nav => {
+    // The queue switch is a group inside the toolbar that carries the same name; the inner one holds only the queues.
+    const labels = await page.getByRole('group', { name: 'Work queues', exact: true }).last().evaluate(nav => {
       const rgb = value => (value.match(/[\d.]+/g) || []).map(Number);
       const luminance = color => color.slice(0, 3).map(value => value / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
       return [...nav.querySelectorAll('button')].filter(button => !button.disabled).map(button => {
@@ -483,6 +491,7 @@ try {
   await page.getByRole('button', { name: 'New task', exact: true }).click();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).fill('Preserve the structured intake');
   await page.getByRole('textbox', { name: 'Goal', exact: true }).fill('Keep the draft through triage');
+  await page.getByRole('button', { name: 'More', exact: true }).click();
   await page.getByRole('textbox', { name: 'Context', exact: true }).fill('Context must survive the handoff.');
   await page.getByRole('button', { name: 'Add criterion', exact: true }).click();
   await page.getByRole('textbox', { name: 'Criterion 1', exact: true }).fill('The criterion keeps its identity');

@@ -8,6 +8,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import { act } from '@testing-library/react';
 import { planningNavigationSummaryKey } from '../planningMasters/usePlanningNavigationSummary';
 import { useEffect } from 'react';
+import { useScopeStore } from '../scope/scopeStore';
 
 const service = vi.hoisted(() => ({ get: vi.fn(), logout: vi.fn() }));
 vi.mock('./identityService', () => ({ identityService: service }));
@@ -85,5 +86,30 @@ describe('signed-out navigation', () => {
         await user.click(screen.getByRole('button', { name: 'Sign out' }));
         await waitFor(() => expect(navigate).toHaveBeenCalledWith(destination));
         expect(service.logout).toHaveBeenCalledOnce();
+    });
+
+    it('forgets the remembered project and iteration on sign out', async () => {
+        const navigate = vi.fn();
+        const { user } = renderWithProviders(<IdentityProvider navigateAfterSignOut={navigate}>
+            <IdentityBadge />
+        </IdentityProvider>);
+        await screen.findByText('Ada');
+        act(() => { useScopeStore.getState().remember({ project: 1, iteration: 'backlog' }); });
+        await user.click(screen.getByLabelText('Account and access'));
+        await user.click(screen.getByRole('button', { name: 'Sign out' }));
+        await waitFor(() => expect(navigate).toHaveBeenCalled());
+        expect(useScopeStore.getState()).toMatchObject({ project: null, iteration: null });
+    });
+
+    it('forgets the remembered project and iteration when another account signs in', async () => {
+        const { queryClient: outer } = renderWithProviders(<IdentityProvider><IdentityBadge /></IdentityProvider>);
+        await screen.findByText('Ada');
+        act(() => { useScopeStore.getState().remember({ project: 1, iteration: 4 }); });
+        service.get.mockResolvedValue({ mode: 'managed', authenticated: true, configured: true,
+            principal: { id: 8, kind: 'human', display_name: 'Grace' }, profile: null,
+            workspace_role: null, projects: { 2: 'viewer' }, csrf_token: 'next-csrf' });
+        await act(async () => { await outer.invalidateQueries({ queryKey: ['workspaceIdentity'] }); });
+        await screen.findByText('Grace');
+        await waitFor(() => expect(useScopeStore.getState()).toMatchObject({ project: null, iteration: null }));
     });
 });

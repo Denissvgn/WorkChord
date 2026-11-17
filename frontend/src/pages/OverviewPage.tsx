@@ -147,8 +147,8 @@ const OverviewPage = () => {
 
     const iterations = navigation.iterations;
     const isAllProjects = project === 'all';
-    const backlogProject = !isAllProjects && scopeIteration === 'backlog' && typeof project === 'number' ? project : null;
-    const isBacklog = backlogProject !== null;
+    const isBacklog = scopeIteration === 'backlog' && (isAllProjects || typeof project === 'number');
+    const backlogProject = typeof project === 'number' ? project : null;
     const viewIterations = useMemo(
         () => iterationsInView(iterations, project, scopeIteration, today),
         [iterations, project, scopeIteration, today],
@@ -167,7 +167,7 @@ const OverviewPage = () => {
     // feedback-policy: query loading,error,retry,empty - the backlog sections share the task states.
     const backlogQuery = useQuery({
         queryKey: ['overview-backlog', backlogProject],
-        queryFn: () => loadProjectBacklog(backlogProject as number),
+        queryFn: () => loadProjectBacklog(backlogProject),
         enabled: isBacklog,
         staleTime: 60000,
     });
@@ -294,7 +294,11 @@ const OverviewPage = () => {
     const iterationsFailed = navigation.isIterationsError;
     const hasNoIterations = !iterationsLoading && !iterationsFailed && iterations.length === 0;
     const scopeKnown = project !== undefined && scopeIteration !== undefined;
-    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && (isBacklog || !hasNoIterations);
+    // Without iterations the page is empty only once a successful backlog read finds no work; while the
+    // read loads or after it fails, the sections show its loading state or its error with Retry.
+    const backlogConfirmedEmpty = isBacklog && backlogQuery.isSuccess && allRoots.length === 0;
+    const noIterationsEmpty = hasNoIterations && (!isBacklog || backlogConfirmedEmpty);
+    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && !noIterationsEmpty;
 
     const openList = parseOverviewCountList(new URLSearchParams(location.search).get(OVERVIEW_COUNT_LIST_PARAM));
     const closeList = () => {
@@ -306,7 +310,8 @@ const OverviewPage = () => {
 
     const purpose = (() => {
         if (iterationsLoading || !scopeKnown) return t('overview.purpose.loading');
-        if (isAllProjects) {
+        if (isAllProjects && isBacklog) return t('overview.purpose.allProjectsBacklog');
+        if (isAllProjects && scopeIteration === undefined) {
             if (viewIterations.length === 0) return t('overview.purpose.allProjectsNoneOpen');
             const start = viewIterations.map(item => item.start_date).sort()[0];
             const end = viewIterations.map(item => item.end_date).sort().at(-1);
@@ -364,7 +369,7 @@ const OverviewPage = () => {
                 />
             )}
             {/* Get started already names the next step, so the empty state would repeat it. */}
-            {hasNoIterations && !isBacklog && !getStarted.visible && (
+            {noIterationsEmpty && !getStarted.visible && (
                 <SectionCard>
                     <NextStepEmptyState
                         title={t('emptyStates.overview.iterationTitle')}
@@ -400,7 +405,7 @@ const OverviewPage = () => {
                         ownList={ownList}
                     />
 
-                    {isAllProjects && viewIterations.length === 0 && (
+                    {isAllProjects && scopeIteration === undefined && viewIterations.length === 0 && (
                         <p className="overview-note">{t('overview.noOpenIterations')}</p>
                     )}
 

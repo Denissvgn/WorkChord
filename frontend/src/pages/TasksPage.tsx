@@ -147,6 +147,8 @@ const TasksPage = () => {
     const taskScopeMoveRef = useRef<{ taskId: number; pending: boolean } | null>(null);
     const overviewReturnActionRef = useRef<HTMLAnchorElement>(null);
     const toolbarRef = useRef<HTMLDivElement>(null);
+    const [toolbarSelectionHost, setSelectionBarHost] = useState<HTMLElement | null>(null);
+    const [fullscreenSelectionHost, setFullscreenSelectionHost] = useState<HTMLElement | null>(null);
     const requestedTaskId = positiveTaskId(searchParams.get(OVERVIEW_TASK_PARAM));
     const returnTaskId = positiveTaskId(
         searchParams.get(OVERVIEW_TASK_RETURN_PARAM),
@@ -165,6 +167,8 @@ const TasksPage = () => {
     const createTaskRequested = searchParams.get('create') === '1';
     const filtersRequested = searchParams.get('panel') === 'filters';
     const isFullScreen = searchParams.get('fullscreen') === '1';
+    // The toolbar sits outside the full-screen dialog, so full-screen mode needs its own host inside it.
+    const selectionBarHost = isFullScreen ? fullscreenSelectionHost : toolbarSelectionHost;
     const viewMode = viewModeFromParam(searchParams.get('layout'));
     const pipelineQuery = usePipeline(viewMode === 'pipeline');
     const agentFilter = searchParams.get('agent') ?? '';
@@ -609,6 +613,8 @@ const TasksPage = () => {
                 </div>
 
                 <div ref={toolbarRef} className="tasks-toolbar-wrap flex-shrink-0">
+                    {/* While tasks are selected the bulk bar shows here, over the toolbar, so the list does not move. */}
+                    <div ref={setSelectionBarHost} className="tasks-selection-slot" />
                     <PageToolbar
                         compact
                         label={t('tasks.toolbar')}
@@ -706,14 +712,16 @@ const TasksPage = () => {
                         className="tasks-workbench-content flex-1 overflow-hidden relative"
                     >
                         {isFullScreen && (
-                            <div className="flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
-                                <div>
+                            <div className="flex justify-between items-center gap-4 px-6 py-4 flex-shrink-0 border-b border-border-subtle">
+                                {/* The selection bar covers the title only, so Exit full screen stays in reach. */}
+                                <div className="relative min-w-0 flex-1">
+                                    <div ref={setFullscreenSelectionHost} data-testid="fullscreen-selection-slot" className="tasks-selection-slot tasks-selection-slot-fullscreen" />
                                     <h2 className="text-2xl font-bold text-content-primary">
                                         {viewMode === 'pipeline' ? t('tasks.pipeline') : viewMode === 'board' ? t('tasks.boardView') : t('tasks.taskList')}
                                     </h2>
                                     <p className="text-content-secondary text-sm">{t('tasks.focusMode')}</p>
                                 </div>
-                                <Button variant="ghost" onClick={exitFullscreen}>
+                                <Button variant="ghost" className="shrink-0" onClick={exitFullscreen}>
                                     <Minimize2 className="w-5 h-5 mr-2" /> {t('actions.exitFullScreen')}
                                 </Button>
                             </div>
@@ -730,6 +738,7 @@ const TasksPage = () => {
                                         filters={filters}
                                         sortKey={sortKey}
                                         groupByStatus={groupByStatus}
+                                        selectionBarHost={selectionBarHost}
                                         leadingRow={(
                                             <QuickCapture listRow target={{ kind: 'task', iterationId: selectedIterationId }}
                                                 onExpand={title => { setCreateTitle(title); setIsCreating(true); }} />

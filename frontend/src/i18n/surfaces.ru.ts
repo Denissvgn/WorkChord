@@ -40,7 +40,7 @@ export const surfacesRussian = {
         testSaveFirst: "Сохраните изменения перед тестом. Для теста используются последние сохранённые настройки.",
     },
     ganttChart: {
-        dependencyLinks: "Связи зависимостей",
+        dependencyLinks: "Связи «Ждёт»",
         dependencyCount_one: "{{count}} связь",
         dependencyCount_few: "{{count}} связи",
         dependencyCount_many: "{{count}} связей",
@@ -73,7 +73,7 @@ export const surfacesRussian = {
         legendHoliday: "Праздник",
         legendNoDates: "Дат пока нет",
         legendProvisional: "Нет исполнителя, даты не рассчитаны",
-        legendGroupSpan: "Период группы",
+        legendGroupSpan: "Интервал группы",
         resizeTaskColumn: "Изменить ширину столбца задач",
         chartRegion: "Диаграмма расписания",
         today: "Сегодня",
@@ -360,7 +360,7 @@ export const surfacesRussian = {
     },
     projectTaskTree: {
         noLinkedTasks: "Связанных задач нет.",
-        dependencies: "Зависимостей: {{count}}",
+        dependencies: "Ждёт: {{count}}",
     },
     projectsPage: {
         purpose: "Все проекты по инициативам — списком или на временной шкале.",
@@ -647,7 +647,7 @@ export const surfacesRussian = {
         workloadWarnings: "Предупреждения по нагрузке",
         affectedTasks: "Затронутые задачи",
         minStart: "Самое раннее начало",
-        noDependenciesVisibleForThisTask: "Для этой задачи нет видимых зависимостей.",
+        noDependenciesVisibleForThisTask: "Для этой задачи не видно задач, которых она ждёт.",
         capacity: "Доступность",
         outsideConstraints: "Вне ограничений",
         taskLevelDecisions: "Решения по задачам",
@@ -764,7 +764,7 @@ export const surfacesRussian = {
         ready: "Готово для агента",
         notReady: "Не готово для агента",
         detailsLabel: "Подробности: {{status}}",
-        explanation: "Готовность агента проверяется отдельно от готовности плана. Она означает, что задачу можно безопасно принять сейчас, и учитывает описание, метки, расписание, зависимости и активные назначения.",
+        explanation: "Готовность агента проверяется отдельно от готовности плана. Она означает, что задачу можно безопасно принять сейчас, и учитывает описание, метки, расписание, задачи, которых она ждёт, и активные назначения.",
     },
     taskTimeline: {
         dismissExternalLinkError: "Скрыть ошибку внешней ссылки",
