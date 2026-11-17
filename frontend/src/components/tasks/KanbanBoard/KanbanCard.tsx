@@ -11,6 +11,7 @@ import { taskStateChip } from '../taskStateChip';
 import { getEffectiveEffort } from '../taskRowValues';
 import { EffortValue, TaskStateChipBadge } from '../taskRowParts';
 
+import { Button } from '../../../components/common/Button';
 /** What a card needs beyond its task: the task map the state chip reads, shared by every card on the board. */
 export interface BoardCardContext {
     taskMap: Map<number, Task>;
@@ -69,10 +70,10 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                 <div className="flex items-start justify-between gap-2">
                     <span className="flex items-center gap-1.5 pt-1 text-xs tabular-nums text-content-secondary">#{task.id}
                         <span className={clsx('rounded px-1 font-medium', priorityChipClassName(task.priority))}>P{task.priority}</span></span>
-                    <button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })} title={t('workStatus.moveTask', { title: task.title })}
-                        className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                    <Button type="button" {...attributes} {...listeners} aria-label={t('workStatus.moveTask', { title: task.title })} title={t('workStatus.moveTask', { title: task.title })}
+                        className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 cursor-grab items-center justify-center rounded-md text-content-secondary hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus" variant="secondary">
                         <GripVertical className="h-4 w-4" aria-hidden="true" />
-                    </button>
+                    </Button>
                 </div>
                 {(task.is_overdue || (task.claimed_by && claimUntil)) && (
                     <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
@@ -95,9 +96,9 @@ export const KanbanCard = ({ task, onOpen, context }: KanbanCardProps) => {
                 {'parent_context' in task && Array.isArray(task.parent_context) && task.parent_context.length > 0 &&
                     <p className="mb-1 truncate text-xs text-content-secondary">{task.parent_context.join(' / ')}</p>}
                 <h4 className={clsx('text-sm font-medium leading-snug text-content-primary', chip ? 'mb-2' : 'mb-3')}>
-                    <button type="button" className="text-left hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
+                    <Button type="button" className="text-left hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus"
                         aria-label={t('workStatus.openTask', { title: task.title })}
-                        onClick={event => onOpen?.(task, event.currentTarget)}>{task.title}</button>
+                        onClick={event => onOpen?.(task, event.currentTarget)} variant="secondary">{task.title}</Button>
                 </h4>
                 {chip && <TaskStateChipBadge chip={chip} className="mb-3" />}
 

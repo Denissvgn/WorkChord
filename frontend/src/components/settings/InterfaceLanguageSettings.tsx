@@ -11,6 +11,7 @@ import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
 import type { AppRuntimeSettingsUpdate, LanguageCode, RuntimeSettingSource, SystemSettings } from '../../types/systemSettings';
 import { changeAppLanguage } from '../../i18n/i18n';
 
+import { Select } from '../../components/common/Select';
 const sourceClass: Record<RuntimeSettingSource, string> = {
     runtime: 'bg-action-muted text-action border-action',
     environment: 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border',
@@ -111,7 +112,7 @@ export const InterfaceLanguageSettings = () => {
                     </label>
                     <SourceBadge source={fieldSource(settings.app, 'ui_language')} />
                 </div>
-                <select
+                <Select
                     id="interface-language"
                     value={selectedLanguage}
                     onChange={event => setLanguageDraft(event.target.value as LanguageCode)}
@@ -120,7 +121,7 @@ export const InterfaceLanguageSettings = () => {
                 >
                     <option value="en">{t('common.language.en')}</option>
                     <option value="ru">{t('common.language.ru')}</option>
-                </select>
+                </Select>
             </div>
 
             <Button type="button" onClick={saveLanguage} isLoading={languageMutation.isPending} disabled={isUnchanged || languageMutation.isPending}>

@@ -24,6 +24,7 @@ import type {
     WebIntakeRuntimeSettingsUpdate,
 } from '../../types/systemSettings';
 
+import { Select } from '../../components/common/Select';
 interface LLMForm {
     provider: LLMProvider;
     api_url: string;
@@ -544,7 +545,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                 <label htmlFor="ai-language-mode" className="text-sm font-medium text-content-primary">{t('settings.aiLanguageMode')}</label>
                                 <SourceBadge source={fieldSource(settings.app, 'ai_language_mode')} />
                             </div>
-                            <select
+                            <Select
                                 id="ai-language-mode"
                                 value={effectiveAppForm.ai_language_mode}
                                 onChange={event => setAppForm({ ...effectiveAppForm, ai_language_mode: event.target.value as AILanguageMode })}
@@ -553,7 +554,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                 <option value="auto">{t('common.language.auto')}</option>
                                 <option value="en">{t('common.language.en')}</option>
                                 <option value="ru">{t('common.language.ru')}</option>
-                            </select>
+                            </Select>
                             <p className="mt-1 text-xs text-content-secondary">{t('settings.aiLanguageHelp')}</p>
                         </div>
                     </div>
@@ -583,7 +584,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                 <label htmlFor="runtime-llm-provider" className="text-sm font-medium text-content-primary">{t('settings.provider')}</label>
                                 <SourceBadge source={fieldSource(settings.llm, 'provider')} />
                             </div>
-                            <select
+                            <Select
                                 id="runtime-llm-provider"
                                 value={effectiveLlmForm.provider}
                                 onChange={event => {
@@ -596,7 +597,7 @@ export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly 
                                 <option value="openrouter">{t('surfaces.runtimeConfig.openrouter')}</option>
                                 <option value="nvidia">NVIDIA</option>
                                 <option value="custom">{t('surfaces.runtimeConfig.custom')}</option>
-                            </select>
+                            </Select>
                         </div>
                         <div>
                             <div className="mb-1 flex justify-end"><SourceBadge source={fieldSource(settings.llm, 'model')} /></div>

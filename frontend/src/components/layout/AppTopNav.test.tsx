@@ -4,6 +4,7 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppTopNav } from './AppTopNav';
 import { AppSidebar } from './AppSidebar';
 
+import { Button } from '../../components/common/Button';
 const planningSummaryMock = vi.hoisted(() => ({
     usePlanningNavigationSummary: vi.fn(),
 }));
@@ -26,7 +27,7 @@ vi.mock('../../navigation/routeModules', async importOriginal => ({
     warmRouteModule: vi.fn(),
 }));
 vi.mock('../UserSessionBadge', () => ({
-    UserSessionBadge: () => <button type="button">Account menu</button>,
+    UserSessionBadge: () => <Button type="button" variant="secondary">Account menu</Button>,
 }));
 
 const DESTINATION_NAMES = [

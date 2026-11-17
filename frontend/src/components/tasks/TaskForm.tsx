@@ -59,6 +59,7 @@ import { useActiveMount } from './useDraftDismissal';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 interface TaskFormProps {
     iterationId: number | null;
     initialData?: Task;
@@ -650,7 +651,7 @@ export const TaskForm = ({
                     <input id={`${formId}-project`} readOnly value={scopedProject?.name ?? t('surfaces.taskForm.projectNumber', { id: scopedProjectId })}
                         className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm bg-surface-muted text-content-primary" />
                 ) : (
-                    <select id={`${formId}-project`}
+                    <Select id={`${formId}-project`}
                         value={formData.project_id ?? ''}
                         onChange={e => handleProjectChange(e.target.value ? parseInt(e.target.value) : null)}
                         className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
@@ -661,7 +662,7 @@ export const TaskForm = ({
                                 {project.name}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                 )}
             </div>
     );
@@ -693,7 +694,7 @@ export const TaskForm = ({
     const milestoneField = (
                 <div>
                     <label htmlFor={`${formId}-milestone`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.milestone')}</label>
-                    <select id={`${formId}-milestone`}
+                    <Select id={`${formId}-milestone`}
                         value={effectiveMilestoneId ?? ''}
                         onChange={e => setFormData({ ...formData, milestone_id: e.target.value ? parseInt(e.target.value) : null })}
                         disabled={!effectiveProjectId}
@@ -706,7 +707,7 @@ export const TaskForm = ({
                                 {milestone.target_date ? ` (${formatDate(milestone.target_date)})` : ''}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                 </div>
     );
     const dateFields = (
@@ -736,12 +737,12 @@ export const TaskForm = ({
                 <label className="field-lbl" htmlFor={`${formId}-owner`}>{t('domain.owner')}</label>
                 {owners.isLoading && <p className="text-sm text-content-secondary">{t('common.loading')}</p>}
                 {owners.isError && <QueryErrorState error={owners.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void owners.refetch()} />}
-                <select id={`${formId}-owner`} className="input w-full" value={formData.owner_profile_id ?? ''}
+                <Select id={`${formId}-owner`} className="input w-full" value={formData.owner_profile_id ?? ''}
                     onChange={event => setFormData(values => ({ ...values, owner_profile_id: event.target.value ? Number(event.target.value) : null }))}>
                     <option value="">{t('domain.unassignedOwner')}</option>
                     {currentTask?.owner && !owners.data?.items.some(owner => owner.id === currentTask.owner!.id) && <option value={currentTask.owner.id}>{currentTask.owner.name}</option>}
                     {(owners.data?.items ?? []).map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
-                </select>
+                </Select>
                 <p className="mt-1 text-sm text-content-secondary">{t('domain.ownerHelp')}</p>
                 {formData.owner_profile_id && <PersonCapacity key={formData.owner_profile_id} profileId={formData.owner_profile_id} startDate={iteration?.start_date} endDate={iteration?.end_date} />}
             </div>
@@ -751,7 +752,7 @@ export const TaskForm = ({
                         <label htmlFor={`${formId}-sandbox-status`} className="block text-sm font-medium text-content-primary mb-1">
                             {t('taskEditor.status')}
                         </label>
-                        <select id={`${formId}-sandbox-status`}
+                        <Select id={`${formId}-sandbox-status`}
                             value={formData.status}
                             onChange={event => setFormData({
                                 ...formData,
@@ -763,7 +764,7 @@ export const TaskForm = ({
                             <option value="active">{t('statuses.active')}</option>
                             <option value="resolved">{t('statuses.resolved')}</option>
                             <option value="closed">{t('statuses.closed')}</option>
-                        </select>
+                        </Select>
                     </div>
     );
     const dependenciesField = (
@@ -813,7 +814,7 @@ export const TaskForm = ({
     const templateField = (
                 <div>
                     <label htmlFor={`${formId}-template`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.template')}</label>
-                    <select id={`${formId}-template`}
+                    <Select id={`${formId}-template`}
                         value={selectedTemplateId}
                         onChange={event => handleTemplateSelect(event.target.value)}
                         className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
@@ -824,7 +825,7 @@ export const TaskForm = ({
                                 {templateDisplay(template).name}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                 </div>
     );
     const assistantButton = mode === 'direct' ? (

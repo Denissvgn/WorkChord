@@ -17,6 +17,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         const helpId = help ? `${selectId}-help` : undefined;
         const errorId = error ? `${selectId}-error` : undefined;
         const describedBy = [ariaDescribedBy, helpId, errorId].filter(Boolean).join(' ') || undefined;
+        const control = (
+            <select data-page-chrome-control="select" ref={ref} id={selectId} aria-describedby={describedBy} aria-invalid={Boolean(error) || undefined}
+                required={required} className={clsx('input', error && 'error', className)} {...props}>
+                {children}
+            </select>
+        );
+        if (!label && !help && !error) return control;
         return (
             <div className="field w-full">
                 {label && (
@@ -25,10 +32,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                         {required && <RequiredIndicator />}
                     </label>
                 )}
-                <select data-page-chrome-control="select" ref={ref} id={selectId} aria-describedby={describedBy} aria-invalid={Boolean(error) || undefined}
-                    required={required} className={clsx('input', error && 'error', className)} {...props}>
-                    {children}
-                </select>
+                {control}
                 {help && <p id={helpId} className="text-xs text-content-secondary">{help}</p>}
                 {error && <p id={errorId} className="field-error" role="alert">{error}</p>}
             </div>

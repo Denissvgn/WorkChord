@@ -275,9 +275,9 @@ const ProjectReleaseDetailPage = () => {
                         <p className="muted" style={{fontSize:12, marginBottom:12}}>
                             {t('surfaces.releaseDetail.useEditToChangeReleaseFieldsAndReplaceTheLinkedTaskSet')}
                         </p>
-                        <button className="btn" style={{width:'100%'}} onClick={() => setIsEditing(true)}>
+                        <Button className="btn" style={{width:'100%'}} onClick={() => setIsEditing(true)} variant="secondary">
                             {t('surfaces.releaseDetail.editLinkedTasks')}
-                        </button>
+                        </Button>
                     </div>
                 </aside>
             </div>

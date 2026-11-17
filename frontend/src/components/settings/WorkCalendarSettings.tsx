@@ -32,6 +32,7 @@ import { usePlanningObservation } from '../../features/usePlanningObservation';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { planningInputService } from '../../services/planningInputService';
 
+import { Select } from '../../components/common/Select';
 const PlanningWorkbenchFrame = ({ contextControl, secondaryActions, primaryAction, overflowAction, state, children }: ComponentProps<typeof OriginalFrame>) => (
     <div className="space-y-4">
         {(contextControl || secondaryActions || primaryAction || overflowAction) && <div className="flex flex-wrap items-center gap-2">
@@ -563,7 +564,7 @@ const WorkCalendarSettings = () => {
                 },
             ]}
             contextControl={calendars.length > 1 ? (
-                <select
+                <Select
                     className="input planning-workbench-select"
                     value={calendar.id}
                     onChange={event => {
@@ -587,7 +588,7 @@ const WorkCalendarSettings = () => {
                             {item.name} ({item.year})
                         </option>
                     ))}
-                </select>
+                </Select>
             ) : undefined}
             secondaryActions={(
                 <>
@@ -708,29 +709,29 @@ const WorkCalendarSettings = () => {
                             </p>
                         </div>
                         <div className="seg">
-                            <button
+                            <Button
                                 type="button"
                                 onClick={() => setViewMode('calendar')}
                                 aria-pressed={viewMode === 'calendar'}
-                            >
+                             variant="secondary">
                                 <Grid className="h-4 w-4" />
                                 {t('calendar.calendarView')}
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 type="button"
                                 onClick={() => setViewMode('list')}
                                 aria-pressed={viewMode === 'list'}
-                            >
+                             variant="secondary">
                                 <List className="h-4 w-4" />
                                 {t('calendar.listView')}
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
                     <div className="wc-toolbar" style={{marginBottom:16}}>
                         <label className="field" style={{minWidth:150}}>
                             <span className="field-lbl">{t('calendar.country')}</span>
-                            <select
+                            <Select
                                 value={publicCountry}
                                 onChange={event => setPublicCountry(event.target.value)}
                                 className="input"
@@ -739,7 +740,7 @@ const WorkCalendarSettings = () => {
                                 <option value="US">{t('calendar.countryUS')}</option>
                                 <option value="ES">{t('calendar.countryES')}</option>
                                 <option value="RU">{t('calendar.countryRU')}</option>
-                            </select>
+                            </Select>
                         </label>
                         <Button
                             type="button"
@@ -775,14 +776,14 @@ const WorkCalendarSettings = () => {
                         <span className="field-lbl">{t('calendar.weekendDays')}</span>
                         <div className="row wrap">
                             {weekdayNames.map((day, index) => (
-                                <button
+                                <Button
                                     key={day}
                                     type="button"
                                     onClick={() => toggleWeekend(index)}
                                     className={`pill ${draft.weekend_days.includes(index) ? 'accent' : 'opt'}`}
-                                >
+                                 variant="secondary">
                                     {day}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>
@@ -994,14 +995,14 @@ const DateChip = ({ dateKey, locale, iconTone, label, onRemove }: DateChipProps)
             {formatDate(dateKey, locale)}
             <span className="ml-2 text-xs text-content-tertiary">{label}</span>
         </span>
-        <button
+        <Button
             type="button"
             onClick={onRemove}
             className="rounded p-1 text-feedback-danger hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground"
             aria-label={label} title={label}
-        >
+         variant="secondary">
             <X className="h-4 w-4" />
-        </button>
+        </Button>
     </div>
 );
 

@@ -131,13 +131,13 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                 {locked && <p role="status" className="rounded-md bg-surface-muted px-3 py-2 text-sm text-content-secondary">{t('taskView.saveToChangeStatus')}</p>}
                 <nav aria-label={t('taskView.parts')} className="flex gap-1">
                     {PARTS.map(value => (
-                        <button key={value} type="button" aria-current={part === value ? 'page' : undefined}
+                        <Button key={value} type="button" aria-current={part === value ? 'page' : undefined}
                             onClick={() => setPart(value)}
                             className={clsx('border-b-2 px-3 py-2.5 text-sm', part === value
                                 ? 'border-action font-semibold text-content-primary'
-                                : 'border-transparent font-medium text-content-secondary hover:text-content-primary')}>
+                                : 'border-transparent font-medium text-content-secondary hover:text-content-primary')} variant="secondary">
                             {partLabel(value)}
-                        </button>
+                        </Button>
                     ))}
                 </nav>
             </header>
@@ -163,7 +163,7 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
                             <div className="flex flex-col gap-2">
                                 <div className="flex items-baseline justify-between">
                                     <h3 className="text-xs font-semibold uppercase tracking-wide text-content-secondary">{t('taskView.acceptanceCriteria')}</h3>
-                                    {criteria.length > 0 && <button type="button" className="text-sm font-medium text-action hover:underline" onClick={() => setPart('work')}>{t('taskView.seeEvidence')}</button>}
+                                    {criteria.length > 0 && <Button type="button" className="text-sm font-medium text-action hover:underline" onClick={() => setPart('work')} variant="secondary">{t('taskView.seeEvidence')}</Button>}
                                 </div>
                                 <ol className="flex flex-col gap-2">
                                     {criteria.map(criterion => {

@@ -16,6 +16,7 @@ import type { TeamMember } from '../../types/team';
 import { formatDecimal } from '../../utils/workNumbers';
 import { getApiErrorMessage } from '../../utils/apiError';
 
+import { Select } from '../../components/common/Select';
 interface Props { iterationId: number; tasks: Task[]; members: TeamMember[]; unassignedCount: number; effortCount: number }
 interface RowLoad { member: TeamMember; current: number; capacity: number; added: number; unknown: boolean }
 interface Batch { request: TaskBulkOperationRequest; response: TaskBulkOperationResponse }
@@ -144,9 +145,9 @@ export const PlanBlockersSection = ({ iterationId, tasks, members, unassignedCou
                         <p className="text-sm text-content-secondary">{recommended ? t('planWork.recommended', { name: recommended.name }) : t('planWork.chooseRow')}</p></div>
                         <label className="flex items-center gap-2">{row?.profile?.profile_kind === 'agent' ? <Bot size={16} aria-label={t('capacity.agent')} /> : <UserRound size={16} aria-label={t('capacity.person')} />}
                             <span className="sr-only">{t('planWork.assigneeFor', { label: group.label })}</span>
-                            <select className="input" disabled={pending} value={selectedRow(group) ?? ''} onChange={event => { setChoices(values => ({ ...values, [group.key]: Number(event.target.value) })); setPreview(null); }}>
+                            <Select className="input" disabled={pending} value={selectedRow(group) ?? ''} onChange={event => { setChoices(values => ({ ...values, [group.key]: Number(event.target.value) })); setPreview(null); }}>
                                 <option value="" disabled>{t('planWork.chooseRow')}</option>{members.map(member => <option value={member.id} key={member.id}>{member.name}</option>)}
-                            </select></label></div>
+                            </Select></label></div>
                     {workload && <p className="text-sm text-content-secondary">{t('planWork.currentLoad', { hours: hours(workload.allocated_hours ?? workload.allocated_days * (workload.nominal_day_hours ?? 8)), capacity: hours(workload.capacity_hours ?? workload.capacity_days * (workload.nominal_day_hours ?? 8)) })}</p>}
                     <details><summary className="cursor-pointer text-sm text-action">{t('planWork.showTasks')}</summary><ul className="mt-2 space-y-1">{group.tasks.map(task => <li key={task.id}>{task.title}</li>)}</ul></details>
                 </div>;

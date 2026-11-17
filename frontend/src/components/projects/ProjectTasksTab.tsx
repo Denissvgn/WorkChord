@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { ProjectTaskTree } from './ProjectTaskTree';
-import { GuardedTaskModal } from '../tasks/GuardedTaskModal';
+import { GuardedTaskDrawer } from '../tasks/GuardedTaskDrawer';
 import type { Task } from '../../types/task';
 
 import {
@@ -47,7 +47,7 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
             )}
         >
 
-            {newBacklogTask && <GuardedTaskModal title={t('projectTabs.newTask')} closeLabel={t('common.close')}
+            {newBacklogTask && <GuardedTaskDrawer title={t('projectTabs.newTask')} closeLabel={t('common.close')}
                 iterationId={null} parentProjectId={numericProjectId} onClose={() => setNewBacklogTask(false)} />}
             <StatusSegmentStrip
                 className="mb-4"

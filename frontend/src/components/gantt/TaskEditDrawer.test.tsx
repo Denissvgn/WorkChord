@@ -1,10 +1,11 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
-import { TaskEditModal } from './TaskEditModal';
+import { TaskEditDrawer } from './TaskEditDrawer';
 import type { GanttTask } from '../../types/gantt';
 import type { TaskDetail, TaskUpdate } from '../../types/task';
 
+import { Button } from '../../components/common/Button';
 const api = vi.hoisted(() => ({ getDetail: vi.fn() }));
 vi.mock('../../services/taskService', () => ({ taskService: api }));
 vi.mock('../../services/teamService', () => ({ teamService: { getByIteration: vi.fn().mockResolvedValue([{ id: 7, name: 'Sam' }]) } }));
@@ -15,9 +16,9 @@ vi.mock('../tasks/TaskReadView', () => ({ TaskReadView: ({ task }: { task: { tit
 vi.mock('../tasks/TaskForm', () => ({ TaskForm: ({ initialData, onSaveSandbox, onSuccess }: {
     initialData: { title: string }; onSaveSandbox?: (update: TaskUpdate) => void; onSuccess: () => void;
 }) => (
-    <button type="button" data-testid="form" onClick={() => { onSaveSandbox?.({ title: 'Saved', assignee_id: 7 } as TaskUpdate); onSuccess(); }}>
+    <Button type="button" data-testid="form" onClick={() => { onSaveSandbox?.({ title: 'Saved', assignee_id: 7 } as TaskUpdate); onSuccess(); }} variant="secondary">
         {initialData.title}
-    </button>
+    </Button>
 ) }));
 
 const ganttTask = { id: 9, title: 'Preview title', priority: 5, effort_days: 2, status: 'todo', tags: [], dependencies: [] } as unknown as GanttTask;
@@ -29,7 +30,7 @@ const resolveDetail = () => api.getDetail.mockResolvedValue({
 
 it('opens a Gantt task read-first, like the other views', async () => {
     resolveDetail();
-    renderWithProviders(<TaskEditModal task={ganttTask} iterationId={1} isOpen onClose={() => undefined} />);
+    renderWithProviders(<TaskEditDrawer task={ganttTask} iterationId={1} isOpen onClose={() => undefined} />);
     expect(await screen.findByTestId('read-view')).toHaveTextContent('Saved title');
     expect(screen.queryByTestId('form')).not.toBeInTheDocument();
 });
@@ -38,7 +39,7 @@ it('opens the form over the preview edits and keeps changes in the preview', asy
     resolveDetail();
     const onSaveSandbox = vi.fn();
     const onClose = vi.fn();
-    renderWithProviders(<TaskEditModal task={ganttTask} iterationId={1} isOpen sandboxMode onClose={onClose} onSaveSandbox={onSaveSandbox} />);
+    renderWithProviders(<TaskEditDrawer task={ganttTask} iterationId={1} isOpen sandboxMode onClose={onClose} onSaveSandbox={onSaveSandbox} />);
     const form = await screen.findByTestId('form');
     expect(form).toHaveTextContent('Preview title');
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 0)); });

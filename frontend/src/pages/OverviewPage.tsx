@@ -68,6 +68,7 @@ import {
     type PipelineStage,
 } from '../features/overview/overviewSignals';
 
+import { Button } from '../components/common/Button';
 type OverviewLocationState = {
     returnFocusId?: string;
 };
@@ -481,10 +482,10 @@ const AttentionItem = ({
     const staleNote = state === 'stale' ? (
         <p className="overview-attention-stale" data-testid="overview-attention-stale">
             <span>{t('overview.attentionItem.staleMeta', { sources: sourceNames(staleSources) })}</span>
-            <button type="button" className="btn ghost sm" onClick={onRetry}>
+            <Button type="button" className="btn ghost sm" onClick={onRetry} variant="ghost">
                 <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
                 {t('overview.attentionItem.retry')}
-            </button>
+            </Button>
         </p>
     ) : null;
 
@@ -500,10 +501,10 @@ const AttentionItem = ({
                     <h2 id={ATTENTION_ID}>{t('overview.attentionItem.unknownTitle')}</h2>
                     <p>{t('overview.attentionItem.unknownMeta', { sources: sourceNames(unknownSources) })}</p>
                 </div>
-                <button type="button" className="btn secondary overview-attention-action" onClick={onRetry}>
+                <Button type="button" className="btn secondary overview-attention-action" onClick={onRetry} variant="secondary">
                     <RefreshCw aria-hidden="true" className="h-4 w-4" />
                     {t('overview.attentionItem.retry')}
-                </button>
+                </Button>
             </section>
         );
     }

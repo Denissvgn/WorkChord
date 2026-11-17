@@ -101,7 +101,7 @@ export const SavedViewPicker = ({ manager, label }: { manager: SavedViewManager;
 
     return (
         <span className="tasks-view-picker">
-            <button
+            <Button
                 data-page-chrome-control="button"
                 ref={triggerRef}
                 type="button"
@@ -110,10 +110,10 @@ export const SavedViewPicker = ({ manager, label }: { manager: SavedViewManager;
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
                 onClick={() => (open ? closeMenu() : setOpen(true))}
-            >
+             variant="secondary">
                 <span>{label}</span>
                 <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0" />
-            </button>
+            </Button>
             {open && (
                 <>
                     <span className="tasks-view-picker-backdrop" onClick={() => closeMenu()} aria-hidden />
@@ -126,7 +126,7 @@ export const SavedViewPicker = ({ manager, label }: { manager: SavedViewManager;
                         )}
                         {items.map((item, index) => (
                             <span key={item.key} className={clsx('block', index === firstActionIndex && 'tasks-view-picker-divider')}>
-                                <button
+                                <Button
                                     data-page-chrome-control="button"
                                     ref={node => { itemRefs.current[index] = node; }}
                                     type="button"
@@ -140,12 +140,12 @@ export const SavedViewPicker = ({ manager, label }: { manager: SavedViewManager;
                                         item.onSelect();
                                     }}
                                     onKeyDown={event => handleItemKeyDown(event, index)}
-                                >
+                                 variant="secondary">
                                     {item.kind === 'view'
                                         ? <Check aria-hidden="true" className={clsx('h-4 w-4 shrink-0', !item.checked && 'invisible')} />
                                         : item.icon}
                                     {item.label}
-                                </button>
+                                </Button>
                             </span>
                         ))}
                         {manager.loadError && (

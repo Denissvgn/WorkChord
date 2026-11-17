@@ -52,6 +52,7 @@ import { useToast } from '../feedback/toast';
 import { AssignedAgentsSummary } from './AssignedAgentsSummary';
 import { RoutingCandidateComparison } from './RoutingCandidateComparison';
 
+import { Select } from '../../components/common/Select';
 interface TaskRoutingPanelProps {
     task: Task;
     onAssigned?: () => void;
@@ -791,7 +792,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                             {AXIS_KEYS.map(axis => (
                                 <label key={axis} className="field">
                                     <span className="field-lbl">{t(`taskRouting.axes.${axis}`)}</span>
-                                    <select
+                                    <Select
                                         className="input"
                                         value={draft.axes[axis]}
                                         onChange={event => updateAxis(axis, Number(event.target.value) as TaskDifficultyScore)}
@@ -799,7 +800,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                                         {[1, 2, 3].map(score => (
                                             <option key={score} value={score}>{t('taskRouting.axisScore', { score })}</option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </label>
                             ))}
                         </div>
@@ -841,12 +842,12 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                             && !skillCatalogQuery.isPending
                             && !skillCatalogQuery.isError && (
                             <div className="flex flex-col gap-2 sm:flex-row">
-                                <select className="input" aria-label={t('taskRouting.selectSkill')} value={skillToAdd} onChange={event => setSkillToAdd(event.target.value)}>
+                                <Select className="input" aria-label={t('taskRouting.selectSkill')} value={skillToAdd} onChange={event => setSkillToAdd(event.target.value)}>
                                     <option value="">{t('taskRouting.selectSkill')}</option>
                                     {skillCatalog
                                         .filter(skill => !draft.requiredSkillLevels[skill.skill_key])
                                         .map(skill => <option key={skill.skill_key} value={skill.skill_key}>{skill.skill_name}</option>)}
-                                </select>
+                                </Select>
                                 <Button type="button" size="sm" variant="secondary" onClick={addRequiredSkill} disabled={!skillToAdd}>
                                     <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                     {t('taskRouting.addSkill')}
@@ -864,7 +865,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                                         </span>
                                         <label className="flex items-center gap-1 text-xs text-content-secondary">
                                             {t('taskRouting.skillLevel')}
-                                            <select
+                                            <Select
                                                 className="input w-16"
                                                 value={level}
                                                 onChange={event => {
@@ -879,7 +880,7 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                                                 }}
                                             >
                                                 {[1, 2, 3, 4, 5].map(value => <option key={value} value={value}>{value}</option>)}
-                                            </select>
+                                            </Select>
                                         </label>
                                         <Button
                                             type="button"
@@ -909,15 +910,15 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                         <div className="grid grid-cols-2 gap-2">
                             <label className="field">
                                 <span className="field-lbl">{t('taskRouting.minimumReasoningTier')}</span>
-                                <select className="input" value={draft.minimumReasoningTier} onChange={event => { setDraft({ ...draft, minimumReasoningTier: Number(event.target.value) as ModelReasoningTier }); clearPreview(); }}>
+                                <Select className="input" value={draft.minimumReasoningTier} onChange={event => { setDraft({ ...draft, minimumReasoningTier: Number(event.target.value) as ModelReasoningTier }); clearPreview(); }}>
                                     <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
-                                </select>
+                                </Select>
                             </label>
                             <label className="field">
                                 <span className="field-lbl">{t('taskRouting.minimumContextTier')}</span>
-                                <select className="input" value={draft.minimumContextTier} onChange={event => { setDraft({ ...draft, minimumContextTier: event.target.value as ModelContextTier }); clearPreview(); }}>
+                                <Select className="input" value={draft.minimumContextTier} onChange={event => { setDraft({ ...draft, minimumContextTier: event.target.value as ModelContextTier }); clearPreview(); }}>
                                     <option value="small">small</option><option value="medium">medium</option><option value="large">large</option>
-                                </select>
+                                </Select>
                             </label>
                         </div>
                         <Input label={t('taskRouting.modalities')} value={draft.modalityTags} onChange={event => { setDraft({ ...draft, modalityTags: event.target.value }); clearPreview(); }} required />
@@ -928,11 +929,11 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     <div className="space-y-2">
                         <label className="field">
                             <span className="field-lbl">{t('taskRouting.reviewMode')}</span>
-                            <select className="input" value={draft.reviewMode} onChange={event => { setDraft({ ...draft, reviewMode: event.target.value as TaskReviewMode }); clearPreview(); }}>
+                            <Select className="input" value={draft.reviewMode} onChange={event => { setDraft({ ...draft, reviewMode: event.target.value as TaskReviewMode }); clearPreview(); }}>
                                 {REVIEW_MODES.map(mode => (
                                     <option key={mode} value={mode}>{t(`taskRouting.reviewModes.${reviewTranslationKey(mode)}`)}</option>
                                 ))}
-                            </select>
+                            </Select>
                         </label>
                         <p className="text-xs text-content-secondary">
                             {t('taskRouting.minimumReview', {
@@ -1004,10 +1005,10 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <label className="field">
                         <span className="field-lbl">{t('taskRouting.purpose')}</span>
-                        <select className="input" value={purpose} onChange={event => { setPurpose(event.target.value as AgentAssignmentPurpose); clearPreview(); }}>
+                        <Select className="input" value={purpose} onChange={event => { setPurpose(event.target.value as AgentAssignmentPurpose); clearPreview(); }}>
                             <option value="execution">{t('taskRouting.purposes.execution')}</option>
                             <option value="verification">{t('taskRouting.purposes.verification')}</option>
-                        </select>
+                        </Select>
                     </label>
                     {purpose === 'verification' && (
                         <div>

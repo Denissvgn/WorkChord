@@ -13,6 +13,7 @@ import { ContextHelp } from './ContextHelp';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import { ScopeBar } from './ScopeBar';
 
+import { Button } from '../../components/common/Button';
 const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
 
 export const AppTopNav = () => {
@@ -94,29 +95,29 @@ export const AppTopNav = () => {
             </div>
 
             <div className="nav-right">
-                <button
+                <Button
                     type="button"
                     className="command-menu-trigger"
                     aria-label={t('commandMenu.trigger')}
                     aria-keyshortcuts="Meta+K Control+K"
                     onClick={openCommandMenu}
-                >
+                 variant="secondary">
                     <Command aria-hidden="true" className="h-4 w-4" />
                     <span>{t('commandMenu.triggerLabel')}</span>
                     <kbd>{t('commandMenu.openShortcut')}</kbd>
-                </button>
+                </Button>
                 <ContextHelp />
-                <button
+                <Button
                     type="button"
                     className="mobile-nav-trigger"
                     aria-label={t('nav.openMenu')}
                     aria-expanded={mobileMenuOpen}
                     aria-controls="mobile-primary-navigation"
                     onClick={openMobileMenu}
-                >
+                 variant="secondary">
                     <Menu aria-hidden="true" className="h-5 w-5" />
                     <span className="mobile-nav-trigger-label">{t('nav.navigationMenu')}</span>
-                </button>
+                </Button>
                 <AccountMenuRowContext.Provider value={accountMenuRow}>
                     <UserSessionBadge />
                 </AccountMenuRowContext.Provider>
@@ -125,7 +126,7 @@ export const AppTopNav = () => {
 
             {mobileMenuOpen && (
                 <div className="mobile-nav-layer">
-                    <button
+                    <Button
                         type="button"
                         className="mobile-nav-backdrop"
                         tabIndex={-1}
@@ -143,9 +144,9 @@ export const AppTopNav = () => {
                     >
                         <div className="mobile-nav-head">
                             <h2 id={MOBILE_NAV_TITLE_ID}>{t('nav.primaryNavigation')}</h2>
-                            <button type="button" className="btn ghost icon" aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose}>
+                            <Button type="button" className="btn ghost icon" aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose} variant="ghost">
                                 <X aria-hidden="true" className="h-4 w-4" />
-                            </button>
+                            </Button>
                         </div>
                         <div className="mobile-nav-content">
                             <nav aria-label={t('nav.primaryNavigation')}>

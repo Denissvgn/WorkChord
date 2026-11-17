@@ -12,7 +12,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ({
         className,
-        variant = 'primary',
+        variant,
         size = 'md',
         isLoading = false,
         disabled,
@@ -24,6 +24,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }, ref) => {
         // An icon-only button shows its accessible name as a tooltip for pointer users.
         const hasText = Children.toArray(children).some(child => typeof child === 'string' || typeof child === 'number');
+        const inferredVariant = className?.split(/\s+/).find(token => ['primary', 'secondary', 'danger', 'warning', 'ghost'].includes(token));
+        const effectiveVariant = variant ?? (inferredVariant as ButtonProps['variant'] | undefined) ?? 'primary';
         const tooltip = title ?? (!hasText && typeof props['aria-label'] === 'string' ? props['aria-label'] : undefined);
         return (
             <button
@@ -35,16 +37,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 className={clsx(
                     'btn',
                     {
-                        primary: variant === 'primary',
-                        'btn-primary': variant === 'primary',
-                        secondary: variant === 'secondary',
-                        'btn-secondary': variant === 'secondary',
-                        danger: variant === 'danger',
-                        'btn-danger': variant === 'danger',
-                        warning: variant === 'warning',
-                        ghost: variant === 'ghost',
-                        'btn-ghost': variant === 'ghost',
-                        'btn-outline': variant === 'outline',
+                        primary: effectiveVariant === 'primary',
+                        'btn-primary': effectiveVariant === 'primary',
+                        secondary: effectiveVariant === 'secondary',
+                        'btn-secondary': effectiveVariant === 'secondary',
+                        danger: effectiveVariant === 'danger',
+                        'btn-danger': effectiveVariant === 'danger',
+                        warning: effectiveVariant === 'warning',
+                        ghost: effectiveVariant === 'ghost',
+                        'btn-ghost': effectiveVariant === 'ghost',
+                        'btn-outline': effectiveVariant === 'outline',
                         sm: size === 'sm',
                         lg: size === 'lg',
                         'opacity-70 cursor-not-allowed': isLoading || disabled,

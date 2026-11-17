@@ -8,6 +8,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
 import { dateFnsLocale } from '../../i18n/dateLocale';
 
+import { Button } from '../../components/common/Button';
+import { Select } from '../../components/common/Select';
 interface CalendarPeriodNavigatorProps {
     year: number;
     month: number;
@@ -77,19 +79,19 @@ export const CalendarPeriodNavigator = ({
     return (
         <div className={clsx('calendar-period-nav', className)}>
             <div className="calendar-period-controls">
-                <button
+                <Button
                     type="button"
                     className="btn icon"
                     onClick={() => onMonthChange(Math.max(0, month - 1))}
                     disabled={!canMovePrevious}
                     aria-label={t('calendar.previousMonth')}
                     title={t('calendar.previousMonth')}
-                >
+                 variant="secondary">
                     <ChevronLeft className="h-4 w-4" />
-                </button>
+                </Button>
                 <label className="field calendar-month-field">
                     <span className="field-lbl">{t('calendar.month')}</span>
-                    <select
+                    <Select
                         value={month}
                         onChange={event => onMonthChange(Number.parseInt(event.target.value, 10))}
                         className="input"
@@ -97,7 +99,7 @@ export const CalendarPeriodNavigator = ({
                         {monthNames.map((name, index) => (
                             <option key={name} value={index}>{name}</option>
                         ))}
-                    </select>
+                    </Select>
                 </label>
                 <label className="field calendar-year-field">
                     <span className="field-lbl">{t('calendar.displayYear')}</span>
@@ -110,25 +112,25 @@ export const CalendarPeriodNavigator = ({
                         className="input"
                     />
                 </label>
-                <button
+                <Button
                     type="button"
                     className="btn icon"
                     onClick={() => onMonthChange(Math.min(11, month + 1))}
                     disabled={!canMoveNext}
                     aria-label={t('calendar.nextMonth')}
                     title={t('calendar.nextMonth')}
-                >
+                 variant="secondary">
                     <ChevronRight className="h-4 w-4" />
-                </button>
+                </Button>
             </div>
             {year === new Date().getFullYear() && month !== new Date().getMonth() && (
-                <button
+                <Button
                     type="button"
                     className="btn sm"
                     onClick={() => onMonthChange(new Date().getMonth())}
-                >
+                 variant="secondary">
                     {t('calendar.currentMonth')}
-                </button>
+                </Button>
             )}
             <p className="calendar-period-summary">
                 {t('calendar.monthSummary', { weekends: monthWeekendCount, holidays: monthHolidayCount })}
@@ -245,13 +247,13 @@ export const InteractiveCalendar = ({
             <div role="radiogroup" aria-label={t('calendar.markDaysAs')} className="mb-3 flex flex-wrap items-center gap-2 text-sm">
                 <span className="text-content-secondary">{t('calendar.markDaysAs')}</span>
                 {(['holiday', 'short', 'workday'] as const).map(mode => (
-                    <button key={mode} type="button" role="radio" aria-checked={markMode === mode}
+                    <Button key={mode} type="button" role="radio" aria-checked={markMode === mode}
                         onClick={() => setMarkMode(mode)}
                         className={clsx('rounded-md border px-3 py-1 font-medium', markMode === mode
                             ? 'border-action bg-action-muted text-action'
-                            : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted')}>
+                            : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted')} variant="secondary">
                         {t(`calendar.mode_${mode}`)}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -272,7 +274,7 @@ export const InteractiveCalendar = ({
                     const weekend = isWeekendDate(day);
 
                     return (
-                        <button
+                        <Button
                             key={day.toISOString()}
                             type="button"
                             ref={element => { dayRefs.current[index] = element; }}
@@ -296,9 +298,9 @@ export const InteractiveCalendar = ({
                                         weekend ? t('calendar.tooltipWeekend') :
                                             t('calendar.tooltipWorkday')
                             }
-                        >
+                         variant="secondary">
                             {format(day, 'd')}
-                        </button>
+                        </Button>
                     );
                 })}
             </div>

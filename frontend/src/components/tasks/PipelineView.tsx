@@ -14,6 +14,7 @@ import type { TaskFilters } from './TaskFiltersBar';
 import type { LabelGroup } from '../../types/label';
 import type { ScopeIteration, ScopeProject } from '../../features/scope/workScope';
 
+import { Button } from '../../components/common/Button';
 /** Stages that wait on a planning decision rather than on an agent. */
 const HUMAN_GATED_STAGES: ReadonlySet<string> = new Set(['needs_definition', 'ready_to_assign', 'recovery_required']);
 /** The action a row offers in each stage; all open the task's detail with routing and recovery. */
@@ -111,7 +112,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                 <ol className="flex min-w-max gap-1 xl:grid xl:min-w-0 xl:grid-cols-7">
                     {columns.map((column, index) => (
                         <li key={column.id} className="flex items-stretch">
-                            <button
+                            <Button
                                 data-page-chrome-control="button" type="button"
                                 aria-pressed={column.id === activeStage.id}
                                 onClick={() => setStageParam(column.id)}
@@ -120,7 +121,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                     'flex min-h-16 w-full min-w-36 flex-col items-start gap-1 rounded-md border px-3 py-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
                                     column.id === activeStage.id ? 'border-action bg-action-muted' : 'border-border bg-surface-card hover:bg-surface-hover',
                                 )}
-                            >
+                             variant="secondary">
                                 <span className="flex w-full items-center justify-between gap-2">
                                     <span className="font-semibold text-content-primary">{column.title}</span>
                                     <span className="tabular-nums text-content-secondary">{column.tasks.length}</span>
@@ -128,7 +129,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                 {HUMAN_GATED_STAGES.has(column.id) && (
                                     <span className="rounded-full bg-feedback-warning-muted px-2 py-0.5 text-xs text-feedback-warning-foreground">{t('agentPipeline.needsDecision')}</span>
                                 )}
-                            </button>
+                            </Button>
                             {index < columns.length - 1 && <span aria-hidden="true" className="hidden self-center px-0.5 text-content-tertiary xl:hidden">›</span>}
                         </li>
                     ))}
@@ -154,11 +155,11 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                             return (
                                 <li key={task.id} className="flex flex-wrap items-start justify-between gap-3 py-3">
                                     <div className="min-w-0 flex-1 space-y-1">
-                                        <button data-page-chrome-control="button" type="button" onClick={() => onOpenTask(task)} data-testid={`task-card-${task.id}`}
+                                        <Button data-page-chrome-control="button" type="button" onClick={() => onOpenTask(task)} data-testid={`task-card-${task.id}`}
                                             aria-label={t('agentPipeline.inspectTask', { title: task.title, state: activeStage.title })}
-                                            className="break-words text-left font-medium text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+                                            className="break-words text-left font-medium text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="secondary">
                                             {t('agentPipeline.taskNumber', { id: task.id })} · {task.title}
-                                        </button>
+                                        </Button>
                                         <p className="text-sm text-content-primary">{t('agentPipeline.reason', { reason: reasons })}</p>
                                         <p className="flex flex-wrap gap-x-3 text-xs text-content-secondary">
                                             {task.project && <span className="inline-flex items-center gap-1"><Folder aria-hidden="true" className="h-3.5 w-3.5" />{task.project.name}</span>}
@@ -168,10 +169,10 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                         </p>
                                     </div>
                                     <div className="flex shrink-0 flex-wrap gap-2">
-                                        <button data-page-chrome-control="button" type="button" className="btn sm" onClick={() => onOpenTask(task)}>{t('agentPipeline.openTask')}</button>
-                                        <button data-page-chrome-control="button" type="button" className="btn sm" onClick={() => onOpenTask(task)}>
+                                        <Button data-page-chrome-control="button" type="button" className="btn sm" onClick={() => onOpenTask(task)} variant="secondary">{t('agentPipeline.openTask')}</Button>
+                                        <Button data-page-chrome-control="button" type="button" className="btn sm" onClick={() => onOpenTask(task)} variant="secondary">
                                             {t(STAGE_ACTION_KEYS[activeStage.id] ?? 'agentPipeline.inspect')}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </li>
                             );

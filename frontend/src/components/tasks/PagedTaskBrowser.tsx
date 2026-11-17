@@ -7,6 +7,7 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useSearchParams } from 'react-router-dom';
 import { taskService } from '../../services/taskService';
 
+import { Select } from '../../components/common/Select';
 export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
     const { t } = useTranslation();
     const [query, setQuery] = useState('');
@@ -29,10 +30,10 @@ export const PagedTaskBrowser = ({ iterationId }: { iterationId: number }) => {
             <label className="min-w-0 flex-1"><span className="field-lbl">{t('pagination.search')}</span>
                 <input className="input w-full" value={query} onChange={event => setQuery(event.target.value)} maxLength={200} /></label>
             <label><span className="field-lbl">{t('pagination.status')}</span>
-                <select className="input" value={status} onChange={event => setStatus(event.target.value)}>
+                <Select className="input" value={status} onChange={event => setStatus(event.target.value)}>
                     <option value="">{t('pagination.allStatuses')}</option>
                     {['planned', 'active', 'resolved', 'closed'].map(value => <option key={value} value={value}>{t(`statuses.${value}`)}</option>)}
-                </select></label>
+                </Select></label>
             <Button variant="secondary" disabled={tasks.isFetching} onClick={() => void tasks.refetch()}>{t('actions.refresh')}</Button>
         </div>
         <p role="status" className="text-sm text-content-secondary">{t(tasks.hasNextPage ? 'pagination.partial' : 'pagination.loaded', { count: items.length })}</p>

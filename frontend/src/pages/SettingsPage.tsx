@@ -357,7 +357,7 @@ const SettingsPage = () => {
                                 {themes.map((themeOption, index) => {
                                     const active = theme === themeOption.id;
                                     return (
-                                        <button
+                                        <Button
                                             key={themeOption.id}
                                             type="button"
                                             role="radio"
@@ -367,14 +367,14 @@ const SettingsPage = () => {
                                             onClick={() => setTheme(themeOption.id)}
                                             onKeyDown={event => handleThemeKeyDown(event, index)}
                                             className="settings-theme-option"
-                                        >
+                                         variant="secondary">
                                             <span aria-hidden="true" data-theme={themeOption.id} className="settings-theme-preview">
                                                 <span />
                                                 <span />
                                             </span>
                                             <strong>{themeOption.name}</strong>
                                             {active && <Check aria-hidden="true" className="h-4 w-4 text-action" />}
-                                        </button>
+                                        </Button>
                                     );
                                 })}
                             </div>

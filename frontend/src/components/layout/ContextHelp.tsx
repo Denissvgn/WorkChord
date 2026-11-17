@@ -25,6 +25,7 @@ import { openCommandMenu } from './commandMenuEvents';
 import { openSetupGuide } from './setupGuideEvents';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 
+import { Button } from '../../components/common/Button';
 const TASK_SHORTCUTS = [
     { key: 'N', labelKey: 'commandMenu.commands.newTask.label' },
     { key: 'F', labelKey: 'commandMenu.commands.filters.label' },
@@ -87,17 +88,17 @@ export const ContextHelp = () => {
 
     return (
         <>
-            <button
+            <Button
                 type="button"
                 className="context-help-trigger"
                 aria-label={t('contextHelp.openForPage', { page: pageTitle })}
                 aria-expanded={open}
                 aria-haspopup="dialog"
                 onClick={() => setOpen(true)}
-            >
+             variant="secondary">
                 <CircleHelp aria-hidden="true" className="h-4 w-4" />
                 <span className="context-help-trigger-label">{t('contextHelp.trigger')}</span>
-            </button>
+            </Button>
             <SlideOverDrawer
                 open={open}
                 title={t('contextHelp.title')}
@@ -146,7 +147,7 @@ export const ContextHelp = () => {
                             <p>{t(setupGuide.descriptionKey)}</p>
                         </header>
                         <div className="context-help-global-shortcuts">
-                            <button type="button" onClick={openSetup}>
+                            <Button type="button" onClick={openSetup} variant="secondary">
                                 <span className="context-help-shortcut-icon" aria-hidden="true">
                                     <CircleHelp className="h-4 w-4" />
                                 </span>
@@ -154,7 +155,7 @@ export const ContextHelp = () => {
                                     <strong>{t(setupGuide.actionKey)}</strong>
                                 </span>
                                 <ChevronRight aria-hidden="true" className="h-4 w-4" />
-                            </button>
+                            </Button>
                         </div>
                     </section>
 
@@ -171,7 +172,7 @@ export const ContextHelp = () => {
                         </header>
 
                         <div className="context-help-global-shortcuts">
-                            <button type="button" onClick={openCommands}>
+                            <Button type="button" onClick={openCommands} variant="secondary">
                                 <span className="context-help-shortcut-icon" aria-hidden="true">
                                     <Command className="h-4 w-4" />
                                 </span>
@@ -180,7 +181,7 @@ export const ContextHelp = () => {
                                     <span>{t('contextHelp.shortcuts.commandsBody')}</span>
                                 </span>
                                 <kbd>{t('commandMenu.openShortcut')}</kbd>
-                            </button>
+                            </Button>
                             <div>
                                 <span className="context-help-shortcut-icon" aria-hidden="true">
                                     <ArrowDownUp className="h-4 w-4" />

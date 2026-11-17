@@ -14,6 +14,7 @@ import type { TaskStatus } from '../../types/task';
 import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } from './taskRowParts';
 import { AssigneeSelect } from './AssigneeSelect';
 
+import { Button } from '../../components/common/Button';
 export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null }
 
 export interface TaskRowProps {
@@ -151,7 +152,7 @@ export const TaskRow = ({
                 </span>
             )}
 
-            <button
+            <Button
                 data-page-chrome-control="button"
                 type="button"
                 onClick={onOpen}
@@ -160,9 +161,9 @@ export const TaskRow = ({
                     'min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
                     status === 'closed' && 'text-content-secondary line-through',
                 )}
-            >
+             variant="secondary">
                 {titleText ?? title}
-            </button>
+            </Button>
 
             {meta && <span className="hidden min-w-0 max-w-[16rem] shrink truncate text-xs text-content-secondary lg:block">{meta}</span>}
 

@@ -9,6 +9,7 @@ import { labelDisplay, labelGroupDisplay } from '../../i18n/seedDisplay';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { LabelChip } from './LabelChip';
 
+import { Select } from '../../components/common/Select';
 interface LabelSelectorProps {
     value: string[];
     onChange: (labels: string[]) => void;
@@ -132,14 +133,14 @@ export const LabelSelector = ({
                                         {t('surfaces.labelSelector.archived')}
                                     </span>
                                 )}
-                                <button
+                                <Button
                                     type="button"
                                     onClick={() => removeLabel(slug)}
                                     className="rounded-full p-0.5 text-content-secondary hover:bg-surface-card/70 hover:text-content-primary"
                                     aria-label={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })} title={t('surfaces.labelSelector.removeLabel', { label: option ? labelDisplay(option).name : slug })}
-                                >
+                                 variant="secondary">
                                     <X className="h-3 w-3" aria-hidden="true" />
-                                </button>
+                                </Button>
                             </LabelChip>
                         );
                     })}
@@ -147,7 +148,7 @@ export const LabelSelector = ({
             )}
 
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
-                <select
+                <Select
                     aria-label={t('surfaces.labelSelector.addGovernedLabel')}
                     disabled={optionsLoading || Boolean(optionError)}
                     value={selectedSuggestion}
@@ -163,7 +164,7 @@ export const LabelSelector = ({
                             {option.name} · {option.groupName}
                         </option>
                     ))}
-                </select>
+                </Select>
 
                 {allowCustom && (
                     <div className="flex min-w-0 gap-2">

@@ -34,6 +34,7 @@ import { ModelBindings } from './ModelBindings';
 import { Modal } from '../common/Modal';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 
+import { Select } from '../../components/common/Select';
 interface CatalogForm {
     id: number | null;
     revision: number | null;
@@ -680,33 +681,33 @@ export const AgentModelAdministration = () => {
                                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <label className="field">
                                         <span className="field-lbl">{t('modelAdministration.reasoningTier')}</span>
-                                        <select className="input" value={catalogForm.reasoningTier} onChange={event => setCatalogForm({ ...catalogForm, reasoningTier: Number(event.target.value) as 1 | 2 | 3 })}>
+                                        <Select className="input" value={catalogForm.reasoningTier} onChange={event => setCatalogForm({ ...catalogForm, reasoningTier: Number(event.target.value) as 1 | 2 | 3 })}>
                                             <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
-                                        </select>
+                                        </Select>
                                     </label>
                                     <label className="field">
                                         <span className="field-lbl">{t('modelAdministration.contextTier')}</span>
-                                        <select className="input" value={catalogForm.contextTier} onChange={event => setCatalogForm({ ...catalogForm, contextTier: event.target.value as CatalogForm['contextTier'] })}>
+                                        <Select className="input" value={catalogForm.contextTier} onChange={event => setCatalogForm({ ...catalogForm, contextTier: event.target.value as CatalogForm['contextTier'] })}>
                                             <option value="small">{t('modelAdministration.small')}</option>
                                             <option value="medium">{t('modelAdministration.medium')}</option>
                                             <option value="large">{t('modelAdministration.large')}</option>
-                                        </select>
+                                        </Select>
                                     </label>
                                     <label className="field">
                                         <span className="field-lbl">{t('modelAdministration.costTier')}</span>
-                                        <select className="input" value={catalogForm.costTier} onChange={event => setCatalogForm({ ...catalogForm, costTier: event.target.value as CatalogForm['costTier'] })}>
+                                        <Select className="input" value={catalogForm.costTier} onChange={event => setCatalogForm({ ...catalogForm, costTier: event.target.value as CatalogForm['costTier'] })}>
                                             <option value="low">{t('modelAdministration.low')}</option>
                                             <option value="medium">{t('modelAdministration.medium')}</option>
                                             <option value="high">{t('modelAdministration.high')}</option>
-                                        </select>
+                                        </Select>
                                     </label>
                                     <label className="field">
                                         <span className="field-lbl">{t('modelAdministration.latencyTier')}</span>
-                                        <select className="input" value={catalogForm.latencyTier} onChange={event => setCatalogForm({ ...catalogForm, latencyTier: event.target.value as CatalogForm['latencyTier'] })}>
+                                        <Select className="input" value={catalogForm.latencyTier} onChange={event => setCatalogForm({ ...catalogForm, latencyTier: event.target.value as CatalogForm['latencyTier'] })}>
                                             <option value="fast">{t('modelAdministration.fast')}</option>
                                             <option value="balanced">{t('modelAdministration.balanced')}</option>
                                             <option value="slow">{t('modelAdministration.slow')}</option>
-                                        </select>
+                                        </Select>
                                     </label>
                                 </div>
                                 <Input label={t('modelAdministration.modalities')} value={catalogForm.modalityTags} onChange={event => setCatalogForm({ ...catalogForm, modalityTags: event.target.value })} required />
@@ -766,20 +767,20 @@ export const AgentModelAdministration = () => {
                                         {t('modelAdministration.actor')}
                                         <RequiredIndicator />
                                     </span>
-                                    <select className="input" value={bindingForm.actorId ?? ''} onChange={event => setBindingForm({ ...bindingForm, actorId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
+                                    <Select className="input" value={bindingForm.actorId ?? ''} onChange={event => setBindingForm({ ...bindingForm, actorId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
                                         <option value="">{t('modelAdministration.selectActor')}</option>
                                         {actors.map(actor => <option key={actor.id} value={actor.id}>{actor.display_name} ({actor.role})</option>)}
-                                    </select>
+                                    </Select>
                                 </label>
                                 <label className="field">
                                     <span className="field-lbl">
                                         {t('modelAdministration.catalogEntry')}
                                         <RequiredIndicator />
                                     </span>
-                                    <select className="input" value={bindingForm.modelCatalogId ?? ''} onChange={event => setBindingForm({ ...bindingForm, modelCatalogId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
+                                    <Select className="input" value={bindingForm.modelCatalogId ?? ''} onChange={event => setBindingForm({ ...bindingForm, modelCatalogId: Number(event.target.value) || null })} disabled={Boolean(bindingForm.id)} required>
                                         <option value="">{t('modelAdministration.selectCatalogEntry')}</option>
                                         {catalog.filter(entry => entry.enabled).map(entry => <option key={entry.id} value={entry.id}>{entry.configured_model_alias} ({entry.key})</option>)}
-                                    </select>
+                                    </Select>
                                 </label>
                                 <Input label={t('modelAdministration.tools')} value={bindingForm.toolTags} onChange={event => setBindingForm({ ...bindingForm, toolTags: event.target.value })} placeholder="code-edit, shell" />
                                 <Input label={t('modelAdministration.dataPolicy')} value={bindingForm.dataPolicyTags} onChange={event => setBindingForm({ ...bindingForm, dataPolicyTags: event.target.value })} placeholder="private-code" />

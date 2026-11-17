@@ -44,7 +44,7 @@ import { QueryErrorState, QueryLoadingState } from '../components/feedback/Query
 import { TaskList } from '../components/tasks/TaskList';
 import type { SortKey, TaskMode } from '../components/tasks/TaskList';
 import { KanbanBoard } from '../components/tasks/KanbanBoard/KanbanBoard';
-import { GuardedTaskModal } from '../components/tasks/GuardedTaskModal';
+import { GuardedTaskDrawer } from '../components/tasks/GuardedTaskDrawer';
 import { TaskEditorDrawer } from '../components/tasks/TaskEditorDrawer';
 import { QuickCapture } from '../components/tasks/QuickCapture';
 import { ImportTasksModal } from '../components/tasks/ImportTasksModal';
@@ -544,7 +544,7 @@ const TasksPage = () => {
         ]}
     />;
 
-    const taskCreator = isCreateModalOpen && <GuardedTaskModal
+    const taskCreator = isCreateModalOpen && <GuardedTaskDrawer
         title={t('tasks.createNewTask')} closeLabel={t('actions.close')} onClose={closeTaskCreator}
         iterationId={isBacklogView ? null : selectedIterationId} parentProjectId={backlogProjectId}
         initialTitle={createTitle}

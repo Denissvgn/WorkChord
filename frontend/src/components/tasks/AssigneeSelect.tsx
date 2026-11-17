@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react';
 import type { TaskRowAssigneeOption } from './TaskRow';
 
+import { Select } from '../../components/common/Select';
 export interface AssigneeSelectProps extends Omit<ComponentProps<'select'>, 'value' | 'onChange' | 'children' | 'aria-label'> {
     /** Names the picker for assistive technology, such as "Assignee: <task title>". */
     'aria-label': string;
@@ -17,7 +18,7 @@ export interface AssigneeSelectProps extends Omit<ComponentProps<'select'>, 'val
  * the people and agents offered, and the way one is chosen, are the same everywhere.
  */
 export const AssigneeSelect = ({ value, options, emptyLabel, onChange, 'aria-label': ariaLabel, ...selectProps }: AssigneeSelectProps) => (
-    <select
+    <Select
         {...selectProps}
         aria-label={ariaLabel}
         value={value ?? ''}
@@ -25,5 +26,5 @@ export const AssigneeSelect = ({ value, options, emptyLabel, onChange, 'aria-lab
     >
         <option value="">{emptyLabel}</option>
         {options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
-    </select>
+    </Select>
 );

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { GanttChart } from '../components/gantt/GanttChart';
 import { ScheduleExplanationDetails } from '../components/gantt/ScheduleExplanationDetails';
-import { TaskEditModal } from '../components/gantt/TaskEditModal';
+import { TaskEditDrawer } from '../components/gantt/TaskEditDrawer';
 import { iterationService } from '../services/iterationService';
 import { ganttService } from '../services/ganttService';
 import { taskService } from '../services/taskService';
@@ -563,7 +563,7 @@ const GanttPage = () => {
                         <h3 className="font-semibold text-feedback-purple-foreground flex items-center gap-2">
                             <Sparkles className="w-4 h-4" /> {t('gantt.aiExplanation')}
                         </h3>
-                        <button onClick={() => setExplanation(null)} className="text-feedback-purple-foreground hover:underline">{t('actions.close')}</button>
+                        <Button onClick={() => setExplanation(null)} className="text-feedback-purple-foreground hover:underline" variant="secondary">{t('actions.close')}</Button>
                     </div>
                     <div className="space-y-3 text-sm text-feedback-purple-foreground">
                         <p className="leading-relaxed text-feedback-purple-foreground">{visibleExplanation.summary}</p>
@@ -748,7 +748,7 @@ const GanttPage = () => {
                 onConfirm={() => { if (restoreTarget && restoreTarget.iteration_id === selectedIterationId && hasAdminAccess) restoreMutation.mutate(restoreTarget); }}
             />
 
-            <TaskEditModal
+            <TaskEditDrawer
                 task={visibleEditingTask}
                 iterationId={selectedIterationId}
                 isOpen={!!visibleEditingTask}
