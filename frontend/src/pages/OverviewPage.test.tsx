@@ -697,11 +697,19 @@ describe('Overview', () => {
         expect(within(drawer).getByText(i18n.t('teamwork.inBacklog'))).toBeInTheDocument();
     });
 
-    it('offers to create an iteration when there is none', async () => {
+    it('shows the backlog of every project when the workspace has no iterations', async () => {
         api.iterations.mockResolvedValue([]);
-        renderOverview('/');
-        expect(await screen.findByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: i18n.t('overview.setUpPlanningPeriod') })).toHaveAttribute('href', expect.stringMatching(/^\/plan/));
+        api.lookup.mockImplementation(async (params: { backlog_only?: boolean }) => ({
+            items: params.backlog_only ? BACKLOG : [],
+            has_more: false,
+            next_after_id: null,
+            limit: 100,
+        }));
+        renderOverview('/?project=all&iteration=backlog');
+        expect(await figure('overview-figure-done')).toHaveTextContent('2');
+        expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
+        expect(screen.queryByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).not.toBeInTheDocument();
+        expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
     });
 
     it('says what is needed when the pipeline cannot be read', async () => {

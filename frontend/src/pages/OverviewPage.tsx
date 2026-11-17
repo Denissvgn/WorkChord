@@ -147,8 +147,6 @@ const OverviewPage = () => {
     const iterations = navigation.iterations;
     const isAllProjects = project === 'all';
     const isBacklog = scopeIteration === 'backlog' && (isAllProjects || typeof project === 'number');
-    /** The project whose backlog is read; null reads the backlog of every project. */
-    const isProjectBacklog = isBacklog && !isAllProjects;
     const backlogProject = typeof project === 'number' ? project : null;
     const viewIterations = useMemo(
         () => iterationsInView(iterations, project, scopeIteration, today),
@@ -292,7 +290,7 @@ const OverviewPage = () => {
     const iterationsFailed = navigation.isIterationsError;
     const hasNoIterations = !iterationsLoading && !iterationsFailed && iterations.length === 0;
     const scopeKnown = project !== undefined && scopeIteration !== undefined;
-    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && (isProjectBacklog || !hasNoIterations);
+    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && (isBacklog || !hasNoIterations);
 
     const openList = parseOverviewCountList(new URLSearchParams(location.search).get(OVERVIEW_COUNT_LIST_PARAM));
     const closeList = () => {
@@ -363,7 +361,7 @@ const OverviewPage = () => {
                 />
             )}
             {/* Get started already names the next step, so the empty state would repeat it. */}
-            {hasNoIterations && !isProjectBacklog && !getStarted.visible && (
+            {hasNoIterations && !isBacklog && !getStarted.visible && (
                 <SectionCard>
                     <NextStepEmptyState
                         title={t('emptyStates.overview.iterationTitle')}
