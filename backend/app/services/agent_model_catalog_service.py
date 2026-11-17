@@ -42,6 +42,7 @@ from app.services.agent_service import (
     AgentConflictError,
     AgentPermissionError,
     actor_has_scope,
+    is_admin_key_principal,
     require_scope,
     validate_idempotency_key,
 )
@@ -91,6 +92,12 @@ class AgentModelCatalogService:
     def _require_read(actor: AgentActor) -> None:
         if not any(actor_has_scope(actor, scope) for scope in MODEL_CATALOG_READ_SCOPES):
             raise AgentPermissionError("Missing required scope: planning:read")
+
+    @staticmethod
+    def _audit_actor(principal: AgentActor) -> dict[str, Any]:
+        if is_admin_key_principal(principal):
+            return {"actor_type": "operator", "actor_id": None}
+        return {"actor_type": "agent", "actor_id": principal.id}
 
     @staticmethod
     def _request_hash(payload: dict[str, Any]) -> str:
@@ -169,8 +176,9 @@ class AgentModelCatalogService:
         mutate: Mutation,
     ) -> AgentModelMutationReceipt:
         require_scope(actor, "admin")
+        operator = is_admin_key_principal(actor)
         actor_id = actor.id
-        if actor_id <= 0:
+        if actor_id <= 0 and not operator:
             raise AgentPermissionError(
                 "Model mutations require a stored admin actor identity"
             )
@@ -180,14 +188,21 @@ class AgentModelCatalogService:
         )
         assert idempotency_key is not None
 
-        replay = await self._replay(
-            actor_id=actor_id,
-            operation=operation,
-            target_type=target_type,
-            idempotency_target_id=idempotency_target_id,
-            idempotency_key=idempotency_key,
-            request_payload=request_payload,
-        )
+        async def replay_receipt() -> AgentModelMutationReceipt | None:
+            # The admin-key operator has no stored actor to own a receipt, so
+            # its retries rely on key uniqueness and expected revisions instead.
+            if operator:
+                return None
+            return await self._replay(
+                actor_id=actor_id,
+                operation=operation,
+                target_type=target_type,
+                idempotency_target_id=idempotency_target_id,
+                idempotency_key=idempotency_key,
+                request_payload=request_payload,
+            )
+
+        replay = await replay_receipt()
         if replay is not None:
             return replay
 
@@ -195,7 +210,7 @@ class AgentModelCatalogService:
             mutation = await mutate()
             receipt = AgentModelMutationReceipt(
                 operation=operation,
-                actor_id=actor_id,
+                actor_id=None if operator else actor_id,
                 target_type=mutation.target_type,
                 target_id=mutation.target_id,
                 idempotency_key=idempotency_key,
@@ -208,32 +223,26 @@ class AgentModelCatalogService:
                 audit_event_ids=list(mutation.audit_event_ids),
                 result=mutation.result,
             )
-            self.db.add(
-                AgentIdempotencyRecord(
-                    actor_id=actor_id,
-                    operation=operation,
-                    target_type=target_type,
-                    target_id=idempotency_target_id,
-                    idempotency_key=idempotency_key,
-                    request_hash=self._request_hash(request_payload),
-                    response_payload=json.dumps(
-                        {"response": receipt.model_dump(mode="json")},
-                        sort_keys=True,
-                    ),
+            if not operator:
+                self.db.add(
+                    AgentIdempotencyRecord(
+                        actor_id=actor_id,
+                        operation=operation,
+                        target_type=target_type,
+                        target_id=idempotency_target_id,
+                        idempotency_key=idempotency_key,
+                        request_hash=self._request_hash(request_payload),
+                        response_payload=json.dumps(
+                            {"response": receipt.model_dump(mode="json")},
+                            sort_keys=True,
+                        ),
+                    )
                 )
-            )
             await commit_or_flush(self.db)
             return receipt
         except IntegrityError as exc:
             await self.db.rollback()
-            replay = await self._replay(
-                actor_id=actor_id,
-                operation=operation,
-                target_type=target_type,
-                idempotency_target_id=idempotency_target_id,
-                idempotency_key=idempotency_key,
-                request_payload=request_payload,
-            )
+            replay = await replay_receipt()
             if replay is not None:
                 return replay
             raise AgentModelConflictError(
@@ -242,14 +251,7 @@ class AgentModelCatalogService:
             ) from exc
         except AgentModelConflictError:
             await self.db.rollback()
-            replay = await self._replay(
-                actor_id=actor_id,
-                operation=operation,
-                target_type=target_type,
-                idempotency_target_id=idempotency_target_id,
-                idempotency_key=idempotency_key,
-                request_payload=request_payload,
-            )
+            replay = await replay_receipt()
             if replay is not None:
                 return replay
             raise
@@ -600,8 +602,7 @@ class AgentModelCatalogService:
             binding_id = assignment.model_binding_id
             event = TaskEvent(
                 task_id=assignment.task_id,
-                actor_type="agent",
-                actor_id=principal.id,
+                **self._audit_actor(principal),
                 event_type="agent.model_binding_invalidated",
                 payload=json.dumps(
                     {
@@ -643,8 +644,7 @@ class AgentModelCatalogService:
     ) -> TaskEvent:
         event = TaskEvent(
             task_id=None,
-            actor_type="agent",
-            actor_id=principal.id,
+            **self._audit_actor(principal),
             event_type="agent.model_configuration_changed",
             payload=json.dumps(
                 {

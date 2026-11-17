@@ -50,16 +50,17 @@ async def get_agent_model_catalog_service(
     return AgentModelCatalogService(db)
 
 
-async def get_model_catalog_reader(
+async def get_model_catalog_principal(
     service: Annotated[AgentService, Depends(get_agent_service)],
     agent_api_key: Annotated[Optional[str], Header(alias="X-Agent-API-Key")] = None,
     admin_api_key: Annotated[Optional[str], Header(alias=ADMIN_API_KEY_HEADER)] = None,
 ) -> AgentActor:
-    """Read the catalog with an agent key, or with the operator's admin key.
+    """Use the catalog with an agent key, or with the operator's admin key.
 
     An agent key is authenticated exactly as on every other agent route. Without
-    one, a valid admin key reads the same catalog, so an operator can connect
-    the first agent before any agent key exists.
+    one, a valid admin key acts as the operator, as it does for team setup, so
+    an operator can declare models and connect the first agent before any agent
+    key exists.
     """
 
     if not agent_api_key and admin_api_key_is_valid(admin_api_key):
@@ -158,7 +159,7 @@ async def apply_agent_profile_preset(
     response_model=list[AgentModelCatalogResponse],
 )
 async def list_agent_model_catalog(
-    actor: Annotated[AgentActor, Depends(get_model_catalog_reader)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -203,7 +204,7 @@ async def get_agent_model_catalog_entry(
 )
 async def create_agent_model_catalog_entry(
     data: AgentModelCatalogCreate,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -213,7 +214,7 @@ async def create_agent_model_catalog_entry(
         Depends(get_agent_planning_command_context),
     ],
 ):
-    """Create a model declaration through a stored admin actor."""
+    """Create a model declaration as an admin actor or the operator."""
 
     try:
         return await service.create_catalog(actor, data, command=command)
@@ -228,7 +229,7 @@ async def create_agent_model_catalog_entry(
 async def update_agent_model_catalog_entry(
     catalog_id: int,
     data: AgentModelCatalogUpdate,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -258,7 +259,7 @@ async def update_agent_model_catalog_entry(
 async def disable_agent_model_catalog_entry(
     catalog_id: int,
     data: AgentModelCatalogDisable,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),

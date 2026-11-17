@@ -2234,6 +2234,8 @@ export const englishResources = {
                         applyUnconfirmed: 'The connection was interrupted before the server answered. Retry this same request to get its receipt; it will not create a second agent.',
                     },
                     addModelFailed: 'Could not add this model. Use a unique lowercase catalog key and check the provider and model alias.',
+                    addModelRefused: 'The server refused the key in this browser tab, so the model was not added. Unlock editing with the admin key, then add it again.',
+                    addModelUnavailable: 'The server could not add this model right now. Try again.',
                     adding: 'Adding…',
                     advanced: 'Advanced: apply a team manifest',
                 },
