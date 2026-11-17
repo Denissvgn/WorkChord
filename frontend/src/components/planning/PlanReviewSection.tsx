@@ -1,3 +1,4 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PlanShareSection } from './PlanShareSection';
@@ -50,6 +51,6 @@ export const PlanReviewSection = ({ iteration, members, gantt, riskCount }: {
             <ul className="plan-schedule-reasons">{gantt!.schedule_result!.capacity_issues!.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>
         </section>}
         <PlanShareSection iterationId={iteration.id} />
-        <Link className="btn secondary" to={scopeLink(withPlanReturn('/gantt', 'review'))}>{t('planSchedule.openGantt')}</Link>
+        <ButtonLink  to={scopeLink(withPlanReturn('/gantt', 'review'))} variant="secondary">{t('planSchedule.openGantt')}</ButtonLink>
     </div>;
 };

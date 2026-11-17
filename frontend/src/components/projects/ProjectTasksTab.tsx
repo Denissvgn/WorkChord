@@ -1,10 +1,11 @@
+import { ButtonLink } from '../common/ButtonLink';
 import {
     CheckCircle2,
     Plus
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { ProjectTaskTree } from './ProjectTaskTree';
 import { GuardedTaskDrawer } from '../tasks/GuardedTaskDrawer';
@@ -82,9 +83,9 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
                         key: group.status, heading: `${t(`statuses.${group.status}`)} · ${group.total}`, tasks: group.tasks,
                     }))} />
                     {tasks.length > PROJECT_TASK_PREVIEW && (
-                        <Link className="btn sm secondary" to={scopeLink(`/tasks?project=${numericProjectId}`, { project: numericProjectId })}>
+                        <ButtonLink  to={scopeLink(`/tasks?project=${numericProjectId}`, { project: numericProjectId })} variant="secondary" size="sm">
                             {t('surfaces.projectDetail.viewAllTasks', { count: tasks.length })}
-                        </Link>
+                        </ButtonLink>
                     )}
                 </>
             )}

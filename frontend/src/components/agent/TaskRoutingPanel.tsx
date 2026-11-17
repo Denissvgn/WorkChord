@@ -1,3 +1,4 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -9,7 +10,6 @@ import {
     Trash2,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { useAgentAccess } from '../../hooks/useAgentAccess';
 import { agentService } from '../../services/agentService';
 import type {
@@ -574,9 +574,9 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                     title={t('taskRouting.accessRequired')}
                     description={t('taskRouting.description')}
                 />
-                <Link className="btn secondary w-fit" to="/settings?tab=models_agents">
+                <ButtonLink  className="w-fit" to="/settings?tab=models_agents" variant="secondary">
                     {t('taskRouting.configureAccess')}
-                </Link>
+                </ButtonLink>
             </section>
         );
     }
@@ -1114,8 +1114,8 @@ export const TaskRoutingPanel = ({ task, onAssigned }: TaskRoutingPanelProps) =>
                                     >
                                         {t('taskRouting.refreshEvidence')}
                                     </Button>
-                                    <Link className="btn secondary" to="/team">{t('taskRouting.openProfiles')}</Link>
-                                    <Link className="btn secondary" to="/settings?tab=models_agents">{t('taskRouting.openModelAdministration')}</Link>
+                                    <ButtonLink  to="/team" variant="secondary">{t('taskRouting.openProfiles')}</ButtonLink>
+                                    <ButtonLink  to="/settings?tab=models_agents" variant="secondary">{t('taskRouting.openModelAdministration')}</ButtonLink>
                                 </div>
                             </div>
                         )}

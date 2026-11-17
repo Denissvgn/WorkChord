@@ -169,8 +169,8 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                         </p>
                                     </div>
                                     <div className="flex shrink-0 flex-wrap gap-2">
-                                        <Button data-page-chrome-control="button" type="button" className="btn sm" onClick={() => onOpenTask(task)} variant="secondary">{t('agentPipeline.openTask')}</Button>
-                                        <Button data-page-chrome-control="button" type="button" className="btn sm" onClick={() => onOpenTask(task)} variant="secondary">
+                                        <Button data-page-chrome-control="button" type="button"  onClick={() => onOpenTask(task)} variant="secondary" size="sm">{t('agentPipeline.openTask')}</Button>
+                                        <Button data-page-chrome-control="button" type="button"  onClick={() => onOpenTask(task)} variant="secondary" size="sm">
                                             {t(STAGE_ACTION_KEYS[activeStage.id] ?? 'agentPipeline.inspect')}
                                         </Button>
                                     </div>

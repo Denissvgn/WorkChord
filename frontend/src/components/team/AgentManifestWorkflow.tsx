@@ -577,10 +577,10 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                     <div className="wc-page-actions">
                         <Button
                             type="button"
-                            className="btn sm"
+
                             onClick={() => readiness.refetch()}
                             disabled={readiness.isFetching}
-                         variant="secondary">
+                         variant="secondary" size="sm">
                             <RefreshCw size={13} aria-hidden="true" />
                             {readiness.isFetching
                                 ? t('actions.refreshing')
@@ -689,12 +689,12 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                             </div>
                             {!statusAccessDenied && <Button
                                 type="button"
-                                className="btn sm"
+
                                 disabled={readiness.isFetching}
                                 onClick={event => {
                                     void retryStatus(event.currentTarget);
                                 }}
-                             variant="secondary">
+                             variant="secondary" size="sm">
                                 <RefreshCw size={13} aria-hidden="true" />
                                 {t('queryFeedback.retry')}
                             </Button>}
@@ -849,7 +849,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                         {/* Start from something real instead of an empty object. */}
                                         <Button
                                             type="button"
-                                            className="btn"
+
                                             disabled={!canMutate || busy || !startingPoints.data?.current}
                                             title={startingPoints.data && !startingPoints.data.current ? t('agentTeamSetup.start.noCurrent') : undefined}
                                             onClick={() => startingPoints.data?.current && replaceEditor(`${JSON.stringify(startingPoints.data.current, null, 2)}\n`)}
@@ -858,7 +858,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                         </Button>
                                         <Button
                                             type="button"
-                                            className="btn"
+
                                             disabled={!canMutate || busy || !startingPoints.data}
                                             onClick={() => startingPoints.data && replaceEditor(`${JSON.stringify(startingPoints.data.template, null, 2)}\n`)}
                                          variant="secondary">
@@ -866,7 +866,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                         </Button>
                                         <Button
                                             type="button"
-                                            className="btn"
+
                                             onClick={() => fileInput.current?.click()}
                                             disabled={!canMutate || busy}
                                          variant="secondary">
@@ -932,7 +932,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                     <div className="row agent-team-master-actions">
                                         <Button
                                             type="button"
-                                            className="btn"
+
                                             disabled={!canMutate || busy}
                                             onClick={handleValidate}
                                          variant="secondary">
@@ -943,10 +943,10 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                         <Button
                                             type="button"
                                             // The plan step is the next step until a plan exists; then applying it is.
-                                            className={plan ? 'btn' : 'btn primary'}
+
                                             disabled={!canMutate || busy || validation?.valid !== true}
                                             onClick={event => handlePlan(event.currentTarget)}
-                                         variant="secondary">
+                                            variant={plan ? "secondary" : "primary"}>
                                             {planMutation.isPending && (
                                                 <LoaderCircle
                                                     size={13}
@@ -1018,7 +1018,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                                 <p className="muted" style={{ margin: 0 }}>{t('agentTeamSetup.safeBatchHelp')}</p>
                                                 <Button
                                                     type="button"
-                                                    className="btn primary"
+
                                                     disabled={busy || !rationaleReady}
                                                     onClick={event => handleApplySafe(event.currentTarget)}
                                                  variant="primary">
@@ -1104,7 +1104,7 @@ const AgentManifestWorkflow = ({ embedded = false }: { embedded?: boolean }) => 
                                                         )}
                                                         <Button
                                                             type="button"
-                                                            className="btn"
+
                                                             aria-busy={actionApplying || undefined}
                                                             aria-label={t('agentTeamSetup.applyActionFor', {
                                                                 action: actionLabel,

@@ -144,7 +144,7 @@ export const AppTopNav = () => {
                     >
                         <div className="mobile-nav-head">
                             <h2 id={MOBILE_NAV_TITLE_ID}>{t('nav.primaryNavigation')}</h2>
-                            <Button type="button" className="btn ghost icon" aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose} variant="ghost">
+                            <Button type="button"  aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose} variant="ghost" iconOnly>
                                 <X aria-hidden="true" className="h-4 w-4" />
                             </Button>
                         </div>

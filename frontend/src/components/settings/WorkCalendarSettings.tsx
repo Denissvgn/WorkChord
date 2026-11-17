@@ -16,6 +16,7 @@ import {
     X,
 } from 'lucide-react';
 import { Button } from '../common/Button';
+import { buttonClassName } from '../common/buttonStyles';
 import { Input } from '../common/Input';
 import { Modal } from '../common/Modal';
 import { useConfirmDialog } from '../common/useConfirmDialog';
@@ -757,7 +758,7 @@ const WorkCalendarSettings = () => {
                             {t('calendar.loadPublicHolidays')}
                         </Button>
                         <p className="w-full text-xs text-content-secondary">{t('calendar.importsSaveImmediately')}</p>
-                        <label className="btn secondary cursor-pointer">
+                        <label className={buttonClassName('secondary', 'md', 'cursor-pointer')}>
                             <Upload className="w-4 h-4" />
                             {t('calendar.importHolidayCsv')}
                             <input

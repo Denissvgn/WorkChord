@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -229,10 +230,10 @@ const CheckpointBody = ({
                 </dl>
             </section>
             <div className="plan-section-owner">
-                <Link className={clsx('btn', ownerIsPrimary ? 'primary' : 'secondary')} to={scopeLink(owner.href)}>
+                <ButtonLink to={scopeLink(owner.href)} variant={ownerIsPrimary ? 'primary' : 'secondary'}>
                     {owner.label}
                     <ArrowRight aria-hidden="true" size={14} />
-                </Link>
+                </ButtonLink>
             </div>
         </>
     );

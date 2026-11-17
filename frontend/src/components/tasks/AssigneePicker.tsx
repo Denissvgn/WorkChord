@@ -38,7 +38,7 @@ export const AssigneePicker = ({ id, members, value, profile, disabled, allowAdd
         </Select>
         {profiles.isLoading && <p role="status" className="mt-1 text-xs text-content-secondary">{t('common.loading')}</p>}
         {profiles.isError && <QueryErrorState error={profiles.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void profiles.refetch()} />}
-        {workloads.some(query => query.isError) && <Button type="button" className="btn ghost sm" onClick={() => workloads.filter(query => query.isError).forEach(query => void query.refetch())} variant="ghost">{t('common.retry')}</Button>}
+        {workloads.some(query => query.isError) && <Button type="button"  onClick={() => workloads.filter(query => query.isError).forEach(query => void query.refetch())} variant="ghost" size="sm">{t('common.retry')}</Button>}
         {profile && <p className="mt-2 text-xs text-content-secondary">{t('assigneePicker.confirmHint', { name: profile.display_name, overhead: profile.profile_kind === 'agent' ? 0 : 20 })}</p>}
     </div>;
 };

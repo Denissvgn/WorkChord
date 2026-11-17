@@ -81,12 +81,12 @@ export const CalendarPeriodNavigator = ({
             <div className="calendar-period-controls">
                 <Button
                     type="button"
-                    className="btn icon"
+
                     onClick={() => onMonthChange(Math.max(0, month - 1))}
                     disabled={!canMovePrevious}
                     aria-label={t('calendar.previousMonth')}
                     title={t('calendar.previousMonth')}
-                 variant="secondary">
+                 variant="secondary" iconOnly>
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <label className="field calendar-month-field">
@@ -114,21 +114,21 @@ export const CalendarPeriodNavigator = ({
                 </label>
                 <Button
                     type="button"
-                    className="btn icon"
+
                     onClick={() => onMonthChange(Math.min(11, month + 1))}
                     disabled={!canMoveNext}
                     aria-label={t('calendar.nextMonth')}
                     title={t('calendar.nextMonth')}
-                 variant="secondary">
+                 variant="secondary" iconOnly>
                     <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
             {year === new Date().getFullYear() && month !== new Date().getMonth() && (
                 <Button
                     type="button"
-                    className="btn sm"
+
                     onClick={() => onMonthChange(new Date().getMonth())}
-                 variant="secondary">
+                 variant="secondary" size="sm">
                     {t('calendar.currentMonth')}
                 </Button>
             )}

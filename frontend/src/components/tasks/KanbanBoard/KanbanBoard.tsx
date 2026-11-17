@@ -1,8 +1,9 @@
+import { ButtonLink } from '../../common/ButtonLink';
 import { isGraphLimitError } from '../../../utils/graphLimitError';
 import { PagedTaskBrowser } from '../PagedTaskBrowser';
 import { useState, useMemo, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
     DndContext,
     closestCorners,
@@ -421,13 +422,13 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                             {t('actions.cancel')}
                         </Button>
                         {team.length === 0 && (
-                            <Link
+                            <ButtonLink
                                 to={`/plan?step=team&iteration=${iterationId}`}
-                                className="btn secondary"
+
                                 onClick={closeOwnershipSelection}
-                            >
+                             variant="secondary">
                                 {t('surfaces.kanbanBoard.addTeamMember')}
-                            </Link>
+                            </ButtonLink>
                         )}
                         <Button
                             type="button"

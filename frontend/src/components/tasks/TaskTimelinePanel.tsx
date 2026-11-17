@@ -485,7 +485,7 @@ export const TaskTimelinePanel = ({ task }: TaskTimelinePanelProps) => {
             ) : (
                 <div className="text-sm text-content-secondary">{t('surfaces.taskTimeline.noEventsYet')}</div>
             )}
-            {timelineQuery.hasNextPage && <Button type="button" className="btn btn-secondary" disabled={timelineQuery.isFetchingNextPage}
+            {timelineQuery.hasNextPage && <Button type="button"  disabled={timelineQuery.isFetchingNextPage}
                 onClick={() => void timelineQuery.fetchNextPage()} variant="secondary">{t('teamwork.loadMore')}</Button>}
         </div>
     );

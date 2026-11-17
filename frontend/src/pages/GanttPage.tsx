@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { useAdminAccess } from '../hooks/useAdminAccess';
 import { planningInputService } from '../services/planningInputService';
 import type { Iteration } from '../types/iteration';
@@ -367,7 +368,7 @@ const GanttPage = () => {
                     <h4>{t('gantt.noIterationsTitle')}</h4>
                     <p>{t('gantt.noIterationsBody')}</p>
                     <div className="empty-actions">
-                        <Link to="/iterations" className="btn primary">{t('gantt.goToIterations')}</Link>
+                        <ButtonLink to="/iterations"  variant="primary">{t('gantt.goToIterations')}</ButtonLink>
                     </div>
                 </div>
             </PlanningWorkbenchFrame>

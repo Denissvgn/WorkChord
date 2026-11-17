@@ -1,5 +1,5 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { ArrowLeft, Waypoints } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { RefObject } from 'react';
 import { overviewTaskReturnFocusId } from '../../features/overview/overviewTaskThread';
@@ -40,17 +40,17 @@ export const OverviewTaskReturnBar = ({
                         : t('overview.thread.returnBody')}
                 </span>
             </div>
-            <Link
+            <ButtonLink
                 ref={returnActionRef}
-                className="btn secondary sm"
+
                 to={scopeLink('/')}
                 state={taskId
                     ? { returnFocusId: overviewTaskReturnFocusId(taskId) }
                     : undefined}
-            >
+             variant="secondary" size="sm">
                 <ArrowLeft aria-hidden="true" size={13} />
                 {t('overview.thread.returnAction')}
-            </Link>
+            </ButtonLink>
         </aside>
     );
 };

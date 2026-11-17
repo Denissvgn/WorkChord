@@ -40,14 +40,14 @@ export const TaskViewOptions = ({ sortKey, onSortKeyChange, groupByStatus, onGro
                 data-page-chrome-control="button"
                 ref={triggerRef}
                 type="button"
-                className="btn icon"
+
                 aria-label={t('tasks.viewOptions')}
                 title={t('tasks.viewOptions')}
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 aria-controls={open ? panelId : undefined}
                 onClick={() => setOpen(current => !current)}
-             variant="secondary">
+             variant="secondary" iconOnly>
                 <SlidersHorizontal aria-hidden="true" className="h-4 w-4" />
             </Button>
             {open && (

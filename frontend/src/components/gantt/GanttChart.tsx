@@ -1,3 +1,4 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { TaskAssigneeDisplay } from '../tasks/TaskAssigneeDisplay';
 import { Select } from '../../components/common/Select';
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- The native scroll region is focusable for keyboard scrolling and supports optional pointer panning. */
@@ -6,7 +7,6 @@ import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, PointerEvent a
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { eachDayOfInterval, format, isSameDay, addDays, differenceInCalendarDays, parseISO, startOfDay } from 'date-fns';
 import { ChevronRight, ChevronDown, ZoomIn, ZoomOut, Minimize2, Maximize2, Calendar, CalendarOff, CalendarRange, Crosshair, GitBranch, ListFilter, Pin, X, UserX, ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { planningIssueTasksHref } from '../../features/planningMasters/planningTaskIssues';
 import { TaskEditDrawer } from './TaskEditDrawer';
@@ -850,9 +850,9 @@ export const GanttChart = ({
                             : t('surfaces.ganttChart.unscheduledSummary', { count: unscheduledTaskCount })}
                     </span>
                     {unassignedTaskCount > 0 && (
-                        <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
+                        <ButtonLink  to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))} size="sm">
                             {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
-                        </Link>
+                        </ButtonLink>
                     )}
                 </div>
             )}
@@ -863,9 +863,9 @@ export const GanttChart = ({
                     <span className="min-w-0 flex-1">
                         {t('surfaces.ganttChart.provisionalSummary', { count: provisionalTaskCount })}
                     </span>
-                    <Link className="btn sm" to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))}>
+                    <ButtonLink  to={scopeLink(planningIssueTasksHref({ issue: 'unassigned', iterationId, returnStepId: 'schedule' }))} size="sm">
                         {t('surfaces.ganttChart.assignOwners', { count: unassignedTaskCount })}
-                    </Link>
+                    </ButtonLink>
                 </div>
             )}
             <PageToolbar className="gantt-toolbar"
@@ -953,9 +953,9 @@ export const GanttChart = ({
                             {t('surfaces.ganttChart.clearFilters')}
                         </Button>
                     ) : (
-                        <Link className="btn primary sm mt-4" to={scopeLink('/tasks?create=1')}>
+                        <ButtonLink  className="mt-4" to={scopeLink('/tasks?create=1')} variant="primary" size="sm">
                             {t('gantt.addTask')}
-                        </Link>
+                        </ButtonLink>
                     )}
                 </section>
             ) : (

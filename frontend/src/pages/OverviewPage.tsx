@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQueries, useQuery } from '@tanstack/react-query';
@@ -334,10 +335,10 @@ const OverviewPage = () => {
                 purpose={purpose}
                 primaryAction={(
                     // While Get started shows, its next step is the page's one primary action.
-                    <Link to={scopeLink('/tasks?create=1')} className={getStarted.visible ? 'btn secondary' : 'btn primary'}>
+                    <ButtonLink to={scopeLink('/tasks?create=1')} variant={getStarted.visible ? 'secondary' : 'primary'}>
                         <Plus aria-hidden="true" className="h-4 w-4" />
                         {t('tasks.newTask')}
-                    </Link>
+                    </ButtonLink>
                 )}
             />
 
@@ -364,10 +365,10 @@ const OverviewPage = () => {
                         title={t('overview.noIterationTitle')}
                         description={t('overview.noIterationBody')}
                         actions={(
-                            <Link className="btn secondary" to={scopeLink('/plan')}>
+                            <ButtonLink  to={scopeLink('/plan')} variant="secondary">
                                 <Calendar aria-hidden="true" className="h-4 w-4" />
                                 {t('overview.setUpPlanningPeriod')}
-                            </Link>
+                            </ButtonLink>
                         )}
                     />
                 </SectionCard>
@@ -482,7 +483,7 @@ const AttentionItem = ({
     const staleNote = state === 'stale' ? (
         <p className="overview-attention-stale" data-testid="overview-attention-stale">
             <span>{t('overview.attentionItem.staleMeta', { sources: sourceNames(staleSources) })}</span>
-            <Button type="button" className="btn ghost sm" onClick={onRetry} variant="ghost">
+            <Button type="button"  onClick={onRetry} variant="ghost" size="sm">
                 <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
                 {t('overview.attentionItem.retry')}
             </Button>
@@ -501,7 +502,7 @@ const AttentionItem = ({
                     <h2 id={ATTENTION_ID}>{t('overview.attentionItem.unknownTitle')}</h2>
                     <p>{t('overview.attentionItem.unknownMeta', { sources: sourceNames(unknownSources) })}</p>
                 </div>
-                <Button type="button" className="btn secondary overview-attention-action" onClick={onRetry} variant="secondary">
+                <Button type="button"  className="overview-attention-action" onClick={onRetry} variant="secondary">
                     <RefreshCw aria-hidden="true" className="h-4 w-4" />
                     {t('overview.attentionItem.retry')}
                 </Button>
@@ -588,10 +589,10 @@ const AttentionItem = ({
                 <p>{meta}</p>
                 {staleNote}
             </div>
-            <Link to={item.to} className="btn secondary overview-attention-action">
+            <ButtonLink to={item.to}  className="overview-attention-action" variant="secondary">
                 {item.action}
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
-            </Link>
+            </ButtonLink>
         </section>
     );
 };
@@ -633,10 +634,10 @@ const WorkNow = ({ roots, state, onRetry, backlog, showProject, showIteration, i
             title={t('overview.workNow')}
             description={t(backlog ? 'overview.workNowBacklogDescription' : 'overview.workNowDescription')}
             actions={(
-                <Link to={scopeLink('/tasks')} className="btn ghost sm">
+                <ButtonLink to={scopeLink('/tasks')}  variant="ghost" size="sm">
                     {t('overview.openTasks')}
                     <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-                </Link>
+                </ButtonLink>
             )}
         >
             {state === 'stale' && (
@@ -748,10 +749,10 @@ const AgentsNow = ({ query, stageCount, scopeName }: {
                 ? t('overview.agentsNowScopeDescription', { scope: scopeName })
                 : t('overview.agentsNowDescription')}
             actions={(
-                <Link to={scopeLink('/tasks?layout=pipeline')} className="btn ghost sm">
+                <ButtonLink to={scopeLink('/tasks?layout=pipeline')}  variant="ghost" size="sm">
                     {t('overview.openPipeline')}
                     <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
-                </Link>
+                </ButtonLink>
             )}
         >
             {!canRead ? (

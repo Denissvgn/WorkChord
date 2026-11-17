@@ -1,3 +1,4 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
@@ -65,7 +66,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
                 {t('planSchedule.calculate')}
             </Button>
             {preview && <Button variant="primary" disabled={pending !== null || preview.schedule_result?.success === false} isLoading={pending === 'apply'} onClick={() => void apply()}>{t('planSchedule.apply')}</Button>}
-            <Link className="btn secondary" to={scopeLink(withPlanReturn('/gantt', 'schedule'))}>{t('planSchedule.openGantt')}</Link>
+            <ButtonLink  to={scopeLink(withPlanReturn('/gantt', 'schedule'))} variant="secondary">{t('planSchedule.openGantt')}</ButtonLink>
         </div>
         {error && <p role="alert" className="text-sm text-feedback-danger-foreground">{error}</p>}
         {applied && <p role="status" className="text-sm text-content-secondary">{t('planSchedule.applied')}</p>}

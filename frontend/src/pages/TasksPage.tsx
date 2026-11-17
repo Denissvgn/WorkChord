@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { filtersFromSavedView, sortKeyFromSavedView } from '../features/savedViews/taskViewState';
 import {
     activeFilterCount as countActiveFilters,
@@ -21,7 +22,7 @@ import { BacklogPanel } from '../components/tasks/BacklogPanel';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     AlertTriangle,
@@ -554,7 +555,7 @@ const TasksPage = () => {
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
             <PageHeader title={t('tasks.title')} purpose={t('teamwork.backlogHelp')}
-                secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+                secondaryActions={<ButtonLink  replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'} variant="secondary">{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</ButtonLink>} />
             <PageToolbar compact label={t('tasks.toolbar')} viewSwitch={viewSwitch} />
             <BacklogPanel />
             {taskCreator}
