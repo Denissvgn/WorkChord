@@ -63,10 +63,6 @@ export const planCheckpointSections = (
     });
 };
 
-export const checkpointsDone = (sections: readonly PlanCheckpointSection[]) => (
-    sections.filter(section => section.state === 'done').length
-);
-
 /** The section that opens by default: the first incomplete one, or Review once all are done. */
 export const firstIncompleteCheckpoint = (sections: readonly PlanCheckpointSection[]): PlanningStepId => (
     sections.find(section => section.state !== 'done')?.id ?? 'review'

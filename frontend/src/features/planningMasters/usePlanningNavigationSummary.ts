@@ -12,21 +12,22 @@ export const planningNavigationSummaryKey = (iterationId?: number) => (
 );
 
 /**
- * How far one iteration's plan is, read from its planning readiness response: the
- * checkpoints done of the total, and the first checkpoint that is not complete.
+ * How far one iteration's plan is, read from its planning readiness response: the server's
+ * count of checkpoints done of the total, and the first checkpoint that is not complete.
  *
- * Null without an iteration or without a complete response (all six checkpoints): there is
- * no progress to show, and nothing is worked out in the browser.
+ * Null without an iteration or without a complete response (all six checkpoints and the
+ * server's done and total counts): there is no progress to show, and nothing is counted in
+ * the browser.
  */
 export const planProgress = (
     iteration: Iteration | null,
     summary: IterationPlanningReadinessSummary | undefined,
 ) => {
     if (iteration === null || !summary?.checkpoints) return null;
+    const { checkpoints_done: done, checkpoints_total: total } = summary;
+    if (typeof done !== 'number' || typeof total !== 'number' || total <= 0) return null;
     const byId = new Map(summary.checkpoints.map(item => [item.id, item.state]));
     if (PLANNING_STEP_IDS.some(id => !byId.has(id))) return null;
-    const total = PLANNING_STEP_IDS.length;
-    const done = PLANNING_STEP_IDS.filter(id => byId.get(id) === 'done').length;
     return {
         ready: { done, total, pct: Math.round((done / total) * 100) },
         nextId: PLANNING_STEP_IDS.find(id => byId.get(id) !== 'done') ?? '',

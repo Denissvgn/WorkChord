@@ -19,7 +19,6 @@ import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
 import { useFirstRunProgress } from '../features/firstRun/useFirstRunProgress';
 import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import {
-    checkpointsDone,
     firstIncompleteCheckpoint,
     planCheckpointSections,
 } from '../features/planningMasters/planCheckpoints';
@@ -32,6 +31,7 @@ import {
 } from '../features/planningMasters/planningReturn';
 import type { PlanningStepId } from '../features/planningMasters/planningReturn';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
+import { planProgress } from '../features/planningMasters/usePlanningNavigationSummary';
 import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import { SetupReturnBar } from '../features/firstRun/SetupReturnBar';
@@ -387,7 +387,8 @@ const PlanCheckpoints = () => {
     const noIteration = queryStates.iterations.hasData && !hasCurrentIteration;
     const setupFirst = noIteration && setupProgress.known && (setupProgress.nextId === 'profile' || setupProgress.nextId === 'project');
     const iterationIsNext = noIteration && setupProgress.known && setupProgress.nextId === 'iteration';
-    const done = sections && hasCurrentIteration ? checkpointsDone(sections) : null;
+    // The server's own count; no count without a complete response.
+    const progress = sections && hasCurrentIteration ? planProgress(currentIteration, planningSummary)?.ready ?? null : null;
     const header = (
         <PageHeader
             title={t('plan.title')}
@@ -395,8 +396,8 @@ const PlanCheckpoints = () => {
             meta={(
                 <span className="plan-page-meta">
                     <span>{currentIteration?.name ?? t('plan.page.noIteration')}</span>
-                    {done !== null && (
-                        <span className="tnum">{t('plan.page.progress', { done, total: PLANNING_STEP_IDS.length })}</span>
+                    {progress !== null && (
+                        <span className="tnum">{t('plan.page.progress', { done: progress.done, total: progress.total })}</span>
                     )}
                     {refreshStatus !== 'idle' && (
                         <span role={refreshStatus === 'error' ? 'alert' : 'status'}>

@@ -105,6 +105,8 @@ const planningState = (doneCount: number, overrides: Record<string, unknown> = {
             task_count: 3, tasks_without_assignee: 0, tasks_without_effort: 0,
             has_schedule: doneCount >= 5, risk_count: 0,
             checkpoints: PLANNING_STEP_IDS.map(id => ({ id, state: PLANNING_STEP_IDS.indexOf(id) < doneCount ? 'done' as const : 'todo' as const, reason_codes: [], counts: {} })),
+            checkpoints_done: doneCount,
+            checkpoints_total: PLANNING_STEP_IDS.length,
         },
         ready: { done: doneCount, total: PLANNING_STEP_IDS.length, pct: Math.round((doneCount / PLANNING_STEP_IDS.length) * 100) },
         isFetching: false,
