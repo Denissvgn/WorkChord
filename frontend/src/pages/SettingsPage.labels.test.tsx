@@ -140,7 +140,14 @@ describe('Settings search rendered labels', () => {
                     if (section === 'templates_labels') expect(screen.getByText('Bug report')).toBeVisible();
                     if (section === 'webhooks') expect(screen.getAllByText('Ops hook').length).toBeGreaterThan(0);
                 });
-                checkLabels(section, view.container.querySelector('.settings-content')!);
+                const content = view.container.querySelector('.settings-content')!;
+                checkLabels(section, content);
+                if (['webhooks', 'access'].includes(section)) {
+                    const headings = [...content.querySelectorAll('h2:not(#settings-destination-title), h3, h4')].map(node => node.textContent?.trim());
+                    expect(headings.length).toBeGreaterThan(0);
+                    const indexed = SETTINGS_FIELD_LABEL_KEYS[section].map(key => i18n.t(key));
+                    expect(headings.filter(heading => heading && !indexed.includes(heading)), `${section}: missing rendered headings`).toEqual([]);
+                }
                 view.unmount();
             }
         } finally {

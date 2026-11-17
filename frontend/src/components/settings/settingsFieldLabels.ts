@@ -7,8 +7,7 @@ export type SettingsSectionId =
 /**
  * The translation keys of the field labels and panel headings each Settings
  * section renders. Settings search translates these same keys, so a search for
- * a field name finds the section that shows the field. A test reads the panel
- * sources and fails when a panel renders a field label that is missing here.
+ * a field name finds the section that shows the field. A rendered-panel test checks these keys against visible labels and headings.
  */
 export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, readonly string[]>> = {
     theme: [
@@ -27,7 +26,17 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'settings.aiOutputLanguage',
         'settings.aiLanguageMode',
     ],
-    work_calendar: [],
+    work_calendar: [
+        'calendar.unavailable',
+        'calendar.companyDays',
+        'calendar.shortDays',
+        'calendar.manualCompanyDays',
+        'calendar.shortDayOverrides',
+        'calendar.date',
+        'calendar.startDate',
+        'calendar.endDate',
+        'calendar.shortDay',
+    ],
     scheduling: [
         'settingsScheduling.sections.modifiers.title',
         'settingsScheduling.fields.id',
@@ -57,6 +66,8 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'settingsScheduling.fields.maxAllowableOverload',
     ],
     templates_labels: [
+        'surfaces.templateLabels.templates',
+        'surfaces.templateLabels.labelTaxonomy',
         'surfaces.templateLabels.name',
         'surfaces.templateLabels.type',
         'surfaces.templateLabels.description',
@@ -78,6 +89,7 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'surfaces.templateLabels.labelColor',
     ],
     notifications: [
+        'surfaces.emailSettings.emailNotifications',
         'surfaces.emailSettings.enableEmailNotificationsForTaskUpdates',
         'surfaces.emailSettings.smtpHost',
         'surfaces.emailSettings.port',
@@ -107,6 +119,9 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'settingsGithubAutomation.reasonTemplate',
     ],
     webhooks: [
+        'settingsWebhooks.title',
+        'settingsWebhooks.targets',
+        'settingsWebhooks.recentDeliveries',
         'settingsWebhooks.name',
         'settingsWebhooks.url',
         'settingsWebhooks.secret',
@@ -135,6 +150,9 @@ export const SETTINGS_FIELD_LABEL_KEYS: Readonly<Record<SettingsSectionId, reado
         'settings.clearRuntimeApiKey',
     ],
     access: [
+        'settingsPage.access.title',
+        'teamwork.readersTitle',
+        'agentAccess.title',
         'settings.adminAccessField',
         'agentAccess.field',
     ],
