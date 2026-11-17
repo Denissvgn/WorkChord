@@ -2,7 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createElement, type ReactNode } from 'react';
 import { renderHook } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { pickDefaultIteration, useIterationStore } from './iterationStore';
+import { useIterationStore } from './iterationStore';
+import { pickDefaultIteration } from '../features/scope/workScope';
 import {
     LEGACY_ITERATION_STORAGE_KEY,
     SCOPE_STORAGE_KEY,

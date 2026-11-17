@@ -15,9 +15,9 @@ import {
 } from 'lucide-react';
 import { getDestination, getDestinationForPath, type DestinationId } from './destinations';
 
-export type WorkspaceKey = 'delivery' | 'planning' | 'resource';
+type WorkspaceKey = 'delivery' | 'planning' | 'resource';
 
-export interface NavItem {
+interface NavItem {
     to: string;
     labelKey: string;
     defaultLabel: string;
@@ -25,7 +25,7 @@ export interface NavItem {
     secondary?: boolean;
 }
 
-export interface WorkspaceMetadata {
+interface WorkspaceMetadata {
     key: WorkspaceKey;
     labelKey: string;
     defaultLabel: string;

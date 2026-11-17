@@ -33,7 +33,6 @@ for (const [file, source] of parsed) {
 }
 const imported = new Map([...exports].map(([file, names]) => [file, new Map([...names].map((name) => [name, new Set()]))]));
 for (const [file, source] of parsed) {
-  if (/\.(test|spec)\.[jt]sx?$/.test(file)) continue;
   for (const statement of source.statements) {
     if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier)) continue;
     const target = resolveModule(file, statement.moduleSpecifier.text);
@@ -56,5 +55,5 @@ const selected = [...exports].flatMap(([file, names]) => [...names].flatMap((nam
 })).sort((a, b) => `${a.file}:${a.name}`.localeCompare(`${b.file}:${b.name}`));
 console.log(`Named exports scanned: ${[...exports.values()].reduce((total, names) => total + names.size, 0)}`);
 if (scopes.length) console.log(`Unused-export report scope: ${scopes.join(', ')}`);
-console.log(`Unused named exports (no non-test source importer): ${selected.length}`);
+console.log(`Unused named exports (no source or test importer): ${selected.length}`);
 console.log(selected.map(({ file, name }) => `${file}: ${name}`).join('\n'));
