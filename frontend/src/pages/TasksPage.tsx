@@ -61,6 +61,7 @@ import { iterationService } from '../services/iterationService';
 import { useWorkScope } from '../features/scope/useWorkScope';
 import { urlNamesIteration } from '../features/scope/namedIteration';
 import { useLinkScope, useScopeLink } from '../features/scope/useScopeLink';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import { resolveWorkScope, type ScopeIteration as ScopeIterationValue } from '../features/scope/workScope';
 import { PageHeader, PageLayout, PageToolbar, ViewSwitch } from '../components/ui';
 import type { SavedView } from '../types/savedView';
@@ -554,7 +555,7 @@ const TasksPage = () => {
         return <PageLayout>
             {/* Leaving the backlog changes only the scope, so it replaces this entry; Iterations is a new page. */}
             <PageHeader title={t('tasks.title')} purpose={t('teamwork.backlogHelp')}
-                secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : '/iterations'}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'tasks.goToIterations')}</Link>} />
+                secondaryActions={<Link className="btn secondary" replace={iterationTasksScope !== undefined} to={iterationTasksScope ? scopeLink('/tasks', iterationTasksScope) : scopeLink(firstRunPlanHref('iteration'))}>{t(iterations?.length ? 'teamwork.iterationTasks' : 'firstRun.steps.iteration.title')}</Link>} />
             <PageToolbar compact label={t('tasks.toolbar')} viewSwitch={viewSwitch} />
             <BacklogPanel />
             {taskCreator}

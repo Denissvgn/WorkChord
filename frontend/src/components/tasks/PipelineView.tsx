@@ -6,7 +6,10 @@ import clsx from 'clsx';
 import type { Task } from '../../types/task';
 import { priorityChipClassName } from '../ui/tone';
 import { AdminAccessGate } from '../settings/AdminAccessGate';
-import { QueryEmptyState, QueryErrorState, QueryLoadingState, QueryStaleState } from '../feedback/QueryState';
+import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../feedback/QueryState';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { usePipeline } from './usePipeline';
 import { taskMatchesFilters } from '../../utils/taskFilters';
 import { pipelineTasksInScope } from '../../features/overview/overviewSignals';
@@ -34,6 +37,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
     labelGroups: LabelGroup[];
     onOpenTask: (task: Task) => void;
 }) {
+    const scopeLink = useScopeLink();
     const { t } = useTranslation();
     const [params, setParams] = useSearchParams();
     const { pipeline, canRead, usableData, isPending, isError, error, refetch } = query;
@@ -180,6 +184,6 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                 )}
             </section>
 
-        {usableData && Object.values(pipeline).every(tasks => tasks.length === 0) && <QueryEmptyState title={t('agentPipeline.emptyTitle')} description={t('agentPipeline.emptyDescription')} />}
+        {usableData && Object.values(pipeline).every(tasks => tasks.length === 0) && <NextStepEmptyState title={t('agentPipeline.emptyTitle')} description={t('emptyStates.pipeline.body')} fallback={{ label: t('firstRun.steps.tasks.title'), to: scopeLink(firstRunPlanHref('work')) }} />}
     </div>;
 }

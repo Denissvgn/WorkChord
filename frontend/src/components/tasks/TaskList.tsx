@@ -14,6 +14,10 @@ import {
 import { taskService } from '../../services/taskService';
 import { labelService } from '../../services/labelService';
 import { Button } from '../common/Button';
+import { InlineEmptyState } from '../ui/InlineEmptyState';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { GuardedTaskModal } from './GuardedTaskModal';
 import { selectVisibleWork } from '../../utils/visibleWork';
@@ -114,6 +118,7 @@ export const TaskList = ({
 }: TaskListProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
     const [searchParams] = useSearchParams();
@@ -490,32 +495,24 @@ export const TaskList = ({
             </div>
 
             {filteredAndSortedTasks?.length === 0 && (
-                <div className="rounded-lg border border-dashed border-border bg-surface-muted px-6 py-12 text-center">
-                    <h2 className="text-base font-semibold text-content-primary">
-                        {tasks && tasks.length > 0
-                            ? t('taskList.noFilterMatches')
-                            : t('taskList.noTasks')}
-                    </h2>
-                    <p className="mx-auto mt-1 max-w-lg text-sm text-content-secondary">
-                        {tasks && tasks.length > 0
-                            ? activeViewName
-                                ? t('taskList.noFilterMatchesViewBody', { view: activeViewName })
-                                : t('taskList.noFilterMatchesBody')
-                            : t('taskList.noTasksBody')}
-                    </p>
-                    <div className="mt-4 flex justify-center gap-2">
-                        {tasks && tasks.length > 0 && hasActiveFilters && onClearFilters ? (
-                            <Button variant="secondary" onClick={onClearFilters}>
-                                {t('taskList.clearFilters')}
-                            </Button>
-                        ) : onCreateTask ? (
-                            <Button variant="primary" onClick={onCreateTask}>
-                                <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
-                                {t('tasks.newTask')}
-                            </Button>
-                        ) : null}
-                    </div>
-                </div>
+                tasks && tasks.length > 0 ? (
+                    <InlineEmptyState
+                        headingLevel={2}
+                        title={t('taskList.noFilterMatches')}
+                        description={activeViewName ? t('taskList.noFilterMatchesViewBody', { view: activeViewName }) : t('taskList.noFilterMatchesBody')}
+                        actions={hasActiveFilters && onClearFilters ? (
+                            <Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button>
+                        ) : undefined}
+                    />
+                ) : (
+                    <NextStepEmptyState
+                        title={t('emptyStates.tasks.title')}
+                        description={t('emptyStates.tasks.body')}
+                        fallback={onCreateTask
+                            ? { label: t('emptyStates.tasks.action'), onClick: onCreateTask }
+                            : { label: t('firstRun.steps.tasks.title'), to: scopeLink(firstRunPlanHref('work')) }}
+                    />
+                )
             )}
 
             {(editingTask || addingChildTo) && <GuardedTaskModal

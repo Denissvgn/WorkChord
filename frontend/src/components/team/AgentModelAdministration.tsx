@@ -27,6 +27,7 @@ import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { Input, RequiredIndicator } from '../common/Input';
 import { QueryEmptyState, QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
+import { InlineEmptyState } from '../ui';
 import { useToast } from '../feedback/toast';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { ModelCatalog } from './ModelCatalog';
@@ -526,10 +527,11 @@ export const AgentModelAdministration = () => {
 
     if (!hasAgentKey) {
         return (
-            <div><QueryEmptyState
-                title={t('modelAdministration.accessRequiredTitle')}
-                description={t('modelAdministration.accessRequiredDescription')}
-            /><Link to="/settings?tab=access" className="text-action underline">{t('settingsPage.openAdminAccess')}</Link></div>
+            <InlineEmptyState
+                title={t('emptyStates.team.modelsTitle')}
+                description={t('emptyStates.team.modelsBody')}
+                actions={<Link className="btn primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</Link>}
+            />
         );
     }
 

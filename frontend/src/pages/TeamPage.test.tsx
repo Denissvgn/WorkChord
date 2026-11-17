@@ -252,7 +252,7 @@ describe('Team page', () => {
 
         await user.click(screen.getByRole('tab', { name: 'Models' }));
         expect(screen.getByRole('tab', { name: 'Models' })).toHaveAttribute('aria-selected', 'true');
-        expect(within(screen.getByRole('tabpanel')).getByText('Agent key required')).toBeVisible();
+        expect(within(screen.getByRole('tabpanel')).getByText('Models need the admin key')).toBeVisible();
         expect(screen.getByRole('tabpanel')).not.toHaveTextContent('not on this page yet');
     });
 

@@ -14,6 +14,8 @@ import { PlanReviewSection } from '../components/planning/PlanReviewSection';
 import { PlanWorkSection } from '../components/planning/PlanWorkSection';
 import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import {
     checkpointsDone,
     firstIncompleteCheckpoint,
@@ -292,6 +294,7 @@ const PlanCheckpoints = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const readiness = usePlanningReadiness();
     const { currentIteration, hasCurrentIteration, planningSummary, queryStates, refetch, isFetching } = readiness;
+    const scopeLink = useScopeLink();
     const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
     // Opening or closing a section by hand wins over the default for the rest of the visit.
     const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null } | null>(null);
@@ -427,6 +430,13 @@ const PlanCheckpoints = () => {
         <PageLayout variant="wide" className="plan-page">
             {header}
             <SetupReturnBar />
+            {queryStates.iterations.hasData && !hasCurrentIteration && (
+                <NextStepEmptyState
+                    title={t('emptyStates.plan.title')}
+                    description={t('emptyStates.plan.body')}
+                    fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
+                />
+            )}
             <div aria-busy={isFetching || undefined}>{content}</div>
         </PageLayout>
     );

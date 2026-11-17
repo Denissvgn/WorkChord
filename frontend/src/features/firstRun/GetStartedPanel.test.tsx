@@ -229,7 +229,7 @@ describe('Get started panel', () => {
         // The same browser, later: the panel stays hidden although setup is incomplete.
         useGetStartedVisibility.setState({ dismissed: localStorage.getItem(GET_STARTED_DISMISSED_KEY) === '1', requested: false });
         const again = renderWorkspace();
-        expect(await screen.findByText(i18n.t('overview.noIterationTitle'))).toBeInTheDocument();
+        expect(await screen.findByText(i18n.t('emptyStates.overview.iterationTitle'))).toBeInTheDocument();
         expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
         again.unmount();
 

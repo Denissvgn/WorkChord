@@ -678,7 +678,7 @@ describe('Overview', () => {
     it('offers to create an iteration when there is none', async () => {
         api.iterations.mockResolvedValue([]);
         renderOverview('/');
-        expect(await screen.findByRole('heading', { name: i18n.t('overview.noIterationTitle') })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: i18n.t('overview.setUpPlanningPeriod') })).toHaveAttribute('href', expect.stringMatching(/^\/plan/));
     });
 

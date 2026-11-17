@@ -6,7 +6,6 @@ import {
     AlertTriangle,
     ArrowRight,
     Bot,
-    Calendar,
     CheckCircle2,
     Clock,
     ClipboardCheck,
@@ -25,7 +24,7 @@ import { getApiErrorStatus } from '../utils/apiError';
 import { taskService } from '../services/taskService';
 import { iterationService } from '../services/iterationService';
 import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
-import { InlineEmptyState, PageHeader, PageLayout, SectionCard, SlideOverDrawer } from '../components/ui';
+import { PageHeader, PageLayout, SectionCard, SlideOverDrawer } from '../components/ui';
 import type { PillTone } from '../components/ui/tone';
 import { STATUS_TONE, toneSoftVar, toneVar } from '../components/ui/tone';
 import { usePipeline } from '../components/tasks/usePipeline';
@@ -46,6 +45,8 @@ import {
 } from '../features/overview/overviewTaskThread';
 import { loadProjectBacklog } from '../features/overview/overviewBacklog';
 import { GetStartedPanel } from '../features/firstRun/GetStartedPanel';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import { useGetStarted } from '../features/firstRun/useGetStarted';
 import {
     OVERVIEW_COUNT_LIST_PARAM,
@@ -359,15 +360,10 @@ const OverviewPage = () => {
             {/* Get started already names the next step, so the empty state would repeat it. */}
             {hasNoIterations && !isBacklog && !getStarted.visible && (
                 <SectionCard>
-                    <InlineEmptyState
-                        title={t('overview.noIterationTitle')}
-                        description={t('overview.noIterationBody')}
-                        actions={(
-                            <Link className="btn secondary" to={scopeLink('/plan')}>
-                                <Calendar aria-hidden="true" className="h-4 w-4" />
-                                {t('overview.setUpPlanningPeriod')}
-                            </Link>
-                        )}
+                    <NextStepEmptyState
+                        title={t('emptyStates.overview.iterationTitle')}
+                        description={t('emptyStates.overview.iterationBody')}
+                        fallback={{ label: t('overview.setUpPlanningPeriod'), to: scopeLink(firstRunPlanHref('iteration')) }}
                     />
                 </SectionCard>
             )}
@@ -646,7 +642,7 @@ const WorkNow = ({ roots, state, onRetry, backlog, showProject, showIteration, i
             ) : !hasResult(state) ? (
                 <QueryLoadingState message={t('overview.dataStatus.sectionLoading')} />
             ) : tasks.length === 0 ? (
-                <InlineEmptyState>{emptyText}</InlineEmptyState>
+                <NextStepEmptyState description={emptyText} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />
             ) : (
                 <>
                     <ul className="overview-task-list">
@@ -864,7 +860,7 @@ const CountList = ({ items, label, showIteration, linkProject }: {
     const scopeLink = useScopeLink();
 
     if (items.length === 0) {
-        return <InlineEmptyState>{t('overview.list.empty')}</InlineEmptyState>;
+        return <NextStepEmptyState description={t('overview.list.empty')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />;
     }
     return (
         <>
