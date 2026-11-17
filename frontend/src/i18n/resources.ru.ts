@@ -1332,6 +1332,7 @@ export const russianResources = {
                     allProjects_other: 'Все проекты · {{count}} открытой итерации, {{start}} – {{end}}',
                     allProjectsNoneOpen: 'Все проекты · сегодня нет открытых итераций.',
                     backlog: '{{project}} · Бэклог, работа без итерации.',
+                    allProjectsBacklog: 'Все проекты · Бэклог, работа без итерации.',
                     thisProject: 'Этот проект',
                 },
                 needsYou: 'Нужно вам сейчас',

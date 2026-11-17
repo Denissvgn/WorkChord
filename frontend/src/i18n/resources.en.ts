@@ -1291,6 +1291,7 @@ export const englishResources = {
                     allProjects_other: 'All projects · {{count}} open iterations, {{start}} – {{end}}.',
                     allProjectsNoneOpen: 'All projects · no iteration is open today.',
                     backlog: '{{project}} · Backlog, work with no iteration.',
+                    allProjectsBacklog: 'All projects · Backlog, work with no iteration.',
                     thisProject: 'This project',
                 },
                 needsYou: 'Needs you now',
