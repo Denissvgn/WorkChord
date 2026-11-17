@@ -53,6 +53,19 @@ describe('page frame lint rules', () => {
         expect(reports.map(report => report.rule)).toEqual(['workchord/single-page-toolbar']);
     });
 
+    it.each([
+        ['an aliased import', 'secondToolbarAlias'],
+        ['a namespace import', 'secondToolbarNamespace'],
+        ['object properties rendered together', 'secondToolbarObject'],
+        ['an array of toolbars', 'secondToolbarArray'],
+        ['a helper that returns one toolbar, called twice', 'secondToolbarHelper'],
+    ])('rejects two toolbars reached through %s', async (_case, name) => {
+        const reports = await lint(name, 'src/pages/Example.tsx');
+        expect(reports.map(report => report.rule)).toEqual(['workchord/single-page-toolbar']);
+        expect(reports[0].text).toMatch(/at most one PageToolbar/);
+        expect(reports[0].text).toMatch(/cannot prove/);
+    });
+
     it('accepts a toolbar in each arm of one conditional', async () => {
         expect(await lint('exclusiveToolbars', 'src/pages/Example.tsx')).toEqual([]);
     });

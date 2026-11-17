@@ -1,0 +1,12 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// A helper that returns one toolbar, called twice in one tree.
+const renderToolbar = (label: string) => <PageToolbar label={label} />;
+
+export const Example = () => (
+    <PageLayout>
+        <PageHeader title="Example" purpose="One sentence." />
+        {renderToolbar('Search')}
+        {renderToolbar('Filters')}
+    </PageLayout>
+);
