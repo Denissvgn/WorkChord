@@ -64,18 +64,29 @@ export const useAgentRowFacts = (tasks: DisplayedTask[], known?: ReadonlyMap<num
 };
 
 /**
+ * The kind of a task's assignee: from the team read once it has the assignee's row, otherwise
+ * from the task itself, so a task given to an agent is known as one while the team read loads
+ * or after it fails.
+ */
+export const assigneeKind = (
+    assignee: { id: number; kind?: TaskRowAssigneeOption['kind'] | null } | null | undefined,
+    option: TaskRowAssigneeOption | undefined,
+): TaskRowAssigneeOption['kind'] => option?.kind ?? assignee?.kind ?? undefined;
+
+/**
  * The agent status line and the Reviewer for one row. The status line is for an agent
  * assignee only; the Reviewer is named once the task is submitted. While any displayed task is
  * submitted, other rows keep an empty reviewer cell so the columns line up; with none, the
- * cell is left out and the title keeps the room.
+ * cell is left out and the title keeps the room. Until the team read says whether the agent is
+ * connected, an agent assignee with nothing sent shows the unknown line.
  */
 export const agentRowValues = (
-    task: Pick<Task, 'id' | 'status' | 'agent_working' | 'claimed_by'> & { assignee?: { id: number } | null },
+    task: Pick<Task, 'id' | 'status' | 'agent_working' | 'claimed_by'> & { assignee?: { id: number; kind?: TaskRowAssigneeOption['kind'] | null } | null },
     options: TaskRowAssigneeOption[] | undefined,
     facts: AgentRowFacts,
 ): { dispatch: AgentDispatchState | null; reviewer: { name: string | null } | null | undefined } => {
     const option = task.assignee ? options?.find(candidate => candidate.id === task.assignee?.id) : undefined;
-    const dispatch = option?.kind === 'agent' ? taskAgentDispatchState(task, option.agentConnected) : null;
+    const dispatch = assigneeKind(task.assignee, option) === 'agent' ? taskAgentDispatchState(task, option?.agentConnected) : null;
     const reviewer = !facts.reviewerColumn ? undefined
         : task.status === 'resolved' && facts.reviewerById.has(task.id) ? { name: facts.reviewerById.get(task.id) ?? null } : null;
     return { dispatch, reviewer };

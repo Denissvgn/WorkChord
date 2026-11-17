@@ -29,8 +29,11 @@ export interface TaskRowProps {
     chip?: TaskStateChip | null;
     /** Secondary text after the title, such as the project and iteration. */
     meta?: ReactNode;
-    /** The assignee column is left out when this is undefined. */
-    assignee?: { id?: number; name: string } | null;
+    /**
+     * The assignee column is left out when this is undefined. `kind` comes from the task and
+     * sets the icon until the assignee options have the row.
+     */
+    assignee?: { id?: number; name: string; kind?: TaskRowAssigneeOption['kind'] | null } | null;
     assigneeOptions?: TaskRowAssigneeOption[];
     onAssign?: (assigneeId: number | null) => void;
     /** Days; `undefined` leaves the column out and `null` shows an unknown estimate. */
@@ -84,7 +87,7 @@ export const TaskRow = ({
     const statusName = t(`statuses.${status}`, { defaultValue: status });
     const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
     const statusIcon = isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
-    const assigneeKind = assigneeOptions?.find(option => option.id === assignee?.id)?.kind;
+    const assigneeKind = assigneeOptions?.find(option => option.id === assignee?.id)?.kind ?? assignee?.kind ?? undefined;
     const assigneeName = assignee?.name ?? t('common.unassigned');
     const options = assignee && assignee.id !== undefined && !assigneeOptions?.some(option => option.id === assignee.id)
         ? [{ id: assignee.id, name: assignee.name }, ...(assigneeOptions ?? [])]

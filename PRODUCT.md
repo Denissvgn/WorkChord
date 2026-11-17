@@ -62,7 +62,7 @@ The web application has ten destinations, in this order: three without a group, 
   - **Queued**: the task has been sent and the agent has not begun.
   - **Working**: the agent has begun.
   - **Waiting for review**: the work has been submitted.
-  - **Agent status unknown**: shown only for an assignee known to be an agent while a read the line needs (whether the agent is connected, or whether the task has been sent) is loading or has failed. Until the team read says the assignee is an agent, the assignee shows no status line.
+  - **Agent status unknown**: a read the line needs (whether the agent is connected, or whether the task has been sent) is loading or has failed.
 - A closed task shows no status line.
 - Reviewer is shown beside Assignee.
 - Owner is not shown on a task unless it is known to differ from the assignee's profile; while that profile cannot be read, Owner stays hidden. It stays editable under More.

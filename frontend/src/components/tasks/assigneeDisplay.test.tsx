@@ -173,15 +173,55 @@ describe('assignee consistency across task views', () => {
         expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
     });
 
-    it.each([
-        ['loading', () => new Promise(() => undefined)],
+    const teamReads = [
+        ['pending', () => new Promise(() => undefined)],
         ['failed', () => Promise.reject(new Error('Capacity unavailable'))],
-    ] as const)('claims no dispatch state while the team read that says the assignee is an agent is %s', async (state, read) => {
+    ] as const;
+    const settled = (state: 'pending' | 'failed') => (query: { fetchStatus: string; status: string } | undefined) =>
+        state === 'pending' ? query?.fetchStatus === 'fetching' : query?.status === 'error';
+    const agentTask: Task = { ...base, assignee: { id: 7, name: 'Builder', kind: 'agent' } };
+
+    it.each(teamReads)('says Agent status unknown for an open agent task while the team read is %s', async (state, read) => {
         services.team.mockImplementation(read);
-        const { queryClient } = renderWithProviders(readView(base));
-        await waitFor(() => expect(queryClient.getQueryState(['team', 2])?.[state === 'loading' ? 'fetchStatus' : 'status'])
-            .toBe(state === 'loading' ? 'fetching' : 'error'));
-        expect(screen.getByText('Builder', { selector: '[data-assignee-cell] *' })).toBeInTheDocument();
+        const gantt = { ...agentTask } as unknown as GanttTask;
+        const { queryClient } = renderWithProviders(<>
+            <section aria-label="Board"><KanbanCard task={agentTask} /></section>
+            <section aria-label="Gantt"><GanttChart iterationId={2} startDate="2026-11-16" endDate="2026-11-30" tasks={[gantt]} weekends={[]} holidays={[]} memberVacations={{}} /></section>
+            <section aria-label="Read view">{readView(agentTask)}</section>
+        </>);
+        await waitFor(() => expect(settled(state)(queryClient.getQueryState(['team', 2]))).toBe(true));
+        for (const name of ['Board', 'Gantt', 'Read view']) {
+            const region = screen.getByRole('region', { name });
+            await waitFor(() => expect(region.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1));
+            expect(region.querySelector('[data-agent-dispatch]')).toHaveTextContent('Agent status unknown');
+            expect(region.querySelector('[data-assignee-cell]')).toHaveTextContent('Builder');
+        }
+        // Nothing says the agent is connected, so the task view keeps its manual action and offers no dispatch.
+        expect(screen.queryByRole('link', { name: 'Send to the agent' })).not.toBeInTheDocument();
+    });
+
+    it('says Agent status unknown on a list row of an open agent task while the team read has given no assignee options', () => {
+        const Row = () => {
+            const facts = useAgentRowFacts([agentTask]);
+            return <TaskRow id={agentTask.id} title={agentTask.title} status={agentTask.status} assignee={agentTask.assignee}
+                assigneeOptions={undefined} {...agentRowValues(agentTask, undefined, facts)} onOpen={vi.fn()} menuItems={[]} />;
+        };
+        renderWithProviders(<Row />);
+        expect(document.querySelectorAll('[data-agent-dispatch]')).toHaveLength(1);
+        expect(document.querySelector('[data-agent-dispatch]')).toHaveTextContent('Agent status unknown');
+        // The icon also follows the task's own word that the assignee is an agent.
+        expect(document.querySelector('[data-assignee-cell] svg.lucide-bot')).not.toBeNull();
+    });
+
+    it.each(teamReads)('keeps what the task says while the team read is %s', async (state, read) => {
+        services.team.mockImplementation(read);
+        const { queryClient, rerender } = renderWithProviders(readView({ ...agentTask, status: 'resolved' }));
+        await waitFor(() => expect(settled(state)(queryClient.getQueryState(['team', 2]))).toBe(true));
+        expect(await screen.findByText('Waiting for review', { selector: '[data-agent-dispatch]' })).toBeInTheDocument();
+        rerender(readView({ ...agentTask, status: 'closed' }));
+        await waitFor(() => expect(document.querySelector('[data-agent-dispatch]')).toBeNull());
+        rerender(readView({ ...base, assignee: { id: 8, name: 'Priya', kind: 'human' } }));
+        await waitFor(() => expect(screen.getByText('Priya', { selector: '[data-assignee-cell] *' })).toBeInTheDocument());
         expect(document.querySelector('[data-agent-dispatch]')).toBeNull();
     });
 
