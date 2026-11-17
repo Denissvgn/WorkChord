@@ -133,3 +133,12 @@ describe('Project detail tabs', () => {
         }
     });
 });
+
+it('frames a missing project with a purpose and one way back', async () => {
+    services.project.getById.mockResolvedValue(null);
+    renderPage();
+    const header = await screen.findByTestId('page-header');
+    expect(within(header).getByRole('heading', { name: 'Project not found' })).toBeVisible();
+    expect(within(header).getByText('Return to projects to find another project.')).toBeVisible();
+    expect(within(header).getAllByRole('button')).toHaveLength(1);
+});

@@ -7,18 +7,16 @@ import {
     CheckCircle2,
     Clock,
     Edit,
-    FolderOpen,
     Package,
     Tag,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Button } from '../components/common/Button';
-import { Modal } from '../components/common/Modal';
 import { useConfirmDialog } from '../components/common/useConfirmDialog';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { WorkMetricsLine } from '../components/tasks/WorkMetricsLine';
 import { ReleaseForm } from '../components/releases/ReleaseForm';
-import { PageHeader, PageLayout } from '../components/ui';
+import { PageHeader, PageLayout, SlideOverDrawer } from '../components/ui';
 import { projectService } from '../services/projectService';
 import { releaseService } from '../services/releaseService';
 import { getApiErrorMessage } from '../utils/apiError';
@@ -150,12 +148,7 @@ const ProjectReleaseDetailPage = () => {
     if (projectError) return <QueryErrorState error={projectError} onRetry={() => void refetchProject()} />;
 
     if (!projectEnabled || !releaseEnabled) {
-        return (
-            <div className="py-20 text-center">
-                <h1 className="text-xl font-semibold text-content-primary">{t('surfaces.releaseDetail.releaseNotFound')}</h1>
-                <Button className="mt-4" onClick={() => navigate('/projects')}>{t('surfaces.releaseDetail.backToProjects')}</Button>
-            </div>
-        );
+        return <PageLayout><PageHeader title={t('surfaces.releaseDetail.releaseNotFound')} purpose={t('surfaces.releaseDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.releaseDetail.backToProjects')}</Button>} /></PageLayout>;
     }
 
     if (isLoading) {
@@ -169,15 +162,7 @@ const ProjectReleaseDetailPage = () => {
 
     if (!release || isError) {
         if (isError) return <QueryErrorState error={error} onRetry={() => void refetchRelease()} />;
-        return (
-            <div className="py-20 text-center">
-                <FolderOpen className="mx-auto h-10 w-10 text-content-tertiary" />
-                <h1 className="mt-3 text-xl font-semibold text-content-primary">{t('surfaces.releaseDetail.releaseNotFound')}</h1>
-                <Button className="mt-4" onClick={() => navigate(`/projects/${numericProjectId}`)}>
-                    {t('surfaces.releaseDetail.backToProject')}
-                </Button>
-            </div>
-        );
+        return <PageLayout><PageHeader title={t('surfaces.releaseDetail.releaseNotFound')} purpose={t('surfaces.releaseDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate(`/projects/${numericProjectId}`)}>{t('surfaces.releaseDetail.backToProject')}</Button>} /></PageLayout>;
     }
 
     const releaseProjectId = release.project_id || numericProjectId;
@@ -192,7 +177,7 @@ const ProjectReleaseDetailPage = () => {
 
             <PageHeader
                 title={release.name}
-                purpose={release.description}
+                purpose={t('surfaces.releaseDetail.purpose')}
                 meta={(
                     <>
                         {/* The canonical status pill for the tone; cobalt is not a record status. */}
@@ -247,6 +232,7 @@ const ProjectReleaseDetailPage = () => {
 
             <div className="wc-content-rail">
                 <div className="wc-panel-stack">
+                    {release.description && <div className="card card-pad"><h2>{t('surfaces.releaseDetail.description')}</h2><p className="whitespace-pre-wrap">{release.description}</p></div>}
                     <div className="card">
                         <div className="card-head">
                             <h2>{t('surfaces.releaseDetail.linkedTasks')}</h2>
@@ -280,16 +266,16 @@ const ProjectReleaseDetailPage = () => {
                 </aside>
             </div>
 
-            <Modal open={isEditing} title={t('surfaces.releaseDetail.editRelease')} closeLabel={t('actions.close')} onClose={() => setIsEditing(false)} className="max-w-3xl">
-                {isEditing && (
+            <SlideOverDrawer open={isEditing} title={t('surfaces.releaseDetail.editRelease')} closeLabel={t('actions.close')} onClose={() => setIsEditing(false)} className="max-w-3xl">
+                <div className="p-5">{isEditing && (
                     <ReleaseForm
                         projectId={release.project_id}
                         initialData={release as Release}
                         onSuccess={() => setIsEditing(false)}
                         onCancel={() => setIsEditing(false)}
                     />
-                )}
-            </Modal>
+                )}</div>
+            </SlideOverDrawer>
             {confirmationDialog}
         </PageLayout>
     );

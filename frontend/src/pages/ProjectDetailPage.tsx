@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import {
     Activity,
     Edit,
-    FolderOpen,
     Send,
     Trash2
 } from 'lucide-react';
@@ -408,12 +407,7 @@ const ProjectDetailPage = () => {
     );
 
     if(!enabled) {
-        return (
-            <div className="py-20 text-center">
-                <h1 className="text-xl font-semibold text-content-primary">{t('surfaces.projectDetail.projectNotFound')}</h1>
-                <Button className="mt-4" onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>
-            </div>
-        );
+        return <PageLayout><PageHeader title={t('surfaces.projectDetail.projectNotFound')} purpose={t('surfaces.projectDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>} /></PageLayout>;
     }
 
     if(isProjectLoading) {
@@ -451,13 +445,7 @@ const ProjectDetailPage = () => {
     }
 
     if(!project) {
-        return (
-            <div className="py-20 text-center">
-                <FolderOpen className="mx-auto h-10 w-10 text-content-tertiary" />
-                <h1 className="mt-3 text-xl font-semibold text-content-primary">{t('surfaces.projectDetail.projectNotFound')}</h1>
-                <Button className="mt-4" onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>
-            </div>
-        );
+        return <PageLayout><PageHeader title={t('surfaces.projectDetail.projectNotFound')} purpose={t('surfaces.projectDetail.missingPurpose')} primaryAction={<Button onClick={() => navigate('/projects')}>{t('surfaces.projectDetail.backToProjects')}</Button>} /></PageLayout>;
     }
 
     return (
