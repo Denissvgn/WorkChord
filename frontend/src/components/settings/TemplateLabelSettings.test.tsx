@@ -263,4 +263,35 @@ describe('TemplateLabelSettings hardening', () => {
         await user.click(screen.getByRole('button', { name: 'Edit template: Bug report' }));
         expect(await screen.findByRole('dialog', { name: 'Edit template' })).toBeInTheDocument();
     });
+
+    it('enters the template default effort in hours and saves the same days value', async () => {
+        templateServiceMock.getAll.mockResolvedValue([{ id: 9, name: 'Bug report', description: null, template_type: 'task', is_active: true, sort_order: 10,
+            seed_key: null, default_priority: null, default_effort_days: 2.5, default_labels: [], default_description: null, default_checklist: [], default_payload: {},
+            created_at: '2026-07-01T10:00:00Z', updated_at: '2026-07-01T10:00:00Z' }]);
+        templateServiceMock.update.mockResolvedValue({});
+        const { user } = renderWithProviders(<TemplateLabelSettings />);
+        await user.click(await screen.findByRole('button', { name: 'Edit template: Bug report' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Edit template' });
+        const hours = within(dialog).getByRole('spinbutton', { name: 'Effort (hours)' });
+        expect(hours).toHaveValue(20);
+        expect(within(dialog).getByText('= 2.5 days at 8 hours per day')).toBeInTheDocument();
+        await user.click(within(dialog).getByRole('button', { name: 'Save template' }));
+        await waitFor(() => expect(templateServiceMock.update).toHaveBeenCalledWith(9, expect.objectContaining({ default_effort_days: 2.5 })));
+    });
+
+    it('converts typed hours to days using the 8-hour working day', async () => {
+        templateServiceMock.getAll.mockResolvedValue([{ id: 9, name: 'Bug report', description: null, template_type: 'task', is_active: true, sort_order: 10,
+            seed_key: null, default_priority: null, default_effort_days: 2.5, default_labels: [], default_description: null, default_checklist: [], default_payload: {},
+            created_at: '2026-07-01T10:00:00Z', updated_at: '2026-07-01T10:00:00Z' }]);
+        templateServiceMock.update.mockResolvedValue({});
+        const { user } = renderWithProviders(<TemplateLabelSettings />);
+        await user.click(await screen.findByRole('button', { name: 'Edit template: Bug report' }));
+        const dialog = await screen.findByRole('dialog', { name: 'Edit template' });
+        const hours = within(dialog).getByRole('spinbutton', { name: 'Effort (hours)' });
+        await user.clear(hours);
+        await user.type(hours, '12');
+        expect(within(dialog).getByText('= 1.5 days at 8 hours per day')).toBeInTheDocument();
+        await user.click(within(dialog).getByRole('button', { name: 'Save template' }));
+        await waitFor(() => expect(templateServiceMock.update).toHaveBeenCalledWith(9, expect.objectContaining({ default_effort_days: 1.5 })));
+    });
 });
