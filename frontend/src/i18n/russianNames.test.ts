@@ -14,12 +14,8 @@ const RETIRED_TERMS = /(?<![\p{L}])(ёмкост\p{L}*|период\p{L}*|зав
 
 // Exceptions, each with a reason:
 // - A sample URL is an address, not interface wording.
-// - The assigned-waiting description is copied word for word from
-//   config/workflow-vocabulary.json, which this change must not edit. The vocabulary
-//   test checks that copy, so the wording stays until the config is updated.
 const ALLOWED_STRINGS = new Set([
     'https://example.com/webhooks/workchord',
-    'Назначено агенту, который пока не может начать из-за расписания, зависимости или времени начала.',
 ]);
 
 describe('Russian names', () => {
