@@ -18,7 +18,7 @@ export const ExecutionUsagePanel = ({ scope }: { scope: { project_id?: number; i
     const currencies = Array.from(new Set([...Object.keys(data?.provider_reported_cost ?? {}), ...Object.keys(data?.estimated_cost ?? {})])).sort();
     const value = (amount: string | null | undefined) => amount === null || amount === undefined ? t('executionUsage.unknown') : amount;
     return <section className="space-y-4 border-t border-border-subtle pt-5" aria-labelledby="execution-usage-title">
-        <div><h4 id="execution-usage-title" className="font-semibold">{t('executionUsage.title')}</h4>
+        <div><h2 id="execution-usage-title" className="font-semibold">{t('executionUsage.title')}</h2>
             <p className="mt-1 max-w-prose text-sm text-content-secondary">{t('executionUsage.description')}</p></div>
         {query.isLoading && <p role="status">{t('common.loading')}</p>}
         {query.isError && <QueryErrorState error={query.error} onRetry={() => { void query.refetch(); }} />}
