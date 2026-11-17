@@ -4087,6 +4087,8 @@
   margin-inline-start: auto; font-size: var(--wc-type-meta); color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
+/* A complete plan keeps its 6/6 and takes the done colour. */
+.wc .sb-count[data-complete="true"] { color: var(--wc-done-ink); }
 .wc .main {
   overflow-y: auto; background: var(--bg); min-height: 0;
 }

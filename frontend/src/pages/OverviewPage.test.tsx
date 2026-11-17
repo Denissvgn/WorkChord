@@ -169,6 +169,8 @@ const readinessResponse = (done = 6) => ({
     has_schedule: true,
     risk_count: 0,
     checkpoints: checkpoints(done),
+    checkpoints_done: done,
+    checkpoints_total: 6,
 });
 
 const LocationProbe = () => {
