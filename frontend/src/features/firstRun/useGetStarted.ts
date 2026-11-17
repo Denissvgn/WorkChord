@@ -1,3 +1,4 @@
+import { useSampleProject } from './sampleProjectStore';
 import { useEffect } from 'react';
 import { useGetStartedVisibility } from './getStartedVisibility';
 import { useFirstRunProgress } from './useFirstRunProgress';
@@ -9,6 +10,7 @@ import { useFirstRunProgress } from './useFirstRunProgress';
  */
 export const useGetStarted = () => {
     const progress = useFirstRunProgress();
+    const sample = useSampleProject(state => Boolean(state.manifest?.records.length) || state.busy);
     const { dismissed, requested, settleRequest } = useGetStartedVisibility();
     const { known, complete } = progress;
     useEffect(() => {
@@ -17,6 +19,6 @@ export const useGetStarted = () => {
     const shownOnRequest = requested === 'pending'
         || requested === 'complete'
         || (requested === 'incomplete' && !complete);
-    const visible = progress.applies && known && (shownOnRequest || (!dismissed && !complete));
+    const visible = progress.applies && known && (shownOnRequest || (!dismissed && (!complete || sample)));
     return { visible, progress };
 };
