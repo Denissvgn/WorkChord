@@ -245,7 +245,7 @@ describe('Plan is one page of six checkpoints', () => {
 
         const list = await within(section('review')).findByRole('region', { name: 'Tasks at risk' });
         const first = within(list).getByRole('link', { name: 'Prepare release' }).closest('li')!;
-        expect(first).toHaveTextContent('Starts before today');
+        expect(first).toHaveTextContent('Not started by its planned start');
         const second = within(list).getByRole('link', { name: 'Ship notes' }).closest('li')!;
         expect(second).toHaveTextContent('Past its end date; Outside its date limits');
         // A task link opens the Tasks list filtered to at-risk work, where the same reasons are shown.
@@ -254,6 +254,26 @@ describe('Plan is one page of six checkpoints', () => {
         expect(href.searchParams.get('planningIssue')).toBe('at-risk');
         expect(href.searchParams.get('task')).toBe('12');
         expect(href.searchParams.get('fromPlanStep')).toBe('review');
+    });
+
+    it('names a missed planned start in Review when the server flags a task whose current start is still ahead', async () => {
+        const ahead = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
+            scheduledTask({ is_delayed: true, start_date: ahead, end_date: ahead }),
+        ], holidays: [], weekends: [] });
+        services.iterations.getPlanningReadiness.mockResolvedValue(summary(
+            FIXTURES.sixOfSix.checkpoints!.map(item => (item.id === 'review'
+                ? checkpoint('review', 'warn', ['risks_to_acknowledge'], { risks: 1 })
+                : item)),
+            { team_member_count: 2, task_count: 4, has_schedule: true, risk_count: 1 },
+        ));
+        renderPlan();
+        await screen.findByRole('list', { name: 'Checkpoints' });
+
+        const list = await within(section('review')).findByRole('region', { name: 'Tasks at risk' });
+        const row = within(list).getByRole('link', { name: 'Prepare release' }).closest('li')!;
+        expect(row).toHaveTextContent('Not started by its planned start');
+        expect(row).not.toHaveTextContent(/before today/i);
     });
 
     it('re-reads readiness on return and opens the next checkpoint once the returned one is done', async () => {

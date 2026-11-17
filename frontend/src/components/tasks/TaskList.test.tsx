@@ -569,8 +569,20 @@ describe('TaskList empty states', () => {
             { ...task(2), is_overdue: true, iteration_revision: 1 },
         ]);
         renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
-        expect(await screen.findByText('Starts before today')).toBeInTheDocument();
+        expect(await screen.findByText('Not started by its planned start')).toBeInTheDocument();
         expect(screen.getByText('Past its end date')).toBeInTheDocument();
+    });
+
+    it('names the missed planned start, not a past start, when the baseline start has passed but the current start is ahead', async () => {
+        const day = (offset: number) => new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), is_delayed: true, status: 'planned', baseline_start_date: day(-5), start_date: day(5), end_date: day(9),
+                actual_start_date: null, iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Not started by its planned start')).toBeInTheDocument();
+        expect(screen.queryByText(/before today/i)).not.toBeInTheDocument();
+        expect(screen.queryByText('Started after its planned start')).not.toBeInTheDocument();
     });
 
     it('lists a task whose only risk is outside its date limits, using the dates the Tasks list receives', async () => {
@@ -584,13 +596,13 @@ describe('TaskList empty states', () => {
         expect(screen.queryByText('Task 2')).not.toBeInTheDocument();
     });
 
-    it('says a task started late when it began after its planned start, not that it starts before today', async () => {
+    it('says a task started late when it began after its planned start, not that it has not started', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([
             { ...task(1), is_delayed: true, status: 'active', baseline_start_date: '2026-08-03', actual_start_date: '2026-08-06', iteration_revision: 1 },
         ]);
         renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
         expect(await screen.findByText('Started after its planned start')).toBeInTheDocument();
-        expect(screen.queryByText('Starts before today')).not.toBeInTheDocument();
+        expect(screen.queryByText('Not started by its planned start')).not.toBeInTheDocument();
     });
 
     it('offers the one next step when the iteration has no tasks yet', async () => {
