@@ -121,7 +121,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                     'flex min-h-16 w-full min-w-36 flex-col items-start gap-1 rounded-md border px-3 py-2 text-left text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
                                     column.id === activeStage.id ? 'border-action bg-action-muted' : 'border-border bg-surface-card hover:bg-surface-hover',
                                 )}
-                             variant="secondary">
+                             variant="plain">
                                 <span className="flex w-full items-center justify-between gap-2">
                                     <span className="font-semibold text-content-primary">{column.title}</span>
                                     <span className="tabular-nums text-content-secondary">{column.tasks.length}</span>

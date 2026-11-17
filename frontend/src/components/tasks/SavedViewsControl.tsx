@@ -110,7 +110,7 @@ export const SavedViewPicker = ({ manager, label }: { manager: SavedViewManager;
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
                 onClick={() => (open ? closeMenu() : setOpen(true))}
-             variant="secondary">
+             variant="plain">
                 <span>{label}</span>
                 <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0" />
             </Button>

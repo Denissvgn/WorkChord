@@ -552,7 +552,7 @@ const ProjectsPage = () => {
     const closeInitiativeEditor = () => { setIsCreatingInitiative(false); setEditingInitiative(null); };
 
     const exceptionButton = (pressed: boolean, onClick: () => void, label: string, risk = false) => (
-        <Button data-page-chrome-control="button" type="button" className={clsx('projects-exception', risk && 'is-risk')}
+        <Button data-page-chrome-control="button" type="button" className={clsx('projects-exception !h-7', risk && 'is-risk')}
             aria-pressed={pressed} onClick={onClick} variant="secondary" size="sm">
             {risk && <AlertTriangle aria-hidden="true" className="h-4 w-4" />}
             {label}

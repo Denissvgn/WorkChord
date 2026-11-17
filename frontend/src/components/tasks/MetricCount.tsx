@@ -29,7 +29,7 @@ export const MetricCount = ({ metric, scope, title, children, className, total }
     if (scope === null) return <span className={className}>{children}</span>;
     return <>
         <Button type="button" onClick={() => setOpen(true)} aria-haspopup="dialog"
-            className={`rounded underline decoration-dotted underline-offset-4 hover:text-action focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className ?? ''}`} variant="secondary">
+            className={`rounded underline decoration-dotted underline-offset-4 hover:text-action focus:outline-none focus-visible:ring-2 focus-visible:ring-focus ${className ?? ''}`} variant="plain">
             {children}
         </Button>
         <Modal open={open} title={title} closeLabel={t('actions.close')} onClose={() => setOpen(false)} className="max-w-xl">
