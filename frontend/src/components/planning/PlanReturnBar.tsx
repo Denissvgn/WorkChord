@@ -1,15 +1,18 @@
+import { ButtonLink } from '../common/ButtonLink';
 import { ArrowLeft, Waypoints } from 'lucide-react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import {
     isPlanningStepId,
-    planMasterStepHref,
+    planStepHref,
     PLANNING_RETURN_STEP_PARAM,
 } from '../../features/planningMasters/planningReturn';
 
 export const PlanReturnBar = () => {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
+    const scopeLink = useScopeLink();
     const stepId = searchParams.get(PLANNING_RETURN_STEP_PARAM);
 
     if (!isPlanningStepId(stepId)) return null;
@@ -23,10 +26,10 @@ export const PlanReturnBar = () => {
                 })}</strong>
                 <span>{t('plan.master.returnAfterChanges')}</span>
             </div>
-            <Link className="btn sm" to={planMasterStepHref(stepId, { returned: true })}>
+            <ButtonLink  to={scopeLink(planStepHref(stepId, { returned: true }))} size="sm">
                 <ArrowLeft aria-hidden="true" size={13} />
                 {t('plan.master.returnToCheckpoint')}
-            </Link>
+            </ButtonLink>
         </aside>
     );
 };

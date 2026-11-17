@@ -192,7 +192,7 @@ const ProjectReleaseDetailPage = () => {
 
             <PageHeader
                 title={release.name}
-                subtitle={release.description}
+                purpose={release.description}
                 meta={(
                     <>
                         {/* The canonical status pill for the tone; cobalt is not a record status. */}
@@ -203,36 +203,34 @@ const ProjectReleaseDetailPage = () => {
                         {release.version && <span><Tag className="inline h-3.5 w-3.5 mr-1"/>{release.version}</span>}
                     </>
                 )}
-                actions={(
-                    <>
-                    {release.status !== 'shipped' && (
-                        <Button
-                            isLoading={markShippedMutation.isPending}
-                            onClick={() => {
-                                // Shipping writes a release entry into every linked task's history,
-                                // so confirm with the unresolved count before committing it.
-                                const unresolved = release.tasks.filter(task => !['resolved', 'closed'].includes(task.status)).length;
-                                requestConfirmation({
-                                    title: t('surfaces.releaseDetail.shipConfirmTitle', { name: release.name }),
-                                    description: t('surfaces.releaseDetail.shipConfirmBody', {
-                                        unresolved,
-                                        total: release.tasks.length,
-                                    }),
-                                    confirmLabel: t('surfaces.releaseDetail.markShipped'),
-                                    cancelLabel: t('actions.cancel'),
-                                    closeLabel: t('actions.close'),
-                                    tone: 'warning',
-                                    onConfirm: () => markShippedMutation.mutateAsync(),
-                                });
-                            }}
-                        >
-                            <CheckCircle2 aria-hidden="true" className="h-4 w-4"/> {t('surfaces.releaseDetail.markShipped')}
-                        </Button>
-                    )}
+                primaryAction={release.status !== 'shipped' ? (
+                    <Button
+                        isLoading={markShippedMutation.isPending}
+                        onClick={() => {
+                            // Shipping writes a release entry into every linked task's history,
+                            // so confirm with the unresolved count before committing it.
+                            const unresolved = release.tasks.filter(task => !['resolved', 'closed'].includes(task.status)).length;
+                            requestConfirmation({
+                                title: t('surfaces.releaseDetail.shipConfirmTitle', { name: release.name }),
+                                description: t('surfaces.releaseDetail.shipConfirmBody', {
+                                    unresolved,
+                                    total: release.tasks.length,
+                                }),
+                                confirmLabel: t('surfaces.releaseDetail.markShipped'),
+                                cancelLabel: t('actions.cancel'),
+                                closeLabel: t('actions.close'),
+                                tone: 'warning',
+                                onConfirm: () => markShippedMutation.mutateAsync(),
+                            });
+                        }}
+                    >
+                        <CheckCircle2 aria-hidden="true" className="h-4 w-4"/> {t('surfaces.releaseDetail.markShipped')}
+                    </Button>
+                ) : undefined}
+                secondaryActions={(
                     <Button variant="secondary" onClick={() => setIsEditing(true)}>
                         <Edit aria-hidden="true" className="h-4 w-4"/> {t('surfaces.releaseDetail.edit')}
                     </Button>
-                    </>
                 )}
             />
             <WorkMetricsLine metrics={release} scope={numericReleaseId > 0 ? { release_id: numericReleaseId } : null} />
@@ -251,7 +249,7 @@ const ProjectReleaseDetailPage = () => {
                 <div className="wc-panel-stack">
                     <div className="card">
                         <div className="card-head">
-                            <h3>{t('surfaces.releaseDetail.linkedTasks')}</h3>
+                            <h2>{t('surfaces.releaseDetail.linkedTasks')}</h2>
                             <span className="sub">{t('surfaces.releaseDetail.taskCount', { count: release.tasks.length })}</span>
                         </div>
                         <div className="card-pad">
@@ -259,9 +257,9 @@ const ProjectReleaseDetailPage = () => {
                         </div>
                     </div>
                 </div>
-                <aside className="sticky-rail">
+                <aside className="sticky-rail" aria-label={t('surfaces.releaseDetail.factsLabel')}>
                     <div className="card">
-                        <div className="card-head"><h3>{t('surfaces.releaseDetail.releaseMetadata')}</h3></div>
+                        <div className="card-head"><h2>{t('surfaces.releaseDetail.releaseMetadata')}</h2></div>
                         <div className="card-pad" style={{display:'flex', flexDirection:'column', gap:10}}>
                             <MetadataRow label={t('surfaces.releaseDetail.target')} value={<span><CalendarDays className="inline h-3.5 w-3.5 mr-1"/>{formatDate(release.target_date)}</span>}/>
                             <MetadataRow label={t('surfaces.releaseDetail.shipped')} value={<span><Clock className="inline h-3.5 w-3.5 mr-1"/>{formatDateTime(release.shipped_at)}</span>}/>
@@ -271,13 +269,13 @@ const ProjectReleaseDetailPage = () => {
                         </div>
                     </div>
                     <div className="card card-pad">
-                        <h3 style={{fontSize:12.5, fontWeight:600, margin:'0 0 8px'}}>{t('surfaces.releaseDetail.attachOrDetach')}</h3>
+                        <h2 style={{fontSize:12.5, fontWeight:600, margin:'0 0 8px'}}>{t('surfaces.releaseDetail.attachOrDetach')}</h2>
                         <p className="muted" style={{fontSize:12, marginBottom:12}}>
                             {t('surfaces.releaseDetail.useEditToChangeReleaseFieldsAndReplaceTheLinkedTaskSet')}
                         </p>
-                        <button className="btn" style={{width:'100%'}} onClick={() => setIsEditing(true)}>
+                        <Button  style={{width:'100%'}} onClick={() => setIsEditing(true)} variant="secondary">
                             {t('surfaces.releaseDetail.editLinkedTasks')}
-                        </button>
+                        </Button>
                     </div>
                 </aside>
             </div>

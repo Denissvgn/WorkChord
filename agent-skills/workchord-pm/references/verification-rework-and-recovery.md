@@ -179,7 +179,7 @@ key, rationale, and correlation ID. Preserve the same three values only for an
 exact retry; changing rationale or correlation creates a different audited
 request and must not replay the prior command.
 
-A worker's claim-fenced `agent.blocker` task event marks the task Blocked, with its reason and the worker's name in Activity; people see it in the Blocked view and the project's blocked count. Decide the response (clarify, fix the dependency, recover, or reassign), then remove the block with Remove block once the cause is resolved. When your deployment offers no agent operation for Remove block, ask a person to do it. Never mark work blocked with a label.
+A worker's claim-fenced `agent.blocker` task event marks the task Blocked, with its reason and the worker's name in Activity; people see it in My Work → Blocked and the project's blocked count. Decide the response (clarify, fix the dependency, recover, or reassign), then remove the block with Remove block once the cause is resolved. When your deployment offers no agent operation for Remove block, ask a person to do it. Never mark work blocked with a label.
 
 ## Triage Discoveries
 
@@ -208,9 +208,9 @@ Append a structured project update after a meaningful delivery, verification, ri
 
 Read the current project summary and latest update before appending. Never overwrite history. Re-read update freshness and project target risk after writing.
 
-Keep the records the Roadmap reads in step with the update:
+Keep the records Projects, Roadmap view reads in step with the update:
 
-- Set project `status` to `active` when its first task starts, and to `completed` when its outcome is Accepted. A project that still reads `planned` while tasks are Active or Implemented misleads everyone who opens the Roadmap.
+- Set project `status` to `active` when its first task starts, and to `completed` when its outcome is Accepted. A project that still reads `planned` while tasks are Active or Implemented misleads everyone who opens Projects, Roadmap view.
 - Set a milestone to `active` when its first task starts and to `completed` when its last task is Accepted.
 - Leave `health` at `unknown` only until the first update.
 - Change a committed project or milestone target date only with the owner's recorded approval. Report a calculated end that passes the target as a risk instead.

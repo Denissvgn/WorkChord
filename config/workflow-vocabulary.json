@@ -48,30 +48,34 @@
     {
       "id": "capture",
       "name": "Capture",
+      "name_ru": "Сбор",
       "person": "Triage → New request, or Tasks → New task.",
-      "pm": "Runs Triage and records one disposition; files WorkChord defects as Triage items.",
+      "pm": "Runs Triage and records one disposition; files WorkChord defects as requests in Triage.",
       "worker": "Reports out-of-scope findings as linked Triage items.",
       "reviewer": "Reports out-of-scope findings to the PM in its review result."
     },
     {
       "id": "plan",
       "name": "Plan and assign",
+      "name_ru": "Планирование и назначение",
       "person": "Plan: Iteration, Capacity, Work, Blockers, Schedule, Review.",
-      "pm": "Writes the brief, sets assignee, dependencies, and schedule, then creates agent assignments.",
+      "pm": "Writes the brief, sets Assignee, Waits for, and schedule, then creates agent assignments.",
       "worker": "—",
       "reviewer": "—"
     },
     {
       "id": "do",
       "name": "Do",
+      "name_ru": "Работа",
       "person": "Start work, Report blocker, Submit for review.",
-      "pm": "Supervises delivery and recovers stuck work through typed recovery.",
+      "pm": "Supervises delivery in Tasks, Pipeline view and recovers stuck work through typed recovery.",
       "worker": "Reads My Work, starts the assigned task, reports progress or a blocker, then submits for review.",
       "reviewer": "—"
     },
     {
       "id": "review",
       "name": "Review",
+      "name_ru": "Проверка",
       "person": "My Work → To review; Accept or Request changes.",
       "pm": "Routes each review to an independent reviewer; never accepts work itself.",
       "worker": "Takes rework only when it is assigned back.",
@@ -80,7 +84,8 @@
     {
       "id": "report",
       "name": "Report",
-      "person": "Post update on the project.",
+      "name_ru": "Отчёт",
+      "person": "Projects → select a project → Post update; Projects, Roadmap view shows dated outcomes.",
       "pm": "Publishes a project update with health, summary, progress, risks, decisions, and next steps.",
       "worker": "—",
       "reviewer": "—"

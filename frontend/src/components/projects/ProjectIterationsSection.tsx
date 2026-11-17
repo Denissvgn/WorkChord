@@ -15,6 +15,7 @@ import type { Iteration } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
 import { QueryErrorState } from '../feedback/QueryState';
 
+import { Select } from '../../components/common/Select';
 interface ProjectIterationsSectionProps {
     projectId: number;
     projectName: string;
@@ -213,7 +214,7 @@ export const ProjectIterationsSection = ({
                             {(Boolean(attachContext.error) || actionError) && <p role="alert">{getApiErrorMessage(attachContext.error, actionError ?? t('projectIterations.attachError'))}</p>}
                     <Button type="button" variant="secondary" disabled={!selectedAttachId || isMutating || attachContext.loading}
                         onClick={() => { if (selectedAttachId) void attachContext.read('iteration', selectedAttachId, true); }}>{t('planningInput.reviewAgain')}</Button>
-                    <select
+                    <Select
                                 id="attach-unscoped-iteration"
                                 value={attachIterationId}
                                 onChange={event => { const value = event.target.value; setAttachIterationId(value); if (value) void attachContext.read('iteration', Number(value)); }}
@@ -225,7 +226,7 @@ export const ProjectIterationsSection = ({
                                         {iteration.name}
                                     </option>
                                 ))}
-                            </select>
+                            </Select>
                             {unscopedIterations.length === 0 && (
                                 <p className="mt-2 text-sm text-content-secondary">{t('projectIterations.noUnscoped')}</p>
                             )}

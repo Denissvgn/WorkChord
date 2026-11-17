@@ -1,17 +1,79 @@
-# Agent-team setup
+# Agent team setup
 
-WorkChord can reconcile a portable, secret-free agent-team master into one
-controller, one or more workers, and optional independent verifiers. The
-master declares stable logical actor keys, role scope presets, capability
-profiles, provider-neutral model bindings, immutable role-package checksums,
-runtime references, and external credential references.
+An agent team has a PM (the controller), one or more workers, and optional
+reviewers. Each member runs in its own runtime and has its own key. There are
+two ways to set one up:
+
+- **Connect an agent** (the default path) adds one member at a time from
+  **Team → Connect**. You answer five questions and the server creates the member.
+- **Advanced: apply a team manifest** reconciles a whole team from a portable,
+  secret-free master file. It is the path for reviewing every change, adopting
+  existing members, rotating credentials, and rolling back.
 
 The server remains authoritative for actor IDs, scopes, profile and binding
 revisions, lifecycle state, topology revision, and handoff checks. A
-manifest is desired state, not proof that a runtime is connected or available
-for a particular task.
+configured member is desired state, not proof that a runtime is connected or
+available for a particular task.
 
-## Prerequisites
+## Connect an agent
+
+Open **Team**, then the **Connect** tab. The **Members** tab lists the people and
+agents already on the team, and the **Models** tab holds the model catalog.
+
+Connecting an agent needs unlocked editing. Choose **Unlock editing** from the
+account menu, or at the top of Settings, and enter the admin key the operator
+gave you. See [identity and recovery](identity-and-recovery.md#account-menu-and-unlock-editing).
+The operator must also have configured the server's credential folder.
+
+Then answer five questions:
+
+1. **Role.** What the agent will do. **PM** plans the work, assigns it, and keeps
+   the team moving. A team has one PM. **Worker** does the tasks assigned to it
+   and reports the evidence. **Reviewer** checks finished work against its
+   acceptance criteria. The manifest calls this role `verifier`.
+2. **Runtime.** Where the agent runs: **Pi with a local model**, or **Other**.
+3. **Model.** An enabled catalog entry. A catalog entry describes a model; it
+   does not install it. If no entry is enabled, add one in the Models tab first.
+   For Pi, choose the entry that matches the local model configured in Pi.
+4. **Review.** Choose **Review change**. The server validates and plans the
+   change. Connecting applies only the new member. Existing members stay unchanged.
+5. **Connect.** Choose **Connect agent**. The server creates the member and
+   writes its key to the credential folder. This page never receives the key.
+
+After the connection is created, the page shows the credential folder reference,
+the skill package to install, and a configuration snippet for the runtime:
+
+- Install the role package from the server skill catalog. The page shows its
+  name, version, and SHA-256 digest.
+- On the runtime host, set `WORKCHORD_CREDENTIAL_DIR` to the private folder
+  behind the reference shown. For a runtime on another machine, move the key
+  file over a secure channel. The snippet needs `jq` and keeps the key inside the
+  runtime environment.
+- Start the runtime with the snippet. It acknowledges onboarding with its own key.
+
+The page then shows **Waiting for the runtime acknowledgement…**, and **Connected**
+once the runtime has acknowledged. Use **Check connection** to look again.
+A member is not routed work until its runtime acknowledges.
+
+If the connection fails, the page explains why:
+
+- **The server could not confirm the key was written.** The server created the
+  member but disabled it. Retrying does not change that. Open **Advanced**, start
+  from the current manifest, run the dry run, and confirm the credential
+  replacement it offers for this member.
+- **The connection was interrupted.** Retry the same request. It returns the
+  original receipt and does not create a second agent.
+- **The credential folder is not available.** Ask the operator to configure it,
+  then review again.
+
+## Advanced: apply a team manifest
+
+Use the manifest path when you need to see and approve each change before it
+applies. Open **Team → Connect** and choose **Advanced: apply a team manifest**
+at the bottom of the page. The same server rules apply on this path, and it
+can change more than one member at once.
+
+### Prerequisites
 
 1. Configure `WORKCHORD_ADMIN_API_KEY`.
 2. Create an operator-owned credential sink directory, set its permissions to
@@ -22,7 +84,7 @@ for a particular task.
    the master. Provider credentials do not belong in the catalog or master.
 5. Use immutable package identities from the server's agent skill catalog.
    Each role has its own package: `workchord-pm` for the controller,
-   `workchord-worker` for workers, and `workchord-reviewer` for verifiers.
+   `workchord-worker` for workers, and `workchord-reviewer` for reviewers.
 
 Start from
 [`config/examples/agent-team-master.json`](../config/examples/agent-team-master.json).
@@ -30,17 +92,22 @@ Replace deployment-specific URLs, runtime references, and model catalog keys.
 The JSON Schema is generated at
 `docs/contracts/agent-team-master-v1.schema.json`.
 
-In Settings, Agent team setup offers the same two starting points without
-copying files: "Start from the current team" loads the applied master, and
-"Start from a template" loads one filled from this server's own catalogs, with
-the latest role package and its digest for each role and the first enabled
-model catalog entry. `GET /api/agent/team-setup/starting-points` returns both
-(`current` is null before any team is applied). Problems are listed with the
-manifest line they refer to, and safe plan actions (no authority change, no
-confirmation) can be applied together; the rationale is always typed by the
-operator.
+### Start from the current team or a template
 
-## Validate and plan
+The manifest editor offers two starting points without copying files:
+
+- **Start from the current team** loads the applied master. If no team is
+  applied yet, use a template.
+- **Start from a template** loads one filled from this server's own catalogs,
+  with the latest role package and its digest for each role and the first
+  enabled model catalog entry.
+
+`GET /api/agent/team-setup/starting-points` returns both (`current` is null
+before any team is applied). Problems are listed with the manifest line they
+refer to, and safe plan actions (no authority change, no confirmation) can be
+applied together; the rationale is always typed by the operator.
+
+### Validate and plan
 
 Validation checks canonical shape, secret exclusions, role and package
 compatibility, model/profile references, server features, and the configured
@@ -67,7 +134,7 @@ desired and current state. Inspect every action. Adoption, replacement,
 disablement, and other authority-changing actions require deliberate review;
 the service never converts absence from a manifest into a hard delete.
 
-## Apply selected actions
+### Apply selected actions
 
 Apply only exact reviewed action IDs. There is intentionally no bulk
 "apply everything" operation:
@@ -93,7 +160,7 @@ metadata. If delivery is uncertain, the actor stays disabled and the response
 identifies the explicit recovery or replacement action; WorkChord never
 redisplays the credential.
 
-## Start and acknowledge runtimes
+### Start and acknowledge runtimes
 
 Each configured member's status includes a secret-free handoff with:
 
@@ -119,7 +186,7 @@ package, profile, model bindings, features, and assignment modes. Successful
 acknowledgement activates the actor. Repeated failed acknowledgements are
 rate-limited.
 
-## Interpret status
+### Interpret status
 
 `GET /api/agent/team-setup/status` and the MCP
 `agent_get_team_setup_status` tool share the same backend-derived projection.
@@ -138,7 +205,7 @@ Operators may select a topology; a PM can read only its bound topology.
   checks and remains separate from availability. Advisory runtime
   observations (see below) do not change it.
 
-## Record advisory runtime observations
+### Record advisory runtime observations
 
 An independent observer, such as a dashboard paired as a read-only observer,
 records what it saw of a runtime session with POST `/api/agent/observations`:
@@ -165,7 +232,7 @@ rework, and recovery command enforce the caller's current topology revision
 and runtime-ready membership. A topology change invalidates stale routing
 evidence.
 
-## Read the team and its runtime references
+### Read the team and its runtime references
 
 `GET /api/agent/team-setup/topology` and the MCP `agent_get_team_topology` tool
 return who is on the team: each member's actor key and ID, name, role, profile,
@@ -178,7 +245,7 @@ paired observer of such a person, and operators may read it; a project role
 alone does not admit a person, because the team is workspace-wide. Pass
 `topology_key` to choose a topology; otherwise the first one is returned.
 
-## Drift, adoption, rotation, and rollback
+### Drift, adoption, rotation, and rollback
 
 - Safe mutable drift produces an update action.
 - An unmanaged actor with the declared stable name produces an explicit
@@ -196,18 +263,19 @@ alone does not admit a person, because the team is workspace-wide. Pass
 - Package, profile, binding, credential-delivery, acknowledgement, and
   connection drift remain separate status evidence.
 
-### Move verifiers to the reviewer package
+#### Move reviewers to the reviewer package
 
-Verifier members must use the `workchord-reviewer` package; validation rejects
-a verifier that still declares `workchord-pm`. To upgrade an existing team:
+Reviewer members (the `verifier` role) must use the `workchord-reviewer`
+package; validation rejects a reviewer that still declares `workchord-pm`. To
+upgrade an existing team:
 
 1. Upgrade the server so its skill catalog lists `workchord-reviewer`.
-2. In the master, set each verifier's `skill_package` to the
+2. In the master, set each reviewer's `skill_package` to the
    `workchord-reviewer` name, version, and archive checksum from that catalog.
-3. Validate and plan, review the action proposed for each verifier, then
+3. Validate and plan, review the action proposed for each reviewer, then
    apply it.
-4. Install the reviewer package in each verifier runtime and acknowledge the
-   new handoff. Verifiers stay out of dispatch until they acknowledge it.
+4. Install the reviewer package in each reviewer runtime and acknowledge the
+   new handoff. Reviewers stay out of dispatch until they acknowledge it.
 
 Until step 3 is applied, a team stored before the upgrade stays readable.
 Status reports `stored_contract_outdated` on the topology, on the master step,
@@ -247,7 +315,7 @@ runtime, request a fresh plan against the latest topology revision, and apply
 only the recovery actions. Never edit topology tables or actor lifecycle state
 directly.
 
-## Credential and evidence handling
+### Credential and evidence handling
 
 Do not place API keys, provider credentials, credential values, prompts,
 environment dumps, private endpoints containing credentials, or raw logs in a

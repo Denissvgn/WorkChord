@@ -95,11 +95,13 @@ describe('OutboundWebhooksPanel', () => {
 
     it('blocks blank names and non-HTTP endpoint URLs with associated field errors', async () => {
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
-        const name = await screen.findByLabelText('Name');
-        const url = screen.getByLabelText('URL');
+        await user.click(await screen.findByRole('button', { name: 'New target' }));
+        const drawer = screen.getByRole('dialog', { name: 'New target' });
+        const name = within(drawer).getByLabelText('Name');
+        const url = within(drawer).getByLabelText('URL');
 
         await user.type(url, 'ftp://files.example.com/webhook');
-        await user.click(screen.getByRole('button', { name: 'Create target' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Create target' }));
 
         expect(outboundWebhookServiceMock.createTarget).not.toHaveBeenCalled();
         expect(name).toHaveAttribute('aria-invalid', 'true');
@@ -134,34 +136,40 @@ describe('OutboundWebhooksPanel', () => {
         );
     });
 
-    it('requires explicit discard confirmation before New, Edit, or Cancel replaces a dirty draft', async () => {
+    it('opens New and Edit in the drawer and requires explicit discard confirmation before closing a dirty draft', async () => {
+        const discardTitle = 'Discard unsaved webhook changes?';
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
         await screen.findByRole('heading', { name: 'Outbound webhooks' });
         await user.click(screen.getByRole('button', { name: 'Edit: Target 1' }));
 
-        const name = screen.getByLabelText('Name');
+        let drawer = screen.getByRole('dialog', { name: 'Edit: Target 1' });
+        const name = within(drawer).getByLabelText('Name');
         await user.clear(name);
         await user.type(name, 'Keep this webhook draft');
-        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Cancel' }));
 
-        let dialog = screen.getByRole('dialog');
+        let confirm = screen.getByRole('dialog', { name: discardTitle });
         expect(name).toHaveValue('Keep this webhook draft');
-        await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+        await user.click(within(confirm).getByRole('button', { name: 'Cancel' }));
         expect(name).toHaveValue('Keep this webhook draft');
+
+        // The drawer's own close button asks too.
+        await user.click(within(drawer).getByRole('button', { name: 'Close' }));
+        confirm = screen.getByRole('dialog', { name: discardTitle });
+        await user.click(within(confirm).getByRole('button', { name: 'Discard changes' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
+        expect(outboundWebhookServiceMock.updateTarget).not.toHaveBeenCalled();
 
         await user.click(screen.getByRole('button', { name: 'Edit: Target 2' }));
-        dialog = screen.getByRole('dialog');
-        expect(name).toHaveValue('Keep this webhook draft');
-        await user.click(within(dialog).getByRole('button', { name: 'Discard changes' }));
-        expect(name).toHaveValue('Target 2');
+        drawer = screen.getByRole('dialog', { name: 'Edit: Target 2' });
+        expect(within(drawer).getByLabelText('Name')).toHaveValue('Target 2');
+        await user.click(within(drawer).getByRole('button', { name: 'Cancel' }));
+        expect(screen.queryByRole('dialog')).toBeNull();
 
-        await user.clear(name);
-        await user.type(name, 'Another dirty draft');
         await user.click(screen.getByRole('button', { name: 'New target' }));
-        dialog = screen.getByRole('dialog');
-        expect(name).toHaveValue('Another dirty draft');
-        await user.click(within(dialog).getByRole('button', { name: 'Discard changes' }));
-        expect(name).toHaveValue('');
+        drawer = screen.getByRole('dialog', { name: 'New target' });
+        expect(within(drawer).getByLabelText('Name')).toHaveValue('');
+        expect(within(drawer).queryByLabelText('Clear stored secret on save')).toBeNull();
     });
 
     it('reconciles a same-target row toggle into the editor without losing other draft fields', async () => {
@@ -200,10 +208,9 @@ describe('OutboundWebhooksPanel', () => {
         await user.click(screen.getByRole('checkbox', { name: 'Target 1: Enabled' }));
 
         await waitFor(() => expect(outboundWebhookServiceMock.updateTarget).toHaveBeenCalled());
-        await user.click(screen.getByRole('button', { name: 'New target' }));
+        await user.click(screen.getByRole('button', { name: 'Cancel' }));
 
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-        expect(screen.getByLabelText('Name')).toHaveValue('');
     });
 
     it('freezes the draft and all target rows while saving', async () => {
@@ -215,11 +222,13 @@ describe('OutboundWebhooksPanel', () => {
         ));
 
         const { user } = renderWithProviders(<OutboundWebhooksPanel />);
-        const name = await screen.findByLabelText('Name');
-        const url = screen.getByLabelText('URL');
+        await user.click(await screen.findByRole('button', { name: 'New target' }));
+        const drawer = screen.getByRole('dialog', { name: 'New target' });
+        const name = within(drawer).getByLabelText('Name');
+        const url = within(drawer).getByLabelText('URL');
         await user.type(name, 'New destination');
         await user.type(url, 'https://hooks.example.com/new');
-        await user.click(screen.getByRole('button', { name: 'Create target' }));
+        await user.click(within(drawer).getByRole('button', { name: 'Create target' }));
 
         await waitFor(() => {
             expect(outboundWebhookServiceMock.createTarget).toHaveBeenCalledOnce();
@@ -233,7 +242,8 @@ describe('OutboundWebhooksPanel', () => {
         await act(async () => {
             resolveCreate?.(targetFixture(3));
         });
-        await waitFor(() => expect(screen.getByLabelText('Name')).toBeEnabled());
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+        expect(screen.getByRole('button', { name: 'New target' })).toBeEnabled();
     });
 
     it('shows pending feedback only on the active row while locking concurrent row actions', async () => {

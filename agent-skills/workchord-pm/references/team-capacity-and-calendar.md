@@ -18,7 +18,7 @@ Use this reference to create a feasible execution timebox and staff it with reus
 1. Select an initiative only when several projects contribute to one strategic goal.
 2. Create or select one accountable project for the outcome.
 3. Set `owner_profile_id`, `status`, `start_date`, `target_date`, and
-   `initiative_id` on the project. The Roadmap draws a project's bar from its
+   `initiative_id` on the project. Projects, Roadmap view draws a project's bar from its
    start and target dates, or else from its dated milestones; a project with
    neither has no bar. Use `planned` until the first task starts, then `active`.
    Set health through project updates. The agent contract has no initiative
@@ -37,6 +37,8 @@ Do not use a task as a substitute for a project update, milestone, release, or i
 ## Configure Calendars and Iterations
 
 ### Calendar sequence
+
+People manage the work calendar in Settings → Work calendar, iterations and iteration capacity in Plan, and agents and the model catalog in Team. To connect an agent, use Team → Connect an agent.
 
 1. Read existing calendars before creating one.
 2. Select the correct year, weekend-day indexes (`0` for Monday through `6` for Sunday), holidays, and shortened days.
@@ -154,7 +156,7 @@ For each candidate, keep these layers separate:
 | Reusable profile | Kind, automation flag, assignment modes, precise skills, levels, weaknesses | Actor identity, permission, live runtime, or capacity |
 | Iteration capacity owner | Workload, availability, vacations, schedule | Authenticated dispatch identity or model capability |
 | Exact actor | Enabled state, role, scopes, profile binding, queue revision, last seen, current work | Model adequacy by itself |
-| Active model binding | Stable catalog key, binding/catalog revisions, reasoning/context tiers, modality/tool/data-policy tags, cost/latency tiers, verification freshness | Credentials, provider access, or cryptographic runtime attestation |
+| Active model binding | Stable catalog key, binding/catalog revisions, reasoning/context tiers, modality/tool/data-policy labels, cost/latency tiers, verification freshness | Credentials, provider access, or cryptographic runtime attestation |
 
 Use only active bindings and live catalog metadata. Treat the configured alias
 as intended runtime and the worker's later observed model as self-reported
@@ -208,7 +210,7 @@ Do not hide overload by lowering effort, increasing professionalism, or removing
 - Confirm dates and ownership do not conflict.
 - Confirm the project has `start_date`, `target_date`, and `owner_profile_id`,
   and that every milestone the plan names exists as a record. Report a project
-  that would have no bar on the Roadmap as unfinished planning.
+  that would have no bar on Projects, Roadmap view as unfinished planning.
 
 **Evidence and stop rules**
 

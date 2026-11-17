@@ -11,6 +11,7 @@ import {
     getDestinationForPath,
 } from '../../navigation/destinations';
 import type { Destination, DestinationCounterValues } from '../../navigation/destinations';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 /**
  * The numbers behind the sidebar counters. A value that is still loading or could not be
@@ -63,6 +64,7 @@ const SidebarDestination = ({
 }) => {
     const { t } = useTranslation();
     const counterDescriptionId = useId();
+    const scopeLink = useScopeLink();
     const label = t(destination.labelKey, destination.defaultLabel);
     const Icon = destination.icon;
     const counter = formatDestinationCounter(destination, counterValues);
@@ -78,7 +80,7 @@ const SidebarDestination = ({
 
     return (
         <Link
-            to={destination.path}
+            to={scopeLink(destination.path)}
             className="sb-item"
             aria-current={isCurrent ? 'page' : undefined}
             aria-label={label}

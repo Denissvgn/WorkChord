@@ -35,13 +35,24 @@ describe('Board column', () => {
         renderWithProviders(<KanbanColumn id="closed" title="Closed" tasks={[]} count={0} tone="gray" />);
         expect(screen.getByRole('region', { name: 'Closed: no tasks. Drop a task here to move it.' })).toBeInTheDocument();
     });
+
+    it('keeps the caption on folded columns so two with the same status stay apart', () => {
+        renderWithProviders(<>
+            <KanbanColumn id="planned-unassigned" title="Planned" caption="No assignee" tasks={[]} count={0} tone="gray" />
+            <KanbanColumn id="planned-assigned" title="Planned" caption="Assigned" tasks={[]} count={0} tone="gray" />
+        </>);
+        expect(screen.getByRole('region', { name: 'Planned (No assignee): no tasks. Drop a task here to move it.' })).toHaveTextContent('Planned · No assignee');
+        expect(screen.getByRole('region', { name: 'Planned (Assigned): no tasks. Drop a task here to move it.' })).toHaveTextContent('Planned · Assigned');
+    });
 });
 
 describe('Board card', () => {
-    it('labels the claim time and says when effort is unknown', () => {
-        renderWithProviders(<KanbanCard task={task(7, { effort_days: null, claimed_by: { display_name: 'Agent A' }, claim_expires_at: '2030-01-02T18:42:00Z' } as Partial<Task>)} />);
-        expect(screen.getByText(/^Claimed by Agent A, held until /)).toBeInTheDocument();
-        expect(screen.getByText('No estimate')).toBeInTheDocument();
+    it('shows the capacity assignee instead of the runtime claimant, the claim expiry, and says when effort is unknown', () => {
+        renderWithProviders(<KanbanCard task={task(7, { effort_days: null, assignee: { id: 4, name: 'Builder' }, claimed_by: { display_name: 'Agent A' }, claim_expires_at: '2030-01-02T18:42:00Z' } as Partial<Task>)} />);
+        expect(screen.getByText('Builder')).toBeInTheDocument();
+        expect(screen.queryByText(/Claimed by Agent A/)).not.toBeInTheDocument();
+        expect(screen.getByText(/^Held until /)).toBeInTheDocument();
+        expect(screen.getByText('Unestimated')).toBeInTheDocument();
         expect(screen.getAllByText(/#7/)).toHaveLength(1);
     });
 

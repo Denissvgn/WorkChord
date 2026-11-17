@@ -121,7 +121,7 @@ export const ProjectSummaryTab = ({ project, summary, updates: projectUpdates, m
             </div>
 
             {/* ── Sticky right rail: facts at a glance ─────────────────── */}
-            <StickyRail>
+            <StickyRail label={t('surfaces.projectDetail.factsLabel')}>
                 {/* Date risk */}
                 <div className="rounded-xl border border-border bg-surface-card p-5 shadow-sm">
                     <div className="mb-3 flex items-center gap-2">

@@ -9,7 +9,7 @@ const planningMastersCss = readFileSync(
     'utf8',
 );
 const agentTeamMasterSource = readFileSync(
-    resolve(process.cwd(), 'src/pages/AgentTeamSetupMasterPage.tsx'),
+    resolve(process.cwd(), 'src/components/team/AgentManifestWorkflow.tsx'),
     'utf8',
 );
 
@@ -20,20 +20,11 @@ const cssRule = (selector: string) => {
 };
 
 describe('responsive shell contracts', () => {
-    it('restores the joined Overview panel on desktop and linearizes it on mobile', () => {
-        expect(planningMastersCss).toContain(
-            'grid-template-areas:\n    "focus snapshot"\n    "work work";',
-        );
-
-        const mobileStart = planningMastersCss.indexOf('@media (max-width: 768px)');
-        const mobileEnd = planningMastersCss.indexOf('@media (max-width: 640px)', mobileStart);
-        const mobileRules = planningMastersCss.slice(mobileStart, mobileEnd);
-
-        expect(mobileStart).toBeGreaterThan(-1);
-        expect(mobileEnd).toBeGreaterThan(mobileStart);
-        expect(mobileRules).toContain('.wc .overview-thread-flow.has-focus-panel');
-        expect(mobileRules).toContain('display: flex;');
-        expect(mobileRules).toContain('> .overview-focus-progress');
+    it('places Work now beside Agents now and the figures on desktop and stacks them when narrow', () => {
+        expect(cssRule('.wc .overview-grid')).toContain('grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);');
+        const narrowStart = planningMastersCss.indexOf('@media (max-width: 900px) {\n  .wc .overview-grid');
+        expect(narrowStart).toBeGreaterThan(-1);
+        expect(cssRule('.wc .overview-first-run:empty')).toContain('display: none;');
     });
 
     it('keeps every shell control at least 44px on mobile and hybrid touch devices', () => {
@@ -60,7 +51,6 @@ describe('responsive shell contracts', () => {
         for (const selector of [
             '.wc .brand',
             '.wc .mobile-nav-trigger',
-            '.wc .plan-master-step-rail .step-item',
             '.wc .plan-share-link-field input',
             '.wc .sb-item',
         ]) {
@@ -158,7 +148,6 @@ describe('responsive shell contracts', () => {
 
     it('preserves interactive step states without making passive checks look clickable', () => {
         const stepRule = cssRule('.wc .step-item');
-        const planStepRule = cssRule('.wc .plan-master-step-rail .step-item');
 
         expect(stepRule).toContain('background: transparent;');
         expect(stepRule).not.toContain('cursor: pointer;');
@@ -168,7 +157,6 @@ describe('responsive shell contracts', () => {
         );
         expect(cssRule('.wc .step-item[aria-current="step"]'))
             .toContain('background: var(--thread-soft);');
-        expect(planStepRule).not.toContain('background: transparent;');
     });
 
     it('keeps the Master hierarchy role-based and tokenized', () => {
@@ -235,7 +223,6 @@ describe('responsive shell contracts', () => {
         }
         expect(mobileRules).toContain('min-height: clamp(18rem, 48dvh, 26rem);');
         expect(mobileRules).toContain('font-size: 16px;');
-        expect(mobileRules).toContain('font-size: var(--wc-type-page);');
         expect(mobileRules).not.toMatch(
             /agent-team-master-layout > \.agent-team-runtime-aux\s*{[^}]*grid-row/s,
         );

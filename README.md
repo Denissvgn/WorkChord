@@ -19,7 +19,7 @@ deliver, and review project work. External agents can participate through
 authenticated REST and MCP APIs, using their own execution runtimes.
 
 - **Teamwork:** project backlogs, task trees, ownership, discussion, and review with evidence.
-- **Planning:** calendars, shared capacity, dependencies, and List, Board, Gantt, and roadmap views.
+- **Planning:** work calendars, shared capacity, waits-for links, and the Plan and Gantt pages, with a roadmap view in Projects.
 - **Recorded time:** optional private entries and scoped totals for project managers.
 
 The web interface supports English and Russian. An [Android companion](android-companion/)
@@ -58,6 +58,7 @@ For a shared server, follow the deployment guides below.
 | External agents | [Runtime integration](docs/external-agent-runtime.md) · [Team setup](docs/agent-team-setup.md) · [Usage and pricing](docs/execution-usage.md) |
 | Self-hosting | [Server setup](docs/runbooks/self-hosted-server-acceptance.md) · [PostgreSQL deployment](docs/runbooks/postgresql-deployment.md) |
 | Operations | [Operator guide](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md) |
+| Releases and upgrades | [Interface simplification 1.0](docs/releases/interface-1.0.md): where pages moved, first-run steps, and what to do after upgrading |
 | Configuration | [Environment settings](.env.example) |
 
 ## Support WorkChord

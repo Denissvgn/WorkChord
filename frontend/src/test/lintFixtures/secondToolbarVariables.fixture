@@ -1,0 +1,14 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// Two toolbars held in constants and rendered in one tree.
+export const Example = () => {
+    const search = <PageToolbar label="Search" />;
+    const filters = <PageToolbar label="Filters" />;
+    return (
+        <PageLayout>
+            <PageHeader title="Example" purpose="One sentence." />
+            {search}
+            {filters}
+        </PageLayout>
+    );
+};

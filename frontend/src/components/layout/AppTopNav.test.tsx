@@ -4,6 +4,7 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppTopNav } from './AppTopNav';
 import { AppSidebar } from './AppSidebar';
 
+import { Button } from '../../components/common/Button';
 const planningSummaryMock = vi.hoisted(() => ({
     usePlanningNavigationSummary: vi.fn(),
 }));
@@ -12,14 +13,21 @@ const triageServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
+const scopeServiceMocks = vi.hoisted(() => ({
+    iterations: { getAll: vi.fn() },
+    projects: { getAll: vi.fn() },
+}));
+
 vi.mock('../../features/planningMasters/usePlanningNavigationSummary', () => planningSummaryMock);
+vi.mock('../../services/iterationService', () => ({ iterationService: scopeServiceMocks.iterations }));
+vi.mock('../../services/projectService', () => ({ projectService: scopeServiceMocks.projects }));
 vi.mock('../../services/triageService', () => ({ triageService: triageServiceMock }));
 vi.mock('../../navigation/routeModules', async importOriginal => ({
     ...await importOriginal<typeof import('../../navigation/routeModules')>(),
     warmRouteModule: vi.fn(),
 }));
 vi.mock('../UserSessionBadge', () => ({
-    UserSessionBadge: () => <button type="button">Account menu</button>,
+    UserSessionBadge: () => <Button type="button" variant="secondary">Account menu</Button>,
 }));
 
 const DESTINATION_NAMES = [
@@ -38,6 +46,10 @@ describe('AppTopNav', () => {
         });
         triageServiceMock.getAll.mockReset();
         triageServiceMock.getAll.mockResolvedValue([]);
+        scopeServiceMocks.iterations.getAll.mockReset();
+        scopeServiceMocks.iterations.getAll.mockResolvedValue([]);
+        scopeServiceMocks.projects.getAll.mockReset();
+        scopeServiceMocks.projects.getAll.mockResolvedValue([]);
     });
 
     it('holds the brand, a scope slot, Commands, Help and the account menu, left to right, with no tabs', () => {
@@ -47,11 +59,11 @@ describe('AppTopNav', () => {
         const brand = screen.getByRole('link', { name: 'Go to WorkChord overview' });
         const slot = screen.getByTestId('topnav-scope-slot');
         const commands = screen.getByRole('button', { name: 'Open command menu' });
-        const help = screen.getByRole('button', { name: 'Open help for Roadmap' });
+        const help = screen.getByRole('button', { name: 'Open help for Projects' });
         const account = screen.getByRole('button', { name: 'Account menu' });
 
         expect(brand).toHaveAttribute('href', '/');
-        expect(slot).toBeEmptyDOMElement();
+        expect(within(slot).getByTestId('scope-bar')).toBeInTheDocument();
         expect(slot).toHaveAttribute('data-slot', 'scope-bar');
         const inOrder = [brand, slot, commands, help, account];
         for (let index = 1; index < inOrder.length; index += 1) {

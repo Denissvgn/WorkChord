@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { useState } from 'react';
 import { screen, within } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
@@ -94,5 +94,29 @@ describe('FilterBar', () => {
         await user.click(within(chips).getByRole('button', { name: 'Clear' }));
         expect(screen.queryByRole('list', { name: 'Active filters' })).not.toBeInTheDocument();
         expect(within(screen.getByRole('list', { name: 'Results' })).getAllByRole('listitem')).toHaveLength(3);
+    });
+
+    it('offers a date field and shows chip-only conditions as removable chips without a control', async () => {
+        const onChange = vi.fn();
+        const { user } = renderWithProviders(<FilterBar onChange={onChange} onClear={() => undefined} filters={[
+            { id: 'start', label: 'Start from', type: 'date', value: '2026-01-05', options: [{ value: '2026-01-05', label: 'Jan 5, 2026' }] },
+            { id: 'label:bug', label: 'Label', value: 'bug', options: [{ value: 'bug', label: 'Bug' }], chipOnly: true },
+        ]} />);
+
+        expect(screen.getByLabelText('Start from')).toHaveAttribute('type', 'date');
+        expect(screen.queryByRole('combobox', { name: 'Label' })).not.toBeInTheDocument();
+        const chips = screen.getByRole('list', { name: 'Active filters' });
+        expect(within(chips).getByText('Start from: Jan 5, 2026')).toBeInTheDocument();
+        await user.click(within(chips).getByRole('button', { name: 'Remove filter Label: Bug' }));
+        expect(onChange).toHaveBeenCalledWith('label:bug', '');
+    });
+
+    it('keeps fewer quick filters in the row when the page asks for it', async () => {
+        renderWithProviders(<FilterBar quickLimit={2} onChange={() => undefined} onClear={() => undefined}
+            filters={definitions.map(definition => ({ id: definition.id, label: definition.label, options: [...definition.options], value: '' }))} />);
+        expect(screen.getByRole('combobox', { name: 'Status' })).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: 'Owner' })).toBeInTheDocument();
+        expect(screen.queryByRole('combobox', { name: 'Team' })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /More filters/ })).toBeInTheDocument();
     });
 });

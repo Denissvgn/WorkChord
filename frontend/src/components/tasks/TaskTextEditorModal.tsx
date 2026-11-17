@@ -106,15 +106,15 @@ const TaskTextEditorBody = ({ iterationId, initialText, initialRevision, isLoadi
                             <FileText className="w-5 h-5" />
                         </div>
                         <span>{t('taskTextEditor.title')}</span>
-                        <button
+                        <Button
                             type="button"
                             onClick={() => setIsFullScreen(!isFullScreen)}
                             className="p-1 hover:bg-surface-subtle rounded text-content-secondary"
                             title={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
                             aria-label={isFullScreen ? t('actions.exitFullScreen') : t('actions.enterFullScreen')}
-                        >
+                         variant="secondary">
                             {isFullScreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-                        </button>
+                        </Button>
                     </span>}
             description={t('taskTextEditor.subtitle')}
             closeLabel={t('actions.close')}

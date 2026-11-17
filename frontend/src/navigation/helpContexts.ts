@@ -10,12 +10,12 @@ import {
 
 // Glossary terms are names from config/workflow-vocabulary.json. Each one has its
 // `contextHelp.glossary.<term>` entry in both catalogs, and a test keeps the names equal.
-export type GlossaryTerm = 'iteration' | 'capacity' | 'blockers' | 'assignee' | 'reviewer' | 'labels'
+type GlossaryTerm = 'iteration' | 'capacity' | 'blockers' | 'assignee' | 'reviewer' | 'labels'
     | 'waits_for' | 'earliest_start' | 'due_by' | 'request' | 'notifications';
 
 export type WorkflowGuideKey = 'plan' | 'gantt' | 'tasks' | 'settings';
 
-export type HelpRelatedLink = {
+type HelpRelatedLink = {
     to: string;
     labelKey: string;
     defaultLabel: string;
@@ -43,15 +43,14 @@ const DESTINATION_HELP: Record<DestinationId, DestinationHelp> = {
 // Only these pages open a guide below their summary, and their guide is the page's own.
 const WORKFLOW_BY_ROUTE: Partial<Record<RouteModuleKey, WorkflowGuideKey>> = {
     plan: 'plan',
-    planMaster: 'plan',
     planShare: 'plan',
     gantt: 'gantt',
     tasks: 'tasks',
     settings: 'settings',
 };
 
-// The first-run setup panel does not exist yet; the event it will listen for is the entry's action.
-export const SETUP_GUIDE_ENTRY = {
+// The entry's action reopens the Get started panel on Overview, from any page.
+const SETUP_GUIDE_ENTRY = {
     labelKey: 'contextHelp.setupGuide.title',
     defaultLabel: 'Setup guide',
     descriptionKey: 'contextHelp.setupGuide.description',

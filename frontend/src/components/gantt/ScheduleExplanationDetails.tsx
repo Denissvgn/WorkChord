@@ -124,7 +124,7 @@ export const ScheduleExplanationDetails = ({
                     return (
                         <div key={`${decision.task_id}-${decision.decision_type}`} className="bg-surface-card/50">
                             <div className="flex items-start gap-2 py-3">
-                                <button
+                                <Button
                                     type="button"
                                     onClick={() => toggleDecision(decision.task_id)}
                                     className="mt-0.5 rounded p-1 text-feedback-purple-foreground hover:bg-feedback-purple-muted-hover"
@@ -134,9 +134,9 @@ export const ScheduleExplanationDetails = ({
                                         : 'surfaces.scheduleExplanation.expandDecisionDetail')} title={t(isExpanded
                                         ? 'surfaces.scheduleExplanation.collapseDecisionDetail'
                                         : 'surfaces.scheduleExplanation.expandDecisionDetail')}
-                                >
+                                 variant="secondary">
                                     {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                </button>
+                                </Button>
 
                                 <div className="min-w-0 flex-1">
                                     <div className="flex flex-wrap items-center gap-2">

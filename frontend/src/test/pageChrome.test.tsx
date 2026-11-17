@@ -1,11 +1,20 @@
-import { describe, expect, it } from 'vitest';
+import { act, waitFor } from '@testing-library/react';
+import { Route, Routes } from 'react-router-dom';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Button } from '../components/common/Button';
 import { Select } from '../components/common/Select';
 import { FilterBar, PageHeader, PageToolbar, ViewSwitch } from '../components/ui';
+import { DESTINATIONS } from '../navigation/destinations';
 import { routeMetadata, routeModuleLoaders } from '../navigation/routeModules';
 import { expectPageChrome } from './pageChrome';
 import { renderWithProviders } from './renderWithProviders';
 import { routeRegistry } from './routeRegistry';
+import { installWorkspaceApi } from './workspaceApi';
+
+// A concrete path for a route pattern, so `/projects/:projectId` is opened as `/projects/1`.
+const samplePath = (pattern: string) => pattern.replace(/:[^/]+/g, match => (match === ':publicId' ? 'shared-plan' : '1'));
+
+afterEach(() => { vi.restoreAllMocks(); });
 
 describe('page chrome', () => {
     it('rejects multiple primary buttons, iteration selectors, and bare selects', () => {
@@ -32,9 +41,25 @@ describe('page chrome', () => {
         expect(routeRegistry.map(({ key, path }) => `${key}:${path}`).sort()).toEqual(routes);
         expect(Object.keys(routeModuleLoaders).sort()).toEqual(routeRegistry.map(({ key }) => key).sort());
     });
-    it.each(routeRegistry.filter(route => route.status === 'migrated'))('checks migrated route $path', async ({ key, path, status }) => {
-        const Page = (await routeModuleLoaders[key]()).default;
-        const { container } = renderWithProviders(<Page />, { initialEntries: [path === '*' ? '/missing' : path] });
-        expectPageChrome(container, { status });
+    it('counts ten destinations in the navigation registry and checks the page of each', () => {
+        expect(DESTINATIONS).toHaveLength(10);
+        const checked = new Map(routeRegistry.filter(route => route.status === 'migrated').map(route => [route.path, route.key]));
+        expect(DESTINATIONS.filter(destination => !checked.has(destination.path)).map(destination => destination.path)).toEqual([]);
     });
+    it('leaves no route pending', () => {
+        expect(routeRegistry.filter(route => route.status === 'pending').map(route => route.path)).toEqual([]);
+    });
+    it.each(routeRegistry)('checks the page frame of route $path', async ({ key, path, status }) => {
+        installWorkspaceApi();
+        const sample = samplePath(path === '*' ? '/missing' : path);
+        const Page = (await routeModuleLoaders[key]()).default;
+        const { container } = renderWithProviders(<Routes>
+            <Route path={path} element={<Page />} />
+        </Routes>, { initialEntries: [sample] });
+        // A page that reads records shows its header once they arrive.
+        await waitFor(() => expectPageChrome(container, { status }), { timeout: 5000 });
+        await act(() => new Promise(resolve => setTimeout(resolve, 50)));
+        expectPageChrome(container, { status });
+    // The first dynamic import of a page module can be slow while the whole suite runs.
+    }, 20_000);
 });

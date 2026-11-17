@@ -1,11 +1,11 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ganttService } from '../../services/ganttService';
 import { iterationService } from '../../services/iterationService';
 import { taskService } from '../../services/taskService';
 import { teamService } from '../../services/teamService';
 import { triageService } from '../../services/triageService';
-import { useIterationStore, pickDefaultIteration } from '../../store/iterationStore';
+import { useWorkScope } from '../scope/useWorkScope';
 import type { GanttResponse } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
@@ -22,14 +22,13 @@ import {
 
 type PlanningReadinessOptions = {
     includeInbox?: boolean;
-    autoSelectFirst?: boolean;
 };
 
 const HOURS_PER_DAY = 8;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const MILLISECONDS_PER_DAY = 86_400_000;
 
-export type PlanningTeamMember = TeamMember & {
+type PlanningTeamMember = TeamMember & {
     capacity_hours: number;
     planned_hours: number;
 };
@@ -76,7 +75,7 @@ const queryFeedback = (
     };
 };
 
-export const flattenTasks = (list: Task[] = []): Task[] => {
+const flattenTasks = (list: Task[] = []): Task[] => {
     const out: Task[] = [];
     for (const task of list) {
         out.push(task);
@@ -85,7 +84,7 @@ export const flattenTasks = (list: Task[] = []): Task[] => {
     return out;
 };
 
-export const planningLeafTasks = (list: Task[] = []): Task[] => (
+const planningLeafTasks = (list: Task[] = []): Task[] => (
     flattenTasks(list).filter(isPlanningLeafTask)
 );
 
@@ -167,7 +166,7 @@ const boundedCoefficient = (value: number) => (
 
 const roundHours = (value: number) => Math.round(value * 100) / 100;
 
-export const enrichPlanningTeamMembers = ({
+const enrichPlanningTeamMembers = ({
     members,
     tasks,
     iteration,
@@ -223,14 +222,14 @@ const hasSavedDateRange = (task: Task) => {
     return start !== null && end !== null && start <= end;
 };
 
-export const hasSavedPlanningSchedule = (tasks: Task[]) => {
+const hasSavedPlanningSchedule = (tasks: Task[]) => {
     const leaves = planningLeafTasks(tasks);
     return leaves.length > 0 && leaves.every(task => (
         finitePositive(task.effort_days) && hasSavedDateRange(task)
     ));
 };
 
-export const countPlanningExceptions = (
+const countPlanningExceptions = (
     tasks: Task[],
     members: PlanningTeamMember[],
 ) => (
@@ -247,11 +246,11 @@ export const countPlanningExceptions = (
 
 export const usePlanningReadiness = ({
     includeInbox = false,
-    // Every planning surface selects the same default iteration, so readiness
-    // never depends on which page was opened first.
-    autoSelectFirst = true,
 }: PlanningReadinessOptions = {}) => {
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
+    // Every planning surface reads the same scope, so readiness never depends on which page
+    // was opened first. The scope already holds a default iteration once iterations load.
+    const { iteration } = useWorkScope();
+    const selectedIterationId = typeof iteration === 'number' ? iteration : 0;
 
     // feedback-policy: query loading,error,retry,empty - aggregate state is returned to the owning workspace.
     const iterationsQuery = useQuery({
@@ -261,26 +260,6 @@ export const usePlanningReadiness = ({
     });
 
     const iterations = useMemo(() => iterationsQuery.data ?? [], [iterationsQuery.data]);
-
-    useEffect(() => {
-        if (!iterationsQuery.isSuccess) return;
-
-        const selectedExists = iterations.some(iteration => iteration.id === selectedIterationId);
-        if (selectedIterationId > 0 && !selectedExists) {
-            setSelectedIterationId(0);
-            return;
-        }
-
-        if (autoSelectFirst && selectedIterationId === 0 && iterations.length > 0) {
-            setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-        }
-    }, [
-        autoSelectFirst,
-        iterations,
-        iterationsQuery.isSuccess,
-        selectedIterationId,
-        setSelectedIterationId,
-    ]);
 
     const currentIteration = useMemo<Iteration | null>(
         () => iterations.find(iteration => iteration.id === selectedIterationId) ?? null,
@@ -412,6 +391,7 @@ export const usePlanningReadiness = ({
         tasks: queryFeedback(tasksQuery, hasCurrentIteration),
         gantt: queryFeedback(ganttQuery, hasCurrentIteration),
         inbox: queryFeedback(inboxQuery, includeInbox),
+        checkpoints: queryFeedback(checkpointsQuery, hasCurrentIteration),
     };
     const readinessError = [
         queryStates.team,
@@ -434,15 +414,15 @@ export const usePlanningReadiness = ({
     const refetch = async () => {
         return Promise.allSettled([
             iterationsQuery.refetch(),
-            ...(hasCurrentIteration ? [teamQuery.refetch(), tasksQuery.refetch(), ganttQuery.refetch()] : []),
+            ...(hasCurrentIteration
+                ? [teamQuery.refetch(), tasksQuery.refetch(), ganttQuery.refetch(), checkpointsQuery.refetch()]
+                : []),
             ...(includeInbox ? [inboxQuery.refetch()] : []),
         ]);
     };
 
     return {
         selectedIterationId,
-        setSelectedIterationId,
-        selectIteration: setSelectedIterationId,
         iterations,
         currentIteration,
         hasCurrentIteration,
@@ -453,6 +433,8 @@ export const usePlanningReadiness = ({
         gantt: ganttQuery.data,
         inboxItems: inboxQuery.data ?? [],
         readinessData,
+        /** The server's planning-readiness response, which owns the checkpoint states. */
+        planningSummary: checkpointsQuery.data,
         status,
         ready,
         nextId,

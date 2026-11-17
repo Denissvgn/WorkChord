@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { AppShell } from './AppShell';
 
+import { Button } from '../../components/common/Button';
 vi.mock('./AppTopNav', () => ({ AppTopNav: () => <header>Top navigation</header> }));
 vi.mock('./AppSidebar', () => ({ AppSidebar: () => <aside>Context navigation</aside> }));
 vi.mock('./DocumentMetadata', () => ({ DocumentMetadata: () => null }));
@@ -25,27 +26,27 @@ const NavigationControls = () => {
 
     return (
         <>
-            <button ref={initialFocusRef} type="button">
+            <Button ref={initialFocusRef} type="button" variant="secondary">
                 Initial focus
-            </button>
-            <button
+            </Button>
+            <Button
                 type="button"
                 onClick={() => navigate({ search: '?view=compact' })}
-            >
+             variant="secondary">
                 Change query
-            </button>
-            <button
+            </Button>
+            <Button
                 type="button"
                 onClick={() => navigate({ hash: '#details' })}
-            >
+             variant="secondary">
                 Change hash
-            </button>
-            <button
+            </Button>
+            <Button
                 type="button"
                 onClick={() => navigate('/tasks?panel=filters#work-now')}
-            >
+             variant="secondary">
                 Change workspace path
-            </button>
+            </Button>
             <output aria-label="Current location">
                 {`${location.pathname}${location.search}${location.hash}`}
             </output>

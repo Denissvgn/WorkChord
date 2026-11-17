@@ -1,27 +1,38 @@
 import { isGraphLimitError } from '../../utils/graphLimitError';
 import { PagedTaskBrowser } from './PagedTaskBrowser';
-import { priorityChipClassName, statusTextClassName } from '../ui/tone';
+import { statusTextClassName } from '../ui/tone';
 import { LabelChip } from '../labels/LabelChip';
-import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useLayoutEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
-    ChevronRight, ChevronDown, CheckCircle2, Circle,
-    Trash2, Plus, Edit, CornerDownRight, AlertTriangle, ArrowUpDown, GripVertical, Layers, Unlink, Bot, ClipboardCheck, Info
+    ChevronRight, ChevronDown,
+    Trash2, Plus, Edit, AlertTriangle, GripVertical, Unlink, Bot, Info
 } from 'lucide-react';
 import { taskService } from '../../services/taskService';
 import { labelService } from '../../services/labelService';
 import { Button } from '../common/Button';
+import { InlineEmptyState } from '../ui/InlineEmptyState';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 import { ConfirmDialog } from '../common/ConfirmDialog';
-import { Modal } from '../common/Modal';
-import { GuardedTaskModal } from './GuardedTaskModal';
+import { GuardedTaskDrawer } from './GuardedTaskDrawer';
 import { selectVisibleWork } from '../../utils/visibleWork';
 import { WorkFreshness } from '../feedback/WorkFreshness';
 import { TaskAgentReadinessBadge } from './TaskAgentReadinessBadge';
-import { TaskBulkOperationsPanel } from './TaskBulkOperationsPanel';
-import type { Task } from '../../types/task';
+import { TaskSelectionBar } from './TaskSelectionBar';
+import { TaskRow } from './TaskRow';
+import { useTaskSelection } from './useTaskSelection';
+import { taskStateChip } from './taskStateChip';
+import { getEffectiveEffort } from './taskRowValues';
+import type { TaskRowAssigneeOption } from './TaskRow';
+import { useAssigneeOptions, useTaskRowEdits } from './useTaskRowEdits';
+import { agentRowValues, useAgentRowFacts } from './useAgentRowFacts';
+import type { AgentRowFacts } from './useAgentRowFacts';
+import type { Task, TaskStatus } from '../../types/task';
 import type { Label } from '../../types/label';
 import type { TaskFilters } from './TaskFiltersBar';
 import clsx from 'clsx';
@@ -47,7 +58,6 @@ import { CSS } from '@dnd-kit/utilities';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
-import { OverflowMenu } from '../ui';
 
 export type SortKey = 'priority' | 'sort_order' | 'status' | 'title';
 export type TaskMode = 'bulk' | 'merge';
@@ -55,21 +65,14 @@ export type TaskMode = 'bulk' | 'merge';
 const STATUS_GROUP_ORDER = ['active', 'planned', 'resolved', 'closed'];
 /** Longer lists render only the rows near the viewport. */
 const VIRTUALIZE_AFTER_ROWS = 80;
+/** Every row is 44 px tall, its bottom line included. */
+const ROW_HEIGHT = 44;
 type RowItem = { kind: 'group'; status: string; count: number; collapsed: boolean } | { kind: 'task'; task: Task };
 const rowItemKey = (item: RowItem) => item.kind === 'group' ? `group:${item.status}` : `task:${item.task.id}`;
 type TaskOrderRequest = Parameters<typeof taskService.reorder>[0];
 type ReorderVariables = {
     order: TaskOrderRequest;
     undoOrder: TaskOrderRequest;
-};
-
-// Calculate effective effort for composite tasks (sum of children)
-const getEffectiveEffort = (task: Task): number | null => {
-    if (task.children && task.children.length > 0) {
-        const values = task.children.map(getEffectiveEffort);
-        return values.some(value => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
-    }
-    return task.effort_days;
 };
 
 // Get dependency task names from taskMap
@@ -81,14 +84,18 @@ interface TaskListProps {
     iterationId: number;
     filters?: TaskFilters;
     sortKey: SortKey;
-    onSortKeyChange: (sortKey: SortKey) => void;
+    /** Group the rows by status; manual order always shows one list. */
+    groupByStatus?: boolean;
+    /** A row shown above the tasks, inside the list, such as quick add. */
+    leadingRow?: ReactNode;
     hasActiveFilters?: boolean;
     activeViewName?: string;
     onClearFilters?: () => void;
     onCreateTask?: () => void;
+    /** A hand-off asked to start with tasks selected; clearing the selection reports `null`. */
     requestedMode?: TaskMode | null;
     onModeChange?: (mode: TaskMode | null) => void;
-    /** Select every matching task once when bulk mode opens from a hand-off. */
+    /** Select every matching task once when a hand-off opens the list to assign work. */
     preselectAllInBulk?: boolean;
     /** Open a task in the page's read-first view (keeps ?task=<id> in the URL). */
     onOpenTask?: (task: Task) => void;
@@ -98,7 +105,8 @@ export const TaskList = ({
     iterationId,
     filters,
     sortKey,
-    onSortKeyChange,
+    groupByStatus = true,
+    leadingRow,
     hasActiveFilters = false,
     activeViewName,
     onClearFilters,
@@ -110,33 +118,22 @@ export const TaskList = ({
 }: TaskListProps) => {
     const queryClient = useQueryClient();
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const toast = useToast();
     const [editingTask, setEditingTask] = useState<Task | null>(null);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
     const [addingChildTo, setAddingChildTo] = useState<number | null>(null);
     const [deletingTask, setDeletingTask] = useState<Task | null>(null);
 
-    // Merge mode state
-    const [internalTaskMode, setInternalTaskMode] = useState<TaskMode | null>(null);
-    const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(new Set());
-    const [showMergeModal, setShowMergeModal] = useState(false);
-    const [mergeParentTitle, setMergeParentTitle] = useState('');
-    const [mergeRevision, setMergeRevision] = useState<number | undefined>(undefined);
-    const mergeTitleRef = useRef<HTMLInputElement>(null);
-    const mergeTitleId = useId();
-    const [selectedBulkTaskIds, setSelectedBulkTaskIds] = useState<Set<number>>(new Set());
+    // Selection is direct: any row can be ticked, with no mode to enter first.
     const [nowMs, setNowMs] = useState(() => Date.now());
-    const activeTaskMode = requestedMode === undefined ? internalTaskMode : requestedMode;
-    const isMergeMode = activeTaskMode === 'merge';
-    const isBulkMode = activeTaskMode === 'bulk';
-
-    const setTaskMode = useCallback((mode: TaskMode | null) => {
-        setInternalTaskMode(mode);
-        if (mode !== 'merge') setSelectedTaskIds(new Set());
-        if (mode !== 'bulk') setSelectedBulkTaskIds(new Set());
-        onModeChange?.(mode);
-    }, [onModeChange]);
+    const [collapsedParents, setCollapsedParents] = useState<Set<number>>(() => new Set());
+    const toggleParent = useCallback((taskId: number) => setCollapsedParents(previous => {
+        const next = new Set(previous);
+        if (next.has(taskId)) next.delete(taskId); else next.add(taskId);
+        return next;
+    }), []);
 
     useEffect(() => {
         const timer = window.setInterval(() => setNowMs(Date.now()), 60_000);
@@ -195,39 +192,6 @@ export const TaskList = ({
         },
     });
 
-    const mergeMutation = useMutation({
-        mutationFn: (data: { task_ids: number[]; parent_title: string; expected_revision: number }) =>
-            taskService.mergeTasks(iterationId, data),
-        onSuccess: (parent, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
-            queryClient.invalidateQueries({ queryKey: ['gantt'] });
-            toast.success(t('taskList.mergeSuccess', { count: variables.task_ids.length }), {
-                dedupeKey: `task-merge-${parent.id}`,
-                durationMs: 10_000,
-                actionLabel: t('taskList.undo'),
-                onAction: async () => {
-                    try {
-                        await taskService.unmergeTask(parent.id, true, parent.iteration_revision);
-                        await Promise.all([
-                            queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] }),
-                            queryClient.invalidateQueries({ queryKey: ['gantt'] }),
-                            queryClient.invalidateQueries({ queryKey: ['workload'] }),
-                        ]);
-                        toast.success(t('taskList.mergeRestored'));
-                    } catch (error) {
-                        toast.error(getApiErrorMessage(error, t('taskList.mergeUndoFailed')));
-                        throw error;
-                    }
-                },
-            });
-            // Reset merge mode
-            setTaskMode(null);
-            setSelectedTaskIds(new Set());
-            setShowMergeModal(false);
-            setMergeParentTitle('');
-        },
-    });
-
     const unmergeMutation = useMutation({
         mutationFn: (taskId: number) => taskService.unmergeTask(taskId, true, iterationRevision),
         onSuccess: async () => {
@@ -239,47 +203,6 @@ export const TaskList = ({
         },
     });
 
-
-    // Toggle task selection for merge
-    const toggleTaskSelection = (taskId: number) => {
-        setSelectedTaskIds(prev => {
-            const next = new Set(prev);
-            if (next.has(taskId)) {
-                next.delete(taskId);
-            } else {
-                next.add(taskId);
-            }
-            return next;
-        });
-    };
-
-    // Check if a task can be selected for merge (must be leaf task - no children)
-    const canSelectForMerge = (task: Task): boolean => {
-        return !task.children || task.children.length === 0;
-    };
-
-    const toggleBulkTaskSelection = (taskId: number) => {
-        setSelectedBulkTaskIds(prev => {
-            const next = new Set(prev);
-            if (next.has(taskId)) {
-                next.delete(taskId);
-            } else {
-                next.add(taskId);
-            }
-            return next;
-        });
-    };
-
-    // Handle merge confirmation
-    const handleMergeConfirm = () => {
-        if (selectedTaskIds.size >= 2 && mergeParentTitle.trim() && mergeRevision !== undefined) {
-            mergeMutation.mutate({
-                task_ids: Array.from(selectedTaskIds),
-                parent_title: mergeParentTitle.trim(),
-                expected_revision: mergeRevision
-            });
-        }
-    };
 
     // Filter and sort tasks based on filters and selected key
     const filteredAndSortedTasks = useMemo(() => {
@@ -309,19 +232,7 @@ export const TaskList = ({
     }, [tasks, sortKey, filters, labelGroups, searchText]);
 
     const visibleTasks = useMemo(() => selectVisibleWork(filteredAndSortedTasks).leaves, [filteredAndSortedTasks]);
-    const selectedBulkTasks = useMemo(
-        () => visibleTasks.filter(task => selectedBulkTaskIds.has(task.id)),
-        [visibleTasks, selectedBulkTaskIds]
-    );
-    // A hand-off into bulk mode starts with every matching task selected, once.
-    // Adjusting state during render (not in an effect) avoids a cascading render.
-    const [preselectApplied, setPreselectApplied] = useState(false);
-    if (!isBulkMode && preselectApplied) {
-        setPreselectApplied(false);
-    } else if (isBulkMode && preselectAllInBulk && !preselectApplied && visibleTasks.length > 0) {
-        setPreselectApplied(true);
-        setSelectedBulkTaskIds(new Set(visibleTasks.map(task => task.id)));
-    }
+    const selectableIds = useMemo(() => new Set(visibleTasks.map(task => task.id)), [visibleTasks]);
 
     const labelsBySlug = useMemo(() => {
         const map = new Map<string, Label>();
@@ -415,13 +326,7 @@ export const TaskList = ({
     const isDraggingEnabled = sortKey === 'sort_order' && !reorderMutation.isPending;
 
     // Group by status unless the list is in manual order, where one sequence is dragged.
-    const groupByStatus = searchParams.get('group') !== 'none';
     const grouped = groupByStatus && sortKey !== 'sort_order';
-    const toggleGrouping = () => setSearchParams(previous => {
-        const next = new URLSearchParams(previous);
-        if (groupByStatus) next.set('group', 'none'); else next.delete('group');
-        return next;
-    }, { replace: true });
     const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => new Set(['closed']));
     const toggleGroup = (status: string) => setCollapsedGroups(previous => {
         const next = new Set(previous);
@@ -443,39 +348,76 @@ export const TaskList = ({
     const [rowsNode, setRowsNode] = useState<HTMLDivElement | null>(null);
     const scrollElement = rowsNode?.closest<HTMLElement>('#workspace-main') ?? null;
     const virtualizeRows = !isDraggingEnabled && scrollElement !== null && rowItems.length > VIRTUALIZE_AFTER_ROWS;
+    const { options: assigneeOptions, error: assigneeOptionsError, refetch: refetchAssigneeOptions } = useAssigneeOptions(iterationId);
+    // Every row the list shows, parents and the children of expanded parents, for the Reviewer reads.
+    const displayedTasks = useMemo(() => {
+        const shown: Task[] = [];
+        const walk = (task: Task) => {
+            shown.push(task);
+            if (!collapsedParents.has(task.id)) task.children?.forEach(walk);
+        };
+        rowItems.forEach(item => { if (item.kind === 'task') walk(item.task); });
+        return shown;
+    }, [rowItems, collapsedParents]);
+    const agentFacts = useAgentRowFacts(displayedTasks);
+    const rowEdits = useTaskRowEdits();
+    // The order a person sees, used to select a range between two ticked rows.
+    const selectionOrder = useMemo(() => {
+        const ids: number[] = [];
+        const walk = (task: Task) => {
+            if (!task.children || task.children.length === 0) { if (selectableIds.has(task.id)) ids.push(task.id); return; }
+            if (!collapsedParents.has(task.id)) task.children.forEach(walk);
+        };
+        rowItems.forEach(item => { if (item.kind === 'task') walk(item.task); });
+        return ids;
+    }, [rowItems, collapsedParents, selectableIds]);
+    const selection = useTaskSelection({ selectableIds, order: selectionOrder });
+    const clearSelection = () => { selection.clear(); if (requestedMode) onModeChange?.(null); };
+    // Only tasks still in the list count, so a filter change never leaves a hidden task selected.
+    const selectedTasks = useMemo(() => visibleTasks.filter(task => selection.selectedIds.has(task.id)), [visibleTasks, selection.selectedIds]);
+    // A hand-off to assign work starts with every matching task selected, once.
+    // Adjusting state during render (not in an effect) avoids a cascading render.
+    const [preselectApplied, setPreselectApplied] = useState(false);
+    if (requestedMode !== 'bulk' && preselectApplied) {
+        setPreselectApplied(false);
+    } else if (requestedMode === 'bulk' && preselectAllInBulk && !preselectApplied && visibleTasks.length > 0) {
+        setPreselectApplied(true);
+        selection.replace(visibleTasks.map(task => task.id));
+    }
+    const rowContext: RowContext = {
+        onOpen: onOpenTask ?? setEditingTask,
+        onAddSubtask: setAddingChildTo,
+        onDelete: setDeletingTask,
+        onUnmerge: id => unmergeMutation.mutate(id),
+        isUnmergePending: unmergeMutation.isPending,
+        sensors,
+        onChildDragEnd: handleChildDragEnd,
+        isDraggingEnabled,
+        taskMap,
+        labelsBySlug,
+        nowMs,
+        selectedIds: selection.selectedIds,
+        selectableIds,
+        selectionActive: selectedTasks.length > 0,
+        onToggleSelect: selection.toggle,
+        collapsedParents,
+        onToggleParent: toggleParent,
+        assigneeOptions,
+        agentFacts,
+        onAssign: (task: Task, assigneeId: number | null) => rowEdits.assign(task, assigneeId),
+        onStatusChange: (task: Task, status: TaskStatus) => rowEdits.changeStatus(task, status),
+    };
     const renderRowItem = (item: RowItem) => item.kind === 'group' ? (
         <h2 className="m-0">
-            <button type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
-                className="flex min-h-11 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+            <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
+                className="flex min-h-9 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
                 <span className={statusTextClassName[item.status as Task['status']]}>{t(`statuses.${item.status}`, { defaultValue: item.status })}</span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
-            </button>
+            </Button>
         </h2>
     ) : (
-        <TaskItemContent
-            task={item.task}
-            onEdit={onOpenTask ?? setEditingTask}
-            onAddSubtask={setAddingChildTo}
-            onDelete={(target) => setDeletingTask(target)}
-            onUnmerge={(id) => unmergeMutation.mutate(id)}
-            isUnmergePending={unmergeMutation.isPending}
-            level={0}
-            sensors={sensors}
-            onChildDragEnd={handleChildDragEnd}
-            isDraggingEnabled={false}
-            taskMap={taskMap}
-            isMergeMode={isMergeMode}
-            selectedTaskIds={selectedTaskIds}
-            canSelectForMerge={canSelectForMerge}
-            toggleTaskSelection={toggleTaskSelection}
-            isBulkMode={isBulkMode}
-            selectedBulkTaskIds={selectedBulkTaskIds}
-            toggleBulkTaskSelection={toggleBulkTaskSelection}
-            labelsBySlug={labelsBySlug}
-            nowMs={nowMs}
-            showStatusLabel={!grouped}
-        />
+        <TaskItemContent task={item.task} level={0} ctx={rowContext} />
     );
 
     if (isGraphLimitError(tasksError)) return <PagedTaskBrowser key={iterationId} iterationId={iterationId} />;
@@ -485,6 +427,9 @@ export const TaskList = ({
     return (
         <div className="space-y-4">
             <WorkFreshness stale={isRefetchError} refreshing={isFetching} onRefresh={() => { void refetchTasks(); }} />
+            {assigneeOptionsError && (
+                <QueryErrorState error={assigneeOptionsError} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => { void refetchAssigneeOptions(); }} />
+            )}
             {reorderMutation.isError && (
                 <QueryErrorState
                     error={reorderMutation.error}
@@ -496,16 +441,13 @@ export const TaskList = ({
             )}
             {(deleteMutation.isPending
                 || reorderMutation.isPending
-                || mergeMutation.isPending
                 || unmergeMutation.isPending) && (
                 <p className="sr-only" role="status" aria-live="polite">
                     {deleteMutation.isPending
                         ? t('taskList.deletingTask')
                         : reorderMutation.isPending
                             ? t('taskList.savingOrder')
-                            : mergeMutation.isPending
-                                ? t('taskList.mergingTasks')
-                                : t('taskList.splittingTask')}
+                            : t('taskList.splittingTask')}
                 </p>
             )}
             {unmergeMutation.isError && (
@@ -517,114 +459,19 @@ export const TaskList = ({
                     }}
                 />
             )}
-            {isMergeMode || isBulkMode ? (
-                <div
-                    className="sticky top-0 z-20 mb-2 flex flex-wrap items-center gap-2 rounded-lg border border-action bg-action-muted px-3 py-2"
-                    role="region"
-                    aria-label={isMergeMode ? t('taskList.mergeTasks') : t('taskList.bulkEdit')}
-                >
-                    <div className="min-w-0 flex-1">
-                        <div className="text-sm font-semibold text-content-primary">
-                            {isMergeMode ? t('taskList.mergeTasks') : t('taskList.bulkEdit')}
-                        </div>
-                        <div className="text-xs text-content-secondary" aria-live="polite">
-                            {isMergeMode
-                                ? t('taskList.mergeHint')
-                                : t('taskList.selectedTasks', { count: selectedBulkTaskIds.size })}
-                        </div>
-                    </div>
-                    {isMergeMode && selectedTaskIds.size >= 2 && (
-                        <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => {
-                                mergeMutation.reset();
-                                setMergeRevision(iterationRevision);
-                                setShowMergeModal(true);
-                            }}
-                        >
-                            {t('taskList.mergeSelected', { count: selectedTaskIds.size })}
-                        </Button>
-                    )}
-                    {isBulkMode && (
-                        <>
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                onClick={() => setSelectedBulkTaskIds(new Set(visibleTasks.map(task => task.id)))}
-                                disabled={visibleTasks.length === 0}
-                            >
-                                {t('taskList.selectAllMatching', { count: visibleTasks.length })}
-                            </Button>
-                            {selectedBulkTaskIds.size > 0 && (
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setSelectedBulkTaskIds(new Set())}
-                                >
-                                    {t('actions.clear')}
-                                </Button>
-                            )}
-                        </>
-                    )}
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                            setTaskMode(null);
-                        }}
-                    >
-                        {isMergeMode ? t('taskList.cancelMerge') : t('taskList.cancelBulkEdit')}
-                    </Button>
-                </div>
-            ) : (
-                <div className="mb-2 flex flex-wrap items-center justify-end gap-2">
-                <div className="flex items-center gap-2">
-                    <ArrowUpDown className="w-4 h-4 text-content-secondary" />
-                    <select
-                        value={sortKey}
-                        onChange={e => onSortKeyChange(e.target.value as SortKey)}
-                        aria-label={t('taskList.sortTasks')}
-                        className="text-sm border border-border-strong rounded-md px-2 py-1 bg-surface-card"
-                    >
-                        <option value="priority">{t('taskList.sortPriority')}</option>
-                        <option value="sort_order">{t('taskList.sortManual')}</option>
-                        <option value="status">{t('taskList.sortStatus')}</option>
-                        <option value="title">{t('taskList.sortTitle')}</option>
-                    </select>
-                    {sortKey === 'sort_order' && (
-                        <span className="max-w-56 text-xs leading-snug text-content-secondary">
-                            {t('taskList.manualSortHint')}
-                        </span>
-                    )}
-                </div>
-                    <Button variant="ghost" size="sm" aria-pressed={grouped} disabled={sortKey === 'sort_order'}
-                        title={sortKey === 'sort_order' ? t('taskList.groupNeedsSort') : undefined} onClick={toggleGrouping}>
-                        {t('taskList.groupByStatus')}
-                    </Button>
-                    <Button variant="secondary" size="sm" onClick={() => setTaskMode('bulk')}>
-                        <ClipboardCheck className="h-4 w-4" aria-hidden="true" />
-                        {t('taskList.select')}
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={() => setTaskMode('merge')}>
-                        <Layers className="h-4 w-4" aria-hidden="true" />
-                        {t('taskList.mergeTasks')}
-                    </Button>
-                </div>
-            )}
-
-            {isBulkMode && selectedBulkTaskIds.size > 0 && (
-                <TaskBulkOperationsPanel
+            {selectedTasks.length > 0 && (
+                <TaskSelectionBar
                     iterationId={iterationId}
-                    selectedTasks={selectedBulkTasks}
-                    selectedTaskIds={Array.from(selectedBulkTaskIds)}
-                    onClearSelection={() => setSelectedBulkTaskIds(new Set())}
-                    onApplied={() => undefined}
-                    focusAssignee={preselectAllInBulk}
+                    selectedTasks={selectedTasks}
+                    matchingCount={visibleTasks.length}
+                    onSelectAll={selection.selectAll}
+                    onClearSelection={clearSelection}
+                    openAssign={preselectAllInBulk}
                 />
             )}
 
             <div ref={setRowsNode} className="rounded-lg border border-border bg-surface-card">
+            {leadingRow && <div className="task-list-leading-row">{leadingRow}</div>}
             {isDraggingEnabled ? (
                 <DndContext
                     sensors={sensors}
@@ -636,29 +483,7 @@ export const TaskList = ({
                         strategy={verticalListSortingStrategy}
                     >
                         {filteredAndSortedTasks.map((task) => (
-                            <SortableTaskItem
-                                key={task.id}
-                                task={task}
-                                onEdit={onOpenTask ?? setEditingTask}
-                                onAddSubtask={setAddingChildTo}
-                                onDelete={(t) => setDeletingTask(t)}
-                                onUnmerge={(id) => unmergeMutation.mutate(id)}
-                                isUnmergePending={unmergeMutation.isPending}
-                                level={0}
-                                sensors={sensors}
-                                onChildDragEnd={handleChildDragEnd}
-                                isDraggingEnabled={isDraggingEnabled}
-                                taskMap={taskMap}
-                                isMergeMode={isMergeMode}
-                                selectedTaskIds={selectedTaskIds}
-                                canSelectForMerge={canSelectForMerge}
-                                toggleTaskSelection={toggleTaskSelection}
-                                isBulkMode={isBulkMode}
-                                selectedBulkTaskIds={selectedBulkTaskIds}
-                                toggleBulkTaskSelection={toggleBulkTaskSelection}
-                                labelsBySlug={labelsBySlug}
-                                nowMs={nowMs}
-                            />
+                            <SortableTaskItem key={task.id} task={task} level={0} ctx={rowContext} />
                         ))}
                     </SortableContext>
                 </DndContext>
@@ -670,35 +495,27 @@ export const TaskList = ({
             </div>
 
             {filteredAndSortedTasks?.length === 0 && (
-                <div className="rounded-lg border border-dashed border-border bg-surface-muted px-6 py-12 text-center">
-                    <h2 className="text-base font-semibold text-content-primary">
-                        {tasks && tasks.length > 0
-                            ? t('taskList.noFilterMatches')
-                            : t('taskList.noTasks')}
-                    </h2>
-                    <p className="mx-auto mt-1 max-w-lg text-sm text-content-secondary">
-                        {tasks && tasks.length > 0
-                            ? activeViewName
-                                ? t('taskList.noFilterMatchesViewBody', { view: activeViewName })
-                                : t('taskList.noFilterMatchesBody')
-                            : t('taskList.noTasksBody')}
-                    </p>
-                    <div className="mt-4 flex justify-center gap-2">
-                        {tasks && tasks.length > 0 && hasActiveFilters && onClearFilters ? (
-                            <Button variant="secondary" onClick={onClearFilters}>
-                                {t('taskList.clearFilters')}
-                            </Button>
-                        ) : onCreateTask ? (
-                            <Button variant="primary" onClick={onCreateTask}>
-                                <Plus className="mr-1 h-4 w-4" aria-hidden="true" />
-                                {t('tasks.newTask')}
-                            </Button>
-                        ) : null}
-                    </div>
-                </div>
+                tasks && tasks.length > 0 ? (
+                    <InlineEmptyState
+                        headingLevel={2}
+                        title={t('emptyStates.filtered.title')}
+                        description={activeViewName ? t('taskList.noFilterMatchesViewBody', { view: activeViewName }) : t('taskList.noFilterMatchesBody')}
+                        actions={hasActiveFilters && onClearFilters ? (
+                            <Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button>
+                        ) : undefined}
+                    />
+                ) : (
+                    <NextStepEmptyState
+                        title={t('emptyStates.tasks.title')}
+                        description={t('emptyStates.tasks.body')}
+                        fallback={onCreateTask
+                            ? { label: t('emptyStates.tasks.action'), onClick: onCreateTask }
+                            : { label: t('firstRun.steps.tasks.title'), to: scopeLink(firstRunPlanHref('work')) }}
+                    />
+                )
             )}
 
-            {(editingTask || addingChildTo) && <GuardedTaskModal
+            {(editingTask || addingChildTo) && <GuardedTaskDrawer
                 key={editingTask?.id ?? `child-${addingChildTo}`}
                 title={editingTask ? t('tasks.editTask') : t('tasks.addSubtask')}
                 closeLabel={t('actions.close')}
@@ -733,74 +550,6 @@ export const TaskList = ({
                 onConfirm={() => { if (deletingTask) deleteMutation.mutate(deletingTask); }}
             />
 
-            {/* Merge Modal */}
-            <Modal
-                open={showMergeModal}
-                title={<span className="flex items-center gap-2 text-feedback-indigo"><Layers className="h-5 w-5" />{t('taskList.mergeModalTitle')}</span>}
-                closeLabel={t('actions.close')}
-                onClose={() => { if (!mergeMutation.isPending) { setShowMergeModal(false); setMergeParentTitle(''); } }}
-                closeDisabled={mergeMutation.isPending}
-                initialFocusRef={mergeTitleRef}
-                className="max-w-md"
-            >
-                {showMergeModal && (
-                    <>
-                        {mergeMutation.isError && <Button type="button" variant="secondary" disabled={mergeMutation.isPending} onClick={() => {
-                            void refetchTasks().then(result => setMergeRevision(result.data?.[0]?.iteration_revision));
-                        }}>{t('planningInput.reviewAgain')}</Button>}
-                        <p className="mb-4 text-content-secondary">
-                            {t('taskList.selectedTasks', { count: selectedTaskIds.size })}
-                        </p>
-                        <div className="mb-4">
-                            <label
-                                className="block text-sm font-medium text-content-primary mb-1"
-                                htmlFor={mergeTitleId}
-                            >
-                                {t('taskList.parentTitleLabel')}
-                            </label>
-                            <input
-                                id={mergeTitleId}
-                                ref={mergeTitleRef}
-                                type="text"
-                                value={mergeParentTitle}
-                                onChange={(e) => setMergeParentTitle(e.target.value)}
-                                placeholder={t('taskList.parentTitlePlaceholder')}
-                                className="w-full px-3 py-2 border border-border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-focus"
-                            />
-                        </div>
-                        {mergeMutation.isError && (
-                            <QueryErrorState
-                                className="mb-4"
-                                error={mergeMutation.error}
-                                fallback={t('taskList.mergeFailed')}
-                                onRetry={() => {
-                                    if (mergeMutation.variables) mergeMutation.mutate(mergeMutation.variables);
-                                }}
-                            />
-                        )}
-                        <div className="flex justify-end gap-3">
-                            <Button
-                                variant="secondary"
-                                onClick={() => {
-                                    setShowMergeModal(false);
-                                    setMergeParentTitle('');
-                                }}
-                                disabled={mergeMutation.isPending}
-                            >
-                                {t('actions.cancel')}
-                            </Button>
-                            <Button
-                                variant="primary"
-                                onClick={handleMergeConfirm}
-                                disabled={mergeRevision === undefined || !mergeParentTitle.trim() || mergeMutation.isPending}
-                                isLoading={mergeMutation.isPending}
-                            >
-                                {t('taskList.mergeTasks')}
-                            </Button>
-                        </div>
-                    </>
-                )}
-            </Modal>
         </div>
     );
 };
@@ -826,7 +575,7 @@ const VirtualTaskRows = ({ items, rowsNode, scrollElement, renderItem }: {
     // Stable callbacks: new ones on every render would reset the measurements.
     const estimateSize = useCallback((index: number) => {
         const item = items[index];
-        return item?.kind === 'task' && item.task.children?.length ? 45 * (1 + item.task.children.length) : 45;
+        return item?.kind === 'task' && item.task.children?.length ? ROW_HEIGHT * (1 + item.task.children.length) : ROW_HEIGHT;
     }, [items]);
     const getItemKey = useCallback((index: number) => items[index] ? rowItemKey(items[index]) : index, [items]);
     const getScrollElement = useCallback(() => scrollElement, [scrollElement]);
@@ -844,33 +593,38 @@ const VirtualTaskRows = ({ items, rowsNode, scrollElement, renderItem }: {
     );
 };
 
-interface TaskItemProps {
-    task: Task;
-    onEdit: (t: Task) => void;
+/** What every row of the list shares: selection, hierarchy state and inline edits. */
+interface RowContext {
+    onOpen: (task: Task) => void;
     onAddSubtask: (id: number) => void;
     onDelete: (task: Task) => void;
     onUnmerge: (taskId: number) => void;
     isUnmergePending: boolean;
-    level: number;
     sensors: ReturnType<typeof useSensors>;
     onChildDragEnd: (parent: Task, event: DragEndEvent) => void;
     isDraggingEnabled: boolean;
     taskMap: Map<number, Task>;
-    // Merge mode props
-    isMergeMode: boolean;
-    selectedTaskIds: Set<number>;
-    canSelectForMerge: (task: Task) => boolean;
-    toggleTaskSelection: (taskId: number) => void;
-    isBulkMode: boolean;
-    selectedBulkTaskIds: Set<number>;
-    toggleBulkTaskSelection: (taskId: number) => void;
     labelsBySlug: Map<string, Label>;
     nowMs: number;
-    /** Status as visible text; off inside a status group, which already names it. */
-    showStatusLabel?: boolean;
+    selectedIds: Set<number>;
+    selectableIds: Set<number>;
+    selectionActive: boolean;
+    onToggleSelect: (taskId: number, shiftKey: boolean) => void;
+    collapsedParents: Set<number>;
+    onToggleParent: (taskId: number) => void;
+    assigneeOptions: TaskRowAssigneeOption[];
+    agentFacts: AgentRowFacts;
+    onAssign: (task: Task, assigneeId: number | null) => void;
+    onStatusChange: (task: Task, status: TaskStatus) => void;
 }
 
-// Sortable wrapper for root-level tasks
+interface TaskItemProps {
+    task: Task;
+    level: number;
+    ctx: RowContext;
+}
+
+// Sortable wrapper for root-level and child tasks
 const SortableTaskItem = (props: TaskItemProps) => {
     const {
         attributes,
@@ -893,6 +647,7 @@ const SortableTaskItem = (props: TaskItemProps) => {
             <TaskItemContent
                 {...props}
                 dragHandleProps={{ ...attributes, ...listeners }}
+                dragging={isDragging}
             />
         </div>
     );
@@ -900,39 +655,16 @@ const SortableTaskItem = (props: TaskItemProps) => {
 
 interface TaskItemContentProps extends TaskItemProps {
     dragHandleProps?: Record<string, unknown>;
+    dragging?: boolean;
 }
 
-const TaskItemContent = ({
-    task,
-    onEdit,
-    onAddSubtask,
-    onDelete,
-    onUnmerge,
-    isUnmergePending,
-    level,
-    sensors,
-    onChildDragEnd,
-    isDraggingEnabled,
-    dragHandleProps,
-    taskMap,
-    isMergeMode,
-    selectedTaskIds,
-    canSelectForMerge,
-    toggleTaskSelection,
-    isBulkMode,
-    selectedBulkTaskIds,
-    toggleBulkTaskSelection,
-    labelsBySlug,
-    nowMs,
-    showStatusLabel = true,
-}: TaskItemContentProps) => {
-    const [isExpanded, setIsExpanded] = useState(true);
+const TaskItemContent = ({ task, level, ctx, dragHandleProps, dragging = false }: TaskItemContentProps) => {
     const [showDetails, setShowDetails] = useState(false);
     const detailsId = useId();
     const { t } = useTranslation();
     const hasChildren = task.children && task.children.length > 0;
-    const isSelectable = isBulkMode ? true : canSelectForMerge(task);
-    const isSelected = isBulkMode ? selectedBulkTaskIds.has(task.id) : selectedTaskIds.has(task.id);
+    const isExpanded = !ctx.collapsedParents.has(task.id);
+    const isSelectable = ctx.selectableIds.has(task.id);
 
     const detailsCount = Number(task.is_optional)
         + Number(task.is_deferred)
@@ -940,186 +672,105 @@ const TaskItemContent = ({
         + Number(task.dependencies.length > 0)
         + task.tags.length
         + 1;
-    const statusClassName = statusTextClassName[task.status];
-    const statusText = t('taskList.taskStatus', { status: t(`statuses.${task.status}`, { defaultValue: task.status }) });
-    const claimExpired = Boolean(task.claim_expires_at && new Date(task.claim_expires_at).getTime() < nowMs);
-    const effort = getEffectiveEffort(task);
-    const startReady = task.agent_readiness.start_ready ?? task.agent_readiness.is_ready;
+    const claimExpired = Boolean(task.claim_expires_at && new Date(task.claim_expires_at).getTime() < ctx.nowMs);
+
+    const handle = ctx.isDraggingEnabled && dragHandleProps ? (
+        <Button data-page-chrome-control="button"
+            type="button"
+            aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
+                className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
+            {...dragHandleProps}
+         variant="plain">
+            <GripVertical className="w-4 h-4" />
+        </Button>
+    ) : undefined;
+
+    const lead = (
+        <>
+            {hasChildren ? (
+                <Button data-page-chrome-control="button"
+                    type="button"
+                    aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`} title={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
+                    aria-expanded={isExpanded}
+                    onClick={() => ctx.onToggleParent(task.id)}
+                    className="shrink-0 rounded p-1 hover:bg-surface-subtle"
+                 variant="plain">
+                    {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                </Button>
+            ) : (
+                <span className="h-6 w-6 shrink-0" aria-hidden="true" />
+            )}
+        </>
+    );
+
+    const childProps = (child: Task) => ({ task: child, level: level + 1, ctx });
+    const agentRow = agentRowValues(task, ctx.assigneeOptions, ctx.agentFacts);
 
     return (
         <div className="group">
-            {/* One 44 px line per task; secondary facts open below with Details. */}
-            <div
-                className={clsx(
-                    "relative flex min-h-11 items-center gap-2 border-b border-border-subtle bg-surface-card py-1 pr-2 hover:bg-surface-hover",
-                    task.is_overdue && "border-l-4 border-l-feedback-danger-border",
-                    task.is_deferred && "opacity-75 bg-surface-muted",
-                    isMergeMode && isSelected && "bg-feedback-indigo-muted",
-                    isBulkMode && isSelected && "bg-action-muted"
-                )}
-                style={{ paddingLeft: 8 + level * 24 }}
-            >
-                {level > 0 && (
-                    <CornerDownRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />
-                )}
-
-                {/* Selection checkbox */}
-                {(isMergeMode || isBulkMode) && (
-                    <input
-                        type="checkbox"
-                        checked={isSelected}
-                        disabled={!isSelectable}
-                        onChange={() => {
-                            if (!isSelectable) return;
-                            if (isBulkMode) {
-                                toggleBulkTaskSelection(task.id);
-                            } else {
-                                toggleTaskSelection(task.id);
-                            }
-                        }}
-                        className={clsx(
-                            "h-5 w-5 shrink-0 cursor-pointer rounded border-2",
-                            isSelectable
-                                ? "border-feedback-indigo-border text-feedback-indigo focus:ring-focus"
-                                : "border-border-strong cursor-not-allowed opacity-50"
-                        )}
-                        aria-label={isBulkMode ? t('taskList.selectForBulkEdit') : (isSelectable ? t('taskList.selectForMerge') : t('taskList.taskHasSubtasks'))}
-                        title={isBulkMode ? t('taskList.selectForBulkEdit') : (isSelectable ? t('taskList.selectForMerge') : t('taskList.taskHasSubtasks'))}
-                    />
-                )}
-
-                {/* Drag Handle - only visible when sorting manually */}
-                {isDraggingEnabled && dragHandleProps && (
-                    <button
-                        type="button"
-                        aria-label={`${t('literalWords.drag')}: ${task.title}`} title={`${t('literalWords.drag')}: ${task.title}`}
-
-                        className="shrink-0 cursor-grab touch-none p-1 text-content-tertiary hover:text-content-secondary active:cursor-grabbing"
-                        {...dragHandleProps}
-                    >
-                        <GripVertical className="w-4 h-4" />
-                    </button>
-                )}
-
-                {hasChildren ? (
-                    <button
-                        type="button"
-                        aria-label={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`} title={`${isExpanded ? t('surfaces.ganttChart.collapseAll') : t('literalWords.expand')}: ${task.title}`}
-                        aria-expanded={isExpanded}
-                        onClick={() => setIsExpanded(!isExpanded)}
-                        className="shrink-0 rounded p-1 hover:bg-surface-subtle"
-                    >
-                        {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                    </button>
-                ) : (
-                    <span className="h-6 w-6 shrink-0" aria-hidden="true" />
-                )}
-
-                <span className={clsx("flex shrink-0 items-center gap-1", statusClassName)} title={statusText}>
-                    {task.status === 'resolved' || task.status === 'closed'
-                        ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" />
-                        : <Circle aria-hidden="true" className="h-4 w-4" />}
-                    <span className={showStatusLabel ? 'hidden text-xs md:inline' : 'sr-only'}>
-                        {showStatusLabel ? t(`statuses.${task.status}`, { defaultValue: task.status }) : statusText}
-                    </span>
-                    {showStatusLabel && <span className="sr-only md:hidden">{statusText}</span>}
-                </span>
-
-                <span className={clsx("shrink-0 rounded px-1.5 py-0.5 text-xs font-medium", priorityChipClassName(task.priority))}>
-                    P{task.priority}
-                </span>
-
-                <button type="button" onClick={() => onEdit(task)} title={task.title}
-                    className={clsx("min-w-0 flex-1 truncate text-left font-medium hover:text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus", task.status === 'closed' && "line-through text-content-secondary")}>
-                    {task.title}
-                </button>
-
-                {task.dependencies.length > 0 && (
-                    <span className="hidden shrink-0 whitespace-nowrap rounded border border-border px-1.5 py-0.5 text-xs text-content-secondary sm:inline">
-                        {t('taskList.dependsOnCount', { count: task.dependencies.length })}
-                    </span>
-                )}
-
-                {task.status === 'planned' && (
-                    <span className={clsx('hidden shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-xs sm:inline',
-                        startReady ? 'bg-feedback-success-muted text-feedback-success-foreground'
-                            : task.agent_readiness.definition_ready ? 'bg-surface-subtle text-content-secondary'
-                                : 'bg-feedback-warning-muted text-feedback-warning-foreground')}>
-                        {t(startReady ? 'taskList.readyToStart'
-                            : task.agent_readiness.definition_ready ? 'taskList.readyToSchedule' : 'taskList.needsDefinition')}
-                    </span>
-                )}
-
-                {task.claimed_by && (
-                    <span className={clsx("hidden shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 text-xs lg:flex",
-                        claimExpired ? "bg-feedback-warning-muted text-feedback-warning-foreground" : "bg-status-active-muted text-action")}>
-                        <Bot className="mr-1 h-3 w-3" aria-hidden="true" />
-                        {claimExpired
-                            ? t('taskList.claimExpired', { name: task.claimed_by.display_name })
-                            : t('taskList.claimedBy', { name: task.claimed_by.display_name })}
-                    </span>
-                )}
-
-                {task.is_overdue && (
-                    <span className="flex shrink-0 items-center whitespace-nowrap rounded-full bg-feedback-danger-muted px-2 py-0.5 text-xs text-feedback-danger-foreground">
-                        <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" /> {t('taskList.overdue')}
-                    </span>
-                )}
-
-                <span className="hidden w-32 shrink-0 truncate text-xs text-content-secondary lg:block" title={task.assignee?.name ?? t('common.unassigned')}>
-                    <span className="sr-only">{t('taskList.assignee')}: </span>{task.assignee?.name ?? t('common.unassigned')}
-                </span>
-
-                {/* The narrow effort column shows a dash for an unknown estimate; the word is its tooltip and accessible text. */}
-                {effort === null ? (
-                    <span className="w-12 shrink-0 text-right text-xs text-content-tertiary" title={t('domain.unknownEstimate')}>
-                        <span aria-hidden="true">—</span>
-                        <span className="sr-only">{t('domain.unknownEstimate')}</span>
-                    </span>
-                ) : (
-                    <span className="w-12 shrink-0 text-right text-xs tabular-nums text-content-secondary">
-                        {t('units.daysCompact', { count: effort })}
-                    </span>
-                )}
-
-                <div className="flex shrink-0 items-center">
-                    <Button variant="ghost" size="sm" aria-expanded={showDetails} aria-controls={detailsId}
-                        aria-label={`${t('taskList.detailsCount', { count: detailsCount })}: ${task.title}`}
-                        title={t('taskList.detailsCount', { count: detailsCount })} onClick={() => setShowDetails(value => !value)}>
-                        <Info className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                    <Button variant="ghost" size="sm" title={t('tasks.editTask')} aria-label={`${t('tasks.editTask')}: ${task.title}`} onClick={() => onEdit(task)}>
-                        <Edit className="w-4 h-4" />
-                    </Button>
-                    <OverflowMenu
-                        label={t('taskList.taskActions', { title: task.title })}
-                        items={[
-                            {
-                                label: t('tasks.addSubtask'),
-                                icon: <Plus className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => onAddSubtask(task.id),
-                            },
-                            ...(hasChildren ? [{
-                                label: t('taskList.unmergeTitle'),
-                                icon: <Unlink className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => onUnmerge(task.id),
-                                disabled: isUnmergePending,
-                            }] : []),
-                            {
-                                label: t('actions.delete'),
-                                icon: <Trash2 className="h-4 w-4" aria-hidden="true" />,
-                                onSelect: () => onDelete(task),
-                                tone: 'danger' as const,
-                            },
-                        ]}
-                    />
-                </div>
-            </div>
+            <TaskRow
+                id={task.id}
+                title={task.title}
+                status={task.status}
+                statusLocked={task.is_composite || Boolean(hasChildren)}
+                priority={task.priority}
+                chip={taskStateChip(task, ctx.taskMap)}
+                assignee={task.assignee ?? null}
+                assigneeOptions={ctx.assigneeOptions}
+                onAssign={assigneeId => ctx.onAssign(task, assigneeId)}
+                dispatch={agentRow.dispatch}
+                reviewer={agentRow.reviewer}
+                effort={getEffectiveEffort(task)}
+                level={level}
+                lead={lead}
+                handle={handle}
+                revealed={dragging}
+                onOpen={() => ctx.onOpen(task)}
+                onStatusChange={status => ctx.onStatusChange(task, status)}
+                selected={ctx.selectedIds.has(task.id)}
+                selectionActive={ctx.selectionActive}
+                onToggleSelect={isSelectable ? ({ shiftKey }) => ctx.onToggleSelect(task.id, shiftKey) : undefined}
+                overdue={task.is_overdue}
+                deferred={task.is_deferred}
+                menuItems={[
+                    {
+                        label: t('taskList.detailsCount', { count: detailsCount }),
+                        icon: <Info className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => setShowDetails(value => !value),
+                    },
+                    {
+                        label: t('tasks.editTask'),
+                        icon: <Edit className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => ctx.onOpen(task),
+                    },
+                    {
+                        label: t('tasks.addSubtask'),
+                        icon: <Plus className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => ctx.onAddSubtask(task.id),
+                    },
+                    ...(hasChildren ? [{
+                        label: t('taskList.unmergeTitle'),
+                        icon: <Unlink className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => ctx.onUnmerge(task.id),
+                        disabled: ctx.isUnmergePending,
+                    }] : []),
+                    {
+                        label: t('actions.delete'),
+                        icon: <Trash2 className="h-4 w-4" aria-hidden="true" />,
+                        onSelect: () => ctx.onDelete(task),
+                        tone: 'danger' as const,
+                    },
+                ]}
+            />
 
             {showDetails && (
                 <div id={detailsId} className="flex flex-wrap items-center gap-1.5 border-b border-border-subtle bg-surface-muted py-2 pr-3 text-xs text-content-secondary"
                     style={{ paddingLeft: 40 + level * 24 }}>
-                    <span>{t('taskList.assignee')}: {task.assignee?.name ?? t('common.unassigned')}</span>
+                    {task.is_overdue && (
+                        <span className="flex items-center rounded-full bg-feedback-danger-muted px-2 py-0.5 text-feedback-danger-foreground">
+                            <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" /> {t('taskList.overdue')}
+                        </span>
+                    )}
                     {task.is_optional && (
                         <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-content-secondary">
                             {t('taskList.optional')}
@@ -1142,12 +793,12 @@ const TaskItemContent = ({
                     <TaskAgentReadinessBadge readiness={task.agent_readiness} />
                     {task.dependencies.length > 0 && (
                         <span>
-                            {t('taskList.dependsOn')}: {getDependencyNames(task.dependencies, taskMap).join(', ')}
+                            {t('taskList.dependsOn')}: {getDependencyNames(task.dependencies, ctx.taskMap).join(', ')}
                             {task.dependencies.length > 3 && ` +${task.dependencies.length - 3}`}
                         </span>
                     )}
                     {task.tags.map((tag, idx) => {
-                        const label = labelsBySlug.get(tag);
+                        const label = ctx.labelsBySlug.get(tag);
                         return <LabelChip key={idx} color={label?.color}>{tag}</LabelChip>;
                     })}
                 </div>
@@ -1155,100 +806,24 @@ const TaskItemContent = ({
 
             {hasChildren && isExpanded && (
                 <div>
-                    {isDraggingEnabled ? (
+                    {ctx.isDraggingEnabled ? (
                         <DndContext
-                            sensors={sensors}
+                            sensors={ctx.sensors}
                             collisionDetection={closestCenter}
-                            onDragEnd={(event) => onChildDragEnd(task, event)}
+                            onDragEnd={(event) => ctx.onChildDragEnd(task, event)}
                         >
                             <SortableContext
                                 items={task.children.map(c => c.id)}
                                 strategy={verticalListSortingStrategy}
                             >
-                                {task.children.map(child => (
-                                    <SortableChildTaskItem
-                                        key={child.id}
-                                        task={child}
-                                        onEdit={onEdit}
-                                        onAddSubtask={onAddSubtask}
-                                        onDelete={onDelete}
-                                        onUnmerge={onUnmerge}
-                                        isUnmergePending={isUnmergePending}
-                                        level={level + 1}
-                                        sensors={sensors}
-                                        onChildDragEnd={onChildDragEnd}
-                                        isDraggingEnabled={isDraggingEnabled}
-                                        taskMap={taskMap}
-                                        isMergeMode={isMergeMode}
-                                        selectedTaskIds={selectedTaskIds}
-                                        canSelectForMerge={canSelectForMerge}
-                                        toggleTaskSelection={toggleTaskSelection}
-                                        isBulkMode={isBulkMode}
-                                        selectedBulkTaskIds={selectedBulkTaskIds}
-                                        toggleBulkTaskSelection={toggleBulkTaskSelection}
-                                        labelsBySlug={labelsBySlug}
-                                        nowMs={nowMs}
-                                    />
-                                ))}
+                                {task.children.map(child => <SortableTaskItem key={child.id} {...childProps(child)} />)}
                             </SortableContext>
                         </DndContext>
                     ) : (
-                        task.children.map(child => (
-                            <TaskItemContent
-                                key={child.id}
-                                task={child}
-                                onEdit={onEdit}
-                                onAddSubtask={onAddSubtask}
-                                onDelete={onDelete}
-                                onUnmerge={onUnmerge}
-                                isUnmergePending={isUnmergePending}
-                                level={level + 1}
-                                sensors={sensors}
-                                onChildDragEnd={onChildDragEnd}
-                                isDraggingEnabled={false}
-                                taskMap={taskMap}
-                                isMergeMode={isMergeMode}
-                                selectedTaskIds={selectedTaskIds}
-                                canSelectForMerge={canSelectForMerge}
-                                toggleTaskSelection={toggleTaskSelection}
-                                isBulkMode={isBulkMode}
-                                selectedBulkTaskIds={selectedBulkTaskIds}
-                                toggleBulkTaskSelection={toggleBulkTaskSelection}
-                                labelsBySlug={labelsBySlug}
-                                nowMs={nowMs}
-                            />
-                        ))
+                        task.children.map(child => <TaskItemContent key={child.id} {...childProps(child)} />)
                     )}
                 </div>
             )}
-        </div>
-    );
-};
-
-// Sortable wrapper for child tasks
-const SortableChildTaskItem = (props: TaskItemProps) => {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging
-    } = useSortable({ id: props.task.id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        zIndex: isDragging ? 50 : 'auto',
-        opacity: isDragging ? 0.8 : 1,
-    };
-
-    return (
-        <div ref={setNodeRef} style={style}>
-            <TaskItemContent
-                {...props}
-                dragHandleProps={{ ...attributes, ...listeners }}
-            />
         </div>
     );
 };

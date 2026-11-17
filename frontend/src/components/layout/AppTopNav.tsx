@@ -5,17 +5,23 @@ import { useTranslation } from 'react-i18next';
 import { getDestinationForPath } from '../../navigation/destinations';
 import { metadataForPath, warmRouteModule } from '../../navigation/routeModules';
 import { useDialogLayer } from '../common/dialogLayer';
+import { AccountMenuRowContext } from '../../features/identity/accountMenuRow';
 import { UserSessionBadge } from '../UserSessionBadge';
 import { SidebarContent } from './AppSidebar';
 import { openCommandMenu } from './commandMenuEvents';
 import { ContextHelp } from './ContextHelp';
+import { useScopeLink } from '../../features/scope/useScopeLink';
+import { ScopeBar } from './ScopeBar';
 
+import { Button } from '../../components/common/Button';
 const MOBILE_NAV_TITLE_ID = 'mobile-primary-navigation-title';
 
 export const AppTopNav = () => {
     const { t } = useTranslation();
     const location = useLocation();
+    const scopeLink = useScopeLink();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [accountMenuRow, setAccountMenuRow] = useState<HTMLElement | null>(null);
     const mobileNavRestoreFocusRef = useRef<HTMLElement | null>(null);
     const { dialogRef, requestClose } = useDialogLayer<HTMLElement>({
         open: mobileMenuOpen,
@@ -62,7 +68,7 @@ export const AppTopNav = () => {
     return (
         <header className="topnav" data-testid="app-navbar">
             <Link
-                to="/"
+                to={scopeLink('/')}
                 className="brand"
                 aria-label={t('nav.home', { appName: t('common.appName') })}
                 onFocus={() => { void warmRouteModule('/'); }}
@@ -83,45 +89,50 @@ export const AppTopNav = () => {
             <div className="topnav-center">
                 {/* Below 1180px the sidebar folds into the drawer; the bar still names where you are. */}
                 <p className="topnav-location" data-testid="topnav-location">{currentPageName}</p>
-                {/* Reserved for the scope bar. */}
-                <div className="topnav-scope" data-slot="scope-bar" data-testid="topnav-scope-slot" />
+                <div className="topnav-scope" data-slot="scope-bar" data-testid="topnav-scope-slot">
+                    <ScopeBar />
+                </div>
             </div>
 
             <div className="nav-right">
-                <button
+                <Button
                     type="button"
                     className="command-menu-trigger"
                     aria-label={t('commandMenu.trigger')}
                     aria-keyshortcuts="Meta+K Control+K"
                     onClick={openCommandMenu}
-                >
+                 variant="plain">
                     <Command aria-hidden="true" className="h-4 w-4" />
                     <span>{t('commandMenu.triggerLabel')}</span>
                     <kbd>{t('commandMenu.openShortcut')}</kbd>
-                </button>
+                </Button>
                 <ContextHelp />
-                <button
+                <Button
                     type="button"
                     className="mobile-nav-trigger"
                     aria-label={t('nav.openMenu')}
                     aria-expanded={mobileMenuOpen}
                     aria-controls="mobile-primary-navigation"
                     onClick={openMobileMenu}
-                >
+                 variant="plain">
                     <Menu aria-hidden="true" className="h-5 w-5" />
                     <span className="mobile-nav-trigger-label">{t('nav.navigationMenu')}</span>
-                </button>
-                <UserSessionBadge />
+                </Button>
+                <AccountMenuRowContext.Provider value={accountMenuRow}>
+                    <UserSessionBadge />
+                </AccountMenuRowContext.Provider>
             </div>
+            <div ref={setAccountMenuRow} className="topnav-account-row" />
 
             {mobileMenuOpen && (
                 <div className="mobile-nav-layer">
-                    <button
+                    <Button
                         type="button"
                         className="mobile-nav-backdrop"
                         tabIndex={-1}
                         aria-hidden="true"
                         onClick={requestClose}
+                        variant="plain"
                     />
                     <aside
                         id="mobile-primary-navigation"
@@ -134,9 +145,9 @@ export const AppTopNav = () => {
                     >
                         <div className="mobile-nav-head">
                             <h2 id={MOBILE_NAV_TITLE_ID}>{t('nav.primaryNavigation')}</h2>
-                            <button type="button" className="btn ghost icon" aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose}>
+                            <Button type="button"  aria-label={t('actions.close')} title={t('actions.close')} onClick={requestClose} variant="ghost" iconOnly>
                                 <X aria-hidden="true" className="h-4 w-4" />
-                            </button>
+                            </Button>
                         </div>
                         <div className="mobile-nav-content">
                             <nav aria-label={t('nav.primaryNavigation')}>

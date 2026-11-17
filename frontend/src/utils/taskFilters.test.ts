@@ -98,15 +98,39 @@ describe('Blocked task filter', () => {
     const blocked = taskFixture({ id: 4, blocked_reason: 'Database credentials are missing' });
     const clear = taskFixture({ id: 5, blocked_reason: null });
     const blank = taskFixture({ id: 6, blocked_reason: '   ' });
+    const resolved = taskFixture({ id: 7, status: 'resolved', blocked_reason: 'Left over from review' });
+    const closed = taskFixture({ id: 8, status: 'closed', blocked_reason: 'Left over from review' });
 
-    it('matches only tasks with a reported blocker', () => {
+    it('matches only open tasks with a reported blocker', () => {
         const filters = { ...defaultFilters, isBlocked: true };
-        expect([blocked, clear, blank].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([4]);
+        expect([blocked, clear, blank, resolved, closed].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([4]);
     });
 
-    it('matches tasks without a blocker when set to not blocked', () => {
+    it('matches tasks without a blocker, and finished tasks, when set to not blocked', () => {
         const filters = { ...defaultFilters, isBlocked: false };
-        expect([blocked, clear, blank].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([5, 6]);
+        expect([blocked, clear, blank, resolved, closed].filter(task => taskMatchesFilters(task, filters)).map(task => task.id)).toEqual([5, 6, 7, 8]);
+    });
+});
+
+describe('Milestone and Needs attention filters', () => {
+    const tasks = {
+        blocked: taskFixture({ id: 10, blocked_reason: 'Waiting for access' }),
+        late: taskFixture({ id: 11, is_overdue: true }),
+        overflow: taskFixture({ id: 12, is_iteration_overflow: true }),
+        unestimated: taskFixture({ id: 13, effort_days: null, effort_hours: null }),
+        fine: taskFixture({ id: 14, milestone_id: 5 }),
+        doneLate: taskFixture({ id: 15, status: 'resolved', is_overdue: true, blocked_reason: 'old' }),
+    };
+    const ids = (filters: typeof defaultFilters) => Object.values(tasks).filter(task => taskMatchesFilters(task, filters)).map(task => task.id);
+
+    it('needs attention for a blocker, a late or overrun delivery and a planned task without an estimate', () => {
+        expect(ids({ ...defaultFilters, needsAttention: true })).toEqual([10, 11, 12, 13]);
+        expect(ids({ ...defaultFilters, needsAttention: false })).toEqual([14, 15]);
+    });
+
+    it('keeps only the tasks of one milestone', () => {
+        expect(ids({ ...defaultFilters, milestoneId: 5 })).toEqual([14]);
+        expect(ids({ ...defaultFilters, milestoneId: 6 })).toEqual([]);
     });
 });
 

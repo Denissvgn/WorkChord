@@ -17,6 +17,10 @@ const projectServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
+const calendarServiceMock = vi.hoisted(() => ({
+    getAll: vi.fn(),
+}));
+
 const iterationStoreMock = vi.hoisted(() => ({
     setSelectedIterationId: vi.fn(),
 }));
@@ -27,6 +31,10 @@ vi.mock('../../services/iterationService', () => ({
 
 vi.mock('../../services/projectService', () => ({
     projectService: projectServiceMock,
+}));
+
+vi.mock('../../services/calendarService', () => ({
+    calendarService: calendarServiceMock,
 }));
 
 vi.mock('../../store/iterationStore', () => ({
@@ -58,6 +66,10 @@ describe('IterationForm hardening', () => {
         vi.clearAllMocks();
         planningMock.readInitial.mockResolvedValue({ resource: iterationFixture(), resource_id: 17, expected_revisions: { 17: 4 }, complete: true });
         projectServiceMock.getAll.mockResolvedValue([]);
+        calendarServiceMock.getAll.mockResolvedValue([
+            { id: 1, name: 'Company calendar', year: 2026, holidays: [], weekend_days: [5, 6], short_days: [] },
+            { id: 2, name: 'Berlin calendar', year: 2026, holidays: [], weekend_days: [5, 6], short_days: [] },
+        ]);
         iterationServiceMock.create.mockResolvedValue(iterationFixture({ project_id: null }));
         iterationServiceMock.createSeries.mockResolvedValue({
             iterations: [iterationFixture({ project_id: null })],
@@ -65,6 +77,30 @@ describe('IterationForm hardening', () => {
         iterationServiceMock.update.mockImplementation(async (_id, payload) => (
             iterationFixture(payload)
         ));
+    });
+
+    it('keeps the calendar under More: the default is not sent, a chosen one is', async () => {
+        const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(screen.queryByLabelText('Calendar')).not.toBeInTheDocument();
+        await user.type(screen.getByLabelText('Iteration name'), 'August plan');
+        await user.type(screen.getByLabelText('Start date'), '2026-08-03');
+        await user.type(screen.getByLabelText('End date'), '2026-08-14');
+        await user.click(screen.getByRole('button', { name: 'Save iteration' }));
+        await waitFor(() => expect(iterationServiceMock.create).toHaveBeenCalledTimes(1));
+        expect(iterationServiceMock.create.mock.calls[0][0]).not.toHaveProperty('calendar_id');
+    });
+
+    it('sends the calendar chosen under More', async () => {
+        const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.type(screen.getByLabelText('Iteration name'), 'August plan');
+        await user.type(screen.getByLabelText('Start date'), '2026-08-03');
+        await user.type(screen.getByLabelText('End date'), '2026-08-14');
+        await user.click(screen.getByRole('button', { name: 'More' }));
+        await screen.findByRole('option', { name: 'Berlin calendar' });
+        await user.selectOptions(screen.getByLabelText('Calendar'), 'Berlin calendar');
+        await user.click(screen.getByRole('button', { name: 'Save iteration' }));
+        await waitFor(() => expect(iterationServiceMock.create).toHaveBeenCalledTimes(1));
+        expect(iterationServiceMock.create.mock.calls[0][0]).toMatchObject({ calendar_id: 2 });
     });
 
     it('omits a hidden project scope when updating an existing iteration', async () => {
@@ -117,6 +153,61 @@ describe('IterationForm hardening', () => {
         );
     });
 
+    it('sends an explicit null when an existing calendar is changed to the default calendar', async () => {
+        const { user } = renderWithProviders(
+            <IterationForm
+                initialData={iterationFixture({ calendar_id: 2 })}
+                hideProjectScope
+                onSuccess={vi.fn()}
+                onCancel={vi.fn()}
+            />,
+        );
+
+        // More is already open because the fixture carries a manager email.
+        await screen.findByRole('option', { name: 'Berlin calendar' });
+        await user.selectOptions(screen.getByLabelText('Calendar'), 'Default calendar');
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.update.mock.calls[0][1]).toEqual(
+            expect.objectContaining({ calendar_id: null }),
+        );
+    });
+
+    it('sends another calendar when an existing calendar is changed and omits it when unchanged', async () => {
+        const first = renderWithProviders(
+            <IterationForm
+                initialData={iterationFixture({ calendar_id: 1 })}
+                hideProjectScope
+                onSuccess={vi.fn()}
+                onCancel={vi.fn()}
+            />,
+        );
+        await screen.findByRole('option', { name: 'Berlin calendar' });
+        await first.user.selectOptions(screen.getByLabelText('Calendar'), 'Berlin calendar');
+        await first.user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.update.mock.calls[0][1]).toEqual(
+            expect.objectContaining({ calendar_id: 2 }),
+        );
+        first.unmount();
+
+        iterationServiceMock.update.mockClear();
+        const second = renderWithProviders(
+            <IterationForm
+                initialData={iterationFixture({ calendar_id: 1 })}
+                hideProjectScope
+                onSuccess={vi.fn()}
+                onCancel={vi.fn()}
+            />,
+        );
+        const name = await screen.findByLabelText('Iteration name');
+        await second.user.type(name, ' v2');
+        await second.user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.update.mock.calls[0][1]).not.toHaveProperty('calendar_id');
+    });
+
     it('reports changes from either draft even after switching editor modes', async () => {
         const onStateChange = vi.fn();
         const { user } = renderWithProviders(
@@ -133,6 +224,7 @@ describe('IterationForm hardening', () => {
             expect(latestState()).toEqual({ dirty: false, pending: false });
         });
 
+        await user.click(screen.getByRole('button', { name: 'More' }));
         await user.click(screen.getByRole('button', { name: 'Repeating series' }));
         await user.type(screen.getByLabelText('Base name'), 'Sprint');
         await user.click(screen.getByRole('button', { name: 'Single period' }));
@@ -235,6 +327,7 @@ describe('IterationForm hardening', () => {
     it('shows which kind is chosen, says why Save is unavailable, and asks before discarding changes', async () => {
         const onCancel = vi.fn();
         const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={onCancel} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
         const single = await screen.findByRole('button', { name: 'Single period' });
         expect(single).toHaveAttribute('aria-pressed', 'true');
         expect(screen.getByRole('button', { name: 'Repeating series' })).toHaveAttribute('aria-pressed', 'false');
@@ -251,5 +344,35 @@ describe('IterationForm hardening', () => {
         await user.click(screen.getByRole('button', { name: 'Cancel' }));
         await user.click(await screen.findByRole('button', { name: 'Discard changes' }));
         expect(onCancel).toHaveBeenCalledOnce();
+    });
+
+    it('keeps name, project, start and end on the first screen and the rest under More', async () => {
+        projectServiceMock.getAll.mockResolvedValue([{ id: 42, name: 'Launch' }]);
+        const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByLabelText('Iteration name')).toBeVisible();
+        expect(screen.getByRole('combobox', { name: 'Project scope' })).toBeVisible();
+        expect(screen.getByLabelText('Start date')).toBeVisible();
+        expect(screen.getByLabelText('End date')).toBeVisible();
+        const more = screen.getByRole('button', { name: 'More' });
+        expect(more).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByRole('button', { name: 'Repeating series' })).not.toBeInTheDocument();
+        expect(screen.queryByLabelText('Manager email (for notifications)')).not.toBeInTheDocument();
+
+        await user.click(more);
+        expect(more).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('button', { name: 'Repeating series' })).toBeVisible();
+        expect(screen.getByLabelText('Manager email (for notifications)')).toBeVisible();
+    });
+
+    it('creates a repeating series from the series fields under More', async () => {
+        const { user } = renderWithProviders(<IterationForm hideProjectScope onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
+        await user.click(screen.getByRole('button', { name: 'Repeating series' }));
+        await user.type(screen.getByLabelText('Base name'), 'Sprint 1');
+        expect(screen.queryByLabelText('End date')).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Duration (calendar days)')).toBeVisible();
+        await user.click(screen.getByRole('button', { name: 'Create series' }));
+        await waitFor(() => expect(iterationServiceMock.createSeries).toHaveBeenCalledOnce());
+        expect(iterationServiceMock.createSeries.mock.calls[0][0]).toEqual(expect.objectContaining({ base_name: 'Sprint 1', duration_days: 14 }));
     });
 });

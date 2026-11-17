@@ -6,13 +6,14 @@ import { renderWithProviders } from '../test/renderWithProviders';
 import type { Task } from '../types/task';
 import TasksPage from './TasksPage';
 
+import { Button } from '../components/common/Button';
 const iterationServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
 }));
 
-const iterationStoreMock = vi.hoisted(() => ({
-    selectedIterationId: 1,
-    setSelectedIterationId: vi.fn(),
+const workScopeMock = vi.hoisted(() => ({
+    iteration: 1 as number | 'backlog',
+    setIteration: vi.fn(),
 }));
 const savedViewServiceMock = vi.hoisted(() => ({
     getAll: vi.fn(),
@@ -32,8 +33,9 @@ vi.mock('../services/taskService', () => ({
     taskService: taskServiceMock,
 }));
 
-vi.mock('../store/iterationStore', () => ({
-    useIterationStore: () => iterationStoreMock,
+vi.mock('../features/scope/useWorkScope', () => ({
+    useWorkScope: () => workScopeMock,
+    useSetWorkScope: () => ({ setProject: vi.fn(), setIteration: vi.fn(), setScope: vi.fn() }),
 }));
 
 vi.mock('../components/tasks/TaskList', () => ({
@@ -63,11 +65,11 @@ vi.mock('../components/tasks/TaskFiltersBar', () => ({
 }));
 
 vi.mock('../components/tasks/SavedViewsControl', () => ({
-    SavedViewsControl: () => <div>Saved views</div>,
+    SavedViewPicker: ({ label }: { label: string }) => <span>{label}</span>,
 }));
 
-vi.mock('../components/iteration/IterationSelector', () => ({
-    IterationSelector: () => <div>Iteration selector</div>,
+vi.mock('../services/sessionService', () => ({
+    sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 1, principal_id: null }) },
 }));
 
 vi.mock('../components/common/Modal', () => ({
@@ -84,7 +86,7 @@ vi.mock('../components/tasks/TaskForm', () => ({
     }) => (
         <div>
             {initialData && <p>Editing {initialData.title}</p>}
-            <button type="button" onClick={onCancel}>Cancel draft</button>
+            <Button type="button" onClick={onCancel} variant="secondary">Cancel draft</Button>
         </div>
     ),
 }));
@@ -135,8 +137,8 @@ const focusedTask = {
 
 describe('TasksPage', () => {
     beforeEach(() => {
-        iterationStoreMock.selectedIterationId = 1;
-        iterationStoreMock.setSelectedIterationId.mockReset();
+        workScopeMock.iteration = 1;
+        workScopeMock.setIteration.mockReset();
         iterationServiceMock.getAll.mockReset();
         iterationServiceMock.getAll.mockResolvedValue([
             { id: 1, name: 'Iteration one', start_date: '2026-01-01', end_date: '2026-01-14' },
@@ -150,7 +152,7 @@ describe('TasksPage', () => {
             dependencies: { items: [], has_more: false, next_after_id: null, limit: 50 }, execution_context_complete: false });
     });
 
-    it('clears create intent while preserving a Plan Master return checkpoint', async () => {
+    it('clears create intent while preserving a return to its Plan checkpoint', async () => {
         const { user } = renderWithProviders(
             <>
                 <TasksPage />
@@ -162,7 +164,7 @@ describe('TasksPage', () => {
         expect(await screen.findByRole('dialog')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Cancel draft' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Return to plan' }))
-            .toHaveAttribute('href', '/plan/master?step=work&returned=1');
+            .toHaveAttribute('href', '/plan?step=work&returned=1');
 
         await user.click(screen.getByRole('button', { name: 'Cancel draft' }));
 
@@ -170,7 +172,31 @@ describe('TasksPage', () => {
         expect(screen.getByTestId('location-search')).toHaveTextContent('?fromPlanStep=work');
     });
 
-    it('applies a URL-selected saved view and keeps its context visible', async () => {
+    it('returns focus to New task when its drawer closes with Escape', async () => {
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks'] });
+
+        // The loading header shows a disabled copy of the action first.
+        await waitFor(() => expect(screen.getByRole('button', { name: 'New task' })).toBeEnabled());
+        screen.getByRole('button', { name: 'New task' }).focus();
+        await user.keyboard('{Enter}');
+        expect(await screen.findByRole('dialog', { name: 'Create new task' })).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('button', { name: 'New task' })).toHaveFocus();
+    });
+
+    it('moves focus to New task when a drawer opened from another page closes', async () => {
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?create=1'] });
+
+        expect(await screen.findByRole('dialog', { name: 'Create new task' })).toBeInTheDocument();
+        await user.keyboard('{Escape}');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('button', { name: 'New task' })).toHaveFocus();
+    });
+
+    it('applies a URL-selected saved view: its name is the title and its filters move into the URL', async () => {
         savedViewServiceMock.getAll.mockResolvedValue([{
             id: 12,
             name: 'Needs owners',
@@ -189,18 +215,17 @@ describe('TasksPage', () => {
             updated_at: '2026-08-01T00:00:00Z',
         }]);
 
-        renderWithProviders(<TasksPage />, {
+        renderWithProviders(<><TasksPage /><LocationProbe /></>, {
             initialEntries: ['/tasks?view=12'],
         });
 
-        expect(await screen.findByText('Needs owners')).toBeVisible();
-        expect(screen.getByText('1 active filter')).toBeVisible();
-        expect(screen.getByRole('button', { name: 'Clear view' })).toBeVisible();
+        expect(await screen.findByRole('heading', { level: 1, name: 'Needs owners' })).toBeVisible();
+        await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent('?view=12&assignee=none'));
         expect(savedViewServiceMock.getAll).toHaveBeenCalledWith({ view_type: 'tasks' });
     });
 
-    it('hydrates an exact Planning issue and clears it without losing return context', async () => {
-        const { user } = renderWithProviders(
+    it('hydrates an exact Planning issue, keeps the return context and moves the Filters command to the toolbar', async () => {
+        renderWithProviders(
             <>
                 <TasksPage />
                 <LocationProbe />
@@ -212,27 +237,16 @@ describe('TasksPage', () => {
             },
         );
 
-        expect(await screen.findByText(
-            'Planning blockers · Needs assignees',
-        )).toBeVisible();
-        expect(screen.getByText(
-            'Showing Plan tasks without an assignee.',
-        )).toBeVisible();
-        expect(screen.getByTestId('task-planning-issue')).toHaveTextContent(
+        expect(await screen.findByTestId('task-planning-issue')).toHaveTextContent(
             'unassigned',
         );
         expect(screen.getByRole('link', { name: 'Return to plan' }))
-            .toHaveAttribute('href', '/plan/master?step=schedule&returned=1');
-        expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
-
-        await user.click(screen.getByRole('button', { name: 'Clear view' }));
-
-        await waitFor(() => expect(
-            screen.getByTestId('task-planning-issue'),
-        ).toHaveTextContent('none'));
-        expect(screen.getByTestId('location-search')).toHaveTextContent(
-            '?panel=filters&iterationId=1&fromPlanStep=schedule',
-        );
+            .toHaveAttribute('href', '/plan?step=schedule&returned=1');
+        expect(screen.queryByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
+        await waitFor(() => expect(screen.getByTestId('location-search')).toHaveTextContent(
+            '?planningIssue=unassigned&iterationId=1&fromPlanStep=schedule',
+        ));
+        expect(screen.queryByText('Modified view')).not.toBeInTheDocument();
     });
 
     it('rejects an unknown Planning issue without changing the period or return checkpoint', async () => {
@@ -271,20 +285,21 @@ describe('TasksPage', () => {
         expect(screen.queryByRole('button', { name: 'Planning help' })).not.toBeInTheDocument();
     });
 
-    it('opens filters and board layout from command URLs', async () => {
+    it('opens the board layout from the URL with one header and one New task action', async () => {
         renderWithProviders(<TasksPage />, {
-            initialEntries: ['/tasks?panel=filters&layout=board'],
+            initialEntries: ['/tasks?layout=board'],
         });
 
-        const viewContext = await screen.findByRole('region', { name: 'Task view context' });
-        expect(within(viewContext).getByRole('button', { name: 'Board' }))
+        const layout = await screen.findByRole('group', { name: 'Task layout' });
+        expect(within(layout).getByRole('button', { name: 'Board' }))
             .toHaveAttribute('aria-pressed', 'true');
-        expect(within(viewContext).getByRole('button', { name: 'Filters' })).toBeVisible();
-        expect(within(viewContext).getByRole('button', { name: 'List' })).toBeVisible();
+        expect(within(layout).getByRole('button', { name: 'List' })).toHaveAttribute('aria-pressed', 'false');
+        expect(within(layout).getByRole('button', { name: 'Pipeline' })).toBeVisible();
+        expect(screen.getAllByText('Board').some(element => element.tagName === 'DIV')).toBe(true);
         const newTaskAction = screen.getByRole('button', { name: 'New task' });
-        expect(newTaskAction.closest('.tasks-primary-slot')).not.toBeNull();
+        expect(newTaskAction.closest('.wc-page-primary')).not.toBeNull();
         expect(screen.getAllByRole('button', { name: 'New task' })).toHaveLength(1);
-        expect(screen.getByRole('dialog', { name: 'Filters' })).toBeVisible();
+        expect(screen.queryByRole('button', { name: 'View options' })).not.toBeInTheDocument();
     });
 
     it('opens an exact Overview task in a drawer over the board and preserves return context', async () => {

@@ -4,6 +4,7 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { renderWithProviders } from '../test/renderWithProviders';
 import ProjectDetailPage from './ProjectDetailPage';
 
+import { Button } from '../components/common/Button';
 const services = vi.hoisted(() => ({
     project: { getById: vi.fn(), getSummary: vi.fn(), getTasks: vi.fn(), getMilestones: vi.fn(), getUpdates: vi.fn(), getIterations: vi.fn(), update: vi.fn(), createMilestone: vi.fn() },
     release: { getForProject: vi.fn() },
@@ -29,7 +30,7 @@ const revisions = { project: 7 };
 const Location = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    return <><output data-testid="location">{location.search}</output><button onClick={() => navigate(-1)}>Back</button><button onClick={() => navigate('?action=add-milestone')}>Milestone deep link</button></>;
+    return <><output data-testid="location">{location.search}</output><Button onClick={() => navigate(-1)} variant="secondary">Back</Button><Button onClick={() => navigate('?action=add-milestone')} variant="secondary">Milestone deep link</Button></>;
 };
 const renderPage = (search = '') => renderWithProviders(<><Location /><Routes><Route path="/projects/:projectId" element={<ProjectDetailPage />} /></Routes></>, { initialEntries: [`/projects/1${search}`] });
 

@@ -30,6 +30,8 @@ import { ConstraintsPanel } from './ConstraintsPanel';
 import { getAdminAccessErrorMessage } from '../../utils/adminAccess';
 import { useCanReadSettings } from '../../hooks/useAdminAccess';
 import { protectedQueryRetry } from '../../utils/protectedQueries';
+import { ReadOnlyFieldset } from './ReadOnlyFieldset';
+import { useSettingsReadOnly } from './sharedUnlock';
 
 type SectionId = 'modifiers' | 'passes' | 'constraints';
 
@@ -76,6 +78,8 @@ export const SchedulingRulesSettings = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const canReadSettings = useCanReadSettings();
+    // Without the admin key the sections and each rule still open; only changes are disabled.
+    const readOnly = useSettingsReadOnly() !== null;
     const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(
         new Set(['modifiers', 'passes', 'constraints'])
     );
@@ -410,13 +414,13 @@ export const SchedulingRulesSettings = () => {
             <fieldset className="contents" disabled={isMutating} aria-busy={isMutating}>
                 {/* Effort Modifiers Section */}
                 <div className="card">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => toggleSection('modifiers')}
                         className="flex w-full items-center justify-between text-left"
                         aria-expanded={expandedSections.has('modifiers')}
                         aria-controls="scheduling-modifiers-panel"
-                    >
+                     variant="secondary">
                         <h3 className="flex min-w-0 items-center gap-2 text-lg font-semibold text-content-primary">
                             {expandedSections.has('modifiers') ? (
                                 <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -428,7 +432,7 @@ export const SchedulingRulesSettings = () => {
                         <span className="shrink-0 text-sm text-content-secondary">
                             {t('settingsScheduling.sections.modifiers.count', { count: localRules.effort_modifiers.length })}
                         </span>
-                    </button>
+                    </Button>
 
                     {expandedSections.has('modifiers') && (
                         <div id="scheduling-modifiers-panel" className="mt-4 space-y-4">
@@ -443,7 +447,7 @@ export const SchedulingRulesSettings = () => {
                                     onRemove={() => removeModifier(index)}
                                 />
                             ))}
-                            <Button variant="outline" size="sm" onClick={addModifier}>
+                            <Button variant="outline" size="sm" onClick={addModifier} disabled={readOnly}>
                                 <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                 {t('settingsScheduling.sections.modifiers.add')}
                             </Button>
@@ -453,13 +457,13 @@ export const SchedulingRulesSettings = () => {
 
                 {/* Scheduling Passes Section */}
                 <div className="card">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => toggleSection('passes')}
                         className="flex w-full items-center justify-between text-left"
                         aria-expanded={expandedSections.has('passes')}
                         aria-controls="scheduling-passes-panel"
-                    >
+                     variant="secondary">
                         <h3 className="flex min-w-0 items-center gap-2 text-lg font-semibold text-content-primary">
                             {expandedSections.has('passes') ? (
                                 <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -471,7 +475,7 @@ export const SchedulingRulesSettings = () => {
                         <span className="shrink-0 text-sm text-content-secondary">
                             {t('settingsScheduling.sections.passes.count', { count: localRules.scheduling_passes.length })}
                         </span>
-                    </button>
+                    </Button>
 
                     {expandedSections.has('passes') && (
                         <div id="scheduling-passes-panel" className="mt-4 space-y-4">
@@ -498,7 +502,7 @@ export const SchedulingRulesSettings = () => {
                                     ))}
                                 </SortableContext>
                             </DndContext>
-                            <Button variant="outline" size="sm" onClick={addPass}>
+                            <Button variant="outline" size="sm" onClick={addPass} disabled={readOnly}>
                                 <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
                                 {t('settingsScheduling.sections.passes.add')}
                             </Button>
@@ -508,13 +512,13 @@ export const SchedulingRulesSettings = () => {
 
                 {/* Constraints Section */}
                 <div className="card">
-                    <button
+                    <Button
                         type="button"
                         onClick={() => toggleSection('constraints')}
                         className="flex w-full items-center justify-between text-left"
                         aria-expanded={expandedSections.has('constraints')}
                         aria-controls="scheduling-constraints-panel"
-                    >
+                     variant="secondary">
                         <h3 className="flex min-w-0 items-center gap-2 text-lg font-semibold text-content-primary">
                             {expandedSections.has('constraints') ? (
                                 <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
@@ -523,9 +527,10 @@ export const SchedulingRulesSettings = () => {
                             )}
                             <span className="break-words">{t('settingsScheduling.sections.constraints.title')}</span>
                         </h3>
-                    </button>
+                    </Button>
 
                     {expandedSections.has('constraints') && (
+                        <ReadOnlyFieldset>
                         <div id="scheduling-constraints-panel" className="mt-4">
                             <p className="mb-4 text-sm text-content-secondary">
                                 {t('settingsScheduling.sections.constraints.description')}
@@ -535,10 +540,12 @@ export const SchedulingRulesSettings = () => {
                                 onChange={updateConstraints}
                             />
                         </div>
+                        </ReadOnlyFieldset>
                     )}
                 </div>
 
                 {/* Action Buttons */}
+                <ReadOnlyFieldset>
                 <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                     <Button
                         variant="outline"
@@ -573,6 +580,7 @@ export const SchedulingRulesSettings = () => {
                         </div>
                     </div>
                 </div>
+                </ReadOnlyFieldset>
             </fieldset>
             <SettingsUnsavedBar dirty={hasChanges} saving={isMutating} onSave={handleSave} onDiscard={handleDiscard} />
             {confirmationDialog}

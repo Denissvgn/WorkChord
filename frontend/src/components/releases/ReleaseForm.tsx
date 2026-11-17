@@ -22,6 +22,7 @@ import { pillToneClassName, STATUS_TONE } from '../ui/tone';
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 interface ReleaseFormProps {
     projectId: number;
     initialData?: Release;
@@ -209,7 +210,7 @@ export const ReleaseForm = ({
 
                 <label className="block text-sm font-medium text-content-primary" htmlFor="release-status">
                     {t('surfaces.releaseForm.status')}
-                    <select
+                    <Select
                         id="release-status"
                         value={formData.status}
                         onChange={event => setField('status', event.target.value as ReleaseStatus)}
@@ -220,7 +221,7 @@ export const ReleaseForm = ({
                                 {t(option.labelKey)}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                 </label>
             </div>
 

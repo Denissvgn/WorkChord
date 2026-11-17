@@ -1,0 +1,20 @@
+/** Query keys whose data needs the admin key: they are dropped on unlock and lock, and refetched after an unlock. */
+export const protectedQueryKeys = [
+    ['system-settings'],
+    ['scheduling-rules'],
+    ['email-settings'],
+    ['outbound-webhook-targets'],
+    ['outbound-webhook-deliveries'],
+    ['agent-capabilities'],
+    ['agent-actor-roster'],
+    ['agent-model-catalog'],
+    ['agent-model-bindings'],
+    ['agent-profile-skill-catalog'],
+    ['routing-assessment'],
+    ['routing-preview'],
+    ['agent-assignments'],
+    ['agent-pipeline'],
+    ['agent-team-setup'],
+    ['task-timeline'],
+    ['agent-run-detail'],
+] as const;

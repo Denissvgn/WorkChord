@@ -1,36 +1,14 @@
-import { savedViewModified } from '../../utils/savedViewState';
 import i18n from '../../i18n/i18n';
-import { useMemo, useRef, useState } from 'react';
-import type { FormEvent } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertTriangle, Copy, Save, Trash2 } from 'lucide-react';
+import { useEffect, useId, useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from 'react';
+import { Check, ChevronDown, Copy, RotateCcw, Save, Trash2 } from 'lucide-react';
+import clsx from 'clsx';
 import { Button } from '../common/Button';
-import { Input } from '../common/Input';
-import { Modal } from '../common/Modal';
-import { useConfirmDialog } from '../common/useConfirmDialog';
-import { savedViewService } from '../../services/savedViewService';
-import { sessionService } from '../../services/sessionService';
-import { getApiErrorMessage } from '../../utils/apiError';
-import type { SavedView, SavedViewScope } from '../../types/savedView';
-import type { TaskFilters } from './TaskFiltersBar';
-import type { SortKey } from './TaskList';
+import type { SavedViewScope } from '../../types/savedView';
 import { savedViewDisplay } from '../../i18n/seedDisplay';
-import { QueryErrorState } from '../feedback/QueryState';
-import { Textarea } from '../common/Textarea';
-import { Select } from '../common/Select';
+import type { SavedViewManager } from './useSavedViewManager';
 
 const t = i18n.t.bind(i18n);
-
-type EditableScope = Exclude<SavedViewScope, 'system'>;
-type FormMode = 'create' | 'duplicate';
-
-interface SavedViewsControlProps {
-    filters: TaskFilters;
-    sortKey: SortKey;
-    selectedViewId: number | null;
-    onSelectedViewIdChange: (viewId: number | null) => void;
-    onApplyView: (view: SavedView) => void;
-}
 
 const sortScopeLabel = (scope: SavedViewScope) => {
     if (scope === 'personal') return t('surfaces.savedViews.personal');
@@ -38,304 +16,146 @@ const sortScopeLabel = (scope: SavedViewScope) => {
     return t('surfaces.savedViews.system');
 };
 
-export const SavedViewsControl = ({
-    filters,
-    sortKey,
-    selectedViewId,
-    onSelectedViewIdChange,
-    onApplyView,
-}: SavedViewsControlProps) => {
-    const queryClient = useQueryClient();
-    const [formMode, setFormMode] = useState<FormMode | null>(null);
-    const [formName, setFormName] = useState('');
-    const [formDescription, setFormDescription] = useState('');
-    const [formScope, setFormScope] = useState<EditableScope>('personal');
-    const [formError, setFormError] = useState<string | null>(null);
-    const [statusMessage, setStatusMessage] = useState<string | null>(null);
-    const formNameRef = useRef<HTMLInputElement>(null);
-    const { requestConfirmation, confirmationDialog } = useConfirmDialog();
+type PickerItem =
+    | { kind: 'view'; key: string; label: ReactNode; checked: boolean; disabled?: boolean; onSelect: () => void }
+    | { kind: 'action'; key: string; label: ReactNode; icon: ReactNode; disabled?: boolean; tone?: 'danger'; onSelect: () => void };
 
-    const { data: session, error: sessionError, refetch: refetchSession } = useQuery({
-        queryKey: ['session', 'whoami'],
-        queryFn: sessionService.getWhoAmI,
-    });
+/**
+ * The page title of Tasks: the name of the view shown, opening a menu with every saved view and
+ * the actions on the current one. Put it in PageHeader's `title`.
+ */
+export const SavedViewPicker = ({ manager, label }: { manager: SavedViewManager; label: string }) => {
+    const [open, setOpen] = useState(false);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+    const menuId = useId();
+    const { selectedView, savedViews, modified, canMutateSelected } = manager;
 
-    const { data: savedViews = [], isLoading, error: viewsError, refetch: refetchViews } = useQuery({
-        queryKey: ['saved-views', 'tasks'],
-        queryFn: () => savedViewService.getAll({ view_type: 'tasks' }),
-    });
-
-    const selectedView = useMemo(
-        () => savedViews.find(view => view.id === selectedViewId) ?? null,
-        [savedViews, selectedViewId],
-    );
-
-    const modified = savedViewModified(selectedView, filters, sortKey);
-
-    const canMutateSelected = Boolean(
-        selectedView &&
-        selectedView.is_valid &&
-        selectedView.scope !== 'system' &&
-        (selectedView.owner_principal_id != null
-            ? selectedView.owner_principal_id === session?.principal_id
-            : selectedView.created_by_session_id === session?.id),
-    );
-
-    const currentViewPayload = {
-        filters_json: filters as unknown as Record<string, unknown>,
-        sort_json: { sortKey },
-        columns_json: {},
+    const closeMenu = (restoreFocus = true) => {
+        setOpen(false);
+        if (restoreFocus) triggerRef.current?.focus();
     };
 
-    const createMutation = useMutation({
-        mutationFn: savedViewService.create,
-    });
+    useEffect(() => {
+        if (!open) return;
+        const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+            if (event.key !== 'Escape') return;
+            event.preventDefault();
+            setOpen(false);
+            triggerRef.current?.focus();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        (itemRefs.current.find(item => item?.getAttribute('aria-checked') === 'true') ?? itemRefs.current.find(Boolean))?.focus();
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [open]);
 
-    const updateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: Parameters<typeof savedViewService.update>[1] }) =>
-            savedViewService.update(id, data),
-    });
+    const items: PickerItem[] = [
+        { kind: 'view', key: 'all', label: t('tasks.allTasks'), checked: !selectedView, onSelect: () => manager.chooseView(null) },
+        ...savedViews.map(view => ({
+            kind: 'view' as const,
+            key: `view-${view.id}`,
+            label: (
+                <>
+                    <span className="min-w-0 flex-1 truncate">{savedViewDisplay(view).name}</span>
+                    <span className="text-xs text-content-secondary">
+                        {sortScopeLabel(view.scope)}{view.is_valid ? '' : ` · ${t('surfaces.savedViews.invalid')}`}
+                    </span>
+                </>
+            ),
+            checked: view.id === selectedView?.id,
+            disabled: !view.is_valid,
+            onSelect: () => manager.chooseView(view.id),
+        })),
+        { kind: 'action', key: 'save-as', label: t('teamwork.saveAs'), icon: <Save aria-hidden="true" className="h-4 w-4" />, onSelect: manager.openSaveAs },
+        {
+            kind: 'action', key: 'save', label: t('teamwork.saveChanges'), icon: <Check aria-hidden="true" className="h-4 w-4" />,
+            disabled: !canMutateSelected || !modified || manager.isSaving, onSelect: () => void manager.saveChanges(),
+        },
+        ...(selectedView && modified ? [{
+            kind: 'action' as const, key: 'reset', label: t('teamwork.resetView'), icon: <RotateCcw aria-hidden="true" className="h-4 w-4" />,
+            onSelect: manager.resetView,
+        }] : []),
+        {
+            kind: 'action', key: 'duplicate', label: t('surfaces.savedViews.duplicate'), icon: <Copy aria-hidden="true" className="h-4 w-4" />,
+            disabled: !selectedView || !selectedView.is_valid, onSelect: manager.openDuplicate,
+        },
+        {
+            kind: 'action', key: 'delete', label: t('surfaces.savedViews.delete'), icon: <Trash2 aria-hidden="true" className="h-4 w-4" />,
+            tone: 'danger', disabled: !canMutateSelected || manager.isDeleting, onSelect: manager.requestDelete,
+        },
+    ];
 
-    const deleteMutation = useMutation({
-        mutationFn: savedViewService.delete,
-    });
-
-    const duplicateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: Parameters<typeof savedViewService.duplicate>[1] }) =>
-            savedViewService.duplicate(id, data),
-    });
-
-    const invalidateSavedViews = async () => {
-        await queryClient.invalidateQueries({ queryKey: ['saved-views', 'tasks'] });
-    };
-
-    const resetForm = () => {
-        setFormMode(null);
-        setFormName('');
-        setFormDescription('');
-        setFormScope('personal');
-        setFormError(null);
-    };
-
-    const openCreateForm = () => {
-        setFormMode('create');
-        setFormName('');
-        setFormDescription('');
-        setFormScope('personal');
-        setFormError(null);
-    };
-
-    const openDuplicateForm = () => {
-        if (!selectedView) return;
-        setFormMode('duplicate');
-        setFormName(`Copy of ${selectedView.name}`.slice(0, 255));
-        setFormDescription(selectedView.description ?? '');
-        setFormScope('personal');
-        setFormError(null);
-    };
-
-    const handleViewSelect = (viewId: string) => {
-        if (!viewId) {
-            onSelectedViewIdChange(null);
-            return;
-        }
-
-        const view = savedViews.find(candidate => candidate.id === Number(viewId));
-        if (!view || !view.is_valid) return;
-
-        onSelectedViewIdChange(view.id);
-        onApplyView(view);
-        setStatusMessage(t('surfaces.savedViews.appliedSavedView'));
-    };
-
-    const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
+    const handleItemKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+        let next: number | null = null;
+        if (event.key === 'ArrowDown') next = (index + 1) % items.length;
+        else if (event.key === 'ArrowUp') next = (index - 1 + items.length) % items.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = items.length - 1;
+        else if (event.key === 'Tab') { closeMenu(false); return; }
+        else return;
         event.preventDefault();
-        const name = formName.trim();
-        if (!name) {
-            setFormError(t('surfaces.savedViews.nameIsRequired'));
-            return;
-        }
-
-        try {
-            const savedView = formMode === 'create'
-                ? await createMutation.mutateAsync({
-                    name,
-                    description: formDescription.trim() || null,
-                    view_type: 'tasks',
-                    scope: formScope,
-                    ...currentViewPayload,
-                })
-                : selectedView
-                    ? await duplicateMutation.mutateAsync({
-                        id: selectedView.id,
-                        data: {
-                            name,
-                            description: formDescription.trim() || null,
-                            scope: formScope,
-                        },
-                    })
-                    : null;
-
-            if (savedView) {
-                await invalidateSavedViews();
-                onSelectedViewIdChange(savedView.id);
-                setStatusMessage(formMode === 'create' ? t('surfaces.savedViews.savedViewCreated') : t('surfaces.savedViews.savedViewDuplicated'));
-            }
-            resetForm();
-        } catch (error) {
-            setFormError(getApiErrorMessage(error, t('surfaces.savedViews.failedToSaveView')));
-        }
+        itemRefs.current[next]?.focus();
     };
 
-    const handleUpdateSelected = async () => {
-        if (!selectedView || !canMutateSelected) return;
-        try {
-            const updated = await updateMutation.mutateAsync({
-                id: selectedView.id,
-                data: currentViewPayload,
-            });
-            await invalidateSavedViews();
-            onSelectedViewIdChange(updated.id);
-            setStatusMessage(t('surfaces.savedViews.savedViewUpdated'));
-        } catch (error) {
-            setStatusMessage(getApiErrorMessage(error, t('surfaces.savedViews.failedToUpdateView')));
-        }
-    };
-
-    const handleDeleteSelected = () => {
-        if (!selectedView || !canMutateSelected) return;
-        requestConfirmation({
-            title: t('surfaces.savedViews.delete'),
-            description: t('surfaces.savedViews.deleteSelectedSavedView'),
-            confirmLabel: t('surfaces.savedViews.delete'),
-            cancelLabel: t('surfaces.savedViews.cancel'),
-            closeLabel: t('actions.close'),
-            onConfirm: async () => {
-                try {
-                    await deleteMutation.mutateAsync(selectedView.id);
-                    await invalidateSavedViews();
-                    onSelectedViewIdChange(null);
-                    setStatusMessage(t('surfaces.savedViews.savedViewDeleted'));
-                } catch (error) {
-                    setStatusMessage(getApiErrorMessage(error, t('surfaces.savedViews.failedToDeleteView')));
-                    throw error;
-                }
-            },
-        });
-    };
+    const firstActionIndex = items.findIndex(item => item.kind === 'action');
 
     return (
-        <div className="space-y-3">
-            {(sessionError || viewsError) && <QueryErrorState className="mb-3" error={sessionError ?? viewsError} onRetry={() => { void refetchSession(); void refetchViews(); }} />}
-            <div className="flex flex-wrap items-center gap-2">
-                <select
-                    value={selectedViewId ?? ''}
-                    onChange={event => handleViewSelect(event.target.value)}
-                    disabled={isLoading}
-                    aria-label={t('surfaces.savedViews.savedViews')}
-                    className="min-w-[220px] rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                >
-                    <option value="">{t('surfaces.savedViews.savedViews')}</option>
-                    {savedViews.map(view => (
-                        <option key={view.id} value={view.id} disabled={!view.is_valid}>
-                            {savedViewDisplay(view).name} · {sortScopeLabel(view.scope)}{view.is_valid ? '' : ` · ${t('surfaces.savedViews.invalid')}`}
-                        </option>
-                    ))}
-                </select>
-
-                <Button variant="secondary" size="sm" onClick={openCreateForm}>
-                    <Save className="mr-1 h-4 w-4" />
-                    {t('teamwork.saveAs')}
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleUpdateSelected}
-                    disabled={!canMutateSelected || !modified || updateMutation.isPending}
-                    isLoading={updateMutation.isPending}
-                >
-                    {t('teamwork.saveChanges')}
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={openDuplicateForm}
-                    disabled={!selectedView || !selectedView.is_valid}
-                >
-                    <Copy className="mr-1 h-4 w-4" />
-                    {t('surfaces.savedViews.duplicate')}
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleDeleteSelected}
-                    disabled={!canMutateSelected || deleteMutation.isPending}
-                    isLoading={deleteMutation.isPending}
-                >
-                    <Trash2 className="mr-1 h-4 w-4" />
-                    {t('surfaces.savedViews.delete')}
-                </Button>
-
-                {modified && <>
-                    <span role="status" className="text-sm text-feedback-warning-foreground">{t('teamwork.modifiedView')}</span>
-                    {selectedView && <Button size="sm" variant="ghost" onClick={() => onApplyView(selectedView)}>{t('teamwork.resetView')}</Button>}
-                    <p className="w-full text-sm text-content-secondary">{t('teamwork.draftViewHelp')}</p>
-                </>}
-                {selectedView && !selectedView.is_valid && (
-                    <span className="inline-flex items-center gap-1 text-sm text-feedback-warning-foreground">
-                        <AlertTriangle className="h-4 w-4" />
-                        {selectedView.invalid_reason ?? t('surfaces.savedViews.invalidReason')}
+        <span className="tasks-view-picker">
+            <Button
+                data-page-chrome-control="button"
+                ref={triggerRef}
+                type="button"
+                className="tasks-view-picker-trigger h-[30px]"
+                aria-haspopup="menu"
+                aria-expanded={open}
+                aria-controls={open ? menuId : undefined}
+                onClick={() => (open ? closeMenu() : setOpen(true))}
+             variant="plain">
+                <span>{label}</span>
+                <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0" />
+            </Button>
+            {open && (
+                <>
+                    <span className="tasks-view-picker-backdrop" onClick={() => closeMenu()} aria-hidden />
+                    <span id={menuId} role="menu" aria-label={t('surfaces.savedViews.savedViews')} className="tasks-view-picker-menu">
+                        {manager.isLoading && <span role="status" className="block px-2.5 py-1.5 text-sm text-content-secondary">{t('tasks.loadingSavedView')}</span>}
+                        {manager.loadError && (
+                            <span role="alert" className="block px-2.5 py-1.5 text-sm text-feedback-danger-foreground">
+                                {t('tasks.savedViewsLoadFailed')}
+                            </span>
+                        )}
+                        {items.map((item, index) => (
+                            <span key={item.key} className={clsx('block', index === firstActionIndex && 'tasks-view-picker-divider')}>
+                                <Button
+                                    data-page-chrome-control="button"
+                                    ref={node => { itemRefs.current[index] = node; }}
+                                    type="button"
+                                    role={item.kind === 'view' ? 'menuitemradio' : 'menuitem'}
+                                    aria-checked={item.kind === 'view' ? item.checked : undefined}
+                                    aria-disabled={item.disabled || undefined}
+                                    className={clsx('ofm-item', item.disabled && 'cursor-not-allowed opacity-60', item.kind === 'action' && item.tone === 'danger' && 'text-feedback-danger-foreground')}
+                                    onClick={() => {
+                                        if (item.disabled) return;
+                                        closeMenu();
+                                        item.onSelect();
+                                    }}
+                                    onKeyDown={event => handleItemKeyDown(event, index)}
+                                 variant="secondary">
+                                    {item.kind === 'view'
+                                        ? <Check aria-hidden="true" className={clsx('h-4 w-4 shrink-0', !item.checked && 'invisible')} />
+                                        : item.icon}
+                                    {item.label}
+                                </Button>
+                            </span>
+                        ))}
+                        {manager.loadError && (
+                            <span className="block px-1 pt-1">
+                                <Button variant="ghost" size="sm" onClick={manager.retryLoad}>{t('queryFeedback.retry')}</Button>
+                            </span>
+                        )}
                     </span>
-                )}
-                {selectedView?.metric_migration_note && <p role="status" className="text-sm text-content-secondary">{t("workMetrics.legacyOverflowView")}</p>}
-                {statusMessage && (
-                    <span className="text-sm text-content-secondary">{statusMessage}</span>
-                )}
-            </div>
-
-            <Modal
-                open={formMode !== null}
-                title={t(formMode === 'create' ? 'surfaces.savedViews.saveCurrentView' : 'surfaces.savedViews.duplicateView')}
-                closeLabel={t('actions.close')}
-                onClose={resetForm}
-                initialFocusRef={formNameRef}
-                className="max-w-md"
-            >
-                {formMode && (
-                    <form
-                        onSubmit={handleSubmitForm}
-                        className="space-y-4"
-                    >
-                        <div className="space-y-3">
-                            <Input
-                                ref={formNameRef}
-                                label={t('surfaces.savedViews.name')}
-                                value={formName}
-                                onChange={event => setFormName(event.target.value)}
-                                maxLength={255}
-                            />
-                            <Textarea label={t('surfaces.savedViews.description')} value={formDescription} onChange={event => setFormDescription(event.target.value)} className="min-h-20" />
-                            <Select label={t('surfaces.savedViews.scope')} value={formScope} onChange={event => setFormScope(event.target.value as EditableScope)}><option value="personal">{t('surfaces.savedViews.personal')}</option><option value="shared">{t('surfaces.savedViews.shared')}</option></Select>
-                            {formError && (
-                                <p className="rounded-md bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground">{formError}</p>
-                            )}
-                        </div>
-
-                        <div className="mt-5 flex justify-end gap-2">
-                            <Button type="button" variant="ghost" onClick={resetForm}>
-                                {t('surfaces.savedViews.cancel')}
-                            </Button>
-                            <Button
-                                type="submit"
-                                isLoading={createMutation.isPending || duplicateMutation.isPending}
-                            >
-                                {t(formMode === 'create' ? 'surfaces.savedViews.save' : 'surfaces.savedViews.duplicate')}
-                            </Button>
-                        </div>
-                    </form>
-                )}
-            </Modal>
-            {confirmationDialog}
-        </div>
+                </>
+            )}
+        </span>
     );
 };

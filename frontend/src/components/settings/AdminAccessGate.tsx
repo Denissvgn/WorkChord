@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAdminAccess, useKeylessReader } from '../../hooks/useAdminAccess';
 import { Button } from '../common/Button';
 import { AdminAccessPanel } from './AdminAccessPanel';
+import { SettingsReadOnlyContext, useSharedUnlock } from './sharedUnlock';
 
 interface AdminAccessGateProps {
     children: ReactNode;
@@ -12,8 +13,16 @@ interface AdminAccessGateProps {
     recovery?: ReactNode;
     accessGranted?: boolean;
     headingLevel?: 2 | 3;
+    /** Secondary when the page around the gate already leads with a primary action. */
+    saveVariant?: 'primary' | 'secondary';
     /** Show the panel read-only to people who may read it without the key, instead of the gate. */
     readable?: boolean;
+    /**
+     * The content disables its own editing controls through `useSettingsReadOnly`, so that its
+     * view controls (tabs, type lists, filters, expanders) stay usable when it is read-only.
+     * Without it, every control inside is disabled.
+     */
+    managesReadOnly?: boolean;
 }
 
 export const AdminAccessGate = ({
@@ -22,19 +31,42 @@ export const AdminAccessGate = ({
     recovery,
     accessGranted,
     headingLevel = 3,
+    saveVariant = 'primary',
     readable = false,
+    managesReadOnly = false,
 }: AdminAccessGateProps) => {
     const { t } = useTranslation();
     const { hasAdminKey } = useAdminAccess();
     const reader = useKeylessReader();
+    const shared = useSharedUnlock();
     const hasAccess = accessGranted ?? hasAdminKey;
     const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
     if (hasAccess) {
-        return <>{children}</>;
+        // Same root as the read-only content, so unlocking keeps the panel's own state (open tab, filters).
+        return <SettingsReadOnlyContext.Provider value={null}>{children}</SettingsReadOnlyContext.Provider>;
     }
     if (readable && reader.settings) {
-        return <ReadOnlySettings headingLevel={headingLevel}>{children}</ReadOnlySettings>;
+        if (shared) {
+            // The page's own Unlock editing control serves this section.
+            return readOnlyContent(children, shared.noteId, managesReadOnly);
+        }
+        return <ReadOnlySettings headingLevel={headingLevel} managesReadOnly={managesReadOnly}>{children}</ReadOnlySettings>;
+    }
+    if (shared) {
+        return (
+            <div className="card card-pad max-w-3xl">
+                <div className="admin-access-gate">
+                    <div className="iconbox warn">
+                        <LockKeyhole aria-hidden="true" className="h-4 w-4" />
+                    </div>
+                    <div className="admin-access-gate-copy">
+                        <Heading>{t('settings.adminAccessProtectedTitle')}</Heading>
+                        <p>{t('settings.sharedUnlockProtectedDescription')}</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -55,13 +87,28 @@ export const AdminAccessGate = ({
                     </div>
                 </div>
             </div>
-            {showPanel && <AdminAccessPanel headingLevel={headingLevel} />}
+            {showPanel && <AdminAccessPanel headingLevel={headingLevel} saveVariant={saveVariant} />}
         </div>
     );
 };
 
+/**
+ * Content that can be read but not changed: either it disables its own editing controls, or all
+ * of them are. A plain function, not a component, so its root is the same Provider as the unlocked
+ * content's and React keeps the content mounted when the key is entered.
+ */
+const readOnlyContent = (children: ReactNode, noteId: string, managesReadOnly: boolean) => (
+    <SettingsReadOnlyContext.Provider value={{ noteId }}>
+        {managesReadOnly ? children : (
+            <fieldset disabled aria-describedby={noteId} className="m-0 min-w-0 border-0 p-0">
+                {children}
+            </fieldset>
+        )}
+    </SettingsReadOnlyContext.Provider>
+);
+
 /** The panel stays readable; its controls are disabled until the admin key is entered in place. */
-const ReadOnlySettings = ({ children, headingLevel }: { children: ReactNode; headingLevel: 2 | 3 }) => {
+const ReadOnlySettings = ({ children, headingLevel, managesReadOnly }: { children: ReactNode; headingLevel: 2 | 3; managesReadOnly: boolean }) => {
     const { t } = useTranslation();
     const id = useId();
     const [unlocking, setUnlocking] = useState(false);
@@ -76,9 +123,7 @@ const ReadOnlySettings = ({ children, headingLevel }: { children: ReactNode; hea
                     onClick={() => setUnlocking(value => !value)}>{t('settings.unlockEditing')}</Button>
             </div>
             {unlocking && <div id={`${id}-unlock`}><AdminAccessPanel headingLevel={headingLevel} /></div>}
-            <fieldset disabled aria-describedby={`${id}-note`} className="m-0 min-w-0 border-0 p-0">
-                {children}
-            </fieldset>
+            {readOnlyContent(children, `${id}-note`, managesReadOnly)}
         </div>
     );
 };

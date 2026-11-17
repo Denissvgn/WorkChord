@@ -5,11 +5,11 @@ import {
     ChevronDown,
     ChevronUp,
     Edit3,
+    Eye,
     FileText,
     Plus,
     Save,
     Tags,
-    X,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
@@ -25,8 +25,10 @@ import { labelDisplay, labelGroupDisplay, templateDisplay } from '../../i18n/see
 import { useToast } from '../feedback/toast';
 import { OverflowMenu } from '../ui';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+import { useSettingsReadOnly } from './sharedUnlock';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 const arrayMove = <T,>(items: T[], from: number, to: number) => {
     const next = [...items];
     const [moved] = next.splice(from, 1);
@@ -220,6 +222,8 @@ const waitForAllUpdates = async (updates: Promise<unknown>[]) => {
 
 interface TemplateRowProps {
     isBusy: boolean;
+    /** The template can be opened and read, but not changed. */
+    readOnly: boolean;
     template: WorkTemplate;
     isFirst: boolean;
     isLast: boolean;
@@ -228,8 +232,8 @@ interface TemplateRowProps {
     onMove: (template: WorkTemplate, direction: -1 | 1) => void;
 }
 
-/** One template: an "Active" switch with its label, Edit, and a menu that moves it up or down. */
-const TemplateRow = ({ isBusy, template, isFirst, isLast, onEdit, onToggleActive, onMove }: TemplateRowProps) => {
+/** One template: an "Active" switch with its label, Edit (View when read-only), and a menu that moves it up or down. */
+const TemplateRow = ({ isBusy, readOnly, template, isFirst, isLast, onEdit, onToggleActive, onMove }: TemplateRowProps) => {
     const { t } = useTranslation();
     const display = templateDisplay(template);
     const headingId = `work-template-${template.id}-heading`;
@@ -266,7 +270,7 @@ const TemplateRow = ({ isBusy, template, isFirst, isLast, onEdit, onToggleActive
                             type="checkbox"
                             role="switch"
                             checked={template.is_active}
-                            disabled={isBusy}
+                            disabled={isBusy || readOnly}
                             onChange={() => onToggleActive(template)}
                             aria-describedby={headingId}
                             className="h-4 w-4"
@@ -279,16 +283,16 @@ const TemplateRow = ({ isBusy, template, isFirst, isLast, onEdit, onToggleActive
                         size="sm"
                         onClick={() => onEdit(template)}
                         disabled={isBusy}
-                        aria-label={`${t('surfaces.templateLabels.editTemplate')}: ${display.name}`}
+                        aria-label={`${t(readOnly ? 'surfaces.templateLabels.viewTemplate' : 'surfaces.templateLabels.editTemplate')}: ${display.name}`}
                     >
-                        <Edit3 className="mr-1 h-4 w-4" aria-hidden="true" />
-                        {t('actions.edit')}
+                        {readOnly ? <Eye className="mr-1 h-4 w-4" aria-hidden="true" /> : <Edit3 className="mr-1 h-4 w-4" aria-hidden="true" />}
+                        {readOnly ? t('surfaces.templateLabels.view') : t('actions.edit')}
                     </Button>
                     <OverflowMenu
                         label={t('surfaces.templateLabels.rowActions', { name: display.name })}
                         items={[
-                            { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, -1), disabled: isBusy || isFirst },
-                            { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, 1), disabled: isBusy || isLast },
+                            { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, -1), disabled: isBusy || readOnly || isFirst },
+                            { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => onMove(template, 1), disabled: isBusy || readOnly || isLast },
                         ]}
                     />
                 </div>
@@ -301,6 +305,10 @@ export const TemplateLabelSettings = () => {
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const toast = useToast();
+    // Without the admin key, tabs, template types and "Include archived" still work and each
+    // item can be opened to read it; only the controls that change something are disabled.
+    const readOnlyNote = useSettingsReadOnly();
+    const readOnly = readOnlyNote !== null;
     const [activeSection, setActiveSection] = useState<ManagementSection>('templates');
     const [activeTemplateType, setActiveTemplateType] = useState<TemplateType>('task');
     const [templateForm, setTemplateForm] = useState<{ id: number | null; state: TemplateFormState } | null>(null);
@@ -541,6 +549,13 @@ export const TemplateLabelSettings = () => {
         setLabelForm(prev => prev ? ({ ...prev, state: { ...prev.state, [field]: value } }) : prev);
     };
 
+    const groupTitle = groupForm?.id == null
+        ? t('surfaces.templateLabels.newGroup')
+        : readOnly ? t('surfaces.templateLabels.groupDetails') : t('surfaces.templateLabels.editGroup');
+    const labelTitle = labelForm?.id == null
+        ? t('surfaces.templateLabels.addLabel')
+        : readOnly ? t('surfaces.templateLabels.labelDetails') : t('surfaces.templateLabels.editLabel');
+
     const moveGroup = (group: LabelGroup, direction: -1 | 1) => {
         if (isGroupListBusy) return;
         const oldIndex = labelGroups.findIndex(candidate => candidate.id === group.id);
@@ -581,7 +596,7 @@ export const TemplateLabelSettings = () => {
                 role="tablist"
                 aria-label={t('surfaces.templateLabels.managementSections')}
             >
-                <button
+                <Button
                     type="button"
                     role="tab"
                     id="template-labels-tab-templates"
@@ -595,11 +610,11 @@ export const TemplateLabelSettings = () => {
                     className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'templates' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
-                >
+                 variant="plain">
                     <FileText aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.templates')}
-                </button>
-                <button
+                </Button>
+                <Button
                     type="button"
                     role="tab"
                     id="template-labels-tab-labels"
@@ -613,10 +628,10 @@ export const TemplateLabelSettings = () => {
                     className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60 ${
                         activeSection === 'labels' ? 'bg-action-muted text-action' : 'text-content-secondary hover:bg-surface-muted'
                     }`}
-                >
+                 variant="plain">
                     <Tags aria-hidden="true" className="h-4 w-4" />
                     {t('surfaces.templateLabels.labels')}
-                </button>
+                </Button>
             </div>
 
             {activeSection === 'templates' && (
@@ -632,7 +647,7 @@ export const TemplateLabelSettings = () => {
                                 <h3 id="template-list-heading" className="text-lg font-semibold text-content-primary">{t('surfaces.templateLabels.templates')}</h3>
                                 <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.manageDefaultsUsedByCreateForms')}</p>
                             </div>
-                            <Button type="button" onClick={startCreateTemplate} disabled={templatesLoading || isTemplatesError || isTemplateListBusy}>
+                            <Button type="button" onClick={startCreateTemplate} disabled={readOnly || templatesLoading || isTemplatesError || isTemplateListBusy}>
                                 <Plus className="mr-2 h-4 w-4" />
                                 {t('surfaces.templateLabels.newTemplate')}
                             </Button>
@@ -640,7 +655,7 @@ export const TemplateLabelSettings = () => {
 
                         <div className="flex flex-wrap gap-2">
                             {templateTypes.map(option => (
-                                <button
+                                <Button
                                     key={option.value}
                                     type="button"
                                     onClick={() => setActiveTemplateType(option.value)}
@@ -650,9 +665,9 @@ export const TemplateLabelSettings = () => {
                                             ? 'border-action bg-action-muted text-action'
                                             : 'border-border bg-surface-card text-content-secondary hover:bg-surface-muted'
                                     }`}
-                                >
+                                 variant="plain">
                                     {t(option.labelKey)}
-                                </button>
+                                </Button>
                             ))}
                         </div>
 
@@ -672,6 +687,7 @@ export const TemplateLabelSettings = () => {
                                 {visibleTemplates.map((template, index) => (
                                     <TemplateRow
                                         isBusy={isTemplateListBusy}
+                                        readOnly={readOnly}
                                         key={template.id}
                                         template={template}
                                         isFirst={index === 0}
@@ -691,8 +707,8 @@ export const TemplateLabelSettings = () => {
                     {/* The editor opens in the shared drawer, beside the list at every width. */}
                     <SlideOverDrawer
                         open={templateForm !== null}
-                        title={templateForm?.id ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
-                        ariaLabel={templateForm?.id ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
+                        title={templateForm?.id && !readOnly ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
+                        ariaLabel={templateForm?.id && !readOnly ? t('surfaces.templateLabels.editTemplate') : t('surfaces.templateLabels.templateDetails')}
                         onClose={() => { if (!isTemplateListBusy) setTemplateForm(null); }}
                         closeDisabled={isTemplateListBusy}
                         closeLabel={t('surfaces.templateLabels.closeTemplateForm')}
@@ -700,7 +716,7 @@ export const TemplateLabelSettings = () => {
                     >
                         {templateForm && <div className="p-6">
                             <form onSubmit={saveTemplate}>
-                                <fieldset disabled={isTemplateListBusy} className="min-w-0 space-y-4">
+                                <fieldset disabled={isTemplateListBusy || readOnly} aria-describedby={readOnlyNote?.noteId} className="min-w-0 space-y-4">
                                 {templateFormError && (
                                     <div className="rounded-md bg-feedback-danger-muted p-3 text-sm text-feedback-danger-foreground" role="alert">{templateFormError}</div>
                                 )}
@@ -712,7 +728,7 @@ export const TemplateLabelSettings = () => {
                                 />
                                 <div>
                                     <label htmlFor={templateTypeId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.type')}</label>
-                                    <select
+                                    <Select
                                         id={templateTypeId}
                                         value={templateForm.state.template_type}
                                         onChange={event => updateTemplateForm('template_type', event.target.value as TemplateType)}
@@ -721,7 +737,7 @@ export const TemplateLabelSettings = () => {
                                         {templateTypes.map(option => (
                                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                                 <div>
                                     <label htmlFor={templateDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
@@ -822,7 +838,6 @@ export const TemplateLabelSettings = () => {
                     id="template-labels-panel-labels"
                     role="tabpanel"
                     aria-labelledby="template-labels-tab-labels"
-                    className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_420px]"
                 >
                     <section className="card space-y-4" aria-labelledby="label-taxonomy-heading">
                         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -841,7 +856,7 @@ export const TemplateLabelSettings = () => {
                                     />
                                     {t('surfaces.templateLabels.includeArchived')}
                                 </label>
-                                <Button type="button" onClick={() => setGroupForm({ id: null, state: emptyGroupForm(nextSortOrder(labelGroups)) })} disabled={labelsLoading || isLabelsError || isLabelsBusy}>
+                                <Button type="button" onClick={() => setGroupForm({ id: null, state: emptyGroupForm(nextSortOrder(labelGroups)) })} disabled={readOnly || labelsLoading || isLabelsError || isLabelsBusy}>
                                     <Plus className="mr-2 h-4 w-4" />
                                     {t('surfaces.templateLabels.newGroup')}
                                 </Button>
@@ -887,11 +902,13 @@ export const TemplateLabelSettings = () => {
                                             <OverflowMenu
                                                 label={t('surfaces.templateLabels.rowActions', { name: labelGroupDisplay(group).name })}
                                                 items={[
-                                                    { label: t('surfaces.templateLabels.editGroup'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setGroupForm({ id: group.id, state: groupToForm(group) }), disabled: isGroupListBusy },
-                                                    { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, -1), disabled: groupIndex === 0 || isGroupListBusy },
-                                                    { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, 1), disabled: groupIndex === labelGroups.length - 1 || isGroupListBusy },
+                                                    readOnly
+                                                        ? { label: t('surfaces.templateLabels.viewGroup'), icon: <Eye className="h-4 w-4" aria-hidden="true" />, onSelect: () => setGroupForm({ id: group.id, state: groupToForm(group) }), disabled: isGroupListBusy }
+                                                        : { label: t('surfaces.templateLabels.editGroup'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setGroupForm({ id: group.id, state: groupToForm(group) }), disabled: isGroupListBusy },
+                                                    { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, -1), disabled: readOnly || groupIndex === 0 || isGroupListBusy },
+                                                    { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveGroup(group, 1), disabled: readOnly || groupIndex === labelGroups.length - 1 || isGroupListBusy },
                                                     { label: group.is_active ? t('surfaces.templateLabels.archiveGroup') : t('surfaces.templateLabels.restoreGroup'), icon: <Archive className="h-4 w-4" aria-hidden="true" />,
-                                                        onSelect: () => toggleGroupMutation.mutate({ id: group.id, isActive: !group.is_active, name: labelGroupDisplay(group).name }), disabled: isGroupListBusy },
+                                                        onSelect: () => toggleGroupMutation.mutate({ id: group.id, isActive: !group.is_active, name: labelGroupDisplay(group).name }), disabled: readOnly || isGroupListBusy },
                                                 ]}
                                             />
                                         </div>
@@ -919,17 +936,19 @@ export const TemplateLabelSettings = () => {
                                                         <OverflowMenu
                                                             label={t('surfaces.templateLabels.rowActions', { name: labelDisplay(label).name })}
                                                             items={[
-                                                                { label: t('surfaces.templateLabels.editLabel'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setLabelForm({ id: label.id, state: labelToForm(label) }), disabled: isLabelListBusy },
-                                                                { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, -1), disabled: labelIndex === 0 || isLabelListBusy },
-                                                                { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, 1), disabled: labelIndex === group.labels.length - 1 || isLabelListBusy },
+                                                                readOnly
+                                                                    ? { label: t('surfaces.templateLabels.viewLabel'), icon: <Eye className="h-4 w-4" aria-hidden="true" />, onSelect: () => setLabelForm({ id: label.id, state: labelToForm(label) }), disabled: isLabelListBusy }
+                                                                    : { label: t('surfaces.templateLabels.editLabel'), icon: <Edit3 className="h-4 w-4" aria-hidden="true" />, onSelect: () => setLabelForm({ id: label.id, state: labelToForm(label) }), disabled: isLabelListBusy },
+                                                                { label: t('surfaces.templateLabels.moveUp'), icon: <ChevronUp className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, -1), disabled: readOnly || labelIndex === 0 || isLabelListBusy },
+                                                                { label: t('surfaces.templateLabels.moveDown'), icon: <ChevronDown className="h-4 w-4" aria-hidden="true" />, onSelect: () => moveLabel(group, label, 1), disabled: readOnly || labelIndex === group.labels.length - 1 || isLabelListBusy },
                                                                 { label: label.is_active ? t('surfaces.templateLabels.archiveLabel') : t('surfaces.templateLabels.restoreLabel'), icon: <Archive className="h-4 w-4" aria-hidden="true" />,
-                                                                    onSelect: () => toggleLabelMutation.mutate({ id: label.id, isActive: !label.is_active, name: labelDisplay(label).name }), disabled: isLabelListBusy },
+                                                                    onSelect: () => toggleLabelMutation.mutate({ id: label.id, isActive: !label.is_active, name: labelDisplay(label).name }), disabled: readOnly || isLabelListBusy },
                                                             ]}
                                                         />
                                                     </article>
                                                 ))
                                             )}
-                                            <Button type="button" variant="outline" size="sm" onClick={() => setLabelForm({ id: null, state: emptyLabelForm(group) })} disabled={isLabelListBusy}>
+                                            <Button type="button" variant="outline" size="sm" onClick={() => setLabelForm({ id: null, state: emptyLabelForm(group) })} disabled={readOnly || isLabelListBusy}>
                                                 <Plus className="mr-2 h-4 w-4" />
                                                 {t('surfaces.templateLabels.addLabel')}
                                             </Button>
@@ -940,184 +959,159 @@ export const TemplateLabelSettings = () => {
                         )}
                     </section>
 
-                    <section
-                        className="card h-fit space-y-6"
-                        aria-labelledby="group-editor-heading label-editor-heading"
+                    {/* Label groups and labels open in the shared drawer, like templates. */}
+                    <SlideOverDrawer
+                        open={groupForm !== null}
+                        title={groupTitle}
+                        ariaLabel={groupTitle}
+                        onClose={() => { if (!isLabelsBusy) setGroupForm(null); }}
+                        closeDisabled={isLabelsBusy}
+                        closeLabel={t('surfaces.templateLabels.closeGroupForm')}
                     >
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <h3 id="group-editor-heading" className="text-lg font-semibold text-content-primary">
-                                    {groupForm?.id ? t('surfaces.templateLabels.editGroup') : t('surfaces.templateLabels.groupDetails')}
-                                </h3>
-                                {groupForm && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setGroupForm(null)}
-                                        disabled={isLabelsBusy}
-                                        className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
-                                        aria-label={t('surfaces.templateLabels.closeGroupForm')} title={t('surfaces.templateLabels.closeGroupForm')}
-                                    >
-                                        <X aria-hidden="true" className="h-4 w-4" />
-                                    </button>
-                                )}
-                            </div>
-                            {!groupForm ? (
-                                <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.selectAGroupOrCreateANewOne')}</p>
-                            ) : (
-                                <form
-                                    onSubmit={event => {
-                                        event.preventDefault();
-                                        if (isLabelsBusy) return;
-                                        saveGroupMutation.mutate({
-                                            id: groupForm.id,
-                                            data: formToGroupPayload(groupForm.state),
-                                        });
-                                    }}
-                                >
-                                    <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
-                                    <Input label={t('surfaces.templateLabels.key')} value={groupForm.state.key} onChange={event => updateGroupForm('key', event.target.value)} required />
-                                    <Input label={t('surfaces.templateLabels.name')} value={groupForm.state.name} onChange={event => updateGroupForm('name', event.target.value)} required />
-                                    <div>
-                                        <label htmlFor={groupDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
-                                        <textarea
-                                            id={groupDescriptionId}
-                                            value={groupForm.state.description}
-                                            onChange={event => updateGroupForm('description', event.target.value)}
-                                            className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-[48px_minmax(0,1fr)] gap-3">
+                        {groupForm && (
+                            <form
+                                className="p-6"
+                                onSubmit={event => {
+                                    event.preventDefault();
+                                    if (isLabelsBusy) return;
+                                    saveGroupMutation.mutate({
+                                        id: groupForm.id,
+                                        data: formToGroupPayload(groupForm.state),
+                                    });
+                                }}
+                            >
+                                <fieldset disabled={isLabelsBusy || readOnly} aria-describedby={readOnlyNote?.noteId} className="min-w-0 space-y-4">
+                                <Input label={t('surfaces.templateLabels.key')} value={groupForm.state.key} onChange={event => updateGroupForm('key', event.target.value)} required />
+                                <Input label={t('surfaces.templateLabels.name')} value={groupForm.state.name} onChange={event => updateGroupForm('name', event.target.value)} required />
+                                <div>
+                                    <label htmlFor={groupDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
+                                    <textarea
+                                        id={groupDescriptionId}
+                                        value={groupForm.state.description}
+                                        onChange={event => updateGroupForm('description', event.target.value)}
+                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-[48px_minmax(0,1fr)] gap-3">
+                                    <input
+                                        type="color"
+                                        value={groupForm.state.color}
+                                        onChange={event => updateGroupForm('color', event.target.value)}
+                                        className="h-10 w-12 rounded-md border border-border-strong bg-surface-card p-1"
+                                        aria-label={t('surfaces.templateLabels.groupColor')}
+                                    />
+                                    <Input label={t('surfaces.templateLabels.color')} value={groupForm.state.color} onChange={event => updateGroupForm('color', event.target.value)} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Input
+                                        type="number"
+                                        label={t('surfaces.templateLabels.sortOrder')}
+                                        value={groupForm.state.sort_order}
+                                        onChange={event => updateGroupForm('sort_order', parseInt(event.target.value) || 0)}
+                                    />
+                                    <label className="flex items-end gap-2 pb-2 text-sm font-medium text-content-primary">
                                         <input
-                                            type="color"
-                                            value={groupForm.state.color}
-                                            onChange={event => updateGroupForm('color', event.target.value)}
-                                            className="h-10 w-12 rounded-md border border-border-strong bg-surface-card p-1"
-                                            aria-label={t('surfaces.templateLabels.groupColor')}
+                                            type="checkbox"
+                                            checked={groupForm.state.is_active}
+                                            onChange={event => updateGroupForm('is_active', event.target.checked)}
+                                            className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
                                         />
-                                        <Input label={t('surfaces.templateLabels.color')} value={groupForm.state.color} onChange={event => updateGroupForm('color', event.target.value)} />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <Input
-                                            type="number"
-                                            label={t('surfaces.templateLabels.sortOrder')}
-                                            value={groupForm.state.sort_order}
-                                            onChange={event => updateGroupForm('sort_order', parseInt(event.target.value) || 0)}
-                                        />
-                                        <label className="flex items-end gap-2 pb-2 text-sm font-medium text-content-primary">
-                                            <input
-                                                type="checkbox"
-                                                checked={groupForm.state.is_active}
-                                                onChange={event => updateGroupForm('is_active', event.target.checked)}
-                                                className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                                            />
-                                            {t('surfaces.templateLabels.active')}
-                                        </label>
-                                    </div>
-                                    <Button type="submit" isLoading={saveGroupMutation.isPending}>
-                                        <Save aria-hidden="true" className="mr-2 h-4 w-4" />
-                                        {t('surfaces.templateLabels.saveGroup')}
-                                    </Button>
-                                    </fieldset>
-                                </form>
-                            )}
-                        </div>
-
-                        <div className="border-t border-border pt-6">
-                            <div className="mb-4 flex items-center justify-between">
-                                <h3 id="label-editor-heading" className="text-lg font-semibold text-content-primary">
-                                    {labelForm?.id ? t('surfaces.templateLabels.editLabel') : t('surfaces.templateLabels.labelDetails')}
-                                </h3>
-                                {labelForm && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setLabelForm(null)}
-                                        disabled={isLabelsBusy}
-                                        className="rounded-md p-1 text-content-tertiary hover:bg-surface-subtle hover:text-content-primary disabled:cursor-not-allowed disabled:opacity-60"
-                                        aria-label={t('surfaces.templateLabels.closeLabelForm')} title={t('surfaces.templateLabels.closeLabelForm')}
+                                        {t('surfaces.templateLabels.active')}
+                                    </label>
+                                </div>
+                                <Button type="submit" isLoading={saveGroupMutation.isPending}>
+                                    <Save aria-hidden="true" className="mr-2 h-4 w-4" />
+                                    {t('surfaces.templateLabels.saveGroup')}
+                                </Button>
+                                </fieldset>
+                            </form>
+                        )}
+                    </SlideOverDrawer>
+                    <SlideOverDrawer
+                        open={labelForm !== null}
+                        title={labelTitle}
+                        ariaLabel={labelTitle}
+                        onClose={() => { if (!isLabelsBusy) setLabelForm(null); }}
+                        closeDisabled={isLabelsBusy}
+                        closeLabel={t('surfaces.templateLabels.closeLabelForm')}
+                    >
+                        {labelForm && (
+                            <form
+                                className="p-6"
+                                onSubmit={event => {
+                                    event.preventDefault();
+                                    if (isLabelsBusy) return;
+                                    saveLabelMutation.mutate({
+                                        id: labelForm.id,
+                                        data: formToLabelPayload(labelForm.state),
+                                    });
+                                }}
+                            >
+                                <fieldset disabled={isLabelsBusy || readOnly} aria-describedby={readOnlyNote?.noteId} className="min-w-0 space-y-4">
+                                <div>
+                                    <label htmlFor={labelGroupId} className="block text-sm font-medium text-content-primary mb-1">
+                                        {t('surfaces.templateLabels.group')}
+                                        <RequiredIndicator />
+                                    </label>
+                                    <Select
+                                        id={labelGroupId}
+                                        aria-label={t('surfaces.templateLabels.group')}
+                                        value={labelForm.state.group_id}
+                                        onChange={event => updateLabelForm('group_id', event.target.value)}
+                                        className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                        required
                                     >
-                                        <X aria-hidden="true" className="h-4 w-4" />
-                                    </button>
-                                )}
-                            </div>
-                            {!labelForm ? (
-                                <p className="text-sm text-content-secondary">{t('surfaces.templateLabels.selectALabelOrAddOneFromAGroup')}</p>
-                            ) : (
-                                <form
-                                    onSubmit={event => {
-                                        event.preventDefault();
-                                        if (isLabelsBusy) return;
-                                        saveLabelMutation.mutate({
-                                            id: labelForm.id,
-                                            data: formToLabelPayload(labelForm.state),
-                                        });
-                                    }}
-                                >
-                                    <fieldset disabled={isLabelsBusy} className="min-w-0 space-y-4">
-                                    <div>
-                                        <label htmlFor={labelGroupId} className="block text-sm font-medium text-content-primary mb-1">
-                                            {t('surfaces.templateLabels.group')}
-                                            <RequiredIndicator />
-                                        </label>
-                                        <select
-                                            id={labelGroupId}
-                                            aria-label={t('surfaces.templateLabels.group')}
-                                            value={labelForm.state.group_id}
-                                            onChange={event => updateLabelForm('group_id', event.target.value)}
-                                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                            required
-                                        >
-                                            {labelGroups.map(group => (
-                                                <option key={group.id} value={group.id}>{labelGroupDisplay(group).name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <Input label={t('surfaces.templateLabels.slug')} value={labelForm.state.slug} onChange={event => updateLabelForm('slug', event.target.value)} required />
-                                    <Input label={t('surfaces.templateLabels.name')} value={labelForm.state.name} onChange={event => updateLabelForm('name', event.target.value)} required />
-                                    <div>
-                                        <label htmlFor={labelDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
-                                        <textarea
-                                            id={labelDescriptionId}
-                                            value={labelForm.state.description}
-                                            onChange={event => updateLabelForm('description', event.target.value)}
-                                            className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-[48px_minmax(0,1fr)] gap-3">
+                                        {labelGroups.map(group => (
+                                            <option key={group.id} value={group.id}>{labelGroupDisplay(group).name}</option>
+                                        ))}
+                                    </Select>
+                                </div>
+                                <Input label={t('surfaces.templateLabels.slug')} value={labelForm.state.slug} onChange={event => updateLabelForm('slug', event.target.value)} required />
+                                <Input label={t('surfaces.templateLabels.name')} value={labelForm.state.name} onChange={event => updateLabelForm('name', event.target.value)} required />
+                                <div>
+                                    <label htmlFor={labelDescriptionId} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.templateLabels.description')}</label>
+                                    <textarea
+                                        id={labelDescriptionId}
+                                        value={labelForm.state.description}
+                                        onChange={event => updateLabelForm('description', event.target.value)}
+                                        className="min-h-[72px] w-full rounded-md border border-border-strong px-3 py-2 shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-[48px_minmax(0,1fr)] gap-3">
+                                    <input
+                                        type="color"
+                                        value={labelForm.state.color}
+                                        onChange={event => updateLabelForm('color', event.target.value)}
+                                        className="h-10 w-12 rounded-md border border-border-strong bg-surface-card p-1"
+                                        aria-label={t('surfaces.templateLabels.labelColor')}
+                                    />
+                                    <Input label={t('surfaces.templateLabels.color')} value={labelForm.state.color} onChange={event => updateLabelForm('color', event.target.value)} />
+                                </div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <Input
+                                        type="number"
+                                        label={t('surfaces.templateLabels.sortOrder')}
+                                        value={labelForm.state.sort_order}
+                                        onChange={event => updateLabelForm('sort_order', parseInt(event.target.value) || 0)}
+                                    />
+                                    <label className="flex items-end gap-2 pb-2 text-sm font-medium text-content-primary">
                                         <input
-                                            type="color"
-                                            value={labelForm.state.color}
-                                            onChange={event => updateLabelForm('color', event.target.value)}
-                                            className="h-10 w-12 rounded-md border border-border-strong bg-surface-card p-1"
-                                            aria-label={t('surfaces.templateLabels.labelColor')}
+                                            type="checkbox"
+                                            checked={labelForm.state.is_active}
+                                            onChange={event => updateLabelForm('is_active', event.target.checked)}
+                                            className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
                                         />
-                                        <Input label={t('surfaces.templateLabels.color')} value={labelForm.state.color} onChange={event => updateLabelForm('color', event.target.value)} />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <Input
-                                            type="number"
-                                            label={t('surfaces.templateLabels.sortOrder')}
-                                            value={labelForm.state.sort_order}
-                                            onChange={event => updateLabelForm('sort_order', parseInt(event.target.value) || 0)}
-                                        />
-                                        <label className="flex items-end gap-2 pb-2 text-sm font-medium text-content-primary">
-                                            <input
-                                                type="checkbox"
-                                                checked={labelForm.state.is_active}
-                                                onChange={event => updateLabelForm('is_active', event.target.checked)}
-                                                className="h-4 w-4 rounded border-border-strong text-action focus:ring-focus"
-                                            />
-                                            {t('surfaces.templateLabels.active')}
-                                        </label>
-                                    </div>
-                                    <Button type="submit" isLoading={saveLabelMutation.isPending}>
-                                        <Save aria-hidden="true" className="mr-2 h-4 w-4" />
-                                        {t('surfaces.templateLabels.saveLabel')}
-                                    </Button>
-                                    </fieldset>
-                                </form>
-                            )}
-                        </div>
-                    </section>
+                                        {t('surfaces.templateLabels.active')}
+                                    </label>
+                                </div>
+                                <Button type="submit" isLoading={saveLabelMutation.isPending}>
+                                    <Save aria-hidden="true" className="mr-2 h-4 w-4" />
+                                    {t('surfaces.templateLabels.saveLabel')}
+                                </Button>
+                                </fieldset>
+                            </form>
+                        )}
+                    </SlideOverDrawer>
                 </section>
             )}
         </div>

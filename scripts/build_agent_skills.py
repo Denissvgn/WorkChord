@@ -44,7 +44,7 @@ RELEASE_BASELINE_FILENAME = "release-baseline.json"
 CATALOG_SCHEMA = "workchord-agent-skills/v1"
 RELEASE_SCHEMA = "workchord-agent-skills-release/v1"
 RELEASE_BASELINE_SCHEMA = "workchord-agent-skills-baseline/v2"
-CATALOG_VERSION = "1.16.0"
+CATALOG_VERSION = "1.17.1"
 API_CONTRACT = "workchord-agent/v1"
 SERVER_COMPATIBILITY = ">=1.8.0,<2.0.0"
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
@@ -768,7 +768,7 @@ ASSIGNED_WORK_V1_CONTRACT: dict[str, Any] = {
 ROLE_METADATA: dict[str, dict[str, Any]] = {
     "workchord-pm": {
         "role": "pm",
-        "version": "1.15.0",
+        "version": "1.15.2",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -808,7 +808,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-worker": {
         "role": "worker",
-        "version": "1.15.0",
+        "version": "1.15.1",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -835,7 +835,7 @@ ROLE_METADATA: dict[str, dict[str, Any]] = {
     },
     "workchord-reviewer": {
         "role": "verifier",
-        "version": "1.3.0",
+        "version": "1.3.2",
         "required_features": [
             "agent-capabilities-v1",
             AGENT_TEAM_MASTER_FEATURE,
@@ -1263,7 +1263,7 @@ _WORKFLOW_VOCABULARY_SECTIONS: dict[str, tuple[tuple[str, ...], tuple[str, ...],
     "destinations": (("means",), ("name",), ()),
     "checkpoints": (("means",), ("name",), ()),
     "roles": (("code_role", "does"), ("name", "group"), ()),
-    "workflow": (("name", "person", "pm", "worker", "reviewer"), (), ()),
+    "workflow": (("name", "person", "pm", "worker", "reviewer"), (), ("name_ru",)),
     "task_states": (("means",), ("name",), ("product_term",)),
     "actions": (("effect", "agents"), ("name",), ()),
     "queues": (("means", "agents"), ("name",), ()),

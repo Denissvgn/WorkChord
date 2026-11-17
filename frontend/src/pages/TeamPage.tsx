@@ -1,241 +1,107 @@
-import { useState, useEffect } from 'react';
-import { Plus, Upload } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { useRef, useState } from 'react';
+import clsx from 'clsx';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
-import { TeamList } from '../components/team/TeamList';
-import { TeamForm } from '../components/team/TeamForm';
-import { ImportTeamModal } from '../components/team/ImportTeamModal';
-import { TeamProfileManager } from '../components/team/TeamProfileManager';
-import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
-import { iterationService } from '../services/iterationService';
-import { teamService } from '../services/teamService';
-import { useIterationStore, pickDefaultIteration } from '../store/iterationStore';
-import { IterationSelector } from '../components/iteration/IterationSelector';
+import { Plus } from 'lucide-react';
+import { Button } from '../components/common/Button';
 import { PageHeader, PageLayout } from '../components/ui';
-import type { TeamMember, TeamMemberProfile } from '../types/team';
 import { PlanReturnBar } from '../components/planning/PlanReturnBar';
+import { AgentModelAdministration } from '../components/team/AgentModelAdministration';
+import { TeamDirectory, type DrawerTarget } from '../components/team/TeamDirectory';
+import { ConnectAgentSteps } from '../components/team/ConnectAgentSteps';
 
-type TeamPageAction = 'assign' | 'import';
+const TEAM_TABS = ['members', 'models', 'connect'] as const;
+type TeamTab = (typeof TEAM_TABS)[number];
 
-const parseTeamPageAction = (value: string | null): TeamPageAction | null => {
-    if (value === 'assign' || value === 'import') return value;
-    return null;
-};
-
-const parseIterationIntent = (value: string | null) => {
-    if (!value) return null;
-    const parsed = Number(value);
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
-};
+const parseTab = (value: string | null): TeamTab => (
+    TEAM_TABS.find(tab => tab === value) ?? 'members'
+);
 
 const TeamPage = () => {
-    const { selectedIterationId, setSelectedIterationId } = useIterationStore();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [isCreating, setIsCreating] = useState(false);
-    const [isImporting, setIsImporting] = useState(false);
-    const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
-    const [assignmentProfile, setAssignmentProfile] = useState<TeamMemberProfile | null>(null);
     const { t } = useTranslation();
-    const intentAction = parseTeamPageAction(searchParams.get('action'));
-    const intentIterationId = parseIterationIntent(searchParams.get('iterationId'));
-    const hasTeamIntent = searchParams.has('action') || searchParams.has('iterationId');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [drawer, setDrawer] = useState<DrawerTarget>(null);
+    // An empty members list offers Add person itself, so the header does not repeat it.
+    const [membersEmpty, setMembersEmpty] = useState(false);
+    // That header button can disappear while the drawer it opened is still open, so the drawer falls back to Members.
+    const membersTabRef = useRef<HTMLAnchorElement>(null);
+    const activeTab = parseTab(searchParams.get('tab'));
 
-    const {
-        data: iterations,
-        error: iterationsError,
-        isError: isIterationsError,
-        isLoading: isLoadingIterations,
-        refetch: refetchIterations,
-    } = useQuery({
-        queryKey: ['iterations'],
-        queryFn: iterationService.getAll,
-    });
-
-    const hasIterations = (iterations?.length ?? 0) > 0;
-    const selectedIteration = iterations?.find(i => i.id === selectedIterationId) ?? null;
-    const hasSelectedIteration = hasIterations && selectedIteration !== null;
-    const isManagingIterationMember = (isCreating || !!editingMember) && hasSelectedIteration;
-
-    const {
-        data: currentIterationMembers = [],
-        error: currentMembersError,
-        isError: isCurrentMembersError,
-        isLoading: isLoadingCurrentMembers,
-        refetch: refetchCurrentMembers,
-    } = useQuery({
-        queryKey: ['team', selectedIterationId],
-        queryFn: () => teamService.getByIteration(selectedIterationId),
-        enabled: hasSelectedIteration,
-    });
-
-    const assignedProfileIds = currentIterationMembers
-        .map(m => m.profile_id)
-        .filter((id): id is number => id !== null && id !== undefined);
-    const canRenderTeamWorkspace = !isLoadingIterations
-        && !isIterationsError
-        && (!hasSelectedIteration || (!isLoadingCurrentMembers && !isCurrentMembersError));
-
-    useEffect(() => {
-        if (!iterations) return;
-        if (iterations.length === 0) { if (selectedIterationId !== 0) setSelectedIterationId(0); return; }
-        const exists = iterations.some(i => i.id === selectedIterationId);
-        if (selectedIterationId === 0 || !exists) setSelectedIterationId(pickDefaultIteration(iterations)!.id);
-    }, [iterations, selectedIterationId, setSelectedIterationId]);
-
-    useEffect(() => {
-        if (!iterations || !hasTeamIntent) return;
-
-        const clearTeamIntent = () => {
-            const nextParams = new URLSearchParams(searchParams);
-            nextParams.delete('action');
-            nextParams.delete('iterationId');
-            setSearchParams(nextParams, { replace: true });
-        };
-
-        const targetIteration = intentIterationId
-            ? iterations.find(iteration => iteration.id === intentIterationId) ?? null
-            : null;
-
-        const timeoutId = window.setTimeout(() => {
-            if (!intentAction || !targetIteration) {
-                setIsCreating(false);
-                setIsImporting(false);
-                setEditingMember(null);
-                setAssignmentProfile(null);
-                clearTeamIntent();
-                return;
-            }
-
-            setSelectedIterationId(targetIteration.id);
-            setEditingMember(null);
-            setAssignmentProfile(null);
-
-            if (intentAction === 'assign') {
-                setIsImporting(false);
-                setIsCreating(true);
-            } else {
-                setIsCreating(false);
-                setIsImporting(true);
-            }
-
-            clearTeamIntent();
-        }, 0);
-
-        return () => window.clearTimeout(timeoutId);
-    }, [
-        hasTeamIntent,
-        intentAction,
-        intentIterationId,
-        iterations,
-        searchParams,
-        setSearchParams,
-        setSelectedIterationId,
-    ]);
+    const tabParams = (tab: TeamTab) => {
+        const next = new URLSearchParams(searchParams);
+        if (tab === 'members') next.delete('tab');
+        else next.set('tab', tab);
+        return next;
+    };
+    const openTab = (tab: TeamTab) => setSearchParams(tabParams(tab));
 
     return (
         <PageLayout>
             <PageHeader
                 title={t('teamPage.title')}
-                subtitle={selectedIteration ? t('teamPage.capacityBelongsTo', {iteration: selectedIteration.name}) : t('teamPage.description')}
-                actions={hasIterations && (
-                    <>
-                        <IterationSelector showLabel disabled={isCreating || !!editingMember} />
-                        <button type="button" className="btn" onClick={() => setIsImporting(true)}
-                            disabled={isCreating || !!editingMember || selectedIterationId === 0}>
-                            <Upload className="h-4 w-4" aria-hidden="true" />
-                            {t('teamPage.importCapacity')}
-                        </button>
-                        <button type="button" className="btn primary"
-                            onClick={() => { setAssignmentProfile(null); setIsCreating(true); }}
-                            disabled={isCreating || !!editingMember || selectedIterationId === 0}>
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            {t('teamPage.assignProfile')}
-                        </button>
-                    </>
+                purpose={t('teamPage.purpose')}
+                primaryAction={activeTab !== 'connect' && !(activeTab === 'members' && membersEmpty) && (
+                    <Button type="button" onClick={() => { openTab('members'); setDrawer({ mode: 'add' }); }}>
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        {t('teamPage.addPerson')}
+                    </Button>
+                )}
+                secondaryActions={activeTab !== 'connect' && (
+                    <Button type="button" variant="secondary" onClick={() => { setDrawer(null); openTab('connect'); }}>
+                        {t('teamPage.connectAgent')}
+                    </Button>
                 )}
             />
             <PlanReturnBar />
-
-            {isLoadingIterations && (
-                <div className="banner">{t('teamPage.loadingCapacity')}</div>
-            )}
-
-            {isIterationsError && (
-                <QueryErrorState
-                    error={iterationsError}
-                    fallback={t('queryFeedback.fallback')}
-                    onRetry={() => { void refetchIterations(); }}
-                />
-            )}
-
-            {!isLoadingIterations && !isIterationsError && !hasIterations && (
-                <div className="empty">
-                    <h4>{t('teamPage.noIterationTitle')}</h4>
-                    <p>{t('teamPage.noIterationBody')}</p>
-                    <div className="empty-actions">
-                        <a href="/iterations" className="btn primary">{t('tasks.goToIterations')}</a>
-                    </div>
-                </div>
-            )}
-
-            {hasSelectedIteration && isLoadingCurrentMembers && (
-                <QueryLoadingState message={t('teamPage.loadingCapacity')} />
-            )}
-
-            {hasSelectedIteration && isCurrentMembersError && (
-                <QueryErrorState
-                    error={currentMembersError}
-                    fallback={t('queryFeedback.fallback')}
-                    onRetry={() => { void refetchCurrentMembers(); }}
-                    title={t('teamPage.iterationCapacity')}
-                />
-            )}
-
-            {canRenderTeamWorkspace && (
-                <>
-                    {isImporting && hasSelectedIteration && (
-                        <ImportTeamModal iterationId={selectedIterationId} onClose={() => setIsImporting(false)}/>
-                    )}
-
-                    {isManagingIterationMember ? (
-                        <div className="card card-pad" style={{maxWidth:640}}>
-                            <h2 style={{margin:'0 0 20px', fontSize:16, fontWeight:600}}>
-                                {editingMember ? t('teamPage.editCapacity') : t('teamPage.addProfile')}
-                            </h2>
-                            <TeamForm
-                                iterationId={selectedIterationId}
-                                initialData={editingMember ?? undefined}
-                                initialProfile={assignmentProfile ?? undefined}
-                                onSuccess={() => { setIsCreating(false); setEditingMember(null); setAssignmentProfile(null); }}
-                                onCancel={() => { setIsCreating(false); setEditingMember(null); setAssignmentProfile(null); }}
-                            />
-                        </div>
-                    ) : (
-                        <>
-                            {hasSelectedIteration && (
-                                <section style={{display:'flex', flexDirection:'column', gap:12}}>
-                                    <div>
-                                        <h2 style={{fontSize:15, fontWeight:600, margin:'0 0 4px'}}>{t('teamPage.iterationCapacity')}</h2>
-                                    </div>
-                                    <TeamList
-                                        iterationId={selectedIterationId}
-                                        onEdit={member => { setAssignmentProfile(null); setEditingMember(member); }}
-                                    />
-                                </section>
-                            )}
-                            <TeamProfileManager
-                                currentIterationId={hasSelectedIteration ? selectedIterationId : null}
-                                currentIterationName={selectedIteration?.name ?? null}
-                                assignedProfileIds={assignedProfileIds}
-                                onAssignProfile={hasSelectedIteration
-                                    ? profile => { setEditingMember(null); setAssignmentProfile(profile); setIsCreating(true); }
-                                    : undefined}
-                            />
-                        </>
-                    )}
-                </>
-            )}
+            <div
+                role="tablist"
+                tabIndex={-1}
+                aria-label={t('teamPage.tabsLabel')}
+                className="flex flex-wrap gap-1 border-b border-border"
+                onKeyDown={event => {
+                    const offset = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+                    if (!offset && event.key !== 'Home' && event.key !== 'End') return;
+                    event.preventDefault();
+                    const index = event.key === 'Home' ? 0 : event.key === 'End' ? TEAM_TABS.length - 1
+                        : (TEAM_TABS.indexOf(activeTab) + offset + TEAM_TABS.length) % TEAM_TABS.length;
+                    openTab(TEAM_TABS[index]);
+                    document.getElementById(`team-tab-${TEAM_TABS[index]}`)?.focus();
+                }}
+            >
+                {TEAM_TABS.map(tab => (
+                    <Link
+                        key={tab}
+                        ref={tab === 'members' ? membersTabRef : undefined}
+                        id={`team-tab-${tab}`}
+                        role="tab"
+                        aria-selected={activeTab === tab}
+                        aria-controls={`team-panel-${tab}`}
+                        tabIndex={activeTab === tab ? 0 : -1}
+                        to={{ search: tabParams(tab).toString() }}
+                        onClick={() => setDrawer(null)}
+                        className={clsx(
+                            'border-b-2 px-4 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-action',
+                            activeTab === tab ? 'border-action text-action' : 'border-transparent text-content-secondary hover:bg-surface-muted',
+                        )}
+                    >
+                        {t(`teamPage.tabs.${tab}`)}
+                    </Link>
+                ))}
+            </div>
+            <div role="tabpanel" id={`team-panel-${activeTab}`} aria-labelledby={`team-tab-${activeTab}`} className="space-y-3">
+                {activeTab === 'members' && (
+                    <>
+                        <p className="text-sm text-content-secondary">{t('teamPage.capacityNote')}</p>
+                        <TeamDirectory drawer={drawer} onDrawerChange={setDrawer} onEmptyChange={setMembersEmpty} drawerFallbackFocusRef={membersTabRef} />
+                    </>
+                )}
+                {activeTab === 'models' && (
+                    <AgentModelAdministration />
+                )}
+                {activeTab === 'connect' && (
+                    <ConnectAgentSteps />
+                )}
+            </div>
         </PageLayout>
     );
 };

@@ -39,6 +39,7 @@ describe('task template application', () => {
         const source = template({ brief });
         configure(source);
         const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
         await user.selectOptions(await screen.findByRole('combobox', { name: 'Template' }), '7');
         expect(screen.getByRole('textbox', { name: 'Goal' })).toHaveValue('Canonical goal');
         expect(screen.getByRole('textbox', { name: 'Criterion 1' })).toHaveValue('Canonical result');
@@ -57,6 +58,7 @@ describe('task template application', () => {
         const source = { ...template(), default_checklist: ['Legacy criterion'] };
         configure(source);
         const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
         await user.selectOptions(await screen.findByRole('combobox', { name: 'Template' }), '7');
         await user.click(screen.getByRole('button', { name: 'Create task' }));
         await waitFor(() => expect(api.post).toHaveBeenCalled());
@@ -68,6 +70,7 @@ describe('task template application', () => {
         configure(template());
         const { user } = renderWithProviders(<TaskForm iterationId={null} parentProjectId={1} initialTitle="Captured title" onSuccess={vi.fn()} onCancel={vi.fn()} />);
         expect(await screen.findByRole('textbox', { name: /Task title/i })).toHaveValue('Captured title');
+        await user.click(screen.getByRole('button', { name: 'More' }));
         const priority = screen.getByRole('spinbutton', { name: 'Priority' });
         expect(priority).toHaveValue(null);
         expect(priority).toHaveAttribute('placeholder', 'Not set');
@@ -152,4 +155,73 @@ describe('task template application', () => {
         expect(api.post.mock.lastCall?.[1].expected_revision).toBe(1);
     });
 
+});
+
+describe('the create form', () => {
+    const iteration = { id: 2, name: 'November', revision: 3, nominal_day_hours: 8, project_id: 1, project: { id: 1, name: 'Calendar' } };
+    const person = { id: 7, name: 'Sam', profile_id: 8, profile: { profile_kind: 'human' } };
+    const kit = { id: 7, name: 'Delivery template', template_type: 'task', default_title: 'Kit', default_description: '', default_checklist: [],
+        default_payload: {}, default_labels: [], is_active: true, sort_order: 0, created_at: '', updated_at: '' };
+
+    beforeEach(() => {
+        api.get.mockReset();
+        api.post.mockReset();
+        api.post.mockResolvedValue({ data: { id: 42, title: 'Ship it' } });
+        api.get.mockImplementation(async (path: string) => {
+            if (path === '/iterations/2') return { data: iteration };
+            if (path === '/iterations/2/team') return { data: [person] };
+            if (path.startsWith('/templates')) return { data: [kit] };
+            if (path.endsWith('/workload')) return { data: { workload_percent: 40 } };
+            if (path === '/tasks/planning-inputs/iteration/2/context') return { data: { kind: 'iteration', resource_id: 2, resource: iteration, complete: true, expected_revisions: { 2: 3 } } };
+            if (path === '/projects/page') return { data: { items: [iteration.project], has_more: false, upper_id: 1 } };
+            if (path === '/tasks/owner-options' || path === '/tasks/lookup') return { data: { items: [], has_more: false } };
+            return { data: [] };
+        });
+    });
+
+    const fieldsShown = () => [
+        ...screen.queryAllByRole('textbox'), ...screen.queryAllByRole('combobox'), ...screen.queryAllByRole('spinbutton'),
+        ...screen.queryAllByRole('checkbox'),
+    ];
+
+    it('saves a new task from title, assignee and effort, with four fields and the brief before More is opened', async () => {
+        const onSuccess = vi.fn();
+        const { user } = renderWithProviders(<TaskForm iterationId={2} onSuccess={onSuccess} onCancel={vi.fn()} />);
+        const title = await screen.findByRole('textbox', { name: 'Task title' });
+        const assignee = await screen.findByRole('combobox', { name: 'Assignee' });
+        await screen.findByRole('option', { name: /Sam/ });
+        const effort = screen.getByRole('spinbutton', { name: 'Effort (hours)' });
+        const goal = screen.getByRole('textbox', { name: 'Goal' });
+
+        // The title, the assignee, the effort and the brief's goal are the whole form until More is opened.
+        expect(fieldsShown()).toHaveLength(4);
+        expect(fieldsShown()).toEqual(expect.arrayContaining([title, goal, assignee, effort]));
+        expect(screen.getByRole('button', { name: 'Add criterion' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Optional AI assistance' })).toBeInTheDocument();
+        for (const name of ['Project', 'Milestone', 'Earliest start', 'Due by', 'Labels', 'Template', 'Owner']) {
+            expect(screen.queryByLabelText(name)).not.toBeInTheDocument();
+        }
+        expect(screen.getByRole('button', { name: 'More' })).toHaveAttribute('aria-expanded', 'false');
+
+        await user.type(title, 'Ship it');
+        await user.selectOptions(assignee, '7');
+        await user.type(effort, '6');
+        await user.click(screen.getByRole('button', { name: 'Create task' }));
+        await waitFor(() => expect(api.post).toHaveBeenCalledWith('/iterations/2/tasks', expect.objectContaining({
+            title: 'Ship it', assignee_id: 7, effort_hours: 6, expected_revision: 3,
+        })));
+        await waitFor(() => expect(onSuccess).toHaveBeenCalled());
+    });
+
+    it('keeps every other field of a new task under More', async () => {
+        const { user } = renderWithProviders(<TaskForm iterationId={2} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await user.click(await screen.findByRole('button', { name: 'More' }));
+        expect(screen.getByRole('button', { name: 'More' })).toHaveAttribute('aria-expanded', 'true');
+        await screen.findByRole('combobox', { name: 'Template' });
+        for (const name of ['Project', 'Milestone', 'Earliest start', 'Due by', 'Owner', 'Priority', 'Optional task', 'Deferred', 'Context', 'Scope', 'Out of scope', 'Verification approach', 'Expected artifacts']) {
+            expect(screen.getByLabelText(name)).toBeInTheDocument();
+        }
+        expect(screen.getByText('Waits for')).toBeInTheDocument();
+        expect(screen.getByText('Labels')).toBeInTheDocument();
+    });
 });

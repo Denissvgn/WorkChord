@@ -1,13 +1,14 @@
+import { ButtonLink } from '../common/ButtonLink';
 import {
     CheckCircle2,
     Plus
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../common/Button';
 import { ProjectTaskTree } from './ProjectTaskTree';
-import { GuardedTaskModal } from '../tasks/GuardedTaskModal';
+import { GuardedTaskDrawer } from '../tasks/GuardedTaskDrawer';
 import type { Task } from '../../types/task';
 
 import {
@@ -16,12 +17,14 @@ import {
     StatusSegmentStrip
 } from '../ui';
 import { STATUS_TONE } from '../ui/tone';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, isLoading: areTasksLoading }: {
     tasks: Task[]; summary?: import('../../types/project').ProjectSummary; projectId: number; isLoading: boolean;
 }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const scopeLink = useScopeLink();
     const [newBacklogTask, setNewBacklogTask] = useState(false);
     const PROJECT_TASK_PREVIEW = 10;
     const statusCounts = summary?.status_counts || {};
@@ -40,12 +43,12 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
             actions={(
                 <div className="flex flex-wrap gap-2">
                     <Button variant="secondary" size="sm" onClick={() => setNewBacklogTask(true)}>{t('projectTabs.newTask')}</Button>
-                    <Button variant="secondary" size="sm" onClick={() => navigate(`/tasks?layout=list&project=${numericProjectId}`)}>{t('projectTabs.openTasks')}</Button>
+                    <Button variant="secondary" size="sm" onClick={() => navigate(scopeLink(`/tasks?layout=list&project=${numericProjectId}`, { project: numericProjectId }))}>{t('projectTabs.openTasks')}</Button>
                 </div>
             )}
         >
 
-            {newBacklogTask && <GuardedTaskModal title={t('projectTabs.newTask')} closeLabel={t('common.close')}
+            {newBacklogTask && <GuardedTaskDrawer title={t('projectTabs.newTask')} closeLabel={t('common.close')}
                 iterationId={null} parentProjectId={numericProjectId} onClose={() => setNewBacklogTask(false)} />}
             <StatusSegmentStrip
                 className="mb-4"
@@ -76,16 +79,13 @@ export const ProjectTasksTab = ({ tasks, summary, projectId: numericProjectId, i
                 />
             ) : (
                 <>
-                    {groupedPreview.map(group => (
-                        <div key={group.status} className="mb-4">
-                            <h3 className="mb-2 text-sm font-semibold text-content-primary">{t(`statuses.${group.status}`)} · {group.total}</h3>
-                            <ProjectTaskTree tasks={group.tasks} />
-                        </div>
-                    ))}
+                    <ProjectTaskTree dependencyTasks={tasks} sections={groupedPreview.map(group => ({
+                        key: group.status, heading: `${t(`statuses.${group.status}`)} · ${group.total}`, tasks: group.tasks,
+                    }))} />
                     {tasks.length > PROJECT_TASK_PREVIEW && (
-                        <Link className="btn sm secondary" to={`/tasks?project=${numericProjectId}`}>
+                        <ButtonLink  to={scopeLink(`/tasks?project=${numericProjectId}`, { project: numericProjectId })} variant="secondary" size="sm">
                             {t('surfaces.projectDetail.viewAllTasks', { count: tasks.length })}
-                        </Link>
+                        </ButtonLink>
                     )}
                 </>
             )}

@@ -1,32 +1,36 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { TaskEditorDrawer } from '../tasks/TaskEditorDrawer';
 import i18n from '../../i18n/i18n';
-import {
-    AlertTriangle,
-    CheckCircle2,
-    Circle,
-    CornerDownRight,
-    MessageSquare,
-    User,
-} from 'lucide-react';
-import clsx from 'clsx';
 import type { Task } from '../../types/task';
-import { formatDate } from '../../utils/formatDate';
-import { pillToneClassName, priorityChipClassName, STATUS_TONE, statusTextClassName } from '../ui/tone';
+import { TaskRow } from '../tasks/TaskRow';
+import { TaskSelectionBar } from '../tasks/TaskSelectionBar';
+import { taskStateChip } from '../tasks/taskStateChip';
+import { getEffectiveEffort } from '../tasks/taskRowValues';
+import { useTaskRowEdits } from '../tasks/useTaskRowEdits';
+import { useIterationRowData } from '../tasks/useIterationRowData';
+import { agentRowValues, useAgentRowFacts } from '../tasks/useAgentRowFacts';
+import { useTaskSelection } from '../tasks/useTaskSelection';
+import { QueryErrorState } from '../feedback/QueryState';
 
 const t = i18n.t.bind(i18n);
 
-interface ProjectTaskTreeProps {
+export interface ProjectTaskSection {
+    key: string;
+    heading?: ReactNode;
     tasks: Task[];
 }
 
-const getEffectiveEffort = (task: Task): number | null => {
-    if (task.children && task.children.length > 0) {
-        const values = task.children.map(getEffectiveEffort);
-        return values.some(value => value === null) ? null : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
-    }
-    return task.effort_days;
-};
+interface ProjectTaskTreeProps {
+    /** Lists of tasks shown one after another. They share one selection and one bulk bar. */
+    sections: ProjectTaskSection[];
+    /**
+     * Every task of the project, with children, when the sections show only some of them. The
+     * Waits chip reads dependency status from these and from each shown iteration's tasks, never
+     * from the shown rows alone, where a finished dependency would be missing and count as open.
+     */
+    dependencyTasks?: Task[];
+}
 
 /** The tree as one flat, indented list, so each task is a divided row, not a card inside a card. */
 const flattenTree = (tasks: Task[], level = 0): { task: Task; level: number }[] => tasks.flatMap(task => [
@@ -34,67 +38,36 @@ const flattenTree = (tasks: Task[], level = 0): { task: Task; level: number }[] 
     ...flattenTree(task.children ?? [], level + 1),
 ]);
 
-const ProjectTaskRow = ({ task, level, onOpen }: { task: Task; level: number; onOpen: (id: number) => void }) => (
-    <li className="relative flex items-center gap-3 py-2 pr-3" style={{ paddingLeft: 12 + level * 22 }}>
-        {level > 0 && (
-            <CornerDownRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />
-        )}
-        <div className={statusTextClassName[task.status]}>
-            {task.status === 'closed' ? <CheckCircle2 className="h-5 w-5" /> : <Circle className="h-5 w-5" />}
-        </div>
-        <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-                <button type="button" className="truncate text-left font-medium text-content-primary hover:underline" onClick={() => onOpen(task.id)}>{task.title}</button>
-                {task.iteration_id === null && <span className="text-sm text-content-secondary">{t("domain.backlog")}</span>}
-                {task.canceled_at && <span className="text-sm text-content-secondary">{t("domain.canceled")}</span>}
-                <span className={clsx('rounded-full border px-2 py-0.5 text-xs font-medium', pillToneClassName[STATUS_TONE[task.status]])}>
-                    {t(`statuses.${task.status}`)}
-                </span>
-                <span className={clsx('rounded-full px-2 py-0.5 text-xs', priorityChipClassName(task.priority))}>
-                    P{task.priority}
-                </span>
-                <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs text-content-secondary">
-                    {getEffectiveEffort(task) === null ? t("domain.unknownEstimate") : t("units.daysCompact", { count: getEffectiveEffort(task)! })}
-                </span>
-                {task.milestone && (
-                    <span className="rounded-full border border-border bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">
-                        {task.milestone.name}
-                    </span>
-                )}
-                {(task.request_count ?? 0) > 0 && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface-subtle px-2 py-0.5 text-xs font-medium text-content-secondary">
-                        <MessageSquare aria-hidden="true" className="h-3 w-3" />
-                        {task.request_count}
-                    </span>
-                )}
-                {task.is_overdue && (
-                    <span className="inline-flex items-center rounded-full bg-feedback-danger-muted px-2 py-0.5 text-xs text-feedback-danger-foreground">
-                        <AlertTriangle aria-hidden="true" className="mr-1 h-3 w-3" />
-                        {t('surfaces.projectTaskTree.overdue')}
-                    </span>
-                )}
-            </div>
-            <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-content-secondary">
-                {task.assignee && (
-                    <span className="inline-flex items-center gap-1">
-                        <User aria-hidden="true" className="h-3.5 w-3.5" />
-                        {task.owner?.name ?? task.assignee.name}
-                    </span>
-                )}
-                {task.start_date && task.end_date && (
-                    <span>{formatDate(task.start_date)} {t('surfaces.projectTaskTree.to')} {formatDate(task.end_date)}</span>
-                )}
-                {task.dependencies.length > 0 && (
-                    <span>{t('surfaces.projectTaskTree.dependencies', { count: task.dependencies.length })}</span>
-                )}
-            </div>
-        </div>
-    </li>
-);
+const isLeaf = (task: Task) => !task.is_composite && (task.children?.length ?? 0) === 0;
 
-export const ProjectTaskTree = ({ tasks }: ProjectTaskTreeProps) => {
+export const ProjectTaskTree = ({ sections, dependencyTasks }: ProjectTaskTreeProps) => {
     const [selectedTask, setSelectedTask] = useState<number | null>(null);
-    if (tasks.length === 0) {
+    const rowEdits = useTaskRowEdits();
+    const flatSections = useMemo(() => sections.map(section => ({ ...section, rows: flattenTree(section.tasks) })), [sections]);
+    const flat = useMemo(() => flatSections.flatMap(section => section.rows), [flatSections]);
+    const taskMap = useMemo(() => new Map(flat.map(({ task }) => [task.id, task])), [flat]);
+    // Only tasks of an iteration can be picked for, or changed together; backlog tasks have no team.
+    // Each iteration's tasks load as the Tasks list loads them, for the dependency status of the chips.
+    const { optionsByIteration, tasksById: iterationTasks, error: optionsError, refetch: refetchOptions } = useIterationRowData(flat.map(({ task }) => task.iteration_id));
+    const dependencyMap = useMemo(() => {
+        const map = new Map<number, Task>();
+        flattenTree(dependencyTasks ?? []).forEach(({ task }) => map.set(task.id, task));
+        taskMap.forEach((task, id) => map.set(id, task));
+        iterationTasks.forEach((task, id) => map.set(id, task));
+        return map;
+    }, [dependencyTasks, taskMap, iterationTasks]);
+    const flatTasks = useMemo(() => flat.map(({ task }) => task), [flat]);
+    const agentFacts = useAgentRowFacts(flatTasks);
+
+    const leaves = useMemo(() => flat.filter(({ task }) => isLeaf(task) && task.iteration_id !== null).map(({ task }) => task), [flat]);
+    const selectableIds = useMemo(() => new Set(leaves.map(task => task.id)), [leaves]);
+    const order = useMemo(() => leaves.map(task => task.id), [leaves]);
+    const iterationOf = useCallback((id: number) => taskMap.get(id)?.iteration_id, [taskMap]);
+    const selection = useTaskSelection({ selectableIds, order, iterationOf });
+    const selectedTasks = useMemo(() => leaves.filter(task => selection.selectedIds.has(task.id)), [leaves, selection.selectedIds]);
+    const scopeIterationId = selectedTasks[0]?.iteration_id ?? null;
+
+    if (flat.length === 0) {
         return (
             <div className="rounded-lg border border-dashed border-border bg-surface-muted py-10 text-center text-content-tertiary">
                 {t('surfaces.projectTaskTree.noLinkedTasks')}
@@ -105,11 +78,56 @@ export const ProjectTaskTree = ({ tasks }: ProjectTaskTreeProps) => {
     return (
         <>
             <TaskEditorDrawer taskId={selectedTask} open={selectedTask !== null} onClose={() => setSelectedTask(null)} />
-            <ul className="divide-y divide-border-subtle rounded-md border border-border bg-surface-card">
-                {flattenTree(tasks).map(({ task, level }) => (
-                    <ProjectTaskRow key={task.id} task={task} level={level} onOpen={setSelectedTask} />
-                ))}
-            </ul>
+            {optionsError && <QueryErrorState error={optionsError} fallback={t('queryFeedback.optionLoadFailed')} onRetry={refetchOptions} />}
+            {scopeIterationId !== null && (
+                <TaskSelectionBar
+                    iterationId={scopeIterationId}
+                    selectedTasks={selectedTasks}
+                    matchingCount={selection.matchingIds.length}
+                    onSelectAll={selection.selectAll}
+                    onClearSelection={selection.clear}
+                />
+            )}
+            {flatSections.map(section => (
+                <div key={section.key} className="mb-4 last:mb-0">
+                    {section.heading && <h3 className="mb-2 text-sm font-semibold text-content-primary">{section.heading}</h3>}
+                    <ul className="rounded-md border border-border bg-surface-card">
+                        {section.rows.map(({ task, level }) => {
+                            const canPick = isLeaf(task) && task.iteration_id !== null;
+                            const assigneeOptions = optionsByIteration.get(task.iteration_id ?? -1);
+                            const agentRow = agentRowValues(task, assigneeOptions, agentFacts);
+                            return (
+                                <li key={task.id}>
+                                    <TaskRow
+                                        id={task.id}
+                                        title={task.title}
+                                        status={task.status}
+                                        statusLocked={task.is_composite || (task.children?.length ?? 0) > 0}
+                                        priority={task.priority}
+                                        chip={taskStateChip(task, dependencyMap)}
+                                        assignee={task.assignee ?? null}
+                                        assigneeOptions={assigneeOptions}
+                                        dispatch={agentRow.dispatch}
+                                        reviewer={agentRow.reviewer}
+                                        onAssign={task.iteration_id === null ? undefined : assigneeId => rowEdits.assign(task, assigneeId)}
+                                        effort={getEffectiveEffort(task)}
+                                        level={level}
+                                        overdue={task.is_overdue}
+                                        meta={[task.iteration_id === null ? t('domain.backlog') : null, task.canceled_at ? t('domain.canceled') : null, task.milestone?.name].filter(Boolean).join(' · ')}
+                                        onOpen={() => setSelectedTask(task.id)}
+                                        onStatusChange={status => rowEdits.changeStatus(task, status)}
+                                        menuItems={[{ label: t('taskList.openTask'), onSelect: () => setSelectedTask(task.id) }]}
+                                        selected={selection.selectedIds.has(task.id)}
+                                        selectionActive={selection.selectionActive}
+                                        onToggleSelect={canPick ? ({ shiftKey }) => selection.toggle(task.id, shiftKey) : undefined}
+                                        selectDisabledReason={canPick && !selection.canAdd(task.id) ? t('taskList.selectOneIteration') : undefined}
+                                    />
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
+            ))}
         </>
     );
 };

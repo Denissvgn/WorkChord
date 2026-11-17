@@ -3,6 +3,8 @@ import type { KeyboardEvent as ReactKeyboardEvent, ReactNode } from 'react';
 import clsx from 'clsx';
 import { MoreHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '../common/Button';
+import type { ButtonSize, ButtonVariant } from '../common/buttonStyles';
 
 export type OverflowMenuItem = {
     label: ReactNode;
@@ -17,12 +19,26 @@ export const OverflowMenu = ({
     label,
     className,
     alwaysMenu = false,
+    align = 'end',
+    trigger,
+    triggerClassName,
+    triggerVariant = 'outline',
+    triggerSize = 'md',
+    triggerIconOnly = true,
 }: {
     items: OverflowMenuItem[];
     label?: string;
     className?: string;
     /** Keep the menu button even for one item, so a page header never gains a visible extra action. */
     alwaysMenu?: boolean;
+    /** Which edge of the button the menu lines up with. */
+    align?: 'start' | 'end';
+    /** Replaces the three-dot icon, such as a status icon that opens its moves. */
+    trigger?: ReactNode;
+    triggerClassName?: string;
+    triggerVariant?: ButtonVariant;
+    triggerSize?: ButtonSize;
+    triggerIconOnly?: boolean;
 }) => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
@@ -95,8 +111,7 @@ export const OverflowMenu = ({
 
     return (
         <div className={clsx('relative', className)}>
-            <button
-                data-page-chrome-control="button"
+            <Button
                 ref={triggerRef}
                 type="button"
                 onClick={() => open ? closeMenu() : setOpen(true)}
@@ -104,10 +119,13 @@ export const OverflowMenu = ({
                 aria-haspopup="menu"
                 aria-expanded={open}
                 aria-controls={open ? menuId : undefined}
-                className="btn icon"
+                variant={triggerVariant}
+                size={triggerSize}
+                iconOnly={triggerIconOnly}
+                className={triggerClassName}
             >
-                <MoreHorizontal className="h-4 w-4" />
-            </button>
+                {trigger ?? <MoreHorizontal className="h-4 w-4" />}
+            </Button>
             {open && (
                 <>
                     <div style={{ position: 'fixed', inset: 0, zIndex: 10 }} onClick={() => closeMenu()} aria-hidden />
@@ -115,7 +133,7 @@ export const OverflowMenu = ({
                         id={menuId}
                         role="menu"
                         style={{
-                            position: 'absolute', right: 0, top: '100%', zIndex: 20, marginTop: 4, width: 208,
+                            position: 'absolute', ...(align === 'start' ? { left: 0 } : { right: 0 }), top: '100%', zIndex: 20, marginTop: 4, width: 208,
                             overflow: 'hidden', borderRadius: 'var(--r-md)', border: '1px solid var(--border-2)',
                             background: 'var(--panel)', padding: 4, boxShadow: 'var(--sh-pop)',
                         }}

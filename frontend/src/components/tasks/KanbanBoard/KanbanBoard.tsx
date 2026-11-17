@@ -1,8 +1,9 @@
+import { ButtonLink } from '../../common/ButtonLink';
 import { isGraphLimitError } from '../../../utils/graphLimitError';
 import { PagedTaskBrowser } from '../PagedTaskBrowser';
 import { useState, useMemo, useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
     DndContext,
     closestCorners,
@@ -22,9 +23,14 @@ import { labelService } from '../../../services/labelService';
 import type { Task, TaskBatchUpdateResponse, TaskStatus, TaskUpdate } from '../../../types/task';
 import type { TaskFilters } from '../TaskFiltersBar';
 import { selectVisibleWork } from '../../../utils/visibleWork';
+import { filterTaskBySearch } from '../../../utils/taskFilters';
+import { AssigneePicker } from '../AssigneePicker';
+import { planningInputService } from '../../../services/planningInputService';
+import type { TeamMemberProfile } from '../../../types/team';
 import { TaskEditorDrawer } from '../TaskEditorDrawer';
 import { WorkFreshness } from '../../feedback/WorkFreshness';
 import { KanbanColumn } from './KanbanColumn';
+import type { BoardCardContext } from './KanbanCard';
 import { KanbanCard } from './KanbanCard';
 import { createPortal } from 'react-dom';
 import { STATUS_TONE } from '../../ui/tone';
@@ -34,18 +40,27 @@ import { Modal } from '../../common/Modal';
 import { feedbackMessage } from '../../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../../features/mutationFeedback';
 import { canTransition } from '../../../features/taskTransitions';
+import { InlineEmptyState } from '../../ui/InlineEmptyState';
+import { NextStepEmptyState } from '../../../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../../../features/firstRun/firstRunSteps';
+import { useScopeLink } from '../../../features/scope/useScopeLink';
 
 interface KanbanBoardProps {
     iterationId: number;
     filters?: TaskFilters;
+    /** The page's create action, offered when the iteration has no tasks yet. */
+    onCreateTask?: () => void;
+    hasActiveFilters?: boolean;
+    onClearFilters?: () => void;
 }
 
 type ColumnId = 'planned-unassigned' | 'planned-assigned' | 'active' | 'resolved' | 'closed';
 
-const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus }[] = [
-    // Lifecycle names, the same words as status everywhere else; Planned splits by whether someone owns it.
-    { id: 'planned-unassigned', titleKey: 'plannedUnassigned', status: 'planned' },
-    { id: 'planned-assigned', titleKey: 'plannedAssigned', status: 'planned' },
+const COLUMNS: { id: ColumnId; titleKey: string; status: TaskStatus; captionKey?: 'noAssignee' | 'assigned' }[] = [
+    // Headers use the lifecycle names of the vocabulary (the same words as status everywhere else);
+    // Planned splits by whether someone owns it, and the caption says which half a column is.
+    { id: 'planned-unassigned', titleKey: 'plannedUnassigned', status: 'planned', captionKey: 'noAssignee' },
+    { id: 'planned-assigned', titleKey: 'plannedAssigned', status: 'planned', captionKey: 'assigned' },
     { id: 'active', titleKey: 'active', status: 'active' },
     { id: 'resolved', titleKey: 'resolved', status: 'resolved' },
     { id: 'closed', titleKey: 'closed', status: 'closed' },
@@ -62,8 +77,9 @@ type OwnershipSelection = {
     targetColumn: ColumnId;
 };
 
-export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
+export const KanbanBoard = ({ iterationId, filters, onCreateTask, hasActiveFilters = false, onClearFilters }: KanbanBoardProps) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const queryClient = useQueryClient();
     const [activeId, setActiveId] = useState<number | null>(null);
     const [openedTaskId, setOpenedTaskId] = useState<number | null>(null);
@@ -71,7 +87,10 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     const [ownershipSelection, setOwnershipSelection] = useState<OwnershipSelection | null>(null);
     const [selectedAssigneeId, setSelectedAssigneeId] = useState<number | null>(null);
     const assigneeSelectId = useId();
-    const assigneeSelectRef = useRef<HTMLSelectElement>(null);
+    const [selectedProfile, setSelectedProfile] = useState<TeamMemberProfile | null>(null);
+    // The list's search applies to the board too: the same ?q= in the toolbar narrows both views.
+    const [searchParams] = useSearchParams();
+    const searchText = searchParams.get('q')?.slice(0, 200) ?? '';
 
     // Data Fetching
     const tasksQuery = useQuery({
@@ -110,18 +129,40 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                     tasks: [{ task_id: task.id, expected_version: moved.version, update: restore, status_reason: t('feedback.undoReason') }] }) };
             },
         } satisfies MutationFeedbackMeta,
-        mutationFn: async ({ task, updates }: { task: Task; updates: BoardTaskUpdate }) => {
+        mutationFn: async ({ task, updates, profile }: { task: Task; updates: BoardTaskUpdate; profile?: TeamMemberProfile | null }) => {
             const { status, ...fieldUpdates } = updates;
             if (status && status !== task.status && !canTransition(task.status, status)) {
                 throw new Error(t('surfaces.kanbanBoard.invalidTransition', { from: task.status, to: status }));
             }
+            let expectedRevision = task.iteration_revision;
+            if (profile) {
+                // A person or agent outside the iteration joins it first; re-reading the team keeps a retry from adding them twice.
+                const currentMembers = await teamService.getByIteration(iterationId);
+                let member = currentMembers.find(candidate => candidate.profile_id === profile.id);
+                if (!member) {
+                    const context = await planningInputService.readInitial('member', iterationId, true, { profile_id: profile.id });
+                    member = await teamService.create(iterationId, {
+                        profile_id: profile.id, name: profile.display_name,
+                        position: profile.headline?.trim() || t(profile.profile_kind === 'agent' ? 'assigneePicker.agentRole' : 'assigneePicker.personRole'),
+                        email: profile.email ?? undefined,
+                        availability_percent: 100, professionalism_coefficient: 1,
+                        operational_utilization: profile.profile_kind === 'agent' ? 0 : 20,
+                    }, context.expected_revisions);
+                }
+                fieldUpdates.assignee_id = member.id;
+                // Adding capacity changes the iteration revision that the move must carry.
+                const context = await planningInputService.readInitial('iteration', iterationId);
+                expectedRevision = context.expected_revisions[iterationId];
+                queryClient.setQueryData(['team', iterationId], [...currentMembers.filter(candidate => candidate.id !== member.id), member]);
+            }
             return taskService.batchUpdate(iterationId, {
-                expected_revision: task.iteration_revision,
+                expected_revision: expectedRevision,
                 tasks: [{ task_id: task.id, expected_version: task.version,
                     update: { ...fieldUpdates, status }, status_reason: t('surfaces.kanbanBoard.movedOnBoard') }],
             });
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['team', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['tasks', iterationId] });
             queryClient.invalidateQueries({ queryKey: ['gantt'] });
             queryClient.invalidateQueries({ queryKey: ['workload'] });
@@ -132,11 +173,12 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
         if (updateTaskMutation.isPending) return;
         setOwnershipSelection(null);
         setSelectedAssigneeId(null);
+        setSelectedProfile(null);
         updateTaskMutation.reset();
     };
 
     const confirmOwnershipSelection = async () => {
-        if (!ownershipSelection || selectedAssigneeId === null || updateTaskMutation.isPending) return;
+        if (!ownershipSelection || (selectedAssigneeId === null && !selectedProfile) || updateTaskMutation.isPending) return;
 
         try {
             await updateTaskMutation.mutateAsync({
@@ -145,16 +187,33 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                     ...ownershipSelection.updates,
                     assignee_id: selectedAssigneeId,
                 },
+                profile: selectedProfile,
             });
             setOwnershipSelection(null);
             setSelectedAssigneeId(null);
+            setSelectedProfile(null);
         } catch {
             // The mutation's visible recovery state keeps the selection open.
         }
     };
 
     // Filtering & Grouping
-    const filteredTasks = useMemo(() => selectVisibleWork(tasks, filters, labelGroups).leaves, [tasks, filters, labelGroups]);
+    const searchedTasks = useMemo(() => tasks
+        .map(task => filterTaskBySearch(task, searchText))
+        .filter((task): task is Task => task !== null), [tasks, searchText]);
+    const filteredTasks = useMemo(() => selectVisibleWork(searchedTasks, filters, labelGroups).leaves, [searchedTasks, filters, labelGroups]);
+
+    // What a card shows beyond its task: the task map its state chip reads.
+    const taskMap = useMemo(() => {
+        const map = new Map<number, Task>();
+        const walk = (list: Task[]) => list.forEach(task => {
+            map.set(task.id, task);
+            if (task.children) walk(task.children);
+        });
+        walk(tasks);
+        return map;
+    }, [tasks]);
+    const cardContext = useMemo<BoardCardContext>(() => ({ taskMap }), [taskMap]);
 
     const columns = useMemo(() => {
         const cols: Record<ColumnId, Task[]> = {
@@ -202,13 +261,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
 
         if (!over) return;
 
-        const activeTask = tasks.find(t => t.id === active.id);
-        if (!activeTask) return; // Should search in full tree if needed
-
-        // Find root-level task if not found (in case we flatten later, but for now we rely on tasks being flat-ish or only dragging roots)
-        // Actually `tasks` from service is flat list? No, it's tree. `children` prop.
-        // We need to find the task deeply.
-
+        // Cards can be nested tasks, so look through the whole tree.
         const findTaskDeep = (id: number, list: Task[]): Task | undefined => {
             for (const t of list) {
                 if (t.id === id) return t;
@@ -268,6 +321,7 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
         if (ownershipWouldChange) {
             updateTaskMutation.reset();
             setSelectedAssigneeId(null);
+            setSelectedProfile(null);
             setOwnershipSelection({ task, updates, targetColumn });
             return;
         }
@@ -302,6 +356,25 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
     if (tasksQuery.isLoading || teamQuery.isLoading || labelsQuery.isLoading) return <QueryLoadingState />;
     const queryError = tasksQuery.error ?? teamQuery.error ?? labelsQuery.error;
     if (queryError) return <QueryErrorState error={queryError} onRetry={() => { void tasksQuery.refetch(); void teamQuery.refetch(); void labelsQuery.refetch(); }} />;
+    // Nothing to show: say why, and offer the one action that fills it (Clear filters only when filters hide the tasks).
+    if (filteredTasks.length === 0) {
+        return tasks.length > 0 && hasActiveFilters ? (
+            <InlineEmptyState
+                headingLevel={2}
+                title={t('emptyStates.filtered.title')}
+                description={t('emptyStates.filtered.body')}
+                actions={onClearFilters ? <Button variant="secondary" onClick={onClearFilters}>{t('emptyStates.filtered.clear')}</Button> : undefined}
+            />
+        ) : (
+            <NextStepEmptyState
+                title={t('emptyStates.tasks.title')}
+                description={t('emptyStates.tasks.body')}
+                fallback={onCreateTask
+                    ? { label: t('emptyStates.tasks.action'), onClick: onCreateTask }
+                    : { label: t('firstRun.steps.tasks.title'), to: scopeLink(firstRunPlanHref('work')) }}
+            />
+        );
+    }
     const ownershipColumnTitle = ownershipSelection
         ? t(`surfaces.kanbanBoard.columns.${COLUMNS.find(column => column.id === ownershipSelection.targetColumn)?.titleKey ?? 'active'}`)
         : '';
@@ -336,10 +409,12 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                             key={col.id}
                             id={col.id}
                             onOpen={(task, trigger) => { openTrigger.current = trigger ?? null; setOpenedTaskId(task.id); }}
-                            title={t(`surfaces.kanbanBoard.columns.${col.titleKey}`)}
+                            title={t(`statuses.${col.status}`)}
+                            caption={col.captionKey ? t(`surfaces.kanbanBoard.captions.${col.captionKey}`) : undefined}
                             tasks={columns[col.id]}
                             count={columns[col.id].length}
                             tone={STATUS_TONE[col.status]}
+                            context={cardContext}
                         />
                     ))}
                 </div>
@@ -354,23 +429,16 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
 
             <Modal
                 open={Boolean(ownershipSelection)}
-                title={team.length > 0
-                    ? t('surfaces.kanbanBoard.chooseAssignee')
-                    : t('surfaces.kanbanBoard.noAssigneeAvailable')}
+                title={t('surfaces.kanbanBoard.chooseAssignee')}
                 description={ownershipSelection
-                    ? team.length > 0
-                        ? t('surfaces.kanbanBoard.chooseAssigneeDescription', {
-                            title: ownershipSelection.task.title,
-                            column: ownershipColumnTitle,
-                        })
-                        : t('surfaces.kanbanBoard.noAssigneeAvailableDescription', {
-                            title: ownershipSelection.task.title,
-                        })
+                    ? t('surfaces.kanbanBoard.chooseAssigneeDescription', {
+                        title: ownershipSelection.task.title,
+                        column: ownershipColumnTitle,
+                    })
                     : ''}
                 onClose={closeOwnershipSelection}
                 closeLabel={t('actions.close')}
                 closeDisabled={updateTaskMutation.isPending}
-                initialFocusRef={team.length > 0 ? assigneeSelectRef : undefined}
                 footer={(
                     <div className="flex flex-wrap justify-end gap-3">
                         <Button
@@ -381,45 +449,37 @@ export const KanbanBoard = ({ iterationId, filters }: KanbanBoardProps) => {
                         >
                             {t('actions.cancel')}
                         </Button>
-                        {team.length > 0 ? (
-                            <Button
-                                type="button"
-                                isLoading={updateTaskMutation.isPending}
-                                disabled={selectedAssigneeId === null}
-                                onClick={() => { void confirmOwnershipSelection(); }}
-                            >
-                                {t('surfaces.kanbanBoard.assignAndMove')}
-                            </Button>
-                        ) : (
-                            <Link
-                                to={`/team?action=assign&iterationId=${iterationId}`}
-                                className="btn primary"
+                        {team.length === 0 && (
+                            <ButtonLink
+                                to={`/plan?step=team&iteration=${iterationId}`}
+
                                 onClick={closeOwnershipSelection}
-                            >
+                             variant="secondary">
                                 {t('surfaces.kanbanBoard.addTeamMember')}
-                            </Link>
+                            </ButtonLink>
                         )}
+                        <Button
+                            type="button"
+                            isLoading={updateTaskMutation.isPending}
+                            disabled={selectedAssigneeId === null && !selectedProfile}
+                            onClick={() => { void confirmOwnershipSelection(); }}
+                        >
+                            {selectedProfile ? t('assigneePicker.addAndAssign') : t('surfaces.kanbanBoard.assignAndMove')}
+                        </Button>
                     </div>
                 )}
             >
-                {ownershipSelection && team.length > 0 ? (
+                {ownershipSelection ? (
                     <div className="space-y-4">
-                        <label className="block text-sm font-medium text-content-primary" htmlFor={assigneeSelectId}>
-                            {t('surfaces.kanbanBoard.assignee')}
-                        </label>
-                        <select
-                            ref={assigneeSelectRef}
+                        <AssigneePicker
                             id={assigneeSelectId}
-                            value={selectedAssigneeId ?? ''}
-                            onChange={event => setSelectedAssigneeId(event.target.value ? Number(event.target.value) : null)}
+                            members={team}
+                            value={selectedAssigneeId}
+                            profile={selectedProfile}
                             disabled={updateTaskMutation.isPending}
-                            className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-base text-content-primary shadow-sm focus:outline-none focus:ring-2 focus:ring-focus disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                            <option value="">{t('surfaces.kanbanBoard.chooseAssigneePlaceholder')}</option>
-                            {team.map(member => (
-                                <option key={member.id} value={member.id}>{member.name}</option>
-                            ))}
-                        </select>
+                            allowAdd
+                            onChange={(memberId, profile) => { setSelectedAssigneeId(memberId); setSelectedProfile(profile); }}
+                        />
                         {updateTaskMutation.isError && (
                             <p role="alert" className="text-sm text-feedback-danger-foreground">
                                 {t('surfaces.kanbanBoard.assignmentMoveFailed')}

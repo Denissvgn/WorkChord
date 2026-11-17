@@ -4,7 +4,8 @@ import type { IterationSummary } from '../../types/iteration';
 import { formatDate } from '../../utils/formatDate';
 import { formatEffortDays } from '../../utils/workNumbers';
 import { MetricCount } from '../tasks/MetricCount';
-import { planMasterStepHref } from '../../features/planningMasters/planningReturn';
+import { planStepHref } from '../../features/planningMasters/planningReturn';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type Verdict = 'done' | 'noSchedule' | 'late' | 'atRisk' | 'onTrack';
 
@@ -27,6 +28,7 @@ const onTrackVerdict = (summary: IterationSummary): Verdict => {
 /** Answers "are we on track for the end date?" in one line, then shows why. */
 export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
     const { t, i18n } = useTranslation();
+    const scopeLink = useScopeLink();
     const locale = i18n.resolvedLanguage ?? i18n.language;
     const verdict = onTrackVerdict(summary);
     const left = capacityLeft(summary);
@@ -37,13 +39,13 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
     const tone = verdict === 'late' ? 'text-feedback-danger-foreground' : verdict === 'atRisk' || verdict === 'noSchedule' ? 'text-feedback-warning-foreground' : 'text-feedback-success-foreground';
     return (
         <section className="card card-pad space-y-4" aria-labelledby="on-track-title">
-            <h3 id="on-track-title" className="text-base font-semibold">{t('analytics.onTrack.title')}</h3>
+            <h2 id="on-track-title" className="text-base font-semibold">{t('analytics.onTrack.title')}</h2>
             <p className="text-lg">
                 <strong className={tone}>{t(`analytics.onTrack.verdict_${verdict}`)}</strong>{' '}
                 {summary.scheduled_finish
                     ? t('analytics.onTrack.finishAgainstEnd', { finish: formatDate(summary.scheduled_finish, locale), end: formatDate(summary.end_date, locale) })
                     : t('analytics.onTrack.endsOn', { end: formatDate(summary.end_date, locale) })}
-                {verdict === 'noSchedule' && <> <Link to={planMasterStepHref('schedule')} className="font-medium text-action underline">{t('analytics.onTrack.planIt')}</Link></>}
+                {verdict === 'noSchedule' && <> <Link to={scopeLink(planStepHref('schedule'))} className="font-medium text-action underline">{t('analytics.onTrack.planIt')}</Link></>}
             </p>
             <p className="text-sm text-content-secondary">
                 {t('analytics.onTrack.effortLine', { remaining: effort(remaining), capacity: left === null ? t('analytics.onTrack.capacityUnknown') : effort(left), days: summary.remaining_working_days ?? 0 })}
@@ -60,6 +62,17 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                         {t('analytics.onTrack.blocked', { count: summary.blocked_tasks })}
                     </MetricCount></>}
             </p>
+            <dl className="space-y-2 text-sm">
+                {([
+                    ['lateStart', 'late_start', summary.late_start_tasks],
+                    ['iterationOverflow', 'iteration_overflow', summary.iteration_overflow_tasks],
+                ] as const).map(([label, metric, count]) => <div key={metric}>
+                    <dt className="font-medium">{t("workStatus." + label)}</dt>
+                    <dd className="text-content-secondary">{t("analytics.onTrack." + label + "Definition")}{' '}
+                        {count == null ? t('common.unknown') : <MetricCount metric={metric} scope={scope} title={t("workStatus." + label)} total={count}>{t('analytics.onTrack.taskCount', { count })}</MetricCount>}
+                    </dd>
+                </div>)}
+            </dl>
             <div className="space-y-2" aria-hidden="true">
                 {([['remaining', remaining, 'var(--wc-status-active)'], ['capacity', left, 'var(--wc-status-resolved)']] as const).map(([key, value, color]) => (
                     <div key={key} className="grid grid-cols-[9rem_1fr_5rem] items-center gap-3 text-sm">
@@ -72,7 +85,9 @@ export const OnTrackSummary = ({ summary }: { summary: IterationSummary }) => {
                 ))}
             </div>
             <details>
-                <summary className="cursor-pointer text-sm font-medium text-action">{t('analytics.showTable')}</summary>
+                <summary className="cursor-pointer text-sm font-medium text-action">
+                    {t('analytics.showTable')}<span className="sr-only">: {t('analytics.onTrack.title')}</span>
+                </summary>
                 <table className="mt-2 w-full max-w-md text-left text-sm">
                     <caption className="sr-only">{t('analytics.onTrack.title')}</caption>
                     <tbody>

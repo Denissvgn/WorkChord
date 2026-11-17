@@ -10,15 +10,19 @@ import { AppSidebar } from './AppSidebar';
 import { DocumentMetadata } from './DocumentMetadata';
 import { CommandMenu } from './CommandMenu';
 import { WorkRefreshStatus } from '../feedback/WorkRefreshStatus';
+import { useWorkScope } from '../../features/scope/useWorkScope';
+import { FirstRunLanding } from '../../features/firstRun/FirstRunLanding';
 
 // Full-height routes where the main area must not scroll itself
 // (the inner component controls overflow).
-const SCROLL_LOCK_PATHS = ['/gantt', '/plan/master', '/tasks', '/triage'];
+const SCROLL_LOCK_PATHS = ['/gantt', '/tasks', '/triage'];
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
     const { theme } = useThemeStore();
     const location = useLocation();
     const { t } = useTranslation();
+    // Keeps the scope in the URL and in this browser in step for every page.
+    useWorkScope();
     const workspaceMainRef = useRef<HTMLElement>(null);
     const previousPathnameRef = useRef(location.pathname);
 
@@ -42,6 +46,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             <div className="wc app">
                 <DocumentMetadata />
                 <CommandMenu />
+                <FirstRunLanding />
                 <a className="skip-link" href="#workspace-main">
                     {t('nav.skipToContent')}
                 </a>

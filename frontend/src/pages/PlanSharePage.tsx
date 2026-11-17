@@ -1,3 +1,4 @@
+import { ButtonLink } from '../components/common/ButtonLink';
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -8,11 +9,12 @@ import {
     ListChecks,
     Users,
 } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../components/common/Button';
 import { QueryErrorState, QueryLoadingState } from '../components/feedback/QueryState';
 import { useToast } from '../components/feedback/toast';
+import { useScopeLink } from '../features/scope/useScopeLink';
 import { PageHeader, PageLayout } from '../components/ui';
 import { planShareService } from '../services/planShareService';
 import type { PlanShareTask } from '../services/planShareService';
@@ -27,6 +29,7 @@ const PlanSharePage = () => {
     const { publicId = '' } = useParams();
     const { t, i18n } = useTranslation();
     const toast = useToast();
+    const scopeLink = useScopeLink();
     // feedback-policy: query loading,error,retry,empty - the token page renders a full loading or revocation-safe recovery state.
     const shareQuery = useQuery({
         queryKey: ['plan-share', publicId],
@@ -79,11 +82,11 @@ const PlanSharePage = () => {
         <PageLayout>
             <PageHeader
                 title={share.iteration_name}
-                subtitle={t('plan.master.sharedPlanSubtitle', {
+                purpose={t('plan.master.sharedPlanSubtitle', {
                     date: formatDateTime(share.created_at, i18n.language),
                     owner: share.created_by_display,
                 })}
-                actions={(
+                primaryAction={(
                     <Button onClick={() => { void handleCopy(); }}>
                         <Copy aria-hidden="true" className="h-4 w-4" />
                         {t('plan.master.copyShareLink')}
@@ -212,9 +215,9 @@ const PlanSharePage = () => {
                             <p className="py-3 text-sm text-content-secondary">{t('plan.master.noSharedTeam')}</p>
                         )}
                     </div>
-                    <Link to="/plan/master" className="btn mt-4 w-full">
+                    <ButtonLink to={scopeLink('/plan')}  className="mt-4 w-full">
                         {t('plan.master.openPlanMaster')}
-                    </Link>
+                    </ButtonLink>
                 </aside>
             </div>
         </PageLayout>

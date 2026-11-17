@@ -19,6 +19,7 @@ import { formatDate } from '../../utils/formatDate';
 import { useDraftDismissal, useActiveMount } from './useDraftDismissal';
 import { DraftDismissalDialog } from './DraftDismissalDialog';
 
+import { Select } from '../../components/common/Select';
 type Draft = { work_date: string; timezone: string; minutes: string; note: string; reason: string;
     task: string; request: string; editing?: Pick<TimeEntry, 'id' | 'version'> };
 const emptyDraft = (taskId?: number): Draft => ({ work_date: format(new Date(), 'yyyy-MM-dd'),
@@ -155,10 +156,10 @@ const TimeEntriesContent = ({ projectId, taskId, start, end, disabled = false, s
                 {options.isLoading && <p role="status">{t('common.loading')}</p>}
                 {options.isError && <QueryErrorState error={options.error} fallback={t('timeEntries.loadFailed')} onRetry={() => void options.refetch()} />}
                 <label className="field-lbl" htmlFor={`${id}-task`}>{t('timeEntries.task')}</label>
-                <select form={formId} id={`${id}-task`} className="input w-full" value={draft.task} onChange={event => field('task', event.target.value)}>
+                <Select form={formId} id={`${id}-task`} className="input w-full" value={draft.task} onChange={event => field('task', event.target.value)}>
                     <option value="">{t('timeEntries.projectWork')}</option>
                     {!options.isError && options.data?.items.map(task => <option key={task.id} value={task.id}>#{task.id} · {task.title}</option>)}
-                </select>
+                </Select>
                 {options.data?.has_more && !options.isError && <p className="text-sm text-content-secondary">{t('timeEntries.partialTasks')}</p>}
             </>}
             <div className="grid gap-3 sm:grid-cols-3">

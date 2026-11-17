@@ -1,11 +1,9 @@
-import clsx from 'clsx';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Calendar, Trash2, ArrowRight, Download, Upload, FolderOpen } from 'lucide-react';
-import { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Trash2, Download, FolderOpen } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { iterationService } from '../../services/iterationService';
-import { IterationImportDialog } from './IterationImportDialog';
 import { planningInputService, type ObservedRevisions } from '../../services/planningInputService';
 import { exportService } from '../../services/exportService';
 import { Button } from '../common/Button';
@@ -16,27 +14,30 @@ import { useToast } from '../feedback/toast';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
 import { IterationCapacityLine } from './IterationCapacityLine';
+import { useWorkScope } from '../../features/scope/useWorkScope';
 
 interface IterationListProps {
-    onEdit?: (iteration: Iteration) => void;
+    /** Makes the iteration the one in scope and shows it in Plan. */
+    onOpen: (iteration: Iteration) => void;
+    onEdit: (iteration: Iteration) => void;
+    /** Lists only this project's iterations; every iteration when omitted. */
+    projectId?: number;
 }
 
-export const IterationList = ({ onEdit }: IterationListProps) => {
+export const IterationList = ({ onOpen, onEdit, projectId }: IterationListProps) => {
     const queryClient = useQueryClient();
     const { selectedIterationId, setSelectedIterationId } = useIterationStore();
-    const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { iteration: scopeIteration } = useWorkScope();
+    const { t, i18n } = useTranslation();
     const toast = useToast();
     const [deleteContext, setDeleteContext] = useState<{ id: number; revisions: ObservedRevisions; name: string; taskCount: number | null } | null>(null);
     const [deleteConfirmation, setDeleteConfirmation] = useState('');
     const [deletingId, setDeletingId] = useState<number | null>(null);
-    const [importingId, setImportingId] = useState<number | null>(null);
-    const [importFile, setImportFile] = useState<File | null>(null);
-    const importFileInputRef = useRef<HTMLInputElement>(null);
-    const { data: iterations, isLoading, isError, error, refetch } = useQuery({
+    const { data: allIterations, isLoading, isError, error, refetch } = useQuery({
         queryKey: ['iterations'],
         queryFn: iterationService.getAll,
     });
+    const iterations = projectId === undefined ? allIterations : allIterations?.filter(item => item.project_id === projectId);
 
     const deleteMutation = useMutation({
         mutationFn: ({ id, revisions }: { id: number; revisions: ObservedRevisions }) => iterationService.delete(id, revisions),
@@ -78,14 +79,6 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
         }
     };
 
-    const handleImportClick = (iterationId: number) => {
-        setImportingId(iterationId);
-        importFileInputRef.current?.click();
-    };
-
-    const handleImportFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setImportFile(event.target.files?.[0] ?? null); event.currentTarget.value = '';
-    };
     const openDelete = async (id: number) => {
         try {
             const observed = await planningInputService.readInitial<Iteration>('iteration', id);
@@ -113,132 +106,89 @@ export const IterationList = ({ onEdit }: IterationListProps) => {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {importFile && <IterationImportDialog file={importFile} iterationId={importingId ?? undefined} onClose={() => { setImportFile(null); setImportingId(null); }} />}
-            {/* Hidden file input for import */}
-            <input
-                type="file"
-                ref={importFileInputRef}
-                className="hidden"
-                accept=".json"
-                onChange={handleImportFile}
-            />
-            {iterations?.map((iteration) => (
-                <div
-                    key={iteration.id}
-                    className={clsx('card card-pad', iteration.id === selectedIterationId && 'border-action')}
-                    aria-current={iteration.id === selectedIterationId ? 'true' : undefined}
-                >
-                    <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-surface-subtle rounded-lg text-content-secondary">
-                                <Calendar className="w-6 h-6" />
+        <div>
+            {iterations?.length === 0 && (
+                <p className="m-5 rounded-lg border border-dashed border-border bg-surface-muted px-4 py-10 text-center text-content-tertiary">
+                    {t('iterations.noIterations')}
+                </p>
+            )}
+            <ul className="divide-y divide-border-subtle" aria-label={t('iterations.allIterations')}>
+                {iterations?.map((iteration) => (
+                    <li
+                        key={iteration.id}
+                        className="space-y-3 px-5 py-4"
+                        aria-current={iteration.id === scopeIteration ? 'true' : undefined}
+                    >
+                        <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                                <h3 className="truncate font-semibold">{iteration.name}</h3>
+                                <p className="flex flex-wrap items-center gap-x-2 text-sm text-content-secondary">
+                                    <span>{formatDate(iteration.start_date, i18n.language)} – {formatDate(iteration.end_date, i18n.language)}</span>
+                                    <span aria-hidden="true">·</span>
+                                    <span>{t('units.days', { count: iteration.working_days })}</span>
+                                </p>
+                                <p className="text-sm text-content-secondary">
+                                    {iteration.project ? (
+                                        <Link
+                                            to={`/projects/${iteration.project.id}`}
+                                            className="inline-flex min-w-0 items-center gap-1 font-medium text-action hover:underline"
+                                            aria-label={t('iterations.openProject', { project: iteration.project.name })}
+                                        >
+                                            <FolderOpen aria-hidden="true" className="h-3.5 w-3.5 shrink-0" />
+                                            <span className="truncate">{iteration.project.name}</span>
+                                        </Link>
+                                    ) : (
+                                        <span>{t('iterations.unscoped')}</span>
+                                    )}
+                                </p>
                             </div>
-                            <div>
-                                <h3 className="font-semibold text-lg">{iteration.name}</h3>
-                                {iteration.id === selectedIterationId && (
-                                    <span className="pill sm">{t('iterations.currentPlanningPeriod')}</span>
-                                )}
-                                <div className="flex items-center text-sm text-content-secondary gap-1">
-                                    <span>{formatDate(iteration.start_date)}</span>
-                                    <ArrowRight className="w-3 h-3" />
-                                    <span>{formatDate(iteration.end_date)}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-2 mb-6">
-                        <div className="flex items-center justify-between gap-3 text-sm">
-                            <span className="text-content-secondary">{t('iterations.projectScope')}</span>
-                            {iteration.project ? (
-                                <Link
-                                    to={`/projects/${iteration.project.id}`}
-                                    className="inline-flex min-w-0 items-center gap-1 font-medium text-action hover:text-action hover:underline"
-                                    aria-label={t('iterations.openProject', { project: iteration.project.name })}
-                                >
-                                    <FolderOpen className="h-3.5 w-3.5 shrink-0 text-action" />
-                                    <span className="truncate">{iteration.project.name}</span>
-                                </Link>
-                            ) : (
-                                <span className="inline-flex min-w-0 items-center gap-1 font-medium text-content-primary">
-                                    <FolderOpen className="h-3.5 w-3.5 shrink-0 text-content-tertiary" />
-                                    <span className="truncate">{t('iterations.unscoped')}</span>
-                                </span>
+                            {iteration.id === scopeIteration && (
+                                <span className="pill sm shrink-0">{t('iterations.inScope')}</span>
                             )}
                         </div>
-                        {!iteration.project && (
-                            <p className="text-xs text-content-secondary">{t('iterations.unscopedHelp')}</p>
-                        )}
-                        <div className="flex justify-between text-sm">
-                            <span className="text-content-secondary">{t('iterations.workingDays')}</span>
-                            <span className="font-medium">{t('units.days', { count: iteration.working_days })}</span>
-                        </div>
-                        <IterationCapacityLine iterationId={iteration.id} />
-                    </div>
 
-                    <div className="flex flex-wrap justify-end gap-2 pt-4 border-t border-border-subtle">
-                        {iteration.id !== selectedIterationId ? (
+                        <IterationCapacityLine iterationId={iteration.id} />
+
+                        <div className="flex flex-wrap items-center gap-1">
                             <Button
                                 variant="secondary"
                                 size="sm"
-                                className="mr-auto"
-                                onClick={() => {
-                                    setSelectedIterationId(iteration.id);
-                                    navigate('/plan/master');
-                                }}
+                                onClick={() => onOpen(iteration)}
+                                aria-label={t('iterations.openNamed', { name: iteration.name })}
                             >
-                                {t('iterations.planThisIteration')}
+                                {t('iterations.open')}
                             </Button>
-                        ) : (
-                            <Link to="/plan/master" className="btn sm mr-auto">{t('iterations.openPlan')}</Link>
-                        )}
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleImportClick(iteration.id)}
-                            title={t('iterations.importJson')}
-                            aria-label={t('iterations.importJson')}
-                        >
-                            <Upload aria-hidden="true" className="w-4 h-4" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleExport(iteration.id, iteration.name)}
-                            title={t('iterations.exportJson')}
-                            aria-label={t('iterations.exportJson')}
-                        >
-                            <Download aria-hidden="true" className="w-4 h-4" />
-                        </Button>
-                        {onEdit && (
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => onEdit(iteration)}
-                                className="text-action hover:text-action hover:bg-action-muted"
+                                aria-label={t('iterations.editNamed', { name: iteration.name })}
                             >
                                 {t('actions.edit')}
                             </Button>
-                        )}
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => void openDelete(iteration.id)}
-                            aria-label={t('actions.delete')}
-                                className="text-feedback-danger-foreground hover:bg-feedback-danger-muted"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </Button>
-                    </div>
-                </div>
-            ))}
-
-            {iterations?.length === 0 && (
-                <div className="col-span-full text-center py-12 text-content-tertiary bg-surface-muted rounded-lg border border-dashed border-border">
-                    {t('iterations.noIterations')}
-                </div>
-            )}
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => void handleExport(iteration.id, iteration.name)}
+                                aria-label={t('iterations.exportNamed', { name: iteration.name })}
+                            >
+                                <Download aria-hidden="true" className="h-4 w-4" />
+                                {t('iterations.export')}
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => void openDelete(iteration.id)}
+                                aria-label={t('iterations.deleteNamed', { name: iteration.name })}
+                                className="ml-auto text-feedback-danger-foreground hover:bg-feedback-danger-muted"
+                            >
+                                <Trash2 aria-hidden="true" className="h-4 w-4" />
+                                {t('actions.delete')}
+                            </Button>
+                        </div>
+                    </li>
+                ))}
+            </ul>
 
             <ConfirmDialog
                 open={deletingId !== null}

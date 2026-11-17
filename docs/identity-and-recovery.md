@@ -10,11 +10,33 @@
 
 In trusted-local mode, each browser chooses the person profile it works as from the account menu or from My Work, or adds a person profile with only a name ("Add me"). The choice is stored on the browser's server session with PUT `/api/auth/local-profile`, `{"profile_id":456}` (or `null` to clear it), and is shown as "local, not verified". It is a label for that browser's own queue, not a sign-in, and grants nothing a local session could not already do. My Work then lists the tasks that profile owns and the tasks assigned to any capacity row of that profile. Comments and task history written by that browser carry the profile's name, marked "local, not verified". Without a chosen profile, a local browser can read the discussion but not comment. Discussion notifications stay with signed-in accounts.
 
-Workspace members and trusted-local sessions can read the settings that explain how the workspace behaves without the admin key: language, scheduling rules, GitHub status rules, webhook targets and deliveries, notification email, and runtime configuration. The server withholds values that are not secrets but are still sensitive: endpoint URLs are reduced to their host, the mail host and login are left out, webhook header values are blanked, and delivery response bodies, errors and event payloads are left out. Each response lists what it withheld in `redacted_fields`. Secrets are never returned to anyone. The Agent Pipeline board follows the same rule as Tasks and lists only tasks the reader can see; run logs and actions still need the admin key or an agent key. On the same rule, GET `/api/agent/assignments` without an agent key lists the assignments of the tasks the reader can see: the agent, what it does (execution or verification), the state and the declared model. Routing evidence and the assigner's reason stay with agent-key reads, which keep their own queue boundary and the full record. GET `/api/agent/runs` follows the same rule for runs: each run's status, times, agent, declared and resolved model, declared harness session and latest declared usage report, filterable by task, harness session, status or agent. An agent key needs `planning:read`. Run events, logs, artifacts, summaries and errors stay with run detail, which still needs the admin key or an agent key.
+Workspace members and trusted-local sessions can read the settings that explain how the workspace behaves without the admin key: language, scheduling rules, GitHub status rules, webhook targets and deliveries, notification email, and runtime configuration. The server withholds values that are not secrets but are still sensitive: endpoint URLs are reduced to their host, the mail host and login are left out, webhook header values are blanked, and delivery response bodies, errors and event payloads are left out. Each response lists what it withheld in `redacted_fields`. Secrets are never returned to anyone. The agent pipeline view of Tasks follows the same rule as Tasks and lists only tasks the reader can see; run logs and actions still need the admin key or an agent key. On the same rule, GET `/api/agent/assignments` without an agent key lists the assignments of the tasks the reader can see: the agent, what it does (execution or verification), the state and the declared model. Routing evidence and the assigner's reason stay with agent-key reads, which keep their own queue boundary and the full record. GET `/api/agent/runs` follows the same rule for runs: each run's status, times, agent, declared and resolved model, declared harness session and latest declared usage report, filterable by task, harness session, status or agent. An agent key needs `planning:read`. Run events, logs, artifacts, summaries and errors stay with run detail, which still needs the admin key or an agent key.
 
 For managed sign-in, register an OIDC confidential client using authorization code flow. Configure `OIDC_ISSUER_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, and the exact `OIDC_REDIRECT_URI`, such as `https://work.example/api/auth/callback`. The provider must support PKCE S256 and RS256 ID tokens with a published signing key ID. Discovery issuer, audience, signature, nonce, expiry, browser state, and return URL are checked. Use HTTPS, `SESSION_COOKIE_SECURE=true`, and an exact `CORS_ORIGINS` JSON allowlist. Configure the reverse proxy not to log callback query strings or credential headers. Provider keys and subject identifiers are authoritative; email, IP address, and display name never prove identity.
 
 The development-only `OIDC_ALLOW_HTTP_LOOPBACK` option permits loopback and the isolated issuer hostname `oidc`; production ignores it. Do not enable it for a shared deployment. Compose passes the identity settings to the web process. Apply the normal migration service, then the dedicated repairs service, before starting web replicas; repairs initialize the operator control-plane identity. Schema-only transfer targets intentionally remain empty.
+
+## Account menu and Unlock editing
+
+The account menu, **Account and access**, sits in the top bar. It shows how
+this browser is signed in: your work profile, your workspace role, whether the
+workspace is managed or trusted-local, and whether editing is **locked** or
+**unlocked**.
+
+Reading the workspace needs no key. Protected changes do: until you unlock
+editing, addresses, logins, and URL paths stay hidden in the settings that show
+them. Editing follows the workspace role of your account, so a role that can
+edit needs no key. Otherwise:
+
+1. Open the account menu and choose **Unlock**, or choose **Unlock editing** at
+   the top of Settings.
+2. Enter the admin key the operator gave you. It stays in this browser tab. One
+   key unlocks every protected settings section, agent team setup, and recovery.
+3. Choose **Lock** to remove it from this tab.
+
+The admin key is an operator credential. Unlocking does not grant project
+access and does not change your profile link. Ask the operator for the key
+rather than sharing one.
 
 ## Establish ownership and grant access
 

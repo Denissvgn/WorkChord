@@ -11,6 +11,7 @@ import type {
 } from '../../types/project';
 
 import { type MilestoneFormState, milestoneStatusLabelKeys, t, textareaClassName } from './projectDetailShared';
+import { Select } from '../../components/common/Select';
 export const MilestoneFormDrawer = ({
     mode,
     form,
@@ -56,7 +57,7 @@ export const MilestoneFormDrawer = ({
                 </label>
                 <label className="block text-sm font-medium text-content-primary" htmlFor="milestone-status">
                     {t('surfaces.projectDetail.status')}
-                    <select
+                    <Select
                         id="milestone-status"
                         value={form.status}
                         onChange={event => onChange('status', event.target.value as ProjectMilestoneStatus)}
@@ -65,7 +66,7 @@ export const MilestoneFormDrawer = ({
                         {Object.entries(milestoneStatusLabelKeys).map(([value, labelKey]) => (
                             <option key={value} value={value}>{t(labelKey)}</option>
                         ))}
-                    </select>
+                    </Select>
                 </label>
                 <label className="block text-sm font-medium text-content-primary" htmlFor="milestone-target-date">
                     {t('surfaces.projectDetail.targetDate')}

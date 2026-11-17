@@ -1,14 +1,12 @@
 import { matchPath } from 'react-router-dom';
 import { getDestination, type DestinationId } from './destinations';
+import { mapLegacyPath } from './legacyPaths';
 
 export const routeModuleLoaders = {
     landing: () => import('../pages/LandingPage'),
     overview: () => import('../pages/OverviewPage'),
     plan: () => import('../pages/PlanPage'),
-    planMaster: () => import('../pages/PlanMasterPage'),
     planShare: () => import('../pages/PlanSharePage'),
-    calendar: () => import('../pages/CalendarPage'),
-    iterations: () => import('../pages/IterationsPage'),
     team: () => import('../pages/TeamPage'),
     tasks: () => import('../pages/TasksPage'),
     myWork: () => import('../pages/MyWorkPage'),
@@ -17,12 +15,9 @@ export const routeModuleLoaders = {
     projects: () => import('../pages/ProjectsPage'),
     projectDetail: () => import('../pages/ProjectDetailPage'),
     projectReleaseDetail: () => import('../pages/ProjectReleaseDetailPage'),
-    roadmap: () => import('../pages/RoadmapPage'),
     gantt: () => import('../pages/GanttPage'),
     analytics: () => import('../pages/AnalyticsPage'),
     settings: () => import('../pages/SettingsPage'),
-    agentPipeline: () => import('../pages/AgentPipelinePage'),
-    agentTeamSetup: () => import('../pages/AgentTeamSetupMasterPage'),
     notFound: () => import('../pages/NotFoundPage'),
 } as const;
 
@@ -41,11 +36,8 @@ const destinationTitle = (id: DestinationId) => getDestination(id).labelKey;
 export const routeMetadata: RouteMetadata[] = [
     { key: 'landing', path: '/welcome', titleKey: 'documentTitles.landing' },
     { key: 'overview', path: '/', titleKey: destinationTitle('overview') },
-    { key: 'planMaster', path: '/plan/master', titleKey: destinationTitle('plan') },
     { key: 'planShare', path: '/plan/share/:publicId', titleKey: 'documentTitles.planShare' },
     { key: 'plan', path: '/plan', titleKey: destinationTitle('plan') },
-    { key: 'calendar', path: '/calendar', titleKey: 'documentTitles.calendar' },
-    { key: 'iterations', path: '/iterations', titleKey: 'documentTitles.iterations' },
     { key: 'team', path: '/team', titleKey: destinationTitle('team') },
     { key: 'myWork', path: '/my-work', titleKey: destinationTitle('my_work') },
     { key: 'nativeConnection', path: '/mobile/connect', titleKey: 'teamwork.connectRoute' },
@@ -54,18 +46,17 @@ export const routeMetadata: RouteMetadata[] = [
     { key: 'projectReleaseDetail', path: '/projects/:projectId/releases/:releaseId', titleKey: 'documentTitles.projectReleaseDetail' },
     { key: 'projectDetail', path: '/projects/:projectId', titleKey: 'documentTitles.projectDetail' },
     { key: 'projects', path: '/projects', titleKey: destinationTitle('projects') },
-    { key: 'roadmap', path: '/roadmap', titleKey: 'documentTitles.roadmap' },
     { key: 'gantt', path: '/gantt', titleKey: destinationTitle('gantt') },
     { key: 'analytics', path: '/analytics', titleKey: destinationTitle('analytics') },
     { key: 'settings', path: '/settings', titleKey: destinationTitle('settings') },
-    { key: 'agentPipeline', path: '/agent-pipeline', titleKey: 'documentTitles.agentPipeline' },
-    { key: 'agentTeamSetup', path: '/agent-team/setup', titleKey: 'documentTitles.agentTeamSetup' },
 ];
 
-export const metadataForPath = (pathname: string): RouteMetadata => (
-    routeMetadata.find(route => matchPath({ path: route.path, end: true }, pathname))
+export const metadataForPath = (pathname: string): RouteMetadata => {
+    const legacyTarget = mapLegacyPath(pathname, '');
+    const currentPath = legacyTarget?.split('?')[0] ?? pathname;
+    return routeMetadata.find(route => matchPath({ path: route.path, end: true }, currentPath))
     ?? { key: 'notFound', path: '*', titleKey: 'documentTitles.notFound' }
-);
+};
 
 export const warmRouteModule = async (pathname: string) => {
     await routeModuleLoaders[metadataForPath(pathname).key]();

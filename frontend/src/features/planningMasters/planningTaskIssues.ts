@@ -1,16 +1,18 @@
 import type { Task } from '../../types/task';
 import {
-    withPlanMasterReturn,
+    withPlanReturn,
 } from './planningReturn';
 import type { PlanningStepId } from './planningReturn';
 
 export const PLANNING_TASK_ISSUE_PARAM = 'planningIssue';
 export const PLANNING_ITERATION_PARAM = 'iterationId';
 
-export const PLANNING_TASK_ISSUES = [
+const PLANNING_TASK_ISSUES = [
     'unassigned',
     'missing-effort',
     'any',
+    'unscheduled',
+    'at-risk',
 ] as const;
 
 export type PlanningTaskIssue = typeof PLANNING_TASK_ISSUES[number];
@@ -37,7 +39,7 @@ export const isPlanningLeafTask = (task: Task) => (
 );
 
 /** The server's rule (app/services/planning_issues.py): only planned leaves are scheduling gaps. */
-export const isPlanningGapCandidate = (task: Task) => task.status === 'planned' && isPlanningLeafTask(task);
+const isPlanningGapCandidate = (task: Task) => task.status === 'planned' && isPlanningLeafTask(task);
 
 /** An agent is working on it, so it is not unassigned, but it still has no capacity row. */
 export const isAgentWorkingWithoutCapacity = (task: Task) => (
@@ -48,11 +50,21 @@ export const hasPositivePlanningEffort = (value: number | null): value is number
     Number.isFinite(value) && value !== null && value > 0
 );
 
+/** Resolved and closed work is finished, so it is never at risk. */
+export const isFinished = (task: Pick<Task, 'status'>) => task.status === 'resolved' || task.status === 'closed';
+
+/** A late, unstarted or out-of-limits schedule signal. */
+export const hasDeliverySignal = (task: Pick<Task, 'is_overdue' | 'is_delayed' | 'is_outside_constraints'>) => (
+    Boolean(task.is_overdue || task.is_delayed || task.is_outside_constraints)
+);
+
 export const taskMatchesPlanningIssue = (
     task: Task,
     issue: PlanningTaskIssue,
 ) => {
+    if (issue === 'at-risk') return isPlanningLeafTask(task) && !isFinished(task) && hasDeliverySignal(task);
     if (!isPlanningGapCandidate(task)) return false;
+    if (issue === 'unscheduled') return !task.start_date || !task.end_date;
     const isUnassigned = !task.assignee && !task.agent_working;
     const isMissingEffort = !hasPositivePlanningEffort(task.effort_days);
 
@@ -69,9 +81,9 @@ export const planningIssueTasksHref = ({
     issue: PlanningTaskIssue;
     iterationId: number;
     returnStepId: PlanningStepId;
-}) => withPlanMasterReturn('/tasks', returnStepId, {
-    // Unassigned work opens ready to assign in bulk; the filter drawer stays closed.
-    ...(issue === 'unassigned' ? { mode: 'bulk' } : {}),
+}) => withPlanReturn('/tasks', returnStepId, {
+    // Both planning gaps open the matching work in selection mode.
+    ...(issue === 'unassigned' || issue === 'missing-effort' ? { mode: 'bulk' } : {}),
     [PLANNING_TASK_ISSUE_PARAM]: issue,
     ...(iterationId > 0
         ? { [PLANNING_ITERATION_PARAM]: String(iterationId) }

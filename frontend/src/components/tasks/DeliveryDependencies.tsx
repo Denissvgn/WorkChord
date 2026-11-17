@@ -10,6 +10,7 @@ import { QueryErrorState } from '../feedback/QueryState';
 import { getApiErrorMessage } from '../../utils/apiError';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 
+import { Select } from '../../components/common/Select';
 interface Dependency { id: number; kind: 'task' | 'milestone'; target_id?: number; title?: string; ready: boolean; reason: string | null }
 
 export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: { task: Task; disabled: boolean; onPending: (pending: boolean) => void; onUpdated: (task: Task) => void }) => {
@@ -50,17 +51,17 @@ export const DeliveryDependencies = ({ task, disabled, onPending, onUpdated }: {
         </li>)}</ul>
         <fieldset disabled={disabled} className="space-y-2"><legend className="text-sm font-medium">{t('teamwork.addPrerequisite')}</legend>
             <label className="field-lbl" htmlFor={`${id}-kind`}>{t('teamwork.prerequisiteType')}</label>
-            <select id={`${id}-kind`} className="input w-full" value={kind} onChange={event => { setKind(event.target.value as 'task' | 'milestone'); setTargetId(null); }}><option value="task">{t('teamwork.task')}</option><option value="milestone">{t('teamwork.milestone')}</option></select>
+            <Select id={`${id}-kind`} className="input w-full" value={kind} onChange={event => { setKind(event.target.value as 'task' | 'milestone'); setTargetId(null); }}><option value="task">{t('teamwork.task')}</option><option value="milestone">{t('teamwork.milestone')}</option></Select>
             {kind === 'task' ? <><label className="field-lbl" htmlFor={`${id}-search`}>{t('teamwork.searchTasks')}</label><input id={`${id}-search`} className="input w-full" value={text} maxLength={200} onChange={event => { setText(event.target.value); setTargetId(null); }} />
                 {tasks.isLoading && <p role="status">{t('common.loading')}</p>}
                 {tasks.isSuccess && tasks.data.items.length === 0 && <p>{t('teamwork.noResults')}</p>}
                 {tasks.isError && <QueryErrorState error={tasks.error} fallback={t('teamwork.loadFailed')} onRetry={() => void tasks.refetch()} />}
-                <label className="field-lbl" htmlFor={`${id}-target`}>{t('teamwork.prerequisite')}</label><select id={`${id}-target`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseTask')}</option>{tasks.data?.items.filter(item => item.id !== task.id).map(item => <option key={item.id} value={item.id}>#{item.id} · {item.title}</option>)}</select></>
-                : <><label className="field-lbl" htmlFor={`${id}-project`}>{t('teamwork.project')}</label><select id={`${id}-project`} className="input w-full" value={projectId ?? ''} onChange={event => { setProjectId(Number(event.target.value) || null); setTargetId(null); }}><option value="">{t('teamwork.chooseProject')}</option>{projects.data?.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
+                <label className="field-lbl" htmlFor={`${id}-target`}>{t('teamwork.prerequisite')}</label><Select id={`${id}-target`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseTask')}</option>{tasks.data?.items.filter(item => item.id !== task.id).map(item => <option key={item.id} value={item.id}>#{item.id} · {item.title}</option>)}</Select></>
+                : <><label className="field-lbl" htmlFor={`${id}-project`}>{t('teamwork.project')}</label><Select id={`${id}-project`} className="input w-full" value={projectId ?? ''} onChange={event => { setProjectId(Number(event.target.value) || null); setTargetId(null); }}><option value="">{t('teamwork.chooseProject')}</option>{projects.data?.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</Select>
                     {(projects.isLoading || milestones.isLoading) && <p role="status">{t('common.loading')}</p>}
                     {milestones.isSuccess && milestones.data.length === 0 && <p>{t('teamwork.noResults')}</p>}
                     {(projects.isError || milestones.isError) && <QueryErrorState error={projects.error ?? milestones.error} fallback={t('teamwork.loadFailed')} onRetry={() => { void projects.refetch(); void milestones.refetch(); }} />}
-                    <label className="field-lbl" htmlFor={`${id}-milestone`}>{t('teamwork.milestone')}</label><select id={`${id}-milestone`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseMilestone')}</option>{milestones.data?.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></>}
+                    <label className="field-lbl" htmlFor={`${id}-milestone`}>{t('teamwork.milestone')}</label><Select id={`${id}-milestone`} className="input w-full" value={targetId ?? ''} onChange={event => setTargetId(Number(event.target.value) || null)}><option value="">{t('teamwork.chooseMilestone')}</option>{milestones.data?.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</Select></>}
             <Button type="button" size="sm" disabled={!targetId || disabled} isLoading={mutation.isPending} onClick={() => mutation.mutate(undefined)}>{t('teamwork.addPrerequisite')}</Button>
         </fieldset>
         {mutation.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(mutation.error, t('teamwork.saveFailed'))}</p>}

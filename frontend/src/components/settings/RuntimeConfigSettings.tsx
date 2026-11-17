@@ -24,6 +24,7 @@ import type {
     WebIntakeRuntimeSettingsUpdate,
 } from '../../types/systemSettings';
 
+import { Select } from '../../components/common/Select';
 interface LLMForm {
     provider: LLMProvider;
     api_url: string;
@@ -55,6 +56,12 @@ interface WebIntakeForm {
 }
 
 type RuntimeSection = 'llm' | 'github' | 'webIntake';
+
+/** The parts of the saved server configuration that one Settings section shows. */
+export type RuntimeConfigPart = 'aiLanguage' | 'llm' | 'github' | 'webIntake' | 'restart';
+
+const ALL_PARTS: readonly RuntimeConfigPart[] = ['aiLanguage', 'llm', 'github', 'webIntake', 'restart'];
+const FORM_PARTS: readonly RuntimeConfigPart[] = ['aiLanguage', 'llm', 'github', 'webIntake'];
 type RuntimeErrors = Record<string, string>;
 
 const parseFiniteNumber = (value: string) => {
@@ -147,8 +154,10 @@ const fieldSource = (settings: { field_sources: Record<string, RuntimeSettingSou
     settings.field_sources?.[field]
 );
 
-export const RuntimeConfigSettings = () => {
+export const RuntimeConfigSettings = ({ parts = ALL_PARTS }: { parts?: readonly RuntimeConfigPart[] }) => {
     const { t } = useTranslation();
+    const shows = (part: RuntimeConfigPart) => parts.includes(part);
+    const formCount = FORM_PARTS.filter(shows).length;
     const queryClient = useQueryClient();
     const canReadSettings = useCanReadSettings();
     const toast = useToast();
@@ -500,7 +509,10 @@ export const RuntimeConfigSettings = () => {
 
     return (
         <div className="max-w-6xl space-y-5">
-            <WithheldValuesNote fields={settings?.redacted_fields} labels={{ 'llm.api_url': t('settings.withheld.llmApiUrl'), 'github.api_url': t('settings.withheld.githubApiUrl') }} />
+            <WithheldValuesNote fields={settings?.redacted_fields} labels={{
+                ...(shows('llm') ? { 'llm.api_url': t('settings.withheld.llmApiUrl') } : {}),
+                ...(shows('github') ? { 'github.api_url': t('settings.withheld.githubApiUrl') } : {}),
+            }} />
             {errorMessages.length > 0 && (
                 <section
                     aria-label={runtimeText('runtimeValidationSummary', 'Review the highlighted fields before saving.')}
@@ -514,26 +526,26 @@ export const RuntimeConfigSettings = () => {
                     </ul>
                 </section>
             )}
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-4">
-                <fieldset
+            {formCount > 0 && <div className={formCount > 1 ? 'grid grid-cols-1 gap-5 lg:grid-cols-2 2xl:grid-cols-4' : 'grid max-w-3xl grid-cols-1 gap-5'}>
+                {shows('aiLanguage') && <fieldset
                     aria-labelledby="runtime-ai-language-heading"
-                    className="card min-w-0 space-y-4"
+                    className="card card-pad min-w-0 space-y-4"
                     disabled={appMutation.isPending}
                 >
                     <div className="min-w-0">
-                        <h2 id="runtime-ai-language-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
+                        <h3 id="runtime-ai-language-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
                             <Globe2 aria-hidden="true" className="h-5 w-5 text-feedback-success" />
                             {t('settings.aiOutputLanguage')}
-                        </h2>
+                        </h3>
                         <p className="break-words text-sm text-content-secondary">{t('settings.aiOutputLanguageDescription')}</p>
                     </div>
-                    <div className="space-y-3">
+                    <div className="flex flex-col gap-3">
                         <div>
                             <div className="mb-1 flex min-w-0 items-center justify-between gap-2">
                                 <label htmlFor="ai-language-mode" className="text-sm font-medium text-content-primary">{t('settings.aiLanguageMode')}</label>
                                 <SourceBadge source={fieldSource(settings.app, 'ai_language_mode')} />
                             </div>
-                            <select
+                            <Select
                                 id="ai-language-mode"
                                 value={effectiveAppForm.ai_language_mode}
                                 onChange={event => setAppForm({ ...effectiveAppForm, ai_language_mode: event.target.value as AILanguageMode })}
@@ -542,7 +554,7 @@ export const RuntimeConfigSettings = () => {
                                 <option value="auto">{t('common.language.auto')}</option>
                                 <option value="en">{t('common.language.en')}</option>
                                 <option value="ru">{t('common.language.ru')}</option>
-                            </select>
+                            </Select>
                             <p className="mt-1 text-xs text-content-secondary">{t('settings.aiLanguageHelp')}</p>
                         </div>
                     </div>
@@ -550,29 +562,29 @@ export const RuntimeConfigSettings = () => {
                         <Save aria-hidden="true" className="mr-2 h-4 w-4" />
                         {t('settings.saveAiLanguage')}
                     </Button>
-                </fieldset>
+                </fieldset>}
 
-                <fieldset
+                {shows('llm') && <fieldset
                     aria-labelledby="runtime-llm-heading"
-                    className="card min-w-0 space-y-4"
+                    className="card card-pad min-w-0 space-y-4"
                     disabled={llmMutation.isPending}
                 >
                     <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                            <h2 id="runtime-llm-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
+                            <h3 id="runtime-llm-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
                                 <ServerCog aria-hidden="true" className="h-5 w-5 text-action" />
                                 {t('settings.llmProvider')}
-                            </h2>
+                            </h3>
                             <p className="break-words text-sm text-content-secondary">{t('settings.llmProviderDescription')}</p>
                         </div>
                     </div>
-                    <div className="space-y-3">
+                    <div className="flex flex-col gap-3">
                         <div>
                             <div className="mb-1 flex min-w-0 items-center justify-between gap-2">
                                 <label htmlFor="runtime-llm-provider" className="text-sm font-medium text-content-primary">{t('settings.provider')}</label>
                                 <SourceBadge source={fieldSource(settings.llm, 'provider')} />
                             </div>
-                            <select
+                            <Select
                                 id="runtime-llm-provider"
                                 value={effectiveLlmForm.provider}
                                 onChange={event => {
@@ -585,7 +597,7 @@ export const RuntimeConfigSettings = () => {
                                 <option value="openrouter">{t('surfaces.runtimeConfig.openrouter')}</option>
                                 <option value="nvidia">NVIDIA</option>
                                 <option value="custom">{t('surfaces.runtimeConfig.custom')}</option>
-                            </select>
+                            </Select>
                         </div>
                         <div>
                             <div className="mb-1 flex justify-end"><SourceBadge source={fieldSource(settings.llm, 'model')} /></div>
@@ -676,21 +688,21 @@ export const RuntimeConfigSettings = () => {
                         <Save aria-hidden="true" className="mr-2 h-4 w-4" />
                         {t('settings.saveLLM')}
                     </Button>
-                </fieldset>
+                </fieldset>}
 
-                <fieldset
+                {shows('github') && <fieldset
                     aria-labelledby="runtime-github-heading"
-                    className="card min-w-0 space-y-4"
+                    className="card card-pad min-w-0 space-y-4"
                     disabled={githubMutation.isPending}
                 >
                     <div className="min-w-0">
-                        <h2 id="runtime-github-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
+                        <h3 id="runtime-github-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
                             <ServerCog aria-hidden="true" className="h-5 w-5 text-content-primary" />
                             {t('settings.github')}
-                        </h2>
+                        </h3>
                         <p className="break-words text-sm text-content-secondary">{t('settings.githubDescription')}</p>
                     </div>
-                    <div className="space-y-3">
+                    <div className="flex flex-col gap-3">
                         <div>
                             <div className="mb-1 flex justify-end"><SourceBadge source={fieldSource(settings.github, 'api_url')} /></div>
                             <Input
@@ -778,21 +790,21 @@ export const RuntimeConfigSettings = () => {
                         <Save aria-hidden="true" className="mr-2 h-4 w-4" />
                         {t('settings.saveGitHub')}
                     </Button>
-                </fieldset>
+                </fieldset>}
 
-                <fieldset
+                {shows('webIntake') && <fieldset
                     aria-labelledby="runtime-web-intake-heading"
-                    className="card min-w-0 space-y-4"
+                    className="card card-pad min-w-0 space-y-4"
                     disabled={webIntakeMutation.isPending}
                 >
                     <div className="min-w-0">
-                        <h2 id="runtime-web-intake-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
+                        <h3 id="runtime-web-intake-heading" className="flex items-center gap-2 text-lg font-semibold text-content-primary">
                             <ShieldAlert aria-hidden="true" className="h-5 w-5 text-feedback-warning" />
                             {t('settings.webIntake')}
-                        </h2>
+                        </h3>
                         <p className="break-words text-sm text-content-secondary">{t('settings.webIntakeDescription')}</p>
                     </div>
-                    <div className="space-y-3">
+                    <div className="flex flex-col gap-3">
                         <SecretState configured={settings.web_intake.has_token} source={fieldSource(settings.web_intake, 'token')} />
                         <Input
                             disabled={effectiveWebIntakeForm.clear_token}
@@ -835,14 +847,14 @@ export const RuntimeConfigSettings = () => {
                         <Save aria-hidden="true" className="mr-2 h-4 w-4" />
                         {t('settings.saveWebIntake')}
                     </Button>
-                </fieldset>
-            </div>
+                </fieldset>}
+            </div>}
 
-            <section className="card min-w-0 space-y-3">
-                <h2 className="flex items-center gap-2 text-lg font-semibold text-content-primary">
+            {shows('restart') && <section className="card card-pad min-w-0 space-y-3">
+                <h3 className="flex items-center gap-2 text-lg font-semibold text-content-primary">
                     <RefreshCcw aria-hidden="true" className="h-5 w-5 text-content-secondary" />
                     {t('settings.restartRequired')}
-                </h2>
+                </h3>
                 <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                     {settings.restart_required.length === 0 && (
                         <QueryEmptyState className="md:col-span-2" title={t('queryFeedback.emptyTitle')} />
@@ -854,7 +866,7 @@ export const RuntimeConfigSettings = () => {
                         </div>
                     ))}
                 </div>
-            </section>
+            </section>}
             <SettingsUnsavedBar dirty={isAppChanged || isLlmChanged || isGitHubChanged || isWebIntakeChanged}
                 saving={appMutation.isPending || llmMutation.isPending || githubMutation.isPending || webIntakeMutation.isPending}
                 hint={t('settings.unsaved.saveEachSection')}

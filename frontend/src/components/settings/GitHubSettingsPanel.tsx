@@ -2,16 +2,18 @@ import { SettingsUnsavedBar } from './SettingsUnsavedBar';
 import { useId, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Edit2, Github, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
+import { Edit2, Eye, Github, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
+import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { useConfirmDialog } from '../common/useConfirmDialog';
 import { QueryErrorState } from '../feedback/QueryState';
 import { useToast } from '../feedback/toast';
 import { githubService } from '../../services/githubService';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { AdminAccessGate } from './AdminAccessGate';
+import { useSettingsReadOnly } from './sharedUnlock';
 import type {
     GitHubAutomationEventType,
     GitHubAutomationTargetStatus,
@@ -21,6 +23,7 @@ import type {
 import type { TaskStatus } from '../../types/task';
 import { githubRuleDisplay } from '../../i18n/seedDisplay';
 
+import { Select } from '../../components/common/Select';
 const eventOptions: Array<{ value: GitHubAutomationEventType; labelKey: string }> = [
     { value: 'github_pr_opened', labelKey: 'settingsGithubAutomation.events.github_pr_opened' },
     { value: 'github_pr_reopened', labelKey: 'settingsGithubAutomation.events.github_pr_reopened' },
@@ -63,11 +66,16 @@ export const GitHubSettingsPanel = () => {
     const [baselineForm, setBaselineForm] = useState<GitHubStatusAutomationRuleCreate>(initialForm);
     const [formErrors, setFormErrors] = useState<FormErrors>({});
     const [editingRuleId, setEditingRuleId] = useState<number | null>(null);
+    // Creating, editing and viewing a rule all happen in the shared drawer.
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const eventSelectId = useId();
     const fromStatusSelectId = useId();
     const targetStatusSelectId = useId();
     const saveStatusId = useId();
+    // Without the admin key each rule opens read-only through View; everything that changes a rule is disabled.
+    const readOnlyNote = useSettingsReadOnly();
+    const readOnly = readOnlyNote !== null;
 
     const eventLabel = (eventType: GitHubAutomationEventType) => {
         const option = eventOptions.find(candidate => candidate.value === eventType);
@@ -92,6 +100,12 @@ export const GitHubSettingsPanel = () => {
         setForm(nextForm);
         setBaselineForm(nextForm);
         setFormErrors({});
+        setDrawerOpen(false);
+    };
+
+    const openNewRule = () => {
+        resetFormNow();
+        setDrawerOpen(true);
     };
 
     // feedback-policy: mutation pending,toast - freeze the draft snapshot and preserve it on failure.
@@ -220,6 +234,7 @@ export const GitHubSettingsPanel = () => {
         setForm(nextForm);
         setBaselineForm(nextForm);
         setFormErrors({});
+        setDrawerOpen(true);
     };
 
     const requestDraftTransition = (onDiscard: () => void) => {
@@ -240,9 +255,11 @@ export const GitHubSettingsPanel = () => {
     };
 
     const handleEdit = (rule: GitHubStatusAutomationRule) => {
-        if (editingRuleId === rule.id) return;
+        if (drawerOpen && editingRuleId === rule.id) return;
         requestDraftTransition(() => editRuleNow(rule));
     };
+
+    const closeDrawer = () => requestDraftTransition(resetFormNow);
 
     const handleDelete = (rule: GitHubStatusAutomationRule) => {
         requestConfirmation({
@@ -280,6 +297,11 @@ export const GitHubSettingsPanel = () => {
     const isSaving = createMutation.isPending || updateMutation.isPending;
     const rowMutationPending = toggleMutation.isPending || deleteMutation.isPending;
     const formLocked = isSaving || rowMutationPending;
+    const editingRule = editingRuleId === null ? undefined : rules.find(rule => rule.id === editingRuleId);
+    const editingName = editingRule ? githubRuleDisplay(editingRule).name : form.name;
+    const drawerTitle = editingRuleId === null
+        ? t('settingsGithubAutomation.newRule')
+        : t(readOnly ? 'settingsGithubAutomation.viewRule' : 'settingsGithubAutomation.editRule', { name: editingName });
 
     return (
         <div className="max-w-6xl space-y-5">
@@ -301,9 +323,9 @@ export const GitHubSettingsPanel = () => {
                         variant="outline"
                         size="sm"
                         className="w-full shrink-0 sm:w-auto"
-                        onClick={() => requestDraftTransition(resetFormNow)}
-                        disabled={formLocked}
-                        aria-describedby={formLocked ? saveStatusId : undefined}
+                        onClick={openNewRule}
+                        disabled={formLocked || readOnly}
+                        aria-describedby={readOnly ? readOnlyNote?.noteId : formLocked ? saveStatusId : undefined}
                         title={formLocked ? t('settingsGithubAutomation.rowUpdateInProgress') : undefined}
                     >
                         <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
@@ -311,118 +333,9 @@ export const GitHubSettingsPanel = () => {
                     </Button>
                 </div>
 
-                <fieldset
-                    className="contents"
-                    disabled={formLocked}
-                    aria-busy={formLocked}
-                    aria-describedby={formLocked ? saveStatusId : undefined}
-                >
-                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
-                        <div className="lg:col-span-3">
-                            <Input
-                                label={t('settingsGithubAutomation.name')}
-                                value={form.name}
-                                onChange={event => updateField('name', event.target.value)}
-                                placeholder={t('settingsGithubAutomation.namePlaceholder')}
-                                maxLength={255}
-                                required
-                                error={formErrors.name}
-                            />
-                        </div>
-                        <div className="lg:col-span-2">
-                            <label htmlFor={eventSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.event')}</label>
-                            <select
-                                id={eventSelectId}
-                                value={form.github_event_type}
-                                onChange={event => updateField('github_event_type', event.target.value as GitHubAutomationEventType)}
-                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                            >
-                                {eventOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="lg:col-span-2">
-                            <label htmlFor={fromStatusSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.fromStatus')}</label>
-                            <select
-                                id={fromStatusSelectId}
-                                value={form.from_status || ''}
-                                onChange={event => updateField('from_status', (event.target.value || null) as TaskStatus | null)}
-                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                            >
-                                <option value="">{t('settingsGithubAutomation.any')}</option>
-                                {statusOptions.map(status => (
-                                    <option key={status} value={status}>{statusLabel(status)}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="lg:col-span-2">
-                            <label htmlFor={targetStatusSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.targetStatus')}</label>
-                            <select
-                                id={targetStatusSelectId}
-                                value={form.target_status}
-                                onChange={event => updateField('target_status', event.target.value as GitHubAutomationTargetStatus)}
-                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
-                            >
-                                {targetStatusOptions.map(status => (
-                                    <option key={status} value={status}>{statusLabel(status)}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="lg:col-span-1">
-                            <Input
-                                label={t('settingsGithubAutomation.order')}
-                                type="number"
-                                step={1}
-                                value={form.sort_order}
-                                onChange={event => updateField('sort_order', Number(event.target.value))}
-                                error={formErrors.sort_order}
-                            />
-                        </div>
-                        <div className="flex items-end lg:col-span-2">
-                            <Checkbox
-                                label={t('settingsGithubAutomation.enabled')}
-                                checked={form.enabled}
-                                onChange={checked => updateField('enabled', checked)}
-                                className="pb-2"
-                            />
-                        </div>
-                        <div className="min-w-0 lg:col-span-6">
-                            <Input
-                                label={t('settingsGithubAutomation.descriptionField')}
-                                value={form.description || ''}
-                                onChange={event => updateField('description', event.target.value)}
-                                placeholder={t('settingsGithubAutomation.descriptionPlaceholder')}
-                            />
-                        </div>
-                        <div className="min-w-0 lg:col-span-6">
-                            <Input
-                                label={t('settingsGithubAutomation.reasonTemplate')}
-                                value={form.reason_template || ''}
-                                onChange={event => updateField('reason_template', event.target.value)}
-                                placeholder={t('settingsGithubAutomation.reasonTemplatePlaceholder')}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col-reverse items-stretch justify-end gap-2 sm:flex-row sm:items-center">
-                        {editingRuleId !== null && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full sm:w-auto"
-                                onClick={() => requestDraftTransition(resetFormNow)}
-                            >
-                                <X aria-hidden="true" className="mr-1 h-4 w-4" />
-                                {t('settingsGithubAutomation.cancel')}
-                            </Button>
-                        )}
-                        <Button className="w-full sm:w-auto" size="sm" onClick={handleSubmit} isLoading={isSaving}>
-                            <Save aria-hidden="true" className="mr-1 h-4 w-4" />
-                            {editingRuleId !== null ? t('settingsGithubAutomation.saveRule') : t('settingsGithubAutomation.createRule')}
-                        </Button>
-                    </div>
-                </fieldset>
+                {readOnly && (
+                    <p className="text-sm text-content-secondary">{t('settingsGithubAutomation.readOnlyHint')}</p>
+                )}
 
                 <p id={saveStatusId} className="min-h-4 text-right text-xs text-content-secondary" aria-live="polite">
                     {isSaving
@@ -432,6 +345,128 @@ export const GitHubSettingsPanel = () => {
                             : ''}
                 </p>
             </div>
+
+            <SlideOverDrawer
+                open={drawerOpen}
+                title={drawerTitle}
+                ariaLabel={drawerTitle}
+                onClose={closeDrawer}
+                closeDisabled={isSaving}
+                closeLabel={t('actions.close')}
+                footer={readOnly ? undefined : (
+                    <div className="flex flex-col-reverse items-stretch justify-end gap-2 sm:flex-row sm:items-center">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full sm:w-auto"
+                            onClick={closeDrawer}
+                            disabled={isSaving}
+                        >
+                            <X aria-hidden="true" className="mr-1 h-4 w-4" />
+                            {t('settingsGithubAutomation.cancel')}
+                        </Button>
+                        <Button className="w-full sm:w-auto" size="sm" onClick={handleSubmit} isLoading={isSaving} disabled={formLocked}>
+                            <Save aria-hidden="true" className="mr-1 h-4 w-4" />
+                            {editingRuleId !== null ? t('settingsGithubAutomation.saveRule') : t('settingsGithubAutomation.createRule')}
+                        </Button>
+                    </div>
+                )}
+            >
+                <form
+                    className="p-5"
+                    onSubmit={event => {
+                        event.preventDefault();
+                        if (!readOnly) handleSubmit();
+                    }}
+                >
+                    <fieldset
+                        className="min-w-0 space-y-4"
+                        disabled={formLocked || readOnly}
+                        aria-busy={formLocked}
+                        aria-describedby={readOnly ? readOnlyNote?.noteId : formLocked ? saveStatusId : undefined}
+                    >
+                        <Input
+                            label={t('settingsGithubAutomation.name')}
+                            value={form.name}
+                            onChange={event => updateField('name', event.target.value)}
+                            placeholder={t('settingsGithubAutomation.namePlaceholder')}
+                            maxLength={255}
+                            required
+                            error={formErrors.name}
+                        />
+                        <Input
+                            label={t('settingsGithubAutomation.descriptionField')}
+                            value={form.description || ''}
+                            onChange={event => updateField('description', event.target.value)}
+                            placeholder={t('settingsGithubAutomation.descriptionPlaceholder')}
+                        />
+                        <div>
+                            <label htmlFor={eventSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.event')}</label>
+                            <Select
+                                id={eventSelectId}
+                                value={form.github_event_type}
+                                onChange={event => updateField('github_event_type', event.target.value as GitHubAutomationEventType)}
+                                className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                            >
+                                {eventOptions.map(option => (
+                                    <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
+                                ))}
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label htmlFor={fromStatusSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.fromStatus')}</label>
+                                <Select
+                                    id={fromStatusSelectId}
+                                    value={form.from_status || ''}
+                                    onChange={event => updateField('from_status', (event.target.value || null) as TaskStatus | null)}
+                                    className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                >
+                                    <option value="">{t('settingsGithubAutomation.any')}</option>
+                                    {statusOptions.map(status => (
+                                        <option key={status} value={status}>{statusLabel(status)}</option>
+                                    ))}
+                                </Select>
+                            </div>
+                            <div>
+                                <label htmlFor={targetStatusSelectId} className="mb-1 block text-sm font-medium text-content-primary">{t('settingsGithubAutomation.targetStatus')}</label>
+                                <Select
+                                    id={targetStatusSelectId}
+                                    value={form.target_status}
+                                    onChange={event => updateField('target_status', event.target.value as GitHubAutomationTargetStatus)}
+                                    className="w-full rounded-md border border-border-strong px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
+                                >
+                                    {targetStatusOptions.map(status => (
+                                        <option key={status} value={status}>{statusLabel(status)}</option>
+                                    ))}
+                                </Select>
+                            </div>
+                        </div>
+                        <Input
+                            label={t('settingsGithubAutomation.reasonTemplate')}
+                            value={form.reason_template || ''}
+                            onChange={event => updateField('reason_template', event.target.value)}
+                            placeholder={t('settingsGithubAutomation.reasonTemplatePlaceholder')}
+                        />
+                        <div className="grid grid-cols-2 items-end gap-4">
+                            <Input
+                                label={t('settingsGithubAutomation.order')}
+                                type="number"
+                                step={1}
+                                value={form.sort_order}
+                                onChange={event => updateField('sort_order', Number(event.target.value))}
+                                error={formErrors.sort_order}
+                            />
+                            <Checkbox
+                                label={t('settingsGithubAutomation.enabled')}
+                                checked={form.enabled}
+                                onChange={checked => updateField('enabled', checked)}
+                                className="pb-2"
+                            />
+                        </div>
+                    </fieldset>
+                </form>
+            </SlideOverDrawer>
 
             <div className="overflow-hidden rounded-lg border border-border bg-surface-card">
                 <div className="overflow-x-auto">
@@ -467,7 +502,7 @@ export const GitHubSettingsPanel = () => {
                                                 <Checkbox
                                                     checked={rule.enabled}
                                                     onChange={checked => toggleMutation.mutate({ ruleId: rule.id, enabled: checked })}
-                                                    disabled={isSaving || rowMutationPending}
+                                                    disabled={readOnly || isSaving || rowMutationPending}
                                                     aria-label={t(
                                                         rule.enabled
                                                             ? 'settingsGithubAutomation.disableRule'
@@ -503,18 +538,20 @@ export const GitHubSettingsPanel = () => {
                                                     variant="outline"
                                                     size="sm"
                                                     onClick={() => handleEdit(rule)}
-                                                    disabled={isSaving || rowMutationPending}
-                                                    aria-label={t('settingsGithubAutomation.editRule', { name: display.name })}
-                                                    title={rowDisabledReason}
+                                                    disabled={!readOnly && (isSaving || rowMutationPending)}
+                                                    aria-label={t(readOnly ? 'settingsGithubAutomation.viewRule' : 'settingsGithubAutomation.editRule', { name: display.name })}
+                                                    title={readOnly ? undefined : rowDisabledReason}
                                                 >
-                                                    <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />
+                                                    {readOnly
+                                                        ? <Eye aria-hidden="true" className="h-3.5 w-3.5" />
+                                                        : <Edit2 aria-hidden="true" className="h-3.5 w-3.5" />}
                                                 </Button>
                                                 <Button
                                                     variant="danger"
                                                     size="sm"
                                                     onClick={() => handleDelete(rule)}
                                                     isLoading={isDeleting}
-                                                    disabled={isSaving || rowMutationPending}
+                                                    disabled={readOnly || isSaving || rowMutationPending}
                                                     aria-busy={isDeleting}
                                                     aria-label={t('settingsGithubAutomation.deleteRule', { name: display.name })}
                                                     title={rowDisabledReason}

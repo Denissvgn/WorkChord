@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TaskBrief } from '../../types/task';
@@ -6,8 +6,13 @@ import { Button } from '../common/Button';
 
 import { newCriterion } from './taskEditorContract';
 
-export const TaskBriefEditor = ({ value, onChange, disabled = false, hideContext = false }: {
+/**
+ * `part` splits the brief for a short create form: `essential` is the goal and the acceptance criteria,
+ * `details` is everything else, and `all` (the default) is the whole brief. `actions` sit beside Add criterion.
+ */
+export const TaskBriefEditor = ({ value, onChange, disabled = false, hideContext = false, part = 'all', actions }: {
     value: TaskBrief; onChange: (value: TaskBrief) => void; disabled?: boolean; hideContext?: boolean;
+    part?: 'all' | 'essential' | 'details'; actions?: ReactNode;
 }) => {
     const { t } = useTranslation();
     const id = useId();
@@ -16,15 +21,19 @@ export const TaskBriefEditor = ({ value, onChange, disabled = false, hideContext
         [criteria[index], criteria[index + offset]] = [criteria[index + offset], criteria[index]];
         onChange({ ...value, acceptance_criteria: criteria });
     };
+    const showEssential = part !== 'details';
+    const showDetails = part !== 'essential';
+    const textFields = (['goal', 'context', 'scope', 'exclusions'] as const)
+        .filter(field => (!hideContext || field !== 'context') && (field === 'goal' ? showEssential : showDetails));
     return <fieldset disabled={disabled} className="space-y-4 min-w-0">
-        <legend className="mb-3 text-base font-semibold text-content-primary">{t('domain.brief')}</legend>
-        {(['goal', 'context', 'scope', 'exclusions'] as const).filter(field => !hideContext || field !== 'context').map(field => <div key={field}>
+        <legend className={showEssential ? 'mb-3 text-base font-semibold text-content-primary' : 'sr-only'}>{t('domain.brief')}</legend>
+        {textFields.map(field => <div key={field}>
             <label className="field-lbl" htmlFor={`${id}-${field}`}>{t(`domain.${field}`)}</label>
             <textarea id={`${id}-${field}`} className="input min-h-20 w-full" value={value[field]}
                 maxLength={field === 'goal' ? 8000 : field === 'context' ? 20000 : 12000}
                 onChange={event => onChange({ ...value, [field]: event.target.value })} />
         </div>)}
-        <div className="space-y-3 border-t border-border pt-4">
+        {showEssential && <div className={part === 'all' ? 'space-y-3 border-t border-border pt-4' : 'space-y-3'}>
             <h3 className="font-semibold text-content-primary">{t('domain.criteria')}</h3>
             <p className="text-sm text-content-secondary">{t('domain.criteriaHelp')}</p>
             {value.acceptance_criteria.length === 0 && <p className="text-sm text-content-secondary">{t('domain.noCriteria')}</p>}
@@ -43,12 +52,15 @@ export const TaskBriefEditor = ({ value, onChange, disabled = false, hideContext
                 <textarea id={`${id}-${criterion.id}-verify`} className="input min-h-16 w-full" value={criterion.verification} maxLength={4000}
                     onChange={event => onChange({ ...value, acceptance_criteria: value.acceptance_criteria.map(item => item.id === criterion.id ? { ...item, verification: event.target.value } : item) })} />
             </div>)}
-            <Button type="button" variant="secondary" size="sm" disabled={value.acceptance_criteria.length >= 100}
-                onClick={() => onChange({ ...value, acceptance_criteria: [...value.acceptance_criteria, newCriterion()] })}>
-                <Plus className="mr-1 h-4 w-4" aria-hidden="true" />{t('domain.addCriterion')}
-            </Button>
-        </div>
-        {(['verification', 'artifact_expectations'] as const).map(field => <div key={field}>
+            <div className="flex flex-wrap items-center gap-2">
+                <Button type="button" variant="secondary" size="sm" disabled={value.acceptance_criteria.length >= 100}
+                    onClick={() => onChange({ ...value, acceptance_criteria: [...value.acceptance_criteria, newCriterion()] })}>
+                    <Plus className="mr-1 h-4 w-4" aria-hidden="true" />{t('domain.addCriterion')}
+                </Button>
+                {actions}
+            </div>
+        </div>}
+        {showDetails && (['verification', 'artifact_expectations'] as const).map(field => <div key={field}>
             <label className="field-lbl" htmlFor={`${id}-${field}`}>{t(`domain.${field}`)}</label>
             <textarea id={`${id}-${field}`} className="input min-h-20 w-full" value={value[field]} maxLength={12000}
                 onChange={event => onChange({ ...value, [field]: event.target.value })} />

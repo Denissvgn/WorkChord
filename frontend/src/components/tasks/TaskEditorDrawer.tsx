@@ -14,6 +14,7 @@ import { TaskContextSummary } from './TaskContextSummary';
 import { TaskForm } from './TaskForm';
 import { TaskReadView } from './TaskReadView';
 import { useIdentity } from '../../features/identity/identityContext';
+import { useScopeLink } from '../../features/scope/useScopeLink';
 
 type DrawerCopy = ReactNode | ((task: Task | null) => ReactNode);
 
@@ -46,7 +47,7 @@ export const TaskEditorDrawer = ({
     title?: DrawerCopy;
     subtitle?: DrawerCopy;
     icon?: ReactNode;
-    beforeForm?: ReactNode;
+    beforeForm?: DrawerCopy;
     className?: string;
     restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
@@ -94,11 +95,12 @@ const TaskEditorDrawerContent = ({
     title?: DrawerCopy;
     subtitle?: DrawerCopy;
     icon?: ReactNode;
-    beforeForm?: ReactNode;
+    beforeForm?: DrawerCopy;
     className?: string;
     restoreFocusRef?: RefObject<HTMLElement | null>;
 }) => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const guard = useDraftDismissal(onClose);
     const navigate = useNavigate();
     const [params] = useSearchParams();
@@ -170,14 +172,14 @@ const TaskEditorDrawerContent = ({
                         </Button>
                     </div>
                 )}
-                {beforeForm}
+                {resolveDrawerCopy(beforeForm, editorTask)}
                 {editorTask?.detail_context && <TaskContextSummary key={`context:${editorTask.version}`} detail={editorTask.detail_context} onReload={() => guard.request(() => {
                     guard.setPending(true);
                     void refetch().then(result => { if (result.data && !result.isError) setOpeningSnapshot(result.data); })
                         .finally(() => guard.setPending(false));
                 })} onNavigate={id => guard.request(() => {
                     const next = new URLSearchParams(params); next.set('task', String(id));
-                    onClose(); navigate(`/tasks?${next}`);
+                    onClose(); navigate(scopeLink(`/tasks?${next}`));
                 })} />}
                 {editorTask && !editAll && (
                     <TaskReadView

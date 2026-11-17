@@ -118,7 +118,7 @@ describe('ContextHelp', () => {
         });
         await roadmapRender.user.click(screen.getByRole('button', {
             name: i18n.t('contextHelp.openForPage', {
-                page: i18n.t('documentTitles.roadmap'),
+                page: i18n.t('nav.projects'),
             }),
         }));
 
@@ -137,7 +137,7 @@ describe('ContextHelp', () => {
         })).toHaveAttribute('href', '/plan');
     });
 
-    it('opens the setup guide through the event the first-run panel will listen for', async () => {
+    it('opens the setup guide through the event the Get started panel listens for', async () => {
         const listener = vi.fn();
         window.addEventListener(OPEN_SETUP_GUIDE_EVENT, listener);
         try {

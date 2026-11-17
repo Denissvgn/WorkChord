@@ -1,12 +1,16 @@
 import { useState, useMemo, useId } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Trash2, ChevronDown, ChevronRight, Info } from 'lucide-react';
+import { Trash2, ChevronRight, Info } from 'lucide-react';
 import { Checkbox } from '../common/Checkbox';
 import { Input } from '../common/Input';
+import { ReadOnlyFieldset } from './ReadOnlyFieldset';
+import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import type { EffortModifier } from '../../types/schedulingRules';
 import { MATH_OPERATIONS, FORMULA_TEMPLATES, FORMULA_ASSIGNEE_FIELDS } from '../../types/schedulingRules';
 import { effortModifierDisplay } from '../../i18n/schedulingDisplay';
 
+import { Button } from '../../components/common/Button';
+import { Select } from '../../components/common/Select';
 interface Props {
     modifier: EffortModifier;
     onChange: (modifier: EffortModifier) => void;
@@ -144,24 +148,23 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
         >
             {/* Header */}
             <div className="flex flex-wrap items-center gap-3 p-4 sm:flex-nowrap sm:gap-4">
+                <ReadOnlyFieldset>
                 <Checkbox
                     checked={modifier.enabled}
                     onChange={handleToggleEnabled}
                     aria-label={t('settingsScheduling.aria.enableModifier', { id: modifier.id })}
                 />
+                </ReadOnlyFieldset>
 
-                <button
+                <Button
                     type="button"
                     onClick={() => setExpanded(!expanded)}
                     className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                    aria-haspopup="dialog"
                     aria-expanded={expanded}
-                    aria-controls={detailsId}
-                >
-                    {expanded ? (
-                        <ChevronDown className="w-4 h-4 text-content-tertiary" />
-                    ) : (
-                        <ChevronRight className="w-4 h-4 text-content-tertiary" />
-                    )}
+                    aria-controls={expanded ? detailsId : undefined}
+                 variant="secondary">
+                    <ChevronRight aria-hidden="true" className="w-4 h-4 text-content-tertiary" />
                     <span className="min-w-0 break-words">
                         <span className="font-medium text-content-primary">{display.name}</span>
                         {display.isBuiltIn && (
@@ -170,29 +173,39 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             </code>
                         )}
                     </span>
-                </button>
+                </Button>
 
                 {/* Preview */}
-                {!expanded && (
-                    <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-none sm:max-w-xs">
-                        {modifier.formula || modifier.operation || '—'}
-                    </div>
-                )}
+                <div className="order-last w-full truncate font-mono text-sm text-content-secondary sm:order-none sm:max-w-xs">
+                    {modifier.formula || modifier.operation || '—'}
+                </div>
 
-                <button
+                <ReadOnlyFieldset>
+                <Button
                     type="button"
                     onClick={onRemove}
                     className="p-1 text-content-tertiary hover:text-feedback-danger-foreground transition-colors"
                     title={t('settingsScheduling.aria.removeModifier')}
                     aria-label={t('settingsScheduling.aria.removeModifier')}
-                >
+                 variant="secondary">
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
-                </button>
+                </Button>
+                </ReadOnlyFieldset>
             </div>
 
-            {/* Expanded Details */}
-            {expanded && (
-                <div id={detailsId} className="animate-in slide-in-from-top-2 space-y-4 border-t border-border-subtle px-4 pb-4 pt-2 duration-200">
+            {/* The details open in the shared drawer; changes stay in the rules until they are saved. */}
+            <SlideOverDrawer
+                open={expanded}
+                title={display.name}
+                subtitle={display.isBuiltIn ? display.technicalId : undefined}
+                ariaLabel={display.name}
+                onClose={() => setExpanded(false)}
+                closeLabel={t('actions.close')}
+                className="max-w-xl"
+            >
+                <ReadOnlyFieldset>
+                <div id={detailsId} className="space-y-4 p-5">
+                    <p className="text-xs text-content-secondary">{t('settingsScheduling.drawerHint')}</p>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <Input
                             label={t('settingsScheduling.fields.id')}
@@ -204,7 +217,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             <label htmlFor={`${detailsId}-type`} className="mb-1 block text-sm font-medium text-content-primary">
                                 {t('settingsScheduling.fields.type')}
                             </label>
-                            <select
+                            <Select
                                 id={`${detailsId}-type`}
                                 value={modifier.operation ? '_operation_' : parsedFormula.templateId}
                                 onChange={(e) => {
@@ -224,7 +237,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                 <optgroup label={t('settingsScheduling.groups.mathOperation')}>
                                     <option value="_operation_">{t('settingsScheduling.groups.roundResult')}</option>
                                 </optgroup>
-                            </select>
+                            </Select>
                         </div>
                     </div>
 
@@ -234,7 +247,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                             <label htmlFor={`${detailsId}-operation`} className="mb-1 block text-sm font-medium text-content-primary">
                                 {t('settingsScheduling.fields.roundingOperation')}
                             </label>
-                            <select
+                            <Select
                                 id={`${detailsId}-operation`}
                                 value={modifier.operation || 'ceil'}
                                 onChange={(e) => handleOperationChange(e.target.value)}
@@ -243,7 +256,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                 {MATH_OPERATIONS.map(op => (
                                     <option key={op.value} value={op.value}>{t(op.labelKey)}</option>
                                 ))}
-                            </select>
+                            </Select>
                         </div>
                     )}
 
@@ -256,7 +269,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                     <label htmlFor={`${detailsId}-field`} className="mb-1 block text-sm font-medium text-content-primary">
                                         {t('settingsScheduling.fields.assigneeField')}
                                     </label>
-                                    <select
+                                    <Select
                                         id={`${detailsId}-field`}
                                         value={selectedField}
                                         onChange={(e) => handleFieldChange(e.target.value)}
@@ -265,7 +278,7 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                                         {FORMULA_ASSIGNEE_FIELDS.map(f => (
                                             <option key={f.value} value={f.value}>{t(f.labelKey)}</option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
                             )}
 
@@ -356,7 +369,8 @@ export const EffortModifierCard = ({ modifier, onChange, onRemove }: Props) => {
                         </div>
                     </div>
                 </div>
-            )}
+                </ReadOnlyFieldset>
+            </SlideOverDrawer>
         </div>
     );
 };

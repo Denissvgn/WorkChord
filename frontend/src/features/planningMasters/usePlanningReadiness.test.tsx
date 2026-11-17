@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { GanttResponse, GanttTask } from '../../types/gantt';
 import type { Iteration } from '../../types/iteration';
@@ -8,10 +9,6 @@ import type { Task } from '../../types/task';
 import type { TeamMember } from '../../types/team';
 import { useIterationStore } from '../../store/iterationStore';
 import {
-    countPlanningExceptions,
-    enrichPlanningTeamMembers,
-    hasSavedPlanningSchedule,
-    planningLeafTasks,
     usePlanningReadiness,
 } from './usePlanningReadiness';
 
@@ -185,70 +182,9 @@ const taskTree = () => {
 
 const makeWrapper = (client: QueryClient) => (
     ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+        <QueryClientProvider client={client}><MemoryRouter>{children}</MemoryRouter></QueryClientProvider>
     )
 );
-
-describe('planning readiness helpers', () => {
-    it('uses only non-deferred leaves for capacity, workload, and schedule readiness', () => {
-        const tasks = taskTree();
-        const gantt = ganttFixture(tasks);
-        const enriched = enrichPlanningTeamMembers({
-            members: [member],
-            tasks,
-            iteration,
-            gantt,
-        });
-
-        expect(planningLeafTasks(tasks).map(task => task.id)).toEqual([2]);
-        expect(enriched[0]).toMatchObject({
-            capacity_hours: 56,
-            planned_hours: 16,
-        });
-        expect(hasSavedPlanningSchedule(tasks)).toBe(true);
-    });
-
-    it('requires every relevant task to have positive effort and an ordered saved date range', () => {
-        expect(hasSavedPlanningSchedule([
-            taskFixture(),
-            taskFixture({ id: 2, start_date: null, end_date: null }),
-        ])).toBe(false);
-        expect(hasSavedPlanningSchedule([
-            taskFixture({ effort_days: Number.NaN }),
-        ])).toBe(false);
-        expect(hasSavedPlanningSchedule([
-            taskFixture({ start_date: '2026-08-05', end_date: '2026-08-04' }),
-        ])).toBe(false);
-        expect(hasSavedPlanningSchedule([
-            taskFixture(),
-            taskFixture({ id: 2, is_deferred: true, start_date: null, end_date: null }),
-        ])).toBe(true);
-        expect(hasSavedPlanningSchedule([
-            taskFixture(),
-            taskFixture({
-                id: 2,
-                is_composite: true,
-                effort_days: 0,
-                start_date: null,
-                end_date: null,
-            }),
-        ])).toBe(true);
-    });
-
-    it('promotes task and capacity exceptions into review readiness', () => {
-        const tasks = [
-            taskFixture({ is_delayed: true }),
-            taskFixture({ id: 2, is_outside_constraints: true }),
-        ];
-        const members = enrichPlanningTeamMembers({
-            members: [member],
-            tasks,
-            iteration: { ...iteration, working_days: 1 },
-        });
-
-        expect(countPlanningExceptions(tasks, members)).toBe(3);
-    });
-});
 
 describe('usePlanningReadiness query contract', () => {
     beforeEach(() => {

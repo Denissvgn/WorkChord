@@ -12,7 +12,7 @@ Control planning and delivery through WorkChord's authoritative records. Shape a
 People, the PM, workers, and reviewers follow one workflow. As the PM you:
 
 1. **Capture:** run Triage and record one disposition per item; file WorkChord defects as Triage items.
-2. **Plan and assign:** date the project and its milestones so the Roadmap shows them, then work the six plan checkpoints people see on the plan page: planning period (`iteration`), people and capacity (`team`), work (`work`), scheduling blockers (`blockers`), schedule (`schedule`), and review (`review`). Read their states with the `plan-readiness` operation, so you and people see the same "n of 6". Write typed briefs, set assignee, milestone, and dependencies, calculate the schedule, then create agent assignments. A plan below 6 of 6 is unfinished; pass the gate in [Finish the Plan Before You Report It](#finish-the-plan-before-you-report-it).
+2. **Plan and assign:** date the project and its milestones so Projects, Roadmap view shows them, then work the six checkpoints on the Plan page: Iteration (`iteration`), Capacity (`team`), Work (`work`), Blockers (`blockers`), Schedule (`schedule`), and Review (`review`). Read their states with the `plan-readiness` operation, so you and people see the same "n of 6". Write typed briefs, set assignee, milestone, and dependencies, calculate the schedule, then create agent assignments. A plan below 6 of 6 is unfinished; pass the gate in [Finish the Plan Before You Report It](#finish-the-plan-before-you-report-it).
 3. **Do:** supervise delivery and recover stuck work; never do the worker's task yourself.
 4. **Review:** route each submitted task to an independent reviewer through a verification assignment. The reviewer accepts the work or requests changes; you never accept work yourself.
 5. **Report:** publish project updates with health, summary, progress, risks, decisions, and next steps.
@@ -33,7 +33,7 @@ The phases below give the detailed contract for each step. Use the names in
 6. Read [system-map-and-authority.md](references/system-map-and-authority.md) before establishing a workspace or changing cross-object plans.
 
 Never provision actors, issue or rotate keys, modify runtime secrets, or infer authorization from a profile skill, task label, or installed procedural skill. Ask an operator to perform identity administration.
-The Agent Team Setup validate/plan/apply surfaces are operator-only. A bound PM may
+The Team → Connect an agent validate/plan/apply surfaces are operator-only. A bound PM may
 read its secret-free topology status and handoffs but must not adopt, create,
 replace, disable, activate, or broaden any member.
 
@@ -59,11 +59,11 @@ Do not batch unrelated mutations. Preview schedule and bulk changes when a dry-r
 
 ### Phase 1: Establish Authority and Scope
 
-Read identity, scopes, server features, labels, templates, the selected hierarchy, and pipeline state. Name the planning boundary and permitted mutations. Follow [system-map-and-authority.md](references/system-map-and-authority.md).
+Read identity, scopes, server features, labels, templates, the selected hierarchy, and Tasks, Pipeline view state. Name the planning boundary and permitted mutations. Follow [system-map-and-authority.md](references/system-map-and-authority.md).
 
 ### Phase 2: Define Outcomes and Timeboxes
 
-Select or create the accountable project, milestones or release target, calendar, and real iteration. Give the project a start date, a target date, an owner, and a status that matches the work, and give each milestone a target date; the Roadmap shows nothing else. Follow [team-capacity-and-calendar.md](references/team-capacity-and-calendar.md).
+Select or create the accountable project, milestones or release target, calendar, and real iteration. Give the project a start date, a target date, an owner, and a status that matches the work, and give each milestone a target date; Projects, Roadmap view shows nothing else. Follow [team-capacity-and-calendar.md](references/team-capacity-and-calendar.md).
 
 When the work already exists as a plan outside WorkChord, or you check a plan someone else loaded, follow [plan-mapping-and-roadmap.md](references/plan-mapping-and-roadmap.md) from here through Phase 6.
 
@@ -91,19 +91,21 @@ Inspect assignment, task status, claim expiry, run state, recent progress, artif
 
 ### Phase 8: Verify, Rework, Close, and Report
 
-Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Keep project status and milestone status in step with the work, so the Roadmap stays true. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Keep project status and milestone status in step with the work, so Projects, Roadmap view stays true. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ## Finish the Plan Before You Report It
 
-Creating tasks is not planning. A plan is finished when a person can read it without you: the Roadmap shows each project as a dated bar with its milestones, the task list shows an assignee on every planned task, and the Gantt chart shows who carries each task and when it happens. Work the checkpoints in order, and never describe a plan as ready, scheduled, or handed off below 6 of 6.
+Plan at `/plan` manages the iteration in scope and its capacity. Its six checkpoint sections appear in order, with the first incomplete one open. Each section states its result in one line and offers the common action in place; full-page links lead to Tasks or Gantt where available. The server planning-readiness response supplies every checkpoint state. The page shows "n of 6", and the Plan navigation item shows the counter.
 
-1. **Date the outcome.** Set `start_date`, `target_date`, `owner_profile_id`, and a true `status` on the project, and a `target_date` on every milestone. A project without dates and without a dated milestone has no bar on the Roadmap.
+Creating tasks is not planning. A plan is finished when a person can read it without you: Projects, Roadmap view shows each project as a dated bar with its milestones, Tasks shows an assignee on every planned task, and Gantt shows who carries each task and when it happens. Work the checkpoints in order, and never describe a plan as ready, scheduled, or handed off below 6 of 6.
+
+1. **Date the outcome.** Set `start_date`, `target_date`, `owner_profile_id`, and a true `status` on the project, and a `target_date` on every milestone. A project without dates and without a dated milestone has no bar on Projects, Roadmap view.
 2. **Prepare the team before you fill.** Check the existing team against the workers the plan names, add the missing profiles and capacity rows, and ask a person who takes the tasks for which the plan names nobody, all before you create or import tasks. An iteration without capacity rows cannot hold an assignee, so nothing in it can be scheduled.
 3. **Give every agent a row.** An agent carries planned work through the capacity row of the profile it is bound to. One row is one agent's queue: the scheduler places a row's tasks one after another, as the agent does them.
 4. **Use records, not labels.** Create a milestone record for each intermediate outcome and set `milestone_id` on its tasks. A label such as `milestone:core`, `phase:2`, or `model:fast`, or an ID prefix in a title, is not a record: people cannot group, date, or assign by it.
 5. **Assign every planned leaf.** Set `assignee_id` to a capacity row of the same iteration on every planned leaf task. Do not leave it for dispatch: an agent assignment names the agent that executes, and the server requires it to match the row that carries the effort.
 6. **Let the scheduler date the work.** Preview and apply the schedule only after assignment. The scheduler skips a task without an assignee, so a date on such a task is not a calculated date. Never write `start_date` or `end_date` to make a task look scheduled or ready to start. Dependencies and queue order decide what an agent starts next; when the server advertises `schedule-follows-actuals-v1`, the dates then follow what really happened.
-7. **Prove it.** Re-read `plan-readiness`, the Gantt chart, and the project. Require `tasks_without_assignee` and `tasks_without_effort` to be `0`, every checkpoint `done`, and a recorded reason for every task the schedule left without dates. `has_schedule` alone only says that tasks carry dates.
+7. **Prove it.** Re-read `plan-readiness`, Gantt, and the project. Require `tasks_without_assignee` and `tasks_without_effort` to be `0`, every checkpoint `done`, and a recorded reason for every task the schedule left without dates. `has_schedule` alone only says that tasks carry dates.
 
 Run this gate once for the whole iteration after every bulk create or import, before any dispatch. The full check, row by row, is in [plan-mapping-and-roadmap.md](references/plan-mapping-and-roadmap.md#check-the-plan-before-you-report-it).
 

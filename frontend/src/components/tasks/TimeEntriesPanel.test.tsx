@@ -4,6 +4,7 @@ import { renderWithProviders } from '../../test/renderWithProviders';
 import { IdentityContext } from '../../features/identity/identityContext';
 import { TimeEntriesPanel } from './TimeEntriesPanel';
 
+import { Button } from '../../components/common/Button';
 const service = vi.hoisted(() => ({ capabilities: vi.fn(), list: vi.fn(), create: vi.fn(), correct: vi.fn(), void: vi.fn(), get: vi.fn(), history: vi.fn() }));
 vi.mock('../../services/timeEntryService', async importOriginal => ({ ...await importOriginal<typeof import('../../services/timeEntryService')>(), timeEntryService: service }));
 const row = (version = 1) => ({ id: 7, project_id: 2, task_id: 42, task_title: 'Work', principal_id: 1,
@@ -11,7 +12,7 @@ const row = (version = 1) => ({ id: 7, project_id: 2, task_id: 42, task_title: '
 const renderPanel = (parentSubmit?: () => void, draftKey: string | null = 'time-test') => renderWithProviders(<IdentityContext.Provider value={{ identity: {
     mode: 'managed', authenticated: true, configured: true, principal: { id: 1, kind: 'human', display_name: 'Sam' },
     profile: null, workspace_role: 'member', projects: { '2': 'manager' }, csrf_token: null,
-}, refresh: vi.fn(), signOut: async () => undefined }}><form onSubmit={event => { event.preventDefault(); parentSubmit?.(); }}><input aria-label="Parent title" required defaultValue="Work" /><TimeEntriesPanel projectId={2} taskId={42} draftKey={draftKey} onDirty={vi.fn()} onPending={vi.fn()} /><button type="submit">Save parent task</button></form></IdentityContext.Provider>);
+}, refresh: vi.fn(), signOut: async () => undefined }}><form onSubmit={event => { event.preventDefault(); parentSubmit?.(); }}><input aria-label="Parent title" required defaultValue="Work" /><TimeEntriesPanel projectId={2} taskId={42} draftKey={draftKey} onDirty={vi.fn()} onPending={vi.fn()} /><Button type="submit" variant="secondary">Save parent task</Button></form></IdentityContext.Provider>);
 beforeEach(() => {
     sessionStorage.clear(); vi.resetAllMocks();
     service.capabilities.mockResolvedValue({ schema_version: 1, enabled: true });

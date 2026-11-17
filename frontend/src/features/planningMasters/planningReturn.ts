@@ -17,12 +17,12 @@ export const isPlanningStepId = (value: string | null): value is PlanningStepId 
 
 export const PLAN_RETURNED_PARAM = 'returned';
 
-/** Link back to a plan step; `returned` makes the step re-check and advance when done. */
-export const planMasterStepHref = (stepId: PlanningStepId, { returned = false }: { returned?: boolean } = {}) => (
-    `/plan/master?step=${stepId}${returned ? `&${PLAN_RETURNED_PARAM}=1` : ''}`
+/** Link back to a plan section; `returned` re-reads readiness and opens the next section when this one is done. */
+export const planStepHref = (stepId: PlanningStepId, { returned = false }: { returned?: boolean } = {}) => (
+    `/plan?step=${stepId}${returned ? `&${PLAN_RETURNED_PARAM}=1` : ''}`
 );
 
-export const withPlanMasterReturn = (
+export const withPlanReturn = (
     route: string,
     returnStepId: PlanningStepId,
     options: Record<string, string> = {},

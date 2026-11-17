@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../components/common/Button';
+import { Select } from '../../components/common/Select';
 import { teamService } from '../../services/teamService';
 import { getApiErrorMessage } from '../../utils/apiError';
 import { identityService } from './identityService';
@@ -43,15 +44,15 @@ export const LocalProfilePicker = ({ current, onChosen }: { current: WorkProfile
         <p className="text-content-secondary">{t('identity.localProfileHelp')}</p>
         {profiles.isLoading && <p role="status">{t('common.loading')}</p>}
         {profiles.isError && <p role="alert" className="text-feedback-danger-foreground">{t('identity.profilesFailed')}{' '}
-            <button type="button" className="underline" onClick={() => { void profiles.refetch(); }}>{t('taskEditor.retry')}</button></p>}
+            <Button variant="plain" type="button" className="underline" onClick={() => { void profiles.refetch(); }}>{t('taskEditor.retry')}</Button></p>}
         {profiles.isSuccess && people.length === 0 && <p>{t('identity.noPeople')}</p>}
         {people.length > 0 && <form className="space-y-2" onSubmit={submitChoice}>
             <label className="block font-medium" htmlFor={`${ids}-person`}>{t('identity.personProfile')}</label>
-            <select id={`${ids}-person`} className="min-h-11 w-full rounded-md border border-border bg-surface-card px-2" value={profileId}
+            <Select plain id={`${ids}-person`} className="min-h-11 w-full rounded-md border border-border bg-surface-card px-2" value={profileId}
                 onChange={event => setProfileId(event.target.value)}>
                 <option value="">{t('identity.choosePerson')}</option>
                 {people.map(profile => <option key={profile.id} value={profile.id}>{profile.display_name}</option>)}
-            </select>
+            </Select>
             <Button type="submit" size="sm" disabled={!profileId || pending || Number(profileId) === current?.id}>{t('identity.useProfile')}</Button>
         </form>}
         <form className="space-y-2" onSubmit={submitName}>

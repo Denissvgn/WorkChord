@@ -3,6 +3,7 @@ import { notifyManager, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { WORKSPACE_QUERY_POLICIES } from '../../features/workQueryFreshness';
 
+import { Button } from '../../components/common/Button';
 /** Live data older than this reads as possibly out of date. */
 const STALE_AFTER_MS = 5 * 60 * 1000;
 const RECHECK_MS = 30 * 1000;
@@ -28,9 +29,9 @@ export const WorkRefreshStatus = () => {
     const refreshing = active.some(query => query.state.fetchStatus === 'fetching');
     return <div className="flex items-center gap-2 px-4 py-1 text-xs text-content-secondary" role="status">
         <span>{t(failed ? 'teamwork.staleWork' : 'teamwork.mayBeStale')}</span>
-        <button type="button" className="font-medium text-action underline disabled:opacity-60" disabled={refreshing}
-            onClick={() => { void client.refetchQueries({ predicate: query => active.includes(query) }); }}>
+        <Button type="button" className="font-medium text-action underline disabled:opacity-60" disabled={refreshing}
+            onClick={() => { void client.refetchQueries({ predicate: query => active.includes(query) }); }} variant="secondary">
             {t('workFreshness.refresh')}
-        </button>
+        </Button>
     </div>;
 };

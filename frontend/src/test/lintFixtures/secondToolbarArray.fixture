@@ -1,0 +1,12 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// An array of toolbars rendered as children.
+export const Example = () => {
+    const rows = [<PageToolbar key="search" label="Search" />, <PageToolbar key="filters" label="Filters" />];
+    return (
+        <PageLayout>
+            <PageHeader title="Example" purpose="One sentence." />
+            {rows}
+        </PageLayout>
+    );
+};

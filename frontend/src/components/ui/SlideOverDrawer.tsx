@@ -10,6 +10,7 @@ export const SlideOverDrawer = ({
     open,
     title,
     subtitle,
+    actions,
     icon,
     children,
     footer,
@@ -18,6 +19,7 @@ export const SlideOverDrawer = ({
     className,
     initialFocusRef,
     restoreFocusRef,
+    fallbackFocusRef,
     closeOnBackdropClick = true,
     closeDisabled = false,
     closeLabel: closeLabelProp,
@@ -25,6 +27,8 @@ export const SlideOverDrawer = ({
     open: boolean;
     title: ReactNode;
     subtitle?: ReactNode;
+    /** Header actions, shown before the close button. */
+    actions?: ReactNode;
     icon?: ReactNode;
     children: ReactNode;
     footer?: ReactNode;
@@ -33,6 +37,8 @@ export const SlideOverDrawer = ({
     className?: string;
     initialFocusRef?: RefObject<HTMLElement | null>;
     restoreFocusRef?: RefObject<HTMLElement | null>;
+    /** Where focus goes on close when the control that opened the drawer is gone. */
+    fallbackFocusRef?: RefObject<HTMLElement | null>;
     closeOnBackdropClick?: boolean;
     closeDisabled?: boolean;
     closeLabel?: string;
@@ -45,6 +51,7 @@ export const SlideOverDrawer = ({
         onClose,
         initialFocusRef,
         restoreFocusRef,
+        fallbackFocusRef,
         closeDisabled,
     });
 
@@ -107,6 +114,7 @@ export const SlideOverDrawer = ({
                             </h2>
                             {subtitle && <p id={subtitleId} className="truncate text-xs" style={{ color: 'var(--ink-3)' }}>{subtitle}</p>}
                         </div>
+                        {actions}
                         <button
                             type="button"
                             onClick={requestClose}

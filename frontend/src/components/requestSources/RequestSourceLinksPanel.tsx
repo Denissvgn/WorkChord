@@ -16,6 +16,7 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { safeExternalHref } from '../../utils/safeUrl';
 import { Button } from '../common/Button';
 
+import { Select } from '../../components/common/Select';
 const t = i18n.t.bind(i18n);
 
 interface RequestSourceLinksPanelProps {
@@ -232,7 +233,7 @@ export const RequestSourceLinksPanel = ({
 
                 <div className={clsx('grid gap-2', targetType !== 'project' && 'md:grid-cols-[150px_1fr_110px]')}>
                     <label className="block text-sm"><span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.sourceType')}</span>
-                    <select
+                    <Select
                         value={sourceType}
                         onChange={event => setSourceType(event.target.value as RequestSourceType)}
                         className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
@@ -240,7 +241,7 @@ export const RequestSourceLinksPanel = ({
                         {sourceTypeOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                         ))}
-                    </select>
+                    </Select>
                     </label>
                     <label className="block text-sm">
                         <span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.sourceName')}</span>
@@ -285,7 +286,7 @@ export const RequestSourceLinksPanel = ({
                         </label>
                     </div>
                     <label className="block text-sm"><span className="mb-1 block font-medium text-content-primary">{t('surfaces.requestSourceLinks.searchType')}</span>
-                    <select
+                    <Select
                         value={searchType}
                         onChange={event => setSearchType(event.target.value as RequestSourceType | '')}
                         className="w-full rounded-md border border-border-strong bg-surface-card px-3 py-2 text-sm shadow-sm focus:border-action focus:outline-none focus:ring-1 focus:ring-focus"
@@ -294,7 +295,7 @@ export const RequestSourceLinksPanel = ({
                         {sourceTypeOptions.map(option => (
                             <option key={option.value} value={option.value}>{t(option.labelKey)}</option>
                         ))}
-                    </select>
+                    </Select>
                     </label>
                 </div>
 
@@ -319,7 +320,7 @@ export const RequestSourceLinksPanel = ({
                                                     {source.external_key ? ` · ${source.external_key}` : ''}
                                                 </p>
                                             </div>
-                                            <button
+                                            <Button
                                                 type="button"
                                                 onClick={() => {
                                                     setLinkingSourceId(source.id);
@@ -327,13 +328,13 @@ export const RequestSourceLinksPanel = ({
                                                 }}
                                                 disabled={alreadyLinked || linkExistingMutation.isPending}
                                                 className="shrink-0 rounded-md border border-border-strong bg-surface-card px-2 py-1 text-xs font-medium text-content-primary hover:bg-surface-subtle disabled:cursor-not-allowed disabled:opacity-50"
-                                            >
+                                             variant="secondary">
                                                 {alreadyLinked
                                                     ? t('surfaces.requestSourceLinks.linked')
                                                     : linkingSourceId === source.id
                                                         ? t('surfaces.requestSourceLinks.linking')
                                                         : t('surfaces.requestSourceLinks.link')}
-                                            </button>
+                                            </Button>
                                         </div>
                                     );
                                 })}
@@ -388,14 +389,14 @@ export const RequestSourceLinksPanel = ({
             {error && (
                 <div className="mb-3 flex items-start justify-between gap-2 rounded-md border border-feedback-danger-border bg-feedback-danger-muted px-3 py-2 text-xs text-feedback-danger-foreground">
                     <span>{error}</span>
-                    <button
+                    <Button
                         type="button"
                         onClick={() => setError(null)}
                         className="rounded p-0.5 text-feedback-danger hover:bg-feedback-danger-muted-hover"
                         aria-label={t('surfaces.requestSourceLinks.dismissRequestSourceError')} title={t('surfaces.requestSourceLinks.dismissRequestSourceError')}
-                    >
+                     variant="secondary">
                         <X className="h-3.5 w-3.5" />
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -446,7 +447,7 @@ export const RequestSourceLinksPanel = ({
                                         </p>
                                     )}
                                 </div>
-                                <button
+                                <Button
                                     type="button"
                                     onClick={() => {
                                         setDeletingLinkId(link.id);
@@ -456,13 +457,13 @@ export const RequestSourceLinksPanel = ({
                                     className="shrink-0 rounded-md p-1.5 text-content-tertiary hover:bg-feedback-danger-muted hover:text-feedback-danger-foreground disabled:cursor-not-allowed disabled:opacity-50"
                                     title={t('surfaces.requestSourceLinks.unlinkRequest')}
                                     aria-label={t('surfaces.requestSourceLinks.unlinkNamedRequest', { name: requestLabel(source) })}
-                                >
+                                 variant="secondary">
                                     {deletingLinkId === link.id ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                     ) : (
                                         <Trash2 className="h-4 w-4" />
                                     )}
-                                </button>
+                                </Button>
                             </div>
                         );
                     })

@@ -1,0 +1,29 @@
+export const planScheduleEnglish = {
+    calculate: 'Calculate schedule', apply: 'Apply schedule', openGantt: 'Open in Gantt',
+    datesAreCalculated: 'Dates are calculated. To move a task, change who does it, its effort, what it waits for, or its earliest start.',
+    calculateFailed: 'The schedule could not be calculated. Try calculating again.',
+    applyFailed: 'The schedule could not be applied. Calculate again before applying.',
+    applied: 'Schedule applied.', result: 'Schedule result', preview: 'Calculated schedule · not saved', saved: 'Saved schedule',
+    calculatedEnd: 'Calculated end', iterationEnd: 'Iteration end',
+    loadingCapacity: 'Loading hours and capacity…', capacityFailed: 'Hours and capacity could not be loaded.',
+    hoursAgainstCapacity: 'Hours against capacity per assignee', hours: 'Effort (hours)',
+    withoutDates: 'Tasks without dates', allDated: 'Every task has dates.',
+    calculateForReasons: 'Calculate the schedule to see why tasks have no dates.',
+    risks: 'Schedule risks', afterEnd: 'End after the iteration ({{date}})', overCapacity: 'Over capacity',
+    noneOverCapacity: 'No assignee is over capacity.', capacityIssues: 'Capacity needs attention',
+};
+
+export const planScheduleRussian = {
+    calculate: 'Рассчитать расписание', apply: 'Применить расписание', openGantt: 'Открыть в Ганте',
+    datesAreCalculated: 'Даты рассчитываются. Чтобы сдвинуть задачу, измените исполнителя, трудозатраты, то, что задача ждёт, или самое раннее начало.',
+    calculateFailed: 'Не удалось рассчитать расписание. Повторите расчёт.',
+    applyFailed: 'Не удалось применить расписание. Рассчитайте его заново перед применением.',
+    applied: 'Расписание применено.', result: 'Результат расчёта', preview: 'Рассчитанное расписание · не сохранено', saved: 'Сохранённое расписание',
+    calculatedEnd: 'Рассчитанное окончание', iterationEnd: 'Окончание итерации',
+    loadingCapacity: 'Загрузка часов и мощности…', capacityFailed: 'Не удалось загрузить часы и мощность.',
+    hoursAgainstCapacity: 'Часы и мощность каждого исполнителя', hours: 'Трудозатраты (часы)',
+    withoutDates: 'Задачи без дат', allDated: 'У всех задач есть даты.',
+    calculateForReasons: 'Рассчитайте расписание, чтобы увидеть причины отсутствия дат.',
+    risks: 'Риски расписания', afterEnd: 'Окончание после итерации ({{date}})', overCapacity: 'Превышение мощности',
+    noneOverCapacity: 'Ни у кого из исполнителей нет превышения мощности.', capacityIssues: 'Мощность требует внимания',
+};

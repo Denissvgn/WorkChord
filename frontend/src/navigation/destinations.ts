@@ -1,6 +1,11 @@
 import type { LucideIcon } from 'lucide-react';
 import {
     BarChart,
+    Bot,
+    Calendar,
+    Map,
+    Network,
+    Repeat,
     FolderOpen,
     GanttChartSquare,
     Inbox,
@@ -26,7 +31,7 @@ export type DestinationId =
     | 'team'
     | 'settings';
 
-export type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
+type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
 
 /**
  * Where a sidebar counter takes its number from.
@@ -34,7 +39,7 @@ export type DestinationGroupId = 'start' | 'plan' | 'deliver' | 'setup';
  * - `requestsWaiting`: the number of active Triage requests.
  * - `planProgress`: complete Plan checkpoints out of six, shown only while the plan is incomplete.
  */
-export type DestinationCounterSource = 'none' | 'requestsWaiting' | 'planProgress';
+type DestinationCounterSource = 'none' | 'requestsWaiting' | 'planProgress';
 
 export interface Destination {
     id: DestinationId;
@@ -52,7 +57,7 @@ export interface Destination {
     owns: readonly string[];
 }
 
-export interface DestinationGroup {
+interface DestinationGroup {
     id: DestinationGroupId;
     /** The first group has no heading. */
     labelKey?: string;
@@ -193,12 +198,6 @@ export const getDestination = (id: DestinationId): Destination => {
     return destination;
 };
 
-export const getDestinationGroup = (id: DestinationId): DestinationGroup => {
-    const group = DESTINATION_GROUPS.find(candidate => candidate.destinations.some(destination => destination.id === id));
-    if (!group) throw new Error(`Unknown destination: ${id}`);
-    return group;
-};
-
 const ownsPath = (pattern: string, pathname: string) => (
     matchPath({ path: pattern, end: pattern === '/' }, pathname) !== null
 );
@@ -238,3 +237,12 @@ export const formatDestinationCounter = (
     }
     return null;
 };
+
+/** Views and sections that remain directly reachable from the command menu. */
+export const DESTINATION_VIEWS = [
+    { id: 'roadmap', path: '/projects?view=roadmap', labelKey: 'nav.roadmap', defaultLabel: 'Roadmap', icon: Map },
+    { id: 'agent-pipeline', path: '/tasks?layout=pipeline', labelKey: 'nav.agentPipeline', defaultLabel: 'Agent pipeline', icon: Bot },
+    { id: 'iterations', path: '/plan?panel=iterations', labelKey: 'nav.iterations', defaultLabel: 'Iterations', icon: Repeat },
+    { id: 'work-calendar', path: '/settings?tab=calendar', labelKey: 'commandMenu.workCalendar', defaultLabel: 'Work calendar', icon: Calendar },
+    { id: 'connect-agent', path: '/team?tab=connect', labelKey: 'commandMenu.connectAgent', defaultLabel: 'Connect an agent', icon: Network },
+] as const;

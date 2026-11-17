@@ -1,7 +1,7 @@
 import type { Task } from '../types/task';
 import type { LabelGroup } from '../types/label';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
-import { taskMatchesPlanningIssue } from '../features/planningMasters/planningTaskIssues';
+import { hasDeliverySignal, isFinished, taskMatchesPlanningIssue } from '../features/planningMasters/planningTaskIssues';
 
 const taskHasAnyTag = (task: Task, selectedTags: Set<string>) => {
     if (selectedTags.size === 0) return true;
@@ -16,6 +16,18 @@ const getSelectedGroupSlugs = (filters: TaskFilters, labelGroups: LabelGroup[]) 
             .flatMap(group => group.labels.map(label => label.slug))
     );
 };
+
+/**
+ * Work that needs a person to act: a blocker is recorded, delivery is late or outside its limits,
+ * the iteration is overrun, or a planned task still lacks an assignee or an estimate.
+ * Finished work never needs attention.
+ */
+export const taskNeedsAttention = (task: Task) => !isFinished(task) && (
+    Boolean(task.blocked_reason?.trim())
+    || hasDeliverySignal(task)
+    || Boolean(task.is_iteration_overflow)
+    || taskMatchesPlanningIssue(task, 'any')
+);
 
 // Helper function to check if a task matches filters (including children recursively)
 export const taskMatchesFilters = (
@@ -43,6 +55,8 @@ export const taskMatchesFilters = (
             matchesSelf ||
             (task.children?.some(c => taskMatchesFilters(c, {
                 ...filters,
+                milestoneId: null,
+                needsAttention: null,
                 priority: null,
                 status: null,
                 hasDependency: null,
@@ -63,6 +77,8 @@ export const taskMatchesFilters = (
         const childProjectFilters = {
             ...filters,
             assigneeId: null,
+            milestoneId: null,
+            needsAttention: null,
             priority: null,
             status: null,
             hasDependency: null,
@@ -79,6 +95,10 @@ export const taskMatchesFilters = (
 
         if (!hasMatchingProject) return false;
     }
+
+    if (filters.milestoneId !== null && task.milestone_id !== filters.milestoneId) return false;
+
+    if (filters.needsAttention !== null && taskNeedsAttention(task) !== filters.needsAttention) return false;
 
     // Check priority (only for leaf tasks or composite priority)
     if (filters.priority !== null && task.priority !== filters.priority) {
@@ -104,8 +124,9 @@ export const taskMatchesFilters = (
 
     if (filters.isIterationOverflow !== undefined && filters.isIterationOverflow !== null
         && Boolean(task.is_iteration_overflow) !== filters.isIterationOverflow) return false;
+    // Finished work is never blocked, even when its blocker was left in place.
     if (filters.isBlocked !== undefined && filters.isBlocked !== null
-        && Boolean(task.blocked_reason?.trim()) !== filters.isBlocked) return false;
+        && (Boolean(task.blocked_reason?.trim()) && !isFinished(task)) !== filters.isBlocked) return false;
 
     if (filters.agentReady !== null && task.agent_readiness.is_ready !== filters.agentReady) {
         return false;

@@ -1,0 +1,6 @@
+export const Example = () => (
+    <>
+        <button type="button">Save</button>
+        <select aria-label="Status"><option>Open</option></select>
+    </>
+);
