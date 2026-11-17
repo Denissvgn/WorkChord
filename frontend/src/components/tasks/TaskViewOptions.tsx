@@ -1,11 +1,12 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 import { Select } from '../common/Select';
 import type { SortKey } from './TaskList';
 
 /**
- * How the task list is arranged: grouping and order, in one popover next to the view switch.
+ * How the task list is arranged: grouping and order, in one popover next to the view switch. The trigger is an
+ * icon button so the toolbar keeps one row; its name and tooltip are "View options".
  * Manual order is one list that is dragged, so it cannot be grouped.
  */
 export const TaskViewOptions = ({ sortKey, onSortKeyChange, groupByStatus, onGroupByStatusChange }: {
@@ -38,15 +39,15 @@ export const TaskViewOptions = ({ sortKey, onSortKeyChange, groupByStatus, onGro
                 data-page-chrome-control="button"
                 ref={triggerRef}
                 type="button"
-                className="btn"
+                className="btn icon"
+                aria-label={t('tasks.viewOptions')}
+                title={t('tasks.viewOptions')}
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 aria-controls={open ? panelId : undefined}
                 onClick={() => setOpen(current => !current)}
             >
                 <SlidersHorizontal aria-hidden="true" className="h-4 w-4" />
-                {t('tasks.viewOptions')}
-                <ChevronDown aria-hidden="true" className="h-4 w-4" />
             </button>
             {open && (
                 <>

@@ -1375,20 +1375,25 @@
   .wc .wc-page-toolbar-end { order: 2; }
   .wc .wc-page-toolbar-filters { order: 3; flex-basis: 100%; }
 }
-/* A stacked toolbar has five quick filters and More filters, which never fit beside search and the view controls:
-   the filters take the row under them at every width, as the default toolbar does when narrow. */
-.wc .wc-page-toolbar.is-stacked .wc-page-toolbar-search { flex-grow: 1; }
-.wc .wc-page-toolbar.is-stacked .wc-page-toolbar-end { order: 2; }
-.wc .wc-page-toolbar.is-stacked .wc-page-toolbar-filters { order: 3; flex-basis: 100%; }
-/* A compact toolbar has at most two quick filters before More filters. Its quick filters size to their text, the
+/* A compact toolbar has up to five quick filters before More filters. Its quick filters size to their text, the
    filter controls stay together as one block next to search, and the chips of active conditions take a full line under
    the row, so search, filters and the view controls keep one row down to about 900px of content (a 1024px viewport).
    Narrower, the filter controls move under search and the view controls, as in the default toolbar. */
-.wc .wc-page-toolbar.is-compact .wc-page-toolbar-search { flex: 1 1 200px; max-width: 320px; }
+.wc .wc-page-toolbar.is-compact .wc-page-toolbar-search { flex: 1 1 140px; min-width: 120px; max-width: 320px; }
 .wc .wc-page-toolbar.is-compact .wc-page-toolbar-filters,
 .wc .wc-page-toolbar.is-compact .wc-filter-bar { display: contents; }
-.wc .wc-page-toolbar.is-compact .wc-filter-controls { flex: 0 0 auto; flex-wrap: nowrap; }
-.wc .wc-page-toolbar.is-compact .wc-filter-controls > .wc-filter-select { field-sizing: content; max-width: 8rem; }
+.wc .wc-page-toolbar.is-compact .wc-filter-controls { flex: 0 0 auto; flex-wrap: nowrap; gap: 6px; }
+.wc .wc-page-toolbar.is-compact .wc-filter-controls > .wc-filter-select {
+  field-sizing: content; max-width: 10rem; min-width: 0; padding-left: 8px; padding-right: 22px;
+  background-position: calc(100% - 11px) 50%, calc(100% - 6px) 50%;
+}
+.wc .wc-page-toolbar.is-compact .wc-page-toolbar-end { gap: 6px; }
+.wc .wc-page-toolbar.is-compact .seg button { padding: 0 8px; }
+.wc .wc-page-toolbar.is-compact .wc-filter-more > .btn { padding-inline: 10px; gap: 4px; }
+/* Below the width that leaves room for icons, the view switch shows its labels alone. */
+@container (max-width: 1100px) {
+  .wc .wc-page-toolbar.is-compact .seg button > svg { display: none; }
+}
 .wc .wc-page-toolbar.is-compact .wc-filter-chips,
 .wc .wc-page-toolbar.is-compact .wc-page-toolbar-filters > :not(.wc-filter-bar) { order: 4; flex-basis: 100%; }
 @container (max-width: 1180px) {
