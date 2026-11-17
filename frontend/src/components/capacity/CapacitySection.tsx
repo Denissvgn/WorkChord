@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../common/Button';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
@@ -17,6 +18,8 @@ import { addCapacityRows, refreshCapacity } from './capacityMutations';
 import { useIdentity } from '../../features/identity/identityContext';
 import { ConnectAgentSteps } from '../team/ConnectAgentSteps';
 
+const CONNECT_PARAM = 'connect';
+
 export const CapacitySection = ({ iteration, iterations, members, primary }: {
     iteration: Iteration; iterations: Iteration[]; members: TeamMember[]; primary: boolean;
 }) => {
@@ -26,7 +29,14 @@ export const CapacitySection = ({ iteration, iterations, members, primary }: {
     const [formState, setFormState] = useState({ dirty: false, pending: false });
     const [importing, setImporting] = useState(false);
     const [importingVacations, setImportingVacations] = useState(false);
-    const [connecting, setConnecting] = useState(false);
+    // The open drawer lives in the address: unlocking editing inside it remounts the page, and the drawer stays open.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const connecting = searchParams.get(CONNECT_PARAM) === '1';
+    const setConnecting = (open: boolean) => setSearchParams(previous => {
+        const next = new URLSearchParams(previous);
+        if (open) { next.set(CONNECT_PARAM, '1'); next.set('step', 'team'); } else next.delete(CONNECT_PARAM);
+        return next;
+    }, { replace: true });
     // A connected agent is a new profile: Add capacity offers it once the drawer closes.
     const closeConnect = () => {
         setConnecting(false);

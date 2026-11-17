@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
 import { screen, waitFor } from '@testing-library/react';
+import { useLocation } from 'react-router-dom';
 import { it, expect, vi } from 'vitest';
 import i18n from '../../i18n/i18n';
 import { IdentityContext } from '../../features/identity/identityContext';
@@ -63,4 +64,20 @@ it('hides Add me once the chosen profile is on the iteration', () => {
         members={[{ id: 31, profile_id: 7 } as TeamMember]} primary />));
     expect(screen.queryByRole('button', { name: i18n.t('identity.addMe') })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: i18n.t('teamPage.connectAgent') })).toBeInTheDocument();
+});
+
+it('keeps the Connect drawer in the address, so it is still open after the page is drawn again', async () => {
+    const LocationProbe = () => <output data-testid="location">{useLocation().search}</output>;
+    const iteration = { id: 9, start_date: '2026-01-01', end_date: '2026-01-31' } as Iteration;
+    const view = renderWithProviders(<><CapacitySection iteration={iteration} iterations={[iteration]} members={[]} primary /><LocationProbe /></>,
+        { initialEntries: ['/plan?project=1&iteration=9'] });
+    await view.user.click(screen.getByRole('button', { name: i18n.t('teamPage.connectAgent') }));
+    expect(await screen.findByRole('dialog', { name: i18n.t('teamPage.connectAgent') })).toBeInTheDocument();
+    expect(screen.getByTestId('location')).toHaveTextContent('connect=1');
+    view.unmount();
+
+    // Saving the admin key inside the drawer redraws the whole app; the address brings the drawer back.
+    renderWithProviders(<CapacitySection iteration={iteration} iterations={[iteration]} members={[]} primary />,
+        { initialEntries: ['/plan?project=1&iteration=9&step=team&connect=1'] });
+    expect(await screen.findByRole('dialog', { name: i18n.t('teamPage.connectAgent') })).toHaveTextContent('Five questions to connect an agent');
 });
