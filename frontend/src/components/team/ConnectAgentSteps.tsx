@@ -29,6 +29,16 @@ const tierOptions = {
 } as const;
 const tierLabels = { context_tier: 'contextTier', cost_tier: 'costTier', latency_tier: 'latencyTier' } as const;
 const P = 'agentTeamSetup.connect';
+type ModelErrorKind = 'refused' | 'input' | 'unavailable';
+const MODEL_ERROR_MESSAGES = { refused: 'addModelRefused', input: 'addModelFailed', unavailable: 'addModelUnavailable' } as const;
+/** A refused credential is not an input mistake; only a rejected entry blames the fields. */
+const modelErrorKind = (error: unknown): ModelErrorKind => {
+    if (!axios.isAxiosError(error)) return 'input';
+    const code = error.response?.status;
+    if (code === 401 || code === 403) return 'refused';
+    if (code === 400 || code === 409 || code === 422) return 'input';
+    return 'unavailable';
+};
 
 /**
  * Connects one agent by five answers. The manifest is the current topology plus
@@ -56,7 +66,7 @@ export const ConnectAgentSteps = () => {
     const previousAttempt = useRef<string | undefined>(undefined);
     const [adding, setAdding] = useState(false);
     const [draft, setDraft] = useState<AgentModelCatalogCreate>(emptyModel);
-    const [modelError, setModelError] = useState(false);
+    const [modelError, setModelError] = useState<ModelErrorKind | null>(null);
     const heading = useRef<HTMLHeadingElement>(null);
     const previousStep = useRef(step);
 
@@ -148,12 +158,12 @@ export const ConnectAgentSteps = () => {
     };
     const addModel = async () => {
         if (inFlight.current) return;
-        inFlight.current = true; setBusy(true); setModelError(false);
+        inFlight.current = true; setBusy(true); setModelError(null);
         try {
             assertAgentTeamMasterSecretFree(draft);
             const result = await agentService.createModelCatalogEntry(draft, createAgentCommandMetadata(`Add model ${draft.key} to connect an agent.`));
             await catalog.refetch(); setModel(result.result.key); reset(); setAdding(false); setDraft(emptyModel);
-        } catch { setModelError(true); }
+        } catch (error) { setModelError(modelErrorKind(error)); }
         finally { inFlight.current = false; setBusy(false); }
     };
     const loading = status.isPending || (status.data?.can_mutate && (points.isPending || catalog.isPending));
@@ -319,7 +329,7 @@ export const ConnectAgentSteps = () => {
                         {tierOptions[field].map(value => <option key={value} value={value}>{t(`modelAdministration.${value}`)}</option>)}
                     </Select>
                 ))}
-                {modelError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t(`${P}.addModelFailed`)}</p>}
+                {modelError && <p role="alert" className="text-sm text-feedback-danger-foreground">{t(`${P}.${MODEL_ERROR_MESSAGES[modelError]}`)}</p>}
             </div>
         </SlideOverDrawer>
     </SharedUnlockContext.Provider>;

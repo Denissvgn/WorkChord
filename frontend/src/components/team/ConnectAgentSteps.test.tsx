@@ -344,6 +344,53 @@ describe('Connect agent steps', () => {
         expect(screen.getByRole('combobox', { name: 'Which model will it use?' })).toHaveValue('local-model');
     });
 
+    it.each([
+        [401, 'The server refused the key in this browser tab, so the model was not added. Unlock editing with the admin key, then add it again.'],
+        [403, 'The server refused the key in this browser tab, so the model was not added. Unlock editing with the admin key, then add it again.'],
+        [409, 'Could not add this model. Use a unique lowercase catalog key and check the provider and model alias.'],
+        [422, 'Could not add this model. Use a unique lowercase catalog key and check the provider and model alias.'],
+        [503, 'The server could not add this model right now. Try again.'],
+    ])('names why a model entry was not added after a %i answer', async (code, message) => {
+        service.getModelCatalog.mockResolvedValue([]);
+        const view = renderWithProviders(<ConnectAgentSteps />);
+        await screen.findByRole('radio', { name: 'Worker' });
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Add a model entry' }));
+        const drawer = screen.getByRole('dialog', { name: 'Add a model entry' });
+        fireEvent.change(within(drawer).getByLabelText(/Stable catalog key/), { target: { value: 'local-model' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured provider/), { target: { value: 'local' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured model alias/), { target: { value: 'Local model' } });
+        service.createModelCatalogEntry.mockRejectedValueOnce(new AxiosError('Refused', String(code), undefined, undefined, {
+            status: code, data: { detail: 'Server detail' },
+        } as never));
+        await view.user.click(within(drawer).getByRole('button', { name: 'Add a model entry' }));
+        expect(await within(drawer).findByRole('alert')).toHaveTextContent(message);
+    });
+
+    it('accepts an admin-key receipt that names no agent actor', async () => {
+        service.getModelCatalog.mockResolvedValue([]);
+        const view = renderWithProviders(<ConnectAgentSteps />);
+        await screen.findByRole('radio', { name: 'Worker' });
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Add a model entry' }));
+        const drawer = screen.getByRole('dialog', { name: 'Add a model entry' });
+        fireEvent.change(within(drawer).getByLabelText(/Stable catalog key/), { target: { value: 'local-model' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured provider/), { target: { value: 'local' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured model alias/), { target: { value: 'Local model' } });
+        const added = { ...model, key: 'local-model' };
+        service.createModelCatalogEntry.mockResolvedValueOnce({
+            operation: 'model_catalog.create', actor_id: null, target_type: 'model_catalog', target_id: added.id,
+            idempotency_key: 'operator-create', rationale: 'Add model local-model to connect an agent.', correlation_id: 'operator-create',
+            authoritative_revision: 1, invalidated_assignment_ids: [], audit_event_ids: [1], result: added,
+        });
+        service.getModelCatalog.mockResolvedValue([added]);
+        await view.user.click(within(drawer).getByRole('button', { name: 'Add a model entry' }));
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(screen.getByRole('combobox', { name: 'Which model will it use?' })).toHaveValue('local-model');
+    });
+
     it('completes the advanced manifest workflow through all seven steps with validate, plan and apply', async () => {
         service.getAgentTeamStatus.mockResolvedValue({ ...status, steps: AGENT_TEAM_STEP_DEFINITIONS.map(({ id }) => ({ id, state: 'todo', blocker_codes: [], next_action: null })) });
         const view = renderWithProviders(<ConnectAgentSteps />);

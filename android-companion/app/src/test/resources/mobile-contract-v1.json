@@ -3,6 +3,417 @@
     "api_version": "1.8.0",
     "components": {
       "schemas": {
+        "AgentModelCatalogCreate": {
+          "additionalProperties": false,
+          "description": "Create payload for a catalog entry.",
+          "properties": {
+            "configured_model_alias": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Configured Model Alias",
+              "type": "string"
+            },
+            "context_tier": {
+              "$ref": "#/components/schemas/ContextTier"
+            },
+            "cost_tier": {
+              "$ref": "#/components/schemas/CostTier"
+            },
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "title": "Key",
+              "type": "string"
+            },
+            "last_verified_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Verified At"
+            },
+            "latency_tier": {
+              "$ref": "#/components/schemas/LatencyTier"
+            },
+            "modality_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Modality Tags",
+              "type": "array"
+            },
+            "provider": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Provider",
+              "type": "string"
+            },
+            "reasoning_tier": {
+              "$ref": "#/components/schemas/ReasoningTier"
+            },
+            "revision": {
+              "const": 1,
+              "default": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "key",
+            "provider",
+            "configured_model_alias",
+            "reasoning_tier",
+            "context_tier",
+            "cost_tier",
+            "latency_tier"
+          ],
+          "title": "AgentModelCatalogCreate",
+          "type": "object"
+        },
+        "AgentModelCatalogDisable": {
+          "additionalProperties": false,
+          "description": "Optimistic soft-disable command for a catalog entry.",
+          "properties": {
+            "expected_revision": {
+              "minimum": 1.0,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "reconcile_live_assignments": {
+              "default": false,
+              "title": "Reconcile Live Assignments",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "expected_revision"
+          ],
+          "title": "AgentModelCatalogDisable",
+          "type": "object"
+        },
+        "AgentModelCatalogResponse": {
+          "additionalProperties": false,
+          "description": "Persisted catalog projection.",
+          "properties": {
+            "configured_model_alias": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Configured Model Alias",
+              "type": "string"
+            },
+            "context_tier": {
+              "$ref": "#/components/schemas/ContextTier"
+            },
+            "cost_tier": {
+              "$ref": "#/components/schemas/CostTier"
+            },
+            "created_at": {
+              "format": "date-time",
+              "title": "Created At",
+              "type": "string"
+            },
+            "enabled": {
+              "default": true,
+              "title": "Enabled",
+              "type": "boolean"
+            },
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "key": {
+              "maxLength": 120,
+              "minLength": 1,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$",
+              "title": "Key",
+              "type": "string"
+            },
+            "last_verified_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Verified At"
+            },
+            "latency_tier": {
+              "$ref": "#/components/schemas/LatencyTier"
+            },
+            "modality_tags": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Modality Tags",
+              "type": "array"
+            },
+            "provider": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Provider",
+              "type": "string"
+            },
+            "reasoning_tier": {
+              "$ref": "#/components/schemas/ReasoningTier"
+            },
+            "revision": {
+              "default": 1,
+              "minimum": 1.0,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "updated_at": {
+              "format": "date-time",
+              "title": "Updated At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "provider",
+            "configured_model_alias",
+            "reasoning_tier",
+            "context_tier",
+            "cost_tier",
+            "latency_tier",
+            "id",
+            "created_at",
+            "updated_at"
+          ],
+          "title": "AgentModelCatalogResponse",
+          "type": "object"
+        },
+        "AgentModelCatalogUpdate": {
+          "additionalProperties": false,
+          "description": "Optimistic partial update for one catalog entry.",
+          "properties": {
+            "configured_model_alias": {
+              "anyOf": [
+                {
+                  "maxLength": 255,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Configured Model Alias"
+            },
+            "context_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ContextTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cost_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CostTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "enabled": {
+              "anyOf": [
+                {
+                  "const": true,
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Enabled"
+            },
+            "expected_revision": {
+              "minimum": 1.0,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "last_verified_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last Verified At"
+            },
+            "latency_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/LatencyTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "modality_tags": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Modality Tags"
+            },
+            "provider": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Provider"
+            },
+            "reasoning_tier": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ReasoningTier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reconcile_live_assignments": {
+              "default": false,
+              "title": "Reconcile Live Assignments",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "expected_revision"
+          ],
+          "title": "AgentModelCatalogUpdate",
+          "type": "object"
+        },
+        "AgentModelMutationReceipt": {
+          "additionalProperties": false,
+          "description": "Durable, replay-safe receipt for an operator model mutation.\n\n``actor_id`` is null when the operator's admin key made the change; that\nreceipt is returned once and not stored for replay.",
+          "properties": {
+            "actor_id": {
+              "anyOf": [
+                {
+                  "minimum": 1.0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Id"
+            },
+            "audit_event_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Audit Event Ids",
+              "type": "array"
+            },
+            "authoritative_revision": {
+              "minimum": 1.0,
+              "title": "Authoritative Revision",
+              "type": "integer"
+            },
+            "correlation_id": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Correlation Id",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "maxLength": 255,
+              "minLength": 1,
+              "title": "Idempotency Key",
+              "type": "string"
+            },
+            "invalidated_assignment_ids": {
+              "items": {
+                "type": "integer"
+              },
+              "title": "Invalidated Assignment Ids",
+              "type": "array"
+            },
+            "operation": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Operation",
+              "type": "string"
+            },
+            "rationale": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Rationale",
+              "type": "string"
+            },
+            "result": {
+              "additionalProperties": true,
+              "title": "Result",
+              "type": "object"
+            },
+            "target_id": {
+              "minimum": 1.0,
+              "title": "Target Id",
+              "type": "integer"
+            },
+            "target_type": {
+              "enum": [
+                "model_catalog",
+                "model_binding"
+              ],
+              "title": "Target Type",
+              "type": "string"
+            }
+          },
+          "required": [
+            "operation",
+            "actor_id",
+            "target_type",
+            "target_id",
+            "idempotency_key",
+            "rationale",
+            "correlation_id",
+            "authoritative_revision",
+            "result"
+          ],
+          "title": "AgentModelMutationReceipt",
+          "type": "object"
+        },
         "Body_import_iteration_api_iterations__iteration_id__import_post": {
           "properties": {
             "file": {
@@ -203,6 +614,26 @@
           ],
           "title": "CascadeUpdateInfo",
           "type": "object"
+        },
+        "ContextTier": {
+          "description": "Closed context-capacity tiers ordered by increasing capacity.",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "title": "ContextTier",
+          "type": "string"
+        },
+        "CostTier": {
+          "description": "Closed relative cost tiers; exact prices are deliberately excluded.",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "CostTier",
+          "type": "string"
         },
         "CriterionProgress": {
           "additionalProperties": false,
@@ -1191,6 +1622,16 @@
           "title": "IterationResponse",
           "type": "object"
         },
+        "LatencyTier": {
+          "description": "Closed relative latency tiers.",
+          "enum": [
+            "fast",
+            "balanced",
+            "slow"
+          ],
+          "title": "LatencyTier",
+          "type": "string"
+        },
         "MemberPlanningIntent": {
           "properties": {
             "csv_text": {
@@ -1268,6 +1709,90 @@
             "message"
           ],
           "title": "MessageResponse",
+          "type": "object"
+        },
+        "MetricMatchItem": {
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "integer"
+            },
+            "iteration_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Name"
+            },
+            "project_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Name"
+            },
+            "status": {
+              "title": "Status",
+              "type": "string"
+            },
+            "title": {
+              "title": "Title",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "status",
+            "project_name",
+            "iteration_name"
+          ],
+          "title": "MetricMatchItem",
+          "type": "object"
+        },
+        "MetricMatchPage": {
+          "properties": {
+            "has_more": {
+              "title": "Has More",
+              "type": "boolean"
+            },
+            "items": {
+              "items": {
+                "$ref": "#/components/schemas/MetricMatchItem"
+              },
+              "title": "Items",
+              "type": "array"
+            },
+            "metric": {
+              "title": "Metric",
+              "type": "string"
+            },
+            "next_after_id": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next After Id"
+            }
+          },
+          "required": [
+            "metric",
+            "items",
+            "has_more"
+          ],
+          "title": "MetricMatchPage",
           "type": "object"
         },
         "NativeApprovalResponse": {
@@ -2159,6 +2684,16 @@
           ],
           "title": "ProjectTargetDateRisk",
           "type": "string"
+        },
+        "ReasoningTier": {
+          "description": "Closed provider-neutral reasoning capability tiers.",
+          "enum": [
+            1,
+            2,
+            3
+          ],
+          "title": "ReasoningTier",
+          "type": "integer"
         },
         "TaskActionAvailability": {
           "properties": {
@@ -5848,6 +6383,411 @@
     },
     "openapi": "3.1.0",
     "paths": {
+      "/api/agent/model-catalog": {
+        "get": {
+          "description": "Return bounded secret-free provider-neutral model declarations.",
+          "operationId": "list_agent_model_catalog_api_agent_model_catalog_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "include_disabled",
+              "required": false,
+              "schema": {
+                "default": false,
+                "title": "Include Disabled",
+                "type": "boolean"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "items": {
+                      "$ref": "#/components/schemas/AgentModelCatalogResponse"
+                    },
+                    "title": "Response List Agent Model Catalog Api Agent Model Catalog Get",
+                    "type": "array"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "List Agent Model Catalog",
+          "tags": [
+            "Agent Catalog"
+          ]
+        },
+        "post": {
+          "description": "Create a model declaration as an admin actor or the operator.",
+          "operationId": "create_agent_model_catalog_entry_api_agent_model_catalog_post",
+          "parameters": [
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelCatalogCreate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "201": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Create Agent Model Catalog Entry",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-catalog/{catalog_id}": {
+        "patch": {
+          "description": "Optimistically update a model declaration.",
+          "operationId": "update_agent_model_catalog_entry_api_agent_model_catalog__catalog_id__patch",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "catalog_id",
+              "required": true,
+              "schema": {
+                "title": "Catalog Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelCatalogUpdate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Update Agent Model Catalog Entry",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
+      "/api/agent/model-catalog/{catalog_id}/disable": {
+        "post": {
+          "description": "Soft-disable a declaration after explicit live-work reconciliation.",
+          "operationId": "disable_agent_model_catalog_entry_api_agent_model_catalog__catalog_id__disable_post",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "catalog_id",
+              "required": true,
+              "schema": {
+                "title": "Catalog Id",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Agent-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Admin-API-Key",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "X-Admin-Api-Key"
+              }
+            },
+            {
+              "in": "header",
+              "name": "Idempotency-Key",
+              "required": true,
+              "schema": {
+                "title": "Idempotency-Key",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Agent-Rationale",
+              "required": true,
+              "schema": {
+                "title": "X-Agent-Rationale",
+                "type": "string"
+              }
+            },
+            {
+              "in": "header",
+              "name": "X-Correlation-ID",
+              "required": true,
+              "schema": {
+                "title": "X-Correlation-Id",
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelCatalogDisable"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Disable Agent Model Catalog Entry",
+          "tags": [
+            "Agent Catalog"
+          ]
+        }
+      },
       "/api/auth/logout": {
         "post": {
           "operationId": "logout_api_auth_logout_post",
@@ -7367,6 +8307,130 @@
             }
           },
           "summary": "Lookup Tasks",
+          "tags": [
+            "Task domain"
+          ]
+        }
+      },
+      "/api/tasks/metric-matches": {
+        "get": {
+          "description": "The tasks behind one work-metric count, chosen by the predicate that counts them.",
+          "operationId": "metric_matches_api_tasks_metric_matches_get",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "metric",
+              "required": true,
+              "schema": {
+                "maxLength": 40,
+                "title": "Metric",
+                "type": "string"
+              }
+            },
+            {
+              "in": "query",
+              "name": "project_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Project Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "iteration_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Iteration Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "release_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Release Id"
+              }
+            },
+            {
+              "in": "query",
+              "name": "limit",
+              "required": false,
+              "schema": {
+                "default": 200,
+                "maximum": 500,
+                "minimum": 1,
+                "title": "Limit",
+                "type": "integer"
+              }
+            },
+            {
+              "in": "query",
+              "name": "after_id",
+              "required": false,
+              "schema": {
+                "anyOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "After Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/MetricMatchPage"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Metric Matches",
           "tags": [
             "Task domain"
           ]

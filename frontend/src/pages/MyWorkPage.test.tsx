@@ -9,6 +9,7 @@ import type { Task } from '../types/task';
 import { useLocation } from 'react-router-dom';
 import { expectPageChrome } from '../test/pageChrome';
 import { taskDetailResponse } from '../test/fixtures/taskDetail';
+import i18n from '../i18n/i18n';
 
 const api = vi.hoisted(() => ({ get: vi.fn(), put: vi.fn(), post: vi.fn() }));
 vi.mock('../services/api', () => ({ default: api }));
@@ -114,18 +115,44 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     expect(screen.getByRole('button', { name: /^Status: Planned/ })).toBeInTheDocument();
 });
 
-it('says the admin key in this tab hides the chosen person\'s work and offers Lock', async () => {
+it.each(['active', 'review', 'inbox'])('explains the operator identity and offers Lock before loading the %s person queue', async queue => {
     sessionStorage.setItem('workchord_admin_api_key', 'operator-key');
     api.get.mockImplementation(async (path: string) => {
         if (path === '/tasks/my-work') return { data: { state: 'profile_unlinked', queues: {}, has_more: false, next_after_id: null } };
         return { data: [] };
     });
     const view = renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', principal: null, profile: { id: 4, display_name: 'Sam Ortiz', verified: false } } as never, refresh: vi.fn(), signOut: vi.fn() }}>
-        <MyWorkPage /></IdentityContext.Provider>);
-    expect(await screen.findByText('The admin key in this tab makes this browser act as the workspace operator, so your work as Sam Ortiz is hidden. Lock editing to see it.')).toBeInTheDocument();
+        <MyWorkPage /></IdentityContext.Provider>, { initialEntries: [`/my-work?queue=${queue}`] });
+    expect(await screen.findByText('The admin key in this tab replaces the chosen person. You are acting as the operator. Lock editing to use your person profile.')).toBeInTheDocument();
     expect(screen.queryByText('Ask a workspace operator to link your account to your human work profile.')).not.toBeInTheDocument();
+    expect(api.get.mock.calls.some(([path]) => ['/tasks/my-work', '/tasks/review-queue', '/notifications'].includes(path))).toBe(false);
+    expect(screen.queryByTestId('capacity')).not.toBeInTheDocument();
     await view.user.click(screen.getByRole('button', { name: 'Lock' }));
     expect(sessionStorage.getItem('workchord_admin_api_key')).toBeNull();
+});
+
+describe('My Work opening queue', () => {
+    const queuesWithUpNextOnly = () => api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null,
+            queues: { active: [], queued: [{ id: 7, title: 'Up next task', status: 'planned', project_name: 'Calendar' }], blocked: [], awaiting_review: [] } } };
+        return { data: [] };
+    });
+
+    it('opens Up next when Doing is empty and Up next has work', async () => {
+        queuesWithUpNextOnly();
+        renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work'] });
+        expect(await screen.findByRole('button', { name: '#7 · Up next task' })).toBeInTheDocument();
+        expect(screen.queryByText(i18n.t('emptyStates.myWork.queueBody'))).toBeNull();
+        expect(screen.getByRole('button', { name: 'Up next · 1' })).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    it('keeps the queue the URL names, even when it is empty', async () => {
+        queuesWithUpNextOnly();
+        renderWithProviders(<MyWorkPage />, { initialEntries: ['/my-work?queue=active'] });
+        expect(await screen.findByText(i18n.t('emptyStates.myWork.queueBody'))).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: '#7 · Up next task' })).toBeNull();
+        expect(screen.getByRole('button', { name: 'Doing · 0' })).toHaveAttribute('aria-pressed', 'true');
+    });
 });
 
 describe('My Work rows', () => {
@@ -314,6 +341,9 @@ describe('My Work rows', () => {
     });
 });
 
+const signedInIdentity = { mode: 'managed', authenticated: true, principal: { id: 7, kind: 'human', display_name: 'Ada' }, profile: { id: 4, display_name: 'Ada' }, projects: {}, workspace_role: 'member' } as const;
+const SignedInWork = () => <IdentityContext.Provider value={{ identity: { ...signedInIdentity, configured: true, csrf_token: null }, refresh: vi.fn(), signOut: vi.fn() }}><MyWorkPage /></IdentityContext.Provider>;
+
 const Location = () => <output data-testid="location">{useLocation().search}</output>;
 
 it.each(['active', 'queued', 'blocked', 'awaiting_review', 'review'])('loads the Notifications count without deliveries from the %s queue until Notifications opens', async queue => {
@@ -328,7 +358,7 @@ it.each(['active', 'queued', 'blocked', 'awaiting_review', 'review'])('loads the
         ], has_more: false, next_after_id: null } };
         return { data: { items: [], has_more: false, next_after_id: null } };
     });
-    renderWithProviders(<MyWorkPage />, { initialEntries: [`/my-work?queue=${queue}`] });
+    renderWithProviders(<SignedInWork />, { initialEntries: [`/my-work?queue=${queue}`] });
 
     const notifications = await screen.findByRole('button', { name: 'Notifications · 1+', pressed: false });
     expect(await screen.findByRole('button', { name: 'To review · 0' })).toBeInTheDocument();
@@ -347,7 +377,7 @@ it('switches six counted queues and preserves the choice in the URL', async () =
         if (path === '/tasks/review-queue' || path.startsWith('/notifications')) return { data: { items: [], has_more: false } };
         return { data: [] };
     });
-    const { container } = renderWithProviders(<><MyWorkPage /><Location /></>, { initialEntries: ['/my-work?queue=blocked'] });
+    const { container } = renderWithProviders(<><SignedInWork /><Location /></>, { initialEntries: ['/my-work?queue=blocked'] });
     const group = within(container.querySelector('.seg') as HTMLElement);
     await waitFor(() => expect(group.getAllByRole('button')).toHaveLength(6));
     expect(await group.findByRole('button', { name: 'Blocked · 1+', pressed: true })).toBeInTheDocument();
@@ -355,4 +385,15 @@ it('switches six counted queues and preserves the choice in the URL', async () =
     expect(screen.getByTestId('location')).toHaveTextContent('queue=queued');
     expect(group.getByRole('button', { name: 'Up next · 0+', pressed: true })).toBeInTheDocument();
     expectPageChrome(container, { status: 'migrated' });
+});
+
+
+it.each(['active', 'inbox'])('hides Notifications for a local person on the %s URL and explains why without requesting it', async queue => {
+    api.get.mockImplementation(async (path: string) => ({ data: path === '/tasks/my-work'
+        ? { state: 'ready', queues: {}, has_more: false } : { items: [], has_more: false } }));
+    renderWithProviders(<IdentityContext.Provider value={{ identity: { mode: 'trusted_local', authenticated: false, principal: null, profile: { id: 4, display_name: 'Sam' } } as never, refresh: vi.fn(), signOut: vi.fn() }}><MyWorkPage /></IdentityContext.Provider>, { initialEntries: [`/my-work?queue=${queue}`] });
+    expect(await screen.findByRole('button', { name: 'Doing · 0' })).toBeInTheDocument();
+    expect(screen.getByText('Notifications are available only to a signed-in account, not a local person profile.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Notifications/ })).not.toBeInTheDocument();
+    expect(api.get.mock.calls.some(([path]) => path.startsWith('/notifications'))).toBe(false);
 });
