@@ -4,6 +4,8 @@ import { AxiosError } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { agentService } from '../../services/agentService';
+import { teamService } from '../../services/teamService';
+import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import type {
     AgentModelCatalogEntry, AgentTeamMaster, AgentTeamMemberSpec, AgentTeamMemberStatus, AgentTeamPlan, AgentTeamStatus,
 } from '../../types/agent';
@@ -14,10 +16,12 @@ import { hasPM, runtimeSnippet } from '../../features/agentTeamSetup/connectAgen
 
 vi.mock('../../services/agentService', () => ({ agentService: {
     getAgentTeamStatus: vi.fn(), getAgentTeamStartingPoints: vi.fn(), getModelCatalog: vi.fn(), createModelCatalogEntry: vi.fn(),
-    validateAgentTeamMaster: vi.fn(), planAgentTeamMaster: vi.fn(), applyAgentTeamAction: vi.fn(), applyAgentTeamActions: vi.fn(),
+    getProfilePresets: vi.fn(), validateAgentTeamMaster: vi.fn(), planAgentTeamMaster: vi.fn(), applyAgentTeamAction: vi.fn(), applyAgentTeamActions: vi.fn(),
 } }));
+vi.mock('../../services/teamService', () => ({ teamService: { getProfiles: vi.fn() } }));
 vi.mock('../../hooks/useAdminAccess', () => ({ useAdminAccess: () => ({ hasAdminKey: true }), useKeylessReader: () => ({ settings: false }) }));
 const service = vi.mocked(agentService);
+const teams = vi.mocked(teamService);
 
 const member = (role: AgentTeamMemberSpec['role'], key: string): AgentTeamMemberSpec => ({
     actor_key: key, actor_name: `workchord-${key}`, display_name: key, role,
@@ -98,6 +102,8 @@ beforeEach(() => {
     service.getAgentTeamStatus.mockResolvedValue(structuredClone(status));
     service.getAgentTeamStartingPoints.mockResolvedValue({ current: structuredClone(current), template: structuredClone(current) });
     service.getModelCatalog.mockResolvedValue([model]);
+    service.getProfilePresets.mockResolvedValue([]);
+    teams.getProfiles.mockResolvedValue([]);
     service.validateAgentTeamMaster.mockImplementation(async manifest => ({
         schema_version: 'agent-team-validation-v1', valid: true, manifest_digest: 'a'.repeat(64), normalized_manifest: manifest, blocker_codes: [],
     }));
@@ -115,6 +121,57 @@ beforeEach(() => {
 afterEach(() => { vi.restoreAllMocks(); });
 
 describe('Connect agent steps', () => {
+    it('shows the server reason and code when the team cannot be loaded', async () => {
+        service.getAgentTeamStatus.mockRejectedValue(new AxiosError('Conflict', 'ERR_BAD_REQUEST', undefined, undefined, {
+            status: 409, statusText: 'Conflict', headers: {}, config: {} as never,
+            data: { detail: { code: 'agent_team_skill_catalog_unavailable', message: 'The skill catalog is not available' } },
+        }));
+        renderWithProviders(<ConnectAgentSteps />);
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent('Could not load the team.');
+        expect(alert).toHaveTextContent('Server reason: The skill catalog is not available');
+        expect(alert).toHaveTextContent('agent_team_skill_catalog_unavailable (409)');
+    });
+
+    it('names AGENT_TEAM_CREDENTIAL_SINK_DIR and links the setup guide when the credential folder is missing', async () => {
+        service.validateAgentTeamMaster.mockImplementation(async manifest => ({
+            schema_version: 'agent-team-validation-v1', valid: false, manifest_digest: 'a'.repeat(64), normalized_manifest: manifest, blocker_codes: ['agent_team_credential_sink_unavailable'],
+        }));
+        await toReview();
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent('AGENT_TEAM_CREDENTIAL_SINK_DIR');
+        expect(within(alert).getByRole('link', { name: 'Agent team setup guide' }))
+            .toHaveAttribute('href', expect.stringContaining('docs/agent-team-setup.md'));
+        expect(within(alert).getByText('agent_team_credential_sink_unavailable')).toBeInTheDocument();
+    });
+
+    it('leaves the drawer title as the only Connect an agent heading when the title is hidden', async () => {
+        renderWithProviders(<SlideOverDrawer open title="Connect an agent" onClose={() => undefined}><ConnectAgentSteps showTitle={false} /></SlideOverDrawer>);
+        await screen.findByRole('radio', { name: 'Worker' });
+        expect(screen.getAllByRole('heading', { name: 'Connect an agent' })).toHaveLength(1);
+    });
+
+    it('announces the profile display name that Team shows, from the existing profile or the preset', async () => {
+        teams.getProfiles.mockResolvedValue([{ seed_key: 'worker-profile', display_name: 'Backend Implementation Agent' } as never]);
+        const view = await toReview();
+        expect(await screen.findByText('Backend Implementation Agent')).toBeInTheDocument();
+        expect(screen.queryByText('Codex Worker 1')).not.toBeInTheDocument();
+        await view.user.click(screen.getByRole('button', { name: 'Continue to connect' }));
+        expect(screen.getByText(/Create Backend Implementation Agent\./)).toBeInTheDocument();
+    });
+
+    it('announces the preset display name when the profile does not exist yet, without reading the agent-key-only preset list', async () => {
+        const template = structuredClone(current);
+        template.workers = [{ ...member('worker', 'backend-worker'), profile_key: 'backend-implementation-agent', display_name: 'Backend Implementation Runtime' }];
+        service.getAgentTeamStartingPoints.mockResolvedValue({ current: structuredClone(current), template });
+        const view = await toReview();
+        expect(await screen.findByText('Backend Implementation Agent')).toBeInTheDocument();
+        expect(screen.queryByText('Codex Worker 1')).not.toBeInTheDocument();
+        await view.user.click(screen.getByRole('button', { name: 'Continue to connect' }));
+        expect(screen.getByText(/Create Backend Implementation Agent\./)).toBeInTheDocument();
+        expect(service.getProfilePresets).not.toHaveBeenCalled();
+    });
+
     it('connects a Worker on Codex in five steps while preserving every existing member in validate, plan and apply', async () => {
         const view = await connect();
         expect(within(screen.getByRole('list', { name: 'Connection steps' })).getAllByRole('listitem').map(item => item.textContent))
