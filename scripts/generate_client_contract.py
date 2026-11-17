@@ -9,6 +9,7 @@ from app.main import app
 
 
 CLIENT_PATHS = (
+    "/api/tasks/delivery-metrics", "/api/tasks/execution-usage",
     "/api/auth/me", "/api/auth/logout", "/api/auth/native-token", "/api/auth/native-connections/start",
     "/api/auth/native-connections/exchange", "/api/auth/native-connections/{request_id}",
     "/api/auth/native-connections/{request_id}/approve", "/api/tasks/capabilities", "/api/tasks/my-work",

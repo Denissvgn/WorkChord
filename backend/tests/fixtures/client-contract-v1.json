@@ -696,6 +696,403 @@
         "title": "CurrentTaskReviewResponse",
         "type": "object"
       },
+      "DeliveryMetricsResponse": {
+        "properties": {
+          "acceptance_events": {
+            "default": 0,
+            "title": "Acceptance Events",
+            "type": "integer"
+          },
+          "accepted_leaf_tasks": {
+            "default": 0,
+            "title": "Accepted Leaf Tasks",
+            "type": "integer"
+          },
+          "canceled_leaf_tasks": {
+            "default": 0,
+            "title": "Canceled Leaf Tasks",
+            "type": "integer"
+          },
+          "contract_version": {
+            "default": 1,
+            "title": "Contract Version",
+            "type": "integer"
+          },
+          "coverage": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "title": "Coverage",
+            "type": "object"
+          },
+          "cycle_time": {
+            "$ref": "#/components/schemas/DurationSamples"
+          },
+          "lead_time": {
+            "$ref": "#/components/schemas/DurationSamples"
+          },
+          "queues_truncated": {
+            "default": false,
+            "title": "Queues Truncated",
+            "type": "boolean"
+          },
+          "recovery_queue": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryQueueItem"
+            },
+            "title": "Recovery Queue",
+            "type": "array"
+          },
+          "rejection_events": {
+            "default": 0,
+            "title": "Rejection Events",
+            "type": "integer"
+          },
+          "reopened_events": {
+            "default": 0,
+            "title": "Reopened Events",
+            "type": "integer"
+          },
+          "review_delay": {
+            "$ref": "#/components/schemas/DurationSamples"
+          },
+          "review_queue": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryQueueItem"
+            },
+            "title": "Review Queue",
+            "type": "array"
+          },
+          "scope_basis": {
+            "default": "scope_at_observation",
+            "title": "Scope Basis",
+            "type": "string"
+          },
+          "window_end": {
+            "format": "date-time",
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "format": "date-time",
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "window_start",
+          "window_end",
+          "lead_time",
+          "cycle_time",
+          "review_delay"
+        ],
+        "title": "DeliveryMetricsResponse",
+        "type": "object"
+      },
+      "DeliveryQueueItem": {
+        "properties": {
+          "age_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Seconds"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "task_id": {
+            "title": "Task Id",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "title",
+          "reason",
+          "age_seconds"
+        ],
+        "title": "DeliveryQueueItem",
+        "type": "object"
+      },
+      "DurationSamples": {
+        "properties": {
+          "censored_count": {
+            "default": 0,
+            "title": "Censored Count",
+            "type": "integer"
+          },
+          "mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean"
+          },
+          "median": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median"
+          },
+          "sample_count": {
+            "default": 0,
+            "title": "Sample Count",
+            "type": "integer"
+          },
+          "unit": {
+            "default": "elapsed_seconds",
+            "title": "Unit",
+            "type": "string"
+          },
+          "unknown_count": {
+            "default": 0,
+            "title": "Unknown Count",
+            "type": "integer"
+          }
+        },
+        "title": "DurationSamples",
+        "type": "object"
+      },
+      "ExecutionUsageSummary": {
+        "properties": {
+          "accepted_task_identities": {
+            "title": "Accepted Task Identities",
+            "type": "integer"
+          },
+          "advisory_budget": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Advisory Budget"
+          },
+          "estimated_cost": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Estimated Cost",
+            "type": "object"
+          },
+          "expected_runs": {
+            "title": "Expected Runs",
+            "type": "integer"
+          },
+          "human_effort_reports": {
+            "title": "Human Effort Reports",
+            "type": "integer"
+          },
+          "independently_reconciled": {
+            "const": false,
+            "default": false,
+            "title": "Independently Reconciled",
+            "type": "boolean"
+          },
+          "known_cost_reports": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Known Cost Reports",
+            "type": "object"
+          },
+          "linked_delivery": {
+            "additionalProperties": true,
+            "title": "Linked Delivery",
+            "type": "object"
+          },
+          "measured_report_count": {
+            "default": 0,
+            "title": "Measured Report Count",
+            "type": "integer"
+          },
+          "partial_reports": {
+            "title": "Partial Reports",
+            "type": "integer"
+          },
+          "provider_reported_cost": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Provider Reported Cost",
+            "type": "object"
+          },
+          "reported_human_effort_minutes": {
+            "anyOf": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reported Human Effort Minutes"
+          },
+          "reported_runs": {
+            "title": "Reported Runs",
+            "type": "integer"
+          },
+          "reported_units": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Reported Units",
+            "type": "object"
+          },
+          "reports_linked_to_accepted_tasks": {
+            "title": "Reports Linked To Accepted Tasks",
+            "type": "integer"
+          },
+          "scope_basis": {
+            "default": "scope_at_first_report",
+            "title": "Scope Basis",
+            "type": "string"
+          },
+          "simulated_estimated_cost": {
+            "additionalProperties": {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            "title": "Simulated Estimated Cost",
+            "type": "object"
+          },
+          "simulated_reported_cost": {
+            "additionalProperties": {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            "title": "Simulated Reported Cost",
+            "type": "object"
+          },
+          "simulated_reports": {
+            "title": "Simulated Reports",
+            "type": "integer"
+          },
+          "simulated_units": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Simulated Units",
+            "type": "object"
+          },
+          "unavailable_reports": {
+            "title": "Unavailable Reports",
+            "type": "integer"
+          },
+          "unit_report_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Unit Report Counts",
+            "type": "object"
+          },
+          "unknown_cost_reports": {
+            "title": "Unknown Cost Reports",
+            "type": "integer"
+          },
+          "unreported_runs": {
+            "title": "Unreported Runs",
+            "type": "integer"
+          },
+          "window_basis": {
+            "default": "run_start_or_report_receipt",
+            "title": "Window Basis",
+            "type": "string"
+          },
+          "window_end": {
+            "format": "date-time",
+            "title": "Window End",
+            "type": "string"
+          },
+          "window_start": {
+            "format": "date-time",
+            "title": "Window Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "window_start",
+          "window_end",
+          "expected_runs",
+          "reported_runs",
+          "unreported_runs",
+          "partial_reports",
+          "unavailable_reports",
+          "simulated_reports",
+          "provider_reported_cost",
+          "estimated_cost",
+          "known_cost_reports",
+          "unknown_cost_reports",
+          "accepted_task_identities",
+          "reports_linked_to_accepted_tasks",
+          "reported_human_effort_minutes",
+          "human_effort_reports"
+        ],
+        "title": "ExecutionUsageSummary",
+        "type": "object"
+      },
       "ExternalLinkResponse": {
         "description": "Schema for external link responses, including synthetic legacy links.",
         "properties": {
@@ -7507,6 +7904,250 @@
           }
         },
         "summary": "Task Capabilities",
+        "tags": [
+          "Task domain"
+        ]
+      }
+    },
+    "/api/tasks/delivery-metrics": {
+      "get": {
+        "operationId": "delivery_metrics_api_tasks_delivery_metrics_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "iteration_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lookback_days",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Lookback Days",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Only this project's work with no iteration, using scope at observation for history.",
+            "in": "query",
+            "name": "backlog",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Only this project's work with no iteration, using scope at observation for history.",
+              "title": "Backlog",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Aggregate all accessible projects; omit other scope filters.",
+            "in": "query",
+            "name": "all_projects",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Aggregate all accessible projects; omit other scope filters.",
+              "title": "All Projects",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryMetricsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Delivery Metrics",
+        "tags": [
+          "Task domain"
+        ]
+      }
+    },
+    "/api/tasks/execution-usage": {
+      "get": {
+        "operationId": "execution_usage_summary_api_tasks_execution_usage_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "iteration_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Iteration Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lookback_days",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Lookback Days",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "budget_amount",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,12}|(?=[\\d.]{1,19}0*$)\\d{0,12}\\.\\d{0,6}0*$)",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Budget Amount"
+            }
+          },
+          {
+            "in": "query",
+            "name": "budget_currency",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[A-Z]{3}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Budget Currency"
+            }
+          },
+          {
+            "description": "Only this project's work with no iteration, using recorded scope for history.",
+            "in": "query",
+            "name": "backlog",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Only this project's work with no iteration, using recorded scope for history.",
+              "title": "Backlog",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Aggregate all accessible projects; omit other scope filters.",
+            "in": "query",
+            "name": "all_projects",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Aggregate all accessible projects; omit other scope filters.",
+              "title": "All Projects",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionUsageSummary"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Execution Usage Summary",
         "tags": [
           "Task domain"
         ]
