@@ -1,0 +1,15 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// Two toolbars held in the properties of one object and rendered together.
+export const Example = () => {
+    const rows = {
+        search: <PageToolbar label="Search" />,
+        filters: <PageToolbar label="Filters" />,
+    };
+    return (
+        <PageLayout>
+            <PageHeader title="Example" purpose="One sentence." />
+            <>{rows.search}{rows.filters}</>
+        </PageLayout>
+    );
+};

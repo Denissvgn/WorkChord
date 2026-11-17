@@ -1,0 +1,10 @@
+import { PageHeader, PageLayout, PageToolbar as Toolbar } from '../components/ui';
+
+// The toolbar imported under another name and rendered twice.
+export const Example = () => (
+    <PageLayout>
+        <PageHeader title="Example" purpose="One sentence." />
+        <Toolbar label="Search" />
+        <Toolbar label="Filters" />
+    </PageLayout>
+);

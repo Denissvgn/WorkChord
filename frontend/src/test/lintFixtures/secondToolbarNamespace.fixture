@@ -1,0 +1,10 @@
+import * as ui from '../components/ui';
+
+// The toolbar read from a namespace import and rendered twice.
+export const Example = () => (
+    <ui.PageLayout>
+        <ui.PageHeader title="Example" purpose="One sentence." />
+        <ui.PageToolbar label="Search" />
+        <ui.PageToolbar label="Filters" />
+    </ui.PageLayout>
+);

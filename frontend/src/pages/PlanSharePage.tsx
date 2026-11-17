@@ -82,11 +82,11 @@ const PlanSharePage = () => {
         <PageLayout>
             <PageHeader
                 title={share.iteration_name}
-                subtitle={t('plan.master.sharedPlanSubtitle', {
+                purpose={t('plan.master.sharedPlanSubtitle', {
                     date: formatDateTime(share.created_at, i18n.language),
                     owner: share.created_by_display,
                 })}
-                actions={(
+                primaryAction={(
                     <Button onClick={() => { void handleCopy(); }}>
                         <Copy aria-hidden="true" className="h-4 w-4" />
                         {t('plan.master.copyShareLink')}

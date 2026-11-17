@@ -1,0 +1,17 @@
+import { PageHeader, PageLayout, PageToolbar } from '../components/ui';
+
+// Two toolbars side by side in one fragment, inside a conditional that only chooses the fragment.
+export const Example = ({ active }: { active: boolean }) => {
+    const rows = (
+        <>
+            <PageToolbar label="Search" />
+            <PageToolbar label="Filters" />
+        </>
+    );
+    return (
+        <PageLayout>
+            <PageHeader title="Example" purpose="One sentence." />
+            {active ? rows : null}
+        </PageLayout>
+    );
+};

@@ -15,7 +15,7 @@ const NotFoundPage = () => {
         <PageLayout testId="not-found-page">
             <PageHeader
                 title={t('notFound.title')}
-                subtitle={t('notFound.description')}
+                purpose={t('notFound.description')}
             />
             <SectionCard className="mx-auto max-w-2xl" title={t('notFound.code')}>
                 <p className="text-sm text-content-secondary">{t('notFound.requestedPath')}</p>
