@@ -672,7 +672,8 @@ export const IterationForm = (props: IterationFormProps) => {
     ].join(':');
 
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
+    // The form keeps the iteration it was opened with until the person loads the latest version.
     return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id} draft={props.initialData}>
-        {(observed, controls, _saved, conflict) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} />}
+        {(observed, controls, _saved, conflict, reloaded) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : props.initialData} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} />}
     </PlanningInputBoundary>;
 };

@@ -10,7 +10,6 @@ import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlan
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse, SchedulePreviewResponse } from '../../types/gantt';
-import { isFinished } from '../../features/planningMasters/planningTaskIssues';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
 import type { Iteration } from '../../types/iteration';
 import type { TeamMember } from '../../types/team';
@@ -59,9 +58,9 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
     const ends = scheduleLeaves(tasks).flatMap(task => task.end_date ? [task.end_date] : []);
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
-    // Only the task data can say every task is dated; an empty unscheduled list or a missing task list cannot.
-    const taskDataKnown = Boolean(preview?.tasks ?? gantt?.tasks);
-    const everyTaskDated = taskDataKnown && scheduleLeaves(tasks).every(task => isFinished(task) || Boolean(task.start_date && task.end_date));
+    // Only the current task data can say every task is dated; an empty unscheduled list or a missing task list cannot.
+    const leaves = preview?.tasks ?? gantt?.tasks ? scheduleLeaves(tasks) : [];
+    const everyTaskDated = leaves.length > 0 && leaves.every(task => Boolean(task.start_date && task.end_date));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -95,10 +94,11 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
                     </table>{members.length === 0 && <p className="text-sm text-content-secondary">{t('plan.status.noPeople')}</p>}</div>}
             <section aria-label={t('planSchedule.withoutDates')} className="space-y-2">
                 <h3 className="text-sm font-semibold">{t('planSchedule.withoutDates')}</h3>
-                {result?.unscheduled?.length ? <ul className="plan-schedule-reasons">{result.unscheduled.map(task => <li key={task.task_id}>
+                {everyTaskDated ? <p className="text-sm text-content-secondary">{t('planSchedule.allDated')}</p>
+                    : result?.unscheduled?.length ? <ul className="plan-schedule-reasons">{result.unscheduled.map(task => <li key={task.task_id}>
                     <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(task.task_id) }))}>{task.task_title}</Link>
                     <p>{task.message}</p>
-                </li>)}</ul> : <p className="text-sm text-content-secondary">{t(everyTaskDated ? 'planSchedule.allDated' : 'planSchedule.calculateForReasons')}</p>}
+                </li>)}</ul> : <p className="text-sm text-content-secondary">{t('planSchedule.calculateForReasons')}</p>}
             </section>
         </>}
     </div>;

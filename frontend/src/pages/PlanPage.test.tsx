@@ -752,6 +752,26 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
+    it('does not count a finished task without dates as dated', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
+            scheduledTask(), scheduledTask({ id: 12, title: 'Old work', status: 'resolved', start_date: null, end_date: null }),
+        ], schedule_result: saved, holidays: [], weekends: [] });
+        renderPlan();
+        expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
+        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
+    it('says every task has dates when the current tasks are all dated, even if an older saved result lists unscheduled tasks', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { ...result, unscheduled: [{ task_id: 11, task_title: 'Prepare release', reason: 'prerequisites_pending', message: 'Waiting for a prerequisite.' }] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        renderPlan();
+        expect(await screen.findByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText('Waiting for a prerequisite.')).not.toBeInTheDocument();
+    });
+
     it('does not mark Schedule Done from a successful apply when readiness still says it is incomplete', async () => {
         scheduleWorkspace();
         services.iterations.getPlanningReadiness.mockResolvedValue(scheduleReady);

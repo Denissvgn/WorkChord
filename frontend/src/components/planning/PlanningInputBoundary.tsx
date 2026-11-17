@@ -15,7 +15,8 @@ export const PlanningInputBoundary = <T,>({ kind, resourceId, creatingMember = f
     kind: PlanningInputKind; resourceId: number; creatingMember?: boolean;
     onCancel?: () => void;
     getIntent?: () => MemberPlanningIntent;
-    children: (observation: ObservedPlanningInput<T>, controls: ReactNode, onSaved: () => void, onConflict: () => void) => ReactNode;
+    /** `reloaded` is true once the person chose to load the server's latest version into the form. */
+    children: (observation: ObservedPlanningInput<T>, controls: ReactNode, onSaved: () => void, onConflict: () => void, reloaded: boolean) => ReactNode;
 }) => {
     const { t } = useTranslation();
     const context = usePlanningObservation<T>();
@@ -63,6 +64,6 @@ export const PlanningInputBoundary = <T,>({ kind, resourceId, creatingMember = f
         {onCancel && <Button type="button" variant="ghost" onClick={onCancel}>{t('actions.cancel')}</Button>}
     </div>;
     return <fieldset key={generation} disabled={context.loading} className="m-0 min-w-0 border-0 p-0">
-        {children(context.observation, controls, () => { void read(kind, resourceId, true, creatingMember); }, () => { setConflicted(true); void read(kind, resourceId, true, creatingMember, getIntent?.()); })}
+        {children(context.observation, controls, () => { void read(kind, resourceId, true, creatingMember); }, () => { setConflicted(true); void read(kind, resourceId, true, creatingMember, getIntent?.()); }, generation > 0)}
     </fieldset>;
 };
