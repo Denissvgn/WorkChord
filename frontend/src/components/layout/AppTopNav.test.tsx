@@ -187,4 +187,71 @@ describe('AppTopNav', () => {
         expect(within(drawer).getByRole('link', { name: 'Plan' })).toHaveTextContent('2/6');
         expect(screen.getAllByText('2/6')).toHaveLength(2);
     });
+
+    it('changes Project and Iteration from the drawer on a phone', async () => {
+        scopeServiceMocks.projects.getAll.mockResolvedValue([
+            { id: 1, name: 'Agdash', sort_order: 1, initiative: null },
+            { id: 2, name: 'Beacon', sort_order: 2, initiative: null },
+        ]);
+        const sprint = (id: number, name: string, projectId: number, start: string, end: string) => ({
+            id, name, calendar_id: 1, project_id: projectId, start_date: start, end_date: end, working_days: 10,
+            project: { id: projectId, name: projectId === 1 ? 'Agdash' : 'Beacon', status: 'active', health: 'green' },
+        });
+        scopeServiceMocks.iterations.getAll.mockResolvedValue([
+            sprint(11, 'Sprint 1', 1, '2026-10-01', '2026-10-31'),
+            sprint(21, 'Launch', 2, '2026-09-01', '2026-09-30'),
+        ]);
+        const original = window.matchMedia;
+        window.matchMedia = ((query: string) => ({
+            matches: query === '(max-width: 767px)' || query === '(max-width: 1023px)',
+            media: query,
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            onchange: null,
+            dispatchEvent: vi.fn(),
+        })) as typeof window.matchMedia;
+        try {
+            const { user } = renderWithProviders(<AppTopNav />, { initialEntries: ['/plan?project=all&iteration=backlog'] });
+            await user.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            const drawer = screen.getByRole('dialog', { name: 'Primary navigation' });
+            const scope = within(drawer).getByTestId('mobile-nav-scope');
+            const projectPicker = within(scope).getByRole('combobox', { name: 'Project' });
+            expect(projectPicker).toHaveValue('All projects');
+            await user.click(projectPicker);
+            await user.click(await screen.findByRole('option', { name: /Beacon/ }));
+            await waitFor(() => expect(
+                within(screen.getByTestId('mobile-nav-scope')).getByRole('combobox', { name: 'Project' }),
+            ).toHaveValue('Beacon'));
+            const iterationPicker = () => within(screen.getByTestId('mobile-nav-scope'))
+                .getByRole('combobox', { name: 'Iteration' });
+            // Choosing a project moves Iteration to that project's current iteration; change it from there.
+            await waitFor(() => expect(iterationPicker()).toHaveValue('Launch'));
+            await user.click(iterationPicker());
+            await user.click(await screen.findByRole('option', { name: /Backlog/ }));
+            await waitFor(() => expect(iterationPicker()).toHaveValue('Backlog'));
+        } finally {
+            window.matchMedia = original;
+        }
+    });
+
+    it('folds the sidebar into the drawer only below 1024px', () => {
+        const queries: string[] = [];
+        const original = window.matchMedia;
+        window.matchMedia = ((query: string) => {
+            queries.push(query);
+            return {
+                matches: false, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn(),
+                addListener: vi.fn(), removeListener: vi.fn(), onchange: null, dispatchEvent: vi.fn(),
+            };
+        }) as typeof window.matchMedia;
+        try {
+            renderWithProviders(<AppTopNav />, { initialEntries: ['/plan'] });
+            expect(queries).toContain('(max-width: 1023px)');
+            expect(queries).not.toContain('(max-width: 1180px)');
+        } finally {
+            window.matchMedia = original;
+        }
+    });
 });
