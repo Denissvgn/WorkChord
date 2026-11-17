@@ -254,6 +254,7 @@ These rules fix how pages are reached, scoped, framed and coloured. Each rule is
 - The scope is carried in the URL as the query parameters `project` and `iteration`, so a copied link opens the same scope.
 - The browser remembers the last scope and applies it when a scoped page opens without scope parameters in its URL.
 - No page has an iteration selector of its own.
+- The command menu is a decided second way to set the same shared scope: its iteration switching writes the scope that the scope bar shows, and it is not a page selector.
 - On workspace-wide pages (My Work, Triage, Projects, Team and Settings) the scope bar is read-only text.
 
 ### Page frame
