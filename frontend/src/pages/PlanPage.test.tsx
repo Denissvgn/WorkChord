@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { changeAppLanguage } from '../i18n/i18n';
 import { LegacyRedirect } from '../navigation/LegacyRedirect';
 import { expectPageChrome } from '../test/pageChrome';
@@ -252,6 +252,26 @@ describe('Plan is one page of six checkpoints', () => {
         expect(within(section('iteration')).getByRole('button', { name: 'Edit' })).toBeVisible();
         expect(within(section('iteration')).getByRole('button', { name: 'New iteration' })).toBeVisible();
         expect(within(section('iteration')).getByRole('button', { name: 'All iterations' })).toBeVisible();
+    });
+
+    it('starts another iteration from its first incomplete checkpoint after a section was opened by hand', async () => {
+        const next = { ...ITERATION, id: 2, name: 'September plan', start_date: '2026-09-07', end_date: '2026-09-18' };
+        services.iterations.getAll.mockResolvedValue([ITERATION, next]);
+        services.iterations.getPlanningReadiness.mockImplementation(async (id: number) => (id === 2 ? FIXTURES.empty : FIXTURES.sixOfSix));
+        const ScopeNext = () => {
+            const navigate = useNavigate();
+            return <button type="button" onClick={() => navigate('/plan?project=1&iteration=2')}>Scope the next iteration</button>;
+        };
+        const { user } = renderWithProviders(<><PlanPage /><ScopeNext /></>, { initialEntries: [PLAN_ENTRY] });
+        await screen.findByRole('list', { name: 'Checkpoints' });
+        await waitFor(() => expect(stateText('review')).toBe('Done'));
+
+        await user.click(toggle('Iteration'));
+        expect(toggle('Iteration')).toHaveAttribute('aria-expanded', 'true');
+        // A new iteration comes into scope, as after New iteration: its own first incomplete checkpoint opens.
+        await user.click(screen.getByRole('button', { name: 'Scope the next iteration' }));
+        await waitFor(() => expect(toggle('Capacity')).toHaveAttribute('aria-expanded', 'true'));
+        expect(toggle('Iteration')).toHaveAttribute('aria-expanded', 'false');
     });
 
     it('opens the All iterations drawer over the checkpoints when the link asks for it', async () => {
@@ -574,6 +594,16 @@ describe('work and blockers inside Plan', () => {
             [12, { iteration_id: 1, expected_version: 1, expected_revisions: { 1: 8 } }],
         ]);
         expect(await screen.findByText('2 tasks · 4 h total effort')).toBeVisible();
+    });
+
+    it('creates a new task inside Plan for the iteration in scope', async () => {
+        workWorkspace([]);
+        const { user } = renderPlan('/plan?step=work&project=1&iteration=1');
+        await user.click(await screen.findByRole('button', { name: 'New task' }));
+        const drawer = await screen.findByRole('dialog', { name: 'Create new task' });
+        expect(within(drawer).getByRole('textbox', { name: /Task title/ })).toBeVisible();
+        // The work is created here; the page still offers the full Tasks page only as a link.
+        expect(screen.getByTestId('location')).toHaveTextContent(/^\/plan\?/);
     });
 
     it('imports tasks inside Plan using the existing version-bound import dialog', async () => {

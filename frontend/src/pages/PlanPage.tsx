@@ -299,15 +299,17 @@ const PlanCheckpoints = () => {
     const scopeLink = useScopeLink();
     const setupProgress = useFirstRunProgress();
     const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
-    // Opening or closing a section by hand wins over the default for the rest of the visit.
-    const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null } | null>(null);
+    // Opening or closing a section by hand wins over the default for the rest of the visit to that
+    // iteration; another iteration in scope starts again from its first incomplete checkpoint.
+    const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null; iterationId?: number } | null>(null);
 
     const sections = planCheckpointSections(planningSummary, { hasIteration: hasCurrentIteration });
     const requestedStep = searchParams.get(STEP_PARAM);
     const defaultOpen = isPlanningStepId(requestedStep)
         ? requestedStep
         : sections ? firstIncompleteCheckpoint(sections) : null;
-    const openId = openOverride ? openOverride.id : defaultOpen;
+    const override = openOverride && openOverride.iterationId === currentIteration?.id ? openOverride : null;
+    const openId = override ? override.id : defaultOpen;
 
     // Coming back from Tasks, Team or Gantt re-reads readiness; a section that is now done gives
     // way to the first incomplete one.
@@ -338,7 +340,7 @@ const PlanCheckpoints = () => {
 
     const toggle = (id: PlanningStepId) => {
         const next = openId === id ? null : id;
-        setOpenOverride({ id: next });
+        setOpenOverride({ id: next, iterationId: currentIteration?.id });
         if (next) {
             setSearchParams(previous => {
                 const params = new URLSearchParams(previous);
