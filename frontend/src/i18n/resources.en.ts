@@ -4426,6 +4426,7 @@ export const englishResources = {
                 calendarsUnavailable: 'Calendars could not be loaded. The iteration keeps its current calendar.',
                 needDates: 'Choose a start and an end date to save.',
                 needOrderedDates: 'The end date must be on or after the start date.',
+                resolveConflictFirst: 'Choose Load latest version or Keep draft with current version before you update.',
                 needSeriesName: 'Enter a base name for the series.',
                 needStartDate: 'Choose a start date.',
                 needDuration: 'Each iteration lasts from 1 to 366 days.',

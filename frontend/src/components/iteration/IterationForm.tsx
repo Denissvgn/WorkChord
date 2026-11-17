@@ -181,8 +181,8 @@ const IterationFormEditor = ({
     defaultProjectId,
     onSuccess,
     onCancel,
-    onStateChange, revisions, contextControls, onConflict,
-}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode; onConflict?: () => void }) => {
+    onStateChange, revisions, contextControls, onConflict, conflictUnresolved = false,
+}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode; onConflict?: () => void; conflictUnresolved?: boolean }) => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const isActive = useActiveMount();
@@ -311,6 +311,7 @@ const IterationFormEditor = ({
         && singleDraft.start_date
         && singleDraft.end_date
         && isOrderedRange(singleDraft.start_date, singleDraft.end_date)
+        && !conflictUnresolved
         && !isSaving,
     );
     const seriesValid = Boolean(
@@ -373,7 +374,9 @@ const IterationFormEditor = ({
                         : seriesPreview.length > MAX_SERIES_ITERATIONS ? t('iterationForm.tooManyInSeries', { count: MAX_SERIES_ITERATIONS }) : null)
         : (!singleDraft.name.trim() ? t('iterationForm.needName')
             : !singleDraft.start_date || !singleDraft.end_date ? t('iterationForm.needDates')
-                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates') : null);
+                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates')
+                    // Saving now would send the draft against a server version the person has not accepted.
+                    : conflictUnresolved ? t('iterationForm.resolveConflictFirst') : null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const handleCancel = () => {
         if (!isDirty) { onCancel(); return; }
@@ -674,6 +677,6 @@ export const IterationForm = (props: IterationFormProps) => {
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
     // The form keeps the iteration it was opened with until the person loads the latest version.
     return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id} draft={props.initialData}>
-        {(observed, controls, _saved, conflict, reloaded) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : props.initialData} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} />}
+        {(observed, controls, _saved, conflict, reloaded, unresolved) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : props.initialData} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} conflictUnresolved={unresolved} />}
     </PlanningInputBoundary>;
 };
