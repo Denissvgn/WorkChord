@@ -3,6 +3,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useTranslation } from 'react-i18next';
 import type { Task } from '../../../types/task';
 import { KanbanCard } from './KanbanCard';
+import type { BoardCardContext } from './KanbanCard';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
 import type { PillTone } from '../../ui/tone';
@@ -17,11 +18,15 @@ interface KanbanColumnProps {
     title: string;
     tasks: Task[];
     count: number;
+    /** Tells two columns with the same status apart, such as Planned with and without an assignee. */
+    caption?: string;
     tone: PillTone;
     onOpen?: (task: Task, trigger?: HTMLElement) => void;
+    context?: BoardCardContext;
 }
 
-export const KanbanColumn = ({ id, title, tasks, count, tone, onOpen }: KanbanColumnProps) => {
+export const KanbanColumn = ({ id, title, caption, tasks, count, tone, onOpen, context }: KanbanColumnProps) => {
+    const name = caption ? `${title} (${caption})` : title;
     const { t } = useTranslation();
     const { setNodeRef, isOver } = useDroppable({
         id: id,
@@ -40,7 +45,7 @@ export const KanbanColumn = ({ id, title, tasks, count, tone, onOpen }: KanbanCo
         return (
             <section
                 ref={setNodeRef}
-                aria-label={t('surfaces.kanbanColumn.emptyColumn', { title })}
+                aria-label={t('surfaces.kanbanColumn.emptyColumn', { title: name })}
                 className={clsx(
                     'flex w-12 shrink-0 flex-col items-center gap-2 self-stretch rounded-xl border border-dashed border-border-subtle py-3 transition-colors',
                     isOver && 'border-action bg-action-muted/50',
@@ -48,18 +53,22 @@ export const KanbanColumn = ({ id, title, tasks, count, tone, onOpen }: KanbanCo
             >
                 <span className={clsx('h-2 w-2 rounded-full', toneDotClassName[tone])} aria-hidden="true" />
                 <span className="text-xs tabular-nums text-content-secondary" aria-hidden="true">0</span>
-                <h3 className="text-sm font-semibold text-content-secondary [writing-mode:vertical-rl]" aria-hidden="true">{title}</h3>
+                <h3 className="text-sm font-semibold text-content-secondary [writing-mode:vertical-rl]" aria-hidden="true">
+                    {title}
+                    {caption && <span className="font-normal"> · {caption}</span>}
+                </h3>
             </section>
         );
     }
 
     return (
-        <section className="flex h-full min-w-[200px] flex-1 basis-0 flex-col" aria-label={title}>
+        <section className="flex h-full min-w-[200px] flex-1 basis-0 flex-col" aria-label={name}>
             {/* Header */}
             <div className="mb-4 flex items-center justify-between gap-2 px-1">
                 <div className="flex min-w-0 items-center gap-2">
                     <div className={clsx('h-2 w-2 shrink-0 rounded-full', toneDotClassName[tone])} aria-hidden="true" />
                     <h3 className="truncate text-sm font-semibold text-content-primary">{title}</h3>
+                    {caption && <span className="truncate text-xs text-content-secondary">{caption}</span>}
                 </div>
                 <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium tabular-nums text-content-secondary">
                     {count}
@@ -76,7 +85,7 @@ export const KanbanColumn = ({ id, title, tasks, count, tone, onOpen }: KanbanCo
             >
                 <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
                     {visible.map((task) => (
-                        <KanbanCard key={task.id} task={task} onOpen={onOpen} />
+                        <KanbanCard key={task.id} task={task} onOpen={onOpen} context={context} />
                     ))}
                 </SortableContext>
                 {remaining > 0 && (

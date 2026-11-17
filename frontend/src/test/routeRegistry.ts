@@ -19,7 +19,7 @@ export const routeRegistry: RouteStatus[] = [
     { key: 'projects', path: '/projects', status: 'migrated' },
     { key: 'roadmap', path: '/roadmap', status: 'pending' },
     { key: 'gantt', path: '/gantt', status: 'migrated' },
-    { key: 'analytics', path: '/analytics', status: 'pending' },
+    { key: 'analytics', path: '/analytics', status: 'migrated' },
     { key: 'settings', path: '/settings', status: 'migrated' },
     { key: 'agentPipeline', path: '/agent-pipeline', status: 'pending' },
     { key: 'agentTeamSetup', path: '/agent-team/setup', status: 'pending' },

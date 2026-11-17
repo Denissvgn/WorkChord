@@ -5,9 +5,18 @@ import { teamService } from '../../services/teamService';
 import { canTransition } from '../../features/taskTransitions';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import type { Task, TaskStatus } from '../../types/task';
+import type { TeamMember } from '../../types/team';
 import type { TaskRowAssigneeOption } from './TaskRow';
 
 type RowTarget = { id: number; title: string; status: TaskStatus; version: number };
+
+/** The picker options for an iteration's team: the same people and agents, with their kind, on every surface. */
+export const assigneeOptionsFrom = (members: TeamMember[]): TaskRowAssigneeOption[] => members.map(member => ({
+    id: member.id,
+    name: member.name,
+    kind: member.profile?.profile_kind,
+    profileId: member.profile_id ?? member.profile?.id ?? null,
+}));
 
 /** The people and agents a task in this iteration can be given to; empty without an iteration. */
 export const useAssigneeOptions = (iterationId: number | null) => {
@@ -17,7 +26,7 @@ export const useAssigneeOptions = (iterationId: number | null) => {
         queryFn: () => teamService.getByIteration(iterationId as number),
         enabled: iterationId !== null,
     });
-    const options: TaskRowAssigneeOption[] = data.map(member => ({ id: member.id, name: member.name, kind: member.profile?.profile_kind, profileId: member.profile_id ?? member.profile?.id ?? null }));
+    const options = assigneeOptionsFrom(data);
     return { options, error, refetch };
 };
 

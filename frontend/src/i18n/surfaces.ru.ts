@@ -161,6 +161,7 @@ export const surfacesRussian = {
         unassigned: "Не назначено",
         claimedBy: "Назначено агенту {{name}}",
         claimHeldUntil: "Взято агентом {{name}} до {{time}}",
+        claimHeldUntilTime: "Взято до {{time}}",
         noEstimate: "Без оценки",
     },
     kanbanBoard: {
@@ -170,6 +171,10 @@ export const surfacesRussian = {
             active: "Активно",
             resolved: "Решено",
             closed: "Закрыто",
+        },
+        captions: {
+            noAssignee: "Без исполнителя",
+            assigned: "Назначено",
         },
         invalidTransition: "Недопустимый переход статуса: {{from}} → {{to}}",
         movedOnBoard: "Перемещено на доске",

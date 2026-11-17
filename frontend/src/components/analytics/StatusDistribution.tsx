@@ -18,7 +18,7 @@ export const StatusDistribution = ({ summary }: { summary: IterationSummary }) =
     if (total === 0) return null;
     return (
         <section className="card card-pad space-y-3" aria-labelledby="status-distribution-title">
-            <h3 id="status-distribution-title" className="text-base font-semibold">{t('analytics.status.title')}</h3>
+            <h2 id="status-distribution-title" className="text-base font-semibold">{t('analytics.status.title')}</h2>
             <p className="text-sm text-content-secondary">{t('analytics.status.summary', { total, accepted })}</p>
             <div className="flex h-8 w-full overflow-hidden rounded-md" role="img"
                 aria-label={counts.map(item => `${t(`statuses.${item.status}`)} ${item.count}`).join(', ')}>
