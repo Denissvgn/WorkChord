@@ -167,7 +167,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
             <Button type="button" variant="ghost" size="sm" disabled={pending} onClick={() => { setCriteria(initial); setReason(''); setDraftVersion(task.version); }}>{t('domain.discardProgress')}</Button>
         </div>}
         <fieldset disabled={disabled || pending || criteriaDirty || staleDraft || actions.isError || actions.isLoading} className="space-y-3">
-            <Input label={t('domain.reason')} value={reason} maxLength={2000} onChange={event => setReason(event.target.value)} />
+            <Input label={t('domain.reason')} required value={reason} maxLength={2000} onChange={event => setReason(event.target.value)} />
             {available.length > 0 ? <div className="flex flex-wrap items-end gap-2">
                 <div className="min-w-0 flex-1">
                     <label className="field-lbl" htmlFor={`${id}-action`}>{t('domain.action')}</label>
