@@ -23,7 +23,7 @@ vi.mock('../services/labelService', () => ({ labelService: { getGroups: vi.fn().
 vi.mock('../services/sessionService', () => ({ sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 3 }) } }));
 vi.mock('../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([
     { id: 3, name: 'Orchard', sort_order: 0 }, { id: 4, name: 'Harbor', sort_order: 1 },
-]) } }));
+]), getRoadmapMilestones: vi.fn().mockResolvedValue({ items: [], next_cursor: null }) } }));
 vi.mock('../services/teamService', () => ({ teamService: { getByIteration: vi.fn().mockResolvedValue([]) } }));
 vi.mock('../components/tasks/taskEditorSnapshot', () => ({ readTaskEditorSnapshot: api.snapshot, keepNewestTaskSnapshot: (_old: unknown, next: unknown) => next }));
 vi.mock('../components/tasks/TaskReadView', () => ({ TASK_PART_PARAM: 'part', TaskReadView: ({ task }: { task: Task }) => <p>Shared task view: {task.title}</p> }));

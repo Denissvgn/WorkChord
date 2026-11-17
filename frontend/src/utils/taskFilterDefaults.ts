@@ -4,6 +4,8 @@ export const defaultFilters: TaskFilters = {
     planningIssue: null,
     assigneeId: null,
     projectId: null,
+    milestoneId: null,
+    needsAttention: null,
     priority: null,
     status: null,
     hasDependency: null,

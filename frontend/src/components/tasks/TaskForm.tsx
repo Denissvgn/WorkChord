@@ -122,6 +122,8 @@ export const TaskForm = ({
     const [discussionDirty, setDiscussionDirty] = useState(false);
     const [timeDirty, setTimeDirty] = useState(false);
     const [showAssistant, setShowAssistant] = useState(false);
+    // A new task keeps its optional fields under More; a rejected save opens it when the problem is in there.
+    const [moreOpen, setMoreOpen] = useState(false);
     const [showDiscardWarning, setShowDiscardWarning] = useState(false);
     // The plan changed between reading it and saving: only then is a fresh read offered.
     const [creationConflict, setCreationConflict] = useState(false);
@@ -503,12 +505,13 @@ export const TaskForm = ({
             project_id: effectiveProjectId,
             milestone_id: effectiveMilestoneId,
         };
-        if (iterationId === null && effectiveProjectId === null) { setError(t('domain.projectRequired')); return; }
+        if (iterationId === null && effectiveProjectId === null) { setMoreOpen(true); setError(t('domain.projectRequired')); return; }
         const assigneeIds = teamMembers
             ? new Set(teamMembers.map(member => member.id))
             : undefined;
         const validationIssue = validateTaskEditor(values, assigneeIds)[0];
         if (validationIssue) {
+            if (validationIssue.field !== 'title' && validationIssue.field !== 'assignee_id' && validationIssue.field !== 'effort_days') setMoreOpen(true);
             setError(t(`taskEditor.validation.${validationIssue.code}`));
             return;
         }
@@ -608,126 +611,21 @@ export const TaskForm = ({
         ?? milestonesError
         ?? templatesError;
 
-    return (
-        <form onSubmit={handleSubmit} className="task-form space-y-6">
-            {!currentTask && iterationId !== null && (creationContext.loading || Boolean(creationContext.error) || creationConflict) && <div className="space-y-2">
-                {creationContext.loading && <p role="status">{t('common.loading')}</p>}
-                {Boolean(creationContext.error) && <QueryErrorState error={creationContext.error} onRetry={() => void compareCreationContext()} />}
-                {creationConflict && <>
-                    <p className="text-sm text-content-secondary">{t('surfaces.taskForm.planChanged')}</p>
-                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting || creationContext.loading} onClick={() => void compareCreationContext()}>{t('planningInput.reviewAgain')}</Button>
-                </>}
-            </div>}
-            {sessionUnavailable && <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
-                <p>{t('identity.expired')}</p>
-                <a className="inline-flex min-h-11 items-center font-semibold underline" href={`/api/auth/login?return_to=${encodeURIComponent(window.location.pathname + window.location.search)}`}>{t('identity.signIn')}</a>
-            </div>}
-            {optionQueryError && (
-                <QueryErrorState
-                    error={optionQueryError}
-                    fallback={t('queryFeedback.optionLoadFailed')}
-                    onRetry={() => {
-                        void refetchTeam();
-                        void refetchIteration();
-                        void refetchProjects();
-                        void refetchMilestones();
-                        void refetchTemplates();
-                    }}
-                />
-            )}
-            {error && (
-                <div role="alert" className="bg-feedback-danger-muted text-feedback-danger-foreground p-3 rounded-md text-sm">
-                    {error}
-                </div>
-            )}
-            {pendingWrite && !createMutation.isPending && !updateMutation.isPending && !createTriageMutation.isPending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
-                <p>{t('teamwork.uncertainTask')}</p>
-                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>
-                {writeComparison && <>
-                    <p>{t('teamwork.boundedComparison')}</p>
-                    <ul>{writeComparison.items.map(item => <li key={`${item.kind ?? 'task'}:${item.id}`}>{item.kind === 'triage' ? t('surfaces.taskForm.sendToTriage') : t('surfaces.taskForm.taskTitle')} · #{item.id} · {item.title} {item.version !== undefined ? ` · v${item.version}` : ''}</li>)}</ul>
-                    {conflictTask && <p className="whitespace-pre-wrap break-words">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
-                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={resumeComparedWrite}>{t('teamwork.comparedWork')}</Button>
-                </>}
-            </div>}
-            {conflict && (
-                <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
-                    <div className="font-semibold">{t('taskEditor.conflictTitle')}</div>
-                    <p>
-                        {t('taskEditor.conflictBody', {
-                            title: conflict.title,
-                            version: conflict.version,
-                        })}
-                    </p>
-                    {conflictTask && <details><summary className="cursor-pointer font-medium">{t('taskEditor.compareCurrent')}</summary>
-                        <dl className="mt-2 space-y-2"><dt>{t('surfaces.taskForm.description')}</dt>
-                            <dd className="max-h-40 overflow-auto whitespace-pre-wrap break-words">{conflictTask.description || '—'}</dd>
-                            <dt>{t('statusChange.currentStatus')}</dt><dd>{t(`statuses.${conflictTask.status}`)}</dd>
-                        </dl></details>}
-                    <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
-                    <Button type="button" size="sm" variant="secondary" onClick={reloadCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty}>
-                        {t('taskEditor.reload')}
-                    </Button>
-                </div>
-            )}
-            <ConfirmDialog
-                open={showDiscardWarning}
-                title={t('taskEditor.unsavedTitle')}
-                description={t('taskEditor.unsavedBody')}
-                confirmLabel={t('taskEditor.discard')}
-                cancelLabel={t('taskEditor.keepEditing')}
-                closeLabel={t('actions.close')}
-                tone="warning"
-                onCancel={() => setShowDiscardWarning(false)}
-                onConfirm={() => { if (!isSubmitting) { clearDraft(); onCancel(); } }}
-            />
-            {recoveredDraft && <p role="status" className="rounded-md bg-feedback-info-muted p-3 text-sm text-feedback-info-foreground">{t('taskEditor.recoveredDraft')}</p>}
-            {statusMessage && (
-                <div className="bg-action-muted text-action p-3 rounded-md text-sm">
-                    {statusMessage}
-                </div>
-            )}
 
-            {/* Template selector (only for new tasks) */}
-            {canApplyTemplates && taskTemplates.length > 0 && (
-                <div>
-                    <label htmlFor={`${formId}-template`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.template')}</label>
-                    <select id={`${formId}-template`}
-                        value={selectedTemplateId}
-                        onChange={event => handleTemplateSelect(event.target.value)}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                    >
-                        <option value="">{t('surfaces.taskForm.noTemplate')}</option>
-                        {taskTemplates.map(template => (
-                            <option key={template.id} value={template.id}>
-                                {templateDisplay(template).name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {/* Agent readiness badge (only for existing tasks) */}
-            {currentTask && mode === 'direct' && (
-                currentTask.tags.includes('agent') && !currentTask.agent_readiness.blocker_codes?.includes('execution_context_required') && <TaskAgentReadinessBadge readiness={currentTask.agent_readiness} mode="panel" />
-            )}
-
-            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting || Boolean(pendingWrite)} className="contents">
-            {/* === ESSENTIAL SECTION (always visible) === */}
-
-            {/* Title - required */}
+    // The fields of the form. A new task shows a short form with the rest under More; an existing task
+    // is edited by section, so both compose the same fields.
+    const titleField = (
             <Input
                 label={t('surfaces.taskForm.taskTitle')}
                 value={formData.title}
                 onChange={e => setFormData({ ...formData, title: e.target.value })}
                 required
             />
-
-
-            {/* Priority + Assignee */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    );
+    const priorityField = (
                 <Input
- disabled={Boolean(currentTask?.is_composite)}                    type="number"
+                    disabled={Boolean(currentTask?.is_composite)}
+                    type="number"
                     label={t('surfaces.taskForm.priority')}
                     value={formData.priority ?? ''}
                     placeholder={t('surfaces.taskForm.priorityUnset')}
@@ -735,26 +633,16 @@ export const TaskForm = ({
                     min="1"
                     max="10"
                 />
-
+    );
+    const assigneeField = (
                 <AssigneePicker id={`${formId}-assignee`} members={teamMembers ?? []} value={formData.assignee_id ?? null}
                     profile={outsideProfile} disabled={Boolean(currentTask?.is_composite) || iterationId === null}
                     allowAdd={mode === 'direct'} onChange={(assigneeId, profile) => {
                         setOutsideProfile(profile); setCapacityAdded(false);
                         setFormData(values => ({ ...values, assignee_id: assigneeId }));
                     }} />
-            </div>
-
-            {/* Assignee recommendations (only for existing) */}
-            {currentTask && iterationId !== null && <CollapsibleSection title={t('assigneeRecommendations.title')}>
-                <AssigneeRecommendationsPanel
-                    targetType="task"
-                    taskId={currentTask.id}
-                    selectedAssigneeId={formData.assignee_id ?? null}
-                    onSelectAssignee={teamMemberId => setFormData({ ...formData, assignee_id: teamMemberId })}
-                />
-            </CollapsibleSection>}
-
-            {/* Project */}
+    );
+    const projectField = (
             <div>
                 <label htmlFor={`${formId}-project`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.project')}</label>
                 {scopedProjectId !== null ? (
@@ -775,7 +663,8 @@ export const TaskForm = ({
                     </select>
                 )}
             </div>
-
+    );
+    const effortField = (
                 <div>
                     <Input
                         type="number"
@@ -799,38 +688,151 @@ export const TaskForm = ({
                         hours: dayHours,
                     })}</p>
                 </div>
-            <p className="text-sm text-content-secondary">{t(iterationId === null ? 'teamwork.inBacklog' : 'teamwork.inIteration')}{currentTask?.baseline_start_date ? ` · ${currentTask.baseline_start_date} – ${currentTask.baseline_end_date}` : ''}</p>
-            {currentTask && <details><summary className="cursor-pointer text-sm font-medium">{t('teamwork.executionDates')}</summary><dl className="grid grid-cols-1 gap-2 rounded-md border border-border p-3 text-sm sm:grid-cols-2">
-                <div><dt className="text-content-secondary">{t('workMetrics.baseline')}</dt><dd>{currentTask.baseline_start_date ?? '—'} → {currentTask.baseline_end_date ?? '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.forecast')}</dt><dd>{currentTask.start_date ?? '—'} → {currentTask.end_date ?? '—'}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualStart')}</dt><dd>{formatDateTime(currentTask.started_at, i18n.language)}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualResolve')}</dt><dd>{formatDateTime(currentTask.resolved_at, i18n.language)}</dd></div>
-                <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{formatDateTime(currentTask.accepted_at, i18n.language)}</dd></div>
-            </dl></details>}
-
-            {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={isSubmitting || workDirty || discussionDirty || timeDirty}
-                onChange={brief => setFormData(values => ({ ...values, brief }))} /> : <div className="space-y-3">
-                <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
-                <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
-                    onChange={event => setFormData(values => ({ ...values, description: event.target.value }))} />
-                {currentTask && <Button type="button" variant="secondary" size="sm" disabled={isSubmitting || isDirty}
-                    onClick={async () => {
-                        setIsRefreshing(true);
-                        try {
-                            const preview = await taskService.convertBrief(currentTask.id, currentTask.version, false);
-                            setFormData(values => ({ ...values, brief: preview.brief }));
-                            setStatusMessage([t('domain.conversionDraft'), ...preview.notes].join(' '));
-                        } catch (cause) { setError(getApiErrorMessage(cause, t('domain.saveFailed'))); }
-                        finally { setIsRefreshing(false); }
-                    }}>{t('domain.convertBrief')}</Button>}
-            </div>}
-            {currentTask?.legacy_description && <details className="text-sm text-content-secondary">
-                <summary className="cursor-pointer">{t('domain.originalDescription')}</summary>
-                <pre className="mt-2 whitespace-pre-wrap break-words font-sans">{currentTask.legacy_description}</pre>
-            </details>}
-            {mode === 'direct' && <Button type="button" variant="ghost" size="sm" aria-expanded={showAssistant} onClick={() => setShowAssistant(value => !value)}>{t('teamwork.optionalAssistant')}</Button>}
-            {/* AI assistance intentionally stays outside sandbox drafts. */}
-            {mode === 'direct' && showAssistant && (
+    );
+    const milestoneField = (
+                <div>
+                    <label htmlFor={`${formId}-milestone`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.milestone')}</label>
+                    <select id={`${formId}-milestone`}
+                        value={effectiveMilestoneId ?? ''}
+                        onChange={e => setFormData({ ...formData, milestone_id: e.target.value ? parseInt(e.target.value) : null })}
+                        disabled={!effectiveProjectId}
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card disabled:bg-surface-muted disabled:text-content-secondary"
+                    >
+                        <option value="">{t('surfaces.taskForm.noMilestone')}</option>
+                        {projectMilestones.map(milestone => (
+                            <option key={milestone.id} value={milestone.id}>
+                                {milestone.name}
+                                {milestone.target_date ? ` (${formatDate(milestone.target_date)})` : ''}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+    );
+    const dateFields = (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label htmlFor={`${formId}-min-start`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.minStartDate')}</label>
+                        <input id={`${formId}-min-start`}
+                            type="date"
+                            value={formData.min_start_date || ''}
+                            onChange={e => setFormData({ ...formData, min_start_date: e.target.value || null })}
+                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor={`${formId}-max-end`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.maxEndDate')}</label>
+                        <input id={`${formId}-max-end`}
+                            type="date"
+                            value={formData.max_end_date || ''}
+                            onChange={e => setFormData({ ...formData, max_end_date: e.target.value || null })}
+                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
+                        />
+                    </div>
+                </div>
+    );
+    const ownerField = (
+            <div>
+                <label className="field-lbl" htmlFor={`${formId}-owner`}>{t('domain.owner')}</label>
+                {owners.isLoading && <p className="text-sm text-content-secondary">{t('common.loading')}</p>}
+                {owners.isError && <QueryErrorState error={owners.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void owners.refetch()} />}
+                <select id={`${formId}-owner`} className="input w-full" value={formData.owner_profile_id ?? ''}
+                    onChange={event => setFormData(values => ({ ...values, owner_profile_id: event.target.value ? Number(event.target.value) : null }))}>
+                    <option value="">{t('domain.unassignedOwner')}</option>
+                    {currentTask?.owner && !owners.data?.items.some(owner => owner.id === currentTask.owner!.id) && <option value={currentTask.owner.id}>{currentTask.owner.name}</option>}
+                    {(owners.data?.items ?? []).map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
+                </select>
+                <p className="mt-1 text-sm text-content-secondary">{t('domain.ownerHelp')}</p>
+                {formData.owner_profile_id && <PersonCapacity key={formData.owner_profile_id} profileId={formData.owner_profile_id} startDate={iteration?.start_date} endDate={iteration?.end_date} />}
+            </div>
+    );
+    const sandboxStatusField = (
+                    <div>
+                        <label htmlFor={`${formId}-sandbox-status`} className="block text-sm font-medium text-content-primary mb-1">
+                            {t('taskEditor.status')}
+                        </label>
+                        <select id={`${formId}-sandbox-status`}
+                            value={formData.status}
+                            onChange={event => setFormData({
+                                ...formData,
+                                status: event.target.value as Task['status'],
+                            })}
+                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                        >
+                            <option value="planned">{t('statuses.planned')}</option>
+                            <option value="active">{t('statuses.active')}</option>
+                            <option value="resolved">{t('statuses.resolved')}</option>
+                            <option value="closed">{t('statuses.closed')}</option>
+                        </select>
+                    </div>
+    );
+    const dependenciesField = (
+                <div>
+                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.dependencies')}</label>
+                    <div className="border border-border-strong rounded-md p-2 max-h-32 overflow-y-auto bg-surface-muted">
+                        {currentTask?.detail_context?.dependencies.has_more ? <p className="text-sm text-content-secondary">{t('domain.boundedDependencies')}</p> : <TaskDependencySelector
+                        projectId={effectiveProjectId}
+                            iterationId={iterationId}
+                            currentTaskId={currentTask?.id}
+                            selectedIds={formData.depends_on}
+                            onChange={(ids) => setFormData({ ...formData, depends_on: ids })}
+                        />}
+                    </div>
+                </div>
+    );
+    const flagsField = (
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
+                    <label className="flex min-h-11 cursor-pointer items-center gap-2">
+                        <input
+                            type="checkbox"
+                            checked={formData.is_optional}
+                            onChange={e => setFormData({ ...formData, is_optional: e.target.checked })}
+                            className="w-4 h-4 rounded border-border-strong text-action focus:ring-focus"
+                        />
+                        <span className="text-sm font-medium text-content-primary">{t('surfaces.taskForm.optionalTask')}</span>
+                    </label>
+                    <label className="flex min-h-11 cursor-pointer items-center gap-2">
+                        <input
+                            type="checkbox"
+                            checked={formData.is_deferred}
+                            onChange={e => setFormData({ ...formData, is_deferred: e.target.checked })}
+                            className="w-4 h-4 rounded border-border-strong text-content-secondary focus:ring-focus"
+                        />
+                        <span className="text-sm font-medium text-content-primary">{t('surfaces.taskForm.deferred')}</span>
+                    </label>
+                </div>
+    );
+    const labelsField = (
+                <LabelSelector
+                    label={t('surfaces.taskForm.tags')}
+                    value={formData.tags ?? []}
+                    onChange={tags => setFormData({ ...formData, tags })}
+                    placeholder={t('surfaces.taskForm.newTag')}
+                />
+    );
+    const templateField = (
+                <div>
+                    <label htmlFor={`${formId}-template`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.template')}</label>
+                    <select id={`${formId}-template`}
+                        value={selectedTemplateId}
+                        onChange={event => handleTemplateSelect(event.target.value)}
+                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
+                    >
+                        <option value="">{t('surfaces.taskForm.noTemplate')}</option>
+                        {taskTemplates.map(template => (
+                            <option key={template.id} value={template.id}>
+                                {templateDisplay(template).name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+    );
+    const assistantButton = mode === 'direct' ? (
+        <Button type="button" variant="ghost" size="sm" aria-expanded={showAssistant} onClick={() => setShowAssistant(value => !value)}>
+            <Sparkles className="mr-1 h-4 w-4" aria-hidden="true" />{t('teamwork.optionalAssistant')}
+        </Button>
+    ) : null;
+    // AI assistance intentionally stays outside sandbox drafts.
+    const assistantPanel = mode === 'direct' && showAssistant && (
             <section className="rounded-md border border-feedback-purple-border bg-feedback-purple-muted p-4 space-y-3">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -996,133 +998,191 @@ export const TaskForm = ({
                     </div>
                 )}
             </section>
+    );
+    const briefBusy = isSubmitting || workDirty || discussionDirty || timeDirty;
+    const positionNote = (
+            <p className="text-sm text-content-secondary">{t(iterationId === null ? 'teamwork.inBacklog' : 'teamwork.inIteration')}{currentTask?.baseline_start_date ? ` · ${currentTask.baseline_start_date} – ${currentTask.baseline_end_date}` : ''}</p>
+    );
+
+    return (
+        <form onSubmit={handleSubmit} className="task-form space-y-6">
+            {!currentTask && iterationId !== null && (creationContext.loading || Boolean(creationContext.error) || creationConflict) && <div className="space-y-2">
+                {creationContext.loading && <p role="status">{t('common.loading')}</p>}
+                {Boolean(creationContext.error) && <QueryErrorState error={creationContext.error} onRetry={() => void compareCreationContext()} />}
+                {creationConflict && <>
+                    <p className="text-sm text-content-secondary">{t('surfaces.taskForm.planChanged')}</p>
+                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting || creationContext.loading} onClick={() => void compareCreationContext()}>{t('planningInput.reviewAgain')}</Button>
+                </>}
+            </div>}
+            {sessionUnavailable && <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
+                <p>{t('identity.expired')}</p>
+                <a className="inline-flex min-h-11 items-center font-semibold underline" href={`/api/auth/login?return_to=${encodeURIComponent(window.location.pathname + window.location.search)}`}>{t('identity.signIn')}</a>
+            </div>}
+            {optionQueryError && (
+                <QueryErrorState
+                    error={optionQueryError}
+                    fallback={t('queryFeedback.optionLoadFailed')}
+                    onRetry={() => {
+                        void refetchTeam();
+                        void refetchIteration();
+                        void refetchProjects();
+                        void refetchMilestones();
+                        void refetchTemplates();
+                    }}
+                />
+            )}
+            {error && (
+                <div role="alert" className="bg-feedback-danger-muted text-feedback-danger-foreground p-3 rounded-md text-sm">
+                    {error}
+                </div>
+            )}
+            {pendingWrite && !createMutation.isPending && !updateMutation.isPending && !createTriageMutation.isPending && <div role="status" className="space-y-2 rounded-md border border-feedback-warning-border p-3 text-sm">
+                <p>{t('teamwork.uncertainTask')}</p>
+                <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={() => void comparePendingWrite()}>{t('teamwork.reloadCurrentWork')}</Button>
+                {writeComparison && <>
+                    <p>{t('teamwork.boundedComparison')}</p>
+                    <ul>{writeComparison.items.map(item => <li key={`${item.kind ?? 'task'}:${item.id}`}>{item.kind === 'triage' ? t('surfaces.taskForm.sendToTriage') : t('surfaces.taskForm.taskTitle')} · #{item.id} · {item.title} {item.version !== undefined ? ` · v${item.version}` : ''}</li>)}</ul>
+                    {conflictTask && <p className="whitespace-pre-wrap break-words">{conflictTask.description ?? conflictTask.brief?.goal}</p>}
+                    <Button type="button" size="sm" variant="secondary" disabled={isSubmitting} onClick={resumeComparedWrite}>{t('teamwork.comparedWork')}</Button>
+                </>}
+            </div>}
+            {conflict && (
+                <div role="alert" className="space-y-2 rounded-md border border-feedback-warning-border bg-feedback-warning-muted p-3 text-sm text-feedback-warning-foreground">
+                    <div className="font-semibold">{t('taskEditor.conflictTitle')}</div>
+                    <p>
+                        {t('taskEditor.conflictBody', {
+                            title: conflict.title,
+                            version: conflict.version,
+                        })}
+                    </p>
+                    {conflictTask && <details><summary className="cursor-pointer font-medium">{t('taskEditor.compareCurrent')}</summary>
+                        <dl className="mt-2 space-y-2"><dt>{t('surfaces.taskForm.description')}</dt>
+                            <dd className="max-h-40 overflow-auto whitespace-pre-wrap break-words">{conflictTask.description || '—'}</dd>
+                            <dt>{t('statusChange.currentStatus')}</dt><dd>{t(`statuses.${conflictTask.status}`)}</dd>
+                        </dl></details>}
+                    <Button type="button" size="sm" variant="secondary" onClick={compareCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty} isLoading={isRefreshing}>{t('taskEditor.keepDraftWithCurrentVersion')}</Button>
+                    <Button type="button" size="sm" variant="secondary" onClick={reloadCurrentTask} disabled={isSubmitting || workDirty || discussionDirty || timeDirty}>
+                        {t('taskEditor.reload')}
+                    </Button>
+                </div>
+            )}
+            <ConfirmDialog
+                open={showDiscardWarning}
+                title={t('taskEditor.unsavedTitle')}
+                description={t('taskEditor.unsavedBody')}
+                confirmLabel={t('taskEditor.discard')}
+                cancelLabel={t('taskEditor.keepEditing')}
+                closeLabel={t('actions.close')}
+                tone="warning"
+                onCancel={() => setShowDiscardWarning(false)}
+                onConfirm={() => { if (!isSubmitting) { clearDraft(); onCancel(); } }}
+            />
+            {recoveredDraft && <p role="status" className="rounded-md bg-feedback-info-muted p-3 text-sm text-feedback-info-foreground">{t('taskEditor.recoveredDraft')}</p>}
+            {statusMessage && (
+                <div className="bg-action-muted text-action p-3 rounded-md text-sm">
+                    {statusMessage}
+                </div>
             )}
 
-            {/* === COLLAPSIBLE: DATES & EFFORT === */}
-            <CollapsibleSection title={t('taskForm.datesEffort')}>
-                {/* Milestone */}
-                <div>
-                    <label htmlFor={`${formId}-milestone`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.milestone')}</label>
-                    <select id={`${formId}-milestone`}
-                        value={effectiveMilestoneId ?? ''}
-                        onChange={e => setFormData({ ...formData, milestone_id: e.target.value ? parseInt(e.target.value) : null })}
-                        disabled={!effectiveProjectId}
-                        className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card disabled:bg-surface-muted disabled:text-content-secondary"
-                    >
-                        <option value="">{t('surfaces.taskForm.noMilestone')}</option>
-                        {projectMilestones.map(milestone => (
-                            <option key={milestone.id} value={milestone.id}>
-                                {milestone.name}
-                                {milestone.target_date ? ` (${formatDate(milestone.target_date)})` : ''}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+            {/* Agent readiness badge (only for existing tasks) */}
+            {currentTask && mode === 'direct' && (
+                currentTask.tags.includes('agent') && !currentTask.agent_readiness.blocker_codes?.includes('execution_context_required') && <TaskAgentReadinessBadge readiness={currentTask.agent_readiness} mode="panel" />
+            )}
 
-                {/* Date constraints */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                        <label htmlFor={`${formId}-min-start`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.minStartDate')}</label>
-                        <input id={`${formId}-min-start`}
-                            type="date"
-                            value={formData.min_start_date || ''}
-                            onChange={e => setFormData({ ...formData, min_start_date: e.target.value || null })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor={`${formId}-max-end`} className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.maxEndDate')}</label>
-                        <input id={`${formId}-max-end`}
-                            type="date"
-                            value={formData.max_end_date || ''}
-                            onChange={e => setFormData({ ...formData, max_end_date: e.target.value || null })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus"
-                        />
-                    </div>
-                </div>
-            </CollapsibleSection>
-
-            {/* === COLLAPSIBLE: ADVANCED OPTIONS === */}
-            <CollapsibleSection title={t('assigneePicker.more')}>
-            <div>
-                <label className="field-lbl" htmlFor={`${formId}-owner`}>{t('domain.owner')}</label>
-                {owners.isLoading && <p className="text-sm text-content-secondary">{t('common.loading')}</p>}
-                {owners.isError && <QueryErrorState error={owners.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={() => void owners.refetch()} />}
-                <select id={`${formId}-owner`} className="input w-full" value={formData.owner_profile_id ?? ''}
-                    onChange={event => setFormData(values => ({ ...values, owner_profile_id: event.target.value ? Number(event.target.value) : null }))}>
-                    <option value="">{t('domain.unassignedOwner')}</option>
-                    {currentTask?.owner && !owners.data?.items.some(owner => owner.id === currentTask.owner!.id) && <option value={currentTask.owner.id}>{currentTask.owner.name}</option>}
-                    {(owners.data?.items ?? []).map(owner => <option key={owner.id} value={owner.id}>{owner.name}</option>)}
-                </select>
-                <p className="mt-1 text-sm text-content-secondary">{t('domain.ownerHelp')}</p>
-                {formData.owner_profile_id && <PersonCapacity key={formData.owner_profile_id} profileId={formData.owner_profile_id} startDate={iteration?.start_date} endDate={iteration?.end_date} />}
+            <fieldset disabled={workDirty || discussionDirty || timeDirty || isSubmitting || Boolean(pendingWrite)} className="m-0 min-w-0 space-y-6 border-0 p-0">
+            {currentTask ? <>
+            {/* Editing an existing task goes by section: essentials first, then dates and the rest. */}
+            {titleField}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {priorityField}
+                {assigneeField}
             </div>
-
-                {mode === 'sandbox' && currentTask && (
-                    <div>
-                        <label htmlFor={`${formId}-sandbox-status`} className="block text-sm font-medium text-content-primary mb-1">
-                            {t('taskEditor.status')}
-                        </label>
-                        <select id={`${formId}-sandbox-status`}
-                            value={formData.status}
-                            onChange={event => setFormData({
-                                ...formData,
-                                status: event.target.value as Task['status'],
-                            })}
-                            className="w-full px-3 py-2 border border-border-strong rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-focus bg-surface-card"
-                        >
-                            <option value="planned">{t('statuses.planned')}</option>
-                            <option value="active">{t('statuses.active')}</option>
-                            <option value="resolved">{t('statuses.resolved')}</option>
-                            <option value="closed">{t('statuses.closed')}</option>
-                        </select>
-                    </div>
-                )}
-
-                {/* Dependencies */}
-                <div>
-                    <label className="block text-sm font-medium text-content-primary mb-1">{t('surfaces.taskForm.dependencies')}</label>
-                    <div className="border border-border-strong rounded-md p-2 max-h-32 overflow-y-auto bg-surface-muted">
-                        {currentTask?.detail_context?.dependencies.has_more ? <p className="text-sm text-content-secondary">{t('domain.boundedDependencies')}</p> : <TaskDependencySelector
-                        projectId={effectiveProjectId}
-                            iterationId={iterationId}
-                            currentTaskId={currentTask?.id}
-                            selectedIds={formData.depends_on}
-                            onChange={(ids) => setFormData({ ...formData, depends_on: ids })}
-                        />}
-                    </div>
-                </div>
-
-                {/* Task flags */}
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4">
-                    <label className="flex min-h-11 cursor-pointer items-center gap-2">
-                        <input
-                            type="checkbox"
-                            checked={formData.is_optional}
-                            onChange={e => setFormData({ ...formData, is_optional: e.target.checked })}
-                            className="w-4 h-4 rounded border-border-strong text-action focus:ring-focus"
-                        />
-                        <span className="text-sm font-medium text-content-primary">{t('surfaces.taskForm.optionalTask')}</span>
-                    </label>
-                    <label className="flex min-h-11 cursor-pointer items-center gap-2">
-                        <input
-                            type="checkbox"
-                            checked={formData.is_deferred}
-                            onChange={e => setFormData({ ...formData, is_deferred: e.target.checked })}
-                            className="w-4 h-4 rounded border-border-strong text-content-secondary focus:ring-focus"
-                        />
-                        <span className="text-sm font-medium text-content-primary">{t('surfaces.taskForm.deferred')}</span>
-                    </label>
-                </div>
-
-                {/* Tags */}
-                <LabelSelector
-                    label={t('surfaces.taskForm.tags')}
-                    value={formData.tags ?? []}
-                    onChange={tags => setFormData({ ...formData, tags })}
-                    placeholder={t('surfaces.taskForm.newTag')}
+            {iterationId !== null && <CollapsibleSection title={t('assigneeRecommendations.title')}>
+                <AssigneeRecommendationsPanel
+                    targetType="task"
+                    taskId={currentTask.id}
+                    selectedAssigneeId={formData.assignee_id ?? null}
+                    onSelectAssignee={teamMemberId => setFormData({ ...formData, assignee_id: teamMemberId })}
                 />
+            </CollapsibleSection>}
+            {projectField}
+            {effortField}
+            {positionNote}
+            {currentTask && <details><summary className="cursor-pointer text-sm font-medium">{t('teamwork.executionDates')}</summary><dl className="grid grid-cols-1 gap-2 rounded-md border border-border p-3 text-sm sm:grid-cols-2">
+                <div><dt className="text-content-secondary">{t('workMetrics.baseline')}</dt><dd>{currentTask.baseline_start_date ?? '—'} → {currentTask.baseline_end_date ?? '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.forecast')}</dt><dd>{currentTask.start_date ?? '—'} → {currentTask.end_date ?? '—'}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualStart')}</dt><dd>{formatDateTime(currentTask.started_at, i18n.language)}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualResolve')}</dt><dd>{formatDateTime(currentTask.resolved_at, i18n.language)}</dd></div>
+                <div><dt className="text-content-secondary">{t('workMetrics.actualAccept')}</dt><dd>{formatDateTime(currentTask.accepted_at, i18n.language)}</dd></div>
+            </dl></details>}
+
+            {formData.brief ? <TaskBriefEditor value={formData.brief} disabled={briefBusy}
+                onChange={brief => setFormData(values => ({ ...values, brief }))} /> : <div className="space-y-3">
+                <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
+                <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
+                    onChange={event => setFormData(values => ({ ...values, description: event.target.value }))} />
+                <Button type="button" variant="secondary" size="sm" disabled={isSubmitting || isDirty}
+                    onClick={async () => {
+                        setIsRefreshing(true);
+                        try {
+                            const preview = await taskService.convertBrief(currentTask.id, currentTask.version, false);
+                            setFormData(values => ({ ...values, brief: preview.brief }));
+                            setStatusMessage([t('domain.conversionDraft'), ...preview.notes].join(' '));
+                        } catch (cause) { setError(getApiErrorMessage(cause, t('domain.saveFailed'))); }
+                        finally { setIsRefreshing(false); }
+                    }}>{t('domain.convertBrief')}</Button>
+            </div>}
+            {currentTask?.legacy_description && <details className="text-sm text-content-secondary">
+                <summary className="cursor-pointer">{t('domain.originalDescription')}</summary>
+                <pre className="mt-2 whitespace-pre-wrap break-words font-sans">{currentTask.legacy_description}</pre>
+            </details>}
+            {assistantButton}
+            {assistantPanel}
+
+            <CollapsibleSection title={t('taskForm.datesEffort')}>
+                {milestoneField}
+                {dateFields}
             </CollapsibleSection>
+
+            <CollapsibleSection title={t('assigneePicker.more')}>
+                {ownerField}
+                {mode === 'sandbox' && sandboxStatusField}
+                {dependenciesField}
+                {flagsField}
+                {labelsField}
+            </CollapsibleSection>
+            </> : <>
+            {/* A new task: title, assignee, effort and the brief; everything else is under More. */}
+            {titleField}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {assigneeField}
+                {effortField}
+            </div>
+            {formData.brief ? <TaskBriefEditor part="essential" value={formData.brief} disabled={briefBusy}
+                onChange={brief => setFormData(values => ({ ...values, brief }))} actions={assistantButton} /> : <div className="space-y-3">
+                <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
+                <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
+                    onChange={event => setFormData(values => ({ ...values, description: event.target.value }))} />
+                {assistantButton}
+            </div>}
+            {assistantPanel}
+            {positionNote}
+
+            <CollapsibleSection title={t('assigneePicker.more')} open={moreOpen} onOpenChange={setMoreOpen}>
+                {canApplyTemplates && taskTemplates.length > 0 && templateField}
+                {projectField}
+                {milestoneField}
+                {dateFields}
+                {dependenciesField}
+                {labelsField}
+                {ownerField}
+                {priorityField}
+                {flagsField}
+                {formData.brief && <TaskBriefEditor part="details" value={formData.brief} disabled={briefBusy}
+                    onChange={brief => setFormData(values => ({ ...values, brief }))} />}
+            </CollapsibleSection>
+            </>}
+
 
             {/* === STATUS & TIMELINE (only for existing tasks) === */}
             {currentTask && <div className="flex flex-wrap gap-2 text-sm" role="status">

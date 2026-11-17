@@ -5,11 +5,19 @@ import clsx from 'clsx';
 interface CollapsibleSectionProps {
     title: string;
     defaultOpen?: boolean;
+    /** Controls the section from outside; pair it with `onOpenChange`. */
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
     children: React.ReactNode;
 }
 
-export const CollapsibleSection = ({ title, defaultOpen = false, children }: CollapsibleSectionProps) => {
-    const [isOpen, setIsOpen] = useState(defaultOpen);
+export const CollapsibleSection = ({ title, defaultOpen = false, open, onOpenChange, children }: CollapsibleSectionProps) => {
+    const [ownOpen, setOwnOpen] = useState(defaultOpen);
+    const isOpen = open ?? ownOpen;
+    const setIsOpen = (next: boolean) => {
+        setOwnOpen(next);
+        onOpenChange?.(next);
+    };
     const contentId = useId();
 
     return (

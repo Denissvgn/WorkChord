@@ -1,4 +1,4 @@
-import { savedViewModified } from '../../utils/savedViewState';
+import { savedViewFilters, savedViewModified } from '../../utils/savedViewState';
 import i18n from '../../i18n/i18n';
 import { useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -83,7 +83,7 @@ export const useSavedViewManager = ({
     );
 
     const currentViewPayload = {
-        filters_json: filters as unknown as Record<string, unknown>,
+        filters_json: savedViewFilters(filters),
         sort_json: { sortKey },
         columns_json: {},
     };

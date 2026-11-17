@@ -2,8 +2,16 @@ import { defaultFilters } from './taskFilterDefaults';
 import type { SavedView } from '../types/savedView';
 import type { TaskFilters } from '../components/tasks/TaskFiltersBar';
 
+/** Conditions a saved view does not store; they narrow the list for this visit only. */
+export const UNSAVED_FILTERS: readonly (keyof TaskFilters)[] = ['milestoneId', 'needsAttention'];
+
+/** The filters a saved view stores. */
+export const savedViewFilters = (filters: TaskFilters): Record<string, unknown> => Object.fromEntries(
+    Object.entries(filters).filter(([key]) => !UNSAVED_FILTERS.includes(key as keyof TaskFilters)),
+);
+
 export const filterSignature = (raw: Record<string, unknown> | TaskFilters) => JSON.stringify(
-    Object.entries(defaultFilters).map(([key, fallback]) => {
+    Object.entries(defaultFilters).filter(([key]) => !UNSAVED_FILTERS.includes(key as keyof TaskFilters)).map(([key, fallback]) => {
         const value = raw[key as keyof typeof raw];
         if (Array.isArray(fallback)) return [key, Array.isArray(value) ? [...new Set(value.filter(item => typeof item === 'string'))].sort() : []];
         if (typeof fallback === 'string') return [key, typeof value === 'string' ? value : fallback];

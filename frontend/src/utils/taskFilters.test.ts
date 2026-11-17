@@ -112,6 +112,28 @@ describe('Blocked task filter', () => {
     });
 });
 
+describe('Milestone and Needs attention filters', () => {
+    const tasks = {
+        blocked: taskFixture({ id: 10, blocked_reason: 'Waiting for access' }),
+        late: taskFixture({ id: 11, is_overdue: true }),
+        overflow: taskFixture({ id: 12, is_iteration_overflow: true }),
+        unestimated: taskFixture({ id: 13, effort_days: null, effort_hours: null }),
+        fine: taskFixture({ id: 14, milestone_id: 5 }),
+        doneLate: taskFixture({ id: 15, status: 'resolved', is_overdue: true, blocked_reason: 'old' }),
+    };
+    const ids = (filters: typeof defaultFilters) => Object.values(tasks).filter(task => taskMatchesFilters(task, filters)).map(task => task.id);
+
+    it('needs attention for a blocker, a late or overrun delivery and a planned task without an estimate', () => {
+        expect(ids({ ...defaultFilters, needsAttention: true })).toEqual([10, 11, 12, 13]);
+        expect(ids({ ...defaultFilters, needsAttention: false })).toEqual([14, 15]);
+    });
+
+    it('keeps only the tasks of one milestone', () => {
+        expect(ids({ ...defaultFilters, milestoneId: 5 })).toEqual([14]);
+        expect(ids({ ...defaultFilters, milestoneId: 6 })).toEqual([]);
+    });
+});
+
 describe('search narrows the task list', () => {
     const child = taskFixture({ id: 21, title: 'Write migration notes' });
     const parent = taskFixture({ id: 20, title: 'Release', is_composite: true, children: [child, taskFixture({ id: 22, title: 'Tag build' })] });

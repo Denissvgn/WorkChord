@@ -1375,6 +1375,11 @@
   .wc .wc-page-toolbar-end { order: 2; }
   .wc .wc-page-toolbar-filters { order: 3; flex-basis: 100%; }
 }
+/* A stacked toolbar has five quick filters and More filters, which never fit beside search and the view controls:
+   the filters take the row under them at every width, as the default toolbar does when narrow. */
+.wc .wc-page-toolbar.is-stacked .wc-page-toolbar-search { flex-grow: 1; }
+.wc .wc-page-toolbar.is-stacked .wc-page-toolbar-end { order: 2; }
+.wc .wc-page-toolbar.is-stacked .wc-page-toolbar-filters { order: 3; flex-basis: 100%; }
 /* A compact toolbar has at most two quick filters before More filters. Its quick filters size to their text, the
    filter controls stay together as one block next to search, and the chips of active conditions take a full line under
    the row, so search, filters and the view controls keep one row down to about 900px of content (a 1024px viewport).

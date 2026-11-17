@@ -15,6 +15,8 @@ export interface TaskFilters {
     planningIssue: PlanningTaskIssue | null;
     assigneeId: number | null;
     projectId: number | null;
+    milestoneId: number | null;
+    needsAttention: boolean | null;
     priority: number | null;
     status: string | null;
     hasDependency: boolean | null;
@@ -44,15 +46,15 @@ const NO = 'no';
 const LABEL_CHIP = 'label:';
 const LABEL_GROUP_CHIP = 'labelGroup:';
 const DATE_FILTERS = ['startDateFrom', 'startDateTo', 'endDateFrom', 'endDateTo'] as const;
-/** Assignee and status stay in the row, so the compact toolbar keeps one line down to a 1024px viewport. */
-const QUICK_FILTERS = 2;
+/** Assignee, Status, Label, Milestone and Needs attention are the quick filters; everything else is under More filters. */
+const QUICK_FILTERS = 5;
 
 const yesNoValue = (value: boolean | null | undefined) => (value === true ? YES : value === false ? NO : '');
 const yesNoFilter = (value: string) => (value === '' ? null : value === YES);
 const numberFilter = (value: string) => (value === '' ? null : Number(value));
 
 /**
- * The task filters in the shared FilterBar: the two most used conditions in the row, the rest under
+ * The task filters in the shared FilterBar: five quick filters in the row, every other condition under
  * More filters, and one removable chip for every active condition, including each label.
  */
 export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFilter, hideProject, onClear }: TaskFiltersBarProps) => {
@@ -73,10 +75,15 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
         queryKey: ['label-groups'],
         queryFn: () => labelService.getGroups(),
     });
+    // feedback-policy: query loading,error,retry,empty - the list is empty while loading; a failure shows with retry below.
+    const milestonesQuery = useQuery({
+        queryKey: ['projectMilestones', 'portfolio', 'filter'],
+        queryFn: () => projectService.getRoadmapMilestones(null),
+    });
     const teamMembers = teamQuery.data;
     const projects = projectsQuery.data;
     const labelGroups = useMemo(() => labelsQuery.data ?? [], [labelsQuery.data]);
-    const optionQueries = [teamQuery, projectsQuery, labelsQuery];
+    const optionQueries = [teamQuery, projectsQuery, labelsQuery, milestonesQuery];
     const optionError = optionQueries.find(query => query.isError)?.error;
 
     const labels = useMemo(() => labelGroups.flatMap(group => group.labels.map(label => ({
@@ -105,6 +112,13 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
         projectOptions.push({ value: String(filters.projectId), label: `#${filters.projectId}` });
     }
 
+    const milestoneOptions = (milestonesQuery.data?.items ?? [])
+        .filter(milestone => filters.projectId === null || milestone.project_id === filters.projectId)
+        .map(milestone => ({ value: String(milestone.id), label: milestone.name }));
+    if (filters.milestoneId !== null && !milestoneOptions.some(option => option.value === String(filters.milestoneId))) {
+        milestoneOptions.push({ value: String(filters.milestoneId), label: `#${filters.milestoneId}` });
+    }
+
     const barFilters: FilterBarFilter[] = [
         {
             id: 'assigneeId',
@@ -122,6 +136,24 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
                 { value: 'resolved', label: t('taskFilters.statusResolved') },
                 { value: 'closed', label: t('taskFilters.statusClosed') },
             ],
+        },
+        {
+            id: 'labelSlugs',
+            label: t('taskFilters.label'),
+            value: '',
+            options: labels.filter(label => !filters.labelSlugs.includes(label.slug)).map(label => ({ value: label.slug, label: label.name })),
+        },
+        {
+            id: 'milestoneId',
+            label: t('taskFilters.milestone'),
+            value: filters.milestoneId === null ? '' : String(filters.milestoneId),
+            options: milestoneOptions,
+        },
+        {
+            id: 'needsAttention',
+            label: t('taskFilters.needsAttention'),
+            value: yesNoValue(filters.needsAttention),
+            options: yesNoOptions(t('taskFilters.yes'), t('taskFilters.no')),
         },
         {
             id: 'isBlocked',
@@ -193,12 +225,6 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
                 .filter(group => !filters.labelGroupKeys.includes(group.key))
                 .map(group => ({ value: group.key, label: labelGroupDisplay(group).name })),
         },
-        {
-            id: 'labelSlugs',
-            label: t('taskFilters.labels'),
-            value: '',
-            options: labels.filter(label => !filters.labelSlugs.includes(label.slug)).map(label => ({ value: label.slug, label: label.name })),
-        },
         ...filters.labelGroupKeys.map(key => {
             const group = labelGroups.find(candidate => candidate.key === key);
             return {
@@ -211,7 +237,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
         }),
         ...filters.labelSlugs.map(slug => ({
             id: `${LABEL_CHIP}${slug}`,
-            label: t('taskFilters.labels'),
+            label: t('taskFilters.label'),
             value: slug,
             options: [{ value: slug, label: labels.find(label => label.slug === slug)?.name ?? slug }],
             chipOnly: true,
@@ -242,6 +268,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
                 return;
             case 'assigneeId':
             case 'projectId':
+            case 'milestoneId':
             case 'priority':
                 onFiltersChange({ ...filters, [id]: numberFilter(value) });
                 return;
@@ -251,6 +278,7 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
             case 'planningIssue':
                 onFiltersChange({ ...filters, planningIssue: (value as PlanningTaskIssue) || null });
                 return;
+            case 'needsAttention':
             case 'isOverdue':
             case 'isBlocked':
             case 'hasDependency':

@@ -19,8 +19,8 @@ export const AssigneePicker = ({ id, members, value, profile, disabled, allowAdd
         return `${member.name} · ${workload?.data ? t('assigneePicker.load', { percent: Math.round(workload.data.workload_percent) }) : t(workload?.isPending ? 'common.loading' : 'assigneePicker.loadUnknown')}`;
     };
     const outside = profiles.data?.filter(candidate => !members.some(member => member.profile_id === candidate.id)) ?? [];
-    return <div>
-        <label htmlFor={id} className="mb-1 block text-sm font-medium text-content-primary">{t('taskList.assignee')}</label>
+    return <div className="field">
+        <label htmlFor={id} className="field-lbl">{t('taskList.assignee')}</label>
         <select id={id} className="input w-full" disabled={disabled} value={profile ? `profile:${profile.id}` : value ?? ''} onChange={event => {
             const selected = event.target.value;
             if (selected.startsWith('profile:')) onChange(null, outside.find(candidate => candidate.id === Number(selected.slice(8))) ?? null);

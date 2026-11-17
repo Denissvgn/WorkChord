@@ -11,6 +11,8 @@ export const TASK_FILTER_PARAMS = {
     planningIssue: PLANNING_TASK_ISSUE_PARAM,
     assigneeId: 'assignee',
     projectId: 'projectId',
+    milestoneId: 'milestone',
+    needsAttention: 'attention',
     priority: 'priority',
     status: 'status',
     hasDependency: 'waits',
@@ -72,6 +74,8 @@ export const filtersFromSearchParams = (params: URLSearchParams): TaskFilters =>
         planningIssue: parsePlanningTaskIssue(params.get(TASK_FILTER_PARAMS.planningIssue)),
         assigneeId: assignee === UNASSIGNED_VALUE ? -1 : positiveInteger(assignee),
         projectId: positiveInteger(params.get(TASK_FILTER_PARAMS.projectId)),
+        milestoneId: positiveInteger(params.get(TASK_FILTER_PARAMS.milestoneId)),
+        needsAttention: yesNo(params.get(TASK_FILTER_PARAMS.needsAttention)),
         priority: priority !== null && priority <= 10 ? priority : null,
         status: status && TASK_STATUSES.includes(status) ? status : null,
         hasDependency: yesNo(params.get(TASK_FILTER_PARAMS.hasDependency)),
@@ -94,6 +98,8 @@ export const writeFiltersToSearchParams = (params: URLSearchParams, filters: Tas
         ['planningIssue', filters.planningIssue],
         ['assigneeId', filters.assigneeId === -1 ? UNASSIGNED_VALUE : filters.assigneeId === null ? null : String(filters.assigneeId)],
         ['projectId', filters.projectId === null ? null : String(filters.projectId)],
+        ['milestoneId', filters.milestoneId === null ? null : String(filters.milestoneId)],
+        ['needsAttention', yesNoParam(filters.needsAttention)],
         ['priority', filters.priority === null ? null : String(filters.priority)],
         ['status', filters.status],
         ['hasDependency', yesNoParam(filters.hasDependency)],
@@ -156,6 +162,8 @@ export const activeFilterCount = (filters: TaskFilters) => (
     Number(filters.planningIssue !== null)
     + Number(filters.assigneeId !== null)
     + Number(filters.projectId !== null)
+    + Number(filters.milestoneId !== null)
+    + Number(filters.needsAttention !== null)
     + Number(filters.priority !== null)
     + Number(filters.status !== null)
     + Number(filters.hasDependency !== null)

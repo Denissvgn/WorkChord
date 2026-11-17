@@ -587,7 +587,7 @@ const TasksPage = () => {
 
                 <div ref={toolbarRef} className="tasks-toolbar-wrap flex-shrink-0">
                     <PageToolbar
-                        compact
+                        stacked
                         label={t('tasks.toolbar')}
                         search={(
                             <div className="relative">
