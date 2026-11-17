@@ -907,7 +907,7 @@ export const englishResources = {
             },
             quickCapture: {
                 taskLabel: 'Quick add a task',
-                triageLabel: 'Quick add an request',
+                triageLabel: 'Quick add a request',
                 taskPlaceholder: 'Add a task: type a title and press Enter',
                 triagePlaceholder: 'Add to intake: type a title and press Enter',
                 enterHint: 'Enter to add',
