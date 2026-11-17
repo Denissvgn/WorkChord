@@ -20,7 +20,7 @@ export type RuntimeReadinessState =
     | 'ready'
     | 'disabled';
 
-export interface AgentTeamStatusScopes {
+interface AgentTeamStatusScopes {
     topology: TopologyConfigurationState;
     authority: SessionAuthorityState;
     runtime: RuntimeReadinessState;

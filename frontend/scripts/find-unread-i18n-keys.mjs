@@ -108,6 +108,7 @@ flattenResolved(translationObject, path.resolve('src/i18n/resources.en.ts'));
 
 const usedLiterals = new Set();
 const dynamicPrefixes = new Set();
+const dynamicLookups = new Map();
 const usedSubtrees = new Set();
 const staticValue = (node, file, seen = new Set()) => {
   if (ts.isParenthesizedExpression(node)) return staticValue(node.expression, file, seen);
@@ -142,28 +143,39 @@ const stringValue = (node) => ts.isStringLiteral(node) || ts.isNoSubstitutionTem
 const pluralBase = (key) => key.replace(/_(zero|one|two|few|many|other)$/, '');
 const isTranslationCall = (node) => ts.isCallExpression(node) && (
   (ts.isIdentifier(node.expression) && ['t', 'i18nT'].includes(node.expression.text)) ||
-  (ts.isPropertyAccessExpression(node.expression) && ['t', 'getFixedT'].includes(node.expression.name.text))
+  (ts.isPropertyAccessExpression(node.expression) && ['t', 'getFixedT'].includes(node.expression.name.text)) ||
+  (ts.isIdentifier(node.expression) && node.expression.text === 'displayText')
 );
 for (const [file, source] of parsed) {
   if (resourceFiles.has(file)) continue;
   const visit = (node) => {
+    if (ts.isPropertyAssignment(node) && ts.isIdentifier(node.name) && /Key$/.test(node.name.text) && ts.isTemplateExpression(node.initializer)) {
+      const prefix = staticPrefix(node.initializer, file);
+      if (prefix) {
+        dynamicPrefixes.add(prefix);
+        const locations = dynamicLookups.get(prefix) ?? new Set();
+        locations.add(`${path.relative(process.cwd(), file)}:${source.getLineAndCharacterOfPosition(node.getStart()).line + 1} (derived key template)`);
+        dynamicLookups.set(prefix, locations);
+      }
+    }
     if (isTranslationCall(node) && node.arguments.length) {
       const first = node.arguments[0];
       const literal = stringValue(first);
       if (literal !== null) usedLiterals.add(literal);
       else {
         const prefix = staticPrefix(first, file);
-        if (prefix) dynamicPrefixes.add(prefix);
+        if (prefix) {
+          dynamicPrefixes.add(prefix);
+          const locations = dynamicLookups.get(prefix) ?? new Set();
+          locations.add(`${path.relative(process.cwd(), file)}:${source.getLineAndCharacterOfPosition(first.getStart()).line + 1}`);
+          dynamicLookups.set(prefix, locations);
+        }
       }
       if (node.arguments.slice(1).some((argument) => ts.isObjectLiteralExpression(argument) && argument.properties.some((property) => ts.isPropertyAssignment(property) && propertyName(property.name) === 'returnObjects' && property.initializer.kind === ts.SyntaxKind.TrueKeyword))) {
         if (literal !== null) usedSubtrees.add(literal);
       }
     }
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) usedLiterals.add(node.text);
-    if (ts.isTemplateExpression(node) || (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken)) {
-      const prefix = staticPrefix(node, file);
-      if (prefix) dynamicPrefixes.add(prefix);
-    }
     ts.forEachChild(node, visit);
   };
   visit(source);
@@ -184,6 +196,8 @@ console.log(`English translation keys: ${fullKeys.size}`);
 console.log(`Exact literal keys matched: ${[...usedLiterals].filter((key) => fullKeys.has(key)).length}`);
 console.log(`Dynamic prefixes matching catalog keys: ${relevantDynamicPrefixes.length}`);
 console.log(`Dynamic prefix list: ${relevantDynamicPrefixes.join(', ')}`);
+console.log('Dynamic lookup locations:');
+for (const prefix of relevantDynamicPrefixes) console.log(`  ${prefix} ${[...(dynamicLookups.get(prefix) ?? [])].sort().join(', ')}`);
 console.log(`Whole subtrees: ${usedSubtrees.size}`);
 console.log(`Unread keys: ${unmatched.length}`);
 console.log(`Unread retired-area keys: ${retiredUnread.length}`);

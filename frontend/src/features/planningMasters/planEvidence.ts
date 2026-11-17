@@ -9,7 +9,7 @@ import type { PlanningTaskIssue } from './planningTaskIssues';
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
-export type EvidenceItem = {
+type EvidenceItem = {
     label: string;
     value: string;
     /** An actionable exception: shown in the exception colour. */
@@ -18,7 +18,7 @@ export type EvidenceItem = {
     actionLabel?: string;
 };
 
-export type OwnerLink = { href: string; label: string };
+type OwnerLink = { href: string; label: string };
 
 const OWNER_LABEL_KEYS: Readonly<Record<string, string>> = {
     '/iterations': 'plan.page.open.iterations',

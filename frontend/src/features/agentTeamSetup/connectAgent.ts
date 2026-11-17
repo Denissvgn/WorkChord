@@ -13,7 +13,7 @@ const runtimeRecordNames: Record<AgentRuntime, string> = {
 };
 const roleRecordNames: Record<AgentTeamRole, string> = { pm: 'PM', worker: 'Worker', verifier: 'Reviewer' };
 
-export const teamMembers = (manifest: AgentTeamMaster) => [manifest.controller, ...manifest.workers, ...manifest.verifiers];
+const teamMembers = (manifest: AgentTeamMaster) => [manifest.controller, ...manifest.workers, ...manifest.verifiers];
 
 /** A declared member the server reports as not configured: kept in the manifest but never created. */
 const isPending = (key: string, status: AgentTeamStatus) => status.members.some(item => item.actor_key === key && !item.configured);
@@ -118,7 +118,7 @@ export function runtimeSnippet(runtime: AgentRuntime, server: string, filename: 
 export const CONNECT_STEPS = ['role', 'runtime', 'model', 'review', 'connect'] as const;
 export const STEP_INDEX = { role: 0, runtime: 1, model: 2, review: 3, connect: 4 } as const;
 
-export type ConnectIssueReason = 'role' | 'runtime' | 'model' | 'sink' | 'teamChanged' | 'unavailable' | 'other'
+type ConnectIssueReason = 'role' | 'runtime' | 'model' | 'sink' | 'teamChanged' | 'unavailable' | 'other'
     | 'applyUnconfirmed' | 'deliveryUncertain';
 export interface ConnectIssue { step: number; reason: ConnectIssueReason; code: string }
 
