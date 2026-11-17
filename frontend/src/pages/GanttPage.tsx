@@ -564,7 +564,7 @@ const GanttPage = () => {
                         <h3 className="font-semibold text-feedback-purple-foreground flex items-center gap-2">
                             <Sparkles className="w-4 h-4" /> {t('gantt.aiExplanation')}
                         </h3>
-                        <Button onClick={() => setExplanation(null)} className="text-feedback-purple-foreground hover:underline" variant="secondary">{t('actions.close')}</Button>
+                        <Button onClick={() => setExplanation(null)} className="text-feedback-purple-foreground hover:underline" variant="plain">{t('actions.close')}</Button>
                     </div>
                     <div className="space-y-3 text-sm text-feedback-purple-foreground">
                         <p className="leading-relaxed text-feedback-purple-foreground">{visibleExplanation.summary}</p>

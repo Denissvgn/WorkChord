@@ -157,7 +157,7 @@ export function PipelineView({ query, project, iteration, search, agent, filters
                                     <div className="min-w-0 flex-1 space-y-1">
                                         <Button data-page-chrome-control="button" type="button" onClick={() => onOpenTask(task)} data-testid={`task-card-${task.id}`}
                                             aria-label={t('agentPipeline.inspectTask', { title: task.title, state: activeStage.title })}
-                                            className="break-words text-left font-medium text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="secondary">
+                                            className="break-words text-left font-medium text-action hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                                             {t('agentPipeline.taskNumber', { id: task.id })} · {task.title}
                                         </Button>
                                         <p className="text-sm text-content-primary">{t('agentPipeline.reason', { reason: reasons })}</p>
