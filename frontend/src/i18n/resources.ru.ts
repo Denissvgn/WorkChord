@@ -826,6 +826,7 @@ export const russianResources = {
                 inReview: 'На проверке',
                 openTask: 'Открыть задачу',
                 selectTask: 'Выбрать: {{title}}',
+                selectParentUnavailable: 'Эта задача состоит из подзадач и меняется через них. Выберите подзадачи.',
                 selectOneIteration: 'Массовые изменения применяются к одной итерации. Снимите выбор, чтобы отметить задачу другой итерации.',
                 priorityTitle: 'Приоритет {{priority}}',
                 reviewerName: 'Проверяющий: {{name}}',

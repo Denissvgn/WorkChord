@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { CheckCircle2, Circle, CornerDownRight } from 'lucide-react';
@@ -46,9 +46,12 @@ export interface TaskRowProps {
     onStatusChange?: (status: TaskStatus) => void;
     menuItems: OverflowMenuItem[];
     selected?: boolean;
-    /** Leaves out the checkbox for rows that cannot be selected. */
+    /** Leaves out the checkbox when there is neither a toggle nor a reason it is off. */
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
-    /** Why this row cannot join the current selection; the checkbox stays visible but off. */
+    /**
+     * Why this row cannot be selected, or cannot join the current selection; the checkbox stays
+     * visible but off, and the reason is its tooltip and accessible description.
+     */
     selectDisabledReason?: string;
     /** For an agent assignee, the status line under the name that says where its work stands. */
     dispatch?: AgentDispatchState | null;
@@ -75,6 +78,7 @@ export const TaskRow = ({
     const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const [focused, setFocused] = useState(false);
+    const selectReasonId = useId();
     // The checkbox is always shown, so selecting never means hunting for it; the menu stays on hover and focus.
     const menuShown = hovered || focused || revealed;
     const statusName = t(`statuses.${status}`, { defaultValue: status });
@@ -103,19 +107,22 @@ export const TaskRow = ({
             onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}
         >
             {/* The slot keeps its width for rows that cannot be selected, so the columns line up. */}
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-                {onToggleSelect && (
+            {/* A disabled checkbox gets no pointer events, so the slot carries the tooltip too. */}
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center" title={selectDisabledReason}>
+                {(onToggleSelect || selectDisabledReason !== undefined) && (
                     <input
                         type="checkbox"
                         checked={selected}
                         disabled={selectDisabledReason !== undefined}
                         title={selectDisabledReason}
+                        aria-describedby={selectDisabledReason !== undefined ? selectReasonId : undefined}
                         onChange={() => undefined}
-                        onClick={event => onToggleSelect({ shiftKey: event.shiftKey })}
+                        onClick={event => onToggleSelect?.({ shiftKey: event.shiftKey })}
                         aria-label={t('taskList.selectTask', { title })}
-                        className="h-4 w-4 cursor-pointer rounded border-border-strong text-action focus:ring-focus disabled:cursor-not-allowed disabled:opacity-50"
+                        className="h-4 w-4 cursor-pointer rounded border-border-strong text-action focus:ring-focus disabled:cursor-not-allowed"
                     />
                 )}
+                {selectDisabledReason !== undefined && <span id={selectReasonId} className="sr-only">{selectDisabledReason}</span>}
             </span>
 
             {level > 0 && <CornerDownRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />}

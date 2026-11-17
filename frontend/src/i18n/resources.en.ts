@@ -797,6 +797,7 @@ export const englishResources = {
                 inReview: 'In review',
                 openTask: 'Open task',
                 selectTask: 'Select: {{title}}',
+                selectParentUnavailable: 'This task is made of subtasks and changes through them. Select its subtasks instead.',
                 selectOneIteration: 'Bulk changes apply to one iteration at a time. Clear the selection to pick a task of another iteration.',
                 priorityTitle: 'Priority {{priority}}',
                 reviewerName: 'Reviewer: {{name}}',

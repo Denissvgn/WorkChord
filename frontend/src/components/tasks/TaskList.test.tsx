@@ -304,25 +304,36 @@ describe('TaskList rows', () => {
         expect(within(rowOf('Task 2')).getByRole('button', { name: 'Actions for Task 2' })).toBeInTheDocument();
     });
 
-    it('shows a selection control on every row at rest, and selecting a task does not move the list', async () => {
-        taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2), task(3)]);
+    it('shows a selection control on every row at rest, off with its reason on parent and composite rows', async () => {
+        const parent = { ...task(3), children: [{ ...task(4), parent_id: 3 }] };
+        const composite = { ...task(5), is_composite: true };
+        taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2), parent, composite]);
         const host = document.createElement('div');
         document.body.appendChild(host);
         renderWithProviders(<TaskList iterationId={1} sortKey="priority" selectionBarHost={host} />);
         await screen.findByRole('button', { name: 'Task 1' });
 
-        for (const title of ['Task 1', 'Task 2', 'Task 3']) {
-            expect(within(rowOf(title)).getByRole('checkbox', { name: `Select: ${title}` })).toBeVisible();
+        const reason = 'This task is made of subtasks and changes through them. Select its subtasks instead.';
+        for (const title of ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5']) {
+            const box = within(rowOf(title)).getByRole('checkbox', { name: `Select: ${title}` });
+            expect(box).toBeVisible();
+            if (title === 'Task 3' || title === 'Task 5') {
+                expect(box).toBeDisabled();
+                expect(box).toHaveAccessibleDescription(reason);
+                expect(box).toHaveAttribute('title', reason);
+            } else {
+                expect(box).toBeEnabled();
+                expect(box).not.toHaveAttribute('aria-describedby');
+            }
         }
-        const listBefore = rowOf('Task 1').parentElement!.parentElement!.parentElement!;
-        const childrenBefore = listBefore.childElementCount;
 
-        fireEvent.click(within(rowOf('Task 2')).getByRole('checkbox', { name: 'Select: Task 2' }));
+        // A parent row's checkbox cannot be ticked; its subtask's can, and the bar shows in the toolbar's place.
+        fireEvent.click(within(rowOf('Task 3')).getByRole('checkbox', { name: 'Select: Task 3' }));
+        expect(within(host).queryByTestId('task-bulk-operations')).toBeNull();
+        fireEvent.click(within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' }));
         expect(await within(host).findByText('Selected tasks: 1')).toBeInTheDocument();
-        // The bar shows in the host that takes the toolbar's place; nothing is added above the rows.
-        expect(screen.getByTestId('task-bulk-operations').parentElement).toBe(host);
-        expect(listBefore.childElementCount).toBe(childrenBefore);
-        expect(rowOf('Task 1').previousElementSibling).toBe(null);
+        expect(within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' })).toBeChecked();
+        expect(within(rowOf('Task 3')).getByRole('checkbox', { name: 'Select: Task 3' })).not.toBeChecked();
         host.remove();
     });
 
@@ -354,9 +365,11 @@ describe('TaskList rows', () => {
         await waitFor(() => expect(within(rowOf('Task 2')).queryByRole('button', { name: 'Drag: Task 2' })).toBeNull());
         for (const title of titles) {
             const row = rowOf(title);
-            // A parent is not selected itself; its leaf tasks are.
-            if (title === 'Task 3') expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
-            else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeInTheDocument();
+            // A parent is not selected itself; its leaf tasks are, so its checkbox shows but is off.
+            if (title === 'Task 3') {
+                expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
+                expect(within(row).getByRole('checkbox', { name: 'Select: Task 3' })).toBeDisabled();
+            } else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeEnabled();
             expect(within(row).queryByRole('button', { name: `Drag: ${title}` })).toBeNull();
             expect(within(row).queryByRole('button', { name: `Actions for ${title}` })).toBeNull();
             expect(row.querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);

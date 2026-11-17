@@ -712,15 +712,16 @@ const TasksPage = () => {
                         className="tasks-workbench-content flex-1 overflow-hidden relative"
                     >
                         {isFullScreen && (
-                            <div className="relative flex justify-between items-center px-6 py-4 flex-shrink-0 border-b border-border-subtle">
-                                <div ref={setFullscreenSelectionHost} data-testid="fullscreen-selection-slot" className="tasks-selection-slot tasks-selection-slot-fullscreen" />
-                                <div>
+                            <div className="flex justify-between items-center gap-4 px-6 py-4 flex-shrink-0 border-b border-border-subtle">
+                                {/* The selection bar covers the title only, so Exit full screen stays in reach. */}
+                                <div className="relative min-w-0 flex-1">
+                                    <div ref={setFullscreenSelectionHost} data-testid="fullscreen-selection-slot" className="tasks-selection-slot tasks-selection-slot-fullscreen" />
                                     <h2 className="text-2xl font-bold text-content-primary">
                                         {viewMode === 'pipeline' ? t('tasks.pipeline') : viewMode === 'board' ? t('tasks.boardView') : t('tasks.taskList')}
                                     </h2>
                                     <p className="text-content-secondary text-sm">{t('tasks.focusMode')}</p>
                                 </div>
-                                <Button variant="ghost" onClick={exitFullscreen}>
+                                <Button variant="ghost" className="shrink-0" onClick={exitFullscreen}>
                                     <Minimize2 className="w-5 h-5 mr-2" /> {t('actions.exitFullScreen')}
                                 </Button>
                             </div>

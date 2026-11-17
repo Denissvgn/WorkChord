@@ -4500,4 +4500,4 @@
 .wc .gantt-toolbar .wc-page-toolbar-view-options > select { width: 160px; }
 .wc .gantt-toolbar .wc-filter-controls { flex-wrap: nowrap; }
 .wc .gantt-toolbar .wc-filter-select { min-width: 5rem; max-width: 9rem; }
-.wc .tasks-selection-slot-fullscreen { inset: 0 0 auto; background: var(--surface-card, var(--panel)); }
+.wc .tasks-selection-slot-fullscreen { inset: 50% 0 auto; transform: translateY(-50%); background: var(--surface-card, var(--panel)); }
