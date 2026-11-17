@@ -257,6 +257,14 @@ These rules fix how pages are reached, scoped, framed and coloured. Each rule is
 - The command menu is a decided second way to set the same shared scope: its iteration switching writes the scope that the scope bar shows, and it is not a page selector.
 - On workspace-wide pages (My Work, Triage, Projects, Team and Settings) the scope bar is read-only text.
 
+### First run
+
+- Overview shows a Get started panel with six steps: Say who you are, Create a project, Create an iteration, Add capacity, Add tasks, Build the schedule.
+- The Say who you are and Create a project steps are completed inline in the panel on Overview. This is a decided exception to opening a page for every step.
+- The other four steps open their named Plan checkpoint: Create an iteration opens Iteration, Add capacity opens Capacity, Add tasks opens Work, and Build the schedule opens Schedule.
+- A step is marked done from the workspace data, never from a stored flag.
+- Every empty page shows one sentence and one button for the single next step.
+
 ### Page frame
 
 - Every page opens with PageHeader, which holds the title, one sentence of purpose, at most one primary action and at most two secondary actions.
