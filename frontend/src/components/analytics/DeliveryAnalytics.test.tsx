@@ -1,4 +1,4 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
 import { DeliveryAnalytics } from './DeliveryAnalytics';
@@ -29,7 +29,7 @@ const report: DeliveryMetrics = { contract_version: 1, window_start: '2026-09-01
     recovery_queue: [], queues_truncated: false };
 
 const unavailable = 'Delivery metrics are available for one iteration or one project. Choose an iteration in the scope bar.';
-const renderReport = (entry: string) => renderWithProviders(<><ScopeBar /><DeliveryAnalytics /></>, { initialEntries: [entry] });
+const renderReport = (entry: string) => renderWithProviders(<><ScopeBar /><DeliveryAnalytics days={30} /></>, { initialEntries: [entry] });
 const settle = () => act(() => new Promise(resolve => setTimeout(resolve, 30)));
 
 describe('Delivery evidence', () => {
@@ -52,15 +52,6 @@ describe('Delivery evidence', () => {
         expect(metrics.get).toHaveBeenCalledWith({ iteration_id: 9, lookback_days: 30 });
     });
 
-    it('has no scope or project controls of its own, only the window', async () => {
-        renderReport('/analytics?project=1&iteration=9');
-        await screen.findByRole('link', { name: 'Ready artifact' });
-        const section = screen.getByRole('region', { name: 'Delivery and review' });
-        const selects = within(section).getAllByRole('combobox');
-        expect(selects).toHaveLength(1);
-        expect(selects[0]).toHaveAccessibleName('Window');
-        expect(within(section).queryByText('Choose project')).not.toBeInTheDocument();
-    });
 
     it('follows the scope bar: another iteration, then Backlog, then another project', async () => {
         const { user } = renderReport('/analytics?project=1&iteration=9');
@@ -108,16 +99,10 @@ describe('Delivery evidence', () => {
         } finally { await changeAppLanguage('en'); }
     });
 
-    it('uses the window with the scope from the bar', async () => {
-        const { user } = renderReport('/analytics?project=1&iteration=9');
-        await screen.findByRole('link', { name: 'Ready artifact' });
-        await user.selectOptions(screen.getByRole('combobox', { name: 'Window' }), '90');
-        await waitFor(() => expect(metrics.get).toHaveBeenLastCalledWith({ iteration_id: 9, lookback_days: 90 }));
-    });
 
     it('hides cached private queues after a failed read and offers retry', async () => {
         const queryClient = createTestQueryClient();
-        renderWithProviders(<><ScopeBar /><DeliveryAnalytics /></>, { queryClient, initialEntries: ['/analytics?project=1&iteration=9'] });
+        renderWithProviders(<><ScopeBar /><DeliveryAnalytics days={30} /></>, { queryClient, initialEntries: ['/analytics?project=1&iteration=9'] });
         await screen.findByRole('link', { name: 'Ready artifact' });
         metrics.get.mockRejectedValueOnce({ response: { status: 403, data: { detail: 'Access was revoked' } } });
         await queryClient.invalidateQueries({ queryKey: ['deliveryMetrics'] });

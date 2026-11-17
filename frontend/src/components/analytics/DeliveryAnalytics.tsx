@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { deliveryMetricsService } from '../../services/deliveryMetricsService';
 import { QueryErrorState } from '../feedback/QueryState';
 import type { DeliveryQueueItem } from '../../types/deliveryMetrics';
-import { ExecutionUsagePanel } from './ExecutionUsagePanel';
 import { formatDateTime } from '../../utils/formatDate';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import { useWorkScope } from '../../features/scope/useWorkScope';
@@ -14,11 +12,10 @@ import { useWorkScope } from '../../features/scope/useWorkScope';
  * Delivery history for the iteration chosen in the scope bar. Backlog (work with no iteration)
  * and All projects have no matching report, so they request nothing and say so.
  */
-export const DeliveryAnalytics = () => {
+export const DeliveryAnalytics = ({ days }: { days: number }) => {
     const { t, i18n } = useTranslation();
     const scopeLink = useScopeLink();
     const { iteration } = useWorkScope();
-    const [days, setDays] = useState(30);
     const params = typeof iteration === 'number' ? { iteration_id: iteration, lookback_days: days } : undefined;
     const enabled = params !== undefined;
     // feedback-policy: query loading,error,retry,empty
@@ -27,7 +24,7 @@ export const DeliveryAnalytics = () => {
     const duration = (seconds: number | null) => seconds === null ? t('deliveryAnalytics.unknown')
         : seconds > 0 && seconds < 864 ? `<${number.format(0.01)}` : number.format(seconds / 86400);
     const queue = (title: string, items: DeliveryQueueItem[]) => <section className="min-w-0">
-        <h4 className="mb-3 font-semibold">{title}</h4>
+        <h3 className="mb-3 font-semibold">{title}</h3>
         {items.length === 0 ? <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueEmpty')}</p> : <ul className="divide-y divide-border-subtle">
             {items.map(item => <li key={item.task_id} className="flex items-baseline justify-between gap-4 py-3">
                 <Link className="min-w-0 break-words text-action underline-offset-4 hover:underline" to={scopeLink(`/tasks?task=${item.task_id}`)}>{item.title}</Link>
@@ -38,13 +35,8 @@ export const DeliveryAnalytics = () => {
     const data = !enabled || report.isError ? undefined : report.data;
     return <section className="space-y-5 border-y border-border-subtle py-6" aria-labelledby="delivery-analytics-title">
         <div className="flex flex-wrap items-start justify-between gap-4">
-            <div><h3 id="delivery-analytics-title" className="text-lg font-semibold">{t('deliveryAnalytics.title')}</h3>
+            <div><h2 id="delivery-analytics-title" className="text-lg font-semibold">{t('deliveryAnalytics.title')}</h2>
                 <p className="mt-1 max-w-prose text-sm text-content-secondary">{t('deliveryAnalytics.description')}</p></div>
-            <div className="flex flex-wrap gap-3">
-                <label className="text-sm">{t('deliveryAnalytics.window')}<select className="ml-2 rounded border px-2 py-1" value={days} onChange={event => setDays(Number(event.target.value))}>
-                    {[30, 90, 180, 366].map(value => <option key={value} value={value}>{t('deliveryAnalytics.days', { count: value })}</option>)}
-                </select></label>
-            </div>
         </div>
         {!enabled && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.unavailableScope')}</p>}
         {enabled && report.isLoading && <p role="status">{t('common.loading')}</p>}
@@ -72,7 +64,6 @@ export const DeliveryAnalytics = () => {
                 missing: data.coverage.current_leaves_without_capture, legacy: data.coverage.legacy_closed_acceptance_unknown })}</p>
             <div className="grid gap-6 lg:grid-cols-2">{queue(t('deliveryAnalytics.reviewQueue'), data.review_queue)}{queue(t('deliveryAnalytics.recoveryQueue'), data.recovery_queue)}</div>
             {data.queues_truncated && <p className="text-sm text-content-secondary">{t('deliveryAnalytics.queueLimit')}</p>}
-            {params && <ExecutionUsagePanel key={`${params.iteration_id}-${days}`} scope={params} />}
         </>}
     </section>;
 };
