@@ -12,8 +12,9 @@ import clsx from 'clsx';
  * viewport with the sidebar open) the filters drop under search and the view
  * controls instead of adding a second toolbar.
  *
- * `compact` is for a toolbar whose FilterBar shows at most two quick filters
- * before More filters: the quick filters size to their text and the row stays
+ * `compact` is for a toolbar whose FilterBar shows up to five quick filters
+ * before More filters: the quick filters size to their text (a filter that is
+ * off shows only its label), search shrinks to make room, and the row stays
  * whole down to about 900px of content, so a 1024px viewport keeps one line.
  */
 export const PageToolbar = ({ search, filters, viewSwitch, viewOptions, label, compact = false, className }: {
@@ -23,7 +24,7 @@ export const PageToolbar = ({ search, filters, viewSwitch, viewOptions, label, c
     viewOptions?: ReactNode;
     /** Accessible name of the toolbar region. */
     label?: string;
-    /** At most two quick filters: keep one row down to about 900px of content. */
+    /** Up to five quick filters: keep one row down to about 900px of content. */
     compact?: boolean;
     className?: string;
 }) => (

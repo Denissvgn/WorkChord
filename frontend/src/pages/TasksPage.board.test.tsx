@@ -18,7 +18,7 @@ vi.mock('../services/taskService', () => ({ taskService: taskServiceMock }));
 vi.mock('../services/savedViewService', () => ({ savedViewService: { getAll: vi.fn().mockResolvedValue([]), update: vi.fn(), delete: vi.fn() } }));
 vi.mock('../services/sessionService', () => ({ sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 3, principal_id: null }) } }));
 vi.mock('../services/labelService', () => ({ labelService: { getGroups: vi.fn().mockResolvedValue([]) } }));
-vi.mock('../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]) } }));
+vi.mock('../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]), getRoadmapMilestones: vi.fn().mockResolvedValue({ items: [], next_cursor: null }) } }));
 vi.mock('../services/teamService', () => ({ teamService: { getByIteration: vi.fn().mockResolvedValue([{ id: 7, name: 'Ana' }]) } }));
 vi.mock('../components/tasks/TaskAgentReadinessBadge', () => ({ TaskAgentReadinessBadge: () => null }));
 

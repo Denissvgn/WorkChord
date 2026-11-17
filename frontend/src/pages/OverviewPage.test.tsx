@@ -604,6 +604,7 @@ describe('Overview', () => {
         await user.click(newTask);
         const drawer = await screen.findByRole('dialog', { name: i18n.t('tasks.createNewTask') });
         expect(within(drawer).getByText(i18n.t('teamwork.inBacklog'))).toBeInTheDocument();
+        await user.click(within(drawer).getByRole('button', { name: i18n.t('assigneePicker.more') }));
         await waitFor(() => expect(within(drawer).getByLabelText(i18n.t('surfaces.taskForm.project'))).toHaveValue('1'));
         await user.type(within(drawer).getByLabelText(i18n.t('surfaces.taskForm.taskTitle')), 'Write the release notes');
         await user.click(within(drawer).getByRole('button', { name: i18n.t('taskEditor.createTask') }));
@@ -623,6 +624,7 @@ describe('Overview', () => {
         await user.click(newTask);
         const drawer = await screen.findByRole('dialog', { name: i18n.t('tasks.createNewTask') });
         expect(within(drawer).getByText(i18n.t('teamwork.inIteration'))).toBeInTheDocument();
+        await user.click(within(drawer).getByRole('button', { name: i18n.t('assigneePicker.more') }));
         await waitFor(() => expect(within(drawer).getByLabelText(i18n.t('surfaces.taskForm.project'))).toHaveValue('Beta'));
     });
 

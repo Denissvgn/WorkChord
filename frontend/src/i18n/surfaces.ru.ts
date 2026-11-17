@@ -743,6 +743,8 @@ export const surfacesRussian = {
     savedViews: {
         cancel: "Отмена",
         savedViewCreated: "Представление создано",
+        savedViewCreatedPartly: "Представление создано. В нём не сохранено: {{conditions}}.",
+        notSaved: "Не сохраняется в представлении: {{conditions}}. Только сужает этот список в текущем сеансе.",
         save: "Сохранить",
         nameIsRequired: "Укажите название",
         description: "Описание",
@@ -757,6 +759,7 @@ export const surfacesRussian = {
         personal: "Личное",
         savedViewDuplicated: "Представление продублировано",
         savedViewUpdated: "Представление обновлено",
+        savedViewUpdatedPartly: "Представление обновлено. В нём не сохранено: {{conditions}}.",
         failedToDeleteView: "Не удалось удалить представление",
         failedToSaveView: "Не удалось сохранить представление",
         update: "Обновить",

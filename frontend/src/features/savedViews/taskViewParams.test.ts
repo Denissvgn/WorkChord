@@ -8,6 +8,14 @@ import {
 } from './taskViewParams';
 
 describe('task view parameters', () => {
+    it('carries the milestone and needs-attention filters in the link and reads them back', () => {
+        const filters = { ...defaultFilters, milestoneId: 11, needsAttention: true };
+        const params = writeFiltersToSearchParams(new URLSearchParams(), filters);
+        expect(params.toString()).toBe('milestone=11&attention=yes');
+        expect(filtersFromSearchParams(params)).toEqual(filters);
+        expect(filtersFromSearchParams(new URLSearchParams('milestone=x&attention=maybe'))).toEqual(defaultFilters);
+    });
+
     it('marks a shown saved view whose every condition and order were removed', () => {
         const params = writeFiltersToSearchParams(new URLSearchParams('view=12&status=planned'), defaultFilters);
 

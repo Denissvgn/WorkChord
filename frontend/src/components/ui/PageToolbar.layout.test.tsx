@@ -19,7 +19,7 @@ describe('PageToolbar layout rules', () => {
         const compactRule = (selector: string) => new RegExp(`\\.wc \\.wc-page-toolbar\\.is-compact ${selector.replace(/\./g, '\\.')} \\{([^}]*)\\}`).exec(css)?.[1] ?? '';
         // Quick filters size to their text, capped, instead of to their longest option.
         expect(compactRule('.wc-filter-controls > .wc-filter-select')).toContain('field-sizing: content');
-        expect(compactRule('.wc-filter-controls > .wc-filter-select')).toContain('max-width: 8rem');
+        expect(compactRule('.wc-filter-controls > .wc-filter-select')).toContain('max-width: 10rem');
         // The controls stay one block, and the chips take their own line under the row.
         expect(compactRule('.wc-filter-controls')).toContain('flex-wrap: nowrap');
         expect(css).toMatch(/\.wc \.wc-page-toolbar\.is-compact \.wc-filter-chips,[^{]*\{[^}]*flex-basis: 100%/);

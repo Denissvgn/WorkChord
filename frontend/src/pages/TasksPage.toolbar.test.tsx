@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import { useLocation } from 'react-router-dom';
@@ -11,7 +13,7 @@ import i18n from '../i18n/i18n';
 const workScopeMock = vi.hoisted(() => ({ iteration: 1 as number | 'backlog', setIteration: vi.fn() }));
 const iterationServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), getById: vi.fn() }));
 const taskServiceMock = vi.hoisted(() => ({ getByIteration: vi.fn(), getById: vi.fn() }));
-const savedViewServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), update: vi.fn(), delete: vi.fn() }));
+const savedViewServiceMock = vi.hoisted(() => ({ getAll: vi.fn(), create: vi.fn(), update: vi.fn(), delete: vi.fn() }));
 
 vi.mock('../features/scope/useWorkScope', () => ({
     useWorkScope: () => workScopeMock,
@@ -22,9 +24,11 @@ vi.mock('../services/taskService', () => ({ taskService: taskServiceMock }));
 vi.mock('../services/savedViewService', () => ({ savedViewService: savedViewServiceMock }));
 vi.mock('../services/sessionService', () => ({ sessionService: { getWhoAmI: vi.fn().mockResolvedValue({ id: 3, principal_id: null }) } }));
 vi.mock('../services/labelService', () => ({ labelService: { getGroups: vi.fn().mockResolvedValue([]) } }));
-vi.mock('../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]) } }));
+vi.mock('../services/projectService', () => ({ projectService: { getAll: vi.fn().mockResolvedValue([]), getRoadmapMilestones: vi.fn().mockResolvedValue({ items: [], next_cursor: null }) } }));
 vi.mock('../services/teamService', () => ({ teamService: { getByIteration: vi.fn().mockResolvedValue([{ id: 7, name: 'Ana' }]) } }));
 vi.mock('../components/tasks/TaskAgentReadinessBadge', () => ({ TaskAgentReadinessBadge: () => null }));
+
+const css = readFileSync(resolve(__dirname, '../styles/planning-masters.css'), 'utf8');
 
 const ana = { id: 7, name: 'Ana' } as Task['assignee'];
 
@@ -101,6 +105,7 @@ describe('Tasks header and toolbar', () => {
         iterationServiceMock.getAll.mockResolvedValue([{ id: 1, name: 'Iteration one', start_date: '2026-11-01', end_date: '2026-11-30' }]);
         taskServiceMock.getByIteration.mockResolvedValue(TASKS);
         savedViewServiceMock.getAll.mockResolvedValue([anaPlannedView]);
+        savedViewServiceMock.create.mockReset();
         savedViewServiceMock.update.mockReset();
         savedViewServiceMock.delete.mockReset();
     });
@@ -126,6 +131,54 @@ describe('Tasks header and toolbar', () => {
         const quickAdd = screen.getByRole('form', { name: 'Quick add a task' });
         const firstTask = screen.getByRole('button', { name: 'Write launch notes' });
         expect(quickAdd.compareDocumentPosition(firstTask) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('keeps search, the five quick filters, More filters and the view controls on one row at 1024px and 1440px', async () => {
+        renderWithProviders(<TasksPage />, { initialEntries: ['/tasks'] });
+        expect(await screen.findByRole('button', { name: 'Write launch notes' })).toBeInTheDocument();
+
+        const toolbar = screen.getByTestId('page-toolbar');
+        expect(screen.getAllByTestId('page-toolbar')).toHaveLength(1);
+        // The compact arrangement is the one that keeps a single row.
+        expect(toolbar).toHaveClass('is-compact');
+        const quickFilters = within(screen.getByTestId('filter-bar')).getAllByRole('combobox').map(control => control.getAttribute('aria-label'));
+        expect(quickFilters).toEqual(['Assignee', 'Status', 'Label', 'Milestone', 'Needs attention']);
+        const moreFilters = within(toolbar).getByRole('button', { name: /More filters/ });
+        // View options is an icon button: it keeps its name and a tooltip, and shows no text of its own.
+        const viewOptions = within(toolbar).getByRole('button', { name: 'View options' });
+        expect(viewOptions).toHaveAttribute('title', 'View options');
+        expect(viewOptions.textContent).toBe('');
+        const layoutLabels = ['List', 'Board', 'Pipeline'];
+        expect(within(toolbar).getByRole('group', { name: 'Task layout' })).toHaveTextContent(layoutLabels.join(''));
+
+        // The layout rules that keep it on one row: filter controls do not wrap, search can shrink and grow,
+        // quick filters size to their text, and the row only breaks below 900px of content.
+        const rule = (selector: string) => new RegExp(`${selector.replace(/[.>]/g, '\\$&')} \\{([^}]*)\\}`).exec(css)?.[1] ?? '';
+        const search = rule('.wc .wc-page-toolbar.is-compact .wc-page-toolbar-search');
+        expect(search).toMatch(/flex: 1 1 (\d+)px/);
+        const searchMin = Number(/min-width: (\d+)px/.exec(search)?.[1]);
+        expect(searchMin).toBeLessThanOrEqual(140);
+        expect(rule('.wc .wc-page-toolbar.is-compact .wc-filter-controls')).toContain('flex-wrap: nowrap');
+        const select = rule('.wc .wc-page-toolbar.is-compact .wc-filter-controls > .wc-filter-select');
+        expect(select).toContain('field-sizing: content');
+        const breakpoint = Number(/@container \(max-width: (\d+)px\)\s*\{\s*\.wc \.wc-page-toolbar\.is-compact \.wc-page-toolbar-search/.exec(css)?.[1]);
+        expect(breakpoint).toBeLessThanOrEqual(900);
+
+        // Width budget from the real labels (about 7px a character in the interface font, close to what Chrome
+        // measures) plus the padding the rules above give each control. Everything but search has to leave search
+        // its minimum width inside the 992px a 1024px viewport leaves, with the icons of the view switch hidden.
+        const glyph = 7;
+        const text = (label: string) => label.length * glyph;
+        const selectChrome = 8 + 22 + 2;
+        const quick = quickFilters.reduce((sum, label) => sum + text(label ?? '') + selectChrome, 0);
+        const more = text('More filters') + 10 * 2 + 2 + 4 + 16;
+        const controls = quick + more + 5 * 6;
+        const viewSwitch = layoutLabels.reduce((sum, label) => sum + text(label) + 8 * 2 + 2, 0) + 6;
+        const end = viewSwitch + 6 + 34;
+        const toolbarWidth = 1024 - 32;
+        expect(moreFilters).toBeInTheDocument();
+        expect(controls + end + 2 * 12 + searchMin).toBeLessThanOrEqual(toolbarWidth);
+        expect(controls + end + 2 * 12 + searchMin).toBeLessThanOrEqual(1440 - 220 - 32);
     });
 
     it('shows a saved view as chips; removing one marks the view as changed and offers Save changes', async () => {
@@ -267,6 +320,58 @@ describe('Tasks header and toolbar', () => {
         expect(await screen.findByRole('heading', { level: 1, name: 'Ana planned' })).toBeInTheDocument();
         expect(screen.getByTestId('location-search')).toHaveTextContent('?assignee=7&status=planned&view=12');
         await waitFor(() => expect(taskTitles()).toEqual(['Ship release build']));
+    });
+
+    it('says that Milestone and Needs attention are not stored when changes to a view are saved', async () => {
+        const updated = { ...anaPlannedView, filters_json: { assigneeId: 7, status: 'active' } };
+        savedViewServiceMock.update.mockImplementation(async () => {
+            savedViewServiceMock.getAll.mockResolvedValue([updated]);
+            return updated;
+        });
+        const { user } = renderWithProviders(<><TasksPage /><LocationProbe /></>, {
+            initialEntries: ['/tasks?assignee=7&status=active&milestone=5&attention=yes&view=12'],
+        });
+
+        expect(await screen.findByText('Modified view')).toBeInTheDocument();
+        expect(screen.getByText(/Not saved with a view: Milestone, Needs attention\./)).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+        await waitFor(() => expect(savedViewServiceMock.update).toHaveBeenCalled());
+        const [id, payload] = savedViewServiceMock.update.mock.calls[0];
+        expect(id).toBe(12);
+        expect(payload.filters_json).toMatchObject({ assigneeId: 7, status: 'active' });
+        expect(payload.filters_json).not.toHaveProperty('milestoneId');
+        expect(payload.filters_json).not.toHaveProperty('needsAttention');
+        expect(await screen.findByText('Saved view updated. Not saved with it: Milestone, Needs attention.')).toBeInTheDocument();
+    });
+
+    it('does not call a view modified when only Milestone or Needs attention differ from it', async () => {
+        renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?assignee=7&status=planned&milestone=5&attention=yes&view=12'] });
+
+        expect(await screen.findByRole('heading', { level: 1, name: 'Ana planned' })).toBeInTheDocument();
+        expect(screen.queryByText('Modified view')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Save changes' })).not.toBeInTheDocument();
+    });
+
+    it('names the conditions a new saved view will not store in the Save as dialog', async () => {
+        const created = { ...anaPlannedView, id: 13, name: 'Needs a look', filters_json: { status: 'active' } };
+        savedViewServiceMock.create.mockImplementation(async () => {
+            savedViewServiceMock.getAll.mockResolvedValue([anaPlannedView, created]);
+            return created;
+        });
+        const { user } = renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?status=active&attention=yes'] });
+
+        await user.click(await screen.findByRole('button', { name: 'Save as…' }));
+        const dialog = screen.getByRole('dialog');
+        expect(within(dialog).getByRole('note')).toHaveTextContent('Not saved with a view: Needs attention. It narrows this list for this visit only.');
+        await user.type(within(dialog).getByRole('textbox', { name: 'Name' }), 'Needs a look');
+        await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => expect(savedViewServiceMock.create).toHaveBeenCalled());
+        const payload = savedViewServiceMock.create.mock.calls[0][0];
+        expect(payload.filters_json).toMatchObject({ status: 'active' });
+        expect(payload.filters_json).not.toHaveProperty('needsAttention');
+        expect(await screen.findByText('Saved view created. Not saved with it: Needs attention.')).toBeInTheDocument();
     });
 
     it('narrows the visible list while typing in search and restores it when search is cleared', async () => {
