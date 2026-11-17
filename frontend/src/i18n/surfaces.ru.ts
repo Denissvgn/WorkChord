@@ -1061,6 +1061,7 @@ export const surfacesRussian = {
         viewLabel: "Открыть метку",
     },
     triagePage: {
+                    waiting: "Ожидают",
         snoozedUntil: "Отложено до",
         priority: "Приоритет",
         suggested: "Предложение:",

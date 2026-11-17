@@ -1,3 +1,4 @@
+import { TaskCreateSections } from './TaskCreateSections';
 import { AssigneePicker } from './AssigneePicker';
 import type { TeamMemberProfile } from '../../types/team';
 import { planningInputService } from '../../services/planningInputService';
@@ -1152,23 +1153,15 @@ export const TaskForm = ({
                 {labelsField}
             </CollapsibleSection>
             </> : <>
-            {/* A new task: title, assignee, effort and the brief; everything else is under More. */}
-            {titleField}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {assigneeField}
-                {effortField}
-            </div>
-            {formData.brief ? <TaskBriefEditor part="essential" value={formData.brief} disabled={briefBusy}
+            <TaskCreateSections title={titleField} assignee={assigneeField} effort={effortField}
+                brief={formData.brief ? <TaskBriefEditor part="essential" value={formData.brief} disabled={briefBusy}
                 onChange={brief => setFormData(values => ({ ...values, brief }))} actions={assistantButton} /> : <div className="space-y-3">
                 <label htmlFor={`${formId}-description`} className="field-lbl">{t('surfaces.taskForm.description')}</label>
                 <textarea id={`${formId}-description`} className="input min-h-24 w-full" value={formData.description}
                     onChange={event => setFormData(values => ({ ...values, description: event.target.value }))} />
                 {assistantButton}
-            </div>}
-            {assistantPanel}
-            {positionNote}
-
-            <CollapsibleSection title={t('assigneePicker.more')} open={moreOpen} onOpenChange={setMoreOpen}>
+            </div>} assistance={assistantPanel} context={positionNote}
+                moreOpen={moreOpen} onMoreOpenChange={setMoreOpen} more={<>
                 {canApplyTemplates && taskTemplates.length > 0 && templateField}
                 {projectField}
                 {milestoneField}
@@ -1180,7 +1173,7 @@ export const TaskForm = ({
                 {flagsField}
                 {formData.brief && <TaskBriefEditor part="details" value={formData.brief} disabled={briefBusy}
                     onChange={brief => setFormData(values => ({ ...values, brief }))} />}
-            </CollapsibleSection>
+                </>} />
             </>}
 
 
