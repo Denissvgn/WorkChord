@@ -43,7 +43,8 @@ const openNested = async () => {
     await page.getByText('Parent', { exact: true }).first().waitFor();
     const expand = page.getByRole('button', { name: /Expand: Parent/i });
     if (await expand.count()) await expand.click();
-    await page.getByRole('button', { name: 'Edit task: Nested leaf', exact: true }).click();
+    // A list row opens its task from the title; editing lives in the row's menu.
+    await page.getByRole('button', { name: 'Nested leaf', exact: true }).click();
   }
   await editAllFields();
   await page.getByRole('textbox', { name: 'Description', exact: true }).waitFor();
