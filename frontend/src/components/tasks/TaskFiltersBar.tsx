@@ -245,7 +245,8 @@ export const TaskFiltersBar = ({ iterationId, filters, onFiltersChange, agentFil
     ];
 
     const visibleFilters = hideProject ? barFilters.map(filter => filter.id === 'projectId' ? { ...filter, chipOnly: true } : filter) : barFilters;
-    if (agentFilter) visibleFilters.unshift({ id: 'agent', label: t('taskFilters.agent'), value: agentFilter.value, options: [...new Set([...agentFilter.options, ...(agentFilter.value ? [agentFilter.value] : [])])].map(name => ({ value: name, label: name })) });
+    // Agent follows the five quick filters, so it sits under More filters and never pushes one of them out of the row.
+    if (agentFilter) visibleFilters.push({ id: 'agent', label: t('taskFilters.agent'), value: agentFilter.value, options: [...new Set([...agentFilter.options, ...(agentFilter.value ? [agentFilter.value] : [])])].map(name => ({ value: name, label: name })) });
 
     const changeFilter = (id: string, value: string) => {
         if (id === 'agent') { agentFilter?.onChange(value); return; }

@@ -64,6 +64,19 @@ describe('visible task filters', () => {
         expect(onFiltersChange).toHaveBeenLastCalledWith(expect.objectContaining({ labelSlugs: ['backend', 'web'] }));
     });
 
+    it('keeps the same five quick filters in the pipeline layout and puts Agent under More filters', async () => {
+        const onAgentChange = vi.fn();
+        const { user } = renderWithProviders(<TaskFiltersBar iterationId={1} onFiltersChange={() => undefined}
+            filters={defaultFilters} agentFilter={{ value: '', options: ['Codex', 'Claude'], onChange: onAgentChange }} />);
+        const row = screen.getByTestId('filter-bar').querySelector('.wc-filter-controls') as HTMLElement;
+        expect(within(row).getAllByRole('combobox').map(control => control.getAttribute('aria-label'))).toEqual(QUICK);
+
+        await user.click(screen.getByRole('button', { name: /More filters/ }));
+        const panel = screen.getByRole('dialog', { name: 'More filters' });
+        await user.selectOptions(within(panel).getByRole('combobox', { name: 'Agent' }), 'Codex');
+        expect(onAgentChange).toHaveBeenCalledWith('Codex');
+    });
+
     it('offers the milestones of the chosen project and names the unknown one by number', async () => {
         const { user } = renderWithProviders(<Harness initial={{ ...defaultFilters, projectId: 3 }} />);
         const milestone = screen.getByRole('combobox', { name: 'Milestone' });

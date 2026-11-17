@@ -102,7 +102,11 @@ describe('Tasks pipeline view', () => {
         expect(screen.getAllByTestId(/^task-card-/)).toHaveLength(3);
         const toolbar = screen.getByTestId('page-toolbar');
         expect(within(toolbar).queryByRole('combobox', { name: 'Project' })).not.toBeInTheDocument();
-        await user.selectOptions(within(toolbar).getByRole('combobox', { name: 'Agent' }), 'Builder');
+        // Agent follows the five quick filters, so it is chosen under More filters.
+        expect(within(toolbar).queryByRole('combobox', { name: 'Needs attention' })).toBeInTheDocument();
+        await user.click(within(toolbar).getByRole('button', { name: /More filters/ }));
+        await user.selectOptions(within(screen.getByRole('dialog', { name: 'More filters' })).getByRole('combobox', { name: 'Agent' }), 'Builder');
+        await user.keyboard('{Escape}');
         expect(screen.getAllByTestId(/^task-card-/)).toHaveLength(2);
         expect(screen.getByRole('list', { name: 'Active filters' })).toHaveTextContent('Agent: Builder');
         await user.type(within(toolbar).getByRole('searchbox'), 'searchable');
@@ -123,7 +127,9 @@ describe('Tasks pipeline view', () => {
         expect(screen.getByTestId('task-card-41')).toBeVisible();
         expect(screen.getByTestId('task-card-43')).toBeVisible();
         expect(screen.queryByTestId('task-card-42')).not.toBeInTheDocument();
-        await user.selectOptions(within(toolbar).getByRole('combobox', { name: 'Agent' }), 'Builder');
+        await user.click(within(toolbar).getByRole('button', { name: /More filters/ }));
+        await user.selectOptions(within(screen.getByRole('dialog', { name: 'More filters' })).getByRole('combobox', { name: 'Agent' }), 'Builder');
+        await user.keyboard('{Escape}');
         await user.click(screen.getByRole('button', { name: 'Clear' }));
         expect(screen.getByTestId('pipeline-location')).not.toHaveTextContent('agent=');
         expect(screen.queryByRole('list', { name: 'Active filters' })).not.toBeInTheDocument();
@@ -142,7 +148,8 @@ describe('Tasks pipeline view', () => {
         for (const part of ['/tasks?', 'layout=pipeline', 'project=4', 'iteration=backlog', 'agent=Runner', 'q=searchable', 'stage=executing', '#work']) expect(url).toHaveTextContent(part);
         expect(screen.queryByText('Old pipeline page')).not.toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Pipeline' })).toHaveAttribute('aria-pressed', 'true');
-        expect(screen.getByRole('combobox', { name: 'Agent' })).toHaveValue('Runner');
+        expect(screen.getByRole('list', { name: 'Active filters' })).toHaveTextContent('Agent: Runner');
+        expect(screen.getByRole('combobox', { name: 'Needs attention' })).toBeInTheDocument();
         expect(screen.getByRole('searchbox')).toHaveValue('searchable');
         expect(screen.getAllByTestId(/^task-card-/)).toHaveLength(1);
         await user.click(screen.getByTestId('task-card-42'));

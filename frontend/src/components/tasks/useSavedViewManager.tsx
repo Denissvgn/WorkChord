@@ -1,4 +1,4 @@
-import { savedViewFilters, savedViewModified } from '../../utils/savedViewState';
+import { savedViewFilters, savedViewModified, unsavedConditionKeys } from '../../utils/savedViewState';
 import i18n from '../../i18n/i18n';
 import { useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -72,6 +72,11 @@ export const useSavedViewManager = ({
     );
 
     const modified = savedViewModified(selectedView, filters, sortKey, systemFilters);
+
+    // Milestone and Needs attention narrow the list but a saved view cannot store them; the save flow says so.
+    const unsavedConditions = unsavedConditionKeys(filters)
+        .map(key => t(key === 'milestoneId' ? 'taskFilters.milestone' : 'taskFilters.needsAttention'))
+        .join(', ');
 
     const canMutateSelected = Boolean(
         selectedView &&
@@ -184,7 +189,11 @@ export const useSavedViewManager = ({
                 await invalidateSavedViews();
                 onSelectedViewIdChange(savedView.id);
                 setStatus({
-                message: formMode === 'create' ? t('surfaces.savedViews.savedViewCreated') : t('surfaces.savedViews.savedViewDuplicated'),
+                message: formMode === 'create'
+                    ? (unsavedConditions
+                        ? t('surfaces.savedViews.savedViewCreatedPartly', { conditions: unsavedConditions })
+                        : t('surfaces.savedViews.savedViewCreated'))
+                    : t('surfaces.savedViews.savedViewDuplicated'),
                 isError: false,
             });
             }
@@ -203,7 +212,12 @@ export const useSavedViewManager = ({
             });
             await invalidateSavedViews();
             onSelectedViewIdChange(updated.id);
-            setStatus({ message: t('surfaces.savedViews.savedViewUpdated'), isError: false });
+            setStatus({
+                message: unsavedConditions
+                    ? t('surfaces.savedViews.savedViewUpdatedPartly', { conditions: unsavedConditions })
+                    : t('surfaces.savedViews.savedViewUpdated'),
+                isError: false,
+            });
         } catch (error) {
             setStatus({ message: getApiErrorMessage(error, t('surfaces.savedViews.failedToUpdateView')), isError: true });
         }
@@ -261,6 +275,9 @@ export const useSavedViewManager = ({
                             />
                             <Textarea label={t('surfaces.savedViews.description')} value={formDescription} onChange={event => setFormDescription(event.target.value)} className="min-h-20" />
                             <Select label={t('surfaces.savedViews.scope')} value={formScope} onChange={event => setFormScope(event.target.value as EditableScope)}><option value="personal">{t('surfaces.savedViews.personal')}</option><option value="shared">{t('surfaces.savedViews.shared')}</option></Select>
+                            {formMode === 'create' && unsavedConditions && (
+                                <p role="note" className="text-sm text-muted-foreground">{t('surfaces.savedViews.notSaved', { conditions: unsavedConditions })}</p>
+                            )}
                             {formError && (
                                 <p className="rounded-md bg-feedback-danger-muted px-3 py-2 text-sm text-feedback-danger-foreground">{formError}</p>
                             )}
@@ -310,6 +327,7 @@ export const useSavedViewManager = ({
         retryLoad: () => { void refetchSession(); void refetchViews(); },
         selectedView,
         modified,
+        unsavedConditions,
         canMutateSelected,
         isSaving: updateMutation.isPending,
         isDeleting: deleteMutation.isPending,

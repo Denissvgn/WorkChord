@@ -4774,6 +4774,8 @@ export const englishResources = {
                 savedViews: {
                     cancel: "Cancel",
                     savedViewCreated: "Saved view created",
+                    savedViewCreatedPartly: "Saved view created. Not saved with it: {{conditions}}.",
+                    notSaved: "Not saved with a view: {{conditions}}. It narrows this list for this visit only.",
                     save: "Save",
                     nameIsRequired: "Name is required",
                     description: "Description",
@@ -4788,6 +4790,7 @@ export const englishResources = {
                     personal: "Personal",
                     savedViewDuplicated: "Saved view duplicated",
                     savedViewUpdated: "Saved view updated",
+                    savedViewUpdatedPartly: "Saved view updated. Not saved with it: {{conditions}}.",
                     failedToDeleteView: "Failed to delete view",
                     failedToSaveView: "Failed to save view",
                     update: "Update",

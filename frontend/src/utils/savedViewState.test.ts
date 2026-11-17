@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { defaultFilters } from './taskFilterDefaults';
-import { filterSignature, savedViewFilters, savedViewModified } from './savedViewState';
+import { filterSignature, savedViewFilters, savedViewModified, unsavedConditionKeys } from './savedViewState';
 import type { SavedView } from '../types/savedView';
 
 describe('effective saved view state', () => {
@@ -23,6 +23,11 @@ describe('effective saved view state', () => {
         expect(savedViewFilters(shown)).not.toHaveProperty('needsAttention');
         expect(savedViewFilters(shown)).toMatchObject({ status: 'active' });
         expect(savedViewModified(view, { ...defaultFilters, milestoneId: 4, needsAttention: true }, 'priority')).toBe(false);
+    });
+    it('names the unsaved conditions that are set', () => {
+        expect(unsavedConditionKeys(defaultFilters)).toEqual([]);
+        expect(unsavedConditionKeys({ ...defaultFilters, needsAttention: false })).toEqual(['needsAttention']);
+        expect(unsavedConditionKeys({ ...defaultFilters, milestoneId: 4, needsAttention: true, status: 'active' })).toEqual(['milestoneId', 'needsAttention']);
     });
     it('marks a changed ordering as modified', () => expect(savedViewModified(view, defaultFilters, 'title')).toBe(true));
     it('does not count a condition applied by a hand-over as a change while it keeps its value', () => {
