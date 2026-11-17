@@ -112,3 +112,12 @@ def test_actor_provisioning_does_not_require_or_invent_runtime_binding():
     assert actor.model_binding is None
     assert actor.work_policy == "assigned_only"
     assert actor.max_parallel_work == 1
+
+
+
+def test_metric_matches_exports_pagination_contract():
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    contract = exporter["build_contract"]()
+    operation = contract["paths"]["/api/tasks/metric-matches"]["get"]
+    assert {"limit", "after_id"} <= {p["name"] for p in operation["parameters"]}
+    assert {"items", "has_more", "next_after_id"} <= contract["components"]["schemas"]["MetricMatchPage"]["properties"].keys()

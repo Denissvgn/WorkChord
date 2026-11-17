@@ -3,6 +3,8 @@
 from typing import Annotated
 from typing import Literal
 
+from pydantic import BaseModel
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -80,10 +82,25 @@ async def execution_usage_summary(db: DB, project_id: int | None = Query(default
         lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency))
 
 
-@router.get("/tasks/metric-matches")
+class MetricMatchItem(BaseModel):
+    id: int
+    title: str
+    status: str
+    project_name: str | None
+    iteration_name: str | None
+
+
+class MetricMatchPage(BaseModel):
+    metric: str
+    items: list[MetricMatchItem]
+    has_more: bool
+    next_after_id: int | None = None
+
+
+@router.get("/tasks/metric-matches", response_model=MetricMatchPage, response_model_exclude_unset=True)
 async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id: int | None = Query(default=None, ge=1),
                          iteration_id: int | None = Query(default=None, ge=1), release_id: int | None = Query(default=None, ge=1),
-                         limit: int = Query(default=200, ge=1, le=500)):
+                         limit: int = Query(default=200, ge=1, le=500), after_id: int | None = Query(default=None, ge=0)):
     """The tasks behind one work-metric count, chosen by the predicate that counts them."""
     from app.authority import require_project
     from app.models.project import Project
@@ -102,7 +119,7 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
         project_id = release.project_id
         task_ids, _ = await releases.metric_task_ids(release)
         require_project(db, project_id)
-        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, matching=metric, limit=limit)
+        return await aggregate_metrics(db, project_id=project_id, task_ids=task_ids, matching=metric, limit=limit, after_id=after_id)
     if project_id is not None:
         require_project(db, project_id)
         project = await db.get(Project, project_id)
@@ -110,7 +127,7 @@ async def metric_matches(db: DB, metric: str = Query(max_length=40), project_id:
             raise HTTPException(404, detail="Project not found")
         zone_map = {project.id: project.timezone}
     # The same scope and time zones as the summary that shows the count.
-    return await aggregate_metrics(db, project_id=project_id, iteration_id=iteration_id, zone_map=zone_map, matching=metric, limit=limit)
+    return await aggregate_metrics(db, project_id=project_id, iteration_id=iteration_id, zone_map=zone_map, matching=metric, limit=limit, after_id=after_id)
 
 
 @router.get("/tasks/lookup", response_model=TaskReferencePage)
