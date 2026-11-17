@@ -1,5 +1,70 @@
 # Working together in WorkChord
 
+This guide starts from an empty workspace and explains how the everyday work
+fits together. It describes the current interface: one sidebar for the whole
+app, with no work-area tabs.
+
+## Find your way around
+
+The sidebar lists ten destinations, in this order:
+
+| Group | Destination | Use it to |
+| --- | --- | --- |
+| *(no heading)* | **Overview** | See what needs you now, what is in progress, and the Get started panel. |
+| | **My Work** | See your tasks, the reviews waiting for you, your notifications, and your availability. |
+| | **Triage** | Decide on incoming requests. A request is not a task until you convert it. |
+| **Plan** | **Projects** | Group the work of each project or initiative. Its roadmap is a view of Projects. |
+| | **Plan** | Manage iterations and capacity through six checkpoints. |
+| | **Gantt** | See the saved schedule and what each task waits for. |
+| **Deliver** | **Tasks** | Create, assign, and move tasks. The agent pipeline is a view of Tasks. |
+| | **Analytics** | See what is done and accepted, and whether there is enough capacity. |
+| **Setup** | **Team** | See the people and agents who do the work. Connect an agent and review the model catalog here. |
+| | **Settings** | Change workspace rules and access. The work calendar is a section of Settings. |
+
+Iterations and iteration capacity are managed in **Plan**. The six Plan
+checkpoints are **Iteration**, **Capacity**, **Work**, **Blockers**,
+**Schedule**, and **Review**. Work through them in order.
+
+Older links keep working. Links to `/plan/master`, `/iterations`,
+`/roadmap`, `/agent-pipeline`, `/agent-team/setup`, and `/calendar` open the place where
+that content now lives, and they keep their query parameters.
+
+## Get started
+
+Start the workspace as described in the [README](../README.md), sign in, and open
+**Overview**. It shows the **Get started** panel until all six steps are done or
+you dismiss it in this browser. It lists six steps. Each step opens the page
+that does it, and each step is marked done from the workspace's data rather
+than from a checkbox:
+
+1. **Say who you are.** Work as a work profile. In a trusted-local workspace,
+   choose or add your profile from the account menu ("Add me"). In managed
+   sign-in, an operator links your account to a profile. The step is done when
+   this session works as a profile.
+2. **Create a project.** A project holds the iterations and tasks of one piece
+   of work. You create it in the panel. The step is done when a project exists.
+3. **Create an iteration.** An iteration is the dated stretch of work you plan.
+   The step opens Plan at its **Iteration** checkpoint.
+4. **Add capacity.** Say who does the work in this iteration: add yourself,
+   connect an agent, or add other profiles. The step opens Plan at **Capacity**.
+   To connect an agent, see [agent team setup](agent-team-setup.md).
+5. **Add tasks.** The step opens Plan at **Work**. A new workspace has an empty
+   backlog, so create the first task there: choose **Open in Tasks**, type a
+   title in the **Add a task** row, and press Enter. The task joins the
+   iteration. **Import tasks** adds several at once. When a project's backlog
+   has tasks, **Add from backlog** adds them to the iteration.
+6. **Build the schedule.** The step opens Plan at **Schedule**. Before the
+   schedule can be built, **Blockers** must be clear: every task needs an
+   assignee and an effort in hours. On **Blockers**, choose **Preview
+   assignments**, then **Assign** (its label gives the number of tasks). Enter
+   each missing effort in hours and choose **Save**. Then, on **Schedule**,
+   choose **Calculate schedule**, check the result, and choose **Apply
+   schedule**. The step is done when the schedule is applied.
+
+When all six steps are done, the panel hides from Overview by itself. **Dismiss**
+hides it earlier, in this browser only. To see it again, open **Help**, then
+**Setup guide**; it then shows "Every step is done. The schedule is applied."
+
 ## Start with a person and a project
 
 Sign in and ask a workspace operator to link your account to your human work
@@ -11,16 +76,20 @@ backlog work. Its queues are **Doing**, **Up next**, **Blocked**, and
 **In review** (work you submitted that waits for a reviewer). **To review** lists
 accessible work that another person can review. Open a task to see its currently allowed actions and any blockers.
 
-## Capture, assign, and estimate
+## Capture and assign tasks
 
-1. In the scope bar, choose a project and **Backlog**, open **Tasks**, and select **Capture a task**.
+1. On **Tasks**, choose a project and **Backlog** in the scope bar, then select
+   **Capture a task**.
 2. Give the task a title, a goal, and observable acceptance criteria. Add context
    and verification instructions when someone else needs them to do or review the work.
-3. Select the responsible person. This ownership survives movement between
-   iterations; an iteration's capacity allocation is a separate assignment.
-4. Leave effort blank when it is unknown. Enter hours or days when you have an
-   estimate. Zero means a known zero; a suggested template estimate remains
-   marked as assumed until you deliberately replace it.
+3. Set the **Assignee**: the person or agent that does the task. This ownership
+   survives movement between iterations. An iteration's capacity allocation is a
+   separate assignment.
+4. Enter **Effort** in hours, or leave it blank when it is unknown. The day
+   equivalent appears as a hint. Zero means a known zero. A suggested template
+   estimate remains marked as assumed until you deliberately replace it.
+5. Add **Labels** to group related work. Use **Waits for** to name the tasks that
+   must finish first, and **Earliest start** and **Due by** for date limits.
 
 Triage can also convert a request directly into a project's backlog. An
 iteration is optional for capture and urgent manual execution. AI assistance is
@@ -34,7 +103,11 @@ of saved views. Each filter shows as a chip you can remove. Changed filters stay
 in the page link until you save them: **Save changes** updates your view,
 **Save as…** creates a new one, and **Reset to saved view** discards the changes.
 
-## Plan capacity and delivery prerequisites
+## Plan iterations and capacity
+
+**Plan** is where you manage iterations and their capacity. Its **Blockers**
+checkpoint lists what must be resolved first: missing assignees, missing effort
+estimates, and unfinished prerequisites.
 
 In **My Work → My availability**, choose your calendar and record absences.
 These absences apply across your allocations. Conflicting imported calendars
@@ -85,27 +158,27 @@ when its iteration ends Friday is **iteration overflow**, even before either
 date has passed. A resolved task counts as implemented; it counts as accepted
 only after a current, attributed review. These signals answer different questions.
 
-## Execute, discuss, and review
+## Work, discuss, and review
 
-Open **Work and review**, select an available action, and supply the requested
-reason. Humans can start urgent backlog work manually. Record criterion progress
-and evidence, then resolve the task for review. Another authorized reviewer
-accepts it or requests rework. A resolved task is awaiting review; **closed**
-means accepted work and uses the violet status color. Explicit blocks and
-cancellation are separate from lifecycle status. A block comes from **Report
-blocker**, used by a person or an agent; either way the task shows the reason,
-appears in the **Blocked** view, and its Activity names who reported it.
-Unblocking or reopening requires the corresponding action; reopening invalidates
-current acceptance.
+Open **Work and review** on a task, select an available action, and supply the
+requested reason. Humans can start urgent backlog work manually. Record
+criterion progress and evidence, then resolve the task for review. Another
+authorized reviewer accepts it or requests rework. A resolved task is awaiting
+review; **closed** means accepted work and uses the violet status color.
+Explicit blocks and cancellation are separate from lifecycle status. A block
+comes from **Report blocker**, used by a person or an agent; either way the task
+shows the reason, appears in the **Blocked** view, and its Activity names who
+reported it. Unblocking or reopening requires the corresponding action; reopening
+invalidates current acceptance.
 
 Use **Discussion** for questions and coordination. Choose mention recipients
 from the authorized people search. Comments retain authorship, edit history,
 and removal markers. Comments do not change execution evidence or task versions.
 Follow a task and choose which discussion, mention, review, and block events
-reach your inbox. **My Work → Inbox** supports read/unread state and delivery
-status. Operators must run the dedicated [delivery worker](database-runtime-policy.md)
+reach your **Notifications** in **My Work**. Notifications show read/unread
+state and delivery status. Operators must run the dedicated [delivery worker](database-runtime-policy.md)
 for queued notifications to arrive. Failed deliveries can be retried. Unsubscribing or losing access is
-checked again before delivery; notification read state never changes task status.
+checked again before delivery; reading a notification never changes task status.
 
 If a save conflicts, keep your draft, reload the current record, and compare
 before reapplying. Task and comment drafts stay in the same browser tab and
@@ -113,4 +186,9 @@ account for up to 24 hours. Signing out clears them. See [task semantics](task-d
 for estimates, lifecycle, acceptance, and metric definitions, and
 [recovery](identity-and-recovery.md#application-snapshots) for operator recovery.
 
-For optional agent execution, start with [agent team setup](agent-team-setup.md).
+## Connect agents
+
+Agents that do or check work are members of the team. Open **Team → Connect**,
+or choose **Connect an agent** from the command menu, to connect one. The
+[agent team setup](agent-team-setup.md) guide describes the five questions, the
+runtime steps, and the advanced manifest path.

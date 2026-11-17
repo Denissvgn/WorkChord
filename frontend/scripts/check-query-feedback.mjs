@@ -68,7 +68,7 @@ export const REVIEWED_HOOK_COUNTS = {
     'src/pages/ProjectReleaseDetailPage.tsx': [2, 1],
     'src/pages/ProjectsPage.tsx': [4, 1],
     'src/pages/TasksPage.tsx': [4, 0],
-    'src/pages/TriagePage.tsx': [11, 5],
+    'src/pages/TriagePage.tsx': [5, 3],
 };
 
 const HOOK_KINDS = new Map([
@@ -144,7 +144,7 @@ export const REVIEWED_HOOK_FINGERPRINTS = {
     'src/pages/ProjectReleaseDetailPage.tsx': '07032a5fd753dcc5',
     'src/pages/ProjectsPage.tsx': '3dc607312f108bd3',
     'src/pages/TasksPage.tsx': '826f718625e7f291',
-    'src/pages/TriagePage.tsx': 'd8eba3b6b2015734',
+    'src/pages/TriagePage.tsx': '3a963b72695a2a31',
 };
 
 const walkAst = (node, visit) => {
