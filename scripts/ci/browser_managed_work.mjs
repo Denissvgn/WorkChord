@@ -236,8 +236,11 @@ try {
   await reviewerPage.getByRole('checkbox', { name: 'Follow this task', exact: true }).waitFor({ state: 'visible' });
   const reviewerMe = await (await reviewerContext.request.get('/api/auth/me')).json();
   await page.goto('/tasks?scope=backlog');
-  await page.getByRole('searchbox', { name: 'Search tasks', exact: true }).fill(`#${capturedTask.id}`);
-  await page.getByRole('region', { name: 'Search tasks', exact: true }).getByRole('link', { name: `#${capturedTask.id} · Canonical browser work`, exact: true }).click();
+  // The command menu finds tasks across projects; a result opens the task where you are.
+  await page.getByRole('heading', { level: 1 }).first().waitFor();
+  await page.keyboard.press('Control+K');
+  await page.getByRole('combobox', { name: 'Search commands', exact: true }).fill(`#${capturedTask.id}`);
+  await page.getByRole('option', { name: new RegExp(`^#${capturedTask.id} · Canonical browser work`) }).click();
   await editAllFields();
   await page.getByRole('textbox', { name: 'Task title', exact: false }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: join(artifacts, 'teamwork-editor-desktop.png'), fullPage: true });
