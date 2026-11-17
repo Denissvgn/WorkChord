@@ -196,6 +196,35 @@ describe('AgentModelAdministration', () => {
         await waitFor(() => expect(agentServiceMock.updateModelBinding).toHaveBeenCalledWith(21, expect.objectContaining({ tool_tags: ['shell'], expected_revision: 4 }), expect.objectContaining({ rationale: 'Update binding' })));
     });
 
+    it.each([
+        [false, false, 'Add a model'],
+        [false, true, 'Add a model'],
+        [true, false, 'Add a binding'],
+        [true, true, 'Add a binding'],
+    ])('shows one primary action for catalog %s and bindings %s', async (hasCatalog, hasBindings, action) => {
+        agentServiceMock.getModelCatalog.mockResolvedValue(hasCatalog ? [catalogFixture()] : []);
+        agentServiceMock.getModelBindings.mockResolvedValue(hasBindings ? [bindingFixture()] : []);
+        const { container } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        expect(await within(screen.getByTestId('page-header')).findByRole('button', { name: action })).toBeVisible();
+        expect(container.querySelectorAll('.btn-primary')).toHaveLength(1);
+        expect(within(screen.getByTestId('page-header')).getByRole('button', { name: action })).toHaveClass('btn-primary');
+    });
+
+    it('opens both creation drawers from the header overflow', async () => {
+        agentServiceMock.getModelCatalog.mockResolvedValue([]);
+        agentServiceMock.getModelBindings.mockResolvedValue([]);
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        await within(screen.getByTestId('page-header')).findByRole('button', { name: 'Add a model' });
+        const header = within(screen.getByTestId('page-header'));
+        await user.click(header.getByRole('button', { name: 'More actions' }));
+        await user.click(screen.getByRole('menuitem', { name: 'New model' }));
+        expect(screen.getByRole('dialog', { name: 'Create catalog entry' })).toBeVisible();
+        await user.keyboard('{Escape}');
+        await user.click(header.getByRole('button', { name: 'More actions' }));
+        await user.click(screen.getByRole('menuitem', { name: 'New binding' }));
+        expect(screen.getByRole('dialog', { name: 'Create model binding' })).toBeVisible();
+    });
+
     it('keeps mutation controls unavailable to a planning reader', async () => {
         agentServiceMock.getCapabilities.mockResolvedValue(capabilitiesFixture(['planning:read']));
         renderWithProviders(<AgentModelAdministration />);
