@@ -98,6 +98,14 @@ export const teamService = {
         return response.data;
     },
 
+    getProfileCapacity: async (profileId: number, start: string, end: string) => {
+        const response = await api.get<{
+            calendar_year: number | null;
+            days: { date: string; allocated_hours: number; committed_effort_hours: number }[];
+        }>(`/team-member-profiles/${profileId}/capacity`, { params: { start, end } });
+        return response.data;
+    },
+
     addVacation: async (memberId: number, data: VacationCreate, revisions: ObservedRevisions) => {
         const response = await api.post<Vacation>(`/team-members/${memberId}/vacations`, data, { headers: revisionHeaders(revisions) });
         return response.data;

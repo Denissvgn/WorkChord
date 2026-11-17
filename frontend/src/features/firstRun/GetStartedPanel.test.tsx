@@ -16,6 +16,7 @@ import { planningNavigationSummaryKey } from '../planningMasters/usePlanningNavi
 import type { Project } from '../../types/project';
 import { FirstRunLanding } from './FirstRunLanding';
 import { GET_STARTED_DISMISSED_KEY, useGetStartedVisibility } from './getStartedVisibility';
+import { useSampleProject } from './sampleProjectStore';
 import { firstRunSteps } from './firstRunSteps';
 
 /** A small in-memory workspace standing in for the server. */
@@ -168,6 +169,7 @@ const newTask = () => within(screen.getByTestId('page-header')).getByRole('link'
 
 beforeEach(() => {
     localStorage.clear();
+    useSampleProject.setState({ manifest: null, busy: false });
     useGetStartedVisibility.setState({ dismissed: false, requested: false });
     useScopeStore.setState({ project: null, iteration: null });
     server.identity = localIdentity();
@@ -229,7 +231,7 @@ describe('Get started panel', () => {
         // The same browser, later: the panel stays hidden although setup is incomplete.
         useGetStartedVisibility.setState({ dismissed: localStorage.getItem(GET_STARTED_DISMISSED_KEY) === '1', requested: false });
         const again = renderWorkspace();
-        expect(await screen.findByText(i18n.t('overview.noIterationTitle'))).toBeInTheDocument();
+        expect(await screen.findByText(i18n.t('emptyStates.overview.iterationTitle'))).toBeInTheDocument();
         expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
         again.unmount();
 
@@ -274,6 +276,27 @@ describe('Get started panel', () => {
 
         await user.click(screen.getByRole('button', { name: i18n.t('firstRun.dismissLabel') }));
         expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
+    });
+
+    it('keeps a completed sample removable after dismissing and reopening Help', async () => {
+        server.identity = localIdentity({ id: 7, display_name: 'Ada Lovelace' });
+        server.projects = [{ id: 40, name: 'Sample project' } as Project];
+        server.iterations = [iterationFor(40)];
+        server.capacityRows = 1;
+        server.tasks = 8;
+        server.scheduleApplied = true;
+        useSampleProject.setState({ manifest: { owner: 'local', complete: true,
+            records: [{ kind: 'project', id: 40, name: 'Sample project' }] } });
+        const { user } = renderWorkspace('/?project=40&iteration=70');
+        expect(await panel()).toHaveTextContent(i18n.t('firstRun.allDone'));
+        expect(screen.getByRole('button', { name: 'Remove sample data' })).toBeVisible();
+        await user.click(screen.getByRole('button', { name: i18n.t('firstRun.dismissLabel') }));
+        expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: i18n.t('contextHelp.openForPage', { page: i18n.t('documentTitles.overview') }) }));
+        await user.click(within(screen.getByRole('dialog', { name: i18n.t('contextHelp.title') }))
+            .getByRole('button', { name: i18n.t('contextHelp.setupGuide.open') }));
+        await panel();
+        expect(screen.getByRole('button', { name: 'Remove sample data' })).toBeVisible();
     });
 
     it('hides itself when setup reopened from Help is then completed', async () => {
@@ -333,10 +356,10 @@ describe('Get started panel', () => {
         expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
     });
 
-    it('leaves an empty place for a second way in, such as a sample project', async () => {
+    it('offers a sample project as a second way in', async () => {
         renderWorkspace();
         const slot = within(await panel()).getByTestId('get-started-secondary-slot');
-        expect(slot).toBeEmptyDOMElement();
+        expect(within(slot).getByRole('button', { name: 'Load a sample project' })).toBeInTheDocument();
     });
 });
 

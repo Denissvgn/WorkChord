@@ -265,13 +265,14 @@ describe('the Tasks links into and out of the Backlog change only the scope', ()
         expect(router.state.location.pathname).toBe('/my-work');
     });
 
-    it('opens Iterations as a new page when there are no iterations, so Back returns to Tasks', async () => {
+    it('opens the Iteration step in Plan as a new page when there are no iterations, so Back returns to Tasks', async () => {
         iterationServiceMock.getAll.mockResolvedValue([]);
         const router = await openTasksFromMyWork('/tasks');
 
-        await userEvent.click(await screen.findByRole('link', { name: i18n.t('tasks.goToIterations') }));
+        await userEvent.click(await screen.findByRole('link', { name: i18n.t('firstRun.steps.iteration.title') }));
         await settle();
-        expect(router.state.location.pathname).toBe('/iterations');
+        expect(router.state.location.pathname).toBe('/plan');
+        expect(router.state.location.search).toContain('step=iteration');
 
         await goBack(router);
         expect(router.state.location.pathname).toBe('/tasks');

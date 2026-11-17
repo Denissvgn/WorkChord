@@ -1,4 +1,5 @@
 import { firstRunEnglish } from './firstRun';
+import { emptyStatesEnglish } from './emptyStates';
 import { planWorkEnglish } from './planWork';
 import { planScheduleEnglish } from './planSchedule';
 import { planningInputEnglish } from './planningInputMessages';
@@ -10,6 +11,7 @@ export const englishResources = {
         translation: {
             planWork: planWorkEnglish,
             firstRun: firstRunEnglish,
+            emptyStates: emptyStatesEnglish,
             planSchedule: planScheduleEnglish,
             capacity: {
                 hourValue: '{{hours}} h',

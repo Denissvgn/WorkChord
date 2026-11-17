@@ -1,12 +1,13 @@
 import {
-    Inbox,
-    Plus
+    Inbox
 } from 'lucide-react';
 import type {
     TriageItem
 } from '../../types/triage';
 import { Button } from '../common/Button';
 import { QueryErrorState } from '../feedback/QueryState';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
+import { InlineEmptyState } from '../ui';
 import { QuickCapture } from '../tasks/QuickCapture';
 
 import { TriageRow } from './TriageRow';
@@ -27,26 +28,23 @@ export const TriageList = ({ items, selectedId, projectsById, iterationsById, li
         ) : isLoading ? (
             <div className="flex h-full items-center justify-center p-8 text-content-secondary">{t('surfaces.triagePage.loadingIntake')}</div>
         ) : items.length === 0 ? (
-            <div className="flex h-full items-center justify-center p-8 text-center">
-                <div>
-                    <Inbox className="mx-auto mb-3 h-10 w-10 text-content-tertiary" />
-                    {activeFilterCount > 0 ? (
-                        <>
-                            <p className="font-medium text-content-primary">{t('surfaces.triagePage.noIntakeItemsMatchTheCurrentFilters')}</p>
-                            <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.convertedDeclinedDuplicateAndFutureSnoozedItemsAreHiddenByTheActiveInboxUnlessFiltered')}</p>
-                            <Button className="mt-3" variant="secondary" onClick={onReset}>{t('surfaces.triagePage.reset')}</Button>
-                        </>
-                    ) : (
-                        <>
-                            <p className="font-medium text-content-primary">{t('surfaces.triagePage.inboxZeroTitle')}</p>
-                            <p className="mt-1 text-sm text-content-secondary">{t('surfaces.triagePage.inboxZeroBody')}</p>
-                            <Button className="mt-3" variant="secondary" onClick={() => onCreate()}>
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                {t('surfaces.triagePage.newIntake')}
-                            </Button>
-                        </>
-                    )}
-                </div>
+            <div className="flex h-full items-center justify-center p-8">
+                {activeFilterCount > 0 ? (
+                    <InlineEmptyState
+                        headingLevel={2}
+                        icon={<Inbox className="h-5 w-5" />}
+                        title={t('emptyStates.filtered.title')}
+                        description={t('emptyStates.filtered.body')}
+                        actions={<Button variant="secondary" onClick={onReset}>{t('emptyStates.filtered.clear')}</Button>}
+                    />
+                ) : (
+                    <NextStepEmptyState
+                        icon={<Inbox className="h-5 w-5" />}
+                        title={t('emptyStates.triage.emptyTitle')}
+                        description={t('emptyStates.triage.emptyBody')}
+                        fallback={{ label: t('emptyStates.triage.action'), onClick: () => onCreate() }}
+                    />
+                )}
             </div>
         ) : (
             <div className="min-h-0 flex-1 overflow-auto">

@@ -15,6 +15,9 @@ import { PlanReviewSection } from '../components/planning/PlanReviewSection';
 import { PlanWorkSection } from '../components/planning/PlanWorkSection';
 import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
+import { useFirstRunProgress } from '../features/firstRun/useFirstRunProgress';
 import {
     checkpointsDone,
     firstIncompleteCheckpoint,
@@ -293,6 +296,8 @@ const PlanCheckpoints = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const readiness = usePlanningReadiness();
     const { currentIteration, hasCurrentIteration, planningSummary, queryStates, refetch, isFetching } = readiness;
+    const scopeLink = useScopeLink();
+    const setupProgress = useFirstRunProgress();
     const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
     // Opening or closing a section by hand wins over the default for the rest of the visit.
     const [openOverride, setOpenOverride] = useState<{ id: PlanningStepId | null } | null>(null);
@@ -352,6 +357,11 @@ const PlanCheckpoints = () => {
         setRefreshStatus(failed ? 'error' : 'success');
     };
 
+    // With no iteration, the page offers one next step: before a profile or project exists, that step
+    // alone; once an iteration is the next step, the Iteration checkpoint's New iteration is that step.
+    const noIteration = queryStates.iterations.hasData && !hasCurrentIteration;
+    const setupFirst = noIteration && setupProgress.known && (setupProgress.nextId === 'profile' || setupProgress.nextId === 'project');
+    const iterationIsNext = noIteration && setupProgress.known && setupProgress.nextId === 'iteration';
     const done = sections ? checkpointsDone(sections) : null;
     const header = (
         <PageHeader
@@ -393,6 +403,14 @@ const PlanCheckpoints = () => {
                 onRetry={() => { void refetch(); }}
             />
         );
+    } else if (setupFirst) {
+        content = (
+            <NextStepEmptyState
+                title={t('emptyStates.plan.title')}
+                description={t('emptyStates.plan.body')}
+                fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
+            />
+        );
     } else if (!sections && queryStates.checkpoints.isLoading) {
         content = <QueryLoadingState message={t('plan.master.planningDataLoading')} />;
     } else if (!sections) {
@@ -428,6 +446,13 @@ const PlanCheckpoints = () => {
         <PageLayout variant="wide" className="plan-page">
             {header}
             <SetupReturnBar />
+            {noIteration && !setupFirst && !iterationIsNext && (
+                <NextStepEmptyState
+                    title={t('emptyStates.plan.title')}
+                    description={t('emptyStates.plan.body')}
+                    fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
+                />
+            )}
             <div aria-busy={isFetching || undefined}>{content}</div>
         </PageLayout>
     );

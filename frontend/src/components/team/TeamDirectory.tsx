@@ -8,7 +8,8 @@ import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { useAgentAccess } from '../../hooks/useAgentAccess';
 import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { Button } from '../common/Button';
-import { InlineEmptyState, Pill, TableFrame } from '../ui';
+import { Pill, TableFrame } from '../ui';
+import { NextStepEmptyState } from '../../features/firstRun/NextStepEmptyState';
 import type { PillTone } from '../ui';
 import { TeamProfileManager } from './TeamProfileManager';
 import {
@@ -106,9 +107,10 @@ export const TeamDirectory = ({ drawer, onDrawerChange }: { drawer: DrawerTarget
         <div className="space-y-3">
             {hasAgents && rosterState === 'unavailable' && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
             {rows.length === 0 ? (
-                <InlineEmptyState
+                <NextStepEmptyState
                     title={t('teamPage.emptyTitle')}
-                    description={t('teamPage.emptyBody')}
+                    description={t('emptyStates.team.membersBody')}
+                    fallback={{ label: t('teamPage.addPerson'), onClick: () => onDrawerChange({ mode: 'add' }) }}
                 />
             ) : (
                 <TableFrame>

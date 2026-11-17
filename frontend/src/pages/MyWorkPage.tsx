@@ -24,6 +24,8 @@ import { agentRowValues, useAgentRowFacts } from '../components/tasks/useAgentRo
 import { taskStateChip } from '../components/tasks/taskStateChip';
 import type { TaskStateChip } from '../components/tasks/taskStateChip';
 import { Button } from '../components/common/Button';
+import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
+import { useScopeLink } from '../features/scope/useScopeLink';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
 
@@ -34,6 +36,7 @@ interface WorkPage { state: string; queues: Record<string, TaskReference[]>; has
 
 const MyWorkPage = () => {
     const { t } = useTranslation();
+    const scopeLink = useScopeLink();
     const identityContext = useIdentity();
     const identity = identityContext?.identity;
     const local = identity?.mode === 'trusted_local' && !identity.principal;
@@ -147,14 +150,14 @@ const MyWorkPage = () => {
                     selectDisabledReason={canPick && !selection.canAdd(task.id) ? t('taskList.selectOneIteration') : undefined} />
             </li>;
         })}</ul>}
-        {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <p className="text-sm text-content-secondary">{t('teamwork.emptyQueue')}</p>}
+        {queue !== 'inbox' && selectedQuery.isSuccess && items.length === 0 && !(workQueue && workState !== 'ready') && <NextStepEmptyState description={t('emptyStates.myWork.queueBody')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />}
         {queue === 'inbox' && <>
             <ul className="divide-y divide-border">{inbox.data?.pages.flatMap(page => page.items).map(item => <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
                 <div className="min-w-0"><Button type="button" className="min-h-9 break-words text-left font-medium text-action hover:underline" onClick={() => selectTask(item.task_id)} variant="plain">{item.title}</Button>
                     <p className="text-sm text-content-secondary">{t(`teamwork.event_${item.event_type}`)} · {t(item.read ? 'teamwork.read' : 'teamwork.unread')}</p></div>
                 <Button size="sm" variant="ghost" disabled={read.isPending} onClick={() => read.mutate({ id: item.id, value: !item.read })}>{t(item.read ? 'teamwork.markUnread' : 'teamwork.markRead')}</Button>
             </li>)}</ul>
-            {inbox.data?.pages.every(page => page.items.length === 0) && <p>{t('teamwork.emptyInbox')}</p>}
+            {inbox.data?.pages.every(page => page.items.length === 0) && <NextStepEmptyState description={t('emptyStates.myWork.inboxBody')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />}
             <details className="rounded-md border border-border p-3"><summary className="cursor-pointer font-medium">{t('teamwork.deliveryStatus')}</summary>
                 {deliveries.isLoading && <p role="status">{t('common.loading')}</p>}
                 {deliveries.isError && <QueryErrorState error={deliveries.error} fallback={t('teamwork.loadFailed')} onRetry={() => void deliveries.refetch()} />}

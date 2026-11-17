@@ -17,6 +17,7 @@ import { Select } from '../common/Select';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import { AdminAccessPanel } from '../settings/AdminAccessPanel';
 import { SharedUnlockContext } from '../settings/sharedUnlock';
+import { InlineEmptyState } from '../ui/InlineEmptyState';
 import AgentManifestWorkflow from './AgentManifestWorkflow';
 
 type Candidate = { manifest: AgentTeamMaster; member: AgentTeamMemberSpec; plan: AgentTeamPlan; filename: string };
@@ -171,14 +172,20 @@ export const ConnectAgentSteps = () => {
                     <h2 className="text-lg font-semibold">{t(`${P}.title`)}</h2>
                     <p id="connect-unlock-note" className="mt-1 text-sm text-content-secondary">{t(`${P}.intro`)}</p>
                 </div>
-                {(!hasAdminKey || status.isError || status.data?.can_mutate === false) && (
+                {hasAdminKey && (status.isError || status.data?.can_mutate === false) && (
                     <Button variant="secondary" aria-expanded={unlock} aria-controls="connect-unlock-panel" onClick={() => setUnlock(!unlock)}>
                         {t('settings.unlockEditing')}
                     </Button>
                 )}
             </div>
             {unlock && <div id="connect-unlock-panel"><AdminAccessPanel headingLevel={3} /></div>}
-            {!hasAdminKey ? <p className="text-sm text-content-secondary">{t(`${P}.lockedNote`)}</p> : <>
+            {!hasAdminKey ? <InlineEmptyState
+                title={t('emptyStates.team.connectTitle')}
+                description={t('emptyStates.team.connectBody')}
+                actions={<Button variant="secondary" aria-expanded={unlock} aria-controls="connect-unlock-panel" onClick={() => setUnlock(!unlock)}>
+                    {t('emptyStates.team.unlock')}
+                </Button>}
+            /> : <>
                 {loading && <p role="status" className="text-sm">{t(`${P}.loading`)}</p>}
                 {failed && <div role="alert" className="space-y-2 text-sm">
                     <p>{t(`${P}.loadFailed`)}</p>
