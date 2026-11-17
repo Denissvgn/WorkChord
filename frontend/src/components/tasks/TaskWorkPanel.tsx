@@ -27,21 +27,33 @@ const progressRows = (value: unknown): CriterionProgress[] | null => Array.isArr
     && value.every((item: CriterionProgress) => typeof item?.criterion_id === 'string' && Number.isInteger(item.criterion_revision)
         && typeof item.evidence === 'string' && PROGRESS_STATES.includes(item.state)) ? value as CriterionProgress[] : null;
 
+const sameRow = (left: CriterionProgress, right: CriterionProgress) => left.criterion_id === right.criterion_id && left.criterion_revision === right.criterion_revision;
+
 /**
- * Lays a saved progress draft over the current criteria. Rows for removed or reworded criteria are
- * dropped, so the panel always lists the current brief. The draft is stale only when the person
- * changed a criterion whose saved progress also changed on the server since the draft was taken;
- * a brief edit alone never makes it stale.
+ * Lays a saved progress draft over the current criteria. Only rows the person edited (they differ
+ * from the progress the draft was taken from) are laid over; every other row shows the current
+ * server value, and rows for removed or reworded criteria are dropped, so the panel always lists the
+ * current brief. The draft is stale only when an edited criterion now has saved progress on the
+ * server that differs from what the draft was taken from. A brief edit clears saved progress, which
+ * is not a competing write, so a brief change alone never makes the draft stale. A draft without a
+ * recorded base treats every changed row as edited.
  */
-const restoreProgress = (stored: { version?: unknown; criteria?: unknown; base?: unknown } | null, initial: CriterionProgress[], version: number) => {
+const restoreProgress = (stored: { version?: unknown; criteria?: unknown; base?: unknown } | null, initial: CriterionProgress[],
+    saved: CriterionProgress[], version: number) => {
     const rows = progressRows(stored?.criteria);
     if (!stored || !rows) return { criteria: initial, version, base: initial };
     const base = progressRows(stored.base);
-    const criteria = initial.map(row => rows.find(item => item.criterion_id === row.criterion_id && item.criterion_revision === row.criterion_revision) ?? row);
+    const edits = rows.filter(item => {
+        const observed = base?.find(row => sameRow(row, item));
+        return !observed || !sameProgress(observed, item);
+    });
+    const criteria = initial.map(row => edits.find(item => sameRow(item, row)) ?? row);
     const conflict = stored.version !== version && criteria.some((row, index) => {
-        if (sameProgress(row, initial[index])) return false;
-        const observed = base?.find(item => item.criterion_id === row.criterion_id && item.criterion_revision === row.criterion_revision);
-        return !observed || !sameProgress(observed, initial[index]);
+        if (sameProgress(row, initial[index]) || !edits.includes(row)) return false;
+        if (!base) return true;
+        const recorded = saved.find(item => sameRow(item, row));
+        const observed = base.find(item => sameRow(item, row));
+        return recorded !== undefined && (!observed || !sameProgress(observed, recorded));
     });
     // A conflicting draft keeps the progress it was taken from until the person keeps or discards it.
     return conflict && Number.isInteger(stored.version) ? { criteria, version: stored.version as number, base: base ?? [] } : { criteria, version, base: initial };
@@ -62,8 +74,8 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const [restored] = useState(() => {
         try {
             const stored = JSON.parse(key ? sessionStorage.getItem(key) ?? 'null' : 'null');
-            return restoreProgress(stored && Date.now() - stored.savedAt < DRAFT_TTL_MS ? stored : null, initial, task.version);
-        } catch { return restoreProgress(null, initial, task.version); }
+            return restoreProgress(stored && Date.now() - stored.savedAt < DRAFT_TTL_MS ? stored : null, initial, task.progress?.criteria ?? [], task.version);
+        } catch { return restoreProgress(null, initial, [], task.version); }
     });
     const [base, setBase] = useState(restored.base);
     const [draftVersion, setDraftVersion] = useState(restored.version);

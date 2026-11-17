@@ -84,6 +84,32 @@ describe('task drawer start, submit and review', () => {
         expect(duplicateKeyWarnings()).toEqual([]);
     });
 
+    it('lists the cleared progress in Review after a goal-only brief change, with no stale-draft warning', async () => {
+        const progress = { criteria: [{ criterion_id: criterion.id, criterion_revision: 1, state: 'completed', evidence: 'Preview shown.' }], artifacts: [], brief_revision: 1, artifact_revision: 0 };
+        const resolved = { ...baseTask, status: 'resolved', version: 3, progress } as Task;
+        // Saving a brief clears saved progress on the server.
+        service.writeBrief.mockImplementation(async (_id: number, version: number, brief: Task['brief']) => serve({ ...current, version: version + 1, brief, progress: null }));
+        const { user } = openDrawer(resolved);
+        await user.click(await enabledButton('Review'));
+        expect(await within(drawer()).findByLabelText(criterion.text)).toHaveValue('completed');
+        await user.type(within(drawer()).getByRole('textbox', { name: /Reason for the action or review/ }), 'Checked the checklist');
+        await user.click(within(drawer()).getByRole('button', { name: 'Brief' }));
+        await user.click(within(drawer()).getByRole('button', { name: 'Edit brief' }));
+        const goal = within(drawer()).getByRole('textbox', { name: 'Goal' });
+        await user.clear(goal);
+        await user.type(goal, 'List every step launch needs.');
+        await user.click(within(drawer()).getByRole('button', { name: 'Save brief' }));
+        await waitFor(() => expect(service.writeBrief).toHaveBeenCalledWith(1, 3, expect.anything()));
+
+        await user.click(await enabledButton('Review'));
+        expect(await within(drawer()).findByLabelText(`Result: ${criterion.text}`)).toBeEnabled();
+        expect(within(drawer()).getByLabelText(criterion.text)).toHaveValue('pending');
+        expect(within(drawer()).queryByText(/This progress draft belongs to an older version/)).not.toBeInTheDocument();
+        expect(within(drawer()).getByRole('textbox', { name: /Reason for the action or review/ })).toBeEnabled();
+        expect(within(drawer()).getByRole('textbox', { name: /Reason for the action or review/ })).toHaveValue('Checked the checklist');
+        expect(duplicateKeyWarnings()).toEqual([]);
+    });
+
     it('lists the current criteria in Review after a brief change, with no stale-draft warning', async () => {
         const resolved = { ...baseTask, status: 'resolved', version: 3, brief: { ...baseTask.brief!, acceptance_criteria: [] } } as Task;
         service.writeBrief.mockImplementation(async (_id: number, version: number, brief: Task['brief']) => serve({ ...current, version: version + 1, brief }));

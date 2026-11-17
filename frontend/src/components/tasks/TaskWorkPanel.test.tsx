@@ -88,6 +88,33 @@ describe('criterion progress saves', () => {
         ] })));
     });
 
+    it('shows the cleared server progress for an untouched criterion after a brief change, with no stale-draft warning', async () => {
+        // Progress was saved, a review reason was begun, and then a brief edit cleared the saved progress on the server.
+        const recorded = { criterion_id: 'criterion', criterion_revision: 1, state: 'completed' as const, evidence: 'Saw it work' };
+        sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 2, savedAt: Date.now(),
+            criteria: [recorded], base: [recorded], reason: 'Checked the output', action: '' }));
+        renderPanel();
+        expect(screen.queryByText(/This progress draft belongs to an older version/)).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Inspect the result')).toHaveValue('pending');
+        expect(screen.getByRole('textbox', { name: 'Evidence' })).toHaveValue('');
+        // Review controls stay usable: a stale draft would disable them.
+        await waitFor(() => expect(screen.getByRole('textbox', { name: /Reason for the action or review/ })).toBeEnabled());
+        expect(screen.getByRole('textbox', { name: /Reason for the action or review/ })).toHaveValue('Checked the output');
+        await waitFor(() => expect(JSON.parse(sessionStorage.getItem('workchord-draft:person:42:progress')!).version).toBe(3));
+    });
+
+    it('keeps the server value for an untouched criterion that another person saved', () => {
+        const recorded = { ...task, progress: { criteria: [{ criterion_id: 'criterion', criterion_revision: 1, state: 'in_progress' as const, evidence: 'Recorded elsewhere' }], artifacts: [], brief_revision: 1, artifact_revision: 0 } } as Task;
+        const pending = { criterion_id: 'criterion', criterion_revision: 1, state: 'pending' as const, evidence: '' };
+        sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 2, savedAt: Date.now(),
+            criteria: [pending], base: [pending], reason: 'Checked the output', action: '' }));
+        renderWithProviders(<TaskWorkPanel task={recorded} disabled={false} draftKey="workchord-draft:person:42"
+            onDirty={vi.fn()} onPending={vi.fn()} onUpdated={vi.fn()} onReload={vi.fn()} />);
+        expect(screen.queryByText(/This progress draft belongs to an older version/)).not.toBeInTheDocument();
+        expect(screen.getByLabelText('Inspect the result')).toHaveValue('in_progress');
+        expect(screen.getByRole('textbox', { name: 'Evidence' })).toHaveValue('Recorded elsewhere');
+    });
+
     it('still warns when the saved progress of an edited criterion changed on the server', () => {
         const recorded = { ...task, progress: { criteria: [{ criterion_id: 'criterion', criterion_revision: 1, state: 'in_progress' as const, evidence: 'Recorded elsewhere' }], artifacts: [], brief_revision: 1, artifact_revision: 0 } } as Task;
         sessionStorage.setItem('workchord-draft:person:42:progress', JSON.stringify({ version: 2, savedAt: Date.now(),
