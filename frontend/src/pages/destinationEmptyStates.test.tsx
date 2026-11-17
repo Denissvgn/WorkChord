@@ -7,6 +7,7 @@ import api from '../services/api';
 import i18n from '../i18n/i18n';
 import { mapLegacyPath } from '../navigation/legacyPaths';
 import { clearAdminApiKey, setAdminApiKey } from '../utils/adminAccess';
+import { clearAgentApiKey, setAgentApiKey } from '../utils/agentAccess';
 import { useGetStartedVisibility } from '../features/firstRun/getStartedVisibility';
 import { useScopeStore } from '../features/scope/scopeStore';
 import { IdentityContext } from '../features/identity/identityContext';
@@ -36,7 +37,17 @@ type Scenario = {
     triage?: unknown[];
     tasks?: unknown[];
     pipeline?: Record<string, unknown[]>;
+    /** The admin-key view of Team models: a key that may administer, and the two lists it shows. */
+    models?: { catalog: unknown[]; bindings: unknown[] };
 };
+
+const MODEL = { id: 1, key: 'atlas-model', provider: 'acme', configured_model_alias: 'atlas', reasoning_tier: 'standard',
+    context_tier: 'standard', modality_tags: [], cost_tier: 'standard', latency_tier: 'standard', enabled: true, revision: 1,
+    last_verified_at: null, created_at: '2026-08-01T00:00:00Z', updated_at: '2026-08-01T00:00:00Z' };
+
+const BINDING = { id: 1, actor_id: 1, model_catalog_id: 1, is_default: true, enabled: true, tool_tags: [], data_policy_tags: [],
+    revision: 1, model_catalog_key: 'atlas-model', selectable: true, model_catalog: MODEL, live_assignment_count: 0,
+    historical_assignment_count: 0, run_reference_count: 0, created_at: '2026-08-01T00:00:00Z', updated_at: '2026-08-01T00:00:00Z' };
 
 const ITERATION = { id: 1, name: 'August plan', calendar_id: 1, project: null, project_id: 1,
     start_date: '2026-08-03', end_date: '2026-08-14', working_days: 10 };
@@ -124,6 +135,9 @@ const respond = (fullUrl: string) => {
         return { needs_definition: [], ready_to_assign: [], assigned_waiting: [], start_ready: [], executing: [],
             verification_required: [], recovery_required: [], ...scenario.pipeline };
     }
+    if (scenario.models && url === '/agent/capabilities') return { scopes: ['admin'] };
+    if (scenario.models && url === '/agent/model-catalog') return scenario.models.catalog;
+    if (scenario.models && url === '/agent/model-bindings') return scenario.models.bindings;
     if (url === '/tasks/my-work') return { state: 'ready', queues: {}, has_more: false, next_after_id: null };
     if (url === '/tasks/review-queue' || url === '/notifications') return { ...PAGE, items: [] };
     return [];
@@ -147,6 +161,7 @@ beforeEach(() => {
 afterEach(() => {
     api.defaults.adapter = originalAdapter;
     clearAdminApiKey();
+    clearAgentApiKey();
 });
 
 type Case = {
@@ -161,6 +176,8 @@ type Case = {
     /** A list that filters hide: it must offer Clear filters. */
     filtered?: boolean;
     adminKey?: boolean;
+    /** The agent key the Models tab needs before it reads anything. */
+    agentKey?: boolean;
     /** Copy keys of controls that must not appear on the page: competing actions of an empty workspace. */
     absent?: string[];
     /** Rendered with the shell's identity, so the first-run step decides the page's one next step. */
@@ -220,7 +237,13 @@ const CASES: Case[] = [
     { name: 'Analytics', path: '/analytics', page: () => <AnalyticsPage />, copy: 'emptyStates.analytics.body' },
     { name: 'Team members', path: '/team', page: () => <TeamPage />, copy: 'emptyStates.team.membersBody' },
     { name: 'Team models without the admin key', path: '/team?tab=models', page: () => <TeamPage />, copy: 'emptyStates.team.modelsBody' },
-    { name: 'Team models with the admin key', path: '/team?tab=models', page: () => <TeamPage />, adminKey: true },
+    { name: 'Team models with an empty catalog and no bindings', path: '/team?tab=models', page: () => <TeamPage />, agentKey: true,
+        scenario: { models: { catalog: [], bindings: [] } }, copy: 'emptyStates.team.catalogBody' },
+    // One list empty and the other filled: each empty state is checked on its own.
+    { name: 'Team models with an empty model catalog', path: '/team?tab=models', page: () => <TeamPage />, agentKey: true,
+        scenario: { models: { catalog: [], bindings: [BINDING] } }, copy: 'emptyStates.team.catalogBody' },
+    { name: 'Team models with an empty bindings list', path: '/team?tab=models', page: () => <TeamPage />, agentKey: true,
+        scenario: { models: { catalog: [MODEL], bindings: [] } }, copy: 'emptyStates.team.bindingsBody' },
     { name: 'Team connect without the admin key', path: '/team?tab=connect', page: () => <TeamPage />, copy: 'emptyStates.team.connectBody' },
 ];
 
@@ -258,6 +281,7 @@ const renderCase = async (testCase: Case, language: Language) => {
     await i18n.changeLanguage(language);
     scenario = testCase.scenario ?? {};
     if (testCase.adminKey) setAdminApiKey('operator-key');
+    if (testCase.agentKey) setAgentApiKey('operator-key');
     const page = testCase.setup ? withIdentity(testCase.page()) : testCase.page();
     const view = renderWithProviders(page, { initialEntries: [testCase.path] });
     if (testCase.typeSearch) {
@@ -308,6 +332,21 @@ describe('destination and view empty states', () => {
         expect(action.textContent).toBe(i18n.t('emptyStates.filtered.clear', { lng: language }));
         expect(states[0].querySelector('.inline-empty-title')?.textContent).toBe(i18n.t('emptyStates.filtered.title', { lng: language }));
     }, 30000);
+
+    it.each(LANGUAGES.map(language => ({ language })))(
+        'Overview with work elsewhere shows no next-step button in an empty Work now list ($language)',
+        async ({ language }) => {
+            await i18n.changeLanguage(language);
+            scenario = { iterations: [ITERATION], tasks: [{ ...task(1), status: 'closed' }] };
+            const view = renderWithProviders(<OverviewPage />, { initialEntries: ['/'] });
+            const note = i18n.t('overview.noWorkNow', { lng: language });
+            await waitFor(() => { expect(view.container.querySelector('.overview-work-now')?.textContent ?? '').toContain(note); }, { timeout: 8000 });
+            const section = view.container.querySelector('.overview-work-now') as HTMLElement;
+            expect(section.querySelectorAll('.inline-empty')).toHaveLength(0);
+            expect(section.querySelectorAll('.inline-empty-actions')).toHaveLength(0);
+        },
+        30000,
+    );
 
     it.each(LANGUAGES.map(language => ({ language })))(
         'Plan with a project and no iteration leaves New iteration as the one next step ($language)',

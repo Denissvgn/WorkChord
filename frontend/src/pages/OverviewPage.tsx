@@ -368,6 +368,16 @@ const OverviewPage = () => {
                 </SectionCard>
             )}
 
+            {/* A workspace with no tasks at all gets the page's one next step; sections below stay plain text. */}
+            {showContent && !hasNoIterations && !getStarted.visible && allRoots.length === 0 && hasResult(tasksState) && (
+                <SectionCard>
+                    <NextStepEmptyState
+                        description={t(isBacklog ? 'overview.noWorkNowBacklog' : 'overview.noWorkNowFirstUse')}
+                        fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }}
+                    />
+                </SectionCard>
+            )}
+
             {showContent && (
                 <>
                     <AttentionItem
@@ -642,7 +652,7 @@ const WorkNow = ({ roots, state, onRetry, backlog, showProject, showIteration, i
             ) : !hasResult(state) ? (
                 <QueryLoadingState message={t('overview.dataStatus.sectionLoading')} />
             ) : tasks.length === 0 ? (
-                <NextStepEmptyState description={emptyText} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />
+                <p className="overview-note">{emptyText}</p>
             ) : (
                 <>
                     <ul className="overview-task-list">
@@ -860,7 +870,7 @@ const CountList = ({ items, label, showIteration, linkProject }: {
     const scopeLink = useScopeLink();
 
     if (items.length === 0) {
-        return <NextStepEmptyState description={t('overview.list.empty')} fallback={{ label: t('overview.openTasks'), to: scopeLink('/tasks') }} />;
+        return <p className="overview-note">{t('overview.list.empty')}</p>;
     }
     return (
         <>
