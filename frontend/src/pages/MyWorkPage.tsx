@@ -28,7 +28,8 @@ import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import { QueryErrorState } from '../components/feedback/QueryState';
 import { getApiErrorMessage } from '../utils/apiError';
-import { clearAdminApiKey, hasAdminApiKey } from '../utils/adminAccess';
+import { useAdminAccess } from '../hooks/useAdminAccess';
+import { OperatorIdentityNotice } from '../features/identity/OperatorIdentityNotice';
 
 const QUEUES = ['active', 'queued', 'blocked', 'awaiting_review', 'review', 'inbox'] as const;
 const WORK_QUEUES: readonly string[] = ['active', 'queued', 'blocked', 'awaiting_review'];
@@ -41,23 +42,26 @@ const MyWorkPage = () => {
     const identityContext = useIdentity();
     const identity = identityContext?.identity;
     const local = identity?.mode === 'trusted_local' && !identity.principal;
+    const { actingAsOperator } = useAdminAccess();
+    const notificationsAvailable = identity?.authenticated === true && identity.principal?.kind === 'human';
+    const queues = QUEUES.filter(key => key !== 'inbox' || notificationsAvailable);
     const { selectedIterationId } = useIterationStore();
     const [params, setParams] = useSearchParams();
-    const queue: Queue = QUEUES.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : 'active';
+    const queue: Queue = queues.includes(params.get('queue') as Queue) ? params.get('queue') as Queue : 'active';
     const selectedId = Number(params.get('task')) || null;
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const work = useLiveWindow({ queryKey: ['human-my-work'], enabled: !local || !!identity?.profile, initialPageParam: 0,
+    const work = useLiveWindow({ queryKey: ['human-my-work'], enabled: !actingAsOperator && (!local || !!identity?.profile), initialPageParam: 0,
         queryFn: async ({ pageParam }) => (await api.get<WorkPage>('/tasks/my-work', { params: { after_id: pageParam } })).data,
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const reviews = useLiveWindow({ queryKey: ['human-review-queue'], enabled: !local || !!identity?.profile, initialPageParam: 0,
+    const reviews = useLiveWindow({ queryKey: ['human-review-queue'], enabled: !actingAsOperator && (!local || !!identity?.profile), initialPageParam: 0,
         queryFn: async ({ pageParam }) => (await api.get<TaskReferencePage>('/tasks/review-queue', { params: { after_id: pageParam } })).data,
         getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const inbox = useLiveWindow({ queryKey: ['personal-inbox'], enabled: !local || !!identity?.profile, initialPageParam: 0,
+    const inbox = useLiveWindow({ queryKey: ['personal-inbox'], enabled: notificationsAvailable, initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.inbox(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: query loading,error,retry,empty - scoped results keep explicit loading, retry and empty feedback.
-    const deliveries = useLiveWindow({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox' && (!local || !!identity?.profile), initialPageParam: 0,
+    const deliveries = useLiveWindow({ queryKey: ['personal-deliveries'], enabled: queue === 'inbox' && notificationsAvailable, initialPageParam: 0,
         queryFn: ({ pageParam }) => discussionService.deliveries(pageParam), getNextPageParam: page => page.has_more ? page.next_after_id : undefined });
     // feedback-policy: mutation pending,inline - disable repeat writes and retain the draft on failure.
     const read = useMutation({ mutationFn: ({ id, value }: { id: number; value: boolean }) => discussionService.read(id, value), onSuccess: () => inbox.refetch() });
@@ -71,7 +75,6 @@ const MyWorkPage = () => {
         [queue, reviewPages, workPages],
     );
     const workState = work.data?.pages[0].state;
-    const operatorKeyHidesProfile = local && Boolean(identity?.profile) && workState === 'profile_unlinked' && hasAdminApiKey();
     const workQueue = WORK_QUEUES.includes(queue);
     const queueLabel = (key: Queue) => {
         const source = key === 'review' ? reviews : key === 'inbox' ? inbox : work;
@@ -101,7 +104,13 @@ const MyWorkPage = () => {
     const scopeIterationId = selectedTasks[0]?.iteration_id ?? null;
     const selectTask = (id: number | null) => { const next = new URLSearchParams(params); if (id) next.set('task', String(id)); else next.delete('task'); setParams(next); };
 
+    if (actingAsOperator) return <PageLayout><PageHeader title={t('teamwork.myWork')} purpose={t('teamwork.myWorkHelp')} />
+        <OperatorIdentityNotice />
+        <p className="text-sm text-content-secondary">{t('teamwork.notificationsRequireSignIn')}</p>
+    </PageLayout>;
+
     if (local && !identity?.profile) return <PageLayout><PageHeader title={t('teamwork.myWork')} purpose={t('teamwork.myWorkHelp')} />
+        <p className="text-sm text-content-secondary">{t('teamwork.notificationsRequireSignIn')}</p>
         <section aria-labelledby="my-work-profile" className="max-w-xl space-y-2">
             <h2 id="my-work-profile" className="text-base font-semibold">{t('identity.localProfileTitle')}</h2>
             <LocalProfilePicker current={null} onChosen={() => identityContext?.refresh()} />
@@ -109,21 +118,16 @@ const MyWorkPage = () => {
 
     return <PageLayout><PageHeader title={t('teamwork.myWork')} purpose={t('teamwork.myWorkHelp')} />
         <PageToolbar label={t('teamwork.workQueues')} viewSwitch={<ViewSwitch<Queue> label={t('teamwork.workQueues')}
-            options={QUEUES.map(key => ({ value: key, label: queueLabel(key) }))} value={queue}
+            options={queues.map(key => ({ value: key, label: queueLabel(key) }))} value={queue}
             onChange={key => { const next = new URLSearchParams(params); next.set('queue', key); next.delete('task'); setParams(next); }} />} />
         <section className="space-y-5">
+        {!notificationsAvailable && <p className="text-sm text-content-secondary">{t('teamwork.notificationsRequireSignIn')}</p>}
         {local && identity?.profile && <p className="text-sm text-content-secondary">{t('identity.workingAsLocal', { name: identity.profile.display_name })}</p>}
         {identity?.profile && <PersonCapacity key={identity.profile.id} profileId={identity.profile.id} manage />}
         <LiveWindowStatus window={selectedQuery} />
         {selectedQuery.isLoading && <p role="status">{t('common.loading')}</p>}
         {selectedQuery.isError && <QueryErrorState error={selectedQuery.error} fallback={t('teamwork.loadFailed')} onRetry={() => void selectedQuery.refetch()} />}
-        {workQueue && workState && workState !== 'ready' && (operatorKeyHidesProfile
-            // On a trusted-local server the admin key in this tab makes every read the operator's, so the chosen person's work is not returned.
-            ? <div className="flex flex-wrap items-center gap-3 rounded-md border border-border p-4 text-sm">
-                <p className="min-w-0 flex-1">{t('teamwork.state_profile_unlinked_admin_key', { name: identity?.profile?.display_name })}</p>
-                <Button size="sm" variant="secondary" onClick={clearAdminApiKey}>{t('identity.lock')}</Button>
-            </div>
-            : <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>)}
+        {workQueue && workState && workState !== 'ready' && <p className="rounded-md border border-border p-4 text-sm">{t(`teamwork.state_${workState}`)}</p>}
         {queue !== 'inbox' && rowData.error && <QueryErrorState error={rowData.error} fallback={t('queryFeedback.optionLoadFailed')} onRetry={rowData.refetch} />}
         {queue !== 'inbox' && scopeIterationId !== null && <TaskSelectionBar iterationId={scopeIterationId} selectedTasks={selectedTasks}
             matchingCount={selection.matchingIds.length} onSelectAll={selection.selectAll} onClearSelection={selection.clear} />}
