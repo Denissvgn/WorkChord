@@ -553,6 +553,9 @@ class IterationService:
                                         Task.start_date.is_(None),
                                         Task.end_date.is_(None),
                                         Task.start_date > Task.end_date,
+                                        Task.start_date < today,
+                                        Task.start_date < iteration.start_date,
+                                        Task.end_date > iteration.end_date,
                                     )),
                                     1,
                                 ),
@@ -566,6 +569,7 @@ class IterationService:
                             case(
                                 (
                                     or_(
+                                        Task.start_date < iteration.start_date,
                                         Task.end_date > iteration.end_date,
                                         and_(
                                             Task.status == TaskStatusModel.PLANNED.value,
