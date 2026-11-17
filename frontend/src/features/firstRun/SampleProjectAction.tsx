@@ -17,6 +17,7 @@ export const SampleProjectAction = () => {
     const navigate = useNavigate();
     const { manifest, busy, save, setBusy } = useSampleProject();
     const [error, setError] = useState(false);
+    const [removalFailed, setRemovalFailed] = useState(false);
     const [confirming, setConfirming] = useState(false);
     const locked = useRef(false);
     const owner = identity?.principal ? `principal:${identity.principal.id}` : 'local';
@@ -33,6 +34,7 @@ export const SampleProjectAction = () => {
         locked.current = true;
         setBusy(true);
         setError(false);
+        setRemovalFailed(false);
         const receipt: SampleManifest = { owner, records: [...records], complete: own?.complete ?? false };
         try {
             if (remove) {
@@ -44,7 +46,7 @@ export const SampleProjectAction = () => {
                 const result = await loadSampleProject(receipt, identity.profile, i18n.language, save);
                 navigate(`/plan?project=${result.projectId}&iteration=${result.iterationId}`);
             }
-        } catch { setError(true); }
+        } catch { setError(true); setRemovalFailed(remove); }
         finally {
             await client.invalidateQueries();
             setBusy(false);
@@ -77,7 +79,7 @@ export const SampleProjectAction = () => {
             <ConfirmDialog open={confirming} title={t('firstRun.sample.remove')} description={<div className="max-h-[50vh] space-y-3 overflow-y-auto" role="region" tabIndex={0}
                 aria-label={t('firstRun.sample.exists', { count: records.length })}>
                 <p>{t('firstRun.sample.confirm')}</p>{inventory}
-                {error && <p role="alert">{t('firstRun.sample.removeFailed')}</p>}
+                {removalFailed && <p role="alert">{t('firstRun.sample.removeFailed')}</p>}
             </div>} confirmLabel={t('firstRun.sample.remove')} cancelLabel={t('actions.cancel')} closeLabel={t('actions.close')}
                 pending={busy} onCancel={() => { if (!busy) { setConfirming(false); setError(false); } }} onConfirm={() => void run(true)} />
         </div>

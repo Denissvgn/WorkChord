@@ -14,9 +14,31 @@ export type SaveSample = (manifest: SampleManifest) => void;
 const revisions = async (kind: 'project' | 'iteration' | 'profile' | 'member', id: number) =>
     (await planningInputService.readInitial(kind, id)).expected_revisions;
 
+const availableFixture = async (profileId: number, language: string) => {
+    const now = new Date();
+    const initial = sampleProjectFixture(language, now);
+    const end = new Date(`${initial.start}T12:00:00`);
+    end.setDate(end.getDate() + 365);
+    const endDate = `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}-${String(end.getDate()).padStart(2, '0')}`;
+    const capacity = await teamService.getProfileCapacity(profileId, initial.start, endDate);
+    const days = new Map(capacity.days.map(day => [day.date, day]));
+    // Keep the whole example together and reserve no time already allocated to other work.
+    for (let offset = 0; offset + 25 <= 365; offset += 7) {
+        const candidate = new Date(now);
+        candidate.setDate(candidate.getDate() + offset);
+        const fixture = sampleProjectFixture(language, candidate);
+        if (capacity.calendar_year != null && (Number(fixture.start.slice(0, 4)) !== capacity.calendar_year
+            || Number(fixture.end.slice(0, 4)) !== capacity.calendar_year)) continue;
+        const window = capacity.days.filter(day => day.date >= fixture.start && day.date <= fixture.end);
+        if (window.length === 26 && days.has(fixture.start) && days.has(fixture.end)
+            && window.every(day => day.allocated_hours === 0 && day.committed_effort_hours === 0)) return fixture;
+    }
+    throw new Error('No unallocated date window is available for the sample.');
+};
+
 /** Keep the receipt after each successful call, including before any subsequent call can fail. */
 export const loadSampleProject = async (manifest: SampleManifest, person: WorkProfile, language: string, save: SaveSample) => {
-    const fixture = sampleProjectFixture(language);
+    const fixture = await availableFixture(person.id, language);
     const remember = (record: SampleRecord) => {
         manifest.records.push(record);
         save({ ...manifest, records: [...manifest.records] });

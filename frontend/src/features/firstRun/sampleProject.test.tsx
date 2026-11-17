@@ -77,16 +77,41 @@ beforeEach(async () => {
         if (path.endsWith('/schedule/preview')) return { data: { input_revision: revision, input_planning_revision: 5, tasks: [] } };
         if (path.endsWith('/schedule')) {
             expect(data).toEqual({ expected_revision: revision, expected_planning_revision: 5 });
+            const iteration = read('iteration', Number(path.split('/')[2]));
+            for (const member of list('member').filter(row => row.iteration_id === iteration.id)) {
+                const overlapping = list('member').filter(row => row.profile_id === member.profile_id).filter(row => {
+                    const other = read('iteration', Number(row.iteration_id));
+                    return String(other.start_date) <= String(iteration.end_date) && String(other.end_date) >= String(iteration.start_date);
+                });
+                if (overlapping.reduce((sum, row) => sum + Number(row.availability_percent), 0) > 100) {
+                    throw new Error('shared_capacity_overallocated');
+                }
+            }
             applied = true; revision++; return { data: { success: true } };
         }
         throw new Error(`Unexpected POST ${path}`);
     });
-    vi.mocked(api.get).mockImplementation(async url => {
+    vi.mocked(api.get).mockImplementation(async (url, config) => {
         const path = String(url); const parts = path.split('/'); const id = Number(parts[2]);
+        if (/^\/team-member-profiles\/\d+\/capacity$/.test(path)) {
+            const days = [];
+            const params = config?.params as { start: string; end: string };
+            const start = new Date(`${params.start}T12:00:00Z`);
+            const end = new Date(`${params.end}T12:00:00Z`);
+            for (const day = new Date(start); day <= end; day.setUTCDate(day.getUTCDate() + 1)) {
+                const date = day.toISOString().slice(0, 10);
+                const allocated = list('member').filter(row => row.profile_id === id).some(row => {
+                    const iteration = read('iteration', Number(row.iteration_id));
+                    return String(iteration.start_date) <= date && String(iteration.end_date) >= date;
+                });
+                days.push({ date, allocated_hours: allocated ? 8 : 0, committed_effort_hours: 0 });
+            }
+            return { data: { calendar_year: null, days } };
+        }
         if (path.includes('/planning-inputs/')) {
             const kind = parts[3]; const resourceId = Number(parts[4]);
             return { data: { kind, resource_id: resourceId, resource: read(kind, resourceId), complete: true,
-                expected_revisions: kind === 'profile' ? {} : list('iteration').length ? { [list('iteration')[0].id]: revision } : {} } };
+                expected_revisions: kind === 'profile' ? {} : Object.fromEntries(list('iteration').map(row => [row.id, revision])) } };
         }
         if (path === '/roadmap/milestones') return { data: { items: list('milestone').map(row => ({ status: 'planned', sort_order: 0, ...row })), next_cursor: null } };
         if (path.endsWith('/planning-readiness')) return { data: readiness(id) };
@@ -149,6 +174,26 @@ describe('sample project lifecycle', () => {
         expect(readiness(list('iteration')[0].id).checkpoints_done).toBe(6);
     });
 
+    it('applies a schedule at 6 of 6 when the person already has overlapping 100% capacity', async () => {
+        const original = sampleProjectFixture('en');
+        const existing = record('iteration', { name: 'Existing iteration', start_date: original.start, end_date: original.end });
+        record('member', { name: person.display_name, profile_id: person.id, iteration_id: existing.id, availability_percent: 100 });
+        const before = structuredClone(rows);
+        const receipt = fresh();
+        const result = await loadSampleProject(receipt, person, 'en', vi.fn());
+        const iteration = read('iteration', result.iterationId);
+        expect(String(iteration.start_date) > original.end).toBe(true);
+        expect(read('project', result.projectId)).toMatchObject({ start_date: iteration.start_date, target_date: iteration.end_date });
+        expect(list('milestone').every(row => String(row.target_date) >= String(iteration.start_date)
+            && String(row.target_date) <= String(iteration.end_date))).toBe(true);
+        expect(applied).toBe(true);
+        expect((await iterationService.getPlanningReadiness(result.iterationId)).checkpoints_done).toBe(6);
+        expect(receipt.complete).toBe(true);
+        for (const [key, row] of before) expect(rows.get(key)).toEqual(row);
+        await removeSampleProject(receipt, vi.fn());
+        expect(rows).toEqual(before);
+    });
+
     it('removes exactly the created records, preserving existing data and the current person', async () => {
         const existing = record('project', { name: 'Existing project' });
         const existingTask = record('task', { title: 'Existing task', project_id: existing.id, version: 1 });
@@ -178,12 +223,31 @@ describe('sample project lifecycle', () => {
         await user.click(screen.getByRole('button', { name: 'Remove sample data' }));
         const dialog = screen.getByRole('dialog');
         expect(within(dialog).getByText(/Project: Sample welcome guide/)).toBeVisible();
+        expect(within(dialog).queryByText(/Removal stopped/)).not.toBeInTheDocument();
         expect(api.delete).not.toHaveBeenCalled();
         await user.click(within(dialog).getByRole('button', { name: 'Remove sample data' }));
         await waitFor(() => expect(list('project')).toHaveLength(0));
         expect(list('milestone')).toHaveLength(0);
         expect(rows.get('profile:1')).toEqual(person);
         expect(await screen.findByRole('button', { name: 'Load a sample project' })).toBeEnabled();
+    });
+
+    it('shows the removal failure warning only after removal fails and supports retry', async () => {
+        failIteration = true;
+        const { user } = renderAction();
+        await user.click(screen.getByRole('button', { name: 'Load a sample project' }));
+        await screen.findByRole('alert');
+        await user.click(screen.getByRole('button', { name: 'Remove sample data' }));
+        const dialog = screen.getByRole('dialog');
+        expect(within(dialog).queryByText(/Removal stopped/)).not.toBeInTheDocument();
+        vi.mocked(api.delete).mockRejectedValueOnce(new Error('offline'));
+        await user.click(within(dialog).getByRole('button', { name: 'Remove sample data' }));
+        expect(await within(dialog).findByText(/Removal stopped/)).toBeVisible();
+        expect(list('project')).toHaveLength(1);
+        expect(list('milestone')).toHaveLength(2);
+        await user.click(within(dialog).getByRole('button', { name: 'Remove sample data' }));
+        expect(await screen.findByRole('button', { name: 'Load a sample project' })).toBeEnabled();
+        expect(rows.size).toBe(1);
     });
 
     it('keeps a deletion receipt and retries removal after a partial deletion failure', async () => {
