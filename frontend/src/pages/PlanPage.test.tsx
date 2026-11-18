@@ -129,7 +129,8 @@ describe('Plan is one page of six checkpoints', () => {
             checkpoint('review', 'blocked', ['build_schedule_first']),
         ]));
         renderPlan();
-        expect(await screen.findByText('The calendar Working calendar does not cover the iteration dates.')).toBeVisible();
+        expect(await screen.findByText(/The calendar Working calendar does not cover the iteration dates/)).toBeVisible();
+        expect(screen.getByRole('link', { name: /Create a calendar in Settings/ })).toHaveAttribute('href', '/settings?tab=work_calendar&create=1&year=2026');
         expect(within(section('iteration')).getByRole('button', { name: 'Edit iteration' })).toBeVisible();
         expect(stateText('schedule')).toMatch(/Waiting/);
     });

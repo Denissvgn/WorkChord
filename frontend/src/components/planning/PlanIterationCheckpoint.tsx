@@ -25,6 +25,10 @@ export const PlanIterationCheckpoint = ({ iteration, done, calendarOutsideYear =
         ? calendars.data?.find(calendar => calendar.id === iteration.calendar_id)?.name
             ?? t('plan.page.calendarFallback', { id: iteration.calendar_id })
         : '';
+    const calendarYear = calendars.data?.find(calendar => calendar.id === iteration?.calendar_id)?.year;
+    const startYear = iteration?.start_date.slice(0, 4);
+    const endYear = iteration?.end_date.slice(0, 4);
+    const missingYear = calendarYear && String(calendarYear) === startYear ? endYear : startYear;
     // One primary action per page: the open, incomplete checkpoint's own.
     const primary = !done;
 
@@ -54,7 +58,7 @@ export const PlanIterationCheckpoint = ({ iteration, done, calendarOutsideYear =
             ) : (
                 <p className="plan-section-waiting">{t('plan.page.noIterationBody')}</p>
             )}
-            {calendarOutsideYear && <p>{t('plan.page.calendarOutsideYear', { calendar: readinessCalendarName ?? calendarName })}</p>}
+            {calendarOutsideYear && <p>{t('plan.page.calendarOutsideYear', { calendar: readinessCalendarName ?? calendarName })} <Link className="plan-evidence-link" to={`/settings?tab=work_calendar&create=1${missingYear ? `&year=${missingYear}` : ''}`}>{t('plan.page.createCoveringCalendar')}</Link></p>}
             <div className="plan-section-owner flex flex-wrap items-center gap-2">
                 {iteration ? (
                     <Button variant="secondary" onClick={() => panels.openEdit(iteration.id)}>{t('iterations.editIteration')}</Button>

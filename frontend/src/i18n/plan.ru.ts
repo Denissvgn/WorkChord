@@ -24,6 +24,7 @@ export const planRussian = {
         noIterationBody: 'В области нет итерации. Создайте её, чтобы начать планирование, или откройте существующую.',
         project: 'Проект',
         calendarOutsideYear: 'Календарь {{calendar}} не покрывает даты итерации.',
+        createCoveringCalendar: 'Создать календарь в разделе «Настройки → Рабочий календарь».',
         calendarFallback: 'Календарь {{id}}',
         waitingResult: 'Начнётся, когда будет готова точка «{{checkpoint}}».',
         waitingBody: 'Эта контрольная точка ждёт точку {{number}} «{{checkpoint}}». До её завершения здесь нечего делать.',
