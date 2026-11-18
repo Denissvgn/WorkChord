@@ -58,7 +58,7 @@ For a shared server, follow the deployment guides below.
 | External agents | [Runtime integration](docs/external-agent-runtime.md) · [Team setup](docs/agent-team-setup.md) · [Usage and pricing](docs/execution-usage.md) |
 | Self-hosting | [Server setup](docs/runbooks/self-hosted-server-acceptance.md) · [PostgreSQL deployment](docs/runbooks/postgresql-deployment.md) |
 | Operations | [Operator guide](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md) |
-| Releases and upgrades | [Interface simplification 1.0](docs/releases/interface-1.0.md): where pages moved, first-run steps, and what to do after upgrading |
+| Releases and upgrades | [Interface 1.1](docs/releases/interface-1.1.md): where pages moved, first-run steps, and what to do after upgrading |
 | Configuration | [Environment settings](.env.example) |
 
 ## Support WorkChord
