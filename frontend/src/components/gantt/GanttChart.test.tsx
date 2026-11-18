@@ -118,6 +118,15 @@ describe('GanttChart clarity states', () => {
         }) + ` · ${i18n.t('taskList.assignee')}: ${i18n.t('common.unassigned')}`);
     });
 
+    it('keeps its sticky header and task column inside its own stacking context', () => {
+        renderChart();
+
+        // The header (z-40) and the task column (z-50) would otherwise cover menus opened above the chart.
+        const chart = screen.getByRole('region', { name: i18n.t('gantt.chartRegion') });
+        expect(chart).toHaveClass('isolate');
+        expect(chart.querySelector('.sticky.top-0.z-40')).not.toBeNull();
+    });
+
     it('shows an explicit unscheduled action instead of fabricating a calendar bar', () => {
         const unscheduledTask: GanttTask = {
             ...taskFixture,
