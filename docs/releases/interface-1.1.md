@@ -170,6 +170,18 @@ removed is restored.
   that matches its mode. Metric lists are paged, so a list shows the same number as
   its count.
 
+### Traceability
+
+- A task can be traced to the code it produced. Agents link the task's branch when
+  they begin work, and its commits and pull request when they submit. The links show
+  on the task as GitHub links.
+- Commits and pull requests name their task, so the trace also works from the code
+  back to the task.
+- A reviewer checks that the links match the reviewed change before accepting it.
+  The PM counts a task as done only when it has a commit or pull request link, or a
+  stated reason why no repository changed.
+- A shipped release can be linked to its merge pull request or tag.
+
 ### Layout and words
 
 - The sidebar fits a 1024 px window, and the scope bar works on phones.
@@ -191,19 +203,19 @@ removed is restored.
 ### Role skill packages
 
 Reinstall the three role skill packages at the versions in the server skill catalog
-(catalog version 1.17.1). Install each one from the catalog and check its SHA-256
+(catalog version 1.18.0). Install each one from the catalog and check its SHA-256
 digest against the catalog entry.
 
 | Role package | Version in this release | Previous version |
 | --- | --- | --- |
-| `workchord-pm` | 1.15.2 | 1.15.0 |
-| `workchord-worker` | 1.15.1 | 1.15.0 |
-| `workchord-reviewer` | 1.3.2 | 1.3.0 |
+| `workchord-pm` | 1.16.0 | 1.15.0 |
+| `workchord-worker` | 1.16.0 | 1.15.0 |
+| `workchord-reviewer` | 1.4.0 | 1.3.0 |
 
 If your workspace already runs these versions, nothing needs to be reinstalled.
 A runtime that uses the tracked Codex role adapter
 (`adapters/codex/workchord-agent-roles`) should take the adapter from this release,
-plugin version 1.17.1, which carries the same three role skills. The setup steps for
+plugin version 1.18.0, which carries the same three role skills. The setup steps for
 each runtime are in [agent team setup](../agent-team-setup.md). The example team
 file in `config/examples` pins the three versions above; it is an example, not a
 setting your workspace reads.
@@ -239,5 +251,15 @@ All of the following are optional and additive. Existing requests keep working.
   `POST .../disable` on `/agent/model-catalog/{catalog_id}`), and all model
   binding routes (`/agent/model-bindings`). Reading one catalog entry and applying
   a profile preset still need an agent key. Agent keys keep working as before.
+- `POST /api/agent/me/work/begin` accepts `branch_url`, and
+  `POST /api/agent/me/work/submit` accepts `branch_url` and `commit_urls` (a list of
+  GitHub commit URLs with the full SHA). Each is optional. WorkChord links them, and the
+  existing `pr_url` and `commit_url` fields, to the task as GitHub links in the same command, without
+  changing the task's version, and skips links the task already has. Servers that
+  support this list `work-delivery-links-v1` in their features.
+- GitHub links accept commit URLs (full SHA only) and release tag URLs. The MCP tool
+  `workspace_create_release_github_link` links a release to its merge pull request
+  or tag. A GitHub link that already exists on the task or release is reported as a
+  structured conflict.
 
 Check the current API schemas when you update a client.
