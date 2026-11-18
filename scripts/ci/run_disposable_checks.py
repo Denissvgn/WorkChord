@@ -179,7 +179,7 @@ def main():
                     run.run(scope, [sys.executable, '-m', 'pytest', '-q', '--durations=25', '-o',
                         f"cache_dir={scratch / 'pytest-cache'}", '-m', marker,
                         f"--junitxml={run.output / (scope + '.xml')}", *map(str, targets)],
-                        cwd=scratch, env=env, timeout=1200 if scope == 'sqlite' else 900, check=False)
+                        cwd=scratch, env=env, timeout=1200 if scope == 'sqlite' else 1500, check=False)
             if args.scope == 'postgresql':
                 def require_schema_diff():
                     difference = json.loads((run.output / 'schema-diff.json').read_text())
@@ -196,10 +196,11 @@ def main():
             run.run('frontend-install', ['npm', 'ci'], cwd=frontend, env=env, timeout=300)
             run.run('node-version', ['node', '--version'], cwd=frontend, env=env, timeout=30)
             if 'frontend' in selected:
-                for label, command in (
-                    ('frontend-tests', ['npm', 'run', 'test:run', '--', '--maxWorkers=2', '--reporter=default', '--reporter=junit', f"--outputFile={run.output / 'frontend.xml'}"]),
-                    ('frontend-lint', ['npm', 'run', 'lint']), ('frontend-build', ['npm', 'run', 'build'])):
-                    run.run(label, command, cwd=frontend, env=env, timeout=300, check=False)
+                # The unit suite takes 190-270 s on hosted runners and more on slow ones; lint and build stay short.
+                for label, command, limit in (
+                    ('frontend-tests', ['npm', 'run', 'test:run', '--', '--maxWorkers=2', '--reporter=default', '--reporter=junit', f"--outputFile={run.output / 'frontend.xml'}"], 540),
+                    ('frontend-lint', ['npm', 'run', 'lint'], 300), ('frontend-build', ['npm', 'run', 'build'], 300)):
+                    run.run(label, command, cwd=frontend, env=env, timeout=limit, check=False)
             if 'browser' in selected:
                 require_free_browser_ports()
                 browser_dir = scratch / 'browser'

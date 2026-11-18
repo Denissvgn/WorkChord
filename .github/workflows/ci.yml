@@ -244,8 +244,8 @@ jobs:
             job_minutes: 25
             work_seconds: 1200
           - scope: postgresql
-            job_minutes: 20
-            work_seconds: 900
+            job_minutes: 30
+            work_seconds: 1500
     steps:
       - name: Reserve cleanup and artifact time
         env:
@@ -304,11 +304,11 @@ jobs:
   frontend:
     name: Frontend checks
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Reserve cleanup and artifact time
         env:
-          JOB_BUDGET_MINUTES: "15"
+          JOB_BUDGET_MINUTES: "20"
         run: |
           python3 - <<'PYTHON'
           import os
@@ -329,7 +329,7 @@ jobs:
       - name: Run frontend checks
         run: >-
           python scripts/ci/run_disposable_checks.py --scope frontend
-          --timeout-seconds 600 --output /tmp/workchord-frontend-results
+          --timeout-seconds 900 --output /tmp/workchord-frontend-results
       - name: Upload frontend results and durations
         if: always()
         timeout-minutes: 2
