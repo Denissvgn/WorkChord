@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import type { Task } from '../../types/task';
 import { emptyTaskBrief } from './taskEditorContract';
+import i18n, { ensureLanguageResources } from '../../i18n/i18n';
 import { TaskWorkPanel } from './TaskWorkPanel';
 
 const service = vi.hoisted(() => ({ actions: vi.fn(), progress: vi.fn(), command: vi.fn(), review: vi.fn(), getDetail: vi.fn() }));
@@ -159,6 +160,40 @@ describe('review by a person', () => {
         ], claim_generation: 0, running_run_ids: [], live_assignment_ids: [] });
         service.getDetail.mockResolvedValue({ task: resolved, reviewer_name: 'Independent Verification Runtime' });
         service.review.mockResolvedValue({ ...resolved, status: 'active', version: 4 });
+    });
+
+    afterEach(async () => { await i18n.changeLanguage('en'); });
+
+    it.each(['en', 'ru'])('names missing acceptance requirements beside Accept in %s', async language => {
+        await ensureLanguageResources(language);
+        await i18n.changeLanguage(language);
+        const { user } = renderPanel2(resolved);
+        const accept = screen.getByRole('button', { name: i18n.t('domain.accept') });
+        await waitFor(() => expect(screen.getByLabelText(i18n.t('domain.resultFor', { criterion: 'Inspect the result' }))).toBeEnabled());
+        expect(accept).toBeDisabled();
+        expect(accept).toHaveAccessibleDescription(expect.stringContaining(i18n.t('domain.acceptNeedsReason')));
+        expect(accept).toHaveAccessibleDescription(expect.stringContaining(i18n.t('domain.acceptNeedsResults')));
+        const result = screen.getByLabelText(i18n.t('domain.resultFor', { criterion: 'Inspect the result' }));
+        await user.selectOptions(result, 'pass');
+        expect(accept).toHaveAccessibleDescription(i18n.t('domain.acceptNeedsReason'));
+        const reason = screen.getByRole('textbox', { name: i18n.t('domain.reason') });
+        expect(result.compareDocumentPosition(reason) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        await user.type(reason, '   ');
+        expect(accept).toBeDisabled();
+        await user.type(reason, 'Checked the result');
+        expect(accept).toBeEnabled();
+        expect(accept).not.toHaveAttribute('aria-describedby');
+    });
+
+    it('shows server acceptance blockers beside Accept', async () => {
+        service.actions.mockResolvedValue({ actions: [
+            { action: 'review', allowed: true, blockers: [] },
+            { action: 'accept_review', allowed: false, blockers: [{ message: 'Only the assigned reviewer can accept.' }] },
+        ] });
+        renderPanel2(resolved);
+        const accept = screen.getByRole('button', { name: 'Accept' });
+        await waitFor(() => expect(accept).toHaveAccessibleDescription(expect.stringContaining('Only the assigned reviewer can accept.')));
+        expect(accept).toBeDisabled();
     });
 
     it('names the reviewer and the rework owner', async () => {

@@ -17,6 +17,7 @@ import { getApiErrorMessage, normalizeApiError } from '../../utils/apiError';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { formatDate } from '../../utils/formatDate';
 import { pillToneClassName, STATUS_TONE } from '../ui/tone';
+import { emptyTaskBrief } from './taskEditorContract';
 import { TaskBriefEditor } from './TaskBriefEditor';
 import { TaskWorkPanel } from './TaskWorkPanel';
 import { DeliveryDependencies } from './DeliveryDependencies';
@@ -90,7 +91,9 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
         setParams(nextParams, { replace: true });
     };
     const startBriefEdit = () => {
-        if (task.brief) { setPart('brief'); setBriefDraft(structuredClone(task.brief)); onDirty(true); } else { onEditAll(); }
+        setPart('brief');
+        setBriefDraft(task.brief ? structuredClone(task.brief) : { ...emptyTaskBrief(), context: task.description ?? '' });
+        onDirty(true);
     };
     const markDirty = (dirty: boolean) => { setSectionDirty(dirty); onDirty(dirty || editingBrief); };
 
@@ -278,7 +281,11 @@ export const TaskReadView = ({ task, draftKey, onTaskUpdated, onEditAll, onDirty
 
             {part === 'brief' && briefDraft && (
                 <form className="flex flex-col gap-4" onSubmit={event => { event.preventDefault(); saveBrief.mutate(briefDraft); }}>
-                    <TaskBriefEditor value={briefDraft} onChange={setBriefDraft} disabled={saveBrief.isPending} />
+                    <TaskBriefEditor part="essential" value={briefDraft} onChange={setBriefDraft} disabled={saveBrief.isPending} />
+                    <details>
+                        <summary className="cursor-pointer text-sm text-content-secondary">{t('quickCapture.moreFields')}</summary>
+                        <div className="mt-4"><TaskBriefEditor part="details" value={briefDraft} onChange={setBriefDraft} disabled={saveBrief.isPending} /></div>
+                    </details>
                     <p className="text-xs text-content-secondary">{t('taskView.criterionRevisionHelp')}</p>
                     {saveBrief.isError && <p role="alert" className="text-sm text-feedback-danger-foreground">{getApiErrorMessage(saveBrief.error, t('taskView.briefSaveFailed'))}</p>}
                     <footer className="sticky bottom-0 -mx-4 flex items-center justify-between gap-3 border-t border-border bg-surface-card px-4 py-3 sm:-mx-6 sm:px-6">

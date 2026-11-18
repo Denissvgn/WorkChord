@@ -178,6 +178,19 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const pending = command.isPending;
     const canReview = actions.data?.actions.find(item => item.action === 'review')?.allowed;
     const canAccept = actions.data?.actions.find(item => item.action === 'accept_review')?.allowed;
+    const acceptAction = actions.data?.actions.find(item => item.action === 'accept_review');
+    const acceptMissing = [
+        disabled && t('domain.acceptFinishEditing'),
+        pending && t('domain.acceptSaving'),
+        actions.isLoading && t('domain.acceptLoading'),
+        actions.isError && t('domain.actionsFailed'),
+        !actions.isLoading && !actions.isError && !canAccept && (acceptAction?.blockers.map(blocker => blocker.message).join(' ') || t('domain.acceptUnavailable')),
+        staleDraft && t('domain.staleProgress'),
+        criteriaDirty && t('domain.acceptSaveProgress'),
+        !reason.trim() && t('domain.acceptNeedsReason'),
+        !allCriteriaPass && t('domain.acceptNeedsResults'),
+        reviewEvidenceTooLong && t('domain.reviewEvidenceTooLong'),
+    ].filter(Boolean);
     const manualActions = ['start_manual', 'resolve_manual', 'block', 'unblock', 'cancel', 'reopen', 'commit', 'uncommit']
         .filter(item => !(offerDispatch && item === 'start_manual'));
     const available = actions.data?.actions.filter(item => item.allowed && manualActions.includes(item.action)) ?? [];
@@ -224,7 +237,7 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
             <Button type="button" variant="ghost" size="sm" disabled={pending} onClick={() => { setCriteria(initial); setReason(''); setDraftVersion(task.version); setBase(initial); }}>{t('domain.discardProgress')}</Button>
         </div>}
         <fieldset disabled={disabled || pending || criteriaDirty || staleDraft || actions.isError || actions.isLoading} className="space-y-3">
-            <Input label={t('domain.reason')} required value={reason} maxLength={2000} onChange={event => setReason(event.target.value)} />
+            {task.status !== 'resolved' && <Input label={t('domain.reason')} required value={reason} maxLength={2000} onChange={event => setReason(event.target.value)} />}
             {available.length > 0 ? <div className="flex flex-wrap items-end gap-2">
                 <div className="min-w-0 flex-1">
                     <label className="field-lbl" htmlFor={`${id}-action`}>{t('domain.action')}</label>
@@ -267,9 +280,11 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
             {task.status === 'resolved' && <p className="text-sm text-content-secondary">{task.assignee?.name
                 ? t('domain.reworkOwner', { name: task.assignee.name })
                 : t('domain.reworkOwnerNone')}</p>}
-            {task.status === 'resolved' && <div className="flex flex-wrap gap-2">
-                <Button type="button" disabled={!canAccept || !reason.trim() || JSON.stringify(criteria) !== JSON.stringify(initial) || !allCriteriaPass || reviewEvidenceTooLong} onClick={() => run('accept')}>{t('domain.accept')}</Button>
+            {task.status === 'resolved' && <Input label={t('domain.reason')} required value={reason} maxLength={2000} onChange={event => setReason(event.target.value)} />}
+            {task.status === 'resolved' && <div className="flex flex-wrap items-center gap-2">
+                <Button type="button" aria-describedby={acceptMissing.length ? `${id}-accept-missing` : undefined} disabled={acceptMissing.length > 0} onClick={() => run('accept')}>{t('domain.accept')}</Button>
                 <Button type="button" variant="secondary" disabled={!canReview || !reason.trim() || (reviewCriteria.length > 0 && !someCriterionFails) || reviewEvidenceTooLong} onClick={() => run('reject')}>{t('domain.requestRework')}</Button>
+                {acceptMissing.length > 0 && <p id={`${id}-accept-missing`} role="status" className="w-full text-sm text-content-secondary">{acceptMissing.join(' ')}</p>}
             </div>}
         </fieldset>
         <details className="text-sm text-content-secondary">
