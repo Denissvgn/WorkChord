@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { InteractiveCalendar } from './InteractiveCalendar';
+import { DateChip } from '../settings/WorkCalendarSettings';
+import { enUS } from 'date-fns/locale';
 
 const renderCalendar = () => {
     const handlers = {
@@ -55,5 +57,19 @@ describe('calendar mark colours', () => {
         expect(legendHoliday?.className).toContain('bg-surface-subtle');
         expect(legendShortDay?.className).toContain('bg-surface-subtle');
         expect(container.textContent).toContain('Holiday');
+    });
+
+    it('uses neutral markers for holiday and short-day override chips', () => {
+        const { container } = renderWithProviders(<>
+            <DateChip dateKey="2026-01-01" locale={enUS} label="Holiday" onRemove={vi.fn()} />
+            <DateChip dateKey="2026-01-02" locale={enUS} label="Short day" onRemove={vi.fn()} />
+        </>);
+        const markers = container.querySelectorAll('.rounded-full');
+        expect(markers).toHaveLength(2);
+        markers.forEach(marker => {
+            expect(marker.className).toContain('bg-surface-subtle');
+            expect(marker.className).toContain('border-border');
+            expect(marker.className).not.toMatch(/feedback-(danger|warning)/);
+        });
     });
 });
