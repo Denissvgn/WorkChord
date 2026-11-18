@@ -18,19 +18,37 @@ import { formatDate } from '../../utils/formatDate';
 import { formatDecimal } from '../../utils/workNumbers';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 
-type DatedTask = Pick<Task, 'start_date' | 'end_date'> & { children?: DatedTask[] };
+type ListedTask = Pick<Task, 'id' | 'start_date' | 'end_date' | 'is_deferred' | 'effective_is_deferred'> & { children?: ListedTask[] };
 
 /**
- * Whether every task has its own start and end dates, whatever its status or kind: finished, deferred and active
- * tasks alike, and a parent task as well as each of its subtasks. A parent task without its own dates fails the check
- * even when all its subtasks are dated. Works on a nested tree and on a flattened list that keeps each task's subtasks.
+ * Sorts the iteration's tasks into deferred and scheduled work. Deferred tasks are backlog work: they stay in list
+ * views and never count in schedule checks. A subtask of a deferred task is deferred too. Works on a nested tree and
+ * on a flattened list that keeps each task's subtasks.
  */
-const everyTaskHasDates = (tasks: DatedTask[]): boolean => tasks.length > 0 && tasks.every(task => (
-    Boolean(task.start_date && task.end_date) && (!task.children?.length || everyTaskHasDates(task.children))
-));
+const sortByDeferral = (tasks: ListedTask[]) => {
+    const deferred = new Set<number>();
+    const scheduled = new Map<number, ListedTask>();
+    const visit = (task: ListedTask, inherited: boolean) => {
+        const isDeferred = inherited || Boolean(task.effective_is_deferred ?? task.is_deferred);
+        if (isDeferred) deferred.add(task.id); else scheduled.set(task.id, task);
+        task.children?.forEach(child => visit(child, isDeferred));
+    };
+    tasks.forEach(task => visit(task, false));
+    deferred.forEach(id => scheduled.delete(id));
+    return { deferred, scheduled: [...scheduled.values()] };
+};
+
+/**
+ * Whether every task that is not deferred has its own start and end dates, whatever its status: finished and active
+ * tasks alike, and a parent task as well as each of its subtasks. A parent task without its own dates fails the check
+ * even when all its subtasks are dated.
+ */
+const everyTaskHasDates = (scheduled: ListedTask[]): boolean => (
+    scheduled.length > 0 && scheduled.every(task => Boolean(task.start_date && task.end_date))
+);
 
 export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iterationTasks, done }: {
-    /** The iteration's tasks from the task list, flattened, deferred tasks included. */
+    /** The iteration's tasks from the task list, flattened, deferred tasks included; this section leaves those out. */
     iteration: Iteration; members: TeamMember[]; gantt?: GanttResponse; tasks: Task[]; done: boolean;
 }) => {
     const { t, i18n } = useTranslation();
@@ -71,11 +89,11 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     const ends = scheduleLeaves(tasks).flatMap(task => task.end_date ? [task.end_date] : []);
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
-    // An unsaved preview must also leave nothing undated, or the claim would contradict the result shown beside it.
-    // The iteration's task list is the authority: the Gantt response leaves deferred tasks out.
-    const previewDated = !preview || (!preview.schedule_result?.unscheduled?.length
-        && (!preview.tasks.length || everyTaskHasDates(preview.tasks)));
-    const everyTaskDated = previewDated && everyTaskHasDates(iterationTasks);
+    // The iteration's task list is the authority: the Gantt response and the schedule preview leave out or misreport
+    // deferred tasks, and an unsaved preview changes no task's dates.
+    const { deferred, scheduled } = sortByDeferral(iterationTasks);
+    const everyTaskDated = everyTaskHasDates(scheduled);
+    const unscheduled = (result?.unscheduled ?? []).filter(task => task.reason !== 'deferred' && !deferred.has(task.task_id));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
@@ -110,7 +128,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
             <section aria-label={t('planSchedule.withoutDates')} className="space-y-2">
                 <h3 className="text-sm font-semibold">{t('planSchedule.withoutDates')}</h3>
                 {everyTaskDated ? <p className="text-sm text-content-secondary">{t('planSchedule.allDated')}</p>
-                    : result?.unscheduled?.length ? <ul className="plan-schedule-reasons">{result.unscheduled.map(task => <li key={task.task_id}>
+                    : unscheduled.length ? <ul className="plan-schedule-reasons">{unscheduled.map(task => <li key={task.task_id}>
                     <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'schedule', { task: String(task.task_id) }))}>{task.task_title}</Link>
                     <p>{task.message}</p>
                 </li>)}</ul> : <p className="text-sm text-content-secondary">{t('planSchedule.calculateForReasons')}</p>}

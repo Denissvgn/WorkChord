@@ -820,7 +820,7 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
-    it('does not claim every task has dates while a deferred task the Gantt response leaves out is undated', async () => {
+    it('says every task has dates while only a deferred task is undated, since deferred work is backlog', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
         // The Gantt response omits deferred tasks; only the task list shows the undated deferred one.
@@ -830,11 +830,11 @@ describe('schedule and review inside Plan', () => {
             listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true, start_date: null, end_date: null }),
         ]);
         renderPlan();
-        expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
-        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+        expect(await screen.findByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
-    it('lists an undated deferred task with the server reason instead of claiming every task has dates', async () => {
+    it('does not list a deferred task the saved result calls unscheduled, and still says every task has dates', async () => {
         const { result } = scheduleWorkspace();
         const message = 'Deferred work is left out of scheduling. Undefer it to schedule it.';
         const saved = { ...result, unscheduled: [{ task_id: 12, task_title: 'Later work', reason: 'deferred', message }] };
@@ -844,8 +844,44 @@ describe('schedule and review inside Plan', () => {
             listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true, start_date: null, end_date: null }),
         ]);
         renderPlan();
-        expect(await screen.findByText(message)).toBeVisible();
-        expect(screen.getByRole('link', { name: 'Later work' })).toHaveAttribute('href', '/tasks?task=12&fromPlanStep=schedule&project=1&iteration=1');
+        expect(await screen.findByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText(message)).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Later work' })).not.toBeInTheDocument();
+    });
+
+    it('keeps saying every task has dates when a schedule preview reports a dated deferred task as unscheduled', async () => {
+        const { preview } = scheduleWorkspace();
+        const message = 'Deferred work is left out of scheduling. Undefer it to schedule it.';
+        services.gantt.previewSchedule.mockResolvedValue({ ...preview, tasks: [scheduledTask()], schedule_result: {
+            ...preview.schedule_result, unscheduled: [{ task_id: 12, task_title: 'Later work', reason: 'deferred', message }],
+        } });
+        services.tasks.getByIteration.mockResolvedValue([
+            listedTask(),
+            listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true }),
+        ]);
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        expect(await screen.findByText('Calculated schedule · not saved')).toBeVisible();
+        expect(screen.getByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText(message)).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Later work' })).not.toBeInTheDocument();
+    });
+
+    it('lists only the non-deferred task when the saved result calls both a deferred and an undated task unscheduled', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { ...result, unscheduled: [
+            { task_id: 11, task_title: 'Prepare release', reason: 'prerequisites_pending', message: 'Waiting for a prerequisite.' },
+            { task_id: 12, task_title: 'Later work', reason: 'deferred', message: 'Deferred work is left out of scheduling.' },
+        ] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([
+            listedTask({ start_date: null, end_date: null }),
+            listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true, start_date: null, end_date: null }),
+        ]);
+        renderPlan();
+        expect(await screen.findByText('Waiting for a prerequisite.')).toBeVisible();
+        expect(screen.getByRole('link', { name: 'Prepare release' })).toBeVisible();
+        expect(screen.queryByText('Deferred work is left out of scheduling.')).not.toBeInTheDocument();
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
@@ -861,6 +897,7 @@ describe('schedule and review inside Plan', () => {
 
     describe('judges "Every task has dates" for every kind of task', () => {
         const undated = { start_date: null, end_date: null };
+        const deferred = { is_deferred: true, effective_is_deferred: true };
         const subtask = (id: number, overrides: Partial<Task> = {}) => listedTask({ id, title: `Step ${id}`, parent_id: 20, ...overrides });
         const parent = (overrides: Partial<Task> = {}) => listedTask({ id: 20, title: 'Parent work', is_composite: true, ...overrides });
         const cases: Array<[string, Task[], boolean]> = [
@@ -877,9 +914,18 @@ describe('schedule and review inside Plan', () => {
             ['a dated finished task', [listedTask({ status: 'closed' })], true],
             ['an undated finished task beside a dated task', [listedTask(), listedTask({ id: 12, status: 'resolved', ...undated })], false],
             ['a dated deferred task beside a dated task',
-                [listedTask(), listedTask({ id: 12, is_deferred: true, effective_is_deferred: true } as Partial<Task>)], true],
+                [listedTask(), listedTask({ id: 12, ...deferred })], true],
+            ['an undated deferred task beside a dated task',
+                [listedTask(), listedTask({ id: 12, ...deferred, ...undated })], true],
             ['an undated deferred subtask of a dated parent task',
-                [parent({ children: [subtask(21), subtask(22, { ...undated, is_deferred: true, effective_is_deferred: true } as Partial<Task>)] })], false],
+                [parent({ children: [subtask(21), subtask(22, { ...undated, ...deferred })] })], true],
+            ['an undated subtask of a deferred parent task, beside a dated task',
+                [listedTask(), parent({ ...deferred, children: [subtask(21, undated)] })], true],
+            ['an undated parent task without dates of its own beside a dated deferred task',
+                [listedTask({ id: 12, ...deferred }), parent({ ...undated, children: [subtask(21)] })], false],
+            ['an undated task beside a dated deferred task',
+                [listedTask({ id: 12, ...deferred }), listedTask(undated)], false],
+            ['only deferred tasks', [listedTask(deferred)], false],
         ];
         it.each(cases)('with %s', async (_label, tasks, claimed) => {
             const { result } = scheduleWorkspace();
