@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -264,6 +264,7 @@ describe('Get started panel', () => {
         server.capacityRows = 1;
         server.tasks = 2;
         server.scheduleApplied = true;
+        useGetStartedVisibility.setState({ dismissed: false, requested: 'complete' });
         const { user } = renderWorkspace('/?project=40&iteration=70');
         await waitFor(() => expect(newTask()).toHaveClass('btn', 'primary'));
         expect(screen.queryByTestId('get-started-panel')).not.toBeInTheDocument();
@@ -326,7 +327,7 @@ describe('Get started panel', () => {
         expect(localStorage.getItem(GET_STARTED_DISMISSED_KEY)).toBeNull();
     });
 
-    it('counts capacity, tasks and the schedule only for the iteration Plan opens', async () => {
+    it('counts setup from the workspace iteration and opens it from Backlog', async () => {
         server.identity = localIdentity({ id: 7, display_name: 'Ada Lovelace' });
         server.projects = [{ id: 40, name: 'Launch' } as Project, { id: 41, name: 'Harbor' } as Project];
         // Launch has a fully planned iteration; Harbor has none.
@@ -334,22 +335,26 @@ describe('Get started panel', () => {
         server.capacityRows = 1;
         server.tasks = 2;
         server.scheduleApplied = true;
+        useGetStartedVisibility.setState({ dismissed: false, requested: 'complete' });
 
-        // A project without iterations: Plan opens no iteration, so steps 4 to 6 are still to do.
+        // A project without iterations in scope still follows the workspace's planned iteration.
         const harbor = renderWorkspace('/?project=41');
         await panel();
-        expect(doneStates()).toEqual([true, true, true, false, false, false]);
-        expect(toggleOf('capacity')).toHaveAttribute('aria-expanded', 'true');
+        expect(doneStates()).toEqual([true, true, true, true, true, true]);
         harbor.unmount();
 
-        // The backlog of the planned project: again no iteration in scope.
+        // Backlog still marks every step done and its Plan action targets the planned iteration.
         const backlog = renderWorkspace('/?project=40&iteration=backlog');
         await panel();
-        expect(doneStates()).toEqual([true, true, true, false, false, false]);
+        expect(doneStates()).toEqual([true, true, true, true, true, true]);
+        fireEvent.click(toggleOf('iteration'));
+        expect(within(step('iteration')).getByRole('link', { name: i18n.t('firstRun.openPlan') }))
+            .toHaveAttribute('href', '/plan?step=iteration&setup=1&project=40&iteration=70');
         backlog.unmount();
-        expect(iterationService.getPlanningReadiness).not.toHaveBeenCalledWith(70);
+        expect(iterationService.getPlanningReadiness).toHaveBeenCalledWith(70);
 
         // The planned iteration itself: all six are done and the panel stays hidden.
+        useGetStartedVisibility.setState({ dismissed: false, requested: false });
         const planned = renderWorkspace('/?project=40&iteration=70');
         await waitFor(() => expect(planned.queryClient.getQueryData(planningNavigationSummaryKey(70))).toBeDefined());
         await waitFor(() => expect(newTask()).toHaveClass('btn', 'primary'));

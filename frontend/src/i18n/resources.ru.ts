@@ -1485,6 +1485,7 @@ export const russianResources = {
                 details: {
                 },
                 dataStatus: {
+                    projectsUnavailable: 'Не удалось загрузить проекты. Повторите запрос, чтобы проверить, доступен ли проект для новой задачи.',
                     planningPeriodsUnavailableTitle: 'Не удалось загрузить итерации',
                     planningPeriodsUnavailableBody: 'Обзор не может определить, какую итерацию показать. Повторите запрос или проверьте состояние системы.',
                     loadingOverview: 'Загружаем текущую итерацию…',

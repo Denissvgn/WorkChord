@@ -1422,6 +1422,7 @@ export const englishResources = {
                 details: {
                 },
                 dataStatus: {
+                    projectsUnavailable: 'Projects could not be loaded. Retry to check whether a project is available for a new task.',
                     planningPeriodsUnavailableTitle: 'Iterations could not be loaded',
                     planningPeriodsUnavailableBody: 'Overview cannot determine which iteration to show. Retry the request or check system status.',
                     loadingOverview: 'Loading the current iteration…',
