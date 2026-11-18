@@ -340,9 +340,10 @@ export const TaskList = ({
     });
     const rowItems = useMemo<RowItem[]>(() => {
         if (!grouped) return filteredAndSortedTasks.map(task => ({ kind: 'task' as const, task }));
-        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => task.status).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
+        const groupStatus = (status: string) => status === 'in_progress' ? 'active' : status;
+        const order = [...STATUS_GROUP_ORDER, ...new Set(filteredAndSortedTasks.map(task => groupStatus(task.status)).filter(status => !STATUS_GROUP_ORDER.includes(status)))];
         return order.flatMap(status => {
-            const inGroup = filteredAndSortedTasks.filter(task => task.status === status);
+            const inGroup = filteredAndSortedTasks.filter(task => groupStatus(task.status) === status);
             if (inGroup.length === 0) return [];
             const collapsed = collapsedGroups.has(status);
             return [{ kind: 'group' as const, status, count: inGroup.length, collapsed },
@@ -417,8 +418,8 @@ export const TaskList = ({
             <Button data-page-chrome-control="button" type="button" aria-expanded={!item.collapsed} onClick={() => toggleGroup(item.status)}
                 className="flex min-h-7 w-full items-center gap-2 border-b border-border-subtle bg-surface-muted px-3 text-left text-sm font-semibold text-content-primary hover:bg-surface-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-focus" variant="plain">
                 {item.collapsed ? <ChevronRight aria-hidden="true" className="h-4 w-4" /> : <ChevronDown aria-hidden="true" className="h-4 w-4" />}
-                <span className={statusTextClassName[item.status === 'in_progress' ? 'active' : item.status as Task['status']]}>
-                    {t(`statuses.${item.status === 'in_progress' ? 'active' : item.status}`, { defaultValue: item.status })}
+                <span className={statusTextClassName[item.status as Task['status']]}>
+                    {t(`statuses.${item.status}`, { defaultValue: item.status })}
                 </span>
                 <span className="tabular-nums font-normal text-content-secondary">{t('taskList.groupCount', { count: item.count })}</span>
             </Button>
