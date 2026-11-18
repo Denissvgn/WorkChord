@@ -16,6 +16,7 @@ from app.services.agent_routing_policy import (
     assignment_intent,
     validate_routing_packet_size,
 )
+from app.utils.github_links import require_github_link
 from app.utils.url_policy import URLPolicyError, normalize_stored_display_url
 
 
@@ -126,6 +127,21 @@ def _normalize_optional_url(value: Optional[str]) -> Optional[str]:
         return normalize_stored_display_url(value)
     except URLPolicyError as exc:
         raise ValueError(str(exc)) from exc
+
+
+def _github_link_or_none(value: Optional[str], github_type: str) -> Optional[str]:
+    if value is None or not str(value).strip():
+        return None
+    return require_github_link(value, github_type)
+
+
+def _github_link_list(values: list[str], github_type: str) -> list[str]:
+    links: list[str] = []
+    for value in values:
+        link = _github_link_or_none(value, github_type)
+        if link is not None and link not in links:
+            links.append(link)
+    return links
 
 
 def _normalize_url_list(values: list[str]) -> list[str]:
@@ -966,10 +982,21 @@ class AgentWorkBegin(BaseModel):
         default_factory=dict, max_length=MAX_AGENT_JSON_FIELDS
     )
 
+    branch_url: Optional[str] = Field(
+        default=None,
+        max_length=1000,
+        description="GitHub branch URL of the work; WorkChord links it to the task.",
+    )
+
     @field_validator("metadata")
     @classmethod
     def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
         return _validate_harness_metadata(_validate_bounded_json(value, label="Work metadata"))
+
+    @field_validator("branch_url")
+    @classmethod
+    def validate_branch_url(cls, value: Optional[str]) -> Optional[str]:
+        return _github_link_or_none(value, "branch")
 
 
 class ModelAwareAgentWorkBegin(BaseModel):
@@ -997,10 +1024,21 @@ class ModelAwareAgentWorkBegin(BaseModel):
             raise ValueError("resolved_model_id must not be blank")
         return normalized
 
+    branch_url: Optional[str] = Field(
+        default=None,
+        max_length=1000,
+        description="GitHub branch URL of the work; WorkChord links it to the task.",
+    )
+
     @field_validator("metadata")
     @classmethod
     def validate_metadata_size(cls, value: dict[str, Any]) -> dict[str, Any]:
         return _validate_harness_metadata(_validate_bounded_json(value, label="Work metadata"))
+
+    @field_validator("branch_url")
+    @classmethod
+    def validate_branch_url(cls, value: Optional[str]) -> Optional[str]:
+        return _github_link_or_none(value, "branch")
 
 
 class AgentWorkBeginResponse(BaseModel):
@@ -1051,6 +1089,26 @@ class AgentWorkSubmit(BaseModel):
     )
     commit_url: Optional[str] = Field(default=None, max_length=1000)
     pr_url: Optional[str] = Field(default=None, max_length=1000)
+    branch_url: Optional[str] = Field(
+        default=None,
+        max_length=1000,
+        description="GitHub branch URL of the work; WorkChord links it to the task.",
+    )
+    commit_urls: list[str] = Field(
+        default_factory=list,
+        max_length=MAX_AGENT_ARTIFACT_LINKS,
+        description="GitHub commit URLs of the work, full SHA; WorkChord links each to the task.",
+    )
+
+    @field_validator("branch_url")
+    @classmethod
+    def validate_branch_url(cls, value: Optional[str]) -> Optional[str]:
+        return _github_link_or_none(value, "branch")
+
+    @field_validator("commit_urls")
+    @classmethod
+    def validate_commit_urls(cls, value: list[str]) -> list[str]:
+        return _github_link_list(value, "commit")
 
     @field_validator("artifact_links")
     @classmethod

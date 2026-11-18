@@ -142,7 +142,7 @@ from app.services.agent_skill_bundle_service import (
 from app.services.agent_team_setup_service import AgentTeamSetupService
 from app.services.agent_work_service import AgentWorkService
 from app.services.assignee_recommendation_service import AssigneeRecommendationService
-from app.services.external_link_service import ExternalLinkService
+from app.services.external_link_service import ExternalLinkConflictError, ExternalLinkService
 from app.services.iteration_service import IterationService
 from app.services.label_service import LabelService
 from app.services.project_service import ProjectService
@@ -2782,7 +2782,10 @@ async def create_task_github_link(
     if replay is not None:
         return replay
     service = ExternalLinkService(db)
-    link = await service.create_task_github_link(task_id, url, commit=False)
+    try:
+        link = await service.create_task_github_link(task_id, url, commit=False)
+    except ExternalLinkConflictError as exc:
+        raise AgentConflictError(str(exc)) from exc
     if link is None:
         return None
     response = service.link_to_response(link).model_dump(mode="json")
@@ -2813,6 +2816,79 @@ async def create_task_github_link(
         operation="external_link.github.create",
         target_type="task",
         target_id=task_id,
+        idempotency_key=key,
+        request_payload=request_payload,
+        response=response,
+    )
+
+
+async def create_release_github_link(
+    db: AsyncSession,
+    actor: AgentActor,
+    release_id: int,
+    url: str,
+    *,
+    idempotency_key: str,
+    rationale: str,
+    correlation_id: str,
+) -> dict[str, Any] | None:
+    """MCP handler: idempotently link a GitHub pull request, commit, or tag to a release."""
+    command = _triage_command_context(
+        idempotency_key=idempotency_key,
+        rationale=rationale,
+        correlation_id=correlation_id,
+    )
+    key = command.idempotency_key
+    operation = "external_link.release_github.create"
+    request_payload = _triage_audited_request(
+        command,
+        {"release_id": release_id, "url": url},
+    )
+    replay = await _triage_command_replay(
+        db,
+        actor_id=actor.id,
+        operation=operation,
+        target_type="release",
+        target_id=release_id,
+        idempotency_key=key,
+        request_payload=request_payload,
+    )
+    if replay is not None:
+        return replay
+    service = ExternalLinkService(db)
+    try:
+        link = await service.create_release_github_link(release_id, url, commit=False)
+    except ExternalLinkConflictError as exc:
+        raise AgentConflictError(str(exc)) from exc
+    if link is None:
+        return None
+    response = service.link_to_response(link).model_dump(mode="json")
+    await _stage_context_command_audit_event(
+        db,
+        actor=actor,
+        operation=operation,
+        target_type="release",
+        target_id=release_id,
+        command=command,
+        details={"external_link_id": link.id, "url": link.url},
+    )
+    _stage_triage_command_receipt(
+        db,
+        actor_id=actor.id,
+        operation=operation,
+        target_type="release",
+        target_id=release_id,
+        idempotency_key=key,
+        request_payload=request_payload,
+        response=response,
+        command=command,
+    )
+    return await _commit_triage_command(
+        db,
+        actor_id=actor.id,
+        operation=operation,
+        target_type="release",
+        target_id=release_id,
         idempotency_key=key,
         request_payload=request_payload,
         response=response,

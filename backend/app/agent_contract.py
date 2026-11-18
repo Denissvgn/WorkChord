@@ -6,6 +6,7 @@ from __future__ import annotations
 MODEL_AWARE_ROUTING_FEATURE = "model-aware-routing-v1"
 SKILL_BUNDLES_FEATURE = "skill-bundles-v1"
 AGENT_TEAM_MASTER_FEATURE = "agent-team-master-v1"
+WORK_DELIVERY_LINKS_FEATURE = "work-delivery-links-v1"
 
 # Add a feature only after every REST/MCP read, mutation, validation, and
 # compatibility boundary behind it is live. In particular, the Wave 1 routing
@@ -31,6 +32,9 @@ AGENT_CONTRACT_FEATURES: tuple[str, ...] = (
     # Work starts once its dependencies are done; calculated dates then follow
     # the actual start and submit, and a change of dates keeps queued dispatch valid.
     "schedule-follows-actuals-v1",
+    # Begin takes branch_url and submit takes branch_url and commit_urls; WorkChord
+    # links the branch, commits, and pull request to the task as GitHub links.
+    WORK_DELIVERY_LINKS_FEATURE,
     SKILL_BUNDLES_FEATURE,
 )
 

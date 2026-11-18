@@ -91,7 +91,7 @@ Inspect assignment, task status, claim expiry, run state, recent progress, artif
 
 ### Phase 8: Verify, Rework, Close, and Report
 
-Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Keep project status and milestone status in step with the work, so Projects, Roadmap view stays true. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
+Create a verification assignment for an independent reviewer (the `verifier` role, guided by the `workchord-reviewer` skill). The reviewer checks every acceptance criterion and accepts the work or requests changes with an explicit rework owner. Read the verdict, confirm the next owner, and append project health, progress, risks, decisions, and next steps. Count a task as done only when it links to its commits or pull request, or states why none exists, and link each shipped release to its merge pull request or tag; follow [Close work with its delivery trace](references/verification-rework-and-recovery.md#close-work-with-its-delivery-trace). Keep project status and milestone status in step with the work, so Projects, Roadmap view stays true. Follow [verification-rework-and-recovery.md](references/verification-rework-and-recovery.md).
 
 ## Finish the Plan Before You Report It
 
