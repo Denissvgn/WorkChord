@@ -10,6 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ButtonLink } from '../common/ButtonLink';
 import { useAgentAccess } from '../../hooks/useAgentAccess';
+import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { agentService } from '../../services/agentService';
 import type {
     AgentModelBinding,
@@ -132,6 +133,8 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
 }) => {
     const { t } = useTranslation();
     const { hasAgentKey } = useAgentAccess();
+    const { hasAdminKey } = useAdminAccess();
+    const hasModelKey = hasAgentKey || hasAdminKey;
     const queryClient = useQueryClient();
     const toast = useToast();
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
@@ -161,14 +164,15 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const scopes = capabilitiesCurrent
         ? capabilitiesQuery.data?.scopes ?? []
         : [];
-    const canRead = scopes.includes('admin') || scopes.includes('planning:read');
-    const canAdminister = scopes.includes('admin');
+    const usesAdminAccess = hasAdminKey && !hasAgentKey;
+    const canRead = usesAdminAccess || scopes.includes('admin') || scopes.includes('planning:read');
+    const canAdminister = usesAdminAccess || scopes.includes('admin');
 
     // feedback-policy: query loading,error,retry,empty
     const rosterQuery = useQuery({
         queryKey: ['agent-actor-roster', true],
         queryFn: () => agentService.getActorRoster(true),
-        enabled: hasAgentKey && canRead,
+        enabled: hasModelKey && canRead,
         retry: protectedQueryRetry,
     });
 
@@ -176,7 +180,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const catalogQuery = useQuery({
         queryKey: ['agent-model-catalog', true],
         queryFn: () => agentService.getModelCatalog(true),
-        enabled: hasAgentKey && canRead,
+        enabled: hasModelKey && canRead,
         retry: protectedQueryRetry,
     });
 
@@ -184,7 +188,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const bindingsQuery = useQuery({
         queryKey: ['agent-model-bindings', true],
         queryFn: () => agentService.getModelBindings({ includeDisabled: true }),
-        enabled: hasAgentKey && canRead,
+        enabled: hasModelKey && canRead,
         retry: protectedQueryRetry,
     });
 
@@ -539,7 +543,9 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const evidenceRetrying = (rosterQuery.isError && rosterQuery.isFetching)
         || (catalogQuery.isError && catalogQuery.isFetching)
         || (bindingsQuery.isError && bindingsQuery.isFetching);
-    const { isPending: accessLoading, isError: accessFailed, isFetching: accessFetching, refetch: retryAccess } = capabilitiesQuery;
+    const accessLoading = hasAgentKey && capabilitiesQuery.isPending;
+    const accessFailed = hasAgentKey && capabilitiesQuery.isError;
+    const { isFetching: accessFetching, refetch: retryAccess } = capabilitiesQuery;
     const { isError: rosterFailed, refetch: retryRoster } = rosterQuery;
     const { isError: catalogFailed, refetch: retryCatalog } = catalogQuery;
     const { isError: bindingsFailed, refetch: retryBindings } = bindingsQuery;
@@ -552,7 +558,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const headerActions = useMemo<ModelHeaderActions>(() => {
         const unlockAction = <ButtonLink variant="primary" to="/settings?tab=access">{t('emptyStates.team.unlock')}</ButtonLink>;
         const loadingAction = <Button type="button" disabled>{t('modelAdministration.addModel')}</Button>;
-        if (!hasAgentKey) return { primaryAction: unlockAction, overflowItems: [] };
+        if (!hasModelKey) return { primaryAction: unlockAction, overflowItems: [] };
         if (accessLoading) return { primaryAction: loadingAction, overflowItems: [] };
         if (accessFailed) {
             return {
@@ -588,7 +594,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
                 { label: t('modelAdministration.newBinding'), onSelect: createBinding, disabled: isMutating },
             ] : [],
         };
-    }, [hasAgentKey, accessLoading, accessFailed, accessFetching, retryAccess,
+    }, [hasModelKey, accessLoading, accessFailed, accessFetching, retryAccess,
         canRead, canAdminister, evidenceError, evidenceLoading, evidenceRetrying, retryFailedEvidence,
         catalog.length, createBinding, createCatalog, isMutating, t]);
 
@@ -598,7 +604,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
 
     useEffect(() => () => onHeaderActionsChange?.(null), [onHeaderActionsChange]);
 
-    if (!hasAgentKey) {
+    if (!hasModelKey) {
         return (
             <InlineEmptyState
                 title={t('emptyStates.team.modelsTitle')}
@@ -608,11 +614,11 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
         );
     }
 
-    if (capabilitiesQuery.isPending) {
+    if (accessLoading) {
         return <QueryLoadingState message={t('modelAdministration.checkingAccess')} />;
     }
 
-    if (capabilitiesQuery.isError) {
+    if (accessFailed) {
         return (
             <QueryErrorState
                 error={capabilitiesQuery.error}

@@ -10,7 +10,6 @@ import {
     replacesPendingPM, waitingMembers, type AgentRuntime, type ConnectIssue,
 } from '../../features/agentTeamSetup/connectAgent';
 import { assertAgentTeamMasterSecretFree } from '../../features/agentTeamSetup/manifest';
-import { AGENT_PROFILE_PRESET_NAMES } from '../../features/agentTeamSetup/profilePresetNames';
 import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { createAgentCommandMetadata } from '../../utils/modelRouting';
 import { Button } from '../common/Button';
@@ -98,6 +97,9 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
     // feedback-policy: query loading,error,retry,empty - the name is a courtesy; without it the member's own name is announced.
     const profiles = useQuery({ queryKey: ['team-member-profiles'], queryFn: () => teamService.getProfiles(),
         enabled: hasAdminKey && status.data?.can_mutate === true, retry: false });
+    // feedback-policy: query loading,error,retry,empty - the member name remains available if preset names cannot be read.
+    const presets = useQuery({ queryKey: ['agent-profile-presets'], queryFn: () => agentService.getProfilePresets(),
+        enabled: hasAdminKey && status.data?.can_mutate === true, retry: false });
 
     useEffect(() => {
         if (previousStep.current !== step) heading.current?.focus();
@@ -107,7 +109,7 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
     const runtimeName = (value: AgentRuntime) => RUNTIME_PRODUCT_NAMES[value] ?? t(`${P}.runtimes.${value}`);
     /** The name Team and the assignee lists show: the profile's display name, which the profile preset names when the server creates the profile. */
     const announcedName = (member: AgentTeamMemberSpec) => (Array.isArray(profiles.data) ? profiles.data.find(item => item.seed_key === member.profile_key)?.display_name : undefined)
-        ?? AGENT_PROFILE_PRESET_NAMES[member.profile_key]
+        ?? presets.data?.find(item => item.key === member.profile_key)?.display_name
         ?? member.display_name;
     const memberStatus = status.data?.members.find(member => member.actor_key === candidate?.member.actor_key);
     const connected = applied && !status.isError && isConnected(memberStatus);

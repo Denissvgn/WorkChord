@@ -15,6 +15,9 @@ import { changeAppLanguage } from '../../i18n/i18n';
 const agentAccessMock = vi.hoisted(() => ({
     useAgentAccess: vi.fn(),
 }));
+const adminAccessMock = vi.hoisted(() => ({
+    useAdminAccess: vi.fn(),
+}));
 
 const agentServiceMock = vi.hoisted(() => ({
     getCapabilities: vi.fn(),
@@ -30,6 +33,7 @@ const agentServiceMock = vi.hoisted(() => ({
 }));
 
 vi.mock('../../hooks/useAgentAccess', () => agentAccessMock);
+vi.mock('../../hooks/useAdminAccess', () => adminAccessMock);
 vi.mock('../../services/agentService', () => ({
     agentService: agentServiceMock,
 }));
@@ -159,6 +163,7 @@ describe('AgentModelAdministration', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         agentAccessMock.useAgentAccess.mockReturnValue({ hasAgentKey: true });
+        adminAccessMock.useAdminAccess.mockReturnValue({ hasAdminKey: false });
         agentServiceMock.getCapabilities.mockResolvedValue(capabilitiesFixture(['admin']));
         agentServiceMock.getActorRoster.mockResolvedValue([rosterFixture()]);
         agentServiceMock.getModelCatalog.mockResolvedValue([catalogFixture()]);
@@ -167,7 +172,7 @@ describe('AgentModelAdministration', () => {
         agentServiceMock.updateModelBinding.mockResolvedValue({});
     });
 
-    it('lists catalog and bindings and saves both edits with an admin key and audit reason', async () => {
+    it('lists catalog and bindings and saves both edits with an admin agent key and audit reason', async () => {
         const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
         expect(await screen.findByRole('heading', { name: 'Model catalog' })).toBeVisible();
         expect(screen.getAllByRole('table')).toHaveLength(2);
@@ -195,6 +200,30 @@ describe('AgentModelAdministration', () => {
         await user.type(within(dialog).getByLabelText('Change rationale'), 'Update binding');
         await user.click(within(dialog).getByRole('button', { name: 'Save' }));
         await waitFor(() => expect(agentServiceMock.updateModelBinding).toHaveBeenCalledWith(21, expect.objectContaining({ tool_tags: ['shell'], expected_revision: 4 }), expect.objectContaining({ rationale: 'Update binding' })));
+    });
+
+    it('loads catalog and bindings and creates a binding with only the saved admin key', async () => {
+        agentAccessMock.useAgentAccess.mockReturnValue({ hasAgentKey: false });
+        adminAccessMock.useAdminAccess.mockReturnValue({ hasAdminKey: true });
+        agentServiceMock.createModelBinding.mockResolvedValue({});
+        const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
+        expect(await screen.findByRole('heading', { name: 'Model catalog' })).toBeVisible();
+        expect(screen.getByText('Worker Alpha')).toBeVisible();
+        expect(agentServiceMock.getCapabilities).not.toHaveBeenCalled();
+        expect(agentServiceMock.getModelCatalog).toHaveBeenCalledWith(true);
+        expect(agentServiceMock.getModelBindings).toHaveBeenCalledWith({ includeDisabled: true });
+        await user.click(within(screen.getByTestId('page-header')).getByRole('button', { name: 'Add a binding' }));
+        const drawer = screen.getByRole('dialog', { name: 'Create model binding' });
+        await user.selectOptions(within(drawer).getByRole('combobox', { name: 'Actor' }), '2');
+        await user.selectOptions(within(drawer).getByRole('combobox', { name: 'Catalog entry' }), '11');
+        await user.click(within(drawer).getByRole('button', { name: 'Create' }));
+        const dialog = screen.getByRole('dialog', { name: 'Audited change controls' });
+        await user.type(within(dialog).getByLabelText('Change rationale'), 'Connect the worker model');
+        await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+        await waitFor(() => expect(agentServiceMock.createModelBinding).toHaveBeenCalledWith(
+            expect.objectContaining({ actor_id: 2, model_catalog_id: 11 }),
+            expect.objectContaining({ rationale: 'Connect the worker model' }),
+        ));
     });
 
     it.each([

@@ -110,7 +110,7 @@ async def get_profile_skill_catalog(
 
 @router.get("/agent/profile-presets", response_model=list[dict[str, Any]])
 async def get_agent_profile_presets(
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     db: Annotated[AsyncSession, Depends(get_db, scope="function")],
 ):
     """Return reusable human-reviewable agent profile presets."""
@@ -287,7 +287,7 @@ async def disable_agent_model_catalog_entry(
     response_model=list[AgentModelBindingResponse],
 )
 async def list_agent_model_bindings(
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -313,7 +313,7 @@ async def list_agent_model_bindings(
 )
 async def get_agent_model_binding(
     binding_id: int,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -334,7 +334,7 @@ async def get_agent_model_binding(
 )
 async def create_agent_model_binding(
     data: AgentModelBindingCreate,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -359,7 +359,7 @@ async def create_agent_model_binding(
 async def update_agent_model_binding(
     binding_id: int,
     data: AgentModelBindingUpdate,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
@@ -389,7 +389,7 @@ async def update_agent_model_binding(
 async def disable_agent_model_binding(
     binding_id: int,
     data: AgentModelBindingDisable,
-    actor: Annotated[AgentActor, Depends(get_agent_actor)],
+    actor: Annotated[AgentActor, Depends(get_model_catalog_principal)],
     service: Annotated[
         AgentModelCatalogService,
         Depends(get_agent_model_catalog_service),
