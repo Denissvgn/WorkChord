@@ -98,6 +98,15 @@ describe('Analytics page reads the scope bar', () => {
         expect(screen.queryByText(/On track scope/)).not.toBeInTheDocument();
     });
 
+    it('counts a task accepted by the chosen local person as one accepted deliverable', async () => {
+        metrics.get.mockResolvedValue({ ...report, accepted_leaf_tasks: 1, acceptance_events: 1,
+            coverage: { ...report.coverage, observation_count: 3 } });
+        await renderPage('/analytics?project=1&iteration=9');
+        const accepted = await screen.findByText('Accepted deliverables');
+        expect(accepted.closest('div')).toHaveTextContent(/^Accepted deliverables1$/);
+        expect(screen.getByText(/0 closed deliverables have unknown acceptance/)).toBeVisible();
+    });
+
     it.each([
         ['/analytics?project=1&iteration=backlog', { project_id: 1, backlog: true }],
         ['/analytics?project=all&iteration=backlog', { all_projects: true }],
