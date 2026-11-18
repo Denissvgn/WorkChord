@@ -1069,3 +1069,19 @@ describe('schedule and review inside Plan', () => {
         expect(screen.getByText('4 of 6')).toBeVisible();
     });
 });
+
+describe('refresh inside Plan', () => {
+    it('re-reads the Schedule hours per assignee on Refresh, so work added elsewhere shows without a reload', async () => {
+        scheduleWorkspace();
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        const hoursTable = () => screen.getByRole('table', { name: 'Hours against capacity per assignee' });
+        expect(await screen.findByRole('table', { name: 'Hours against capacity per assignee' })).toBeVisible();
+        expect(within(hoursTable()).getByText('40 h')).toBeVisible();
+        services.team.getWorkload.mockResolvedValue({ team_member_id: 1, name: 'Person 1', allocated_hours: 52, capacity_hours: 64 });
+        await user.click(screen.getByRole('button', { name: 'Refresh' }));
+        await waitFor(() => expect(within(hoursTable()).getByText('52 h')).toBeVisible());
+        expect(within(hoursTable()).queryByText('40 h')).not.toBeInTheDocument();
+        expect(await screen.findByText('Planning data updated.')).toBeVisible();
+    });
+});

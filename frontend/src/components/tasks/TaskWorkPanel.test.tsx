@@ -196,6 +196,25 @@ describe('review by a person', () => {
         expect(accept).toBeDisabled();
     });
 
+    it.each(['en', 'ru'])('ends every server blocker beside Accept with its own full stop in %s', async language => {
+        await ensureLanguageResources(language);
+        await i18n.changeLanguage(language);
+        service.actions.mockResolvedValue({ actions: [
+            { action: 'review', allowed: true, blockers: [] },
+            { action: 'accept_review', allowed: false, blockers: [
+                { message: 'Only the assigned reviewer can accept' },
+                { message: 'Attach the test run!' },
+                { message: 'Is the evidence complete?' },
+            ] },
+        ] });
+        renderPanel2(resolved);
+        const accept = screen.getByRole('button', { name: i18n.t('domain.accept') });
+        await waitFor(() => expect(accept).toHaveAccessibleDescription(expect.stringContaining('Only the assigned reviewer can accept.')));
+        expect(accept).toHaveAccessibleDescription(expect.stringContaining('Only the assigned reviewer can accept. Attach the test run. Is the evidence complete.'));
+        expect(accept).not.toHaveAccessibleDescription(expect.stringMatching(/[!?]|\.\./));
+        expect(accept).toBeDisabled();
+    });
+
     it('names the reviewer and the rework owner', async () => {
         renderPanel2(resolved);
         expect(await screen.findByText('Independent Verification Runtime')).toBeInTheDocument();

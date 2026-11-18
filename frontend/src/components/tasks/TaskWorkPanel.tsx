@@ -21,6 +21,11 @@ import { useAdminAccess } from '../../hooks/useAdminAccess';
 import { Select } from '../../components/common/Select';
 
 const DRAFT_TTL_MS = 86400000;
+// Ends a message with one full stop: trailing sentence marks from the server are replaced, not doubled.
+const asSentence = (message: string): string => {
+    const text = message.trim().replace(/[\s.!?;:,…]+$/u, '');
+    return text ? `${text}.` : '';
+};
 const PROGRESS_STATES = ['pending', 'in_progress', 'completed'];
 const sameProgress = (left: CriterionProgress, right: CriterionProgress) => left.criterion_id === right.criterion_id
     && left.criterion_revision === right.criterion_revision && left.state === right.state && left.evidence === right.evidence;
@@ -181,12 +186,14 @@ export const TaskWorkPanel = ({ task, disabled, draftKey, onDirty, onPending, on
     const canReview = actions.data?.actions.find(item => item.action === 'review')?.allowed;
     const canAccept = actions.data?.actions.find(item => item.action === 'accept_review')?.allowed;
     const acceptAction = actions.data?.actions.find(item => item.action === 'accept_review');
+    // Each server blocker is its own sentence under Accept, so it ends with a full stop whatever the server sent.
+    const acceptBlockerSentences = acceptAction?.blockers.map(blocker => asSentence(blocker.message)).filter(Boolean) ?? [];
     const acceptMissing = [
         disabled && t('domain.acceptFinishEditing'),
         pending && t('domain.acceptSaving'),
         actions.isLoading && t('domain.acceptLoading'),
         actions.isError && t('domain.actionsFailed'),
-        !actions.isLoading && !actions.isError && !canAccept && (acceptAction?.blockers.map(blocker => blocker.message).join(' ') || t('domain.acceptUnavailable')),
+        ...(!actions.isLoading && !actions.isError && !canAccept ? (acceptBlockerSentences.length ? acceptBlockerSentences : [t('domain.acceptUnavailable')]) : []),
         staleDraft && t('domain.staleProgress'),
         criteriaDirty && t('domain.acceptSaveProgress'),
         !reason.trim() && t('domain.acceptNeedsReason'),
