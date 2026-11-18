@@ -2,6 +2,7 @@ import { ButtonLink } from '../components/common/ButtonLink';
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, Check, ChevronDown, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -301,6 +302,7 @@ const PlanCheckpoints = () => {
     const { currentIteration, hasCurrentIteration, planningSummary, queryStates, refetch, isFetching } = readiness;
     const scopeLink = useScopeLink();
     const setupProgress = useFirstRunProgress();
+    const queryClient = useQueryClient();
     const [refreshStatus, setRefreshStatus] = useState<'idle' | 'success' | 'error'>('idle');
     // Opening or closing a section by hand wins over the default for the rest of the visit to that
     // iteration; another iteration in scope starts again from its first incomplete checkpoint.
@@ -378,8 +380,11 @@ const PlanCheckpoints = () => {
     const refresh = async () => {
         if (isFetching) return;
         setRefreshStatus('idle');
-        const results = await refetch();
-        const failed = results.some(result => result.status === 'rejected'
+        // The Schedule section's hours per assignee is read outside the readiness hook, so Refresh re-reads it too.
+        const workloads = queryClient.refetchQueries({ queryKey: ['plan-schedule-workloads'] }, { throwOnError: true })
+            .then(() => true, () => false);
+        const [results, workloadsRead] = await Promise.all([refetch(), workloads]);
+        const failed = !workloadsRead || results.some(result => result.status === 'rejected'
             || Boolean((result.value as { isError?: boolean } | undefined)?.isError));
         setRefreshStatus(failed ? 'error' : 'success');
     };
