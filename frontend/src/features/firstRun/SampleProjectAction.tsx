@@ -63,8 +63,11 @@ export const SampleProjectAction = () => {
                     const removed = records.filter(record => !receipt.records.some(item => item.kind === record.kind && item.id === record.id));
                     const selected = currentScope.current;
                     // Move the scope off the deleted records before any page refetches them.
-                    if (removed.some(record => record.kind === 'project' && record.id === selected?.project
-                        || record.kind === 'iteration' && record.id === selected?.iteration)) {
+                    // Scope validation may already have dropped the deleted iteration to Backlog while the
+                    // removal ran, so a scope that still sits inside the sample counts as well.
+                    const inSample = records.some(record => record.kind === 'project' && record.id === selected?.project
+                        || record.kind === 'iteration' && record.id === selected?.iteration);
+                    if (inSample && removed.some(record => record.kind === 'project' || record.kind === 'iteration')) {
                         let restored: WorkScope = { project: 'all', iteration: 'backlog' };
                         let repaired = selected;
                         try {

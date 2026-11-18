@@ -182,6 +182,44 @@ describe('useWorkScope', () => {
         await waitFor(() => expect(locationText()).toBe('/my-work'));
     });
 
+    it('keeps a remembered scope while its URL update is pending and the iterations refetch', async () => {
+        const queryClient = createTestQueryClient();
+        const router = createMemoryRouter([{ path: '*', element: <Probe /> }], {
+            initialEntries: ['/plan?project=1&iteration=12'],
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router} />
+            </QueryClientProvider>,
+        );
+        await waitForReady();
+        expect(locationText()).toBe('/plan?project=1&iteration=12');
+
+        // Hold every URL write back, as when it lands after other updates.
+        const navigate = router.navigate.bind(router);
+        const held: Array<() => Promise<void>> = [];
+        vi.spyOn(router, 'navigate').mockImplementation(((...args: Parameters<typeof navigate>) => {
+            held.push(() => navigate(...args));
+            return Promise.resolve();
+        }) as typeof router.navigate);
+
+        act(() => useScopeStore.getState().remember({ project: 1, iteration: 11 }));
+        await waitFor(() => expect(held.length).toBeGreaterThan(0));
+        expect(locationText()).toBe('/plan?project=1&iteration=12');
+
+        // The iterations refetch while the URL still holds the old iteration.
+        iterationServiceMock.getAll.mockResolvedValue([...ITERATIONS, iteration(14, 1, '2027-02-01', '2027-02-28')]);
+        await act(() => queryClient.invalidateQueries({ queryKey: ['iterations'] }));
+        await waitFor(() => expect(queryClient.getQueryData<unknown[]>(['iterations'])).toHaveLength(ITERATIONS.length + 1));
+
+        expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 11 });
+
+        await act(async () => { for (const release of held.splice(0)) await release(); });
+        await waitFor(() => expect(locationText()).toBe('/plan?project=1&iteration=11'));
+        expect(useScopeStore.getState()).toMatchObject({ project: 1, iteration: 11 });
+        expect(scopeText()).toBe('1/11');
+    });
+
     it('builds scoped links with the current scope', async () => {
         renderAt('/triage?project=2&iteration=22');
         await waitForReady();
