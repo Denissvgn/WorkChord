@@ -32,6 +32,8 @@ CLIENT_PATHS = (
     "/api/time-entries/report", "/api/time-entries/export",
     "/api/agent/model-catalog", "/api/agent/model-catalog/{catalog_id}",
     "/api/agent/model-catalog/{catalog_id}/disable",
+    "/api/agent/model-bindings", "/api/agent/model-bindings/{binding_id}",
+    "/api/agent/model-bindings/{binding_id}/disable", "/api/agent/profile-presets",
 )
 DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "backend/tests/fixtures/client-contract-v1.json"
 

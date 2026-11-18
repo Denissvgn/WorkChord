@@ -160,16 +160,17 @@ describe('Connect agent steps', () => {
         expect(screen.getByText(/Create Backend Implementation Agent\./)).toBeInTheDocument();
     });
 
-    it('announces the preset display name when the profile does not exist yet, without reading the agent-key-only preset list', async () => {
+    it('announces the server preset display name when the profile does not exist yet', async () => {
         const template = structuredClone(current);
         template.workers = [{ ...member('worker', 'backend-worker'), profile_key: 'backend-implementation-agent', display_name: 'Backend Implementation Runtime' }];
         service.getAgentTeamStartingPoints.mockResolvedValue({ current: structuredClone(current), template });
+        service.getProfilePresets.mockResolvedValue([{ key: 'backend-implementation-agent', display_name: 'Server Backend Agent' }]);
         const view = await toReview();
-        expect(await screen.findByText('Backend Implementation Agent')).toBeInTheDocument();
+        expect(await screen.findByText('Server Backend Agent')).toBeInTheDocument();
         expect(screen.queryByText('Codex Worker 1')).not.toBeInTheDocument();
         await view.user.click(screen.getByRole('button', { name: 'Continue to connect' }));
-        expect(screen.getByText(/Create Backend Implementation Agent\./)).toBeInTheDocument();
-        expect(service.getProfilePresets).not.toHaveBeenCalled();
+        expect(screen.getByText(/Create Server Backend Agent\./)).toBeInTheDocument();
+        expect(service.getProfilePresets).toHaveBeenCalledTimes(1);
     });
 
     it('connects a Worker on Codex in five steps while preserving every existing member in validate, plan and apply', async () => {

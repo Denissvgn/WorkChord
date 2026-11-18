@@ -96,6 +96,30 @@ def test_model_catalog_routes_accept_either_credential_header(path, method, succ
         assert response["$ref"] == f"#/components/schemas/{receipt}"
 
 
+@pytest.mark.parametrize("path,method,status,response_schema", [
+    ("/api/agent/model-bindings", "get", "200", "AgentModelBindingResponse"),
+    ("/api/agent/model-bindings/{binding_id}", "get", "200", "AgentModelBindingResponse"),
+    ("/api/agent/model-bindings", "post", "201", "AgentModelMutationReceipt"),
+    ("/api/agent/model-bindings/{binding_id}", "patch", "200", "AgentModelMutationReceipt"),
+    ("/api/agent/model-bindings/{binding_id}/disable", "post", "200", "AgentModelMutationReceipt"),
+    ("/api/agent/profile-presets", "get", "200", None),
+])
+def test_binding_and_preset_contracts_accept_either_credential_header(path, method, status, response_schema):
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    operation = exporter["build_contract"]()["paths"][path][method]
+    headers = {p["name"]: p for p in operation["parameters"] if p["in"] == "header"}
+    for name in ("X-Agent-API-Key", "X-Admin-API-Key"):
+        assert name in headers and headers[name].get("required", False) is False
+    response = operation["responses"][status]["content"]["application/json"]["schema"]
+    if response_schema is None:
+        assert response["type"] == "array"
+        assert response["items"]["type"] == "object"
+    elif path == "/api/agent/model-bindings" and method == "get":
+        assert response["items"]["$ref"] == f"#/components/schemas/{response_schema}"
+    else:
+        assert response["$ref"] == f"#/components/schemas/{response_schema}"
+
+
 def test_model_receipt_actor_is_an_agent_id_or_null_for_the_operator():
     exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
     receipt = exporter["build_contract"]()["components"]["schemas"]["AgentModelMutationReceipt"]

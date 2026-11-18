@@ -2,6 +2,261 @@
   "api_version": "1.8.0",
   "components": {
     "schemas": {
+      "AgentModelBindingCreate": {
+        "additionalProperties": false,
+        "description": "Create payload for an actor-model binding.",
+        "properties": {
+          "actor_id": {
+            "minimum": 1.0,
+            "title": "Actor Id",
+            "type": "integer"
+          },
+          "data_policy_tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Data Policy Tags",
+            "type": "array"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "is_default": {
+            "default": false,
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "model_catalog_id": {
+            "minimum": 1.0,
+            "title": "Model Catalog Id",
+            "type": "integer"
+          },
+          "revision": {
+            "const": 1,
+            "default": 1,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "tool_tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tool Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "actor_id",
+          "model_catalog_id"
+        ],
+        "title": "AgentModelBindingCreate",
+        "type": "object"
+      },
+      "AgentModelBindingDisable": {
+        "additionalProperties": false,
+        "description": "Optimistic soft-disable command for an actor-model binding.",
+        "properties": {
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "reconcile_live_assignments": {
+            "default": false,
+            "title": "Reconcile Live Assignments",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "title": "AgentModelBindingDisable",
+        "type": "object"
+      },
+      "AgentModelBindingResponse": {
+        "additionalProperties": false,
+        "description": "Persisted binding projection.",
+        "properties": {
+          "actor_id": {
+            "minimum": 1.0,
+            "title": "Actor Id",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "data_policy_tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Data Policy Tags",
+            "type": "array"
+          },
+          "enabled": {
+            "default": true,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "historical_assignment_count": {
+            "default": 0,
+            "title": "Historical Assignment Count",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_default": {
+            "default": false,
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "live_assignment_count": {
+            "default": 0,
+            "title": "Live Assignment Count",
+            "type": "integer"
+          },
+          "model_catalog": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgentModelCatalogResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "model_catalog_id": {
+            "minimum": 1.0,
+            "title": "Model Catalog Id",
+            "type": "integer"
+          },
+          "model_catalog_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Catalog Key"
+          },
+          "revision": {
+            "default": 1,
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "run_reference_count": {
+            "default": 0,
+            "title": "Run Reference Count",
+            "type": "integer"
+          },
+          "selectable": {
+            "default": false,
+            "title": "Selectable",
+            "type": "boolean"
+          },
+          "tool_tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tool Tags",
+            "type": "array"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "actor_id",
+          "model_catalog_id",
+          "id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "AgentModelBindingResponse",
+        "type": "object"
+      },
+      "AgentModelBindingUpdate": {
+        "additionalProperties": false,
+        "description": "Optimistic partial update for one actor-model binding.",
+        "properties": {
+          "data_policy_tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Policy Tags"
+          },
+          "enabled": {
+            "anyOf": [
+              {
+                "const": true,
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "expected_revision": {
+            "minimum": 1.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "is_default": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Default"
+          },
+          "reconcile_live_assignments": {
+            "default": false,
+            "title": "Reconcile Live Assignments",
+            "type": "boolean"
+          },
+          "tool_tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tool Tags"
+          }
+        },
+        "required": [
+          "expected_revision"
+        ],
+        "title": "AgentModelBindingUpdate",
+        "type": "object"
+      },
       "AgentModelCatalogCreate": {
         "additionalProperties": false,
         "description": "Create payload for a catalog entry.",
@@ -6405,6 +6660,501 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/agent/model-bindings": {
+      "get": {
+        "description": "Return actor binding evidence without credentials or runtime logs.",
+        "operationId": "list_agent_model_bindings_api_agent_model_bindings_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "actor_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Actor Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "include_disabled",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Disabled",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AgentModelBindingResponse"
+                  },
+                  "title": "Response List Agent Model Bindings Api Agent Model Bindings Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Agent Model Bindings",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "post": {
+        "description": "Bind an existing actor to one existing catalog entry.",
+        "operationId": "create_agent_model_binding_api_agent_model_bindings_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentModelBindingCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Agent Model Binding",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/model-bindings/{binding_id}": {
+      "get": {
+        "description": "Return one binding, including disabled historical evidence.",
+        "operationId": "get_agent_model_binding_api_agent_model_bindings__binding_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "binding_id",
+            "required": true,
+            "schema": {
+              "title": "Binding Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelBindingResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Agent Model Binding",
+        "tags": [
+          "Agent Catalog"
+        ]
+      },
+      "patch": {
+        "description": "Optimistically update one actor model binding.",
+        "operationId": "update_agent_model_binding_api_agent_model_bindings__binding_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "binding_id",
+            "required": true,
+            "schema": {
+              "title": "Binding Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentModelBindingUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Agent Model Binding",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/model-bindings/{binding_id}/disable": {
+      "post": {
+        "description": "Soft-disable a binding without deleting assignment or run evidence.",
+        "operationId": "disable_agent_model_binding_api_agent_model_bindings__binding_id__disable_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "binding_id",
+            "required": true,
+            "schema": {
+              "title": "Binding Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Agent-Rationale",
+            "required": true,
+            "schema": {
+              "title": "X-Agent-Rationale",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Correlation-ID",
+            "required": true,
+            "schema": {
+              "title": "X-Correlation-Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentModelBindingDisable"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentModelMutationReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Disable Agent Model Binding",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
     "/api/agent/model-catalog": {
       "get": {
         "description": "Return bounded secret-free provider-neutral model declarations.",
@@ -6805,6 +7555,77 @@
           }
         },
         "summary": "Disable Agent Model Catalog Entry",
+        "tags": [
+          "Agent Catalog"
+        ]
+      }
+    },
+    "/api/agent/profile-presets": {
+      "get": {
+        "description": "Return reusable human-reviewable agent profile presets.",
+        "operationId": "get_agent_profile_presets_api_agent_profile_presets_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Agent-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Agent-Api-Key"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Admin-API-Key",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Admin-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "title": "Response Get Agent Profile Presets Api Agent Profile Presets Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Agent Profile Presets",
         "tags": [
           "Agent Catalog"
         ]
