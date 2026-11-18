@@ -124,6 +124,7 @@ class PlanCheckpoint(BaseModel):
 class IterationPlanningReadinessSummary(BaseModel):
     """Compact planning inputs used by persistent navigation."""
     iteration_id: int
+    calendar_name: str | None = None
     team_member_count: int
     # Capacity rows whose profile is an agent; the rest are people (decision: agents count as capacity).
     team_agent_count: int = 0

@@ -31,6 +31,7 @@ vi.mock('../services/labelService', () => ({ labelService: services.labels }));
 vi.mock('../services/ganttService', () => ({ ganttService: services.gantt }));
 vi.mock('../services/triageService', () => ({ triageService: services.triage }));
 vi.mock('../services/planShareService', () => ({ planShareService: services.share }));
+vi.mock('../services/calendarService', () => ({ calendarService: { getAll: async () => [{ id: 1, name: 'Working calendar' }] } }));
 const planning = vi.hoisted(() => ({ readInitial: vi.fn() }));
 vi.mock('../services/planningInputService', () => ({ planningInputService: planning }));
 
@@ -120,6 +121,19 @@ afterEach(() => {
 });
 
 describe('Plan is one page of six checkpoints', () => {
+    it('shows the calendar coverage reason and edit action before calculation', async () => {
+        services.iterations.getPlanningReadiness.mockResolvedValue(summary([
+            checkpoint('iteration', 'warn', ['calendar_outside_year']),
+            checkpoint('team', 'done'), checkpoint('work', 'done'), checkpoint('blockers', 'done'),
+            checkpoint('schedule', 'blocked', ['complete_earlier_checkpoints']),
+            checkpoint('review', 'blocked', ['build_schedule_first']),
+        ]));
+        renderPlan();
+        expect(await screen.findByText('The calendar Working calendar does not cover the iteration dates.')).toBeVisible();
+        expect(within(section('iteration')).getByRole('button', { name: 'Edit iteration' })).toBeVisible();
+        expect(stateText('schedule')).toMatch(/Waiting/);
+    });
+
     it('lists the six checkpoints once, in order, with the first incomplete one open and no launcher content', async () => {
         services.iterations.getPlanningReadiness.mockResolvedValue(FIXTURES.twoOfSix);
         const { container } = renderPlan();
@@ -297,7 +311,7 @@ describe('Plan is one page of six checkpoints', () => {
         expect(screen.getByTestId('location')).toHaveTextContent('step=iteration');
         // Iterations are managed in place: no link leaves the page for them.
         expect(within(section('iteration')).queryByRole('link', { name: /Open iterations/ })).not.toBeInTheDocument();
-        expect(within(section('iteration')).getByRole('button', { name: 'Edit' })).toBeVisible();
+        expect(within(section('iteration')).getByRole('button', { name: 'Edit iteration' })).toBeVisible();
         expect(within(section('iteration')).getByRole('button', { name: 'New iteration' })).toBeVisible();
         expect(within(section('iteration')).getByRole('button', { name: 'All iterations' })).toBeVisible();
     });

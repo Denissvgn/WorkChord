@@ -2544,6 +2544,7 @@ export const englishResources = {
                     noIterationResult: 'Choose an iteration in the scope bar, or create one.',
                     noIterationBody: 'There is no iteration in scope. Create one to start planning, or open an existing one.',
                     project: 'Project',
+                    calendarOutsideYear: 'The calendar {{calendar}} does not cover the iteration dates.',
                     calendarFallback: 'Calendar {{id}}',
                     waitingResult: 'Starts when {{checkpoint}} is done.',
                     waitingBody: 'This checkpoint waits for checkpoint {{number}}, {{checkpoint}}. There is nothing to do here until it is done.',

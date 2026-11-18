@@ -12,7 +12,7 @@ import { formatDate } from '../../utils/formatDate';
  * The body of the Iteration checkpoint: what the iteration in scope is, and the actions that manage
  * iterations without leaving Plan. The checkpoint's state comes from the server; this only shows facts.
  */
-export const PlanIterationCheckpoint = ({ iteration, done }: { iteration: Iteration | null; done: boolean }) => {
+export const PlanIterationCheckpoint = ({ iteration, done, calendarOutsideYear = false, readinessCalendarName }: { iteration: Iteration | null; done: boolean; calendarOutsideYear?: boolean; readinessCalendarName?: string | null }) => {
     const { t, i18n } = useTranslation();
     const panels = useIterationPanels();
     // feedback-policy: query loading,error,retry,empty - the calendar row shows its id until the name is known.
@@ -54,9 +54,10 @@ export const PlanIterationCheckpoint = ({ iteration, done }: { iteration: Iterat
             ) : (
                 <p className="plan-section-waiting">{t('plan.page.noIterationBody')}</p>
             )}
+            {calendarOutsideYear && <p>{t('plan.page.calendarOutsideYear', { calendar: readinessCalendarName ?? calendarName })}</p>}
             <div className="plan-section-owner flex flex-wrap items-center gap-2">
                 {iteration ? (
-                    <Button variant="secondary" onClick={() => panels.openEdit(iteration.id)}>{t('actions.edit')}</Button>
+                    <Button variant="secondary" onClick={() => panels.openEdit(iteration.id)}>{t('iterations.editIteration')}</Button>
                 ) : null}
                 <Button variant={primary ? 'primary' : 'secondary'} onClick={panels.openCreate}>{t('iterations.newIteration')}</Button>
                 {hasIterations && <Button variant="secondary" onClick={panels.openList}>{t('iterations.allIterations')}</Button>}

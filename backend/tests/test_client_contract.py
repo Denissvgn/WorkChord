@@ -186,3 +186,12 @@ def test_metric_matches_exports_pagination_contract():
     operation = contract["paths"]["/api/tasks/metric-matches"]["get"]
     assert {"limit", "after_id"} <= {p["name"] for p in operation["parameters"]}
     assert {"items", "has_more", "next_after_id"} <= contract["components"]["schemas"]["MetricMatchPage"]["properties"].keys()
+
+
+def test_planning_readiness_contract_includes_calendar_name():
+    exporter = runpy.run_path(str(ROOT / "scripts/generate_client_contract.py"))
+    contract = exporter["build_contract"]()
+    assert "/api/iterations/{iteration_id}/planning-readiness" in contract["paths"]
+    summary = contract["components"]["schemas"]["IterationPlanningReadinessSummary"]
+    assert "calendar_name" in summary["properties"]
+    assert "calendar_name" not in summary.get("required", [])

@@ -22,6 +22,7 @@ def plan_checkpoints(
     has_schedule: bool,
     tasks_agent_without_capacity: int = 0,
     risk_count: int,
+    calendar_covers_iteration: bool = True,
 ) -> list[dict[str, Any]]:
     """Return the ordered checkpoints for one existing planning period."""
 
@@ -33,8 +34,8 @@ def plan_checkpoints(
             "counts": {key: value for key, value in counts.items() if value},
         }
 
-    # The summary is always for an existing iteration, so its period is set.
-    items = [checkpoint("iteration", "done")]
+    items = [checkpoint("iteration", "done") if calendar_covers_iteration
+             else checkpoint("iteration", "warn", "calendar_outside_year")]
     if team_member_count == 0:
         items.append(checkpoint("team", "todo", "no_people"))
     elif team_members_no_capacity > 0:

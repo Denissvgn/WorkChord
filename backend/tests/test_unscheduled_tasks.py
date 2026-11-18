@@ -97,3 +97,16 @@ async def test_agent_capacity_row_assignment_and_apply_schedule_an_unassigned_ta
         assert scheduled.start_date is not None and scheduled.end_date is not None
         passed, _ = _schedule_reason(scheduled)
         assert passed is True
+
+
+async def test_schedule_omits_undated_deferred_work_on_apply(delivery_store):
+    factory, scenario, _ = delivery_store
+    async with factory() as db:
+        task = Task(title="Deferred work", status="planned", priority=3,
+                    iteration_id=scenario.iterations[0], is_deferred=True)
+        db.add(task)
+        await db.commit()
+        result = await SchedulerService(db).schedule_iteration(scenario.iterations[0])
+        assert task.id not in {item.task_id for item in result.unscheduled}
+        assert task.id not in {item.task_id for item in result.decisions}
+        assert task.start_date is None and task.end_date is None

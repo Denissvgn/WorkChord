@@ -164,7 +164,9 @@ const CheckpointBody = ({
     }
 
     if (section.id === 'iteration') {
-        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'} />;
+        return <PlanIterationCheckpoint iteration={readiness.currentIteration} done={section.state === 'done'}
+            calendarOutsideYear={section.reasonCodes.includes('calendar_outside_year')}
+            readinessCalendarName={readiness.planningSummary?.calendar_name} />;
     }
 
     const queries = bodyQueries(section.id, readiness.queryStates).filter(query => query.enabled);
