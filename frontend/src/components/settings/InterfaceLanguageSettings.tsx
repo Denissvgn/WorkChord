@@ -13,8 +13,8 @@ import { changeAppLanguage } from '../../i18n/i18n';
 
 import { Select } from '../../components/common/Select';
 const sourceClass: Record<RuntimeSettingSource, string> = {
-    runtime: 'bg-action-muted text-action border-action',
-    environment: 'bg-feedback-warning-muted text-feedback-warning-foreground border-feedback-warning-border',
+    runtime: 'bg-surface-muted text-content-secondary border-border',
+    environment: 'bg-surface-muted text-content-secondary border-border',
     default: 'bg-surface-muted text-content-secondary border-border',
 };
 

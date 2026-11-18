@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AgentActorRosterItem, AgentModelBinding } from '../../types/agent';
+import { createHash } from 'node:crypto';
+import type { AgentActorRosterItem, AgentModelBinding, AgentTeamMaster, AgentTeamMemberSpec, AgentTeamMemberStatus, AgentTeamStatus } from '../../types/agent';
 import type {
     TeamMemberProfile,
     TeamMemberProfileCreate,
@@ -20,7 +21,7 @@ const teamServiceMock = vi.hoisted(() => ({
     deleteProfileSkill: vi.fn(),
 }));
 const planningMock = vi.hoisted(() => ({ readInitial: vi.fn() }));
-const agentServiceMock = vi.hoisted(() => ({ linkActorProfile: vi.fn() }));
+const agentServiceMock = vi.hoisted(() => ({ linkActorProfile: vi.fn(), getAgentTeamStatus: vi.fn(), getAgentTeamStartingPoints: vi.fn() }));
 vi.mock('../../services/agentService', () => ({ agentService: agentServiceMock }));
 vi.mock('../../services/planningInputService', () => ({ planningInputService: planningMock }));
 vi.mock('../../services/teamService', () => ({ teamService: teamServiceMock }));
@@ -347,5 +348,68 @@ describe('agent without a profile', () => {
 
         expect(screen.getByRole('button', { name: 'Create and link profile' })).toBeDisabled();
         expect(screen.getByText(/needs the admin key/)).toBeVisible();
+    });
+
+    describe('an agent that waits for its runtime', () => {
+        const waitingSpec: AgentTeamMemberSpec = {
+            actor_key: 'codex-worker-1', actor_name: 'workchord-codex-worker-1', display_name: 'Codex Worker 1', role: 'worker',
+            scope_preset: 'worker-v1', profile_key: 'worker-profile',
+            skill_package: { name: 'workchord-worker', version: '1.8.0', sha256: 'a'.repeat(64) },
+            assignment_modes: ['execution'], model_binding_keys: ['sonnet'], default_model_binding_key: 'sonnet',
+            runtime_ref: 'runtime://codex/codex-worker-1', credential_ref: 'private-sink/codex-worker-1',
+        };
+        const waitingStatus = (): AgentTeamMemberStatus => ({
+            actor_key: 'codex-worker-1', actor_id: 9, actor_name: waitingSpec.actor_name, display_name: waitingSpec.display_name, role: 'worker',
+            desired: true, configured: true, lifecycle_state: 'onboarding', enabled: true, profile_key: 'worker-profile', profile_revision: null,
+            binding_revisions: {}, skill_package: waitingSpec.skill_package, package_acknowledged: false, acknowledgement_state: 'missing',
+            credential_delivery_state: 'delivered', connection_state: 'unobserved', last_seen_at: null, queued_assignments: 0,
+            accepted_assignments: 0, running_runs: 0, runtime_ready: false, availability: 'availability_unknown', blocker_codes: [],
+            handoff: {
+                schema_version: 'agent-team-runtime-handoff-v1', topology_key: 'team', topology_revision: 8, actor_key: 'codex-worker-1', actor_id: 9,
+                role: 'worker', server_url: 'https://workchord.example', required_server_features: [], skill_package: waitingSpec.skill_package,
+                profile_key: 'worker-profile', profile_revision: 'r1', model_binding_revisions: {}, supported_assignment_modes: ['execution'],
+                startup_instructions: [], credential_ref: 'private-sink/codex-worker-1',
+            },
+        });
+        const topology: AgentTeamMaster = {
+            schema_version: 'agent-team-master-v1', topology_key: 'team', server_url: 'https://workchord.example', credential_sink_ref: 'private-sink',
+            required_server_features: [], controller: { ...waitingSpec, actor_key: 'pm-1', role: 'pm', scope_preset: 'pm-v1' },
+            workers: [waitingSpec], verifiers: [], readiness_policy: { minimum_execution_workers: 1, require_independent_verifier_when_assessed: false, maximum_runtime_staleness_seconds: 300 },
+        };
+        const teamStatus = (members: AgentTeamMemberStatus[]): AgentTeamStatus => ({
+            schema_version: 'agent-team-status-v1', topology_key: 'team', topology_revision: 8, manifest_digest: 'a'.repeat(64), topology_state: 'onboarding',
+            runtime_ready: false, availability: 'availability_unknown', blocker_codes: [], steps: [], members, pending_action_ids: [], can_mutate: true, next_action: null,
+        });
+
+        beforeEach(() => {
+            setAdminApiKey('operator-key');
+            agentServiceMock.getAgentTeamStatus.mockResolvedValue(teamStatus([waitingStatus()]));
+            agentServiceMock.getAgentTeamStartingPoints.mockResolvedValue({ current: topology, template: topology });
+        });
+        afterEach(() => { clearAdminApiKey(); });
+
+        it('shows its credential file, package, snippet and handoff in the drawer after Connect was left', async () => {
+            const actor: AgentActorRosterItem = { ...actorFixture(), name: 'workchord-codex-worker-1', display_name: 'Codex Worker 1', profile_id: 77 };
+            renderDrawer(rowFor(profileFixture({ id: 77, display_name: 'Codex Worker 1' }), [actor]));
+
+            expect(await screen.findByRole('heading', { name: 'Connection steps' })).toBeVisible();
+            const filename = `${createHash('sha256').update('private-sink/codex-worker-1').digest('hex').slice(0, 24)}-codex-worker-1.json`;
+            await waitFor(() => expect(screen.getByText('Credential file').nextElementSibling).toHaveTextContent(filename));
+            expect(screen.getByText('Skill package to install').nextElementSibling).toHaveTextContent('workchord-worker 1.8.0');
+            expect(screen.getByLabelText('Codex configuration')).toHaveTextContent(`"$WORKCHORD_CREDENTIAL_DIR/${filename}"`);
+            expect(screen.getByText('Runtime handoff')).toBeVisible();
+            expect(screen.getByText('Waiting for the runtime acknowledgement…')).toBeVisible();
+            expect(screen.getByRole('button', { name: 'Check connection' })).toBeVisible();
+        });
+
+        it('shows no connection steps for an agent that is not waiting', async () => {
+            agentServiceMock.getAgentTeamStatus.mockResolvedValue(teamStatus([{ ...waitingStatus(), package_acknowledged: true, acknowledgement_state: 'current', connection_state: 'observed' }]));
+            const actor: AgentActorRosterItem = { ...actorFixture(), name: 'workchord-codex-worker-1' };
+            renderDrawer(rowFor(profileFixture(), [actor]));
+
+            await screen.findByRole('list', { name: 'Model binding' });
+            await waitFor(() => expect(agentServiceMock.getAgentTeamStatus).toHaveBeenCalled());
+            expect(screen.queryByRole('heading', { name: 'Connection steps' })).not.toBeInTheDocument();
+        });
     });
 });

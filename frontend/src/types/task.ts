@@ -4,6 +4,8 @@ import type { AssigneeRecommendation } from './team';
 export interface TaskAssignee {
     id: number;
     name: string;
+    /** Kind of the assignee's profile; null or absent when it is not known. */
+    kind?: 'human' | 'agent' | 'hybrid' | null;
 }
 
 export interface TaskClaimedBy {

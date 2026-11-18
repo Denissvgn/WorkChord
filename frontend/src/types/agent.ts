@@ -284,7 +284,8 @@ export interface AgentModelMutationReceipt<
         AgentModelCatalogEntry | AgentModelBinding,
 > {
     operation: string;
-    actor_id: number;
+    /** Null when the operator's admin key made the change. */
+    actor_id: number | null;
     target_type: 'model_catalog' | 'model_binding';
     target_id: number;
     idempotency_key: string;

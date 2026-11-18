@@ -4,6 +4,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { renderWithProviders } from '../test/renderWithProviders';
 import { expectPageChrome } from '../test/pageChrome';
 import { useScopeStore } from '../features/scope/scopeStore';
+import { useGetStartedVisibility } from '../features/firstRun/getStartedVisibility';
 import type { AgentPipeline } from '../types/agent';
 import type { Iteration, PlanCheckpoint } from '../types/iteration';
 import type { Task, TaskReference } from '../types/task';
@@ -168,6 +169,8 @@ const readinessResponse = (done = 6) => ({
     has_schedule: true,
     risk_count: 0,
     checkpoints: checkpoints(done),
+    checkpoints_done: done,
+    checkpoints_total: 6,
 });
 
 const LocationProbe = () => {
@@ -267,6 +270,7 @@ describe('Overview', () => {
     });
 
     it('shows one attention item, Work now, Agents now and three figures, and passes the page chrome check', async () => {
+        api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }]);
         const { container } = renderOverview();
 
         const attention = await screen.findByRole('region', { name: i18n.t('overview.attentionItem.blocked', { count: 1 }) });
@@ -290,7 +294,7 @@ describe('Overview', () => {
         // The header names the scope's project and dates and leads with New task.
         const header = screen.getByTestId('page-header');
         expect(header).toHaveTextContent('Alpha · Iteration 12');
-        expect(within(header).getByRole('link', { name: i18n.t('tasks.newTask') })).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=12');
+        expect(await within(header).findByRole('link', { name: i18n.t('tasks.newTask') })).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=12');
         expect(within(header).getByRole('link', { name: i18n.t('tasks.newTask') })).toHaveClass('btn', 'primary');
         expect(container.querySelectorAll('.btn.primary')).toHaveLength(1);
 
@@ -428,29 +432,30 @@ describe('Overview', () => {
         expect(section.querySelectorAll('[data-testid^="task-card-"]')).toHaveLength(expected);
     });
 
-    it('renders with All projects: Done and At risk sum over the open iterations, and Days left counts to the latest end', async () => {
+    it('renders with All projects and one iteration: every section shows only that iteration\'s work', async () => {
         const { container } = renderOverview('/?project=all&iteration=12');
 
         await waitFor(() => expect(screen.getByTestId('page-header')).toHaveTextContent(
-            i18n.t('overview.purpose.allProjects', { count: 2, start: 'Nov 2, 2026', end: 'Dec 4, 2026' }).split(',')[0],
+            i18n.t('overview.purpose.iteration', { project: 'Alpha', iteration: 'Iteration 12', start: 'Nov 2, 2026', end: 'Nov 27, 2026' }),
         ));
-        // Done 2 + 1 of 9 + 4, at risk 2 + 1; the ended iteration 11 is left out.
-        expect(await figure('overview-figure-done')).toHaveTextContent('3');
-        expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('13');
-        expect(screen.getByTestId('overview-figure-at-risk')).toHaveTextContent('3');
+        // Iteration 12 alone: 2 closed of 9, 2 at risk. Iteration 21 and the ended iteration 11 are left out.
+        expect(await figure('overview-figure-done')).toHaveTextContent('2');
+        expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('9');
+        expect(screen.getByTestId('overview-figure-at-risk')).toHaveTextContent('2');
+        expect(api.tasks).toHaveBeenCalledWith(12);
         expect(api.tasks).not.toHaveBeenCalledWith(11);
-        // Calendar days from Nov 16 to Dec 4, the end of iteration 21, which ends last. It is not
-        // prorated from a working-day budget: iteration 21 has 20 working days, and a budget of 3
-        // with the same dates gives the same count.
-        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('18');
+        expect(api.tasks).not.toHaveBeenCalledWith(21);
+        expect(api.readiness).not.toHaveBeenCalledWith(21);
+        expect(api.lookup).not.toHaveBeenCalled();
+        // Calendar days from Nov 16 to Nov 27, the end of iteration 12.
+        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('11');
 
-        // Work now draws from both open iterations, and the attention item names its iteration.
         const workNow = screen.getByRole('region', { name: i18n.t('overview.workNow') });
-        expect(within(workNow).getByRole('link', { name: 'Open “Task 202” in the task drawer' })).toBeInTheDocument();
+        expect(within(workNow).queryByRole('link', { name: 'Open “Task 202” in the task drawer' })).not.toBeInTheDocument();
+        expect(within(workNow).getByRole('link', { name: 'Open “Task 104” in the task drawer' })).toBeInTheDocument();
         expect(await screen.findByRole('region', { name: i18n.t('overview.attentionItem.blocked', { count: 1 }) }))
             .toHaveTextContent('Iteration 12 · Alpha:');
 
-        // Stage counts are taken in the scope bar's iteration, which the pipeline view applies.
         await waitFor(() => expect(screen.getByTestId('overview-stage-executing')).toHaveTextContent('2'));
         expect(screen.getByTestId('overview-stage-executing')).toHaveAttribute('href', '/tasks?layout=pipeline&stage=executing&project=all&iteration=12');
         expect(screen.getByRole('region', { name: i18n.t('overview.agentsNow') }))
@@ -458,28 +463,27 @@ describe('Overview', () => {
         expectPageChrome(container);
     });
 
-    it('counts Days left in calendar days to the latest end, whatever the working-day budget', async () => {
+    it('counts Days left in calendar days to the iteration end, whatever the working-day budget', async () => {
         api.iterations.mockResolvedValue(ITERATIONS.map(item => (item.id === 21 ? { ...item, working_days: 3 } : item)));
-        renderOverview('/?project=all&iteration=12');
+        renderOverview('/?project=all&iteration=21');
         expect(await figure('overview-figure-days-left')).toHaveTextContent('18');
     });
 
     it.each([
-        { testId: 'overview-figure-done', expected: ['Task 101', 'Task 102', 'Task 201'] },
-        { testId: 'overview-figure-total', expected: [101, 102, 103, 104, 105, 106, 107, 108, 109, 201, 202, 203, 204].map(id => `Task ${id}`) },
-        { testId: 'overview-figure-at-risk', expected: ['Task 104', 'Task 105', 'Task 202'] },
-    ])('with All projects links $testId to a list that holds exactly its count', async ({ testId, expected }) => {
+        { testId: 'overview-figure-done', expected: 2 },
+        { testId: 'overview-figure-total', expected: 9 },
+        { testId: 'overview-figure-at-risk', expected: 2 },
+    ])('with All projects and one iteration links $testId to that iteration\'s task list, which holds exactly its count', async ({ testId, expected }) => {
         const { user } = renderOverview('/?project=all&iteration=12');
         const count = await figure(testId);
-        await waitFor(() => expect(count).toHaveTextContent(String(expected.length)));
+        await waitFor(() => expect(count).toHaveTextContent(String(expected)));
         expect(count.tagName).toBe('A');
 
         await user.click(count);
-        await waitFor(() => expect(searchOf().get('list')).not.toBeNull());
+        await waitFor(() => expect(screen.getByTestId('location').textContent).toMatch(/^\/tasks/));
         expect(searchOf().get('project')).toBe('all');
-        const rows = await ownListRows();
-        expect(rows).toHaveLength(expected.length);
-        expect(rows).toEqual(expected.map(title => i18n.t('overview.list.openTask', { title })));
+        expect(searchOf().get('iteration')).toBe('12');
+        expect(await countListRows(user)).toBe(expected);
     });
 
     it.each([
@@ -511,42 +515,66 @@ describe('Overview', () => {
     });
 
     it('closes its own list and keeps the scope', async () => {
-        const { user } = renderOverview('/?project=all&iteration=12');
+        const { user } = renderOverview('/?project=1&iteration=backlog');
         await user.click(await figure('overview-figure-done'));
         const drawer = await screen.findByRole('dialog');
         await user.click(within(drawer).getByRole('button', { name: i18n.t('surfaces.slideOver.close') }));
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(searchOf().get('list')).toBeNull();
-        expect(searchOf().get('project')).toBe('all');
+        expect(searchOf().get('project')).toBe('1');
     });
 
-    it('links zero counts with All projects and no open iteration to an empty list', async () => {
-        api.iterations.mockResolvedValue([ITERATIONS[0]]);
-        const { user } = renderOverview('/?project=all&iteration=11');
-        expect(await screen.findByText(i18n.t('overview.noOpenIterations'))).toBeInTheDocument();
-        const done = await figure('overview-figure-done');
-        expect(done).toHaveTextContent('0');
-        expect(screen.getByTestId('overview-figure-days-left')).toHaveTextContent('—');
-        await user.click(done);
-        expect(await ownListRows()).toEqual([]);
-    });
-
-    it('weighs the plan of every open iteration with All projects', async () => {
-        TASKS_BY_ITERATION[12] = [task(101, { status: 'closed' }), task(109)];
+    it('weighs only the plan of the iteration in scope with All projects', async () => {
         api.pipeline.mockResolvedValue({ ...pipelineResponse(), verification_required: [] });
         api.readiness.mockImplementation(async (id: number) => ({ ...readinessResponse(id === 21 ? 4 : 6), iteration_id: id }));
-        try {
-            renderOverview('/?project=all&iteration=12');
-            const attention = await screen.findByRole('region', { name: i18n.t('overview.attentionItem.plan', { done: 4, total: 6 }) });
-            expect(attention).toHaveTextContent('Iteration 21 · Beta:');
-            expect(within(attention).getByRole('link', { name: i18n.t('overview.attentionItem.planAction') }))
-                .toHaveAttribute('href', '/plan?project=all&iteration=21');
-            expect(api.readiness).toHaveBeenCalledWith(12);
-            expect(api.readiness).toHaveBeenCalledWith(21);
-            expect(api.readiness).not.toHaveBeenCalledWith(11);
-        } finally {
-            TASKS_BY_ITERATION[12] = ALPHA_TASKS;
-        }
+        renderOverview('/?project=all&iteration=21');
+        const attention = await screen.findByRole('region', { name: i18n.t('overview.attentionItem.plan', { done: 4, total: 6 }) });
+        expect(attention).toHaveTextContent('Iteration 21 · Beta:');
+        expect(within(attention).getByRole('link', { name: i18n.t('overview.attentionItem.planAction') }))
+            .toHaveAttribute('href', '/plan?project=all&iteration=21');
+        expect(api.readiness).toHaveBeenCalledWith(21);
+        // Get started reads the workspace default iteration as well as Overview's scoped plans.
+        expect(api.readiness).toHaveBeenCalledWith(12);
+        expect(api.readiness).not.toHaveBeenCalledWith(11);
+    });
+
+    it('shows only work with no iteration with All projects and Backlog', async () => {
+        const betaBacklog = reference(601, { project_id: 2, project_name: 'Beta', title: 'Backlog 601' });
+        api.lookup.mockImplementation(async (params: { backlog_only?: boolean; project_id?: number }) => ({
+            items: params.backlog_only ? [...BACKLOG, betaBacklog] : [],
+            has_more: false,
+            next_after_id: null,
+            limit: 100,
+        }));
+        api.pipeline.mockResolvedValue({
+            ...pipelineResponse(),
+            executing: [...pipelineResponse().executing, task(505, { iteration_id: null, status: 'active' })],
+        });
+        const { user } = renderOverview('/?project=all&iteration=backlog');
+
+        await waitFor(() => expect(screen.getByTestId('page-header')).toHaveTextContent(i18n.t('overview.purpose.allProjectsBacklog')));
+        expect(await figure('overview-figure-done')).toHaveTextContent('2');
+        expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('6');
+        // The backlog of every project is read, and no iteration's tasks or plan are.
+        expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
+        expect(api.lookup.mock.calls.every(([params]) => params.project_id === undefined)).toBe(true);
+        expect(api.tasks).not.toHaveBeenCalled();
+        // Backlog still reads the workspace's default iteration for Get started.
+        expect(api.readiness).toHaveBeenCalledWith(12);
+        expect(screen.queryByText(i18n.t('overview.noOpenIterations'))).not.toBeInTheDocument();
+
+        const workNow = screen.getByRole('region', { name: i18n.t('overview.workNow') });
+        expect(within(workNow).getAllByRole('link', { name: /^Open “Backlog/ }).map(row => row.getAttribute('aria-label'))).toEqual([
+            'Open “Backlog 502” in the task drawer',
+            'Open “Backlog 505” in the task drawer',
+            'Open “Backlog 504” in the task drawer',
+            'Open “Backlog 601” in the task drawer',
+        ]);
+        expect(within(workNow).queryByRole('link', { name: /Task \d+/ })).not.toBeInTheDocument();
+        await waitFor(() => expect(screen.getByTestId('overview-stage-executing')).toHaveTextContent('1'));
+
+        await user.click(screen.getByTestId('overview-figure-total'));
+        expect(await ownListRows()).toHaveLength(6);
     });
 
     it('keeps attention, Work now, Agents now and the figures for the Backlog', async () => {
@@ -595,10 +623,20 @@ describe('Overview', () => {
         expect((heading.closest('section') as HTMLElement).querySelectorAll('[data-testid^="task-card-"]')).toHaveLength(1);
     });
 
+    it('keeps New task and offers Retry when projects fail to load', async () => {
+        api.projects.mockRejectedValue(unavailable());
+        renderOverview('/?project=1&iteration=12');
+        expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('overview.dataStatus.projectsUnavailable'));
+        expect(within(screen.getByRole('alert')).getByRole('button', { name: i18n.t('queryFeedback.retry') })).toBeInTheDocument();
+        expect(await screen.findByRole('heading', { level: 2, name: i18n.t('overview.workNow') })).toBeInTheDocument();
+        const header = screen.getByTestId('page-header');
+        expect(within(header).getByRole('link', { name: i18n.t('tasks.newTask') })).toBeVisible();
+    });
+
     it('opens New task on the Backlog as a backlog task of the scope project, with no iteration', async () => {
         api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
         const { user } = renderOverview('/?project=1&iteration=backlog');
-        const newTask = within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
+        const newTask = await within(screen.getByTestId('page-header')).findByRole('link', { name: i18n.t('tasks.newTask') });
         expect(newTask).toHaveAttribute('href', '/tasks?create=1&project=1&iteration=backlog');
 
         await user.click(newTask);
@@ -617,8 +655,9 @@ describe('Overview', () => {
     });
 
     it('opens New task with All projects in the iteration in scope', async () => {
+        api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
         const { user } = renderOverview('/?project=all&iteration=21');
-        const newTask = within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') });
+        const newTask = await within(screen.getByTestId('page-header')).findByRole('link', { name: i18n.t('tasks.newTask') });
         expect(newTask).toHaveAttribute('href', '/tasks?create=1&project=all&iteration=21');
 
         await user.click(newTask);
@@ -631,7 +670,7 @@ describe('Overview', () => {
     it('asks for a project before New task can create a backlog task with All projects', async () => {
         api.projects.mockResolvedValue([{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }]);
         const { user } = renderOverview('/?project=all&iteration=backlog');
-        await user.click(within(screen.getByTestId('page-header')).getByRole('link', { name: i18n.t('tasks.newTask') }));
+        await user.click(await within(screen.getByTestId('page-header')).findByRole('link', { name: i18n.t('tasks.newTask') }));
 
         // A backlog task needs a project, and All projects names none.
         expect(await screen.findByText(i18n.t('teamwork.chooseProject'))).toBeInTheDocument();
@@ -675,11 +714,77 @@ describe('Overview', () => {
         expect(within(drawer).getByText(i18n.t('teamwork.inBacklog'))).toBeInTheDocument();
     });
 
-    it('offers to create an iteration when there is none', async () => {
+    it('shows the backlog of every project when the workspace has no iterations', async () => {
         api.iterations.mockResolvedValue([]);
-        renderOverview('/');
-        expect(await screen.findByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: i18n.t('overview.setUpPlanningPeriod') })).toHaveAttribute('href', expect.stringMatching(/^\/plan/));
+        api.lookup.mockImplementation(async (params: { backlog_only?: boolean }) => ({
+            items: params.backlog_only ? BACKLOG : [],
+            has_more: false,
+            next_after_id: null,
+            limit: 100,
+        }));
+        renderOverview('/?project=all&iteration=backlog');
+        expect(await figure('overview-figure-done')).toHaveTextContent('2');
+        expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
+        expect(screen.queryByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).not.toBeInTheDocument();
+        expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
+    });
+
+    describe.each([
+        { scope: 'All projects', url: '/?project=all&iteration=backlog', projectId: undefined },
+        { scope: 'one project', url: '/?project=1&iteration=backlog', projectId: 1 },
+    ])('with no iterations and $scope with Backlog', ({ url, projectId }) => {
+        const backlogPage = (items: TaskReference[]) => ({ items, has_more: false, next_after_id: null, limit: 100 });
+        const emptyStateTitle = () => screen.queryByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') });
+        const workNow = () => screen.findByRole('region', { name: i18n.t('overview.workNow') });
+
+        beforeEach(() => {
+            api.iterations.mockResolvedValue([]);
+            // Get started would name the next step itself; with it dismissed the page's own empty state is in view.
+            useGetStartedVisibility.setState({ dismissed: true, requested: false });
+        });
+
+        afterEach(() => {
+            useGetStartedVisibility.setState({ dismissed: false, requested: false });
+        });
+
+        it('shows loading, not the empty state, while the backlog is read', async () => {
+            api.lookup.mockReturnValue(new Promise(() => undefined));
+            renderOverview(url);
+            expect(await within(await workNow()).findByText(i18n.t('overview.dataStatus.sectionLoading'))).toBeInTheDocument();
+            expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+        });
+
+        it('shows the error with Retry, not the empty state, when the backlog cannot be read', async () => {
+            api.lookup.mockRejectedValue(new Error('offline'));
+            const { user } = renderOverview(url);
+            const section = await workNow();
+            expect(await within(section).findByText(i18n.t('overview.dataStatus.sectionUnavailable'))).toBeInTheDocument();
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+
+            // Once the backlog loads, Retry shows its work.
+            api.lookup.mockResolvedValue(backlogPage(BACKLOG));
+            await user.click(within(section).getByRole('button', { name: i18n.t('queryFeedback.retry') }));
+            expect(await figure('overview-figure-done')).toHaveTextContent('2');
+            expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+        });
+
+        it('shows the backlog work when there is some', async () => {
+            api.lookup.mockResolvedValue(backlogPage(BACKLOG));
+            renderOverview(url);
+            expect(await figure('overview-figure-done')).toHaveTextContent('2');
+            expect(screen.getByTestId('overview-figure-total')).toHaveTextContent('5');
+            expect(emptyStateTitle()).not.toBeInTheDocument();
+            expect(api.lookup.mock.calls.every(([params]) => params.project_id === projectId)).toBe(true);
+        });
+
+        it('shows the empty state once the backlog is read and holds no work', async () => {
+            api.lookup.mockResolvedValue(backlogPage([]));
+            renderOverview(url);
+            expect(await screen.findByRole('heading', { name: i18n.t('emptyStates.overview.iterationTitle') })).toBeInTheDocument();
+            expect(screen.queryByRole('region', { name: i18n.t('overview.workNow') })).not.toBeInTheDocument();
+        });
     });
 
     it('says what is needed when the pipeline cannot be read', async () => {

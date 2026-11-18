@@ -127,6 +127,10 @@ class TaskAssignee(BaseModel):
     """Brief assignee info for task."""
     id: int
     name: str
+    kind: Optional[Literal["human", "agent", "hybrid"]] = Field(
+        default=None,
+        description="Kind of the assignee's profile. Read-only; null when it is not known.",
+    )
 
     class Config:
         from_attributes = True

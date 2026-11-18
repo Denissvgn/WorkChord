@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { defaultFilters } from '../../utils/taskFilterDefaults';
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import type { Task } from '../../types/task';
 import { createTestQueryClient, renderWithProviders } from '../../test/renderWithProviders';
@@ -6,6 +7,7 @@ import { REVIEWER_PAGE_SIZE } from './useAgentRowFacts';
 import { TaskList } from './TaskList';
 import { taskDetailResponse } from '../../test/fixtures/taskDetail';
 import type { TaskFilters } from './TaskFiltersBar';
+import { changeAppLanguage } from '../../i18n/i18n';
 
 const taskServiceMock = vi.hoisted(() => ({
     getByIteration: vi.fn(),
@@ -212,17 +214,47 @@ describe('TaskList rows and groups', () => {
 
     it('groups by status with counts, work in hand first and finished work collapsed', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([
-            { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' }, { ...task(4), status: 'closed' },
+            { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' },
+            { ...task(4), status: 'closed' }, { ...task(5), status: 'resolved' },
         ]);
         const { user, rerender } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
         const groups = await screen.findAllByRole('heading', { level: 2 });
-        expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Closed1 task']);
+        expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Resolved1 task', 'Closed1 task']);
         expect(screen.getByRole('button', { name: /Closed/ })).toHaveAttribute('aria-expanded', 'false');
         expect(screen.queryByRole('button', { name: 'Task 4' })).toBeNull();
         await user.click(screen.getByRole('button', { name: /Closed/ }));
         expect(screen.getByRole('button', { name: 'Task 4' })).toBeInTheDocument();
         rerender(<TaskList iterationId={1} sortKey="priority" groupByStatus={false} />);
         expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
+    });
+
+    it('shows translated status names for legacy in-progress groups in English and Russian', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([{ ...task(1), status: 'in_progress' }]);
+        const { unmount } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
+        expect((await screen.findByRole('heading', { level: 2 })).textContent).toBe('Active1 task');
+        unmount();
+
+        await changeAppLanguage('ru');
+        try {
+            renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
+            expect((await screen.findByRole('heading', { level: 2 })).textContent).toBe('Активно1 задача');
+        } finally {
+            await changeAppLanguage('en');
+        }
+    });
+
+    it('combines legacy and active tasks into one active group', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), status: 'in_progress' }, { ...task(2), status: 'active' }, { ...task(3), status: 'closed' },
+        ]);
+        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
+        const groups = await screen.findAllByRole('heading', { level: 2 });
+        expect(groups.map(group => group.textContent)).toEqual(['Active2 tasks', 'Closed1 task']);
+        expect(screen.getByRole('button', { name: 'Task 1' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Task 2' })).toBeInTheDocument();
+        await user.click(within(groups[0]).getByRole('button'));
+        expect(screen.queryByRole('button', { name: 'Task 1' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Task 2' })).not.toBeInTheDocument();
     });
 
     it('keeps secondary facts behind Details and one manual-order list without groups', async () => {
@@ -261,7 +293,7 @@ describe('TaskList rows', () => {
         labelServiceMock.getGroups.mockResolvedValue([]);
     });
 
-    it('shows at most four interactive parts at rest and the checkbox and menu on hover and focus', async () => {
+    it('shows at most four interactive parts at rest, the checkbox always, and the menu on hover and focus', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2)]);
         const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
         await screen.findByRole('button', { name: 'Task 1' });
@@ -273,14 +305,15 @@ describe('TaskList rows', () => {
         expect(within(row).getByRole('button', { name: /Status: Planned/ })).toBeInTheDocument();
         expect(within(row).getByRole('button', { name: 'Task 1' })).toBeInTheDocument();
         expect(within(row).getByRole('combobox', { name: 'Assignee: Task 1' })).toBeInTheDocument();
-        expect(within(row).queryByRole('checkbox')).toBeNull();
+        expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
         expect(within(row).queryByRole('button', { name: 'Actions for Task 1' })).toBeNull();
 
         hover(row);
         expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
         expect(within(row).getByRole('button', { name: 'Actions for Task 1' })).toBeInTheDocument();
         unhover(row);
-        expect(within(row).queryByRole('checkbox')).toBeNull();
+        expect(within(row).getByRole('checkbox', { name: 'Select: Task 1' })).toBeInTheDocument();
+        expect(within(row).queryByRole('button', { name: 'Actions for Task 1' })).toBeNull();
 
         await user.click(within(row).getByRole('button', { name: 'Task 1' }));
         within(row).getByRole('button', { name: 'Task 1' }).focus();
@@ -301,6 +334,39 @@ describe('TaskList rows', () => {
         }
         hover(rowOf('Task 2'));
         expect(within(rowOf('Task 2')).getByRole('button', { name: 'Actions for Task 2' })).toBeInTheDocument();
+    });
+
+    it('shows a selection control on every row at rest, off with its reason on parent and composite rows', async () => {
+        const parent = { ...task(3), children: [{ ...task(4), parent_id: 3 }] };
+        const composite = { ...task(5), is_composite: true };
+        taskServiceMock.getByIteration.mockResolvedValue([task(1), task(2), parent, composite]);
+        const host = document.createElement('div');
+        document.body.appendChild(host);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" selectionBarHost={host} />);
+        await screen.findByRole('button', { name: 'Task 1' });
+
+        const reason = 'This task is made of subtasks and changes through them. Select its subtasks instead.';
+        for (const title of ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5']) {
+            const box = within(rowOf(title)).getByRole('checkbox', { name: `Select: ${title}` });
+            expect(box).toBeVisible();
+            if (title === 'Task 3' || title === 'Task 5') {
+                expect(box).toBeDisabled();
+                expect(box).toHaveAccessibleDescription(reason);
+                expect(box).toHaveAttribute('title', reason);
+            } else {
+                expect(box).toBeEnabled();
+                expect(box).not.toHaveAttribute('aria-describedby');
+            }
+        }
+
+        // A parent row's checkbox cannot be ticked; its subtask's can, and the bar shows in the toolbar's place.
+        fireEvent.click(within(rowOf('Task 3')).getByRole('checkbox', { name: 'Select: Task 3' }));
+        expect(within(host).queryByTestId('task-bulk-operations')).toBeNull();
+        fireEvent.click(within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' }));
+        expect(await within(host).findByText('Selected tasks: 1')).toBeInTheDocument();
+        expect(within(rowOf('Task 4')).getByRole('checkbox', { name: 'Select: Task 4' })).toBeChecked();
+        expect(within(rowOf('Task 3')).getByRole('checkbox', { name: 'Select: Task 3' })).not.toBeChecked();
+        host.remove();
     });
 
     it('keeps rows in manual order to four interactive parts, with the drag handle on hover and focus only', async () => {
@@ -331,9 +397,11 @@ describe('TaskList rows', () => {
         await waitFor(() => expect(within(rowOf('Task 2')).queryByRole('button', { name: 'Drag: Task 2' })).toBeNull());
         for (const title of titles) {
             const row = rowOf(title);
-            // A parent is not selected itself; its leaf tasks are.
-            if (title === 'Task 3') expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
-            else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeInTheDocument();
+            // A parent is not selected itself; its leaf tasks are, so its checkbox shows but is off.
+            if (title === 'Task 3') {
+                expect(within(row).getByRole('button', { name: 'Collapse all: Task 3' })).toBeInTheDocument();
+                expect(within(row).getByRole('checkbox', { name: 'Select: Task 3' })).toBeDisabled();
+            } else expect(within(row).getByRole('checkbox', { name: `Select: ${title}` })).toBeEnabled();
             expect(within(row).queryByRole('button', { name: `Drag: ${title}` })).toBeNull();
             expect(within(row).queryByRole('button', { name: `Actions for ${title}` })).toBeNull();
             expect(row.querySelectorAll(INTERACTIVE).length).toBeLessThanOrEqual(4);
@@ -524,6 +592,48 @@ describe('TaskList empty states', () => {
         expect(onClearFilters).toHaveBeenCalledTimes(1);
         expect(screen.queryByRole('button', { name: /new task/i })).not.toBeInTheDocument();
         expect(onCreateTask).not.toHaveBeenCalled();
+    });
+
+    it('shows why each task is at risk when opened from the at-risk signals', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), is_delayed: true, iteration_revision: 1 },
+            { ...task(2), is_overdue: true, iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Not started by its planned start')).toBeInTheDocument();
+        expect(screen.getByText('Past its end date')).toBeInTheDocument();
+    });
+
+    it('names the missed planned start, not a past start, when the baseline start has passed but the current start is ahead', async () => {
+        const day = (offset: number) => new Date(Date.now() + offset * 86_400_000).toISOString().slice(0, 10);
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), is_delayed: true, status: 'planned', baseline_start_date: day(-5), start_date: day(5), end_date: day(9),
+                actual_start_date: null, iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Not started by its planned start')).toBeInTheDocument();
+        expect(screen.queryByText(/before today/i)).not.toBeInTheDocument();
+        expect(screen.queryByText('Started after its planned start')).not.toBeInTheDocument();
+    });
+
+    it('lists a task whose only risk is outside its date limits, using the dates the Tasks list receives', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), start_date: '2026-08-03', min_start_date: '2026-08-05', iteration_revision: 1 },
+            { ...task(2), iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Outside its date limits')).toBeInTheDocument();
+        expect(screen.getByText('Task 1')).toBeInTheDocument();
+        expect(screen.queryByText('Task 2')).not.toBeInTheDocument();
+    });
+
+    it('says a task started late when it began after its planned start, not that it has not started', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), is_delayed: true, status: 'active', baseline_start_date: '2026-08-03', actual_start_date: '2026-08-06', iteration_revision: 1 },
+        ]);
+        renderWithProviders(<TaskList iterationId={1} sortKey="priority" filters={{ ...defaultFilters, planningIssue: 'at-risk' }} />);
+        expect(await screen.findByText('Started after its planned start')).toBeInTheDocument();
+        expect(screen.queryByText('Not started by its planned start')).not.toBeInTheDocument();
     });
 
     it('offers the one next step when the iteration has no tasks yet', async () => {

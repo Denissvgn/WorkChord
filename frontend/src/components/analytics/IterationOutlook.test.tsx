@@ -45,12 +45,12 @@ describe('iteration outlook on Analytics', () => {
         await user.click(screen.getByRole('button', { name: '2 tasks' }));
         let dialog = await screen.findByRole('dialog', { name: 'Late start' });
         expect(await within(dialog).findAllByRole('link')).toHaveLength(2);
-        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'late_start' }, expect.anything());
+        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'late_start', after_id: 0 }, expect.anything());
         await user.click(within(dialog).getByRole('button', { name: 'Close' }));
         await user.click(screen.getByRole('button', { name: '1 task' }));
         dialog = await screen.findByRole('dialog', { name: 'Iteration overflow' });
         expect(await within(dialog).findAllByRole('link')).toHaveLength(1);
-        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'iteration_overflow' }, expect.anything());
+        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric: 'iteration_overflow', after_id: 0 }, expect.anything());
     });
 
     it('shows schedule exceptions with unknown values when counts are missing on older summaries', () => {
@@ -65,13 +65,16 @@ describe('iteration outlook on Analytics', () => {
         }
     });
 
-    it('discloses the total when a schedule exception list is truncated', async () => {
-        vi.mocked(taskService.metricMatches).mockResolvedValue({ metric: 'late_start', has_more: true, items: Array.from({ length: 200 }, (_, index) => ({ id: index + 1, title: `Task ${index + 1}`, status: 'planned', project_name: 'Orchard', iteration_name: 'Iteration 7' })) });
-        const { user } = renderWithProviders(<OnTrackSummary summary={summary({ late_start_tasks: 201 })} />);
+    it.each(['late_start', 'iteration_overflow'] as const)('loads every page for %s', async (metric) => {
+        vi.mocked(taskService.metricMatches).mockImplementation(async ({ after_id }) => ({
+            metric, has_more: after_id === 0, next_after_id: after_id === 0 ? 200 : null,
+            items: Array.from({ length: after_id === 0 ? 200 : 1 }, (_, index) => ({ id: (after_id ?? 0) + index + 1, title: `Task ${(after_id ?? 0) + index + 1}`, status: 'planned', project_name: 'Orchard', iteration_name: 'Iteration 7' })),
+        }));
+        const { user } = renderWithProviders(<OnTrackSummary summary={summary({ late_start_tasks: metric === 'late_start' ? 201 : 0, iteration_overflow_tasks: metric === 'iteration_overflow' ? 201 : 0 })} />);
         await user.click(screen.getByRole('button', { name: '201 tasks' }));
-        const dialog = await screen.findByRole('dialog', { name: 'Late start' });
-        expect(await within(dialog).findByText('Showing the first 200 of 201 tasks.')).toBeVisible();
-        expect(within(dialog).getAllByRole('link')).toHaveLength(200);
+        const dialog = await screen.findByRole('dialog', { name: metric === 'late_start' ? 'Late start' : 'Iteration overflow' });
+        expect(await within(dialog).findAllByRole('link')).toHaveLength(201);
+        expect(taskService.metricMatches).toHaveBeenCalledWith({ iteration_id: 7, metric, after_id: 200 }, expect.anything());
     });
 
     it('splits tasks by status with counts and a table view, accepted shown separately', () => {

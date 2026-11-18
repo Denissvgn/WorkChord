@@ -12,7 +12,7 @@ import { useScopeLink } from '../../features/scope/useScopeLink';
 import { Button } from '../../components/common/Button';
 /**
  * A count that opens the tasks it counts. The server picks them with the same
- * predicate as the count; the response may be limited.
+ * predicate as the count.
  */
 export const MetricCount = ({ metric, scope, title, children, className, total }: {
     metric: WorkMetricName; scope: MetricScope | null; title: string; children: ReactNode; className?: string; total?: number;
@@ -23,7 +23,21 @@ export const MetricCount = ({ metric, scope, title, children, className, total }
     // feedback-policy: query loading,error,retry,empty - the dialog keeps explicit loading, retry and empty feedback.
     const matches = useQuery({
         queryKey: ['metric-matches', metric, scope],
-        queryFn: ({ signal }) => taskService.metricMatches({ ...scope!, metric }, signal),
+        queryFn: async ({ signal }) => {
+            let after_id = 0;
+            const items: Awaited<ReturnType<typeof taskService.metricMatches>>['items'] = [];
+            let hasMore = true;
+            while (hasMore) {
+                const page = await taskService.metricMatches({ ...scope!, metric, after_id }, signal);
+                items.push(...page.items);
+                hasMore = page.has_more;
+                if (hasMore) {
+                    if (page.next_after_id == null || page.next_after_id <= after_id) throw new Error('Invalid metric matches cursor');
+                    after_id = page.next_after_id;
+                }
+            }
+            return { items, has_more: false };
+        },
         enabled: open && scope !== null,
     });
     if (scope === null) return <span className={className}>{children}</span>;

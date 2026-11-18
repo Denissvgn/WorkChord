@@ -36,7 +36,9 @@ api.interceptors.request.use((config) => {
     ) {
         config.headers = new AxiosHeaders(config.headers);
     }
-    if (adminApiKey && !identityRead && !humanSession && !(agentApiKey && sendsAgentCredential)) {
+    if (humanSession) {
+        config.headers.delete('X-Admin-API-Key');
+    } else if (adminApiKey && !identityRead && !config.headers.has('X-Admin-API-Key') && !(agentApiKey && sendsAgentCredential)) {
         config.headers.set('X-Admin-API-Key', adminApiKey);
     }
     if (agentApiKey && sendsAgentCredential && !humanSession) {

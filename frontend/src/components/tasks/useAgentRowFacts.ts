@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
-import { useQueries, useQuery } from '@tanstack/react-query';
-import { agentService } from '../../services/agentService';
+import { useQueries } from '@tanstack/react-query';
 import { taskService } from '../../services/taskService';
-import { useIdentity } from '../../features/identity/identityContext';
-import { useAgentAccess } from '../../hooks/useAgentAccess';
-import { hasAdminApiKey } from '../../utils/adminAccess';
-import { protectedQueryRetry } from '../../utils/protectedQueries';
 import { taskAgentDispatchState } from '../../features/agentDispatch';
 import type { AgentDispatchState } from '../../features/agentDispatch';
 import type { Task, TaskStatus } from '../../types/task';
@@ -22,8 +17,6 @@ export interface AgentRowFacts {
     reviewerById: Map<number, string | null>;
     /** True while any displayed task is submitted, so every row keeps a Reviewer cell and the columns line up. */
     reviewerColumn: boolean;
-    /** Profiles with an enabled agent bound; null when this reader may not read the agent roster. */
-    boundProfileIds: Set<number> | null;
 }
 
 /**
@@ -33,7 +26,7 @@ export interface AgentRowFacts {
  * agent holding the live review. Reads go only for the tasks shown, in pages of
  * REVIEWER_PAGE_SIZE ids, so a long list is covered without one unbounded request. `known` holds
  * reviewers a page already read in its own list (My Work returns them), which are not read again.
- * Whether an agent is bound to a profile comes from the agent roster, for readers allowed it.
+ * Whether the agent is connected comes with the assignee options, from the team read every reader has.
  */
 export const useAgentRowFacts = (tasks: DisplayedTask[], known?: ReadonlyMap<number, string | null>): AgentRowFacts => {
     const submittedKey = [...new Set(tasks.filter(task => task.status === 'resolved').map(task => task.id))].sort((a, b) => a - b).join(',');
@@ -44,11 +37,6 @@ export const useAgentRowFacts = (tasks: DisplayedTask[], known?: ReadonlyMap<num
         for (let start = 0; start < toRead.length; start += REVIEWER_PAGE_SIZE) chunks.push(toRead.slice(start, start + REVIEWER_PAGE_SIZE));
         return chunks;
     }, [toRead]);
-    const identity = useIdentity()?.identity;
-    const { hasAgentKey } = useAgentAccess();
-    // The roster is for workspace operators and agent or admin keys; others are not asked.
-    const mayReadRoster = identity?.workspace_role === 'owner' || identity?.workspace_role === 'operator' || hasAgentKey || hasAdminApiKey();
-
     // feedback-policy: query loading,error,retry,empty - optional row detail: while loading or after a failure the row keeps an empty Reviewer cell instead of guessing a name.
     const reviewerQueries = useQueries({
         queries: pages.map(ids => ({
@@ -61,14 +49,6 @@ export const useAgentRowFacts = (tasks: DisplayedTask[], known?: ReadonlyMap<num
             staleTime: 30_000,
         })),
     });
-    // feedback-policy: query loading,error,retry,empty - optional row detail: without the roster the line says the agent status is unknown.
-    const roster = useQuery({
-        queryKey: ['agent-actor-roster', false],
-        queryFn: () => agentService.getActorRoster(false, { optional: true }),
-        enabled: mayReadRoster,
-        retry: protectedQueryRetry,
-        staleTime: 60_000,
-    });
 
     // The query array is new on every render; the time of the last load says when its data changed.
     const reviewerStamp = reviewerQueries.map(query => query.dataUpdatedAt).join(',');
@@ -79,29 +59,34 @@ export const useAgentRowFacts = (tasks: DisplayedTask[], known?: ReadonlyMap<num
         return map;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reviewerStamp, submittedIds, known]);
-    const rosterData = roster.data;
-    const boundProfileIds = useMemo(() => rosterData
-        ? new Set(rosterData.filter(actor => actor.enabled && actor.lifecycle_state !== 'disabled' && actor.profile_id !== null).map(actor => actor.profile_id as number))
-        : null, [rosterData]);
 
-    return { reviewerById, reviewerColumn: submittedIds.length > 0, boundProfileIds };
+    return { reviewerById, reviewerColumn: submittedIds.length > 0 };
 };
+
+/**
+ * The kind of a task's assignee: from the team read once it has the assignee's row, otherwise
+ * from the task itself, so a task given to an agent is known as one while the team read loads
+ * or after it fails.
+ */
+export const assigneeKind = (
+    assignee: { id: number; kind?: TaskRowAssigneeOption['kind'] | null } | null | undefined,
+    option: TaskRowAssigneeOption | undefined,
+): TaskRowAssigneeOption['kind'] => option?.kind ?? assignee?.kind ?? undefined;
 
 /**
  * The agent status line and the Reviewer for one row. The status line is for an agent
  * assignee only; the Reviewer is named once the task is submitted. While any displayed task is
  * submitted, other rows keep an empty reviewer cell so the columns line up; with none, the
- * cell is left out and the title keeps the room.
+ * cell is left out and the title keeps the room. Until the team read says whether the agent is
+ * connected, an agent assignee with nothing sent shows the unknown line.
  */
 export const agentRowValues = (
-    task: Pick<Task, 'id' | 'status' | 'agent_working' | 'claimed_by'> & { assignee?: { id: number } | null },
+    task: Pick<Task, 'id' | 'status' | 'agent_working' | 'claimed_by'> & { assignee?: { id: number; kind?: TaskRowAssigneeOption['kind'] | null } | null },
     options: TaskRowAssigneeOption[] | undefined,
     facts: AgentRowFacts,
 ): { dispatch: AgentDispatchState | null; reviewer: { name: string | null } | null | undefined } => {
     const option = task.assignee ? options?.find(candidate => candidate.id === task.assignee?.id) : undefined;
-    const profileId = option?.profileId ?? null;
-    const agentBound = facts.boundProfileIds && profileId !== null ? facts.boundProfileIds.has(profileId) : undefined;
-    const dispatch = option?.kind === 'agent' ? taskAgentDispatchState(task, agentBound) : null;
+    const dispatch = assigneeKind(task.assignee, option) === 'agent' ? taskAgentDispatchState(task, option?.agentConnected) : null;
     const reviewer = !facts.reviewerColumn ? undefined
         : task.status === 'resolved' && facts.reviewerById.has(task.id) ? { name: facts.reviewerById.get(task.id) ?? null } : null;
     return { dispatch, reviewer };

@@ -276,7 +276,8 @@ def _task_to_gantt(
     # Assignee for the task itself (show even if composite)
     assignee = None
     if loaded_assignee:
-        assignee = GanttAssignee(id=loaded_assignee.id, name=loaded_assignee.name)
+        assignee = GanttAssignee(id=loaded_assignee.id, name=loaded_assignee.name,
+                                 kind=loaded_assignee.__dict__.get("assignee_kind"))
 
     milestone = None
     if loaded_milestone:

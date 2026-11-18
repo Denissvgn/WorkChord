@@ -118,7 +118,7 @@ describe('Plan manages iterations', () => {
             expect(within(section).getByText('Company calendar')).toBeVisible();
             expect(within(section).getByRole('link', { name: 'Beacon' })).toHaveAttribute('href', '/projects/2');
 
-            await user.click(within(section).getByRole('button', { name: 'Edit' }));
+            await user.click(within(section).getByRole('button', { name: 'Edit iteration' }));
             const drawer = await screen.findByRole('dialog', { name: 'Edit iteration' });
             await waitFor(() => expect(within(drawer).getByLabelText('Iteration name')).toHaveValue('Launch'));
             expect(locationText()).toContain('edit=21');
@@ -136,8 +136,9 @@ describe('Plan manages iterations', () => {
             });
             const { user } = await renderPlan('/plan?project=3&iteration=backlog');
 
-            const section = screen.getByTestId('plan-section-iteration');
-            expect(section).toHaveAttribute('data-state', 'todo');
+            const section = await screen.findByTestId('plan-section-iteration');
+            // Without an iteration the server has nothing to report, so the step carries no state.
+            expect(section).not.toHaveAttribute('data-state');
             expect(section).toHaveTextContent('There is no iteration in scope.');
             await user.click(within(section).getByRole('button', { name: 'New iteration' }));
 

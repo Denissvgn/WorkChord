@@ -81,6 +81,7 @@ export interface IterationSummary extends WorkMetrics {
 
 export interface IterationPlanningReadinessSummary {
     iteration_id: number;
+    calendar_name?: string | null;
     team_member_count: number;
     team_capacity_hours: number;
     /** Effort of the iteration's planning leaves, and the part assigned to a capacity row. */

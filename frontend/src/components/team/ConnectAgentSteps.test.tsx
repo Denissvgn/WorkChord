@@ -4,6 +4,8 @@ import { AxiosError } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
 import { agentService } from '../../services/agentService';
+import { teamService } from '../../services/teamService';
+import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 import type {
     AgentModelCatalogEntry, AgentTeamMaster, AgentTeamMemberSpec, AgentTeamMemberStatus, AgentTeamPlan, AgentTeamStatus,
 } from '../../types/agent';
@@ -14,10 +16,12 @@ import { hasPM, runtimeSnippet } from '../../features/agentTeamSetup/connectAgen
 
 vi.mock('../../services/agentService', () => ({ agentService: {
     getAgentTeamStatus: vi.fn(), getAgentTeamStartingPoints: vi.fn(), getModelCatalog: vi.fn(), createModelCatalogEntry: vi.fn(),
-    validateAgentTeamMaster: vi.fn(), planAgentTeamMaster: vi.fn(), applyAgentTeamAction: vi.fn(), applyAgentTeamActions: vi.fn(),
+    getProfilePresets: vi.fn(), validateAgentTeamMaster: vi.fn(), planAgentTeamMaster: vi.fn(), applyAgentTeamAction: vi.fn(), applyAgentTeamActions: vi.fn(),
 } }));
+vi.mock('../../services/teamService', () => ({ teamService: { getProfiles: vi.fn() } }));
 vi.mock('../../hooks/useAdminAccess', () => ({ useAdminAccess: () => ({ hasAdminKey: true }), useKeylessReader: () => ({ settings: false }) }));
 const service = vi.mocked(agentService);
+const teams = vi.mocked(teamService);
 
 const member = (role: AgentTeamMemberSpec['role'], key: string): AgentTeamMemberSpec => ({
     actor_key: key, actor_name: `workchord-${key}`, display_name: key, role,
@@ -98,6 +102,8 @@ beforeEach(() => {
     service.getAgentTeamStatus.mockResolvedValue(structuredClone(status));
     service.getAgentTeamStartingPoints.mockResolvedValue({ current: structuredClone(current), template: structuredClone(current) });
     service.getModelCatalog.mockResolvedValue([model]);
+    service.getProfilePresets.mockResolvedValue([]);
+    teams.getProfiles.mockResolvedValue([]);
     service.validateAgentTeamMaster.mockImplementation(async manifest => ({
         schema_version: 'agent-team-validation-v1', valid: true, manifest_digest: 'a'.repeat(64), normalized_manifest: manifest, blocker_codes: [],
     }));
@@ -115,6 +121,89 @@ beforeEach(() => {
 afterEach(() => { vi.restoreAllMocks(); });
 
 describe('Connect agent steps', () => {
+    it('offers to resume an agent that waits for its runtime after Connect was left and reopened, without creating it again', async () => {
+        const waitingSpec: AgentTeamMemberSpec = { ...member('worker', 'codex-worker-1'), runtime_ref: 'runtime://codex/codex-worker-1' };
+        service.getAgentTeamStartingPoints.mockResolvedValue({
+            current: { ...structuredClone(current), workers: [...current.workers, waitingSpec] }, template: structuredClone(current),
+        });
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, members: [memberStatus(waitingSpec, { configured: true })] });
+        const first = renderWithProviders(<ConnectAgentSteps />);
+        await first.user.click(await screen.findByRole('button', { name: 'Resume codex-worker-1' }));
+        first.unmount();
+
+        const reopened = renderWithProviders(<ConnectAgentSteps />);
+        const resume = await reopened.findByRole('button', { name: 'Resume codex-worker-1' });
+        await reopened.user.click(resume);
+        expect(await screen.findByText('Waiting for the runtime acknowledgement…')).toBeVisible();
+        const filename = `${createHash('sha256').update('private-sink/codex-worker-1').digest('hex').slice(0, 24)}-codex-worker-1.json`;
+        await waitFor(() => expect(screen.getByText('Credential file').nextElementSibling).toHaveTextContent(filename));
+        expect(screen.getByText('Skill package to install').nextElementSibling).toHaveTextContent('workchord-worker 1.8.0');
+        expect(screen.getByLabelText('Codex configuration')).toHaveTextContent(`"$WORKCHORD_CREDENTIAL_DIR/${filename}"`);
+        expect(screen.queryByRole('button', { name: 'Connect agent' })).not.toBeInTheDocument();
+        expect(service.applyAgentTeamAction).not.toHaveBeenCalled();
+    });
+
+    it('offers no resume when every configured member is already acknowledged', async () => {
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, members: [memberStatus(current.workers[0], {
+            configured: true, package_acknowledged: true, acknowledgement_state: 'current', connection_state: 'observed',
+        })] });
+        renderWithProviders(<ConnectAgentSteps />);
+        await screen.findByRole('radio', { name: 'Worker' });
+        expect(screen.queryByRole('button', { name: /^Resume / })).not.toBeInTheDocument();
+    });
+
+    it('shows the server reason and code when the team cannot be loaded', async () => {
+        service.getAgentTeamStatus.mockRejectedValue(new AxiosError('Conflict', 'ERR_BAD_REQUEST', undefined, undefined, {
+            status: 409, statusText: 'Conflict', headers: {}, config: {} as never,
+            data: { detail: { code: 'agent_team_skill_catalog_unavailable', message: 'The skill catalog is not available' } },
+        }));
+        renderWithProviders(<ConnectAgentSteps />);
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent('Could not load the team.');
+        expect(alert).toHaveTextContent('Server reason: The skill catalog is not available');
+        expect(alert).toHaveTextContent('agent_team_skill_catalog_unavailable (409)');
+    });
+
+    it('names AGENT_TEAM_CREDENTIAL_SINK_DIR and links the setup guide when the credential folder is missing', async () => {
+        service.validateAgentTeamMaster.mockImplementation(async manifest => ({
+            schema_version: 'agent-team-validation-v1', valid: false, manifest_digest: 'a'.repeat(64), normalized_manifest: manifest, blocker_codes: ['agent_team_credential_sink_unavailable'],
+        }));
+        await toReview();
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent('AGENT_TEAM_CREDENTIAL_SINK_DIR');
+        expect(within(alert).getByRole('link', { name: 'Agent team setup guide' }))
+            .toHaveAttribute('href', expect.stringContaining('docs/agent-team-setup.md'));
+        expect(within(alert).getByText('agent_team_credential_sink_unavailable')).toBeInTheDocument();
+    });
+
+    it('leaves the drawer title as the only Connect an agent heading when the title is hidden', async () => {
+        renderWithProviders(<SlideOverDrawer open title="Connect an agent" onClose={() => undefined}><ConnectAgentSteps showTitle={false} /></SlideOverDrawer>);
+        await screen.findByRole('radio', { name: 'Worker' });
+        expect(screen.getAllByRole('heading', { name: 'Connect an agent' })).toHaveLength(1);
+    });
+
+    it('announces the profile display name that Team shows, from the existing profile or the preset', async () => {
+        teams.getProfiles.mockResolvedValue([{ seed_key: 'worker-profile', display_name: 'Backend Implementation Agent' } as never]);
+        const view = await toReview();
+        expect(await screen.findByText('Backend Implementation Agent')).toBeInTheDocument();
+        expect(screen.queryByText('Codex Worker 1')).not.toBeInTheDocument();
+        await view.user.click(screen.getByRole('button', { name: 'Continue to connect' }));
+        expect(screen.getByText(/Create Backend Implementation Agent\./)).toBeInTheDocument();
+    });
+
+    it('announces the server preset display name when the profile does not exist yet', async () => {
+        const template = structuredClone(current);
+        template.workers = [{ ...member('worker', 'backend-worker'), profile_key: 'backend-implementation-agent', display_name: 'Backend Implementation Runtime' }];
+        service.getAgentTeamStartingPoints.mockResolvedValue({ current: structuredClone(current), template });
+        service.getProfilePresets.mockResolvedValue([{ key: 'backend-implementation-agent', display_name: 'Server Backend Agent' }]);
+        const view = await toReview();
+        expect(await screen.findByText('Server Backend Agent')).toBeInTheDocument();
+        expect(screen.queryByText('Codex Worker 1')).not.toBeInTheDocument();
+        await view.user.click(screen.getByRole('button', { name: 'Continue to connect' }));
+        expect(screen.getByText(/Create Server Backend Agent\./)).toBeInTheDocument();
+        expect(service.getProfilePresets).toHaveBeenCalledTimes(1);
+    });
+
     it('connects a Worker on Codex in five steps while preserving every existing member in validate, plan and apply', async () => {
         const view = await connect();
         expect(within(screen.getByRole('list', { name: 'Connection steps' })).getAllByRole('listitem').map(item => item.textContent))
@@ -341,6 +430,53 @@ describe('Connect agent steps', () => {
         await view.user.click(within(drawer).getByRole('button', { name: 'Add a model entry' }));
         await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(service.createModelCatalogEntry).toHaveBeenCalledWith(expect.objectContaining({ key: 'local-model', provider: 'local' }), expect.any(Object));
+        expect(screen.getByRole('combobox', { name: 'Which model will it use?' })).toHaveValue('local-model');
+    });
+
+    it.each([
+        [401, 'The server refused the key in this browser tab, so the model was not added. Unlock editing with the admin key, then add it again.'],
+        [403, 'The server refused the key in this browser tab, so the model was not added. Unlock editing with the admin key, then add it again.'],
+        [409, 'Could not add this model. Use a unique lowercase catalog key and check the provider and model alias.'],
+        [422, 'Could not add this model. Use a unique lowercase catalog key and check the provider and model alias.'],
+        [503, 'The server could not add this model right now. Try again.'],
+    ])('names why a model entry was not added after a %i answer', async (code, message) => {
+        service.getModelCatalog.mockResolvedValue([]);
+        const view = renderWithProviders(<ConnectAgentSteps />);
+        await screen.findByRole('radio', { name: 'Worker' });
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Add a model entry' }));
+        const drawer = screen.getByRole('dialog', { name: 'Add a model entry' });
+        fireEvent.change(within(drawer).getByLabelText(/Stable catalog key/), { target: { value: 'local-model' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured provider/), { target: { value: 'local' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured model alias/), { target: { value: 'Local model' } });
+        service.createModelCatalogEntry.mockRejectedValueOnce(new AxiosError('Refused', String(code), undefined, undefined, {
+            status: code, data: { detail: 'Server detail' },
+        } as never));
+        await view.user.click(within(drawer).getByRole('button', { name: 'Add a model entry' }));
+        expect(await within(drawer).findByRole('alert')).toHaveTextContent(message);
+    });
+
+    it('accepts an admin-key receipt that names no agent actor', async () => {
+        service.getModelCatalog.mockResolvedValue([]);
+        const view = renderWithProviders(<ConnectAgentSteps />);
+        await screen.findByRole('radio', { name: 'Worker' });
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Continue' }));
+        await view.user.click(screen.getByRole('button', { name: 'Add a model entry' }));
+        const drawer = screen.getByRole('dialog', { name: 'Add a model entry' });
+        fireEvent.change(within(drawer).getByLabelText(/Stable catalog key/), { target: { value: 'local-model' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured provider/), { target: { value: 'local' } });
+        fireEvent.change(within(drawer).getByLabelText(/Configured model alias/), { target: { value: 'Local model' } });
+        const added = { ...model, key: 'local-model' };
+        service.createModelCatalogEntry.mockResolvedValueOnce({
+            operation: 'model_catalog.create', actor_id: null, target_type: 'model_catalog', target_id: added.id,
+            idempotency_key: 'operator-create', rationale: 'Add model local-model to connect an agent.', correlation_id: 'operator-create',
+            authoritative_revision: 1, invalidated_assignment_ids: [], audit_event_ids: [1], result: added,
+        });
+        service.getModelCatalog.mockResolvedValue([added]);
+        await view.user.click(within(drawer).getByRole('button', { name: 'Add a model entry' }));
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         expect(screen.getByRole('combobox', { name: 'Which model will it use?' })).toHaveValue('local-model');
     });
 

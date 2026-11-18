@@ -1,8 +1,14 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithProviders } from '../../test/renderWithProviders';
+import AnalyticsPage from '../../pages/AnalyticsPage';
+import { useScopeStore } from '../../features/scope/scopeStore';
 import { ExecutionUsagePanel } from './ExecutionUsagePanel';
 import type { ExecutionUsageSummary } from '../../types/executionUsage';
+
+const delivery = vi.hoisted(() => ({ get: vi.fn() }));
+vi.mock('../../services/deliveryMetricsService', () => ({ deliveryMetricsService: delivery }));
+vi.mock('../../services/iterationService', () => ({ iterationService: { getAll: async () => [] } }));
 
 const service = vi.hoisted(() => ({ get: vi.fn() }));
 vi.mock('../../services/executionUsageService', () => ({ executionUsageService: service }));
@@ -16,6 +22,27 @@ const report: ExecutionUsageSummary = { window_start: '2026-09-01T00:00:00Z', wi
 
 describe('Reported execution usage', () => {
     beforeEach(() => { vi.clearAllMocks(); service.get.mockResolvedValue(report); });
+
+    it('requests backlog-only delivery and usage across projects and displays the scoped totals', async () => {
+        useScopeStore.setState({ project: null, iteration: null });
+        delivery.get.mockImplementation(() => new Promise(() => {}));
+        service.get.mockImplementation(async scope => ({
+            ...report,
+            reported_runs: scope.all_projects_backlog ? 4 : 5,
+            expected_runs: scope.all_projects_backlog ? 4 : 6,
+            unreported_runs: scope.all_projects_backlog ? 0 : 1,
+            partial_reports: 0,
+            provider_reported_cost: { USD: scope.all_projects_backlog ? '29' : '39' },
+        }));
+        renderWithProviders(<AnalyticsPage />, { initialEntries: ['/analytics?project=all&iteration=backlog'] });
+        expect(await screen.findByText('Reports: 4 of 4 observed attempts. Unreported: 0; partial: 0; unavailable: 0.')).toBeVisible();
+        expect(screen.getByText('29')).toBeVisible();
+        const scope = { all_projects: true, all_projects_backlog: true, lookback_days: 30 };
+        expect(service.get).toHaveBeenCalledWith(scope);
+        expect(delivery.get).toHaveBeenCalledWith(scope);
+        expect(service.get.mock.calls.every(([params]) => params.all_projects_backlog === true)).toBe(true);
+        useScopeStore.setState({ project: null, iteration: null });
+    });
 
     it('retains tiny decimal costs and keeps simulations, currencies and unknown effort visible', async () => {
         renderWithProviders(<ExecutionUsagePanel scope={{ project_id: 1, lookback_days: 30 }} />);

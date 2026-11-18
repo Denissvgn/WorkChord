@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import { CheckCircle2, Circle, CornerDownRight } from 'lucide-react';
@@ -15,7 +15,7 @@ import { AgentDispatchLine, AssigneeKindIcon, EffortValue, TaskStateChipBadge } 
 import { AssigneeSelect } from './AssigneeSelect';
 
 import { Button } from '../../components/common/Button';
-export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null }
+export interface TaskRowAssigneeOption { id: number; name: string; kind?: 'human' | 'agent' | 'hybrid'; profileId?: number | null; agentConnected?: boolean }
 
 export interface TaskRowProps {
     id: number;
@@ -29,8 +29,13 @@ export interface TaskRowProps {
     chip?: TaskStateChip | null;
     /** Secondary text after the title, such as the project and iteration. */
     meta?: ReactNode;
-    /** The assignee column is left out when this is undefined. */
-    assignee?: { id?: number; name: string } | null;
+    /** Why the row needs attention, one short line per reason, shown beside the title from 768 px. */
+    reasons?: string[];
+    /**
+     * The assignee column is left out when this is undefined. `kind` comes from the task and
+     * sets the icon until the assignee options have the row.
+     */
+    assignee?: { id?: number; name: string; kind?: TaskRowAssigneeOption['kind'] | null } | null;
     assigneeOptions?: TaskRowAssigneeOption[];
     onAssign?: (assigneeId: number | null) => void;
     /** Days; `undefined` leaves the column out and `null` shows an unknown estimate. */
@@ -38,7 +43,7 @@ export interface TaskRowProps {
     level?: number;
     /** Hierarchy controls shown before the status, such as an expander. */
     lead?: ReactNode;
-    /** A drag handle, shown with the checkbox and the menu on hover and focus. */
+    /** A drag handle, shown with the menu on hover and focus. */
     handle?: ReactNode;
     /** Keeps the handle and the menu shown, such as while the row is dragged. */
     revealed?: boolean;
@@ -46,11 +51,12 @@ export interface TaskRowProps {
     onStatusChange?: (status: TaskStatus) => void;
     menuItems: OverflowMenuItem[];
     selected?: boolean;
-    /** Some rows are selected, so every checkbox stays visible. */
-    selectionActive?: boolean;
-    /** Leaves out the checkbox for rows that cannot be selected. */
+    /** Leaves out the checkbox when there is neither a toggle nor a reason it is off. */
     onToggleSelect?: (options: { shiftKey: boolean }) => void;
-    /** Why this row cannot join the current selection; the checkbox stays visible but off. */
+    /**
+     * Why this row cannot be selected, or cannot join the current selection; the checkbox stays
+     * visible but off, and the reason is its tooltip and accessible description.
+     */
     selectDisabledReason?: string;
     /** For an agent assignee, the status line under the name that says where its work stands. */
     dispatch?: AgentDispatchState | null;
@@ -66,24 +72,24 @@ export interface TaskRowProps {
 
 /**
  * One 44 px task row for the list, My Work and the project task tree. At rest it holds the
- * status, the title and the assignee; the checkbox, the drag handle and the menu appear on hover
- * and focus, and every checkbox stays while some rows are selected.
+ * status, the title and the assignee; the selection checkbox is always shown, and the drag handle and
+ * the menu appear on hover and focus.
  */
 export const TaskRow = ({
-    id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
-    level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, selectionActive = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
+    id, title, titleText, status, statusLocked = false, priority, chip, meta, reasons, assignee, assigneeOptions, onAssign, effort,
+    level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
     const { t } = useTranslation();
     const [hovered, setHovered] = useState(false);
     const [focused, setFocused] = useState(false);
-    // While some rows are selected every checkbox shows; the menu stays on hover and focus only.
+    const selectReasonId = useId();
+    // The checkbox is always shown, so selecting never means hunting for it; the menu stays on hover and focus.
     const menuShown = hovered || focused || revealed;
-    const checkboxShown = menuShown || selected || selectionActive;
     const statusName = t(`statuses.${status}`, { defaultValue: status });
     const transitions = statusLocked ? [] : TASK_TRANSITIONS[status] ?? [];
     const statusIcon = isDone(status) ? <CheckCircle2 aria-hidden="true" className="h-4 w-4" /> : <Circle aria-hidden="true" className="h-4 w-4" />;
-    const assigneeKind = assigneeOptions?.find(option => option.id === assignee?.id)?.kind;
+    const assigneeKind = assigneeOptions?.find(option => option.id === assignee?.id)?.kind ?? assignee?.kind ?? undefined;
     const assigneeName = assignee?.name ?? t('common.unassigned');
     const options = assignee && assignee.id !== undefined && !assigneeOptions?.some(option => option.id === assignee.id)
         ? [{ id: assignee.id, name: assignee.name }, ...(assigneeOptions ?? [])]
@@ -105,20 +111,23 @@ export const TaskRow = ({
             onFocus={() => setFocused(true)}
             onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}
         >
-            {/* The slot keeps its width, so the row does not shift when the checkbox appears. */}
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-                {checkboxShown && onToggleSelect && (
+            {/* The slot keeps its width for rows that cannot be selected, so the columns line up. */}
+            {/* A disabled checkbox gets no pointer events, so the slot carries the tooltip too. */}
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center" title={selectDisabledReason}>
+                {(onToggleSelect || selectDisabledReason !== undefined) && (
                     <input
                         type="checkbox"
                         checked={selected}
                         disabled={selectDisabledReason !== undefined}
                         title={selectDisabledReason}
+                        aria-describedby={selectDisabledReason !== undefined ? selectReasonId : undefined}
                         onChange={() => undefined}
-                        onClick={event => onToggleSelect({ shiftKey: event.shiftKey })}
+                        onClick={event => onToggleSelect?.({ shiftKey: event.shiftKey })}
                         aria-label={t('taskList.selectTask', { title })}
-                        className="h-4 w-4 cursor-pointer rounded border-border-strong text-action focus:ring-focus disabled:cursor-not-allowed disabled:opacity-50"
+                        className="h-4 w-4 cursor-pointer rounded border-border-strong text-action focus:ring-focus disabled:cursor-not-allowed"
                     />
                 )}
+                {selectDisabledReason !== undefined && <span id={selectReasonId} className="sr-only">{selectDisabledReason}</span>}
             </span>
 
             {level > 0 && <CornerDownRight aria-hidden="true" className="h-4 w-4 shrink-0 text-content-tertiary" />}
@@ -169,6 +178,12 @@ export const TaskRow = ({
             </Button>
 
             {meta && <span className="hidden min-w-0 max-w-[16rem] shrink truncate text-xs text-content-secondary lg:block">{meta}</span>}
+
+            {reasons && reasons.length > 0 && (
+                <span data-task-reasons="" title={reasons.join('; ')} className="hidden w-44 shrink-0 flex-col justify-center text-wc-micro leading-3.5 text-content-secondary md:flex">
+                    {reasons.map(reason => <span key={reason} className="block truncate">{reason}</span>)}
+                </span>
+            )}
 
             {chip && <TaskStateChipBadge chip={chip} className="hidden sm:inline" />}
 
