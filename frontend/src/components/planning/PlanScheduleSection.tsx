@@ -10,15 +10,27 @@ import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlan
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse, SchedulePreviewResponse } from '../../types/gantt';
-import { scheduleLeaves, taskLeaves } from '../../features/planningMasters/scheduleEvidence';
+import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
+import { isFinished } from '../../features/planningMasters/planningTaskIssues';
 import type { Iteration } from '../../types/iteration';
+import type { Task } from '../../types/task';
 import type { TeamMember } from '../../types/team';
 import { formatDate } from '../../utils/formatDate';
 import { formatDecimal } from '../../utils/workNumbers';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 
-export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
-    iteration: Iteration; members: TeamMember[]; gantt?: GanttResponse; done: boolean;
+/**
+ * Whether every unfinished task in the iteration has dates, judged from the iteration's task list (deferred tasks
+ * included). The Gantt response leaves deferred tasks out, so it cannot support that claim.
+ */
+const everyUnfinishedTaskDated = (tasks: Task[]) => {
+    const leaves = tasks.filter(task => !task.is_composite && !task.children?.length && !isFinished(task));
+    return leaves.length > 0 && leaves.every(task => Boolean(task.start_date && task.end_date));
+};
+
+export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iterationTasks, done }: {
+    /** The iteration's tasks from the task list, flattened, deferred tasks included. */
+    iteration: Iteration; members: TeamMember[]; gantt?: GanttResponse; tasks: Task[]; done: boolean;
 }) => {
     const { t, i18n } = useTranslation();
     const client = useQueryClient();
@@ -58,10 +70,10 @@ export const PlanScheduleSection = ({ iteration, members, gantt, done }: {
     const ends = scheduleLeaves(tasks).flatMap(task => task.end_date ? [task.end_date] : []);
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
-    // Only the current task data can say every task is dated; an empty unscheduled list or a missing task list cannot.
-    // Deferred tasks count too: the scheduler leaves them undated, so they must not be hidden behind that claim.
-    const leaves = preview?.tasks ?? gantt?.tasks ? taskLeaves(tasks) : [];
-    const everyTaskDated = leaves.length > 0 && leaves.every(task => Boolean(task.start_date && task.end_date));
+    // An unsaved preview must also leave nothing undated, or the claim would contradict the result shown beside it.
+    const previewDated = !preview || (!preview.schedule_result?.unscheduled?.length
+        && scheduleLeaves(preview.tasks).every(task => Boolean(task.start_date && task.end_date)));
+    const everyTaskDated = previewDated && everyUnfinishedTaskDated(iterationTasks);
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>

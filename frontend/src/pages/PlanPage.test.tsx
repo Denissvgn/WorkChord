@@ -696,6 +696,11 @@ const scheduledTask = (overrides: Partial<GanttTask> = {}): GanttTask => ({
     is_outside_constraints: false, tags: [], assignee: { id: 1, name: 'Person 1' },
     assignees: [{ id: 1, name: 'Person 1' }], children: [], dependencies: [], ...overrides,
 });
+/** A task as the iteration task list returns it (deferred tasks included, unlike the Gantt response). */
+const listedTask = (overrides: Partial<Task> = {}): Task => plannedTask(11, {
+    title: 'Prepare release', start_date: '2026-08-03', end_date: '2026-08-10', effort_hours: 40, effort_days: 5,
+    assignee: { id: 1, name: 'Person 1' }, effective_is_deferred: false, ...overrides,
+} as Partial<Task>);
 const scheduleReady = summary([
     ...FIXTURES.sixOfSix.checkpoints!.slice(0, 4), checkpoint('schedule', 'todo', ['schedule_not_built']),
     checkpoint('review', 'blocked', ['build_schedule_first']),
@@ -711,6 +716,7 @@ const scheduleWorkspace = (end = '2026-08-10') => {
     services.gantt.getChart.mockImplementation(async () => ({ iteration: { ...ITERATION, revision: 7 }, tasks: applied ? [task] : [], schedule_result: applied ? result : null }));
     services.gantt.previewSchedule.mockResolvedValue(preview);
     services.gantt.schedule.mockImplementation(async () => { applied = true; return result; });
+    services.tasks.getByIteration.mockImplementation(async () => [listedTask(applied ? { end_date: end } : { start_date: null, end_date: null })]);
     services.iterations.getPlanningReadiness.mockImplementation(async () => !applied ? scheduleReady : summary([
         ...scheduleReady.checkpoints!.slice(0, 4), checkpoint('schedule', 'done'),
         end > ITERATION.end_date ? checkpoint('review', 'warn', ['risks_to_acknowledge'], { risks: 1 }) : checkpoint('review', 'done'),
@@ -761,6 +767,7 @@ describe('schedule and review inside Plan', () => {
         let applied = false;
         services.gantt.schedule.mockImplementation(async () => { applied = true; return result; });
         services.gantt.getChart.mockImplementation(async () => ({ iteration: { ...ITERATION, revision: 7 }, tasks: applied ? [scheduledTask()] : [], schedule_result: applied ? saved : null }));
+        services.tasks.getByIteration.mockImplementation(async () => [listedTask(applied ? {} : { start_date: null, end_date: null })]);
         const { user } = renderPlan();
         await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
         await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
@@ -769,43 +776,69 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
-    it('does not claim every task has dates while an active task is undated or the saved result is empty', async () => {
+    it('does not claim every task has dates while an active task in the task list is undated', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
-        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask({ status: 'active', start_date: null, end_date: null })], schedule_result: saved, holidays: [], weekends: [] });
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([listedTask(), listedTask({ id: 12, title: 'Running work', status: 'active', start_date: null, end_date: null })]);
         renderPlan();
         expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
-    it('does not count a finished task without dates as dated', async () => {
+    it('does not claim every task has dates while the task list cannot be read', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
-        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
-            scheduledTask(), scheduledTask({ id: 12, title: 'Old work', status: 'resolved', start_date: null, end_date: null }),
-        ], schedule_result: saved, holidays: [], weekends: [] });
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockRejectedValue(new Error('Task list unavailable'));
         renderPlan();
         expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
-    it('does not claim every task has dates while a deferred task is undated, and lists it with the server reason', async () => {
+    it('judges dates from unfinished tasks, so a finished task without dates does not hide the message', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([listedTask(), listedTask({ id: 12, title: 'Old work', status: 'resolved', start_date: null, end_date: null })]);
+        renderPlan();
+        expect(await screen.findByText('Every task has dates.')).toBeVisible();
+    });
+
+    it('does not claim every task has dates while a deferred task the Gantt response leaves out is undated', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+        // The Gantt response omits deferred tasks; only the task list shows the undated deferred one.
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([
+            listedTask(),
+            listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true, start_date: null, end_date: null }),
+        ]);
+        renderPlan();
+        expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
+        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
+    it('lists an undated deferred task with the server reason instead of claiming every task has dates', async () => {
         const { result } = scheduleWorkspace();
         const message = 'Deferred work is left out of scheduling. Undefer it to schedule it.';
         const saved = { ...result, unscheduled: [{ task_id: 12, task_title: 'Later work', reason: 'deferred', message }] };
-        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
-            scheduledTask(), scheduledTask({ id: 12, title: 'Later work', is_deferred: true, start_date: null, end_date: null }),
-        ], schedule_result: saved, holidays: [], weekends: [] });
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([
+            listedTask(),
+            listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true, start_date: null, end_date: null }),
+        ]);
         renderPlan();
         expect(await screen.findByText(message)).toBeVisible();
         expect(screen.getByRole('link', { name: 'Later work' })).toHaveAttribute('href', '/tasks?task=12&fromPlanStep=schedule&project=1&iteration=1');
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
-    it('says every task has dates when the current tasks are all dated, even if an older saved result lists unscheduled tasks', async () => {
+    it('says every task has dates when the task list is all dated, even if an older saved result lists unscheduled tasks', async () => {
         const { result } = scheduleWorkspace();
         const saved = { ...result, unscheduled: [{ task_id: 11, task_title: 'Prepare release', reason: 'prerequisites_pending', message: 'Waiting for a prerequisite.' }] };
         services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([listedTask()]);
         renderPlan();
         expect(await screen.findByText('Every task has dates.')).toBeVisible();
         expect(screen.queryByText('Waiting for a prerequisite.')).not.toBeInTheDocument();
