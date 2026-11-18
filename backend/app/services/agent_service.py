@@ -96,6 +96,18 @@ def actor_has_scope(actor: AgentActor, scope: str) -> bool:
     return "admin" in scopes or scope in scopes
 
 
+ADMIN_KEY_PRINCIPAL_NAME = "admin-api-key"
+
+
+def is_admin_key_principal(actor: AgentActor) -> bool:
+    """Return whether the actor is the transient operator behind the admin key.
+
+    That principal has no stored actor row, so mutations it makes are audited
+    as the operator and carry no actor-owned idempotency record.
+    """
+    return actor.id == 0 and actor.name == ADMIN_KEY_PRINCIPAL_NAME
+
+
 def require_scope(actor: AgentActor, scope: str) -> None:
     """Raise if actor does not have scope."""
     if not actor_has_scope(actor, scope):

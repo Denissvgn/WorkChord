@@ -16,6 +16,51 @@ def service_without_database() -> SavedViewService:
     return SavedViewService(cast(AsyncSession, None))
 
 
+@pytest.mark.parametrize("filters_json", [
+    {"milestoneId": 12, "needsAttention": True},
+    {"milestoneId": None, "needsAttention": False},
+])
+def test_task_milestone_and_attention_filters_normalize(filters_json: dict[str, Any]) -> None:
+    filters, is_valid, invalid_reason = service_without_database().normalize_filters(
+        SavedViewType.TASKS,
+        filters_json,
+    )
+
+    assert is_valid is True
+    assert invalid_reason is None
+    assert filters["milestoneId"] == filters_json["milestoneId"]
+    assert filters["needsAttention"] == filters_json["needsAttention"]
+
+
+@pytest.mark.parametrize("filters_json", [
+    {"milestoneId": True}, {"milestoneId": 0}, {"milestoneId": "12"},
+    {"needsAttention": 1}, {"needsAttention": "true"},
+])
+def test_task_milestone_and_attention_filters_reject_invalid_values(filters_json: dict[str, Any]) -> None:
+    filters, is_valid, invalid_reason = service_without_database().normalize_filters(
+        SavedViewType.TASKS,
+        filters_json,
+    )
+
+    assert filters == {}
+    assert is_valid is False
+    assert invalid_reason is not None
+
+
+def test_legacy_task_view_filters_keep_their_values_and_default_new_filters() -> None:
+    filters, is_valid, invalid_reason = service_without_database().normalize_filters(
+        SavedViewType.TASKS,
+        {"assigneeId": 7, "status": "planned"},
+    )
+
+    assert is_valid is True
+    assert invalid_reason is None
+    assert filters["assigneeId"] == 7
+    assert filters["status"] == "planned"
+    assert filters["milestoneId"] is None
+    assert filters["needsAttention"] is None
+
+
 def task_response(
     *,
     assignee: Any = None,
@@ -106,6 +151,30 @@ async def test_task_planning_issue_filter_persists_in_saved_view(
     assert stored.filters_json["planningIssue"] == "any"
     assert visible is not None
     assert visible.filters_json["planningIssue"] == "any"
+
+
+@pytest.mark.asyncio
+async def test_task_milestone_and_attention_filters_persist_in_saved_view(
+    db_session: AsyncSession,
+) -> None:
+    owner = UserSession(public_id="milestoneview", ip_address="127.0.0.1", user_agent="pytest")
+    db_session.add(owner)
+    await db_session.flush()
+
+    service = SavedViewService(db_session)
+    created = await service.create_for_session(
+        SavedViewCreateRequest(
+            name="Milestone follow-up",
+            view_type=SavedViewType.TASKS,
+            filters_json={"milestoneId": 12, "needsAttention": True},
+        ),
+        owner.id,
+    )
+
+    visible = await service.get_visible_by_id(created.id, owner.id)
+    assert visible is not None
+    assert visible.filters_json["milestoneId"] == 12
+    assert visible.filters_json["needsAttention"] is True
 
 
 def test_task_planning_issue_matching_uses_planning_leaf_semantics() -> None:

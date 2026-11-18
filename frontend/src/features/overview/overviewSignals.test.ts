@@ -107,8 +107,9 @@ describe('Overview signals', () => {
         ];
         const today = '2026-11-16';
         expect(iterationsInView(iterations, 1, 11, today).map(item => item.id)).toEqual([11]);
-        expect(iterationsInView(iterations, 'all', 11, today).map(item => item.id)).toEqual([12, 21]);
-        expect(iterationsInView(iterations, 'all', 'backlog', today).map(item => item.id)).toEqual([12, 21]);
+        expect(iterationsInView(iterations, 'all', undefined, today).map(item => item.id)).toEqual([12, 21]);
+        expect(iterationsInView(iterations, 'all', 11, today).map(item => item.id)).toEqual([11]);
+        expect(iterationsInView(iterations, 'all', 'backlog', today)).toEqual([]);
         expect(iterationsInView(iterations, 1, 'backlog', today)).toEqual([]);
     });
 

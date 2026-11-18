@@ -133,3 +133,44 @@ describe('Project detail tabs', () => {
         }
     });
 });
+
+it('frames a missing project with a purpose and one way back', async () => {
+    services.project.getById.mockResolvedValue(null);
+    renderPage();
+    const header = await screen.findByTestId('page-header');
+    expect(within(header).getByRole('heading', { name: 'Project not found' })).toBeVisible();
+    expect(within(header).getByText('Return to projects to find another project.')).toBeVisible();
+    expect(within(header).getAllByRole('button')).toHaveLength(1);
+});
+
+it('frames an invalid project ID without requesting it', async () => {
+    renderWithProviders(<Routes><Route path="/projects/:projectId" element={<ProjectDetailPage />} /></Routes>, { initialEntries: ['/projects/invalid'] });
+    const header = await screen.findByTestId('page-header');
+    expect(within(header).getByRole('heading', { name: 'Project not found' })).toBeVisible();
+    expect(within(header).getByText('Return to projects to find another project.')).toBeVisible();
+    expect(within(header).getAllByRole('button')).toHaveLength(1);
+    expect(services.project.getById).not.toHaveBeenCalled();
+});
+
+it('frames a project 404 returned by the API', async () => {
+    services.project.getById.mockRejectedValue({ response: { status: 404, data: { code: 'not_found', message: 'Project with id 1 not found', details: [] } } });
+    renderPage();
+    const header = await screen.findByTestId('page-header');
+    expect(within(header).getByRole('heading', { name: 'Project not found' })).toBeVisible();
+    expect(within(header).getAllByRole('button')).toHaveLength(1);
+});
+
+it('offers retry for a project load failure', async () => {
+    services.project.getById.mockRejectedValueOnce({ response: { status: 500, data: { code: 'error', message: 'Server unavailable', details: [] } } });
+    const { user } = renderPage();
+    expect(await screen.findByText('Server unavailable')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(await screen.findByRole('heading', { name: 'Atlas' })).toBeVisible();
+});
+
+it('keeps related data failures in the retry state', async () => {
+    services.project.getSummary.mockRejectedValue({ response: { status: 404, data: { code: 'not_found', message: 'Summary unavailable', details: [] } } });
+    renderPage();
+    expect(await screen.findByText('Summary unavailable')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeVisible();
+});

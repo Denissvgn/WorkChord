@@ -16,9 +16,12 @@ export const useAdminAccess = () => {
         };
     }, []);
 
-    const role = identity?.identity?.workspace_role;
-    const hasAdminAccess = hasAdminKey || role === 'owner' || role === 'operator';
-    return { hasAdminKey: hasAdminAccess, hasAdminAccess };
+    const current = identity?.identity;
+    const role = current?.workspace_role;
+    const effectiveKey = hasAdminKey && current?.principal?.kind !== 'human';
+    const actingAsOperator = effectiveKey && current?.mode === 'trusted_local' && !current.principal;
+    const hasAdminAccess = effectiveKey || role === 'owner' || role === 'operator';
+    return { hasAdminKey: hasAdminAccess, hasAdminAccess, actingAsOperator };
 };
 
 /**

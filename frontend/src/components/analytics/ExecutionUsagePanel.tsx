@@ -5,8 +5,9 @@ import { executionUsageService } from '../../services/executionUsageService';
 import { QueryErrorState } from '../feedback/QueryState';
 import { Button } from '../common/Button';
 import { formatDateTime } from '../../utils/formatDate';
+import type { AnalyticsScope } from '../../types/analyticsScope';
 
-export const ExecutionUsagePanel = ({ scope }: { scope: { project_id?: number; iteration_id?: number; lookback_days: number } }) => {
+export const ExecutionUsagePanel = ({ scope }: { scope: AnalyticsScope }) => {
     const { t, i18n } = useTranslation();
     const [amount, setAmount] = useState('');
     const [currency, setCurrency] = useState('');

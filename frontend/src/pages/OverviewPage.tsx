@@ -24,6 +24,7 @@ import { formatDecimal } from '../utils/workNumbers';
 import { getApiErrorStatus } from '../utils/apiError';
 import { taskService } from '../services/taskService';
 import { iterationService } from '../services/iterationService';
+import { projectService } from '../services/projectService';
 import { QueryErrorState, QueryLoadingState, QueryStaleState } from '../components/feedback/QueryState';
 import { PageHeader, PageLayout, SectionCard, SlideOverDrawer } from '../components/ui';
 import type { PillTone } from '../components/ui/tone';
@@ -146,8 +147,8 @@ const OverviewPage = () => {
 
     const iterations = navigation.iterations;
     const isAllProjects = project === 'all';
-    const backlogProject = !isAllProjects && scopeIteration === 'backlog' && typeof project === 'number' ? project : null;
-    const isBacklog = backlogProject !== null;
+    const isBacklog = scopeIteration === 'backlog' && (isAllProjects || typeof project === 'number');
+    const backlogProject = typeof project === 'number' ? project : null;
     const viewIterations = useMemo(
         () => iterationsInView(iterations, project, scopeIteration, today),
         [iterations, project, scopeIteration, today],
@@ -166,7 +167,7 @@ const OverviewPage = () => {
     // feedback-policy: query loading,error,retry,empty - the backlog sections share the task states.
     const backlogQuery = useQuery({
         queryKey: ['overview-backlog', backlogProject],
-        queryFn: () => loadProjectBacklog(backlogProject as number),
+        queryFn: () => loadProjectBacklog(backlogProject),
         enabled: isBacklog,
         staleTime: 60000,
     });
@@ -179,6 +180,9 @@ const OverviewPage = () => {
         })),
     });
     const pipelineQuery = usePipeline(true);
+    // feedback-policy: query loading,error,retry,empty - New task waits until the projects are known; a task needs a project.
+    const projectsQuery = useQuery({ queryKey: ['projects'], queryFn: () => projectService.getAll(), staleTime: 60000 });
+    const hasProject = (projectsQuery.data?.length ?? 0) > 0;
 
     const tasksState: SourceState = isBacklog ? queryState(backlogQuery) : combine(taskQueries.map(queryState));
     const readinessState: SourceState = isBacklog ? 'unavailable' : combine(readinessQueries.map(queryState));
@@ -249,8 +253,9 @@ const OverviewPage = () => {
         }
         if (hasResult(readinessState)) {
             viewIterations.forEach((item, index) => {
-                const { ready, nextId } = planProgress(item, iterations.length, readinessQueries[index]?.data);
-                if (ready.done < ready.total) {
+                const progress = planProgress(item, readinessQueries[index]?.data);
+                if (progress && progress.ready.done < progress.ready.total) {
+                    const { ready, nextId } = progress;
                     candidates.push({ kind: 'plan', count: ready.total - ready.done, iteration: item, plan: { ...ready, nextId } });
                 }
             });
@@ -290,7 +295,11 @@ const OverviewPage = () => {
     const iterationsFailed = navigation.isIterationsError;
     const hasNoIterations = !iterationsLoading && !iterationsFailed && iterations.length === 0;
     const scopeKnown = project !== undefined && scopeIteration !== undefined;
-    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && (isBacklog || !hasNoIterations);
+    // Without iterations the page is empty only once a successful backlog read finds no work; while the
+    // read loads or after it fails, the sections show its loading state or its error with Retry.
+    const backlogConfirmedEmpty = isBacklog && backlogQuery.isSuccess && allRoots.length === 0;
+    const noIterationsEmpty = hasNoIterations && (!isBacklog || backlogConfirmedEmpty);
+    const showContent = scopeKnown && !iterationsLoading && !iterationsFailed && !noIterationsEmpty;
 
     const openList = parseOverviewCountList(new URLSearchParams(location.search).get(OVERVIEW_COUNT_LIST_PARAM));
     const closeList = () => {
@@ -302,7 +311,8 @@ const OverviewPage = () => {
 
     const purpose = (() => {
         if (iterationsLoading || !scopeKnown) return t('overview.purpose.loading');
-        if (isAllProjects) {
+        if (isAllProjects && isBacklog) return t('overview.purpose.allProjectsBacklog');
+        if (isAllProjects && scopeIteration === undefined) {
             if (viewIterations.length === 0) return t('overview.purpose.allProjectsNoneOpen');
             const start = viewIterations.map(item => item.start_date).sort()[0];
             const end = viewIterations.map(item => item.end_date).sort().at(-1);
@@ -334,13 +344,13 @@ const OverviewPage = () => {
                     </span>
                 )}
                 purpose={purpose}
-                primaryAction={(
+                primaryAction={hasProject ? (
                     // While Get started shows, its next step is the page's one primary action.
                     <ButtonLink to={scopeLink('/tasks?create=1')} variant={getStarted.visible ? 'secondary' : 'primary'}>
                         <Plus aria-hidden="true" className="h-4 w-4" />
                         {t('tasks.newTask')}
                     </ButtonLink>
-                )}
+                ) : undefined}
             />
 
             {/* The Get started panel comes first, above everything else on the page. */}
@@ -360,7 +370,7 @@ const OverviewPage = () => {
                 />
             )}
             {/* Get started already names the next step, so the empty state would repeat it. */}
-            {hasNoIterations && !isBacklog && !getStarted.visible && (
+            {noIterationsEmpty && !getStarted.visible && (
                 <SectionCard>
                     <NextStepEmptyState
                         title={t('emptyStates.overview.iterationTitle')}
@@ -396,7 +406,7 @@ const OverviewPage = () => {
                         ownList={ownList}
                     />
 
-                    {isAllProjects && viewIterations.length === 0 && (
+                    {isAllProjects && scopeIteration === undefined && viewIterations.length === 0 && (
                         <p className="overview-note">{t('overview.noOpenIterations')}</p>
                     )}
 

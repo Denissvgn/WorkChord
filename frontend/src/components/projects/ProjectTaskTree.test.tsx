@@ -84,13 +84,24 @@ describe('ProjectTaskTree', () => {
         expect(services.getDetail.mock.calls.map(([id]) => id)).toEqual([3]);
     });
 
-    it('says the agent status is unknown when this reader cannot read the agent roster', async () => {
+    it('says a connected agent has not been sent the task yet, from the team read every reader has', async () => {
+        services.team.mockResolvedValue([{ id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent', agent_connected: true } }]);
+        renderWithProviders(<ProjectTaskTree sections={sections(
+            task(1, { assignee: { id: 6, name: 'Build agent' }, agent_working: false }),
+            task(2, { assignee: { id: 6, name: 'Build agent' }, agent_working: true }),
+        )} />);
+        await waitFor(() => expect(rowOf('Task 1').querySelector('[data-agent-dispatch]')?.textContent).toBe('Agent status: Not sent to the agent yet'));
+        expect(rowOf('Task 2').querySelector('[data-agent-dispatch]')?.textContent).toBe('Agent status: Queued');
+        expect(screen.queryByText(/No agent connected/)).toBeNull();
+    });
+
+    it('says the agent status is unknown when the team read does not say whether the agent is connected', async () => {
         services.team.mockResolvedValue([{ id: 6, name: 'Build agent', profile_id: 60, profile: { id: 60, profile_kind: 'agent' } }]);
         renderWithProviders(<ProjectTaskTree sections={sections(
             task(1, { assignee: { id: 6, name: 'Build agent' }, agent_working: false }),
             task(2, { assignee: { id: 6, name: 'Build agent' }, agent_working: true }),
         )} />);
-        // Without the roster no row claims that no agent is connected, and the line stays.
+        // No row claims that no agent is connected; the line stays, and what the task itself says still shows.
         await waitFor(() => expect(rowOf('Task 1').querySelector('[data-agent-dispatch]')?.textContent).toBe('Agent status unknown'));
         expect(rowOf('Task 2').querySelector('[data-agent-dispatch]')?.textContent).toBe('Agent status: Queued');
         expect(screen.queryByText(/No agent connected/)).toBeNull();

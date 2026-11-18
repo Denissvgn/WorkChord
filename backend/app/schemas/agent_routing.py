@@ -485,10 +485,14 @@ class AgentModelBindingResponse(AgentModelBindingFields):
 
 
 class AgentModelMutationReceipt(RoutingContractModel):
-    """Durable, replay-safe receipt for an operator model mutation."""
+    """Durable, replay-safe receipt for an operator model mutation.
+
+    ``actor_id`` is null when the operator's admin key made the change; that
+    receipt is returned once and not stored for replay.
+    """
 
     operation: str = Field(..., min_length=1, max_length=100)
-    actor_id: int = Field(..., ge=1)
+    actor_id: int | None = Field(..., ge=1)
     target_type: Literal["model_catalog", "model_binding"]
     target_id: int = Field(..., ge=1)
     idempotency_key: str = Field(..., min_length=1, max_length=255)

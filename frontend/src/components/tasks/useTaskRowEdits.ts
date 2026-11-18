@@ -16,6 +16,7 @@ export const assigneeOptionsFrom = (members: TeamMember[]): TaskRowAssigneeOptio
     name: member.name,
     kind: member.profile?.profile_kind,
     profileId: member.profile_id ?? member.profile?.id ?? null,
+    agentConnected: member.profile?.agent_connected,
 }));
 
 /** The people and agents a task in this iteration can be given to; empty without an iteration. */

@@ -16,10 +16,9 @@ import { PlanWorkSection } from '../components/planning/PlanWorkSection';
 import { PlanBlockersSection } from '../components/planning/PlanBlockersSection';
 import { PageHeader, PageLayout } from '../components/ui';
 import { NextStepEmptyState } from '../features/firstRun/NextStepEmptyState';
-import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import { useFirstRunProgress } from '../features/firstRun/useFirstRunProgress';
+import { firstRunPlanHref } from '../features/firstRun/firstRunSteps';
 import {
-    checkpointsDone,
     firstIncompleteCheckpoint,
     planCheckpointSections,
 } from '../features/planningMasters/planCheckpoints';
@@ -32,6 +31,7 @@ import {
 } from '../features/planningMasters/planningReturn';
 import type { PlanningStepId } from '../features/planningMasters/planningReturn';
 import { usePlanningReadiness } from '../features/planningMasters/usePlanningReadiness';
+import { planProgress } from '../features/planningMasters/usePlanningNavigationSummary';
 import type { PlanningQueryFeedback } from '../features/planningMasters/usePlanningReadiness';
 import { useScopeLink } from '../features/scope/useScopeLink';
 import { SetupReturnBar } from '../features/firstRun/SetupReturnBar';
@@ -382,12 +382,13 @@ const PlanCheckpoints = () => {
         setRefreshStatus(failed ? 'error' : 'success');
     };
 
-    // With no iteration, the page offers one next step: before a profile or project exists, that step
-    // alone; once an iteration is the next step, the Iteration checkpoint's New iteration is that step.
+    // With no iteration there is no readiness to read: the page offers the one next step and shows no
+    // checkpoint states. Before a profile or project exists, that step alone.
     const noIteration = queryStates.iterations.hasData && !hasCurrentIteration;
     const setupFirst = noIteration && setupProgress.known && (setupProgress.nextId === 'profile' || setupProgress.nextId === 'project');
     const iterationIsNext = noIteration && setupProgress.known && setupProgress.nextId === 'iteration';
-    const done = sections ? checkpointsDone(sections) : null;
+    // The server's own count; no count without a complete response.
+    const progress = sections && hasCurrentIteration ? planProgress(currentIteration, planningSummary)?.ready ?? null : null;
     const header = (
         <PageHeader
             title={t('plan.title')}
@@ -395,8 +396,8 @@ const PlanCheckpoints = () => {
             meta={(
                 <span className="plan-page-meta">
                     <span>{currentIteration?.name ?? t('plan.page.noIteration')}</span>
-                    {done !== null && (
-                        <span className="tnum">{t('plan.page.progress', { done, total: PLANNING_STEP_IDS.length })}</span>
+                    {progress !== null && (
+                        <span className="tnum">{t('plan.page.progress', { done: progress.done, total: progress.total })}</span>
                     )}
                     {refreshStatus !== 'idle' && (
                         <span role={refreshStatus === 'error' ? 'alert' : 'status'}>
@@ -435,6 +436,24 @@ const PlanCheckpoints = () => {
                 description={t('emptyStates.plan.body')}
                 fallback={{ label: t('firstRun.steps.iteration.title'), to: scopeLink(firstRunPlanHref('iteration')) }}
             />
+        );
+    } else if (noIteration) {
+        // No iteration, so no readiness to read: the Iteration step offers New iteration and
+        // carries no state.
+        content = (
+            <ol className="plan-sections" aria-label={t('plan.page.checkpoints')}>
+                <li className="plan-section is-open" data-testid="plan-section-iteration">
+                    <div className="plan-section-head">
+                        <span className="plan-section-number" aria-hidden="true">1</span>
+                        <h2 id="plan-section-iteration-title" className="plan-section-title">
+                            {t('plan.steps.iteration.title')}
+                        </h2>
+                    </div>
+                    <div className="plan-section-body" role="region" aria-labelledby="plan-section-iteration-title">
+                        <PlanIterationCheckpoint iteration={null} done={false} />
+                    </div>
+                </li>
+            </ol>
         );
     } else if (!sections && queryStates.checkpoints.isLoading) {
         content = <QueryLoadingState message={t('plan.master.planningDataLoading')} />;
