@@ -14,6 +14,15 @@ npm ci --prefix frontend
 cp .env.example backend/.env
 ```
 
+On Apple Silicon, use the following command for the runtime dependency install.
+macOS reports `arm64` for the architecture. This selects the `greenlet` wheel
+that SQLAlchemy needs for async sessions, using the version and hashes in the lockfile.
+
+```bash
+sed "/^greenlet==/s/'aarch64'/'arm64'/" backend/requirements.lock |
+  .venv/bin/pip install --require-hashes -r /dev/stdin
+```
+
 ## Configure access
 
 Edit `backend/.env`. Backend settings load `.env` from the process's working
@@ -39,10 +48,14 @@ see [recorded time](time-entries.md).
 
 ## Start
 
-Initialize the configured database:
+Initialize the schema, then run the data repairs that prepare the workspace.
+Each command uses its own database role and a one-connection pool.
 
 ```bash
-./scripts/upgrade_database.sh
+DATABASE_PROCESS_ROLE=migration DATABASE_POOL_SIZE=1 DATABASE_MAX_OVERFLOW=0 \
+  ./scripts/upgrade_database.sh --no-repairs
+DATABASE_PROCESS_ROLE=repair DATABASE_POOL_SIZE=1 DATABASE_MAX_OVERFLOW=0 \
+  ./scripts/upgrade_database.sh --repairs-only
 ```
 
 Start the backend and frontend in separate terminals, each from the repository root:
@@ -52,7 +65,7 @@ Start the backend and frontend in separate terminals, each from the repository r
 ```
 
 ```bash
-npm --prefix frontend run dev
+npm --prefix frontend run dev -- --host localhost
 ```
 
 Open [localhost:5173](http://localhost:5173). The frontend proxies `/api` to the
@@ -75,7 +88,7 @@ credentials and runtime setup. Provide the provisioned actor's
 (cd backend && ../.venv/bin/workchord-mcp --transport stdio)
 ```
 
-The container workspace uses PostgreSQL and reads the repository-root `.env`;
-see [container setup](../README.md#get-started). For shared deployments, use the
+The [container quickstart](../README.md#get-started) runs a local PostgreSQL
+workspace. For shared deployments, use the
 [server](runbooks/self-hosted-server-acceptance.md) and
 [PostgreSQL](runbooks/postgresql-deployment.md) guides.
