@@ -27,6 +27,9 @@ import type {
 import { feedbackMessage } from '../../features/mutationFeedback';
 import type { MutationFeedbackMeta } from '../../features/mutationFeedback';
 import { actorName, modelName, statusKnown, type AgentStatus, type DirectoryActor, type DirectoryRow } from './directoryModel';
+import { isConnected } from '../../features/agentTeamSetup/connectAgent';
+import { useWaitingAgents } from '../../features/agentTeamSetup/useWaitingAgents';
+import { ConnectionSteps } from './ConnectionSteps';
 import type { AgentActorRosterItem } from '../../types/agent';
 
 import { Select } from '../../components/common/Select';
@@ -142,6 +145,26 @@ const AgentSection = ({ row }: { row: DirectoryRow }) => {
                 );
             })}
             {row.rosterState === 'unavailable' && <p className="text-sm text-content-secondary">{t('teamPage.adminKeyNote')}</p>}
+            <WaitingConnection row={row} />
+        </section>
+    );
+};
+
+/**
+ * The connection steps of an agent that still waits for its runtime's acknowledgement. They come from the
+ * team status, not from the Connect page, so they stay reachable after Connect was left.
+ */
+const WaitingConnection = ({ row }: { row: DirectoryRow }) => {
+    const { t } = useTranslation();
+    const { hasAdminAccess } = useAdminAccess();
+    const { status, manifest, waiting } = useWaitingAgents(hasAdminAccess);
+    const entry = waiting.find(item => row.actors.some(actor => actor.actor.name === item.member.actor_name));
+    if (!entry || !manifest) return null;
+    return (
+        <section aria-labelledby="team-drawer-connection" className="space-y-3 border-t border-border pt-4">
+            <h3 id="team-drawer-connection" className="text-sm font-semibold text-content-primary">{t('agentTeamSetup.connect.drawerTitle')}</h3>
+            <ConnectionSteps manifest={manifest} member={entry.member} memberStatus={entry.memberStatus} connected={isConnected(entry.memberStatus)}
+                checking={status.isFetching} onCheck={() => void status.refetch()} />
         </section>
     );
 };

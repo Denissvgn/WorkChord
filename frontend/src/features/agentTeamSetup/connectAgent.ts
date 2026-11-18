@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AgentTeamMaster, AgentTeamMemberSpec, AgentTeamRole, AgentTeamStatus } from '../../types/agent';
+import type { AgentTeamMaster, AgentTeamMemberSpec, AgentTeamMemberStatus, AgentTeamRole, AgentTeamStatus } from '../../types/agent';
 import { assertAgentTeamMasterSecretFree } from './manifest';
 
 export const AGENT_RUNTIMES = ['claude-code', 'codex', 'antigravity', 'pi', 'other'] as const;
@@ -32,6 +32,30 @@ export const hasPM = (current: AgentTeamMaster | null, status: AgentTeamStatus) 
 export const replacesPendingPM = (current: AgentTeamMaster | null, status: AgentTeamStatus) => Boolean(
     current?.controller && isPending(current.controller.actor_key, status),
 );
+
+/** The runtime a member was connected on, read from the runtime reference the server keeps with it. */
+export const runtimeOfMember = (member: AgentTeamMemberSpec): AgentRuntime => {
+    const runtime = /^runtime:\/\/([^/]+)\//.exec(member.runtime_ref)?.[1];
+    return AGENT_RUNTIMES.find(value => value === runtime) ?? 'other';
+};
+
+/** Whether the server has seen this member's runtime acknowledge its package and reach the team. */
+export const isConnected = (memberStatus: AgentTeamMemberStatus | undefined) => Boolean(
+    memberStatus?.package_acknowledged && memberStatus.acknowledgement_state === 'current' && memberStatus.connection_state === 'observed',
+);
+
+/**
+ * Configured members that still wait for their runtime to acknowledge the package. They are read from the
+ * server's team status, so a connection can be resumed after the page was left and reopened.
+ */
+export const waitingMembers = (current: AgentTeamMaster | null, status: AgentTeamStatus) => {
+    if (!current) return [];
+    return teamMembers(current).flatMap(member => {
+        const memberStatus = status.members.find(item => item.actor_key === member.actor_key);
+        if (!memberStatus?.configured || (memberStatus.package_acknowledged && memberStatus.acknowledgement_state === 'current')) return [];
+        return [{ member, memberStatus }];
+    });
+};
 
 /**
  * Builds the manifest the server would hold after adding one member: the current
@@ -82,7 +106,7 @@ export function buildConnectedMember(
  * the first 24 hex digits of SHA-256 over the public credential reference, then
  * the actor key. Only the public reference is hashed; no key is involved.
  */
-export async function credentialFilename(member: AgentTeamMemberSpec): Promise<string> {
+export async function credentialFilename(member: Pick<AgentTeamMemberSpec, 'credential_ref' | 'actor_key'>): Promise<string> {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(member.credential_ref));
     return `${Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('').slice(0, 24)}-${member.actor_key}.json`;
 }
