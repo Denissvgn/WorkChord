@@ -18,6 +18,7 @@ import { sampleProjectFixture } from './sampleProject.fixture';
 import { SampleProjectAction } from './SampleProjectAction';
 import { useSampleProject } from './sampleProjectStore';
 import { changeAppLanguage } from '../../i18n/i18n';
+import i18n from '../../i18n/i18n';
 import { RoadmapView } from '../../components/projects/RoadmapView';
 import type { Project } from '../../types/project';
 import { formatDate } from '../../utils/formatDate';
@@ -35,6 +36,7 @@ let revision: number;
 let writes: string[];
 let applied: boolean;
 let failIteration: boolean;
+let capacityYear: number | null;
 const person = { id: 1, display_name: 'Robin' };
 const identity: WorkspaceIdentity = { mode: 'trusted_local', principal: null, profile: person, access: 'full',
     authenticated: false, configured: true, workspace_role: null, projects: {}, csrf_token: null };
@@ -78,7 +80,7 @@ const WorkspaceSetup = () => {
 beforeEach(async () => {
     vi.resetAllMocks();
     await changeAppLanguage('en');
-    rows = new Map(); nextId = 10; revision = 1; writes = []; applied = false; failIteration = false;
+    rows = new Map(); nextId = 10; revision = 1; writes = []; applied = false; failIteration = false; capacityYear = null;
     localStorage.clear();
     sessionStorage.clear();
     useSampleProject.setState({ manifest: null, busy: false });
@@ -137,7 +139,7 @@ beforeEach(async () => {
                 });
                 days.push({ date, allocated_hours: allocated ? 8 : 0, committed_effort_hours: 0 });
             }
-            return { data: { calendar_year: null, days } };
+            return { data: { calendar_year: capacityYear, days } };
         }
         if (path.includes('/planning-inputs/')) {
             const kind = parts[3]; const resourceId = Number(parts[4]);
@@ -212,6 +214,15 @@ const watchForErrors = () => {
 };
 
 describe('sample project lifecycle', () => {
+    it('explains when no calendar-year window is free and creates no records', async () => {
+        capacityYear = 1900;
+        renderAction();
+        await userEvent.setup().click(await screen.findByRole('button', { name: 'Load a sample project' }));
+        expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('firstRun.sample.noWindow'));
+        expect(writes).toEqual([]);
+        expect(screen.queryByText(i18n.t('firstRun.sample.exists', { count: 0 }))).toBeNull();
+    });
+
     it.each(['dirty', 'pending'] as const)('logs no uncaught error and opens the plan without asking when the sample loads over a %s draft', async mode => {
         const watch = watchForErrors();
         try {

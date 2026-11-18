@@ -533,7 +533,8 @@ describe('Overview', () => {
         expect(within(attention).getByRole('link', { name: i18n.t('overview.attentionItem.planAction') }))
             .toHaveAttribute('href', '/plan?project=all&iteration=21');
         expect(api.readiness).toHaveBeenCalledWith(21);
-        expect(api.readiness).not.toHaveBeenCalledWith(12);
+        // Get started reads the workspace default iteration as well as Overview's scoped plans.
+        expect(api.readiness).toHaveBeenCalledWith(12);
         expect(api.readiness).not.toHaveBeenCalledWith(11);
     });
 
@@ -558,7 +559,8 @@ describe('Overview', () => {
         expect(api.lookup).toHaveBeenCalledWith(expect.objectContaining({ backlog_only: true }));
         expect(api.lookup.mock.calls.every(([params]) => params.project_id === undefined)).toBe(true);
         expect(api.tasks).not.toHaveBeenCalled();
-        expect(api.readiness).not.toHaveBeenCalled();
+        // Backlog still reads the workspace's default iteration for Get started.
+        expect(api.readiness).toHaveBeenCalledWith(12);
         expect(screen.queryByText(i18n.t('overview.noOpenIterations'))).not.toBeInTheDocument();
 
         const workNow = screen.getByRole('region', { name: i18n.t('overview.workNow') });
@@ -621,15 +623,14 @@ describe('Overview', () => {
         expect((heading.closest('section') as HTMLElement).querySelectorAll('[data-testid^="task-card-"]')).toHaveLength(1);
     });
 
-    it('hides New task until a project exists', async () => {
-        api.projects.mockResolvedValue([]);
+    it('keeps New task and offers Retry when projects fail to load', async () => {
+        api.projects.mockRejectedValue(unavailable());
         renderOverview('/?project=1&iteration=12');
-        // The page's sections load with the projects; once Work now shows, the projects have answered too.
-        await waitFor(() => expect(api.projects).toHaveBeenCalled());
+        expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('overview.dataStatus.projectsUnavailable'));
+        expect(within(screen.getByRole('alert')).getByRole('button', { name: i18n.t('queryFeedback.retry') })).toBeInTheDocument();
         expect(await screen.findByRole('heading', { level: 2, name: i18n.t('overview.workNow') })).toBeInTheDocument();
         const header = screen.getByTestId('page-header');
-        expect(within(header).queryByRole('link', { name: i18n.t('tasks.newTask') })).toBeNull();
-        expect(screen.queryByRole('link', { name: i18n.t('tasks.newTask') })).toBeNull();
+        expect(within(header).getByRole('link', { name: i18n.t('tasks.newTask') })).toBeVisible();
     });
 
     it('opens New task on the Backlog as a backlog task of the scope project, with no iteration', async () => {
