@@ -121,6 +121,37 @@ beforeEach(() => {
 afterEach(() => { vi.restoreAllMocks(); });
 
 describe('Connect agent steps', () => {
+    it('offers to resume an agent that waits for its runtime after Connect was left and reopened, without creating it again', async () => {
+        const waitingSpec: AgentTeamMemberSpec = { ...member('worker', 'codex-worker-1'), runtime_ref: 'runtime://codex/codex-worker-1' };
+        service.getAgentTeamStartingPoints.mockResolvedValue({
+            current: { ...structuredClone(current), workers: [...current.workers, waitingSpec] }, template: structuredClone(current),
+        });
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, members: [memberStatus(waitingSpec, { configured: true })] });
+        const first = renderWithProviders(<ConnectAgentSteps />);
+        await first.user.click(await screen.findByRole('button', { name: 'Resume codex-worker-1' }));
+        first.unmount();
+
+        const reopened = renderWithProviders(<ConnectAgentSteps />);
+        const resume = await reopened.findByRole('button', { name: 'Resume codex-worker-1' });
+        await reopened.user.click(resume);
+        expect(await screen.findByText('Waiting for the runtime acknowledgement…')).toBeVisible();
+        const filename = `${createHash('sha256').update('private-sink/codex-worker-1').digest('hex').slice(0, 24)}-codex-worker-1.json`;
+        await waitFor(() => expect(screen.getByText('Credential file').nextElementSibling).toHaveTextContent(filename));
+        expect(screen.getByText('Skill package to install').nextElementSibling).toHaveTextContent('workchord-worker 1.8.0');
+        expect(screen.getByLabelText('Codex configuration')).toHaveTextContent(`"$WORKCHORD_CREDENTIAL_DIR/${filename}"`);
+        expect(screen.queryByRole('button', { name: 'Connect agent' })).not.toBeInTheDocument();
+        expect(service.applyAgentTeamAction).not.toHaveBeenCalled();
+    });
+
+    it('offers no resume when every configured member is already acknowledged', async () => {
+        service.getAgentTeamStatus.mockResolvedValue({ ...status, members: [memberStatus(current.workers[0], {
+            configured: true, package_acknowledged: true, acknowledgement_state: 'current', connection_state: 'observed',
+        })] });
+        renderWithProviders(<ConnectAgentSteps />);
+        await screen.findByRole('radio', { name: 'Worker' });
+        expect(screen.queryByRole('button', { name: /^Resume / })).not.toBeInTheDocument();
+    });
+
     it('shows the server reason and code when the team cannot be loaded', async () => {
         service.getAgentTeamStatus.mockRejectedValue(new AxiosError('Conflict', 'ERR_BAD_REQUEST', undefined, undefined, {
             status: 409, statusText: 'Conflict', headers: {}, config: {} as never,

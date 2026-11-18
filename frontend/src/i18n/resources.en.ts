@@ -2246,6 +2246,10 @@ export const englishResources = {
                     installNote: 'Install this role package from the server skill catalog, start the runtime with the snippet, then have it acknowledge onboarding with its own key.',
                     handoff: 'Runtime handoff',
                     checkConnection: 'Check connection',
+                    resumeTitle: 'Resume a waiting agent',
+                    resumeIntro: 'These agents exist but their runtime has not acknowledged the package yet. Resume one to see its credential file, package and handoff again.',
+                    resume: 'Resume {{name}}',
+                    drawerTitle: 'Connection steps',
                     serverCode: 'Server code',
                     serverReason: 'Server reason: {{reason}}',
                     issues: {

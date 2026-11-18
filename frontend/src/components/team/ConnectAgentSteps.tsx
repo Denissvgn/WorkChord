@@ -6,8 +6,8 @@ import { agentService } from '../../services/agentService';
 import { teamService } from '../../services/teamService';
 import type { AgentModelCatalogCreate, AgentTeamMaster, AgentTeamMemberSpec, AgentTeamPlan, AgentTeamRole } from '../../types/agent';
 import {
-    AGENT_RUNTIMES, CONNECT_STEPS, RUNTIME_PRODUCT_NAMES, STEP_INDEX, applyOutcomeUnknown, buildConnectedMember, connectIssue, credentialFilename, hasPM,
-    replacesPendingPM, runtimeSnippet, type AgentRuntime, type ConnectIssue,
+    AGENT_RUNTIMES, CONNECT_STEPS, RUNTIME_PRODUCT_NAMES, STEP_INDEX, applyOutcomeUnknown, buildConnectedMember, connectIssue, hasPM, isConnected,
+    replacesPendingPM, waitingMembers, type AgentRuntime, type ConnectIssue,
 } from '../../features/agentTeamSetup/connectAgent';
 import { assertAgentTeamMasterSecretFree } from '../../features/agentTeamSetup/manifest';
 import { AGENT_PROFILE_PRESET_NAMES } from '../../features/agentTeamSetup/profilePresetNames';
@@ -21,8 +21,10 @@ import { AdminAccessPanel } from '../settings/AdminAccessPanel';
 import { SharedUnlockContext } from '../settings/sharedUnlock';
 import { InlineEmptyState } from '../ui/InlineEmptyState';
 import AgentManifestWorkflow from './AgentManifestWorkflow';
+import { ConnectionSteps } from './ConnectionSteps';
 
-type Candidate = { manifest: AgentTeamMaster; member: AgentTeamMemberSpec; plan: AgentTeamPlan; filename: string };
+/** A member the Connect steps are working on. A resumed member has no plan: it already exists and only waits for its runtime. */
+type Candidate = { manifest: AgentTeamMaster; member: AgentTeamMemberSpec; plan?: AgentTeamPlan };
 const emptyModel: AgentModelCatalogCreate = {
     key: '', provider: '', configured_model_alias: '', reasoning_tier: 2, context_tier: 'medium', cost_tier: 'medium', latency_tier: 'balanced', modality_tags: ['text'],
 };
@@ -108,8 +110,7 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
         ?? AGENT_PROFILE_PRESET_NAMES[member.profile_key]
         ?? member.display_name;
     const memberStatus = status.data?.members.find(member => member.actor_key === candidate?.member.actor_key);
-    const connected = applied && !status.isError && memberStatus?.package_acknowledged
-        && memberStatus.acknowledgement_state === 'current' && memberStatus.connection_state === 'observed';
+    const connected = applied && !status.isError && isConnected(memberStatus);
     const reset = () => { setCandidate(null); setIssues([]); command.current = null; setUncertain(false); };
     const showIssues = (next: ConnectIssue[]) => { setIssues(next); setStep(Math.min(...next.map(issue => issue.step), STEP_INDEX.review)); };
     const requestIssues = (error: unknown): ConnectIssue[] => {
@@ -142,7 +143,7 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
                 showIssues((blockers.length ? blockers : ['create_action_unavailable']).map(code => connectIssue(code)));
                 return;
             }
-            setCandidate({ ...built, plan, filename: await credentialFilename(built.member) });
+            setCandidate({ ...built, plan });
             setStep(STEP_INDEX.review);
         } catch (error) {
             showIssues(error instanceof Error && error.message === 'role_unavailable'
@@ -150,8 +151,9 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
         } finally { inFlight.current = false; setBusy(false); }
     };
     const apply = async () => {
-        if (!candidate || inFlight.current) return;
-        const action = candidate.plan.actions.find(item => item.actor_key === candidate.member.actor_key && item.operation === 'create_member');
+        const plan = candidate?.plan;
+        if (!candidate || !plan || inFlight.current) return;
+        const action = plan.actions.find(item => item.actor_key === candidate.member.actor_key && item.operation === 'create_member');
         if (!action) return;
         inFlight.current = true; setBusy(true); setIssues([]);
         previousAttempt.current = candidate.member.actor_key;
@@ -160,7 +162,7 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
         // A settled refusal: the server keeps and replays it for this idempotency key, so the change is reviewed again.
         const reviewAgain = (next: ConnectIssue[]) => { setCandidate(null); command.current = null; setUncertain(false); showIssues(next); };
         try {
-            const receipt = await agentService.applyAgentTeamAction(candidate.manifest, candidate.plan, action.action_id, true, command.current);
+            const receipt = await agentService.applyAgentTeamAction(candidate.manifest, plan, action.action_id, true, command.current);
             const ownReceipt = receipt.receipts.find(item => item.action_id === action.action_id);
             if (ownReceipt?.status !== 'applied' && ownReceipt?.status !== 'no_change') {
                 const code = ownReceipt?.blocker_code ?? receipt.blocker_codes[0] ?? 'apply_incomplete';
@@ -198,6 +200,13 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
     const locked = applied || uncertain || deliveryBlocked;
     const editStep = (index: number) => { if (!locked && !busy) setStep(index); };
     const stepIssues = issues.filter(issue => issue.step === step);
+    const waiting = points.data && status.data ? waitingMembers(points.data.current, status.data) : [];
+    // Leaving Connect discards the local steps, so a member that still waits is offered back from the team's own status.
+    const resume = (member: AgentTeamMemberSpec) => {
+        if (!points.data?.current || inFlight.current) return;
+        reset(); setApplied(true); setStep(STEP_INDEX.connect);
+        setCandidate({ manifest: points.data.current, member });
+    };
 
     return <SharedUnlockContext.Provider value={{ noteId: 'connect-unlock-note' }}>
         <div className="space-y-6">
@@ -232,6 +241,14 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
                 </div>}
                 {!loading && !failed && !status.data?.can_mutate && <p role="alert" className="text-sm">{t(`${P}.cannotEdit`)}</p>}
                 {available && !advanced && <>
+                    {waiting.length > 0 && !candidate && <section aria-labelledby="connect-resume-title" className="max-w-3xl space-y-3 border-b border-border pb-5">
+                        <h3 id="connect-resume-title" className="text-base font-semibold">{t(`${P}.resumeTitle`)}</h3>
+                        <p className="text-sm text-content-secondary">{t(`${P}.resumeIntro`)}</p>
+                        <div className="flex flex-wrap gap-3">
+                            {waiting.map(({ member }) => <Button key={member.actor_key} variant="secondary" disabled={busy}
+                                onClick={() => resume(member)}>{t(`${P}.resume`, { name: announcedName(member) })}</Button>)}
+                        </div>
+                    </section>}
                     <ol aria-label={t(`${P}.stepsLabel`)} className="grid grid-cols-5 border-b border-border">
                         {CONNECT_STEPS.map((id, index) => <li key={id}>
                             <Button type="button" aria-current={step === index ? 'step' : undefined}
@@ -292,26 +309,8 @@ export const ConnectAgentSteps = ({ showTitle = true }: { showTitle?: boolean })
                         </>}
                         {step === STEP_INDEX.connect && candidate && <>
                             {!applied ? <p className="text-sm">{t(`${P}.connectIntro`, { name: announcedName(candidate.member) })}</p> : <>
-                                <p role="status" className="font-medium">{connected ? t(`${P}.connected`) : t(`${P}.waiting`)}</p>
-                                <dl className="space-y-3 text-sm">
-                                    <div><dt className="text-content-secondary">{t(`${P}.sinkRef`)}</dt><dd className="break-all font-mono">{candidate.manifest.credential_sink_ref}</dd></div>
-                                    <div><dt className="text-content-secondary">{t(`${P}.sinkFile`)}</dt><dd className="break-all font-mono">{candidate.filename}</dd></div>
-                                    <div>
-                                        <dt className="text-content-secondary">{t(`${P}.packageToInstall`)}</dt>
-                                        <dd>{t(`${P}.packageName`, { name: candidate.member.skill_package.name, version: candidate.member.skill_package.version })}</dd>
-                                        <dd className="break-all font-mono text-xs">{t(`${P}.packageDigest`, { digest: candidate.member.skill_package.sha256 })}</dd>
-                                    </div>
-                                </dl>
-                                <p className="text-sm text-content-secondary">{t(`${P}.hostNote`)}</p>
-                                <pre aria-label={t(`${P}.snippetLabel`, { runtime: runtimeName(runtime) })} className="overflow-x-auto rounded-md border border-border bg-surface-muted p-4 text-xs">
-                                    <code>{runtimeSnippet(runtime, candidate.manifest.server_url, candidate.filename)}</code>
-                                </pre>
-                                <p className="text-sm">{t(`${P}.installNote`)}</p>
-                                {memberStatus?.handoff && <details>
-                                    <summary className="cursor-pointer text-sm">{t(`${P}.handoff`)}</summary>
-                                    <pre className="mt-2 overflow-x-auto rounded-md border border-border p-3 text-xs">{JSON.stringify(memberStatus.handoff, null, 2)}</pre>
-                                </details>}
-                                {!connected && <Button variant="secondary" disabled={status.isFetching} onClick={() => void status.refetch()}>{t(`${P}.checkConnection`)}</Button>}
+                                <ConnectionSteps manifest={candidate.manifest} member={candidate.member} memberStatus={memberStatus} connected={connected}
+                                    checking={status.isFetching} onCheck={() => void status.refetch()} />
                             </>}
                         </>}
                         {stepIssues.map(issue => <div key={`${issue.reason}-${issue.code}`} role="alert" className="space-y-2 text-sm text-feedback-danger-foreground">
