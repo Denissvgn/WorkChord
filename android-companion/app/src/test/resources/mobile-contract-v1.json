@@ -1511,6 +1511,108 @@
           "title": "IterationPage",
           "type": "object"
         },
+        "IterationPlanningReadinessSummary": {
+          "description": "Compact planning inputs used by persistent navigation.",
+          "properties": {
+            "assigned_hours": {
+              "default": 0.0,
+              "title": "Assigned Hours",
+              "type": "number"
+            },
+            "calendar_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Calendar Name"
+            },
+            "checkpoints": {
+              "items": {
+                "$ref": "#/components/schemas/PlanCheckpoint"
+              },
+              "title": "Checkpoints",
+              "type": "array"
+            },
+            "checkpoints_done": {
+              "default": 0,
+              "title": "Checkpoints Done",
+              "type": "integer"
+            },
+            "checkpoints_total": {
+              "default": 6,
+              "title": "Checkpoints Total",
+              "type": "integer"
+            },
+            "has_schedule": {
+              "title": "Has Schedule",
+              "type": "boolean"
+            },
+            "iteration_id": {
+              "title": "Iteration Id",
+              "type": "integer"
+            },
+            "planned_hours": {
+              "default": 0.0,
+              "title": "Planned Hours",
+              "type": "number"
+            },
+            "risk_count": {
+              "title": "Risk Count",
+              "type": "integer"
+            },
+            "task_count": {
+              "title": "Task Count",
+              "type": "integer"
+            },
+            "tasks_agent_without_capacity": {
+              "default": 0,
+              "title": "Tasks Agent Without Capacity",
+              "type": "integer"
+            },
+            "tasks_without_assignee": {
+              "title": "Tasks Without Assignee",
+              "type": "integer"
+            },
+            "tasks_without_effort": {
+              "title": "Tasks Without Effort",
+              "type": "integer"
+            },
+            "team_agent_count": {
+              "default": 0,
+              "title": "Team Agent Count",
+              "type": "integer"
+            },
+            "team_capacity_hours": {
+              "title": "Team Capacity Hours",
+              "type": "number"
+            },
+            "team_member_count": {
+              "title": "Team Member Count",
+              "type": "integer"
+            },
+            "team_members_no_capacity": {
+              "title": "Team Members No Capacity",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "iteration_id",
+            "team_member_count",
+            "team_capacity_hours",
+            "team_members_no_capacity",
+            "task_count",
+            "tasks_without_assignee",
+            "tasks_without_effort",
+            "has_schedule",
+            "risk_count"
+          ],
+          "title": "IterationPlanningReadinessSummary",
+          "type": "object"
+        },
         "IterationProjectSummary": {
           "description": "Compact project identity embedded in iteration responses.",
           "properties": {
@@ -2017,6 +2119,53 @@
             "renewable_until"
           ],
           "title": "NativeTokenResponse",
+          "type": "object"
+        },
+        "PlanCheckpoint": {
+          "description": "One of the six plan checkpoints, in the order people and the PM work them.",
+          "properties": {
+            "counts": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "title": "Counts",
+              "type": "object"
+            },
+            "id": {
+              "enum": [
+                "iteration",
+                "team",
+                "work",
+                "blockers",
+                "schedule",
+                "review"
+              ],
+              "title": "Id",
+              "type": "string"
+            },
+            "reason_codes": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Reason Codes",
+              "type": "array"
+            },
+            "state": {
+              "enum": [
+                "done",
+                "warn",
+                "todo",
+                "blocked"
+              ],
+              "title": "State",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "state"
+          ],
+          "title": "PlanCheckpoint",
           "type": "object"
         },
         "PlanningInputContext": {
@@ -7527,6 +7676,49 @@
           "summary": "Preview Iteration Import",
           "tags": [
             "Export"
+          ]
+        }
+      },
+      "/api/iterations/{iteration_id}/planning-readiness": {
+        "get": {
+          "description": "Get the compact aggregate used by persistent planning navigation.",
+          "operationId": "get_iteration_planning_readiness_api_iterations__iteration_id__planning_readiness_get",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "iteration_id",
+              "required": true,
+              "schema": {
+                "title": "Iteration Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IterationPlanningReadinessSummary"
+                  }
+                }
+              },
+              "description": "Successful Response"
+            },
+            "422": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              },
+              "description": "Validation Error"
+            }
+          },
+          "summary": "Get Iteration Planning Readiness",
+          "tags": [
+            "Iterations"
           ]
         }
       },

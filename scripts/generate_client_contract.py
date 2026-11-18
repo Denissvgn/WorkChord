@@ -14,7 +14,7 @@ CLIENT_PATHS = (
     "/api/auth/native-connections/exchange", "/api/auth/native-connections/{request_id}",
     "/api/auth/native-connections/{request_id}/approve", "/api/tasks/capabilities", "/api/tasks/my-work",
     "/api/tasks/review-queue", "/api/tasks/{task_id}/reviews", "/api/tasks/{task_id}/reviews/current", "/api/projects", "/api/iterations",
-    "/api/session/whoami", "/api/iterations/{iteration_id}/tasks", "/api/tasks/{task_id}",
+    "/api/session/whoami", "/api/iterations/{iteration_id}/planning-readiness", "/api/iterations/{iteration_id}/tasks", "/api/tasks/{task_id}",
     "/api/tasks/{task_id}/status", "/api/tasks/{task_id}/move",
     "/api/triage/{triage_item_id}/convert-to-task",
     "/api/triage/{triage_item_id}/convert-to-backlog", "/api/projects/{project_id}/backlog",

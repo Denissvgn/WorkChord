@@ -165,3 +165,31 @@ async def test_excluded_and_structural_dates_do_not_invalidate_schedule(db_sessi
     await SchedulerService(db_session).schedule_iteration(iteration.id)
     summary = await IterationService(db_session).get_planning_readiness_summary(iteration.id)
     assert summary.task_count == 2 and summary.checkpoints_done == 6
+
+
+@pytest.mark.parametrize("start,end", [
+    (date(2027, 1, 1), date(2027, 1, 31)),
+    (date(2026, 12, 28), date(2027, 1, 4)),
+])
+async def test_readiness_flags_iteration_outside_calendar_year(db_session, start, end):
+    iteration, _, _ = await current_plan(db_session)
+    iteration.start_date, iteration.end_date = start, end
+    await db_session.commit()
+    summary = await IterationService(db_session).get_planning_readiness_summary(iteration.id)
+    assert summary.calendar_name == iteration.calendar.name
+    assert summary.checkpoints[0].state == "warn"
+    assert summary.checkpoints[0].reason_codes == ["calendar_outside_year"]
+    assert next(item for item in summary.checkpoints if item.id == "schedule").state == "blocked"
+
+
+@pytest.mark.parametrize("commit", [False, True], ids=["preview", "apply"])
+async def test_schedule_omits_undated_deferred_tasks(db_session, commit):
+    iteration, members, _ = await current_plan(db_session)
+    deferred = Task(title="Deferred work", iteration_id=iteration.id, assignee_id=members[0].id,
+                    status="planned", is_deferred=True, effort_hours=8)
+    db_session.add(deferred)
+    await db_session.commit()
+    result = await SchedulerService(db_session).schedule_iteration(iteration.id, commit=commit)
+    assert deferred.id not in {item.task_id for item in result.unscheduled}
+    assert deferred.id not in {item.task_id for item in result.decisions}
+    assert deferred.start_date is None and deferred.end_date is None

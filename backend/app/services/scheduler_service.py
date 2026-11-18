@@ -851,8 +851,8 @@ class SchedulerService:
             if task.start_date is not None and task.end_date is not None:
                 continue
             if self._effective_flags(task)["effective_is_deferred"]:
-                reason = "deferred"
-            elif task.blocked_reason:
+                continue
+            if task.blocked_reason:
                 reason = "blocked"
             elif task.id in known_reasons:
                 reason = known_reasons[task.id]

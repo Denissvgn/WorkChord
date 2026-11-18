@@ -23,6 +23,7 @@ export const planRussian = {
         noIterationResult: 'Выберите итерацию на панели области или создайте новую.',
         noIterationBody: 'В области нет итерации. Создайте её, чтобы начать планирование, или откройте существующую.',
         project: 'Проект',
+        calendarOutsideYear: 'Календарь {{calendar}} не покрывает даты итерации.',
         calendarFallback: 'Календарь {{id}}',
         waitingResult: 'Начнётся, когда будет готова точка «{{checkpoint}}».',
         waitingBody: 'Эта контрольная точка ждёт точку {{number}} «{{checkpoint}}». До её завершения здесь нечего делать.',

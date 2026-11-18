@@ -626,9 +626,14 @@ class IterationService:
             has_schedule=task_count > 0 and unscheduled_count == 0,
             risk_count=int(task_row[4]) + overloaded_count + uncertain_count,
         )
-        checkpoints = plan_checkpoints(**inputs)
+        checkpoints = plan_checkpoints(
+            **inputs,
+            calendar_covers_iteration=(iteration.start_date.year == iteration.calendar.year
+                                       and iteration.end_date.year == iteration.calendar.year),
+        )
         return IterationPlanningReadinessSummary(
             iteration_id=iteration_id,
+            calendar_name=iteration.calendar.name,
             team_agent_count=agent_rows,
             team_capacity_hours=round(total_hours, 2),
             planned_hours=round(float(task_row[6] or 0), 2),
