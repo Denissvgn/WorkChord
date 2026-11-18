@@ -299,8 +299,10 @@ class TaskBriefService:
                     raise ValueError("Every current criterion requires completed progress and evidence")
 
     async def record_review(self, task, *, verdict, reason, evidence=""):
+        from app.services.identity_service import acting_principal_id
+        principal_id = await acting_principal_id(self.db)
         record = TaskReviewRecord(task_id=task.id, original_task_id=task.id, task_version=task.version, brief_revision=task.brief_revision,
-            artifact_revision=task.artifact_revision, principal_id=getattr(self.db.info.get("authority"), "principal_id", None),
+            artifact_revision=task.artifact_revision, principal_id=principal_id,
             verdict=verdict, reason=reason, evidence=evidence)
         self.db.add(record)
         return record

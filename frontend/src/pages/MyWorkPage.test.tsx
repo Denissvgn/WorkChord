@@ -115,6 +115,31 @@ it('lets a local session choose who it works as instead of a dead end, then coun
     expect(screen.getByRole('button', { name: /^Status: Planned/ })).toBeInTheDocument();
 });
 
+it('keeps a task the chosen local person accepted out of Blocked, and still flags a closed task with no recorded acceptor', async () => {
+    const local = { mode: 'trusted_local', principal: null, profile: { id: 4, display_name: 'Sam Ortiz', verified: false } } as never;
+    const unrecorded = { id: 12, title: 'Closed before the acceptor was recorded', status: 'closed', iteration_id: null,
+        project_name: 'Calendar', acceptance_current: false };
+    let queues: Record<string, unknown[]> = { active: [], queued: [], blocked: [unrecorded], awaiting_review: [] };
+    api.get.mockImplementation(async (path: string) => {
+        if (path === '/tasks/my-work') return { data: { state: 'ready', has_more: false, next_after_id: null, queues } };
+        return { data: [] };
+    });
+    const view = renderWithProviders(<IdentityContext.Provider value={{ identity: local, refresh: vi.fn(), signOut: vi.fn() }}>
+        <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?queue=blocked'] });
+    expect(await screen.findByRole('button', { name: 'Blocked · 1' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: '#12 · Closed before the acceptor was recorded' })).toBeInTheDocument();
+    expect(screen.getByText(/Closed · acceptance needs reconciliation/)).toBeInTheDocument();
+    view.unmount();
+
+    // Once the acceptance records who accepted it, the server leaves the task out of every My Work queue.
+    queues = { active: [], queued: [], blocked: [], awaiting_review: [] };
+    renderWithProviders(<IdentityContext.Provider value={{ identity: local, refresh: vi.fn(), signOut: vi.fn() }}>
+        <MyWorkPage /></IdentityContext.Provider>, { initialEntries: ['/my-work?queue=blocked'] });
+    expect(await screen.findByRole('button', { name: 'Blocked · 0' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^#12 · / })).toBeNull();
+    expect(screen.queryByText(/acceptance needs reconciliation/)).toBeNull();
+});
+
 it.each(['active', 'review', 'inbox'])('explains the operator identity and offers Lock before loading the %s person queue', async queue => {
     sessionStorage.setItem('workchord_admin_api_key', 'operator-key');
     api.get.mockImplementation(async (path: string) => {
