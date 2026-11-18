@@ -796,13 +796,28 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
     });
 
-    it('judges dates from unfinished tasks, so a finished task without dates does not hide the message', async () => {
+    it('does not claim every task has dates while a finished task in the task list is undated', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
         services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
         services.tasks.getByIteration.mockResolvedValue([listedTask(), listedTask({ id: 12, title: 'Old work', status: 'resolved', start_date: null, end_date: null })]);
         renderPlan();
+        expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
+        expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+    });
+
+    it('says every task has dates when every task is finished and dated', async () => {
+        const { result } = scheduleWorkspace();
+        const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+        services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [
+            scheduledTask({ status: 'resolved' }), scheduledTask({ id: 12, title: 'Old work', status: 'closed' }),
+        ], schedule_result: saved, holidays: [], weekends: [] });
+        services.tasks.getByIteration.mockResolvedValue([
+            listedTask({ status: 'resolved' }), listedTask({ id: 12, title: 'Old work', status: 'closed' }),
+        ]);
+        renderPlan();
         expect(await screen.findByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
     it('does not claim every task has dates while a deferred task the Gantt response leaves out is undated', async () => {

@@ -11,7 +11,6 @@ import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse, SchedulePreviewResponse } from '../../types/gantt';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
-import { isFinished } from '../../features/planningMasters/planningTaskIssues';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
 import type { TeamMember } from '../../types/team';
@@ -20,11 +19,12 @@ import { formatDecimal } from '../../utils/workNumbers';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 
 /**
- * Whether every unfinished task in the iteration has dates, judged from the iteration's task list (deferred tasks
- * included). The Gantt response leaves deferred tasks out, so it cannot support that claim.
+ * Whether every task in the iteration has dates, whatever its status (finished, deferred and active alike), judged
+ * from the iteration's task list. The Gantt response leaves deferred tasks out, so it cannot support that claim.
+ * Parent tasks are judged through their subtasks, whose dates they roll up.
  */
-const everyUnfinishedTaskDated = (tasks: Task[]) => {
-    const leaves = tasks.filter(task => !task.is_composite && !task.children?.length && !isFinished(task));
+const everyTaskHasDates = (tasks: Task[]) => {
+    const leaves = tasks.filter(task => !task.is_composite && !task.children?.length);
     return leaves.length > 0 && leaves.every(task => Boolean(task.start_date && task.end_date));
 };
 
@@ -73,7 +73,7 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     // An unsaved preview must also leave nothing undated, or the claim would contradict the result shown beside it.
     const previewDated = !preview || (!preview.schedule_result?.unscheduled?.length
         && scheduleLeaves(preview.tasks).every(task => Boolean(task.start_date && task.end_date)));
-    const everyTaskDated = previewDated && everyUnfinishedTaskDated(iterationTasks);
+    const everyTaskDated = previewDated && everyTaskHasDates(iterationTasks);
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
         <p className="text-sm text-content-secondary">{t('planSchedule.datesAreCalculated')}</p>
