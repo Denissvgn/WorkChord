@@ -34,7 +34,7 @@ def test_self_hosted_acceptance_exports_receipts_even_on_failure():
                      ".runtime/autonomy/reports/public-artifacts/*.b64"]
     assert exports[0]["with"]["retention-days"] == 14
     assert exports[0]["with"]["if-no-files-found"] == "error"
-    assert exports[0]["uses"] == "actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f"
+    assert exports[0]["uses"] == "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9"
     exporter = next(step for step in steps if step.get("name") == "Export bounded public evidence")
     assert exporter["if"] == "always()"
     assert "export_acceptance_artifacts.py" in exporter["run"]
