@@ -63,15 +63,24 @@ you add to an old address are kept on the new one.
 
 Plan shows six checkpoints in order, and the counter reads "done of 6":
 
-1. **Iteration**: the iteration's dates are covered by a work calendar.
-2. **Team**: people are added, and each has capacity in the iteration.
+1. **Iteration**: the iteration's start and end dates fall in the year of its work
+   calendar. A calendar that does not cover those years needs attention.
+2. **Team**: people are added. Each person needs capacity in the iteration; a person
+   without capacity needs attention.
 3. **Work**: the iteration has tasks.
-4. **Blockers**: tasks without an assignee, or other blockers, are dealt with.
-5. **Schedule**: the schedule is built and applied.
-6. **Review**: the plan is reviewed.
+4. **Blockers**: no task lacks an assignee or effort, and no agent task lacks
+   capacity. Blocked until the iteration has tasks.
+5. **Schedule**: done when the iteration has tasks and every one of them has dates.
+   Deferred work is left out. This checks the dates on the tasks; it does not record that a schedule
+   was applied.
+6. **Review**: done when the schedule is done and no at-risk signal is open: no
+   at-risk task, no overloaded person, and no uncertain item. While a signal is
+   open, Review needs attention. Blocked until the schedule is done.
 
 Each checkpoint is done, needs attention, is next, or is blocked until an earlier
-checkpoint is done. The server works these states out, so Plan and the API agree.
+checkpoint is done. Completing Review does not mean a person has read the plan; it
+means the server's checks above pass. The server works these states out, so Plan and
+the API agree.
 
 ### First run: the Get started steps
 
@@ -87,9 +96,9 @@ workspace; nothing is ticked by hand.
    connect an agent, or add other profiles. Opens Plan at its Capacity step.
 5. **Add tasks.** Add the iteration's work in Plan, from the backlog or by
    import. Opens Plan at its Work step.
-6. **Build the schedule.** Build the schedule from the tasks and capacity, then
-   apply it. Opens Plan at its Schedule step. The workspace is set up once the
-   schedule is applied.
+6. **Build the schedule.** Build the schedule from the tasks and capacity. Opens
+   Plan at its Schedule step. The step is done when Plan's Schedule checkpoint is
+   done, that is, when every task in the iteration has dates.
 
 Dismiss hides the panel in this browser. To bring it back, open **Help**, then
 **Setup guide**.
