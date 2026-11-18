@@ -194,8 +194,8 @@ def test_analytics_contract_adds_optional_scope_modes(path):
     exporter = runpy.run_path(str(ROOT / 'scripts/generate_client_contract.py'))
     operation = exporter['build_contract']()['paths'][path]['get']
     params = {item['name']: item for item in operation['parameters'] if item['in'] == 'query'}
-    assert {'project_id', 'iteration_id', 'lookback_days', 'backlog', 'all_projects'} <= params.keys()
-    for name in ('backlog', 'all_projects'):
+    assert {'project_id', 'iteration_id', 'lookback_days', 'backlog', 'all_projects', 'all_projects_backlog'} <= params.keys()
+    for name in ('backlog', 'all_projects', 'all_projects_backlog'):
         assert params[name]['required'] is False
         assert params[name]['schema']['type'] == 'boolean'
         assert params[name]['schema']['default'] is False

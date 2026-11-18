@@ -312,8 +312,8 @@ describe('destination and view empty states', () => {
         expect(screen.getByRole('heading', { name: i18n.t('deliveryAnalytics.title') })).toBeVisible();
         expect(screen.getByRole('heading', { name: i18n.t('executionUsage.title') })).toBeVisible();
         expect(view.container.querySelectorAll('.inline-empty')).toHaveLength(0);
-        expect(api.get).toHaveBeenCalledWith('/tasks/delivery-metrics', { params: { all_projects: true, lookback_days: 30 } });
-        expect(api.get).toHaveBeenCalledWith('/tasks/execution-usage', { params: { all_projects: true, lookback_days: 30 } });
+        expect(api.get).toHaveBeenCalledWith('/tasks/delivery-metrics', { params: { all_projects: true, all_projects_backlog: true, lookback_days: 30 } });
+        expect(api.get).toHaveBeenCalledWith('/tasks/execution-usage', { params: { all_projects: true, all_projects_backlog: true, lookback_days: 30 } });
         expect(unplanned).toEqual([]);
     });
 

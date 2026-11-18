@@ -20,7 +20,9 @@ MAX_OBSERVATIONS = 20_000
 MAX_QUEUE_ITEMS = 50
 
 
-def validate_report_scope(project_id, iteration_id, *, backlog=False, all_projects=False):
+def validate_report_scope(project_id, iteration_id, *, backlog=False, all_projects=False, all_projects_backlog=False):
+    if all_projects_backlog and not all_projects:
+        raise ValueError("Workspace backlog requires all projects")
     if all_projects and (project_id is not None or iteration_id is not None or backlog):
         raise ValueError("All projects cannot be combined with a project, iteration or backlog filter")
     if backlog and (project_id is None or iteration_id is not None):
@@ -148,8 +150,8 @@ class DeliveryMetricsService:
         return rows
 
     async def report(self, *, project_id=None, iteration_id=None, lookback_days=30, now=None,
-                     backlog=False, all_projects=False):
-        validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects)
+                     backlog=False, all_projects=False, all_projects_backlog=False):
+        validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)
         if not 1 <= lookback_days <= 366:
             raise ValueError("Observation window must be between 1 and 366 elapsed days")
         if project_id is not None:
@@ -168,7 +170,7 @@ class DeliveryMetricsService:
         if iteration_id is not None:
             observed = observed.where(DeliveryObservation.iteration_id == iteration_id)
             live = live.where(Task.iteration_id == iteration_id)
-        if backlog:
+        if backlog or all_projects_backlog:
             observed = observed.where(DeliveryObservation.iteration_id.is_(None),
                                       DeliveryObservation.original_iteration_id.is_(None))
             live = live.where(Task.iteration_id.is_(None))

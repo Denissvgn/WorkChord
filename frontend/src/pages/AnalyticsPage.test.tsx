@@ -91,8 +91,8 @@ describe('Analytics page reads the scope bar', () => {
         await user.click(screen.getByRole('combobox', { name: 'Project' }));
         await user.click(await screen.findByRole('option', { name: /All projects/ }));
         await waitFor(() => {
-            expect(metrics.get).toHaveBeenLastCalledWith({ all_projects: true, lookback_days: 30 });
-            expect(usage.get).toHaveBeenLastCalledWith({ all_projects: true, lookback_days: 30 });
+            expect(metrics.get).toHaveBeenLastCalledWith({ all_projects: true, all_projects_backlog: true, lookback_days: 30 });
+            expect(usage.get).toHaveBeenLastCalledWith({ all_projects: true, all_projects_backlog: true, lookback_days: 30 });
         });
         expect(screen.queryByText(/Delivery metrics are available for one iteration/)).not.toBeInTheDocument();
         expect(screen.queryByText(/On track scope/)).not.toBeInTheDocument();
@@ -109,8 +109,8 @@ describe('Analytics page reads the scope bar', () => {
 
     it.each([
         ['/analytics?project=1&iteration=backlog', { project_id: 1, backlog: true }],
-        ['/analytics?project=all&iteration=backlog', { all_projects: true }],
-        ['/analytics?project=all&iteration=9', { all_projects: true }],
+        ['/analytics?project=all&iteration=backlog', { all_projects: true, all_projects_backlog: true }],
+        ['/analytics?project=all&iteration=9', { all_projects: true, all_projects_backlog: true }],
     ])('renders both report results and changes the window for %s', async (entry, scope) => {
         await renderPage(entry);
         await waitFor(() => {

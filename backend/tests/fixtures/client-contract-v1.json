@@ -9008,14 +9008,26 @@
             }
           },
           {
-            "description": "Aggregate all accessible projects; omit other scope filters.",
+            "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
             "in": "query",
             "name": "all_projects",
             "required": false,
             "schema": {
               "default": false,
-              "description": "Aggregate all accessible projects; omit other scope filters.",
+              "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
               "title": "All Projects",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+            "in": "query",
+            "name": "all_projects_backlog",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+              "title": "All Projects Backlog",
               "type": "boolean"
             }
           }
@@ -9149,14 +9161,26 @@
             }
           },
           {
-            "description": "Aggregate all accessible projects; omit other scope filters.",
+            "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
             "in": "query",
             "name": "all_projects",
             "required": false,
             "schema": {
               "default": false,
-              "description": "Aggregate all accessible projects; omit other scope filters.",
+              "description": "Aggregate all accessible projects; omit project_id, iteration_id and backlog filters.",
               "title": "All Projects",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+            "in": "query",
+            "name": "all_projects_backlog",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "With all_projects, include only work with no iteration; history uses recorded scope.",
+              "title": "All Projects Backlog",
               "type": "boolean"
             }
           }

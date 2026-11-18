@@ -70,7 +70,7 @@ async def report_store(delivery_store, monkeypatch):
 @pytest.mark.parametrize('scope,accepted,median_days,cost,runs,missing', [
     ('backlog', 3, 2, 9, 3, 0), ('all', 5, 3, 39, 6, 1),
     ('project', 4, 2.5, 19, 4, 0), ('iteration', 1, 10, 10, 1, 0),
-    ('both', 1, 10, 10, 1, 0),
+    ('both', 1, 10, 10, 1, 0), ('workspace_backlog', 4, 2.5, 29, 4, 0),
 ])
 async def test_reports_aggregate_matching_scope_and_preserve_existing_parameters(
     report_store, scope, accepted, median_days, cost, runs, missing,
@@ -83,7 +83,9 @@ async def test_reports_aggregate_matching_scope_and_preserve_existing_parameters
         params['iteration_id'] = scenario.iterations[0]
     if scope == 'backlog':
         params['backlog'] = True
-    if scope == 'all':
+    if scope == 'workspace_backlog':
+        params['all_projects_backlog'] = True
+    if scope in {'all', 'workspace_backlog'}:
         params['all_projects'] = True
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://test') as client:
         delivery = await client.get('/api/tasks/delivery-metrics', params=params)
@@ -93,6 +95,9 @@ async def test_reports_aggregate_matching_scope_and_preserve_existing_parameters
         assert data['lead_time']['median'] == median_days * 86400
         assert data['lead_time']['sample_count'] == accepted
         assert data['scope_basis'] == 'scope_at_observation'
+        if scope == 'workspace_backlog':
+            assert {item['task_id'] for item in data['review_queue']} == set(task_ids[:4])
+            assert data['coverage']['current_leaf_tasks'] == 4
         if scope == 'backlog':
             assert {item['task_id'] for item in data['review_queue']} == set(task_ids[:3])
             assert data['coverage']['current_leaf_tasks'] == 3
@@ -113,7 +118,7 @@ async def test_reports_aggregate_matching_scope_and_preserve_existing_parameters
                 ('execution-usage', usage, {'budget_amount': '100', 'budget_currency': 'USD'}),
             ]:
                 explicit_defaults = await client.get(f'/api/tasks/{route}', params={
-                    **params, **extra, 'backlog': False, 'all_projects': False,
+                    **params, **extra, 'backlog': False, 'all_projects': False, 'all_projects_backlog': False,
                 })
                 assert explicit_defaults.json() == original.json()
 
@@ -131,6 +136,8 @@ async def test_workspace_reports_keep_authorization_and_recorded_backlog_scope(r
             project = await read(project_id=scenario.projects[0])
             assert workspace.model_dump() == project.model_dump()
             backlog = await read(project_id=scenario.projects[0], backlog=True)
+            workspace_backlog = await read(all_projects=True, all_projects_backlog=True)
+            assert workspace_backlog.model_dump() == backlog.model_dump()
             if method == 'report':
                 assert backlog.accepted_leaf_tasks == 3
                 assert {item.task_id for item in backlog.review_queue} == set(task_ids[1:3])
@@ -143,6 +150,10 @@ async def test_workspace_reports_keep_authorization_and_recorded_backlog_scope(r
     {}, {'backlog': True}, {'backlog': True, 'project_id': 1, 'iteration_id': 1},
     {'all_projects': True, 'project_id': 1}, {'all_projects': True, 'iteration_id': 1},
     {'all_projects': True, 'backlog': True},
+    {'all_projects_backlog': True}, {'all_projects_backlog': True, 'project_id': 1},
+    {'all_projects': True, 'all_projects_backlog': True, 'iteration_id': 1},
+    {'all_projects': True, 'all_projects_backlog': True, 'project_id': 1},
+    {'all_projects': True, 'all_projects_backlog': True, 'backlog': True},
 ])
 async def test_report_reads_reject_missing_or_conflicting_scope(delivery_store, params):
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://test') as client:
@@ -205,3 +216,5 @@ async def test_deleted_iteration_history_does_not_become_backlog(delivery_store)
         assert delivery.accepted_leaf_tasks == 0
         assert usage.reported_runs == usage.accepted_task_identities == 0
         assert usage.provider_reported_cost == {}
+        assert (await DeliveryMetricsService(db).report(all_projects=True, all_projects_backlog=True)).accepted_leaf_tasks == 0
+        assert (await ExecutionUsageService(db).summary(all_projects=True, all_projects_backlog=True)).reported_runs == 0

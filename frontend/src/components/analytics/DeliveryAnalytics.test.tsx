@@ -74,8 +74,8 @@ describe('Delivery evidence', () => {
 
     it.each([
         ['/analytics?project=2&iteration=backlog', { project_id: 2, backlog: true, lookback_days: 30 }],
-        ['/analytics?project=all&iteration=backlog', { all_projects: true, lookback_days: 30 }],
-        ['/analytics?project=all&iteration=9', { all_projects: true, lookback_days: 30 }],
+        ['/analytics?project=all&iteration=backlog', { all_projects: true, all_projects_backlog: true, lookback_days: 30 }],
+        ['/analytics?project=all&iteration=9', { all_projects: true, all_projects_backlog: true, lookback_days: 30 }],
     ])('shows delivery evidence for %s', async (entry, scope) => {
         renderReport(entry);
         expect(await screen.findByRole('link', { name: 'Ready artifact' })).toBeVisible();
