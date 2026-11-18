@@ -776,6 +776,19 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
     });
 
+    it('says every task has dates right after Calculate schedule when the calculated schedule dates every task', async () => {
+        scheduleWorkspace();
+        services.tasks.getByIteration.mockResolvedValue([
+            listedTask({ start_date: null, end_date: null }),
+            listedTask({ id: 12, title: 'Later work', is_deferred: true, effective_is_deferred: true, start_date: null, end_date: null }),
+        ]);
+        const { user } = renderPlan();
+        await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+        expect(await screen.findByText('Calculated schedule · not saved')).toBeVisible();
+        expect(screen.getByText('Every task has dates.')).toBeVisible();
+        expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
+    });
+
     it('does not claim every task has dates while an active task in the task list is undated', async () => {
         const { result } = scheduleWorkspace();
         const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };

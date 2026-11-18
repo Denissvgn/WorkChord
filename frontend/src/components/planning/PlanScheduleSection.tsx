@@ -9,7 +9,7 @@ import { ganttService } from '../../services/ganttService';
 import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlanScheduleWorkloads';
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
 import { useScopeLink } from '../../features/scope/useScopeLink';
-import type { GanttResponse, SchedulePreviewResponse } from '../../types/gantt';
+import type { GanttResponse, GanttTask, SchedulePreviewResponse } from '../../types/gantt';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
 import type { Iteration } from '../../types/iteration';
 import type { Task } from '../../types/task';
@@ -38,13 +38,24 @@ const sortByDeferral = (tasks: ListedTask[]) => {
     return { deferred, scheduled: [...scheduled.values()] };
 };
 
+/** Ids of the tasks a calculated schedule gives a start and an end date, parent tasks included. */
+const datedInSchedule = (tasks: GanttTask[] = []): Set<number> => {
+    const dated = new Set<number>();
+    const visit = (task: GanttTask) => {
+        if (task.start_date && task.end_date) dated.add(task.id);
+        task.children?.forEach(visit);
+    };
+    tasks.forEach(visit);
+    return dated;
+};
+
 /**
  * Whether every task that is not deferred has its own start and end dates, whatever its status: finished and active
  * tasks alike, and a parent task as well as each of its subtasks. A parent task without its own dates fails the check
- * even when all its subtasks are dated.
+ * even when all its subtasks are dated. While a calculated schedule is shown, a task it dates counts as dated.
  */
-const everyTaskHasDates = (scheduled: ListedTask[]): boolean => (
-    scheduled.length > 0 && scheduled.every(task => Boolean(task.start_date && task.end_date))
+const everyTaskHasDates = (scheduled: ListedTask[], calculated: Set<number>): boolean => (
+    scheduled.length > 0 && scheduled.every(task => Boolean(task.start_date && task.end_date) || calculated.has(task.id))
 );
 
 export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iterationTasks, done }: {
@@ -90,9 +101,9 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
     // The iteration's task list is the authority: the Gantt response and the schedule preview leave out or misreport
-    // deferred tasks, and an unsaved preview changes no task's dates.
+    // deferred tasks. An unsaved preview changes no saved dates, so it only adds the dates it calculated.
     const { deferred, scheduled } = sortByDeferral(iterationTasks);
-    const everyTaskDated = everyTaskHasDates(scheduled);
+    const everyTaskDated = everyTaskHasDates(scheduled, datedInSchedule(preview?.tasks));
     const unscheduled = (result?.unscheduled ?? []).filter(task => task.reason !== 'deferred' && !deferred.has(task.task_id));
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">
