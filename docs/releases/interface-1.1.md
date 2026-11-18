@@ -63,16 +63,22 @@ you add to an old address are kept on the new one.
 
 Plan shows six checkpoints in order, and the counter reads "done of 6":
 
-1. **Iteration**: the iteration's start and end dates fall in the year of its work
-   calendar. A calendar that does not cover those years needs attention.
-2. **Team**: people are added. Each person needs capacity in the iteration; a person
-   without capacity needs attention.
-3. **Work**: the iteration has tasks.
-4. **Blockers**: no task lacks an assignee or effort, and no agent task lacks
-   capacity. Blocked until the iteration has tasks.
-5. **Schedule**: done when the iteration has tasks and every one of them has dates.
-   Deferred work is left out. This checks the dates on the tasks; it does not record that a schedule
-   was applied.
+1. **Iteration**: done when the iteration's start and end dates both fall in the
+   year of its work calendar. Otherwise it needs attention.
+2. **Team**: done when people are added and each has capacity in the iteration. With
+   no people it is next; a person without capacity needs attention.
+3. **Work**: done when the iteration has tasks. A parent task that has subtasks is
+   counted through its subtasks. With no tasks it is next.
+4. **Blockers**: done when no planned, non-deferred task lacks an assignee or effort,
+   and no task that an agent is working on lacks an assignee. Otherwise it needs
+   attention. Blocked until the iteration has tasks.
+5. **Schedule**: done when the first four checkpoints are all done and every planned,
+   non-deferred task has effort, a start and an end inside the iteration's dates,
+   and a planned start that has not already passed. Deferred work is left out. While
+   any earlier checkpoint is not done, Schedule is blocked, even if the tasks
+   already have dates. When the earlier checkpoints are done but a task lacks dates,
+   Schedule is next. This checks the dates on the tasks; it does not record that a
+   schedule was applied.
 6. **Review**: done when the schedule is done and no at-risk signal is open: no
    at-risk task, no overloaded person, and no uncertain item. While a signal is
    open, Review needs attention. Blocked until the schedule is done.
@@ -98,7 +104,9 @@ workspace; nothing is ticked by hand.
    import. Opens Plan at its Work step.
 6. **Build the schedule.** Build the schedule from the tasks and capacity. Opens
    Plan at its Schedule step. The step is done when Plan's Schedule checkpoint is
-   done, that is, when every task in the iteration has dates.
+   done: the iteration, team, work and blockers checkpoints are done first, and
+   then every planned, non-deferred task has effort and dates inside the iteration.
+   Dates on the tasks alone do not finish it while an earlier checkpoint is open.
 
 Dismiss hides the panel in this browser. To bring it back, open **Help**, then
 **Setup guide**.
@@ -211,9 +219,12 @@ All of the following are optional and additive. Existing requests keep working.
 
 - `GET /api/tasks/delivery-metrics` and `GET /api/tasks/execution-usage` accept
   `backlog`, `all_projects` and `all_projects_backlog` (boolean, default `false`).
-  `all_projects` aggregates every accessible project and ignores the project,
-  iteration and backlog filters. `all_projects_backlog` limits an all-projects
-  request to work with no iteration.
+  `all_projects=true` aggregates every accessible project and must be sent without
+  `project_id`, `iteration_id` and `backlog=true`; the server rejects the
+  combination. `all_projects_backlog=true` limits an all-projects request to work
+  with no iteration and is rejected without `all_projects=true`. `backlog=true`
+  needs one `project_id` and no `iteration_id`. A request still needs a project, an
+  iteration, or `all_projects=true`.
 - `GET /api/tasks/metric-matches` accepts `limit` (1 to 500, default 200) and
   `after_id` (default none). Its response adds `has_more` and `next_after_id`; pass
   `next_after_id` as `after_id` to get the next page.
@@ -222,8 +233,11 @@ All of the following are optional and additive. Existing requests keep working.
 - Team member responses embed the reader-safe profile part for every reader, and
   carry `agent_connected` (boolean, read-only): true when an enabled agent is bound
   to the profile. It names no agent.
-- The model catalog and model binding routes under `/api/agent/` (profile presets,
-  model catalog and model bindings) accept the `X-Admin-API-Key` header when no agent
-  key is sent. Agent keys keep working as before.
+- These routes under `/api/agent/` accept the `X-Admin-API-Key` header when no
+  agent key is sent: `GET /agent/profile-presets`, the model catalog list, create,
+  update and disable routes (`GET` and `POST /agent/model-catalog`, `PATCH` and
+  `POST .../disable` on `/agent/model-catalog/{catalog_id}`), and all model
+  binding routes (`/agent/model-bindings`). Reading one catalog entry and applying
+  a profile preset still need an agent key. Agent keys keep working as before.
 
 Check the current API schemas when you update a client.
