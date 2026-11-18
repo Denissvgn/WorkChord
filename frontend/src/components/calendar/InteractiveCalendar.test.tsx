@@ -38,3 +38,22 @@ describe('calendar day editing without right-click', () => {
         expect(handlers.onAddHoliday).toHaveBeenCalledWith('2026-01-08');
     });
 });
+
+describe('calendar mark colours', () => {
+    it('uses neutral colours for holiday and short-day marks and their legend in English', () => {
+        const { container } = renderWithProviders(<InteractiveCalendar year={2026} month={0}
+            holidays={['2026-01-01']} shortDays={['2026-01-02']} weekendDays={[5, 6]}
+            onYearChange={vi.fn()} onMonthChange={vi.fn()} onAddHoliday={vi.fn()} onRemoveHoliday={vi.fn()}
+            onAddShortDay={vi.fn()} onRemoveShortDay={vi.fn()} onToggleWeekend={vi.fn()} />);
+        const holiday = screen.getByRole('button', { name: 'Thursday, 1 January 2026: holiday' });
+        const shortDay = screen.getByRole('button', { name: 'Friday, 2 January 2026: short day' });
+        expect(holiday.className).toContain('bg-surface-subtle');
+        expect(shortDay.className).toContain('bg-surface-subtle');
+        expect(holiday.className + shortDay.className).not.toMatch(/feedback-(danger|warning)/);
+        const legendHoliday = screen.getAllByText('Holiday').find(element => element.tagName === 'SPAN')?.previousElementSibling;
+        const legendShortDay = screen.getByText('Short day (-1h)').previousElementSibling;
+        expect(legendHoliday?.className).toContain('bg-surface-subtle');
+        expect(legendShortDay?.className).toContain('bg-surface-subtle');
+        expect(container.textContent).toContain('Holiday');
+    });
+});

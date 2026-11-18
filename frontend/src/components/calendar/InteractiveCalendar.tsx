@@ -287,8 +287,8 @@ export const InteractiveCalendar = ({
                             className={clsx(
                                 "h-8 w-full rounded text-sm font-medium transition-all",
                                 "hover:ring-2 hover:ring-focus hover:ring-offset-1",
-                                holiday && "bg-feedback-danger text-feedback-danger-emphasis hover:bg-feedback-danger/90",
-                                !holiday && shortDay && "bg-feedback-warning text-feedback-warning-emphasis hover:bg-feedback-warning/90",
+                                holiday && "bg-surface-subtle text-content-secondary border border-border hover:bg-surface-muted",
+                                !holiday && shortDay && "bg-surface-subtle text-content-secondary border border-border hover:bg-surface-muted",
                                 !holiday && !shortDay && weekend && "bg-status-active-muted text-action",
                                 !holiday && !shortDay && !weekend && "bg-surface-muted text-content-primary hover:bg-surface-subtle"
                             )}
@@ -311,11 +311,11 @@ export const InteractiveCalendar = ({
                     <span>{t('calendar.legendWeekend')}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-feedback-danger" />
+                    <div className="w-3 h-3 rounded bg-surface-subtle border border-border" />
                     <span>{t('calendar.legendHoliday')}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-feedback-warning" />
+                    <div className="w-3 h-3 rounded bg-surface-subtle border border-border" />
                     <span>{t('calendar.legendShortDay')}</span>
                 </div>
                 <div className="flex items-center gap-1">
