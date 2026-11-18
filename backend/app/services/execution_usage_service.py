@@ -153,10 +153,10 @@ class ExecutionUsageService:
         return self.response(row)
 
     async def summary(self, *, project_id=None, iteration_id=None, lookback_days=30, budget_amount=None, budget_currency=None,
-                      backlog=False, all_projects=False):
+                      backlog=False, all_projects=False, all_projects_backlog=False):
         if not 1 <= lookback_days <= 366:
             raise ValueError("Observation window must be between 1 and 366 elapsed days")
-        validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects)
+        validate_report_scope(project_id, iteration_id, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)
         if project_id is not None:
             require_project(self.db, project_id)
             if await self.db.get(Project, project_id) is None:
@@ -176,7 +176,7 @@ class ExecutionUsageService:
             records = records.where(ExecutionUsageRecord.iteration_id == iteration_id)
             runs = runs.where(Task.iteration_id == iteration_id)
             outcomes = outcomes.where(DeliveryObservation.iteration_id == iteration_id)
-        if backlog:
+        if backlog or all_projects_backlog:
             records = records.where(ExecutionUsageRecord.iteration_id.is_(None),
                                     ExecutionUsageRecord.original_iteration_id.is_(None))
             runs = runs.where(Task.iteration_id.is_(None))
@@ -236,7 +236,7 @@ class ExecutionUsageService:
                 human_minutes += report.reported_human_effort_minutes
                 human_reports += 1
         delivery = await DeliveryMetricsService(self.db).report(project_id=project_id, iteration_id=iteration_id,
-            lookback_days=lookback_days, now=end, backlog=backlog, all_projects=all_projects)
+            lookback_days=lookback_days, now=end, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog)
         budget = None
         if budget_amount is not None:
             if budget_amount < 0 or not budget_amount.is_finite() or budget_currency is None or len(budget_currency) != 3 or not budget_currency.isascii() or not budget_currency.isupper():

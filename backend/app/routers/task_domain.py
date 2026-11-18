@@ -71,9 +71,10 @@ from app.services.execution_usage_service import ExecutionUsageService
 async def delivery_metrics(db: DB, project_id: int | None = Query(default=None, ge=1),
     iteration_id: int | None = Query(default=None, ge=1), lookback_days: int = Query(default=30, ge=1, le=366),
     backlog: bool = Query(default=False, description="Only this project's work with no iteration, using scope at observation for history."),
-    all_projects: bool = Query(default=False, description="Aggregate all accessible projects; omit other scope filters.")):
+    all_projects: bool = Query(default=False, description="Aggregate all accessible projects; omit project_id, iteration_id and backlog filters."),
+    all_projects_backlog: bool = Query(default=False, description="With all_projects, include only work with no iteration; history uses recorded scope.")):
     return await domain_result(DeliveryMetricsService(db).report(project_id=project_id, iteration_id=iteration_id,
-        lookback_days=lookback_days, backlog=backlog, all_projects=all_projects))
+        lookback_days=lookback_days, backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog))
 
 
 @router.get("/tasks/execution-usage", response_model=ExecutionUsageSummary)
@@ -82,10 +83,11 @@ async def execution_usage_summary(db: DB, project_id: int | None = Query(default
     budget_amount: Decimal | None = Query(default=None, ge=0, max_digits=18, decimal_places=6),
     budget_currency: str | None = Query(default=None, pattern=r"^[A-Z]{3}$"),
     backlog: bool = Query(default=False, description="Only this project's work with no iteration, using recorded scope for history."),
-    all_projects: bool = Query(default=False, description="Aggregate all accessible projects; omit other scope filters.")):
+    all_projects: bool = Query(default=False, description="Aggregate all accessible projects; omit project_id, iteration_id and backlog filters."),
+    all_projects_backlog: bool = Query(default=False, description="With all_projects, include only work with no iteration; history uses recorded scope.")):
     return await domain_result(ExecutionUsageService(db).summary(project_id=project_id, iteration_id=iteration_id,
         lookback_days=lookback_days, budget_amount=budget_amount, budget_currency=budget_currency,
-        backlog=backlog, all_projects=all_projects))
+        backlog=backlog, all_projects=all_projects, all_projects_backlog=all_projects_backlog))
 
 
 class MetricMatchItem(BaseModel):
