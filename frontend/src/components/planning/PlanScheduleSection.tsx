@@ -18,15 +18,16 @@ import { formatDate } from '../../utils/formatDate';
 import { formatDecimal } from '../../utils/workNumbers';
 import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 
+type DatedTask = Pick<Task, 'start_date' | 'end_date'> & { children?: DatedTask[] };
+
 /**
- * Whether every task in the iteration has dates, whatever its status (finished, deferred and active alike), judged
- * from the iteration's task list. The Gantt response leaves deferred tasks out, so it cannot support that claim.
- * Parent tasks are judged through their subtasks, whose dates they roll up.
+ * Whether every task has dates, whatever its status (finished, deferred and active alike). A task with subtasks is
+ * judged through its subtasks, whose dates it rolls up; any other task, a parent task without subtasks included, is
+ * judged by its own dates. Works on a nested tree and on a flattened list that keeps each task's subtasks.
  */
-const everyTaskHasDates = (tasks: Task[]) => {
-    const leaves = tasks.filter(task => !task.is_composite && !task.children?.length);
-    return leaves.length > 0 && leaves.every(task => Boolean(task.start_date && task.end_date));
-};
+const everyTaskHasDates = (tasks: DatedTask[]): boolean => tasks.length > 0 && tasks.every(task => (
+    task.children?.length ? everyTaskHasDates(task.children) : Boolean(task.start_date && task.end_date)
+));
 
 export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iterationTasks, done }: {
     /** The iteration's tasks from the task list, flattened, deferred tasks included. */
@@ -71,8 +72,9 @@ export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iteratio
     const finish = ends.sort().at(-1);
     const result = preview?.schedule_result ?? gantt?.schedule_result;
     // An unsaved preview must also leave nothing undated, or the claim would contradict the result shown beside it.
+    // The iteration's task list is the authority: the Gantt response leaves deferred tasks out.
     const previewDated = !preview || (!preview.schedule_result?.unscheduled?.length
-        && scheduleLeaves(preview.tasks).every(task => Boolean(task.start_date && task.end_date)));
+        && (!preview.tasks.length || everyTaskHasDates(preview.tasks)));
     const everyTaskDated = previewDated && everyTaskHasDates(iterationTasks);
     const showResult = preview !== null || done || Boolean(result);
     return <div className="space-y-4">

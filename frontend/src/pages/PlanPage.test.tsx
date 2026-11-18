@@ -859,6 +859,57 @@ describe('schedule and review inside Plan', () => {
         expect(screen.queryByText('Waiting for a prerequisite.')).not.toBeInTheDocument();
     });
 
+    describe('judges "Every task has dates" for every kind of task', () => {
+        const undated = { start_date: null, end_date: null };
+        const subtask = (id: number, overrides: Partial<Task> = {}) => listedTask({ id, title: `Step ${id}`, parent_id: 20, ...overrides });
+        const parent = (overrides: Partial<Task> = {}) => listedTask({ id: 20, title: 'Parent work', is_composite: true, ...overrides });
+        const cases: Array<[string, Task[], boolean]> = [
+            ['a dated task', [listedTask()], true],
+            ['an undated task', [listedTask(undated)], false],
+            ['a parent task whose subtasks are all dated, though it has no dates of its own',
+                [parent({ ...undated, children: [subtask(21), subtask(22)] })], true],
+            ['a parent task with an undated subtask, though it has dates of its own',
+                [parent({ children: [subtask(21), subtask(22, undated)] })], false],
+            ['a dated parent task without subtasks', [parent()], true],
+            ['an undated parent task without subtasks beside a dated task', [listedTask(), parent(undated)], false],
+            ['a dated finished task', [listedTask({ status: 'closed' })], true],
+            ['an undated finished task beside a dated task', [listedTask(), listedTask({ id: 12, status: 'resolved', ...undated })], false],
+            ['a dated deferred task beside a dated task',
+                [listedTask(), listedTask({ id: 12, is_deferred: true, effective_is_deferred: true } as Partial<Task>)], true],
+            ['an undated deferred subtask of a dated parent task',
+                [parent({ children: [subtask(21), subtask(22, { ...undated, is_deferred: true, effective_is_deferred: true } as Partial<Task>)] })], false],
+        ];
+        it.each(cases)('with %s', async (_label, tasks, claimed) => {
+            const { result } = scheduleWorkspace();
+            const saved = { success: result.success, decisions: [], workload_balanced: true, workload_issues: [], unscheduled: [] };
+            services.gantt.getChart.mockResolvedValue({ iteration: ITERATION, tasks: [scheduledTask()], schedule_result: saved, holidays: [], weekends: [] });
+            services.tasks.getByIteration.mockResolvedValue(tasks);
+            renderPlan();
+            if (claimed) {
+                expect(await screen.findByText('Every task has dates.')).toBeVisible();
+                expect(screen.queryByText('Calculate the schedule to see why tasks have no dates.')).not.toBeInTheDocument();
+            } else {
+                expect(await screen.findByText('Calculate the schedule to see why tasks have no dates.')).toBeVisible();
+                expect(screen.queryByText('Every task has dates.')).not.toBeInTheDocument();
+            }
+        });
+
+        it('says every task has dates after Apply schedule dates the only task, a parent task without subtasks', async () => {
+            const { result } = scheduleWorkspace();
+            let applied = false;
+            const empty = scheduledTask({ id: 20, title: 'Parent work', is_composite: true });
+            services.gantt.previewSchedule.mockResolvedValue({ input_revision: 7, input_planning_revision: 19, tasks: [empty], overdue_task_ids: [], schedule_result: result });
+            services.gantt.schedule.mockImplementation(async () => { applied = true; return result; });
+            services.gantt.getChart.mockImplementation(async () => ({ iteration: { ...ITERATION, revision: 7 }, tasks: applied ? [empty] : [], schedule_result: applied ? result : null }));
+            services.tasks.getByIteration.mockImplementation(async () => [parent(applied ? {} : undated)]);
+            const { user } = renderPlan();
+            await user.click(await screen.findByRole('button', { name: 'Calculate schedule' }));
+            await user.click(await screen.findByRole('button', { name: 'Apply schedule' }));
+            expect(await screen.findByText('Schedule applied.')).toBeVisible();
+            expect(await screen.findByText('Every task has dates.')).toBeVisible();
+        });
+    });
+
     it('does not mark Schedule Done from a successful apply when readiness still says it is incomplete', async () => {
         scheduleWorkspace();
         services.iterations.getPlanningReadiness.mockResolvedValue(scheduleReady);
