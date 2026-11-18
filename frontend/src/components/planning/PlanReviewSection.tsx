@@ -6,6 +6,7 @@ import { QueryErrorState, QueryLoadingState } from '../feedback/QueryState';
 import { usePlanScheduleWorkloads } from '../../features/planningMasters/usePlanScheduleWorkloads';
 import { scheduleLeaves } from '../../features/planningMasters/scheduleEvidence';
 import { withPlanReturn } from '../../features/planningMasters/planningReturn';
+import { atRiskReasons } from '../../features/planningMasters/atRiskReasons';
 import { hasDeliverySignal, isFinished } from '../../features/planningMasters/planningTaskIssues';
 import { useScopeLink } from '../../features/scope/useScopeLink';
 import type { GanttResponse } from '../../types/gantt';
@@ -38,6 +39,13 @@ export const PlanReviewSection = ({ iteration, members, gantt, riskCount }: {
                 {riskLink(t('plan.page.atRisk'), signals.length, href({ planningIssue: 'at-risk' }))}
             </dl>
         </section>
+        {signals.length > 0 && <section className="plan-checkpoint-evidence" aria-label={t('planSchedule.atRiskTasks')}>
+            <h3>{t('planSchedule.atRiskTasks')}</h3>
+            <ul className="plan-schedule-reasons">{signals.map(task => <li key={task.id}>
+                <Link className="underline" to={scopeLink(withPlanReturn('/tasks', 'review', { planningIssue: 'at-risk', task: String(task.id) }))}>{task.title}</Link>
+                <p>{atRiskReasons(task, t).join('; ')}</p>
+            </li>)}</ul>
+        </section>}
         {workloads.isLoading ? <QueryLoadingState message={t('planSchedule.loadingCapacity')} />
             : workloads.isError ? <QueryErrorState error={workloads.error} fallback={t('planSchedule.capacityFailed')} onRetry={() => void workloads.refetch()} />
                 : <section className="plan-checkpoint-evidence" aria-label={t('planSchedule.overCapacity')}>

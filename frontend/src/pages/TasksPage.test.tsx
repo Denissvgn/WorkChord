@@ -254,6 +254,30 @@ describe('TasksPage', () => {
         expect(screen.queryByText('Modified view')).not.toBeInTheDocument();
     });
 
+    it('keeps the at-risk filter for a task opened from Review and says why the task is at risk', async () => {
+        renderWithProviders(
+            <>
+                <TasksPage />
+                <LocationProbe />
+            </>,
+            { initialEntries: ['/tasks?planningIssue=at-risk&task=42&iterationId=1&fromPlanStep=review'] },
+        );
+
+        expect(await screen.findByTestId('task-planning-issue')).toHaveTextContent('at-risk');
+        const drawer = await screen.findByRole('dialog', { name: 'Resolve launch blocker' });
+        const why = await within(drawer).findByRole('region', { name: 'Why this task is at risk' });
+        expect(why).toHaveTextContent('Past its end date');
+        expect(screen.getByTestId('location-search')).toHaveTextContent('planningIssue=at-risk');
+    });
+
+    it('does not add at-risk reasons to a task opened without the at-risk filter', async () => {
+        renderWithProviders(<TasksPage />, { initialEntries: ['/tasks?task=42&iterationId=1'] });
+
+        const drawer = await screen.findByRole('dialog', { name: 'Resolve launch blocker' });
+        expect(within(drawer).getByText('Reading Resolve launch blocker')).toBeVisible();
+        expect(within(drawer).queryByRole('region', { name: 'Why this task is at risk' })).not.toBeInTheDocument();
+    });
+
     it('rejects an unknown Planning issue without changing the period or return checkpoint', async () => {
         renderWithProviders(
             <>

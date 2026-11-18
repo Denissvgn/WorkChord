@@ -79,6 +79,135 @@ describe('IterationForm hardening', () => {
         ));
     });
 
+    it('shows no conflict prompt when the server copy matches the opened iteration', async () => {
+        renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByDisplayValue('August plan');
+        expect(screen.queryByRole('button', { name: 'Load latest version' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Keep draft with current version' })).not.toBeInTheDocument();
+        expect(screen.queryByText('Current server values')).not.toBeInTheDocument();
+    });
+
+    it('names the fields that changed on the server when it differs from the opened iteration', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ end_date: '2026-08-21', name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByText(/This was changed on the server after you opened it: Name, End\./)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Load latest version' })).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Keep draft with current version' })).toBeVisible();
+    });
+
+    it('keeps the opened draft when asked to, and loads the server values only when asked to', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ end_date: '2026-08-21', name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name, End\./);
+        expect(screen.getByLabelText('Iteration name')).toHaveValue('August plan');
+        expect(screen.queryByDisplayValue('August plan v2')).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        await waitFor(() => expect(screen.queryByRole('button', { name: 'Keep draft with current version' })).not.toBeInTheDocument());
+        expect(screen.getByLabelText('Iteration name')).toHaveValue('August plan');
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledWith(17, expect.objectContaining({ name: 'August plan', end_date: '2026-08-14' }), { 17: 5 }));
+    });
+
+    it('names a newer server change instead of keeping the draft against it', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2', end_date: '2026-08-28' }), resource_id: 17, expected_revisions: { 17: 6 }, complete: true });
+
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        expect(await screen.findByText(/changed on the server again while you were deciding: End\./)).toBeVisible();
+        expect(screen.getByText(/changed on the server after you opened it: Name, End\./)).toBeVisible();
+        expect(screen.getByRole('button', { name: 'Keep draft with current version' })).toBeVisible();
+
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        await waitFor(() => expect(screen.queryByRole('button', { name: 'Keep draft with current version' })).not.toBeInTheDocument());
+        expect(screen.queryByText(/changed on the server again/)).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await waitFor(() => expect(iterationServiceMock.update).toHaveBeenCalledWith(17, expect.objectContaining({ name: 'August plan', end_date: '2026-08-14' }), { 17: 6 }));
+    });
+
+    it('does not update while the conflict prompt waits for a choice', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+        const update = screen.getByRole('button', { name: 'Update iteration' });
+        expect(update).toBeDisabled();
+        expect(screen.getByText('Choose Load latest version or Keep draft with current version before you update.')).toBeVisible();
+        await user.click(update);
+        expect(iterationServiceMock.update).not.toHaveBeenCalled();
+
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Update iteration' })).toBeEnabled());
+        expect(screen.queryByText(/before you update/)).not.toBeInTheDocument();
+    });
+
+    it('does not update after a newer server change while the draft is not kept yet', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2', end_date: '2026-08-28' }), resource_id: 17, expected_revisions: { 17: 6 }, complete: true });
+        await user.click(screen.getByRole('button', { name: 'Keep draft with current version' }));
+        await screen.findByText(/changed on the server again while you were deciding: End\./);
+        const update = screen.getByRole('button', { name: 'Update iteration' });
+        expect(update).toBeDisabled();
+        await user.click(update);
+        expect(iterationServiceMock.update).not.toHaveBeenCalled();
+    });
+
+    it('does not update again after a refused save until a conflict choice is made', async () => {
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByDisplayValue('August plan');
+        iterationServiceMock.update.mockRejectedValueOnce({ response: { status: 409, data: { detail: 'Out of date' } } });
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'Changed elsewhere' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        await screen.findByRole('button', { name: 'Load latest version' });
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Update iteration' })).toBeDisabled());
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        expect(iterationServiceMock.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the conflict prompt when the caller passes a refreshed iteration while the form shows the opened one', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user, rerender } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+
+        rerender(<IterationForm initialData={iterationFixture({ name: 'August plan v2' })} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(screen.getByText(/changed on the server after you opened it: Name\./)).toBeVisible();
+        expect(screen.getByLabelText('Iteration name')).toHaveValue('August plan');
+        const update = screen.getByRole('button', { name: 'Update iteration' });
+        expect(update).toBeDisabled();
+        await user.click(update);
+        expect(iterationServiceMock.update).not.toHaveBeenCalled();
+    });
+
+    it('fills the form with the server values after Load latest version', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'August plan v2' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByText(/changed on the server after you opened it: Name\./);
+        expect(screen.getByLabelText('Iteration name')).toHaveValue('August plan');
+        await user.click(screen.getByRole('button', { name: 'Load latest version' }));
+        expect(await screen.findByDisplayValue('August plan v2')).toBeVisible();
+        expect(screen.queryByRole('button', { name: 'Load latest version' })).not.toBeInTheDocument();
+    });
+
+    it('names a calendar or manager change made on the server', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ calendar_id: 2, manager_email: 'lead@example.com' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        expect(await screen.findByText(/changed on the server after you opened it: Calendar, Manager email\./)).toBeVisible();
+    });
+
+    it('asks what to do when a save is refused as out of date', async () => {
+        const { user } = renderWithProviders(<IterationForm initialData={iterationFixture()} onSuccess={vi.fn()} onCancel={vi.fn()} />);
+        await screen.findByDisplayValue('August plan');
+        expect(screen.queryByRole('button', { name: 'Load latest version' })).not.toBeInTheDocument();
+        iterationServiceMock.update.mockRejectedValueOnce({ response: { status: 409, data: { detail: 'Out of date' } } });
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ name: 'Changed elsewhere' }), resource_id: 17, expected_revisions: { 17: 5 }, complete: true });
+        await user.click(screen.getByRole('button', { name: 'Update iteration' }));
+        expect(await screen.findByRole('button', { name: 'Load latest version' })).toBeVisible();
+        expect(screen.getByText(/changed on the server after you opened it: Name\./)).toBeVisible();
+    });
+
     it('keeps the calendar under More: the default is not sent, a chosen one is', async () => {
         const { user } = renderWithProviders(<IterationForm onSuccess={vi.fn()} onCancel={vi.fn()} />);
         expect(screen.queryByLabelText('Calendar')).not.toBeInTheDocument();
@@ -154,6 +283,7 @@ describe('IterationForm hardening', () => {
     });
 
     it('sends an explicit null when an existing calendar is changed to the default calendar', async () => {
+        planningMock.readInitial.mockResolvedValue({ resource: iterationFixture({ calendar_id: 2 }), resource_id: 17, expected_revisions: { 17: 4 }, complete: true });
         const { user } = renderWithProviders(
             <IterationForm
                 initialData={iterationFixture({ calendar_id: 2 })}

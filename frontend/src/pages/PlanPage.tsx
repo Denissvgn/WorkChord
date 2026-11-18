@@ -204,7 +204,7 @@ const CheckpointBody = ({
     }
     if (section.id === 'schedule' && readiness.currentIteration) {
         return <PlanScheduleSection key={iterationId} iteration={readiness.currentIteration} members={readiness.teamMembers}
-            gantt={readiness.gantt} done={section.state === 'done'} />;
+            gantt={readiness.gantt} tasks={readiness.allTasks} done={section.state === 'done'} />;
     }
     if (section.id === 'review' && readiness.currentIteration) {
         return <PlanReviewSection key={iterationId} iteration={readiness.currentIteration} members={readiness.teamMembers}

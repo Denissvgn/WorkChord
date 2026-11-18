@@ -21,7 +21,7 @@ import type {
     IterationSeriesCreate,
     IterationUpdate,
 } from '../../types/iteration';
-import { getApiErrorMessage } from '../../utils/apiError';
+import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 import { formatDate } from '../../utils/formatDate';
 
 interface IterationFormProps {
@@ -181,8 +181,8 @@ const IterationFormEditor = ({
     defaultProjectId,
     onSuccess,
     onCancel,
-    onStateChange, revisions, contextControls,
-}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode }) => {
+    onStateChange, revisions, contextControls, onConflict, conflictUnresolved = false,
+}: IterationFormProps & { revisions?: ObservedRevisions; contextControls?: ReactNode; onConflict?: () => void; conflictUnresolved?: boolean }) => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const isActive = useActiveMount();
@@ -311,6 +311,7 @@ const IterationFormEditor = ({
         && singleDraft.start_date
         && singleDraft.end_date
         && isOrderedRange(singleDraft.start_date, singleDraft.end_date)
+        && !conflictUnresolved
         && !isSaving,
     );
     const seriesValid = Boolean(
@@ -341,7 +342,7 @@ const IterationFormEditor = ({
         }
 
         if (initialData) {
-            updateMutation.mutate(payload);
+            updateMutation.mutate(payload, { onError: error => { if ([409, 412].includes(getApiErrorStatus(error) ?? 0)) onConflict?.(); } });
             return;
         }
 
@@ -373,7 +374,9 @@ const IterationFormEditor = ({
                         : seriesPreview.length > MAX_SERIES_ITERATIONS ? t('iterationForm.tooManyInSeries', { count: MAX_SERIES_ITERATIONS }) : null)
         : (!singleDraft.name.trim() ? t('iterationForm.needName')
             : !singleDraft.start_date || !singleDraft.end_date ? t('iterationForm.needDates')
-                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates') : null);
+                : !isOrderedRange(singleDraft.start_date, singleDraft.end_date) ? t('iterationForm.needOrderedDates')
+                    // Saving now would send the draft against a server version the person has not accepted.
+                    : conflictUnresolved ? t('iterationForm.resolveConflictFirst') : null);
     const { requestConfirmation, confirmationDialog } = useConfirmDialog();
     const handleCancel = () => {
         if (!isDirty) { onCancel(); return; }
@@ -672,7 +675,15 @@ export const IterationForm = (props: IterationFormProps) => {
     ].join(':');
 
     if (!props.initialData) return <IterationFormEditor key={formKey} {...props} />;
-    return <PlanningInputBoundary<Iteration> key={formKey} onCancel={props.onCancel} kind="iteration" resourceId={props.initialData.id}>
-        {(observed, controls) => <IterationFormEditor {...props} initialData={observed.resource} revisions={observed.expected_revisions} contextControls={controls} />}
+    return <IterationEditBoundary key={formKey} {...props} initialData={props.initialData} />;
+};
+
+const IterationEditBoundary = (props: IterationFormProps & { initialData: Iteration }) => {
+    // The form keeps the iteration it was opened with until the person loads the latest version. A later
+    // refetch of the caller's list must not replace it: the conflict prompt compares the server against
+    // what the form shows, and a refreshed copy would hide a change the form would then overwrite.
+    const [opened] = useState(props.initialData);
+    return <PlanningInputBoundary<Iteration> onCancel={props.onCancel} kind="iteration" resourceId={opened.id} draft={opened}>
+        {(observed, controls, _saved, conflict, reloaded, unresolved) => <IterationFormEditor {...props} initialData={reloaded ? observed.resource : opened} revisions={observed.expected_revisions} contextControls={controls} onConflict={conflict} conflictUnresolved={unresolved} />}
     </PlanningInputBoundary>;
 };

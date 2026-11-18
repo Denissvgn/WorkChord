@@ -29,6 +29,8 @@ export interface TaskRowProps {
     chip?: TaskStateChip | null;
     /** Secondary text after the title, such as the project and iteration. */
     meta?: ReactNode;
+    /** Why the row needs attention, one short line per reason, shown beside the title from 768 px. */
+    reasons?: string[];
     /**
      * The assignee column is left out when this is undefined. `kind` comes from the task and
      * sets the icon until the assignee options have the row.
@@ -74,7 +76,7 @@ export interface TaskRowProps {
  * the menu appear on hover and focus.
  */
 export const TaskRow = ({
-    id, title, titleText, status, statusLocked = false, priority, chip, meta, assignee, assigneeOptions, onAssign, effort,
+    id, title, titleText, status, statusLocked = false, priority, chip, meta, reasons, assignee, assigneeOptions, onAssign, effort,
     level = 0, lead, handle, revealed = false, onOpen, onStatusChange, menuItems, selected = false, onToggleSelect, selectDisabledReason, dispatch, reviewer,
     overdue = false, deferred = false, className,
 }: TaskRowProps) => {
@@ -176,6 +178,12 @@ export const TaskRow = ({
             </Button>
 
             {meta && <span className="hidden min-w-0 max-w-[16rem] shrink truncate text-xs text-content-secondary lg:block">{meta}</span>}
+
+            {reasons && reasons.length > 0 && (
+                <span data-task-reasons="" title={reasons.join('; ')} className="hidden w-44 shrink-0 flex-col justify-center text-wc-micro leading-3.5 text-content-secondary md:flex">
+                    {reasons.map(reason => <span key={reason} className="block truncate">{reason}</span>)}
+                </span>
+            )}
 
             {chip && <TaskStateChipBadge chip={chip} className="hidden sm:inline" />}
 
