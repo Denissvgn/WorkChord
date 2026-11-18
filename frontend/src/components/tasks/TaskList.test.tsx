@@ -7,6 +7,7 @@ import { REVIEWER_PAGE_SIZE } from './useAgentRowFacts';
 import { TaskList } from './TaskList';
 import { taskDetailResponse } from '../../test/fixtures/taskDetail';
 import type { TaskFilters } from './TaskFiltersBar';
+import { changeAppLanguage } from '../../i18n/i18n';
 
 const taskServiceMock = vi.hoisted(() => ({
     getByIteration: vi.fn(),
@@ -213,17 +214,47 @@ describe('TaskList rows and groups', () => {
 
     it('groups by status with counts, work in hand first and finished work collapsed', async () => {
         taskServiceMock.getByIteration.mockResolvedValue([
-            { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' }, { ...task(4), status: 'closed' },
+            { ...task(1), status: 'planned' }, { ...task(2), status: 'active' }, { ...task(3), status: 'planned' },
+            { ...task(4), status: 'closed' }, { ...task(5), status: 'resolved' },
         ]);
         const { user, rerender } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
         const groups = await screen.findAllByRole('heading', { level: 2 });
-        expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Closed1 task']);
+        expect(groups.map(group => group.textContent)).toEqual(['Active1 task', 'Planned2 tasks', 'Resolved1 task', 'Closed1 task']);
         expect(screen.getByRole('button', { name: /Closed/ })).toHaveAttribute('aria-expanded', 'false');
         expect(screen.queryByRole('button', { name: 'Task 4' })).toBeNull();
         await user.click(screen.getByRole('button', { name: /Closed/ }));
         expect(screen.getByRole('button', { name: 'Task 4' })).toBeInTheDocument();
         rerender(<TaskList iterationId={1} sortKey="priority" groupByStatus={false} />);
         expect(screen.queryByRole('heading', { level: 2 })).toBeNull();
+    });
+
+    it('shows translated status names for legacy in-progress groups in English and Russian', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([{ ...task(1), status: 'in_progress' }]);
+        const { unmount } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
+        expect((await screen.findByRole('heading', { level: 2 })).textContent).toBe('Active1 task');
+        unmount();
+
+        await changeAppLanguage('ru');
+        try {
+            renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
+            expect((await screen.findByRole('heading', { level: 2 })).textContent).toBe('Активно1 задача');
+        } finally {
+            await changeAppLanguage('en');
+        }
+    });
+
+    it('combines legacy and active tasks into one active group', async () => {
+        taskServiceMock.getByIteration.mockResolvedValue([
+            { ...task(1), status: 'in_progress' }, { ...task(2), status: 'active' }, { ...task(3), status: 'closed' },
+        ]);
+        const { user } = renderWithProviders(<TaskList iterationId={1} sortKey="priority" />);
+        const groups = await screen.findAllByRole('heading', { level: 2 });
+        expect(groups.map(group => group.textContent)).toEqual(['Active2 tasks', 'Closed1 task']);
+        expect(screen.getByRole('button', { name: 'Task 1' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Task 2' })).toBeInTheDocument();
+        await user.click(within(groups[0]).getByRole('button'));
+        expect(screen.queryByRole('button', { name: 'Task 1' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Task 2' })).not.toBeInTheDocument();
     });
 
     it('keeps secondary facts behind Details and one manual-order list without groups', async () => {

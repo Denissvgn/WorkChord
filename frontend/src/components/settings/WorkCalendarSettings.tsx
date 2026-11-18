@@ -888,7 +888,6 @@ const WorkCalendarSettings = () => {
                                     key={day}
                                     dateKey={day}
                                     locale={locale}
-                                    iconTone="amber"
                                     label={t('calendar.shortDay')}
                                     onRemove={() => removeShortDay(day)}
                                 />
@@ -945,7 +944,6 @@ const DateList = ({
                             key={day}
                             dateKey={day}
                             locale={locale}
-                            iconTone="red"
                             label={t('calendar.companyDay')}
                             onRemove={() => onRemoveHoliday(day)}
                         />
@@ -965,7 +963,6 @@ const DateList = ({
                             key={day}
                             dateKey={day}
                             locale={locale}
-                            iconTone="amber"
                             label={t('calendar.shortDay')}
                             onRemove={() => onRemoveShortDay(day)}
                         />
@@ -984,15 +981,14 @@ const DateList = ({
 interface DateChipProps {
     dateKey: string;
     locale: Locale;
-    iconTone: 'red' | 'amber';
     label: string;
     onRemove: () => void;
 }
 
-const DateChip = ({ dateKey, locale, iconTone, label, onRemove }: DateChipProps) => (
+export const DateChip = ({ dateKey, locale, label, onRemove }: DateChipProps) => (
     <div className="flex items-center justify-between rounded-lg border bg-surface-card p-2 text-sm text-content-primary">
         <span>
-            <span className={`mr-2 inline-flex h-2.5 w-2.5 rounded-full ${iconTone === 'red' ? 'bg-feedback-danger' : 'bg-feedback-warning'}`} />
+            <span className="mr-2 inline-flex h-2.5 w-2.5 rounded-full border border-border bg-surface-subtle" />
             {formatDate(dateKey, locale)}
             <span className="ml-2 text-xs text-content-tertiary">{label}</span>
         </span>
