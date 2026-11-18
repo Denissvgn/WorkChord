@@ -156,7 +156,7 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const capabilitiesQuery = useQuery({
         queryKey: ['agent-capabilities'],
         queryFn: agentService.getCapabilities,
-        enabled: hasModelKey,
+        enabled: hasAgentKey,
         retry: protectedQueryRetry,
     });
     const capabilitiesCurrent = capabilitiesQuery.isSuccess
@@ -164,8 +164,9 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const scopes = capabilitiesCurrent
         ? capabilitiesQuery.data?.scopes ?? []
         : [];
-    const canRead = scopes.includes('admin') || scopes.includes('planning:read');
-    const canAdminister = scopes.includes('admin');
+    const usesAdminAccess = hasAdminKey && !hasAgentKey;
+    const canRead = usesAdminAccess || scopes.includes('admin') || scopes.includes('planning:read');
+    const canAdminister = usesAdminAccess || scopes.includes('admin');
 
     // feedback-policy: query loading,error,retry,empty
     const rosterQuery = useQuery({
@@ -542,7 +543,9 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
     const evidenceRetrying = (rosterQuery.isError && rosterQuery.isFetching)
         || (catalogQuery.isError && catalogQuery.isFetching)
         || (bindingsQuery.isError && bindingsQuery.isFetching);
-    const { isPending: accessLoading, isError: accessFailed, isFetching: accessFetching, refetch: retryAccess } = capabilitiesQuery;
+    const accessLoading = hasAgentKey && capabilitiesQuery.isPending;
+    const accessFailed = hasAgentKey && capabilitiesQuery.isError;
+    const { isFetching: accessFetching, refetch: retryAccess } = capabilitiesQuery;
     const { isError: rosterFailed, refetch: retryRoster } = rosterQuery;
     const { isError: catalogFailed, refetch: retryCatalog } = catalogQuery;
     const { isError: bindingsFailed, refetch: retryBindings } = bindingsQuery;
@@ -611,11 +614,11 @@ export const AgentModelAdministration = ({ onHeaderActionsChange }: {
         );
     }
 
-    if (capabilitiesQuery.isPending) {
+    if (accessLoading) {
         return <QueryLoadingState message={t('modelAdministration.checkingAccess')} />;
     }
 
-    if (capabilitiesQuery.isError) {
+    if (accessFailed) {
         return (
             <QueryErrorState
                 error={capabilitiesQuery.error}

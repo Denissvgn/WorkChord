@@ -209,7 +209,7 @@ describe('AgentModelAdministration', () => {
         const { user } = renderWithProviders(<TeamPage />, { initialEntries: ['/team?tab=models'] });
         expect(await screen.findByRole('heading', { name: 'Model catalog' })).toBeVisible();
         expect(screen.getByText('Worker Alpha')).toBeVisible();
-        expect(agentServiceMock.getCapabilities).toHaveBeenCalledTimes(1);
+        expect(agentServiceMock.getCapabilities).not.toHaveBeenCalled();
         expect(agentServiceMock.getModelCatalog).toHaveBeenCalledWith(true);
         expect(agentServiceMock.getModelBindings).toHaveBeenCalledWith({ includeDisabled: true });
         await user.click(within(screen.getByTestId('page-header')).getByRole('button', { name: 'Add a binding' }));
