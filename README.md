@@ -1,72 +1,50 @@
 # WorkChord
 
-[![CI (main)](https://github.com/Denissvgn/WorkChord/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/Denissvgn/WorkChord/actions/workflows/ci.yml)
-[![Release status: unreleased](https://img.shields.io/badge/release-unreleased-yellow)](https://github.com/Denissvgn/WorkChord/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+WorkChord is a self-hosted project workspace for teams of people and external agents. Plan an iteration around the hours your team has, see which tasks depend on each other, and review the evidence before accepting the work.
 
-[![Python 3.11–3.13](https://img.shields.io/badge/Python-3.11%E2%80%933.13-3776AB?logo=python&logoColor=white)](backend/pyproject.toml)
-[![Node.js 22.23.1](https://img.shields.io/badge/Node.js-22.23.1-5FA04E?logo=nodedotjs&logoColor=white)](.github/workflows/ci.yml)
-[![FastAPI 0.139.0](https://img.shields.io/badge/FastAPI-0.139.0-009688?logo=fastapi&logoColor=white)](backend/requirements.lock)
-[![SQLAlchemy 2.0.51](https://img.shields.io/badge/SQLAlchemy-2.0.51-D71F00?logo=sqlalchemy&logoColor=white)](backend/requirements.lock)
-[![PostgreSQL 18](https://img.shields.io/badge/PostgreSQL-18-4169E1?logo=postgresql&logoColor=white)](docker-compose.yml)
-[![React 19.2.3](https://img.shields.io/badge/React-19.2.3-149ECA?logo=react&logoColor=white)](frontend/package-lock.json)
-[![Vite 7.3.6](https://img.shields.io/badge/Vite-7.3.6-646CFF?logo=vite&logoColor=white)](frontend/package-lock.json)
+[Watch the demo (1:45)](docs/media/workchord-demo.mp4) · [Try the sample project](#get-started) · [Connect an agent](docs/agent-team-setup.md) · [Deploy a shared workspace](docs/runbooks/self-hosted-server-acceptance.md)
 
-CI tracks `main`; versions reflect supported runtimes and locked dependencies.
+[![The welcome guide in Gantt. The introduction and setup checklist run in parallel, then both feed into draft review.](docs/media/welcome-guide-gantt.png)](docs/media/workchord-demo.mp4)
 
-WorkChord is a self-hosted workspace for human-led teams to capture, plan,
-deliver, and review project work. External agents can participate through
-authenticated REST and MCP APIs, using their own execution runtimes.
-
-- **Teamwork:** project backlogs, task trees, ownership, discussion, and review with evidence.
-- **Planning:** work calendars, shared capacity, waits-for links, and the Plan and Gantt pages, with a roadmap view in Projects.
-- **Recorded time:** optional private entries and scoped totals for project managers.
-
-The web interface supports English and Russian. An [Android companion](android-companion/)
-provides mobile task access.
+*Eight tasks make up the sample welcome guide. Follow the two lines into “Review the draft” to see which pieces have to be ready together. The person and robot icons show who owns each task.* [English captions](docs/media/workchord-demo.en.vtt)
 
 ## Get started
 
-For a local PostgreSQL workspace, use Docker with Compose v2:
+To try the sample on your own machine, use Git and Docker Compose v2. Run these commands in a Bash-compatible shell. The demo gets its own PostgreSQL volume and uses trusted-local access on the loopback address.
 
 ```bash
-cp .env.example .env
+git clone https://github.com/Denissvgn/WorkChord.git
+cd WorkChord
+WORKCHORD_AUTH_MODE=trusted_local docker compose --env-file .env.example -p workchord-demo up --build --detach
 ```
 
-Configure sign-in and application secrets in `.env` using the
-[identity setup guide](docs/identity-and-recovery.md). Managed sign-in is the
-default; an isolated workspace can explicitly select `trusted_local` mode.
+1. Open [localhost](http://localhost). In **Overview → Get started → Say who you are**, enter a name and choose **Add me**.
+2. Choose **Load a sample project**. **Plan** opens on *Sample first iteration*. Expand **Capacity** to see how the person and the sample agent share the work.
+3. Open **Gantt** and select **Sample: Agree on the audience**. The brief asks for three questions a new teammate needs answered and tells the reviewer how to check the result.
+4. Choose **Start work**, then reopen the task in **My Work → Doing**. Record your answer in **Work & review** and submit it. After a reviewer accepts it, **Analytics** counts the task under **Accepted deliverables**.
 
-```bash
-docker compose up --build --detach
-```
+To stop the demo and keep its data, run `docker compose --env-file .env.example -p workchord-demo stop`.
 
-Open [localhost](http://localhost) (port 80 by default), then follow the identity
-guide to establish the first owner.
+For a shared deployment, WorkChord defaults to managed sign-in. Configure an OIDC provider and an operator key, then establish the first workspace owner. [Identity and recovery](docs/identity-and-recovery.md) · [Server setup](docs/runbooks/self-hosted-server-acceptance.md)
 
-For native Python/Node.js setup and local API documentation, follow
-[local development](docs/local-development.md), which uses SQLite by default.
-For a shared server, follow the deployment guides below.
+## Working in WorkChord
+
+| When you need to… | Where to go |
+| --- | --- |
+| Turn a request into work | **Triage** sends requests to a project backlog. In **Tasks**, give each task an assignee, an estimate in hours, and acceptance criteria. [Teamwork guide](docs/human-teamwork.md) |
+| Decide what fits | **Plan** accounts for work calendars, absences, dependencies, and capacity shared across projects. Preview the schedule before applying dates. [Iteration planning](docs/human-teamwork.md#plan-iterations-and-capacity) |
+| Hand work to an agent | **Team → Connect** sets up an external agent. Its own runtime claims assignments and returns evidence over authenticated REST or the Model Context Protocol (MCP). The sample includes an agent profile so you can explore planning before connecting a runtime. [Runtime guide](docs/external-agent-runtime.md) |
+| Decide whether work is done | **My Work** shows what to do and what needs review. Open **Work & review** to record evidence for each criterion. A reviewer can accept the result or request changes. [Task and review semantics](docs/task-domain.md) |
+| Measure delivery | **Analytics** counts accepted deliverables and shows lead time, cycle time, and review delay. With optional time recording, people keep private entries and project managers can see totals. [Delivery metrics](docs/delivery-analytics.md) · [Recorded time](docs/time-entries.md) |
+
+The web app supports English and Russian. The Android companion gives people access to their tasks from a phone. [Android companion](android-companion/)
 
 ## Documentation
 
-| Topic | Guides |
-| --- | --- |
-| Working together | [Quickstart](docs/human-teamwork.md) · [Task semantics](docs/task-domain.md) · [Delivery analytics](docs/delivery-analytics.md) |
-| Accounts and mobile access | [Sign-in, permissions, Android connection, and recovery](docs/identity-and-recovery.md) |
-| Recorded time | [Enable time entry, privacy, reports, and exports](docs/time-entries.md) |
-| External agents | [Runtime integration](docs/external-agent-runtime.md) · [Team setup](docs/agent-team-setup.md) · [Usage and pricing](docs/execution-usage.md) |
-| Self-hosting | [Server setup](docs/runbooks/self-hosted-server-acceptance.md) · [PostgreSQL deployment](docs/runbooks/postgresql-deployment.md) |
-| Operations | [Operator guide](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md) |
-| Releases and upgrades | [Interface 1.1](docs/releases/interface-1.1.md): where pages moved, first-run steps, and what to do after upgrading |
-| Configuration | [Environment settings](.env.example) |
-
-## Support WorkChord
-
-If WorkChord helps your team, consider [sponsoring its development](https://github.com/sponsors/Denissvgn).
-Sponsorship helps sustain maintenance and improvements to self-hosting, team planning,
-and collaboration between people and external agents.
+- **Run from source** with Python, Node.js, and a local SQLite database. [Local development](docs/local-development.md)
+- **Operate PostgreSQL** and keep a recoverable copy of your workspace. [Deployment](docs/runbooks/postgresql-deployment.md) · [Operations](docs/runbooks/postgresql-operations.md) · [Backup and restore](docs/runbooks/postgresql-backup-restore.md) · [Troubleshooting](docs/runbooks/postgresql-troubleshooting.md)
+- **Configure or upgrade a workspace.** [Environment settings](.env.example) · [Interface upgrade notes](docs/releases/interface-1.1.md)
 
 ## License
 
-[MIT](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) for bundled components.
+WorkChord is available under the MIT license. [License](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Sponsor WorkChord](https://github.com/sponsors/Denissvgn)
