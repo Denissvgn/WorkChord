@@ -21,12 +21,12 @@ import { getApiErrorMessage, getApiErrorStatus } from '../../utils/apiError';
 type DatedTask = Pick<Task, 'start_date' | 'end_date'> & { children?: DatedTask[] };
 
 /**
- * Whether every task has dates, whatever its status (finished, deferred and active alike). A task with subtasks is
- * judged through its subtasks, whose dates it rolls up; any other task, a parent task without subtasks included, is
- * judged by its own dates. Works on a nested tree and on a flattened list that keeps each task's subtasks.
+ * Whether every task has its own start and end dates, whatever its status or kind: finished, deferred and active
+ * tasks alike, and a parent task as well as each of its subtasks. A parent task without its own dates fails the check
+ * even when all its subtasks are dated. Works on a nested tree and on a flattened list that keeps each task's subtasks.
  */
 const everyTaskHasDates = (tasks: DatedTask[]): boolean => tasks.length > 0 && tasks.every(task => (
-    task.children?.length ? everyTaskHasDates(task.children) : Boolean(task.start_date && task.end_date)
+    Boolean(task.start_date && task.end_date) && (!task.children?.length || everyTaskHasDates(task.children))
 ));
 
 export const PlanScheduleSection = ({ iteration, members, gantt, tasks: iterationTasks, done }: {

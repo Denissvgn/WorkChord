@@ -866,8 +866,10 @@ describe('schedule and review inside Plan', () => {
         const cases: Array<[string, Task[], boolean]> = [
             ['a dated task', [listedTask()], true],
             ['an undated task', [listedTask(undated)], false],
-            ['a parent task whose subtasks are all dated, though it has no dates of its own',
-                [parent({ ...undated, children: [subtask(21), subtask(22)] })], true],
+            ['a dated parent task whose subtasks are all dated',
+                [parent({ children: [subtask(21), subtask(22)] })], true],
+            ['a parent task without dates of its own, though all its subtasks are dated',
+                [parent({ ...undated, children: [subtask(21), subtask(22)] })], false],
             ['a parent task with an undated subtask, though it has dates of its own',
                 [parent({ children: [subtask(21), subtask(22, undated)] })], false],
             ['a dated parent task without subtasks', [parent()], true],
