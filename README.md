@@ -2,9 +2,9 @@
 
 WorkChord is a self-hosted project workspace for teams of people and external agents. Plan an iteration around the hours your team has, see which tasks depend on each other, and review the evidence before accepting the work.
 
-[Watch the demo (1:45)](docs/media/workchord-demo.mp4) · [Try the sample project](#get-started) · [Connect an agent](docs/agent-team-setup.md) · [Deploy a shared workspace](docs/runbooks/self-hosted-server-acceptance.md)
+[Download the demo (1:45)](docs/media/workchord-demo.mp4) · [Try the sample project](#get-started) · [Connect an agent](docs/agent-team-setup.md) · [Deploy a shared workspace](docs/runbooks/self-hosted-server-acceptance.md)
 
-[![The welcome guide in Gantt. The introduction and setup checklist run in parallel, then both feed into draft review.](docs/media/welcome-guide-gantt.png)](docs/media/workchord-demo.mp4)
+https://github.com/user-attachments/assets/e1d3cfab-8568-4333-8b41-4c823e9b12eb
 
 *Eight tasks make up the sample welcome guide. Follow the two lines into “Review the draft” to see which pieces have to be ready together. The person and robot icons show who owns each task.* [English captions](docs/media/workchord-demo.en.vtt)
 
