@@ -380,7 +380,7 @@ export const englishResources = {
                 reviewWork: 'Review',
                 sendToAgent: 'Send to the agent',
                 saveToChangeStatus: 'Save or discard your edits to change status.',
-                takenAsPerson: 'Start work and Submit for review are taken as the chosen person. Lock editing to use them.',
+                takenAsPerson: 'Start work and Submit for review are taken as the chosen person, so lock editing to use them.',
                 lockEditing: 'Lock editing',
                 startReason: 'Started from the task view.',
                 submitReason: 'Submitted for review from the task view.',
